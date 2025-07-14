@@ -1,0 +1,14 @@
+2025-07-13T19:30:34.469152 | pandas importado correctamente. Versión: 2.2.3
+2025-07-13T19:30:34.472862 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T13:57:12.861762 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T13:57:12.865870 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T17:45:23.469224 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T17:45:23.472928 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T18:03:02.234128 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T18:03:02.237305 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T18:06:54.214634 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T18:06:54.218049 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T18:08:00.743382 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T18:08:00.747697 | reportlab importado correctamente. Versión: 4.4.0
+2025-07-14T18:08:42.001525 | pandas importado correctamente. Versión: 2.2.3
+2025-07-14T18:08:42.004939 | reportlab importado correctamente. Versión: 4.4.0

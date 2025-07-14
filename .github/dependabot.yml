@@ -1,0 +1,49 @@
+version: 2
+updates:
+  # Dependencias de Python
+  - package-ecosystem: "pip"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    reviewers:
+      - "admin"
+    assignees:
+      - "admin"
+    commit-message:
+      prefix: "🔄"
+      include: "scope"
+    open-pull-requests-limit: 10
+    target-branch: "develop"
+    
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "10:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    reviewers:
+      - "admin"
+    commit-message:
+      prefix: "🚀"
+      include: "scope"
+    open-pull-requests-limit: 5
+
+  # Docker
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "09:00"
+      timezone: "America/Argentina/Buenos_Aires"
+    reviewers:
+      - "admin"
+    commit-message:
+      prefix: "🐳"
+      include: "scope"
+    open-pull-requests-limit: 5

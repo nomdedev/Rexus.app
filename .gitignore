@@ -1,0 +1,120 @@
+# ====================================================
+# REXUS APP - ARCHIVOS SENSIBLES Y CONFIGURACIÓN
+# ====================================================
+
+# === CONFIGURACIÓN Y CREDENCIALES ===
+config/privado/
+.env
+.env.local
+.env.production
+.env.staging
+.env.*
+.flaskenv
+config/*.env
+src/core/config_local.py
+src/core/secret_*.py
+src/core/credentials.py
+src/core/keys.py
+*.key
+*.pem
+*.p12
+*.pfx
+*.crt
+*.csr
+
+# === TESTS CONFIDENCIALES ===
+**/tests/*confidencial*
+**/tests/*privado*
+**/tests/utilitarios/test_*privado*.py
+**/tests/utilitarios/test_*confidencial*.py
+
+# === VARIABLES DE ENTORNO ESPECÍFICAS ===
+config/production.env
+config/staging.env
+config/development.env
+
+# Ignorar archivos temporales y caché
+*.pyc
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.pyc
+.pytest_cache/
+.coverage
+htmlcov/
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Ignorar logs y archivos de sistema
+logs/*.log
+*.log
+.DS_Store
+Thumbs.db
+*.bak
+*.swp
+*~
+sonar-scanner/
+*.sqlite3
+temp_*
+output*.txt
+
+# Docker
+*.pid
+docker-compose.override.yml
+
+# Node/npm
+node_modules/
+
+# Directorios específicos del IDE
+.idea/
+.vscode/
+.vscode-test/
+*.sublime-workspace
+.vs/
+
+# === DIRECTORIOS DE DATOS DINÁMICOS ===
+uploads/
+backups/
+temp/
+user_files/
+attachments/
+
+# === ARCHIVOS DE PRODUCCIÓN ===
+*.backup
+*.bak
+*.sql.gz
+*.dump
+
+# === CERTIFICADOS Y SEGURIDAD ===
+ssl/
+certificates/
+private_keys/
+
+# === OTROS ===
+archive/
+performance_reports/
+monitoring_data/
+
+# === ESPECÍFICO DE MODERNIZACIÓN ===
+migration_logs/
+deployment_logs/
+.deployment/
+
+# No subir contraseñas ni configuraciones sensibles
+# Añade aquí cualquier otro archivo que contenga datos privados

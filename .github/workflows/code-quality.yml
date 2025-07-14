@@ -1,0 +1,47 @@
+name: 📊 Calidad de Código
+
+on:
+  push:
+    branches: [ main ]
+  schedule:
+    - cron: '0 2 * * 1'  # Lunes a las 2 AM
+
+jobs:
+  quality:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: 🐍 Configurar Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: 3.11
+
+    - name: 📦 Instalar herramientas
+      run: |
+        pip install flake8 black isort mypy
+        pip install -r requirements.txt
+
+    - name: 🎨 Verificar formato de código
+      run: |
+        black --check modules/ core/ utils/ scripts/
+        isort --check-only modules/ core/ utils/ scripts/
+
+    - name: 🔍 Análisis estático
+      run: |
+        flake8 modules/ core/ utils/ --max-line-length=88
+        mypy modules/ core/ utils/ --ignore-missing-imports
+
+    - name: 📈 Ejecutar análisis automático
+      run: |
+        python scripts/verificacion/analizador_modulos.py
+        python scripts/verificacion/metricas_rapidas.py
+
+    - name: 📤 Guardar reportes
+      uses: actions/upload-artifact@v3
+      with:
+        name: quality-reports
+        path: |
+          METRICAS_RAPIDAS_*.md
+          informes_modulos/

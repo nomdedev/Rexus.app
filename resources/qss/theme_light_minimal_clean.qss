@@ -1,0 +1,110 @@
+
+QLabel {
+    color: #333;
+    font-size: 12px;
+}
+QPushButton {
+    background-color: #e3f6fd;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 12px;
+    padding: 4px 8px;
+    color: #2563eb;
+}
+QPushButton:hover {
+    background-color: #d1f2fd;
+}
+QPushButton:pressed {
+    background-color: #b3e5fc;
+}
+QTableWidget {
+    background-color: white;
+    alternate-background-color: #f5f5f5;
+    border: 1px solid #ddd;
+    font-size: 12px;
+}
+QHeaderView::section {
+    background-color: #f8fafc;
+    color: #2563eb;
+    border: 1px solid #e0e0e0;
+    padding: 4px;
+    font-size: 10px;
+}
+QTableWidget::item {
+    padding: 4px;
+    border-bottom: 1px solid #eee;
+}
+QTableWidget::item:selected {
+    background-color: #e3f6fd;
+    color: #2563eb;
+}
+QLineEdit, QComboBox, QTextEdit, QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit {
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    padding: 8px 12px;
+    font-size: 12px;
+    background-color: white;
+    color: #333;
+}
+QLineEdit:focus, QComboBox:focus, QTextEdit:focus, QSpinBox:focus, QDateEdit:focus {
+    border: 2px solid #2563eb;
+    background-color: #f8fafc;
+}
+QLabel[objectName="label_feedback"] {
+    font-size: 13px;
+    font-weight: bold;
+    border-radius: 8px;
+    padding: 8px;
+    background: #f1f5f9;
+    color: #2563eb;
+}
+QLabel[feedback_tipo="error"] {
+    color: #ef4444;
+    background: #ffe5e5;
+}
+QLabel[feedback_tipo="exito"] {
+    color: #22c55e;
+    background: #d1f7e7;
+}
+QLabel[feedback_tipo="advertencia"] {
+    color: #fbbf24;
+    background: #fef9c3;
+}
+QLabel[feedback_tipo="info"] {
+    color: #2563eb;
+    background: #e3f6fd;
+}
+QLineEdit[error="true"], QComboBox[error="true"], QDateEdit[error="true"] {
+    border: 2px solid #ef4444;
+    background: #ffe5e5;
+}
+QLineEdit[objectName="form_input"] {
+    border: 1px solid #bfc0c0;
+    border-radius: 4px;
+    padding: 8px;
+    font-size: 12px;
+    background: white;
+}
+QLineEdit[objectName="form_input"]:focus {
+    border: 2px solid #2563eb;
+}
+QDialog[objectName="dialog_form"] {
+    background: #fff9f3;
+    border-radius: 12px;
+}
+QPushButton[objectName="button_secondary"] {
+    background: #f1f5f9;
+    color: #2563eb;
+    border-radius: 6px;
+    padding: 4px 12px;
+    font-size: 14px;
+    border: 1px solid #e3e3e3;
+}
+QPushButton[objectName="button_secondary"]:hover {
+    background: #e3f6fd;
+}
+QLabel[objectName="label_info"] {
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: 500;
+}

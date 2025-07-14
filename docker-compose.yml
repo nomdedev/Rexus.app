@@ -1,0 +1,260 @@
+# ====================================================
+# REXUS APP - DOCKER COMPOSE PARA TODOS LOS ENTORNOS
+# ====================================================
+version: '3.8'
+
+# ===== CONFIGURACIÓN COMPARTIDA =====
+x-common-variables: &common-variables
+  PYTHONPATH: /app
+  PYTHONDONTWRITEBYTECODE: 1
+  PYTHONUNBUFFERED: 1
+
+x-common-volumes: &common-volumes
+  - .:/app
+  - rexus_logs:/app/logs
+  - rexus_uploads:/app/uploads
+  - rexus_backups:/app/backups
+
+# ===== SERVICIOS =====
+services:
+  # ===== APLICACIÓN PRINCIPAL =====
+  rexus-app:
+    build:
+      context: .
+      target: runtime
+    container_name: rexus-app
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes: *common-volumes
+    environment:
+      <<: *common-variables
+      APP_ENV: production
+      DB_SERVER: sqlserver
+      DB_USERNAME: sa
+      DB_PASSWORD: ${DB_PASSWORD:-Rexus123!@#}
+      SECRET_KEY: ${SECRET_KEY:-production_secret_key_change_this}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-production_jwt_secret_change_this}
+      ENCRYPTION_KEY: ${ENCRYPTION_KEY:-production_encrypt_key_32chars}
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - rexus-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import src.core.config; print('OK')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # ===== BASE DE DATOS SQL SERVER =====
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rexus-sqlserver
+    restart: unless-stopped
+    ports:
+      - "1433:1433"
+    environment:
+      SA_PASSWORD: ${DB_PASSWORD:-Rexus123!@#}
+      ACCEPT_EULA: Y
+      MSSQL_PID: Express
+    volumes:
+      - rexus_db_data:/var/opt/mssql
+      - ./scripts/database:/docker-entrypoint-initdb.d
+    networks:
+      - rexus-network
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P ${DB_PASSWORD:-Rexus123!@#} -Q 'SELECT 1'"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+
+  # ===== REDIS PARA CACHE =====
+  redis:
+    image: redis:7-alpine
+    container_name: rexus-redis
+    restart: unless-stopped
+    ports:
+      - "6379:6379"
+    volumes:
+      - rexus_redis_data:/data
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    networks:
+      - rexus-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  # ===== DESARROLLO =====
+  rexus-dev:
+    build:
+      context: .
+      target: development
+    container_name: rexus-dev
+    ports:
+      - "8001:8000"
+      - "5678:5678"  # Puerto para debugger
+    volumes:
+      - .:/app
+      - rexus_dev_logs:/app/logs
+    environment:
+      <<: *common-variables
+      APP_ENV: development
+      APP_DEBUG: true
+      DB_SERVER: sqlserver
+      DB_USERNAME: sa
+      DB_PASSWORD: ${DB_PASSWORD:-Rexus123!@#}
+      SECRET_KEY: dev_secret_key_not_for_production
+      JWT_SECRET_KEY: dev_jwt_secret_not_for_production
+      ENCRYPTION_KEY: dev_encryption_key_32_characters
+    depends_on:
+      - sqlserver
+      - redis
+    networks:
+      - rexus-network
+    profiles:
+      - development
+
+  # ===== TESTING =====
+  rexus-test:
+    build:
+      context: .
+      target: testing
+    container_name: rexus-test
+    volumes:
+      - .:/app
+      - rexus_test_reports:/app/htmlcov
+    environment:
+      <<: *common-variables
+      APP_ENV: testing
+      QT_QPA_PLATFORM: offscreen
+      DB_SERVER: sqlserver-test
+      DB_USERNAME: sa
+      DB_PASSWORD: Test123!@#
+      SECRET_KEY: test_secret_key_for_testing_only
+      JWT_SECRET_KEY: test_jwt_secret_for_testing_only
+      ENCRYPTION_KEY: test_encryption_key_32_characters
+    depends_on:
+      - sqlserver-test
+    networks:
+      - rexus-network
+    profiles:
+      - testing
+    command: >
+      sh -c "
+        python -m pytest tests/utils/ tests/test_schema_consistency.py -v &&
+        python -m pytest tests/ -v --cov=src --cov-report=html --cov-report=term
+      "
+
+  # ===== BASE DE DATOS PARA TESTING =====
+  sqlserver-test:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: rexus-sqlserver-test
+    environment:
+      SA_PASSWORD: Test123!@#
+      ACCEPT_EULA: Y
+      MSSQL_PID: Express
+    networks:
+      - rexus-network
+    profiles:
+      - testing
+
+  # ===== CALIDAD DE CÓDIGO =====
+  code-quality:
+    build:
+      context: .
+      target: development
+    container_name: rexus-code-quality
+    volumes:
+      - .:/app
+      - rexus_quality_reports:/app/reports
+    environment: *common-variables
+    profiles:
+      - quality
+    command: >
+      sh -c "
+        echo '🎨 Verificando formato con Black...' &&
+        black --check --diff src/ tests/ &&
+        echo '📋 Verificando imports con isort...' &&
+        isort --check-only --diff src/ tests/ &&
+        echo '🔍 Ejecutando linting con Flake8...' &&
+        flake8 src/ tests/ --max-line-length=88 --extend-ignore=E203,W503 &&
+        echo '🔒 Ejecutando análisis de seguridad con Bandit...' &&
+        bandit -r src/ -f json -o reports/bandit-report.json &&
+        echo '📊 Ejecutando análisis estático con MyPy...' &&
+        mypy src/ --ignore-missing-imports --no-strict-optional
+      "
+
+  # ===== MONITOREO =====
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: rexus-prometheus
+    restart: unless-stopped
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+      - rexus_prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--storage.tsdb.retention.time=200h'
+      - '--web.enable-lifecycle'
+    networks:
+      - rexus-network
+    profiles:
+      - monitoring
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: rexus-grafana
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - rexus_grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_PASSWORD:-admin123}
+      GF_USERS_ALLOW_SIGN_UP: false
+    networks:
+      - rexus-network
+    profiles:
+      - monitoring
+
+# ===== VOLÚMENES =====
+volumes:
+  rexus_db_data:
+    driver: local
+  rexus_redis_data:
+    driver: local
+  rexus_logs:
+    driver: local
+  rexus_uploads:
+    driver: local
+  rexus_backups:
+    driver: local
+  rexus_dev_logs:
+    driver: local
+  rexus_test_reports:
+    driver: local
+  rexus_quality_reports:
+    driver: local
+  rexus_prometheus_data:
+    driver: local
+  rexus_grafana_data:
+    driver: local
+
+# ===== REDES =====
+networks:
+  rexus-network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -1,0 +1,314 @@
+QLabel#label_feedback {
+    background: #f1f5f9;
+    border-radius: 8px;
+    color: #2563eb;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 8px;
+    }
+QPushButton {
+    background: #e3f6fd;
+    border-radius: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    }
+QPushButton#boton_agregar_pedidos, QPushButton#boton_agregar_logistica, QPushButton#boton_agregar_usuarios, QPushButton#boton_agregar_vidrios_obra, QPushButton#boton_buscar_vidrios, QPushButton#boton_exportar_excel_vidrios {
+    background: #e3f6fd;
+    border-radius: 12px;
+    color: #2563eb;
+    margin-left: 16px;
+    min-height: 48px;
+    min-width: 48px;
+    }
+QPushButton#boton_nuevo_compras, QPushButton#boton_add-entrega, QPushButton#boton_search_icon, QPushButton#boton_excel_icon {
+    background: #f1f5f9;
+    border-radius: 12px;
+    color: #2563eb;
+    margin-left: 16px;
+    min-height: 48px;
+    min-width: 48px;
+    }
+QPushButton:focus, QLineEdit#input_logistica:focus, QLineEdit#input_logistica_prop:focus, QPushButton#boton_agregar:focus, QPushButton#boton_produccion:focus {
+    border: 2px solid #2563eb;
+    }
+QLabel#titulo_label_logistica, QLabel#label, QLabel#label_titulo_pedidos, QLabel#label_titulo, QLabel#label_titulo_usuarios, QLabel#label_titulo_vidrios {
+    color: #222222;
+    font-size: 35px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 18px;
+    }
+QTableWidget QHeaderView::section {
+    background: #f8fafc;
+    border-radius: 4px;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 400;
+    }
+QTableWidget#tabla_comparacion, QTableWidget#tabla_pedidos, QTableWidget#tabla_logistica, QLineEdit#input_logistica, QLineEdit#input_logistica_prop, QTableWidget#tabla_usuarios, QTableWidget#tabla_tareas, QTableWidget#tabla_notificaciones, QTableWidget#tabla_vidrios, QTableWidget#tabla_produccion {
+    font-size: 12px;
+    }
+QHeaderView#header_comparacion, QHeaderView#header_pedidos, QHeaderView#header_vidrios, QHeaderView#header_produccion, QHeaderView#header_logistica, QHeaderView#header_tareas, QHeaderView#header_notificaciones, QHeaderView#header_vidrios {
+    background-color: #e3f6fd;
+    border-radius: 8px;
+    border: 1px solid #e3e3e3;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 400;
+    padding: 8px 12px;
+    }
+QProgressBar#progress_bar_logistica {
+    background: #e3f6fd;
+    border-radius: 8px;
+    height: 18px;
+    }
+QProgressBar#progress_bar_logistica::chunk {
+    background: #2563eb;
+    border-radius: 8px;
+    }
+QFrame#login_card {
+    background: #f3f4f6;
+    border-radius: 28px;
+    padding: 0px;
+    }
+QLabel#label_titulo_usuarios {
+    color: #2563eb;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 18px;
+    }
+QLabel#icono {
+    margin-bottom: 8px;
+    margin-top: 32px;
+    }
+QLabel#subtitulo {
+    color: #374151;
+    font-size: 18px;
+    margin-bottom: 18px;
+    }
+QLineEdit#usuario_input, QLineEdit#password_input {
+    background: #ffffff;
+    border-radius: 14px;
+    border: 2px solid #d1d5db;
+    color: #1e293b;
+    font-size: 1.1rem;
+    margin-bottom: 8px;
+    padding: 12px;
+    }
+QLineEdit#usuario_input:focus, QLineEdit#password_input:focus {
+    background: #f3f4f6;
+    border: 2px solid #2563eb;
+    color: #1e293b;
+    }
+QLineEdit#usuario_input::placeholder, QLineEdit#password_input::placeholder {
+    color: #bdbdbd;
+    font-style: italic;
+    }
+QPushButton#boton_login {
+    background: qlineargradient(x1:0, y1:0, x2:1, y2:0, stop:0 #2563eb, stop:1 #60a5fa);
+    border-radius: 14px;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 18px;
+    padding: 14px;
+    }
+QPushButton#boton_login:hover {
+    background: #1d4ed8;
+    }
+QLabel#error {
+    color: #ef4444;
+    font-size: 16px;
+    margin-top: 8px;
+    }
+QPushButton#boton_agregar {
+    background: #e3f6fd;
+    border-radius: 12px;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
+    margin-left: 16px;
+    min-height: 48px;
+    min-width: 48px;
+    }
+QWidget#cronograma_view {
+    background: #ffffff;
+    border-radius: 10px;
+    }
+QLabel#cronograma_label {
+    color: #2563eb;
+    font-weight: bold;
+    }
+QPushButton#boton_produccion {
+    background: #e3f6fd;
+    border-radius: 12px;
+    color: #2563eb;
+    font-size: 14px;
+    font-weight: 600;
+    min-height: 48px;
+    min-width: 48px;
+    }
+QLabel#tarjeta_kanban {
+    background: #e0f2fe;
+    border-radius: 8px;
+    border: 1px solid #2563eb;
+    color: #2563eb;
+    font-size: 13px;
+    margin: 5px;
+    padding: 5px;
+    }
+QLabel#label_feedback[feedback_tipo="info"], QLabel#label_feedback[feedback_tipo="info"] {
+    background: #e3f6fd;
+    color: #2563eb;
+    }
+QLabel#label_feedback[feedback_tipo="exito"], QLabel#label_feedback[feedback_tipo="exito"] {
+    background: #d1f7e7;
+    color: #15803d;
+    }
+QLabel#label_feedback[feedback_tipo="error"], QLabel#label_feedback[feedback_tipo="error"] {
+    background: #fee2e2;
+    color: #b91c1c;
+    }
+QLabel#label_feedback[feedback_tipo="advertencia"], QLabel#label_feedback[feedback_tipo="advertencia"] {
+    background: #fef9c3;
+    color: #b45309;
+    }
+QLineEdit#nombre_input_herrajes[error="true"] {
+    background: #fee2e2;
+    border: 2px solid #b91c1c;
+    }
+QLineEdit#nombre_input_herrajes[error="false"], QLineEdit#nombre_input_herrajes, QLineEdit#nombre_input_obra[error="false"], QLineEdit#nombre_input_obra, QLineEdit#cliente_input_obra[error="false"], QLineEdit#cliente_input_obra, QDateEdit#fecha_entrega_input_obra[error="false"], QDateEdit#fecha_entrega_input_obra {
+    background: #ffffff;
+    border: 1px solid #e3e3e3;
+    }
+QLineEdit#nombre_input_obra[error="true"], QLineEdit#cliente_input_obra[error="true"], QDateEdit#fecha_entrega_input_obra[error="true"] {
+    background: #fee2e2;
+    border: 2px solid #ef4444;
+    }
+QLabel#label_titulo_dialogo_obra {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    }
+QLabel#label_usuario_dialogo_obra {
+    background: #f1f5f9;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 8px;
+    padding: 4px 8px;
+    }
+QWidget#Sidebar {
+    background: #ffffff;
+    border-right: 1px solid #e3e3e3;
+    max-width: 240px;
+    min-width: 220px;
+    padding-bottom: 40px;
+    padding-top: 40px;
+    }
+QFrame#sidebar-header, QFrame#sidebar-buttons {
+    background: transparent;
+    margin-bottom: 28px;
+    margin-top: 0;
+    }
+QLabel#sidebar-user {
+    max-height: 0px;
+    max-width: 0px;
+    min-height: 0px;
+    min-width: 0px;
+    }
+QPushButton.sidebar-button, QPushButton#botonMenu {
+    background: #ffffff;
+    border-radius: 8px;
+    border: 1px solid #e3e3e3;
+    color: #1f2937;
+    font-size: 12px;
+    font-weight: 600;
+    margin-bottom: 160px;
+    max-height: 40px;
+    max-width: 210px;
+    min-height: 36px;
+    min-width: 160px;
+    padding-left: 14px;
+    padding-right: 14px;
+    }
+QPushButton.sidebar-button:hover, QPushButton#botonMenu:hover {
+    background: #f3f4f6;
+    border: 1.5px solid #2563eb;
+    color: #2563eb;
+    }
+QPushButton.sidebar-button:checked, QPushButton#botonMenu:checked, QPushButton.sidebar-button[active="true"], QPushButton#botonMenu[active="true"] {
+    background: #ffffff;
+    border-left: 4px solid #2563eb;
+    border: 2px solid #2563eb;
+    color: #2563eb;
+    }
+QFrame#sidebar-tools {
+    background: transparent;
+    margin-bottom: 24px;
+    margin-top: 32px;
+    }
+QWidget#sidebar-footer {
+    background: transparent;
+    border-top: 1px solid #e3e3e3;
+    margin-top: 40px;
+    padding: 20px 0 0 0;
+    }
+QLabel#estadoOnline {
+    background: #dcfce7;
+    border-radius: 8px;
+    color: #15803d;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 0 16px;
+    }
+QLabel#estadoOffline {
+    background: #fee2e2;
+    border-radius: 8px;
+    color: #b91c1c;
+    font-size: 13px;
+    font-weight: bold;
+    padding: 0 16px;
+    }
+QTableWidget {
+    alternate-background-color: #f1f5f9;
+    background: #fff9f3;
+    border-radius: 10px;
+    border: 1.5px solid #e3e3e3;
+    color: #2563eb;
+    font-size: 13px;
+    gridline-color: #e3e3e3;
+    selection-background-color: #e3f6fd;
+    selection-color: #1e293b;
+    }
+QTableWidget QHeaderView::section, QHeaderView::section {
+    background: #f8fafc;
+    border-radius: 4px;
+    border: 1px solid #e3e3e3;
+    color: #2563eb;
+    font-size: 10px;
+    font-weight: 400;
+    padding: 8px 12px;
+    }
+QTableWidget::item {
+    border-radius: 6px;
+    padding: 4px 8px;
+    }
+QTableWidget::item:selected {
+    background: #e3f6fd;
+    color: #1e293b;
+    }
+QLabel#label_titulo_vidrios {
+    color: #222222;
+    font-size: 2.2rem;
+    font-weight: bold;
+    margin-bottom: 8px;
+    margin-top: 18px;
+    }
+QDialog {
+    background: #ffffff;
+    border-radius: 10px;
+    border: 1.5px solid #e3e3e3;
+    padding: 8px 12px;
+    }
