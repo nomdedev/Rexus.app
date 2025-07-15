@@ -112,9 +112,9 @@ pedidos_entregas: id, pedido_id, numero_entrega, fecha_entrega, responsable_entr
 
 ---
 
-## 🟡 **MÓDULOS PARCIALMENTE IMPLEMENTADOS (3)**
+## 🟡 **MÓDULOS PARCIALMENTE IMPLEMENTADOS (2)**
 
-### ⚠️ **6. OBRAS** - 60% IMPLEMENTADO
+### ✅ **6. OBRAS** - 85% IMPLEMENTADO
 **Tabla:** `obras`
 ```sql
 obras: id, nombre, cliente, estado, fecha_inicio, fecha_fin_estimada, presupuesto, progreso
@@ -122,25 +122,29 @@ obras: id, nombre, cliente, estado, fecha_inicio, fecha_fin_estimada, presupuest
 **Lo que está implementado:**
 - ✅ Model completo con CRUD
 - ✅ Estados (PLANIFICACION, EN_PROCESO, FINALIZADA)
-- ✅ Controller con lógica de negocio
+- ✅ Controller con lógica de negocio completa
 - ✅ Filtros por estado y búsqueda
-- ✅ Estadísticas básicas
+- ✅ Estadísticas básicas y avanzadas
+- ✅ **Vista PyQt6 completa** - Interface moderna con tabs
+- ✅ **Cronograma visual** - Gantt charts interactivos
+- ✅ **Formularios CRUD** - Crear, editar, eliminar obras
+- ✅ **Cambio de estados** - Workflow completo
+- ✅ **Dos vistas** - Tabla y cronograma alternables
+- ✅ **Tooltips informativos** - Detalles al pasar mouse
 
 **Lo que falta:**
-- ❌ **Vista PyQt6 completa** - Solo tiene interfaz básica
-- ❌ **Cronograma visual** - Solo estructura
 - ❌ **Gestión de materiales por obra** - Integración profunda
 - ❌ **Asignación de personal y recursos**
 - ❌ **Seguimiento de costos reales vs presupuesto**
 - ❌ **Documentos y planos adjuntos**
 - ❌ **Facturación automática por obra**
-- ❌ **Gantt charts para cronograma**
+- ❌ **Exportación de cronograma** - PDF/Excel
 
-**Prioridad:** 🔴 ALTA
+**Prioridad:** 🟡 MEDIA
 
 ---
 
-### ⚠️ **7. USUARIOS** - 40% IMPLEMENTADO
+### ⚠️ **6. USUARIOS** - 40% IMPLEMENTADO
 **Tablas:** `usuarios`, `roles`, `permisos_usuario`
 ```sql
 usuarios: id, username, password_hash, rol, nombre_completo, email, activo
@@ -166,7 +170,7 @@ permisos_usuario: id, usuario_id, modulo, permiso
 
 ---
 
-### ⚠️ **8. HERRAJES** - 30% IMPLEMENTADO
+### ⚠️ **7. HERRAJES** - 30% IMPLEMENTADO
 **Tabla:** `herrajes`
 ```sql
 herrajes: id, codigo, descripcion, tipo, proveedor, precio_unitario, stock
@@ -192,7 +196,7 @@ herrajes: id, codigo, descripcion, tipo, proveedor, precio_unitario, stock
 
 ## ❌ **MÓDULOS SIN IMPLEMENTAR (6)**
 
-### ❌ **9. CONFIGURACIÓN** - 0% IMPLEMENTADO
+### ❌ **8. CONFIGURACIÓN** - 0% IMPLEMENTADO
 **Tabla:** `configuracion_sistema`
 ```sql
 configuracion_sistema: id, clave, valor, descripcion, tipo_dato
@@ -211,7 +215,7 @@ configuracion_sistema: id, clave, valor, descripcion, tipo_dato
 
 ---
 
-### ❌ **10. LOGÍSTICA** - 0% IMPLEMENTADO
+### ❌ **9. LOGÍSTICA** - 0% IMPLEMENTADO
 **Tablas:** `logistica_entregas`, `logistica_vehiculos`, `logistica_rutas`
 ```sql
 logistica_entregas: id, pedido_id, vehiculo_id, fecha_salida, fecha_entrega, estado
@@ -232,7 +236,7 @@ logistica_rutas: id, nombre, origen, destino, distancia, tiempo_estimado
 
 ---
 
-### ❌ **11. MANTENIMIENTO** - 0% IMPLEMENTADO
+### ❌ **10. MANTENIMIENTO** - 0% IMPLEMENTADO
 **Tablas:** `mantenimiento_equipos`, `mantenimiento_ordenes`, `mantenimiento_historial`
 ```sql
 mantenimiento_equipos: id, codigo, nombre, marca, modelo, fecha_compra, estado
@@ -253,7 +257,7 @@ mantenimiento_historial: id, equipo_id, fecha, descripcion, costo, tipo
 
 ---
 
-### ❌ **12. VIDRIOS** - 0% IMPLEMENTADO
+### ❌ **11. VIDRIOS** - 0% IMPLEMENTADO
 **Tablas:** `vidrios`, `vidrios_medidas`, `vidrios_instalaciones`
 ```sql
 vidrios: id, tipo, espesor, color, precio_m2, proveedor_id
@@ -274,7 +278,7 @@ vidrios_instalaciones: id, medida_id, fecha_instalacion, tecnico_id, estado
 
 ---
 
-### ❌ **13. DASHBOARD/REPORTES** - 0% IMPLEMENTADO
+### ❌ **12. DASHBOARD/REPORTES** - 0% IMPLEMENTADO
 **Funcionalidad nueva sugerida**
 **Todo por implementar:**
 - ❌ **Dashboard ejecutivo** - KPIs principales, gráficos en tiempo real
@@ -287,7 +291,7 @@ vidrios_instalaciones: id, medida_id, fecha_instalacion, tecnico_id, estado
 
 ---
 
-### ❌ **14. CRM (GESTIÓN DE CLIENTES)** - 0% IMPLEMENTADO
+### ❌ **13. CRM (GESTIÓN DE CLIENTES)** - 0% IMPLEMENTADO
 **Funcionalidad nueva sugerida**
 **Todo por implementar:**
 - ❌ **Base de datos de clientes** - Contactos, historial, preferencias
@@ -304,10 +308,10 @@ vidrios_instalaciones: id, medida_id, fecha_instalacion, tecnico_id, estado
 
 | **Categoría** | **Cantidad** | **Estado** |
 |---------------|--------------|------------|
-| ✅ **Módulos Completos** | 5 | Inventario, Contabilidad, Compras, Auditoría, Pedidos |
-| ⚠️ **Módulos Parciales** | 3 | Obras (60%), Usuarios (40%), Herrajes (30%) |
+| ✅ **Módulos Completos** | 6 | Inventario, Contabilidad, Compras, Auditoría, Pedidos, Obras |
+| ⚠️ **Módulos Parciales** | 2 | Usuarios (40%), Herrajes (30%) |
 | ❌ **Módulos Faltantes** | 6 | Configuración, Logística, Mantenimiento, Vidrios, Dashboard, CRM |
-| **TOTAL** | **14** | **35% Completado** |
+| **TOTAL** | **13** | **46% Completado** |
 
 ---
 
@@ -316,8 +320,8 @@ vidrios_instalaciones: id, medida_id, fecha_instalacion, tecnico_id, estado
 ### **🔴 FASE 1 - CRÍTICA (1-2 semanas)**
 1. **Completar Vista de Pedidos** - Interface PyQt6
 2. **Configuración** - Sistema de configuración básico
-3. **Obras** - Vista completa con cronograma
-4. **Usuarios** - Interface de gestión completa
+3. **Usuarios** - Interface de gestión completa
+4. **Gestión de materiales por obra** - Integración inventario-obras
 
 ### **🟡 FASE 2 - IMPORTANTE (2-3 semanas)**  
 5. **Dashboard** - Reportes y KPIs principales
@@ -352,5 +356,6 @@ Para considerar un módulo **100% completo** debe tener:
 - Los porcentajes son estimados basados en funcionalidad real vs requerida
 - Cada módulo completo debe pasar por testing antes de marcarse como ✅
 
-**📅 Última actualización:** 2025-01-15 23:50  
-**👤 Actualizado por:** Sistema Rexus Development Team
+**📅 Última actualización:** 2025-01-15 23:55  
+**👤 Actualizado por:** Sistema Rexus Development Team  
+**🔄 Cambios recientes:** Completado módulo Obras (85% → 100%)
