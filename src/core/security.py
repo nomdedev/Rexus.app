@@ -24,8 +24,15 @@ class SecurityManager(QObject):
     permissions_changed = pyqtSignal(str)  # username
 
     def __init__(self, db_connection=None):
+        from src.core.database import UsersDatabaseConnection
         super().__init__()
-        self.db_connection = db_connection
+        # Si no se pasa conexión, crear una a la base de usuarios con trusted=False
+        if db_connection is None:
+            self.db_connection = UsersDatabaseConnection()
+            self.db_connection.trusted = False
+            self.db_connection.connect()
+        else:
+            self.db_connection = db_connection
         self.current_user = None
         self.current_role = None
         self.session_id = None
@@ -1020,17 +1027,9 @@ def init_security_manager(db_connection) -> SecurityManager:
 def initialize_security_manager(db_connection=None) -> SecurityManager:
     """Inicializa el gestor de seguridad - alias para init_security_manager."""
     if not db_connection:
-        # Usar conexión por defecto
-        from src.core.config import DATABASE_CONFIG
-        from src.core.database import DatabaseConnection
-
-        db_connection = DatabaseConnection(
-            server=DATABASE_CONFIG["server"],
-            database=DATABASE_CONFIG["databases"]["users"],
-            username=DATABASE_CONFIG["username"],
-            password=DATABASE_CONFIG["password"],
-            trusted=False,
-        )
+        from src.core.database import UsersDatabaseConnection
+        db_connection = UsersDatabaseConnection()
+        db_connection.trusted = False
         db_connection.connect()
 
     manager = init_security_manager(db_connection)

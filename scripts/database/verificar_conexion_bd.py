@@ -12,19 +12,14 @@ PRIVADO_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'c
 ROOT_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '.env'))
 EXAMPLE_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'core', 'config.example.py'))
 
-        print("❌ No se encontró ningún archivo .env!")
-    print("\n🔍 Verificando archivos de configuración...")
-    if os.path.exists(PRIVADO_DOTENV_PATH):
-        print(f"✅ Archivo .env encontrado en: {PRIVADO_DOTENV_PATH}")
-        load_dotenv(dotenv_path=PRIVADO_DOTENV_PATH, override=True)
-        return PRIVADO_DOTENV_PATH
-    elif os.path.exists(ROOT_DOTENV_PATH):
+def cargar_variables_entorno():
+    print("\n🔍 Verificando archivo .env en la raíz del proyecto...")
+    if os.path.exists(ROOT_DOTENV_PATH):
         print(f"✅ Archivo .env encontrado en: {ROOT_DOTENV_PATH}")
         load_dotenv(dotenv_path=ROOT_DOTENV_PATH, override=True)
         return ROOT_DOTENV_PATH
     else:
-        print("❌ No se encontró ningún archivo .env!")
-        return None
+        print("❌ No se encontró ningún archivo .env en la raíz!")
         return None
 
 def detectar_driver_odbc():
@@ -49,39 +44,33 @@ def detectar_driver_odbc():
         print("❌ No se encontró un controlador ODBC compatible para SQL Server")
         return drivers[0] if drivers else None
 
-def verificar_conexion_simple():
-    print("\n🔗 Verificando conexión directa a SQL Server...")
 
+def verificar_conexion_bd(database_name):
+    print(f"\n🔗 Verificando conexión a la base de datos: {database_name}")
     driver = detectar_driver_odbc()
     if not driver:
         return False
 
-    # Obtener parámetros de conexión
     DB_SERVER = os.getenv("DB_SERVER", "")
     DB_USERNAME = os.getenv("DB_USERNAME", "")
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
-    DB_DEFAULT_DATABASE = os.getenv("DB_DEFAULT_DATABASE", "inventario")
 
     if not DB_SERVER:
         print("❌ No se ha configurado la variable DB_SERVER")
         return False
 
-    print(f"Intentando conectar a: {DB_SERVER}, Base de datos: {DB_DEFAULT_DATABASE}")
+    print(f"Intentando conectar a: {DB_SERVER}, Base de datos: {database_name}")
     print(f"Usando credenciales: Usuario: {DB_USERNAME}, Contraseña: {'*' * len(DB_PASSWORD) if DB_PASSWORD else 'vacía'}")
 
-    # Construir string de conexión
     conn_str = (
         f"DRIVER={{{driver}}};"
         f"SERVER={DB_SERVER};"
-        f"DATABASE={DB_DEFAULT_DATABASE};"
+        f"DATABASE={database_name};"
     )
-
-    # Añadir autenticación según disponibilidad
     if DB_USERNAME and DB_PASSWORD:
         conn_str += f"UID={DB_USERNAME};PWD={DB_PASSWORD};"
     else:
         conn_str += "Trusted_Connection=yes;"
-
     conn_str += "TrustServerCertificate=yes;"
 
     try:
@@ -95,21 +84,11 @@ def verificar_conexion_simple():
         else:
             print("✅ Conexión exitosa a SQL Server (versión no disponible)")
 
-        # Verificar si la base de datos existe
-        cursor.execute("SELECT name FROM sys.databases WHERE name = ?", (DB_DEFAULT_DATABASE,))
+        cursor.execute("SELECT name FROM sys.databases WHERE name = ?", (database_name,))
         if cursor.fetchone():
-            print(f"✅ Base de datos '{DB_DEFAULT_DATABASE}' existe")
-
-            # Verificar tablas críticas
-            try:
-                cursor.execute("SELECT COUNT(*) FROM obras")
-                row = cursor.fetchone()
-                count = row[0] if row else 0
-                print(f"✅ Tabla 'obras' existe y contiene {count} registros")
-            except Exception as e:
-                print(f"❌ Error al verificar tabla 'obras': {e}")
+            print(f"✅ Base de datos '{database_name}' existe")
         else:
-            print(f"❌ La base de datos '{DB_DEFAULT_DATABASE}' no existe")
+            print(f"❌ La base de datos '{database_name}' no existe")
 
         cursor.close()
         conn.close()
@@ -216,9 +195,11 @@ if __name__ == "__main__":
     if not driver or "SQL Server" not in driver:
         sugerir_soluciones("driver")
 
-    # 3. Probar conexión
-    conexion_exitosa = verificar_conexion_simple()
-    if not conexion_exitosa:
+    # 3. Probar conexión a ambas bases
+    exito_inventario = verificar_conexion_bd(os.getenv("DB_INVENTARIO", "inventario"))
+    exito_users = verificar_conexion_bd(os.getenv("DB_USERS", "users"))
+
+    if not exito_inventario or not exito_users:
         if not config_path:
             reparar_configuracion()
         sugerir_soluciones("conexion")
