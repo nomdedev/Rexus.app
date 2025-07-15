@@ -62,9 +62,36 @@ La conexión a la base de datos implementa:
 
 ---
 
-**Convención:** Si agregas un nuevo estándar, guía o flujo, enlázalo aquí y describe brevemente su propósito.
+## 🤝 Guía rápida para colaboradores y desarrolladores
 
-**Actualización:**
+### ¿Por dónde empezar?
+- El punto de entrada principal es `run.py`. Ejecuta `python run.py` para iniciar la app.
+- Si la app principal no está disponible, el script puede adaptarse para lanzar el modo demo (`demo_app.py`), que permite probar la interfaz y módulos sin base de datos.
+- El archivo `demo_app.py` muestra todos los módulos y funcionalidades usando datos mock y emojis, ideal para testing visual y onboarding.
+
+### Estructura y convenciones clave
+- **Estándares visuales:** El proyecto usa emojis para feedback, botones y navegación en vez de íconos SVG/PNG. Consulta `docs/estandares_visuales.md` para ver el estándar actual y casos especiales.
+- **Variables de entorno:** `run.py` configura automáticamente variables críticas si no existen. Puedes personalizarlas en tu entorno local.
+- **Modularidad:** Cada módulo (Inventario, Obras, Contabilidad, etc.) tiene su propia carpeta y checklist de verificación en `docs/checklists/`.
+- **Accesibilidad y feedback:** Todos los botones y acciones deben tener tooltips, feedback visual claro y accesible. Revisa los checklists y los estándares antes de modificar la UI.
+
+### ¿Cómo ayudar?
+- Lee los estándares y checklists antes de proponer cambios.
+- Si agregas un nuevo módulo, funcionalidad o flujo, documenta y enlaza en este README.
+- Si encuentras un bug, mejora o excepción visual, documenta en el archivo correspondiente y en el checklist del módulo.
+- Usa el modo demo para validar cambios visuales y de UX antes de integrarlos a la app principal.
+
+### Recursos útiles
+- [Estándares visuales y uso de emojis](estandares_visuales.md)
+- [Modo demo y testing visual](../demo_app.py)
+- [Checklist de mejoras UI/UX por módulo](checklists/checklist_mejoras_uiux_por_modulo.md)
+- [Checklist general de estado y pendientes](CHECKLIST_ESTADO_PROYECTO.md)
+
+---
+
+## **Convención:** Si agregas un nuevo estándar, guía o flujo, enlázalo aquí y describe brevemente su propósito.
+
+## **Actualización:**
 - [14/06/2025] Documentación y checklists actualizados tras la unificación visual, accesibilidad y feedback en Mantenimiento, Configuración, Contabilidad y Notificaciones. Todos los ítems marcados como completos en los checklists correspondientes.
 
 Última actualización: 14 de junio de 2025

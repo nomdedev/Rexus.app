@@ -1,30 +1,38 @@
 """
-Controlador de Herrajes
+Controlador de Herrajes - Rexus.app v2.0.0
 
 Maneja la lógica entre el modelo y la vista para herrajes.
 """
 
-from PyQt6.QtCore import QObject, pyqtSlot
+from typing import Any, Dict, List, Optional
+from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt6.QtWidgets import QMessageBox
+
+from .model import HerrajesModel
 
 
 class HerrajesController(QObject):
     """Controlador para la gestión de herrajes."""
+    
+    # Señales para comunicación con otros módulos
+    herraje_creado = pyqtSignal(dict)
+    herraje_actualizado = pyqtSignal(dict)
+    herraje_eliminado = pyqtSignal(int)
+    stock_actualizado = pyqtSignal(int, int)
 
-    def __init__(self, model=None, view=None, db_connection=None, usuarios_model=None):
+    def __init__(self, view=None, db_connection=None, usuario_actual=None):
         super().__init__()
-        self.model = model
         self.view = view
         self.db_connection = db_connection
-        self.usuarios_model = usuarios_model
-        self.usuario_actual = "SISTEMA"
+        self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
+        
+        # Inicializar modelo
+        self.model = HerrajesModel(db_connection)
 
         # Conectar señales si la vista está disponible
         if self.view:
             self.connect_signals()
-
-        # Cargar datos iniciales
-        self.cargar_datos_iniciales()
+            self.cargar_datos_iniciales()
 
     def connect_signals(self):
         """Conecta las señales de la vista con los métodos del controlador."""
@@ -227,11 +235,157 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
     def get_herrajes_data(self):
         """Obtiene datos de herrajes para uso externo."""
         try:
-            if self.model:
-                return self.model.obtener_todos_herrajes()
-            else:
-                return []
-
+            return self.model.obtener_todos_herrajes()
         except Exception as e:
             print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo datos: {e}")
             return []
+    
+    def crear_herraje(self, datos_herraje: Dict[str, Any]):
+        """Crea un nuevo herraje."""
+        try:
+            exito, mensaje = self.model.crear_herraje(datos_herraje)
+            
+            if exito:
+                self.mostrar_exito(mensaje)
+                self.cargar_datos_iniciales()
+                
+                # Emitir señal
+                herraje_creado = self.model.obtener_herraje_por_id(datos_herraje.get("id"))
+                if herraje_creado:
+                    self.herraje_creado.emit(herraje_creado)
+            else:
+                self.mostrar_error(mensaje)
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error creando herraje: {e}")
+            self.mostrar_error(f"Error creando herraje: {str(e)}")
+    
+    def actualizar_herraje(self, herraje_id: int, datos_herraje: Dict[str, Any]):
+        """Actualiza un herraje existente."""
+        try:
+            exito, mensaje = self.model.actualizar_herraje(herraje_id, datos_herraje)
+            
+            if exito:
+                self.mostrar_exito(mensaje)
+                self.cargar_datos_iniciales()
+                
+                # Emitir señal
+                herraje_actualizado = self.model.obtener_herraje_por_id(herraje_id)
+                if herraje_actualizado:
+                    self.herraje_actualizado.emit(herraje_actualizado)
+            else:
+                self.mostrar_error(mensaje)
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error actualizando herraje: {e}")
+            self.mostrar_error(f"Error actualizando herraje: {str(e)}")
+    
+    def eliminar_herraje(self, herraje_id: int):
+        """Elimina un herraje."""
+        try:
+            # Confirmar eliminación
+            if self.view:
+                respuesta = QMessageBox.question(
+                    self.view,
+                    "Confirmar eliminación",
+                    f"¿Está seguro de eliminar el herraje con ID {herraje_id}?\n\n"
+                    "Esta acción no se puede deshacer.",
+                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                    QMessageBox.StandardButton.No
+                )
+                
+                if respuesta == QMessageBox.StandardButton.Yes:
+                    exito, mensaje = self.model.eliminar_herraje(herraje_id)
+                    
+                    if exito:
+                        self.mostrar_exito(mensaje)
+                        self.cargar_datos_iniciales()
+                        self.herraje_eliminado.emit(herraje_id)
+                    else:
+                        self.mostrar_error(mensaje)
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error eliminando herraje: {e}")
+            self.mostrar_error(f"Error eliminando herraje: {str(e)}")
+    
+    def actualizar_stock_herraje(self, herraje_id: int, nuevo_stock: int, tipo_movimiento: str = "AJUSTE"):
+        """Actualiza el stock de un herraje."""
+        try:
+            exito, mensaje = self.model.actualizar_stock(herraje_id, nuevo_stock, tipo_movimiento)
+            
+            if exito:
+                self.mostrar_exito(mensaje)
+                self.cargar_datos_iniciales()
+                self.stock_actualizado.emit(herraje_id, nuevo_stock)
+            else:
+                self.mostrar_error(mensaje)
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error actualizando stock: {e}")
+            self.mostrar_error(f"Error actualizando stock: {str(e)}")
+    
+    def obtener_herraje_por_id(self, herraje_id: int) -> Optional[Dict[str, Any]]:
+        """Obtiene un herraje por su ID."""
+        try:
+            return self.model.obtener_herraje_por_id(herraje_id)
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo herraje: {e}")
+            return None
+    
+    def obtener_proveedores(self) -> List[str]:
+        """Obtiene la lista de proveedores."""
+        try:
+            return self.model.obtener_proveedores()
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo proveedores: {e}")
+            return []
+    
+    def obtener_tipos_herrajes(self) -> List[str]:
+        """Obtiene la lista de tipos de herrajes."""
+        return list(self.model.TIPOS_HERRAJES.keys())
+    
+    def obtener_estados_herrajes(self) -> List[str]:
+        """Obtiene la lista de estados de herrajes."""
+        return list(self.model.ESTADOS.keys())
+    
+    def obtener_unidades_medida(self) -> List[str]:
+        """Obtiene la lista de unidades de medida."""
+        return list(self.model.UNIDADES.keys())
+    
+    def set_usuario_actual(self, usuario: Dict[str, Any]):
+        """Establece el usuario actual."""
+        self.usuario_actual = usuario
+        print(f"[HERRAJES CONTROLLER] Usuario actual: {usuario.get('nombre', 'Desconocido')}")
+    
+    def mostrar_exito(self, mensaje: str):
+        """Muestra un mensaje de éxito."""
+        if self.view and hasattr(self.view, "show_success"):
+            self.view.show_success(mensaje)
+    
+    def mostrar_error(self, mensaje: str):
+        """Muestra un mensaje de error."""
+        if self.view and hasattr(self.view, "show_error"):
+            self.view.show_error(mensaje)
+    
+    def mostrar_advertencia(self, mensaje: str):
+        """Muestra un mensaje de advertencia."""
+        if self.view:
+            QMessageBox.warning(self.view, "Advertencia", mensaje)
+    
+    def mostrar_info(self, mensaje: str):
+        """Muestra un mensaje informativo."""
+        if self.view:
+            QMessageBox.information(self.view, "Información", mensaje)
+    
+    def get_view(self):
+        """Retorna la vista del módulo."""
+        return self.view
+    
+    def cleanup(self):
+        """Limpia recursos al cerrar el módulo."""
+        try:
+            print("[HERRAJES CONTROLLER] Limpiando recursos...")
+            # Desconectar señales si es necesario
+            # Cerrar conexiones, etc.
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error en cleanup: {e}")

@@ -275,6 +275,15 @@ class HerrajesView(QWidget):
         actions_layout = QHBoxLayout(self.actions_frame)
 
         # Botones de acción
+        self.crear_herraje_btn = QPushButton("➕ Crear Herraje")
+        self.crear_herraje_btn.clicked.connect(self.show_crear_herraje_dialog)
+        
+        self.editar_herraje_btn = QPushButton("✏️ Editar Herraje")
+        self.editar_herraje_btn.clicked.connect(self.show_editar_herraje_dialog)
+        
+        self.eliminar_herraje_btn = QPushButton("🗑️ Eliminar Herraje")
+        self.eliminar_herraje_btn.clicked.connect(self.show_eliminar_herraje_dialog)
+
         self.asignar_obra_btn = QPushButton("📋 Asignar a Obra")
         self.asignar_obra_btn.clicked.connect(self.show_asignar_obra_dialog)
 
@@ -287,6 +296,9 @@ class HerrajesView(QWidget):
         self.estadisticas_btn = QPushButton("📊 Ver Estadísticas")
         self.estadisticas_btn.clicked.connect(self.show_estadisticas)
 
+        actions_layout.addWidget(self.crear_herraje_btn)
+        actions_layout.addWidget(self.editar_herraje_btn)
+        actions_layout.addWidget(self.eliminar_herraje_btn)
         actions_layout.addWidget(self.asignar_obra_btn)
         actions_layout.addWidget(self.crear_pedido_btn)
         actions_layout.addWidget(self.actualizar_btn)
@@ -316,6 +328,9 @@ class HerrajesView(QWidget):
             for col, item in enumerate(items):
                 table_item = QTableWidgetItem(str(item))
                 table_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
+                # Guardar el ID en el primer item para referencia
+                if col == 0:
+                    table_item.setData(Qt.ItemDataRole.UserRole, herraje.get("id", 0))
                 self.herrajes_table.setItem(row, col, table_item)
 
             # Botón de acciones
@@ -374,18 +389,76 @@ class HerrajesView(QWidget):
             )
             return
 
-        # Aquí se abriría un diálogo para asignar a obra
-        # Por simplicidad, mostraremos un mensaje
-        QMessageBox.information(
-            self, "Asignar a Obra", "Función de asignación a obra en desarrollo."
-        )
+        # Obtener datos del herraje seleccionado
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
+        codigo = self.herrajes_table.item(selected_row, 0).text()
+        descripcion = self.herrajes_table.item(selected_row, 1).text()
+        
+        # Crear diálogo de asignación
+        dialog = DialogoAsignarObra(self, codigo, descripcion)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos = dialog.obtener_datos()
+            if self.controller:
+                self.controller.asignar_herraje_obra(
+                    int(herraje_id), 
+                    datos["obra_id"], 
+                    datos["cantidad"], 
+                    datos["observaciones"]
+                )
 
     def show_crear_pedido_dialog(self):
         """Muestra diálogo para crear pedido."""
-        # Aquí se abriría un diálogo para crear pedido
-        QMessageBox.information(
-            self, "Crear Pedido", "Función de creación de pedido en desarrollo."
-        )
+        # Crear diálogo de pedido
+        dialog = DialogoCrearPedido(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos = dialog.obtener_datos()
+            if self.controller:
+                self.controller.crear_pedido_obra(
+                    datos["obra_id"],
+                    datos["proveedor"],
+                    datos["herrajes_lista"]
+                )
+    
+    def show_crear_herraje_dialog(self):
+        """Muestra diálogo para crear nuevo herraje."""
+        dialog = DialogoCrearHerrajeDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos = dialog.obtener_datos()
+            if self.controller:
+                self.controller.crear_herraje(datos)
+    
+    def show_editar_herraje_dialog(self):
+        """Muestra diálogo para editar herraje."""
+        selected_row = self.herrajes_table.currentRow()
+        if selected_row < 0:
+            QMessageBox.warning(
+                self, "Advertencia", "Seleccione un herraje de la tabla."
+            )
+            return
+        
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
+        
+        if self.controller:
+            herraje = self.controller.obtener_herraje_por_id(herraje_id)
+            if herraje:
+                dialog = DialogoCrearHerrajeDialog(self, herraje)
+                if dialog.exec() == QDialog.DialogCode.Accepted:
+                    datos = dialog.obtener_datos()
+                    self.controller.actualizar_herraje(herraje_id, datos)
+    
+    def show_eliminar_herraje_dialog(self):
+        """Elimina el herraje seleccionado."""
+        selected_row = self.herrajes_table.currentRow()
+        if selected_row < 0:
+            QMessageBox.warning(
+                self, "Advertencia", "Seleccione un herraje de la tabla."
+            )
+            return
+        
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
+        
+        if self.controller:
+            self.controller.eliminar_herraje(herraje_id)
 
     def show_herraje_detail(self, row):
         """Muestra detalles del herraje seleccionado."""
@@ -416,3 +489,296 @@ class HerrajesView(QWidget):
     def show_success(self, mensaje):
         """Muestra mensaje de éxito."""
         QMessageBox.information(self, "Éxito", mensaje)
+
+
+class DialogoAsignarObra(QDialog):
+    """Diálogo para asignar herraje a obra."""
+    
+    def __init__(self, parent=None, codigo_herraje="", descripcion=""):
+        super().__init__(parent)
+        self.setWindowTitle("Asignar Herraje a Obra")
+        self.setModal(True)
+        self.setFixedSize(400, 300)
+        
+        self.codigo_herraje = codigo_herraje
+        self.descripcion = descripcion
+        
+        self.init_ui()
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Información del herraje
+        info_label = QLabel(f"Herraje: {self.codigo_herraje} - {self.descripcion}")
+        info_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
+        layout.addWidget(info_label)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        self.obra_combo = QComboBox()
+        self.obra_combo.addItems(["Obra 1", "Obra 2", "Obra 3"])  # Datos demo
+        
+        self.cantidad_spin = QDoubleSpinBox()
+        self.cantidad_spin.setMinimum(0.1)
+        self.cantidad_spin.setMaximum(9999.0)
+        self.cantidad_spin.setValue(1.0)
+        
+        self.observaciones_text = QTextEdit()
+        self.observaciones_text.setMaximumHeight(100)
+        
+        form_layout.addRow("Obra:", self.obra_combo)
+        form_layout.addRow("Cantidad:", self.cantidad_spin)
+        form_layout.addRow("Observaciones:", self.observaciones_text)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "obra_id": self.obra_combo.currentIndex() + 1,
+            "cantidad": self.cantidad_spin.value(),
+            "observaciones": self.observaciones_text.toPlainText()
+        }
+
+
+class DialogoCrearPedido(QDialog):
+    """Diálogo para crear pedido de herrajes."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Crear Pedido de Herrajes")
+        self.setModal(True)
+        self.setFixedSize(500, 400)
+        
+        self.init_ui()
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        self.obra_combo = QComboBox()
+        self.obra_combo.addItems(["Obra 1", "Obra 2", "Obra 3"])  # Datos demo
+        
+        self.proveedor_combo = QComboBox()
+        self.proveedor_combo.addItems(["Proveedor A", "Proveedor B", "Proveedor C"])  # Datos demo
+        
+        self.observaciones_text = QTextEdit()
+        self.observaciones_text.setMaximumHeight(100)
+        
+        form_layout.addRow("Obra:", self.obra_combo)
+        form_layout.addRow("Proveedor:", self.proveedor_combo)
+        form_layout.addRow("Observaciones:", self.observaciones_text)
+        
+        layout.addLayout(form_layout)
+        
+        # Lista de herrajes (simplificada)
+        herrajes_label = QLabel("Herrajes del pedido:")
+        layout.addWidget(herrajes_label)
+        
+        self.herrajes_list = QTextEdit()
+        self.herrajes_list.setPlainText("Herraje 1 - Cantidad: 5\nHeraje 2 - Cantidad: 3")
+        layout.addWidget(self.herrajes_list)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "obra_id": self.obra_combo.currentIndex() + 1,
+            "proveedor": self.proveedor_combo.currentText(),
+            "herrajes_lista": [
+                {"herraje_id": 1, "cantidad": 5, "precio_unitario": 10.0},
+                {"herraje_id": 2, "cantidad": 3, "precio_unitario": 15.0}
+            ]
+        }
+
+
+class DialogoCrearHerrajeDialog(QDialog):
+    """Diálogo para crear/editar herraje."""
+    
+    def __init__(self, parent=None, herraje=None):
+        super().__init__(parent)
+        self.setWindowTitle("Crear Herraje" if herraje is None else "Editar Herraje")
+        self.setModal(True)
+        self.setFixedSize(600, 700)
+        
+        self.herraje = herraje
+        self.init_ui()
+        
+        if herraje:
+            self.cargar_datos_herraje(herraje)
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Scroll area para el formulario
+        scroll_area = QScrollArea()
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout(scroll_widget)
+        
+        # Información básica
+        info_group = QGroupBox("Información Básica")
+        info_layout = QFormLayout(info_group)
+        
+        self.codigo_input = QLineEdit()
+        self.descripcion_input = QLineEdit()
+        self.tipo_combo = QComboBox()
+        self.tipo_combo.addItems(["BISAGRA", "CERRADURA", "MANIJA", "TORNILLO", "RIEL", "SOPORTE", "OTRO"])
+        
+        self.proveedor_input = QLineEdit()
+        self.precio_spin = QDoubleSpinBox()
+        self.precio_spin.setMaximum(99999.99)
+        self.precio_spin.setDecimals(2)
+        
+        self.unidad_combo = QComboBox()
+        self.unidad_combo.addItems(["UNIDAD", "PAR", "JUEGO", "METRO", "KILOGRAMO"])
+        
+        self.categoria_input = QLineEdit()
+        self.estado_combo = QComboBox()
+        self.estado_combo.addItems(["ACTIVO", "INACTIVO", "DESCONTINUADO"])
+        
+        info_layout.addRow("Código:", self.codigo_input)
+        info_layout.addRow("Descripción:", self.descripcion_input)
+        info_layout.addRow("Tipo:", self.tipo_combo)
+        info_layout.addRow("Proveedor:", self.proveedor_input)
+        info_layout.addRow("Precio Unitario:", self.precio_spin)
+        info_layout.addRow("Unidad:", self.unidad_combo)
+        info_layout.addRow("Categoría:", self.categoria_input)
+        info_layout.addRow("Estado:", self.estado_combo)
+        
+        # Stock
+        stock_group = QGroupBox("Stock")
+        stock_layout = QFormLayout(stock_group)
+        
+        self.stock_minimo_spin = QSpinBox()
+        self.stock_minimo_spin.setMaximum(99999)
+        self.stock_actual_spin = QSpinBox()
+        self.stock_actual_spin.setMaximum(99999)
+        self.ubicacion_input = QLineEdit()
+        
+        stock_layout.addRow("Stock Mínimo:", self.stock_minimo_spin)
+        stock_layout.addRow("Stock Actual:", self.stock_actual_spin)
+        stock_layout.addRow("Ubicación:", self.ubicacion_input)
+        
+        # Detalles técnicos
+        detalles_group = QGroupBox("Detalles Técnicos")
+        detalles_layout = QFormLayout(detalles_group)
+        
+        self.marca_input = QLineEdit()
+        self.modelo_input = QLineEdit()
+        self.color_input = QLineEdit()
+        self.material_input = QLineEdit()
+        self.dimensiones_input = QLineEdit()
+        self.peso_spin = QDoubleSpinBox()
+        self.peso_spin.setMaximum(9999.999)
+        self.peso_spin.setDecimals(3)
+        self.peso_spin.setSuffix(" kg")
+        
+        detalles_layout.addRow("Marca:", self.marca_input)
+        detalles_layout.addRow("Modelo:", self.modelo_input)
+        detalles_layout.addRow("Color:", self.color_input)
+        detalles_layout.addRow("Material:", self.material_input)
+        detalles_layout.addRow("Dimensiones:", self.dimensiones_input)
+        detalles_layout.addRow("Peso:", self.peso_spin)
+        
+        # Observaciones
+        obs_group = QGroupBox("Observaciones y Especificaciones")
+        obs_layout = QVBoxLayout(obs_group)
+        
+        self.observaciones_text = QTextEdit()
+        self.observaciones_text.setMaximumHeight(80)
+        self.especificaciones_text = QTextEdit()
+        self.especificaciones_text.setMaximumHeight(80)
+        
+        obs_layout.addWidget(QLabel("Observaciones:"))
+        obs_layout.addWidget(self.observaciones_text)
+        obs_layout.addWidget(QLabel("Especificaciones técnicas:"))
+        obs_layout.addWidget(self.especificaciones_text)
+        
+        # Agregar grupos al scroll
+        scroll_layout.addWidget(info_group)
+        scroll_layout.addWidget(stock_group)
+        scroll_layout.addWidget(detalles_group)
+        scroll_layout.addWidget(obs_group)
+        scroll_layout.addStretch()
+        
+        scroll_area.setWidget(scroll_widget)
+        scroll_area.setWidgetResizable(True)
+        layout.addWidget(scroll_area)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+    
+    def cargar_datos_herraje(self, herraje):
+        """Carga los datos del herraje en el formulario."""
+        self.codigo_input.setText(herraje.get("codigo", ""))
+        self.descripcion_input.setText(herraje.get("descripcion", ""))
+        self.tipo_combo.setCurrentText(herraje.get("tipo", "OTRO"))
+        self.proveedor_input.setText(herraje.get("proveedor", ""))
+        self.precio_spin.setValue(herraje.get("precio_unitario", 0.0))
+        self.unidad_combo.setCurrentText(herraje.get("unidad_medida", "UNIDAD"))
+        self.categoria_input.setText(herraje.get("categoria", ""))
+        self.estado_combo.setCurrentText(herraje.get("estado", "ACTIVO"))
+        
+        self.stock_minimo_spin.setValue(herraje.get("stock_minimo", 0))
+        self.stock_actual_spin.setValue(herraje.get("stock_actual", 0))
+        self.ubicacion_input.setText(herraje.get("ubicacion", ""))
+        
+        self.marca_input.setText(herraje.get("marca", ""))
+        self.modelo_input.setText(herraje.get("modelo", ""))
+        self.color_input.setText(herraje.get("color", ""))
+        self.material_input.setText(herraje.get("material", ""))
+        self.dimensiones_input.setText(herraje.get("dimensiones", ""))
+        self.peso_spin.setValue(herraje.get("peso", 0.0))
+        
+        self.observaciones_text.setText(herraje.get("observaciones", ""))
+        self.especificaciones_text.setText(herraje.get("especificaciones", ""))
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "codigo": self.codigo_input.text(),
+            "descripcion": self.descripcion_input.text(),
+            "tipo": self.tipo_combo.currentText(),
+            "proveedor": self.proveedor_input.text(),
+            "precio_unitario": self.precio_spin.value(),
+            "unidad_medida": self.unidad_combo.currentText(),
+            "categoria": self.categoria_input.text(),
+            "estado": self.estado_combo.currentText(),
+            "stock_minimo": self.stock_minimo_spin.value(),
+            "stock_actual": self.stock_actual_spin.value(),
+            "ubicacion": self.ubicacion_input.text(),
+            "marca": self.marca_input.text(),
+            "modelo": self.modelo_input.text(),
+            "color": self.color_input.text(),
+            "material": self.material_input.text(),
+            "dimensiones": self.dimensiones_input.text(),
+            "peso": self.peso_spin.value(),
+            "observaciones": self.observaciones_text.toPlainText(),
+            "especificaciones": self.especificaciones_text.toPlainText()
+        }
