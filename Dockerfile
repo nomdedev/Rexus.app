@@ -4,7 +4,7 @@
 # Multi-stage build para optimizar el tamaño de imagen
 
 # ===== STAGE 1: Builder =====
-FROM python:3.11-slim as builder
+FROM python:3.13-slim as builder
 
 # Metadatos
 LABEL maintainer="Rexus Team"
@@ -36,7 +36,7 @@ COPY requirements.txt .
 RUN pip install --user --no-warn-script-location -r requirements.txt
 
 # ===== STAGE 2: Runtime =====
-FROM python:3.11-slim as runtime
+FROM python:3.13-slim as runtime
 
 # Variables de entorno para runtime
 ENV PYTHONDONTWRITEBYTECODE=1
