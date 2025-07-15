@@ -1,7 +1,7 @@
 """
-Diálogo de Login - Stock.App v1.1.3
+Diálogo de Login - Rexus.app v2.0.0
 
-Sistema de autenticación con interfaz moderna
+Sistema de autenticación con interfaz minimalista y profesional
 """
 
 import os
@@ -26,7 +26,7 @@ from src.core.security import get_security_manager
 
 
 class LoginDialog(QDialog):
-    """Diálogo de login con diseño moderno."""
+    """Diálogo de login minimalista y profesional."""
 
     # Señales
     login_successful = pyqtSignal(str, str)  # username, role
@@ -38,114 +38,104 @@ class LoginDialog(QDialog):
         self.init_ui()
 
     def init_ui(self):
-        """Inicializa la interfaz de usuario."""
-        self.setWindowTitle("Rexus.app - Iniciar Sesión")
-        self.setFixedSize(400, 550)
+        """Inicializa la interfaz de usuario minimalista."""
+        self.setWindowTitle("Rexus.app - Acceso")
+        self.setFixedSize(500, 850)
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowCloseButtonHint)
+        
+        # Estilo general minimalista
         self.setStyleSheet("""
             QDialog {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                                           stop:0 #4a90e2, stop:1 #7b68ee);
-                border-radius: 0px;
+                background-color: #fafafa;
+                border: 1px solid #e0e0e0;
             }
         """)
 
         # Layout principal
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(0)
-        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        # Frame principal
-        main_frame = QFrame()
-        main_frame.setStyleSheet("""
+        # Contenedor principal
+        container = QFrame()
+        container.setStyleSheet("""
             QFrame {
                 background-color: white;
-                border-radius: 16px;
                 border: none;
             }
         """)
 
-        frame_layout = QVBoxLayout(main_frame)
-        frame_layout.setSpacing(20)
-        frame_layout.setContentsMargins(30, 30, 30, 30)
+        container_layout = QVBoxLayout(container)
+        container_layout.setSpacing(40)
+        container_layout.setContentsMargins(80, 120, 80, 120)
 
-        # Logo y título
-        self.create_header(frame_layout)
+        # Header minimalista
+        self.create_header(container_layout)
 
-        # Formulario de login
-        self.create_form(frame_layout)
+        # Formulario
+        self.create_form(container_layout)
 
         # Botones
-        self.create_buttons(frame_layout)
+        self.create_buttons(container_layout)
 
-        # Información adicional
-        self.create_footer(frame_layout)
+        # Info credentials (más discreta)
+        self.create_info(container_layout)
 
-        main_layout.addWidget(main_frame)
-
-        # Aplicar estilos
-        self.apply_styles()
+        main_layout.addWidget(container)
 
         # Conectar eventos
         self.connect_events()
 
     def create_header(self, layout):
-        """Crea el header con logo y título."""
+        """Crea el header minimalista."""
         header_layout = QVBoxLayout()
-        header_layout.setSpacing(10)
-
-        # Logo simple y elegante
-        logo_label = QLabel("🏢")
-        logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        logo_label.setStyleSheet("""
-            QLabel {
-                font-size: 48px;
-                color: #4a90e2;
-                margin-bottom: 10px;
-            }
-        """)
-        header_layout.addWidget(logo_label)
+        header_layout.setSpacing(8)
+        header_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Título principal
-        title_label = QLabel("Rexus.app")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet("""
+        title = QLabel("Rexus.app")
+        title.setStyleSheet("""
             QLabel {
                 font-size: 28px;
-                font-weight: bold;
-                color: #2c3e50;
-                margin-bottom: 5px;
+                font-weight: 300;
+                color: #1a1a1a;
+                letter-spacing: 1px;
             }
         """)
-        header_layout.addWidget(title_label)
+        title.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Subtítulo
-        subtitle_label = QLabel("Sistema de Gestión Integral")
-        subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle_label.setStyleSheet("""
+        subtitle = QLabel("Sistema de Gestión")
+        subtitle.setStyleSheet("""
             QLabel {
                 font-size: 13px;
-                color: #7f8c8d;
-                margin-bottom: 20px;
+                color: #666;
+                font-weight: 400;
             }
         """)
-        header_layout.addWidget(subtitle_label)
+        subtitle.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
+        header_layout.addWidget(title)
+        header_layout.addWidget(subtitle)
         layout.addLayout(header_layout)
 
     def create_form(self, layout):
-        """Crea el formulario de login."""
+        """Crea el formulario minimalista."""
         form_layout = QVBoxLayout()
-        form_layout.setSpacing(15)
+        form_layout.setSpacing(25)
 
-        # Campo usuario
-        user_label = QLabel("👤 Usuario")
+        # Usuario
+        user_container = QVBoxLayout()
+        user_container.setSpacing(6)
+        
+        user_label = QLabel("Usuario")
         user_label.setStyleSheet("""
             QLabel {
-                font-size: 14px;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 5px;
+                font-size: 11px;
+                color: #555;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
         """)
         
@@ -154,35 +144,36 @@ class LoginDialog(QDialog):
         self.username_edit.setStyleSheet("""
             QLineEdit {
                 padding: 12px 16px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
                 font-size: 14px;
-                background-color: #f8f9fa;
-                color: #2c3e50;
+                background-color: #fafafa;
+                color: #333;
             }
             QLineEdit:focus {
-                border-color: #4a90e2;
-                background-color: #ffffff;
+                border-color: #2196F3;
+                background-color: white;
                 outline: none;
             }
-            QLineEdit:hover {
-                border-color: #bbb;
-            }
         """)
-        self.username_edit.setFixedHeight(40)
+        self.username_edit.setFixedHeight(48)
         
-        form_layout.addWidget(user_label)
-        form_layout.addWidget(self.username_edit)
+        user_container.addWidget(user_label)
+        user_container.addWidget(self.username_edit)
+        form_layout.addLayout(user_container)
 
-        # Campo contraseña
-        password_label = QLabel("🔒 Contraseña")
-        password_label.setStyleSheet("""
+        # Contraseña
+        pass_container = QVBoxLayout()
+        pass_container.setSpacing(6)
+        
+        pass_label = QLabel("Contraseña")
+        pass_label.setStyleSheet("""
             QLabel {
-                font-size: 14px;
-                font-weight: 600;
-                color: #2c3e50;
-                margin-bottom: 5px;
-                margin-top: 10px;
+                font-size: 11px;
+                color: #555;
+                font-weight: 500;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
             }
         """)
         
@@ -192,172 +183,133 @@ class LoginDialog(QDialog):
         self.password_edit.setStyleSheet("""
             QLineEdit {
                 padding: 12px 16px;
-                border: 2px solid #ddd;
-                border-radius: 8px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
                 font-size: 14px;
-                background-color: #f8f9fa;
-                color: #2c3e50;
+                background-color: #fafafa;
+                color: #333;
             }
             QLineEdit:focus {
-                border-color: #4a90e2;
-                background-color: #ffffff;
+                border-color: #2196F3;
+                background-color: white;
                 outline: none;
             }
-            QLineEdit:hover {
-                border-color: #bbb;
-            }
         """)
-        self.password_edit.setFixedHeight(40)
+        self.password_edit.setFixedHeight(48)
         
-        form_layout.addWidget(password_label)
-        form_layout.addWidget(self.password_edit)
+        pass_container.addWidget(pass_label)
+        pass_container.addWidget(self.password_edit)
+        form_layout.addLayout(pass_container)
 
-        # Checkbox recordar
-        self.remember_checkbox = QCheckBox("Recordar usuario")
-        self.remember_checkbox.setStyleSheet("""
-            QCheckBox {
-                font-size: 12px;
-                color: #7f8c8d;
-                margin-top: 10px;
-            }
-            QCheckBox::indicator {
-                width: 16px;
-                height: 16px;
-            }
-            QCheckBox::indicator:unchecked {
-                border: 2px solid #ddd;
-                border-radius: 3px;
-                background-color: #f8f9fa;
-            }
-            QCheckBox::indicator:checked {
-                border: 2px solid #4a90e2;
-                border-radius: 3px;
-                background-color: #4a90e2;
-            }
-        """)
-        
-        form_layout.addWidget(self.remember_checkbox)
         layout.addLayout(form_layout)
 
     def create_buttons(self, layout):
-        """Crea los botones de acción."""
+        """Crea los botones minimalistas."""
         buttons_layout = QVBoxLayout()
-        buttons_layout.setSpacing(16)
+        buttons_layout.setSpacing(12)
         buttons_layout.setContentsMargins(0, 20, 0, 0)
 
-        # Botón login principal
+        # Botón principal
         self.login_button = QPushButton("Iniciar Sesión")
         self.login_button.setStyleSheet("""
             QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                          stop:0 #667eea, stop:1 #764ba2);
+                background-color: #2196F3;
                 color: white;
                 border: none;
-                padding: 20px 40px;
-                border-radius: 16px;
-                font-size: 17px;
-                font-weight: 600;
-                min-width: 300px;
-                min-height: 48px;
+                padding: 14px;
+                border-radius: 4px;
+                font-size: 14px;
+                font-weight: 500;
+                text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
             QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                          stop:0 #5a67d8, stop:1 #667eea);
+                background-color: #1976D2;
             }
             QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                          stop:0 #4c51bf, stop:1 #5a67d8);
+                background-color: #0D47A1;
             }
             QPushButton:disabled {
-                background: #e2e8f0;
-                color: #a0aec0;
+                background-color: #ccc;
+                color: #999;
             }
         """)
+        self.login_button.setFixedHeight(52)
         self.login_button.setDefault(True)
 
-        # Botón cancelar secundario
+        # Botón secundario
         self.cancel_button = QPushButton("Cancelar")
         self.cancel_button.setStyleSheet("""
             QPushButton {
                 background-color: transparent;
-                color: #718096;
-                border: 2px solid #e2e8f0;
-                padding: 16px 40px;
-                border-radius: 16px;
-                font-size: 15px;
-                font-weight: 500;
-                min-width: 300px;
-                min-height: 44px;
+                color: #666;
+                border: 1px solid #ddd;
+                padding: 12px;
+                border-radius: 4px;
+                font-size: 13px;
+                font-weight: 400;
             }
             QPushButton:hover {
-                border-color: #cbd5e0;
-                background-color: #f7fafc;
-                color: #4a5568;
+                background-color: #f5f5f5;
+                border-color: #bbb;
             }
             QPushButton:pressed {
-                background-color: #edf2f7;
-                border-color: #a0aec0;
+                background-color: #eeeeee;
             }
         """)
+        self.cancel_button.setFixedHeight(46)
 
         buttons_layout.addWidget(self.login_button)
         buttons_layout.addWidget(self.cancel_button)
-
         layout.addLayout(buttons_layout)
 
-    def create_footer(self, layout):
-        """Crea el footer con información adicional."""
-        footer_layout = QVBoxLayout()
-        footer_layout.setSpacing(12)
+    def create_info(self, layout):
+        """Crea la información de credenciales de forma discreta."""
+        info_layout = QVBoxLayout()
+        info_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        info_layout.setContentsMargins(0, 20, 0, 0)
 
-        # Separador elegante
+        # Línea separadora
         separator = QFrame()
         separator.setFrameShape(QFrame.Shape.HLine)
         separator.setStyleSheet("""
             QFrame {
-                color: #e1e8ed;
-                margin: 20px 0 15px 0;
+                color: #e0e0e0;
                 max-height: 1px;
+                border: none;
+                background-color: #e0e0e0;
             }
         """)
-        footer_layout.addWidget(separator)
-
-        # Información de usuario por defecto con diseño moderno
-        info_label = QLabel("👤 Usuario por defecto: admin\n🔒 Contraseña: admin")
-        info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        # Info discreta
+        info_label = QLabel("Usuario de prueba: admin / admin")
         info_label.setStyleSheet("""
             QLabel {
-                font-size: 12px;
-                color: #667eea;
-                background-color: rgba(102, 126, 234, 0.08);
-                padding: 15px 20px;
-                border-radius: 10px;
-                border: 1px solid rgba(102, 126, 234, 0.15);
-                font-weight: 500;
-                line-height: 1.4;
+                font-size: 11px;
+                color: #999;
+                text-align: center;
             }
         """)
-        footer_layout.addWidget(info_label)
+        info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Versión con estilo minimalista
-        version_label = QLabel("v1.1.3 - 2025")
-        version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # Versión
+        version_label = QLabel("v2.0.0")
         version_label.setStyleSheet("""
             QLabel {
-                font-size: 11px;
-                color: #95a5a6;
-                margin-top: 10px;
-                font-weight: 400;
+                font-size: 10px;
+                color: #bbb;
+                text-align: center;
             }
         """)
-        footer_layout.addWidget(version_label)
+        version_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        layout.addLayout(footer_layout)
-
-    def apply_styles(self):
-        """Aplica estilos al diálogo."""
-        pass
+        info_layout.addWidget(separator)
+        info_layout.addSpacing(12)
+        info_layout.addWidget(info_label)
+        info_layout.addSpacing(4)
+        info_layout.addWidget(version_label)
+        
+        layout.addLayout(info_layout)
 
     def connect_events(self):
         """Conecta los eventos."""
@@ -384,20 +336,18 @@ class LoginDialog(QDialog):
 
         # Deshabilitar botón durante el proceso
         self.login_button.setEnabled(False)
-        self.login_button.setText("Autenticando...")
+        self.login_button.setText("Verificando...")
 
         # Intentar login
         try:
-            if self.security_manager and self.security_manager.login(
-                username, password
-            ):
+            if self.security_manager and self.security_manager.login(username, password):
                 # Login exitoso
                 role = self.security_manager.get_current_role()
                 self.login_successful.emit(username, role)
                 self.accept()
             else:
                 # Login fallido
-                error_msg = "Usuario o contraseña incorrectos"
+                error_msg = "Credenciales incorrectas"
                 self.show_error(error_msg)
                 self.login_failed.emit(error_msg)
                 self.password_edit.clear()
@@ -414,27 +364,28 @@ class LoginDialog(QDialog):
             self.login_button.setText("Iniciar Sesión")
 
     def show_error(self, message):
-        """Muestra un mensaje de error."""
+        """Muestra un mensaje de error minimalista."""
         msg_box = QMessageBox(self)
         msg_box.setIcon(QMessageBox.Icon.Warning)
-        msg_box.setWindowTitle("Error de Autenticación")
+        msg_box.setWindowTitle("Error")
         msg_box.setText(message)
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.setStyleSheet("""
             QMessageBox {
-                background-color: #ffffff;
+                background-color: white;
+                border: 1px solid #ddd;
             }
             QMessageBox QPushButton {
-                background-color: #e74c3c;
+                background-color: #f44336;
                 color: white;
                 border: none;
-                padding: 8px 16px;
+                padding: 8px 20px;
                 border-radius: 4px;
-                font-weight: bold;
+                font-weight: 500;
                 min-width: 80px;
             }
             QMessageBox QPushButton:hover {
-                background-color: #c0392b;
+                background-color: #d32f2f;
             }
         """)
         msg_box.exec()
