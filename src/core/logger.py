@@ -194,15 +194,28 @@ class RexusLogger:
         )
     
     def _parse_size(self, size_str: str) -> int:
-        """Convertir string de tamaño (ej: '10MB') a bytes"""
-        units = {'B': 1, 'KB': 1024, 'MB': 1024**2, 'GB': 1024**3}
-        size_str = size_str.upper()
-        
-        for unit, multiplier in units.items():
+        """Convertir string de tamaño (ej: '10MB', '10M', '10 MB', '10 K') a bytes"""
+        if not isinstance(size_str, str):
+            raise ValueError(f"Tamaño de log inválido: {size_str}")
+        size_str = size_str.replace(" ", "").upper().strip()
+        units = [
+            ("GB", 1024**3), ("G", 1024**3),
+            ("MB", 1024**2), ("M", 1024**2),
+            ("KB", 1024), ("K", 1024),
+            ("B", 1)
+        ]
+        for unit, multiplier in units:
             if size_str.endswith(unit):
-                return int(size_str[:-len(unit)]) * multiplier
-        
-        return int(size_str)  # Asumir bytes si no hay unidad
+                num = size_str[:-len(unit)]
+                try:
+                    return int(num) * multiplier
+                except ValueError:
+                    raise ValueError(f"Tamaño de log inválido: {size_str}")
+        # Si solo es un número, asumir bytes
+        try:
+            return int(size_str)
+        except ValueError:
+            raise ValueError(f"Tamaño de log inválido: {size_str}")
     
     # Métodos de logging estándar
     def debug(self, message: str, extra: Optional[Dict[str, Any]] = None):

@@ -1,5 +1,14 @@
 # Índice de documentación y estándares
 
+## 📚 Guía de uso de bases de datos
+
+**¡IMPORTANTE!**
+Lee y respeta la guía de uso de bases de datos y tablas:
+
+- [docs/USO_BASES_DE_DATOS.md](USO_BASES_DE_DATOS.md)
+
+---
+
 Este índice centraliza el acceso a todos los documentos clave del proyecto. Consulta cada estándar antes de modificar o agregar código.
 
 ## Estándares y guías

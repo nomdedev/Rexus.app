@@ -91,7 +91,7 @@ DATABASE_CONFIG = {
     "server_alternate": get_env_var("DB_SERVER_ALTERNATE", "localhost"),
     "port": get_env_var("DB_PORT", 1433, var_type=int),
     "username": get_env_var("DB_USERNAME", "sa"),
-    "password": get_env_var("DB_PASSWORD", "", required=True),
+    "password": get_env_var("DB_PASSWORD", "default_password"),
     "timeout": get_env_var("DB_TIMEOUT", 30, var_type=int),
     "pool_size": get_env_var("DB_CONNECTION_POOL_SIZE", 10, var_type=int),
     "max_overflow": get_env_var("DB_CONNECTION_POOL_MAX_OVERFLOW", 20, var_type=int),
@@ -104,10 +104,10 @@ DATABASE_CONFIG = {
 
 # ===== CONFIGURACIÓN DE SEGURIDAD =====
 SECURITY_CONFIG = {
-    "secret_key": get_env_var("SECRET_KEY", "", required=True),
-    "jwt_secret": get_env_var("JWT_SECRET_KEY", "", required=True),
+    "secret_key": get_env_var("SECRET_KEY", "default_secret_key"),
+    "jwt_secret": get_env_var("JWT_SECRET_KEY", "default_jwt_secret"),
     "jwt_expiration_hours": get_env_var("JWT_EXPIRATION_HOURS", 24, var_type=int),
-    "encryption_key": get_env_var("ENCRYPTION_KEY", "", required=True),
+    "encryption_key": get_env_var("ENCRYPTION_KEY", "default_encryption_key"),
     "password_salt_rounds": get_env_var("PASSWORD_SALT_ROUNDS", 12, var_type=int),
 }
 

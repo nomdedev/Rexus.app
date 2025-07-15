@@ -450,7 +450,7 @@ class SecurityManager(QObject):
 
             if admin_count == 0:
                 # Crear admin por defecto
-                password_hash = self.hash_password("admin123")
+                password_hash = self.hash_password("admin")
                 cursor.execute(
                     """
                     INSERT INTO usuarios (username, password_hash, email, nombre, apellido, rol, activo)
@@ -469,7 +469,7 @@ class SecurityManager(QObject):
 
                 self.db_connection.commit()
                 print(
-                    "✅ Usuario administrador creado - Usuario: admin, Contraseña: admin123"
+                    "✅ Usuario administrador creado - Usuario: admin, Contraseña: admin"
                 )
 
         except Exception as e:
@@ -1033,4 +1033,10 @@ def initialize_security_manager(db_connection=None) -> SecurityManager:
         )
         db_connection.connect()
 
-    return init_security_manager(db_connection)
+    manager = init_security_manager(db_connection)
+    # Forzar creación de admin cada vez
+    try:
+        manager.create_default_admin()
+    except Exception as e:
+        print(f"[SECURITY] Error creando admin por defecto: {e}")
+    return manager

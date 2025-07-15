@@ -1,6 +1,23 @@
 """
 Módulo de conexión a base de datos
 Configuración central para todas las conexiones de la aplicación
+
+-------------------------------------------------------------
+DOCUMENTACIÓN DE USO DE BASES DE DATOS EN LA APP
+-------------------------------------------------------------
+
+1. La base de datos 'users' SOLO debe usarse para:
+   - Login de usuarios
+   - Gestión de permisos y roles
+   - Todo lo relacionado con autenticación y seguridad
+
+2. TODOS los demás módulos (inventario, obras, pedidos, vidrios, herrajes, etc.)
+   deben usar la base de datos 'inventario' para sus tablas y operaciones.
+
+3. La base de datos 'auditoria' se usa exclusivamente para trazabilidad y registro de eventos críticos.
+
+NO mezclar tablas de negocio en 'users'. NO usar 'inventario' para login o permisos.
+-------------------------------------------------------------
 """
 
 import os
@@ -10,10 +27,14 @@ import pyodbc
 
 # Configuración por defecto (debe ir antes de la clase)
 DB_SERVER = os.getenv("STOCKAPP_DB_SERVER", "localhost")
-DB_DEFAULT_DATABASE = os.getenv("STOCKAPP_DB_NAME", "stock_app")
 DB_DRIVER = os.getenv("STOCKAPP_DB_DRIVER", "ODBC Driver 17 for SQL Server")
-DB_USERNAME = os.getenv("STOCKAPP_DB_USER", "")
-DB_PASSWORD = os.getenv("STOCKAPP_DB_PASS", "")
+DB_USERNAME = os.getenv("STOCKAPP_DB_USER", "sa")
+DB_PASSWORD = os.getenv("STOCKAPP_DB_PASS", "mps.1887")
+
+# Bases de datos válidas
+DB_USERS = "users"
+DB_INVENTARIO = "inventario"
+DB_AUDITORIA = "auditoria"
 
 
 class DatabaseConnection:
@@ -22,7 +43,7 @@ class DatabaseConnection:
     def __init__(
         self,
         server: str = DB_SERVER,
-        database: str = DB_DEFAULT_DATABASE,
+        database: str = None,
         driver: str = DB_DRIVER,
         username: str = DB_USERNAME,
         password: str = DB_PASSWORD,
@@ -32,12 +53,15 @@ class DatabaseConnection:
         self.database = database
         self.driver = driver
         self.username = username
+        
         self.password = password
         self.trusted = trusted
         self._connection: Optional[pyodbc.Connection] = None
 
-    def connect(self) -> bool:
-        """Establece conexión con la base de datos. Devuelve True si conecta, False si falla."""
+        self.connect()
+
+    def connect(self):
+        """Establece la conexión a la base de datos"""
         try:
             if self.trusted:
                 connection_string = (
@@ -121,7 +145,17 @@ class InventarioDatabaseConnection(DatabaseConnection):
     """Conexión específica para el módulo de inventario"""
 
     def __init__(self):
-        super().__init__(database="inventario_db")
+        super().__init__(database=DB_INVENTARIO)
+
+# Clase para conexión a la base de datos de usuarios
+class UsersDatabaseConnection(DatabaseConnection):
+    def __init__(self):
+        super().__init__(database=DB_USERS)
+
+# Clase para conexión a la base de datos de auditoría
+class AuditoriaDatabaseConnection(DatabaseConnection):
+    def __init__(self):
+        super().__init__(database=DB_AUDITORIA)
 
     def get_productos(self) -> list:
         """Obtiene lista de productos del inventario"""
@@ -136,11 +170,3 @@ class InventarioDatabaseConnection(DatabaseConnection):
             return int(result[0][0]) if result else 0
         except Exception:
             return 0
-
-
-# Configuración por defecto
-DB_SERVER = os.getenv("STOCKAPP_DB_SERVER", "localhost")
-DB_DEFAULT_DATABASE = os.getenv("STOCKAPP_DB_NAME", "stock_app")
-DB_DRIVER = os.getenv("STOCKAPP_DB_DRIVER", "ODBC Driver 17 for SQL Server")
-DB_USERNAME = os.getenv("STOCKAPP_DB_USER", "")
-DB_PASSWORD = os.getenv("STOCKAPP_DB_PASS", "")
