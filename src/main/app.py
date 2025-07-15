@@ -108,9 +108,10 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.user_data = user_data
         self.modulos_permitidos = modulos_permitidos
+        from PyQt6.QtWidgets import QTabWidget, QLabel
         self.security_manager = None
-        self.content_stack: Optional[QTabWidget] = None
-        self.content_header: Optional[QLabel] = None
+        self.content_stack = QTabWidget()
+        self.content_header = QLabel()
         
         self._init_ui()
 
@@ -193,25 +194,17 @@ class MainWindow(QMainWindow):
         
         # Módulos ordenados por flujo de proyecto real
         modulos = [
-            # 1. PLANIFICACIÓN Y GESTIÓN
             ("🏗️", "Obras", "Gestión de proyectos y construcción"),
+            ("�", "Inventario", "Gestión de inventario y stock"),
+            ("�", "Herrajes", "Gestión de herrajes"),
+            ("🪟", "Vidrios", "Gestión de vidrios"),
             ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
-            ("💳", "Compras", "Gestión de compras y proveedores"),
-            
-            # 2. INVENTARIO Y MATERIALES  
-            ("📦", "Inventario", "Stock de perfiles y materiales"),
-            ("🪟", "Vidrios", "Catálogo y pedidos de vidrios"),
-            ("🔧", "Herrajes", "Catálogo de herrajes y accesorios"),
-            
-            # 3. OPERACIONES
-            ("🚛", "Logística", "Transporte y distribución"),
-            ("🛠️", "Mantenimiento", "Mantenimiento de equipos"),
-            ("💰", "Contabilidad", "Finanzas y facturación"),
-            
-            # 4. ADMINISTRACIÓN
+            ("�", "Compras", "Gestión de compras y proveedores"),
+            ("�", "Administración", "Gestión administrativa y financiera"),
+            ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
+            ("�", "Auditoría", "Auditoría y trazabilidad"),
             ("👥", "Usuarios", "Gestión de personal y roles"),
-            ("🔍", "Auditoría", "Logs y trazabilidad"),
-            ("⚙️", "Configuración", "Ajustes del sistema"),
+            ("⚙️", "Configuración", "Configuración del sistema"),
         ]
         
         for emoji, nombre, descripcion in modulos:
@@ -386,28 +379,26 @@ class MainWindow(QMainWindow):
                 background-color: white;
                 border-left: 4px solid {color};
                 border-radius: 8px;
-                padding: 20px;
+                padding: 4px;
+                min-width: 60px;
+                min-height: 60px;
+                max-width: 60px;
+                max-height: 60px;
             }}
         """)
-        
         layout = QVBoxLayout(card)
-        
         emoji_label = QLabel(emoji)
-        emoji_label.setStyleSheet("font-size: 32px;")
+        emoji_label.setStyleSheet("font-size: 18px;")
         emoji_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
         title_label = QLabel(titulo)
-        title_label.setStyleSheet("font-size: 12px; color: #7f8c8d; font-weight: 500;")
+        title_label.setStyleSheet("font-size: 9px; color: #7f8c8d; font-weight: 500;")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
         value_label = QLabel(valor)
-        value_label.setStyleSheet(f"font-size: 24px; color: {color}; font-weight: bold;")
+        value_label.setStyleSheet(f"font-size: 12px; color: {color}; font-weight: bold;")
         value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
         layout.addWidget(emoji_label)
         layout.addWidget(title_label)
         layout.addWidget(value_label)
-        
         return card
 
     def show_module(self, module_name: str) -> None:
@@ -617,7 +608,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando vidrios real: {e}")
-            return self.create_fallback_module("Vidrios")
+            return self._create_fallback_module("Vidrios")
 
     def _create_herrajes_module(self) -> QWidget:
         """Crea el módulo de herrajes usando los archivos reales"""
@@ -643,7 +634,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando herrajes real: {e}")
-            return self.create_fallback_module("Herrajes")
+            return self._create_fallback_module("Herrajes")
 
     def _create_pedidos_module(self) -> QWidget:
         """Crea el módulo de pedidos usando los archivos reales"""
@@ -669,7 +660,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando pedidos real: {e}")
-            return self.create_fallback_module("Pedidos")
+            return self._create_fallback_module("Pedidos")
 
     def _create_logistica_module(self) -> QWidget:
         """Crea el módulo de logística usando los archivos reales"""
@@ -695,7 +686,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando logística real: {e}")
-            return self.create_fallback_module("Logística")
+            return self._create_fallback_module("Logística")
 
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando los archivos reales"""
@@ -721,7 +712,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando usuarios real: {e}")
-            return self.create_fallback_module("Usuarios")
+            return self._create_fallback_module("Usuarios")
 
     def _create_auditoria_module(self) -> QWidget:
         """Crea el módulo de auditoría usando los archivos reales"""
@@ -747,7 +738,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando auditoría real: {e}")
-            return self.create_fallback_module("Auditoría")
+            return self._create_fallback_module("Auditoría")
 
     def _create_compras_module(self) -> QWidget:
         """Crea el módulo de compras usando los archivos reales"""
@@ -773,7 +764,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando compras real: {e}")
-            return self.create_fallback_module("Compras")
+            return self._create_fallback_module("Compras")
 
     def _create_mantenimiento_module(self) -> QWidget:
         """Crea el módulo de mantenimiento usando los archivos reales"""
@@ -799,7 +790,7 @@ class MainWindow(QMainWindow):
             
         except Exception as e:
             print(f"Error creando mantenimiento real: {e}")
-            return self.create_fallback_module("Mantenimiento")
+            return self._create_fallback_module("Mantenimiento")
 
     def _create_fallback_module(self, module_name: str) -> QWidget:
         """Crea un módulo de fallback cuando el real no está disponible"""
@@ -941,14 +932,15 @@ def main():
         print("[SEGURIDAD] Sistema de seguridad completo inicializado")
     except Exception as e:
         print(f"[SEGURIDAD] Error inicializando sistema completo: {e}")
-        print("[SEGURIDAD] Usando sistema simple de fallback")
-        security_manager = SimpleSecurityManager()
+        print("[SEGURIDAD] No se pudo inicializar el sistema de seguridad completo. La app funcionará sin seguridad avanzada.")
+        security_manager = None
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
     
     # Asignar el security manager al login dialog
-    login_dialog.security_manager = security_manager
+    if security_manager is not None:
+        login_dialog.security_manager = security_manager
 
     def cargar_main_window_con_seguridad(user_data, modulos_permitidos):
         global main_window
@@ -959,14 +951,9 @@ def main():
             main_window = MainWindow(user_data, modulos_permitidos)
             main_window.actualizar_usuario_label(user_data)
             # Inicializar el atributo si no existe
-            if not hasattr(main_window, "security_manager"):
-                main_window.security_manager = None
-            main_window.security_manager = security_manager
-            main_window.mostrar_mensaje(
-                f"¡Bienvenido {user_data['username']}! ({user_data['rol']})",
-                tipo="exito",
-                duracion=3000,
-            )
+            if security_manager is not None:
+                main_window.security_manager = security_manager
+            # main_window.mostrar_mensaje( ... )  # Mensaje de bienvenida removido
             main_window.show()
             print(f"✅ [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
         except Exception as e:
@@ -986,6 +973,11 @@ def main():
 
     def on_login_success(username, role):
         print(f"✅ [LOGIN] Autenticación exitosa para {username} ({role})")
+        if security_manager is None:
+            print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.critical(None, "Error de seguridad", "No se pudo inicializar el sistema de seguridad. Contacte al administrador.")
+            return
         user_data = security_manager.get_current_user()
         if not user_data:
             print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")

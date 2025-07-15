@@ -26,10 +26,10 @@ from typing import Optional
 import pyodbc
 
 # Configuración por defecto (debe ir antes de la clase)
-DB_SERVER = os.getenv("STOCKAPP_DB_SERVER", "localhost")
-DB_DRIVER = os.getenv("STOCKAPP_DB_DRIVER", "ODBC Driver 17 for SQL Server")
-DB_USERNAME = os.getenv("STOCKAPP_DB_USER", "sa")
-DB_PASSWORD = os.getenv("STOCKAPP_DB_PASS", "mps.1887")
+DB_SERVER = os.getenv("DB_SERVER", "localhost")
+DB_DRIVER = os.getenv("DB_DRIVER", "ODBC Driver 17 for SQL Server")
+DB_USERNAME = os.getenv("DB_USERNAME", "sa")
+DB_PASSWORD = os.getenv("DB_PASSWORD", "mps.1887")
 
 # Bases de datos válidas
 DB_USERS = "users"
@@ -42,22 +42,15 @@ class DatabaseConnection:
 
     def __init__(
         self,
-        server: str = DB_SERVER,
         database: str = None,
-        driver: str = DB_DRIVER,
-        username: str = DB_USERNAME,
-        password: str = DB_PASSWORD,
-        trusted: bool = True,
     ):
-        self.server = server
+        self.server = DB_SERVER
         self.database = database
-        self.driver = driver
-        self.username = username
-        
-        self.password = password
-        self.trusted = trusted
+        self.driver = DB_DRIVER
+        self.username = DB_USERNAME
+        self.password = DB_PASSWORD
+        self.trusted = False  # Siempre autenticación SQL Server
         self._connection: Optional[pyodbc.Connection] = None
-
         self.connect()
 
     def connect(self):

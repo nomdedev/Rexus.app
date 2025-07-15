@@ -371,10 +371,140 @@ Se recomienda utilizar herramientas como [dbdiagram.io](https://dbdiagram.io) o 
 
 ---
 
-**Notas:**
-- Todas las claves foráneas (`FK`) deben estar correctamente definidas y referenciar las tablas correspondientes.
-- Los tipos de datos pueden variar según el motor de base de datos (ajustar según SQL Server, MySQL, etc.).
-- Si algún módulo requiere tablas adicionales (por ejemplo, historial, logs, relaciones N a N), documentar aquí y en el modelo correspondiente.
+## Tablas presentes en la base de datos `inventario` no implementadas o con uso parcial
+
+A continuación se listan las tablas que existen en la base de datos `inventario` pero no están implementadas en la lógica principal del sistema, o su uso es parcial/redundante. Se incluyen sugerencias de funcionalidad y migración:
+
+- **inventario**: Tabla histórica, en desuso o absorbida por `inventario_perfiles`. Sugerencia: migrar datos relevantes y eliminar si no se usa.
+- **inventario_items**: Usada para otros productos (herrajes, insumos) en tests y scripts, pero parece redundante con `inventario_perfiles`. Sugerencia: migrar lógica y datos a `inventario_perfiles` y eliminar si no hay dependencias.
+- **movimientos_stock_items**: Registra movimientos de stock de items. Usada en tests, pero no en la lógica principal. Sugerencia: migrar a `movimientos_stock` si es posible.
+- **pagos_por_obra / pagos_obra / pagos_pedidos**: Relacionadas con pagos, pero no se observa uso activo en inventario. Sugerencia: integrar con contabilidad y reportes financieros si se requiere trazabilidad de pagos.
+- **obra_materiales / pedidos_obra / reserva_materiales**: Usadas en scripts y migraciones, pueden estar en transición o ser redundantes. Sugerencia: revisar dependencias y migrar a modelos actuales.
+- **vidrios_por_obra / herrajes_por_obra / logistica_por_obra**: Relacionadas con otros módulos, su uso en inventario es indirecto. Sugerencia: documentar integración o migrar si corresponde.
+- **estado_material / historial / auditorias_sistema**: Para trazabilidad y auditoría, pero no se observa uso directo en inventario. Sugerencia: implementar lógica de auditoría si se requiere mayor trazabilidad.
+- **materiales**: Puede ser redundante con inventario_perfiles/items. Sugerencia: migrar datos y eliminar si no se usa.
+- **users / auditoria**: Tablas de usuarios y auditoría, usadas en otros módulos pero no directamente en inventario.
+
+**Notas de migración y mejora:**
+- Revisar dependencias antes de eliminar cualquier tabla.
+- Migrar datos históricos relevantes a las tablas actuales.
+- Documentar cualquier integración entre módulos que dependa de estas tablas.
+- Si se decide eliminar una tabla, actualizar este documento y los scripts de migración.
+
+---
+
+**Sugerencias de funcionalidades para mejor aprovechamiento de las tablas**
+
+A continuación se proponen funcionalidades que pueden implementarse para aprovechar mejor la información de cada tabla:
+
+- **inventario / inventario_perfiles / inventario_items**
+  - Reportes históricos de stock y movimientos.
+  - Alertas automáticas de stock bajo, vencimientos y productos críticos.
+  - Auditoría de cambios y trazabilidad completa de cada producto.
+  - Integración con compras/ventas para actualizar stock en tiempo real.
+  - Dashboard visual de estado de inventario y tendencias.
+
+- **movimientos_stock / movimientos_stock_items**
+  - Dashboard de movimientos recientes y tendencias de consumo.
+  - Estadísticas de entradas/salidas por período, usuario o tipo de producto.
+  - Exportación de movimientos para análisis externo.
+  - Filtros avanzados por tipo de movimiento, usuario, fecha, producto.
+
+- **pagos_por_obra / pagos_obra / pagos_pedidos**
+  - Reportes financieros por obra, proveedor o período.
+  - Alertas de pagos pendientes o vencidos.
+  - Integración con módulos de contabilidad y facturación.
+  - Visualización de flujo de pagos y estado de cuentas.
+
+- **obra_materiales / pedidos_obra / reserva_materiales**
+  - Seguimiento detallado de consumo y reservas por obra.
+  - Proyección de necesidades futuras según avance de obra.
+  - Visualización de materiales asignados y pendientes.
+  - Alertas de faltantes y vencimientos de reservas.
+
+- **vidrios_por_obra / herrajes_por_obra / logistica_por_obra**
+  - Seguimiento de entregas y pedidos específicos por obra.
+  - Alertas de retrasos o faltantes en logística.
+  - Integración con inventario para actualizar stock automáticamente.
+  - Reportes de cumplimiento y eficiencia logística.
+
+- **estado_material / historial / auditorias_sistema**
+  - Trazabilidad completa de cambios y acciones sobre materiales.
+  - Reportes de auditoría por usuario, fecha o tipo de acción.
+  - Alertas de acciones críticas o sospechosas.
+  - Visualización de historial de modificaciones y accesos.
+
+- **materiales**
+  - Unificación de catálogo de materiales para evitar duplicados.
+  - Clasificación avanzada por tipo, proveedor, uso, etc.
+  - Reportes de materiales por categoría y proveedor.
+
+- **users / auditoria**
+  - Reportes de actividad y permisos por usuario.
+  - Alertas de accesos o acciones no autorizadas.
+  - Integración con auditoría para trazabilidad completa.
+  - Panel de administración de usuarios y roles.
+
+**Planificación para implementación**
+
+1. Priorizar funcionalidades según impacto y facilidad de desarrollo.
+2. Definir requerimientos técnicos y de negocio para cada funcionalidad.
+3. Crear historias de usuario y tareas en el gestor de proyectos.
+4. Implementar módulos de reportes, alertas y dashboards visuales.
+5. Integrar auditoría y trazabilidad en operaciones críticas.
+6. Documentar cada nueva funcionalidad y actualizar este archivo.
+
+---
+
+**Sugerencia de módulo administrativo de Recursos Humanos**
+
+Para complementar la parte contable y administrativa, se recomienda implementar un módulo de Recursos Humanos con las siguientes funcionalidades y tablas:
+
+- **Tabla: operarios**
+  - Datos personales: nombre, apellido, DNI, fecha de nacimiento, dirección, contacto.
+  - Datos laborales: fecha de ingreso, puesto, área, estado (activo/inactivo).
+  - Salario y condiciones contractuales.
+
+- **Tabla: historial_academico**
+  - Relación con operario.
+  - Estudios realizados, cursos, certificaciones, fechas y entidades.
+
+- **Tabla: desempeño_laboral**
+  - Relación con operario.
+  - Evaluaciones periódicas, observaciones, calificaciones, fechas.
+
+- **Tabla: historial_salarios**
+  - Relación con operario.
+  - Registro de cambios de salario, bonificaciones, descuentos, fechas y motivos.
+
+- **Funcionalidades recomendadas**
+  - Carga y edición de datos de operarios.
+  - Registro y consulta de historial académico y desempeño.
+  - Seguimiento de evolución salarial y condiciones laborales.
+  - Reportes de desempeño, historial y situación contractual.
+  - Integración con contabilidad para cálculo de costos laborales y liquidaciones.
+  - Alertas de vencimiento de contratos, capacitaciones pendientes, evaluaciones próximas.
+
+**Planificación para implementación**
+
+1. Definir el modelo de datos y las relaciones entre tablas.
+2. Crear las tablas y migraciones necesarias en la base de datos.
+3. Desarrollar formularios y vistas para carga y consulta de información.
+4. Integrar reportes y alertas en el dashboard administrativo.
+5. Documentar el módulo y actualizar este archivo.
+
+---
+
+**Nota sobre integración de módulos administrativos**
+
+El módulo administrativo de usuarios y recursos humanos puede integrarse dentro del módulo "Contabilidad" o bien redefinirse como un módulo más amplio llamado "Administración", que incluya tanto la gestión contable como la gestión de personal, salarios y desempeño.
+
+Esto permite centralizar la información administrativa y facilitar el acceso a reportes, auditoría y seguimiento de recursos humanos y aspectos económicos en un solo lugar.
+
+Se recomienda:
+- Unificar la documentación y los modelos bajo el nuevo módulo "Administración".
+- Integrar formularios, reportes y dashboards para usuarios, operarios, salarios y contabilidad.
+- Actualizar el índice y las secciones del documento para reflejar esta integración.
 
 ---
 
