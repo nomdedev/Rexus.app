@@ -1,7 +1,8 @@
-class DummyModel:
 import pytest
 
 from modules.auditoria import controller as auditoria_controller
+
+class DummyModel:
     def __init__(self):
         self.eventos = []
     def registrar_evento(self, usuario_id, modulo, accion, detalle, ip):

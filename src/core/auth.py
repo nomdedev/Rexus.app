@@ -21,8 +21,8 @@ class AuthManager:
         # Cargar conexión si no se proporciona
         if not self.db_connection:
             try:
-                from src.core.database import DatabaseConnection
-                self.db_connection = DatabaseConnection('users')
+                from src.core.database import UsersDatabaseConnection
+                self.db_connection = UsersDatabaseConnection()
             except:
                 self.db_connection = None
     
@@ -41,19 +41,17 @@ class AuthManager:
             return None
         
         try:
-            cursor = self.db_connection.cursor()
-            
             # Buscar usuario por nombre de usuario
-            cursor.execute("""
+            user_data = self.db_connection.execute_query("""
                 SELECT id, usuario, password_hash, rol, estado, nombre, apellido, email
                 FROM usuarios 
                 WHERE usuario = ? AND estado = 'Activo'
             """, (username,))
             
-            user_data = cursor.fetchone()
-            
             if not user_data:
                 return None
+            
+            user_data = user_data[0]  # Obtener primera fila
             
             # Verificar password
             password_hash = hashlib.sha256(password.encode()).hexdigest()
@@ -71,13 +69,11 @@ class AuthManager:
                 }
                 
                 # Actualizar último login
-                cursor.execute("""
+                self.db_connection.execute_non_query("""
                     UPDATE usuarios 
                     SET ultimo_login = GETDATE() 
                     WHERE id = ?
                 """, (user_data[0],))
-                
-                self.db_connection.commit()
                 
                 # Establecer sesión
                 self.current_user = user_info
@@ -86,7 +82,6 @@ class AuthManager:
                 
                 return user_info
             
-            cursor.close()
             return None
             
         except Exception as e:
@@ -159,26 +154,21 @@ class AuthManager:
             return False
         
         try:
-            cursor = self.db_connection.cursor()
-            
             # Verificar que el usuario no exista
-            cursor.execute("SELECT id FROM usuarios WHERE usuario = ?", (username,))
-            if cursor.fetchone():
+            existing_user = self.db_connection.execute_query("SELECT id FROM usuarios WHERE usuario = ?", (username,))
+            if existing_user:
                 return False
             
             # Crear hash de contraseña
             password_hash = hashlib.sha256(password.encode()).hexdigest()
             
             # Insertar usuario
-            cursor.execute("""
+            result = self.db_connection.execute_non_query("""
                 INSERT INTO usuarios (usuario, password_hash, rol, nombre, apellido, email, estado)
                 VALUES (?, ?, ?, ?, ?, ?, 'Activo')
             """, (username, password_hash, role, nombre, apellido, email))
             
-            self.db_connection.commit()
-            cursor.close()
-            
-            return True
+            return result
             
         except Exception as e:
             print(f"Error creando usuario: {e}")
@@ -199,22 +189,17 @@ class AuthManager:
             return False
         
         try:
-            cursor = self.db_connection.cursor()
-            
             # Crear hash de nueva contraseña
             password_hash = hashlib.sha256(new_password.encode()).hexdigest()
             
             # Actualizar contraseña
-            cursor.execute("""
+            result = self.db_connection.execute_non_query("""
                 UPDATE usuarios 
                 SET password_hash = ? 
                 WHERE id = ?
             """, (password_hash, user_id))
             
-            self.db_connection.commit()
-            cursor.close()
-            
-            return True
+            return result
             
         except Exception as e:
             print(f"Error cambiando contraseña: {e}")
@@ -231,16 +216,14 @@ class AuthManager:
             return []
         
         try:
-            cursor = self.db_connection.cursor()
-            
-            cursor.execute("""
+            user_data = self.db_connection.execute_query("""
                 SELECT id, usuario, rol, nombre, apellido, email, estado, ultimo_login
                 FROM usuarios
                 ORDER BY usuario
             """)
             
             users = []
-            for row in cursor.fetchall():
+            for row in user_data:
                 users.append({
                     'id': row[0],
                     'username': row[1],
@@ -252,7 +235,6 @@ class AuthManager:
                     'ultimo_login': row[7]
                 })
             
-            cursor.close()
             return users
             
         except Exception as e:
@@ -281,8 +263,6 @@ class AuthManager:
             return False
         
         try:
-            cursor = self.db_connection.cursor()
-            
             # Construir query dinámico
             updates = []
             params = []
@@ -312,12 +292,9 @@ class AuthManager:
             params.append(user_id)
             
             query = f"UPDATE usuarios SET {', '.join(updates)} WHERE id = ?"
-            cursor.execute(query, params)
+            result = self.db_connection.execute_non_query(query, tuple(params))
             
-            self.db_connection.commit()
-            cursor.close()
-            
-            return True
+            return result
             
         except Exception as e:
             print(f"Error actualizando usuario: {e}")

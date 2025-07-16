@@ -1,3 +1,8 @@
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+import pytest
+
 # Agregar directorio raíz para imports
 ROOT_DIR = Path(__file__).resolve().parents[3]
 sys.path.append(str(ROOT_DIR))
@@ -42,14 +47,6 @@ class TestAuditoriaBasic:
             )
         except ImportError:
             # Es opcional que tenga modelo
-import sys
-from pathlib import Path
-from unittest.mock import MagicMock, patch
-
-import pytest
-
-from modules.auditoria import controller, model
-
             pytest.skip(f"Modelo de auditoria no disponible")
 
 class TestAuditoriaEdgeCases:
@@ -103,6 +100,8 @@ class TestAuditoriaIntegration:
         db = MagicMock()
         db.ejecutar_query = MagicMock(return_value=[])
         assert db is not None
+        return db
+    
     def test_conexion_database(self, mock_database):
         """Test: verificar conexión con base de datos."""
         # Simular consulta básica
