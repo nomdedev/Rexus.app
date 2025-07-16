@@ -424,7 +424,7 @@ class MainWindow(QMainWindow):
             
             if not tab_exists:
                 icon_map = {
-                    "Inventario": "📦", "Contabilidad": "💰", "Obras": "🏗️",
+                    "Inventario": "📦", "Administración": "💰", "Obras": "🏗️",
                     "Pedidos": "📋", "Logística": "🚛", "Herrajes": "🔧",
                     "Vidrios": "🪟", "Usuarios": "👥", "Auditoría": "🔍",
                     "Configuración": "⚙️", "Compras": "💳", "Mantenimiento": "🛠️"
@@ -450,7 +450,7 @@ class MainWindow(QMainWindow):
         # Mapeo de módulos a métodos de creación
         module_factory = {
             "Inventario": self._create_inventario_module,
-            "Contabilidad": self._create_contabilidad_module,
+            "Administración": self._create_administracion_module,
             "Obras": self._create_obras_module,
             "Configuración": self._create_configuracion_module,
             "Vidrios": self._create_vidrios_module,
@@ -501,12 +501,12 @@ class MainWindow(QMainWindow):
             demo = DemoMainWindow({}, [])
             return demo.create_inventario_module()
 
-    def _create_contabilidad_module(self) -> QWidget:
-        """Crea el módulo de contabilidad usando los archivos reales"""
+    def _create_administracion_module(self) -> QWidget:
+        """Crea el módulo de administración usando los archivos reales"""
         try:
-            from src.modules.contabilidad.view import ContabilidadView
-            from src.modules.contabilidad.model import ContabilidadModel
-            from src.modules.contabilidad.controller import ContabilidadController
+            from src.modules.administracion.view import AdministracionView
+            from src.modules.administracion.model import AdministracionModel
+            from src.modules.administracion.controller import AdministracionController
             from src.core.database import InventarioDatabaseConnection
             
             # Crear conexión a la base de datos
@@ -517,18 +517,15 @@ class MainWindow(QMainWindow):
                 db_connection = None
             
             # Crear modelo, vista y controlador
-            model = ContabilidadModel(db_connection)
-            view = ContabilidadView()
-            controller = ContabilidadController(model, view)
+            model = AdministracionModel(db_connection)
+            view = AdministracionView()
+            controller = AdministracionController(model, view)
             
             return view
             
         except Exception as e:
-            print(f"Error creando contabilidad real: {e}")
-            # Fallback a demo
-            from demo_app import DemoMainWindow
-            demo = DemoMainWindow({}, [])
-            return demo.create_contabilidad_module()
+            print(f"Error creando administración real: {e}")
+            return self._create_fallback_module("Administración")
 
     def _create_obras_module(self) -> QWidget:
         """Crea el módulo de obras usando los archivos reales"""
@@ -789,7 +786,7 @@ class MainWindow(QMainWindow):
         icon_map = {
             "Vidrios": "🪟", "Herrajes": "🔧", "Pedidos": "📋",
             "Logística": "🚛", "Usuarios": "👥", "Auditoría": "🔍",
-            "Compras": "💳", "Mantenimiento": "🛠️"
+            "Compras": "💳", "Mantenimiento": "🛠️", "Administración": "💰"
         }
         
         icon = icon_map.get(module_name, "📱")
