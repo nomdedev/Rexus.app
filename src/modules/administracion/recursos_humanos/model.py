@@ -97,7 +97,7 @@ class RecursosHumanosModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
-            query = f"""
+            query = """
                 SELECT 
                     e.id, e.codigo, e.nombre, e.apellido, e.dni, e.telefono,
                     e.email, e.direccion, e.fecha_nacimiento, e.fecha_ingreso,
@@ -105,7 +105,7 @@ class RecursosHumanosModel:
                     e.fecha_creacion, e.fecha_modificacion
                 FROM {self.tabla_empleados} e
                 LEFT JOIN {self.tabla_departamentos} d ON e.departamento_id = d.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY e.apellido, e.nombre
             """
 
@@ -140,8 +140,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_empleados}
+            query = """
+                INSERT INTO """ + self.tabla_empleados + """
                 (codigo, nombre, apellido, dni, telefono, email, direccion,
                  fecha_nacimiento, fecha_ingreso, salario_base, cargo, 
                  departamento_id, estado, activo, fecha_creacion, fecha_modificacion)
@@ -200,11 +200,11 @@ class RecursosHumanosModel:
             cursor = self.db_connection.cursor()
 
             # Obtener datos actuales para historial
-            cursor.execute(f"SELECT salario_base, cargo, departamento_id FROM {self.tabla_empleados} WHERE id = ?", (empleado_id,))
+            cursor.execute("SELECT salario_base, cargo, departamento_id FROM " + self.tabla_empleados + " WHERE id = ?", (empleado_id,))
             datos_actuales = cursor.fetchone()
 
-            query = f"""
-                UPDATE {self.tabla_empleados}
+            query = """
+                UPDATE """ + self.tabla_empleados + """
                 SET nombre = ?, apellido = ?, dni = ?, telefono = ?, email = ?, 
                     direccion = ?, fecha_nacimiento = ?, salario_base = ?, 
                     cargo = ?, departamento_id = ?, estado = ?, fecha_modificacion = GETDATE()
@@ -262,8 +262,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_empleados}
+            query = """
+                UPDATE """ + self.tabla_empleados + """
                 SET activo = 0, estado = 'INACTIVO', fecha_modificacion = GETDATE()
                 WHERE id = ?
             """
@@ -304,11 +304,11 @@ class RecursosHumanosModel:
             cursor = self.db_connection.cursor()
 
             # Obtener empleados activos
-            empleados_query = f"""
+            empleados_query = """
                 SELECT e.id, e.nombre, e.apellido, e.salario_base, e.cargo,
                        d.nombre as departamento
                 FROM {self.tabla_empleados} e
-                LEFT JOIN {self.tabla_departamentos} d ON e.departamento_id = d.id
+                LEFT JOIN """ + self.tabla_departamentos + """ d ON e.departamento_id = d.id
                 WHERE e.activo = 1 AND e.estado = 'ACTIVO'
             """
             
@@ -397,15 +397,15 @@ class RecursosHumanosModel:
 
             for nomina in nomina_data:
                 # Verificar si ya existe registro para ese empleado/período
-                cursor.execute(f"""
-                    SELECT id FROM {self.tabla_nomina} 
+                cursor.execute("""
+                    SELECT id FROM """ + self.tabla_nomina + """ 
                     WHERE empleado_id = ? AND mes = ? AND anio = ?
                 """, (nomina['empleado_id'], nomina['mes'], nomina['anio']))
 
                 if cursor.fetchone():
                     # Actualizar registro existente
-                    query = f"""
-                        UPDATE {self.tabla_nomina}
+                    query = """
+                        UPDATE """ + self.tabla_nomina + """
                         SET salario_base = ?, dias_trabajados = ?, horas_extra = ?,
                             bonos = ?, descuentos = ?, faltas = ?, bruto = ?,
                             total_descuentos = ?, neto = ?, fecha_calculo = GETDATE()
@@ -419,8 +419,8 @@ class RecursosHumanosModel:
                     ))
                 else:
                     # Crear nuevo registro
-                    query = f"""
-                        INSERT INTO {self.tabla_nomina}
+                    query = """
+                        INSERT INTO """ + self.tabla_nomina + """
                         (empleado_id, mes, anio, salario_base, dias_trabajados, horas_extra,
                          bonos, descuentos, faltas, bruto, total_descuentos, neto, fecha_calculo)
                         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -460,8 +460,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_asistencias}
+            query = """
+                INSERT INTO """ + self.tabla_asistencias + """
                 (empleado_id, fecha, hora_entrada, hora_salida, horas_trabajadas,
                  horas_extra, tipo, observaciones, fecha_registro)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -521,13 +521,13 @@ class RecursosHumanosModel:
                 conditions.append("a.empleado_id = ?")
                 params.append(empleado_id)
 
-            query = f"""
+            query = """
                 SELECT a.id, a.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
                        a.fecha, a.hora_entrada, a.hora_salida, a.horas_trabajadas,
                        a.horas_extra, a.tipo, a.observaciones
                 FROM {self.tabla_asistencias} a
                 JOIN {self.tabla_empleados} e ON a.empleado_id = e.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY a.fecha DESC, a.hora_entrada
             """
 
@@ -564,8 +564,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_bonos}
+            query = """
+                INSERT INTO """ + self.tabla_bonos + """
                 (empleado_id, tipo, concepto, monto, fecha_aplicacion,
                  mes_aplicacion, anio_aplicacion, estado, observaciones, fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -626,13 +626,13 @@ class RecursosHumanosModel:
                 conditions.append("b.anio_aplicacion = ?")
                 params.append(anio)
 
-            query = f"""
+            query = """
                 SELECT b.id, b.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
                        b.tipo, b.concepto, b.monto, b.fecha_aplicacion,
                        b.mes_aplicacion, b.anio_aplicacion, b.estado, b.observaciones
                 FROM {self.tabla_bonos} b
                 JOIN {self.tabla_empleados} e ON b.empleado_id = e.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY b.fecha_aplicacion DESC
             """
 
@@ -681,13 +681,13 @@ class RecursosHumanosModel:
                 conditions.append("h.tipo = ?")
                 params.append(tipo)
 
-            query = f"""
+            query = """
                 SELECT h.id, h.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
                        h.tipo, h.descripcion, h.fecha, h.valor_anterior,
                        h.valor_nuevo, h.usuario_creacion
                 FROM {self.tabla_historial} h
                 JOIN {self.tabla_empleados} e ON h.empleado_id = e.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY h.fecha DESC
             """
 
@@ -722,23 +722,23 @@ class RecursosHumanosModel:
             estadisticas = {}
 
             # Total empleados activos
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_empleados} WHERE activo = 1")
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_empleados + " WHERE activo = 1")
             estadisticas['total_empleados'] = cursor.fetchone()[0]
 
             # Empleados por estado
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM {self.tabla_empleados}
+                FROM """ + self.tabla_empleados + """
                 WHERE activo = 1
                 GROUP BY estado
             """)
             estadisticas['por_estado'] = dict(cursor.fetchall())
 
             # Empleados por departamento
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT d.nombre, COUNT(e.id) as cantidad
-                FROM {self.tabla_empleados} e
-                LEFT JOIN {self.tabla_departamentos} d ON e.departamento_id = d.id
+                FROM """ + self.tabla_empleados + """ e
+                LEFT JOIN """ + self.tabla_departamentos + """ d ON e.departamento_id = d.id
                 WHERE e.activo = 1
                 GROUP BY d.nombre
             """)
@@ -747,8 +747,8 @@ class RecursosHumanosModel:
             # Nómina total del mes actual
             mes_actual = datetime.now().month
             anio_actual = datetime.now().year
-            cursor.execute(f"""
-                SELECT SUM(neto) FROM {self.tabla_nomina}
+            cursor.execute("""
+                SELECT SUM(neto) FROM """ + self.tabla_nomina + """
                 WHERE mes = ? AND anio = ?
             """, (mes_actual, anio_actual))
             resultado = cursor.fetchone()[0]
@@ -779,8 +779,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_historial}
+            query = """
+                INSERT INTO """ + self.tabla_historial + """
                 (empleado_id, tipo, descripcion, fecha, valor_anterior, valor_nuevo, usuario_creacion)
                 VALUES (?, ?, ?, GETDATE(), ?, ?, 'SYSTEM')
             """
@@ -798,8 +798,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                SELECT COUNT(DISTINCT fecha) FROM {self.tabla_asistencias}
+            query = """
+                SELECT COUNT(DISTINCT fecha) FROM """ + self.tabla_asistencias + """
                 WHERE empleado_id = ? AND MONTH(fecha) = ? AND YEAR(fecha) = ?
                 AND tipo != 'FALTA'
             """
@@ -820,8 +820,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                SELECT SUM(horas_extra) FROM {self.tabla_asistencias}
+            query = """
+                SELECT SUM(horas_extra) FROM """ + self.tabla_asistencias + """
                 WHERE empleado_id = ? AND MONTH(fecha) = ? AND YEAR(fecha) = ?
             """
 
@@ -841,8 +841,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                SELECT SUM(monto) FROM {self.tabla_bonos}
+            query = """
+                SELECT SUM(monto) FROM """ + self.tabla_bonos + """
                 WHERE empleado_id = ? AND mes_aplicacion = ? AND anio_aplicacion = ?
                 AND tipo = 'BONO' AND estado = 'APLICADO'
             """
@@ -863,8 +863,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                SELECT SUM(monto) FROM {self.tabla_bonos}
+            query = """
+                SELECT SUM(monto) FROM """ + self.tabla_bonos + """
                 WHERE empleado_id = ? AND mes_aplicacion = ? AND anio_aplicacion = ?
                 AND tipo = 'DESCUENTO' AND estado = 'APLICADO'
             """
@@ -885,8 +885,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                SELECT COUNT(*) FROM {self.tabla_asistencias}
+            query = """
+                SELECT COUNT(*) FROM """ + self.tabla_asistencias + """
                 WHERE empleado_id = ? AND MONTH(fecha) = ? AND YEAR(fecha) = ?
                 AND tipo = 'FALTA'
             """

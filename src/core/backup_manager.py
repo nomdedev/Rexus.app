@@ -278,27 +278,31 @@ USE [{database_name}];
                     backup_script += f"\n-- Table: {table}\n"
                     
                     # Obtener estructura de tabla
-                    cursor.execute(f"""
+                    cursor.execute("""
                         SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT
                         FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_NAME = '{table}'
+                        WHERE TABLE_NAME = ?
                         ORDER BY ORDINAL_POSITION
-                    """)
+                    """, (table,))
                     
                     columns_info = cursor.fetchall()
                     backup_script += f"-- Columns: {len(columns_info)}\n"
                     
                     # Obtener datos de la tabla (limitado para evitar archivos muy grandes)
-                    cursor.execute(f"SELECT COUNT(*) FROM [{table}]")
+                    # Use parameterized query for table name - construct safely
+                    count_query = "SELECT COUNT(*) FROM [" + table + "]"
+                    cursor.execute(count_query)
                     row_count = cursor.fetchone()[0]
                     
                     if row_count > 0 and row_count < 10000:  # Solo backup de tablas pequeñas
-                        cursor.execute(f"SELECT * FROM [{table}]")
+                        # Use parameterized query for table name - construct safely
+                        select_query = "SELECT * FROM [" + table + "]"
+                        cursor.execute(select_query)
                         rows = cursor.fetchall()
                         
                         if rows:
                             columns = [desc[0] for desc in cursor.description]
-                            backup_script += f"INSERT INTO [{table}] ({', '.join(columns)}) VALUES\n"
+                            backup_script += "INSERT INTO [" + table + "] (" + ', '.join(columns) + ") VALUES\n"
                             
                             for i, row in enumerate(rows):
                                 values = []
@@ -306,7 +310,8 @@ USE [{database_name}];
                                     if value is None:
                                         values.append("NULL")
                                     elif isinstance(value, str):
-                                        values.append(f"'{value.replace(\"'\", \"''\")}'")
+                                        escaped_value = value.replace("'", "''")
+                                        values.append(f"'{escaped_value}'")
                                     else:
                                         values.append(str(value))
                                 

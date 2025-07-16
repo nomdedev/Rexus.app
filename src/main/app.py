@@ -205,7 +205,7 @@ class MainWindow(QMainWindow):
 
         # Usuario actual
         user_info = QLabel(
-            f"👤 {self.user_data['username']}\n🔑 {self.user_data['rol']}"
+            f"👤 {self.user_data['username']}\n🔑 {self.user_data.get('rol', self.user_data.get('role', 'Usuario'))}"
         )
         user_info.setStyleSheet("""
             QLabel {
@@ -380,7 +380,7 @@ class MainWindow(QMainWindow):
 
         welcome_info = QLabel(f"""
         Usuario: {self.user_data.get("username", "N/A")}
-        Rol: {self.user_data.get("rol", "N/A")}
+        Rol: {self.user_data.get("rol", self.user_data.get("role", "N/A"))}
         
         Módulos disponibles: {len(self.modulos_permitidos)}
         
@@ -1035,8 +1035,10 @@ def main():
             )
             app.quit()
 
-    def on_login_success(username, role):
-        print(f"✅ [LOGIN] Autenticación exitosa para {username} ({role})")
+    def on_login_success(user_data):
+        print(
+            f"✅ [LOGIN] Autenticación exitosa para {user_data.get('usuario', '???')} ({user_data.get('rol', '???')})"
+        )
         if security_manager is None:
             print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
             from PyQt6.QtWidgets import QMessageBox
@@ -1047,11 +1049,10 @@ def main():
                 "No se pudo inicializar el sistema de seguridad. Contacte al administrador.",
             )
             return
-        user_data = security_manager.get_current_user()
         if not user_data:
             print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")
             return
-        modulos_permitidos = security_manager.get_user_modules(user_data["id"])
+        modulos_permitidos = security_manager.get_user_modules(user_data.get("id", 1))
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 
     def on_login_failed(error_message):

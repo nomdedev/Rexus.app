@@ -25,16 +25,37 @@ from typing import Optional
 
 import pyodbc
 
-# Configuración por defecto (debe ir antes de la clase)
-DB_SERVER = os.getenv("DB_SERVER", "localhost")
-DB_DRIVER = os.getenv("DB_DRIVER", "ODBC Driver 17 for SQL Server")
-DB_USERNAME = os.getenv("DB_USERNAME", "sa")
-DB_PASSWORD = os.getenv("DB_PASSWORD", "mps.1887")
+# Configuración desde variables de entorno (sin valores por defecto)
+DB_SERVER = os.getenv("DB_SERVER")
+DB_DRIVER = os.getenv("DB_DRIVER")
+DB_USERNAME = os.getenv("DB_USERNAME")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
 
-# Bases de datos válidas
-DB_USERS = "users"
-DB_INVENTARIO = "inventario"
-DB_AUDITORIA = "auditoria"
+# Bases de datos desde variables de entorno
+DB_USERS = os.getenv("DB_USERS")
+DB_INVENTARIO = os.getenv("DB_INVENTARIO")
+DB_AUDITORIA = os.getenv("DB_AUDITORIA")
+
+# Validar que las variables críticas estén configuradas
+def validate_environment():
+    """Valida que todas las variables de entorno necesarias estén configuradas"""
+    required_vars = {
+        'DB_SERVER': DB_SERVER,
+        'DB_DRIVER': DB_DRIVER,
+        'DB_USERNAME': DB_USERNAME,
+        'DB_PASSWORD': DB_PASSWORD,
+        'DB_USERS': DB_USERS,
+        'DB_INVENTARIO': DB_INVENTARIO,
+        'DB_AUDITORIA': DB_AUDITORIA
+    }
+    
+    missing = [var for var, value in required_vars.items() if not value]
+    if missing:
+        raise EnvironmentError(f"Variables de entorno faltantes: {', '.join(missing)}. "
+                               f"Por favor configura estas variables en el archivo .env")
+
+# Validar al importar el módulo
+validate_environment()
 
 
 class DatabaseConnection:
@@ -43,6 +64,7 @@ class DatabaseConnection:
     def __init__(
         self,
         database: str = None,
+        auto_connect: bool = False,
     ):
         self.server = DB_SERVER
         self.database = database
@@ -51,7 +73,46 @@ class DatabaseConnection:
         self.password = DB_PASSWORD
         self.trusted = False  # Siempre autenticación SQL Server
         self._connection: Optional[pyodbc.Connection] = None
-        self.connect()
+        if auto_connect:
+            self.connect()
+
+    def switch_database(self, new_database: str) -> bool:
+        """
+        Cambia a una base de datos diferente usando la misma conexión
+        
+        Args:
+            new_database: Nombre de la nueva base de datos
+            
+        Returns:
+            True si el cambio fue exitoso, False si no
+        """
+        # Validate database name to prevent SQL injection
+        if not new_database or not isinstance(new_database, str):
+            print(f"[DB ERROR] Invalid database name: {new_database}")
+            return False
+        
+        # Sanitize database name - only allow alphanumeric, underscore, and hyphen
+        import re
+        if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):
+            print(f"[DB ERROR] Database name contains invalid characters: {new_database}")
+            return False
+        
+        if not self._connection:
+            self.database = new_database
+            return self.connect()
+        
+        try:
+            cursor = self._connection.cursor()
+            # Use secure string concatenation instead of f-string
+            query = "USE [" + new_database + "]"
+            cursor.execute(query)
+            self.database = new_database
+            cursor.close()
+            print(f"[DB] Cambiado a base de datos: {new_database}")
+            return True
+        except Exception as e:
+            print(f"[DB ERROR] No se pudo cambiar a la base de datos {new_database}: {e}")
+            return False
 
     def connect(self):
         """Establece la conexión a la base de datos y muestra el flujo en consola"""
@@ -71,20 +132,36 @@ class DatabaseConnection:
                     f"Trusted_Connection=yes;"
                 )
             else:
-                connection_string = (
+                # String de conexión real (con contraseña)
+                real_connection_string = (
                     f"DRIVER={{{self.driver}}};"
                     f"SERVER={self.server};"
                     f"DATABASE={self.database};"
-                    f"UID={self.username};PWD=******;"  # No mostrar la contraseña real
+                    f"UID={self.username};"
+                    f"PWD={self.password};"
+                    f"TrustServerCertificate=yes;"
                 )
-            print(f"[DB] String de conexión: {connection_string}")
-            self._connection = pyodbc.connect(connection_string)
-            print("[DB] Conexión exitosa ✔️\n")
+                # String para mostrar (sin contraseña)
+                display_connection_string = (
+                    f"DRIVER={{{self.driver}}};"
+                    f"SERVER={self.server};"
+                    f"DATABASE={self.database};"
+                    f"UID={self.username};"
+                    f"PWD=******;"
+                    f"TrustServerCertificate=yes;"
+                )
+            if self.trusted:
+                print(f"[DB] String de conexión: {connection_string}")
+                self._connection = pyodbc.connect(connection_string)
+            else:
+                print(f"[DB] String de conexión: {display_connection_string}")
+                self._connection = pyodbc.connect(real_connection_string)
+            print("[DB] Conexión exitosa OK\n")
             return True
         except Exception as e:
             print(f"[DB ERROR] No se pudo conectar: {e}")
             self._connection = None
-            print("[DB] ❌ Error al intentar conectar.\n")
+            print("[DB] ERROR: Error al intentar conectar.\n")
             return False
 
     def disconnect(self):
@@ -144,23 +221,76 @@ class DatabaseConnection:
             return False
 
 
+# Singleton para conexiones reutilizables
+class SmartDatabaseConnection:
+    """Conexión inteligente que permite cambiar de base de datos dinámicamente"""
+    
+    _instance = None
+    _connection_obj = None
+    
+    def __new__(cls):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+        return cls._instance
+    
+    def get_connection(self, database: str, auto_connect: bool = True) -> DatabaseConnection:
+        """
+        Obtiene una conexión a la base de datos especificada
+        
+        Args:
+            database: Nombre de la base de datos
+            auto_connect: Si debe conectar automáticamente
+            
+        Returns:
+            Objeto DatabaseConnection configurado para la base de datos
+        """
+        if self._connection_obj is None:
+            self._connection_obj = DatabaseConnection(database=database, auto_connect=auto_connect)
+        elif self._connection_obj.database != database:
+            # Cambiar a la nueva base de datos
+            self._connection_obj.switch_database(database)
+        elif not self._connection_obj._connection and auto_connect:
+            # Reconectar si no hay conexión activa
+            self._connection_obj.connect()
+            
+        return self._connection_obj
+    
+    def disconnect(self):
+        """Desconecta la conexión actual"""
+        if self._connection_obj:
+            self._connection_obj.disconnect()
+            self._connection_obj = None
+
+# Instancia global del gestor de conexiones
+_db_manager = SmartDatabaseConnection()
+
+def get_inventario_connection(auto_connect: bool = True) -> DatabaseConnection:
+    """Obtiene conexión a la base de datos de inventario"""
+    return _db_manager.get_connection(DB_INVENTARIO, auto_connect)
+
+def get_users_connection(auto_connect: bool = True) -> DatabaseConnection:
+    """Obtiene conexión a la base de datos de usuarios"""
+    return _db_manager.get_connection(DB_USERS, auto_connect)
+
+def get_auditoria_connection(auto_connect: bool = True) -> DatabaseConnection:
+    """Obtiene conexión a la base de datos de auditoría"""
+    return _db_manager.get_connection(DB_AUDITORIA, auto_connect)
+
+# Clases de compatibilidad (mantener para no romper código existente)
 class InventarioDatabaseConnection(DatabaseConnection):
     """Conexión específica para el módulo de inventario"""
+    def __init__(self, auto_connect: bool = False):
+        super().__init__(database=DB_INVENTARIO, auto_connect=auto_connect)
 
-    def __init__(self):
-        super().__init__(database=DB_INVENTARIO)
-
-
-# Clase para conexión a la base de datos de usuarios
 class UsersDatabaseConnection(DatabaseConnection):
-    def __init__(self):
-        super().__init__(database=DB_USERS)
+    """Conexión específica para el módulo de usuarios"""
+    def __init__(self, auto_connect: bool = False):
+        super().__init__(database=DB_USERS, auto_connect=auto_connect)
 
-
-# Clase para conexión a la base de datos de auditoría
 class AuditoriaDatabaseConnection(DatabaseConnection):
-    def __init__(self):
-        super().__init__(database=DB_AUDITORIA)
+    """Conexión específica para el módulo de auditoría"""
+    def __init__(self, auto_connect: bool = False):
+        super().__init__(database=DB_AUDITORIA, auto_connect=auto_connect)
 
     def get_productos(self) -> list:
         """Obtiene lista de productos del inventario"""

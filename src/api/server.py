@@ -266,10 +266,10 @@ class RexusAPI:
                     where_clause = "WHERE categoria = ?" if categoria else ""
                     params = (categoria,) if categoria else ()
                     
-                    query = f"""
+                    query = """
                         SELECT id, codigo, descripcion, cantidad, precio, categoria
                         FROM inventario
-                        {where_clause}
+                        """ + where_clause + """
                         ORDER BY codigo
                         OFFSET ? ROWS
                         FETCH NEXT ? ROWS ONLY
@@ -289,7 +289,8 @@ class RexusAPI:
                         ))
                     
                     # Count total
-                    count_query = f"SELECT COUNT(*) FROM inventario {where_clause}"
+                    # Use secure string concatenation instead of f-string
+                    count_query = "SELECT COUNT(*) FROM inventario " + where_clause
                     cursor = conn.execute(count_query, params)
                     total = cursor.fetchone()[0]
                 

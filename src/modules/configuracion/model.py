@@ -136,8 +136,9 @@ class ConfiguracionModel:
                 return
 
             # Crear tabla con estructura simple
-            cursor.execute(f"""
-                CREATE TABLE {self.tabla_configuracion} (
+            # Use secure string concatenation for table creation
+            create_table_query = """
+                CREATE TABLE """ + self.tabla_configuracion + """ (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     clave VARCHAR(100) UNIQUE NOT NULL,
                     valor VARCHAR(500),
@@ -147,6 +148,8 @@ class ConfiguracionModel:
                     activo BIT DEFAULT 1,
                     fecha_creacion DATETIME DEFAULT GETDATE(),
                     fecha_modificacion DATETIME DEFAULT GETDATE()
+                )"""
+            cursor.execute(create_table_query
                 )
             """)
 
@@ -168,7 +171,7 @@ class ConfiguracionModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si ya hay configuraciones
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion}")
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_configuracion)
             count = cursor.fetchone()[0]
 
             if count == 0:
@@ -179,8 +182,8 @@ class ConfiguracionModel:
                     tipo_dato = self._obtener_tipo_dato_por_valor(valor)
 
                     cursor.execute(
-                        f"""
-                        INSERT INTO {self.tabla_configuracion} 
+                        """
+                        INSERT INTO """ + self.tabla_configuracion + """ 
                         (clave, valor, descripcion, tipo, categoria)
                         VALUES (?, ?, ?, ?, ?)
                     """,
@@ -227,7 +230,7 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
-                f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1"
+                "SELECT clave, valor FROM " + self.tabla_configuracion + " WHERE activo = 1"
             )
 
             self.config_cache = {}
@@ -289,7 +292,7 @@ class ConfiguracionModel:
 
                 # Verificar si existe
                 cursor.execute(
-                    f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?",
+                    "SELECT COUNT(*) FROM " + self.tabla_configuracion + " WHERE clave = ?",
                     (clave,),
                 )
                 existe = cursor.fetchone()[0] > 0
@@ -297,8 +300,8 @@ class ConfiguracionModel:
                 if existe:
                     # Actualizar
                     cursor.execute(
-                        f"""
-                        UPDATE {self.tabla_configuracion}
+                        """
+                        UPDATE """ + self.tabla_configuracion + """
                         SET valor = ?, fecha_modificacion = GETDATE()
                         WHERE clave = ?
                     """,
@@ -311,8 +314,8 @@ class ConfiguracionModel:
                     tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
 
                     cursor.execute(
-                        f"""
-                        INSERT INTO {self.tabla_configuracion}
+                        """
+                        INSERT INTO """ + self.tabla_configuracion + """
                         (clave, valor, descripcion, tipo, categoria)
                         VALUES (?, ?, ?, ?, ?)
                     """,
@@ -357,9 +360,9 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
-                f"""
+                """
                 SELECT clave, valor, descripcion, tipo
-                FROM {self.tabla_configuracion}
+                FROM """ + self.tabla_configuracion + """
                 WHERE categoria = ? AND activo = 1
                 ORDER BY clave
             """,
@@ -395,10 +398,10 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT clave, valor, descripcion, tipo, categoria, 
                        fecha_modificacion
-                FROM {self.tabla_configuracion}
+                FROM """ + self.tabla_configuracion + """
                 WHERE activo = 1
                 ORDER BY categoria, clave
             """)
