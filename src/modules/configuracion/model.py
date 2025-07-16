@@ -131,38 +131,36 @@ class ConfiguracionModel:
             return
             
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             
+            # Verificar si la tabla existe
+            cursor.execute("SELECT * FROM sysobjects WHERE name=? AND xtype='U'", (self.tabla_configuracion,))
+            if cursor.fetchone():
+                print("[CONFIGURACION] Tabla de configuración ya existe")
+                return
+            
+            # Crear tabla con estructura simple
             cursor.execute(f"""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_configuracion}' AND xtype='U')
                 CREATE TABLE {self.tabla_configuracion} (
                     id INT IDENTITY(1,1) PRIMARY KEY,
-                    clave NVARCHAR(100) UNIQUE NOT NULL,
-                    valor NTEXT,
-                    descripcion NVARCHAR(255),
-                    tipo_dato NVARCHAR(20) NOT NULL DEFAULT 'string',
-                    categoria NVARCHAR(50) NOT NULL DEFAULT 'SISTEMA',
-                    es_publica BIT NOT NULL DEFAULT 0,
-                    es_editable BIT NOT NULL DEFAULT 1,
-                    valor_por_defecto NTEXT,
-                    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    fecha_modificacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    usuario_modificacion NVARCHAR(50),
-                    activo BIT NOT NULL DEFAULT 1
+                    clave VARCHAR(100) UNIQUE NOT NULL,
+                    valor VARCHAR(500),
+                    descripcion VARCHAR(255),
+                    tipo VARCHAR(50) DEFAULT 'STRING',
+                    categoria VARCHAR(50) DEFAULT 'GENERAL',
+                    activo BIT DEFAULT 1,
+                    fecha_creacion DATETIME DEFAULT GETDATE(),
+                    fecha_modificacion DATETIME DEFAULT GETDATE()
                 )
             """)
             
-            # Crear índices
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_config_clave ON {self.tabla_configuracion}(clave)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_config_categoria ON {self.tabla_configuracion}(categoria)")
-            
-            self.db_connection.connection.commit()
-            print("[CONFIGURACION] Tabla de configuración creada/verificada")
+            self.db_connection.commit()
+            print("[CONFIGURACION] Tabla de configuración creada")
             
         except Exception as e:
             print(f"[ERROR CONFIGURACION] Error creando tabla: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback()
+                self.db_connection.rollback()
     
     def _cargar_configuracion_inicial(self):
         """Carga la configuración inicial en la base de datos."""
@@ -171,7 +169,7 @@ class ConfiguracionModel:
             return
             
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             
             # Verificar si ya hay configuraciones
             cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion}")
@@ -186,11 +184,11 @@ class ConfiguracionModel:
                     
                     cursor.execute(f"""
                         INSERT INTO {self.tabla_configuracion} 
-                        (clave, valor, descripcion, tipo_dato, categoria, valor_por_defecto)
-                        VALUES (?, ?, ?, ?, ?, ?)
-                    """, (clave, valor, descripcion, tipo_dato, categoria, valor))
+                        (clave, valor, descripcion, tipo, categoria)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (clave, valor, descripcion, tipo_dato, categoria))
                 
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
                 print("[CONFIGURACION] Configuración inicial cargada")
             
             # Cargar configuración en cache
@@ -199,7 +197,7 @@ class ConfiguracionModel:
         except Exception as e:
             print(f"[ERROR CONFIGURACION] Error cargando configuración inicial: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback()
+                self.db_connection.rollback()
     
     def _cargar_desde_archivo(self):
         """Carga configuración desde archivo JSON."""
@@ -228,7 +226,7 @@ class ConfiguracionModel:
             return
             
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute(f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1")
             
             self.config_cache = {}
@@ -284,7 +282,7 @@ class ConfiguracionModel:
             valor_str = str(valor)
             
             if self.db_connection:
-                cursor = self.db_connection.connection.cursor()
+                cursor = self.db_connection.cursor()
                 
                 # Verificar si existe
                 cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?", (clave,))
@@ -294,9 +292,9 @@ class ConfiguracionModel:
                     # Actualizar
                     cursor.execute(f"""
                         UPDATE {self.tabla_configuracion}
-                        SET valor = ?, fecha_modificacion = GETDATE(), usuario_modificacion = ?
+                        SET valor = ?, fecha_modificacion = GETDATE()
                         WHERE clave = ?
-                    """, (valor_str, usuario, clave))
+                    """, (valor_str, clave))
                 else:
                     # Insertar
                     categoria = self._obtener_categoria_por_clave(clave)
@@ -305,11 +303,11 @@ class ConfiguracionModel:
                     
                     cursor.execute(f"""
                         INSERT INTO {self.tabla_configuracion}
-                        (clave, valor, descripcion, tipo_dato, categoria, valor_por_defecto, usuario_modificacion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?)
-                    """, (clave, valor_str, descripcion, tipo_dato, categoria, valor_str, usuario))
+                        (clave, valor, descripcion, tipo, categoria)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, (clave, valor_str, descripcion, tipo_dato, categoria))
                 
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
             
             # Actualizar cache
             self.config_cache[clave] = valor_str
@@ -323,7 +321,7 @@ class ConfiguracionModel:
         except Exception as e:
             print(f"[ERROR CONFIGURACION] Error estableciendo valor: {e}")
             if self.db_connection:
-                self.db_connection.connection.rollback()
+                self.db_connection.rollback()
             return False, f"Error estableciendo configuración: {str(e)}"
     
     def obtener_configuracion_por_categoria(self, categoria: str) -> Dict[str, Any]:
@@ -342,9 +340,9 @@ class ConfiguracionModel:
                    if self._obtener_categoria_por_clave(k) == categoria}
         
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute(f"""
-                SELECT clave, valor, descripcion, tipo_dato, es_editable
+                SELECT clave, valor, descripcion, tipo
                 FROM {self.tabla_configuracion}
                 WHERE categoria = ? AND activo = 1
                 ORDER BY clave
@@ -355,8 +353,8 @@ class ConfiguracionModel:
                 configs[row[0]] = {
                     'valor': row[1],
                     'descripcion': row[2],
-                    'tipo_dato': row[3],
-                    'es_editable': bool(row[4])
+                    'tipo': row[3],
+                    'editable': True
                 }
             
             return configs
@@ -376,10 +374,10 @@ class ConfiguracionModel:
             return self._get_configuraciones_demo()
         
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute(f"""
-                SELECT clave, valor, descripcion, tipo_dato, categoria, 
-                       es_editable, fecha_modificacion, usuario_modificacion
+                SELECT clave, valor, descripcion, tipo, categoria, 
+                       fecha_modificacion
                 FROM {self.tabla_configuracion}
                 WHERE activo = 1
                 ORDER BY categoria, clave

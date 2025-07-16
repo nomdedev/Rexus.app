@@ -14,7 +14,8 @@
       "Bash(python:*)",
       "Bash(git add:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(del:*)"
     ],
     "deny": []
   }

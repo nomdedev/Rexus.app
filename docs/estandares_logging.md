@@ -1,2 +1,0 @@
-# Estándares de Logging
-
