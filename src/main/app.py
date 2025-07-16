@@ -691,22 +691,10 @@ class MainWindow(QMainWindow):
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando los archivos reales"""
         try:
-            from src.modules.usuarios.view import UsuariosView
-            from src.modules.usuarios.model import UsuariosModel
-            from src.modules.usuarios.controller import UsuariosController
-            from src.core.database import UsersDatabaseConnection
+            from src.modules.usuarios.view_admin import UsersAdminView
             
-            # Crear conexión a la base de datos
-            try:
-                db_connection = UsersDatabaseConnection()
-            except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
-                db_connection = None
-            
-            # Crear modelo, vista y controlador
-            model = UsuariosModel(db_connection)
-            view = UsuariosView()
-            controller = UsuariosController(model, view)
+            # Crear vista de administración de usuarios
+            view = UsersAdminView()
             
             return view
             

@@ -128,6 +128,9 @@ class InventarioView(QWidget):
         # Pestaña 3: Disponibilidad
         self.create_disponibilidad_tab()
 
+        # Pestaña 4: Estadísticas
+        self.create_estadisticas_tab()
+
     def create_inventario_tab(self):
         """Crea la pestaña de inventario general."""
         inventario_widget = QWidget()
@@ -159,52 +162,6 @@ class InventarioView(QWidget):
 
         filtros_layout.addStretch()
         layout.addWidget(filtros_frame)
-
-        # Panel de estadísticas
-        stats_frame = QGroupBox("📊 Estadísticas Generales")
-        stats_layout = QHBoxLayout(stats_frame)
-
-        # Crear widgets de estadísticas
-        self.stats_widgets = {}
-        stats_info = [
-            ("total_productos", "Total Productos", "#3498db"),
-            ("valor_total", "Valor Total", "#e74c3c"),
-            ("stock_bajo", "Stock Bajo", "#f39c12"),
-            ("productos_activos", "Productos Activos", "#2ecc71"),
-        ]
-
-        for key, label, color in stats_info:
-            stat_widget = QFrame()
-            stat_widget.setStyleSheet(f"""
-                QFrame {{
-                    background-color: {color};
-                    border-radius: 8px;
-                    padding: 15px;
-                    margin: 5px;
-                }}
-                QLabel {{
-                    color: white;
-                    font-weight: bold;
-                }}
-            """)
-
-            stat_layout = QVBoxLayout(stat_widget)
-
-            value_label = QLabel("0")
-            value_label.setStyleSheet("font-size: 20px; font-weight: bold;")
-            value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            desc_label = QLabel(label)
-            desc_label.setStyleSheet("font-size: 11px;")
-            desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            stat_layout.addWidget(value_label)
-            stat_layout.addWidget(desc_label)
-
-            self.stats_widgets[key] = value_label
-            stats_layout.addWidget(stat_widget)
-
-        layout.addWidget(stats_frame)
 
         # Panel de acciones
         acciones_frame = QGroupBox("⚡ Acciones Rápidas")
@@ -316,49 +273,6 @@ class InventarioView(QWidget):
         selector_layout.addStretch()
         control_layout.addLayout(selector_layout)
 
-        # Estadísticas de reservas
-        stats_layout = QHBoxLayout()
-
-        self.stats_reservas = {}
-        stats_info = [
-            ("total_reservas", "Total Reservas", "#3498db"),
-            ("valor_reservado", "Valor Reservado", "#e74c3c"),
-            ("productos_reservados", "Productos Reservados", "#2ecc71"),
-            ("stock_disponible", "Stock Disponible", "#f39c12"),
-        ]
-
-        for key, label, color in stats_info:
-            stat_widget = QFrame()
-            stat_widget.setStyleSheet(f"""
-                QFrame {{
-                    background-color: {color};
-                    border-radius: 8px;
-                    padding: 15px;
-                    margin: 5px;
-                }}
-                QLabel {{
-                    color: white;
-                    font-weight: bold;
-                }}
-            """)
-
-            stat_layout = QVBoxLayout(stat_widget)
-
-            value_label = QLabel("0")
-            value_label.setStyleSheet("font-size: 20px; font-weight: bold;")
-            value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            desc_label = QLabel(label)
-            desc_label.setStyleSheet("font-size: 11px;")
-            desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            stat_layout.addWidget(value_label)
-            stat_layout.addWidget(desc_label)
-
-            self.stats_reservas[key] = value_label
-            stats_layout.addWidget(stat_widget)
-
-        control_layout.addLayout(stats_layout)
         layout.addWidget(control_frame)
 
         # Tabla de reservas
@@ -505,6 +419,145 @@ class InventarioView(QWidget):
         self.disponibilidad_table.setStyleSheet(self.reservas_table.styleSheet())
 
         table_layout.addWidget(self.disponibilidad_table)
+
+    def create_estadisticas_tab(self):
+        """Crea la pestaña de estadísticas separada."""
+        estadisticas_widget = QWidget()
+        layout = QVBoxLayout(estadisticas_widget)
+
+        # Título
+        title_label = QLabel("📊 Estadísticas del Inventario")
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+        """)
+        layout.addWidget(title_label)
+
+        # Panel de estadísticas generales
+        stats_frame = QGroupBox("📈 Estadísticas Generales")
+        stats_layout = QHBoxLayout(stats_frame)
+
+        # Crear widgets de estadísticas
+        self.stats_widgets = {}
+        stats_info = [
+            ("total_productos", "Total Productos", "#3498db"),
+            ("valor_total", "Valor Total", "#e74c3c"),
+            ("stock_bajo", "Stock Bajo", "#f39c12"),
+            ("productos_activos", "Productos Activos", "#2ecc71"),
+        ]
+
+        for key, label, color in stats_info:
+            stat_widget = QFrame()
+            stat_widget.setStyleSheet(f"""
+                QFrame {{
+                    background-color: {color};
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 5px;
+                }}
+                QLabel {{
+                    color: white;
+                    font-weight: bold;
+                }}
+            """)
+
+            stat_layout = QVBoxLayout(stat_widget)
+
+            value_label = QLabel("0")
+            value_label.setStyleSheet("font-size: 20px; font-weight: bold;")
+            value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            desc_label = QLabel(label)
+            desc_label.setStyleSheet("font-size: 11px;")
+            desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            stat_layout.addWidget(value_label)
+            stat_layout.addWidget(desc_label)
+
+            self.stats_widgets[key] = value_label
+            stats_layout.addWidget(stat_widget)
+
+        layout.addWidget(stats_frame)
+
+        # Panel de estadísticas de reservas
+        reservas_stats_frame = QGroupBox("🏗️ Estadísticas de Reservas")
+        reservas_stats_layout = QHBoxLayout(reservas_stats_frame)
+
+        # Crear widgets de estadísticas de reservas
+        self.stats_reservas = {}
+        reservas_stats_info = [
+            ("total_reservas", "Total Reservas", "#3498db"),
+            ("valor_reservado", "Valor Reservado", "#e74c3c"),
+            ("productos_reservados", "Productos Reservados", "#2ecc71"),
+            ("stock_disponible", "Stock Disponible", "#f39c12"),
+        ]
+
+        for key, label, color in reservas_stats_info:
+            stat_widget = QFrame()
+            stat_widget.setStyleSheet(f"""
+                QFrame {{
+                    background-color: {color};
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 5px;
+                }}
+                QLabel {{
+                    color: white;
+                    font-weight: bold;
+                }}
+            """)
+
+            stat_layout = QVBoxLayout(stat_widget)
+
+            value_label = QLabel("0")
+            value_label.setStyleSheet("font-size: 20px; font-weight: bold;")
+            value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            desc_label = QLabel(label)
+            desc_label.setStyleSheet("font-size: 11px;")
+            desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+
+            stat_layout.addWidget(value_label)
+            stat_layout.addWidget(desc_label)
+
+            self.stats_reservas[key] = value_label
+            reservas_stats_layout.addWidget(stat_widget)
+
+        layout.addWidget(reservas_stats_frame)
+
+        # Panel de gráficos o información adicional
+        info_frame = QGroupBox("📋 Información Adicional")
+        info_layout = QVBoxLayout(info_frame)
+
+        info_text = QLabel("""
+        📊 Resumen de Inventario:
+        
+        • Esta pestaña muestra estadísticas detalladas del inventario
+        • Las estadísticas se actualizan automáticamente
+        • Puede ver el rendimiento general del inventario
+        • Monitoreo de stock bajo y productos críticos
+        
+        🔄 Última actualización: Al cargar el módulo
+        """)
+        info_text.setStyleSheet("""
+            QLabel {
+                background-color: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                color: #495057;
+                font-size: 12px;
+            }
+        """)
+        info_layout.addWidget(info_text)
+
+        layout.addWidget(info_frame)
+        layout.addStretch()
+
+        self.tabs.addTab(estadisticas_widget, "📊 Estadísticas")
 
     def cargar_inventario_en_tabla(self, productos):
         """Carga los productos en la tabla de inventario."""

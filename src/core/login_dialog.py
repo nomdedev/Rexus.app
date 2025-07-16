@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
-from src.core.security import get_security_manager
+from src.core.auth import get_auth_manager
 
 
 class LoginDialog(QDialog):
@@ -34,7 +34,7 @@ class LoginDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.security_manager = get_security_manager()
+        self.auth_manager = get_auth_manager()
         self.init_ui()
 
     def init_ui(self):
@@ -340,9 +340,10 @@ class LoginDialog(QDialog):
 
         # Intentar login
         try:
-            if self.security_manager and self.security_manager.login(username, password):
+            user = self.auth_manager.authenticate_user(username, password)
+            if user:
                 # Login exitoso
-                role = self.security_manager.get_current_role()
+                role = user['role']
                 self.login_successful.emit(username, role)
                 self.accept()
             else:

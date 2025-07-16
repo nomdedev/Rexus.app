@@ -392,3 +392,187 @@ class VidriosModel:
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error buscando vidrios: {e}")
             return []
+
+    def crear_vidrio(self, datos_vidrio):
+        """
+        Crea un nuevo vidrio en la base de datos.
+
+        Args:
+            datos_vidrio (dict): Datos del vidrio a crear
+
+        Returns:
+            int: ID del vidrio creado o None si falla
+        """
+        if not self.db_connection:
+            return None
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+
+            query = f"""
+                INSERT INTO {self.tabla_vidrios}
+                (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
+                 color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
+            """
+
+            cursor.execute(query, (
+                datos_vidrio.get('codigo', ''),
+                datos_vidrio.get('descripcion', ''),
+                datos_vidrio.get('tipo', ''),
+                datos_vidrio.get('espesor', 0),
+                datos_vidrio.get('proveedor', ''),
+                datos_vidrio.get('precio_m2', 0),
+                datos_vidrio.get('color', ''),
+                datos_vidrio.get('tratamiento', ''),
+                datos_vidrio.get('dimensiones_disponibles', ''),
+                datos_vidrio.get('estado', 'ACTIVO'),
+                datos_vidrio.get('observaciones', '')
+            ))
+
+            # Obtener ID del vidrio creado
+            cursor.execute("SELECT @@IDENTITY")
+            vidrio_id = cursor.fetchone()[0]
+
+            self.db_connection.connection.commit()
+            print(f"[VIDRIOS] Vidrio creado con ID: {vidrio_id}")
+            return vidrio_id
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error creando vidrio: {e}")
+            if self.db_connection:
+                self.db_connection.connection.rollback()
+            return None
+
+    def actualizar_vidrio(self, vidrio_id, datos_vidrio):
+        """
+        Actualiza un vidrio existente.
+
+        Args:
+            vidrio_id (int): ID del vidrio a actualizar
+            datos_vidrio (dict): Nuevos datos del vidrio
+
+        Returns:
+            bool: True si fue exitoso
+        """
+        if not self.db_connection:
+            return False
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+
+            query = f"""
+                UPDATE {self.tabla_vidrios}
+                SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
+                    precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
+                    estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
+                WHERE id = ?
+            """
+
+            cursor.execute(query, (
+                datos_vidrio.get('codigo', ''),
+                datos_vidrio.get('descripcion', ''),
+                datos_vidrio.get('tipo', ''),
+                datos_vidrio.get('espesor', 0),
+                datos_vidrio.get('proveedor', ''),
+                datos_vidrio.get('precio_m2', 0),
+                datos_vidrio.get('color', ''),
+                datos_vidrio.get('tratamiento', ''),
+                datos_vidrio.get('dimensiones_disponibles', ''),
+                datos_vidrio.get('estado', 'ACTIVO'),
+                datos_vidrio.get('observaciones', ''),
+                vidrio_id
+            ))
+
+            self.db_connection.connection.commit()
+            print(f"[VIDRIOS] Vidrio {vidrio_id} actualizado exitosamente")
+            return True
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error actualizando vidrio: {e}")
+            if self.db_connection:
+                self.db_connection.connection.rollback()
+            return False
+
+    def eliminar_vidrio(self, vidrio_id):
+        """
+        Elimina un vidrio (marca como inactivo).
+
+        Args:
+            vidrio_id (int): ID del vidrio a eliminar
+
+        Returns:
+            bool: True si fue exitoso
+        """
+        if not self.db_connection:
+            return False
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+
+            # Verificar si el vidrio está asignado a alguna obra
+            cursor.execute(
+                f"SELECT COUNT(*) FROM {self.tabla_vidrios_obra} WHERE vidrio_id = ?",
+                (vidrio_id,)
+            )
+            
+            if cursor.fetchone()[0] > 0:
+                print(f"[ADVERTENCIA] El vidrio {vidrio_id} está asignado a obras, se marcará como inactivo")
+                # Marcar como inactivo en lugar de eliminar
+                query = f"""
+                    UPDATE {self.tabla_vidrios}
+                    SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
+                    WHERE id = ?
+                """
+                cursor.execute(query, (vidrio_id,))
+            else:
+                # Eliminar completamente si no está asignado
+                query = f"DELETE FROM {self.tabla_vidrios} WHERE id = ?"
+                cursor.execute(query, (vidrio_id,))
+
+            self.db_connection.connection.commit()
+            print(f"[VIDRIOS] Vidrio {vidrio_id} eliminado exitosamente")
+            return True
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error eliminando vidrio: {e}")
+            if self.db_connection:
+                self.db_connection.connection.rollback()
+            return False
+
+    def obtener_vidrio_por_id(self, vidrio_id):
+        """
+        Obtiene un vidrio específico por su ID.
+
+        Args:
+            vidrio_id (int): ID del vidrio
+
+        Returns:
+            dict: Datos del vidrio o None si no existe
+        """
+        if not self.db_connection:
+            return None
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+
+            query = f"""
+                SELECT
+                    id, codigo, descripcion, tipo, espesor, proveedor,
+                    precio_m2, color, tratamiento, dimensiones_disponibles,
+                    estado, observaciones, fecha_actualizacion
+                FROM {self.tabla_vidrios}
+                WHERE id = ?
+            """
+
+            cursor.execute(query, (vidrio_id,))
+            columnas = [column[0] for column in cursor.description]
+            resultado = cursor.fetchone()
+
+            if resultado:
+                return dict(zip(columnas, resultado))
+            return None
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
+            return None

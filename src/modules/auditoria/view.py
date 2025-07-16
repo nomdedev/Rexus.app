@@ -260,13 +260,16 @@ class AuditoriaView(QWidget):
         resumen_group = QGroupBox("📊 Resumen General (últimos 30 días)")
         resumen_layout = QHBoxLayout(resumen_group)
 
-        # Tarjetas de estadísticas
+        # Tarjetas de estadísticas pequeñas
         self.card_total = self._create_stat_card("Total Acciones", "0", "#3498db")
         self.card_criticas = self._create_stat_card("Acciones Críticas", "0", "#e74c3c")
         self.card_fallidas = self._create_stat_card("Acciones Fallidas", "0", "#f39c12")
 
+        # Agregar cards con espaciado
         resumen_layout.addWidget(self.card_total)
+        resumen_layout.addSpacing(10)
         resumen_layout.addWidget(self.card_criticas)
+        resumen_layout.addSpacing(10)
         resumen_layout.addWidget(self.card_fallidas)
         resumen_layout.addStretch()
 
@@ -308,41 +311,49 @@ class AuditoriaView(QWidget):
         return widget
 
     def _create_stat_card(self, title, value, color):
-        """Crea una tarjeta de estadística."""
+        """Crea una tarjeta de estadística pequeña 40x40px."""
         card = QFrame()
         card.setFrameStyle(QFrame.Shape.Box)
+        card.setFixedSize(40, 40)
         card.setStyleSheet(f"""
             QFrame {{
                 border: 2px solid {color};
-                border-radius: 10px;
+                border-radius: 6px;
                 background-color: white;
-                margin: 5px;
+                margin: 2px;
             }}
             QLabel {{
                 border: none;
                 background: transparent;
+                margin: 0px;
+                padding: 0px;
             }}
         """)
 
         layout = QVBoxLayout(card)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.setContentsMargins(2, 2, 2, 2)
+        layout.setSpacing(0)
 
-        # Título
-        title_label = QLabel(title)
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet(
-            f"color: {color}; font-weight: bold; font-size: 12px;"
-        )
-        layout.addWidget(title_label)
-
-        # Valor
+        # Valor prominente
         value_label = QLabel(value)
         value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         value_label.setStyleSheet(
-            f"color: {color}; font-weight: bold; font-size: 24px;"
+            f"color: {color}; font-weight: bold; font-size: 12px;"
         )
         value_label.setObjectName("valueLabel")
         layout.addWidget(value_label)
+
+        # Título más pequeño
+        title_label = QLabel(title[:3])  # Solo primeras 3 letras
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        title_label.setStyleSheet(
+            f"color: {color}; font-weight: normal; font-size: 7px;"
+        )
+        layout.addWidget(title_label)
+
+        # Tooltip con el título completo
+        card.setToolTip(title)
 
         return card
 
