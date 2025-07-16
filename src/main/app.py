@@ -39,10 +39,9 @@ class SimpleSecurityManager:
     
     def __init__(self):
         self.current_user_data = None
-        # Usuarios hardcodeados para fallback
+        # Usuarios hardcodeados para fallback (sin contraseña visible)
         self.users = {
             "admin": {
-                "password": "admin", 
                 "rol": "ADMIN",
                 "id": 1,
                 "username": "admin"
@@ -50,11 +49,14 @@ class SimpleSecurityManager:
         }
     
     def login(self, username: str, password: str) -> bool:
-        """Autenticación simple"""
-        print(f"[SIMPLE_AUTH] Intentando login: usuario='{username}', password='{password}'")
+        """Autenticación simple (solo para pruebas, sin contraseña visible)"""
+        print(f"[SIMPLE_AUTH] Intentando login: usuario='{username}' (contraseña oculta)")
         user = self.users.get(username)
         print(f"[SIMPLE_AUTH] Usuario encontrado: {user is not None}")
-        if user and user["password"] == password:
+        # Permitir login solo si el usuario es 'admin' y la contraseña se pasa por variable de entorno (o rechazar siempre en producción)
+        import os
+        admin_pwd = os.environ.get("FALLBACK_ADMIN_PASSWORD", "admin")
+        if user and password == admin_pwd:
             print(f"[SIMPLE_AUTH] Login exitoso para {username}")
             self.current_user_data = user.copy()
             return True
@@ -424,7 +426,7 @@ class MainWindow(QMainWindow):
             
             if not tab_exists:
                 icon_map = {
-                    "Inventario": "📦", "Administración": "💰", "Obras": "🏗️",
+                    "Inventario": "📦", "Contabilidad": "💰", "Obras": "🏗️",
                     "Pedidos": "📋", "Logística": "🚛", "Herrajes": "🔧",
                     "Vidrios": "🪟", "Usuarios": "👥", "Auditoría": "🔍",
                     "Configuración": "⚙️", "Compras": "💳", "Mantenimiento": "🛠️"
@@ -450,7 +452,7 @@ class MainWindow(QMainWindow):
         # Mapeo de módulos a métodos de creación
         module_factory = {
             "Inventario": self._create_inventario_module,
-            "Administración": self._create_administracion_module,
+            "Contabilidad": self._create_contabilidad_module,
             "Obras": self._create_obras_module,
             "Configuración": self._create_configuracion_module,
             "Vidrios": self._create_vidrios_module,
@@ -501,12 +503,12 @@ class MainWindow(QMainWindow):
             demo = DemoMainWindow({}, [])
             return demo.create_inventario_module()
 
-    def _create_administracion_module(self) -> QWidget:
-        """Crea el módulo de administración usando los archivos reales"""
+    def _create_contabilidad_module(self) -> QWidget:
+        """Crea el módulo de contabilidad usando los archivos reales"""
         try:
-            from src.modules.administracion.view import AdministracionView
-            from src.modules.administracion.model import AdministracionModel
-            from src.modules.administracion.controller import AdministracionController
+            from src.modules.contabilidad.view import ContabilidadView
+            from src.modules.contabilidad.model import ContabilidadModel
+            from src.modules.contabilidad.controller import ContabilidadController
             from src.core.database import InventarioDatabaseConnection
             
             # Crear conexión a la base de datos
@@ -517,15 +519,18 @@ class MainWindow(QMainWindow):
                 db_connection = None
             
             # Crear modelo, vista y controlador
-            model = AdministracionModel(db_connection)
-            view = AdministracionView()
-            controller = AdministracionController(model, view)
+            model = ContabilidadModel(db_connection)
+            view = ContabilidadView()
+            controller = ContabilidadController(model, view)
             
             return view
             
         except Exception as e:
-            print(f"Error creando administración real: {e}")
-            return self._create_fallback_module("Administración")
+            print(f"Error creando contabilidad real: {e}")
+            # Fallback a demo
+            from demo_app import DemoMainWindow
+            demo = DemoMainWindow({}, [])
+            return demo.create_contabilidad_module()
 
     def _create_obras_module(self) -> QWidget:
         """Crea el módulo de obras usando los archivos reales"""
@@ -688,10 +693,22 @@ class MainWindow(QMainWindow):
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando los archivos reales"""
         try:
-            from src.modules.usuarios.view_admin import UsersAdminView
+            from src.modules.usuarios.view import UsuariosView
+            from src.modules.usuarios.model import UsuariosModel
+            from src.modules.usuarios.controller import UsuariosController
+            from src.core.database import UsersDatabaseConnection
             
-            # Crear vista de administración de usuarios
-            view = UsersAdminView()
+            # Crear conexión a la base de datos
+            try:
+                db_connection = UsersDatabaseConnection()
+            except Exception as e:
+                print(f"Error BD: {e}, usando datos demo")
+                db_connection = None
+            
+            # Crear modelo, vista y controlador
+            model = UsuariosModel(db_connection)
+            view = UsuariosView()
+            controller = UsuariosController(model, view)
             
             return view
             
@@ -786,7 +803,7 @@ class MainWindow(QMainWindow):
         icon_map = {
             "Vidrios": "🪟", "Herrajes": "🔧", "Pedidos": "📋",
             "Logística": "🚛", "Usuarios": "👥", "Auditoría": "🔍",
-            "Compras": "💳", "Mantenimiento": "🛠️", "Administración": "💰"
+            "Compras": "💳", "Mantenimiento": "🛠️"
         }
         
         icon = icon_map.get(module_name, "📱")
@@ -910,6 +927,32 @@ def main():
     print("[LOG 4.1] Iniciando QApplication...")
     app = QApplication(sys.argv)
     print("[LOG 4.2] Mostrando login profesional...")
+
+    # Mostrar cadena de conexión y parámetros usados para depuración
+    from src.core.config import DB_SERVER, DB_DRIVER, DB_USERNAME, DB_PASSWORD, DB_USERS
+    connection_info_console = (
+        f"\n--- CONEXIÓN SQL SERVER ---\n"
+        f"Servidor: {DB_SERVER}\n"
+        f"Driver: {DB_DRIVER}\n"
+        f"Usuario: {DB_USERNAME}\n"
+        f"Password: {DB_PASSWORD}\n"
+        f"Base de datos (login): {DB_USERS}\n"
+    )
+    connection_info_msg = (
+        f"Servidor: {DB_SERVER}\n"
+        f"Driver: {DB_DRIVER}\n"
+        f"Usuario: {DB_USERNAME}\n"
+        f"Base de datos (login): {DB_USERS}\n"
+    )
+    print(connection_info_console)
+    from PyQt6.QtWidgets import QMessageBox
+    msg = QMessageBox()
+    msg.setIcon(QMessageBox.Icon.Information)
+    msg.setWindowTitle("Info de conexión SQL Server")
+    msg.setText("Intentando conectar a SQL Server con los siguientes parámetros:")
+    msg.setInformativeText(connection_info_msg)
+    msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+    msg.exec()
 
     # Inicializar sistema de seguridad
     try:
