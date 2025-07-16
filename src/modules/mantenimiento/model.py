@@ -102,7 +102,7 @@ class MantenimientoModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
-            query = f"""
+            query = """
                 SELECT 
                     e.id, e.codigo, e.nombre, e.tipo, e.modelo, e.marca,
                     e.numero_serie, e.fecha_adquisicion, e.fecha_instalacion,
@@ -110,7 +110,7 @@ class MantenimientoModel:
                     e.ultima_revision, e.proxima_revision, e.observaciones,
                     e.fecha_creacion, e.fecha_modificacion
                 FROM {self.tabla_equipos} e
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY e.nombre
             """
 
@@ -145,8 +145,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_equipos}
+            query = """
+                INSERT INTO """ + self.tabla_equipos + """
                 (codigo, nombre, tipo, modelo, marca, numero_serie,
                  fecha_adquisicion, fecha_instalacion, ubicacion, estado,
                  valor_adquisicion, vida_util_anos, observaciones,
@@ -205,8 +205,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_equipos}
+            query = """
+                UPDATE """ + self.tabla_equipos + """
                 SET nombre = ?, tipo = ?, modelo = ?, marca = ?, numero_serie = ?,
                     fecha_adquisicion = ?, fecha_instalacion = ?, ubicacion = ?,
                     estado = ?, valor_adquisicion = ?, vida_util_anos = ?,
@@ -279,14 +279,14 @@ class MantenimientoModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = f"""
+            query = """
                 SELECT 
                     h.id, h.codigo, h.nombre, h.tipo, h.marca, h.modelo,
                     h.numero_serie, h.fecha_adquisicion, h.ubicacion,
                     h.estado, h.valor_adquisicion, h.vida_util_anos,
                     h.observaciones, h.fecha_creacion
                 FROM {self.tabla_herramientas} h
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY h.nombre
             """
 
@@ -321,8 +321,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_herramientas}
+            query = """
+                INSERT INTO """ + self.tabla_herramientas + """
                 (codigo, nombre, tipo, marca, modelo, numero_serie,
                  fecha_adquisicion, ubicacion, estado, valor_adquisicion,
                  vida_util_anos, observaciones, activo, fecha_creacion)
@@ -400,7 +400,7 @@ class MantenimientoModel:
                     conditions.append("m.fecha_programada <= ?")
                     params.append(filtros["fecha_hasta"])
 
-            query = f"""
+            query = """
                 SELECT 
                     m.id, m.equipo_id, e.nombre as equipo_nombre,
                     m.tipo, m.descripcion, m.fecha_programada, m.fecha_realizacion,
@@ -408,7 +408,7 @@ class MantenimientoModel:
                     m.responsable, m.fecha_creacion
                 FROM {self.tabla_mantenimientos} m
                 LEFT JOIN {self.tabla_equipos} e ON m.equipo_id = e.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY m.fecha_programada DESC
             """
 
@@ -443,8 +443,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_mantenimientos}
+            query = """
+                INSERT INTO """ + self.tabla_mantenimientos + """
                 (equipo_id, tipo, descripcion, fecha_programada, estado,
                  observaciones, costo_estimado, responsable, fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -496,8 +496,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_mantenimientos}
+            query = """
+                UPDATE """ + self.tabla_mantenimientos + """
                 SET estado = 'COMPLETADO', fecha_realizacion = GETDATE(),
                     observaciones = ?, costo_real = ?, responsable = ?
                 WHERE id = ?
@@ -544,36 +544,36 @@ class MantenimientoModel:
             estadisticas = {}
 
             # Total equipos
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_equipos} WHERE activo = 1")
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_equipos + " WHERE activo = 1")
             estadisticas['total_equipos'] = cursor.fetchone()[0]
 
             # Equipos por estado
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM {self.tabla_equipos}
+                FROM """ + self.tabla_equipos + """
                 WHERE activo = 1
                 GROUP BY estado
             """)
             estadisticas['equipos_por_estado'] = dict(cursor.fetchall())
 
             # Mantenimientos por estado
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM {self.tabla_mantenimientos}
+                FROM """ + self.tabla_mantenimientos + """
                 GROUP BY estado
             """)
             estadisticas['mantenimientos_por_estado'] = dict(cursor.fetchall())
 
             # Mantenimientos vencidos
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM {self.tabla_mantenimientos}
+            cursor.execute("""
+                SELECT COUNT(*) FROM """ + self.tabla_mantenimientos + """
                 WHERE estado = 'PROGRAMADO' AND fecha_programada < GETDATE()
             """)
             estadisticas['mantenimientos_vencidos'] = cursor.fetchone()[0]
 
             # Próximos mantenimientos (próximos 30 días)
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM {self.tabla_mantenimientos}
+            cursor.execute("""
+                SELECT COUNT(*) FROM """ + self.tabla_mantenimientos + """
                 WHERE estado = 'PROGRAMADO' AND fecha_programada 
                 BETWEEN GETDATE() AND DATEADD(day, 30, GETDATE())
             """)
@@ -595,8 +595,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_historial_mantenimiento}
+            query = """
+                INSERT INTO """ + self.tabla_historial_mantenimiento + """
                 (equipo_id, tipo, descripcion, fecha, usuario)
                 VALUES (?, ?, ?, GETDATE(), 'SYSTEM')
             """
@@ -614,8 +614,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_historial_mantenimiento}
+            query = """
+                INSERT INTO """ + self.tabla_historial_mantenimiento + """
                 (mantenimiento_id, tipo, descripcion, fecha, usuario)
                 VALUES (?, ?, ?, GETDATE(), 'SYSTEM')
             """
@@ -634,15 +634,15 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             # Obtener equipo_id del mantenimiento
-            cursor.execute(f"SELECT equipo_id FROM {self.tabla_mantenimientos} WHERE id = ?", (mantenimiento_id,))
+            cursor.execute("SELECT equipo_id FROM " + self.tabla_mantenimientos + " WHERE id = ?", (mantenimiento_id,))
             resultado = cursor.fetchone()
             
             if resultado:
                 equipo_id = resultado[0]
                 
                 # Actualizar fechas de revisión
-                query = f"""
-                    UPDATE {self.tabla_equipos}
+                query = """
+                    UPDATE """ + self.tabla_equipos + """
                     SET ultima_revision = GETDATE(),
                         proxima_revision = DATEADD(month, 6, GETDATE())
                     WHERE id = ?

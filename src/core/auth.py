@@ -18,13 +18,7 @@ class AuthManager:
         self.current_role = None
         self.session_active = False
         
-        # Cargar conexión si no se proporciona
-        if not self.db_connection:
-            try:
-                from src.core.database import UsersDatabaseConnection
-                self.db_connection = UsersDatabaseConnection()
-            except:
-                self.db_connection = None
+        # La conexión se creará cuando sea necesaria
     
     def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
         """
@@ -37,8 +31,14 @@ class AuthManager:
         Returns:
             Dict con información del usuario si es válido, None si no
         """
+        # Crear conexión solo cuando se necesite autenticar
         if not self.db_connection:
-            return None
+            try:
+                from src.core.database import UsersDatabaseConnection
+                self.db_connection = UsersDatabaseConnection(auto_connect=True)
+            except Exception as e:
+                print(f"Error conectando a la base de datos para autenticación: {e}")
+                return None
         
         try:
             # Buscar usuario por nombre de usuario
@@ -58,13 +58,18 @@ class AuthManager:
             
             if user_data[2] == password_hash:
                 # Autenticación exitosa
+                nombre = user_data[5] or ''
+                apellido = user_data[6] or ''
+                nombre_completo = f"{nombre} {apellido}".strip()
+                
                 user_info = {
                     'id': user_data[0],
                     'username': user_data[1],
                     'role': user_data[3],
                     'status': user_data[4],
-                    'nombre': user_data[5] or '',
-                    'apellido': user_data[6] or '',
+                    'nombre': nombre,
+                    'apellido': apellido,
+                    'nombre_completo': nombre_completo,
                     'email': user_data[7] or ''
                 }
                 
@@ -150,8 +155,14 @@ class AuthManager:
         Returns:
             True si se creó exitosamente, False si no
         """
+        # Crear conexión si no existe
         if not self.db_connection:
-            return False
+            try:
+                from src.core.database import UsersDatabaseConnection
+                self.db_connection = UsersDatabaseConnection(auto_connect=True)
+            except Exception as e:
+                print(f"Error conectando a la base de datos: {e}")
+                return False
         
         try:
             # Verificar que el usuario no exista
@@ -291,8 +302,33 @@ class AuthManager:
             
             params.append(user_id)
             
-            query = f"UPDATE usuarios SET {', '.join(updates)} WHERE id = ?"
-            result = self.db_connection.execute_non_query(query, tuple(params))
+            # SEGURIDAD: Usar queries predefinidas para evitar construcción dinámica
+            if not updates:
+                return False
+            
+            # Mapear campos permitidos a queries seguras predefinidas
+            allowed_fields = {
+                'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
+                'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?', 
+                'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
+                'estado': 'UPDATE usuarios SET estado = ? WHERE id = ?'
+            }
+            
+            # Procesar cada update de forma segura
+            success = True
+            for update in updates:
+                field_name = update.split(' = ?')[0].strip()
+                if field_name in allowed_fields and field_name in [u.split(' = ?')[0].strip() for u in updates]:
+                    # Encontrar el valor correspondiente 
+                    field_index = [u.split(' = ?')[0].strip() for u in updates].index(field_name)
+                    field_value = params[field_index]
+                    query = allowed_fields[field_name]
+                    result = self.db_connection.execute_non_query(query, (field_value, params[-1]))
+                    if not result:
+                        success = False
+                        break
+            
+            result = success
             
             return result
             

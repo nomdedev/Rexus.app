@@ -29,7 +29,7 @@ class LoginDialog(QDialog):
     """Diálogo de login minimalista y profesional."""
 
     # Señales
-    login_successful = pyqtSignal(str, str)  # username, role
+    login_successful = pyqtSignal(dict)  # Emitir dict completo del usuario
     login_failed = pyqtSignal(str)  # error_message
 
     def __init__(self, parent=None):
@@ -42,7 +42,7 @@ class LoginDialog(QDialog):
         self.setWindowTitle("Rexus.app - Acceso")
         self.setFixedSize(500, 850)
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.WindowCloseButtonHint)
-        
+
         # Estilo general minimalista
         self.setStyleSheet("""
             QDialog {
@@ -127,7 +127,7 @@ class LoginDialog(QDialog):
         # Usuario
         user_container = QVBoxLayout()
         user_container.setSpacing(6)
-        
+
         user_label = QLabel("Usuario")
         user_label.setStyleSheet("""
             QLabel {
@@ -138,7 +138,7 @@ class LoginDialog(QDialog):
                 letter-spacing: 0.5px;
             }
         """)
-        
+
         self.username_edit = QLineEdit()
         self.username_edit.setPlaceholderText("Ingrese su usuario")
         self.username_edit.setStyleSheet("""
@@ -157,7 +157,7 @@ class LoginDialog(QDialog):
             }
         """)
         self.username_edit.setFixedHeight(48)
-        
+
         user_container.addWidget(user_label)
         user_container.addWidget(self.username_edit)
         form_layout.addLayout(user_container)
@@ -165,7 +165,7 @@ class LoginDialog(QDialog):
         # Contraseña
         pass_container = QVBoxLayout()
         pass_container.setSpacing(6)
-        
+
         pass_label = QLabel("Contraseña")
         pass_label.setStyleSheet("""
             QLabel {
@@ -176,7 +176,7 @@ class LoginDialog(QDialog):
                 letter-spacing: 0.5px;
             }
         """)
-        
+
         self.password_edit = QLineEdit()
         self.password_edit.setPlaceholderText("Ingrese su contraseña")
         self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
@@ -196,7 +196,7 @@ class LoginDialog(QDialog):
             }
         """)
         self.password_edit.setFixedHeight(48)
-        
+
         pass_container.addWidget(pass_label)
         pass_container.addWidget(self.password_edit)
         form_layout.addLayout(pass_container)
@@ -280,7 +280,7 @@ class LoginDialog(QDialog):
                 background-color: #e0e0e0;
             }
         """)
-        
+
         # Info discreta
         info_label = QLabel("Usuario de prueba: admin / admin")
         info_label.setStyleSheet("""
@@ -308,7 +308,7 @@ class LoginDialog(QDialog):
         info_layout.addWidget(info_label)
         info_layout.addSpacing(4)
         info_layout.addWidget(version_label)
-        
+
         layout.addLayout(info_layout)
 
     def connect_events(self):
@@ -343,8 +343,7 @@ class LoginDialog(QDialog):
             user = self.auth_manager.authenticate_user(username, password)
             if user:
                 # Login exitoso
-                role = user['role']
-                self.login_successful.emit(username, role)
+                self.login_successful.emit(user)  # Emitir dict completo del usuario
                 self.accept()
             else:
                 # Login fallido

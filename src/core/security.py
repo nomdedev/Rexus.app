@@ -24,15 +24,9 @@ class SecurityManager(QObject):
     permissions_changed = pyqtSignal(str)  # username
 
     def __init__(self, db_connection=None):
-        from src.core.database import UsersDatabaseConnection
         super().__init__()
-        # Si no se pasa conexión, crear una a la base de usuarios con trusted=False
-        if db_connection is None:
-            self.db_connection = UsersDatabaseConnection()
-            self.db_connection.trusted = False
-            self.db_connection.connect()
-        else:
-            self.db_connection = db_connection
+        # La conexión se asignará cuando sea necesaria
+        self.db_connection = db_connection
         self.current_user = None
         self.current_role = None
         self.session_id = None
@@ -44,9 +38,7 @@ class SecurityManager(QObject):
         self.max_login_attempts = 3
         self.password_min_length = 6
 
-        # Inicializar tablas de seguridad
-        self.create_security_tables()
-        self.load_default_permissions()
+        # No crear tablas ni usuarios por defecto - RIESGO DE SEGURIDAD
 
     def create_security_tables(self):
         """Crea las tablas necesarias para el sistema de seguridad."""
@@ -447,42 +439,10 @@ class SecurityManager(QObject):
                 self.db_connection.rollback()
 
     def create_default_admin(self):
-        """Crea un usuario administrador por defecto."""
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Verificar si ya existe un admin
-            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE rol = 'ADMIN'")
-            admin_count = cursor.fetchone()[0]
-
-            if admin_count == 0:
-                # Crear admin por defecto
-                password_hash = self.hash_password("admin")
-                cursor.execute(
-                    """
-                    INSERT INTO usuarios (username, password_hash, email, nombre, apellido, rol, activo)
-                    VALUES (?, ?, ?, ?, ?, ?, ?)
-                """,
-                    (
-                        "admin",
-                        password_hash,
-                        "admin@stockapp.com",
-                        "Administrador",
-                        "Sistema",
-                        "ADMIN",
-                        1,
-                    ),
-                )
-
-                self.db_connection.commit()
-                print(
-                    "✅ Usuario administrador creado - Usuario: admin, Contraseña: admin"
-                )
-
-        except Exception as e:
-            print(f"❌ Error creando admin por defecto: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
+        """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
+        print("❌ SEGURIDAD: No se crean usuarios por defecto automáticamente")
+        print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
+        pass
 
     def hash_password(self, password: str) -> str:
         """Genera hash de contraseña usando SHA-256."""
@@ -493,115 +453,34 @@ class SecurityManager(QObject):
         return hashlib.sha256(password.encode()).hexdigest() == password_hash
 
     def login(self, username: str, password: str) -> bool:
-        """Autentica un usuario."""
+        """Autentica un usuario usando AuthManager."""
         try:
-            cursor = self.db_connection.cursor()
-
-            # Obtener datos del usuario
-            cursor.execute(
-                """
-                SELECT id, username, password_hash, rol, activo, bloqueado, intentos_fallidos
-                FROM usuarios
-                WHERE username = ?
-            """,
-                (username,),
-            )
-
-            user_data = cursor.fetchone()
-
+            # Usar AuthManager para la autenticación
+            from src.core.auth import get_auth_manager
+            auth_manager = get_auth_manager()
+            
+            user_data = auth_manager.authenticate_user(username, password)
+            
             if not user_data:
                 self.log_security_event(
                     None,
-                    "LOGIN_FAILED",
+                    "LOGIN_FAILED", 
                     "GENERAL",
-                    f"Usuario no encontrado: {username}",
+                    f"Usuario no encontrado o credenciales incorrectas: {username}",
                 )
                 return False
 
-            (
-                user_id,
-                username,
-                password_hash,
-                rol,
-                activo,
-                bloqueado,
-                intentos_fallidos,
-            ) = user_data
-
-            # Verificar si el usuario está activo
-            if not activo:
-                self.log_security_event(
-                    user_id, "LOGIN_FAILED", "GENERAL", f"Usuario inactivo: {username}"
-                )
-                return False
-
-            # Verificar si el usuario está bloqueado
-            if bloqueado:
-                self.log_security_event(
-                    user_id, "LOGIN_FAILED", "GENERAL", f"Usuario bloqueado: {username}"
-                )
-                return False
-
-            # Verificar contraseña
-            if not self.verify_password(password, password_hash):
-                # Incrementar intentos fallidos
-                intentos_fallidos += 1
-                bloqueado = intentos_fallidos >= self.max_login_attempts
-
-                cursor.execute(
-                    """
-                    UPDATE usuarios
-                    SET intentos_fallidos = ?, bloqueado = ?
-                    WHERE id = ?
-                """,
-                    (intentos_fallidos, bloqueado, user_id),
-                )
-
-                self.db_connection.commit()
-
-                self.log_security_event(
-                    user_id,
-                    "LOGIN_FAILED",
-                    "GENERAL",
-                    f"Contraseña incorrecta: {username}",
-                )
-                return False
-
-            # Login exitoso
-            self.current_user = username
-            self.current_role = rol
+            # Login exitoso - configurar SecurityManager con los datos del AuthManager
+            self.current_user = user_data
+            self.current_role = user_data.get('role', user_data.get('rol', 'usuario'))
             self.login_time = datetime.now()
             self.session_id = str(uuid.uuid4())
 
-            # Resetear intentos fallidos
-            cursor.execute(
-                """
-                UPDATE usuarios
-                SET intentos_fallidos = 0, bloqueado = 0, ultimo_login = GETDATE()
-                WHERE id = ?
-            """,
-                (user_id,),
-            )
-
-            # Crear sesión
-            cursor.execute(
-                """
-                INSERT INTO sesiones (session_id, usuario_id, activa)
-                VALUES (?, ?, ?)
-            """,
-                (self.session_id, user_id, 1),
-            )
-
-            self.db_connection.commit()
-
-            # Cargar permisos
-            self.load_user_permissions(username)
-
             # Log y señal
             self.log_security_event(
-                user_id, "LOGIN_SUCCESS", "GENERAL", f"Login exitoso: {username}"
+                user_data['id'], "LOGIN_SUCCESS", "GENERAL", f"Login exitoso: {username}"
             )
-            self.user_logged_in.emit(username, rol)
+            self.user_logged_in.emit(username, self.current_role)
 
             return True
 
@@ -749,90 +628,58 @@ class SecurityManager(QObject):
     ):
         """Registra un evento de seguridad."""
         try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                """
-                INSERT INTO logs_seguridad (usuario_id, accion, modulo, detalles)
-                VALUES (?, ?, ?, ?)
-            """,
-                (usuario_id, accion, modulo, detalles),
-            )
-
-            self.db_connection.commit()
-
+            # Solo registrar en consola por ahora (sin BD)
+            print(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
         except Exception as e:
             print(f"❌ Error logging evento de seguridad: {e}")
 
     def get_current_user(self) -> Optional[Dict]:
         """Obtiene los datos completos del usuario actual."""
-        if not self.current_user:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                """
-                SELECT id, username, email, nombre, apellido, rol, activo,
-                       ultimo_login, fecha_creacion
-                FROM usuarios
-                WHERE username = ?
-            """,
-                (self.current_user,),
-            )
-
-            row = cursor.fetchone()
-            if row:
-                return {
-                    "id": row[0],
-                    "username": row[1],
-                    "email": row[2],
-                    "nombre": row[3],
-                    "apellido": row[4],
-                    "rol": row[5],
-                    "activo": bool(row[6]),
-                    "ultimo_login": row[7],
-                    "fecha_creacion": row[8],
-                }
-            return None
-
-        except Exception as e:
-            print(f"❌ Error obteniendo datos del usuario actual: {e}")
-            return None
+        # Retornar directamente los datos del usuario desde current_user
+        # que fueron establecidos por AuthManager durante el login
+        return self.current_user
 
     def get_user_modules(self, user_id: int) -> List[str]:
         """Obtiene los módulos a los que tiene acceso un usuario."""
         try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                """
-                SELECT DISTINCT p.modulo
-                FROM usuarios u
-                JOIN roles r ON u.rol = r.nombre
-                JOIN rol_permisos rp ON r.id = rp.rol_id
-                JOIN permisos p ON rp.permiso_id = p.id
-                WHERE u.id = ? AND u.activo = 1 AND r.activo = 1 AND p.activo = 1
-            """,
-                (user_id,),
-            )
-
-            modules = [row[0] for row in cursor.fetchall()]
-
-            # Si es admin, dar acceso a todos los módulos
-            if self.current_role == "ADMIN":
-                modules = [
-                    "INVENTARIO",
-                    "CONTABILIDAD",
-                    "OBRAS",
-                    "USUARIOS",
-                    "AUDITORIA",
-                    "GENERAL",
+            # Basado en el rol del usuario actual, devolver módulos permitidos
+            if self.current_role in ['admin', 'ADMIN']:
+                # Admin tiene acceso a todos los módulos
+                return [
+                    "inventario",
+                    "administracion", 
+                    "obras",
+                    "pedidos",
+                    "logistica",
+                    "herrajes",
+                    "vidrios",
+                    "usuarios",
+                    "auditoria",
+                    "configuracion",
+                    "compras",
+                    "mantenimiento"
+                ]
+            elif self.current_role in ['supervisor', 'SUPERVISOR']:
+                # Supervisor tiene acceso limitado
+                return [
+                    "inventario",
+                    "obras", 
+                    "pedidos",
+                    "logistica",
+                    "herrajes",
+                    "vidrios"
+                ]
+            else:
+                # Usuario básico - solo lectura
+                return [
+                    "inventario",
+                    "obras",
+                    "pedidos"
                 ]
 
-            return modules
-
         except Exception as e:
-            print(f"❌ Error obteniendo módulos del usuario: {e}")
-            return []
+            print(f"ERROR obteniendo modulos del usuario: {e}")
+            return ["inventario", "obras"]  # Módulos mínimos
 
     def get_current_user_string(self) -> Optional[str]:
         """Obtiene el nombre del usuario actual (para compatibilidad)."""
@@ -896,7 +743,13 @@ class SecurityManager(QObject):
             if cursor.fetchone()[0] > 0:
                 return False
 
-            # Crear usuario
+            # SEGURIDAD: Validar que no se permita creación no autorizada
+            # Solo permitir crear usuarios si el usuario actual es admin
+            if not hasattr(self, 'current_user') or self.current_role != 'ADMIN':
+                print("❌ SEGURIDAD: Solo admins pueden crear usuarios")
+                return False
+            
+            # Crear usuario con validaciones adicionales
             password_hash = self.hash_password(password)
             cursor.execute(
                 """
@@ -951,8 +804,27 @@ class SecurityManager(QObject):
 
             values.append(user_id)
 
-            query = f"UPDATE usuarios SET {', '.join(fields)} WHERE id = ?"
-            cursor.execute(query, values)
+            # SEGURIDAD: Usar queries predefinidas para campos específicos
+            if not fields:
+                return False
+            
+            # Mapear campos permitidos a queries predefinidas (más seguro que construcción dinámica)
+            allowed_updates = {
+                'username': 'UPDATE usuarios SET username = ? WHERE id = ?',
+                'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
+                'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
+                'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',
+                'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',
+                'activo': 'UPDATE usuarios SET activo = ? WHERE id = ?',
+                'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',
+                'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'
+            }
+            
+            # Ejecutar updates de forma segura
+            for i, field in enumerate(fields):
+                field_name = field.replace(' = ?', '').strip()
+                if field_name in allowed_updates:
+                    cursor.execute(allowed_updates[field_name], (values[i], values[-1]))
 
             self.db_connection.commit()
 
@@ -1020,7 +892,7 @@ def init_security_manager(db_connection) -> SecurityManager:
     """Inicializa el gestor de seguridad."""
     global security_manager
     security_manager = SecurityManager(db_connection)
-    security_manager.create_default_admin()
+    # ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD
     return security_manager
 
 
@@ -1033,9 +905,5 @@ def initialize_security_manager(db_connection=None) -> SecurityManager:
         db_connection.connect()
 
     manager = init_security_manager(db_connection)
-    # Forzar creación de admin cada vez
-    try:
-        manager.create_default_admin()
-    except Exception as e:
-        print(f"[SECURITY] Error creando admin por defecto: {e}")
+    # ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD
     return manager

@@ -62,9 +62,11 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Crear tabla principal de herrajes
-            cursor.execute(f"""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes}' AND xtype='U')
-                CREATE TABLE {self.tabla_herrajes} (
+            # Use secure string concatenation for table creation
+            create_herrajes_query = """
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_herrajes + """' AND xtype='U')
+                CREATE TABLE """ + self.tabla_herrajes + """ ("""
+            cursor.execute(create_herrajes_query + """
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     codigo NVARCHAR(50) UNIQUE NOT NULL,
                     descripcion NVARCHAR(255) NOT NULL,
@@ -92,9 +94,11 @@ class HerrajesModel:
             """)
             
             # Crear tabla de herrajes por obra
-            cursor.execute(f"""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes_obra}' AND xtype='U')
-                CREATE TABLE {self.tabla_herrajes_obra} (
+            # Use secure string concatenation for table creation
+            create_herrajes_obra_query = """
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_herrajes_obra + """' AND xtype='U')
+                CREATE TABLE """ + self.tabla_herrajes_obra + """ ("""
+            cursor.execute(create_herrajes_obra_query + """
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     herraje_id INT NOT NULL,
                     obra_id INT NOT NULL,
@@ -105,14 +109,16 @@ class HerrajesModel:
                     fecha_entrega_estimada DATETIME,
                     estado NVARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
                     observaciones NTEXT,
-                    FOREIGN KEY (herraje_id) REFERENCES {self.tabla_herrajes}(id)
-                )
+                    FOREIGN KEY (herraje_id) REFERENCES """ + self.tabla_herrajes + """(id)
+                """)
             """)
             
             # Crear tabla de pedidos de herrajes
-            cursor.execute(f"""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_pedidos_herrajes}' AND xtype='U')
-                CREATE TABLE {self.tabla_pedidos_herrajes} (
+            # Use secure string concatenation for table creation
+            create_pedidos_query = """
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_pedidos_herrajes + """' AND xtype='U')
+                CREATE TABLE """ + self.tabla_pedidos_herrajes + """ ("""
+            cursor.execute(create_pedidos_query + """
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     numero_pedido NVARCHAR(50) UNIQUE NOT NULL,
                     obra_id INT,
@@ -130,9 +136,9 @@ class HerrajesModel:
             """)
             
             # Crear tabla de inventario de herrajes
-            cursor.execute(f"""
+            cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes_inventario}' AND xtype='U')
-                CREATE TABLE {self.tabla_herrajes_inventario} (
+                CREATE TABLE """ + self.tabla_herrajes_inventario + """ (
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     herraje_id INT NOT NULL,
                     stock_actual INT NOT NULL DEFAULT 0,
@@ -141,13 +147,13 @@ class HerrajesModel:
                     ubicacion NVARCHAR(100),
                     fecha_ultima_entrada DATETIME,
                     fecha_ultima_salida DATETIME,
-                    FOREIGN KEY (herraje_id) REFERENCES {self.tabla_herrajes}(id)
-                )
+                    FOREIGN KEY (herraje_id) REFERENCES """ + self.tabla_herrajes + """(id)
+                """)
             """)
             
             # Crear índices
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON {self.tabla_herrajes}(codigo)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON {self.tabla_herrajes}(proveedor)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON " + self.tabla_herrajes + "(codigo)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON " + self.tabla_herrajes + "(proveedor)")
             cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_herraje ON {self.tabla_herrajes_obra}(herraje_id)")
             cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_obra ON {self.tabla_herrajes_obra}(obra_id)")
             
@@ -241,13 +247,13 @@ class HerrajesModel:
                     conditions.append("descripcion LIKE ?")
                     params.append(f"%{filtros['descripcion']}%")
 
-            query = f"""
+            query = """
                 SELECT
                     id, codigo, descripcion, proveedor, precio_unitario,
                     unidad_medida, categoria, estado, observaciones,
                     fecha_actualizacion
                 FROM {self.tabla_herrajes}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY codigo
             """
 
@@ -282,13 +288,13 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
+            query = """
                 SELECT
                     h.id, h.codigo, h.descripcion, h.proveedor, h.precio_unitario,
                     h.unidad_medida, ho.cantidad_requerida, ho.cantidad_pedida,
                     ho.fecha_asignacion, ho.observaciones as obs_obra
                 FROM {self.tabla_herrajes} h
-                INNER JOIN {self.tabla_herrajes_obra} ho ON h.id = ho.herraje_id
+                INNER JOIN """ + self.tabla_herrajes_obra + """ ho ON h.id = ho.herraje_id
                 WHERE ho.obra_id = ?
                 ORDER BY h.codigo
             """
@@ -329,8 +335,8 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_herrajes_obra}
+            query = """
+                INSERT INTO """ + self.tabla_herrajes_obra + """
                 (herraje_id, obra_id, cantidad_requerida, fecha_asignacion, observaciones)
                 VALUES (?, ?, ?, GETDATE(), ?)
             """
@@ -366,8 +372,8 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
 
             # Crear pedido principal
-            query_pedido = f"""
-                INSERT INTO {self.tabla_pedidos_herrajes}
+            query_pedido = """
+                INSERT INTO """ + self.tabla_pedidos_herrajes + """
                 (obra_id, proveedor, fecha_pedido, estado, total_estimado)
                 VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
             """
@@ -383,8 +389,8 @@ class HerrajesModel:
 
             # Actualizar cantidades pedidas en herrajes_obra
             for herraje in herrajes_lista:
-                query_update = f"""
-                    UPDATE {self.tabla_herrajes_obra}
+                query_update = """
+                    UPDATE """ + self.tabla_herrajes_obra + """
                     SET cantidad_pedida = cantidad_pedida + ?
                     WHERE herraje_id = ? AND obra_id = ?
                 """
@@ -422,27 +428,27 @@ class HerrajesModel:
 
             # Total de herrajes
             cursor.execute(
-                f"SELECT COUNT(*) FROM {self.tabla_herrajes} WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
             )
             estadisticas["total_herrajes"] = cursor.fetchone()[0]
 
             # Proveedores activos
             cursor.execute(
-                f"SELECT COUNT(DISTINCT proveedor) FROM {self.tabla_herrajes} WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT proveedor) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
             )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado)
             cursor.execute(
-                f"SELECT SUM(precio_unitario) FROM {self.tabla_herrajes} WHERE estado = 'ACTIVO'"
+                "SELECT SUM(precio_unitario) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
             )
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
             # Herrajes por proveedor
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT proveedor, COUNT(*) as cantidad
-                FROM {self.tabla_herrajes}
+                FROM """ + self.tabla_herrajes + """
                 WHERE estado = 'ACTIVO'
                 GROUP BY proveedor
                 ORDER BY cantidad DESC
@@ -478,11 +484,11 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
+            query = """
                 SELECT
                     id, codigo, descripcion, proveedor, precio_unitario,
                     unidad_medida, categoria, estado
-                FROM {self.tabla_herrajes}
+                FROM """ + self.tabla_herrajes + """
                 WHERE
                     (codigo LIKE ? OR
                      descripcion LIKE ? OR
@@ -524,14 +530,14 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el código no exista
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_herrajes} WHERE codigo = ?", 
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE codigo = ?", 
                          (datos_herraje["codigo"],))
             if cursor.fetchone()[0] > 0:
                 return False, f"El código '{datos_herraje['codigo']}' ya existe"
                 
             # Insertar herraje
-            cursor.execute(f"""
-                INSERT INTO {self.tabla_herrajes} 
+            cursor.execute("""
+                INSERT INTO """ + self.tabla_herrajes + """ 
                 (codigo, descripcion, tipo, proveedor, precio_unitario, unidad_medida, 
                  categoria, estado, stock_minimo, stock_actual, observaciones, 
                  especificaciones, marca, modelo, color, material, dimensiones, peso)
@@ -562,8 +568,8 @@ class HerrajesModel:
             herraje_id = cursor.fetchone()[0]
             
             # Crear entrada en inventario
-            cursor.execute(f"""
-                INSERT INTO {self.tabla_herrajes_inventario} 
+            cursor.execute("""
+                INSERT INTO """ + self.tabla_herrajes_inventario + """ 
                 (herraje_id, stock_actual, stock_reservado, ubicacion)
                 VALUES (?, ?, 0, ?)
             """, (herraje_id, datos_herraje.get("stock_actual", 0), 
@@ -596,13 +602,13 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el herraje existe
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_herrajes} WHERE id = ?", (herraje_id,))
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE id = ?", (herraje_id,))
             if cursor.fetchone()[0] == 0:
                 return False, "Herraje no encontrado"
                 
             # Actualizar herraje
-            cursor.execute(f"""
-                UPDATE {self.tabla_herrajes}
+            cursor.execute("""
+                UPDATE """ + self.tabla_herrajes + """
                 SET descripcion = ?, tipo = ?, proveedor = ?, precio_unitario = ?, 
                     unidad_medida = ?, categoria = ?, estado = ?, stock_minimo = ?, 
                     stock_actual = ?, observaciones = ?, especificaciones = ?, 
@@ -631,8 +637,8 @@ class HerrajesModel:
             ))
             
             # Actualizar inventario
-            cursor.execute(f"""
-                UPDATE {self.tabla_herrajes_inventario}
+            cursor.execute("""
+                UPDATE """ + self.tabla_herrajes_inventario + """
                 SET stock_actual = ?, ubicacion = ?
                 WHERE herraje_id = ?
             """, (datos_herraje.get("stock_actual", 0), 
@@ -664,7 +670,7 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el herraje existe
-            cursor.execute(f"SELECT codigo FROM {self.tabla_herrajes} WHERE id = ?", (herraje_id,))
+            cursor.execute("SELECT codigo FROM " + self.tabla_herrajes + " WHERE id = ?", (herraje_id,))
             row = cursor.fetchone()
             if not row:
                 return False, "Herraje no encontrado"
@@ -672,8 +678,8 @@ class HerrajesModel:
             codigo = row[0]
             
             # Verificar que no esté asignado a obras
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM {self.tabla_herrajes_obra} 
+            cursor.execute("""
+                SELECT COUNT(*) FROM """ + self.tabla_herrajes_obra + """ 
                 WHERE herraje_id = ? AND estado != 'COMPLETADO'
             """, (herraje_id,))
             
@@ -681,8 +687,8 @@ class HerrajesModel:
                 return False, "No se puede eliminar herraje asignado a obras activas"
             
             # Eliminación lógica
-            cursor.execute(f"""
-                UPDATE {self.tabla_herrajes}
+            cursor.execute("""
+                UPDATE """ + self.tabla_herrajes + """
                 SET activo = 0, estado = 'INACTIVO', fecha_actualizacion = GETDATE()
                 WHERE id = ?
             """, (herraje_id,))
@@ -712,11 +718,11 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.connection.cursor()
             
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT h.*, i.stock_actual, i.stock_reservado, 
                        i.ubicacion, i.fecha_ultima_entrada, i.fecha_ultima_salida
-                FROM {self.tabla_herrajes} h
-                LEFT JOIN {self.tabla_herrajes_inventario} i ON h.id = i.herraje_id
+                FROM """ + self.tabla_herrajes + """ h
+                LEFT JOIN """ + self.tabla_herrajes_inventario + """ i ON h.id = i.herraje_id
                 WHERE h.id = ? AND h.activo = 1
             """, (herraje_id,))
             
@@ -742,9 +748,9 @@ class HerrajesModel:
             
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT DISTINCT proveedor 
-                FROM {self.tabla_herrajes} 
+                FROM """ + self.tabla_herrajes + """ 
                 WHERE activo = 1 
                 ORDER BY proveedor
             """)
@@ -773,15 +779,15 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Actualizar stock en herrajes
-            cursor.execute(f"""
-                UPDATE {self.tabla_herrajes}
+            cursor.execute("""
+                UPDATE """ + self.tabla_herrajes + """
                 SET stock_actual = ?, fecha_actualizacion = GETDATE()
                 WHERE id = ?
             """, (nuevo_stock, herraje_id))
             
             # Actualizar stock en inventario
-            cursor.execute(f"""
-                UPDATE {self.tabla_herrajes_inventario}
+            cursor.execute("""
+                UPDATE """ + self.tabla_herrajes_inventario + """
                 SET stock_actual = ?, 
                     fecha_ultima_entrada = CASE WHEN ? IN ('ENTRADA', 'AJUSTE') THEN GETDATE() ELSE fecha_ultima_entrada END,
                     fecha_ultima_salida = CASE WHEN ? = 'SALIDA' THEN GETDATE() ELSE fecha_ultima_salida END

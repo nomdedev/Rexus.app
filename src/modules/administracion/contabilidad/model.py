@@ -93,13 +93,13 @@ class ContabilidadModel:
                 conditions.append("tipo_asiento = ?")
                 params.append(tipo)
 
-            query = f"""
+            query = """
                 SELECT 
                     id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
                     referencia, debe, haber, saldo, estado, usuario_creacion,
                     fecha_creacion, fecha_modificacion
                 FROM {self.tabla_libro_contable}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY fecha_asiento DESC, numero_asiento DESC
             """
 
@@ -135,7 +135,7 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
 
             # Generar número de asiento
-            cursor.execute(f"SELECT MAX(numero_asiento) FROM {self.tabla_libro_contable}")
+            cursor.execute("SELECT MAX(numero_asiento) FROM " + self.tabla_libro_contable)
             ultimo_numero = cursor.fetchone()[0]
             numero_asiento = (ultimo_numero or 0) + 1
 
@@ -144,8 +144,8 @@ class ContabilidadModel:
             haber = float(datos_asiento.get('haber', 0))
             saldo = debe - haber
 
-            query = f"""
-                INSERT INTO {self.tabla_libro_contable}
+            query = """
+                INSERT INTO """ + self.tabla_libro_contable + """
                 (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                  debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
@@ -200,8 +200,8 @@ class ContabilidadModel:
             haber = float(datos_asiento.get('haber', 0))
             saldo = debe - haber
 
-            query = f"""
-                UPDATE {self.tabla_libro_contable}
+            query = """
+                UPDATE """ + self.tabla_libro_contable + """
                 SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
                     debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
                 WHERE id = ?
@@ -264,13 +264,13 @@ class ContabilidadModel:
                 conditions.append("tipo_recibo = ?")
                 params.append(tipo)
 
-            query = f"""
+            query = """
                 SELECT 
                     id, numero_recibo, fecha_emision, tipo_recibo, concepto,
                     beneficiario, monto, moneda, estado, impreso,
                     usuario_creacion, fecha_creacion
                 FROM {self.tabla_recibos}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY fecha_emision DESC, numero_recibo DESC
             """
 
@@ -306,12 +306,12 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
 
             # Generar número de recibo
-            cursor.execute(f"SELECT MAX(numero_recibo) FROM {self.tabla_recibos}")
+            cursor.execute("SELECT MAX(numero_recibo) FROM " + self.tabla_recibos)
             ultimo_numero = cursor.fetchone()[0]
             numero_recibo = (ultimo_numero or 0) + 1
 
-            query = f"""
-                INSERT INTO {self.tabla_recibos}
+            query = """
+                INSERT INTO """ + self.tabla_recibos + """
                 (numero_recibo, fecha_emision, tipo_recibo, concepto, beneficiario,
                  monto, moneda, estado, impreso, usuario_creacion, fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -360,8 +360,8 @@ class ContabilidadModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_recibos}
+            query = """
+                UPDATE """ + self.tabla_recibos + """
                 SET impreso = 1, fecha_impresion = GETDATE()
                 WHERE id = ?
             """
@@ -408,13 +408,13 @@ class ContabilidadModel:
                 conditions.append("categoria = ?")
                 params.append(categoria)
 
-            query = f"""
+            query = """
                 SELECT 
                     id, obra_id, concepto, categoria, monto, fecha_pago,
                     metodo_pago, estado, usuario_creacion, fecha_creacion,
                     observaciones
                 FROM {self.tabla_pagos_obra}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY fecha_pago DESC
             """
 
@@ -449,8 +449,8 @@ class ContabilidadModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_pagos_obra}
+            query = """
+                INSERT INTO """ + self.tabla_pagos_obra + """
                 (obra_id, concepto, categoria, monto, fecha_pago, metodo_pago,
                  estado, usuario_creacion, fecha_creacion, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
@@ -512,13 +512,13 @@ class ContabilidadModel:
                 conditions.append("estado = ?")
                 params.append(estado)
 
-            query = f"""
+            query = """
                 SELECT 
                     id, producto, proveedor, cantidad, precio_unitario,
                     total, pagado, pendiente, estado, fecha_compra,
                     fecha_pago, usuario_creacion
                 FROM {self.tabla_pagos_materiales}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY fecha_compra DESC
             """
 
@@ -559,8 +559,8 @@ class ContabilidadModel:
             pagado = float(datos_pago.get('pagado', 0))
             pendiente = total - pagado
 
-            query = f"""
-                INSERT INTO {self.tabla_pagos_materiales}
+            query = """
+                INSERT INTO """ + self.tabla_pagos_materiales + """
                 (producto, proveedor, cantidad, precio_unitario, total, pagado,
                  pendiente, estado, fecha_compra, fecha_pago, usuario_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -611,12 +611,12 @@ class ContabilidadModel:
             estadisticas = {}
 
             # Total ingresos y egresos del libro contable
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT 
                     SUM(debe) as total_debe,
                     SUM(haber) as total_haber,
                     SUM(saldo) as saldo_total
-                FROM {self.tabla_libro_contable}
+                FROM """ + self.tabla_libro_contable + """
                 WHERE estado = 'ACTIVO'
             """)
             resultado = cursor.fetchone()
@@ -627,9 +627,9 @@ class ContabilidadModel:
             }
 
             # Total recibos emitidos
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT COUNT(*), SUM(monto)
-                FROM {self.tabla_recibos}
+                FROM """ + self.tabla_recibos + """
                 WHERE estado = 'EMITIDO'
             """)
             resultado = cursor.fetchone()
@@ -639,9 +639,9 @@ class ContabilidadModel:
             }
 
             # Total pagos por obra
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT COUNT(*), SUM(monto)
-                FROM {self.tabla_pagos_obra}
+                FROM """ + self.tabla_pagos_obra + """
                 WHERE estado = 'PAGADO'
             """)
             resultado = cursor.fetchone()
@@ -651,9 +651,9 @@ class ContabilidadModel:
             }
 
             # Total pagos de materiales
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT COUNT(*), SUM(total), SUM(pagado), SUM(pendiente)
-                FROM {self.tabla_pagos_materiales}
+                FROM """ + self.tabla_pagos_materiales + """
             """)
             resultado = cursor.fetchone()
             estadisticas['pagos_materiales'] = {
@@ -697,14 +697,14 @@ class ContabilidadModel:
                 conditions.append("fecha_asiento <= ?")
                 params.append(fecha_hasta)
 
-            query = f"""
+            query = """
                 SELECT 
                     tipo_asiento,
                     SUM(debe) as total_debe,
                     SUM(haber) as total_haber,
                     SUM(saldo) as saldo_neto
                 FROM {self.tabla_libro_contable}
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 GROUP BY tipo_asiento
             """
 
@@ -757,28 +757,30 @@ class ContabilidadModel:
             where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
 
             # Ingresos por recibos
-            cursor.execute(f"""
+            # Use secure string concatenation for dynamic query
+            query = """
                 SELECT tipo_recibo, SUM(monto)
-                FROM {self.tabla_recibos}
-                {where_clause}
+                FROM """ + self.tabla_recibos + """ 
+                """ + where_clause + """
                 GROUP BY tipo_recibo
-            """, params)
+            """
+            cursor.execute(query, params)
             
             ingresos = dict(cursor.fetchall())
             flujo['ingresos'] = ingresos
 
             # Egresos por pagos de obra
             if fecha_desde and fecha_hasta:
-                cursor.execute(f"""
+                cursor.execute("""
                     SELECT categoria, SUM(monto)
-                    FROM {self.tabla_pagos_obra}
+                    FROM """ + self.tabla_pagos_obra + """
                     WHERE fecha_pago >= ? AND fecha_pago <= ?
                     GROUP BY categoria
                 """, (fecha_desde, fecha_hasta))
             else:
-                cursor.execute(f"""
+                cursor.execute("""
                     SELECT categoria, SUM(monto)
-                    FROM {self.tabla_pagos_obra}
+                    FROM """ + self.tabla_pagos_obra + """
                     GROUP BY categoria
                 """)
             

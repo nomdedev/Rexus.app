@@ -16,7 +16,9 @@
       "mcp__ide__getDiagnostics",
       "Bash(rm:*)",
       "Bash(del:*)",
-      "Bash(move DOCUMENTACION_BASE_DATOS.md docs/database/)"
+      "Bash(move DOCUMENTACION_BASE_DATOS.md docs/database/)",
+      "Bash(pip install:*)",
+      "Bash(sed:*)"
     ],
     "deny": []
   }

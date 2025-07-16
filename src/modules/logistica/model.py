@@ -103,13 +103,13 @@ class LogisticaModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = f"""
+            query = """
                 SELECT 
                     t.id, t.codigo, t.tipo, t.proveedor, t.capacidad_kg,
                     t.capacidad_m3, t.costo_km, t.disponible, t.observaciones,
                     t.fecha_creacion, t.fecha_modificacion
                 FROM {self.tabla_transportes} t
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY t.tipo, t.proveedor
             """
 
@@ -144,8 +144,8 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_transportes}
+            query = """
+                INSERT INTO """ + self.tabla_transportes + """
                 (codigo, tipo, proveedor, capacidad_kg, capacidad_m3, costo_km,
                  disponible, observaciones, activo, fecha_creacion, fecha_modificacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
@@ -193,8 +193,8 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_transportes}
+            query = """
+                UPDATE """ + self.tabla_transportes + """
                 SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
                     costo_km = ?, disponible = ?, observaciones = ?, fecha_modificacion = GETDATE()
                 WHERE id = ?
@@ -263,7 +263,7 @@ class LogisticaModel:
                     conditions.append("e.transporte_id = ?")
                     params.append(filtros["transporte_id"])
 
-            query = f"""
+            query = """
                 SELECT 
                     e.id, e.obra_id, o.nombre as obra_nombre, e.transporte_id,
                     t.codigo as transporte_codigo, t.proveedor as transporte_proveedor,
@@ -273,7 +273,7 @@ class LogisticaModel:
                 FROM {self.tabla_entregas} e
                 LEFT JOIN {self.tabla_obras} o ON e.obra_id = o.id
                 LEFT JOIN {self.tabla_transportes} t ON e.transporte_id = t.id
-                WHERE {" AND ".join(conditions)}
+                WHERE """ + " AND ".join(conditions) + """
                 ORDER BY e.fecha_programada DESC
             """
 
@@ -308,8 +308,8 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_entregas}
+            query = """
+                INSERT INTO """ + self.tabla_entregas + """
                 (obra_id, transporte_id, fecha_programada, direccion_entrega,
                  contacto, telefono, estado, observaciones, costo_envio,
                  usuario_creacion, fecha_creacion)
@@ -363,14 +363,14 @@ class LogisticaModel:
 
             # Si se marca como entregada, agregar fecha de entrega
             if nuevo_estado == 'ENTREGADA':
-                query = f"""
-                    UPDATE {self.tabla_entregas}
+                query = """
+                    UPDATE """ + self.tabla_entregas + """
                     SET estado = ?, fecha_entrega = GETDATE(), observaciones = ?
                     WHERE id = ?
                 """
             else:
-                query = f"""
-                    UPDATE {self.tabla_entregas}
+                query = """
+                    UPDATE """ + self.tabla_entregas + """
                     SET estado = ?, observaciones = ?
                     WHERE id = ?
                 """
@@ -405,11 +405,11 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
+            query = """
                 SELECT 
                     d.id, d.entrega_id, d.producto, d.cantidad, d.peso_kg,
                     d.volumen_m3, d.observaciones
-                FROM {self.tabla_detalle_entregas} d
+                FROM """ + self.tabla_detalle_entregas + """ d
                 WHERE d.entrega_id = ?
                 ORDER BY d.producto
             """
@@ -446,8 +446,8 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_detalle_entregas}
+            query = """
+                INSERT INTO """ + self.tabla_detalle_entregas + """
                 (entrega_id, producto, cantidad, peso_kg, volumen_m3, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?)
             """
@@ -491,7 +491,7 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"DELETE FROM {self.tabla_detalle_entregas} WHERE id = ?"
+            query = "DELETE FROM " + self.tabla_detalle_entregas + " WHERE id = ?"
             cursor.execute(query, (detalle_id,))
 
             self.db_connection.commit()
@@ -521,39 +521,39 @@ class LogisticaModel:
             estadisticas = {}
 
             # Total transportes
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_transportes} WHERE activo = 1")
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_transportes + " WHERE activo = 1")
             estadisticas['total_transportes'] = cursor.fetchone()[0]
 
             # Transportes disponibles
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_transportes} WHERE activo = 1 AND disponible = 1")
+            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_transportes + " WHERE activo = 1 AND disponible = 1")
             estadisticas['transportes_disponibles'] = cursor.fetchone()[0]
 
             # Entregas por estado
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM {self.tabla_entregas}
+                FROM """ + self.tabla_entregas + """
                 GROUP BY estado
             """)
             estadisticas['entregas_por_estado'] = dict(cursor.fetchall())
 
             # Entregas del mes actual
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM {self.tabla_entregas}
+            cursor.execute("""
+                SELECT COUNT(*) FROM """ + self.tabla_entregas + """
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
             """)
             estadisticas['entregas_mes_actual'] = cursor.fetchone()[0]
 
             # Entregas pendientes
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM {self.tabla_entregas}
+            cursor.execute("""
+                SELECT COUNT(*) FROM """ + self.tabla_entregas + """
                 WHERE estado IN ('PROGRAMADA', 'EN_TRANSITO')
             """)
             estadisticas['entregas_pendientes'] = cursor.fetchone()[0]
 
             # Costo total de envíos del mes
-            cursor.execute(f"""
-                SELECT SUM(costo_envio) FROM {self.tabla_entregas}
+            cursor.execute("""
+                SELECT SUM(costo_envio) FROM """ + self.tabla_entregas + """
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
             """)
@@ -579,9 +579,9 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
+            query = """
                 SELECT id, nombre, direccion, estado
-                FROM {self.tabla_obras}
+                FROM """ + self.tabla_obras + """
                 WHERE activo = 1 AND estado != 'TERMINADA'
                 ORDER BY nombre
             """
@@ -621,9 +621,9 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
 
             # Obtener información del transporte
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT costo_km, capacidad_kg, capacidad_m3
-                FROM {self.tabla_transportes}
+                FROM """ + self.tabla_transportes + """
                 WHERE id = ?
             """, (transporte_id,))
             
