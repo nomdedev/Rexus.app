@@ -54,7 +54,14 @@ class DatabaseConnection:
         self.connect()
 
     def connect(self):
-        """Establece la conexión a la base de datos"""
+        """Establece la conexión a la base de datos y muestra el flujo en consola"""
+        print("\n[DB] Intentando conectar a la base de datos...")
+        print(f"[DB] Servidor: {self.server}")
+        print(f"[DB] Base de datos: {self.database}")
+        print(f"[DB] Driver: {self.driver}")
+        print(
+            f"[DB] Usuario: {self.username if not self.trusted else '[Trusted_Connection]'}"
+        )
         try:
             if self.trusted:
                 connection_string = (
@@ -68,13 +75,16 @@ class DatabaseConnection:
                     f"DRIVER={{{self.driver}}};"
                     f"SERVER={self.server};"
                     f"DATABASE={self.database};"
-                    f"UID={self.username};PWD={self.password};"
+                    f"UID={self.username};PWD=******;"  # No mostrar la contraseña real
                 )
+            print(f"[DB] String de conexión: {connection_string}")
             self._connection = pyodbc.connect(connection_string)
+            print("[DB] Conexión exitosa ✔️\n")
             return True
         except Exception as e:
             print(f"[DB ERROR] No se pudo conectar: {e}")
             self._connection = None
+            print("[DB] ❌ Error al intentar conectar.\n")
             return False
 
     def disconnect(self):
@@ -140,10 +150,12 @@ class InventarioDatabaseConnection(DatabaseConnection):
     def __init__(self):
         super().__init__(database=DB_INVENTARIO)
 
+
 # Clase para conexión a la base de datos de usuarios
 class UsersDatabaseConnection(DatabaseConnection):
     def __init__(self):
         super().__init__(database=DB_USERS)
+
 
 # Clase para conexión a la base de datos de auditoría
 class AuditoriaDatabaseConnection(DatabaseConnection):

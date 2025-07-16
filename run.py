@@ -16,6 +16,8 @@ import os
 import sys
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 # Configurar path del proyecto
 project_root = Path(__file__).parent
 sys.path.insert(0, str(project_root))
@@ -23,21 +25,32 @@ sys.path.insert(0, str(project_root))
 
 def setup_environment():
     """Configura variables de entorno por defecto si no existen"""
-    # Permitir setear desde afuera las variables de conexión a la base de datos
-    default_env_vars = {
-        "DB_SERVER": "localhost",
-        "DB_DRIVER": "ODBC Driver 17 for SQL Server",
-        "DB_USERNAME": "sa",
-        "DB_PASSWORD": "mps.1887",
-        "SECRET_KEY": "default_secret_key",
-        "JWT_SECRET_KEY": "default_jwt_secret",
-        "ENCRYPTION_KEY": "default_encryption_key",
-    }
+    # Cargar variables desde .env (si existe)
+    env_path = os.path.join(project_root, ".env")
+    if os.path.exists(env_path):
+        load_dotenv(env_path)
+    else:
+        print(
+            "[ADVERTENCIA] No se encontró archivo .env en el directorio del proyecto."
+        )
 
-    for key, default_value in default_env_vars.items():
-        # Solo setear si no está definida en el entorno
-        if os.environ.get(key) is None:
-            os.environ[key] = default_value
+    # Requerir que las variables críticas estén definidas en el entorno
+    required_env_vars = [
+        "DB_SERVER",
+        "DB_DRIVER",
+        "DB_USERNAME",
+        "DB_PASSWORD",
+        "SECRET_KEY",
+        "JWT_SECRET_KEY",
+        "ENCRYPTION_KEY",
+    ]
+    missing = [key for key in required_env_vars if not os.environ.get(key)]
+    if missing:
+        print(f"\n[ERROR] Faltan variables de entorno críticas: {', '.join(missing)}")
+        print(
+            "Por favor configura todas las variables requeridas en un archivo .env antes de ejecutar la app."
+        )
+        sys.exit(1)
 
 
 def main():
