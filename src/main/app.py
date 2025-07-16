@@ -142,7 +142,7 @@ class MainWindow(QMainWindow):
         self.modulos_permitidos = modulos_permitidos
         from PyQt6.QtWidgets import QLabel, QTabWidget
 
-        self.security_manager = None
+        # Eliminado: self.security_manager no corresponde a ninguna inicialización ni uso válido
         self.content_stack = QTabWidget()
         self.content_header = QLabel()
 
@@ -986,33 +986,7 @@ def main():
     app = QApplication(sys.argv)
     print("[LOG 4.2] Mostrando login profesional...")
 
-    # Mostrar cadena de conexión y parámetros usados para depuración
-    from src.core.config import DB_DRIVER, DB_PASSWORD, DB_SERVER, DB_USERNAME, DB_USERS
-
-    connection_info_console = (
-        f"\n--- CONEXIÓN SQL SERVER ---\n"
-        f"Servidor: {DB_SERVER}\n"
-        f"Driver: {DB_DRIVER}\n"
-        f"Usuario: {DB_USERNAME}\n"
-        f"Password: {DB_PASSWORD}\n"
-        f"Base de datos (login): {DB_USERS}\n"
-    )
-    connection_info_msg = (
-        f"Servidor: {DB_SERVER}\n"
-        f"Driver: {DB_DRIVER}\n"
-        f"Usuario: {DB_USERNAME}\n"
-        f"Base de datos (login): {DB_USERS}\n"
-    )
-    print(connection_info_console)
-    from PyQt6.QtWidgets import QMessageBox
-
-    msg = QMessageBox()
-    msg.setIcon(QMessageBox.Icon.Information)
-    msg.setWindowTitle("Info de conexión SQL Server")
-    msg.setText("Intentando conectar a SQL Server con los siguientes parámetros:")
-    msg.setInformativeText(connection_info_msg)
-    msg.setStandardButtons(QMessageBox.StandardButton.Ok)
-    msg.exec()
+    # Eliminado: mensaje emergente con parámetros de conexión SQL Server
 
     # Inicializar sistema de seguridad
     try:
@@ -1038,11 +1012,11 @@ def main():
             print(
                 f"🏗️ [SEGURIDAD] Creando MainWindow para usuario: {user_data['username']}"
             )
-            main_window = MainWindow(user_data, modulos_permitidos)
+            main_window = MainWindow(
+                user_data, modulos_permitidos
+            )  # security_manager ya no se asigna
             main_window.actualizar_usuario_label(user_data)
-            # Inicializar el atributo si no existe
-            if security_manager is not None:
-                main_window.security_manager = security_manager
+            # Eliminado: asignación de security_manager innecesaria (el atributo no existe)
             # main_window.mostrar_mensaje( ... )  # Mensaje de bienvenida removido
             main_window.show()
             print(f"✅ [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
