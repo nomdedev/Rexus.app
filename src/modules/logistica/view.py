@@ -32,6 +32,29 @@ from PyQt6.QtWidgets import (
 
 
 class LogisticaView(QWidget):
+    def cargar_entregas_en_tabla(self, entregas):
+        self.tabla_entregas.setRowCount(len(entregas))
+        for row, entrega in enumerate(entregas):
+            self.tabla_entregas.setItem(row, 0, QTableWidgetItem(str(entrega.get('id', ''))))
+            self.tabla_entregas.setItem(row, 1, QTableWidgetItem(str(entrega.get('fecha_programada', ''))))
+            self.tabla_entregas.setItem(row, 2, QTableWidgetItem(str(entrega.get('direccion_entrega', ''))))
+            self.tabla_entregas.setItem(row, 3, QTableWidgetItem(str(entrega.get('estado', ''))))
+            self.tabla_entregas.setItem(row, 4, QTableWidgetItem(str(entrega.get('contacto', ''))))
+            self.tabla_entregas.setItem(row, 5, QTableWidgetItem(str(entrega.get('observaciones', ''))))
+            btn_accion = QPushButton('⚙️')
+            self.tabla_entregas.setCellWidget(row, 6, btn_accion)
+
+    def cargar_services_en_tabla(self, services):
+        self.tabla_service.setRowCount(len(services))
+        for row, service in enumerate(services):
+            self.tabla_service.setItem(row, 0, QTableWidgetItem(str(service.get('id', ''))))
+            self.tabla_service.setItem(row, 1, QTableWidgetItem(str(service.get('fecha', ''))))
+            self.tabla_service.setItem(row, 2, QTableWidgetItem(str(service.get('obra', ''))))
+            self.tabla_service.setItem(row, 3, QTableWidgetItem(str(service.get('estado', ''))))
+            self.tabla_service.setItem(row, 4, QTableWidgetItem(str(service.get('responsable', ''))))
+            self.tabla_service.setItem(row, 5, QTableWidgetItem(str(service.get('descripcion', ''))))
+            btn_accion = QPushButton('⚙️')
+            self.tabla_service.setCellWidget(row, 6, btn_accion)
     """Vista modernizada para gestión de logística."""
 
     # Señales
@@ -269,6 +292,157 @@ class LogisticaView(QWidget):
         self.tabla_rutas.setAlternatingRowColors(True)
 
         layout.addWidget(toolbar)
+    def crear_tab_entregas(self):
+        """Crea la pestaña de entregas con formulario y tabla."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # --- Formulario de entrega ---
+        form_group = QGroupBox("Nueva Entrega")
+        form_layout = QFormLayout(form_group)
+
+        self.entrega_fecha = QDateEdit()
+        self.entrega_fecha.setDate(QDate.currentDate())
+        self.entrega_fecha.setCalendarPopup(True)
+        form_layout.addRow("Fecha:", self.entrega_fecha)
+
+        self.entrega_destino = QLineEdit()
+        self.entrega_destino.setPlaceholderText("Destino de la entrega")
+        form_layout.addRow("Destino:", self.entrega_destino)
+
+        self.entrega_estado = QComboBox()
+        self.entrega_estado.addItems(["Pendiente", "En Camino", "Entregado", "Cancelado"])
+        form_layout.addRow("Estado:", self.entrega_estado)
+
+        self.entrega_responsable = QLineEdit()
+        self.entrega_responsable.setPlaceholderText("Responsable")
+        form_layout.addRow("Responsable:", self.entrega_responsable)
+
+        self.entrega_observaciones = QTextEdit()
+        self.entrega_observaciones.setMaximumHeight(60)
+        self.entrega_observaciones.setPlaceholderText("Observaciones...")
+        form_layout.addRow("Observaciones:", self.entrega_observaciones)
+
+        btns_layout = QHBoxLayout()
+        self.btn_guardar_entrega = QPushButton("💾 Guardar")
+        self.btn_limpiar_entrega = QPushButton("🧹 Limpiar")
+        btns_layout.addWidget(self.btn_guardar_entrega)
+        btns_layout.addWidget(self.btn_limpiar_entrega)
+        btns_layout.addStretch()
+        form_layout.addRow(btns_layout)
+
+        # Conectar botón guardar entrega
+        self.btn_guardar_entrega.clicked.connect(self._on_guardar_entrega)
+    def set_controller(self, controller):
+        self.controller = controller
+        # Cargar datos iniciales
+        if hasattr(self.controller, 'cargar_entregas'):
+            self.controller.cargar_entregas()
+        if hasattr(self.controller, 'cargar_services'):
+            self.controller.cargar_services()
+
+    def _on_guardar_entrega(self):
+        datos = {
+            'fecha_programada': self.entrega_fecha.date().toString('yyyy-MM-dd'),
+            'direccion_entrega': self.entrega_destino.text(),
+            'estado': self.entrega_estado.currentText(),
+            'contacto': self.entrega_responsable.text(),
+            'observaciones': self.entrega_observaciones.toPlainText(),
+            # Puedes agregar más campos según el modelo
+        }
+        if self.controller and hasattr(self.controller, 'guardar_entrega'):
+            self.controller.guardar_entrega(datos)
+        self._limpiar_formulario_entrega()
+
+    def _limpiar_formulario_entrega(self):
+        self.entrega_fecha.setDate(QDate.currentDate())
+        self.entrega_destino.clear()
+        self.entrega_estado.setCurrentIndex(0)
+        self.entrega_responsable.clear()
+        self.entrega_observaciones.clear()
+
+        layout.addWidget(form_group)
+
+        # --- Tabla de entregas ---
+        self.tabla_entregas = QTableWidget()
+        self.tabla_entregas.setColumnCount(7)
+        self.tabla_entregas.setHorizontalHeaderLabels([
+            "ID", "Fecha", "Destino", "Estado", "Responsable", "Observaciones", "Acciones"
+        ])
+        header = self.tabla_entregas.horizontalHeader()
+        if header:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
+        self.tabla_entregas.setAlternatingRowColors(True)
+
+        layout.addWidget(self.tabla_entregas)
+        return widget
+
+    def crear_tab_service(self):
+        """Crea la pestaña de service con formulario y tabla."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # --- Formulario de service ---
+        form_group = QGroupBox("Nuevo Service")
+        form_layout = QFormLayout(form_group)
+
+        self.service_fecha = QDateEdit()
+        self.service_fecha.setDate(QDate.currentDate())
+        self.service_fecha.setCalendarPopup(True)
+        form_layout.addRow("Fecha:", self.service_fecha)
+
+        self.service_obra = QLineEdit()
+        self.service_obra.setPlaceholderText("Obra asociada")
+        form_layout.addRow("Obra:", self.service_obra)
+
+        self.service_estado = QComboBox()
+        self.service_estado.addItems(["Pendiente", "En Proceso", "Finalizado", "Cancelado"])
+        form_layout.addRow("Estado:", self.service_estado)
+
+        self.service_responsable = QLineEdit()
+        self.service_responsable.setPlaceholderText("Responsable")
+        form_layout.addRow("Responsable:", self.service_responsable)
+
+        self.service_descripcion = QTextEdit()
+        self.service_descripcion.setMaximumHeight(60)
+        self.service_descripcion.setPlaceholderText("Descripción del service...")
+        form_layout.addRow("Descripción:", self.service_descripcion)
+
+        btns_layout = QHBoxLayout()
+        self.btn_guardar_service = QPushButton("� Guardar")
+        self.btn_limpiar_service = QPushButton("🧹 Limpiar")
+        btns_layout.addWidget(self.btn_guardar_service)
+        btns_layout.addWidget(self.btn_limpiar_service)
+        btns_layout.addStretch()
+        form_layout.addRow(btns_layout)
+
+        layout.addWidget(form_group)
+
+        # --- Tabla de service ---
+        self.tabla_service = QTableWidget()
+        self.tabla_service.setColumnCount(7)
+        self.tabla_service.setHorizontalHeaderLabels([
+            "ID", "Fecha", "Obra", "Estado", "Responsable", "Descripción", "Acciones"
+        ])
+        header = self.tabla_service.horizontalHeader()
+        if header:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
+        self.tabla_service.setAlternatingRowColors(True)
+
+        layout.addWidget(self.tabla_service)
+        return widget
         layout.addWidget(self.tabla_rutas)
 
         return widget

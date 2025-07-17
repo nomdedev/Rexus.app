@@ -115,51 +115,30 @@ class ConfiguracionModel:
         self.config_file.parent.mkdir(exist_ok=True)
 
         # Inicializar configuración
-        self._crear_tabla_si_no_existe()
+        self._verificar_tablas()
         self._cargar_configuracion_inicial()
 
-    def _crear_tabla_si_no_existe(self):
-        """Crea la tabla de configuración si no existe."""
+    def _verificar_tablas(self):
+        """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
         if not self.db_connection:
             return
 
         try:
             cursor = self.db_connection.cursor()
-
+            
             # Verificar si la tabla existe
             cursor.execute(
                 "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
                 (self.tabla_configuracion,),
             )
             if cursor.fetchone():
-                print("[CONFIGURACION] Tabla de configuración ya existe")
-                return
-
-            # Crear tabla con estructura simple
-            # Use secure string concatenation for table creation
-            create_table_query = """
-                CREATE TABLE """ + self.tabla_configuracion + """ (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    clave VARCHAR(100) UNIQUE NOT NULL,
-                    valor VARCHAR(500),
-                    descripcion VARCHAR(255),
-                    tipo VARCHAR(50) DEFAULT 'STRING',
-                    categoria VARCHAR(50) DEFAULT 'GENERAL',
-                    activo BIT DEFAULT 1,
-                    fecha_creacion DATETIME DEFAULT GETDATE(),
-                    fecha_modificacion DATETIME DEFAULT GETDATE()
-                )"""
-            cursor.execute(create_table_query
-                )
-            """)
-
-            self.db_connection.commit()
-            print("[CONFIGURACION] Tabla de configuración creada")
+                print(f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente.")
+            else:
+                raise RuntimeError(f"Required table '{self.tabla_configuracion}' does not exist. Please create it manually.")
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error creando tabla: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
+            print(f"[ERROR CONFIGURACION] Error verificando tablas: {e}")
+            raise
 
     def _cargar_configuracion_inicial(self):
         """Carga la configuración inicial en la base de datos."""
@@ -171,7 +150,7 @@ class ConfiguracionModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si ya hay configuraciones
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_configuracion)
+            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion}")
             count = cursor.fetchone()[0]
 
             if count == 0:
@@ -182,8 +161,8 @@ class ConfiguracionModel:
                     tipo_dato = self._obtener_tipo_dato_por_valor(valor)
 
                     cursor.execute(
-                        """
-                        INSERT INTO """ + self.tabla_configuracion + """ 
+                        f"""
+                        INSERT INTO {self.tabla_configuracion} 
                         (clave, valor, descripcion, tipo, categoria)
                         VALUES (?, ?, ?, ?, ?)
                     """,
@@ -230,7 +209,7 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
-                "SELECT clave, valor FROM " + self.tabla_configuracion + " WHERE activo = 1"
+                f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1"
             )
 
             self.config_cache = {}
@@ -292,7 +271,7 @@ class ConfiguracionModel:
 
                 # Verificar si existe
                 cursor.execute(
-                    "SELECT COUNT(*) FROM " + self.tabla_configuracion + " WHERE clave = ?",
+                    f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?",
                     (clave,),
                 )
                 existe = cursor.fetchone()[0] > 0
@@ -300,8 +279,8 @@ class ConfiguracionModel:
                 if existe:
                     # Actualizar
                     cursor.execute(
-                        """
-                        UPDATE """ + self.tabla_configuracion + """
+                        f"""
+                        UPDATE {self.tabla_configuracion}
                         SET valor = ?, fecha_modificacion = GETDATE()
                         WHERE clave = ?
                     """,
@@ -314,8 +293,8 @@ class ConfiguracionModel:
                     tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
 
                     cursor.execute(
-                        """
-                        INSERT INTO """ + self.tabla_configuracion + """
+                        f"""
+                        INSERT INTO {self.tabla_configuracion}
                         (clave, valor, descripcion, tipo, categoria)
                         VALUES (?, ?, ?, ?, ?)
                     """,
@@ -360,9 +339,9 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
-                """
+                f"""
                 SELECT clave, valor, descripcion, tipo
-                FROM """ + self.tabla_configuracion + """
+                FROM {self.tabla_configuracion}
                 WHERE categoria = ? AND activo = 1
                 ORDER BY clave
             """,
@@ -398,10 +377,10 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("""
+            cursor.execute(f"""
                 SELECT clave, valor, descripcion, tipo, categoria, 
                        fecha_modificacion
-                FROM """ + self.tabla_configuracion + """
+                FROM {self.tabla_configuracion}
                 WHERE activo = 1
                 ORDER BY categoria, clave
             """)

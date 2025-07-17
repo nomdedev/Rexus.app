@@ -63,9 +63,9 @@ class HerrajesModel:
             
             # Crear tabla principal de herrajes
             # Use secure string concatenation for table creation
-            create_herrajes_query = """
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_herrajes + """' AND xtype='U')
-                CREATE TABLE """ + self.tabla_herrajes + """ ("""
+            create_herrajes_query = f"""
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes}' AND xtype='U')
+                CREATE TABLE {self.tabla_herrajes} ("""
             cursor.execute(create_herrajes_query + """
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     codigo NVARCHAR(50) UNIQUE NOT NULL,
@@ -95,9 +95,9 @@ class HerrajesModel:
             
             # Crear tabla de herrajes por obra
             # Use secure string concatenation for table creation
-            create_herrajes_obra_query = """
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_herrajes_obra + """' AND xtype='U')
-                CREATE TABLE """ + self.tabla_herrajes_obra + """ ("""
+            create_herrajes_obra_query = f"""
+                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes_obra}' AND xtype='U')
+                CREATE TABLE {self.tabla_herrajes_obra} ("""
             cursor.execute(create_herrajes_obra_query + """
                     id INT IDENTITY(1,1) PRIMARY KEY,
                     herraje_id INT NOT NULL,
@@ -109,51 +109,19 @@ class HerrajesModel:
                     fecha_entrega_estimada DATETIME,
                     estado NVARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
                     observaciones NTEXT,
-                    FOREIGN KEY (herraje_id) REFERENCES """ + self.tabla_herrajes + """(id)
+                    FOREIGN KEY (herraje_id) REFERENCES {self.tabla_herrajes}(id)
                 """)
             """)
             
             # Crear tabla de pedidos de herrajes
             # Use secure string concatenation for table creation
-            create_pedidos_query = """
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='""" + self.tabla_pedidos_herrajes + """' AND xtype='U')
-                CREATE TABLE """ + self.tabla_pedidos_herrajes + """ ("""
-            cursor.execute(create_pedidos_query + """
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    numero_pedido NVARCHAR(50) UNIQUE NOT NULL,
-                    obra_id INT,
-                    proveedor NVARCHAR(100) NOT NULL,
-                    fecha_pedido DATETIME NOT NULL DEFAULT GETDATE(),
-                    fecha_entrega_estimada DATETIME,
-                    estado NVARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
-                    total_estimado DECIMAL(12,2) DEFAULT 0.00,
-                    total_real DECIMAL(12,2) DEFAULT 0.00,
-                    observaciones NTEXT,
-                    usuario_id INT,
-                    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    fecha_modificacion DATETIME NOT NULL DEFAULT GETDATE()
-                )
-            """)
-            
-            # Crear tabla de inventario de herrajes
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{self.tabla_herrajes_inventario}' AND xtype='U')
-                CREATE TABLE """ + self.tabla_herrajes_inventario + """ (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    herraje_id INT NOT NULL,
-                    stock_actual INT NOT NULL DEFAULT 0,
-                    stock_reservado INT NOT NULL DEFAULT 0,
-                    stock_disponible AS (stock_actual - stock_reservado),
-                    ubicacion NVARCHAR(100),
-                    fecha_ultima_entrada DATETIME,
-                    fecha_ultima_salida DATETIME,
-                    FOREIGN KEY (herraje_id) REFERENCES """ + self.tabla_herrajes + """(id)
-                """)
-            """)
+            create_pedidos_query = f"""
+"""
+            cursor.execute(create_pedidos_query)
             
             # Crear índices
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON " + self.tabla_herrajes + "(codigo)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON " + self.tabla_herrajes + "(proveedor)")
+            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON {self.tabla_herrajes}(codigo)")
+            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON {self.tabla_herrajes}(proveedor)")
             cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_herraje ON {self.tabla_herrajes_obra}(herraje_id)")
             cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_obra ON {self.tabla_herrajes_obra}(obra_id)")
             
@@ -247,7 +215,7 @@ class HerrajesModel:
                     conditions.append("descripcion LIKE ?")
                     params.append(f"%{filtros['descripcion']}%")
 
-            query = """
+            query = f"""
                 SELECT
                     id, codigo, descripcion, proveedor, precio_unitario,
                     unidad_medida, categoria, estado, observaciones,
@@ -288,13 +256,13 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
+            query = f"""
                 SELECT
                     h.id, h.codigo, h.descripcion, h.proveedor, h.precio_unitario,
                     h.unidad_medida, ho.cantidad_requerida, ho.cantidad_pedida,
                     ho.fecha_asignacion, ho.observaciones as obs_obra
                 FROM {self.tabla_herrajes} h
-                INNER JOIN """ + self.tabla_herrajes_obra + """ ho ON h.id = ho.herraje_id
+                INNER JOIN {self.tabla_herrajes_obra} ho ON h.id = ho.herraje_id
                 WHERE ho.obra_id = ?
                 ORDER BY h.codigo
             """

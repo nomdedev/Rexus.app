@@ -26,57 +26,35 @@ class InventarioModel:
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "movimientos_inventario"
         self.tabla_reservas = "reservas_inventario"  # Tabla para reservas por obra
-        self._crear_tablas_si_no_existen()
+        self._verificar_tablas()
 
-    def _crear_tablas_si_no_existen(self):
-        """Verifica que las tablas necesarias existan en la base de datos."""
+    def _verificar_tablas(self):
+        """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
         if not self.db_connection:
             return
 
         try:
             cursor = self.db_connection.connection.cursor()
+            tablas_requeridas = [
+                self.tabla_inventario,
+                self.tabla_movimientos,
+                self.tabla_reservas
+            ]
 
-            # Verificar si la tabla de inventario existe
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_inventario,),
-            )
-            if cursor.fetchone():
-                print(
-                    f"[INVENTARIO] Tabla '{self.tabla_inventario}' verificada correctamente."
+            for tabla in tablas_requeridas:
+                cursor.execute(
+                    "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
+                    (tabla,),
                 )
-            else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_inventario}' no existe en la base de datos."
-                )
+                if cursor.fetchone():
+                    print(f"[INVENTARIO] Tabla '{tabla}' verificada correctamente.")
+                else:
+                    raise RuntimeError(f"[CRITICAL] Required table '{tabla}' does not exist. Please create it manually.")
 
-            # Verificar si la tabla de movimientos existe
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_movimientos,),
-            )
-            if cursor.fetchone():
-                print(
-                    f"[INVENTARIO] Tabla '{self.tabla_movimientos}' verificada correctamente."
-                )
-            else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_movimientos}' no existe en la base de datos."
-                )
-
-            # Obtener estructura de la tabla inventario para mostrarla en consola
-            cursor.execute(
-                "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?",
-                (self.tabla_inventario,),
-            )
-            columnas = cursor.fetchall()
-            print(f"[INVENTARIO] Estructura de tabla '{self.tabla_inventario}':")
-            for columna in columnas:
-                print(f"  - {columna[0]}: {columna[1]}")
-
-            print(f"[INVENTARIO] Tablas verificadas correctamente.")
+            print(f"[INVENTARIO] Todas las tablas requeridas están disponibles.")
         except Exception as e:
-            print(f"[ERROR INVENTARIO] Error creando tablas: {e}")
+            print(f"[ERROR INVENTARIO] Error verificando tablas: {e}")
+            raise
 
     def obtener_todos_productos(self, filtros=None):
         """
@@ -118,14 +96,14 @@ class InventarioModel:
             where_clause = " AND ".join(conditions)
 
             # Usar la tabla real inventario_perfiles
-            base_query = """
+            base_query = f"""
             SELECT id, codigo, descripcion, categoria, subcategoria, stock_actual,
                    stock_minimo, stock_maximo, precio_unitario, precio_promedio,
                    ubicacion, proveedor, unidad_medida, estado, fecha_creacion,
                    fecha_modificacion, observaciones, codigo_qr,
                    (stock_actual - ISNULL(stock_reservado, 0)) as stock_disponible,
                    ISNULL(stock_reservado, 0) as stock_reservado
-            FROM """ + self.tabla_inventario + """
+            FROM {self.tabla_inventario}
             WHERE """
             sql_select = base_query + where_clause + " ORDER BY descripcion"
 

@@ -75,6 +75,11 @@ class DatabaseConnection:
         self._connection: Optional[pyodbc.Connection] = None
         if auto_connect:
             self.connect()
+    
+    @property
+    def connection(self) -> Optional[pyodbc.Connection]:
+        """Proporciona acceso a la conexión actual"""
+        return self._connection
 
     def switch_database(self, new_database: str) -> bool:
         """
@@ -103,8 +108,8 @@ class DatabaseConnection:
         
         try:
             cursor = self._connection.cursor()
-            # Use secure string concatenation instead of f-string
-            query = "USE [" + new_database + "]"
+            # Use secure string concatenation with brackets for database names
+            query = f"USE [{new_database}]"
             cursor.execute(query)
             self.database = new_database
             cursor.close()

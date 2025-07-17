@@ -102,7 +102,7 @@ class MantenimientoModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
-            query = """
+            query = f"""
                 SELECT 
                     e.id, e.codigo, e.nombre, e.tipo, e.modelo, e.marca,
                     e.numero_serie, e.fecha_adquisicion, e.fecha_instalacion,
@@ -145,8 +145,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_equipos + """
+            query = f"""
+                INSERT INTO {self.tabla_equipos}
                 (codigo, nombre, tipo, modelo, marca, numero_serie,
                  fecha_adquisicion, fecha_instalacion, ubicacion, estado,
                  valor_adquisicion, vida_util_anos, observaciones,
@@ -205,8 +205,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                UPDATE """ + self.tabla_equipos + """
+            query = f"""
+                UPDATE {self.tabla_equipos}
                 SET nombre = ?, tipo = ?, modelo = ?, marca = ?, numero_serie = ?,
                     fecha_adquisicion = ?, fecha_instalacion = ?, ubicacion = ?,
                     estado = ?, valor_adquisicion = ?, vida_util_anos = ?,
@@ -279,7 +279,7 @@ class MantenimientoModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = """
+            query = f"""
                 SELECT 
                     h.id, h.codigo, h.nombre, h.tipo, h.marca, h.modelo,
                     h.numero_serie, h.fecha_adquisicion, h.ubicacion,

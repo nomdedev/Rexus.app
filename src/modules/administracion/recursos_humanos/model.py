@@ -97,7 +97,7 @@ class RecursosHumanosModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
-            query = """
+            query = f"""
                 SELECT 
                     e.id, e.codigo, e.nombre, e.apellido, e.dni, e.telefono,
                     e.email, e.direccion, e.fecha_nacimiento, e.fecha_ingreso,
@@ -105,7 +105,7 @@ class RecursosHumanosModel:
                     e.fecha_creacion, e.fecha_modificacion
                 FROM {self.tabla_empleados} e
                 LEFT JOIN {self.tabla_departamentos} d ON e.departamento_id = d.id
-                WHERE """ + " AND ".join(conditions) + """
+                WHERE """ + " AND ".join(conditions) + f"""
                 ORDER BY e.apellido, e.nombre
             """
 
@@ -140,8 +140,8 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_empleados + """
+            query = f"""
+                INSERT INTO {self.tabla_empleados}
                 (codigo, nombre, apellido, dni, telefono, email, direccion,
                  fecha_nacimiento, fecha_ingreso, salario_base, cargo, 
                  departamento_id, estado, activo, fecha_creacion, fecha_modificacion)
