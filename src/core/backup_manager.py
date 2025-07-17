@@ -289,20 +289,20 @@ USE [{database_name}];
                     backup_script += f"-- Columns: {len(columns_info)}\n"
                     
                     # Obtener datos de la tabla (limitado para evitar archivos muy grandes)
-                    # Use parameterized query for table name - construct safely
-                    count_query = "SELECT COUNT(*) FROM [" + table + "]"
+                    # Use f-string for safe table name construction (table names are from system tables)
+                    count_query = f"SELECT COUNT(*) FROM [{table}]"
                     cursor.execute(count_query)
                     row_count = cursor.fetchone()[0]
                     
                     if row_count > 0 and row_count < 10000:  # Solo backup de tablas pequeñas
-                        # Use parameterized query for table name - construct safely
-                        select_query = "SELECT * FROM [" + table + "]"
+                        # Use f-string for safe table name construction (table names are from system tables)
+                        select_query = f"SELECT * FROM [{table}]"
                         cursor.execute(select_query)
                         rows = cursor.fetchall()
                         
                         if rows:
                             columns = [desc[0] for desc in cursor.description]
-                            backup_script += "INSERT INTO [" + table + "] (" + ', '.join(columns) + ") VALUES\n"
+                            backup_script += f"INSERT INTO [{table}] ({', '.join(columns)}) VALUES\n"
                             
                             for i, row in enumerate(rows):
                                 values = []

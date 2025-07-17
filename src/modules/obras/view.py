@@ -82,7 +82,7 @@ class ObrasView(QWidget):
                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                                            stop:0 #3498db, stop:1 #2980b9);
                 border-radius: 8px;
-                padding: 15px;
+                padding: 6px;
                 margin-bottom: 10px;
             }
         """)
@@ -93,7 +93,7 @@ class ObrasView(QWidget):
         title_label = QLabel("🏗️ Gestión de Obras")
         title_label.setStyleSheet("""
             QLabel {
-                font-size: 28px;
+                font-size: 14px;
                 font-weight: bold;
                 color: white;
                 background: transparent;

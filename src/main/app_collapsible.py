@@ -7,6 +7,16 @@ import os
 import sys
 from typing import Any, Dict, Optional
 
+# Cargar variables de entorno antes de cualquier otra importación
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("[ENV] Variables de entorno cargadas desde .env")
+except ImportError:
+    print("[ENV] python-dotenv no disponible, usando variables del sistema")
+except Exception as e:
+    print(f"[ENV] Error cargando variables: {e}")
+
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QRect, Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QColor, QIcon
 from PyQt6.QtWidgets import (
@@ -198,7 +208,7 @@ class CollapsibleSidebar(QFrame):
                 text-align: left;
                 padding: 15px 20px;
                 border: none;
-                color: #ecf0f1;
+                color: #ffffff;
                 font-size: 14px;
                 font-weight: 600;
                 background-color: transparent;
@@ -245,7 +255,7 @@ class CollapsibleSidebar(QFrame):
                     text-align: center;
                     padding: 12px 8px;
                     border: none;
-                    color: #ecf0f1;
+                    color: #ffffff;
                     font-size: 16px;
                     background-color: transparent;
                     border-radius: 6px;
@@ -282,7 +292,7 @@ class CollapsibleSidebar(QFrame):
                     text-align: left;
                     padding: 15px 20px;
                     border: none;
-                    color: #ecf0f1;
+                    color: #ffffff;
                     font-size: 14px;
                     font-weight: 600;
                     background-color: transparent;

@@ -9,9 +9,9 @@
 
 /* Filtros compactos */
 .filtros-box, .filtros-panel, .filtros, .filters, .filtros-section {
-    max-width: 320px;
-    min-width: 180px;
-    width: 100%;
+    max-width: 150px;
+    min-width: 150px;
+    width: 150px;
     margin-bottom: 8px;
     padding: 8px 12px;
     box-sizing: border-box;
@@ -50,6 +50,8 @@
     height: 28px;
     font-size: 1em;
     margin-bottom: 4px;
+    width: 150px;
+    max-width: 150px;
 }
 
 /* Botones de filtros más pequeños */

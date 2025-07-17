@@ -20,6 +20,16 @@ import platform
 import sys
 from typing import Any, Dict, Optional
 
+# Cargar variables de entorno antes de cualquier otra importación
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    print("[ENV] Variables de entorno cargadas desde .env")
+except ImportError:
+    print("[ENV] python-dotenv no disponible, usando variables del sistema")
+except Exception as e:
+    print(f"[ENV] Error cargando variables: {e}")
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QColor
 
@@ -34,7 +44,7 @@ from PyQt6.QtWidgets import (
     QMessageBox,
     QPushButton,
     QScrollArea,
-    QTabWidget,
+    QStackedWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -140,11 +150,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.user_data = user_data
         self.modulos_permitidos = modulos_permitidos
-        from PyQt6.QtWidgets import QLabel, QTabWidget
+        from PyQt6.QtWidgets import QLabel, QStackedWidget
 
         # Eliminado: self.security_manager no corresponde a ninguna inicialización ni uso válido
-        self.content_stack = QTabWidget()
-        self.content_header = QLabel()
+        self.content_stack = QStackedWidget()
+        # Eliminado: self.content_header
 
         self._init_ui()
 
@@ -177,11 +187,11 @@ class MainWindow(QMainWindow):
         from PyQt6.QtWidgets import QScrollArea
 
         sidebar = QFrame()
-        sidebar.setFixedWidth(280)
+        sidebar.setFixedWidth(200)
         sidebar.setStyleSheet("""
             QFrame {
-                background-color: #2c3e50;
-                border-right: 2px solid #34495e;
+                background-color: #3498db;
+                border-right: 2px solid #217dbb;
             }
         """)
 
@@ -227,17 +237,18 @@ class MainWindow(QMainWindow):
         modules_layout.setSpacing(5)
         modules_layout.setContentsMargins(10, 10, 10, 10)
 
-        # Módulos ordenados por flujo de proyecto real
+        # Módulos ordenados por flujo de proyecto real (incluye Logística)
         modulos = [
             ("🏗️", "Obras", "Gestión de proyectos y construcción"),
-            ("�", "Inventario", "Gestión de inventario y stock"),
-            ("�", "Herrajes", "Gestión de herrajes"),
+            ("📦", "Inventario", "Gestión de inventario y stock"),
+            ("🔩", "Herrajes", "Gestión de herrajes"),
             ("🪟", "Vidrios", "Gestión de vidrios"),
-            ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
-            ("�", "Compras", "Gestión de compras y proveedores"),
-            ("�", "Administración", "Gestión administrativa y financiera"),
+            ("�", "Logística", "Gestión de logística y transporte"),
+            ("�📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
+            ("🛒", "Compras", "Gestión de compras y proveedores"),
+            ("🏢", "Administración", "Gestión administrativa y financiera"),
             ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
-            ("�", "Auditoría", "Auditoría y trazabilidad"),
+            ("🕵️", "Auditoría", "Auditoría y trazabilidad"),
             ("👥", "Usuarios", "Gestión de personal y roles"),
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
@@ -264,19 +275,20 @@ class MainWindow(QMainWindow):
                 text-align: left;
                 padding: 15px 20px;
                 border: none;
-                color: #ecf0f1;
+                color: #ffffff;
                 font-size: 14px;
                 font-weight: 600;
                 background-color: transparent;
                 border-radius: 6px;
                 margin: 3px 8px;
+                transition: background 0.2s, color 0.2s;
             }
             QPushButton:hover {
-                background-color: #34495e;
-                color: #ffffff;
+                background-color: #217dbb;
+                color: #ffe082;
             }
             QPushButton:pressed {
-                background-color: #3498db;
+                background-color: #17608a;
                 color: #ffffff;
             }
         """)
@@ -296,43 +308,17 @@ class MainWindow(QMainWindow):
         content_layout = QVBoxLayout(content_area)
         content_layout.setContentsMargins(30, 30, 30, 30)
 
-        # Header del contenido
-        self.content_header = QLabel("🏠 Dashboard Principal")
-        self.content_header.setStyleSheet("""
-            QLabel {
-                font-size: 28px;
-                font-weight: bold;
-                color: #2c3e50;
-                margin-bottom: 20px;
-            }
-        """)
-        content_layout.addWidget(self.content_header)
+        # Eliminado: Título principal del área de contenido
 
         # Área de contenido dinámico
-        from PyQt6.QtWidgets import QTabWidget
+        from PyQt6.QtWidgets import QStackedWidget
 
-        self.content_stack = QTabWidget()
+        self.content_stack = QStackedWidget()
         self.content_stack.setStyleSheet("""
-            QTabWidget::pane {
+            QStackedWidget {
                 border: 1px solid #ddd;
                 border-radius: 8px;
                 background-color: #f8f9fa;
-            }
-            QTabWidget::tab-bar {
-                alignment: left;
-            }
-            QTabBar::tab {
-                background-color: #e9ecef;
-                color: #495057;
-                padding: 10px 20px;
-                margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-            }
-            QTabBar::tab:selected {
-                background-color: #ffffff;
-                color: #2c3e50;
-                font-weight: bold;
             }
         """)
 
@@ -407,7 +393,7 @@ class MainWindow(QMainWindow):
 
         layout.addWidget(welcome_widget, 1, 0, 1, 4)
 
-        self.content_stack.addTab(dashboard, "🏠 Dashboard")
+        self.content_stack.addWidget(dashboard)
 
     def _create_stat_card(
         self, emoji: str, titulo: str, valor: str, color: str
@@ -451,37 +437,19 @@ class MainWindow(QMainWindow):
             module_name: Nombre del módulo a mostrar
         """
         try:
-            self.content_header.setText(f"📱 {module_name}")
+            # Eliminado: actualización de título principal
 
             # Factory pattern para creación de módulos
             module_widget = self._create_module_widget(module_name)
 
-            # Agregar o actualizar pestaña
-            tab_exists = False
-            for i in range(self.content_stack.count()):
-                if self.content_stack.tabText(i).endswith(module_name):
-                    self.content_stack.setCurrentIndex(i)
-                    tab_exists = True
-                    break
+            # Limpiar contenido anterior y agregar nuevo widget
+            while self.content_stack.count() > 0:
+                widget = self.content_stack.widget(0)
+                self.content_stack.removeWidget(widget)
+                widget.deleteLater()
 
-            if not tab_exists:
-                icon_map = {
-                    "Inventario": "📦",
-                    "Contabilidad": "💰",
-                    "Obras": "🏗️",
-                    "Pedidos": "📋",
-                    "Logística": "🚛",
-                    "Herrajes": "🔧",
-                    "Vidrios": "🪟",
-                    "Usuarios": "👥",
-                    "Auditoría": "🔍",
-                    "Configuración": "⚙️",
-                    "Compras": "💳",
-                    "Mantenimiento": "🛠️",
-                }
-                icon = icon_map.get(module_name, "📱")
-                self.content_stack.addTab(module_widget, f"{icon} {module_name}")
-                self.content_stack.setCurrentWidget(module_widget)
+            self.content_stack.addWidget(module_widget)
+            self.content_stack.setCurrentWidget(module_widget)
 
         except Exception as e:
             print(f"Error cargando módulo {module_name}: {e}")
@@ -511,13 +479,26 @@ class MainWindow(QMainWindow):
             "Auditoría": self._create_auditoria_module,
             "Compras": self._create_compras_module,
             "Mantenimiento": self._create_mantenimiento_module,
+            "Administración": self._create_administracion_module,
+            "Administracion": self._create_administracion_module,
         }
-
-        creation_method = module_factory.get(module_name)
+        # Normalizar nombre para evitar problemas de tildes/capitalización
+        normalized_name = module_name.strip().capitalize().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
+        creation_method = module_factory.get(module_name) or module_factory.get(normalized_name)
         if creation_method:
             return creation_method()
         else:
             return self._create_fallback_module(module_name)
+
+    def _create_administracion_module(self) -> QWidget:
+        """Crea el módulo de administración usando la vista real"""
+        try:
+            from src.modules.administracion.view import AdministracionView
+            view = AdministracionView()
+            return view
+        except Exception as e:
+            print(f"Error creando administración real: {e}")
+            return self._create_fallback_module("Administración")
 
     def _create_inventario_module(self) -> QWidget:
         """Crea el módulo de inventario usando los archivos reales"""
@@ -546,19 +527,16 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f"Error creando inventario real: {e}")
-            # Fallback a demo
-            from demo_app import DemoMainWindow
-
-            demo = DemoMainWindow({}, [])
-            return demo.create_inventario_module()
+            # Fallback a widget simple
+            return self._create_fallback_module("Inventario")
 
     def _create_contabilidad_module(self) -> QWidget:
         """Crea el módulo de contabilidad usando los archivos reales"""
         try:
             from src.core.database import InventarioDatabaseConnection
-            from src.modules.contabilidad.controller import ContabilidadController
-            from src.modules.contabilidad.model import ContabilidadModel
-            from src.modules.contabilidad.view import ContabilidadView
+            from src.modules.administracion.contabilidad.controller import ContabilidadController
+            from src.modules.administracion.contabilidad.model import ContabilidadModel
+            from src.modules.administracion.contabilidad.view import ContabilidadView
 
             # Crear conexión a la base de datos
             try:
@@ -576,11 +554,8 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f"Error creando contabilidad real: {e}")
-            # Fallback a demo
-            from demo_app import DemoMainWindow
-
-            demo = DemoMainWindow({}, [])
-            return demo.create_contabilidad_module()
+            # Fallback a widget simple
+            return self._create_fallback_module("Contabilidad")
 
     def _create_obras_module(self) -> QWidget:
         """Crea el módulo de obras usando los archivos reales"""
@@ -606,11 +581,8 @@ class MainWindow(QMainWindow):
 
         except Exception as e:
             print(f"Error creando obras real: {e}")
-            # Fallback a demo
-            from demo_app import DemoMainWindow
-
-            demo = DemoMainWindow({}, [])
-            return demo.create_obras_module()
+            # Fallback a widget simple
+            return self._create_fallback_module("Obras")
 
     def _create_configuracion_module(self) -> QWidget:
         """Crea el módulo de configuración usando los archivos reales"""
@@ -623,16 +595,19 @@ class MainWindow(QMainWindow):
             model = ConfiguracionModel()
             view = ConfiguracionView()
             controller = ConfiguracionController(model, view)
+            
+            # Conectar view con controller
+            view.set_controller(controller)
+            
+            # Cargar datos iniciales
+            controller.cargar_configuraciones()
 
             return view
 
         except Exception as e:
             print(f"Error creando configuración real: {e}")
-            # Fallback a demo
-            from demo_app import DemoMainWindow
-
-            demo = DemoMainWindow({}, [])
-            return demo.create_configuracion_module()
+            # Fallback a widget simple
+            return self._create_fallback_module("Configuración")
 
     def actualizar_usuario_label(self, user_data):
         """Actualiza la información del usuario"""
@@ -761,6 +736,12 @@ class MainWindow(QMainWindow):
             model = UsuariosModel(db_connection)
             view = UsuariosView()
             controller = UsuariosController(model, view)
+            
+            # Conectar view con controller
+            view.set_controller(controller)
+            
+            # Cargar datos iniciales
+            controller.cargar_usuarios()
 
             return view
 

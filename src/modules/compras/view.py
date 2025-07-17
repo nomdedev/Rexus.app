@@ -28,6 +28,7 @@ from PyQt6.QtWidgets import (
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
+    QTabWidget,
     QTextEdit,
     QVBoxLayout,
     QWidget,
@@ -53,30 +54,24 @@ class ComprasView(QWidget):
         layout.setContentsMargins(20, 20, 20, 20)
         layout.setSpacing(20)
 
-        # Título
-        titulo = QLabel("Gestión de Compras")
-        titulo.setFont(QFont("Arial", 20, QFont.Weight.Bold))
-        titulo.setStyleSheet("color: #2c3e50; margin-bottom: 10px;")
-        layout.addWidget(titulo)
+        # Título removido según solicitado
 
         # Panel de control
         control_panel = self.crear_panel_control()
         layout.addWidget(control_panel)
 
-        # Splitter principal
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-
-        # Panel izquierdo - Lista de compras
-        panel_izquierdo = self.crear_panel_compras()
-        splitter.addWidget(panel_izquierdo)
-
-        # Panel derecho - Estadísticas
-        panel_derecho = self.crear_panel_estadisticas()
-        splitter.addWidget(panel_derecho)
-
-        # Configurar splitter
-        splitter.setSizes([800, 400])
-        layout.addWidget(splitter)
+        # Crear tabs
+        tab_widget = QTabWidget()
+        
+        # Pestaña de compras
+        panel_compras = self.crear_panel_compras()
+        tab_widget.addTab(panel_compras, "📋 Órdenes de Compra")
+        
+        # Pestaña de estadísticas
+        panel_estadisticas = self.crear_panel_estadisticas()
+        tab_widget.addTab(panel_estadisticas, "📊 Estadísticas")
+        
+        layout.addWidget(tab_widget)
 
         # Aplicar estilo general
         self.aplicar_estilo()
@@ -316,11 +311,12 @@ class ComprasView(QWidget):
                     stop:0 #3498db, stop:1 #2980b9);
                 color: white;
                 border: none;
-                padding: 12px 24px;
-                border-radius: 6px;
+                padding: 6px 12px;
+                border-radius: 4px;
                 font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
+                font-size: 12px;
+                min-width: 80px;
+                max-height: 28px;
             }
             QPushButton:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,

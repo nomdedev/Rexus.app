@@ -104,7 +104,7 @@ class VidriosModel:
                     conditions.append("espesor = ?")
                     params.append(filtros["espesor"])
 
-            query = """
+            query = f"""
                 SELECT
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, dimensiones_disponibles,
@@ -145,13 +145,13 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
+            query = f"""
                 SELECT
                     v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
                     v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,
                     vo.medidas_especificas, vo.fecha_asignacion, vo.observaciones as obs_obra
                 FROM {self.tabla_vidrios} v
-                INNER JOIN """ + self.tabla_vidrios_obra + """ vo ON v.id = vo.vidrio_id
+                INNER JOIN {self.tabla_vidrios_obra} vo ON v.id = vo.vidrio_id
                 WHERE vo.obra_id = ?
                 ORDER BY v.tipo, v.espesor
             """
@@ -198,8 +198,8 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_vidrios_obra + """
+            query = f"""
+                INSERT INTO {self.tabla_vidrios_obra}
                 (vidrio_id, obra_id, metros_cuadrados_requeridos, medidas_especificas, fecha_asignacion, observaciones)
                 VALUES (?, ?, ?, ?, GETDATE(), ?)
             """
@@ -242,8 +242,8 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Crear pedido principal
-            query_pedido = """
-                INSERT INTO """ + self.tabla_pedidos_vidrios + """
+            query_pedido = f"""
+                INSERT INTO {self.tabla_pedidos_vidrios}
                 (obra_id, proveedor, fecha_pedido, estado, total_estimado)
                 VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
             """
@@ -259,8 +259,8 @@ class VidriosModel:
 
             # Actualizar cantidades pedidas en vidrios_obra
             for vidrio in vidrios_lista:
-                query_update = """
-                    UPDATE """ + self.tabla_vidrios_obra + """
+                query_update = f"""
+                    UPDATE {self.tabla_vidrios_obra}
                     SET metros_cuadrados_pedidos = metros_cuadrados_pedidos + ?
                     WHERE vidrio_id = ? AND obra_id = ?
                 """
@@ -300,33 +300,33 @@ class VidriosModel:
 
             # Total de vidrios
             cursor.execute(
-                "SELECT COUNT(*) FROM " + self.tabla_vidrios + " WHERE estado = 'ACTIVO'"
+                f"SELECT COUNT(*) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
             )
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
             cursor.execute(
-                "SELECT COUNT(DISTINCT tipo) FROM " + self.tabla_vidrios + " WHERE estado = 'ACTIVO'"
+                f"SELECT COUNT(DISTINCT tipo) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
             )
             estadisticas["tipos_disponibles"] = cursor.fetchone()[0]
 
             # Proveedores activos
             cursor.execute(
-                "SELECT COUNT(DISTINCT proveedor) FROM " + self.tabla_vidrios + " WHERE estado = 'ACTIVO'"
+                f"SELECT COUNT(DISTINCT proveedor) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
             )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado por m2)
             cursor.execute(
-                "SELECT SUM(precio_m2) FROM " + self.tabla_vidrios + " WHERE estado = 'ACTIVO'"
+                f"SELECT SUM(precio_m2) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
             )
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
             # Vidrios por tipo
-            cursor.execute("""
+            cursor.execute(f"""
                 SELECT tipo, COUNT(*) as cantidad
-                FROM """ + self.tabla_vidrios + """
+                FROM {self.tabla_vidrios}
                 WHERE estado = 'ACTIVO'
                 GROUP BY tipo
                 ORDER BY cantidad DESC
@@ -363,11 +363,11 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
+            query = f"""
                 SELECT
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, estado
-                FROM """ + self.tabla_vidrios + """
+                FROM {self.tabla_vidrios}
                 WHERE
                     (codigo LIKE ? OR
                      descripcion LIKE ? OR
@@ -409,8 +409,8 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_vidrios + """
+            query = f"""
+                INSERT INTO {self.tabla_vidrios}
                 (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
                  color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -461,8 +461,8 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
-                UPDATE """ + self.tabla_vidrios + """
+            query = f"""
+                UPDATE {self.tabla_vidrios}
                 SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
                     precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
                     estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
@@ -512,22 +512,22 @@ class VidriosModel:
 
             # Verificar si el vidrio está asignado a alguna obra
             cursor.execute(
-                "SELECT COUNT(*) FROM " + self.tabla_vidrios_obra + " WHERE vidrio_id = ?",
+                f"SELECT COUNT(*) FROM {self.tabla_vidrios_obra} WHERE vidrio_id = ?",
                 (vidrio_id,)
             )
             
             if cursor.fetchone()[0] > 0:
                 print(f"[ADVERTENCIA] El vidrio {vidrio_id} está asignado a obras, se marcará como inactivo")
                 # Marcar como inactivo en lugar de eliminar
-                query = """
-                    UPDATE """ + self.tabla_vidrios + """
+                query = f"""
+                    UPDATE {self.tabla_vidrios}
                     SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
                     WHERE id = ?
                 """
                 cursor.execute(query, (vidrio_id,))
             else:
                 # Eliminar completamente si no está asignado
-                query = "DELETE FROM " + self.tabla_vidrios + " WHERE id = ?"
+                query = f"DELETE FROM {self.tabla_vidrios} WHERE id = ?"
                 cursor.execute(query, (vidrio_id,))
 
             self.db_connection.connection.commit()
@@ -556,12 +556,12 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = """
+            query = f"""
                 SELECT
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, dimensiones_disponibles,
                     estado, observaciones, fecha_actualizacion
-                FROM """ + self.tabla_vidrios + """
+                FROM {self.tabla_vidrios}
                 WHERE id = ?
             """
 

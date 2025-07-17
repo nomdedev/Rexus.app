@@ -68,7 +68,7 @@ class InventarioView(QWidget):
         title_label = QLabel("📦 Gestión de Inventario")
         title_label.setStyleSheet("""
             QLabel {
-                font-size: 28px;
+                font-size: 14px;
                 font-weight: bold;
                 color: #2c3e50;
                 margin-bottom: 10px;

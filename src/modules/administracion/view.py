@@ -61,7 +61,7 @@ class AdministracionView(QWidget):
         layout.setSpacing(10)
         layout.setContentsMargins(20, 20, 20, 20)
 
-        # Header con título y controles
+        # Header con controles (sin título)
         header_layout = self.create_header()
         layout.addLayout(header_layout)
 
@@ -109,18 +109,8 @@ class AdministracionView(QWidget):
         self.connect_signals()
 
     def create_header(self):
-        """Crea el header con título y controles."""
+        """Crea el header con controles (sin título)."""
         header_layout = QHBoxLayout()
-
-        # Título
-        title_label = QLabel("🏢 Administración - Rexus.app")
-        title_label.setStyleSheet("""
-            font-size: 28px;
-            font-weight: bold;
-            color: #2c3e50;
-            padding: 10px;
-        """)
-        header_layout.addWidget(title_label)
 
         header_layout.addStretch()
 
@@ -135,9 +125,7 @@ class AdministracionView(QWidget):
         """)
         user_layout = QHBoxLayout(user_frame)
 
-        user_label = QLabel(f"👤 {self.current_user} ({self.current_role})")
-        user_label.setStyleSheet("color: white; font-weight: bold;")
-        user_layout.addWidget(user_label)
+        # User identification removed as requested
 
         refresh_btn = QPushButton("🔄 Actualizar")
         refresh_btn.setStyleSheet("""
@@ -190,13 +178,13 @@ class AdministracionView(QWidget):
         resumen_frame = QGroupBox("📊 Resumen General")
         resumen_frame.setStyleSheet("""
             QGroupBox {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: bold;
                 color: #2c3e50;
                 border: 2px solid #3498db;
                 border-radius: 10px;
-                padding-top: 10px;
-                margin-top: 10px;
+                padding-top: 5px;
+                margin-top: 5px;
             }
             QGroupBox::title {
                 subcontrol-origin: margin;
@@ -218,9 +206,9 @@ class AdministracionView(QWidget):
         ]
 
         for i, (titulo, key, color) in enumerate(cards_data):
-            card = self.create_info_card(titulo, "0", color)
+            card = self.create_info_card(titulo, "0", color, small=True)
             self.cards_resumen[key] = card
-            resumen_layout.addWidget(card, i // 3, i % 3)
+            resumen_layout.addWidget(card, i // 2, i % 2)
 
         layout.addWidget(resumen_frame)
 
@@ -1282,38 +1270,46 @@ class AdministracionView(QWidget):
 
         return widget
 
-    def create_info_card(self, titulo, valor, color):
+    def create_info_card(self, titulo, valor, color, small=False):
         """Crea una tarjeta de información."""
         card = QFrame()
+        padding = "4px" if small else "15px"
+        margin = "1px" if small else "5px"
+        title_size = "10px" if small else "14px"
+        value_size = "14px" if small else "24px"
         card.setStyleSheet(f"""
             QFrame {{
                 background-color: {color};
-                border-radius: 10px;
-                padding: 15px;
-                margin: 5px;
+                border-radius: 6px;
+                padding: {padding};
+                margin: {margin};
+                min-width: 80px;
+                max-width: 160px;
+                min-height: 50px;
+                max-height: 60px;
             }}
         """)
 
         layout = QVBoxLayout(card)
 
         titulo_label = QLabel(titulo)
-        titulo_label.setStyleSheet("""
-            QLabel {
+        titulo_label.setStyleSheet(f"""
+            QLabel {{
                 color: white;
-                font-size: 14px;
+                font-size: {title_size};
                 font-weight: bold;
-            }
+            }}
         """)
         titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(titulo_label)
 
         valor_label = QLabel(valor)
-        valor_label.setStyleSheet("""
-            QLabel {
+        valor_label.setStyleSheet(f"""
+            QLabel {{
                 color: white;
-                font-size: 24px;
+                font-size: {value_size};
                 font-weight: bold;
-            }
+            }}
         """)
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_label)
