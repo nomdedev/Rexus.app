@@ -522,6 +522,9 @@ class MainWindow(QMainWindow):
 
             # Configurar vista
             view.set_controller(controller)
+            
+            # Cargar datos iniciales
+            controller.cargar_datos_iniciales()
 
             return view
 
@@ -658,6 +661,12 @@ class MainWindow(QMainWindow):
             model = HerrajesModel(db_connection)
             view = HerrajesView()
             controller = HerrajesController(model, view)
+            
+            # Configurar vista
+            view.set_controller(controller)
+            
+            # Cargar datos iniciales
+            controller.cargar_datos_iniciales()
 
             return view
 
@@ -684,6 +693,12 @@ class MainWindow(QMainWindow):
             model = PedidosModel(db_connection)
             view = PedidosView()
             controller = PedidosController(model, view)
+            
+            # Configurar vista
+            view.set_controller(controller)
+            
+            # Cargar datos iniciales
+            controller.cargar_datos_iniciales()
 
             return view
 

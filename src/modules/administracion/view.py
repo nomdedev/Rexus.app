@@ -127,21 +127,6 @@ class AdministracionView(QWidget):
 
         # User identification removed as requested
 
-        refresh_btn = QPushButton("🔄 Actualizar")
-        refresh_btn.setStyleSheet("""
-            QPushButton {
-                background-color: #27ae60;
-                color: white;
-                padding: 8px 15px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #2ecc71;
-            }
-        """)
-        refresh_btn.clicked.connect(self.refresh_data)
-        user_layout.addWidget(refresh_btn)
 
         header_layout.addWidget(user_frame)
 
@@ -206,9 +191,9 @@ class AdministracionView(QWidget):
         ]
 
         for i, (titulo, key, color) in enumerate(cards_data):
-            card = self.create_info_card(titulo, "0", color, small=True)
+            card = self.create_info_card(titulo, "0", color, small=False)
             self.cards_resumen[key] = card
-            resumen_layout.addWidget(card, i // 2, i % 2)
+            resumen_layout.addWidget(card, i // 3, i % 3)
 
         layout.addWidget(resumen_frame)
 
@@ -1273,24 +1258,33 @@ class AdministracionView(QWidget):
     def create_info_card(self, titulo, valor, color, small=False):
         """Crea una tarjeta de información."""
         card = QFrame()
-        padding = "4px" if small else "15px"
-        margin = "1px" if small else "5px"
-        title_size = "10px" if small else "14px"
-        value_size = "14px" if small else "24px"
+        padding = "8px" if small else "20px"
+        margin = "2px" if small else "8px"
+        title_size = "11px" if small else "13px"
+        value_size = "16px" if small else "20px"
+        min_width = "120px" if small else "180px"
+        min_height = "70px" if small else "100px"
+        
         card.setStyleSheet(f"""
             QFrame {{
-                background-color: {color};
-                border-radius: 6px;
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {color}, stop:1 {self._darken_color(color)});
+                border: none;
+                border-radius: 12px;
                 padding: {padding};
                 margin: {margin};
-                min-width: 80px;
-                max-width: 160px;
-                min-height: 50px;
-                max-height: 60px;
+                min-width: {min_width};
+                min-height: {min_height};
+                box-shadow: 0px 2px 8px rgba(0, 0, 0, 0.15);
+            }}
+            QFrame:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {self._lighten_color(color)}, stop:1 {color});
             }}
         """)
 
         layout = QVBoxLayout(card)
+        layout.setSpacing(8)
 
         titulo_label = QLabel(titulo)
         titulo_label.setStyleSheet(f"""
@@ -1298,9 +1292,12 @@ class AdministracionView(QWidget):
                 color: white;
                 font-size: {title_size};
                 font-weight: bold;
+                background: transparent;
+                border: none;
             }}
         """)
         titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        titulo_label.setWordWrap(True)
         layout.addWidget(titulo_label)
 
         valor_label = QLabel(valor)
@@ -1309,12 +1306,28 @@ class AdministracionView(QWidget):
                 color: white;
                 font-size: {value_size};
                 font-weight: bold;
+                background: transparent;
+                border: none;
             }}
         """)
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_label)
 
         return card
+    
+    def _lighten_color(self, color):
+        """Aclara un color hexadecimal."""
+        color = color.lstrip('#')
+        rgb = tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
+        lightened = tuple(min(255, int(c * 1.2)) for c in rgb)
+        return f"#{lightened[0]:02x}{lightened[1]:02x}{lightened[2]:02x}"
+    
+    def _darken_color(self, color):
+        """Oscurece un color hexadecimal."""
+        color = color.lstrip('#')
+        rgb = tuple(int(color[i:i+2], 16) for i in (0, 2, 4))
+        darkened = tuple(max(0, int(c * 0.8)) for c in rgb)
+        return f"#{darkened[0]:02x}{darkened[1]:02x}{darkened[2]:02x}"
 
     def create_status_bar(self):
         """Crea la barra de estado."""

@@ -24,6 +24,7 @@ from PyQt6.QtWidgets import (
     QLineEdit,
     QMessageBox,
     QPushButton,
+    QScrollArea,
     QSpinBox,
     QSplitter,
     QTableWidget,
@@ -211,35 +212,50 @@ class ComprasView(QWidget):
         return panel
 
     def crear_panel_estadisticas(self):
-        """Crea el panel de estadísticas."""
-        panel = QGroupBox("Estadísticas")
+        """Crea el panel de estadísticas mejorado."""
+        panel = QWidget()
         layout = QVBoxLayout(panel)
-
-        # Estadísticas generales
-        self.stats_frame = QFrame()
-        self.stats_frame.setFrameStyle(QFrame.Shape.Box)
-        self.stats_frame.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffffff, stop:1 #f8f9fa);
-                border: 1px solid #dee2e6;
+        
+        # Crear scroll area para estadísticas
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("QScrollArea { border: none; }")
+        
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout(scroll_widget)
+        
+        # === ESTADÍSTICAS GENERALES ===
+        stats_general = QGroupBox("📊 Estadísticas Generales")
+        stats_general.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #3498db;
                 border-radius: 8px;
-                padding: 15px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
             }
         """)
-
-        stats_layout = QVBoxLayout(self.stats_frame)
-
-        # Labels de estadísticas
+        
+        stats_layout = QGridLayout(stats_general)
+        
+        # Labels de estadísticas básicas
         self.lbl_total_ordenes = QLabel("Total Órdenes: 0")
         self.lbl_ordenes_pendientes = QLabel("Pendientes: 0")
         self.lbl_ordenes_aprobadas = QLabel("Aprobadas: 0")
         self.lbl_monto_total = QLabel("Monto Total: $0.00")
-
-        # Estilo para labels
+        self.lbl_promedio_orden = QLabel("Promedio por Orden: $0.00")
+        self.lbl_ordenes_mes = QLabel("Órdenes este Mes: 0")
+        
+        # Estilo para labels básicos
         label_style = """
             QLabel {
-                font-size: 14px;
+                font-size: 12px;
                 font-weight: bold;
                 color: #2c3e50;
                 padding: 8px;
@@ -248,17 +264,185 @@ class ComprasView(QWidget):
                 margin: 2px;
             }
         """
-
-        for label in [
-            self.lbl_total_ordenes,
-            self.lbl_ordenes_pendientes,
-            self.lbl_ordenes_aprobadas,
-            self.lbl_monto_total,
-        ]:
+        
+        labels_basicos = [
+            self.lbl_total_ordenes, self.lbl_ordenes_pendientes, self.lbl_ordenes_aprobadas,
+            self.lbl_monto_total, self.lbl_promedio_orden, self.lbl_ordenes_mes
+        ]
+        
+        for i, label in enumerate(labels_basicos):
             label.setStyleSheet(label_style)
-            stats_layout.addWidget(label)
-
-        layout.addWidget(self.stats_frame)
+            stats_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(stats_general)
+        
+        # === ANÁLISIS POR PROVEEDORES ===
+        proveedores_group = QGroupBox("🏪 Análisis por Proveedores")
+        proveedores_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #27ae60;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        proveedores_layout = QVBoxLayout(proveedores_group)
+        
+        # Tabla de proveedores
+        self.tabla_proveedores = QTableWidget()
+        self.tabla_proveedores.setColumnCount(5)
+        self.tabla_proveedores.setHorizontalHeaderLabels([
+            "Proveedor", "Órdenes", "Monto Total", "Promedio", "% del Total"
+        ])
+        self.tabla_proveedores.setMaximumHeight(200)
+        self.tabla_proveedores.setAlternatingRowColors(True)
+        self.tabla_proveedores.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QHeaderView::section {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px;
+                border: 1px solid #229954;
+                font-weight: bold;
+            }
+        """)
+        
+        # Configurar tabla
+        header = self.tabla_proveedores.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        
+        proveedores_layout.addWidget(self.tabla_proveedores)
+        
+        # Proveedor destacado
+        self.lbl_proveedor_top = QLabel("🏆 Proveedor Principal: No hay datos")
+        self.lbl_proveedor_top.setStyleSheet("""
+            QLabel {
+                font-size: 13px;
+                font-weight: bold;
+                color: #27ae60;
+                padding: 10px;
+                background-color: #d5f4e6;
+                border-radius: 6px;
+                margin: 5px;
+            }
+        """)
+        proveedores_layout.addWidget(self.lbl_proveedor_top)
+        
+        scroll_layout.addWidget(proveedores_group)
+        
+        # === ANÁLISIS TEMPORAL ===
+        temporal_group = QGroupBox("📈 Análisis Temporal")
+        temporal_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #e74c3c;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        temporal_layout = QGridLayout(temporal_group)
+        
+        # Estadísticas temporales
+        self.lbl_compras_hoy = QLabel("Compras Hoy: 0")
+        self.lbl_compras_semana = QLabel("Compras esta Semana: 0")
+        self.lbl_compras_mes = QLabel("Compras este Mes: 0")
+        self.lbl_tendencia = QLabel("Tendencia: Estable")
+        
+        temporal_style = """
+            QLabel {
+                font-size: 12px;
+                font-weight: bold;
+                color: #e74c3c;
+                padding: 8px;
+                background-color: #fdf2f2;
+                border-radius: 4px;
+                margin: 2px;
+            }
+        """
+        
+        labels_temporales = [
+            self.lbl_compras_hoy, self.lbl_compras_semana, 
+            self.lbl_compras_mes, self.lbl_tendencia
+        ]
+        
+        for i, label in enumerate(labels_temporales):
+            label.setStyleSheet(temporal_style)
+            temporal_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(temporal_group)
+        
+        # === ANÁLISIS DE PRODUCTOS ===
+        productos_group = QGroupBox("📦 Análisis de Productos")
+        productos_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #f39c12;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        productos_layout = QGridLayout(productos_group)
+        
+        # Estadísticas de productos
+        self.lbl_productos_unicos = QLabel("Productos Únicos: 0")
+        self.lbl_categoria_top = QLabel("Categoría Principal: No hay datos")
+        self.lbl_producto_mas_comprado = QLabel("Producto Más Comprado: No hay datos")
+        self.lbl_ticket_promedio = QLabel("Ticket Promedio: $0.00")
+        
+        productos_style = """
+            QLabel {
+                font-size: 12px;
+                font-weight: bold;
+                color: #f39c12;
+                padding: 8px;
+                background-color: #fef9e7;
+                border-radius: 4px;
+                margin: 2px;
+            }
+        """
+        
+        labels_productos = [
+            self.lbl_productos_unicos, self.lbl_categoria_top,
+            self.lbl_producto_mas_comprado, self.lbl_ticket_promedio
+        ]
+        
+        for i, label in enumerate(labels_productos):
+            label.setStyleSheet(productos_style)
+            productos_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(productos_group)
+        
+        # Configurar scroll area
+        scroll_area.setWidget(scroll_widget)
+        layout.addWidget(scroll_area)
 
         # Gráfico de estados (texto por ahora)
         self.estados_frame = QFrame()
@@ -429,12 +613,19 @@ class ComprasView(QWidget):
             self.tabla_compras.setCellWidget(row, 9, btn_editar)
 
     def actualizar_estadisticas(self, stats):
-        """Actualiza las estadísticas mostradas."""
+        """Actualiza las estadísticas completas mostradas."""
+        # === ESTADÍSTICAS GENERALES ===
         self.lbl_total_ordenes.setText(
             f"Total Órdenes: {stats.get('total_ordenes', 0)}"
         )
         self.lbl_monto_total.setText(
             f"Monto Total: ${stats.get('monto_total', 0):,.2f}"
+        )
+        self.lbl_promedio_orden.setText(
+            f"Promedio por Orden: ${stats.get('promedio_orden', 0):,.2f}"
+        )
+        self.lbl_ordenes_mes.setText(
+            f"Órdenes este Mes: {stats.get('ordenes_mes', 0)}"
         )
 
         # Actualizar contadores por estado
@@ -449,6 +640,41 @@ class ComprasView(QWidget):
         self.lbl_ordenes_pendientes.setText(f"Pendientes: {pendientes}")
         self.lbl_ordenes_aprobadas.setText(f"Aprobadas: {aprobadas}")
 
+        # === ANÁLISIS POR PROVEEDORES ===
+        # Actualizar tabla de proveedores
+        proveedores_data = stats.get("proveedores_analisis", [])
+        self.tabla_proveedores.setRowCount(len(proveedores_data))
+        
+        for row, proveedor in enumerate(proveedores_data):
+            self.tabla_proveedores.setItem(row, 0, QTableWidgetItem(proveedor["proveedor"]))
+            self.tabla_proveedores.setItem(row, 1, QTableWidgetItem(str(proveedor["ordenes"])))
+            self.tabla_proveedores.setItem(row, 2, QTableWidgetItem(f"${proveedor['monto_total']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 3, QTableWidgetItem(f"${proveedor['promedio']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 4, QTableWidgetItem(f"{proveedor['porcentaje']:.1f}%"))
+        
+        # Actualizar proveedor principal
+        proveedor_principal = stats.get("proveedor_principal")
+        if proveedor_principal:
+            self.lbl_proveedor_top.setText(
+                f"🏆 Proveedor Principal: {proveedor_principal['proveedor']} "
+                f"({proveedor_principal['ordenes']} órdenes - ${proveedor_principal['monto_total']:,.2f})"
+            )
+        else:
+            self.lbl_proveedor_top.setText("🏆 Proveedor Principal: No hay datos")
+
+        # === ANÁLISIS TEMPORAL ===
+        self.lbl_compras_hoy.setText(f"Compras Hoy: {stats.get('compras_hoy', 0)}")
+        self.lbl_compras_semana.setText(f"Compras esta Semana: {stats.get('compras_semana', 0)}")
+        self.lbl_compras_mes.setText(f"Compras este Mes: {stats.get('compras_mes', 0)}")
+        self.lbl_tendencia.setText(f"Tendencia: {stats.get('tendencia', 'Estable')}")
+
+        # === ANÁLISIS DE PRODUCTOS ===
+        self.lbl_productos_unicos.setText(f"Productos Únicos: {stats.get('productos_unicos', 0)}")
+        self.lbl_categoria_top.setText(f"Categoría Principal: {stats.get('categoria_principal', 'No hay datos')}")
+        self.lbl_producto_mas_comprado.setText(f"Producto Más Comprado: {stats.get('producto_mas_comprado', 'No hay datos')}")
+        self.lbl_ticket_promedio.setText(f"Ticket Promedio: ${stats.get('ticket_promedio', 0):,.2f}")
+
+        # === DISTRIBUCIÓN POR ESTADO ===
         # Actualizar texto de estados
         texto_estados = "Distribución por Estado:\n\n"
         for estado_data in estados_data:

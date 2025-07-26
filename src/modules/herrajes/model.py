@@ -193,7 +193,7 @@ class HerrajesModel:
             List[Dict]: Lista de herrajes
         """
         if not self.db_connection:
-            return self._get_herrajes_demo()
+            return []
 
         try:
             cursor = self.db_connection.connection.cursor()

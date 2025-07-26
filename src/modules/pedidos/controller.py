@@ -54,6 +54,10 @@ class PedidosController(QObject):
         # Establecer controlador en la vista
         self.view.set_controller(self)
         
+    def cargar_datos_iniciales(self):
+        """Carga los datos iniciales de pedidos."""
+        self.cargar_pedidos()
+        
     def cargar_pedidos(self, filtros: Optional[Dict[str, Any]] = None):
         """Carga los pedidos desde el modelo."""
         try:
