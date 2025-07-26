@@ -576,3 +576,78 @@ class VidriosModel:
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
             return None
+    
+    def _get_vidrios_demo(self):
+        """Datos demo para cuando no hay conexión a base de datos."""
+        return [
+            {
+                "id": 1,
+                "codigo": "VT-001",
+                "descripcion": "Vidrio Templado 6mm Transparente",
+                "tipo": "Templado",
+                "espesor": 6,
+                "proveedor": "Cristales Modernos",
+                "precio_m2": 45.00,
+                "color": "Transparente",
+                "tratamiento": "Templado",
+                "estado": "ACTIVO",
+                "dimensiones_disponibles": "2.0x3.0m, 1.5x2.5m",
+                "observaciones": "Vidrio para puertas principales"
+            },
+            {
+                "id": 2,
+                "codigo": "VL-002",
+                "descripcion": "Vidrio Laminado 8mm Bronce",
+                "tipo": "Laminado",
+                "espesor": 8,
+                "proveedor": "Vidrios Industriales",
+                "precio_m2": 62.50,
+                "color": "Bronce",
+                "tratamiento": "Laminado",
+                "estado": "ACTIVO",
+                "dimensiones_disponibles": "2.5x3.5m, 2.0x3.0m",
+                "observaciones": "Vidrio de seguridad para fachadas"
+            },
+            {
+                "id": 3,
+                "codigo": "VC-003",
+                "descripcion": "Vidrio Común 4mm Transparente",
+                "tipo": "Común",
+                "espesor": 4,
+                "proveedor": "Distribuidora Central",
+                "precio_m2": 18.75,
+                "color": "Transparente",
+                "tratamiento": "Ninguno",
+                "estado": "ACTIVO",
+                "dimensiones_disponibles": "1.5x2.0m, 1.0x1.5m",
+                "observaciones": "Vidrio estándar para ventanas"
+            },
+            {
+                "id": 4,
+                "codigo": "VE-004",
+                "descripción": "Espejo 5mm Plata",
+                "tipo": "Espejo",
+                "espesor": 5,
+                "proveedor": "Espejos Decorativos",
+                "precio_m2": 35.00,
+                "color": "Plata",
+                "tratamiento": "Espejado",
+                "estado": "ACTIVO",
+                "dimensiones_disponibles": "1.0x2.0m, 0.8x1.5m",
+                "observaciones": "Espejo decorativo para baños"
+            },
+            {
+                "id": 5,
+                "codigo": "VT-005",
+                "descripcion": "Vidrio Templado 10mm Azul",
+                "tipo": "Templado",
+                "espesor": 10,
+                "proveedor": "Cristales Modernos",
+                "precio_m2": 78.00,
+                "color": "Azul",
+                "tratamiento": "Templado",
+                "estado": "ACTIVO",
+                "dimensiones_disponibles": "3.0x4.0m, 2.5x3.0m",
+                "observaciones": "Vidrio especial para divisiones"
+            }
+        ]

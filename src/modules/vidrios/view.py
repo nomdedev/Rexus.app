@@ -118,13 +118,14 @@ class VidriosView(QWidget):
         main_splitter.addWidget(right_panel)
 
         # Configurar proporciones del splitter
-        main_splitter.setSizes([300, 700])
+        main_splitter.setSizes([200, 800])
 
         layout.addWidget(main_splitter)
 
     def crear_panel_izquierdo(self):
         """Crea el panel izquierdo con filtros y estadísticas."""
         widget = QWidget()
+        widget.setMaximumWidth(200)
         layout = QVBoxLayout(widget)
 
         # Filtros
@@ -135,7 +136,7 @@ class VidriosView(QWidget):
         self.search_input = QLineEdit()
         self.search_input.setPlaceholderText("Buscar vidrios...")
         self.search_input.textChanged.connect(self.filtrar_busqueda)
-        self.search_input.setFixedWidth(200)
+        self.search_input.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Búsqueda:"))
         filtros_layout.addWidget(self.search_input)
 
@@ -143,7 +144,7 @@ class VidriosView(QWidget):
         self.combo_tipo = QComboBox()
         self.combo_tipo.addItems(["Todos", "Templado", "Laminado", "Común", "Espejo"])
         self.combo_tipo.currentTextChanged.connect(self.aplicar_filtros)
-        self.combo_tipo.setFixedWidth(200)
+        self.combo_tipo.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Tipo:"))
         filtros_layout.addWidget(self.combo_tipo)
 
@@ -151,7 +152,7 @@ class VidriosView(QWidget):
         self.combo_proveedor = QComboBox()
         self.combo_proveedor.addItem("Todos")
         self.combo_proveedor.currentTextChanged.connect(self.aplicar_filtros)
-        self.combo_proveedor.setFixedWidth(200)
+        self.combo_proveedor.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Proveedor:"))
         filtros_layout.addWidget(self.combo_proveedor)
 
@@ -161,7 +162,7 @@ class VidriosView(QWidget):
             ["Todos", "3mm", "4mm", "5mm", "6mm", "8mm", "10mm", "12mm"]
         )
         self.combo_espesor.currentTextChanged.connect(self.aplicar_filtros)
-        self.combo_espesor.setFixedWidth(200)
+        self.combo_espesor.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Espesor:"))
         filtros_layout.addWidget(self.combo_espesor)
 

@@ -283,7 +283,7 @@ class PedidosModel:
     def obtener_pedidos(self, filtros: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
         """Obtiene lista de pedidos con filtros opcionales."""
         if not self.db_connection:
-            return self._get_datos_demo()
+            return []
             
         try:
             cursor = self.db_connection.cursor()

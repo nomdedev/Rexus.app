@@ -47,6 +47,10 @@ class VidriosController(QObject):
                 
         except Exception as e:
             self.mostrar_error(f"Error cargando datos: {e}")
+    
+    def cargar_datos_iniciales(self):
+        """Carga los datos iniciales de vidrios."""
+        self.cargar_datos()
 
     def buscar_vidrios(self, termino):
         """Busca vidrios por término de búsqueda."""

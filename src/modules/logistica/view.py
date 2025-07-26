@@ -32,8 +32,458 @@ from PyQt6.QtWidgets import (
 
 
 class LogisticaView(QWidget):
+    """Vista modernizada para gestión de logística."""
+    
+    # Señales
+    entrega_seleccionada = pyqtSignal(dict)
+    crear_entrega_solicitada = pyqtSignal(dict)
+    actualizar_entrega_solicitada = pyqtSignal(dict)
+    eliminar_entrega_solicitada = pyqtSignal(int)
+    
+    def __init__(self):
+        super().__init__()
+        self.controller = None
+        self.entregas_data = []
+        self.init_ui()
+    
+    def init_ui(self):
+        """Inicializa la interfaz de usuario."""
+        layout = QVBoxLayout(self)
+        layout.setSpacing(15)
+        layout.setContentsMargins(20, 20, 20, 20)
+        
+        
+        # Crear tabs
+        self.tabs = QTabWidget()
+        self.tabs.setStyleSheet("""
+            QTabWidget::pane {
+                border: 1px solid #bdc3c7;
+                background-color: white;
+            }
+            QTabBar::tab {
+                background: #ecf0f1;
+                padding: 10px 20px;
+                margin-right: 2px;
+                border: 1px solid #bdc3c7;
+                border-bottom: none;
+            }
+            QTabBar::tab:selected {
+                background: white;
+                border-bottom: 1px solid white;
+            }
+        """)
+        
+        # Tab de entregas
+        self.create_entregas_tab()
+        
+        # Tab de servicios
+        self.create_servicios_tab()
+        
+        # Tab de mapa
+        self.create_mapa_tab()
+        
+        # Tab de estadísticas
+        self.create_estadisticas_tab()
+        
+        layout.addWidget(self.tabs)
+        
+        self.setStyleSheet("""
+            QWidget {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', sans-serif;
+            }
+            QGroupBox {
+                font-weight: bold;
+                border: 2px solid #bdc3c7;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 8px;
+                border: 1px solid #2980b9;
+                font-weight: bold;
+            }
+        """)
+    
+    def create_entregas_tab(self):
+        """Crea el tab de entregas."""
+        entregas_widget = QWidget()
+        layout = QVBoxLayout(entregas_widget)
+        
+        # Panel de filtros
+        filtros_group = QGroupBox("Filtros y Búsqueda")
+        filtros_layout = QHBoxLayout(filtros_group)
+        
+        # Búsqueda
+        self.search_input = QLineEdit()
+        self.search_input.setPlaceholderText("Buscar entregas...")
+        self.search_input.setFixedWidth(200)
+        filtros_layout.addWidget(QLabel("Buscar:"))
+        filtros_layout.addWidget(self.search_input)
+        
+        # Filtro por estado
+        self.combo_estado = QComboBox()
+        self.combo_estado.addItems(["Todos", "Programada", "En Tránsito", "Entregada", "Cancelada"])
+        self.combo_estado.setFixedWidth(150)
+        filtros_layout.addWidget(QLabel("Estado:"))
+        filtros_layout.addWidget(self.combo_estado)
+        
+        # Botón nuevo
+        btn_nueva_entrega = QPushButton("➕ Nueva Entrega")
+        btn_nueva_entrega.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 10px 20px;
+                font-size: 14px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #219a52;
+            }
+        """)
+        filtros_layout.addWidget(btn_nueva_entrega)
+        
+        filtros_layout.addStretch()
+        layout.addWidget(filtros_group)
+        
+        # Tabla de entregas
+        self.tabla_entregas = QTableWidget()
+        self.tabla_entregas.setColumnCount(7)
+        self.tabla_entregas.setHorizontalHeaderLabels([
+            "ID", "Fecha Programada", "Dirección", "Estado", "Contacto", "Observaciones", "Acciones"
+        ])
+        
+        # Configurar tabla
+        header = self.tabla_entregas.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        self.tabla_entregas.setColumnWidth(0, 60)
+        self.tabla_entregas.setAlternatingRowColors(True)
+        self.tabla_entregas.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        layout.addWidget(self.tabla_entregas)
+        
+        self.tabs.addTab(entregas_widget, "📦 Entregas")
+    
+    def create_servicios_tab(self):
+        """Crea el tab de servicios."""
+        servicios_widget = QWidget()
+        layout = QVBoxLayout(servicios_widget)
+        
+        # Panel de creación de servicios
+        crear_group = QGroupBox("📋 Generar Nuevo Servicio")
+        crear_layout = QVBoxLayout(crear_group)
+        
+        # Formulario para crear servicio
+        form_layout = QFormLayout()
+        
+        # Tipo de servicio
+        self.combo_tipo_servicio = QComboBox()
+        self.combo_tipo_servicio.addItems([
+            "Entrega Domicilio",
+            "Transporte Obra",
+            "Servicio Express",
+            "Carga Pesada",
+            "Servicio Programado"
+        ])
+        self.combo_tipo_servicio.setFixedWidth(200)
+        
+        # Cliente/Destino
+        self.input_cliente = QLineEdit()
+        self.input_cliente.setPlaceholderText("Nombre del cliente o destino")
+        self.input_cliente.setFixedWidth(300)
+        
+        # Dirección
+        self.input_direccion = QLineEdit()
+        self.input_direccion.setPlaceholderText("Dirección completa de entrega")
+        self.input_direccion.setFixedWidth(400)
+        
+        # Fecha programada
+        self.date_programada = QDateEdit()
+        self.date_programada.setDate(QDate.currentDate())
+        self.date_programada.setCalendarPopup(True)
+        self.date_programada.setFixedWidth(150)
+        
+        # Hora programada
+        self.input_hora = QLineEdit()
+        self.input_hora.setPlaceholderText("HH:MM")
+        self.input_hora.setFixedWidth(100)
+        
+        # Contacto
+        self.input_contacto = QLineEdit()
+        self.input_contacto.setPlaceholderText("Teléfono de contacto")
+        self.input_contacto.setFixedWidth(200)
+        
+        # Observaciones
+        self.text_observaciones = QTextEdit()
+        self.text_observaciones.setPlaceholderText("Observaciones adicionales del servicio")
+        self.text_observaciones.setMaximumHeight(80)
+        
+        # Agregar campos al formulario
+        form_layout.addRow("Tipo de Servicio:", self.combo_tipo_servicio)
+        form_layout.addRow("Cliente/Destino:", self.input_cliente)
+        form_layout.addRow("Dirección:", self.input_direccion)
+        form_layout.addRow("Fecha Programada:", self.date_programada)
+        form_layout.addRow("Hora:", self.input_hora)
+        form_layout.addRow("Contacto:", self.input_contacto)
+        form_layout.addRow("Observaciones:", self.text_observaciones)
+        
+        crear_layout.addLayout(form_layout)
+        
+        # Botones de acción
+        botones_layout = QHBoxLayout()
+        
+        btn_generar = QPushButton("✨ Generar Servicio")
+        btn_generar.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 12px 30px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 6px;
+            }
+            QPushButton:hover {
+                background-color: #219a52;
+            }
+        """)
+        btn_generar.clicked.connect(self.generar_servicio)
+        
+        btn_limpiar = QPushButton("🧹 Limpiar Formulario")
+        btn_limpiar.setStyleSheet("""
+            QPushButton {
+                background-color: #95a5a6;
+                color: white;
+                padding: 12px 30px;
+                font-size: 14px;
+                font-weight: bold;
+                border-radius: 6px;
+            }
+            QPushButton:hover {
+                background-color: #7f8c8d;
+            }
+        """)
+        btn_limpiar.clicked.connect(self.limpiar_formulario)
+        
+        botones_layout.addWidget(btn_generar)
+        botones_layout.addWidget(btn_limpiar)
+        botones_layout.addStretch()
+        
+        crear_layout.addLayout(botones_layout)
+        layout.addWidget(crear_group)
+        
+        # Tabla de servicios generados
+        tabla_group = QGroupBox("📋 Servicios Generados")
+        tabla_layout = QVBoxLayout(tabla_group)
+        
+        self.tabla_servicios = QTableWidget()
+        self.tabla_servicios.setColumnCount(8)
+        self.tabla_servicios.setHorizontalHeaderLabels([
+            "ID", "Tipo", "Cliente", "Dirección", "Fecha", "Hora", "Estado", "Acciones"
+        ])
+        
+        # Configurar tabla
+        header = self.tabla_servicios.horizontalHeader()
+        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        self.tabla_servicios.setColumnWidth(0, 60)
+        self.tabla_servicios.setAlternatingRowColors(True)
+        self.tabla_servicios.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        tabla_layout.addWidget(self.tabla_servicios)
+        layout.addWidget(tabla_group)
+        
+        self.tabs.addTab(servicios_widget, "🚚 Servicios")
+    
+    def create_mapa_tab(self):
+        """Crea el tab del mapa con ubicaciones."""
+        mapa_widget = QWidget()
+        layout = QVBoxLayout(mapa_widget)
+        
+        # Panel de controles del mapa
+        controles_group = QGroupBox("🗺️ Controles del Mapa")
+        controles_layout = QHBoxLayout(controles_group)
+        
+        # Filtros del mapa
+        self.combo_filtro_mapa = QComboBox()
+        self.combo_filtro_mapa.addItems([
+            "Mostrar Todo",
+            "Solo Servicios",
+            "Solo Obras",
+            "Servicios Activos",
+            "Obras En Proceso"
+        ])
+        self.combo_filtro_mapa.setFixedWidth(150)
+        controles_layout.addWidget(QLabel("Filtro:"))
+        controles_layout.addWidget(self.combo_filtro_mapa)
+        
+        # Botón actualizar mapa
+        btn_actualizar_mapa = QPushButton("🔄 Actualizar Mapa")
+        btn_actualizar_mapa.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                padding: 8px 16px;
+                font-weight: bold;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+        """)
+        btn_actualizar_mapa.clicked.connect(self.actualizar_mapa)
+        controles_layout.addWidget(btn_actualizar_mapa)
+        
+        # Botón centrar mapa
+        btn_centrar = QPushButton("📍 Centrar Mapa")
+        btn_centrar.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                padding: 8px 16px;
+                font-weight: bold;
+                border-radius: 4px;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        btn_centrar.clicked.connect(self.centrar_mapa)
+        controles_layout.addWidget(btn_centrar)
+        
+        controles_layout.addStretch()
+        layout.addWidget(controles_group)
+        
+        # Área del mapa de La Plata y alrededores
+        mapa_frame = QFrame()
+        mapa_frame.setMinimumHeight(500)
+        mapa_frame.setStyleSheet("""
+            QFrame {
+                background-color: #e8f5e8;
+                border: 2px solid #27ae60;
+                border-radius: 8px;
+                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="%23e8f5e8"/><g stroke="%23666" stroke-width="1" fill="none"><path d="M50 50 Q200 80 350 60 Q500 40 650 70 Q750 90 800 100"/><path d="M0 150 Q150 130 300 140 Q450 150 600 135 Q750 120 800 130"/><path d="M50 250 Q200 230 350 240 Q500 250 650 235 Q750 220 800 230"/><path d="M0 350 Q150 330 300 340 Q450 350 600 335 Q750 320 800 330"/><path d="M50 450 Q200 430 350 440 Q500 450 650 435 Q750 420 800 430"/></g><g stroke="%23999" stroke-width="0.5" fill="none"><line x1="100" y1="0" x2="100" y2="500"/><line x1="200" y1="0" x2="200" y2="500"/><line x1="300" y1="0" x2="300" y2="500"/><line x1="400" y1="0" x2="400" y2="500"/><line x1="500" y1="0" x2="500" y2="500"/><line x1="600" y1="0" x2="600" y2="500"/><line x1="700" y1="0" x2="700" y2="500"/><line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/><line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/></g><text x="200" y="30" font-size="16" fill="%23333" font-weight="bold">BERISSO</text><text x="350" y="30" font-size="20" fill="%23333" font-weight="bold">LA PLATA</text><text x="550" y="30" font-size="16" fill="%23333" font-weight="bold">ENSENADA</text><text x="120" y="180" font-size="14" fill="%23666">Los Hornos</text><text x="280" y="150" font-size="14" fill="%23666">Casco Urbano</text><text x="450" y="160" font-size="14" fill="%23666">Gonnet</text><text x="580" y="180" font-size="14" fill="%23666">City Bell</text><text x="150" y="280" font-size="14" fill="%23666">San Carlos</text><text x="350" y="250" font-size="14" fill="%23666">Tolosa</text><text x="500" y="280" font-size="14" fill="%23666">Villa Elisa</text><text x="100" y="380" font-size="14" fill="%23666">Melchor Romero</text><text x="320" y="350" font-size="14" fill="%23666">Ringuelet</text><text x="520" y="380" font-size="14" fill="%23666">Arturo Seguí</text><circle cx="180" cy="200" r="4" fill="%23e74c3c"/><text x="190" y="205" font-size="10" fill="%23e74c3c">Servicio Activo</text><circle cx="380" cy="170" r="4" fill="%2327ae60"/><text x="390" y="175" font-size="10" fill="%2327ae60">Obra en Proceso</text><circle cx="520" cy="300" r="4" fill="%233498db"/><text x="530" y="305" font-size="10" fill="%233498db">Entrega Programada</text><circle cx="150" cy="320" r="4" fill="%23f39c12"/><text x="160" y="325" font-size="10" fill="%23f39c12">Servicio Pendiente</text><circle cx="450" cy="220" r="4" fill="%239b59b6"/><text x="460" y="225" font-size="10" fill="%239b59b6">Ruta Optimizada</text><circle cx="600" cy="150" r="4" fill="%23e67e22"/><text x="610" y="155" font-size="10" fill="%23e67e22">Punto de Entrega</text></svg>');
+                background-repeat: no-repeat;
+                background-position: center;
+                background-size: contain;
+            }
+        """)
+        
+        mapa_layout = QVBoxLayout(mapa_frame)
+        
+        # Panel de información del mapa (sin ocupar espacio del mapa)
+        info_panel = QWidget()
+        info_panel.setMaximumHeight(60)
+        info_panel.setStyleSheet("""
+            QWidget {
+                background-color: rgba(255, 255, 255, 0.95);
+                border: 1px solid #bdc3c7;
+                border-radius: 8px;
+                margin: 10px;
+            }
+        """)
+        info_layout = QHBoxLayout(info_panel)
+        
+        # Leyenda compacta
+        leyenda_label = QLabel("🗺️ Mapa de La Plata y Alrededores | 🔴 Servicios Activos | 🟢 Obras en Proceso | 🔵 Entregas Programadas | 🟠 Servicios Pendientes | 🟣 Rutas Optimizadas")
+        leyenda_label.setStyleSheet("""
+            QLabel {
+                font-size: 11px;
+                color: #2c3e50;
+                font-weight: bold;
+                padding: 8px;
+            }
+        """)
+        info_layout.addWidget(leyenda_label)
+        
+        # Agregar panel de información encima del mapa
+        layout.addWidget(info_panel)
+        
+        layout.addWidget(mapa_frame)
+        
+        # Panel de información lateral
+        info_group = QGroupBox("📋 Información de Ubicaciones")
+        info_layout = QVBoxLayout(info_group)
+        
+        # Lista de ubicaciones
+        self.lista_ubicaciones = QTableWidget()
+        self.lista_ubicaciones.setColumnCount(4)
+        self.lista_ubicaciones.setHorizontalHeaderLabels([
+            "Tipo", "Descripción", "Dirección", "Estado"
+        ])
+        self.lista_ubicaciones.setMaximumHeight(150)
+        
+        # Configurar tabla de ubicaciones
+        header_ubicaciones = self.lista_ubicaciones.horizontalHeader()
+        header_ubicaciones.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        self.lista_ubicaciones.setAlternatingRowColors(True)
+        
+        info_layout.addWidget(self.lista_ubicaciones)
+        layout.addWidget(info_group)
+        
+        self.tabs.addTab(mapa_widget, "🗺️ Mapa")
+    
+    def create_estadisticas_tab(self):
+        """Crea el tab de estadísticas."""
+        stats_widget = QWidget()
+        layout = QVBoxLayout(stats_widget)
+        
+        # Panel de estadísticas
+        stats_group = QGroupBox("Estadísticas de Logística")
+        stats_layout = QFormLayout(stats_group)
+        
+        self.label_total_entregas = QLabel("0")
+        self.label_entregas_pendientes = QLabel("0")
+        self.label_entregas_completadas = QLabel("0")
+        self.label_entregas_canceladas = QLabel("0")
+        self.label_promedio_tiempo = QLabel("0 horas")
+        
+        stats_layout.addRow("Total Entregas:", self.label_total_entregas)
+        stats_layout.addRow("Entregas Pendientes:", self.label_entregas_pendientes)
+        stats_layout.addRow("Entregas Completadas:", self.label_entregas_completadas)
+        stats_layout.addRow("Entregas Canceladas:", self.label_entregas_canceladas)
+        stats_layout.addRow("Tiempo Promedio:", self.label_promedio_tiempo)
+        
+        layout.addWidget(stats_group)
+        layout.addStretch()
+        
+        self.tabs.addTab(stats_widget, "📊 Estadísticas")
+    
+    def set_controller(self, controller):
+        """Establece el controlador para esta vista."""
+        self.controller = controller
+    
     def cargar_entregas_en_tabla(self, entregas):
+        """Carga las entregas en la tabla."""
+        self.entregas_data = entregas
         self.tabla_entregas.setRowCount(len(entregas))
+        
         for row, entrega in enumerate(entregas):
             self.tabla_entregas.setItem(row, 0, QTableWidgetItem(str(entrega.get('id', ''))))
             self.tabla_entregas.setItem(row, 1, QTableWidgetItem(str(entrega.get('fecha_programada', ''))))
@@ -41,846 +491,193 @@ class LogisticaView(QWidget):
             self.tabla_entregas.setItem(row, 3, QTableWidgetItem(str(entrega.get('estado', ''))))
             self.tabla_entregas.setItem(row, 4, QTableWidgetItem(str(entrega.get('contacto', ''))))
             self.tabla_entregas.setItem(row, 5, QTableWidgetItem(str(entrega.get('observaciones', ''))))
-            btn_accion = QPushButton('⚙️')
-            self.tabla_entregas.setCellWidget(row, 6, btn_accion)
-
-    def cargar_services_en_tabla(self, services):
-        self.tabla_service.setRowCount(len(services))
-        for row, service in enumerate(services):
-            self.tabla_service.setItem(row, 0, QTableWidgetItem(str(service.get('id', ''))))
-            self.tabla_service.setItem(row, 1, QTableWidgetItem(str(service.get('fecha', ''))))
-            self.tabla_service.setItem(row, 2, QTableWidgetItem(str(service.get('obra', ''))))
-            self.tabla_service.setItem(row, 3, QTableWidgetItem(str(service.get('estado', ''))))
-            self.tabla_service.setItem(row, 4, QTableWidgetItem(str(service.get('responsable', ''))))
-            self.tabla_service.setItem(row, 5, QTableWidgetItem(str(service.get('descripcion', ''))))
-            btn_accion = QPushButton('⚙️')
-            self.tabla_service.setCellWidget(row, 6, btn_accion)
-    """Vista modernizada para gestión de logística."""
-
-    # Señales
-    envio_seleccionado = pyqtSignal(dict)
-    solicitud_crear_envio = pyqtSignal(dict)
-    solicitud_actualizar_envio = pyqtSignal(dict)
-    solicitud_cancelar_envio = pyqtSignal(str)
-
-    def __init__(self):
-        super().__init__()
-        self.controller = None
-        self.envios_data = []
-        self.envio_actual = None
-
-        self.init_ui()
-        self.aplicar_estilos()
-
-    def init_ui(self):
-        """Inicializa la interfaz de usuario."""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(10)
-        layout.setContentsMargins(15, 15, 15, 15)
-
-        # Header
-        header_widget = self.crear_header()
-        layout.addWidget(header_widget)
-
-        # Pestañas principales
-        self.tab_widget = QTabWidget()
-
-        # Pestaña de envíos
-        tab_envios = self.crear_tab_envios()
-        self.tab_widget.addTab(tab_envios, "📦 Envíos")
-
-        # Pestaña de rutas
-        tab_rutas = self.crear_tab_rutas()
-        self.tab_widget.addTab(tab_rutas, "🗺️ Rutas")
-
-        # Pestaña de vehículos
-        tab_vehiculos = self.crear_tab_vehiculos()
-        self.tab_widget.addTab(tab_vehiculos, "🚚 Vehículos")
-
-        # Pestaña de tracking
-        tab_tracking = self.crear_tab_tracking()
-        self.tab_widget.addTab(tab_tracking, "📍 Tracking")
-
-        layout.addWidget(self.tab_widget)
-
-    def crear_header(self):
-        """Crea el header con título y estadísticas."""
-        header = QFrame()
-        header.setFixedHeight(120)
-        layout = QHBoxLayout(header)
-
-        # Título
-        titulo_container = QVBoxLayout()
-        titulo = QLabel("🚚 Gestión de Logística")
-        titulo.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
-        subtitulo = QLabel("Control de envíos, rutas y transporte")
-        subtitulo.setFont(QFont("Segoe UI", 12))
-
-        titulo_container.addWidget(titulo)
-        titulo_container.addWidget(subtitulo)
-        titulo_container.addStretch()
-
-        layout.addLayout(titulo_container)
-        layout.addStretch()
-
-        # Estadísticas
-        stats_container = QHBoxLayout()
-
-        self.stat_envios_activos = self.crear_stat_card(
-            "Envíos Activos", "0", "#3498db"
-        )
-        self.stat_en_ruta = self.crear_stat_card("En Ruta", "0", "#f39c12")
-        self.stat_entregados = self.crear_stat_card("Entregados Hoy", "0", "#27ae60")
-        self.stat_vehiculos = self.crear_stat_card("Vehículos", "0", "#9b59b6")
-
-        stats_container.addWidget(self.stat_envios_activos)
-        stats_container.addWidget(self.stat_en_ruta)
-        stats_container.addWidget(self.stat_entregados)
-        stats_container.addWidget(self.stat_vehiculos)
-
-        layout.addLayout(stats_container)
-
-        return header
-
-    def crear_stat_card(self, titulo, valor, color):
-        """Crea una tarjeta de estadística."""
-        card = QFrame()
-        card.setFixedSize(120, 80)
-
-        layout = QVBoxLayout(card)
-        layout.setContentsMargins(10, 10, 10, 10)
-
-        valor_label = QLabel(valor)
-        valor_label.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))
-        valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        valor_label.setStyleSheet(f"color: {color};")
-
-        titulo_label = QLabel(titulo)
-        titulo_label.setFont(QFont("Segoe UI", 10))
-        titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        layout.addWidget(valor_label)
-        layout.addWidget(titulo_label)
-
-        # Guardar referencias
-        setattr(card, "valor_label", valor_label)
-        setattr(card, "titulo_label", titulo_label)
-        setattr(card, "color", color)
-
-        return card
-
-    def crear_tab_envios(self):
-        """Crea la pestaña de envíos."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Barra de herramientas
-        toolbar = QFrame()
-        toolbar_layout = QHBoxLayout(toolbar)
-
-        # Búsqueda
-        self.search_envios = QLineEdit()
-        self.search_envios.setPlaceholderText("🔍 Buscar envíos...")
-        self.search_envios.textChanged.connect(self.filtrar_envios)
-
-        # Filtros
-        self.filtro_estado_envio = QComboBox()
-        self.filtro_estado_envio.addItems(
-            ["Todos", "Preparando", "En Ruta", "Entregado", "Cancelado"]
-        )
-        self.filtro_estado_envio.currentTextChanged.connect(self.filtrar_envios)
-
-        self.filtro_transportista = QComboBox()
-        self.filtro_transportista.addItems(["Todos", "Interno", "Externo"])
-        self.filtro_transportista.currentTextChanged.connect(self.filtrar_envios)
-
-        # Botones
-        self.btn_nuevo_envio = QPushButton("➕ Nuevo Envío")
-        self.btn_nuevo_envio.clicked.connect(self.nuevo_envio)
-
-        self.btn_actualizar_envios = QPushButton("🔄 Actualizar")
-        self.btn_actualizar_envios.clicked.connect(self.cargar_envios)
-
-        toolbar_layout.addWidget(self.search_envios)
-        toolbar_layout.addWidget(self.filtro_estado_envio)
-        toolbar_layout.addWidget(self.filtro_transportista)
-        toolbar_layout.addStretch()
-        toolbar_layout.addWidget(self.btn_nuevo_envio)
-        toolbar_layout.addWidget(self.btn_actualizar_envios)
-
-        # Tabla de envíos
-        self.tabla_envios = QTableWidget()
-        self.tabla_envios.setColumnCount(8)
-        self.tabla_envios.setHorizontalHeaderLabels(
-            [
-                "ID",
-                "Fecha",
-                "Destino",
-                "Estado",
-                "Transportista",
-                "Progreso",
-                "Estimado",
-                "Acciones",
-            ]
-        )
-
-        # Configurar tabla
-        header = self.tabla_envios.horizontalHeader()
-        if header:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)
-
-        self.tabla_envios.setColumnWidth(0, 80)
-        self.tabla_envios.setColumnWidth(1, 100)
-        self.tabla_envios.setColumnWidth(3, 100)
-        self.tabla_envios.setColumnWidth(5, 120)
-        self.tabla_envios.setColumnWidth(6, 100)
-        self.tabla_envios.setColumnWidth(7, 120)
-
-        self.tabla_envios.setSelectionBehavior(
-            QTableWidget.SelectionBehavior.SelectRows
-        )
-        self.tabla_envios.setAlternatingRowColors(True)
-        self.tabla_envios.itemSelectionChanged.connect(self.on_envio_seleccionado)
-
-        layout.addWidget(toolbar)
-        layout.addWidget(self.tabla_envios)
-
-        return widget
-
-    def crear_tab_rutas(self):
-        """Crea la pestaña de rutas."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Herramientas de rutas
-        toolbar = QFrame()
-        toolbar_layout = QHBoxLayout(toolbar)
-
-        self.btn_planificar_ruta = QPushButton("🗺️ Planificar Ruta")
-        self.btn_optimizar_rutas = QPushButton("⚡ Optimizar Rutas")
-        self.btn_ver_mapa = QPushButton("🌍 Ver Mapa")
-
-        toolbar_layout.addWidget(self.btn_planificar_ruta)
-        toolbar_layout.addWidget(self.btn_optimizar_rutas)
-        toolbar_layout.addWidget(self.btn_ver_mapa)
-        toolbar_layout.addStretch()
-
-        # Tabla de rutas
-        self.tabla_rutas = QTableWidget()
-        self.tabla_rutas.setColumnCount(6)
-        self.tabla_rutas.setHorizontalHeaderLabels(
-            ["ID", "Nombre", "Distancia", "Tiempo Est.", "Envíos", "Estado"]
-        )
-
-        # Configurar tabla de rutas
-        header_rutas = self.tabla_rutas.horizontalHeader()
-        if header_rutas:
-            header_rutas.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            header_rutas.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-            header_rutas.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)
-            header_rutas.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
-            header_rutas.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
-            header_rutas.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
-
-        self.tabla_rutas.setAlternatingRowColors(True)
-
-        layout.addWidget(toolbar)
-    def crear_tab_entregas(self):
-        """Crea la pestaña de entregas con formulario y tabla."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # --- Formulario de entrega ---
-        form_group = QGroupBox("Nueva Entrega")
-        form_layout = QFormLayout(form_group)
-
-        self.entrega_fecha = QDateEdit()
-        self.entrega_fecha.setDate(QDate.currentDate())
-        self.entrega_fecha.setCalendarPopup(True)
-        form_layout.addRow("Fecha:", self.entrega_fecha)
-
-        self.entrega_destino = QLineEdit()
-        self.entrega_destino.setPlaceholderText("Destino de la entrega")
-        form_layout.addRow("Destino:", self.entrega_destino)
-
-        self.entrega_estado = QComboBox()
-        self.entrega_estado.addItems(["Pendiente", "En Camino", "Entregado", "Cancelado"])
-        form_layout.addRow("Estado:", self.entrega_estado)
-
-        self.entrega_responsable = QLineEdit()
-        self.entrega_responsable.setPlaceholderText("Responsable")
-        form_layout.addRow("Responsable:", self.entrega_responsable)
-
-        self.entrega_observaciones = QTextEdit()
-        self.entrega_observaciones.setMaximumHeight(60)
-        self.entrega_observaciones.setPlaceholderText("Observaciones...")
-        form_layout.addRow("Observaciones:", self.entrega_observaciones)
-
-        btns_layout = QHBoxLayout()
-        self.btn_guardar_entrega = QPushButton("💾 Guardar")
-        self.btn_limpiar_entrega = QPushButton("🧹 Limpiar")
-        btns_layout.addWidget(self.btn_guardar_entrega)
-        btns_layout.addWidget(self.btn_limpiar_entrega)
-        btns_layout.addStretch()
-        form_layout.addRow(btns_layout)
-
-        # Conectar botón guardar entrega
-        self.btn_guardar_entrega.clicked.connect(self._on_guardar_entrega)
-    def set_controller(self, controller):
-        self.controller = controller
-        # Cargar datos iniciales
-        if hasattr(self.controller, 'cargar_entregas'):
-            self.controller.cargar_entregas()
-        if hasattr(self.controller, 'cargar_services'):
-            self.controller.cargar_services()
-
-    def _on_guardar_entrega(self):
-        datos = {
-            'fecha_programada': self.entrega_fecha.date().toString('yyyy-MM-dd'),
-            'direccion_entrega': self.entrega_destino.text(),
-            'estado': self.entrega_estado.currentText(),
-            'contacto': self.entrega_responsable.text(),
-            'observaciones': self.entrega_observaciones.toPlainText(),
-            # Puedes agregar más campos según el modelo
-        }
-        if self.controller and hasattr(self.controller, 'guardar_entrega'):
-            self.controller.guardar_entrega(datos)
-        self._limpiar_formulario_entrega()
-
-    def _limpiar_formulario_entrega(self):
-        self.entrega_fecha.setDate(QDate.currentDate())
-        self.entrega_destino.clear()
-        self.entrega_estado.setCurrentIndex(0)
-        self.entrega_responsable.clear()
-        self.entrega_observaciones.clear()
-
-        layout.addWidget(form_group)
-
-        # --- Tabla de entregas ---
-        self.tabla_entregas = QTableWidget()
-        self.tabla_entregas.setColumnCount(7)
-        self.tabla_entregas.setHorizontalHeaderLabels([
-            "ID", "Fecha", "Destino", "Estado", "Responsable", "Observaciones", "Acciones"
-        ])
-        header = self.tabla_entregas.horizontalHeader()
-        if header:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
-        self.tabla_entregas.setAlternatingRowColors(True)
-
-        layout.addWidget(self.tabla_entregas)
-        return widget
-
-    def crear_tab_service(self):
-        """Crea la pestaña de service con formulario y tabla."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # --- Formulario de service ---
-        form_group = QGroupBox("Nuevo Service")
-        form_layout = QFormLayout(form_group)
-
-        self.service_fecha = QDateEdit()
-        self.service_fecha.setDate(QDate.currentDate())
-        self.service_fecha.setCalendarPopup(True)
-        form_layout.addRow("Fecha:", self.service_fecha)
-
-        self.service_obra = QLineEdit()
-        self.service_obra.setPlaceholderText("Obra asociada")
-        form_layout.addRow("Obra:", self.service_obra)
-
-        self.service_estado = QComboBox()
-        self.service_estado.addItems(["Pendiente", "En Proceso", "Finalizado", "Cancelado"])
-        form_layout.addRow("Estado:", self.service_estado)
-
-        self.service_responsable = QLineEdit()
-        self.service_responsable.setPlaceholderText("Responsable")
-        form_layout.addRow("Responsable:", self.service_responsable)
-
-        self.service_descripcion = QTextEdit()
-        self.service_descripcion.setMaximumHeight(60)
-        self.service_descripcion.setPlaceholderText("Descripción del service...")
-        form_layout.addRow("Descripción:", self.service_descripcion)
-
-        btns_layout = QHBoxLayout()
-        self.btn_guardar_service = QPushButton("� Guardar")
-        self.btn_limpiar_service = QPushButton("🧹 Limpiar")
-        btns_layout.addWidget(self.btn_guardar_service)
-        btns_layout.addWidget(self.btn_limpiar_service)
-        btns_layout.addStretch()
-        form_layout.addRow(btns_layout)
-
-        layout.addWidget(form_group)
-
-        # --- Tabla de service ---
-        self.tabla_service = QTableWidget()
-        self.tabla_service.setColumnCount(7)
-        self.tabla_service.setHorizontalHeaderLabels([
-            "ID", "Fecha", "Obra", "Estado", "Responsable", "Descripción", "Acciones"
-        ])
-        header = self.tabla_service.horizontalHeader()
-        if header:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
-            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)
-        self.tabla_service.setAlternatingRowColors(True)
-
-        layout.addWidget(self.tabla_service)
-        return widget
-        layout.addWidget(self.tabla_rutas)
-
-        return widget
-
-    def crear_tab_vehiculos(self):
-        """Crea la pestaña de vehículos."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Herramientas de vehículos
-        toolbar = QFrame()
-        toolbar_layout = QHBoxLayout(toolbar)
-
-        self.btn_nuevo_vehiculo = QPushButton("🚚 Nuevo Vehículo")
-        self.btn_mantenimiento = QPushButton("🔧 Mantenimiento")
-        self.btn_disponibilidad = QPushButton("📊 Disponibilidad")
-
-        toolbar_layout.addWidget(self.btn_nuevo_vehiculo)
-        toolbar_layout.addWidget(self.btn_mantenimiento)
-        toolbar_layout.addWidget(self.btn_disponibilidad)
-        toolbar_layout.addStretch()
-
-        # Tabla de vehículos
-        self.tabla_vehiculos = QTableWidget()
-        self.tabla_vehiculos.setColumnCount(7)
-        self.tabla_vehiculos.setHorizontalHeaderLabels(
-            ["ID", "Placa", "Tipo", "Conductor", "Estado", "Capacidad", "Ubicación"]
-        )
-
-        # Configurar tabla de vehículos
-        header_vehiculos = self.tabla_vehiculos.horizontalHeader()
-        if header_vehiculos:
-            header_vehiculos.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-            header_vehiculos.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
-            header_vehiculos.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)
-            header_vehiculos.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
-            header_vehiculos.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
-            header_vehiculos.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
-            header_vehiculos.setSectionResizeMode(6, QHeaderView.ResizeMode.Stretch)
-
-        self.tabla_vehiculos.setAlternatingRowColors(True)
-
-        layout.addWidget(toolbar)
-        layout.addWidget(self.tabla_vehiculos)
-
-        return widget
-
-    def crear_tab_tracking(self):
-        """Crea la pestaña de tracking."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Panel de seguimiento
-        tracking_panel = QFrame()
-        tracking_layout = QVBoxLayout(tracking_panel)
-
-        # Búsqueda de tracking
-        search_layout = QHBoxLayout()
-        search_layout.addWidget(QLabel("Código de Seguimiento:"))
-
-        self.input_tracking = QLineEdit()
-        self.input_tracking.setPlaceholderText("Ingrese código de seguimiento...")
-
-        self.btn_buscar_tracking = QPushButton("🔍 Buscar")
-        self.btn_buscar_tracking.clicked.connect(self.buscar_tracking)
-
-        search_layout.addWidget(self.input_tracking)
-        search_layout.addWidget(self.btn_buscar_tracking)
-        search_layout.addStretch()
-
-        tracking_layout.addLayout(search_layout)
-
-        # Información del envío
-        info_group = QGroupBox("Información del Envío")
-        info_layout = QFormLayout(info_group)
-
-        self.lbl_tracking_id = QLabel("---")
-        self.lbl_tracking_origen = QLabel("---")
-        self.lbl_tracking_destino = QLabel("---")
-        self.lbl_tracking_estado = QLabel("---")
-        self.lbl_tracking_fecha = QLabel("---")
-
-        info_layout.addRow("ID:", self.lbl_tracking_id)
-        info_layout.addRow("Origen:", self.lbl_tracking_origen)
-        info_layout.addRow("Destino:", self.lbl_tracking_destino)
-        info_layout.addRow("Estado:", self.lbl_tracking_estado)
-        info_layout.addRow("Fecha:", self.lbl_tracking_fecha)
-
-        tracking_layout.addWidget(info_group)
-
-        # Historial de tracking
-        historial_group = QGroupBox("Historial de Seguimiento")
-        historial_layout = QVBoxLayout(historial_group)
-
-        self.tabla_historial = QTableWidget()
-        self.tabla_historial.setColumnCount(4)
-        self.tabla_historial.setHorizontalHeaderLabels(
-            ["Fecha/Hora", "Ubicación", "Estado", "Observaciones"]
-        )
-
-        historial_layout.addWidget(self.tabla_historial)
-
-        tracking_layout.addWidget(historial_group)
-
-        layout.addWidget(tracking_panel)
-
-        return widget
-
-    def aplicar_estilos(self):
-        """Aplica estilos modernos al widget."""
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f8f9fa;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            }
-
-            QFrame {
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 10px;
-            }
-
-            QTabWidget::pane {
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                background-color: white;
-            }
-
-            QTabBar::tab {
-                background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
-                border: 1px solid #bdc3c7;
-                border-bottom: none;
-                padding: 12px 24px;
-                margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                font-weight: bold;
-                color: #2c3e50;
-            }
-
-            QTabBar::tab:selected {
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                color: white;
-                border-bottom: 2px solid #3498db;
-            }
-
-            QTabBar::tab:hover {
-                background: linear-gradient(135deg, #d5dbdb, #bdc3c7);
-            }
-
-            QLabel {
-                color: #2c3e50;
-                font-weight: 500;
-            }
-
-            QLineEdit {
-                padding: 8px 12px;
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
-                font-size: 14px;
-                background-color: white;
-            }
-
-            QLineEdit:focus {
-                border-color: #3498db;
-                outline: none;
-            }
-
-            QPushButton {
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 100px;
-            }
-
-            QPushButton:hover {
-                background: linear-gradient(135deg, #2980b9, #1f618d);
-            }
-
-            QPushButton:pressed {
-                background: linear-gradient(135deg, #1f618d, #154360);
-            }
-
-            QTableWidget {
-                background-color: white;
-                alternate-background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                gridline-color: #e9ecef;
-            }
-
-            QTableWidget::item {
-                padding: 8px;
-                border: none;
-            }
-
-            QTableWidget::item:selected {
-                background-color: #3498db;
-                color: white;
-            }
-
-            QHeaderView::section {
-                background: linear-gradient(135deg, #34495e, #2c3e50);
-                color: white;
-                padding: 10px;
-                border: none;
-                font-weight: bold;
-            }
-
-            QComboBox {
-                padding: 8px 12px;
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
-                background-color: white;
-                min-width: 100px;
-            }
-
-            QComboBox:focus {
-                border-color: #3498db;
-            }
-
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                color: #2c3e50;
-                border: 2px solid #e9ecef;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                background-color: #f8f9fa;
-            }
-
-            QProgressBar {
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
-                background-color: #ecf0f1;
-                text-align: center;
-                font-weight: bold;
-            }
-
-            QProgressBar::chunk {
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                border-radius: 4px;
-            }
-        """)
-
-    def cargar_envios_en_tabla(self, envios):
-        """Carga la lista de envíos en la tabla."""
-        self.envios_data = envios
-        self.tabla_envios.setRowCount(len(envios))
-
-        for row, envio in enumerate(envios):
-            # ID
-            item_id = QTableWidgetItem(str(envio.get("id", "")))
-            item_id.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-            self.tabla_envios.setItem(row, 0, item_id)
-
-            # Fecha
-            fecha = envio.get("fecha", "")
-            if isinstance(fecha, str):
-                try:
-                    fecha = datetime.strptime(fecha, "%Y-%m-%d").strftime("%d/%m/%Y")
-                except Exception:
-                    pass
-            self.tabla_envios.setItem(row, 1, QTableWidgetItem(fecha))
-
-            # Destino
-            self.tabla_envios.setItem(
-                row, 2, QTableWidgetItem(envio.get("destino", ""))
-            )
-
-            # Estado
-            estado = envio.get("estado", "")
-            item_estado = QTableWidgetItem(estado)
-            item_estado.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
-
-            # Colorear según estado
-            if estado == "Entregado":
-                item_estado.setBackground(QColor("#d4edda"))
-                item_estado.setForeground(QColor("#155724"))
-            elif estado == "En Ruta":
-                item_estado.setBackground(QColor("#d1ecf1"))
-                item_estado.setForeground(QColor("#0c5460"))
-            elif estado == "Preparando":
-                item_estado.setBackground(QColor("#fff3cd"))
-                item_estado.setForeground(QColor("#856404"))
-            elif estado == "Cancelado":
-                item_estado.setBackground(QColor("#f8d7da"))
-                item_estado.setForeground(QColor("#721c24"))
-
-            self.tabla_envios.setItem(row, 3, item_estado)
-
-            # Transportista
-            self.tabla_envios.setItem(
-                row, 4, QTableWidgetItem(envio.get("transportista", ""))
-            )
-
-            # Progreso
-            progreso = envio.get("progreso", 0)
-            progress_bar = QProgressBar()
-            progress_bar.setMinimum(0)
-            progress_bar.setMaximum(100)
-            progress_bar.setValue(progreso)
-            progress_bar.setFormat(f"{progreso}%")
-            self.tabla_envios.setCellWidget(row, 5, progress_bar)
-
-            # Estimado
-            estimado = envio.get("fecha_estimada", "")
-            if isinstance(estimado, str):
-                try:
-                    estimado = datetime.strptime(estimado, "%Y-%m-%d").strftime("%d/%m")
-                except Exception:
-                    pass
-            self.tabla_envios.setItem(row, 6, QTableWidgetItem(estimado))
-
+            
             # Botón de acciones
-            btn_acciones = QPushButton("⚙️ Acciones")
-            btn_acciones.clicked.connect(lambda: self.mostrar_acciones_envio(envio))
-            self.tabla_envios.setCellWidget(row, 7, btn_acciones)
-
-        # Actualizar estadísticas
-        self.actualizar_estadisticas_header()
-
-    def actualizar_estadisticas_header(self):
-        """Actualiza las estadísticas del header."""
-        if not self.envios_data:
-            return
-
-        activos = len([e for e in self.envios_data if e.get("estado") != "Entregado"])
-        en_ruta = len([e for e in self.envios_data if e.get("estado") == "En Ruta"])
-
-        # Entregados hoy (simulado)
-        entregados_hoy = len(
-            [e for e in self.envios_data if e.get("estado") == "Entregado"]
-        )
-
-        # Total vehículos (simulado)
-        vehiculos = 5
-
-        self.stat_envios_activos.valor_label.setText(str(activos))
-        self.stat_en_ruta.valor_label.setText(str(en_ruta))
-        self.stat_entregados.valor_label.setText(str(entregados_hoy))
-        self.stat_vehiculos.valor_label.setText(str(vehiculos))
-
-    def filtrar_envios(self):
-        """Filtra envíos según los criterios seleccionados."""
-        texto_busqueda = self.search_envios.text().lower()
-        estado_filtro = self.filtro_estado_envio.currentText()
-        transportista_filtro = self.filtro_transportista.currentText()
-
-        for row in range(self.tabla_envios.rowCount()):
-            mostrar_fila = True
-
-            # Filtro por texto
-            if texto_busqueda:
-                item_id = self.tabla_envios.item(row, 0)
-                item_destino = self.tabla_envios.item(row, 2)
-                item_transportista = self.tabla_envios.item(row, 4)
-
-                if item_id and item_destino and item_transportista:
-                    envio_id = item_id.text().lower()
-                    destino = item_destino.text().lower()
-                    transportista = item_transportista.text().lower()
-
-                    if not (
-                        texto_busqueda in envio_id
-                        or texto_busqueda in destino
-                        or texto_busqueda in transportista
-                    ):
-                        mostrar_fila = False
-
-            # Filtro por estado
-            if estado_filtro != "Todos":
-                item_estado = self.tabla_envios.item(row, 3)
-                if item_estado and item_estado.text() != estado_filtro:
-                    mostrar_fila = False
-
-            # Filtro por transportista
-            if transportista_filtro != "Todos":
-                item_transportista = self.tabla_envios.item(row, 4)
-                if item_transportista:
-                    # Simplificado: Interno si contiene la empresa, Externo si no
-                    es_interno = "empresa" in item_transportista.text().lower()
-                    if (transportista_filtro == "Interno" and not es_interno) or (
-                        transportista_filtro == "Externo" and es_interno
-                    ):
-                        mostrar_fila = False
-
-            self.tabla_envios.setRowHidden(row, not mostrar_fila)
-
-    def on_envio_seleccionado(self):
-        """Maneja la selección de un envío."""
-        fila_actual = self.tabla_envios.currentRow()
-        if fila_actual >= 0:
-            item_id = self.tabla_envios.item(fila_actual, 0)
-            if item_id:
-                envio_id = item_id.text()
-                envio = next(
-                    (e for e in self.envios_data if str(e.get("id")) == envio_id), None
-                )
-
-                if envio:
-                    self.envio_actual = envio
-                    self.envio_seleccionado.emit(envio)
-
-    def nuevo_envio(self):
-        """Crea un nuevo envío."""
-        # Aquí implementarías un diálogo para crear envío
-        pass
-
-    def mostrar_acciones_envio(self, envio):
-        """Muestra las acciones disponibles para un envío."""
-        # Aquí implementarías un menú contextual
-        pass
-
-    def buscar_tracking(self):
-        """Busca información de tracking."""
-        codigo = self.input_tracking.text()
-        if codigo:
-            # Aquí implementarías la búsqueda de tracking
-            pass
-
-    def cargar_envios(self):
-        """Solicita la carga de envíos al controlador."""
-        if self.controller:
-            self.controller.cargar_envios()
-
-    def set_controller(self, controller):
-        """Establece el controlador para la vista."""
-        self.controller = controller
+            btn_accion = QPushButton('⚙️')
+            btn_accion.setMaximumWidth(30)
+            btn_accion.setToolTip("Acciones")
+            self.tabla_entregas.setCellWidget(row, 6, btn_accion)
+    
+    def actualizar_estadisticas(self, estadisticas):
+        """Actualiza las estadísticas mostradas."""
+        self.label_total_entregas.setText(str(estadisticas.get('total_entregas', 0)))
+        self.label_entregas_pendientes.setText(str(estadisticas.get('entregas_pendientes', 0)))
+        self.label_entregas_completadas.setText(str(estadisticas.get('entregas_completadas', 0)))
+        self.label_entregas_canceladas.setText(str(estadisticas.get('entregas_canceladas', 0)))
+        self.label_promedio_tiempo.setText(f"{estadisticas.get('promedio_tiempo', 0)} horas")
+    
+    def mostrar_mensaje(self, mensaje):
+        """Muestra un mensaje informativo."""
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.information(self, "Logística", mensaje)
+    
+    def mostrar_error(self, mensaje):
+        """Muestra un mensaje de error."""
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.critical(self, "Error - Logística", mensaje)
+    
+    def generar_servicio(self):
+        """Genera un nuevo servicio con los datos del formulario."""
+        try:
+            # Obtener datos del formulario
+            tipo_servicio = self.combo_tipo_servicio.currentText()
+            cliente = self.input_cliente.text().strip()
+            direccion = self.input_direccion.text().strip()
+            fecha = self.date_programada.date().toString("yyyy-MM-dd")
+            hora = self.input_hora.text().strip()
+            contacto = self.input_contacto.text().strip()
+            observaciones = self.text_observaciones.toPlainText().strip()
+            
+            # Validar datos obligatorios
+            if not cliente or not direccion:
+                self.mostrar_error("Por favor complete los campos obligatorios: Cliente y Dirección")
+                return
+            
+            # Crear nuevo servicio
+            servicio = {
+                "tipo": tipo_servicio,
+                "cliente": cliente,
+                "direccion": direccion,
+                "fecha": fecha,
+                "hora": hora or "No especificada",
+                "contacto": contacto or "No especificado",
+                "observaciones": observaciones,
+                "estado": "Programado"
+            }
+            
+            # Agregar a la tabla
+            self.agregar_servicio_tabla(servicio)
+            
+            # Mostrar mensaje de éxito
+            self.mostrar_mensaje(f"Servicio '{tipo_servicio}' generado exitosamente para {cliente}")
+            
+            # Limpiar formulario
+            self.limpiar_formulario()
+            
+        except Exception as e:
+            self.mostrar_error(f"Error al generar servicio: {str(e)}")
+    
+    def agregar_servicio_tabla(self, servicio):
+        """Agrega un servicio a la tabla de servicios."""
+        try:
+            row = self.tabla_servicios.rowCount()
+            self.tabla_servicios.insertRow(row)
+            
+            # Generar ID único
+            service_id = f"SRV{row + 1:03d}"
+            
+            # Llenar datos en la tabla
+            self.tabla_servicios.setItem(row, 0, QTableWidgetItem(service_id))
+            self.tabla_servicios.setItem(row, 1, QTableWidgetItem(servicio["tipo"]))
+            self.tabla_servicios.setItem(row, 2, QTableWidgetItem(servicio["cliente"]))
+            self.tabla_servicios.setItem(row, 3, QTableWidgetItem(servicio["direccion"]))
+            self.tabla_servicios.setItem(row, 4, QTableWidgetItem(servicio["fecha"]))
+            self.tabla_servicios.setItem(row, 5, QTableWidgetItem(servicio["hora"]))
+            self.tabla_servicios.setItem(row, 6, QTableWidgetItem(servicio["estado"]))
+            
+            # Botón de acciones
+            btn_acciones = QPushButton("⚙️")
+            btn_acciones.setMaximumWidth(30)
+            btn_acciones.setToolTip("Acciones del servicio")
+            self.tabla_servicios.setCellWidget(row, 7, btn_acciones)
+            
+            # Actualizar información del mapa
+            self.actualizar_ubicaciones_mapa()
+            
+        except Exception as e:
+            self.mostrar_error(f"Error al agregar servicio a la tabla: {str(e)}")
+    
+    def limpiar_formulario(self):
+        """Limpia todos los campos del formulario de servicios."""
+        self.input_cliente.clear()
+        self.input_direccion.clear()
+        self.date_programada.setDate(QDate.currentDate())
+        self.input_hora.clear()
+        self.input_contacto.clear()
+        self.text_observaciones.clear()
+        self.combo_tipo_servicio.setCurrentIndex(0)
+    
+    def actualizar_mapa(self):
+        """Actualiza la información del mapa."""
+        try:
+            # Simular actualización del mapa
+            self.actualizar_ubicaciones_mapa()
+            self.mostrar_mensaje("Mapa actualizado correctamente")
+        except Exception as e:
+            self.mostrar_error(f"Error al actualizar mapa: {str(e)}")
+    
+    def centrar_mapa(self):
+        """Centra el mapa en la ubicación principal."""
+        try:
+            # Simular centrado del mapa
+            self.mostrar_mensaje("Mapa centrado en la ubicación principal")
+        except Exception as e:
+            self.mostrar_error(f"Error al centrar mapa: {str(e)}")
+    
+    def actualizar_ubicaciones_mapa(self):
+        """Actualiza la tabla de ubicaciones del mapa."""
+        try:
+            # Limpiar tabla
+            self.lista_ubicaciones.setRowCount(0)
+            
+            # Agregar ubicaciones demo de La Plata
+            ubicaciones_demo = [
+                ("Servicio", "Entrega Domicilio", "Calle 7 entre 47 y 48, La Plata", "Activo"),
+                ("Obra", "Construcción Edificio", "Av. 13 y 60, La Plata", "En Proceso"),
+                ("Servicio", "Transporte Vidrios", "Calle 50 entre 15 y 16, Berisso", "Programado"),
+                ("Obra", "Remodelación Casa", "Calle 25 entre 3 y 4, Gonnet", "En Proceso"),
+                ("Servicio", "Entrega Herrajes", "Av. 122 y 82, Los Hornos", "Pendiente"),
+                ("Obra", "Ampliación Local", "Calle 1 y 57, Tolosa", "Pausada"),
+                ("Servicio", "Servicio Express", "Calle 10 y 38, City Bell", "Activo"),
+                ("Obra", "Construcción Galpón", "Av. 44 y 150, Villa Elisa", "En Proceso"),
+                ("Servicio", "Transporte Pesado", "Calle 520 y 15, Melchor Romero", "Programado"),
+                ("Obra", "Refacción Oficinas", "Calle 2 y 64, Ringuelet", "En Proceso"),
+            ]
+            
+            # Agregar servicios de la tabla
+            for row in range(self.tabla_servicios.rowCount()):
+                tipo_item = self.tabla_servicios.item(row, 1)
+                cliente_item = self.tabla_servicios.item(row, 2)
+                direccion_item = self.tabla_servicios.item(row, 3)
+                estado_item = self.tabla_servicios.item(row, 6)
+                
+                if tipo_item and cliente_item and direccion_item and estado_item:
+                    ubicaciones_demo.append((
+                        "Servicio",
+                        f"{tipo_item.text()} - {cliente_item.text()}",
+                        direccion_item.text(),
+                        estado_item.text()
+                    ))
+            
+            # Llenar tabla de ubicaciones
+            self.lista_ubicaciones.setRowCount(len(ubicaciones_demo))
+            for row, (tipo, descripcion, direccion, estado) in enumerate(ubicaciones_demo):
+                self.lista_ubicaciones.setItem(row, 0, QTableWidgetItem(tipo))
+                self.lista_ubicaciones.setItem(row, 1, QTableWidgetItem(descripcion))
+                self.lista_ubicaciones.setItem(row, 2, QTableWidgetItem(direccion))
+                self.lista_ubicaciones.setItem(row, 3, QTableWidgetItem(estado))
+                
+        except Exception as e:
+            print(f"Error al actualizar ubicaciones del mapa: {str(e)}")
+    
+    def cargar_servicios_en_tabla(self, servicios):
+        """Carga servicios en la tabla (método para el controlador)."""
+        try:
+            self.tabla_servicios.setRowCount(len(servicios))
+            for row, servicio in enumerate(servicios):
+                self.tabla_servicios.setItem(row, 0, QTableWidgetItem(str(servicio.get('id', ''))))
+                self.tabla_servicios.setItem(row, 1, QTableWidgetItem(str(servicio.get('tipo', ''))))
+                self.tabla_servicios.setItem(row, 2, QTableWidgetItem(str(servicio.get('cliente', ''))))
+                self.tabla_servicios.setItem(row, 3, QTableWidgetItem(str(servicio.get('direccion', ''))))
+                self.tabla_servicios.setItem(row, 4, QTableWidgetItem(str(servicio.get('fecha_programada', ''))))
+                self.tabla_servicios.setItem(row, 5, QTableWidgetItem(str(servicio.get('hora', ''))))
+                self.tabla_servicios.setItem(row, 6, QTableWidgetItem(str(servicio.get('estado', ''))))
+                
+                # Botón de acciones
+                btn_acciones = QPushButton('⚙️')
+                btn_acciones.setMaximumWidth(30)
+                btn_acciones.setToolTip("Acciones")
+                self.tabla_servicios.setCellWidget(row, 7, btn_acciones)
+                
+        except Exception as e:
+            print(f"Error cargando servicios: {str(e)}")

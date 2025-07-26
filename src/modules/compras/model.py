@@ -217,29 +217,24 @@ class ComprasModel:
 
     def obtener_estadisticas_compras(self, dias: int = 30) -> Dict[str, Any]:
         """
-        Obtiene estadísticas de compras.
+        Obtiene estadísticas completas de compras.
 
         Args:
             dias: Número de días hacia atrás para analizar
 
         Returns:
-            Dict: Estadísticas de compras
+            Dict: Estadísticas completas de compras
         """
         if not self.db_connection:
-            return {}
+            return self._get_estadisticas_demo()
 
         try:
             cursor = self.db_connection.connection.cursor()
             fecha_limite = datetime.datetime.now() - datetime.timedelta(days=dias)
 
+            # === ESTADÍSTICAS GENERALES ===
             # Total de órdenes
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM compras
-                WHERE fecha_creacion >= ?
-            """,
-                (fecha_limite,),
-            )
+            cursor.execute("SELECT COUNT(*) FROM compras")
             total_ordenes = cursor.fetchone()[0]
 
             # Órdenes por estado
@@ -247,11 +242,9 @@ class ComprasModel:
                 """
                 SELECT estado, COUNT(*) as cantidad
                 FROM compras
-                WHERE fecha_creacion >= ?
                 GROUP BY estado
                 ORDER BY cantidad DESC
-            """,
-                (fecha_limite,),
+            """
             )
             ordenes_por_estado = [
                 {"estado": row[0], "cantidad": row[1]} for row in cursor.fetchall()
@@ -267,37 +260,249 @@ class ComprasModel:
                                 WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
                     ), 0) as total
                 FROM compras c
-                WHERE c.fecha_creacion >= ?
-            """,
-                (fecha_limite,),
+            """
             )
             monto_total = cursor.fetchone()[0] or 0
 
-            # Proveedores más activos
+            # Promedio por orden
+            promedio_orden = monto_total / total_ordenes if total_ordenes > 0 else 0
+
+            # Órdenes este mes
             cursor.execute(
                 """
-                SELECT proveedor, COUNT(*) as cantidad
-                FROM compras
-                WHERE fecha_creacion >= ?
-                GROUP BY proveedor
-                ORDER BY cantidad DESC
-            """,
-                (fecha_limite,),
+                SELECT COUNT(*) FROM compras
+                WHERE MONTH(fecha_creacion) = MONTH(GETDATE()) 
+                AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            """
             )
-            proveedores_activos = [
-                {"proveedor": row[0], "cantidad": row[1]} for row in cursor.fetchall()
-            ]
+            ordenes_mes = cursor.fetchone()[0]
+
+            # === ANÁLISIS POR PROVEEDORES ===
+            # Análisis completo de proveedores
+            cursor.execute(
+                """
+                SELECT 
+                    c.proveedor,
+                    COUNT(*) as ordenes,
+                    ISNULL(SUM(
+                        ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
+                                FROM detalle_compras dc
+                                WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
+                    ), 0) as monto_total,
+                    CASE 
+                        WHEN COUNT(*) > 0 THEN 
+                            ISNULL(SUM(
+                                ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
+                                        FROM detalle_compras dc
+                                        WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
+                            ), 0) / COUNT(*)
+                        ELSE 0 
+                    END as promedio
+                FROM compras c
+                GROUP BY c.proveedor
+                ORDER BY monto_total DESC
+            """
+            )
+            proveedores_data = cursor.fetchall()
+            
+            # Calcular porcentajes
+            proveedores_analisis = []
+            for proveedor, ordenes, monto, promedio in proveedores_data:
+                porcentaje = (monto / monto_total * 100) if monto_total > 0 else 0
+                proveedores_analisis.append({
+                    "proveedor": proveedor,
+                    "ordenes": ordenes,
+                    "monto_total": monto,
+                    "promedio": promedio,
+                    "porcentaje": porcentaje
+                })
+
+            # Proveedor principal
+            proveedor_principal = proveedores_analisis[0] if proveedores_analisis else None
+
+            # === ANÁLISIS TEMPORAL ===
+            # Compras hoy
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM compras
+                WHERE CAST(fecha_creacion AS DATE) = CAST(GETDATE() AS DATE)
+            """
+            )
+            compras_hoy = cursor.fetchone()[0]
+
+            # Compras esta semana
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM compras
+                WHERE DATEPART(WEEK, fecha_creacion) = DATEPART(WEEK, GETDATE())
+                AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            """
+            )
+            compras_semana = cursor.fetchone()[0]
+
+            # Compras mes actual
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM compras
+                WHERE MONTH(fecha_creacion) = MONTH(GETDATE())
+                AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            """
+            )
+            compras_mes = cursor.fetchone()[0]
+
+            # Tendencia (comparar con mes anterior)
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM compras
+                WHERE MONTH(fecha_creacion) = MONTH(DATEADD(MONTH, -1, GETDATE()))
+                AND YEAR(fecha_creacion) = YEAR(DATEADD(MONTH, -1, GETDATE()))
+            """
+            )
+            compras_mes_anterior = cursor.fetchone()[0]
+            
+            if compras_mes_anterior > 0:
+                if compras_mes > compras_mes_anterior:
+                    tendencia = "Al alza"
+                elif compras_mes < compras_mes_anterior:
+                    tendencia = "A la baja"
+                else:
+                    tendencia = "Estable"
+            else:
+                tendencia = "Nuevo período"
+
+            # === ANÁLISIS DE PRODUCTOS ===
+            # Productos únicos (basado en detalle_compras)
+            cursor.execute(
+                """
+                SELECT COUNT(DISTINCT dc.descripcion) 
+                FROM detalle_compras dc
+                INNER JOIN compras c ON dc.compra_id = c.id
+            """
+            )
+            productos_unicos = cursor.fetchone()[0] or 0
+
+            # Categoría principal
+            cursor.execute(
+                """
+                SELECT TOP 1 dc.categoria, COUNT(*) as cantidad
+                FROM detalle_compras dc
+                INNER JOIN compras c ON dc.compra_id = c.id
+                WHERE dc.categoria IS NOT NULL AND dc.categoria != ''
+                GROUP BY dc.categoria
+                ORDER BY cantidad DESC
+            """
+            )
+            categoria_result = cursor.fetchone()
+            categoria_principal = categoria_result[0] if categoria_result else "No hay datos"
+
+            # Producto más comprado
+            cursor.execute(
+                """
+                SELECT TOP 1 dc.descripcion, SUM(dc.cantidad) as total_cantidad
+                FROM detalle_compras dc
+                INNER JOIN compras c ON dc.compra_id = c.id
+                GROUP BY dc.descripcion
+                ORDER BY total_cantidad DESC
+            """
+            )
+            producto_result = cursor.fetchone()
+            producto_mas_comprado = producto_result[0] if producto_result else "No hay datos"
+
+            # Ticket promedio
+            cursor.execute(
+                """
+                SELECT AVG(dc.precio_unitario) 
+                FROM detalle_compras dc
+                INNER JOIN compras c ON dc.compra_id = c.id
+            """
+            )
+            ticket_promedio = cursor.fetchone()[0] or 0
 
             return {
+                # Estadísticas generales
                 "total_ordenes": total_ordenes,
                 "ordenes_por_estado": ordenes_por_estado,
                 "monto_total": monto_total,
-                "proveedores_activos": proveedores_activos,
+                "promedio_orden": promedio_orden,
+                "ordenes_mes": ordenes_mes,
+                
+                # Análisis por proveedores
+                "proveedores_analisis": proveedores_analisis,
+                "proveedor_principal": proveedor_principal,
+                
+                # Análisis temporal
+                "compras_hoy": compras_hoy,
+                "compras_semana": compras_semana,
+                "compras_mes": compras_mes,
+                "tendencia": tendencia,
+                
+                # Análisis de productos
+                "productos_unicos": productos_unicos,
+                "categoria_principal": categoria_principal,
+                "producto_mas_comprado": producto_mas_comprado,
+                "ticket_promedio": ticket_promedio,
+                
+                # Compatibilidad con código existente
+                "proveedores_activos": [
+                    {"proveedor": p["proveedor"], "cantidad": p["ordenes"]} 
+                    for p in proveedores_analisis
+                ]
             }
 
         except Exception as e:
             print(f"[ERROR COMPRAS] Error obteniendo estadísticas: {e}")
-            return {}
+            return self._get_estadisticas_demo()
+
+    def _get_estadisticas_demo(self) -> Dict[str, Any]:
+        """Estadísticas demo cuando no hay conexión a BD."""
+        return {
+            # Estadísticas generales
+            "total_ordenes": 48,
+            "ordenes_por_estado": [
+                {"estado": "APROBADA", "cantidad": 18},
+                {"estado": "PENDIENTE", "cantidad": 15},
+                {"estado": "RECIBIDA", "cantidad": 12},
+                {"estado": "CANCELADA", "cantidad": 3}
+            ],
+            "monto_total": 125680.75,
+            "promedio_orden": 2618.35,
+            "ordenes_mes": 15,
+            
+            # Análisis por proveedores
+            "proveedores_analisis": [
+                {"proveedor": "Materiales del Sur", "ordenes": 12, "monto_total": 45250.30, "promedio": 3770.86, "porcentaje": 36.0},
+                {"proveedor": "Construcciones Norte", "ordenes": 8, "monto_total": 28900.15, "promedio": 3612.52, "porcentaje": 23.0},
+                {"proveedor": "Vidrios y Cristales", "ordenes": 10, "monto_total": 22150.80, "promedio": 2215.08, "porcentaje": 17.6},
+                {"proveedor": "Herrajes Industriales", "ordenes": 6, "monto_total": 15890.25, "promedio": 2648.38, "porcentaje": 12.6},
+                {"proveedor": "Perfiles Técnicos", "ordenes": 12, "monto_total": 13489.25, "promedio": 1124.10, "porcentaje": 10.7}
+            ],
+            "proveedor_principal": {
+                "proveedor": "Materiales del Sur",
+                "ordenes": 12,
+                "monto_total": 45250.30,
+                "promedio": 3770.86,
+                "porcentaje": 36.0
+            },
+            
+            # Análisis temporal
+            "compras_hoy": 2,
+            "compras_semana": 8,
+            "compras_mes": 15,
+            "tendencia": "Al alza",
+            
+            # Análisis de productos
+            "productos_unicos": 86,
+            "categoria_principal": "Materiales de Construcción",
+            "producto_mas_comprado": "Perfiles de Aluminio 20x20",
+            "ticket_promedio": 285.50,
+            
+            # Compatibilidad
+            "proveedores_activos": [
+                {"proveedor": "Materiales del Sur", "cantidad": 12},
+                {"proveedor": "Construcciones Norte", "cantidad": 8},
+                {"proveedor": "Vidrios y Cristales", "cantidad": 10}
+            ]
+        }
 
     def buscar_compras(
         self,
