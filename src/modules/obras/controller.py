@@ -61,14 +61,18 @@ class ObrasController(QObject):
     def mostrar_formulario_nueva_obra(self):
         """Muestra el formulario para crear una nueva obra."""
         try:
-            if hasattr(self.view, "mostrar_formulario_obra"):
-                self.view.mostrar_formulario_obra()
+            if hasattr(self.view, "mostrar_dialogo_nueva_obra"):
+                self.view.mostrar_dialogo_nueva_obra()
             else:
                 print(
-                    "[OBRAS CONTROLLER] Vista no tiene método mostrar_formulario_obra"
+                    "[OBRAS CONTROLLER] Vista no tiene método mostrar_dialogo_nueva_obra"
                 )
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error mostrando formulario: {e}")
+
+    def agregar_obra(self, datos_obra: Dict[str, Any]) -> bool:
+        """Alias para crear_obra - usado por la vista del diálogo."""
+        return self.crear_obra(datos_obra)
 
     def crear_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """

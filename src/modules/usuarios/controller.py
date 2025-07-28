@@ -9,6 +9,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from .model import UsuariosModel
+from src.utils.error_handler import ErrorHandler, safe_method_decorator
 
 
 class UsuariosController(QObject):

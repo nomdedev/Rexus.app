@@ -51,11 +51,12 @@ def validate_environment():
     
     missing = [var for var, value in required_vars.items() if not value]
     if missing:
-        raise EnvironmentError(f"Variables de entorno faltantes: {', '.join(missing)}. "
-                               f"Por favor configura estas variables en el archivo .env")
+        print(f"[WARNING] Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo.")
+        return False
+    return True
 
-# Validar al importar el módulo
-validate_environment()
+# Validar al importar el módulo (no hacer crash si faltan variables)
+_environment_valid = validate_environment()
 
 
 class DatabaseConnection:

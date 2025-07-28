@@ -8,6 +8,7 @@ import datetime
 from typing import Any, Dict
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
+from src.utils.form_validators import FormValidator, FormValidatorManager, validacion_codigo_producto
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QAbstractItemView,
@@ -168,6 +169,8 @@ class InventarioView(QWidget):
         acciones_layout = QHBoxLayout(acciones_frame)
 
         self.nuevo_producto_btn = QPushButton("➕ Nuevo Producto")
+        self.nuevo_producto_btn.clicked.connect(self.mostrar_dialogo_nuevo_producto)
+        
         self.editar_producto_btn = QPushButton("✏️ Editar Producto")
         self.eliminar_producto_btn = QPushButton("🗑️ Eliminar Producto")
         self.movimiento_btn = QPushButton("📦 Registrar Movimiento")
@@ -789,6 +792,195 @@ class InventarioView(QWidget):
         """Muestra mensaje informativo."""
         QMessageBox.information(self, titulo, mensaje)
 
+    def mostrar_dialogo_nuevo_producto(self):
+        """Muestra el diálogo para agregar un nuevo producto."""
+        dialogo = DialogoNuevoProducto(self)
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            datos_producto = dialogo.obtener_datos()
+            if self.controller:
+                self.controller.agregar_producto(datos_producto)
+                # Recargar la tabla después de agregar
+                self.controller.cargar_datos_iniciales()
+
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class DialogoNuevoProducto(QDialog):
+    """Diálogo para agregar un nuevo producto al inventario."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.validator_manager = FormValidatorManager()
+        self.setWindowTitle("Nuevo Producto")
+        self.setModal(True)
+        self.setFixedSize(500, 600)
+        self.init_ui()
+
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+
+        # Título
+        title_label = QLabel("📦 Agregar Nuevo Producto")
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 20px;
+                padding: 10px;
+                background-color: #ecf0f1;
+                border-radius: 5px;
+            }
+        """)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(title_label)
+
+        # Formulario
+        form_widget = QScrollArea()
+        form_content = QWidget()
+        form_layout = QFormLayout(form_content)
+
+        # Campo código
+        self.codigo_input = QLineEdit()
+        self.codigo_input.setPlaceholderText("Ej: VID-1234, HER-5678")
+        form_layout.addRow("🏷️ Código:", self.codigo_input)
+
+        # Campo descripción
+        self.descripcion_input = QLineEdit()
+        self.descripcion_input.setPlaceholderText("Descripción del producto")
+        form_layout.addRow("📝 Descripción:", self.descripcion_input)
+
+        # Campo categoría
+        self.tipo_combo = QComboBox()
+        self.tipo_combo.addItems(["Marco", "Vidrio", "Herraje", "Accesorio", "Sellador"])
+        form_layout.addRow("📂 Tipo:", self.tipo_combo)
+
+        # Campo acabado
+        self.acabado_combo = QComboBox()
+        self.acabado_combo.addItems(["Natural", "Blanco", "Negro", "Bronce", "Cromado"])
+        form_layout.addRow("🎨 Acabado:", self.acabado_combo)
+
+        # Campo cantidad
+        self.cantidad_input = QSpinBox()
+        self.cantidad_input.setRange(0, 999999)
+        self.cantidad_input.setValue(1)
+        form_layout.addRow("📦 Cantidad:", self.cantidad_input)
+
+        # Campo precio
+        self.precio_input = QDoubleSpinBox()
+        self.precio_input.setRange(0.0, 999999.99)
+        self.precio_input.setDecimals(2)
+        self.precio_input.setPrefix("$")
+        form_layout.addRow("💰 Precio:", self.precio_input)
+
+        # Campo unidad de medida
+        self.unidad_combo = QComboBox()
+        self.unidad_combo.addItems(["UN", "MT", "M2", "KG", "LT"])
+        form_layout.addRow("📏 Unidad:", self.unidad_combo)
+
+        # Campo proveedor
+        self.proveedor_input = QLineEdit()
+        self.proveedor_input.setPlaceholderText("Nombre del proveedor")
+        form_layout.addRow("🏢 Proveedor:", self.proveedor_input)
+
+        # Campo ubicación
+        self.ubicacion_input = QLineEdit()
+        self.ubicacion_input.setPlaceholderText("Ej: Estante A-1")
+        form_layout.addRow("📍 Ubicación:", self.ubicacion_input)
+
+        # Campo observaciones
+        self.observaciones_input = QTextEdit()
+        self.observaciones_input.setMaximumHeight(80)
+        self.observaciones_input.setPlaceholderText("Observaciones adicionales (opcional)")
+        form_layout.addRow("📋 Observaciones:", self.observaciones_input)
+
+        form_widget.setWidget(form_content)
+        form_widget.setWidgetResizable(True)
+        layout.addWidget(form_widget)
+
+        # Botones
+        button_layout = QHBoxLayout()
+        
+        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn.clicked.connect(self.reject)
+        
+        self.save_btn = QPushButton("✅ Guardar")
+        self.save_btn.clicked.connect(self.validar_y_guardar)
+        self.save_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #229954;
+            }
+        """)
+
+        button_layout.addWidget(self.cancel_btn)
+        button_layout.addWidget(self.save_btn)
+        layout.addWidget(QWidget())  # Spacer
+        layout.addLayout(button_layout)
+
+        # Configurar validaciones
+        self.configurar_validaciones()
+
+    def configurar_validaciones(self):
+        """Configura las validaciones del formulario."""
+        # Validación de código obligatorio con formato específico
+        self.validator_manager.agregar_validacion(
+            self.codigo_input, validacion_codigo_producto
+        )
+
+        # Validación de descripción obligatoria
+        self.validator_manager.agregar_validacion(
+            self.descripcion_input, FormValidator.validar_campo_obligatorio, "Descripción"
+        )
+
+        # Validación de precio
+        self.validator_manager.agregar_validacion(
+            self.precio_input, FormValidator.validar_numero, 0.01, 999999.99
+        )
+
+        # Validación de proveedor obligatorio
+        self.validator_manager.agregar_validacion(
+            self.proveedor_input, FormValidator.validar_campo_obligatorio, "Proveedor"
+        )
+
+    def validar_y_guardar(self):
+        """Valida el formulario y guarda si es válido."""
+        es_valido, errores = self.validator_manager.validar_formulario()
+        
+        if not es_valido:
+            # Mostrar errores
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            QMessageBox.warning(
+                self, 
+                "Errores de Validación", 
+                "Por favor corrige los siguientes errores:\n\n" + "\n".join(mensajes_error)
+            )
+            return
+
+        # Si todo es válido, aceptar el diálogo
+        self.accept()
+
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            'codigo': self.codigo_input.text().strip().upper(),
+            'descripcion': self.descripcion_input.text().strip(),
+            'tipo': self.tipo_combo.currentText(),
+            'acabado': self.acabado_combo.currentText(),
+            'cantidad': self.cantidad_input.value(),
+            'importe': self.precio_input.value(),
+            'unidad': self.unidad_combo.currentText(),
+            'proveedor': self.proveedor_input.text().strip(),
+            'ubicacion': self.ubicacion_input.text().strip(),
+            'observaciones': self.observaciones_input.toPlainText().strip()
+        }

@@ -9,6 +9,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QIcon, QPainter, QPen, QPixmap
+from src.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -766,8 +767,12 @@ class DialogoNuevoUsuario(QDialog):
         self.setWindowTitle("Nuevo Usuario")
         self.setModal(True)
         self.setFixedSize(400, 600)
+        
+        # Inicializar el gestor de validaciones
+        self.validator_manager = FormValidatorManager()
 
         self.init_ui()
+        self.configurar_validaciones()
 
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""

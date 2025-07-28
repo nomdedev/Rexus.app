@@ -110,13 +110,23 @@ class HerrajesModel:
                     estado NVARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
                     observaciones NTEXT,
                     FOREIGN KEY (herraje_id) REFERENCES {self.tabla_herrajes}(id)
-                """)
+                )
             """)
             
             # Crear tabla de pedidos de herrajes
             # Use secure string concatenation for table creation
             create_pedidos_query = f"""
-"""
+                CREATE TABLE IF NOT EXISTS pedidos_herrajes (
+                    id INTEGER PRIMARY KEY IDENTITY,
+                    herraje_id INTEGER NOT NULL,
+                    obra_id INTEGER,
+                    cantidad INTEGER NOT NULL,
+                    estado NVARCHAR(20) NOT NULL DEFAULT 'PENDIENTE',
+                    fecha_pedido DATETIME DEFAULT GETDATE(),
+                    observaciones NTEXT,
+                    FOREIGN KEY (herraje_id) REFERENCES {self.tabla_herrajes}(id)
+                )
+            """
             cursor.execute(create_pedidos_query)
             
             # Crear índices

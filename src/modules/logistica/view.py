@@ -11,6 +11,7 @@ from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QComboBox,
     QDateEdit,
+    QDialog,
     QFormLayout,
     QFrame,
     QGroupBox,
@@ -18,6 +19,7 @@ from PyQt6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QProgressBar,
     QPushButton,
     QScrollArea,
@@ -29,6 +31,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from src.utils.form_validators import FormValidator, FormValidatorManager, validacion_direccion
 
 
 class LogisticaView(QWidget):
@@ -167,6 +171,7 @@ class LogisticaView(QWidget):
                 background-color: #219a52;
             }
         """)
+        btn_nueva_entrega.clicked.connect(self.mostrar_dialogo_nueva_entrega)
         filtros_layout.addWidget(btn_nueva_entrega)
         
         filtros_layout.addStretch()
@@ -519,6 +524,18 @@ class LogisticaView(QWidget):
         from PyQt6.QtWidgets import QMessageBox
         QMessageBox.critical(self, "Error - Logística", mensaje)
     
+    def mostrar_dialogo_nueva_entrega(self):
+        """Muestra el diálogo para crear una nueva entrega."""
+        dialog = DialogoNuevaEntrega(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos_entrega = dialog.obtener_datos()
+            try:
+                # Emitir señal para que el controlador maneje la creación
+                self.crear_entrega_solicitada.emit(datos_entrega)
+                self.mostrar_mensaje("Entrega creada exitosamente")
+            except Exception as e:
+                self.mostrar_error(f"Error al crear entrega: {str(e)}")
+    
     def generar_servicio(self):
         """Genera un nuevo servicio con los datos del formulario."""
         try:
@@ -684,3 +701,140 @@ class LogisticaView(QWidget):
                 
         except Exception as e:
             print(f"Error cargando servicios: {str(e)}")
+
+
+class DialogoNuevaEntrega(QDialog):
+    """Diálogo para crear una nueva entrega."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Nueva Entrega")
+        self.setFixedSize(500, 400)
+        
+        # Configurar validador de formulario
+        self.validator_manager = FormValidatorManager()
+        
+        self.setup_ui()
+        self.setup_validations()
+    
+    def setup_ui(self):
+        """Configura la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Campos del formulario
+        self.input_direccion = QLineEdit()
+        self.input_direccion.setPlaceholderText("Ingrese la dirección de entrega")
+        
+        self.input_contacto = QLineEdit()
+        self.input_contacto.setPlaceholderText("Nombre del contacto")
+        
+        self.input_telefono = QLineEdit()
+        self.input_telefono.setPlaceholderText("+54 11 1234-5678")
+        
+        self.date_programada = QDateEdit()
+        self.date_programada.setDate(QDate.currentDate())
+        self.date_programada.setCalendarPopup(True)
+        
+        self.combo_estado = QComboBox()
+        self.combo_estado.addItems(["Programada", "En Preparación", "En Tránsito", "Entregada"])
+        
+        self.text_observaciones = QTextEdit()
+        self.text_observaciones.setMaximumHeight(80)
+        self.text_observaciones.setPlaceholderText("Observaciones adicionales...")
+        
+        # Agregar campos al formulario
+        form_layout.addRow("📍 Dirección:", self.input_direccion)
+        form_layout.addRow("👤 Contacto:", self.input_contacto)
+        form_layout.addRow("📞 Teléfono:", self.input_telefono)
+        form_layout.addRow("📅 Fecha:", self.date_programada)
+        form_layout.addRow("📊 Estado:", self.combo_estado)
+        form_layout.addRow("📝 Observaciones:", self.text_observaciones)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        botones_layout = QHBoxLayout()
+        
+        btn_cancelar = QPushButton("❌ Cancelar")
+        btn_cancelar.clicked.connect(self.reject)
+        
+        btn_guardar = QPushButton("💾 Guardar")
+        btn_guardar.clicked.connect(self.validar_y_aceptar)
+        btn_guardar.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 16px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #219a52;
+            }
+        """)
+        
+        botones_layout.addStretch()
+        botones_layout.addWidget(btn_cancelar)
+        botones_layout.addWidget(btn_guardar)
+        
+        layout.addLayout(botones_layout)
+    
+    def setup_validations(self):
+        """Configura las validaciones del formulario."""
+        # Validaciones obligatorias
+        self.validator_manager.agregar_validacion(
+            self.input_direccion, 
+            validacion_direccion
+        )
+        
+        self.validator_manager.agregar_validacion(
+            self.input_contacto,
+            FormValidator.validar_campo_obligatorio,
+            "Contacto"
+        )
+        
+        # Validación opcional de teléfono
+        self.validator_manager.agregar_validacion(
+            self.input_telefono,
+            FormValidator.validar_telefono
+        )
+        
+        # Validación de fecha
+        self.validator_manager.agregar_validacion(
+            self.date_programada,
+            FormValidator.validar_fecha,
+            QDate.currentDate()  # No permitir fechas pasadas
+        )
+        
+        # Validación de longitud para observaciones
+        self.validator_manager.agregar_validacion(
+            self.text_observaciones,
+            FormValidator.validar_longitud_texto,
+            0, 500  # Máximo 500 caracteres
+        )
+    
+    def validar_y_aceptar(self):
+        """Valida los datos antes de aceptar."""
+        es_valido, errores = self.validator_manager.validar_formulario()
+        
+        if not es_valido:
+            # Mostrar todos los errores
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            mensaje_completo = "Errores encontrados:\n\n" + "\n".join(f"• {msg}" for msg in mensajes_error)
+            QMessageBox.warning(self, "Datos Incompletos", mensaje_completo)
+            return
+        
+        self.accept()
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            'direccion': self.input_direccion.text().strip(),
+            'contacto': self.input_contacto.text().strip(),
+            'telefono': self.input_telefono.text().strip(),
+            'fecha_programada': self.date_programada.date().toString('yyyy-MM-dd'),
+            'estado': self.combo_estado.currentText(),
+            'observaciones': self.text_observaciones.toPlainText().strip()
+        }

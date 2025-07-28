@@ -279,17 +279,17 @@ class MainWindow(QMainWindow):
                 color: #ffffff;
                 font-size: 14px;
                 font-weight: 600;
-                background-color: transparent;
+                background-color: rgba(255, 255, 255, 0.15);
                 border-radius: 6px;
                 margin: 3px 8px;
-                transition: background 0.2s, color 0.2s;
             }
             QPushButton:hover {
-                background-color: #217dbb;
-                color: #ffe082;
+                background-color: rgba(255, 255, 255, 0.35);
+                color: #ffffff;
+                font-weight: bold;
             }
             QPushButton:pressed {
-                background-color: #17608a;
+                background-color: rgba(255, 255, 255, 0.5);
                 color: #ffffff;
             }
         """)
