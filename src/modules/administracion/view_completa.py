@@ -415,8 +415,9 @@ class AdministracionCompletaView(QWidget):
         
         # Configurar tabla
         header = self.empleados_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.empleados_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.empleados_table.setAlternatingRowColors(True)

@@ -560,8 +560,9 @@ class HerrajesCompletaView(QWidget):
         
         # Configurar tabla
         header = self.herrajes_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.herrajes_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.herrajes_table.setAlternatingRowColors(True)
@@ -617,8 +618,9 @@ class HerrajesCompletaView(QWidget):
         
         # Configurar tabla
         header = self.asignados_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.asignados_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.asignados_table.setAlternatingRowColors(True)

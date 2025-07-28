@@ -260,7 +260,8 @@ class HerrajesView(QWidget):
 
         # Configurar tabla
         header = self.herrajes_table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.herrajes_table.setAlternatingRowColors(True)
         self.herrajes_table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows

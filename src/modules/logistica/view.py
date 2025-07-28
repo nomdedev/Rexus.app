@@ -181,8 +181,9 @@ class LogisticaView(QWidget):
         
         # Configurar tabla
         header = self.tabla_entregas.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
         self.tabla_entregas.setColumnWidth(0, 60)
         self.tabla_entregas.setAlternatingRowColors(True)
         self.tabla_entregas.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -310,8 +311,9 @@ class LogisticaView(QWidget):
         
         # Configurar tabla
         header = self.tabla_servicios.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
         self.tabla_servicios.setColumnWidth(0, 60)
         self.tabla_servicios.setAlternatingRowColors(True)
         self.tabla_servicios.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
@@ -441,7 +443,8 @@ class LogisticaView(QWidget):
         
         # Configurar tabla de ubicaciones
         header_ubicaciones = self.lista_ubicaciones.horizontalHeader()
-        header_ubicaciones.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header_ubicaciones is not None:
+            header_ubicaciones.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.lista_ubicaciones.setAlternatingRowColors(True)
         
         info_layout.addWidget(self.lista_ubicaciones)

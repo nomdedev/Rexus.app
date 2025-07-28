@@ -554,8 +554,9 @@ class MantenimientoCompletaView(QWidget):
         
         # Configurar tabla
         header = self.maquinas_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.maquinas_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.maquinas_table.setAlternatingRowColors(True)
@@ -617,8 +618,9 @@ class MantenimientoCompletaView(QWidget):
         
         # Configurar tabla
         header = self.servicios_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.servicios_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.servicios_table.setAlternatingRowColors(True)

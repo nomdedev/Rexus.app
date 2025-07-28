@@ -171,8 +171,9 @@ class ComprasView(QWidget):
 
         # Configurar tabla
         header = self.tabla_compras.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header.setStretchLastSection(True)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+            header.setStretchLastSection(True)
 
         self.tabla_compras.setAlternatingRowColors(True)
         self.tabla_compras.setSelectionBehavior(
@@ -321,7 +322,8 @@ class ComprasView(QWidget):
         
         # Configurar tabla
         header = self.tabla_proveedores.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         
         proveedores_layout.addWidget(self.tabla_proveedores)
         

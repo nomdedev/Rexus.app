@@ -198,12 +198,13 @@ class UsuariosView(QWidget):
 
         # Configurar tabla
         header = self.tabla_usuarios.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
-        header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
+        if header is not None:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)
 
         self.tabla_usuarios.setColumnWidth(0, 60)
         self.tabla_usuarios.setColumnWidth(4, 100)

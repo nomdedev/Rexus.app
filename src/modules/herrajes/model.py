@@ -120,10 +120,10 @@ class HerrajesModel:
             cursor.execute(create_pedidos_query)
             
             # Crear índices
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON {self.tabla_herrajes}(codigo)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON {self.tabla_herrajes}(proveedor)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_herraje ON {self.tabla_herrajes_obra}(herraje_id)")
-            cursor.execute(f"CREATE INDEX IF NOT EXISTS idx_herrajes_obra_obra ON {self.tabla_herrajes_obra}(obra_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_codigo ON herrajes(codigo)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_proveedor ON herrajes(proveedor)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_obra_herraje ON herrajes_obra(herraje_id)")
+            cursor.execute("CREATE INDEX IF NOT EXISTS idx_herrajes_obra_obra ON herrajes_obra(obra_id)")
             
             self.db_connection.connection.commit()
             print("[HERRAJES] Tablas creadas/verificadas exitosamente")
@@ -396,19 +396,19 @@ class HerrajesModel:
 
             # Total de herrajes
             cursor.execute(
-                "SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(*) FROM herrajes WHERE estado = 'ACTIVO'"
             )
             estadisticas["total_herrajes"] = cursor.fetchone()[0]
 
             # Proveedores activos
             cursor.execute(
-                "SELECT COUNT(DISTINCT proveedor) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT proveedor) FROM herrajes WHERE estado = 'ACTIVO'"
             )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado)
             cursor.execute(
-                "SELECT SUM(precio_unitario) FROM " + self.tabla_herrajes + " WHERE estado = 'ACTIVO'"
+                "SELECT SUM(precio_unitario) FROM herrajes WHERE estado = 'ACTIVO'"
             )
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
@@ -416,7 +416,7 @@ class HerrajesModel:
             # Herrajes por proveedor
             cursor.execute("""
                 SELECT proveedor, COUNT(*) as cantidad
-                FROM """ + self.tabla_herrajes + """
+                FROM herrajes
                 WHERE estado = 'ACTIVO'
                 GROUP BY proveedor
                 ORDER BY cantidad DESC
@@ -456,7 +456,7 @@ class HerrajesModel:
                 SELECT
                     id, codigo, descripcion, proveedor, precio_unitario,
                     unidad_medida, categoria, estado
-                FROM """ + self.tabla_herrajes + """
+                FROM herrajes
                 WHERE
                     (codigo LIKE ? OR
                      descripcion LIKE ? OR
@@ -498,7 +498,7 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el código no exista
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE codigo = ?", 
+            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE codigo = ?", 
                          (datos_herraje["codigo"],))
             if cursor.fetchone()[0] > 0:
                 return False, f"El código '{datos_herraje['codigo']}' ya existe"
@@ -570,7 +570,7 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el herraje existe
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_herrajes + " WHERE id = ?", (herraje_id,))
+            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE id = ?", (herraje_id,))
             if cursor.fetchone()[0] == 0:
                 return False, "Herraje no encontrado"
                 
@@ -638,7 +638,7 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             
             # Verificar que el herraje existe
-            cursor.execute("SELECT codigo FROM " + self.tabla_herrajes + " WHERE id = ?", (herraje_id,))
+            cursor.execute("SELECT codigo FROM herrajes WHERE id = ?", (herraje_id,))
             row = cursor.fetchone()
             if not row:
                 return False, "Herraje no encontrado"
@@ -647,7 +647,7 @@ class HerrajesModel:
             
             # Verificar que no esté asignado a obras
             cursor.execute("""
-                SELECT COUNT(*) FROM """ + self.tabla_herrajes_obra + """ 
+                SELECT COUNT(*) FROM herrajes_obra 
                 WHERE herraje_id = ? AND estado != 'COMPLETADO'
             """, (herraje_id,))
             
@@ -689,7 +689,7 @@ class HerrajesModel:
             cursor.execute("""
                 SELECT h.*, i.stock_actual, i.stock_reservado, 
                        i.ubicacion, i.fecha_ultima_entrada, i.fecha_ultima_salida
-                FROM """ + self.tabla_herrajes + """ h
+                FROM herrajes h
                 LEFT JOIN """ + self.tabla_herrajes_inventario + """ i ON h.id = i.herraje_id
                 WHERE h.id = ? AND h.activo = 1
             """, (herraje_id,))
@@ -718,7 +718,7 @@ class HerrajesModel:
             cursor = self.db_connection.connection.cursor()
             cursor.execute("""
                 SELECT DISTINCT proveedor 
-                FROM """ + self.tabla_herrajes + """ 
+                FROM herrajes 
                 WHERE activo = 1 
                 ORDER BY proveedor
             """)

@@ -381,8 +381,9 @@ class ObrasView(QWidget):
 
         # Ajustar columnas
         header = self.tabla_obras.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header.setStretchLastSection(True)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+            header.setStretchLastSection(True)
 
         # Ocultar columna ID
         self.tabla_obras.setColumnHidden(0, True)

@@ -301,8 +301,9 @@ class UsersAdminView(QWidget):
         
         # Configurar tabla
         header = self.users_table.horizontalHeader()
-        header.setStretchLastSection(True)
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+        if header is not None:
+            header.setStretchLastSection(True)
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         
         self.users_table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         self.users_table.setAlternatingRowColors(True)
