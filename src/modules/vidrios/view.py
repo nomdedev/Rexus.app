@@ -232,9 +232,10 @@ class VidriosView(QWidget):
 
         # Configurar tabla
         header = self.tabla_vidrios.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Fixed)
         self.tabla_vidrios.setColumnWidth(0, 60)
         self.tabla_vidrios.setColumnWidth(1, 100)
 

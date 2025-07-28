@@ -190,14 +190,15 @@ class AuditoriaView(QWidget):
 
         # Configurar tabla
         header = self.tabla_registros.horizontalHeader()
-        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-        header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
-        header.setSectionResizeMode(7, QHeaderView.ResizeMode.ResizeToContents)
+        if header is not None:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
+            header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
+            header.setSectionResizeMode(7, QHeaderView.ResizeMode.ResizeToContents)
 
         self.tabla_registros.setAlternatingRowColors(True)
         self.tabla_registros.setSelectionBehavior(
@@ -285,9 +286,9 @@ class AuditoriaView(QWidget):
         self.tabla_modulos = QTableWidget()
         self.tabla_modulos.setColumnCount(2)
         self.tabla_modulos.setHorizontalHeaderLabels(["Módulo", "Acciones"])
-        self.tabla_modulos.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
+        header = self.tabla_modulos.horizontalHeader()
+        if header is not None:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         modulos_layout.addWidget(self.tabla_modulos)
 
         splitter.addWidget(modulos_group)
@@ -299,9 +300,9 @@ class AuditoriaView(QWidget):
         self.tabla_usuarios = QTableWidget()
         self.tabla_usuarios.setColumnCount(2)
         self.tabla_usuarios.setHorizontalHeaderLabels(["Usuario", "Acciones"])
-        self.tabla_usuarios.horizontalHeader().setSectionResizeMode(
-            0, QHeaderView.ResizeMode.Stretch
-        )
+        header = self.tabla_usuarios.horizontalHeader()
+        if header is not None:
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
         usuarios_layout.addWidget(self.tabla_usuarios)
 
         splitter.addWidget(usuarios_group)

@@ -209,7 +209,8 @@ class InventarioView(QWidget):
 
         # Configurar tabla
         header = self.tabla_inventario.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.tabla_inventario.setAlternatingRowColors(True)
         self.tabla_inventario.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
@@ -304,7 +305,8 @@ class InventarioView(QWidget):
 
         # Configurar tabla
         header = self.reservas_table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.reservas_table.setAlternatingRowColors(True)
         self.reservas_table.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
@@ -409,7 +411,8 @@ class InventarioView(QWidget):
 
         # Configurar tabla
         header = self.disponibilidad_table.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         self.disponibilidad_table.setAlternatingRowColors(True)
         self.disponibilidad_table.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows

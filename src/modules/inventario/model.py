@@ -24,8 +24,8 @@ class InventarioModel:
         """
         self.db_connection = db_connection
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
-        self.tabla_movimientos = "movimientos_inventario"
-        self.tabla_reservas = "reservas_inventario"  # Tabla para reservas por obra
+        self.tabla_movimientos = "historial"  # Usar tabla historial existente
+        self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
         self._verificar_tablas()
 
     def _verificar_tablas(self):
@@ -35,13 +35,24 @@ class InventarioModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            tablas_requeridas = [
-                self.tabla_inventario,
+            
+            # Verificar tabla principal (crítica)
+            cursor.execute(
+                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
+                (self.tabla_inventario,),
+            )
+            if cursor.fetchone():
+                print(f"[INVENTARIO] Tabla principal '{self.tabla_inventario}' verificada correctamente.")
+            else:
+                raise RuntimeError(f"[CRITICAL] Required table '{self.tabla_inventario}' does not exist. Please create it manually.")
+
+            # Verificar tablas secundarias (no críticas)
+            tablas_secundarias = [
                 self.tabla_movimientos,
                 self.tabla_reservas
             ]
-
-            for tabla in tablas_requeridas:
+            
+            for tabla in tablas_secundarias:
                 cursor.execute(
                     "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
                     (tabla,),
@@ -49,9 +60,9 @@ class InventarioModel:
                 if cursor.fetchone():
                     print(f"[INVENTARIO] Tabla '{tabla}' verificada correctamente.")
                 else:
-                    raise RuntimeError(f"[CRITICAL] Required table '{tabla}' does not exist. Please create it manually.")
+                    print(f"[ADVERTENCIA] Tabla secundaria '{tabla}' no existe. Algunas funciones estarán limitadas.")
 
-            print(f"[INVENTARIO] Todas las tablas requeridas están disponibles.")
+            print(f"[INVENTARIO] Verificación de tablas completada.")
         except Exception as e:
             print(f"[ERROR INVENTARIO] Error verificando tablas: {e}")
             raise
@@ -78,12 +89,12 @@ class InventarioModel:
 
             if filtros:
                 if filtros.get("categoria"):
-                    conditions.append("categoria = ?")
+                    conditions.append("tipo = ?")
                     params.append(filtros["categoria"])
 
                 if filtros.get("estado"):
-                    conditions.append("estado = ?")
-                    params.append(filtros["estado"])
+                    # Estado siempre es ACTIVO para esta tabla
+                    pass
 
                 if filtros.get("stock_bajo"):
                     conditions.append("stock_actual <= stock_minimo")
@@ -95,17 +106,17 @@ class InventarioModel:
 
             where_clause = " AND ".join(conditions)
 
-            # Usar la tabla real inventario_perfiles
-            base_query = f"""
-            SELECT id, codigo, descripcion, categoria, subcategoria, stock_actual,
-                   stock_minimo, stock_maximo, precio_unitario, precio_promedio,
-                   ubicacion, proveedor, unidad_medida, estado, fecha_creacion,
-                   fecha_modificacion, observaciones, codigo_qr,
-                   (stock_actual - ISNULL(stock_reservado, 0)) as stock_disponible,
-                   ISNULL(stock_reservado, 0) as stock_reservado
-            FROM {self.tabla_inventario}
+            # Usar la tabla real inventario_perfiles con columnas existentes
+            base_query = """
+            SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
+                   stock_actual, stock_minimo, 0 as stock_maximo, importe as precio_unitario, 
+                   importe as precio_promedio, ubicacion, proveedor, unidad as unidad_medida, 
+                   'ACTIVO' as estado, GETDATE() as fecha_creacion, GETDATE() as fecha_modificacion, 
+                   '' as observaciones, qr as codigo_qr,
+                   stock_actual as stock_disponible, 0 as stock_reservado
+            FROM inventario_perfiles
             WHERE """
-            sql_select = base_query + where_clause + " ORDER BY descripcion"
+            sql_select = base_query + where_clause + " ORDER BY codigo"
 
             cursor.execute(sql_select, params)
             rows = cursor.fetchall()
@@ -149,7 +160,7 @@ class InventarioModel:
             cursor = self.db_connection.connection.cursor()
 
             sql_select = """
-            SELECT * FROM inventario WHERE id = ?
+            SELECT * FROM inventario_perfiles WHERE id = ?
             """
 
             cursor.execute(sql_select, (producto_id,))
@@ -174,7 +185,7 @@ class InventarioModel:
             cursor = self.db_connection.connection.cursor()
 
             sql_select = """
-            SELECT * FROM inventario WHERE codigo = ?
+            SELECT * FROM inventario_perfiles WHERE codigo = ?
             """
 
             cursor.execute(sql_select, (codigo,))
@@ -217,11 +228,11 @@ class InventarioModel:
             codigo_qr = self._generar_codigo_qr(datos_producto.get("codigo"))
 
             sql_insert = """
-            INSERT INTO inventario
-            (codigo, descripcion, categoria, subcategoria, stock_actual, stock_minimo,
-             stock_maximo, precio_unitario, ubicacion, proveedor, unidad_medida,
-             estado, usuario_creacion, observaciones, codigo_qr)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            INSERT INTO inventario_perfiles
+            (codigo, descripcion, tipo, acabado, stock_actual, stock_minimo,
+             stock_maximo, importe, ubicacion, proveedor, unidad,
+             activo, usuario_creacion, observaciones, qr)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
             """
 
             cursor.execute(
@@ -229,16 +240,15 @@ class InventarioModel:
                 (
                     datos_producto.get("codigo"),
                     datos_producto.get("descripcion"),
-                    datos_producto.get("categoria", ""),
-                    datos_producto.get("subcategoria", ""),
+                    datos_producto.get("tipo", ""),
+                    datos_producto.get("acabado", ""),
                     datos_producto.get("stock_actual", 0),
                     datos_producto.get("stock_minimo", 0),
                     datos_producto.get("stock_maximo", 1000),
-                    datos_producto.get("precio_unitario", 0.00),
+                    datos_producto.get("importe", 0.00),
                     datos_producto.get("ubicacion", ""),
                     datos_producto.get("proveedor", ""),
-                    datos_producto.get("unidad_medida", "Unidad"),
-                    "ACTIVO",
+                    datos_producto.get("unidad", "Unidad"),
                     usuario,
                     datos_producto.get("observaciones", ""),
                     codigo_qr,
@@ -295,7 +305,7 @@ class InventarioModel:
                 raise Exception("Producto no encontrado")
 
             sql_update = """
-            UPDATE inventario
+            UPDATE inventario_perfiles
             SET descripcion = ?, categoria = ?, subcategoria = ?, stock_minimo = ?,
                 stock_maximo = ?, precio_unitario = ?, ubicacion = ?, proveedor = ?,
                 unidad_medida = ?, observaciones = ?, fecha_modificacion = GETDATE(),
@@ -347,7 +357,7 @@ class InventarioModel:
         usuario="SISTEMA",
     ):
         """
-        Registra un movimiento de inventario.
+        Registra un movimiento de inventario usando la tabla historial.
 
         Args:
             producto_id (int): ID del producto
@@ -385,37 +395,26 @@ class InventarioModel:
             else:
                 raise Exception(f"Tipo de movimiento inválido: {tipo_movimiento}")
 
-            # Registrar movimiento
-            sql_movimiento = """
-            INSERT INTO movimientos_inventario
-            (inventario_id, tipo_movimiento, cantidad, stock_anterior, stock_nuevo,
-             motivo, documento_referencia, usuario, fecha_movimiento)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
+            # Verificar si existe la tabla historial
+            cursor.execute("SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'")
+            if cursor.fetchone():
+                # Registrar en historial usando estructura existente
+                cantidad_movimiento = (
+                    cantidad
+                    if tipo_movimiento != "AJUSTE"
+                    else (stock_nuevo - stock_anterior)
+                )
+                
+                detalles = f"Producto ID: {producto_id}, {tipo_movimiento}: {cantidad_movimiento}, Stock anterior: {stock_anterior}, Stock nuevo: {stock_nuevo}, Motivo: {motivo}, Doc: {documento_referencia}"
+                
+                cursor.execute(
+                    "INSERT INTO historial (accion, usuario, fecha, detalles) VALUES (?, ?, GETDATE(), ?)",
+                    (f"INVENTARIO_{tipo_movimiento}", usuario, detalles)
+                )
 
-            cantidad_movimiento = (
-                cantidad
-                if tipo_movimiento != "AJUSTE"
-                else (stock_nuevo - stock_anterior)
-            )
-
-            cursor.execute(
-                sql_movimiento,
-                (
-                    producto_id,
-                    tipo_movimiento,
-                    cantidad_movimiento,
-                    stock_anterior,
-                    stock_nuevo,
-                    motivo,
-                    documento_referencia,
-                    usuario,
-                ),
-            )
-
-            # Actualizar stock en inventario
+            # Actualizar stock en inventario_perfiles
             sql_update_stock = """
-            UPDATE inventario
+            UPDATE inventario_perfiles
             SET stock_actual = ?, fecha_modificacion = GETDATE(), usuario_modificacion = ?
             WHERE id = ?
             """
@@ -424,7 +423,7 @@ class InventarioModel:
 
             self.db_connection.connection.commit()
             print(
-                f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad_movimiento}"
+                f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}"
             )
             return True
 
@@ -436,7 +435,7 @@ class InventarioModel:
 
     def obtener_movimientos(self, producto_id=None, limite=100):
         """
-        Obtiene el historial de movimientos.
+        Obtiene el historial de movimientos desde la tabla historial.
 
         Args:
             producto_id (int): ID del producto específico (opcional)
@@ -451,20 +450,24 @@ class InventarioModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
+            # Verificar si existe la tabla historial
+            cursor.execute("SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'")
+            if not cursor.fetchone():
+                print("[ADVERTENCIA] Tabla historial no existe. No se pueden obtener movimientos.")
+                return []
+
             sql_select = """
-            SELECT m.id, m.inventario_id, i.codigo, i.descripcion,
-                   m.tipo_movimiento, m.cantidad, m.stock_anterior, m.stock_nuevo,
-                   m.motivo, m.documento_referencia, m.fecha_movimiento, m.usuario
-            FROM movimientos_inventario m
-            INNER JOIN inventario i ON m.inventario_id = i.id
+            SELECT id, accion, usuario, fecha, detalles
+            FROM historial
+            WHERE accion LIKE 'INVENTARIO_%'
             """
 
             params = []
             if producto_id:
-                sql_select += " WHERE m.inventario_id = ?"
-                params.append(producto_id)
+                sql_select += " AND detalles LIKE ?"
+                params.append(f"%Producto ID: {producto_id}%")
 
-            sql_select += f" ORDER BY m.fecha_movimiento DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
+            sql_select += f" ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
 
             cursor.execute(sql_select, params)
             rows = cursor.fetchall()
@@ -475,6 +478,9 @@ class InventarioModel:
 
             for row in rows:
                 movimiento = dict(zip(columns, row))
+                # Parse basic info from detalles field
+                detalles = movimiento.get('detalles', '')
+                movimiento['tipo_movimiento'] = movimiento['accion'].replace('INVENTARIO_', '')
                 movimientos.append(movimiento)
 
             return movimientos
@@ -537,9 +543,9 @@ class InventarioModel:
             cursor = self.db_connection.connection.cursor()
 
             sql_select = """
-            SELECT DISTINCT categoria FROM inventario
-            WHERE categoria IS NOT NULL AND categoria != ''
-            ORDER BY categoria
+            SELECT DISTINCT tipo FROM inventario_perfiles
+            WHERE tipo IS NOT NULL AND tipo != ''
+            ORDER BY tipo
             """
 
             cursor.execute(sql_select)
@@ -565,7 +571,7 @@ class InventarioModel:
                     if codigo_qr:
                         cursor = self.db_connection.connection.cursor()
                         sql_update = """
-                        UPDATE inventario
+                        UPDATE inventario_perfiles
                         SET codigo_qr = ? WHERE id = ?
                         """
                         cursor.execute(sql_update, (codigo_qr, producto["id"]))
@@ -585,28 +591,28 @@ class InventarioModel:
             cursor = self.db_connection.connection.cursor()
 
             # Total de productos
-            cursor.execute("SELECT COUNT(*) FROM inventario WHERE estado = 'ACTIVO'")
+            cursor.execute("SELECT COUNT(*) FROM inventario_perfiles")
             total_productos = cursor.fetchone()[0]
 
             # Productos con stock bajo
             cursor.execute("""
-                SELECT COUNT(*) FROM inventario
-                WHERE estado = 'ACTIVO' AND stock_actual <= stock_minimo
+                SELECT COUNT(*) FROM inventario_perfiles
+                WHERE stock_actual <= stock_minimo
             """)
             stock_bajo = cursor.fetchone()[0]
 
             # Valor total del inventario
             cursor.execute("""
-                SELECT SUM(stock_actual * precio_unitario) FROM inventario
-                WHERE estado = 'ACTIVO'
+                SELECT SUM(stock_actual * ISNULL(importe, 0)) FROM inventario_perfiles
             """)
             valor_total = cursor.fetchone()[0] or 0
 
-            # Movimientos del mes actual
+            # Movimientos del mes actual desde historial
             cursor.execute("""
-                SELECT COUNT(*) FROM movimientos_inventario
-                WHERE MONTH(fecha_movimiento) = MONTH(GETDATE())
-                AND YEAR(fecha_movimiento) = YEAR(GETDATE())
+                SELECT COUNT(*) FROM historial
+                WHERE accion LIKE 'INVENTARIO_%'
+                  AND MONTH(fecha) = MONTH(GETDATE())
+                  AND YEAR(fecha) = YEAR(GETDATE())
             """)
             movimientos_mes = cursor.fetchone()[0]
 
@@ -642,7 +648,7 @@ class InventarioModel:
                    mo.cantidad as cantidad_asignada, mo.estado, mo.fecha_asignacion,
                    mo.etapa_id, mo.observaciones
             FROM materiales_obra mo
-            INNER JOIN inventario i ON mo.producto_id = i.id
+            INNER JOIN inventario_perfiles i ON mo.producto_id = i.id
             WHERE mo.obra_id = ?
             ORDER BY mo.fecha_asignacion DESC
             """
@@ -933,7 +939,7 @@ class InventarioModel:
                    m.motivo, m.documento_referencia, m.fecha_movimiento, m.usuario,
                    i.unidad_medida, i.precio_unitario
             FROM movimientos_inventario m
-            INNER JOIN inventario i ON m.inventario_id = i.id
+            INNER JOIN inventario_perfiles i ON m.inventario_id = i.id
             WHERE """
             sql_select = (
                 base_sql
@@ -1003,7 +1009,7 @@ class InventarioModel:
                    l.cantidad, l.proveedor, i.codigo, i.descripcion, i.categoria,
                    DATEDIFF(day, GETDATE(), l.fecha_vencimiento) as dias_restantes
             FROM lotes_inventario l
-            INNER JOIN inventario i ON l.producto_id = i.id
+            INNER JOIN inventario_perfiles i ON l.producto_id = i.id
             WHERE l.fecha_vencimiento IS NOT NULL
               AND l.fecha_vencimiento <= ?
               AND l.fecha_vencimiento >= GETDATE()
@@ -1317,7 +1323,7 @@ class InventarioModel:
 
                     # Obtener precio actual para registro de cambio
                     cursor.execute(
-                        "SELECT precio_unitario FROM inventario WHERE id = ?",
+                        "SELECT precio_unitario FROM inventario_perfiles WHERE id = ?",
                         (producto_id,),
                     )
                     row = cursor.fetchone()

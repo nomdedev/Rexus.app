@@ -198,8 +198,8 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_vidrios_obra}
+            query = """
+                INSERT INTO vidrios_obra
                 (vidrio_id, obra_id, metros_cuadrados_requeridos, medidas_especificas, fecha_asignacion, observaciones)
                 VALUES (?, ?, ?, ?, GETDATE(), ?)
             """
@@ -242,8 +242,8 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Crear pedido principal
-            query_pedido = f"""
-                INSERT INTO {self.tabla_pedidos_vidrios}
+            query_pedido = """
+                INSERT INTO pedidos_vidrios
                 (obra_id, proveedor, fecha_pedido, estado, total_estimado)
                 VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
             """
@@ -300,25 +300,25 @@ class VidriosModel:
 
             # Total de vidrios
             cursor.execute(
-                f"SELECT COUNT(*) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(*) FROM vidrios WHERE estado = 'ACTIVO'"
             )
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
             cursor.execute(
-                f"SELECT COUNT(DISTINCT tipo) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'"
             )
             estadisticas["tipos_disponibles"] = cursor.fetchone()[0]
 
             # Proveedores activos
             cursor.execute(
-                f"SELECT COUNT(DISTINCT proveedor) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
+                "SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO'"
             )
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado por m2)
             cursor.execute(
-                f"SELECT SUM(precio_m2) FROM {self.tabla_vidrios} WHERE estado = 'ACTIVO'"
+                "SELECT SUM(precio_m2) FROM vidrios WHERE estado = 'ACTIVO'"
             )
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0

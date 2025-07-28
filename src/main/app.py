@@ -52,6 +52,7 @@ from PyQt6.QtWidgets import (
 # Core Application Imports
 from src.core.login_dialog import LoginDialog
 from src.core.security import initialize_security_manager
+from src.core.module_manager import module_manager
 
 
 class SimpleSecurityManager:
@@ -465,26 +466,52 @@ class MainWindow(QMainWindow):
         Returns:
             Widget del módulo correspondiente
         """
-        # Mapeo de módulos a métodos de creación
+        # Mapeo de módulos a métodos de creación (incluyendo variaciones normalizadas)
         module_factory = {
             "Inventario": self._create_inventario_module,
             "Contabilidad": self._create_contabilidad_module,
             "Obras": self._create_obras_module,
             "Configuración": self._create_configuracion_module,
+            "Configuracion": self._create_configuracion_module,  # Sin tilde
             "Vidrios": self._create_vidrios_module,
             "Herrajes": self._create_herrajes_module,
             "Pedidos": self._create_pedidos_module,
             "Logística": self._create_logistica_module,
+            "Logistica": self._create_logistica_module,  # Sin tilde
             "Usuarios": self._create_usuarios_module,
             "Auditoría": self._create_auditoria_module,
+            "Auditoria": self._create_auditoria_module,  # Sin tilde
             "Compras": self._create_compras_module,
             "Mantenimiento": self._create_mantenimiento_module,
             "Administración": self._create_administracion_module,
-            "Administracion": self._create_administracion_module,
+            "Administracion": self._create_administracion_module,  # Sin tilde
         }
-        # Normalizar nombre para evitar problemas de tildes/capitalización
-        normalized_name = module_name.strip().capitalize().replace("á", "a").replace("é", "e").replace("í", "i").replace("ó", "o").replace("ú", "u")
-        creation_method = module_factory.get(module_name) or module_factory.get(normalized_name)
+        # Función de normalización mejorada
+        def normalize_module_name(name):
+            """Normaliza nombre de módulo para evitar problemas de tildes/capitalización"""
+            replacements = {
+                'á': 'a', 'é': 'e', 'í': 'i', 'ó': 'o', 'ú': 'u',
+                'Á': 'A', 'É': 'E', 'Í': 'I', 'Ó': 'O', 'Ú': 'U'
+            }
+            normalized = name.strip().capitalize()
+            for accented, plain in replacements.items():
+                normalized = normalized.replace(accented, plain)
+            return normalized
+        
+        # Intentar múltiples variaciones del nombre
+        names_to_try = [
+            module_name,                                    # Nombre original
+            normalize_module_name(module_name),             # Nombre normalizado
+            module_name.strip().capitalize(),               # Solo capitalizado
+            module_name.strip().lower().capitalize()        # Lowercase primero, luego capitalizado
+        ]
+        
+        creation_method = None
+        for name_variant in names_to_try:
+            creation_method = module_factory.get(name_variant)
+            if creation_method:
+                break
+        
         if creation_method:
             return creation_method()
         else:
@@ -501,40 +528,36 @@ class MainWindow(QMainWindow):
             return self._create_fallback_module("Administración")
 
     def _create_inventario_module(self) -> QWidget:
-        """Crea el módulo de inventario usando los archivos reales"""
+        """Crea el módulo de inventario usando el gestor robusto de módulos"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.inventario.controller import InventarioController
             from src.modules.inventario.model import InventarioModel
             from src.modules.inventario.view import InventarioView
 
-            # Crear conexión a la base de datos (puede fallar, usamos mock)
+            # Crear conexión a la base de datos
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = InventarioModel(db_connection)
-            view = InventarioView()
-            controller = InventarioController(model, view, db_connection)
-
-            # Configurar vista
-            view.set_controller(controller)
-            
-            # Cargar datos iniciales
-            controller.cargar_datos_iniciales()
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Inventario",
+                model_class=InventarioModel,
+                view_class=InventarioView,
+                controller_class=lambda m, v: InventarioController(m, v, db_connection),
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando inventario real: {e}")
-            # Fallback a widget simple
+            print(f"Error crítico creando inventario: {e}")
             return self._create_fallback_module("Inventario")
 
     def _create_contabilidad_module(self) -> QWidget:
-        """Crea el módulo de contabilidad usando los archivos reales"""
+        """Crea el módulo de contabilidad usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.administracion.contabilidad.controller import ContabilidadController
@@ -548,20 +571,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = ContabilidadModel(db_connection)
-            view = ContabilidadView()
-            controller = ContabilidadController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Contabilidad",
+                model_class=ContabilidadModel,
+                view_class=ContabilidadView,
+                controller_class=ContabilidadController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando contabilidad real: {e}")
-            # Fallback a widget simple
+            print(f"Error crítico creando contabilidad: {e}")
             return self._create_fallback_module("Contabilidad")
 
     def _create_obras_module(self) -> QWidget:
-        """Crea el módulo de obras usando los archivos reales"""
+        """Crea el módulo de obras usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.obras.controller import ObrasController
@@ -575,16 +600,18 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = ObrasModel(db_connection)
-            view = ObrasView()
-            controller = ObrasController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Obras",
+                model_class=ObrasModel,
+                view_class=ObrasView,
+                controller_class=ObrasController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando obras real: {e}")
-            # Fallback a widget simple
+            print(f"Error crítico creando obras: {e}")
             return self._create_fallback_module("Obras")
 
     def _create_configuracion_module(self) -> QWidget:
@@ -617,7 +644,7 @@ class MainWindow(QMainWindow):
         self.user_data = user_data
 
     def _create_vidrios_module(self) -> QWidget:
-        """Crea el módulo de vidrios usando los archivos reales"""
+        """Crea el módulo de vidrios usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.vidrios.controller import VidriosController
@@ -631,19 +658,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = VidriosModel(db_connection)
-            view = VidriosView()
-            controller = VidriosController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Vidrios",
+                model_class=VidriosModel,
+                view_class=VidriosView,
+                controller_class=VidriosController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando vidrios real: {e}")
+            print(f"Error crítico creando vidrios: {e}")
             return self._create_fallback_module("Vidrios")
 
     def _create_herrajes_module(self) -> QWidget:
-        """Crea el módulo de herrajes usando los archivos reales"""
+        """Crea el módulo de herrajes usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.herrajes.controller import HerrajesController
@@ -657,25 +687,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = HerrajesModel(db_connection)
-            view = HerrajesView()
-            controller = HerrajesController(model, view)
-            
-            # Configurar vista
-            view.set_controller(controller)
-            
-            # Cargar datos iniciales
-            controller.cargar_datos_iniciales()
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Herrajes",
+                model_class=HerrajesModel,
+                view_class=HerrajesView,
+                controller_class=HerrajesController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando herrajes real: {e}")
+            print(f"Error crítico creando herrajes: {e}")
             return self._create_fallback_module("Herrajes")
 
     def _create_pedidos_module(self) -> QWidget:
-        """Crea el módulo de pedidos usando los archivos reales"""
+        """Crea el módulo de pedidos usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.pedidos.controller import PedidosController
@@ -689,25 +716,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = PedidosModel(db_connection)
-            view = PedidosView()
-            controller = PedidosController(model, view)
-            
-            # Configurar vista
-            view.set_controller(controller)
-            
-            # Cargar datos iniciales
-            controller.cargar_datos_iniciales()
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Pedidos",
+                model_class=PedidosModel,
+                view_class=PedidosView,
+                controller_class=PedidosController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando pedidos real: {e}")
+            print(f"Error crítico creando pedidos: {e}")
             return self._create_fallback_module("Pedidos")
 
     def _create_logistica_module(self) -> QWidget:
-        """Crea el módulo de logística usando los archivos reales"""
+        """Crea el módulo de logística usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.logistica.controller import LogisticaController
@@ -721,19 +745,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = LogisticaModel(db_connection)
-            view = LogisticaView()
-            controller = LogisticaController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Logistica",
+                model_class=LogisticaModel,
+                view_class=LogisticaView,
+                controller_class=LogisticaController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando logística real: {e}")
+            print(f"Error crítico creando logística: {e}")
             return self._create_fallback_module("Logística")
 
     def _create_usuarios_module(self) -> QWidget:
-        """Crea el módulo de usuarios usando los archivos reales"""
+        """Crea el módulo de usuarios usando el gestor robusto"""
         try:
             from src.core.database import UsersDatabaseConnection
             from src.modules.usuarios.controller import UsuariosController
@@ -747,25 +774,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = UsuariosModel(db_connection)
-            view = UsuariosView()
-            controller = UsuariosController(model, view)
-            
-            # Conectar view con controller
-            view.set_controller(controller)
-            
-            # Cargar datos iniciales
-            controller.cargar_usuarios()
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Usuarios",
+                model_class=UsuariosModel,
+                view_class=UsuariosView,
+                controller_class=UsuariosController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando usuarios real: {e}")
+            print(f"Error crítico creando usuarios: {e}")
             return self._create_fallback_module("Usuarios")
 
     def _create_auditoria_module(self) -> QWidget:
-        """Crea el módulo de auditoría usando los archivos reales"""
+        """Crea el módulo de auditoría usando el gestor robusto"""
         try:
             from src.core.database import AuditoriaDatabaseConnection
             from src.modules.auditoria.controller import AuditoriaController
@@ -779,19 +803,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = AuditoriaModel(db_connection)
-            view = AuditoriaView()
-            controller = AuditoriaController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Auditoria",
+                model_class=AuditoriaModel,
+                view_class=AuditoriaView,
+                controller_class=AuditoriaController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando auditoría real: {e}")
+            print(f"Error crítico creando auditoría: {e}")
             return self._create_fallback_module("Auditoría")
 
     def _create_compras_module(self) -> QWidget:
-        """Crea el módulo de compras usando los archivos reales"""
+        """Crea el módulo de compras usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.compras.controller import ComprasController
@@ -805,19 +832,22 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = ComprasModel(db_connection)
-            view = ComprasView()
-            controller = ComprasController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Compras",
+                model_class=ComprasModel,
+                view_class=ComprasView,
+                controller_class=ComprasController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando compras real: {e}")
+            print(f"Error crítico creando compras: {e}")
             return self._create_fallback_module("Compras")
 
     def _create_mantenimiento_module(self) -> QWidget:
-        """Crea el módulo de mantenimiento usando los archivos reales"""
+        """Crea el módulo de mantenimiento usando el gestor robusto"""
         try:
             from src.core.database import InventarioDatabaseConnection
             from src.modules.mantenimiento.controller import MantenimientoController
@@ -831,15 +861,18 @@ class MainWindow(QMainWindow):
                 print(f"Error BD: {e}, usando datos demo")
                 db_connection = None
 
-            # Crear modelo, vista y controlador
-            model = MantenimientoModel(db_connection)
-            view = MantenimientoView()
-            controller = MantenimientoController(model, view)
-
-            return view
+            # Usar el gestor de módulos para carga robusta
+            return module_manager.create_module_safely(
+                module_name="Mantenimiento",
+                model_class=MantenimientoModel,
+                view_class=MantenimientoView,
+                controller_class=MantenimientoController,
+                db_connection=db_connection,
+                fallback_callback=self._create_fallback_module
+            )
 
         except Exception as e:
-            print(f"Error creando mantenimiento real: {e}")
+            print(f"Error crítico creando mantenimiento: {e}")
             return self._create_fallback_module("Mantenimiento")
 
     def _create_fallback_module(self, module_name: str) -> QWidget:
