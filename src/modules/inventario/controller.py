@@ -9,6 +9,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from src.core.security import get_security_manager
+from src.utils.error_handler import ErrorHandler, safe_method_decorator
 
 
 class InventarioController(QObject):
@@ -115,6 +116,7 @@ class InventarioController(QObject):
             self.cargar_categorias()
             self.actualizar_estadisticas()
         except Exception as e:
+            ErrorHandler.mostrar_error_operacion(self.view, "inicializar inventario", e)
             self.error_ocurrido.emit(f"Error al inicializar: {str(e)}")
 
     def cargar_datos_iniciales(self):
@@ -211,6 +213,46 @@ class InventarioController(QObject):
             )
 
         self.log_auditoria("CREAR_PRODUCTO", "Intento de crear nuevo producto")
+
+    @safe_method_decorator
+    def agregar_producto(self, datos_producto):
+        """Agrega un nuevo producto al inventario."""
+        if not self.verificar_permiso("crear_producto"):
+            self.mostrar_error_permiso("crear producto")
+            return
+
+        try:
+            if self.model:
+                # Crear el producto usando el modelo
+                exito = self.model.crear_producto(datos_producto)
+                
+                if exito:
+                    if self.view:
+                        self.view.show_success("Producto agregado correctamente")
+                    
+                    # Log de auditoría
+                    self.log_auditoria(
+                        "PRODUCTO_CREADO", 
+                        f"Producto creado: {datos_producto.get('codigo', 'N/A')}", 
+                        datos_producto
+                    )
+                    
+                    # Recargar datos
+                    self.cargar_datos_iniciales()
+                    self.actualizar_estadisticas()
+                    
+                else:
+                    if self.view:
+                        self.view.show_error("Error al crear el producto en la base de datos")
+            else:
+                if self.view:
+                    self.view.show_error("No hay conexión al modelo de datos")
+                
+        except Exception as e:
+            error_msg = f"Error al agregar producto: {str(e)}"
+            if self.view:
+                self.view.show_error(error_msg)
+            self.error_ocurrido.emit(error_msg)
 
     def editar_producto(self):
         """Abre diálogo para editar producto seleccionado."""

@@ -13,6 +13,8 @@ Maneja la lógica de negocio para:
 from datetime import datetime, date
 from decimal import Decimal
 
+from src.utils.demo_data_generator import DemoDataGenerator
+
 
 class LogisticaModel:
     """Modelo para gestionar logística y distribución."""
@@ -234,6 +236,9 @@ class LogisticaModel:
             List[Dict]: Lista de entregas
         """
         if not self.db_connection:
+            # Modo demo: devolver datos demo
+            if DemoDataGenerator.es_modo_demo():
+                return DemoDataGenerator.generar_logistica_demo()['entregas']
             return []
 
         try:

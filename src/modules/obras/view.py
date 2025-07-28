@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
+from src.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -734,6 +735,15 @@ class ObrasView(QWidget):
         """Establece el controlador para esta vista."""
         self.controller = controller
 
+    def mostrar_dialogo_nueva_obra(self):
+        """Muestra el diálogo para crear una nueva obra."""
+        dialogo = FormularioObraDialog(self)
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            datos_obra = dialogo.obtener_datos()
+            if self.controller:
+                self.controller.agregar_obra(datos_obra)
+                # El método crear_obra ya recarga la tabla automáticamente
+
 
 class FormularioObraDialog(QDialog):
     """Diálogo para crear/editar obras."""
@@ -742,7 +752,9 @@ class FormularioObraDialog(QDialog):
         super().__init__(parent)
         self.obra_datos = obra_datos
         self.es_edicion = obra_datos is not None
+        self.validator_manager = FormValidatorManager()
         self.init_ui()
+        self.configurar_validaciones()
 
         if self.es_edicion:
             self.cargar_datos_obra()
@@ -845,7 +857,7 @@ class FormularioObraDialog(QDialog):
         botones = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
-        botones.accepted.connect(self.accept)
+        botones.accepted.connect(self.validar_y_aceptar)
         botones.rejected.connect(self.reject)
         layout.addWidget(botones)
 
@@ -929,3 +941,73 @@ class FormularioObraDialog(QDialog):
         datos["observaciones"] = self.txt_observaciones.toPlainText().strip()
 
         return datos
+
+    def configurar_validaciones(self):
+        """Configura las validaciones del formulario."""
+        # Código obligatorio (solo para nuevas obras)
+        if not self.es_edicion:
+            self.validator_manager.agregar_validacion(
+                self.txt_codigo, FormValidator.validar_campo_obligatorio, "Código"
+            )
+
+        # Nombre obligatorio
+        self.validator_manager.agregar_validacion(
+            self.txt_nombre, FormValidator.validar_campo_obligatorio, "Nombre"
+        )
+
+        # Cliente obligatorio
+        self.validator_manager.agregar_validacion(
+            self.txt_cliente, FormValidator.validar_campo_obligatorio, "Cliente"
+        )
+
+        # Responsable obligatorio
+        self.validator_manager.agregar_validacion(
+            self.txt_responsable, FormValidator.validar_campo_obligatorio, "Responsable"
+        )
+
+        # Dirección obligatoria
+        self.validator_manager.agregar_validacion(
+            self.txt_direccion, FormValidator.validar_campo_obligatorio, "Dirección"
+        )
+
+        # Email (opcional pero con formato correcto)
+        if hasattr(self, 'txt_email') and self.txt_email.text().strip():
+            self.validator_manager.agregar_validacion(
+                self.txt_email, FormValidator.validar_email
+            )
+
+        # Validación de fechas
+        self.validator_manager.agregar_validacion(
+            self.date_inicio, FormValidator.validar_fecha, QDate.currentDate()
+        )
+
+        # Presupuesto mayor que 0
+        self.validator_manager.agregar_validacion(
+            self.spin_presupuesto, FormValidator.validar_numero, 0.01, 999999999.99
+        )
+
+    def validar_y_aceptar(self):
+        """Valida el formulario antes de aceptar."""
+        es_valido, errores = self.validator_manager.validar_formulario()
+        
+        if not es_valido:
+            # Mostrar errores
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            QMessageBox.warning(
+                self, 
+                "Errores de Validación", 
+                "Por favor corrige los siguientes errores:\n\n" + "\n".join(mensajes_error)
+            )
+            return
+
+        # Validación adicional: fecha fin debe ser posterior a fecha inicio
+        if self.date_fin.date() <= self.date_inicio.date():
+            QMessageBox.warning(
+                self,
+                "Error en Fechas",
+                "La fecha de finalización debe ser posterior a la fecha de inicio."
+            )
+            return
+
+        # Si todo es válido, aceptar el diálogo
+        self.accept()

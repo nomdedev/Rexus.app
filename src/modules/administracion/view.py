@@ -191,7 +191,7 @@ class AdministracionView(QWidget):
         ]
 
         for i, (titulo, key, color) in enumerate(cards_data):
-            card = self.create_info_card(titulo, "0", color, small=False)
+            card = self.create_info_card(titulo, "0", color, small=True)
             self.cards_resumen[key] = card
             resumen_layout.addWidget(card, i // 3, i % 3)
 
