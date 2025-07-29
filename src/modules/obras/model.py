@@ -125,7 +125,7 @@ class ObrasModel:
             return False, f"Error creando obra: {str(e)}"
 
     def obtener_todas_obras(self):
-        """Obtiene todas las obras de la base de datos."""
+        """Obtiene todas las obras de la base de datos como lista de diccionarios."""
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
@@ -137,11 +137,11 @@ class ObrasModel:
                     created_at, updated_at
                 FROM obras
                 ORDER BY fecha_inicio DESC
-            """
+                """
             )
-
-            return cursor.fetchall()
-
+            rows = cursor.fetchall()
+            columnas = [column[0] for column in cursor.description]
+            return [dict(zip(columnas, row)) for row in rows]
         except Exception as e:
             print(f"Error obteniendo obras: {e}")
             return []
