@@ -5,10 +5,10 @@ Interfaz moderna para la gestión de usuarios del sistema.
 """
 
 import json
-from datetime import date, datetime
+from datetime import datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
-from PyQt6.QtGui import QBrush, QColor, QFont, QIcon, QPainter, QPen, QPixmap
+from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -22,10 +22,8 @@ from PyQt6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
-    QProgressBar,
     QPushButton,
     QScrollArea,
-    QSpinBox,
     QSplitter,
     QTableWidget,
     QTableWidgetItem,
@@ -40,7 +38,6 @@ from src.modules.usuarios.improved_dialogs import (
     UsuarioPermisosDialog,
 )
 from src.utils.form_validators import FormValidator, FormValidatorManager
-from src.utils.format_utils import format_for_display, table_formatter
 from src.utils.message_system import (
     ask_question,
     show_error,
@@ -163,9 +160,9 @@ class UsuariosView(QWidget):
         layout.addWidget(titulo_label)
 
         # Guardar referencia para actualizar
-        card.valor_label = valor_label
-        card.titulo_label = titulo_label
-        card.color = color
+        card.setProperty("valor_label", valor_label)
+        card.setProperty("titulo_label", titulo_label)
+        card.setProperty("color", color)
 
         return card
 
@@ -563,7 +560,10 @@ class UsuariosView(QWidget):
             self.stat_admins,
         ]:
             card.setObjectName("stat_card")
-            card.valor_label.setStyleSheet(f"color: {card.color}; font-weight: bold;")
+            valor_label = card.property("valor_label")
+            color = card.property("color")
+            if valor_label and color:
+                valor_label.setStyleSheet(f"color: {color}; font-weight: bold;")
 
     def cargar_usuarios_en_tabla(self, usuarios):
         """Carga la lista de usuarios en la tabla."""
@@ -629,10 +629,13 @@ class UsuariosView(QWidget):
         )
         admins = len([u for u in self.usuarios_data if u.get("rol") == "Administrador"])
 
-        self.stat_total.valor_label.setText(str(total))
-        self.stat_activos.valor_label.setText(str(activos))
-        self.stat_inactivos.valor_label.setText(str(inactivos))
-        self.stat_admins.valor_label.setText(str(admins))
+        for stat_card, value in zip(
+            [self.stat_total, self.stat_activos, self.stat_inactivos, self.stat_admins],
+            [total, activos, inactivos, admins],
+        ):
+            valor_label = stat_card.property("valor_label")
+            if valor_label:
+                valor_label.setText(str(value))
 
     def filtrar_usuarios(self):
         """Filtra usuarios según los criterios seleccionados."""
@@ -645,10 +648,12 @@ class UsuariosView(QWidget):
 
             # Filtro por texto
             if texto_busqueda:
-                usuario = self.tabla_usuarios.item(row, 1).text().lower()
-                nombre = self.tabla_usuarios.item(row, 2).text().lower()
-                email = self.tabla_usuarios.item(row, 3).text().lower()
-
+                usuario_item = self.tabla_usuarios.item(row, 1)
+                nombre_item = self.tabla_usuarios.item(row, 2)
+                email_item = self.tabla_usuarios.item(row, 3)
+                usuario = usuario_item.text().lower() if usuario_item else ""
+                nombre = nombre_item.text().lower() if nombre_item else ""
+                email = email_item.text().lower() if email_item else ""
                 if not (
                     texto_busqueda in usuario
                     or texto_busqueda in nombre
@@ -658,31 +663,21 @@ class UsuariosView(QWidget):
 
             # Filtro por estado
             if estado_filtro != "Todos":
-                estado_actual = self.tabla_usuarios.item(row, 5).text()
+                estado_item = self.tabla_usuarios.item(row, 5)
+                estado_actual = estado_item.text() if estado_item else ""
                 if estado_actual != estado_filtro:
                     mostrar_fila = False
 
             # Filtro por rol
             if rol_filtro != "Todos":
-                rol_actual = self.tabla_usuarios.item(row, 4).text()
+                rol_item = self.tabla_usuarios.item(row, 4)
+                rol_actual = rol_item.text() if rol_item else ""
                 if rol_actual != rol_filtro:
                     mostrar_fila = False
 
             self.tabla_usuarios.setRowHidden(row, not mostrar_fila)
 
-    def on_usuario_seleccionado(self):
-        """Maneja la selección de un usuario en la tabla."""
-        fila_actual = self.tabla_usuarios.currentRow()
-        if fila_actual >= 0:
-            usuario_id = self.tabla_usuarios.item(fila_actual, 0).text()
-            usuario = next(
-                (u for u in self.usuarios_data if str(u.get("id")) == usuario_id), None
-            )
-
-            if usuario:
-                self.cargar_usuario_en_formulario(usuario)
-                self.habilitar_formulario(True)
-                self.usuario_actual = usuario
+    # Elimino el método duplicado, solo queda el mejorado más abajo
 
     def cargar_usuario_en_formulario(self, usuario):
         """Carga los datos del usuario en el formulario."""
@@ -700,17 +695,20 @@ class UsuariosView(QWidget):
         if ultimo_acceso:
             try:
                 if isinstance(ultimo_acceso, str):
-                    fecha = datetime.strptime(ultimo_acceso, "%Y-%m-%d").date()
-                    self.date_ultimo_acceso.setDate(QDate(fecha))
-            except:
-                pass
+                    fecha = datetime.strptime(ultimo_acceso, "%Y-%m-%d")
+                    self.date_ultimo_acceso.setDate(
+                        QDate(fecha.year, fecha.month, fecha.day)
+                    )
+            except Exception as e:
+                print(f"Error al convertir fecha de último acceso: {e}")
 
         # Permisos
         permisos = usuario.get("permisos", [])
         if isinstance(permisos, str):
             try:
                 permisos = json.loads(permisos)
-            except:
+            except Exception as e:
+                print(f"Error al cargar permisos: {e}")
                 permisos = []
 
         for permiso, checkbox in self.permisos_checkboxes.items():
@@ -901,24 +899,15 @@ class UsuariosView(QWidget):
         if self.password_dialog:
             self.password_dialog.show_reset_password_dialog(self.usuario_actual)
 
-    def cargar_usuarios_con_formato(self, usuarios):
-        """Carga usuarios en la tabla con formateo consistente."""
-        if not usuarios:
-            return
-
-        # Usar formatters de utilidades para consistencia
-        formatters = table_formatter.create_default_formatters()
-        formatted_data = table_formatter.format_table_data(usuarios, formatters)
-
-        # Cargar en tabla existente
-        self.cargar_en_tabla(formatted_data)
+    # Elimino método que llama a cargar_en_tabla (no existe)
 
     def on_usuario_seleccionado(self):
         """Maneja la selección de usuario en la tabla."""
         current_row = self.tabla_usuarios.currentRow()
         if current_row >= 0:
             # Obtener datos del usuario seleccionado
-            usuario_id = self.tabla_usuarios.item(current_row, 0).text()
+            usuario_id_item = self.tabla_usuarios.item(current_row, 0)
+            usuario_id = usuario_id_item.text() if usuario_id_item else ""
             usuario_data = next(
                 (u for u in self.usuarios_data if str(u.get("id", "")) == usuario_id),
                 None,

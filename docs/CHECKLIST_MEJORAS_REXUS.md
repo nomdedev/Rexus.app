@@ -1,26 +1,14 @@
 # Checklist de Mejoras y Problemas Detectados en Rexus.app
 
 ## 1. Visualización de datos en tablas
-- [x] **Las tablas de muchos módulos aparecen vacías o no muestran datos.** ✅ **RESUELTO - Inventario**
-  - [x] **El método del modelo retorna una lista vacía (por error de consulta, tabla vacía o error de conexión).** ✅ **RESUELTO** 
-    - **Problema identificado:** El modelo `InventarioModel` referenciaba tabla incorrecta (`inventario` vacía en lugar de `inventario_perfiles` con 2549 registros)
-    - **Solución aplicada:** Actualizado todas las referencias de `inventario` a `inventario_perfiles` en el modelo
-    - **Resultado:** Ahora carga correctamente 2549 productos, búsquedas funcionan (648 productos con "Marco")
-  - [x] **Errores de columnas incorrectas:** Mapeadas columnas del modelo a estructura real de la BD:
-    - `categoria` → `tipo`
-    - `subcategoria` → `acabado` 
-    - `precio_unitario` → `importe`
-    - `unidad_medida` → `unidad`
-    - `codigo_qr` → `qr`
-  - [x] **Tablas auxiliares:** Adaptado para usar tablas existentes (`historial` para movimientos, `reserva_materiales` para reservas)
-  - [ ] El método del controlador que debería cargar los datos no se llama al inicializar la vista.
-    - *Solución:* Llamar explícitamente a los métodos de carga de datos (`cargar_datos_iniciales`, `cargar_X`) en el constructor o método `set_controller` de cada vista.
-  - [ ] El método de la vista que debe poblar la tabla no está implementado o no se llama.
-    - *Solución:* Implementar siempre un método `cargar_en_tabla` y llamarlo desde el controlador tras obtener los datos.
-  - [ ] Faltan llamadas a `set_controller` o a métodos como `cargar_datos_iniciales` en la inicialización.
-    - *Solución:* Asegurarse de que cada vista reciba y almacene su controlador y que este llame a la carga inicial.
-  - [ ] Errores silenciosos en los métodos de carga (try/except que oculta el error real).
-    - *Solución:* Loggear todas las excepciones y mostrar mensajes de error en la UI.
+- [ ] El método del controlador que debería cargar los datos no se llama al inicializar la vista.
+  - *Solución:* Llamar explícitamente a los métodos de carga de datos (`cargar_datos_iniciales`, `cargar_X`) en el constructor o método `set_controller` de cada vista.
+- [ ] El método de la vista que debe poblar la tabla no está implementado o no se llama.
+  - *Solución:* Implementar siempre un método `cargar_en_tabla` y llamarlo desde el controlador tras obtener los datos.
+- [ ] Faltan llamadas a `set_controller` o a métodos como `cargar_datos_iniciales` en la inicialización.
+  - *Solución:* Asegurarse de que cada vista reciba y almacene su controlador y que este llame a la carga inicial.
+- [ ] Errores silenciosos en los métodos de carga (try/except que oculta el error real).
+  - *Solución:* Loggear todas las excepciones y mostrar mensajes de error en la UI.
 
 ## 2. Factory de módulos y fallback
 - [ ] Varios módulos muestran solo “disponible y funcionando” (fallback).
@@ -31,22 +19,9 @@
   - [ ] El método de creación del módulo no está implementado en el factory.
     - *Solución:* Implementar todos los métodos de creación de módulos en el factory.
 
-## 3. Errores de inicialización de tablas
-- [x] ✅ **RESUELTO** Errores al llamar a `setSectionResizeMode` sobre `None` en las tablas.
-  - [x] ✅ **RESUELTO** Siempre verificar que `header` no sea `None` antes de llamar a métodos sobre él.
-    - **Problema resuelto:** Agregada validación `if header is not None:` en todos los módulos
-    - **Impacto:** Eliminados crashes por headers None en tablas vacías
 
-## 4. Falta de conexión entre formularios y base de datos
-- [x] ✅ **PARCIALMENTE RESUELTO** Los formularios de alta/edición (por ejemplo, Entregas, Service) no guardan ni muestran datos.
-  - [x] ✅ **RESUELTO - Inventario y Obras** El botón "Guardar" no está conectado al controlador.
-    - **Solución aplicada:** Conectados botones Nuevo Producto (Inventario) y Nueva Obra (Obras) con validación completa
-  - [x] ✅ **RESUELTO - Inventario y Obras** El controlador no llama al método correcto del modelo.
-    - **Solución aplicada:** Métodos `agregar_producto()` y `agregar_obra()` implementados y funcionando
-  - [x] ✅ **RESUELTO - Inventario y Obras** El modelo no implementa el método de inserción o consulta.
-    - **Solución aplicada:** Métodos `crear_producto()` y `crear_obra()` funcionando correctamente
-  - [x] ✅ **RESUELTO - Inventario y Obras** Faltan señales o métodos de actualización de la tabla tras guardar.
-    - **Solución aplicada:** Recarga automática de datos tras crear productos/obras exitosamente
+
+
 
 ## 5. Nombres y tildes en los módulos
 - [ ] Inconsistencias en nombres de módulos (tildes, mayúsculas/minúsculas) entre el sidebar y el factory.
@@ -134,82 +109,7 @@
 ---
 ---
 
-## 📊 RESUMEN DE PROGRESO
 
-### ✅ **COMPLETADO (2025-01-17)**
-1. **Problema crítico de datos vacíos en Inventario - RESUELTO**
-   - **Causa raíz:** Referencia a tabla incorrecta (`inventario` vacía vs `inventario_perfiles` con datos)
-   - **Archivos modificados:** `src/modules/inventario/model.py`
-   - **Impacto:** 2549 productos ahora cargan correctamente, búsquedas funcionan
-   - **Técnical Details:** 
-     - Actualizado 15+ referencias de tabla en queries SQL
-     - Mapeado columnas existentes en BD a modelo esperado
-     - Adaptado tablas auxiliares (`historial`, `reserva_materiales`)
-
-2. **Configuración de base de datos verificada**
-   - ✅ Conexión a SQL Server funcional (DESKTOP-QHMPTGO\SQLEXPRESS)
-   - ✅ 65 tablas identificadas en BD `inventario`
-   - ✅ Variables de entorno configuradas correctamente
-
-3. **Vulnerabilidades SQL Injection eliminadas**
-   - ✅ **Inventario Model:** Todas las queries con f-strings y concatenación convertidas a queries parametrizadas
-   - ✅ **Vidrios Model:** Eliminados f-strings con nombres de tabla dinámicos  
-   - ✅ **Herrajes Model:** Convertida concatenación de strings SQL a nombres fijos
-   - **Impacto:** App ahora resistente a inyecciones SQL, código más seguro
-
-4. **Sistema de gestión de módulos robusto implementado**
-   - ✅ **Creado:** `src/core/module_manager.py` - Gestor centralizado de módulos
-   - ✅ **Características:** Manejo de errores, carga automática de datos, logging detallado, fallback robusto
-   - ✅ **Integrado:** En `src/main/app.py` para módulo Inventario (ejemplo piloto)
-   - **Beneficios:** Carga más confiable, mejor debugging, experiencia de usuario mejorada
-
-### ✅ **COMPLETADO HOY (2025-01-28) - Sesión de mejoras adicionales**
-5. **Conexión de botón Nueva Entrega en logística - COMPLETADO**
-   - ✅ Conectado botón "Nueva Entrega" con diálogo de formulario completo
-   - ✅ Implementada clase `DialogoNuevaEntrega` con validaciones
-   - ✅ Mejorado controlador con manejo de señales y carga de datos iniciales
-   - **Archivos modificados:** `src/modules/logistica/view.py`, `src/modules/logistica/controller.py`
-   - **Impacto:** Formularios ahora funcionales para crear entregas
-
-6. **Sistema de manejo de errores unificado - COMPLETADO**
-   - ✅ Creado `src/utils/error_handler.py` - Sistema centralizado de manejo de errores
-   - ✅ Integrado `QMessageBox` con logging automático
-   - ✅ Aplicado en módulos de logística e inventario
-   - ✅ Decoradores para manejo automático de errores en métodos
-   - **Impacto:** Mejor feedback visual al usuario y logging detallado de errores
-
-7. **Sistema de datos demo implementado - COMPLETADO**
-   - ✅ Creado `src/utils/demo_data_generator.py` - Generador de datos realistas
-   - ✅ Datos demo para: Inventario, Obras, Pedidos, Logística, Usuarios, Compras
-   - ✅ Integrado modo demo en modelo de logística
-   - ✅ Variable de entorno `REXUS_MODO_DEMO` para activación
-   - **Impacto:** Testing y demostración sin necesidad de BD real
-
-8. **Sistema de validación de formularios - COMPLETADO**
-   - ✅ Creado `src/utils/form_validators.py` - Validadores con feedback visual
-   - ✅ Validaciones: campos obligatorios, email, teléfono, números, fechas, longitud
-   - ✅ Clase `FormValidatorManager` para gestión completa de formularios
-   - ✅ Integrado en diálogo Nueva Entrega como ejemplo piloto
-   - **Impacto:** Validación robusta con feedback visual inmediato
-
-### ✅ **COMPLETADO (2025-01-28) - Sesión de mejoras mayor**
-1. **Aplicación del gestor de módulos a todos los módulos - COMPLETADO**
-   - ✅ Aplicado `module_manager.create_module_safely()` a: Contabilidad, Obras, Vidrios, Herrajes, Pedidos, Usuarios, Auditoría, Compras, Mantenimiento, Logística
-   - ✅ Todos los módulos ahora usan el gestor robusto de módulos
-   - **Impacto:** Carga más confiable de módulos, mejor manejo de errores, experiencia de usuario mejorada
-
-2. **Corrección de nombres de módulos en factory - COMPLETADO**
-   - ✅ Normalizado nombres entre sidebar y factory (sin tildes, consistentes)  
-   - ✅ Implementada función de normalización de nombres mejorada
-   - ✅ Verificado mappings: "Logística" → "Logistica", "Auditoría" → "Auditoria"
-   - **Impacto:** Elimina módulos fallback por problemas de nombres con tildes
-
-3. **Arreglo de errores de inicialización de tablas - COMPLETADO**
-   - ✅ Corregidos todos los `setSectionResizeMode` sobre headers `None` en todos los módulos
-   - ✅ Agregada validación `if header is not None:` antes de modificar headers
-   - ✅ Implementada inicialización robusta de tablas en: Vidrios, Usuarios, Obras, Mantenimiento, Logística, Inventario, Compras, Herrajes, Auditoría, Administración
-   - **Archivos modificados:** 15+ archivos view.py en diferentes módulos
-   - **Impacto:** Elimina crashes por headers None en tablas vacías
 
 ## Checklist Único de Mejoras y Problemas Pendientes en Rexus.app
 
