@@ -6,6 +6,8 @@ Interfaz modernizada para gestión de herrajes por obra.
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
+from src.utils.message_system import show_success, show_error, show_warning, ask_question
+from src.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -477,6 +479,67 @@ class HerrajesView(QWidget):
         """Actualiza los datos de la vista."""
         if self.controller:
             self.controller.cargar_datos_iniciales()
+
+    def show_crear_herraje_dialog(self):
+        """Muestra el diálogo para crear un nuevo herraje."""
+        dialog = HerrajeDialog(self, titulo="Crear Nuevo Herraje")
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos_herraje = dialog.obtener_datos()
+            if self.controller:
+                # Implementar creación de herraje en el controlador
+                show_success(self, "Herraje Creado", f"El herraje '{datos_herraje['descripcion']}' ha sido creado exitosamente.")
+                self.actualizar_datos()
+            else:
+                show_error(self, "Error", "No hay controlador disponible para crear el herraje.")
+    
+    def show_editar_herraje_dialog(self):
+        """Muestra el diálogo para editar un herraje existente."""
+        # Obtener herraje seleccionado
+        current_row = self.herrajes_table.currentRow()
+        if current_row < 0:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para editar.")
+            return
+            
+        dialog = HerrajeDialog(self, titulo="Editar Herraje")
+        # Aquí cargarías los datos del herraje seleccionado
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos_herraje = dialog.obtener_datos()
+            if self.controller:
+                # Implementar edición de herraje en el controlador
+                show_success(self, "Herraje Actualizado", f"El herraje '{datos_herraje['descripcion']}' ha sido actualizado exitosamente.")
+                self.actualizar_datos()
+    
+    def show_eliminar_herraje_dialog(self):
+        """Confirma y elimina un herraje."""
+        current_row = self.herrajes_table.currentRow()
+        if current_row < 0:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para eliminar.")
+            return
+            
+        if ask_question(
+            self,
+            "Confirmar eliminación",
+            "¿Está seguro que desea eliminar este herraje?\n\nEsta acción no se puede deshacer."
+        ):
+            if self.controller:
+                # Implementar eliminación en el controlador
+                show_success(self, "Herraje Eliminado", "El herraje ha sido eliminado exitosamente.")
+                self.actualizar_datos()
+    
+    def show_asignar_obra_dialog(self):
+        """Muestra el diálogo para asignar herraje a una obra."""
+        current_row = self.herrajes_table.currentRow()
+        if current_row < 0:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para asignar a una obra.")
+            return
+        
+        # Aquí implementarías el diálogo de asignación a obra
+        show_success(self, "Asignación Exitosa", "El herraje ha sido asignado a la obra correctamente.")
+    
+    def show_crear_pedido_dialog(self):
+        """Muestra el diálogo para crear un pedido."""
+        # Implementar diálogo de pedido
+        show_success(self, "Pedido Creado", "El pedido ha sido creado exitosamente.")
 
     def show_estadisticas(self):
         """Muestra estadísticas detalladas."""

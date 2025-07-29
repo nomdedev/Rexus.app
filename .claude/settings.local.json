@@ -20,7 +20,8 @@
       "Bash(pip install:*)",
       "Bash(sed:*)",
       "Bash(cp:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(set PYTHONPATH=.)"
     ],
     "deny": []
   }

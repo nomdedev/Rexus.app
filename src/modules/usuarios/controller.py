@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QMessageBox
 
 from .model import UsuariosModel
 from src.utils.error_handler import ErrorHandler, safe_method_decorator
+from src.utils.message_system import show_success, show_error
 
 
 class UsuariosController(QObject):
@@ -320,24 +321,26 @@ class UsuariosController(QObject):
         print(f"[USUARIOS CONTROLLER] Usuario actual: {usuario.get('nombre_completo', 'Desconocido')}")
     
     def mostrar_exito(self, mensaje: str):
-        """Muestra un mensaje de éxito."""
+        """Muestra un mensaje de éxito con el sistema mejorado."""
         if self.view:
-            QMessageBox.information(self.view, "Éxito", mensaje)
+            show_success(self.view, "Éxito", mensaje)
     
     def mostrar_error(self, mensaje: str):
-        """Muestra un mensaje de error."""
+        """Muestra un mensaje de error con el sistema mejorado."""
         if self.view:
-            QMessageBox.critical(self.view, "Error", mensaje)
+            show_error(self.view, "Error", mensaje)
     
     def mostrar_advertencia(self, mensaje: str):
-        """Muestra un mensaje de advertencia."""
+        """Muestra un mensaje de advertencia con el sistema mejorado."""
         if self.view:
-            QMessageBox.warning(self.view, "Advertencia", mensaje)
+            from src.utils.message_system import show_warning
+            show_warning(self.view, "Advertencia", mensaje)
     
     def mostrar_info(self, mensaje: str):
-        """Muestra un mensaje informativo."""
+        """Muestra un mensaje informativo con el sistema mejorado."""
         if self.view:
-            QMessageBox.information(self.view, "Información", mensaje)
+            from src.utils.message_system import show_info
+            show_info(self.view, "Información", mensaje)
     
     def get_view(self):
         """Retorna la vista del módulo."""

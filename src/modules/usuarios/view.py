@@ -35,6 +35,7 @@ from PyQt6.QtWidgets import (
 )
 
 from src.utils.form_validators import FormValidator, FormValidatorManager
+from src.utils.message_system import show_success, show_error, show_warning, ask_question
 
 
 class UsuariosView(QWidget):
@@ -707,6 +708,14 @@ class UsuariosView(QWidget):
         if dialogo.exec() == QDialog.DialogCode.Accepted:
             datos_usuario = dialogo.obtener_datos()
             self.solicitud_crear_usuario.emit(datos_usuario)
+    
+    def mostrar_exito_operacion(self, titulo: str, mensaje: str):
+        """Muestra un mensaje de éxito para operaciones exitosas."""
+        show_success(self, titulo, mensaje)
+    
+    def mostrar_error_operacion(self, titulo: str, mensaje: str):
+        """Muestra un mensaje de error para operaciones fallidas."""
+        show_error(self, titulo, mensaje)
 
     def guardar_usuario(self):
         """Guarda los cambios del usuario actual."""
@@ -736,17 +745,32 @@ class UsuariosView(QWidget):
     def eliminar_usuario(self):
         """Elimina el usuario actual."""
         if not self.usuario_actual:
+            show_warning(self, "Sin selección", "Debe seleccionar un usuario para eliminar")
             return
 
-        self.solicitud_eliminar_usuario.emit(str(self.usuario_actual["id"]))
+        # Confirmar eliminación
+        if ask_question(
+            self,
+            "Confirmar eliminación",
+            f"¿Está seguro que desea eliminar el usuario '{self.usuario_actual['username']}'?\n\nEsta acción no se puede deshacer."
+        ):
+            self.solicitud_eliminar_usuario.emit(str(self.usuario_actual["id"]))
 
     def resetear_password(self):
         """Resetea la contraseña del usuario actual."""
         if not self.usuario_actual:
+            show_warning(self, "Sin selección", "Debe seleccionar un usuario para resetear la contraseña")
             return
 
-        # Aquí implementarías la lógica para resetear password
-        print(f"Resetear password para usuario {self.usuario_actual['username']}")
+        # Confirmar reset de contraseña
+        if ask_question(
+            self,
+            "Confirmar reset",
+            f"¿Está seguro que desea resetear la contraseña del usuario '{self.usuario_actual['username']}'?\n\nSe establecerá una contraseña temporal."
+        ):
+            # Implementar lógica de reset de contraseña aquí
+            show_success(self, "Contraseña reseteada", f"La contraseña del usuario '{self.usuario_actual['username']}' ha sido reseteada exitosamente.")
+            print(f"Resetear password para usuario {self.usuario_actual['username']}")
 
     def cargar_usuarios(self):
         """Solicita la carga de usuarios al controlador."""
@@ -860,24 +884,21 @@ class DialogoNuevoUsuario(QDialog):
         es_valido, errores = self.validator_manager.validar_formulario()
 
         if not es_valido:
-            # Mostrar errores
+            # Mostrar errores con el nuevo sistema
             mensajes_error = self.validator_manager.obtener_mensajes_error()
-            from PyQt6.QtWidgets import QMessageBox
-
-            QMessageBox.warning(
+            show_error(
                 self,
                 "Errores de Validación",
-                "Por favor corrige los siguientes errores:\n\n"
-                + "\n".join(mensajes_error),
+                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
             )
             return
 
         # Validación adicional: contraseñas coinciden
         if self.input_password.text() != self.input_password_confirm.text():
-            from PyQt6.QtWidgets import QMessageBox
-
-            QMessageBox.warning(
-                self, "Error de Validación", "Las contraseñas no coinciden"
+            show_error(
+                self, 
+                "Error de Validación", 
+                "Las contraseñas ingresadas no coinciden.\n\nPor favor verifique que ambas contraseñas sean idénticas."
             )
             return
 

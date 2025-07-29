@@ -9,6 +9,7 @@ from datetime import date, datetime
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 from src.utils.form_validators import FormValidator, FormValidatorManager
+from src.utils.message_system import show_success, show_error, show_warning, ask_question
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -881,21 +882,21 @@ class DialogNuevaOrden(QDialog):
         es_valido, errores = self.validator_manager.validar_formulario()
         
         if not es_valido:
-            # Mostrar errores
+            # Mostrar errores con el sistema mejorado
             mensajes_error = self.validator_manager.obtener_mensajes_error()
-            QMessageBox.warning(
+            show_error(
                 self, 
                 "Errores de Validación", 
-                "Por favor corrige los siguientes errores:\n\n" + "\n".join(mensajes_error)
+                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
             )
             return
 
         # Validación adicional: fecha de entrega posterior a fecha de pedido
         if self.date_entrega.date() <= self.date_pedido.date():
-            QMessageBox.warning(
+            show_error(
                 self, 
                 "Error de Validación", 
-                "La fecha de entrega debe ser posterior a la fecha de pedido"
+                "La fecha de entrega debe ser posterior a la fecha de pedido.\n\nPor favor seleccione una fecha de entrega que sea al menos un día después de la fecha de pedido."
             )
             return
 
