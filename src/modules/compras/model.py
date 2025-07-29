@@ -29,7 +29,7 @@ class ComprasModel:
             return
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar tabla compras
             cursor.execute(
@@ -96,7 +96,7 @@ class ComprasModel:
             return False
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_insert = """
             INSERT INTO compras
@@ -121,7 +121,7 @@ class ComprasModel:
                 ),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             print(f"[COMPRAS] Orden creada: {numero_orden}")
             return True
 
@@ -140,7 +140,7 @@ class ComprasModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_select = """
             SELECT
@@ -195,7 +195,7 @@ class ComprasModel:
             return False
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_update = """
             UPDATE compras
@@ -204,7 +204,7 @@ class ComprasModel:
             """
 
             cursor.execute(sql_update, (nuevo_estado, compra_id))
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             print(
                 f"[COMPRAS] Estado actualizado para compra {compra_id}: {nuevo_estado}"
@@ -229,7 +229,7 @@ class ComprasModel:
             return self._get_estadisticas_demo()
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             fecha_limite = datetime.datetime.now() - datetime.timedelta(days=dias)
 
             # === ESTADÍSTICAS GENERALES ===
@@ -529,7 +529,7 @@ class ComprasModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Construir query con filtros
             conditions = []

@@ -20,6 +20,10 @@ class VidriosModel:
         self.tabla_vidrios = "vidrios"  # Tabla principal de vidrios en DB inventario
         self.tabla_vidrios_obra = "vidrios_obra"  # Tabla para asociar vidrios con obras
         self.tabla_pedidos_vidrios = "pedidos_vidrios"  # Tabla para pedidos por obra
+        if not self.db_connection:
+            print(
+                "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
+            )
         self._verificar_tablas()
 
     def _verificar_tablas(self):
@@ -104,15 +108,19 @@ class VidriosModel:
                     conditions.append("espesor = ?")
                     params.append(filtros["espesor"])
 
-            query = f"""
+            query = (
+                f"""
                 SELECT
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, dimensiones_disponibles,
                     estado, observaciones, fecha_actualizacion
                 FROM {self.tabla_vidrios}
-                WHERE """ + " AND ".join(conditions) + """
+                WHERE """
+                + " AND ".join(conditions)
+                + """
                 ORDER BY tipo, espesor
             """
+            )
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -299,9 +307,7 @@ class VidriosModel:
             estadisticas = {}
 
             # Total de vidrios
-            cursor.execute(
-                "SELECT COUNT(*) FROM vidrios WHERE estado = 'ACTIVO'"
-            )
+            cursor.execute("SELECT COUNT(*) FROM vidrios WHERE estado = 'ACTIVO'")
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
@@ -317,9 +323,7 @@ class VidriosModel:
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado por m2)
-            cursor.execute(
-                "SELECT SUM(precio_m2) FROM vidrios WHERE estado = 'ACTIVO'"
-            )
+            cursor.execute("SELECT SUM(precio_m2) FROM vidrios WHERE estado = 'ACTIVO'")
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
@@ -416,19 +420,22 @@ class VidriosModel:
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
             """
 
-            cursor.execute(query, (
-                datos_vidrio.get('codigo', ''),
-                datos_vidrio.get('descripcion', ''),
-                datos_vidrio.get('tipo', ''),
-                datos_vidrio.get('espesor', 0),
-                datos_vidrio.get('proveedor', ''),
-                datos_vidrio.get('precio_m2', 0),
-                datos_vidrio.get('color', ''),
-                datos_vidrio.get('tratamiento', ''),
-                datos_vidrio.get('dimensiones_disponibles', ''),
-                datos_vidrio.get('estado', 'ACTIVO'),
-                datos_vidrio.get('observaciones', '')
-            ))
+            cursor.execute(
+                query,
+                (
+                    datos_vidrio.get("codigo", ""),
+                    datos_vidrio.get("descripcion", ""),
+                    datos_vidrio.get("tipo", ""),
+                    datos_vidrio.get("espesor", 0),
+                    datos_vidrio.get("proveedor", ""),
+                    datos_vidrio.get("precio_m2", 0),
+                    datos_vidrio.get("color", ""),
+                    datos_vidrio.get("tratamiento", ""),
+                    datos_vidrio.get("dimensiones_disponibles", ""),
+                    datos_vidrio.get("estado", "ACTIVO"),
+                    datos_vidrio.get("observaciones", ""),
+                ),
+            )
 
             # Obtener ID del vidrio creado
             cursor.execute("SELECT @@IDENTITY")
@@ -469,20 +476,23 @@ class VidriosModel:
                 WHERE id = ?
             """
 
-            cursor.execute(query, (
-                datos_vidrio.get('codigo', ''),
-                datos_vidrio.get('descripcion', ''),
-                datos_vidrio.get('tipo', ''),
-                datos_vidrio.get('espesor', 0),
-                datos_vidrio.get('proveedor', ''),
-                datos_vidrio.get('precio_m2', 0),
-                datos_vidrio.get('color', ''),
-                datos_vidrio.get('tratamiento', ''),
-                datos_vidrio.get('dimensiones_disponibles', ''),
-                datos_vidrio.get('estado', 'ACTIVO'),
-                datos_vidrio.get('observaciones', ''),
-                vidrio_id
-            ))
+            cursor.execute(
+                query,
+                (
+                    datos_vidrio.get("codigo", ""),
+                    datos_vidrio.get("descripcion", ""),
+                    datos_vidrio.get("tipo", ""),
+                    datos_vidrio.get("espesor", 0),
+                    datos_vidrio.get("proveedor", ""),
+                    datos_vidrio.get("precio_m2", 0),
+                    datos_vidrio.get("color", ""),
+                    datos_vidrio.get("tratamiento", ""),
+                    datos_vidrio.get("dimensiones_disponibles", ""),
+                    datos_vidrio.get("estado", "ACTIVO"),
+                    datos_vidrio.get("observaciones", ""),
+                    vidrio_id,
+                ),
+            )
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Vidrio {vidrio_id} actualizado exitosamente")
@@ -513,11 +523,13 @@ class VidriosModel:
             # Verificar si el vidrio está asignado a alguna obra
             cursor.execute(
                 f"SELECT COUNT(*) FROM {self.tabla_vidrios_obra} WHERE vidrio_id = ?",
-                (vidrio_id,)
+                (vidrio_id,),
             )
-            
+
             if cursor.fetchone()[0] > 0:
-                print(f"[ADVERTENCIA] El vidrio {vidrio_id} está asignado a obras, se marcará como inactivo")
+                print(
+                    f"[ADVERTENCIA] El vidrio {vidrio_id} está asignado a obras, se marcará como inactivo"
+                )
                 # Marcar como inactivo en lugar de eliminar
                 query = f"""
                     UPDATE {self.tabla_vidrios}
@@ -576,7 +588,7 @@ class VidriosModel:
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
             return None
-    
+
     def _get_vidrios_demo(self):
         """Datos demo para cuando no hay conexión a base de datos."""
         return [
@@ -592,7 +604,7 @@ class VidriosModel:
                 "tratamiento": "Templado",
                 "estado": "ACTIVO",
                 "dimensiones_disponibles": "2.0x3.0m, 1.5x2.5m",
-                "observaciones": "Vidrio para puertas principales"
+                "observaciones": "Vidrio para puertas principales",
             },
             {
                 "id": 2,
@@ -606,7 +618,7 @@ class VidriosModel:
                 "tratamiento": "Laminado",
                 "estado": "ACTIVO",
                 "dimensiones_disponibles": "2.5x3.5m, 2.0x3.0m",
-                "observaciones": "Vidrio de seguridad para fachadas"
+                "observaciones": "Vidrio de seguridad para fachadas",
             },
             {
                 "id": 3,
@@ -620,7 +632,7 @@ class VidriosModel:
                 "tratamiento": "Ninguno",
                 "estado": "ACTIVO",
                 "dimensiones_disponibles": "1.5x2.0m, 1.0x1.5m",
-                "observaciones": "Vidrio estándar para ventanas"
+                "observaciones": "Vidrio estándar para ventanas",
             },
             {
                 "id": 4,
@@ -634,7 +646,7 @@ class VidriosModel:
                 "tratamiento": "Espejado",
                 "estado": "ACTIVO",
                 "dimensiones_disponibles": "1.0x2.0m, 0.8x1.5m",
-                "observaciones": "Espejo decorativo para baños"
+                "observaciones": "Espejo decorativo para baños",
             },
             {
                 "id": 5,
@@ -648,6 +660,6 @@ class VidriosModel:
                 "tratamiento": "Templado",
                 "estado": "ACTIVO",
                 "dimensiones_disponibles": "3.0x4.0m, 2.5x3.0m",
-                "observaciones": "Vidrio especial para divisiones"
-            }
+                "observaciones": "Vidrio especial para divisiones",
+            },
         ]

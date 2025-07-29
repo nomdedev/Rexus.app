@@ -18,7 +18,9 @@
       "Bash(del:*)",
       "Bash(move DOCUMENTACION_BASE_DATOS.md docs/database/)",
       "Bash(pip install:*)",
-      "Bash(sed:*)"
+      "Bash(sed:*)",
+      "Bash(cp:*)",
+      "Bash(timeout:*)"
     ],
     "deny": []
   }

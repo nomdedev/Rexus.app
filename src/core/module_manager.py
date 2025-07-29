@@ -76,11 +76,8 @@ class ModuleManager:
                 'error': str(e)
             }
             
-            # Ejecutar fallback
-            if fallback_callback:
-                return fallback_callback(module_name)
-            else:
-                return self._create_error_widget(module_name, str(e))
+            # SIEMPRE mostrar widget de error detallado en lugar del fallback genérico
+            return self._create_error_widget(module_name, str(e))
     
     def _create_model_safely(self, model_class, db_connection, module_name):
         """Crea modelo con validación de conexión BD."""
@@ -144,12 +141,13 @@ class ModuleManager:
             print(f"[{module_name}] ADVERTENCIA: Error cargando datos iniciales: {e}")
     
     def _create_error_widget(self, module_name: str, error_message: str) -> QWidget:
-        """Crea widget de error informativo."""
-        from PyQt6.QtWidgets import QVBoxLayout, QLabel
+        """Crea widget de error informativo con diagnóstico detallado."""
+        from PyQt6.QtWidgets import QVBoxLayout, QLabel, QPushButton, QTextEdit, QGroupBox
         from PyQt6.QtCore import Qt
         
         widget = QWidget()
         layout = QVBoxLayout(widget)
+        layout.setContentsMargins(20, 20, 20, 20)
         
         # Título de error
         title = QLabel(f"❌ Error en módulo {module_name}")
@@ -157,29 +155,115 @@ class ModuleManager:
             font-size: 18px;
             font-weight: bold;
             color: #e74c3c;
-            margin: 20px;
+            margin-bottom: 20px;
         """)
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        # Mensaje de error
-        message = QLabel(f"Detalles: {error_message}")
-        message.setStyleSheet("""
-            font-size: 12px;
-            color: #7f8c8d;
-            margin: 10px;
-            padding: 10px;
-            background-color: #f8f9fa;
-            border: 1px solid #e9ecef;
-            border-radius: 4px;
+        # Diagnóstico del error
+        diagnosis = self._analyze_error(error_message)
+        diagnosis_label = QLabel(f"📋 Diagnóstico: {diagnosis}")
+        diagnosis_label.setStyleSheet("""
+            font-size: 14px;
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-weight: bold;
         """)
-        message.setWordWrap(True)
-        message.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        diagnosis_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        diagnosis_label.setWordWrap(True)
+        
+        # Grupo de detalles técnicos
+        details_group = QGroupBox("🔧 Detalles Técnicos")
+        details_layout = QVBoxLayout(details_group)
+        
+        # Mensaje de error detallado
+        error_text = QTextEdit()
+        error_text.setPlainText(error_message)
+        error_text.setReadOnly(True)
+        error_text.setMaximumHeight(100)
+        error_text.setStyleSheet("""
+            QTextEdit {
+                font-family: monospace;
+                font-size: 11px;
+                color: #7f8c8d;
+                background-color: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 4px;
+                padding: 8px;
+            }
+        """)
+        
+        details_layout.addWidget(error_text)
+        
+        # Sugerencias de solución
+        suggestions = self._get_error_suggestions(error_message, module_name)
+        if suggestions:
+            suggestions_label = QLabel(f"💡 Sugerencias:\n{suggestions}")
+            suggestions_label.setStyleSheet("""
+                font-size: 12px;
+                color: #27ae60;
+                margin-top: 10px;
+                padding: 10px;
+                background-color: #eafaf1;
+                border: 1px solid #d5f4e6;
+                border-radius: 4px;
+            """)
+            suggestions_label.setWordWrap(True)
+            details_layout.addWidget(suggestions_label)
         
         layout.addWidget(title)
-        layout.addWidget(message)
+        layout.addWidget(diagnosis_label)
+        layout.addWidget(details_group)
         layout.addStretch()
         
         return widget
+    
+    def _analyze_error(self, error_message: str) -> str:
+        """Analiza el error y proporciona un diagnóstico."""
+        error_lower = error_message.lower()
+        
+        if "connection" in error_lower or "conexión" in error_lower:
+            return "Problema de conexión a la base de datos"
+        elif "import" in error_lower or "module" in error_lower:
+            return "Error de importación de módulos Python"
+        elif "table" in error_lower or "tabla" in error_lower:
+            return "Problema con tablas de base de datos"
+        elif "sql" in error_lower or "database" in error_lower:
+            return "Error en operación de base de datos"
+        elif "permission" in error_lower or "access" in error_lower:
+            return "Problema de permisos o acceso"
+        else:
+            return "Error general del módulo"
+    
+    def _get_error_suggestions(self, error_message: str, module_name: str) -> str:
+        """Proporciona sugerencias específicas según el error."""
+        error_lower = error_message.lower()
+        suggestions = []
+        
+        if "connection" in error_lower:
+            suggestions.extend([
+                "• Verificar que SQL Server esté ejecutándose",
+                "• Revisar variables de entorno de base de datos",
+                "• Comprobar credenciales de conexión"
+            ])
+        
+        if "table" in error_lower:
+            suggestions.extend([
+                "• Verificar que las tablas existan en la base de datos",
+                "• Ejecutar scripts de creación de tablas",
+                "• Revisar estructura de la base de datos"
+            ])
+        
+        if "import" in error_lower:
+            suggestions.extend([
+                "• Verificar que todos los archivos del módulo existan",
+                "• Revisar sintaxis de los archivos Python",
+                "• Comprobar dependencias del módulo"
+            ])
+        
+        if not suggestions:
+            suggestions.append("• Revisar logs de la aplicación para más detalles")
+        
+        return "\n".join(suggestions)
     
     def get_module_status(self, module_name: str) -> Dict[str, Any]:
         """Obtiene el estado de un módulo."""

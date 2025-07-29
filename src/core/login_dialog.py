@@ -134,7 +134,6 @@ class LoginDialog(QDialog):
                 font-size: 11px;
                 color: #555;
                 font-weight: 500;
-                text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
         """)
@@ -172,7 +171,6 @@ class LoginDialog(QDialog):
                 font-size: 11px;
                 color: #555;
                 font-weight: 500;
-                text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
         """)
@@ -220,7 +218,6 @@ class LoginDialog(QDialog):
                 border-radius: 4px;
                 font-size: 14px;
                 font-weight: 500;
-                text-transform: uppercase;
                 letter-spacing: 0.5px;
             }
             QPushButton:hover {

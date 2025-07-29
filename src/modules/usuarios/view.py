@@ -9,7 +9,6 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QIcon, QPainter, QPen, QPixmap
-from src.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -34,6 +33,8 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+from src.utils.form_validators import FormValidator, FormValidatorManager
 
 
 class UsuariosView(QWidget):
@@ -393,12 +394,10 @@ class UsuariosView(QWidget):
 
             QPushButton:hover {
                 background: linear-gradient(135deg, #2980b9, #1f618d);
-                transform: translateY(-2px);
             }
 
             QPushButton:pressed {
                 background: linear-gradient(135deg, #1f618d, #154360);
-                transform: translateY(0px);
             }
 
             QTableWidget {
@@ -767,7 +766,7 @@ class DialogoNuevoUsuario(QDialog):
         self.setWindowTitle("Nuevo Usuario")
         self.setModal(True)
         self.setFixedSize(400, 600)
-        
+
         # Inicializar el gestor de validaciones
         self.validator_manager = FormValidatorManager()
 
@@ -817,18 +816,72 @@ class DialogoNuevoUsuario(QDialog):
 
         layout.addLayout(botones_layout)
 
+    def configurar_validaciones(self):
+        """Configura las validaciones del formulario."""
+        # Validación de usuario obligatorio (4-20 caracteres alfanuméricos)
+        self.validator_manager.agregar_validacion(
+            self.input_usuario, FormValidator.validar_campo_obligatorio, "Usuario"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_usuario, FormValidator.validar_longitud_texto, 3, 20
+        )
+
+        # Validación de nombre obligatorio
+        self.validator_manager.agregar_validacion(
+            self.input_nombre,
+            FormValidator.validar_campo_obligatorio,
+            "Nombre completo",
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_nombre, FormValidator.validar_longitud_texto, 2, 100
+        )
+
+        # Validación de email
+        self.validator_manager.agregar_validacion(
+            self.input_email, FormValidator.validar_email
+        )
+
+        # Validación de teléfono (opcional pero con formato)
+        self.validator_manager.agregar_validacion(
+            self.input_telefono, FormValidator.validar_telefono
+        )
+
+        # Validación de contraseña (mínimo 6 caracteres)
+        self.validator_manager.agregar_validacion(
+            self.input_password, FormValidator.validar_campo_obligatorio, "Contraseña"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_password, FormValidator.validar_longitud_texto, 6, 50
+        )
+
     def validar_y_aceptar(self):
         """Valida los datos y acepta el diálogo."""
-        # Validaciones básicas
-        if not self.input_usuario.text():
+        # Usar el sistema de validación
+        es_valido, errores = self.validator_manager.validar_formulario()
+
+        if not es_valido:
+            # Mostrar errores
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            from PyQt6.QtWidgets import QMessageBox
+
+            QMessageBox.warning(
+                self,
+                "Errores de Validación",
+                "Por favor corrige los siguientes errores:\n\n"
+                + "\n".join(mensajes_error),
+            )
             return
 
-        if not self.input_nombre.text():
-            return
-
+        # Validación adicional: contraseñas coinciden
         if self.input_password.text() != self.input_password_confirm.text():
+            from PyQt6.QtWidgets import QMessageBox
+
+            QMessageBox.warning(
+                self, "Error de Validación", "Las contraseñas no coinciden"
+            )
             return
 
+        # Validación adicional: usuario único (deberías implementar esto en el controlador)
         self.accept()
 
     def obtener_datos(self):

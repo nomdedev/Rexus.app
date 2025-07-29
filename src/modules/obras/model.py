@@ -17,7 +17,7 @@ class ObrasModel:
             return
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar tabla de obras
             cursor.execute(
@@ -72,7 +72,7 @@ class ObrasModel:
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar que no existe una obra con el mismo código
             cursor.execute(
@@ -115,7 +115,7 @@ class ObrasModel:
                 ),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             print(f"[OBRAS] Obra creada exitosamente: {datos_obra.get('codigo')}")
             return True, f"Obra {datos_obra.get('codigo')} creada exitosamente"
@@ -127,7 +127,7 @@ class ObrasModel:
     def obtener_todas_obras(self):
         """Obtiene todas las obras de la base de datos."""
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute(
                 """
                 SELECT
@@ -152,7 +152,7 @@ class ObrasModel:
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute(
                 """
                 SELECT
@@ -178,7 +178,7 @@ class ObrasModel:
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             cursor.execute("SELECT * FROM obras WHERE codigo = ?", (codigo,))
 
             row = cursor.fetchone()
@@ -208,7 +208,7 @@ class ObrasModel:
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_update = """
             UPDATE obras
@@ -242,7 +242,7 @@ class ObrasModel:
             )
 
             if cursor.rowcount > 0:
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
                 return True, "Obra actualizada exitosamente"
             else:
                 return False, "No se encontró la obra a actualizar"
@@ -283,7 +283,7 @@ class ObrasModel:
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Obtener estado actual
             cursor.execute("SELECT estado FROM obras WHERE id = ?", (obra_id,))
@@ -301,7 +301,7 @@ class ObrasModel:
             """
 
             cursor.execute(sql_update, (nuevo_estado, usuario, obra_id))
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             # Si se finaliza la obra, actualizar fecha de finalización
             if nuevo_estado == "FINALIZADA":
@@ -309,7 +309,7 @@ class ObrasModel:
                     "UPDATE obras SET fecha_fin_real = GETDATE() WHERE id = ?",
                     (obra_id,),
                 )
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
 
             return True, f"Estado cambiado de {estado_actual} a {nuevo_estado}"
 
@@ -340,7 +340,7 @@ class ObrasModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             conditions = []
             params = []
@@ -393,7 +393,7 @@ class ObrasModel:
             return {}
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             estadisticas = {}
 
@@ -462,7 +462,7 @@ class ObrasModel:
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar si la obra existe
             cursor.execute("SELECT codigo, estado FROM obras WHERE id = ?", (obra_id,))
@@ -488,7 +488,7 @@ class ObrasModel:
 
             # Eliminar la obra
             cursor.execute("DELETE FROM obras WHERE id = ?", (obra_id,))
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             return True, f"Obra {codigo_obra} eliminada exitosamente"
 

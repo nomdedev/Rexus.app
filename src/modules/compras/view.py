@@ -8,6 +8,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
+from src.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -729,7 +730,12 @@ class DialogNuevaOrden(QDialog):
         self.setWindowTitle("Nueva Orden de Compra")
         self.setModal(True)
         self.setMinimumSize(400, 500)
+        
+        # Inicializar el gestor de validaciones
+        self.validator_manager = FormValidatorManager()
+        
         self.init_ui()
+        self.configurar_validaciones()
 
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""
@@ -781,7 +787,7 @@ class DialogNuevaOrden(QDialog):
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
         )
-        buttons.accepted.connect(self.accept)
+        buttons.accepted.connect(self.validar_y_aceptar)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
 
@@ -817,3 +823,81 @@ class DialogNuevaOrden(QDialog):
             "observaciones": self.input_observaciones.toPlainText(),
             "usuario_creacion": "Usuario Actual",  # TODO: Obtener del sistema
         }
+
+    def configurar_validaciones(self):
+        """Configura las validaciones del formulario."""
+        # Validación de proveedor obligatorio
+        self.validator_manager.agregar_validacion(
+            self.input_proveedor, 
+            FormValidator.validar_campo_obligatorio, 
+            "Proveedor"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_proveedor, 
+            FormValidator.validar_longitud_texto, 
+            2, 100
+        )
+
+        # Validación de número de orden obligatorio
+        self.validator_manager.agregar_validacion(
+            self.input_numero_orden, 
+            FormValidator.validar_campo_obligatorio, 
+            "Número de orden"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_numero_orden, 
+            FormValidator.validar_longitud_texto, 
+            3, 50
+        )
+
+        # Validación de fechas
+        self.validator_manager.agregar_validacion(
+            self.date_pedido, 
+            FormValidator.validar_fecha
+        )
+        
+        self.validator_manager.agregar_validacion(
+            self.date_entrega, 
+            FormValidator.validar_fecha, 
+            self.date_pedido.date()  # Fecha mínima: fecha de pedido
+        )
+
+        # Validación de montos (descuento e impuestos no negativos)
+        self.validator_manager.agregar_validacion(
+            self.input_descuento, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
+        )
+        
+        self.validator_manager.agregar_validacion(
+            self.input_impuestos, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
+        )
+
+    def validar_y_aceptar(self):
+        """Valida los datos y acepta el diálogo."""
+        # Usar el sistema de validación
+        es_valido, errores = self.validator_manager.validar_formulario()
+        
+        if not es_valido:
+            # Mostrar errores
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            QMessageBox.warning(
+                self, 
+                "Errores de Validación", 
+                "Por favor corrige los siguientes errores:\n\n" + "\n".join(mensajes_error)
+            )
+            return
+
+        # Validación adicional: fecha de entrega posterior a fecha de pedido
+        if self.date_entrega.date() <= self.date_pedido.date():
+            QMessageBox.warning(
+                self, 
+                "Error de Validación", 
+                "La fecha de entrega debe ser posterior a la fecha de pedido"
+            )
+            return
+
+        # Si todo es válido, aceptar el diálogo
+        self.accept()

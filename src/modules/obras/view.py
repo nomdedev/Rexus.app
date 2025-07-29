@@ -744,6 +744,10 @@ class ObrasView(QWidget):
                 self.controller.agregar_obra(datos_obra)
                 # El método crear_obra ya recarga la tabla automáticamente
 
+    def mostrar_formulario_nueva_obra(self):
+        """Alias para mostrar_dialogo_nueva_obra (compatibilidad con controlador)."""
+        self.mostrar_dialogo_nueva_obra()
+
 
 class FormularioObraDialog(QDialog):
     """Diálogo para crear/editar obras."""

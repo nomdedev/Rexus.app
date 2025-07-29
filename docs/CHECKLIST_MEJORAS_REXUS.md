@@ -57,9 +57,6 @@
 ## 6. Falta de feedback visual o mensajes de error
 - [ ] No se muestran mensajes claros cuando hay errores de carga de datos o de inicialización.
   - [ ] Agregar mensajes de error visibles en la UI y logs detallados.
-    - *Justificación:* El usuario no sabe si la app está funcionando mal o si solo no hay datos.
-    - *Solución:* Usar `QMessageBox` o banners de error en la UI y logs en consola/archivo.
-
 ## 7. Errores de importación o inicialización silenciosos
 - [ ] Errores en imports o constructores de vistas/modelos/controladores no se ven en la UI.
   - [ ] Revisar los logs y mostrar mensajes de error en pantalla.
@@ -68,12 +65,12 @@
 
 ## 8. Falta de datos de prueba o base de datos vacía
 - [ ] Las tablas pueden estar vacías porque la base de datos no tiene datos de prueba.
-  - [ ] Agregar datos de ejemplo o scripts de carga rápida.
+- [ ] Agregar datos de ejemplo o scripts de carga rápida.
     - *Justificación:* Sin datos de prueba, es difícil validar la UI y la lógica.
     - *Solución:* Crear scripts de carga de datos y/o un modo demo.
 ## 9. Código duplicado y falta de reutilización
 - [ ] Hay lógica repetida en la inicialización de vistas, carga de datos y manejo de errores.
-  - [ ] Extraer funciones utilitarias para carga de datos, manejo de errores y normalización de nombres.
+- [ ] Extraer funciones utilitarias para carga de datos, manejo de errores y normalización de nombres.
     - *Justificación:* Facilita el mantenimiento y reduce bugs por cambios en un solo lugar.
     - *Solución:* Crear utilidades en `utils/` y usarlas en todos los módulos.
 
@@ -89,33 +86,28 @@
 ## 12. Checklist detallado de mejoras y tests faltantes por módulo
 
 ### Inventario
-  - *Solución:* Agregar tests de integración, mocks de BD y feedback visual en la UI.
 
 ### Obras
-  - *Solución:* Tests de edge cases, integración y permisos.
 
 ### Logística
-  - *Solución:* Tests de integración, edge cases y feedback visual.
 
 ### Herrajes
-  - *Solución:* Tests de integración, edge cases y feedback visual.
 
 ### Vidrios
-  - *Solución:* Tests de edge cases, integración y feedback visual.
 
 ### Mantenimiento
-  - *Solución:* Tests de edge cases, integración y feedback visual.
 
 ### Configuración
-  - *Solución:* Tests de edge cases, feedback visual y documentación.
 
 ### Usuarios
-  - *Solución:* Tests de edge cases, integración y feedback visual.
 
 ### General
-  - *Solución:* Crear y mantener suites de tests automáticos por módulo y tipo, usando `pytest`, `qtbot` y mocks de base de datos.
 
----
+## 13. Problema crítico: sistema de seguridad no se inicializa correctamente
+- [ ] El sistema de seguridad global (`SecurityManager`) no se inicializa correctamente al iniciar la app, por lo que el login y los permisos no funcionan aunque la base de datos conecte bien.
+    - *Síntoma:* Login exitoso pero error "sistema de seguridad no disponible" y no se puede continuar.
+    - *Causa:* Se llama a `get_security_manager()` en vez de `initialize_security_manager()` en el arranque, por lo que la instancia global queda en `None`.
+    - *Solución:* Reemplazar la llamada por `initialize_security_manager()` para inicializar correctamente el sistema de seguridad y permitir login y permisos.
 
 ## 🔥 Mejoras y correcciones tras últimos cambios manuales (2025-07-28)
 
@@ -219,7 +211,25 @@
    - **Archivos modificados:** 15+ archivos view.py en diferentes módulos
    - **Impacto:** Elimina crashes por headers None en tablas vacías
 
-4. **Correcciones SQL injection completadas - COMPLETADO**
+## Checklist Único de Mejoras y Problemas Pendientes en Rexus.app
+
+### ALTA PRIORIDAD
+- [ ] Completar conexión de formularios restantes (Usuarios, Compras, otros módulos)
+- [ ] Verificar señales de actualización de tablas tras guardar
+- [ ] Problema crítico: sistema de seguridad no se inicializa correctamente
+    - *Síntoma:* Login exitoso pero error "sistema de seguridad no disponible" y no se puede continuar.
+    - *Causa:* Se llama a `get_security_manager()` en vez de `initialize_security_manager()` en el arranque, por lo que la instancia global queda en `None`.
+    - *Solución:* Reemplazar la llamada por `initialize_security_manager()` para inicializar correctamente el sistema de seguridad y permitir login y permisos.
+
+### MEDIA PRIORIDAD
+- [ ] Mejorar feedback visual y manejo de errores (`QMessageBox`, banners, logging)
+- [ ] Completar correcciones SQL injection en modelos restantes
+- [ ] Crear scripts de carga de datos demo y modo demo
+
+### BAJA PRIORIDAD
+- [ ] Refactoring y optimización (utilidades, arquitectura, duplicación)
+- [ ] Validación de formularios (campos obligatorios, formatos, feedback visual)
+- [ ] Documentación (docstrings, comentarios, arquitectura)
    - ✅ Verificados modelos restantes: Pedidos, Compras, Usuarios, Logística, Mantenimiento
    - ✅ Todos los modelos ya usan queries parametrizadas correctamente
    - **Impacto:** Sistema completamente protegido contra inyecciones SQL

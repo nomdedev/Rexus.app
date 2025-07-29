@@ -26,6 +26,10 @@ class InventarioModel:
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
         self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
+        if not self.db_connection:
+            print(
+                "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
+            )
         self._verificar_tablas()
 
     def _verificar_tablas(self):
@@ -34,24 +38,25 @@ class InventarioModel:
             return
 
         try:
-            cursor = self.db_connection.connection.cursor()
-            
+            cursor = self.db_connection.cursor()
+
             # Verificar tabla principal (crítica)
             cursor.execute(
                 "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
                 (self.tabla_inventario,),
             )
             if cursor.fetchone():
-                print(f"[INVENTARIO] Tabla principal '{self.tabla_inventario}' verificada correctamente.")
+                print(
+                    f"[INVENTARIO] Tabla principal '{self.tabla_inventario}' verificada correctamente."
+                )
             else:
-                raise RuntimeError(f"[CRITICAL] Required table '{self.tabla_inventario}' does not exist. Please create it manually.")
+                raise RuntimeError(
+                    f"[CRITICAL] Required table '{self.tabla_inventario}' does not exist. Please create it manually."
+                )
 
             # Verificar tablas secundarias (no críticas)
-            tablas_secundarias = [
-                self.tabla_movimientos,
-                self.tabla_reservas
-            ]
-            
+            tablas_secundarias = [self.tabla_movimientos, self.tabla_reservas]
+
             for tabla in tablas_secundarias:
                 cursor.execute(
                     "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
@@ -60,7 +65,9 @@ class InventarioModel:
                 if cursor.fetchone():
                     print(f"[INVENTARIO] Tabla '{tabla}' verificada correctamente.")
                 else:
-                    print(f"[ADVERTENCIA] Tabla secundaria '{tabla}' no existe. Algunas funciones estarán limitadas.")
+                    print(
+                        f"[ADVERTENCIA] Tabla secundaria '{tabla}' no existe. Algunas funciones estarán limitadas."
+                    )
 
             print(f"[INVENTARIO] Verificación de tablas completada.")
         except Exception as e:
@@ -81,7 +88,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Construir query con filtros
             conditions = ["1=1"]  # Condición base
@@ -157,7 +164,7 @@ class InventarioModel:
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_select = """
             SELECT * FROM inventario_perfiles WHERE id = ?
@@ -182,7 +189,7 @@ class InventarioModel:
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_select = """
             SELECT * FROM inventario_perfiles WHERE codigo = ?
@@ -216,7 +223,7 @@ class InventarioModel:
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar que el código no exista
             if self.obtener_producto_por_codigo(datos_producto.get("codigo")):
@@ -259,7 +266,7 @@ class InventarioModel:
             cursor.execute("SELECT @@IDENTITY")
             producto_id = cursor.fetchone()[0]
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             # Registrar movimiento inicial si hay stock
             stock_inicial = datos_producto.get("stock_actual", 0)
@@ -297,7 +304,7 @@ class InventarioModel:
             return False
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Obtener datos actuales para auditoría
             producto_actual = self.obtener_producto_por_id(producto_id)
@@ -337,7 +344,7 @@ class InventarioModel:
                 ),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             print(f"[INVENTARIO] Producto actualizado: {producto_id}")
             return True
 
@@ -374,7 +381,7 @@ class InventarioModel:
             return False
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Obtener stock actual
             producto = self.obtener_producto_por_id(producto_id)
@@ -396,7 +403,9 @@ class InventarioModel:
                 raise Exception(f"Tipo de movimiento inválido: {tipo_movimiento}")
 
             # Verificar si existe la tabla historial
-            cursor.execute("SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'")
+            cursor.execute(
+                "SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'"
+            )
             if cursor.fetchone():
                 # Registrar en historial usando estructura existente
                 cantidad_movimiento = (
@@ -404,12 +413,12 @@ class InventarioModel:
                     if tipo_movimiento != "AJUSTE"
                     else (stock_nuevo - stock_anterior)
                 )
-                
+
                 detalles = f"Producto ID: {producto_id}, {tipo_movimiento}: {cantidad_movimiento}, Stock anterior: {stock_anterior}, Stock nuevo: {stock_nuevo}, Motivo: {motivo}, Doc: {documento_referencia}"
-                
+
                 cursor.execute(
                     "INSERT INTO historial (accion, usuario, fecha, detalles) VALUES (?, ?, GETDATE(), ?)",
-                    (f"INVENTARIO_{tipo_movimiento}", usuario, detalles)
+                    (f"INVENTARIO_{tipo_movimiento}", usuario, detalles),
                 )
 
             # Actualizar stock en inventario_perfiles
@@ -421,10 +430,8 @@ class InventarioModel:
 
             cursor.execute(sql_update_stock, (stock_nuevo, usuario, producto_id))
 
-            self.db_connection.connection.commit()
-            print(
-                f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}"
-            )
+            self.db_connection.commit()
+            print(f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}")
             return True
 
         except Exception as e:
@@ -448,12 +455,16 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar si existe la tabla historial
-            cursor.execute("SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'")
+            cursor.execute(
+                "SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'"
+            )
             if not cursor.fetchone():
-                print("[ADVERTENCIA] Tabla historial no existe. No se pueden obtener movimientos.")
+                print(
+                    "[ADVERTENCIA] Tabla historial no existe. No se pueden obtener movimientos."
+                )
                 return []
 
             sql_select = """
@@ -467,7 +478,9 @@ class InventarioModel:
                 sql_select += " AND detalles LIKE ?"
                 params.append(f"%Producto ID: {producto_id}%")
 
-            sql_select += f" ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
+            sql_select += (
+                f" ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
+            )
 
             cursor.execute(sql_select, params)
             rows = cursor.fetchall()
@@ -479,8 +492,10 @@ class InventarioModel:
             for row in rows:
                 movimiento = dict(zip(columns, row))
                 # Parse basic info from detalles field
-                detalles = movimiento.get('detalles', '')
-                movimiento['tipo_movimiento'] = movimiento['accion'].replace('INVENTARIO_', '')
+                detalles = movimiento.get("detalles", "")
+                movimiento["tipo_movimiento"] = movimiento["accion"].replace(
+                    "INVENTARIO_", ""
+                )
                 movimientos.append(movimiento)
 
             return movimientos
@@ -540,7 +555,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_select = """
             SELECT DISTINCT tipo FROM inventario_perfiles
@@ -569,14 +584,14 @@ class InventarioModel:
                     # Generar QR faltante
                     codigo_qr = self._generar_codigo_qr(producto["codigo"])
                     if codigo_qr:
-                        cursor = self.db_connection.connection.cursor()
+                        cursor = self.db_connection.cursor()
                         sql_update = """
                         UPDATE inventario_perfiles
                         SET codigo_qr = ? WHERE id = ?
                         """
                         cursor.execute(sql_update, (codigo_qr, producto["id"]))
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             print("[INVENTARIO] QRs actualizados")
 
         except Exception as e:
@@ -588,7 +603,7 @@ class InventarioModel:
             return {}
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Total de productos
             cursor.execute("SELECT COUNT(*) FROM inventario_perfiles")
@@ -641,7 +656,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_select = """
             SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
@@ -711,7 +726,7 @@ class InventarioModel:
                 )
 
             # Registrar en materiales_obra
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             sql_insert = """
             INSERT INTO materiales_obra
@@ -743,7 +758,7 @@ class InventarioModel:
                 usuario=usuario,
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return True, f"Producto asignado correctamente a la obra"
 
         except Exception as e:
@@ -768,7 +783,7 @@ class InventarioModel:
             return False
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
             cursor.execute(
@@ -815,7 +830,7 @@ class InventarioModel:
                     usuario=usuario,
                 )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return True
 
         except Exception as e:
@@ -838,7 +853,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
             cursor.execute(
@@ -901,7 +916,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             conditions = ["1=1"]
             params = []
@@ -991,7 +1006,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
             cursor.execute(
@@ -1049,7 +1064,7 @@ class InventarioModel:
             return {}
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             conditions = ["estado = 'ACTIVO'"]
             params = []
@@ -1143,7 +1158,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             conditions = ["1=1"]
             params = []
@@ -1310,7 +1325,7 @@ class InventarioModel:
         fallidos = 0
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             for item in actualizaciones:
                 try:
@@ -1375,7 +1390,7 @@ class InventarioModel:
                     )
                     fallidos += 1
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return exitosos, fallidos
 
         except Exception as e:
@@ -1431,13 +1446,15 @@ class InventarioModel:
             return False, "No hay conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar stock disponible
             cursor.execute(
                 """
                 SELECT stock_actual, ISNULL(stock_reservado, 0) as stock_reservado, descripcion
-                FROM """ + self.tabla_inventario + """
+                FROM """
+                + self.tabla_inventario
+                + """
                 WHERE id = ?
             """,
                 (producto_id,),
@@ -1459,7 +1476,9 @@ class InventarioModel:
             # Crear reserva
             cursor.execute(
                 """
-                INSERT INTO """ + self.tabla_reservas + """
+                INSERT INTO """
+                + self.tabla_reservas
+                + """
                 (producto_id, obra_id, cantidad_reservada, usuario_id, fecha_reserva, estado, observaciones)
                 VALUES (?, ?, ?, ?, GETDATE(), 'ACTIVA', ?)
             """,
@@ -1469,7 +1488,9 @@ class InventarioModel:
             # Actualizar stock reservado en inventario
             cursor.execute(
                 """
-                UPDATE """ + self.tabla_inventario + """
+                UPDATE """
+                + self.tabla_inventario
+                + """
                 SET stock_reservado = ISNULL(stock_reservado, 0) + ?
                 WHERE id = ?
             """,
@@ -1479,7 +1500,9 @@ class InventarioModel:
             # Registrar movimiento
             cursor.execute(
                 """
-                INSERT INTO """ + self.tabla_movimientos + """
+                INSERT INTO """
+                + self.tabla_movimientos
+                + """
                 (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
                 VALUES (?, 'RESERVA', ?, ?, ?, GETDATE(), ?)
             """,
@@ -1492,7 +1515,7 @@ class InventarioModel:
                 ),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             return (
                 True,
@@ -1519,19 +1542,23 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
-            query = """
+            query = (
+                """
                 SELECT
                     r.id, r.producto_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
                     i.codigo, i.descripcion, i.unidad_medida, i.precio_unitario,
                     u.nombre as usuario_nombre
                 FROM {self.tabla_reservas} r
-                INNER JOIN """ + self.tabla_inventario + """ i ON r.producto_id = i.id
+                INNER JOIN """
+                + self.tabla_inventario
+                + """ i ON r.producto_id = i.id
                 LEFT JOIN usuarios u ON r.usuario_id = u.id
                 WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
                 ORDER BY r.fecha_reserva DESC
             """
+            )
 
             cursor.execute(query, (obra_id,))
             columnas = [column[0] for column in cursor.description]
@@ -1562,19 +1589,23 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
-            query = """
+            query = (
+                """
                 SELECT
                     r.id, r.obra_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
                     o.nombre as obra_nombre, o.codigo as obra_codigo,
                     u.nombre as usuario_nombre
-                FROM """ + self.tabla_reservas + """ r
+                FROM """
+                + self.tabla_reservas
+                + """ r
                 INNER JOIN obras o ON r.obra_id = o.id
                 LEFT JOIN usuarios u ON r.usuario_id = u.id
                 WHERE r.producto_id = ? AND r.estado = 'ACTIVA'
                 ORDER BY r.fecha_reserva DESC
             """
+            )
 
             cursor.execute(query, (producto_id,))
             columnas = [column[0] for column in cursor.description]
@@ -1607,13 +1638,15 @@ class InventarioModel:
             return False, "No hay conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Obtener información de la reserva
             cursor.execute(
                 """
                 SELECT producto_id, cantidad_reservada, obra_id
-                FROM """ + self.tabla_reservas + """
+                FROM """
+                + self.tabla_reservas
+                + """
                 WHERE id = ? AND estado = 'ACTIVA'
             """,
                 (reserva_id,),
@@ -1628,7 +1661,9 @@ class InventarioModel:
             # Actualizar estado de la reserva
             cursor.execute(
                 """
-                UPDATE """ + self.tabla_reservas + """
+                UPDATE """
+                + self.tabla_reservas
+                + """
                 SET estado = 'LIBERADA', fecha_liberacion = GETDATE(), usuario_liberacion = ?
                 WHERE id = ?
             """,
@@ -1638,7 +1673,9 @@ class InventarioModel:
             # Actualizar stock reservado en inventario
             cursor.execute(
                 """
-                UPDATE """ + self.tabla_inventario + """
+                UPDATE """
+                + self.tabla_inventario
+                + """
                 SET stock_reservado = ISNULL(stock_reservado, 0) - ?
                 WHERE id = ?
             """,
@@ -1648,7 +1685,9 @@ class InventarioModel:
             # Registrar movimiento
             cursor.execute(
                 """
-                INSERT INTO """ + self.tabla_movimientos + """
+                INSERT INTO """
+                + self.tabla_movimientos
+                + """
                 (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
                 VALUES (?, 'LIBERACION_RESERVA', ?, ?, ?, GETDATE(), ?)
             """,
@@ -1661,7 +1700,7 @@ class InventarioModel:
                 ),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             return True, "Reserva liberada correctamente"
 
@@ -1685,7 +1724,7 @@ class InventarioModel:
             return []
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             where_clause = ""
             params = []
@@ -1694,7 +1733,8 @@ class InventarioModel:
                 where_clause = "WHERE i.id = ?"
                 params.append(producto_id)
 
-            query = """
+            query = (
+                """
                 SELECT
                     i.id, i.codigo, i.descripcion, i.categoria, i.unidad_medida,
                     i.stock_actual,
@@ -1707,9 +1747,12 @@ class InventarioModel:
                         ELSE 'NORMAL'
                     END as estado_stock
                 FROM {self.tabla_inventario} i
-                """ + where_clause + """
+                """
+                + where_clause
+                + """
                 ORDER BY i.descripcion
             """
+            )
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -1740,7 +1783,7 @@ class InventarioModel:
             return {}
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Información de la obra
             cursor.execute("SELECT codigo, nombre FROM obras WHERE id = ?", (obra_id,))
@@ -1769,7 +1812,9 @@ class InventarioModel:
                     SUM(r.cantidad_reservada) as cantidad_total,
                     SUM(r.cantidad_reservada * i.precio_unitario) as valor_total
                 FROM {self.tabla_reservas} r
-                INNER JOIN """ + self.tabla_inventario + """ i ON r.producto_id = i.id
+                INNER JOIN """
+                + self.tabla_inventario
+                + """ i ON r.producto_id = i.id
                 WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
                 GROUP BY i.categoria
                 ORDER BY valor_total DESC
@@ -1810,40 +1855,56 @@ class InventarioModel:
             return {}
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             estadisticas = {}
 
             # Total de reservas activas
             cursor.execute(
-                "SELECT COUNT(*) FROM " + self.tabla_reservas + " WHERE estado = 'ACTIVA'"
+                "SELECT COUNT(*) FROM "
+                + self.tabla_reservas
+                + " WHERE estado = 'ACTIVA'"
             )
             estadisticas["total_reservas_activas"] = cursor.fetchone()[0]
 
             # Valor total reservado
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT SUM(r.cantidad_reservada * i.precio_unitario)
-                FROM """ + self.tabla_reservas + """ r
-                INNER JOIN """ + self.tabla_inventario + """ i ON r.producto_id = i.id
+                FROM """
+                + self.tabla_reservas
+                + """ r
+                INNER JOIN """
+                + self.tabla_inventario
+                + """ i ON r.producto_id = i.id
                 WHERE r.estado = 'ACTIVA'
-            """)
+            """
+            )
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_reservado"] = resultado or 0.0
 
             # Obras con reservas
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(DISTINCT obra_id)
-                FROM """ + self.tabla_reservas + """
+                FROM """
+                + self.tabla_reservas
+                + """
                 WHERE estado = 'ACTIVA'
-            """)
+            """
+            )
             estadisticas["obras_con_reservas"] = cursor.fetchone()[0]
 
             # Productos con reservas
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT COUNT(DISTINCT producto_id)
-                FROM """ + self.tabla_reservas + """
+                FROM """
+                + self.tabla_reservas
+                + """
                 WHERE estado = 'ACTIVA'
-            """)
+            """
+            )
             estadisticas["productos_con_reservas"] = cursor.fetchone()[0]
 
             return estadisticas
@@ -1954,7 +2015,8 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
 
             # Construir consulta base
-            query = """
+            query = (
+                """
                 SELECT id, codigo, descripcion, categoria, stock_actual, stock_minimo,
                        precio_unitario, unidad_medida, activo, fecha_actualizacion,
                        COALESCE(r.stock_reservado, 0) as stock_reservado,
@@ -1963,7 +2025,9 @@ class InventarioModel:
                            WHEN stock_actual <= stock_minimo THEN 'BAJO'
                            ELSE 'NORMAL'
                        END as estado_stock
-                FROM """ + self.tabla_inventario + """ i
+                FROM """
+                + self.tabla_inventario
+                + """ i
                 LEFT JOIN (
                     SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
                     FROM reservas_inventario
@@ -1972,6 +2036,7 @@ class InventarioModel:
                 ) r ON i.id = r.producto_id
                 WHERE i.activo = 1
             """
+            )
 
             # Agregar filtros
             params = []
@@ -2087,12 +2152,15 @@ class InventarioModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
+            query = (
+                """
                 SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
                        i.precio_unitario, i.unidad_medida,
                        COALESCE(r.stock_reservado, 0) as stock_reservado,
                        (i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                FROM """ + self.tabla_inventario + """ i
+                FROM """
+                + self.tabla_inventario
+                + """ i
                 LEFT JOIN (
                     SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
                     FROM reservas_inventario
@@ -2103,6 +2171,7 @@ class InventarioModel:
                 AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0
                 ORDER BY i.codigo
             """
+            )
 
             cursor.execute(query)
 
@@ -2171,7 +2240,9 @@ class InventarioModel:
             cursor.execute(
                 """
                 SELECT stock_actual, stock_minimo, precio_unitario
-                FROM """ + self.tabla_inventario + """
+                FROM """
+                + self.tabla_inventario
+                + """
                 WHERE id = ?
             """,
                 (producto_id,),
@@ -2209,7 +2280,7 @@ class InventarioModel:
         except Exception as e:
             print(f"Error al obtener detalle de disponibilidad: {str(e)}")
             return None
-    
+
     def _get_productos_demo(self):
         """Datos demo para cuando no hay conexión a base de datos."""
         return [
@@ -2234,7 +2305,7 @@ class InventarioModel:
                 "codigo_qr": "QR001",
                 "stock_disponible": 120,
                 "stock_reservado": 30,
-                "estado_stock": "NORMAL"
+                "estado_stock": "NORMAL",
             },
             {
                 "id": 2,
@@ -2257,7 +2328,7 @@ class InventarioModel:
                 "codigo_qr": "QR002",
                 "stock_disponible": 20,
                 "stock_reservado": 5,
-                "estado_stock": "NORMAL"
+                "estado_stock": "NORMAL",
             },
             {
                 "id": 3,
@@ -2280,7 +2351,7 @@ class InventarioModel:
                 "codigo_qr": "QR003",
                 "stock_disponible": 8,
                 "stock_reservado": 0,
-                "estado_stock": "BAJO"
+                "estado_stock": "BAJO",
             },
             {
                 "id": 4,
@@ -2303,6 +2374,6 @@ class InventarioModel:
                 "codigo_qr": "QR004",
                 "stock_disponible": 0,
                 "stock_reservado": 0,
-                "estado_stock": "AGOTADO"
-            }
+                "estado_stock": "AGOTADO",
+            },
         ]
