@@ -8,8 +8,8 @@ Integrado con el sistema de seguridad global.
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
-from src.core.security import get_security_manager
-from src.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.core.security import get_security_manager
+from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
 
 
 class InventarioController(QObject):
@@ -21,7 +21,7 @@ class InventarioController(QObject):
     reserva_creada = pyqtSignal(dict)
     reserva_liberada = pyqtSignal(int)
 
-    def __init__(self, model=None, view=None, db_connection=None):
+    def __init__(self, model, view, db_connection=None):
         super().__init__()
         self.model = model
         self.view = view
@@ -97,16 +97,23 @@ class InventarioController(QObject):
     def conectar_senales(self):
         """Conecta las señales de la vista con los métodos del controlador."""
         if self.view:
-            # Conectar señales de búsqueda y filtros
-            self.view.buscar_btn.clicked.connect(self.buscar_productos)
-            self.view.limpiar_btn.clicked.connect(self.limpiar_filtros)
+            # Conectar señales de búsqueda y filtros si existen
+            if hasattr(self.view, 'buscar_btn'):
+                self.view.buscar_btn.clicked.connect(self.buscar_productos)
+            if hasattr(self.view, 'limpiar_btn'):
+                self.view.limpiar_btn.clicked.connect(self.limpiar_filtros)
 
-            # Conectar señales de acciones
-            self.view.nuevo_producto_btn.clicked.connect(self.nuevo_producto)
-            self.view.editar_producto_btn.clicked.connect(self.editar_producto)
-            self.view.eliminar_producto_btn.clicked.connect(self.eliminar_producto)
-            self.view.movimiento_btn.clicked.connect(self.registrar_movimiento)
-            self.view.exportar_btn.clicked.connect(self.exportar_inventario)
+            # Conectar señales de acciones si existen
+            if hasattr(self.view, 'nuevo_producto_btn'):
+                self.view.nuevo_producto_btn.clicked.connect(self.nuevo_producto)
+            if hasattr(self.view, 'editar_producto_btn'):
+                self.view.editar_producto_btn.clicked.connect(self.editar_producto)
+            if hasattr(self.view, 'eliminar_producto_btn'):
+                self.view.eliminar_producto_btn.clicked.connect(self.eliminar_producto)
+            if hasattr(self.view, 'movimiento_btn'):
+                self.view.movimiento_btn.clicked.connect(self.registrar_movimiento)
+            if hasattr(self.view, 'exportar_btn'):
+                self.view.exportar_btn.clicked.connect(self.exportar_inventario)
 
     def inicializar(self):
         """Inicializa el controlador cargando datos iniciales."""

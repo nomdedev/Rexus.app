@@ -1400,8 +1400,8 @@ class AdministracionView(QWidget):
         margin = "2px" if small else "6px"
         title_size = "10px" if small else "12px"
         value_size = "14px" if small else "18px"
-        min_width = "80px" if small else "120px"
-        min_height = "40px" if small else "60px"
+        min_width = "50px" if small else "120px"
+        min_height = "30px" if small else "60px"
 
         card.setStyleSheet(f"""
             QFrame {{
@@ -1413,7 +1413,7 @@ class AdministracionView(QWidget):
                 margin: {margin};
                 min-width: {min_width};
                 min-height: {min_height};
-                box-shadow: 0px 1px 4px rgba(0,0,0,0.10);
+                /* box-shadow eliminado */
             }}
             QFrame:hover {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -1603,7 +1603,119 @@ class AdministracionView(QWidget):
 
     def show_nuevo_recibo_dialog(self):
         """Muestra el diálogo para crear un nuevo recibo."""
-        pass
+        from PyQt6.QtCore import QDate
+        from PyQt6.QtWidgets import (
+            QComboBox,
+            QDateEdit,
+            QDoubleSpinBox,
+            QLineEdit,
+            QTextEdit,
+        )
+        from rexus.utils.form_styles import ModernFormBuilder, apply_modern_form_styles
+
+        # Crear constructor de formulario moderno
+        form_builder = ModernFormBuilder(self)
+        dialog = form_builder.create_form_dialog("💾 Nuevo Recibo", width=550, height=450)
+
+        # Aplicar estilos modernos
+        apply_modern_form_styles(dialog)
+
+        # Añadir sección principal
+        form_layout = form_builder.add_form_section("Información del Recibo")
+
+        # Campos del formulario
+        self.recibo_numero = QLineEdit()
+        self.recibo_numero.setPlaceholderText("Ej: REC-001")
+        form_builder.add_form_field("Número de Recibo", self.recibo_numero, required=True)
+
+        self.recibo_cliente = QLineEdit()
+        self.recibo_cliente.setPlaceholderText("Nombre del cliente")
+        form_builder.add_form_field("Cliente", self.recibo_cliente, required=True)
+
+        self.recibo_concepto = QComboBox()
+        self.recibo_concepto.addItems([
+            "Pago de Obra",
+            "Adelanto de Trabajo",
+            "Pago de Materiales",
+            "Servicios Profesionales",
+            "Otros",
+        ])
+        form_builder.add_form_field("Concepto", self.recibo_concepto, required=True)
+
+        self.recibo_monto = QDoubleSpinBox()
+        self.recibo_monto.setRange(0, 999999)
+        self.recibo_monto.setDecimals(2)
+        self.recibo_monto.setSuffix(" $")
+        form_builder.add_form_field("Monto", self.recibo_monto, required=True, 
+                                   help_text="Ingrese el monto en pesos argentinos")
+
+        self.recibo_fecha = QDateEdit()
+        self.recibo_fecha.setDate(QDate.currentDate())
+        self.recibo_fecha.setCalendarPopup(True)
+        form_builder.add_form_field("Fecha", self.recibo_fecha)
+
+        self.recibo_observaciones = QTextEdit()
+        self.recibo_observaciones.setMaximumHeight(80)
+        self.recibo_observaciones.setPlaceholderText("Observaciones adicionales...")
+        form_builder.add_form_field("Observaciones", self.recibo_observaciones, 
+                                   help_text="Información adicional opcional")
+
+        # Botones con estilos modernos
+        form_builder.add_button_row([
+            ("💾 Guardar Recibo", lambda: self.guardar_recibo(dialog), "success"),
+            ("❌ Cancelar", dialog.reject, "danger")
+        ])
+
+        dialog.exec()
+
+    def guardar_recibo(self, dialog):
+        """Guarda el nuevo recibo."""
+        from PyQt6.QtWidgets import QMessageBox
+
+        # Validaciones básicas
+        if not self.recibo_numero.text().strip():
+            QMessageBox.warning(dialog, "Error", "El número de recibo es obligatorio")
+            return
+
+        if not self.recibo_cliente.text().strip():
+            QMessageBox.warning(dialog, "Error", "El nombre del cliente es obligatorio")
+            return
+
+        if self.recibo_monto.value() <= 0:
+            QMessageBox.warning(dialog, "Error", "El monto debe ser mayor a 0")
+            return
+
+        # Aquí iría la lógica para guardar en la base de datos
+        # Por ahora, solo mostramos un mensaje de éxito
+        try:
+            # Datos del recibo
+            recibo_data = {
+                "numero": self.recibo_numero.text().strip(),
+                "cliente": self.recibo_cliente.text().strip(),
+                "concepto": self.recibo_concepto.currentText(),
+                "monto": self.recibo_monto.value(),
+                "fecha": self.recibo_fecha.date().toString("yyyy-MM-dd"),
+                "observaciones": self.recibo_observaciones.toPlainText().strip(),
+            }
+
+            # TODO: Implementar guardado en base de datos
+            print(f"[ADMIN] Guardando recibo: {recibo_data}")
+
+            QMessageBox.information(
+                dialog,
+                "Éxito",
+                f"Recibo {recibo_data['numero']} guardado correctamente\n"
+                f"Cliente: {recibo_data['cliente']}\n"
+                f"Monto: ${recibo_data['monto']:.2f}",
+            )
+
+            dialog.accept()
+
+        except Exception as e:
+            print(f"[ERROR] Error guardando recibo: {e}")
+            QMessageBox.critical(
+                dialog, "Error", f"Error al guardar el recibo: {str(e)}"
+            )
 
     def show_nuevo_pago_obra_dialog(self):
         """Muestra el diálogo para registrar un pago por obra."""

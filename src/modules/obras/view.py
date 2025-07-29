@@ -5,7 +5,7 @@ from typing import Any, Dict, List, Optional
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
-from src.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,

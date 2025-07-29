@@ -8,8 +8,8 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
-from src.utils.form_validators import FormValidator, FormValidatorManager
-from src.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,

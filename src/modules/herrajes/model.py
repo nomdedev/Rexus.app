@@ -6,6 +6,7 @@ Gestiona la compra por obra y asociación con proveedores.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
+from rexus.utils.sql_security import validate_table_name, load_sql_script, SQLSecurityError
 
 
 class HerrajesModel:
@@ -50,12 +51,22 @@ class HerrajesModel:
         self.tabla_herrajes_obra = "herrajes_obra"
         self.tabla_pedidos_herrajes = "pedidos_herrajes"
         self.tabla_herrajes_inventario = "herrajes_inventario"
+        
+        # Lista de tablas permitidas para prevenir SQL injection
+        self._allowed_tables = {
+            "herrajes", "herrajes_obra", "pedidos_herrajes", 
+            "herrajes_inventario", "proveedores", "obras"
+        }
         if not self.db_connection:
             print(
                 "[ERROR HERRAJES] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         # Las tablas deben crearse por el DBA, no por la aplicación
         self._verificar_tablas()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """Valida que el nombre de tabla esté en la lista permitida."""
+        return validate_table_name(table_name, self._allowed_tables)
 
     # ELIMINADO: _crear_tablas_si_no_existen() por razones de seguridad
     # Las tablas deben ser creadas por el DBA usando scripts externos,
@@ -126,50 +137,32 @@ class HerrajesModel:
                 "[ADVERTENCIA] Sin conexión a la base de datos. Mostrando datos demo."
             )
             return self._get_herrajes_demo()
-
+        
         try:
+            import os
             cursor = self.db_connection.cursor()
-
-            # Construir query con filtros
-            conditions = ["1=1"]  # Condición base
+            
+            # Cargar el script SQL externo de forma segura
+            script_path = os.path.join(os.path.dirname(__file__), '../../scripts/sql/select_herrajes.sql')
+            try:
+                query = load_sql_script(script_path)
+            except SQLSecurityError as e:
+                print(f"[ERROR HERRAJES] Error cargando script SQL: {e}")
+                # Fallback a consulta básica segura
+                table_name = self._validate_table_name(self.tabla_herrajes)
+                query = f"SELECT * FROM {table_name} WHERE 1=1"
+            
             params = []
-
+            where_clauses = []
             if filtros:
-                if filtros.get("proveedor"):
-                    conditions.append("proveedor LIKE ?")
-                    params.append(f"%{filtros['proveedor']}%")
-
-                if filtros.get("codigo"):
-                    conditions.append("codigo LIKE ?")
-                    params.append(f"%{filtros['codigo']}%")
-
-                if filtros.get("descripcion"):
-                    conditions.append("descripcion LIKE ?")
-                    params.append(f"%{filtros['descripcion']}%")
-
-            # Validate table name to prevent SQL injection
-            allowed_tables = ["herrajes"]
-            table_name = (
-                self.tabla_herrajes
-                if self.tabla_herrajes in allowed_tables
-                else "herrajes"
-            )
-
-            query = (
-                """
-                SELECT
-                    id, codigo, descripcion, proveedor, precio_unitario,
-                    unidad_medida, categoria, estado, observaciones,
-                    fecha_actualizacion
-                FROM """
-                + table_name
-                + """
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY codigo
-            """
-            )
+                if "tipo" in filtros:
+                    where_clauses.append("tipo = ?")
+                    params.append(filtros["tipo"])
+                if "stock_min" in filtros:
+                    where_clauses.append("stock >= ?")
+                    params.append(filtros["stock_min"])
+            if where_clauses:
+                query += " AND " + " AND ".join(where_clauses)
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -255,14 +248,18 @@ class HerrajesModel:
 
         try:
             cursor = self.db_connection.cursor()
-            # Usar script SQL externo para asignar herraje a obra
+            # Usar script SQL externo con parámetros nombrados
             with open(
                 "scripts/sql/insert_herraje_obra.sql", "r", encoding="utf-8"
             ) as f:
                 query = f.read()
-            cursor.execute(
-                query, (herraje_id, obra_id, cantidad_requerida, observaciones)
-            )
+            params = {
+                "herraje_id": herraje_id,
+                "obra_id": obra_id,
+                "cantidad_requerida": cantidad_requerida,
+                "observaciones": observaciones,
+            }
+            cursor.execute(query, params)
             self.db_connection.commit()
             print(f"[HERRAJES] Herraje {herraje_id} asignado a obra {obra_id}")
             return True
@@ -454,38 +451,30 @@ class HerrajesModel:
             if cursor.fetchone()[0] > 0:
                 return False, f"El código '{datos_herraje['codigo']}' ya existe"
 
-            # Insertar herraje
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_herrajes
-                + """ 
-                (codigo, descripcion, tipo, proveedor, precio_unitario, unidad_medida, 
-                 categoria, estado, stock_minimo, stock_actual, observaciones, 
-                 especificaciones, marca, modelo, color, material, dimensiones, peso)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    datos_herraje["codigo"],
-                    datos_herraje["descripcion"],
-                    datos_herraje.get("tipo", "OTRO"),
-                    datos_herraje["proveedor"],
-                    datos_herraje.get("precio_unitario", 0.00),
-                    datos_herraje.get("unidad_medida", "UNIDAD"),
-                    datos_herraje.get("categoria", ""),
-                    datos_herraje.get("estado", "ACTIVO"),
-                    datos_herraje.get("stock_minimo", 0),
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("observaciones", ""),
-                    datos_herraje.get("especificaciones", ""),
-                    datos_herraje.get("marca", ""),
-                    datos_herraje.get("modelo", ""),
-                    datos_herraje.get("color", ""),
-                    datos_herraje.get("material", ""),
-                    datos_herraje.get("dimensiones", ""),
-                    datos_herraje.get("peso", 0.0),
-                ),
-            )
+            # Insertar herraje usando script externo y parámetros nombrados
+            with open("scripts/sql/insert_herraje.sql", "r", encoding="utf-8") as f:
+                query = f.read()
+            params = {
+                "codigo": datos_herraje["codigo"],
+                "descripcion": datos_herraje["descripcion"],
+                "tipo": datos_herraje.get("tipo", "OTRO"),
+                "proveedor": datos_herraje["proveedor"],
+                "precio_unitario": datos_herraje.get("precio_unitario", 0.00),
+                "unidad_medida": datos_herraje.get("unidad_medida", "UNIDAD"),
+                "categoria": datos_herraje.get("categoria", ""),
+                "estado": datos_herraje.get("estado", "ACTIVO"),
+                "stock_minimo": datos_herraje.get("stock_minimo", 0),
+                "stock_actual": datos_herraje.get("stock_actual", 0),
+                "observaciones": datos_herraje.get("observaciones", ""),
+                "especificaciones": datos_herraje.get("especificaciones", ""),
+                "marca": datos_herraje.get("marca", ""),
+                "modelo": datos_herraje.get("modelo", ""),
+                "color": datos_herraje.get("color", ""),
+                "material": datos_herraje.get("material", ""),
+                "dimensiones": datos_herraje.get("dimensiones", ""),
+                "peso": datos_herraje.get("peso", 0.0),
+            }
+            cursor.execute(query, params)
 
             # Obtener ID del herraje creado
             cursor.execute("SELECT @@IDENTITY")
@@ -540,40 +529,30 @@ class HerrajesModel:
             if cursor.fetchone()[0] == 0:
                 return False, "Herraje no encontrado"
 
-            # Actualizar herraje
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes
-                + """
-                SET descripcion = ?, tipo = ?, proveedor = ?, precio_unitario = ?, 
-                    unidad_medida = ?, categoria = ?, estado = ?, stock_minimo = ?, 
-                    stock_actual = ?, observaciones = ?, especificaciones = ?, 
-                    marca = ?, modelo = ?, color = ?, material = ?, dimensiones = ?, 
-                    peso = ?, fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """,
-                (
-                    datos_herraje["descripcion"],
-                    datos_herraje.get("tipo", "OTRO"),
-                    datos_herraje["proveedor"],
-                    datos_herraje.get("precio_unitario", 0.00),
-                    datos_herraje.get("unidad_medida", "UNIDAD"),
-                    datos_herraje.get("categoria", ""),
-                    datos_herraje.get("estado", "ACTIVO"),
-                    datos_herraje.get("stock_minimo", 0),
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("observaciones", ""),
-                    datos_herraje.get("especificaciones", ""),
-                    datos_herraje.get("marca", ""),
-                    datos_herraje.get("modelo", ""),
-                    datos_herraje.get("color", ""),
-                    datos_herraje.get("material", ""),
-                    datos_herraje.get("dimensiones", ""),
-                    datos_herraje.get("peso", 0.0),
-                    herraje_id,
-                ),
-            )
+            # Actualizar herraje usando script externo y parámetros nombrados
+            with open("scripts/sql/update_herraje.sql", "r", encoding="utf-8") as f:
+                query = f.read()
+            params = {
+                "herraje_id": herraje_id,
+                "descripcion": datos_herraje["descripcion"],
+                "tipo": datos_herraje.get("tipo", "OTRO"),
+                "proveedor": datos_herraje["proveedor"],
+                "precio_unitario": datos_herraje.get("precio_unitario", 0.00),
+                "unidad_medida": datos_herraje.get("unidad_medida", "UNIDAD"),
+                "categoria": datos_herraje.get("categoria", ""),
+                "estado": datos_herraje.get("estado", "ACTIVO"),
+                "stock_minimo": datos_herraje.get("stock_minimo", 0),
+                "stock_actual": datos_herraje.get("stock_actual", 0),
+                "observaciones": datos_herraje.get("observaciones", ""),
+                "especificaciones": datos_herraje.get("especificaciones", ""),
+                "marca": datos_herraje.get("marca", ""),
+                "modelo": datos_herraje.get("modelo", ""),
+                "color": datos_herraje.get("color", ""),
+                "material": datos_herraje.get("material", ""),
+                "dimensiones": datos_herraje.get("dimensiones", ""),
+                "peso": datos_herraje.get("peso", 0.0),
+            }
+            cursor.execute(query, params)
 
             # Actualizar inventario
             cursor.execute(
@@ -626,27 +605,17 @@ class HerrajesModel:
 
             # Verificar que no esté asignado a obras
             cursor.execute(
-                """
-                SELECT COUNT(*) FROM herrajes_obra 
-                WHERE herraje_id = ? AND estado != 'COMPLETADO'
-            """,
+                "SELECT COUNT(*) FROM herrajes_obra WHERE herraje_id = ? AND estado != 'COMPLETADO'",
                 (herraje_id,),
             )
-
             if cursor.fetchone()[0] > 0:
                 return False, "No se puede eliminar herraje asignado a obras activas"
 
-            # Eliminación lógica
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes
-                + """
-                SET activo = 0, estado = 'INACTIVO', fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """,
-                (herraje_id,),
-            )
+            # Eliminación lógica usando script externo y parámetros nombrados
+            with open("scripts/sql/delete_herraje.sql", "r", encoding="utf-8") as f:
+                query = f.read()
+            params = {"herraje_id": herraje_id}
+            cursor.execute(query, params)
 
             self.db_connection.commit()
             return True, f"Herraje '{codigo}' eliminado exitosamente"
