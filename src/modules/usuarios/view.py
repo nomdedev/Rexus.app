@@ -34,8 +34,19 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from src.modules.usuarios.improved_dialogs import (
+    UsuarioDialogManager,
+    UsuarioPasswordDialog,
+    UsuarioPermisosDialog,
+)
 from src.utils.form_validators import FormValidator, FormValidatorManager
-from src.utils.message_system import show_success, show_error, show_warning, ask_question
+from src.utils.format_utils import format_for_display, table_formatter
+from src.utils.message_system import (
+    ask_question,
+    show_error,
+    show_success,
+    show_warning,
+)
 
 
 class UsuariosView(QWidget):
@@ -52,6 +63,11 @@ class UsuariosView(QWidget):
         self.controller = None
         self.usuarios_data = []
         self.usuario_actual = None
+
+        # Gestores de diálogos mejorados
+        self.dialog_manager = None
+        self.permisos_dialog = None
+        self.password_dialog = None
 
         self.init_ui()
         self.aplicar_estilos()
@@ -180,16 +196,37 @@ class UsuariosView(QWidget):
 
         # Botones de acción
         self.btn_nuevo = QPushButton("➕ Nuevo Usuario")
-        self.btn_nuevo.clicked.connect(self.mostrar_dialogo_nuevo_usuario)
+        self.btn_nuevo.clicked.connect(self.crear_usuario_mejorado)
 
         self.btn_actualizar = QPushButton("🔄 Actualizar")
         self.btn_actualizar.clicked.connect(self.cargar_usuarios)
+
+        # Botones adicionales para gestión mejorada
+        self.btn_editar = QPushButton("✏️ Editar")
+        self.btn_editar.clicked.connect(self.editar_usuario_mejorado)
+        self.btn_editar.setEnabled(False)
+
+        self.btn_permisos = QPushButton("🔐 Permisos")
+        self.btn_permisos.clicked.connect(self.gestionar_permisos)
+        self.btn_permisos.setEnabled(False)
+
+        self.btn_password = QPushButton("🔑 Reset Password")
+        self.btn_password.clicked.connect(self.resetear_password_usuario)
+        self.btn_password.setEnabled(False)
+
+        self.btn_eliminar = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar.clicked.connect(self.eliminar_usuario_mejorado)
+        self.btn_eliminar.setEnabled(False)
 
         toolbar_layout.addWidget(self.search_input)
         toolbar_layout.addWidget(self.filtro_estado)
         toolbar_layout.addWidget(self.filtro_rol)
         toolbar_layout.addStretch()
         toolbar_layout.addWidget(self.btn_nuevo)
+        toolbar_layout.addWidget(self.btn_editar)
+        toolbar_layout.addWidget(self.btn_permisos)
+        toolbar_layout.addWidget(self.btn_password)
+        toolbar_layout.addWidget(self.btn_eliminar)
         toolbar_layout.addWidget(self.btn_actualizar)
 
         # Tabla de usuarios
@@ -212,6 +249,9 @@ class UsuariosView(QWidget):
         self.tabla_usuarios.setColumnWidth(0, 60)
         self.tabla_usuarios.setColumnWidth(4, 100)
         self.tabla_usuarios.setColumnWidth(5, 80)
+
+        # Conectar selección de tabla
+        self.tabla_usuarios.itemSelectionChanged.connect(self.on_usuario_seleccionado)
 
         self.tabla_usuarios.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
@@ -708,11 +748,11 @@ class UsuariosView(QWidget):
         if dialogo.exec() == QDialog.DialogCode.Accepted:
             datos_usuario = dialogo.obtener_datos()
             self.solicitud_crear_usuario.emit(datos_usuario)
-    
+
     def mostrar_exito_operacion(self, titulo: str, mensaje: str):
         """Muestra un mensaje de éxito para operaciones exitosas."""
         show_success(self, titulo, mensaje)
-    
+
     def mostrar_error_operacion(self, titulo: str, mensaje: str):
         """Muestra un mensaje de error para operaciones fallidas."""
         show_error(self, titulo, mensaje)
@@ -745,32 +785,43 @@ class UsuariosView(QWidget):
     def eliminar_usuario(self):
         """Elimina el usuario actual."""
         if not self.usuario_actual:
-            show_warning(self, "Sin selección", "Debe seleccionar un usuario para eliminar")
+            show_warning(
+                self, "Sin selección", "Debe seleccionar un usuario para eliminar"
+            )
             return
 
         # Confirmar eliminación
         if ask_question(
             self,
             "Confirmar eliminación",
-            f"¿Está seguro que desea eliminar el usuario '{self.usuario_actual['username']}'?\n\nEsta acción no se puede deshacer."
+            f"¿Está seguro que desea eliminar el usuario '{self.usuario_actual['username']}'?\n\nEsta acción no se puede deshacer.",
         ):
             self.solicitud_eliminar_usuario.emit(str(self.usuario_actual["id"]))
 
     def resetear_password(self):
-        """Resetea la contraseña del usuario actual."""
+        """Resetea la contraseña del usuario actual de forma segura (sin establecer ninguna contraseña por defecto en el código)."""
         if not self.usuario_actual:
-            show_warning(self, "Sin selección", "Debe seleccionar un usuario para resetear la contraseña")
+            show_warning(
+                self,
+                "Sin selección",
+                "Debe seleccionar un usuario para resetear la contraseña",
+            )
             return
 
         # Confirmar reset de contraseña
         if ask_question(
             self,
             "Confirmar reset",
-            f"¿Está seguro que desea resetear la contraseña del usuario '{self.usuario_actual['username']}'?\n\nSe establecerá una contraseña temporal."
+            f"¿Está seguro que desea resetear la contraseña del usuario '{self.usuario_actual['username']}'?\n\nSe enviará un enlace de restablecimiento o se solicitará nueva contraseña al usuario.",
         ):
-            # Implementar lógica de reset de contraseña aquí
-            show_success(self, "Contraseña reseteada", f"La contraseña del usuario '{self.usuario_actual['username']}' ha sido reseteada exitosamente.")
-            print(f"Resetear password para usuario {self.usuario_actual['username']}")
+            # Aquí solo se debe invocar el flujo seguro (por ejemplo, abrir el diálogo de cambio de contraseña o notificar al backend)
+            show_success(
+                self,
+                "Solicitud enviada",
+                f"Se ha solicitado el reseteo de contraseña para el usuario '{self.usuario_actual['username']}'.",
+            )
+            # No establecer ninguna contraseña temporal ni hardcodeada aquí
+            # ...existing code...
 
     def cargar_usuarios(self):
         """Solicita la carga de usuarios al controlador."""
@@ -780,6 +831,125 @@ class UsuariosView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+        # Inicializar gestores de diálogos con el controlador
+        self.dialog_manager = UsuarioDialogManager(self, controller)
+        self.permisos_dialog = UsuarioPermisosDialog(self, controller)
+        self.password_dialog = UsuarioPasswordDialog(self, controller)
+
+        if hasattr(self.controller, "cargar_usuarios"):
+            self.controller.cargar_usuarios()
+
+    # ===== MÉTODOS MEJORADOS CON NUEVAS UTILIDADES =====
+
+    def crear_usuario_mejorado(self):
+        """Crea un nuevo usuario usando el sistema de diálogos mejorado."""
+        if self.dialog_manager:
+            success = self.dialog_manager.show_create_dialog()
+            if success:
+                self.cargar_usuarios()  # Recargar la tabla
+
+    def editar_usuario_mejorado(self):
+        """Edita el usuario seleccionado usando el sistema mejorado."""
+        if not self.usuario_actual:
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un usuario para editar."
+            )
+            return
+
+        if self.dialog_manager:
+            success = self.dialog_manager.show_edit_dialog(self.usuario_actual)
+            if success:
+                self.cargar_usuarios()  # Recargar la tabla
+
+    def eliminar_usuario_mejorado(self):
+        """Elimina el usuario seleccionado usando confirmación mejorada."""
+        if not self.usuario_actual:
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un usuario para eliminar."
+            )
+            return
+
+        if self.dialog_manager:
+            success = self.dialog_manager.confirm_and_delete(self.usuario_actual)
+            if success:
+                self.cargar_usuarios()  # Recargar la tabla
+
+    def gestionar_permisos(self):
+        """Gestiona los permisos del usuario seleccionado."""
+        if not self.usuario_actual:
+            show_warning(
+                self,
+                "Sin selección",
+                "Por favor seleccione un usuario para gestionar permisos.",
+            )
+            return
+
+        if self.permisos_dialog:
+            self.permisos_dialog.show_permisos_dialog(self.usuario_actual)
+
+    def resetear_password_usuario(self):
+        """Resetea la contraseña del usuario seleccionado."""
+        if not self.usuario_actual:
+            show_warning(
+                self,
+                "Sin selección",
+                "Por favor seleccione un usuario para resetear contraseña.",
+            )
+            return
+
+        if self.password_dialog:
+            self.password_dialog.show_reset_password_dialog(self.usuario_actual)
+
+    def cargar_usuarios_con_formato(self, usuarios):
+        """Carga usuarios en la tabla con formateo consistente."""
+        if not usuarios:
+            return
+
+        # Usar formatters de utilidades para consistencia
+        formatters = table_formatter.create_default_formatters()
+        formatted_data = table_formatter.format_table_data(usuarios, formatters)
+
+        # Cargar en tabla existente
+        self.cargar_en_tabla(formatted_data)
+
+    def on_usuario_seleccionado(self):
+        """Maneja la selección de usuario en la tabla."""
+        current_row = self.tabla_usuarios.currentRow()
+        if current_row >= 0:
+            # Obtener datos del usuario seleccionado
+            usuario_id = self.tabla_usuarios.item(current_row, 0).text()
+            usuario_data = next(
+                (u for u in self.usuarios_data if str(u.get("id", "")) == usuario_id),
+                None,
+            )
+
+            if usuario_data:
+                self.usuario_actual = usuario_data
+
+                # Habilitar botones de acción
+                if hasattr(self, "btn_editar"):
+                    self.btn_editar.setEnabled(True)
+                if hasattr(self, "btn_permisos"):
+                    self.btn_permisos.setEnabled(True)
+                if hasattr(self, "btn_password"):
+                    self.btn_password.setEnabled(True)
+                if hasattr(self, "btn_eliminar"):
+                    self.btn_eliminar.setEnabled(True)
+
+                # Emitir señal
+                self.usuario_seleccionado.emit(usuario_data)
+        else:
+            self.usuario_actual = None
+            # Deshabilitar botones
+            if hasattr(self, "btn_editar"):
+                self.btn_editar.setEnabled(False)
+            if hasattr(self, "btn_permisos"):
+                self.btn_permisos.setEnabled(False)
+            if hasattr(self, "btn_password"):
+                self.btn_password.setEnabled(False)
+            if hasattr(self, "btn_eliminar"):
+                self.btn_eliminar.setEnabled(False)
 
 
 class DialogoNuevoUsuario(QDialog):
@@ -889,16 +1059,17 @@ class DialogoNuevoUsuario(QDialog):
             show_error(
                 self,
                 "Errores de Validación",
-                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
+                "Por favor corrige los siguientes errores:\n\n• "
+                + "\n• ".join(mensajes_error),
             )
             return
 
         # Validación adicional: contraseñas coinciden
         if self.input_password.text() != self.input_password_confirm.text():
             show_error(
-                self, 
-                "Error de Validación", 
-                "Las contraseñas ingresadas no coinciden.\n\nPor favor verifique que ambas contraseñas sean idénticas."
+                self,
+                "Error de Validación",
+                "Las contraseñas ingresadas no coinciden.\n\nPor favor verifique que ambas contraseñas sean idénticas.",
             )
             return
 

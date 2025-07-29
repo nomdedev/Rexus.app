@@ -214,22 +214,30 @@
 ## Checklist Único de Mejoras y Problemas Pendientes en Rexus.app
 
 ### ALTA PRIORIDAD
-- [ ] Completar conexión de formularios restantes (Usuarios, Compras, otros módulos)
-- [ ] Verificar señales de actualización de tablas tras guardar
-- [ ] Problema crítico: sistema de seguridad no se inicializa correctamente
     - *Síntoma:* Login exitoso pero error "sistema de seguridad no disponible" y no se puede continuar.
     - *Causa:* Se llama a `get_security_manager()` en vez de `initialize_security_manager()` en el arranque, por lo que la instancia global queda en `None`.
     - *Solución:* Reemplazar la llamada por `initialize_security_manager()` para inicializar correctamente el sistema de seguridad y permitir login y permisos.
+ - [ ] Cobertura de tests automatizados (unitarios, integración, edge cases, UI)
+ - [ ] Sanitización de datos sensibles (contraseñas, logs, auditoría)
+ - [ ] Auditoría y logs de actividad (registro, limpieza automática, detección de patrones sospechosos)
+ - [ ] Gestión de errores y excepciones (evitar try/except/pass, logging específico)
+ - [ ] Controladores incompletos o no robustos (herrajes, vidrios, filtros avanzados)
+ - [ ] Funcionalidades faltantes en módulos: Compras (proveedores, órdenes, seguimiento), Herrajes (cálculos, validaciones), Mantenimiento (programación, historial)
 
 ### MEDIA PRIORIDAD
-- [ ] Mejorar feedback visual y manejo de errores (`QMessageBox`, banners, logging)
-- [ ] Completar correcciones SQL injection en modelos restantes
-- [ ] Crear scripts de carga de datos demo y modo demo
+ - [ ] Optimización de rendimiento (consultas SQL, índices, paginación, lazy loading)
+ - [ ] Integración y sincronización entre módulos (inventario, obras, compras, etc.)
+ - [ ] Refactorización de funciones grandes (>50 líneas, muchas variables locales)
+ - [ ] Limpieza de imports (eliminar no usados, agrupar por tipo)
+ - [ ] Revisión y optimización de dependencias (`requirements.txt`, versiones, vulnerabilidades)
+ - [ ] Mejoras de feedback visual (indicadores de carga, accesibilidad, modo oscuro)
 
 ### BAJA PRIORIDAD
-- [ ] Refactoring y optimización (utilidades, arquitectura, duplicación)
-- [ ] Validación de formularios (campos obligatorios, formatos, feedback visual)
-- [ ] Documentación (docstrings, comentarios, arquitectura)
+ - [ ] Documentación avanzada (manual de usuario, troubleshooting, diagramas)
+ - [ ] Mejoras de estilo (líneas largas, espacios en blanco, f-strings)
+ - [ ] Atajos de teclado y accesibilidad (shortcuts, tooltips)
+ - [ ] API REST y webhooks para integraciones externas
+ - [ ] Monitor de rendimiento y analizador de deuda técnica (scripts para complejidad y optimización)
    - ✅ Verificados modelos restantes: Pedidos, Compras, Usuarios, Logística, Mantenimiento
    - ✅ Todos los modelos ya usan queries parametrizadas correctamente
    - **Impacto:** Sistema completamente protegido contra inyecciones SQL
