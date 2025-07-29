@@ -570,7 +570,7 @@ QPushButton:pressed {
                 module_name="Inventario",
                 model_class=InventarioModel,
                 view_class=InventarioView,
-                controller_class=lambda m, v: InventarioController(m, v, db_connection),
+                controller_class=InventarioController,
                 db_connection=db_connection,
                 fallback_callback=self._create_fallback_module,
             )

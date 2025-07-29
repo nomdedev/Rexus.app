@@ -15,8 +15,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QAction
 
-from src.core.auth import get_auth_manager
-from src.core.database import DatabaseConnection
+from rexus.core.auth import get_auth_manager
+from rexus.core.database import DatabaseConnection
 
 
 class UserDialog(QDialog):

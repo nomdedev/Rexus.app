@@ -8,7 +8,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
-from src.utils.message_system import show_success, show_error, show_warning
+from rexus.utils.message_system import show_success, show_error, show_warning
 
 
 class ComprasController(QObject):
@@ -266,7 +266,7 @@ class ComprasController(QObject):
         if titulo == "Éxito":
             show_success(self.view, titulo, mensaje)
         else:
-            from src.utils.message_system import show_info
+            from rexus.utils.message_system import show_info
             show_info(self.view, titulo, mensaje)
 
     def mostrar_error(self, titulo, mensaje):

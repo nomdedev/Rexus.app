@@ -9,8 +9,8 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from .model import UsuariosModel
-from src.utils.error_handler import ErrorHandler, safe_method_decorator
-from src.utils.message_system import show_success, show_error
+from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.message_system import show_success, show_error
 
 
 class UsuariosController(QObject):
@@ -23,14 +23,12 @@ class UsuariosController(QObject):
     sesion_iniciada = pyqtSignal(dict)
     sesion_terminada = pyqtSignal(str)
     
-    def __init__(self, view=None, db_connection=None, usuario_actual=None):
+    def __init__(self, model, view, db_connection=None, usuario_actual=None):
         super().__init__()
+        self.model = model
         self.view = view
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-        
-        # Inicializar modelo
-        self.model = UsuariosModel(db_connection)
         
         # Conectar señales si hay vista
         if self.view:
@@ -333,13 +331,13 @@ class UsuariosController(QObject):
     def mostrar_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia con el sistema mejorado."""
         if self.view:
-            from src.utils.message_system import show_warning
+            from rexus.utils.message_system import show_warning
             show_warning(self.view, "Advertencia", mensaje)
     
     def mostrar_info(self, mensaje: str):
         """Muestra un mensaje informativo con el sistema mejorado."""
         if self.view:
-            from src.utils.message_system import show_info
+            from rexus.utils.message_system import show_info
             show_info(self.view, "Información", mensaje)
     
     def get_view(self):

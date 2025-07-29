@@ -9,9 +9,9 @@ from PyQt6.QtWidgets import QWidget, QDialog, QVBoxLayout, QHBoxLayout, QTableWi
 from PyQt6.QtCore import Qt
 from datetime import date, timedelta
 
-from src.utils.dialog_utils import CrudDialogManager, create_standard_form_config, BaseFormDialog
-from src.utils.validation_utils import FormValidationManager, AdvancedValidator, BusinessValidator
-from src.utils.format_utils import format_for_display
+from rexus.utils.dialog_utils import CrudDialogManager, create_standard_form_config, BaseFormDialog
+from rexus.utils.validation_utils import FormValidationManager, AdvancedValidator, BusinessValidator
+from rexus.utils.format_utils import format_for_display
 
 
 class PedidoDialogManager:
@@ -200,7 +200,7 @@ class PedidoDialogManager:
             # Validar datos antes de crear
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -226,7 +226,7 @@ class PedidoDialogManager:
             # Validar datos
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -397,7 +397,7 @@ class PedidoDetalleDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Detalle Actualizado",
@@ -464,7 +464,7 @@ class PedidoDetalleDialog:
         total = subtotal - descuento + impuestos
         
         if hasattr(self, 'label_subtotal'):
-            from src.utils.format_utils import currency_formatter
+            from rexus.utils.format_utils import currency_formatter
             self.label_subtotal.setText(f"Subtotal: {currency_formatter.format_amount(subtotal)}")
             self.label_descuento.setText(f"Descuento: {currency_formatter.format_amount(descuento)}")
             self.label_impuestos.setText(f"Impuestos: {currency_formatter.format_amount(impuestos)}")
@@ -571,7 +571,7 @@ class PedidoEstadoDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Estado Cambiado",
@@ -579,7 +579,7 @@ class PedidoEstadoDialog:
                     )
                     return True
                 else:
-                    from src.utils.message_system import show_error
+                    from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,      
                         "Error al Cambiar Estado",

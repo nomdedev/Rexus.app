@@ -32,13 +32,13 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.modules.usuarios.improved_dialogs import (
+from rexus.modules.usuarios.improved_dialogs import (
     UsuarioDialogManager,
     UsuarioPasswordDialog,
     UsuarioPermisosDialog,
 )
-from src.utils.form_validators import FormValidator, FormValidatorManager
-from src.utils.message_system import (
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.message_system import (
     ask_question,
     show_error,
     show_success,

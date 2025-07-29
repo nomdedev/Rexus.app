@@ -17,7 +17,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate, pyqtSignal, QTimer
 from PyQt6.QtGui import QFont, QIcon, QAction, QPixmap
 
-from src.core.database import InventarioDatabaseConnection
+from rexus.core.database import InventarioDatabaseConnection
 
 
 class EmpleadoDialog(QDialog):

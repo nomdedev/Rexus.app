@@ -13,7 +13,7 @@ Maneja la lógica de negocio para:
 from datetime import datetime, date
 from decimal import Decimal
 
-from src.utils.demo_data_generator import DemoDataGenerator
+from rexus.utils.demo_data_generator import DemoDataGenerator
 
 
 class LogisticaModel:

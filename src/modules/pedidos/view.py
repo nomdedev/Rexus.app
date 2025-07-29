@@ -34,9 +34,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.utils.message_system import show_success, show_error, show_warning, ask_question
-from src.modules.pedidos.improved_dialogs import PedidoDialogManager, PedidoDetalleDialog, PedidoEstadoDialog
-from src.utils.format_utils import format_for_display, table_formatter, currency_formatter
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.modules.pedidos.improved_dialogs import PedidoDialogManager, PedidoDetalleDialog, PedidoEstadoDialog
+from rexus.utils.format_utils import format_for_display, table_formatter, currency_formatter
 
 
 class PedidosView(QWidget):

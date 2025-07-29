@@ -4,7 +4,7 @@ Rexus.app - Sistema de Gestión Integral con Sidebar Colapsible
 """
 
 import sys
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 # Cargar variables de entorno antes de cualquier otra importación
 try:
@@ -17,7 +17,7 @@ except ImportError:
 except Exception as e:
     print(f"[ENV] Error cargando variables: {e}")
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QPropertyAnimation, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QFrame,
@@ -32,7 +32,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.core.login_dialog import LoginDialog
+from ..core.login_dialog import LoginDialog
 
 
 class CollapsibleSidebar(QFrame):
@@ -40,9 +40,17 @@ class CollapsibleSidebar(QFrame):
 
     module_clicked = pyqtSignal(str)
 
-    def __init__(self, user_data: Dict[str, Any], parent=None):
+    def __init__(
+        self,
+        user_data: Dict[str, Any],
+        modulos_permitidos: Optional[list] = None,
+        parent=None,
+    ):
         super().__init__(parent)
         self.user_data = user_data
+        self.modulos_permitidos = (
+            modulos_permitidos if modulos_permitidos is not None else []
+        )
         self.is_collapsed = False
         self.expanded_width = 280
         self.collapsed_width = 70
@@ -158,7 +166,7 @@ class CollapsibleSidebar(QFrame):
         self.main_layout.addWidget(self.user_frame)
 
     def create_modules(self):
-        """Crea los módulos del sidebar"""
+        """Crea los módulos del sidebar, solo los permitidos"""
         # Scroll area para módulos
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
@@ -169,24 +177,37 @@ class CollapsibleSidebar(QFrame):
         self.modules_layout.setSpacing(5)
         self.modules_layout.setContentsMargins(10, 10, 10, 10)
 
-        # Módulos ordenados
-        self.modules = [
-            ("🏗️", "Obras", "Gestión de proyectos y construcción"),
-            ("📦", "Inventario", "Gestión de inventario y stock"),
-            ("🔧", "Herrajes", "Gestión de herrajes"),
-            ("🪟", "Vidrios", "Gestión de vidrios"),
-            ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
-            ("🛒", "Compras", "Gestión de compras y proveedores"),
-            ("💼", "Administración", "Gestión administrativa y financiera"),
-            ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
-            ("📊", "Auditoría", "Auditoría y trazabilidad"),
-            ("👥", "Usuarios", "Gestión de personal y roles"),
-            ("⚙️", "Configuración", "Configuración del sistema"),
-        ]
+        # Mapeo de módulos: nombre interno -> (emoji, nombre visible, descripción)
+        all_modules = {
+            "Obras": ("🏗️", "Obras", "Gestión de proyectos y construcción"),
+            "Inventario": ("📦", "Inventario", "Gestión de inventario y stock"),
+            "Herrajes": ("🔧", "Herrajes", "Gestión de herrajes"),
+            "Vidrios": ("🪟", "Vidrios", "Gestión de vidrios"),
+            "Pedidos": ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
+            "Compras": ("🛒", "Compras", "Gestión de compras y proveedores"),
+            "Administración": (
+                "💼",
+                "Administración",
+                "Gestión administrativa y financiera",
+            ),
+            "Mantenimiento": ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
+            "Auditoría": ("📊", "Auditoría", "Auditoría y trazabilidad"),
+            "Usuarios": ("👥", "Usuarios", "Gestión de personal y roles"),
+            "Configuración": ("⚙️", "Configuración", "Configuración del sistema"),
+        }
 
+        # Filtrar módulos permitidos (por nombre visible)
+        self.modules = []
         self.module_buttons = []
-        for emoji, nombre, descripcion in self.modules:
-            btn = self.create_module_button(emoji, nombre, descripcion)
+        for nombre in all_modules:
+            # El nombre interno debe estar en la lista de permitidos (case-insensitive)
+            if self.modulos_permitidos:
+                # Permitir tanto nombre visible como nombre interno
+                if nombre.lower() not in [m.lower() for m in self.modulos_permitidos]:
+                    continue
+            emoji, nombre_visible, descripcion = all_modules[nombre]
+            self.modules.append((emoji, nombre_visible, descripcion))
+            btn = self.create_module_button(emoji, nombre_visible, descripcion)
             self.module_buttons.append(btn)
             self.modules_layout.addWidget(btn)
 
@@ -233,8 +254,13 @@ class CollapsibleSidebar(QFrame):
             self.collapse_sidebar()
 
     def collapse_sidebar(self):
-        """Colapsa el sidebar"""
+        """Colapsa el sidebar con animación"""
         self.is_collapsed = True
+        animation = QPropertyAnimation(self, b"minimumWidth")
+        animation.setDuration(250)
+        animation.setStartValue(self.width())
+        animation.setEndValue(self.collapsed_width)
+        animation.start()
         self.setFixedWidth(self.collapsed_width)
 
         # Cambiar botón toggle
@@ -270,8 +296,13 @@ class CollapsibleSidebar(QFrame):
             """)
 
     def expand_sidebar(self):
-        """Expande el sidebar"""
+        """Expande el sidebar con animación"""
         self.is_collapsed = False
+        animation = QPropertyAnimation(self, b"minimumWidth")
+        animation.setDuration(250)
+        animation.setStartValue(self.width())
+        animation.setEndValue(self.expanded_width)
+        animation.start()
         self.setFixedWidth(self.expanded_width)
 
         # Cambiar botón toggle
@@ -333,8 +364,8 @@ class MainWindow(QMainWindow):
         main_layout.setSpacing(0)
         main_layout.setContentsMargins(0, 0, 0, 0)
 
-        # Sidebar colapsible
-        self.sidebar = CollapsibleSidebar(self.user_data)
+        # Sidebar colapsible (ahora recibe modulos_permitidos)
+        self.sidebar = CollapsibleSidebar(self.user_data, self.modulos_permitidos)
         self.sidebar.module_clicked.connect(self.show_module)
         main_layout.addWidget(self.sidebar)
 
@@ -431,7 +462,7 @@ class MainWindow(QMainWindow):
                 min-height: 100px;
             }}
             QFrame:hover {{
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                /* box-shadow eliminado */
             }}
         """)
 

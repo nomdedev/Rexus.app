@@ -24,6 +24,8 @@ class InventarioModel:
         """
         self.db_connection = db_connection
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
+        # Lista de tablas permitidas para prevenir SQL injection
+        self._allowed_tables = {"inventario_perfiles", "inventario", "reserva_materiales", "historial"}
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
         self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
         if not self.db_connection:
@@ -31,6 +33,12 @@ class InventarioModel:
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """Valida que el nombre de tabla esté en la lista permitida."""
+        if table_name in self._allowed_tables:
+            return table_name
+        raise ValueError(f"Table name '{table_name}' not allowed. Only {self._allowed_tables} are permitted.")
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
@@ -88,58 +96,42 @@ class InventarioModel:
             return []
 
         try:
+            import os
+
             cursor = self.db_connection.cursor()
-
-            # Construir query con filtros
-            conditions = ["1=1"]  # Condición base
+            # Cargar el script SQL externo
+            script_path = os.path.join(
+                os.path.dirname(__file__), "../../scripts/sql/select_inventario.sql"
+            )
+            with open(script_path, "r", encoding="utf-8") as f:
+                query = f.read()
             params = []
-
+            where_clauses = []
             if filtros:
                 if filtros.get("categoria"):
-                    conditions.append("tipo = ?")
+                    where_clauses.append("tipo = ?")
                     params.append(filtros["categoria"])
-
-                if filtros.get("estado"):
-                    # Estado siempre es ACTIVO para esta tabla
-                    pass
-
+                if filtros.get("stock_min"):
+                    where_clauses.append("stock_actual >= ?")
+                    params.append(filtros["stock_min"])
                 if filtros.get("stock_bajo"):
-                    conditions.append("stock_actual <= stock_minimo")
-
+                    where_clauses.append("stock_actual <= stock_minimo")
                 if filtros.get("busqueda"):
-                    conditions.append("(descripcion LIKE ? OR codigo LIKE ?)")
+                    where_clauses.append("(descripcion LIKE ? OR codigo LIKE ?)")
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
-
-            where_clause = " AND ".join(conditions)
-
-            # Usar la tabla real inventario_perfiles con columnas existentes
-            base_query = """
-            SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
-                   stock_actual, stock_minimo, 0 as stock_maximo, importe as precio_unitario, 
-                   importe as precio_promedio, ubicacion, proveedor, unidad as unidad_medida, 
-                   'ACTIVO' as estado, GETDATE() as fecha_creacion, GETDATE() as fecha_modificacion, 
-                   '' as observaciones, qr as codigo_qr,
-                   stock_actual as stock_disponible, 0 as stock_reservado
-            FROM inventario_perfiles
-            WHERE """
-            sql_select = base_query + where_clause + " ORDER BY codigo"
-
-            cursor.execute(sql_select, params)
+            if where_clauses:
+                query += " AND " + " AND ".join(where_clauses)
+            query += " ORDER BY codigo"
+            cursor.execute(query, params)
             rows = cursor.fetchall()
-
-            # Convertir a lista de diccionarios
             columns = [desc[0] for desc in cursor.description]
             productos = []
-
             for row in rows:
                 producto = dict(zip(columns, row))
-                # Calcular estado del stock
                 producto["estado_stock"] = self._determinar_estado_stock(producto)
                 productos.append(producto)
-
             return productos
-
         except Exception as e:
             print(f"[ERROR INVENTARIO] Error obteniendo productos: {e}")
             return []
@@ -1449,16 +1441,13 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
 
             # Verificar stock disponible
-            cursor.execute(
-                """
+            table_name = self._validate_table_name(self.tabla_inventario)
+            query = """
                 SELECT stock_actual, ISNULL(stock_reservado, 0) as stock_reservado, descripcion
-                FROM """
-                + self.tabla_inventario
-                + """
+                FROM """ + table_name + """
                 WHERE id = ?
-            """,
-                (producto_id,),
-            )
+            """
+            cursor.execute(query, (producto_id,))
 
             resultado = cursor.fetchone()
             if not resultado:
@@ -1474,46 +1463,37 @@ class InventarioModel:
                 )
 
             # Crear reserva
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_reservas
-                + """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            query = """
+                INSERT INTO """ + reservas_table + """
                 (producto_id, obra_id, cantidad_reservada, usuario_id, fecha_reserva, estado, observaciones)
                 VALUES (?, ?, ?, ?, GETDATE(), 'ACTIVA', ?)
-            """,
-                (producto_id, obra_id, cantidad_reservada, usuario_id, observaciones),
-            )
+            """
+            cursor.execute(query, (producto_id, obra_id, cantidad_reservada, usuario_id, observaciones))
 
             # Actualizar stock reservado en inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_inventario
-                + """
+            table_name = self._validate_table_name(self.tabla_inventario)
+            query = """
+                UPDATE """ + table_name + """
                 SET stock_reservado = ISNULL(stock_reservado, 0) + ?
                 WHERE id = ?
-            """,
-                (cantidad_reservada, producto_id),
-            )
+            """
+            cursor.execute(query, (cantidad_reservada, producto_id))
 
             # Registrar movimiento
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_movimientos
-                + """
+            movimientos_table = self._validate_table_name(self.tabla_movimientos)
+            query = """
+                INSERT INTO """ + movimientos_table + """
                 (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
                 VALUES (?, 'RESERVA', ?, ?, ?, GETDATE(), ?)
-            """,
-                (
-                    producto_id,
-                    cantidad_reservada,
-                    f"Reserva para obra {obra_id}",
-                    usuario_id,
-                    obra_id,
-                ),
-            )
+            """
+            cursor.execute(query, (
+                producto_id,
+                cantidad_reservada,
+                f"Reserva para obra {obra_id}",
+                usuario_id,
+                obra_id,
+            ))
 
             self.db_connection.commit()
 
@@ -1544,21 +1524,19 @@ class InventarioModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            query = f"""
                 SELECT
                     r.id, r.producto_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
                     i.codigo, i.descripcion, i.unidad_medida, i.precio_unitario,
                     u.nombre as usuario_nombre
-                FROM {self.tabla_reservas} r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
+                FROM {reservas_table} r
+                INNER JOIN {inventario_table} i ON r.producto_id = i.id
                 LEFT JOIN usuarios u ON r.usuario_id = u.id
                 WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
                 ORDER BY r.fecha_reserva DESC
             """
-            )
 
             cursor.execute(query, (obra_id,))
             columnas = [column[0] for column in cursor.description]
@@ -1591,21 +1569,18 @@ class InventarioModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            query = f"""
                 SELECT
                     r.id, r.obra_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
                     o.nombre as obra_nombre, o.codigo as obra_codigo,
                     u.nombre as usuario_nombre
-                FROM """
-                + self.tabla_reservas
-                + """ r
+                FROM {reservas_table} r
                 INNER JOIN obras o ON r.obra_id = o.id
                 LEFT JOIN usuarios u ON r.usuario_id = u.id
                 WHERE r.producto_id = ? AND r.estado = 'ACTIVA'
                 ORDER BY r.fecha_reserva DESC
             """
-            )
 
             cursor.execute(query, (producto_id,))
             columnas = [column[0] for column in cursor.description]
@@ -1641,16 +1616,13 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
 
             # Obtener información de la reserva
-            cursor.execute(
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            query = """
                 SELECT producto_id, cantidad_reservada, obra_id
-                FROM """
-                + self.tabla_reservas
-                + """
+                FROM """ + reservas_table + """
                 WHERE id = ? AND estado = 'ACTIVA'
-            """,
-                (reserva_id,),
-            )
+            """
+            cursor.execute(query, (reserva_id,))
 
             reserva = cursor.fetchone()
             if not reserva:
@@ -1659,11 +1631,9 @@ class InventarioModel:
             producto_id, cantidad_reservada, obra_id = reserva
 
             # Actualizar estado de la reserva
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_reservas
-                + """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            cursor.execute(f"""
+                UPDATE {reservas_table}
                 SET estado = 'LIBERADA', fecha_liberacion = GETDATE(), usuario_liberacion = ?
                 WHERE id = ?
             """,
@@ -1671,11 +1641,9 @@ class InventarioModel:
             )
 
             # Actualizar stock reservado en inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_inventario
-                + """
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            cursor.execute(f"""
+                UPDATE {inventario_table}
                 SET stock_reservado = ISNULL(stock_reservado, 0) - ?
                 WHERE id = ?
             """,
@@ -1683,11 +1651,9 @@ class InventarioModel:
             )
 
             # Registrar movimiento
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_movimientos
-                + """
+            movimientos_table = self._validate_table_name(self.tabla_movimientos)
+            cursor.execute(f"""
+                INSERT INTO {movimientos_table}
                 (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
                 VALUES (?, 'LIBERACION_RESERVA', ?, ?, ?, GETDATE(), ?)
             """,
@@ -1733,8 +1699,8 @@ class InventarioModel:
                 where_clause = "WHERE i.id = ?"
                 params.append(producto_id)
 
-            query = (
-                """
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            query = f"""
                 SELECT
                     i.id, i.codigo, i.descripcion, i.categoria, i.unidad_medida,
                     i.stock_actual,
@@ -1746,13 +1712,10 @@ class InventarioModel:
                         WHEN (i.stock_actual - ISNULL(i.stock_reservado, 0)) = 0 THEN 'AGOTADO'
                         ELSE 'NORMAL'
                     END as estado_stock
-                FROM {self.tabla_inventario} i
-                """
-                + where_clause
-                + """
+                FROM {inventario_table} i
+                {where_clause}
                 ORDER BY i.descripcion
             """
-            )
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -1804,17 +1767,16 @@ class InventarioModel:
             )
 
             # Materiales por categoría
-            cursor.execute(
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            cursor.execute(f"""
                 SELECT
                     i.categoria,
                     COUNT(*) as cantidad_items,
                     SUM(r.cantidad_reservada) as cantidad_total,
                     SUM(r.cantidad_reservada * i.precio_unitario) as valor_total
-                FROM {self.tabla_reservas} r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
+                FROM {reservas_table} r
+                INNER JOIN {inventario_table} i ON r.producto_id = i.id
                 WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
                 GROUP BY i.categoria
                 ORDER BY valor_total DESC
@@ -1860,51 +1822,38 @@ class InventarioModel:
             estadisticas = {}
 
             # Total de reservas activas
-            cursor.execute(
-                "SELECT COUNT(*) FROM "
-                + self.tabla_reservas
-                + " WHERE estado = 'ACTIVA'"
-            )
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            cursor.execute(f"SELECT COUNT(*) FROM {reservas_table} WHERE estado = 'ACTIVA'")
             estadisticas["total_reservas_activas"] = cursor.fetchone()[0]
 
             # Valor total reservado
-            cursor.execute(
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            cursor.execute(f"""
                 SELECT SUM(r.cantidad_reservada * i.precio_unitario)
-                FROM """
-                + self.tabla_reservas
-                + """ r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
+                FROM {reservas_table} r
+                INNER JOIN {inventario_table} i ON r.producto_id = i.id
                 WHERE r.estado = 'ACTIVA'
-            """
-            )
+            """)
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_reservado"] = resultado or 0.0
 
             # Obras con reservas
-            cursor.execute(
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            cursor.execute(f"""
                 SELECT COUNT(DISTINCT obra_id)
-                FROM """
-                + self.tabla_reservas
-                + """
+                FROM {reservas_table}
                 WHERE estado = 'ACTIVA'
-            """
-            )
+            """)
             estadisticas["obras_con_reservas"] = cursor.fetchone()[0]
 
             # Productos con reservas
-            cursor.execute(
-                """
+            reservas_table = self._validate_table_name(self.tabla_reservas)
+            cursor.execute(f"""
                 SELECT COUNT(DISTINCT producto_id)
-                FROM """
-                + self.tabla_reservas
-                + """
+                FROM {reservas_table}
                 WHERE estado = 'ACTIVA'
-            """
-            )
+            """)
             estadisticas["productos_con_reservas"] = cursor.fetchone()[0]
 
             return estadisticas
@@ -2015,8 +1964,8 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
 
             # Construir consulta base
-            query = (
-                """
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            query = f"""
                 SELECT id, codigo, descripcion, categoria, stock_actual, stock_minimo,
                        precio_unitario, unidad_medida, activo, fecha_actualizacion,
                        COALESCE(r.stock_reservado, 0) as stock_reservado,
@@ -2025,9 +1974,7 @@ class InventarioModel:
                            WHEN stock_actual <= stock_minimo THEN 'BAJO'
                            ELSE 'NORMAL'
                        END as estado_stock
-                FROM """
-                + self.tabla_inventario
-                + """ i
+                FROM {inventario_table} i
                 LEFT JOIN (
                     SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
                     FROM reservas_inventario
@@ -2036,7 +1983,6 @@ class InventarioModel:
                 ) r ON i.id = r.producto_id
                 WHERE i.activo = 1
             """
-            )
 
             # Agregar filtros
             params = []
@@ -2152,15 +2098,13 @@ class InventarioModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            query = f"""
                 SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
                        i.precio_unitario, i.unidad_medida,
                        COALESCE(r.stock_reservado, 0) as stock_reservado,
                        (i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                FROM """
-                + self.tabla_inventario
-                + """ i
+                FROM {inventario_table} i
                 LEFT JOIN (
                     SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
                     FROM reservas_inventario
@@ -2171,7 +2115,6 @@ class InventarioModel:
                 AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0
                 ORDER BY i.codigo
             """
-            )
 
             cursor.execute(query)
 
@@ -2237,12 +2180,10 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
 
             # Información del producto
-            cursor.execute(
-                """
+            inventario_table = self._validate_table_name(self.tabla_inventario)
+            cursor.execute(f"""
                 SELECT stock_actual, stock_minimo, precio_unitario
-                FROM """
-                + self.tabla_inventario
-                + """
+                FROM {inventario_table}
                 WHERE id = ?
             """,
                 (producto_id,),

@@ -1,3 +1,7 @@
 """Módulo de Compras"""
 
-__all__ = []
+from .controller import ComprasController
+from .model import ComprasModel  
+from .view import ComprasView
+
+__all__ = ["ComprasModel", "ComprasView", "ComprasController"]

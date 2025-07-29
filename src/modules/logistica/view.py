@@ -32,7 +32,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.utils.form_validators import FormValidator, FormValidatorManager, validacion_direccion
+from rexus.utils.form_validators import FormValidator, FormValidatorManager, validacion_direccion
 
 
 class LogisticaView(QWidget):
@@ -332,34 +332,36 @@ class LogisticaView(QWidget):
         """Crea el tab del mapa interactivo con OpenStreetMap."""
         mapa_widget = QWidget()
         layout = QVBoxLayout(mapa_widget)
+        layout.setContentsMargins(5, 5, 5, 5)  # Menos margen para más espacio al mapa
         
-        # Panel de controles del mapa
-        controles_group = QGroupBox("🗺️ Controles del Mapa Interactivo")
+        # Panel de controles compacto
+        controles_group = QGroupBox("🗺️ Mapa Interactivo")
         controles_layout = QHBoxLayout(controles_group)
         
         # Filtros del mapa
         self.combo_filtro_mapa = QComboBox()
         self.combo_filtro_mapa.addItems([
             "Mostrar Todo",
-            "Solo Servicios",
+            "Solo Servicios", 
             "Solo Obras",
             "Servicios Activos",
             "Obras En Proceso"
         ])
-        self.combo_filtro_mapa.setFixedWidth(150)
+        self.combo_filtro_mapa.setFixedWidth(130)
         self.combo_filtro_mapa.currentTextChanged.connect(self.filtrar_mapa)
         controles_layout.addWidget(QLabel("Filtro:"))
         controles_layout.addWidget(self.combo_filtro_mapa)
         
-        # Botón agregar marcador
-        btn_agregar_marcador = QPushButton("📍 Agregar Ubicación")
+        # Botón agregar marcador (más compacto)
+        btn_agregar_marcador = QPushButton("📍 Agregar")
         btn_agregar_marcador.setStyleSheet("""
             QPushButton {
                 background-color: #27ae60;
                 color: white;
-                padding: 8px 16px;
+                padding: 6px 12px;
                 font-weight: bold;
-                border-radius: 4px;
+                border-radius: 3px;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #219a52;
@@ -368,15 +370,16 @@ class LogisticaView(QWidget):
         btn_agregar_marcador.clicked.connect(self.agregar_marcador_mapa)
         controles_layout.addWidget(btn_agregar_marcador)
         
-        # Botón limpiar marcadores
-        btn_limpiar = QPushButton("🧹 Limpiar Marcadores")
+        # Botón limpiar marcadores (más compacto)
+        btn_limpiar = QPushButton("🧹 Limpiar")
         btn_limpiar.setStyleSheet("""
             QPushButton {
                 background-color: #f39c12;
                 color: white;
-                padding: 8px 16px;
+                padding: 6px 12px;
                 font-weight: bold;
-                border-radius: 4px;
+                border-radius: 3px;
+                font-size: 12px;
             }
             QPushButton:hover {
                 background-color: #e67e22;
@@ -388,7 +391,7 @@ class LogisticaView(QWidget):
         controles_layout.addStretch()
         layout.addWidget(controles_group)
         
-        # Crear mapa interactivo
+        # Crear mapa interactivo (ocupa la mayor parte del espacio)
         try:
             from .interactive_map import InteractiveMapWidget
             self.interactive_map = InteractiveMapWidget()
@@ -397,38 +400,18 @@ class LogisticaView(QWidget):
             self.interactive_map.location_clicked.connect(self.on_map_location_clicked)
             self.interactive_map.marker_clicked.connect(self.on_map_marker_clicked)
             
-            layout.addWidget(self.interactive_map)
+            # El mapa toma todo el espacio disponible
+            layout.addWidget(self.interactive_map, stretch=1)
+            
+            # Cargar ubicaciones iniciales directamente en el mapa
+            self.actualizar_ubicaciones_mapa()
             
         except ImportError as e:
             print(f"Error importando mapa interactivo: {e}")
-            # Fallback al mapa estático
-            self.create_static_map_fallback(layout)
+            # Fallback simplificado sin información de cobertura
+            self.create_simple_map_fallback(layout)
         
-        # Panel de información de ubicaciones
-        info_group = QGroupBox("📋 Información de Ubicaciones en el Mapa")
-        info_layout = QVBoxLayout(info_group)
-        
-        # Lista de ubicaciones
-        self.lista_ubicaciones = QTableWidget()
-        self.lista_ubicaciones.setColumnCount(4)
-        self.lista_ubicaciones.setHorizontalHeaderLabels([
-            "Tipo", "Descripción", "Dirección", "Estado"
-        ])
-        self.lista_ubicaciones.setMaximumHeight(150)
-        
-        # Configurar tabla de ubicaciones
-        header_ubicaciones = self.lista_ubicaciones.horizontalHeader()
-        if header_ubicaciones is not None:
-            header_ubicaciones.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-        self.lista_ubicaciones.setAlternatingRowColors(True)
-        
-        info_layout.addWidget(self.lista_ubicaciones)
-        layout.addWidget(info_group)
-        
-        # Cargar ubicaciones iniciales
-        self.actualizar_ubicaciones_mapa()
-        
-        self.tabs.addTab(mapa_widget, "🗺️ Mapa Interactivo")
+        self.tabs.addTab(mapa_widget, "🗺️ Mapa")
     
     def create_estadisticas_tab(self):
         """Crea el tab de estadísticas."""
@@ -942,6 +925,75 @@ class LogisticaView(QWidget):
             
         except Exception as e:
             print(f"Error creando mapa fallback: {e}")
+    
+    def create_simple_map_fallback(self, layout):
+        """Crea un mapa simplificado sin información de cobertura."""
+        try:
+            # Widget simple para el mapa
+            fallback_widget = QWidget()
+            fallback_layout = QVBoxLayout(fallback_widget)
+            
+            # Título simple
+            titulo = QLabel("🗺️ Mapa de Ubicaciones")
+            titulo.setStyleSheet("""
+                QLabel {
+                    font-size: 16px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    padding: 15px;
+                    text-align: center;
+                    background-color: white;
+                    border: 1px solid #bdc3c7;
+                    border-radius: 6px;
+                }
+            """)
+            titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            fallback_layout.addWidget(titulo)
+            
+            # Lista compacta de ubicaciones actuales
+            ubicaciones_label = QLabel("📍 Ubicaciones Registradas:")
+            ubicaciones_label.setStyleSheet("font-weight: bold; padding: 10px; color: #34495e;")
+            fallback_layout.addWidget(ubicaciones_label)
+            
+            # Tabla simple de ubicaciones
+            self.lista_ubicaciones = QTableWidget()
+            self.lista_ubicaciones.setColumnCount(3)
+            self.lista_ubicaciones.setHorizontalHeaderLabels([
+                "Tipo", "Descripción", "Estado"
+            ])
+            
+            # Configurar tabla
+            header = self.lista_ubicaciones.horizontalHeader()
+            if header is not None:
+                header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            self.lista_ubicaciones.setAlternatingRowColors(True)
+            self.lista_ubicaciones.setMaximumHeight(200)
+            self.lista_ubicaciones.setStyleSheet("""
+                QTableWidget {
+                    gridline-color: #bdc3c7;
+                    background-color: white;
+                    border: 1px solid #bdc3c7;
+                    border-radius: 4px;
+                }
+            """)
+            
+            fallback_layout.addWidget(self.lista_ubicaciones)
+            
+            # Mensaje informativo
+            info_label = QLabel("💡 Use los botones de arriba para agregar nuevas ubicaciones")
+            info_label.setStyleSheet("color: #7f8c8d; font-style: italic; padding: 10px;")
+            info_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            fallback_layout.addWidget(info_label)
+            
+            fallback_layout.addStretch()
+            layout.addWidget(fallback_widget)
+            
+        except Exception as e:
+            print(f"Error en simple fallback: {e}")
+            error_label = QLabel("❌ Error cargando vista del mapa")
+            error_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            error_label.setStyleSheet("color: red; padding: 20px;")
+            layout.addWidget(error_label)
     
     def retry_interactive_map(self):
         """Intenta recargar el mapa interactivo."""

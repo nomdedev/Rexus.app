@@ -8,7 +8,7 @@ import datetime
 from typing import Any, Dict
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
-from src.utils.form_validators import FormValidator, FormValidatorManager, validacion_codigo_producto
+from rexus.utils.form_validators import FormValidator, FormValidatorManager, validacion_codigo_producto
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QAbstractItemView,
@@ -30,8 +30,6 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QScrollArea,
     QSpinBox,
-        # El buscador se acciona automáticamente al escribir
-        self.busqueda_input.textChanged.connect(self.filtrar_inventario)
     QTableWidget,
     QTableWidgetItem,
     QTabWidget,
@@ -45,14 +43,11 @@ from .dialogs import ReservaDialog
 
 class InventarioView(QWidget):
     """Vista principal del módulo de inventario con sistema de reservas."""
-        # El botón buscar también acciona el filtro
-        self.buscar_btn.clicked.connect(self.filtrar_inventario)
 
     # Señales
     producto_agregado = pyqtSignal(dict)
     producto_editado = pyqtSignal(dict)
     producto_eliminado = pyqtSignal(int)
-        self.limpiar_btn.clicked.connect(self.limpiar_filtros_inventario)
     movimiento_solicitado = pyqtSignal(dict)
     reserva_solicitada = pyqtSignal(dict)
     reserva_liberada = pyqtSignal(int)
