@@ -21,7 +21,9 @@
       "Bash(sed:*)",
       "Bash(cp:*)",
       "Bash(timeout:*)",
-      "Bash(set PYTHONPATH=.)"
+      "Bash(set PYTHONPATH=.)",
+      "Bash(touch:*)",
+      "Bash(grep:*)"
     ],
     "deny": []
   }
