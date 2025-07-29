@@ -8,6 +8,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
+from src.utils.message_system import show_success, show_error, show_warning
 
 
 class ComprasController(QObject):
@@ -261,20 +262,16 @@ class ComprasController(QObject):
         return True
 
     def mostrar_mensaje(self, titulo, mensaje):
-        """Muestra un mensaje informativo."""
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Icon.Information)
-        msg.setWindowTitle(titulo)
-        msg.setText(mensaje)
-        msg.exec()
+        """Muestra un mensaje informativo con el sistema mejorado."""
+        if titulo == "Éxito":
+            show_success(self.view, titulo, mensaje)
+        else:
+            from src.utils.message_system import show_info
+            show_info(self.view, titulo, mensaje)
 
     def mostrar_error(self, titulo, mensaje):
-        """Muestra un mensaje de error."""
-        msg = QMessageBox()
-        msg.setIcon(QMessageBox.Icon.Critical)
-        msg.setWindowTitle(titulo)
-        msg.setText(mensaje)
-        msg.exec()
+        """Muestra un mensaje de error con el sistema mejorado."""
+        show_error(self.view, titulo, mensaje)
 
     def obtener_resumen_compras(self):
         """
