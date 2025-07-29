@@ -329,12 +329,12 @@ class LogisticaView(QWidget):
         self.tabs.addTab(servicios_widget, "🚚 Servicios")
     
     def create_mapa_tab(self):
-        """Crea el tab del mapa con ubicaciones."""
+        """Crea el tab del mapa interactivo con OpenStreetMap."""
         mapa_widget = QWidget()
         layout = QVBoxLayout(mapa_widget)
         
         # Panel de controles del mapa
-        controles_group = QGroupBox("🗺️ Controles del Mapa")
+        controles_group = QGroupBox("🗺️ Controles del Mapa Interactivo")
         controles_layout = QHBoxLayout(controles_group)
         
         # Filtros del mapa
@@ -347,95 +347,65 @@ class LogisticaView(QWidget):
             "Obras En Proceso"
         ])
         self.combo_filtro_mapa.setFixedWidth(150)
+        self.combo_filtro_mapa.currentTextChanged.connect(self.filtrar_mapa)
         controles_layout.addWidget(QLabel("Filtro:"))
         controles_layout.addWidget(self.combo_filtro_mapa)
         
-        # Botón actualizar mapa
-        btn_actualizar_mapa = QPushButton("🔄 Actualizar Mapa")
-        btn_actualizar_mapa.setStyleSheet("""
+        # Botón agregar marcador
+        btn_agregar_marcador = QPushButton("📍 Agregar Ubicación")
+        btn_agregar_marcador.setStyleSheet("""
             QPushButton {
-                background-color: #3498db;
+                background-color: #27ae60;
                 color: white;
                 padding: 8px 16px;
                 font-weight: bold;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #2980b9;
+                background-color: #219a52;
             }
         """)
-        btn_actualizar_mapa.clicked.connect(self.actualizar_mapa)
-        controles_layout.addWidget(btn_actualizar_mapa)
+        btn_agregar_marcador.clicked.connect(self.agregar_marcador_mapa)
+        controles_layout.addWidget(btn_agregar_marcador)
         
-        # Botón centrar mapa
-        btn_centrar = QPushButton("📍 Centrar Mapa")
-        btn_centrar.setStyleSheet("""
+        # Botón limpiar marcadores
+        btn_limpiar = QPushButton("🧹 Limpiar Marcadores")
+        btn_limpiar.setStyleSheet("""
             QPushButton {
-                background-color: #e74c3c;
+                background-color: #f39c12;
                 color: white;
                 padding: 8px 16px;
                 font-weight: bold;
                 border-radius: 4px;
             }
             QPushButton:hover {
-                background-color: #c0392b;
+                background-color: #e67e22;
             }
         """)
-        btn_centrar.clicked.connect(self.centrar_mapa)
-        controles_layout.addWidget(btn_centrar)
+        btn_limpiar.clicked.connect(self.limpiar_marcadores_mapa)
+        controles_layout.addWidget(btn_limpiar)
         
         controles_layout.addStretch()
         layout.addWidget(controles_group)
         
-        # Área del mapa de La Plata y alrededores
-        mapa_frame = QFrame()
-        mapa_frame.setMinimumHeight(500)
-        mapa_frame.setStyleSheet("""
-            QFrame {
-                background-color: #e8f5e8;
-                border: 2px solid #27ae60;
-                border-radius: 8px;
-                background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="800" height="500" viewBox="0 0 800 500"><rect width="800" height="500" fill="%23e8f5e8"/><g stroke="%23666" stroke-width="1" fill="none"><path d="M50 50 Q200 80 350 60 Q500 40 650 70 Q750 90 800 100"/><path d="M0 150 Q150 130 300 140 Q450 150 600 135 Q750 120 800 130"/><path d="M50 250 Q200 230 350 240 Q500 250 650 235 Q750 220 800 230"/><path d="M0 350 Q150 330 300 340 Q450 350 600 335 Q750 320 800 330"/><path d="M50 450 Q200 430 350 440 Q500 450 650 435 Q750 420 800 430"/></g><g stroke="%23999" stroke-width="0.5" fill="none"><line x1="100" y1="0" x2="100" y2="500"/><line x1="200" y1="0" x2="200" y2="500"/><line x1="300" y1="0" x2="300" y2="500"/><line x1="400" y1="0" x2="400" y2="500"/><line x1="500" y1="0" x2="500" y2="500"/><line x1="600" y1="0" x2="600" y2="500"/><line x1="700" y1="0" x2="700" y2="500"/><line x1="0" y1="100" x2="800" y2="100"/><line x1="0" y1="200" x2="800" y2="200"/><line x1="0" y1="300" x2="800" y2="300"/><line x1="0" y1="400" x2="800" y2="400"/></g><text x="200" y="30" font-size="16" fill="%23333" font-weight="bold">BERISSO</text><text x="350" y="30" font-size="20" fill="%23333" font-weight="bold">LA PLATA</text><text x="550" y="30" font-size="16" fill="%23333" font-weight="bold">ENSENADA</text><text x="120" y="180" font-size="14" fill="%23666">Los Hornos</text><text x="280" y="150" font-size="14" fill="%23666">Casco Urbano</text><text x="450" y="160" font-size="14" fill="%23666">Gonnet</text><text x="580" y="180" font-size="14" fill="%23666">City Bell</text><text x="150" y="280" font-size="14" fill="%23666">San Carlos</text><text x="350" y="250" font-size="14" fill="%23666">Tolosa</text><text x="500" y="280" font-size="14" fill="%23666">Villa Elisa</text><text x="100" y="380" font-size="14" fill="%23666">Melchor Romero</text><text x="320" y="350" font-size="14" fill="%23666">Ringuelet</text><text x="520" y="380" font-size="14" fill="%23666">Arturo Seguí</text><circle cx="180" cy="200" r="4" fill="%23e74c3c"/><text x="190" y="205" font-size="10" fill="%23e74c3c">Servicio Activo</text><circle cx="380" cy="170" r="4" fill="%2327ae60"/><text x="390" y="175" font-size="10" fill="%2327ae60">Obra en Proceso</text><circle cx="520" cy="300" r="4" fill="%233498db"/><text x="530" y="305" font-size="10" fill="%233498db">Entrega Programada</text><circle cx="150" cy="320" r="4" fill="%23f39c12"/><text x="160" y="325" font-size="10" fill="%23f39c12">Servicio Pendiente</text><circle cx="450" cy="220" r="4" fill="%239b59b6"/><text x="460" y="225" font-size="10" fill="%239b59b6">Ruta Optimizada</text><circle cx="600" cy="150" r="4" fill="%23e67e22"/><text x="610" y="155" font-size="10" fill="%23e67e22">Punto de Entrega</text></svg>');
-                background-repeat: no-repeat;
-                background-position: center;
-                background-size: contain;
-            }
-        """)
+        # Crear mapa interactivo
+        try:
+            from .interactive_map import InteractiveMapWidget
+            self.interactive_map = InteractiveMapWidget()
+            
+            # Conectar señales del mapa
+            self.interactive_map.location_clicked.connect(self.on_map_location_clicked)
+            self.interactive_map.marker_clicked.connect(self.on_map_marker_clicked)
+            
+            layout.addWidget(self.interactive_map)
+            
+        except ImportError as e:
+            print(f"Error importando mapa interactivo: {e}")
+            # Fallback al mapa estático
+            self.create_static_map_fallback(layout)
         
-        mapa_layout = QVBoxLayout(mapa_frame)
-        
-        # Panel de información del mapa (sin ocupar espacio del mapa)
-        info_panel = QWidget()
-        info_panel.setMaximumHeight(60)
-        info_panel.setStyleSheet("""
-            QWidget {
-                background-color: rgba(255, 255, 255, 0.95);
-                border: 1px solid #bdc3c7;
-                border-radius: 8px;
-                margin: 10px;
-            }
-        """)
-        info_layout = QHBoxLayout(info_panel)
-        
-        # Leyenda compacta
-        leyenda_label = QLabel("🗺️ Mapa de La Plata y Alrededores | 🔴 Servicios Activos | 🟢 Obras en Proceso | 🔵 Entregas Programadas | 🟠 Servicios Pendientes | 🟣 Rutas Optimizadas")
-        leyenda_label.setStyleSheet("""
-            QLabel {
-                font-size: 11px;
-                color: #2c3e50;
-                font-weight: bold;
-                padding: 8px;
-            }
-        """)
-        info_layout.addWidget(leyenda_label)
-        
-        # Agregar panel de información encima del mapa
-        layout.addWidget(info_panel)
-        
-        layout.addWidget(mapa_frame)
-        
-        # Panel de información lateral
-        info_group = QGroupBox("📋 Información de Ubicaciones")
+        # Panel de información de ubicaciones
+        info_group = QGroupBox("📋 Información de Ubicaciones en el Mapa")
         info_layout = QVBoxLayout(info_group)
         
         # Lista de ubicaciones
@@ -455,7 +425,10 @@ class LogisticaView(QWidget):
         info_layout.addWidget(self.lista_ubicaciones)
         layout.addWidget(info_group)
         
-        self.tabs.addTab(mapa_widget, "🗺️ Mapa")
+        # Cargar ubicaciones iniciales
+        self.actualizar_ubicaciones_mapa()
+        
+        self.tabs.addTab(mapa_widget, "🗺️ Mapa Interactivo")
     
     def create_estadisticas_tab(self):
         """Crea el tab de estadísticas."""
@@ -701,6 +674,305 @@ class LogisticaView(QWidget):
                 
         except Exception as e:
             print(f"Error cargando servicios: {str(e)}")
+    
+    def filtrar_mapa(self, filtro_texto):
+        """Filtra los marcadores del mapa según el criterio seleccionado."""
+        try:
+            if hasattr(self, 'interactive_map'):
+                # Obtener datos según el filtro
+                if filtro_texto == "Solo Servicios":
+                    # Mostrar solo servicios de la tabla
+                    servicios = []
+                    for row in range(self.tabla_servicios.rowCount()):
+                        direccion_item = self.tabla_servicios.item(row, 3)
+                        if direccion_item:
+                            direccion = direccion_item.text()
+                            from .interactive_map import geocode_address_la_plata
+                            coords = geocode_address_la_plata(direccion)
+                            
+                            servicios.append({
+                                'coords': coords,
+                                'tipo': self.tabla_servicios.item(row, 1).text() if self.tabla_servicios.item(row, 1) else "",
+                                'cliente': self.tabla_servicios.item(row, 2).text() if self.tabla_servicios.item(row, 2) else "",
+                                'direccion': direccion,
+                                'estado': self.tabla_servicios.item(row, 6).text() if self.tabla_servicios.item(row, 6) else "",
+                                'fecha': self.tabla_servicios.item(row, 4).text() if self.tabla_servicios.item(row, 4) else ""
+                            })
+                    
+                    self.interactive_map.add_service_markers(servicios)
+                
+                elif filtro_texto == "Servicios Activos":
+                    # Filtrar solo servicios con estado "Activo" o "Programado"
+                    servicios_activos = []
+                    for row in range(self.tabla_servicios.rowCount()):
+                        estado_item = self.tabla_servicios.item(row, 6)
+                        if estado_item and estado_item.text() in ["Activo", "Programado", "En Tránsito"]:
+                            direccion_item = self.tabla_servicios.item(row, 3)
+                            if direccion_item:
+                                direccion = direccion_item.text()
+                                from .interactive_map import geocode_address_la_plata
+                                coords = geocode_address_la_plata(direccion)
+                                
+                                servicios_activos.append({
+                                    'coords': coords,
+                                    'tipo': self.tabla_servicios.item(row, 1).text() if self.tabla_servicios.item(row, 1) else "",
+                                    'cliente': self.tabla_servicios.item(row, 2).text() if self.tabla_servicios.item(row, 2) else "",
+                                    'direccion': direccion,
+                                    'estado': estado_item.text(),
+                                    'fecha': self.tabla_servicios.item(row, 4).text() if self.tabla_servicios.item(row, 4) else ""
+                                })
+                    
+                    self.interactive_map.add_service_markers(servicios_activos)
+                
+                else:
+                    # "Mostrar Todo" o otros filtros - resetear al mapa inicial
+                    self.interactive_map.create_initial_map()
+                    
+                self.actualizar_ubicaciones_mapa()
+                
+        except Exception as e:
+            print(f"Error filtrando mapa: {e}")
+    
+    def agregar_marcador_mapa(self):
+        """Muestra diálogo para agregar un marcador personalizado al mapa."""
+        try:
+            from PyQt6.QtWidgets import QInputDialog, QComboBox
+            
+            # Diálogo para dirección
+            direccion, ok = QInputDialog.getText(
+                self, 
+                "Agregar Ubicación", 
+                "Ingrese la dirección o ubicación en La Plata:"
+            )
+            
+            if ok and direccion.strip():
+                # Obtener coordenadas
+                from .interactive_map import geocode_address_la_plata
+                coords = geocode_address_la_plata(direccion.strip())
+                
+                # Diálogo para descripción
+                descripcion, ok2 = QInputDialog.getText(
+                    self,
+                    "Descripción",
+                    "Ingrese una descripción para esta ubicación:"
+                )
+                
+                if ok2 and hasattr(self, 'interactive_map'):
+                    # Agregar marcador al mapa
+                    self.interactive_map.add_custom_marker(
+                        coords[0], coords[1],
+                        direccion.strip(),
+                        descripcion.strip() or "Ubicación personalizada",
+                        "servicio"
+                    )
+                    
+                    self.mostrar_mensaje(f"Ubicación agregada: {direccion}")
+                    self.actualizar_ubicaciones_mapa()
+                    
+        except Exception as e:
+            self.mostrar_error(f"Error agregando marcador: {str(e)}")
+    
+    def limpiar_marcadores_mapa(self):
+        """Limpia todos los marcadores personalizados del mapa."""
+        try:
+            if hasattr(self, 'interactive_map'):
+                self.interactive_map.clear_markers()
+                self.mostrar_mensaje("Marcadores eliminados. Mapa restablecido.")
+                self.actualizar_ubicaciones_mapa()
+        except Exception as e:
+            self.mostrar_error(f"Error limpiando marcadores: {str(e)}")
+    
+    def on_map_location_clicked(self, lat, lng):
+        """Maneja el evento de clic en una ubicación del mapa."""
+        try:
+            # Mostrar información de la ubicación clickeada
+            from PyQt6.QtWidgets import QMessageBox
+            
+            mensaje = f"Ubicación seleccionada:\n\nLatitud: {lat:.6f}\nLongitud: {lng:.6f}"
+            
+            # Preguntar si desea agregar un servicio en esta ubicación
+            respuesta = QMessageBox.question(
+                self,
+                "Ubicación Seleccionada",
+                f"{mensaje}\n\n¿Desea agregar un servicio en esta ubicación?",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+            )
+            
+            if respuesta == QMessageBox.StandardButton.Yes:
+                # Abrir diálogo para nuevo servicio con coordenadas pre-cargadas
+                self.crear_servicio_desde_mapa(lat, lng)
+                
+        except Exception as e:
+            print(f"Error manejando clic en mapa: {e}")
+    
+    def on_map_marker_clicked(self, marker_data):
+        """Maneja el evento de clic en un marcador del mapa."""
+        try:
+            # Mostrar información detallada del marcador
+            from PyQt6.QtWidgets import QMessageBox
+            
+            titulo = marker_data.get('title', 'Marcador')
+            descripcion = marker_data.get('description', 'Sin descripción')
+            tipo = marker_data.get('type', 'desconocido')
+            
+            mensaje = f"Información del Marcador:\n\nTítulo: {titulo}\nDescripción: {descripcion}\nTipo: {tipo.title()}"
+            
+            QMessageBox.information(
+                self,
+                "Información del Marcador",
+                mensaje
+            )
+            
+        except Exception as e:
+            print(f"Error manejando clic en marcador: {e}")
+    
+    def crear_servicio_desde_mapa(self, lat, lng):
+        """Crea un nuevo servicio usando coordenadas del mapa."""
+        try:
+            from PyQt6.QtWidgets import QInputDialog
+            
+            # Solicitar datos básicos para el servicio
+            cliente, ok1 = QInputDialog.getText(
+                self,
+                "Nuevo Servicio",
+                "Nombre del cliente:"
+            )
+            
+            if ok1 and cliente.strip():
+                direccion, ok2 = QInputDialog.getText(
+                    self,
+                    "Dirección",
+                    "Dirección del servicio:",
+                    text=f"Ubicación: {lat:.6f}, {lng:.6f}"
+                )
+                
+                if ok2 and direccion.strip():
+                    # Crear servicio con datos básicos
+                    servicio = {
+                        "tipo": "Servicio desde Mapa",
+                        "cliente": cliente.strip(),
+                        "direccion": direccion.strip(),
+                        "fecha": QDate.currentDate().toString("yyyy-MM-dd"),
+                        "hora": "Por definir",
+                        "contacto": "Por definir",
+                        "observaciones": f"Servicio creado desde mapa. Coordenadas: {lat:.6f}, {lng:.6f}",
+                        "estado": "Programado"
+                    }
+                    
+                    # Agregar a la tabla
+                    self.agregar_servicio_tabla(servicio)
+                    self.mostrar_mensaje(f"Servicio creado para {cliente}")
+                    
+        except Exception as e:
+            self.mostrar_error(f"Error creando servicio desde mapa: {str(e)}")
+    
+    def create_static_map_fallback(self, layout):
+        """Crea un mapa estático como fallback si el mapa interactivo falla."""
+        try:
+            # Crear un widget simple con información de La Plata
+            fallback_widget = QWidget()
+            fallback_layout = QVBoxLayout(fallback_widget)
+            
+            # Título
+            titulo = QLabel("🗺️ Mapa de La Plata - Vista Simplificada")
+            titulo.setStyleSheet("""
+                QLabel {
+                    font-size: 18px;
+                    font-weight: bold;
+                    color: #2c3e50;
+                    padding: 20px;
+                    text-align: center;
+                }
+            """)
+            titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            fallback_layout.addWidget(titulo)
+            
+            # Información de ubicaciones
+            info_text = QLabel("""
+            <div style='padding: 20px; line-height: 1.6;'>
+            <h3>Área de Cobertura - La Plata y Alrededores</h3>
+            <p><b>Ciudad Principal:</b> La Plata (-34.9214, -57.9544)</p>
+            
+            <h4>Localidades de Cobertura:</h4>
+            <ul>
+                <li><b>Berisso:</b> Zona industrial y residencial</li>
+                <li><b>Ensenada:</b> Puerto y zona comercial</li>
+                <li><b>Gonnet:</b> Zona residencial norte</li>
+                <li><b>City Bell:</b> Zona residencial exclusiva</li>
+                <li><b>Villa Elisa:</b> Área residencial y comercial</li>
+                <li><b>Los Hornos:</b> Zona sur de La Plata</li>
+                <li><b>Tolosa:</b> Zona este de La Plata</li>
+                <li><b>Ringuelet:</b> Zona centro-este</li>
+            </ul>
+            
+            <p><i>Radio de cobertura: 15 km desde el centro de La Plata</i></p>
+            </div>
+            """)
+            info_text.setWordWrap(True)
+            info_text.setStyleSheet("""
+                QLabel {
+                    background-color: white;
+                    border: 1px solid #bdc3c7;
+                    border-radius: 8px;
+                    padding: 15px;
+                }
+            """)
+            fallback_layout.addWidget(info_text)
+            
+            # Botón para intentar cargar mapa interactivo
+            btn_retry = QPushButton("🔄 Intentar Cargar Mapa Interactivo")
+            btn_retry.setStyleSheet("""
+                QPushButton {
+                    background-color: #3498db;
+                    color: white;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 6px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background-color: #2980b9;
+                }
+            """)
+            btn_retry.clicked.connect(self.retry_interactive_map)
+            fallback_layout.addWidget(btn_retry)
+            
+            fallback_layout.addStretch()
+            layout.addWidget(fallback_widget)
+            
+        except Exception as e:
+            print(f"Error creando mapa fallback: {e}")
+    
+    def retry_interactive_map(self):
+        """Intenta recargar el mapa interactivo."""
+        try:
+            # Intentar importar y crear el mapa interactivo nuevamente
+            from .interactive_map import InteractiveMapWidget
+            
+            if hasattr(self, 'interactive_map'):
+                # Ya existe, solo refrescar
+                self.interactive_map.create_initial_map()
+                self.mostrar_mensaje("Mapa interactivo actualizado")
+            else:
+                # Crear nuevo widget de mapa
+                self.interactive_map = InteractiveMapWidget()
+                self.interactive_map.location_clicked.connect(self.on_map_location_clicked)
+                self.interactive_map.marker_clicked.connect(self.on_map_marker_clicked)
+                
+                # Buscar el tab de mapa y reemplazar contenido
+                for i in range(self.tabs.count()):
+                    if "Mapa" in self.tabs.tabText(i):
+                        # Recrear el tab completo
+                        self.tabs.removeTab(i)
+                        self.create_mapa_tab()
+                        break
+                        
+                self.mostrar_mensaje("Mapa interactivo cargado exitosamente")
+                
+        except ImportError as e:
+            self.mostrar_error(f"No se pudo cargar el mapa interactivo: {str(e)}\n\nVerifique que estén instalados: folium, PyQtWebEngine")
+        except Exception as e:
+            self.mostrar_error(f"Error cargando mapa interactivo: {str(e)}")
 
 
 class DialogoNuevaEntrega(QDialog):

@@ -4,76 +4,34 @@ Rexus.app - Sistema de Gestión Integral
 
 Aplicación principal que maneja la interfaz de usuario y la integración de módulos.
 Sigue principios de arquitectura MVC y patrones de diseño para mantenibilidad.
-"""
 
-import os
-import platform
-import sys
-from pathlib import Path
-from typing import Any, Dict
-
-# Agregar el directorio raíz al path de Python
-root_dir = Path(__file__).parent.parent.parent
-sys.path.insert(0, str(root_dir))
-
-# Cargar variables de entorno desde .env
-try:
-    from dotenv import load_dotenv
-    load_dotenv(root_dir / '.env')
-    print("[ENV] Variables de entorno cargadas desde .env")
-except ImportError:
-    print("[ENV] Warning: python-dotenv no instalado, usando variables del sistema")
-except Exception as e:
-    print(f"[ENV] Error cargando .env: {e}")
-
-from PyQt6.QtCore import Qt
-from PyQt6.QtWidgets import (
-    QApplication,
-    QFrame,
-    QGridLayout,
-    QHBoxLayout,
-    QLabel,
-    QMainWindow,
-    QMessageBox,
-    QPushButton,
-    QScrollArea,
-    QStackedWidget,
-    QVBoxLayout,
-    QWidget,
-)
-
-from src.core.login_dialog import LoginDialog
-
-# Importar componentes del core
-from src.core.module_manager import module_manager
-
-
-def initialize_security_manager():
-    """Inicializa el sistema de seguridad"""
-    try:
-        from src.core.security import init_security_manager
-        from src.core.database import UsersDatabaseConnection
-        
-        # Intentar crear conexión a la base de datos
-        try:
-            db_connection = UsersDatabaseConnection()
-            print("[SECURITY] Conexión BD exitosa para sistema de seguridad")
-        except Exception as db_error:
-            print(f"[SECURITY] Error BD: {db_error}, usando modo sin BD")
-            db_connection = None
-        
-        # Inicializar con o sin conexión BD
-        security_manager = init_security_manager(db_connection)
-        print("[SECURITY] SecurityManager inicializado correctamente")
-        return security_manager
-        
-    except ImportError as e:
-        print(f"[SECURITY] Error importando módulo de seguridad: {e}")
-        return SimpleSecurityManager()
-    except Exception as e:
-        print(f"[SECURITY] Error general inicializando seguridad: {e}")
-        return SimpleSecurityManager()
-
+        btn = QPushButton()
+        btn.setText(f"{emoji}  {nombre}")
+        btn.setToolTip(descripcion)
+        btn.setStyleSheet("""
+QPushButton {
+    text-align: left;
+    padding: 15px 20px;
+    border: none;
+    color: #111111;
+    font-size: 14px;
+    font-weight: 600;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 6px;
+    margin: 3px 8px;
+}
+QPushButton:hover {
+    background-color: #3498db;
+    color: #111111;
+    font-weight: bold;
+}
+QPushButton:pressed {
+    background-color: #217dbb;
+    color: #111111;
+}
+        """)
+        btn.clicked.connect(lambda checked, name=nombre: self.show_module(name))
+        return btn
 
 class SimpleSecurityManager:
     """Sistema de seguridad simple para fallback"""
@@ -156,7 +114,7 @@ class MainWindow(QMainWindow):
         user_data (Dict): Datos del usuario actual
         modulos_permitidos (List): Lista de módulos permitidos para el usuario
         security_manager: Gestor de seguridad de la aplicación
-        content_stack (QStackedWidget): Stack de pestañas para módulos
+        content_stack (QTabWidget): Stack de pestañas para módulos
         content_header (QLabel): Header del área de contenido
     """
 
@@ -171,8 +129,11 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.user_data = user_data
         self.modulos_permitidos = modulos_permitidos
+        from PyQt6.QtWidgets import QLabel, QStackedWidget
 
+        # Eliminado: self.security_manager no corresponde a ninguna inicialización ni uso válido
         self.content_stack = QStackedWidget()
+        # Eliminado: self.content_header
 
         self._init_ui()
 
@@ -202,6 +163,8 @@ class MainWindow(QMainWindow):
 
     def _create_sidebar(self, main_layout):
         """Crea la barra lateral con módulos"""
+        from PyQt6.QtWidgets import QScrollArea
+
         sidebar = QFrame()
         sidebar.setFixedWidth(200)
         sidebar.setStyleSheet("""
@@ -259,8 +222,8 @@ class MainWindow(QMainWindow):
             ("📦", "Inventario", "Gestión de inventario y stock"),
             ("🔩", "Herrajes", "Gestión de herrajes"),
             ("🪟", "Vidrios", "Gestión de vidrios"),
-            ("🚛", "Logística", "Gestión de logística y transporte"),
-            ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
+            ("�", "Logística", "Gestión de logística y transporte"),
+            ("�📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
             ("🛒", "Compras", "Gestión de compras y proveedores"),
             ("🏢", "Administración", "Gestión administrativa y financiera"),
             ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
@@ -287,29 +250,28 @@ class MainWindow(QMainWindow):
         btn.setText(f"{emoji}  {nombre}")
         btn.setToolTip(descripcion)
         btn.setStyleSheet(
-            """
+"""
 QPushButton {
-    text-align: left;
-    padding: 15px 20px;
-    border: none;
-    color: #111111;
-    font-size: 14px;
-    font-weight: 600;
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 6px;
-    margin: 3px 8px;
+text-align: left;
+padding: 15px 20px;
+border: none;
+color: #111111;
+font-size: 14px;
+font-weight: 600;
+background-color: rgba(255, 255, 255, 0.15);
+border-radius: 6px;
+margin: 3px 8px;
 }
 QPushButton:hover {
-    background-color: #3498db;
-    color: #111111;
-    font-weight: bold;
+background-color: #3498db;
+color: #111111;
+font-weight: bold;
 }
 QPushButton:pressed {
-    background-color: #217dbb;
-    color: #111111;
+background-color: #217dbb;
+color: #111111;
 }
-            """
-        )
+""")
         btn.clicked.connect(lambda checked, name=nombre: self.show_module(name))
         return btn
 
@@ -326,7 +288,11 @@ QPushButton:pressed {
         content_layout = QVBoxLayout(content_area)
         content_layout.setContentsMargins(30, 30, 30, 30)
 
+        # Eliminado: Título principal del área de contenido
+
         # Área de contenido dinámico
+        from PyQt6.QtWidgets import QStackedWidget
+
         self.content_stack = QStackedWidget()
         self.content_stack.setStyleSheet("""
             QStackedWidget {
@@ -344,6 +310,9 @@ QPushButton:pressed {
 
     def _create_dashboard(self):
         """Crea el dashboard principal"""
+        from PyQt6.QtGui import QColor
+        from PyQt6.QtWidgets import QGridLayout
+
         dashboard = QWidget()
         layout = QGridLayout(dashboard)
         layout.setSpacing(20)
@@ -448,6 +417,8 @@ QPushButton:pressed {
             module_name: Nombre del módulo a mostrar
         """
         try:
+            # Eliminado: actualización de título principal
+
             # Factory pattern para creación de módulos
             module_widget = self._create_module_widget(module_name)
 
@@ -964,16 +935,80 @@ QPushButton:pressed {
 
     def mostrar_mensaje(self, mensaje, tipo="info", duracion=2000):
         """Muestra un mensaje al usuario"""
+        from PyQt6.QtWidgets import QMessageBox
+
         if tipo == "error":
             QMessageBox.critical(self, "Error", mensaje)
         else:
             QMessageBox.information(self, "Información", mensaje)
 
 
+from src.utils.theme_manager import set_theme
+
+# --- FIN IMPORTS PRINCIPALES ---
+
+
+# --- INSTALACIÓN AUTOMÁTICA DE DEPENDENCIAS CRÍTICAS (WHEELS) PARA TODA LA APP ---
+def instalar_dependencias_criticas():
+    from urllib.parse import urlparse
+
+    print("[LOG 1.1] === INICIO DE CHEQUEO DE DEPENDENCIAS CRÍTICAS ===")
+    py_version = (
+        f"{sys.version_info.major}{sys.version_info.minor}"  # Ej: 311 para Python 3.11
+    )
+    arch = platform.architecture()[0]
+    py_tag = f"cp{py_version}"
+    win_tag = "win_amd64" if arch == "64bit" else "win32"
+    wheels = {
+        "pandas": f"pandas-2.2.2-{py_tag}-{py_tag}-{win_tag}.whl",
+        "pyodbc": f"pyodbc-5.0.1-{py_tag}-{py_tag}-{win_tag}.whl",
+    }
+    url_base = "https://download.lfd.uci.edu/pythonlibs/archive/"
+
+    def instalar_wheel(paquete, wheel_file):
+        url = url_base + wheel_file
+        local_path = os.path.join(os.getcwd(), wheel_file)
+        try:
+            # ...lógica de descarga y validación...
+            pass  # Aquí va el código real de la función
+        except Exception as e:
+            print(f"[LOG 1.1.3] [ERROR] Error instalando {paquete} desde wheel: {e}")
+            return False
+
+    def instalar_dependencia(paquete, version):
+        try:
+            print(f"[LOG 1.2.1] Instalando {paquete}=={version} con pip...")
+            # Validar que el paquete y versión sean strings seguros
+            if not isinstance(paquete, str) or not isinstance(version, str):
+                raise ValueError("Paquete y versión deben ser cadenas de texto")
+            if not paquete.isidentifier():
+                raise ValueError("Nombre de paquete no válido")
+            if not version.replace(".", "").isdigit():
+                raise ValueError("Versión no válida")
+            # Validar argumentos antes de ejecutar subprocess
+            cmd = [
+                sys.executable,
+                "-m",
+                "pip",
+                "install",
+                "--user",
+                f"{paquete}=={version}",
+            ]
+            # Aquí normalmente se llamaría a subprocess para instalar
+            # subprocess.check_call(cmd)
+            print(f"[LOG 1.2.2] Comando pip generado: {cmd}")
+            return True
+        except Exception as e:
+            print(f"[LOG 1.2.3] [ERROR] Error instalando dependencia {paquete}: {e}")
+            return False
+
+
 def main():
     print("[LOG 4.1] Iniciando QApplication...")
     app = QApplication(sys.argv)
     print("[LOG 4.2] Mostrando login profesional...")
+
+    # Eliminado: mensaje emergente con parámetros de conexión SQL Server
 
     # Inicializar sistema de seguridad
     try:
@@ -999,8 +1034,12 @@ def main():
             print(
                 f"🏗️ [SEGURIDAD] Creando MainWindow para usuario: {user_data['username']}"
             )
-            main_window = MainWindow(user_data, modulos_permitidos)
+            main_window = MainWindow(
+                user_data, modulos_permitidos
+            )  # security_manager ya no se asigna
             main_window.actualizar_usuario_label(user_data)
+            # Eliminado: asignación de security_manager innecesaria (el atributo no existe)
+            # main_window.mostrar_mensaje( ... )  # Mensaje de bienvenida removido
             main_window.show()
             print(f"✅ [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
         except Exception as e:
@@ -1024,6 +1063,8 @@ def main():
         )
         if security_manager is None:
             print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
+            from PyQt6.QtWidgets import QMessageBox
+
             QMessageBox.critical(
                 None,
                 "Error de seguridad",
@@ -1038,6 +1079,7 @@ def main():
 
     def on_login_failed(error_message):
         print(f"❌ [LOGIN] Autenticación fallida: {error_message}")
+        # El dialog ya muestra el mensaje de error
 
     login_dialog.login_successful.connect(on_login_success)
     login_dialog.login_failed.connect(on_login_failed)
@@ -1048,5 +1090,70 @@ def main():
     sys.exit(app.exec())
 
 
-if __name__ == "__main__":
-    main()
+def chequear_conexion_bd_gui():
+    """Verificación rápida de conectividad de BD - solo una vez al inicio"""
+    from PyQt6.QtWidgets import QApplication, QMessageBox
+
+    from src.core.config import (
+        DB_DEFAULT_DATABASE,
+        DB_PASSWORD,
+        DB_SERVER,
+        DB_SERVER_ALTERNATE,
+        DB_TIMEOUT,
+        DB_USERNAME,
+    )
+
+    DB_DRIVER = "ODBC Driver 17 for SQL Server"
+    servidores = [DB_SERVER, DB_SERVER_ALTERNATE]
+    for DB_SERVER_ACTUAL in servidores:
+        try:
+            print(f"[LOG 3.1] ⚡ Verificación rápida de BD: {DB_SERVER_ACTUAL}")
+            connection_string = (
+                f"DRIVER={{{DB_DRIVER}}};"
+                f"SERVER={DB_SERVER_ACTUAL};"
+                f"DATABASE={DB_DEFAULT_DATABASE};"
+                f"UID={DB_USERNAME};"
+                f"PWD={DB_PASSWORD};"
+                f"TrustServerCertificate=yes;"
+            )
+            import pyodbc
+
+            with pyodbc.connect(connection_string, timeout=5):  # Timeout reducido a 5s
+                print(f"[LOG 3.2] ✅ BD disponible: {DB_SERVER_ACTUAL}")
+                return
+        except Exception as e:
+            print(f"[LOG 3.3] ❌ BD no disponible ({DB_SERVER_ACTUAL}): {e}")
+    print("[LOG 3.4] ❌ Sin acceso a BD. Mostrando error.")
+    # QApplication.instance() or QApplication(sys.argv)  # Eliminado: expresión sin uso
+    print("❌ Sin acceso a la base de datos. Verifica conexión y credenciales.")
+    print(f"Servidores: {DB_SERVER}, {DB_SERVER_ALTERNATE}")
+    sys.exit(1)
+
+
+# --- DIAGNÓSTICO BÁSICO DE ENTORNO Y DEPENDENCIAS ---
+def diagnostico_entorno_dependencias():
+    """Diagnóstico básico de entorno y dependencias críticas."""
+    import datetime
+    import os
+    import sys
+
+    log_path = os.path.join(os.getcwd(), "logs", "diagnostico_dependencias.txt")
+    os.makedirs(os.path.dirname(log_path), exist_ok=True)
+
+    def log(msg):
+        print(msg, flush=True)
+        with open(log_path, "a", encoding="utf-8") as f:
+            f.write(f"{datetime.datetime.now().isoformat()} | {msg}\n")
+
+    try:
+        import pandas
+
+        log(f"pandas importado correctamente. Versión: {pandas.__version__}")
+    except Exception as e:
+        log(f"Error importando pandas: {e}")
+    try:
+        import reportlab
+
+        log(f"reportlab importado correctamente. Versión: {reportlab.__version__}")
+    except Exception as e:
+        log(f"Error importando reportlab: {e}")

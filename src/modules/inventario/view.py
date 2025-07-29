@@ -62,26 +62,14 @@ class InventarioView(QWidget):
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(20)
-        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(8)  # Reduced spacing
+        main_layout.setContentsMargins(10, 8, 10, 8)  # Reduced margins
 
-        # Título
-        title_label = QLabel("📦 Gestión de Inventario")
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 14px;
-                font-weight: bold;
-                color: #2c3e50;
-                margin-bottom: 10px;
-            }
-        """)
-        main_layout.addWidget(title_label)
-
-        # Pestañas principales
+        # Pestañas principales (sin título)
         self.create_tabs()
         main_layout.addWidget(self.tabs)
 
-        # Aplicar estilo general
+        # Aplicar estilo general optimizado para compacidad
         self.setStyleSheet("""
             QWidget {
                 background-color: #f8f9fa;
@@ -97,12 +85,12 @@ class InventarioView(QWidget):
                     stop:0 #ecf0f1, stop:1 #bdc3c7);
                 border: 1px solid #bdc3c7;
                 border-bottom: none;
-                padding: 12px 20px;
+                padding: 8px 16px;
                 margin-right: 2px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
                 font-weight: bold;
-                font-size: 14px;
+                font-size: 13px;
                 color: #2c3e50;
             }
             QTabBar::tab:selected {
@@ -113,6 +101,20 @@ class InventarioView(QWidget):
             QTabBar::tab:hover {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #f8f9fa, stop:1 #d5dbdb);
+            }
+            QGroupBox {
+                font-weight: bold;
+                font-size: 12px;
+                color: #2c3e50;
+                border: 2px solid #bdc3c7;
+                border-radius: 4px;
+                margin: 8px 0px;
+                padding-top: 8px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 4px 0 4px;
             }
         """)
 
@@ -136,54 +138,88 @@ class InventarioView(QWidget):
         """Crea la pestaña de inventario general."""
         inventario_widget = QWidget()
         layout = QVBoxLayout(inventario_widget)
+        layout.setSpacing(6)  # Compact spacing
 
-        # Panel de filtros
-        filtros_frame = QGroupBox("🔍 Filtros de Búsqueda")
-        filtros_layout = QHBoxLayout(filtros_frame)
+        # Panel de filtros y acciones combinado - más compacto
+        control_frame = QFrame()
+        control_frame.setStyleSheet("""
+            QFrame {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 4px;
+            }
+        """)
+        control_layout = QHBoxLayout(control_frame)
+        control_layout.setSpacing(8)
+        control_layout.setContentsMargins(8, 6, 8, 6)
 
         # Búsqueda por código/descripción
-        filtros_layout.addWidget(QLabel("Buscar:"))
+        control_layout.addWidget(QLabel("Buscar:"))
         self.busqueda_input = QLineEdit()
         self.busqueda_input.setPlaceholderText("Código o descripción...")
-        filtros_layout.addWidget(self.busqueda_input)
+        self.busqueda_input.setMaximumWidth(200)
+        control_layout.addWidget(self.busqueda_input)
 
         # Filtro por categoría
-        filtros_layout.addWidget(QLabel("Categoría:"))
+        control_layout.addWidget(QLabel("Categoría:"))
         self.categoria_combo = QComboBox()
         self.categoria_combo.addItem("Todas")
-        filtros_layout.addWidget(self.categoria_combo)
+        self.categoria_combo.setMaximumWidth(120)
+        control_layout.addWidget(self.categoria_combo)
 
-        # Botón buscar
-        self.buscar_btn = QPushButton("🔍 Buscar")
-        filtros_layout.addWidget(self.buscar_btn)
+        # Botones de filtrado
+        self.buscar_btn = QPushButton("🔍")
+        self.buscar_btn.setMaximumWidth(35)
+        self.buscar_btn.setToolTip("Buscar")
+        control_layout.addWidget(self.buscar_btn)
 
-        # Botón limpiar
-        self.limpiar_btn = QPushButton("🧹 Limpiar")
-        filtros_layout.addWidget(self.limpiar_btn)
+        self.limpiar_btn = QPushButton("🧹")
+        self.limpiar_btn.setMaximumWidth(35)
+        self.limpiar_btn.setToolTip("Limpiar filtros")
+        control_layout.addWidget(self.limpiar_btn)
 
-        filtros_layout.addStretch()
-        layout.addWidget(filtros_frame)
+        # Separador visual
+        separator = QFrame()
+        separator.setFrameShape(QFrame.Shape.VLine)
+        separator.setFrameShadow(QFrame.Shadow.Sunken)
+        control_layout.addWidget(separator)
 
-        # Panel de acciones
-        acciones_frame = QGroupBox("⚡ Acciones Rápidas")
-        acciones_layout = QHBoxLayout(acciones_frame)
-
-        self.nuevo_producto_btn = QPushButton("➕ Nuevo Producto")
+        # Acciones principales - más compactas
+        self.nuevo_producto_btn = QPushButton("➕")
+        self.nuevo_producto_btn.setMaximumWidth(35)
+        self.nuevo_producto_btn.setToolTip("Nuevo Producto")
         self.nuevo_producto_btn.clicked.connect(self.mostrar_dialogo_nuevo_producto)
+        control_layout.addWidget(self.nuevo_producto_btn)
         
-        self.editar_producto_btn = QPushButton("✏️ Editar Producto")
-        self.eliminar_producto_btn = QPushButton("🗑️ Eliminar Producto")
-        self.movimiento_btn = QPushButton("📦 Registrar Movimiento")
-        self.exportar_btn = QPushButton("📄 Exportar Inventario")
+        self.editar_producto_btn = QPushButton("✏️")
+        self.editar_producto_btn.setMaximumWidth(35)
+        self.editar_producto_btn.setToolTip("Editar Producto")
+        control_layout.addWidget(self.editar_producto_btn)
+        
+        self.eliminar_producto_btn = QPushButton("🗑️")
+        self.eliminar_producto_btn.setMaximumWidth(35)
+        self.eliminar_producto_btn.setToolTip("Eliminar Producto")
+        control_layout.addWidget(self.eliminar_producto_btn)
+        
+        # Segundo separador
+        separator2 = QFrame()
+        separator2.setFrameShape(QFrame.Shape.VLine)
+        separator2.setFrameShadow(QFrame.Shadow.Sunken)
+        control_layout.addWidget(separator2)
+        
+        self.movimiento_btn = QPushButton("📦")
+        self.movimiento_btn.setMaximumWidth(35)
+        self.movimiento_btn.setToolTip("Registrar Movimiento")
+        control_layout.addWidget(self.movimiento_btn)
+        
+        self.exportar_btn = QPushButton("📄")
+        self.exportar_btn.setMaximumWidth(35)
+        self.exportar_btn.setToolTip("Exportar Inventario")
+        control_layout.addWidget(self.exportar_btn)
 
-        acciones_layout.addWidget(self.nuevo_producto_btn)
-        acciones_layout.addWidget(self.editar_producto_btn)
-        acciones_layout.addWidget(self.eliminar_producto_btn)
-        acciones_layout.addWidget(self.movimiento_btn)
-        acciones_layout.addWidget(self.exportar_btn)
-        acciones_layout.addStretch()
-
-        layout.addWidget(acciones_frame)
+        control_layout.addStretch()
+        layout.addWidget(control_frame)
 
         # Tabla de inventario
         self.create_tabla_inventario()
@@ -210,27 +246,50 @@ class InventarioView(QWidget):
             ]
         )
 
-        # Configurar tabla
+        # Configurar tabla con tamaños de columna optimizados
         header = self.tabla_inventario.horizontalHeader()
         if header is not None:
-            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+            # Configurar anchos específicos para optimizar el espacio
+            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # Código
+            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Descripción
+            header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)  # Categoría
+            header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)  # Stock Actual
+            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)  # Stock Mínimo
+            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)  # Stock Reservado
+            header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)  # Precio Unit.
+            header.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)  # Valor Total
+            header.setSectionResizeMode(8, QHeaderView.ResizeMode.Fixed)  # Estado
+            header.setSectionResizeMode(9, QHeaderView.ResizeMode.Fixed)  # Acciones
+            
+            # Establecer anchos específicos (en píxeles)
+            self.tabla_inventario.setColumnWidth(0, 80)   # Código
+            self.tabla_inventario.setColumnWidth(2, 90)   # Categoría
+            self.tabla_inventario.setColumnWidth(3, 70)   # Stock Actual
+            self.tabla_inventario.setColumnWidth(4, 70)   # Stock Mínimo
+            self.tabla_inventario.setColumnWidth(5, 80)   # Stock Reservado
+            self.tabla_inventario.setColumnWidth(6, 85)   # Precio Unit.
+            self.tabla_inventario.setColumnWidth(7, 90)   # Valor Total
+            self.tabla_inventario.setColumnWidth(8, 70)   # Estado
+            self.tabla_inventario.setColumnWidth(9, 80)   # Acciones
         self.tabla_inventario.setAlternatingRowColors(True)
         self.tabla_inventario.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
         )
 
-        # Estilo de tabla
+        # Estilo de tabla optimizado para más densidad de información
         self.tabla_inventario.setStyleSheet("""
             QTableWidget {
                 gridline-color: #ecf0f1;
                 background-color: white;
                 alternate-background-color: #f8f9fa;
                 border: 1px solid #bdc3c7;
-                border-radius: 6px;
+                border-radius: 4px;
+                font-size: 12px;
             }
             QTableWidget::item {
-                padding: 8px;
+                padding: 4px 6px;
                 border-bottom: 1px solid #ecf0f1;
+                min-height: 20px;
             }
             QTableWidget::item:selected {
                 background-color: #3498db;
@@ -239,10 +298,12 @@ class InventarioView(QWidget):
             QHeaderView::section {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ecf0f1, stop:1 #bdc3c7);
-                padding: 10px;
+                padding: 6px 8px;
                 border: 1px solid #bdc3c7;
                 font-weight: bold;
                 color: #2c3e50;
+                font-size: 11px;
+                min-height: 25px;
             }
         """)
 
@@ -315,18 +376,20 @@ class InventarioView(QWidget):
             QAbstractItemView.SelectionBehavior.SelectRows
         )
 
-        # Estilo de tabla
+        # Estilo de tabla optimizado para compacidad
         self.reservas_table.setStyleSheet("""
             QTableWidget {
                 gridline-color: #ecf0f1;
                 background-color: white;
                 alternate-background-color: #f8f9fa;
                 border: 1px solid #bdc3c7;
-                border-radius: 6px;
+                border-radius: 4px;
+                font-size: 12px;
             }
             QTableWidget::item {
-                padding: 8px;
+                padding: 4px 6px;
                 border-bottom: 1px solid #ecf0f1;
+                min-height: 20px;
             }
             QTableWidget::item:selected {
                 background-color: #3498db;
@@ -335,10 +398,12 @@ class InventarioView(QWidget):
             QHeaderView::section {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 #ecf0f1, stop:1 #bdc3c7);
-                padding: 10px;
+                padding: 6px 8px;
                 border: 1px solid #bdc3c7;
                 font-weight: bold;
                 color: #2c3e50;
+                font-size: 11px;
+                min-height: 25px;
             }
         """)
 
@@ -577,8 +642,8 @@ class InventarioView(QWidget):
                 str(producto.get("stock_actual", 0)),
                 str(producto.get("stock_minimo", 0)),
                 str(producto.get("stock_reservado", 0)),
-                f"${producto.get('precio_unitario', 0.0):.2f}",
-                f"${producto.get('stock_actual', 0) * producto.get('precio_unitario', 0.0):.2f}",
+                f"${float(producto.get('precio_unitario', 0.0)):.2f}",
+                f"${float(producto.get('stock_actual', 0)) * float(producto.get('precio_unitario', 0.0)):.2f}",
                 producto.get("estado_stock", "NORMAL"),
             ]
 

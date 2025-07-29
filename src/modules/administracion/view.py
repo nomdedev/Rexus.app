@@ -1363,7 +1363,81 @@ class AdministracionView(QWidget):
     # MÉTODOS DE DIÁLOGOS - CONTABILIDAD
     def show_nuevo_asiento_dialog(self):
         """Muestra el diálogo para crear un nuevo asiento contable."""
-        pass
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QHBoxLayout, QTextEdit, QDateEdit
+        from PyQt6.QtCore import QDate
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Nuevo Asiento Contable")
+        dialog.setModal(True)
+        dialog.resize(450, 350)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        fecha_input = QDateEdit()
+        fecha_input.setDate(QDate.currentDate())
+        concepto_input = QLineEdit()
+        monto_input = QLineEdit()
+        debe_input = QLineEdit()
+        haber_input = QLineEdit()
+        observaciones_input = QTextEdit()
+        observaciones_input.setMaximumHeight(80)
+        
+        form_layout.addRow("Fecha:", fecha_input)
+        form_layout.addRow("Concepto:", concepto_input)
+        form_layout.addRow("Monto:", monto_input)
+        form_layout.addRow("Debe:", debe_input)
+        form_layout.addRow("Haber:", haber_input)
+        form_layout.addRow("Observaciones:", observaciones_input)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        button_layout = QHBoxLayout()
+        
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+        
+        save_btn = QPushButton("Guardar")
+        save_btn.clicked.connect(lambda: self._save_asiento(
+            dialog, fecha_input, concepto_input, monto_input, 
+            debe_input, haber_input, observaciones_input
+        ))
+        
+        button_layout.addWidget(cancel_btn)
+        button_layout.addWidget(save_btn)
+        layout.addLayout(button_layout)
+        
+        dialog.exec()
+    
+    def _save_asiento(self, dialog, fecha_input, concepto_input, monto_input, 
+                     debe_input, haber_input, observaciones_input):
+        """Guarda los datos del asiento contable."""
+        datos_asiento = {
+            'fecha': fecha_input.date().toPython(),
+            'concepto': concepto_input.text().strip(),
+            'monto': monto_input.text().strip(),
+            'debe': debe_input.text().strip(),
+            'haber': haber_input.text().strip(),
+            'observaciones': observaciones_input.toPlainText().strip()
+        }
+        
+        # Validación básica
+        if not all([datos_asiento['concepto'], datos_asiento['monto']]):
+            QMessageBox.warning(dialog, "Error", "Concepto y monto son obligatorios")
+            return
+            
+        try:
+            float(datos_asiento['monto'])
+        except ValueError:
+            QMessageBox.warning(dialog, "Error", "El monto debe ser un número válido")
+            return
+            
+        # Emitir señal al controlador
+        self.crear_asiento_signal.emit(datos_asiento)
+        dialog.accept()
 
     def show_nuevo_recibo_dialog(self):
         """Muestra el diálogo para crear un nuevo recibo."""
@@ -1380,7 +1454,75 @@ class AdministracionView(QWidget):
     # MÉTODOS DE DIÁLOGOS - RECURSOS HUMANOS
     def show_nuevo_empleado_dialog(self):
         """Muestra el diálogo para crear un nuevo empleado."""
-        pass
+        from PyQt6.QtWidgets import QDialog, QVBoxLayout, QFormLayout, QLineEdit, QPushButton, QHBoxLayout
+        
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Nuevo Empleado")
+        dialog.setModal(True)
+        dialog.resize(400, 300)
+        
+        layout = QVBoxLayout(dialog)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        nombre_input = QLineEdit()
+        apellido_input = QLineEdit()
+        dni_input = QLineEdit()
+        cargo_input = QLineEdit()
+        salario_input = QLineEdit()
+        email_input = QLineEdit()
+        telefono_input = QLineEdit()
+        
+        form_layout.addRow("Nombre:", nombre_input)
+        form_layout.addRow("Apellido:", apellido_input)
+        form_layout.addRow("DNI:", dni_input)
+        form_layout.addRow("Cargo:", cargo_input)
+        form_layout.addRow("Salario:", salario_input)
+        form_layout.addRow("Email:", email_input)
+        form_layout.addRow("Teléfono:", telefono_input)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        button_layout = QHBoxLayout()
+        
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+        
+        save_btn = QPushButton("Guardar")
+        save_btn.clicked.connect(lambda: self._save_empleado(
+            dialog, nombre_input, apellido_input, dni_input, 
+            cargo_input, salario_input, email_input, telefono_input
+        ))
+        
+        button_layout.addWidget(cancel_btn)
+        button_layout.addWidget(save_btn)
+        layout.addLayout(button_layout)
+        
+        dialog.exec()
+    
+    def _save_empleado(self, dialog, nombre_input, apellido_input, dni_input, 
+                      cargo_input, salario_input, email_input, telefono_input):
+        """Guarda los datos del empleado."""
+        datos_empleado = {
+            'nombre': nombre_input.text().strip(),
+            'apellido': apellido_input.text().strip(),
+            'dni': dni_input.text().strip(),
+            'cargo': cargo_input.text().strip(),
+            'salario': salario_input.text().strip(),
+            'email': email_input.text().strip(),
+            'telefono': telefono_input.text().strip()
+        }
+        
+        # Validación básica
+        if not all([datos_empleado['nombre'], datos_empleado['apellido'], datos_empleado['dni']]):
+            QMessageBox.warning(dialog, "Error", "Nombre, apellido y DNI son obligatorios")
+            return
+            
+        # Emitir señal al controlador
+        self.crear_empleado_rrhh_signal.emit(datos_empleado)
+        dialog.accept()
 
     def show_nuevo_bono_dialog(self):
         """Muestra el diálogo para crear un nuevo bono."""

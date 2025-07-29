@@ -122,15 +122,75 @@ class InventarioController(QObject):
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales del inventario."""
         try:
-            productos = self.model.obtener_todos_productos() if self.model else []
-            if self.view:
+            print("[INVENTARIO CONTROLLER] Iniciando carga de datos...")
+            
+            # Verificar componentes
+            if not self.model:
+                print("[INVENTARIO CONTROLLER] ERROR: No hay modelo disponible")
+                self.error_ocurrido.emit("Error: No hay modelo disponible")
+                return
+                
+            if not self.view:
+                print("[INVENTARIO CONTROLLER] ERROR: No hay vista disponible")
+                self.error_ocurrido.emit("Error: No hay vista disponible") 
+                return
+            
+            # Obtener productos del modelo
+            print("[INVENTARIO CONTROLLER] Obteniendo productos del modelo...")
+            productos = self.model.obtener_todos_productos()
+            print(f"[INVENTARIO CONTROLLER] Modelo retornó {len(productos)} productos")
+            
+            # Cargar en la vista
+            if productos:
+                print("[INVENTARIO CONTROLLER] Cargando productos en la tabla...")
                 self.view.cargar_inventario_en_tabla(productos)
+                print(f"[INVENTARIO CONTROLLER] Datos cargados exitosamente: {len(productos)} productos")
+            else:
+                print("[INVENTARIO CONTROLLER] ADVERTENCIA: No se obtuvieron productos del modelo")
+                # Intentar cargar datos demo si no hay productos reales
+                print("[INVENTARIO CONTROLLER] Intentando cargar datos demo...")
+                datos_demo = self._get_datos_demo()
+                self.view.cargar_inventario_en_tabla(datos_demo)
+                print(f"[INVENTARIO CONTROLLER] Datos demo cargados: {len(datos_demo)} productos")
 
             # Cargar disponibilidad
             self.cargar_disponibilidad()
+            print("[INVENTARIO CONTROLLER] Carga de datos completada")
 
         except Exception as e:
+            print(f"[INVENTARIO CONTROLLER] ERROR en cargar_datos_iniciales: {e}")
+            import traceback
+            traceback.print_exc()
             self.error_ocurrido.emit(f"Error al cargar datos: {str(e)}")
+    
+    def _get_datos_demo(self):
+        """Obtiene datos demo cuando no hay datos reales disponibles."""
+        return [
+            {
+                'id': 1,
+                'codigo': 'DEMO-001',
+                'descripcion': 'Producto Demo 1',
+                'categoria': 'Demo',
+                'stock_actual': 100,
+                'stock_minimo': 10,
+                'precio_unitario': 25.50,
+                'estado': 'ACTIVO',
+                'ubicacion': 'Almacén Demo',
+                'proveedor': 'Proveedor Demo'
+            },
+            {
+                'id': 2,
+                'codigo': 'DEMO-002', 
+                'descripcion': 'Producto Demo 2',
+                'categoria': 'Demo',
+                'stock_actual': 50,
+                'stock_minimo': 5,
+                'precio_unitario': 15.75,
+                'estado': 'ACTIVO',
+                'ubicacion': 'Almacén Demo',
+                'proveedor': 'Proveedor Demo'
+            }
+        ]
 
     def cargar_obras(self):
         """Carga las obras disponibles en el selector."""

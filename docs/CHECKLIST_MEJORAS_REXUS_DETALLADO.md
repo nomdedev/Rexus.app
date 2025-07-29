@@ -1,7 +1,6 @@
 # Checklist Detallado de Mejoras y Problemas en Rexus.app
 
 ## 1. Visualización de datos en tablas
-- [ ] Las tablas de muchos módulos aparecen vacías o no muestran datos.
   - [ ] El método del controlador que debería cargar los datos no se llama al inicializar la vista.
     - *Solución:* Llamar explícitamente a los métodos de carga de datos (`cargar_datos_iniciales`, `cargar_X`) en el constructor o método `set_controller` de cada vista.
   - [ ] El método del modelo retorna una lista vacía (por error de consulta, tabla vacía o error de conexión).
@@ -14,7 +13,6 @@
     - *Solución:* Loggear todas las excepciones y mostrar mensajes de error en la UI.
 
 ## 2. Factory de módulos y fallback
-- [ ] Varios módulos muestran solo “disponible y funcionando” (fallback).
   - [ ] El nombre del módulo en el botón no coincide exactamente con el esperado en el factory.
     - *Solución:* Unificar nombres y claves en el diccionario del factory y en los botones del sidebar. Usar una función de normalización.
   - [ ] El import de la vista/modelo/controlador falla (archivo faltante, error de sintaxis, etc.).
@@ -23,13 +21,11 @@
     - *Solución:* Implementar todos los métodos de creación de módulos en el factory.
 
 ## 3. Errores de inicialización de tablas
-- [ ] Errores al llamar a `setSectionResizeMode` sobre `None` en las tablas.
   - [ ] Siempre verificar que `header` no sea `None` antes de llamar a métodos sobre él.
     - *Justificación:* Si la tabla no tiene columnas, `horizontalHeader()` devuelve `None` y causa un crash.
     - *Solución:* Usar `if header is not None:` antes de modificar el header.
 
 ## 4. Falta de conexión entre formularios y base de datos
-- [ ] Los formularios de alta/edición (por ejemplo, Entregas, Service) no guardan ni muestran datos.
   - [ ] El botón “Guardar” no está conectado al controlador.
     - *Solución:* Conectar el botón a un método que valide y envíe los datos al controlador.
   - [ ] El controlador no llama al método correcto del modelo.
@@ -40,47 +36,39 @@
     - *Solución:* Llamar a la recarga de la tabla después de guardar/editar.
 
 ## 5. Nombres y tildes en los módulos
-- [ ] Inconsistencias en nombres de módulos (tildes, mayúsculas/minúsculas) entre el sidebar y el factory.
   - [ ] Unificar nombres y claves en el diccionario del factory y en los botones.
     - *Justificación:* Si el nombre no coincide exactamente, se muestra el fallback.
     - *Solución:* Usar una función de normalización de nombres (sin tildes, minúsculas) tanto en el sidebar como en el factory.
 
 ## 6. Falta de feedback visual o mensajes de error
-- [ ] No se muestran mensajes claros cuando hay errores de carga de datos o de inicialización.
   - [ ] Agregar mensajes de error visibles en la UI y logs detallados.
     - *Justificación:* El usuario no sabe si la app está funcionando mal o si solo no hay datos.
     - *Solución:* Usar `QMessageBox` o banners de error en la UI y logs en consola/archivo.
 
 ## 7. Errores de importación o inicialización silenciosos
-- [ ] Errores en imports o constructores de vistas/modelos/controladores no se ven en la UI.
   - [ ] Revisar los logs y mostrar mensajes de error en pantalla.
     - *Justificación:* Si hay un error en el import, el usuario solo ve el fallback y no sabe por qué.
     - *Solución:* Capturar excepciones y mostrar el mensaje real en la UI.
 
 ## 8. Falta de datos de prueba o base de datos vacía
-- [ ] Las tablas pueden estar vacías porque la base de datos no tiene datos de prueba.
   - [ ] Agregar datos de ejemplo o scripts de carga rápida.
     - *Justificación:* Sin datos de prueba, es difícil validar la UI y la lógica.
     - *Solución:* Crear scripts de carga de datos y/o un modo demo.
 
 ## 9. Código duplicado y falta de reutilización
-- [ ] Hay lógica repetida en la inicialización de vistas, carga de datos y manejo de errores.
   - [ ] Extraer funciones utilitarias para carga de datos, manejo de errores y normalización de nombres.
     - *Justificación:* Facilita el mantenimiento y reduce bugs por cambios en un solo lugar.
     - *Solución:* Crear utilidades en `utils/` y usarlas en todos los módulos.
 
 ## 10. Falta de validación de formularios
-- [ ] Los formularios permiten guardar datos incompletos o inválidos.
   - [ ] Agregar validaciones antes de guardar (campos obligatorios, formatos, etc.).
     - *Justificación:* Evita datos corruptos o errores en la base.
     - *Solución:* Validar en el frontend y backend antes de insertar/actualizar.
 
 ## 11. Falta de documentación y comentarios
-- [ ] Algunos módulos y métodos no tienen docstrings ni comentarios claros.
   - [ ] Documentar cada clase y método clave.
     - *Justificación:* Facilita el onboarding y el mantenimiento.
     - *Solución:* Agregar docstrings y comentarios explicativos.
 
----
 
 > Actualiza este checklist a medida que avances en cada punto. Si necesitas ayuda para resolver un ítem, indícalo aquí. Si encuentras un problema nuevo, agrégalo con su justificación y propuesta de solución.
