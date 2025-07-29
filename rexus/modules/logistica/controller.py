@@ -1,7 +1,7 @@
 """Controlador de Logística"""
 
 from PyQt6.QtCore import QObject
-from src.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
 
 
 class LogisticaController(QObject):

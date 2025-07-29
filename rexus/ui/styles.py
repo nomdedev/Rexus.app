@@ -3,7 +3,7 @@ Módulo de utilidades para estilos QSS
 Centraliza todos los estilos de la aplicación
 """
 
-from src.core.config import UI_CONFIG
+from rexus.core.config import UI_CONFIG
 
 
 def get_base_styles():

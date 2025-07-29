@@ -9,8 +9,8 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from .model import UsuariosModel
-from src.utils.error_handler import ErrorHandler, safe_method_decorator
-from src.utils.message_system import show_success, show_error
+from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.message_system import show_success, show_error
 
 
 class UsuariosController(QObject):
@@ -333,13 +333,13 @@ class UsuariosController(QObject):
     def mostrar_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia con el sistema mejorado."""
         if self.view:
-            from src.utils.message_system import show_warning
+            from rexus.utils.message_system import show_warning
             show_warning(self.view, "Advertencia", mensaje)
     
     def mostrar_info(self, mensaje: str):
         """Muestra un mensaje informativo con el sistema mejorado."""
         if self.view:
-            from src.utils.message_system import show_info
+            from rexus.utils.message_system import show_info
             show_info(self.view, "Información", mensaje)
     
     def get_view(self):

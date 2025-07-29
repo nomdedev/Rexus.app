@@ -32,7 +32,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.utils.form_validators import FormValidator, FormValidatorManager, validacion_direccion
+from rexus.utils.form_validators import FormValidator, FormValidatorManager, validacion_direccion
 
 
 class LogisticaView(QWidget):
@@ -390,6 +390,11 @@ class LogisticaView(QWidget):
         
         # Crear mapa interactivo
         try:
+            # Verificar si tenemos todas las dependencias
+            import folium
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+            
+            # Si llegamos aquí, tenemos las dependencias
             from .interactive_map import InteractiveMapWidget
             self.interactive_map = InteractiveMapWidget()
             
@@ -400,8 +405,9 @@ class LogisticaView(QWidget):
             layout.addWidget(self.interactive_map)
             
         except ImportError as e:
-            print(f"Error importando mapa interactivo: {e}")
+            print(f"Dependencias del mapa interactivo no disponibles: {e}")
             # Fallback al mapa estático
+            self.interactive_map = None
             self.create_static_map_fallback(layout)
         
         # Panel de información de ubicaciones
@@ -866,6 +872,43 @@ class LogisticaView(QWidget):
         except Exception as e:
             self.mostrar_error(f"Error creando servicio desde mapa: {str(e)}")
     
+    def mostrar_info_cobertura(self):
+        """Muestra información detallada sobre la cobertura de servicios."""
+        info_detallada = """
+        <div style='padding: 20px; line-height: 1.6;'>
+        <h2 style='color: #2c3e50;'>🗺️ Información Detallada de Cobertura</h2>
+        
+        <h3 style='color: #3498db;'>📍 Zonas de Cobertura:</h3>
+        <ul>
+            <li><b>Zona Centro:</b> La Plata centro, Tolosa, Ringuelet</li>
+            <li><b>Zona Norte:</b> Gonnet, City Bell, Villa Elisa</li>
+            <li><b>Zona Este:</b> Berisso, zonas industriales</li>
+            <li><b>Zona Sur:</b> Los Hornos, Melchor Romero</li>
+            <li><b>Zona Oeste:</b> Ensenada, puerto</li>
+        </ul>
+        
+        <h3 style='color: #27ae60;'>🚚 Tipos de Servicio:</h3>
+        <ul>
+            <li><b>Entrega Express:</b> 30-60 minutos (zona centro)</li>
+            <li><b>Entrega Estándar:</b> 60-120 minutos (todas las zonas)</li>
+            <li><b>Transporte de Obra:</b> Coordinado según disponibilidad</li>
+            <li><b>Carga Pesada:</b> Servicios especiales para materiales grandes</li>
+        </ul>
+        
+        <h3 style='color: #e74c3c;'>📱 Contacto:</h3>
+        <p>Para coordinar servicios especiales o consultas:<br>
+        📞 Tel: (0221) 555-1234<br>
+        📧 Email: logistica@rexus.app</p>
+        </div>
+        """
+        
+        from PyQt6.QtWidgets import QMessageBox
+        msg = QMessageBox(self)
+        msg.setWindowTitle("Información de Cobertura")
+        msg.setText(info_detallada)
+        msg.setTextFormat(Qt.TextFormat.RichText)
+        msg.exec()
+    
     def create_static_map_fallback(self, layout):
         """Crea un mapa estático como fallback si el mapa interactivo falla."""
         try:
@@ -874,59 +917,95 @@ class LogisticaView(QWidget):
             fallback_layout = QVBoxLayout(fallback_widget)
             
             # Título
-            titulo = QLabel("🗺️ Mapa de La Plata - Vista Simplificada")
+            titulo = QLabel("🗺️ Mapa de La Plata - Vista de Referencia")
             titulo.setStyleSheet("""
                 QLabel {
-                    font-size: 18px;
+                    font-size: 20px;
                     font-weight: bold;
-                    color: #2c3e50;
-                    padding: 20px;
-                    text-align: center;
+                    color: white;
+                    background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                               stop:0 #3498db, stop:1 #2980b9);
+                    padding: 15px;
+                    border-radius: 8px;
+                    margin-bottom: 10px;
                 }
             """)
             titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
             fallback_layout.addWidget(titulo)
             
-            # Información de ubicaciones
-            info_text = QLabel("""
-            <div style='padding: 20px; line-height: 1.6;'>
-            <h3>Área de Cobertura - La Plata y Alrededores</h3>
-            <p><b>Ciudad Principal:</b> La Plata (-34.9214, -57.9544)</p>
-            
-            <h4>Localidades de Cobertura:</h4>
-            <ul>
-                <li><b>Berisso:</b> Zona industrial y residencial</li>
-                <li><b>Ensenada:</b> Puerto y zona comercial</li>
-                <li><b>Gonnet:</b> Zona residencial norte</li>
-                <li><b>City Bell:</b> Zona residencial exclusiva</li>
-                <li><b>Villa Elisa:</b> Área residencial y comercial</li>
-                <li><b>Los Hornos:</b> Zona sur de La Plata</li>
-                <li><b>Tolosa:</b> Zona este de La Plata</li>
-                <li><b>Ringuelet:</b> Zona centro-este</li>
-            </ul>
-            
-            <p><i>Radio de cobertura: 15 km desde el centro de La Plata</i></p>
-            </div>
-            """)
-            info_text.setWordWrap(True)
-            info_text.setStyleSheet("""
-                QLabel {
+            # Panel principal con información
+            main_info = QFrame()
+            main_info.setStyleSheet("""
+                QFrame {
                     background-color: white;
-                    border: 1px solid #bdc3c7;
+                    border: 2px solid #bdc3c7;
                     border-radius: 8px;
                     padding: 15px;
                 }
             """)
-            fallback_layout.addWidget(info_text)
+            main_layout = QVBoxLayout(main_info)
+            
+            # Información de ubicaciones
+            info_text = QLabel("""
+            <div style='padding: 10px; line-height: 1.8; font-size: 14px;'>
+            <h3 style='color: #2c3e50; margin-bottom: 15px;'>🏙️ Área de Cobertura - La Plata y Alrededores</h3>
+            
+            <p style='margin-bottom: 15px;'><b>🎯 Ciudad Principal:</b> La Plata (Coordenadas: -34.9214, -57.9544)</p>
+            
+            <h4 style='color: #27ae60; margin-bottom: 10px;'>📍 Localidades de Cobertura:</h4>
+            <table style='width: 100%; border-collapse: collapse;'>
+                <tr><td style='padding: 5px;'><b>🏪 Berisso:</b></td><td style='padding: 5px;'>Zona industrial y residencial</td></tr>
+                <tr><td style='padding: 5px;'><b>⚓ Ensenada:</b></td><td style='padding: 5px;'>Puerto y zona comercial</td></tr>
+                <tr><td style='padding: 5px;'><b>🏡 Gonnet:</b></td><td style='padding: 5px;'>Zona residencial norte</td></tr>
+                <tr><td style='padding: 5px;'><b>🌟 City Bell:</b></td><td style='padding: 5px;'>Zona residencial exclusiva</td></tr>
+                <tr><td style='padding: 5px;'><b>🏢 Villa Elisa:</b></td><td style='padding: 5px;'>Área residencial y comercial</td></tr>
+                <tr><td style='padding: 5px;'><b>🏘️ Los Hornos:</b></td><td style='padding: 5px;'>Zona sur de La Plata</td></tr>
+                <tr><td style='padding: 5px;'><b>🌾 Tolosa:</b></td><td style='padding: 5px;'>Zona este de La Plata</td></tr>
+                <tr><td style='padding: 5px;'><b>🏞️ Ringuelet:</b></td><td style='padding: 5px;'>Zona centro-este</td></tr>
+            </table>
+            
+            <p style='margin-top: 15px; font-style: italic; color: #7f8c8d;'>
+            📏 <b>Radio de cobertura:</b> 15 km desde el centro de La Plata<br>
+            🚚 <b>Tiempo promedio de entrega:</b> 30-90 minutos según la zona<br>
+            🗓️ <b>Días de servicio:</b> Lunes a Sábado, 8:00 - 18:00 hs
+            </p>
+            </div>
+            """)
+            info_text.setWordWrap(True)
+            main_layout.addWidget(info_text)
+            
+            fallback_layout.addWidget(main_info)
+            
+            # Panel de acciones
+            actions_frame = QFrame()
+            actions_layout = QHBoxLayout(actions_frame)
+            
+            # Botón para mostrar información adicional
+            btn_info = QPushButton("ℹ️ Más Información")
+            btn_info.setStyleSheet("""
+                QPushButton {
+                    background-color: #27ae60;
+                    color: white;
+                    border: none;
+                    padding: 10px 20px;
+                    border-radius: 6px;
+                    font-weight: bold;
+                }
+                QPushButton:hover {
+                    background-color: #219a52;
+                }
+            """)
+            btn_info.clicked.connect(self.mostrar_info_cobertura)
+            actions_layout.addWidget(btn_info)
             
             # Botón para intentar cargar mapa interactivo
-            btn_retry = QPushButton("🔄 Intentar Cargar Mapa Interactivo")
+            btn_retry = QPushButton("🔄 Cargar Mapa Interactivo")
             btn_retry.setStyleSheet("""
                 QPushButton {
                     background-color: #3498db;
                     color: white;
                     border: none;
-                    padding: 12px 24px;
+                    padding: 10px 20px;
                     border-radius: 6px;
                     font-weight: bold;
                 }
@@ -935,13 +1014,42 @@ class LogisticaView(QWidget):
                 }
             """)
             btn_retry.clicked.connect(self.retry_interactive_map)
-            fallback_layout.addWidget(btn_retry)
+            actions_layout.addWidget(btn_retry)
             
-            fallback_layout.addStretch()
+            actions_layout.addStretch()
+            fallback_layout.addWidget(actions_frame)
+            
+            # Nota informativa
+            nota = QLabel("💡 Para usar el mapa interactivo, instale: pip install folium pyqtwebengine")
+            nota.setStyleSheet("""
+                QLabel {
+                    background-color: #f39c12;
+                    color: white;
+                    padding: 8px;
+                    border-radius: 4px;
+                    font-style: italic;
+                    margin-top: 10px;
+                }
+            """)
+            nota.setWordWrap(True)
+            fallback_layout.addWidget(nota)
+            
             layout.addWidget(fallback_widget)
             
         except Exception as e:
             print(f"Error creando mapa fallback: {e}")
+            # Crear widget mínimo en caso de error
+            error_widget = QLabel("❌ Error cargando vista de mapa")
+            error_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            error_widget.setStyleSheet("""
+                QLabel {
+                    color: #e74c3c;
+                    font-size: 16px;
+                    font-weight: bold;
+                    padding: 50px;
+                }
+            """)
+            layout.addWidget(error_widget)
     
     def retry_interactive_map(self):
         """Intenta recargar el mapa interactivo."""

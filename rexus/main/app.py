@@ -119,20 +119,23 @@ class SimpleSecurityManager:
 
     def get_user_modules(self, user_id: int) -> list:
         """Lista de módulos permitidos"""
-        return [
-            "inventario",
-            "contabilidad",
-            "obras",
-            "pedidos",
-            "logistica",
-            "herrajes",
-            "vidrios",
-            "usuarios",
-            "auditoria",
-            "configuracion",
-            "compras",
-            "mantenimiento",
+        print(f"[SIMPLE_AUTH] Obteniendo módulos para usuario ID: {user_id}")
+        # Usar nombres consistentes con los esperados por el sistema
+        modules = [
+            "Inventario",
+            "Obras", 
+            "Administración",
+            "Logística",
+            "Herrajes",
+            "Vidrios",
+            "Pedidos",
+            "Usuarios",
+            "Configuración",
+            "Compras",
+            "Mantenimiento"
         ]
+        print(f"[SIMPLE_AUTH] Módulos permitidos: {modules}")
+        return modules
 
     def has_permission(self, permission: str, module: str = None) -> bool:
         """Verifica permisos - admin tiene todos"""
@@ -1022,6 +1025,8 @@ def main():
         print(
             f"✅ [LOGIN] Autenticación exitosa para {user_data.get('usuario', '???')} ({user_data.get('rol', '???')})"
         )
+        # Acceder al security_manager del contexto exterior
+        nonlocal security_manager
         if security_manager is None:
             print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
             QMessageBox.critical(
@@ -1033,7 +1038,15 @@ def main():
         if not user_data:
             print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")
             return
-        modulos_permitidos = security_manager.get_user_modules(user_data.get("id", 1))
+        
+        # Usar el método correcto para obtener módulos permitidos
+        try:
+            modulos_permitidos = security_manager.get_user_modules(user_data.get("id", 1))
+        except AttributeError:
+            # Si no tiene get_user_modules, permitir todos los módulos por defecto
+            print("[SECURITY] Usando SimpleSecurityManager, permitiendo todos los módulos")
+            modulos_permitidos = ["Inventario", "Obras", "Administración", "Logística", "Herrajes", "Vidrios", "Pedidos", "Usuarios", "Configuración", "Compras", "Mantenimiento"]
+        
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 
     def on_login_failed(error_message):

@@ -698,6 +698,7 @@ class FormularioObraDialog(QDialog):
         self.validator_manager = FormValidatorManager()
         self.init_ui()
         self.configurar_validaciones()
+        self._setup_modern_styling()
 
         if self.es_edicion:
             self.cargar_datos_obra()
@@ -796,13 +797,21 @@ class FormularioObraDialog(QDialog):
 
         layout.addLayout(form_layout)
 
-        # Botones
-        botones = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        botones.accepted.connect(self.validar_y_aceptar)
-        botones.rejected.connect(self.reject)
-        layout.addWidget(botones)
+        # Botones modernos
+        button_layout = QHBoxLayout()
+        
+        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn.clicked.connect(self.reject)
+        self.cancel_btn.setProperty("buttonType", "secondary")
+        
+        texto_boton = "💾 Actualizar Obra" if self.es_edicion else "✅ Crear Obra"
+        self.save_btn = QPushButton(texto_boton)
+        self.save_btn.clicked.connect(self.validar_y_aceptar)
+        self.save_btn.setProperty("buttonType", "success")
+        
+        button_layout.addWidget(self.cancel_btn)
+        button_layout.addWidget(self.save_btn)
+        layout.addLayout(button_layout)
 
     def cargar_datos_obra(self):
         """Carga los datos de la obra en el formulario."""
@@ -954,3 +963,146 @@ class FormularioObraDialog(QDialog):
 
         # Si todo es válido, aceptar el diálogo
         self.accept()
+    
+    def _setup_modern_styling(self):
+        """Configura el estilizado moderno para el diálogo."""
+        from rexus.utils.form_styles import FormStyleManager, setup_form_widget
+        
+        # Aplicar estilos modernos
+        setup_form_widget(self, apply_animations=True)
+        
+        # Configurar propiedades específicas de botones ya establecidas en init_ui
+        
+        # Configurar tooltips mejorados
+        if not self.es_edicion:
+            self.txt_codigo.setToolTip("💡 Código único de la obra (ej: OBR-2024-001)")
+        self.txt_nombre.setToolTip("🏗️ Nombre descriptivo de la obra")
+        self.txt_cliente.setToolTip("👤 Nombre completo del cliente")
+        self.txt_responsable.setToolTip("👷 Responsable técnico de la obra")
+        self.txt_direccion.setToolTip("📍 Dirección completa de la obra")
+        self.txt_email.setToolTip("📧 Email de contacto del cliente")
+        self.txt_telefono.setToolTip("📞 Teléfono de contacto")
+        self.spin_presupuesto.setToolTip("💰 Presupuesto estimado de la obra")
+        self.date_inicio.setToolTip("📅 Fecha de inicio planificada")
+        self.date_fin.setToolTip("📅 Fecha de finalización estimada")
+        
+        # Configurar placeholders mejorados con iconos
+        if not self.es_edicion:
+            self.txt_codigo.setPlaceholderText("📋 Ej: OBR-2024-001")
+        self.txt_nombre.setPlaceholderText("🏗️ Construcción de vivienda familiar")
+        self.txt_cliente.setPlaceholderText("👤 Juan Pérez García")
+        self.txt_responsable.setPlaceholderText("👷 María González (Arquitecta)")
+        self.txt_direccion.setPlaceholderText("📍 Calle 123 #45-67, Barrio Norte")
+        self.txt_email.setPlaceholderText("📧 cliente@email.com")
+        self.txt_telefono.setPlaceholderText("📞 +57 300 123 4567")
+        
+        # Refrescar estilos
+        self.style().polish(self)
+        
+        # Configurar validación visual en tiempo real
+        self._setup_realtime_validation()
+    
+    def _setup_realtime_validation(self):
+        """Configura validación visual en tiempo real."""
+        from rexus.utils.form_styles import FormStyleManager
+        
+        def validate_codigo():
+            if hasattr(self, 'txt_codigo'):
+                text = self.txt_codigo.text().strip()
+                if not text:
+                    FormStyleManager.apply_validation_state(
+                        self.txt_codigo, 'invalid', 'El código es obligatorio'
+                    )
+                elif len(text) < 3:
+                    FormStyleManager.apply_validation_state(
+                        self.txt_codigo, 'warning', 'El código debe tener al menos 3 caracteres'
+                    )
+                else:
+                    FormStyleManager.apply_validation_state(
+                        self.txt_codigo, 'valid', '✓ Código válido'
+                    )
+        
+        def validate_nombre():
+            text = self.txt_nombre.text().strip()
+            if not text:
+                FormStyleManager.apply_validation_state(
+                    self.txt_nombre, 'invalid', 'El nombre es obligatorio'
+                )
+            elif len(text) < 5:
+                FormStyleManager.apply_validation_state(
+                    self.txt_nombre, 'warning', 'El nombre debe ser más descriptivo'
+                )
+            else:
+                FormStyleManager.apply_validation_state(
+                    self.txt_nombre, 'valid', '✓ Nombre válido'
+                )
+        
+        def validate_cliente():
+            text = self.txt_cliente.text().strip()
+            if not text:
+                FormStyleManager.apply_validation_state(
+                    self.txt_cliente, 'invalid', 'El cliente es obligatorio'
+                )
+            else:
+                FormStyleManager.apply_validation_state(
+                    self.txt_cliente, 'valid', '✓ Cliente válido'
+                )
+        
+        def validate_responsable():
+            text = self.txt_responsable.text().strip()
+            if not text:
+                FormStyleManager.apply_validation_state(
+                    self.txt_responsable, 'invalid', 'El responsable es obligatorio'
+                )
+            else:
+                FormStyleManager.apply_validation_state(
+                    self.txt_responsable, 'valid', '✓ Responsable válido'
+                )
+        
+        def validate_presupuesto():
+            value = self.spin_presupuesto.value()
+            if value <= 0:
+                FormStyleManager.apply_validation_state(
+                    self.spin_presupuesto, 'invalid', 'El presupuesto debe ser mayor a 0'
+                )
+            elif value > 10000000:
+                FormStyleManager.apply_validation_state(
+                    self.spin_presupuesto, 'warning', 'Presupuesto muy alto, verifique'
+                )
+            else:
+                FormStyleManager.apply_validation_state(
+                    self.spin_presupuesto, 'valid', f'✓ ${value:,.2f}'
+                )
+        
+        def validate_email():
+            text = self.txt_email.text().strip()
+            if text and '@' not in text:
+                FormStyleManager.apply_validation_state(
+                    self.txt_email, 'invalid', 'Formato de email inválido'
+                )
+            elif text and '@' in text:
+                FormStyleManager.apply_validation_state(
+                    self.txt_email, 'valid', '✓ Email válido'
+                )
+            else:
+                FormStyleManager.apply_validation_state(
+                    self.txt_email, 'neutral', ''
+                )
+        
+        # Conectar validaciones en tiempo real
+        if hasattr(self, 'txt_codigo'):
+            self.txt_codigo.textChanged.connect(validate_codigo)
+        self.txt_nombre.textChanged.connect(validate_nombre)
+        self.txt_cliente.textChanged.connect(validate_cliente)
+        self.txt_responsable.textChanged.connect(validate_responsable)
+        self.spin_presupuesto.valueChanged.connect(validate_presupuesto)
+        self.txt_email.textChanged.connect(validate_email)
+        
+        # Validar inicialmente
+        if hasattr(self, 'txt_codigo'):
+            validate_codigo()
+        validate_nombre()
+        validate_cliente()
+        validate_responsable()
+        validate_presupuesto()
+        validate_email()

@@ -16,6 +16,7 @@ class ObrasModel:
         if not self.db_connection:
             return
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
 
@@ -57,6 +58,9 @@ class ObrasModel:
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error verificando tablas: {e}")
+        finally:
+            if cursor:
+                cursor.close()
 
     def crear_obra(self, datos_obra: Dict[str, Any]) -> tuple[bool, str]:
         """
@@ -71,6 +75,7 @@ class ObrasModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
 
@@ -122,10 +127,19 @@ class ObrasModel:
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error creando obra: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except:
+                    pass
             return False, f"Error creando obra: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
 
     def obtener_todas_obras(self):
         """Obtiene todas las obras de la base de datos como lista de diccionarios."""
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
@@ -145,12 +159,16 @@ class ObrasModel:
         except Exception as e:
             print(f"Error obteniendo obras: {e}")
             return []
+        finally:
+            if cursor:
+                cursor.close()
 
     def obtener_obra_por_id(self, obra_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene una obra específica por su ID."""
         if not self.db_connection:
             return None
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
             cursor.execute(
@@ -171,12 +189,16 @@ class ObrasModel:
         except Exception as e:
             print(f"Error obteniendo obra {obra_id}: {e}")
             return None
+        finally:
+            if cursor:
+                cursor.close()
 
     def obtener_obra_por_codigo(self, codigo: str) -> Optional[Dict[str, Any]]:
         """Obtiene una obra específica por su código."""
         if not self.db_connection:
             return None
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("SELECT * FROM obras WHERE codigo = ?", (codigo,))
@@ -190,6 +212,9 @@ class ObrasModel:
         except Exception as e:
             print(f"[ERROR OBRAS] Error obteniendo obra: {e}")
             return None
+        finally:
+            if cursor:
+                cursor.close()
 
     def actualizar_obra(
         self, obra_id: int, datos_obra: Dict[str, Any]
@@ -207,6 +232,7 @@ class ObrasModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
 
@@ -249,7 +275,15 @@ class ObrasModel:
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error actualizando obra: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except:
+                    pass
             return False, f"Error actualizando obra: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
 
     def cambiar_estado_obra(
         self, obra_id: int, nuevo_estado: str, usuario: str = "SISTEMA"
@@ -282,6 +316,7 @@ class ObrasModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
+        cursor = None
         try:
             cursor = self.db_connection.cursor()
 
@@ -315,7 +350,15 @@ class ObrasModel:
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error cambiando estado: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except:
+                    pass
             return False, f"Error cambiando estado: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
 
     def obtener_obras_filtradas(
         self,

@@ -8,8 +8,8 @@ Integrado con el sistema de seguridad global.
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
-from src.core.security import get_security_manager
-from src.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.core.security import get_security_manager
+from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
 
 
 class InventarioController(QObject):

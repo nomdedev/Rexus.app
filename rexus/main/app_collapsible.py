@@ -34,7 +34,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from src.core.login_dialog import LoginDialog
+from rexus.core.login_dialog import LoginDialog
 
 
 class CollapsibleSidebar(QFrame):

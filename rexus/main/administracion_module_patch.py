@@ -1,4 +1,4 @@
-from src.modules.administracion.view import AdministracionView
+from rexus.modules.administracion.view import AdministracionView
 
 # ...existing code...
 

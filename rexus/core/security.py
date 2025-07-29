@@ -456,7 +456,7 @@ class SecurityManager(QObject):
         """Autentica un usuario usando AuthManager."""
         try:
             # Usar AuthManager para la autenticación
-            from src.core.auth import get_auth_manager
+            from rexus.core.auth import get_auth_manager
             auth_manager = get_auth_manager()
             
             user_data = auth_manager.authenticate_user(username, password)
@@ -899,7 +899,7 @@ def init_security_manager(db_connection) -> SecurityManager:
 def initialize_security_manager(db_connection=None) -> SecurityManager:
     """Inicializa el gestor de seguridad - alias para init_security_manager."""
     if not db_connection:
-        from src.core.database import UsersDatabaseConnection
+        from rexus.core.database import UsersDatabaseConnection
         db_connection = UsersDatabaseConnection()
         db_connection.trusted = False
         db_connection.connect()

@@ -8,9 +8,9 @@ from typing import Dict, Any, Optional
 from PyQt6.QtWidgets import QWidget
 from datetime import date
 
-from src.utils.dialog_utils import CrudDialogManager, create_standard_form_config
-from src.utils.validation_utils import create_usuario_validator
-from src.utils.format_utils import format_for_display
+from rexus.utils.dialog_utils import CrudDialogManager, create_standard_form_config
+from rexus.utils.validation_utils import create_usuario_validator
+from rexus.utils.format_utils import format_for_display
 
 
 class UsuarioDialogManager:
@@ -143,7 +143,7 @@ class UsuarioDialogManager:
             # Validar datos antes de crear
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -170,7 +170,7 @@ class UsuarioDialogManager:
             # Validar datos
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -233,7 +233,7 @@ class UsuarioPermisosDialog:
     
     def show_permisos_dialog(self, user_data: Dict[str, Any]) -> bool:
         """Muestra diálogo de permisos para un usuario."""
-        from src.utils.dialog_utils import BaseFormDialog
+        from rexus.utils.dialog_utils import BaseFormDialog
         from PyQt6.QtWidgets import QDialog
         
         # Configuración de permisos por módulo
@@ -336,7 +336,7 @@ class UsuarioPermisosDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Permisos Actualizados",
@@ -344,7 +344,7 @@ class UsuarioPermisosDialog:
                     )
                     return True
                 else:
-                    from src.utils.message_system import show_error
+                    from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,
                         "Error",
@@ -363,7 +363,7 @@ class UsuarioPasswordDialog:
     
     def show_reset_password_dialog(self, user_data: Dict[str, Any]) -> bool:
         """Muestra diálogo para resetear contraseña de usuario."""
-        from src.utils.dialog_utils import BaseFormDialog
+        from rexus.utils.dialog_utils import BaseFormDialog
         from PyQt6.QtWidgets import QDialog
         
         password_config = {
@@ -411,7 +411,7 @@ class UsuarioPasswordDialog:
             
             # Validar que las contraseñas coincidan
             if password_data['nueva_password'] != password_data['confirmar_password']:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(
                     self.parent,
                     "Error de Validación",
@@ -420,13 +420,13 @@ class UsuarioPasswordDialog:
                 return False
             
             # Validar fortaleza de contraseña
-            from src.utils.validation_utils import BusinessValidator
+            from rexus.utils.validation_utils import BusinessValidator
             validation_result = BusinessValidator.validate_password_strength(
                 password_data['nueva_password']
             )
             
             if not validation_result.is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(
                     self.parent,
                     "Contraseña Débil",
@@ -443,7 +443,7 @@ class UsuarioPasswordDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Contraseña Actualizada",
@@ -451,7 +451,7 @@ class UsuarioPasswordDialog:
                     )
                     return True
                 else:
-                    from src.utils.message_system import show_error
+                    from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,
                         "Error",
