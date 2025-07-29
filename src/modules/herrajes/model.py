@@ -5,7 +5,6 @@ Maneja la lógica de negocio y acceso a datos para herrajes.
 Gestiona la compra por obra y asociación con proveedores.
 """
 
-import datetime
 from typing import Any, Dict, List, Optional, Tuple
 
 
@@ -120,8 +119,12 @@ class HerrajesModel:
         Returns:
             List[Dict]: Lista de herrajes
         """
+
         if not self.db_connection:
             # Retornar datos demo si no hay conexión
+            print(
+                "[ADVERTENCIA] Sin conexión a la base de datos. Mostrando datos demo."
+            )
             return self._get_herrajes_demo()
 
         try:
@@ -144,13 +147,23 @@ class HerrajesModel:
                     conditions.append("descripcion LIKE ?")
                     params.append(f"%{filtros['descripcion']}%")
 
+            # Validate table name to prevent SQL injection
+            allowed_tables = ["herrajes"]
+            table_name = (
+                self.tabla_herrajes
+                if self.tabla_herrajes in allowed_tables
+                else "herrajes"
+            )
+
             query = (
-                f"""
+                """
                 SELECT
                     id, codigo, descripcion, proveedor, precio_unitario,
                     unidad_medida, categoria, estado, observaciones,
                     fecha_actualizacion
-                FROM {self.tabla_herrajes}
+                FROM """
+                + table_name
+                + """
                 WHERE """
                 + " AND ".join(conditions)
                 + """
@@ -167,10 +180,17 @@ class HerrajesModel:
                 herraje = dict(zip(columnas, fila))
                 herrajes.append(herraje)
 
+            print(f"[INFO HERRAJES] {len(herrajes)} registros obtenidos correctamente.")
             return herrajes
 
         except Exception as e:
+            import traceback
+
             print(f"[ERROR HERRAJES] Error obteniendo herrajes: {e}")
+            print(traceback.format_exc())
+            # Ejemplo de integración con UI: mostrar mensaje de error
+            # if hasattr(self, 'mostrar_error_ui'):
+            #     self.mostrar_error_ui(f"Error obteniendo herrajes: {str(e)}")
             return []
 
     def obtener_herrajes_por_obra(self, obra_id):
@@ -235,25 +255,17 @@ class HerrajesModel:
 
         try:
             cursor = self.db_connection.cursor()
-
-            query = (
-                """
-                INSERT INTO """
-                + self.tabla_herrajes_obra
-                + """
-                (herraje_id, obra_id, cantidad_requerida, fecha_asignacion, observaciones)
-                VALUES (?, ?, ?, GETDATE(), ?)
-            """
-            )
-
+            # Usar script SQL externo para asignar herraje a obra
+            with open(
+                "scripts/sql/insert_herraje_obra.sql", "r", encoding="utf-8"
+            ) as f:
+                query = f.read()
             cursor.execute(
                 query, (herraje_id, obra_id, cantidad_requerida, observaciones)
             )
             self.db_connection.commit()
-
             print(f"[HERRAJES] Herraje {herraje_id} asignado a obra {obra_id}")
             return True
-
         except Exception as e:
             print(f"[ERROR HERRAJES] Error asignando herraje a obra: {e}")
             return False
@@ -276,39 +288,33 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Crear pedido principal
-            query_pedido = (
-                """
-                INSERT INTO """
-                + self.tabla_pedidos_herrajes
-                + """
-                (obra_id, proveedor, fecha_pedido, estado, total_estimado)
-                VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
-            """
-            )
+            # Usar script SQL externo para crear pedido principal
+            with open("scripts/sql/insert_pedido_obra.sql", "r", encoding="utf-8") as f:
+                query_pedido = f.read()
 
             total_estimado = sum(
                 item["cantidad"] * item["precio_unitario"] for item in herrajes_lista
             )
+            # Activar el script con parámetros seguros
             cursor.execute(query_pedido, (obra_id, proveedor, total_estimado))
 
             # Obtener ID del pedido creado
             cursor.execute("SELECT @@IDENTITY")
             pedido_id = cursor.fetchone()[0]
 
-            # Actualizar cantidades pedidas en herrajes_obra
+            # Actualizar cantidades pedidas en herrajes_obra usando script externo
+            with open(
+                "scripts/sql/update_cantidad_pedida.sql", "r", encoding="utf-8"
+            ) as f:
+                query_update = f.read()
             for herraje in herrajes_lista:
-                query_update = (
-                    """
-                    UPDATE """
-                    + self.tabla_herrajes_obra
-                    + """
-                    SET cantidad_pedida = cantidad_pedida + ?
-                    WHERE herraje_id = ? AND obra_id = ?
-                """
-                )
                 cursor.execute(
-                    query_update, (herraje["cantidad"], herraje["herraje_id"], obra_id)
+                    query_update,
+                    {
+                        "cantidad": herraje["cantidad"],
+                        "herraje_id": herraje["herraje_id"],
+                        "obra_id": obra_id,
+                    },
                 )
 
             self.db_connection.commit()
