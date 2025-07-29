@@ -8,6 +8,8 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
 from src.utils.message_system import show_success, show_error, show_warning, ask_question
 from src.utils.form_validators import FormValidator, FormValidatorManager
+from src.modules.herrajes.improved_dialogs import HerrajeDialogManager, HerrajeObrasDialog, HerrajePedidosDialog
+from src.utils.format_utils import format_for_display, table_formatter
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -45,6 +47,13 @@ class HerrajesView(QWidget):
     def __init__(self):
         super().__init__()
         self.controller = None
+        self.herraje_actual = None
+        
+        # Gestores de diálogos mejorados
+        self.dialog_manager = None
+        self.obras_dialog = None
+        self.pedidos_dialog = None
+        
         self.init_ui()
 
     def init_ui(self):
@@ -268,6 +277,9 @@ class HerrajesView(QWidget):
         self.herrajes_table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
+        
+        # Conectar selección de tabla  
+        self.herrajes_table.itemSelectionChanged.connect(self.on_herraje_seleccionado)
 
         herrajes_layout.addWidget(self.herrajes_table)
 
@@ -279,19 +291,19 @@ class HerrajesView(QWidget):
 
         # Botones de acción
         self.crear_herraje_btn = QPushButton("➕ Crear Herraje")
-        self.crear_herraje_btn.clicked.connect(self.show_crear_herraje_dialog)
+        self.crear_herraje_btn.clicked.connect(self.crear_herraje_mejorado)
         
         self.editar_herraje_btn = QPushButton("✏️ Editar Herraje")
-        self.editar_herraje_btn.clicked.connect(self.show_editar_herraje_dialog)
+        self.editar_herraje_btn.clicked.connect(self.editar_herraje_mejorado)
         
         self.eliminar_herraje_btn = QPushButton("🗑️ Eliminar Herraje")
-        self.eliminar_herraje_btn.clicked.connect(self.show_eliminar_herraje_dialog)
+        self.eliminar_herraje_btn.clicked.connect(self.eliminar_herraje_mejorado)
 
         self.asignar_obra_btn = QPushButton("📋 Asignar a Obra")
-        self.asignar_obra_btn.clicked.connect(self.show_asignar_obra_dialog)
+        self.asignar_obra_btn.clicked.connect(self.asignar_a_obra_mejorado)
 
         self.crear_pedido_btn = QPushButton("🛒 Crear Pedido")
-        self.crear_pedido_btn.clicked.connect(self.show_crear_pedido_dialog)
+        self.crear_pedido_btn.clicked.connect(self.crear_pedido_mejorado)
 
         self.actualizar_btn = QPushButton("🔄 Actualizar")
         self.actualizar_btn.clicked.connect(self.actualizar_datos)
@@ -311,6 +323,91 @@ class HerrajesView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador."""
         self.controller = controller
+        
+        # Inicializar gestores de diálogos con el controlador
+        self.dialog_manager = HerrajeDialogManager(self, controller)
+        self.obras_dialog = HerrajeObrasDialog(self, controller)
+        self.pedidos_dialog = HerrajePedidosDialog(self, controller)
+        
+        if hasattr(self.controller, "cargar_datos_iniciales"):
+            self.controller.cargar_datos_iniciales()
+    
+    # ===== MÉTODOS MEJORADOS CON NUEVAS UTILIDADES =====
+    
+    def crear_herraje_mejorado(self):
+        """Crea un nuevo herraje usando el sistema de diálogos mejorado."""
+        if self.dialog_manager:
+            success = self.dialog_manager.show_create_dialog()
+            if success:
+                self.actualizar_datos()  # Recargar la tabla
+    
+    def editar_herraje_mejorado(self):
+        """Edita el herraje seleccionado usando el sistema mejorado."""
+        if not self.herraje_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para editar.")
+            return
+        
+        if self.dialog_manager:
+            success = self.dialog_manager.show_edit_dialog(self.herraje_actual)
+            if success:
+                self.actualizar_datos()  # Recargar la tabla
+    
+    def eliminar_herraje_mejorado(self):
+        """Elimina el herraje seleccionado usando confirmación mejorada."""
+        if not self.herraje_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para eliminar.")
+            return
+        
+        if self.dialog_manager:
+            success = self.dialog_manager.confirm_and_delete(self.herraje_actual)
+            if success:
+                self.actualizar_datos()  # Recargar la tabla
+    
+    def asignar_a_obra_mejorado(self):
+        """Asigna el herraje a una obra usando diálogo mejorado."""
+        if not self.herraje_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un herraje para asignar a una obra.")
+            return
+        
+        if self.obras_dialog:
+            self.obras_dialog.show_asignar_obra_dialog(self.herraje_actual)
+    
+    def crear_pedido_mejorado(self):
+        """Crea un pedido de herrajes usando diálogo mejorado."""
+        if self.pedidos_dialog:
+            # Obtener herrajes seleccionados si hay alguno
+            herrajes_seleccionados = []
+            if self.herraje_actual:
+                herrajes_seleccionados = [self.herraje_actual]
+            
+            self.pedidos_dialog.show_crear_pedido_dialog(herrajes_seleccionados)
+    
+    def on_herraje_seleccionado(self):
+        """Maneja la selección de herraje en la tabla."""
+        current_row = self.herrajes_table.currentRow()
+        if current_row >= 0:
+            # Obtener datos del herraje seleccionado desde la primera columna (ID)
+            herraje_id_item = self.herrajes_table.item(current_row, 0)
+            if herraje_id_item:
+                herraje_id = herraje_id_item.data(Qt.ItemDataRole.UserRole)
+                if herraje_id and self.controller:
+                    # Obtener datos completos del herraje desde el controlador
+                    herraje_data = self.controller.obtener_herraje_por_id(herraje_id)
+                    if herraje_data:
+                        self.herraje_actual = herraje_data
+                        return
+            
+            # Fallback: construir datos básicos desde la tabla
+            codigo = self.herrajes_table.item(current_row, 0).text() if self.herrajes_table.item(current_row, 0) else ""
+            descripcion = self.herrajes_table.item(current_row, 1).text() if self.herrajes_table.item(current_row, 1) else ""
+            
+            self.herraje_actual = {
+                'id': current_row + 1,  # ID temporal
+                'codigo': codigo,
+                'descripcion': descripcion
+            }
+        else:
+            self.herraje_actual = None
 
     def cargar_herrajes_en_tabla(self, herrajes):
         """Carga herrajes en la tabla."""

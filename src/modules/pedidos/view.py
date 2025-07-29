@@ -34,6 +34,10 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from src.utils.message_system import show_success, show_error, show_warning, ask_question
+from src.modules.pedidos.improved_dialogs import PedidoDialogManager, PedidoDetalleDialog, PedidoEstadoDialog
+from src.utils.format_utils import format_for_display, table_formatter, currency_formatter
+
 
 class PedidosView(QWidget):
     """Vista modernizada para gestión de pedidos."""
@@ -50,6 +54,11 @@ class PedidosView(QWidget):
         self.controller = None
         self.pedidos_data = []
         self.pedido_actual = None
+        
+        # Gestores de diálogos mejorados
+        self.dialog_manager = None
+        self.detalle_dialog = None
+        self.estado_dialog = None
 
         self.init_ui()
         self.aplicar_estilos()
@@ -836,3 +845,111 @@ class PedidosView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+        
+        # Inicializar gestores de diálogos con el controlador
+        self.dialog_manager = PedidoDialogManager(self, controller)
+        self.detalle_dialog = PedidoDetalleDialog(self, controller)
+        self.estado_dialog = PedidoEstadoDialog(self, controller)
+        
+        if hasattr(self.controller, "cargar_pedidos"):
+            self.controller.cargar_pedidos()
+    
+    # ===== MÉTODOS MEJORADOS CON NUEVAS UTILIDADES =====
+    
+    def crear_pedido_mejorado(self):
+        """Crea un nuevo pedido usando el sistema de diálogos mejorado."""
+        if self.dialog_manager:
+            success = self.dialog_manager.show_create_dialog()
+            if success:
+                self.cargar_pedidos()  # Recargar la tabla
+    
+    def editar_pedido_mejorado(self):
+        """Edita el pedido seleccionado usando el sistema mejorado."""
+        if not self.pedido_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un pedido para editar.")
+            return
+        
+        if self.dialog_manager:
+            success = self.dialog_manager.show_edit_dialog(self.pedido_actual)
+            if success:
+                self.cargar_pedidos()  # Recargar la tabla
+    
+    def eliminar_pedido_mejorado(self):
+        """Elimina el pedido seleccionado usando confirmación mejorada."""
+        if not self.pedido_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un pedido para eliminar.")
+            return
+        
+        if self.dialog_manager:
+            success = self.dialog_manager.confirm_and_delete(self.pedido_actual)
+            if success:
+                self.cargar_pedidos()  # Recargar la tabla
+    
+    def gestionar_detalle_mejorado(self):
+        """Gestiona el detalle del pedido seleccionado."""
+        if not self.pedido_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un pedido para gestionar su detalle.")
+            return
+        
+        if self.detalle_dialog:
+            self.detalle_dialog.show_detalle_dialog(self.pedido_actual)
+    
+    def cambiar_estado_mejorado(self):
+        """Cambia el estado del pedido seleccionado."""
+        if not self.pedido_actual:
+            show_warning(self, "Sin selección", "Por favor seleccione un pedido para cambiar su estado.")
+            return
+        
+        if self.estado_dialog:
+            success = self.estado_dialog.show_cambiar_estado_dialog(self.pedido_actual)
+            if success:
+                self.cargar_pedidos()  # Recargar la tabla
+    
+    def on_pedido_seleccionado(self):
+        """Maneja la selección de pedido en la tabla."""
+        current_row = self.tabla_pedidos.currentRow()
+        if current_row >= 0:
+            # Obtener datos del pedido seleccionado
+            pedido_id = self.tabla_pedidos.item(current_row, 0).text()
+            pedido_data = next(
+                (p for p in self.pedidos_data if str(p.get('id', '')) == pedido_id), 
+                None
+            )
+            
+            if pedido_data:
+                self.pedido_actual = pedido_data
+                
+                # Habilitar botones de acción si existen
+                self._habilitar_botones_accion(True)
+                
+                # Emitir señal
+                self.pedido_seleccionado.emit(pedido_data)
+        else:
+            self.pedido_actual = None
+            self._habilitar_botones_accion(False)
+    
+    def _habilitar_botones_accion(self, habilitar: bool):
+        """Habilita o deshabilita los botones de acción según la selección."""
+        if hasattr(self, 'btn_editar'):
+            self.btn_editar.setEnabled(habilitar)
+        if hasattr(self, 'btn_eliminar'):
+            self.btn_eliminar.setEnabled(habilitar)
+        if hasattr(self, 'btn_detalle'):
+            self.btn_detalle.setEnabled(habilitar)
+        if hasattr(self, 'btn_cambiar_estado'):
+            self.btn_cambiar_estado.setEnabled(habilitar)
+    
+    def cargar_pedidos_con_formato(self, pedidos):
+        """Carga pedidos en la tabla con formateo consistente."""
+        if not pedidos:
+            return
+        
+        self.pedidos_data = pedidos
+        
+        # Usar formatters de utilidades para consistencia
+        formatters = table_formatter.create_default_formatters()
+        formatted_data = table_formatter.format_table_data(pedidos, formatters)
+        
+        # Cargar en tabla existente
+        if hasattr(self, 'tabla_pedidos'):
+            self.cargar_en_tabla_pedidos(formatted_data)
