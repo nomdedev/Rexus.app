@@ -121,6 +121,7 @@ class ConfiguracionModel:
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
         if not self.db_connection:
+            print("[CONFIGURACION] Sin conexión BD - usando archivo de configuración")
             return
 
         try:
@@ -128,17 +129,22 @@ class ConfiguracionModel:
             
             # Verificar si la tabla existe
             cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
+                "SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype='U'",
                 (self.tabla_configuracion,),
             )
-            if cursor.fetchone():
+            
+            result = cursor.fetchone()
+            if result and result[0] > 0:
                 print(f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente.")
             else:
-                raise RuntimeError(f"Required table '{self.tabla_configuracion}' does not exist. Please create it manually.")
+                print(f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos")
+                self.db_connection = None  # Deshabilitar BD y usar archivo
+                
+            cursor.close()
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error verificando tablas: {e}")
-            raise
+            print(f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos")
+            self.db_connection = None  # Fallback a archivo
 
     def _cargar_configuracion_inicial(self):
         """Carga la configuración inicial en la base de datos."""
@@ -151,9 +157,11 @@ class ConfiguracionModel:
 
             # Verificar si ya hay configuraciones
             cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion}")
-            count = cursor.fetchone()[0]
+            result = cursor.fetchone()
+            count = result[0] if result else 0
 
             if count == 0:
+                print("[CONFIGURACION] Insertando configuraciones por defecto...")
                 # Insertar configuraciones por defecto
                 for clave, valor in self.CONFIG_DEFAULTS.items():
                     categoria = self._obtener_categoria_por_clave(clave)
@@ -170,15 +178,25 @@ class ConfiguracionModel:
                     )
 
                 self.db_connection.commit()
-                print("[CONFIGURACION] Configuración inicial cargada")
+                print("[CONFIGURACION] Configuración inicial cargada en BD")
+            else:
+                print(f"[CONFIGURACION] {count} configuraciones ya existentes en BD")
+
+            cursor.close()
 
             # Cargar configuración en cache
             self._cargar_cache()
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error cargando configuración inicial: {e}")
+            print(f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo")
             if self.db_connection:
-                self.db_connection.rollback()
+                try:
+                    self.db_connection.rollback()
+                except:
+                    pass
+            # Fallback a archivo
+            self.db_connection = None
+            self._cargar_desde_archivo()
 
     def _cargar_desde_archivo(self):
         """Carga configuración desde archivo JSON."""
@@ -204,20 +222,30 @@ class ConfiguracionModel:
     def _cargar_cache(self):
         """Carga toda la configuración en cache."""
         if not self.db_connection:
+            print("[CONFIGURACION] Sin BD - cache desde archivo")
             return
 
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1"
-            )
+            
+            # Verificar si la columna 'activo' existe
+            try:
+                cursor.execute(f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1")
+            except:
+                # Si falla, la tabla podría no tener columna 'activo'
+                cursor.execute(f"SELECT clave, valor FROM {self.tabla_configuracion}")
 
             self.config_cache = {}
-            for row in cursor.fetchall():
+            rows = cursor.fetchall()
+            for row in rows:
                 self.config_cache[row[0]] = row[1]
+                
+            cursor.close()
+            print(f"[CONFIGURACION] Cache cargado con {len(self.config_cache)} configuraciones")
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error cargando cache: {e}")
+            print(f"[CONFIGURACION] Error cargando cache: {e} - usando configuración por defecto")
+            self.config_cache = self.CONFIG_DEFAULTS.copy()
 
     def obtener_valor(self, clave: str, valor_por_defecto: Any = None) -> Any:
         """
@@ -269,39 +297,55 @@ class ConfiguracionModel:
             if self.db_connection:
                 cursor = self.db_connection.cursor()
 
-                # Verificar si existe
-                cursor.execute(
-                    f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?",
-                    (clave,),
-                )
-                existe = cursor.fetchone()[0] > 0
-
-                if existe:
-                    # Actualizar
+                try:
+                    # Verificar si existe
                     cursor.execute(
-                        f"""
-                        UPDATE {self.tabla_configuracion}
-                        SET valor = ?, fecha_modificacion = GETDATE()
-                        WHERE clave = ?
-                    """,
-                        (valor_str, clave),
+                        f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?",
+                        (clave,),
                     )
-                else:
-                    # Insertar
-                    categoria = self._obtener_categoria_por_clave(clave)
-                    descripcion = self._obtener_descripcion_por_clave(clave)
-                    tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
+                    result = cursor.fetchone()
+                    existe = result[0] > 0 if result else False
 
-                    cursor.execute(
-                        f"""
-                        INSERT INTO {self.tabla_configuracion}
-                        (clave, valor, descripcion, tipo, categoria)
-                        VALUES (?, ?, ?, ?, ?)
-                    """,
-                        (clave, valor_str, descripcion, tipo_dato, categoria),
-                    )
+                    if existe:
+                        # Actualizar
+                        try:
+                            cursor.execute(
+                                f"""
+                                UPDATE {self.tabla_configuracion}
+                                SET valor = ?, fecha_modificacion = GETDATE()
+                                WHERE clave = ?
+                            """,
+                                (valor_str, clave),
+                            )
+                        except:
+                            # Si no existe fecha_modificacion, usar versión simple
+                            cursor.execute(
+                                f"""
+                                UPDATE {self.tabla_configuracion}
+                                SET valor = ?
+                                WHERE clave = ?
+                            """,
+                                (valor_str, clave),
+                            )
+                    else:
+                        # Insertar
+                        categoria = self._obtener_categoria_por_clave(clave)
+                        descripcion = self._obtener_descripcion_por_clave(clave)
+                        tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
 
-                self.db_connection.commit()
+                        cursor.execute(
+                            f"""
+                            INSERT INTO {self.tabla_configuracion}
+                            (clave, valor, descripcion, tipo, categoria)
+                            VALUES (?, ?, ?, ?, ?)
+                        """,
+                            (clave, valor_str, descripcion, tipo_dato, categoria),
+                        )
+
+                    self.db_connection.commit()
+                    
+                finally:
+                    cursor.close()
 
             # Actualizar cache
             self.config_cache[clave] = valor_str
@@ -313,9 +357,12 @@ class ConfiguracionModel:
             return True, f"Configuración '{clave}' actualizada exitosamente"
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error estableciendo valor: {e}")
+            print(f"[CONFIGURACION] Error estableciendo valor: {e}")
             if self.db_connection:
-                self.db_connection.rollback()
+                try:
+                    self.db_connection.rollback()
+                except:
+                    pass
             return False, f"Error estableciendo configuración: {str(e)}"
 
     def obtener_configuracion_por_categoria(self, categoria: str) -> Dict[str, Any]:
@@ -338,32 +385,51 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                f"""
-                SELECT clave, valor, descripcion, tipo
-                FROM {self.tabla_configuracion}
-                WHERE categoria = ? AND activo = 1
-                ORDER BY clave
-            """,
-                (categoria,),
-            )
+            
+            try:
+                # Intentar con columna activo
+                cursor.execute(
+                    f"""
+                    SELECT clave, valor, descripcion, tipo
+                    FROM {self.tabla_configuracion}
+                    WHERE categoria = ? AND activo = 1
+                    ORDER BY clave
+                """,
+                    (categoria,),
+                )
+            except:
+                # Si falla, usar sin columna activo
+                cursor.execute(
+                    f"""
+                    SELECT clave, valor, descripcion, tipo
+                    FROM {self.tabla_configuracion}
+                    WHERE categoria = ?
+                    ORDER BY clave
+                """,
+                    (categoria,),
+                )
 
             configs = {}
-            for row in cursor.fetchall():
+            rows = cursor.fetchall()
+            for row in rows:
                 configs[row[0]] = {
                     "valor": row[1],
-                    "descripcion": row[2],
-                    "tipo": row[3],
+                    "descripcion": row[2] if len(row) > 2 else "Configuración",
+                    "tipo": row[3] if len(row) > 3 else "string",
                     "editable": True,
                 }
-
+                
+            cursor.close()
             return configs
 
         except Exception as e:
-            print(
-                f"[ERROR CONFIGURACION] Error obteniendo configuración por categoría: {e}"
-            )
-            return {}
+            print(f"[CONFIGURACION] Error obteniendo configuración por categoría: {e}")
+            # Fallback desde cache
+            return {
+                k: v
+                for k, v in self.config_cache.items()
+                if self._obtener_categoria_por_clave(k) == categoria
+            }
 
     def obtener_todas_configuraciones(self) -> List[Dict[str, Any]]:
         """
@@ -377,27 +443,64 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(f"""
-                SELECT clave, valor, descripcion, tipo, categoria, 
-                       fecha_modificacion
-                FROM {self.tabla_configuracion}
-                WHERE activo = 1
-                ORDER BY categoria, clave
-            """)
+            
+            try:
+                # Intentar con todas las columnas
+                cursor.execute(f"""
+                    SELECT clave, valor, descripcion, tipo, categoria, 
+                           fecha_modificacion
+                    FROM {self.tabla_configuracion}
+                    WHERE activo = 1
+                    ORDER BY categoria, clave
+                """)
+            except:
+                try:
+                    # Sin fecha_modificacion ni activo
+                    cursor.execute(f"""
+                        SELECT clave, valor, descripcion, tipo, categoria
+                        FROM {self.tabla_configuracion}
+                        ORDER BY categoria, clave
+                    """)
+                except:
+                    # Solo columnas básicas
+                    cursor.execute(f"""
+                        SELECT clave, valor
+                        FROM {self.tabla_configuracion}
+                        ORDER BY clave
+                    """)
 
-            columns = [desc[0] for desc in cursor.description]
             configuraciones = []
-
-            for row in cursor.fetchall():
-                config = dict(zip(columns, row))
+            rows = cursor.fetchall()
+            
+            for row in rows:
+                if len(row) >= 5:
+                    # Formato completo
+                    config = {
+                        "clave": row[0],
+                        "valor": row[1],
+                        "descripcion": row[2] or "Configuración",
+                        "tipo": row[3] or "string",
+                        "categoria": row[4] or "SISTEMA",
+                    }
+                elif len(row) >= 2:
+                    # Formato básico
+                    config = {
+                        "clave": row[0],
+                        "valor": row[1],
+                        "descripcion": self._obtener_descripcion_por_clave(row[0]),
+                        "tipo": "string",
+                        "categoria": self._obtener_categoria_por_clave(row[0]),
+                    }
+                else:
+                    continue
+                    
                 configuraciones.append(config)
-
+                
+            cursor.close()
             return configuraciones
 
         except Exception as e:
-            print(
-                f"[ERROR CONFIGURACION] Error obteniendo todas las configuraciones: {e}"
-            )
+            print(f"[CONFIGURACION] Error obteniendo todas las configuraciones: {e}")
             return self._get_configuraciones_demo()
 
     def restaurar_configuracion_defecto(

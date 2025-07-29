@@ -552,7 +552,7 @@ class RBACSystem:
                                 granted: bool):
         """Audita verificaciones de permisos sensibles."""
         try:
-            from src.core.audit_system import get_audit_system, AuditEvent, AuditLevel
+            from rexus.core.audit_system import get_audit_system, AuditEvent, AuditLevel
             
             audit = get_audit_system()
             if audit:
@@ -573,7 +573,7 @@ class RBACSystem:
                                assigned_by: int, action: str):
         """Audita asignaciones/revocaciones de roles."""
         try:
-            from src.core.audit_system import get_audit_system, AuditEvent, AuditLevel
+            from rexus.core.audit_system import get_audit_system, AuditEvent, AuditLevel
             
             audit = get_audit_system()
             if audit:

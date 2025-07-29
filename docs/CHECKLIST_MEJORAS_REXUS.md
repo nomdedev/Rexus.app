@@ -218,13 +218,24 @@
 
 ---
 
-> **NOTA:** Este checklist se actualiza en tiempo real. 
-> 
-> **Última actualización: 2025-01-28** - Completadas mejoras críticas de:
-> - ✅ **Formularios funcionales:** Inventario y Obras con validación completa
-> - ✅ **UI mejorada:** Contraste sidebar, tamaño cards, sin errores CSS  
-> - ✅ **Módulos funcionales:** Errores sintaxis corregidos, carga robusta
-> - ✅ **Validación avanzada:** Sistema completo con feedback visual
-> - ✅ **Conectividad BD:** Validación leniente, modo demo funcionando
-> 
-> **Sistema significativamente mejorado y más robusto. La mayoría de problemas críticos resueltos.**
+
+
+
+### Logística (PRIORIDAD MEDIA)
+- [ ] Revisar que el método `create_mapa_tab` inicialice correctamente el widget de mapa y que las dependencias de QtWebEngine estén presentes.
+- [ ] Validar que el panel de información se muestre como tooltip y que los controles del mapa funcionen correctamente.
+- [ ] Agregar manejo de excepciones en la inicialización y actualización del mapa interactivo.
+
+### Vidrios (PRIORIDAD MEDIA)
+- [ ] Revisar que la tabla de vidrios (`tabla_vidrios`) se conecte correctamente al controlador y que los métodos de actualización manejen errores.
+- [ ] Validar que la carga de datos en la tabla no arroje excepciones y que el feedback visual sea claro.
+- [ ] Agregar manejo de excepciones en los métodos de actualización de la tabla.
+
+### Configuración (PRIORIDAD BAJA)
+- [ ] Revisar la lectura y escritura de parámetros de configuración en los widgets (`widgets_configuracion`).
+- [ ] Validar que la carga de configuraciones y parámetros no arroje excepciones.
+- [ ] Agregar manejo de errores robusto en la lectura de archivos de configuración y en la actualización de parámetros.
+
+---
+> **Estos errores fueron detectados en la última ejecución y deben ser priorizados según el impacto en la funcionalidad principal.**
+---

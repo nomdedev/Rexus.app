@@ -13,7 +13,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSlot
 
-from src.core.security import get_security_manager
+from rexus.core.security import get_security_manager
 
 # Importar submódulos
 from .contabilidad import ContabilidadModel, ContabilidadController

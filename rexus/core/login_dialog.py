@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
-from src.core.auth import get_auth_manager
+from rexus.core.auth import get_auth_manager
 
 
 class LoginDialog(QDialog):

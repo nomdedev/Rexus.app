@@ -16,8 +16,8 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt, QDate, pyqtSignal, QThread, QTimer
 from PyQt6.QtGui import QFont, QIcon, QAction, QPixmap
 
-from src.core.database import InventarioDatabaseConnection
-from src.modules.herrajes.model import HerrajesModel
+from rexus.core.database import InventarioDatabaseConnection
+from rexus.modules.herrajes.model import HerrajesModel
 
 
 class ExportDialog(QDialog):

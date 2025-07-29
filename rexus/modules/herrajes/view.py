@@ -6,10 +6,10 @@ Interfaz modernizada para gestión de herrajes por obra.
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
-from src.utils.message_system import show_success, show_error, show_warning, ask_question
-from src.utils.form_validators import FormValidator, FormValidatorManager
-from src.modules.herrajes.improved_dialogs import HerrajeDialogManager, HerrajeObrasDialog, HerrajePedidosDialog
-from src.utils.format_utils import format_for_display, table_formatter
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.modules.herrajes.improved_dialogs import HerrajeDialogManager, HerrajeObrasDialog, HerrajePedidosDialog
+from rexus.utils.format_utils import format_for_display, table_formatter
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,

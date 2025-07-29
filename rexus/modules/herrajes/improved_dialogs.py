@@ -8,9 +8,9 @@ from typing import Dict, Any, Optional
 from PyQt6.QtWidgets import QWidget
 from datetime import date
 
-from src.utils.dialog_utils import CrudDialogManager, create_standard_form_config
-from src.utils.validation_utils import FormValidationManager, AdvancedValidator
-from src.utils.format_utils import format_for_display
+from rexus.utils.dialog_utils import CrudDialogManager, create_standard_form_config
+from rexus.utils.validation_utils import FormValidationManager, AdvancedValidator
+from rexus.utils.format_utils import format_for_display
 
 
 class HerrajeDialogManager:
@@ -41,15 +41,15 @@ class HerrajeDialogManager:
             stock_minimo = data.get("stock_minimo", 0)
             try:
                 if float(stock_actual) < 0:
-                    from src.utils.validation_utils import ValidationResult
+                    from rexus.utils.validation_utils import ValidationResult
                     return ValidationResult(False, "Stock actual no puede ser negativo")
                 if float(stock_minimo) < 0:
-                    from src.utils.validation_utils import ValidationResult
+                    from rexus.utils.validation_utils import ValidationResult
                     return ValidationResult(False, "Stock mínimo no puede ser negativo")
             except (ValueError, TypeError):
                 pass
             
-            from src.utils.validation_utils import ValidationResult
+            from rexus.utils.validation_utils import ValidationResult
             return ValidationResult(True)
         
         manager.add_custom_validator("stock_coherent", validate_stock_coherent)
@@ -236,7 +236,7 @@ class HerrajeDialogManager:
             # Validar datos antes de crear
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -259,7 +259,7 @@ class HerrajeDialogManager:
             # Validar datos
             is_valid, errors = self.validator.validate_form(data)
             if not is_valid:
-                from src.utils.message_system import show_error
+                from rexus.utils.message_system import show_error
                 show_error(self.parent, "Errores de Validación", "\n• ".join(errors))
                 return False
             
@@ -314,7 +314,7 @@ class HerrajeObrasDialog:
     
     def show_asignar_obra_dialog(self, herraje_data: Dict[str, Any]) -> bool:
         """Muestra diálogo para asignar herraje a una obra."""
-        from src.utils.dialog_utils import BaseFormDialog
+        from rexus.utils.dialog_utils import BaseFormDialog
         from PyQt6.QtWidgets import QDialog
         
         # Configuración del formulario
@@ -397,7 +397,7 @@ class HerrajeObrasDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Asignación Exitosa",
@@ -405,7 +405,7 @@ class HerrajeObrasDialog:
                     )
                     return True
                 else:
-                    from src.utils.message_system import show_error
+                    from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,
                         "Error en Asignación",
@@ -424,7 +424,7 @@ class HerrajePedidosDialog:
     
     def show_crear_pedido_dialog(self, herrajes_seleccionados: list = None) -> bool:
         """Muestra diálogo para crear un pedido de herrajes."""
-        from src.utils.dialog_utils import BaseFormDialog
+        from rexus.utils.dialog_utils import BaseFormDialog
         from PyQt6.QtWidgets import QDialog
         
         # Configuración del formulario
@@ -508,7 +508,7 @@ class HerrajePedidosDialog:
                 )
                 
                 if success:
-                    from src.utils.message_system import show_success
+                    from rexus.utils.message_system import show_success
                     show_success(
                         self.parent,
                         "Pedido Creado",
@@ -516,7 +516,7 @@ class HerrajePedidosDialog:
                     )
                     return True
                 else:
-                    from src.utils.message_system import show_error
+                    from rexus.utils.message_system import show_error
                     show_error(
                         self.parent,
                         "Error al Crear Pedido",

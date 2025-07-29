@@ -34,7 +34,7 @@ class AuthManager:
         # Crear conexión solo cuando se necesite autenticar
         if not self.db_connection:
             try:
-                from src.core.database import UsersDatabaseConnection
+                from rexus.core.database import UsersDatabaseConnection
                 self.db_connection = UsersDatabaseConnection(auto_connect=True)
             except Exception as e:
                 print(f"Error conectando a la base de datos para autenticación: {e}")
@@ -158,7 +158,7 @@ class AuthManager:
         # Crear conexión si no existe
         if not self.db_connection:
             try:
-                from src.core.database import UsersDatabaseConnection
+                from rexus.core.database import UsersDatabaseConnection
                 self.db_connection = UsersDatabaseConnection(auto_connect=True)
             except Exception as e:
                 print(f"Error conectando a la base de datos: {e}")

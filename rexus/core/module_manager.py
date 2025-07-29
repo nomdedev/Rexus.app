@@ -7,6 +7,7 @@ manejo de errores y prevención de vulnerabilidades SQL injection.
 
 from typing import Optional, Dict, Any
 from PyQt6.QtWidgets import QWidget
+from rexus.utils.module_utils import module_registry, normalize_module_name
 
 
 class ModuleManager:
@@ -122,26 +123,84 @@ class ModuleManager:
             raise Exception(f"Error configurando conexiones: {e}")
     
     def _load_initial_data(self, controller, module_name):
-        """Carga datos iniciales de forma segura."""
+        """Carga datos iniciales de forma segura usando registry centralizado."""
         try:
-            # Intentar diferentes métodos de carga según el módulo
-            if hasattr(controller, 'cargar_datos_iniciales'):
-                controller.cargar_datos_iniciales()
-                print(f"[{module_name}] Datos iniciales cargados")
-            elif hasattr(controller, 'cargar_usuarios') and module_name == "Usuarios":
-                controller.cargar_usuarios()
-                print(f"[{module_name}] Usuarios cargados")
-            elif hasattr(controller, 'cargar_obras') and module_name == "Obras":
-                controller.cargar_obras()
-                print(f"[{module_name}] Obras cargadas")
-            elif hasattr(controller, 'actualizar_tabla'):
-                controller.actualizar_tabla()
-                print(f"[{module_name}] Tabla actualizada")
-            else:
-                print(f"[{module_name}] No requiere carga inicial de datos")
+            # Normalizar nombre del módulo para búsqueda consistente
+            normalized_name = normalize_module_name(module_name)
+            module_key = module_registry.normalize_and_find(module_name)
+            
+            # Mapeo robusto basado en registry 
+            loader_method_map = {
+                'usuarios': 'cargar_usuarios',
+                'obras': 'cargar_obras',
+                'inventario': 'cargar_inventario', 
+                'compras': 'cargar_compras',
+                'pedidos': 'cargar_pedidos',
+                'logistica': 'cargar_logistica',
+                'herrajes': 'cargar_herrajes',
+                'vidrios': 'cargar_vidrios',
+                'mantenimiento': 'cargar_mantenimiento',
+                'auditoria': 'cargar_auditoria',
+                'administracion': 'cargar_administracion',
+                'contabilidad': 'cargar_contabilidad',
+                'configuracion': 'cargar_configuracion'
+            }
+            
+            # Métodos de carga alternativos en orden de prioridad
+            fallback_methods = ["cargar_datos_iniciales", "actualizar_tabla", "inicializar_datos", "refresh_data"]
+            
+            # 1. Intentar método específico basado en registry
+            if module_key and module_key in loader_method_map:
+                specific_method = loader_method_map[module_key]
+                if hasattr(controller, specific_method):
+                    getattr(controller, specific_method)()
+                    print(f"✅ [{module_name}] Datos cargados con método específico: {specific_method}")
+                    return
+                else:
+                    print(f"⚠️  [{module_name}] Método {specific_method} no encontrado en controlador")
+            
+            # 2. Intentar métodos genéricos de fallback
+            for method_name in fallback_methods:
+                if hasattr(controller, method_name):
+                    getattr(controller, method_name)()
+                    print(f"✅ [{module_name}] Datos cargados con método genérico: {method_name}")
+                    return
+            
+            # 3. Módulo no requiere carga inicial
+            print(f"ℹ️  [{module_name}] No requiere carga inicial de datos")
+            
         except Exception as e:
             # No fallar completamente por error de datos iniciales
-            print(f"[{module_name}] ADVERTENCIA: Error cargando datos iniciales: {e}")
+            print(f"❌ [{module_name}] Error cargando datos iniciales: {e}")
+            # Log más detallado para debugging
+            import traceback
+            print(f"[DEBUG] Stack trace para {module_name}:")
+            print(f"[DEBUG] {traceback.format_exc()}")
+            
+            # Intentar mostrar error en UI si es posible
+            self._show_data_loading_error(module_name, str(e))
+    
+    def _show_data_loading_error(self, module_name: str, error_message: str):
+        """Muestra error de carga de datos de forma visual."""
+        try:
+            from PyQt6.QtWidgets import QMessageBox
+            from PyQt6.QtCore import QTimer
+            
+            # Crear mensaje de error no bloqueante
+            def show_error():
+                msg = QMessageBox()
+                msg.setIcon(QMessageBox.Icon.Warning)
+                msg.setWindowTitle(f"Error cargando {module_name}")
+                msg.setText(f"No se pudieron cargar los datos iniciales del módulo {module_name}")
+                msg.setDetailedText(f"Error técnico: {error_message}")
+                msg.setStandardButtons(QMessageBox.StandardButton.Ok)
+                msg.exec()
+            
+            # Mostrar después de que la UI esté lista
+            QTimer.singleShot(1000, show_error)
+            
+        except Exception as ui_error:
+            print(f"[ERROR] No se pudo mostrar error de UI: {ui_error}")
     
     def _create_error_widget(self, module_name: str, error_message: str) -> QWidget:
         """Crea widget de error informativo con diagnóstico detallado."""

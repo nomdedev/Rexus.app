@@ -15,7 +15,7 @@ from PyQt6.QtWidgets import (
     QMessageBox, QTextEdit, QComboBox, QFrame
 )
 
-from src.core.database import DatabaseConnection
+from rexus.core.database import DatabaseConnection
 
 class DatabaseConfigDialog(QDialog):
     """Diálogo para configurar conexiones de base de datos"""
