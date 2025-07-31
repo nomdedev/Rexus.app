@@ -436,7 +436,7 @@ def generar_indice(reportes, directorio_salida):
         .header {{ background-color: #f8f8f8; padding: 20px; border-bottom: 1px solid #ddd; margin-bottom: 20px; }}
         .report-list {{ display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; }}
         .report-card {{ border: 1px solid #ddd; border-radius: 5px; padding: 15px; transition: all 0.3s ease; }}
-        .report-card:hover {{ box-shadow: 0 5px 15px rgba(0,0,0,0.1); }}
+        # box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente
         .report-card h3 {{ margin-top: 0; padding-bottom: 10px; border-bottom: 1px solid #eee; }}
         .report-card p {{ color: #666; }}
         .report-card a {{ display: inline-block; margin-top: 10px; background: #4CAF50; color: white; padding: 8px 12px;

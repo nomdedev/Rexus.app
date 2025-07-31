@@ -1395,7 +1395,7 @@ class AdministracionView(QWidget):
     def create_info_card(self, titulo, valor, color, small=False):
         """Crea una tarjeta de información."""
         card = QFrame()
-        # Ajuste para cuadrados más pequeños y box-shadow sutil
+        # Ajuste para cuadrados más pequeños y sombra sutil (usar QGraphicsDropShadowEffect en PyQt)
         padding = "6px" if small else "12px"
         margin = "2px" if small else "6px"
         title_size = "10px" if small else "12px"
@@ -1413,7 +1413,7 @@ class AdministracionView(QWidget):
                 margin: {margin};
                 min-width: {min_width};
                 min-height: {min_height};
-                box-shadow: 0px 1px 4px rgba(0,0,0,0.10);
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
             QFrame:hover {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
