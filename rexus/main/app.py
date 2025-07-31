@@ -19,7 +19,8 @@ sys.path.insert(0, str(root_dir))
 # Cargar variables de entorno desde .env
 try:
     from dotenv import load_dotenv
-    load_dotenv(root_dir / '.env')
+
+    load_dotenv(root_dir / ".env")
     print("[ENV] Variables de entorno cargadas desde .env")
 except ImportError:
     print("[ENV] Warning: python-dotenv no instalado, usando variables del sistema")
@@ -51,9 +52,9 @@ from rexus.core.module_manager import module_manager
 def initialize_security_manager():
     """Inicializa el sistema de seguridad"""
     try:
-        from rexus.core.security import init_security_manager
         from rexus.core.database import UsersDatabaseConnection
-        
+        from rexus.core.security import init_security_manager
+
         # Intentar crear conexión a la base de datos
         try:
             db_connection = UsersDatabaseConnection()
@@ -61,12 +62,12 @@ def initialize_security_manager():
         except Exception as db_error:
             print(f"[SECURITY] Error BD: {db_error}, usando modo sin BD")
             db_connection = None
-        
+
         # Inicializar con o sin conexión BD
         security_manager = init_security_manager(db_connection)
         print("[SECURITY] SecurityManager inicializado correctamente")
         return security_manager
-        
+
     except ImportError as e:
         print(f"[SECURITY] Error importando módulo de seguridad: {e}")
         return SimpleSecurityManager()
@@ -123,7 +124,7 @@ class SimpleSecurityManager:
         # Usar nombres consistentes con los esperados por el sistema
         modules = [
             "Inventario",
-            "Obras", 
+            "Obras",
             "Administración",
             "Logística",
             "Herrajes",
@@ -132,7 +133,7 @@ class SimpleSecurityManager:
             "Usuarios",
             "Configuración",
             "Compras",
-            "Mantenimiento"
+            "Mantenimiento",
         ]
         print(f"[SIMPLE_AUTH] Módulos permitidos: {modules}")
         return modules
@@ -586,7 +587,9 @@ QPushButton:pressed {
             from rexus.modules.administracion.contabilidad.controller import (
                 ContabilidadController,
             )
-            from rexus.modules.administracion.contabilidad.model import ContabilidadModel
+            from rexus.modules.administracion.contabilidad.model import (
+                ContabilidadModel,
+            )
             from rexus.modules.administracion.contabilidad.view import ContabilidadView
 
             # Crear conexión a la base de datos
@@ -974,6 +977,25 @@ QPushButton:pressed {
 
 
 def main():
+    print("[LOG 4.1] Inicializando QtWebEngine y configurando OpenGL...")
+    qtwebengine_failed = False
+    try:
+        from PyQt6.QtWebEngine import QtWebEngine
+
+        QtWebEngine.initialize()
+        import os
+
+        os.environ["QT_OPENGL"] = (
+            "angle"  # Forzar OpenGL ANGLE para compatibilidad en Windows
+        )
+        from PyQt6.QtCore import Qt
+        from PyQt6.QtWidgets import QApplication
+
+        QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseOpenGLES)
+    except Exception as e:
+        print(f"[LOG 4.1] Error inicializando QtWebEngine/OpenGL: {e}")
+        qtwebengine_failed = True
+        from PyQt6.QtWidgets import QApplication
     print("[LOG 4.1] Iniciando QApplication...")
     app = QApplication(sys.argv)
     print("[LOG 4.2] Mostrando login profesional...")
@@ -1038,15 +1060,31 @@ def main():
         if not user_data:
             print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")
             return
-        
+
         # Usar el método correcto para obtener módulos permitidos
         try:
-            modulos_permitidos = security_manager.get_user_modules(user_data.get("id", 1))
+            modulos_permitidos = security_manager.get_user_modules(
+                user_data.get("id", 1)
+            )
         except AttributeError:
             # Si no tiene get_user_modules, permitir todos los módulos por defecto
-            print("[SECURITY] Usando SimpleSecurityManager, permitiendo todos los módulos")
-            modulos_permitidos = ["Inventario", "Obras", "Administración", "Logística", "Herrajes", "Vidrios", "Pedidos", "Usuarios", "Configuración", "Compras", "Mantenimiento"]
-        
+            print(
+                "[SECURITY] Usando SimpleSecurityManager, permitiendo todos los módulos"
+            )
+            modulos_permitidos = [
+                "Inventario",
+                "Obras",
+                "Administración",
+                "Logística",
+                "Herrajes",
+                "Vidrios",
+                "Pedidos",
+                "Usuarios",
+                "Configuración",
+                "Compras",
+                "Mantenimiento",
+            ]
+
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 
     def on_login_failed(error_message):
