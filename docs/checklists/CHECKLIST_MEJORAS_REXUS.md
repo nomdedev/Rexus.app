@@ -1,63 +1,49 @@
 # Checklist de Mejoras y Problemas Detectados en Rexus.app
-[// --- INICIO CHECKLIST UNIFICADO ORDENADO POR MÓDULO Y PRIORIDAD ---]
 
-# Checklist de Mejoras y Problemas Detectados en Rexus.app
+# CHECKLIST DE MEJORAS Y PROBLEMAS PENDIENTES EN REXUS.APP (REORGANIZADO POR PRIORIDAD)
 
----
+## PRIORIDAD ALTA
+### USUARIOS
+- [ ] Validar unicidad de nombre de usuario/email en registro
+- [ ] Implementar validación en formularios de login y registro
+- [ ] Sanitizar todos los datos de entrada (texto libre, email, contraseña)
+- [ ] Limitar intentos de login fallidos
+- [ ] Validar tokens y entradas en restablecimiento de contraseña
+- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI)
+### INVENTARIO
+- [ ] Migrar todas las consultas SQL a scripts externos en scripts/sql/
+- [ ] Usar siempre parámetros en cursor.execute
+- [ ] Validar y sanitizar todos los datos de entrada
+- [ ] Auditar y testear todos los métodos de acceso a datos
+- [ ] Validar que todos los scripts SQL externos usen solo parámetros nombrados y nunca interpolación directa
+- [ ] Migrar métodos que construyen queries con strings a scripts externos y parametrizar
+- [ ] Validar formato de códigos de producto, precios, cantidades, fechas
+- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI)
+### HERRAJES
+- [ ] Migrar métodos principales a scripts externos y validar parámetros
+- [ ] Controladores incompletos o no robustos
+- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI)
 
-## USUARIOS
-### Alta Prioridad
-- [ ] Validar unicidad de nombre de usuario/email en registro.
-- [ ] Implementar validación en formularios de login y registro.
-- [ ] Sanitizar todos los datos de entrada (texto libre, email, contraseña).
-- [ ] Limitar intentos de login fallidos.
-- [ ] Validar tokens y entradas en restablecimiento de contraseña.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Mejorar feedback visual en login y registro (mensajes claros, tooltips, loaders).
-- [ ] Refactorizar funciones grandes en el controlador de usuarios.
-- [ ] Limpieza de imports y dependencias.
-### Baja Prioridad
-- [ ] Documentar el flujo de autenticación y recuperación de contraseña.
+## PRIORIDAD MEDIA
+### USUARIOS
+- [ ] Mejorar feedback visual en login y registro (mensajes claros, tooltips, loaders)
+- [ ] Refactorizar funciones grandes en el controlador de usuarios
+- [ ] Limpieza de imports y dependencias
+### INVENTARIO
+- [ ] Optimización de rendimiento (consultas SQL, índices, paginación, lazy loading)
+- [ ] Refactorización de funciones grandes
+- [ ] Limpieza de imports y dependencias
+### HERRAJES
+- [ ] Optimización de rendimiento y refactorización de funciones grandes
+- [ ] Limpieza de imports y dependencias
 
----
-
-## INVENTARIO
-### Alta Prioridad
-- [ ] Migrar todas las consultas SQL a scripts externos en scripts/sql/.
-- [ ] Usar siempre parámetros en cursor.execute.
-- [ ] Validar y sanitizar todos los datos de entrada.
-- [ ] Auditar y testear todos los métodos de acceso a datos.
-- [ ] Validar que todos los scripts SQL externos usen solo parámetros nombrados y nunca interpolación directa.
-- [ ] Métodos que construyen queries con strings (líneas 1434, 1459, 1471, 1483, 1529, 1576, 1626, 1644, 1656, 1668, 1718, 1789, 1845, 1853, 1869, 1881, 2000, 2011, 2137, 2144): migrar a scripts externos y parametrizar.
-- [ ] Validar formato de códigos de producto, precios, cantidades, fechas.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Optimización de rendimiento (consultas SQL, índices, paginación, lazy loading).
-- [ ] Refactorización de funciones grandes.
-- [ ] Limpieza de imports y dependencias.
-### Baja Prioridad
-- [ ] Documentar el modelo de inventario y sus relaciones.
-
----
-
-## HERRAJES
-### Alta Prioridad
-- [ ] obtener_herrajes_por_obra: migrar a script externo y validar tabla.
-- [ ] crear_herraje: migrar a script externo.
-- [ ] actualizar_herraje: migrar a script externo.
-- [ ] obtener_herraje_por_id: migrar a script externo.
-- [ ] actualizar_stock: migrar a script externo.
-- [ ] buscar_herrajes: validar uso de LIKE y parámetros, migrar a script externo si es posible.
-- [ ] obtener_estadisticas: migrar a scripts externos.
-- [ ] eliminar_herraje: migrar a script externo y validar parámetros.
-- [ ] Controladores incompletos o no robustos.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Optimización de rendimiento y refactorización de funciones grandes.
-- [ ] Limpieza de imports y dependencias.
-### Baja Prioridad
-- [ ] Documentar el modelo de herrajes y sus relaciones.
+## PRIORIDAD BAJA
+### USUARIOS
+- [ ] Documentar el flujo de autenticación y recuperación de contraseña
+### INVENTARIO
+- [ ] Documentar el modelo de inventario y sus relaciones
+### HERRAJES
+- [ ] Documentar el modelo de herrajes y sus relaciones
 
 ---
 
