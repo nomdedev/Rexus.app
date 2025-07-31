@@ -2,14 +2,31 @@
 Modelo de Inventario
 
 Maneja la lógica de negocio y acceso a datos para el inventario.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
+import sys
 from io import BytesIO
+from pathlib import Path
 from typing import Any, Dict, List
 
 import qrcode
 from PIL import Image
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+    
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
+    
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in inventario: {e}")
+    SECURITY_AVAILABLE = False
 
 
 class InventarioModel:
@@ -17,7 +34,7 @@ class InventarioModel:
 
     def __init__(self, db_connection=None):
         """
-        Inicializa el modelo de inventario.
+        Inicializa el modelo de inventario con utilidades de seguridad.
 
         Args:
             db_connection: Conexión a la base de datos
@@ -26,6 +43,17 @@ class InventarioModel:
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
         self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
+        
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available:
+            self.data_sanitizer = data_sanitizer
+            self.sql_validator = SQLSecurityValidator()
+            print("OK [INVENTARIO] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            self.sql_validator = None
+            print("WARNING [INVENTARIO] Utilidades de seguridad no disponibles")
         if not self.db_connection:
             print(
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
