@@ -2,11 +2,28 @@
 Modelo de Usuarios - Rexus.app v2.0.0
 
 Gestiona la autenticación, permisos y CRUD completo de usuarios.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
 import hashlib
+import sys
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+    
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
+    
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available: {e}")
+    SECURITY_AVAILABLE = False
 
 
 class UsuariosModel:
@@ -52,6 +69,18 @@ class UsuariosModel:
         self.tabla_roles = "roles"
         self.tabla_permisos = "permisos_usuario"
         self.tabla_sesiones = "sesiones_usuario"
+        
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available:
+            self.data_sanitizer = data_sanitizer
+            self.sql_validator = SQLSecurityValidator()
+            print("OK [USUARIOS] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            self.sql_validator = None
+            print("WARNING [USUARIOS] Utilidades de seguridad no disponibles")
+            
         # Las tablas deben existir previamente - no crear desde la aplicación
 
     def _crear_tablas_si_no_existen(self):
@@ -77,9 +106,26 @@ class UsuariosModel:
         return
 
     def obtener_usuario_por_nombre(self, nombre_usuario):
-        """Obtiene un usuario por su nombre."""
+        """
+        Obtiene un usuario por su nombre con sanitización de entrada.
+        
+        Args:
+            nombre_usuario: Nombre del usuario a buscar
+            
+        Returns:
+            Dict con datos del usuario o None si no existe
+        """
         if not self.db_connection:
             return None
+
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available and nombre_usuario:
+            # Sanitizar el nombre de usuario para prevenir inyecciones
+            nombre_limpio = self.data_sanitizer.sanitize_string(nombre_usuario, max_length=50)
+            if not nombre_limpio:
+                return None
+        else:
+            nombre_limpio = nombre_usuario
 
         try:
             cursor = self.db_connection.connection.cursor()
@@ -88,7 +134,7 @@ class UsuariosModel:
                    fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos, bloqueado_hasta, avatar, configuracion_personal, activo
             FROM usuarios WHERE usuario = ?
             """
-            cursor.execute(sql_select, (nombre_usuario,))
+            cursor.execute(sql_select, (nombre_limpio,))
             row = cursor.fetchone()
             print(
                 f"[DEBUG obtener_usuario_por_nombre] Buscando usuario: {nombre_usuario}"
@@ -177,7 +223,7 @@ class UsuariosModel:
 
     def crear_usuario(self, datos_usuario: Dict[str, Any]) -> Tuple[bool, str]:
         """
-        Crea un nuevo usuario en el sistema.
+        Crea un nuevo usuario en el sistema con validación y sanitización completa.
 
         Args:
             datos_usuario: Diccionario con los datos del usuario
@@ -189,32 +235,65 @@ class UsuariosModel:
             return False, "Sin conexión a la base de datos"
 
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            if self.security_available:
+                # Sanitizar todos los datos de entrada
+                datos_limpios = self.data_sanitizer.sanitize_form_data(datos_usuario)
+                
+                # Validaciones específicas
+                if not datos_limpios.get("usuario"):
+                    return False, "El nombre de usuario es requerido"
+                if not datos_limpios.get("password"):
+                    return False, "La contraseña es requerida"
+                if not datos_limpios.get("nombre_completo"):
+                    return False, "El nombre completo es requerido"
+                    
+                # Validar formato de email si se proporciona
+                if datos_limpios.get("email"):
+                    try:
+                        email_limpio = self.data_sanitizer.sanitize_email(datos_limpios["email"])
+                        if not email_limpio or len(email_limpio) < 5 or "@" not in email_limpio:
+                            return False, "Formato de email inválido"
+                        datos_limpios["email"] = email_limpio
+                    except Exception:
+                        return False, "Formato de email inválido"
+                
+                # Validar teléfono si se proporciona
+                if datos_limpios.get("telefono"):
+                    telefono_limpio = self.data_sanitizer.sanitize_phone(datos_limpios["telefono"])
+                    datos_limpios["telefono"] = telefono_limpio
+                    
+            else:
+                # Sin utilidades de seguridad, usar datos originales con precaución
+                datos_limpios = datos_usuario.copy()
+                print("WARNING [USUARIOS] Creando usuario sin sanitización de seguridad")
+
             cursor = self.db_connection.connection.cursor()
 
             # Verificar que el usuario no exista
             cursor.execute(
                 "SELECT COUNT(*) FROM usuarios WHERE usuario = ?",
-                (datos_usuario["usuario"],),
+                (datos_limpios["usuario"],),
             )
             if cursor.fetchone()[0] > 0:
-                return False, f"El usuario '{datos_usuario['usuario']}' ya existe"
+                return False, f"El usuario '{datos_limpios['usuario']}' ya existe"
 
             # Verificar que el email no exista
-            if datos_usuario.get("email"):
+            if datos_limpios.get("email"):
                 cursor.execute(
                     "SELECT COUNT(*) FROM usuarios WHERE email = ?",
-                    (datos_usuario["email"],),
+                    (datos_limpios["email"],),
                 )
                 if cursor.fetchone()[0] > 0:
                     return (
                         False,
-                        f"El email '{datos_usuario['email']}' ya está registrado",
+                        f"El email '{datos_limpios['email']}' ya está registrado",
                     )
 
             # Hashear la contraseña
-            password_hash = self._hashear_password(datos_usuario["password"])
+            password_hash = self._hashear_password(datos_limpios["password"])
 
-            # Insertar usuario
+            # Insertar usuario con datos sanitizados
             cursor.execute(
                 """
                 INSERT INTO usuarios 
@@ -222,13 +301,13 @@ class UsuariosModel:
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    datos_usuario["usuario"],
+                    datos_limpios["usuario"],
                     password_hash,
-                    datos_usuario["nombre_completo"],
-                    datos_usuario.get("email", ""),
-                    datos_usuario.get("telefono", ""),
-                    datos_usuario.get("rol", "USUARIO"),
-                    datos_usuario.get("estado", "ACTIVO"),
+                    datos_limpios["nombre_completo"],
+                    datos_limpios.get("email", ""),
+                    datos_limpios.get("telefono", ""),
+                    datos_limpios.get("rol", "USUARIO"),
+                    datos_limpios.get("estado", "ACTIVO"),
                 ),
             )
 
