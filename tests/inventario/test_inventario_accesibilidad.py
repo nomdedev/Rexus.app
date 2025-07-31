@@ -3,7 +3,7 @@ try:
 except ImportError:
     pytest.skip("Módulo no disponible")
 
-# from modules.inventario.view import InventarioView # Movido a sección try/except
+# from rexus.modules.inventario.view import InventarioView # Movido a sección try/except
 
 @pytest.fixture(scope="module")
 def app():
@@ -11,8 +11,15 @@ def app():
     if app is None:
         app = QApplication(sys.argv)
     return app
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 from PyQt6.QtWidgets import QApplication
-from modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
 import sys
 import pytest
 

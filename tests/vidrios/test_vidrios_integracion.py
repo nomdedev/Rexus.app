@@ -7,7 +7,7 @@ class MockDBConnection:
 import os
 import sys
 
-from modules.vidrios.model import VidriosModel
+from rexus.modules.vidrios.model import VidriosModel
 from unittest.mock import Mock
 import unittest
         self.last_id = 1

@@ -563,6 +563,13 @@ class TestInventarioControllerDataCorruption:
         """Test manejo de datos binarios."""
         if hasattr(inventario_controller_edge_cases, 'agregar_item'):
             datos_binarios = [
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import json
 import os
 import sys
@@ -574,7 +581,7 @@ from unittest.mock import ANY, MagicMock, Mock, call, mock_open, patch
 
 import pytest
 
-from modules.inventario.controller import InventarioController
+from rexus.modules.inventario.controller import InventarioController
 
                 b'\x00\x01\x02\x03',  # Bytes
                 bytes(range(256)),     # Todos los bytes posibles

@@ -281,4 +281,4 @@ import sys
 import unittest
 from unittest.mock import MagicMock, mock_open, patch
 
-from modules.pedidos.view import PedidosView
+from rexus.modules.pedidos.view import PedidosView

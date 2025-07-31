@@ -1,4 +1,4 @@
-# from modules.inventario.view import InventarioView # Movido a sección try/except
+# from rexus.modules.inventario.view import InventarioView # Movido a sección try/except
 app = QApplication.instance() or QApplication(sys.argv)
 
 class TestInventarioViewUI(unittest.TestCase):
@@ -8,6 +8,13 @@ class TestInventarioViewUI(unittest.TestCase):
         if not hasattr(self.view, "inventario_headers") or not self.view.inventario_headers:
             self.view.inventario_headers = [f"Columna{i}" for i in range(5)]
             self.view.tabla_inventario = QTableWidget()
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import sys
 from PyQt6.QtWidgets import QPushButton, QHBoxLayout, QTableWidget
 

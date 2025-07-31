@@ -171,7 +171,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
-from modules.configuracion.controller import (
+from rexus.modules.configuracion.controller import (
     ConfiguracionController as RealConfiguracionController,
 )
 

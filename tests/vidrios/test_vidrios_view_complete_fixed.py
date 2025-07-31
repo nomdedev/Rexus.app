@@ -96,13 +96,20 @@ class TestVidriosViewInicializacion:
                 controller=mock_controller
             )
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import json
 import os
 import sys
 from unittest.mock import MagicMock, Mock, call, mock_open, patch
 
 import pytest
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
 from PyQt6.QtCore import QPoint, Qt, QTimer
 from PyQt6.QtGui import QAction, QColor, QIcon, QPixmap
 from PyQt6.QtWidgets import QApplication, QDialog, QMessageBox, QTableWidget, QWidget

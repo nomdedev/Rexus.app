@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.usuarios import controller, model
+from rexus.modules.usuarios import controller, model
 
             pytest.skip(f"Modelo de usuarios no disponible")
 

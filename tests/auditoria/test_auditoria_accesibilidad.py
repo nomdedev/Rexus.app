@@ -1,10 +1,17 @@
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 import pytest
 from PyQt6.QtWidgets import QApplication
 
 try:
-    from src.modules.auditoria.view import AuditoriaView
+    from rexus.modules.auditoria.view import AuditoriaView
 except ImportError:
     pytest.skip("Módulo Auditoría no disponible", allow_module_level=True)
 
@@ -72,7 +79,7 @@ import pytest
 try:
     from PyQt6.QtWidgets import QApplication
 
-    from src.modules.auditoria.view import AuditoriaView
+    from rexus.modules.auditoria.view import AuditoriaView
 except ImportError:
     pytest.skip("Módulo Auditoría no disponible", allow_module_level=True)
 

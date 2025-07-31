@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from modules.usuarios.model import UsuariosModel
+from rexus.modules.usuarios.model import UsuariosModel
 
 
 @pytest.fixture

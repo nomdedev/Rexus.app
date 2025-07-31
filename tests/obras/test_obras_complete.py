@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.obras import controller, model
+from rexus.modules.obras import controller, model
 
             pytest.skip(f"Modelo de obras no disponible")
 

@@ -6,13 +6,20 @@ class MockDBConnection:
         self.last_id = 1
     def ejecutar_query(self, query, params=None):
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from PyQt6.QtWidgets import QApplication
 
 from core.event_bus import event_bus
-from modules.obras.controller import ObrasController
-from modules.obras.model import ObrasModel
-from modules.vidrios.view import VidriosView
+from rexus.modules.obras.controller import ObrasController
+from rexus.modules.obras.model import ObrasModel
+from rexus.modules.vidrios.view import VidriosView
 from unittest.mock import Mock
 import unittest
         if "INSERT INTO obras" in query and params:

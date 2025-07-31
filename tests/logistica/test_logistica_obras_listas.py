@@ -42,9 +42,16 @@ def test_obras_no_listas_si_falta_pago_o_estado(setup_modelos):
     model = LogisticaModel()  # No pasar db_connection
     obras_model, inventario_model, vidrios_model, herrajes_model, contabilidad_model = setup_modelos
     # Cambiar estado de inventario para obra 3
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
-from modules.logistica.model import LogisticaModel
-from modules.logistica.model import LogisticaModel
+from rexus.modules.logistica.model import LogisticaModel
+from rexus.modules.logistica.model import LogisticaModel
 
     inventario_model.obtener_estado_pedidos_por_obra = lambda id_obra: 'pendiente' if id_obra == 3 else 'entregado'
     obras_listas = model.obtener_obras_listas_para_entrega(

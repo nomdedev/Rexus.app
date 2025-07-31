@@ -9,12 +9,19 @@ def test_nombre_vacio(model):
 
 def test_fecha_entrega_menor_medicion(model):
     with pytest.raises(ValueError):
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 
 import pytest
 
-from modules.obras.model import ObrasModel
+from rexus.modules.obras.model import ObrasModel
 from tests.mock_db import DummyDB
         model.agregar_obra(("Obra Test", "Cliente Test", "Medición", "2025-05-28", "5", True, "", "1000", "1000000", "2025-05-28", 0, "2025-05-27", 1))
 

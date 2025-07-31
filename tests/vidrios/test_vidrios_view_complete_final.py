@@ -44,6 +44,13 @@ def mock_controller():
     controller.actualizar_estado_pedido = Mock()
     controller.guardar_pedido_vidrios = Mock()
     controller.mostrar_detalle_pedido = Mock()
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import atexit
 import os
 import sys
@@ -77,7 +84,7 @@ from PyQt6.QtWidgets import (
     vidrios_view,
 )
 
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
     def real_qicon(*args, **kwargs):
         return QIcon()
 

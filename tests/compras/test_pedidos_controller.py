@@ -20,10 +20,10 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from modules.compras.pedidos.controller import (
+from rexus.modules.compras.pedidos.controller import (
     ComprasPedidosController as PedidosController,
 )
-from modules.compras.pedidos.model import PedidosModel
+from rexus.modules.compras.pedidos.model import PedidosModel
 
     class PedidosController:
         def __init__(self, view, db_connection=None, usuarios_model=None, usuario_actual=None):

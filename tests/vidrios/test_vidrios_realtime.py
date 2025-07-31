@@ -3,11 +3,18 @@ app = QApplication.instance() or QApplication(sys.argv)
 class TestIntegracionRealTimeVidrios(unittest.TestCase):
     def setUp(self):
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from PyQt6.QtWidgets import QApplication
 
 from core.event_bus import event_bus
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
 import unittest
         self.view = VidriosView(usuario_actual="testuser")
         self._feedback = []

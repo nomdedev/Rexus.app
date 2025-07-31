@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.contabilidad import controller, model
+from rexus.modules.contabilidad import controller, model
 
             pytest.skip(f"Modelo de contabilidad no disponible")
 

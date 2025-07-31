@@ -540,6 +540,13 @@ class TestContabilidadViewCompatibility:
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 from unittest.mock import MagicMock, Mock, patch
@@ -548,4 +555,4 @@ import pytest
 from PyQt6.QtWidgets import QApplication, QLabel, QVBoxLayout, QWidget
 
 from core.table_responsive_mixin import TableResponsiveMixin
-from modules.contabilidad.view import ContabilidadView
+from rexus.modules.contabilidad.view import ContabilidadView

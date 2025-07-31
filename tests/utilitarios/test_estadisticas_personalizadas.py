@@ -47,13 +47,20 @@ class TestEstadisticasPersonalizadas(unittest.TestCase):
         self.view.mostrar_grafico_personalizado(etiquetas, valores, config)
         # Guardar imagen temporal del gráfico
         fig = self.view.grafico_canvas.figure
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import tempfile
 import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from modules.contabilidad.view import ContabilidadView
+from rexus.modules.contabilidad.view import ContabilidadView
 import unittest
         with tempfile.NamedTemporaryFile(suffix=".png", delete=False) as tmp:
             fig.savefig(tmp.name)

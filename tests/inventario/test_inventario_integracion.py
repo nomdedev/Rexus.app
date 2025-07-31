@@ -1,5 +1,12 @@
-# from modules.inventario.model import InventarioModel # Movido a sección try/except
-# from modules.inventario.view import InventarioView # Movido a sección try/except
+# from rexus.modules.inventario.model import InventarioModel # Movido a sección try/except
+# from rexus.modules.inventario.view import InventarioView # Movido a sección try/except
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import unittest
 from unittest.mock import Mock
 

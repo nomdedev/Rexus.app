@@ -2,10 +2,17 @@ app = QApplication.instance() or QApplication(sys.argv)
 
 class TestVidriosView(unittest.TestCase):
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from PyQt6.QtWidgets import QApplication, QTableWidgetItem
 
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
 import unittest
     def setUp(self):
         self.view = VidriosView(usuario_actual="testuser")

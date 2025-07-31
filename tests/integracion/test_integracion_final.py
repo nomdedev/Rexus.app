@@ -169,8 +169,8 @@ import traceback
 from PyQt6.QtWidgets import QApplication
 
 from core.database import ObrasDatabaseConnection
-from modules.contabilidad.model import ContabilidadModel
-from modules.herrajes.model import HerrajesModel
-from modules.inventario.model import InventarioModel
-from modules.obras.model import ObrasModel
-from modules.vidrios.model import VidriosModel
+from rexus.modules.contabilidad.model import ContabilidadModel
+from rexus.modules.herrajes.model import HerrajesModel
+from rexus.modules.inventario.model import InventarioModel
+from rexus.modules.obras.model import ObrasModel
+from rexus.modules.vidrios.model import VidriosModel

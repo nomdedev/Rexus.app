@@ -676,6 +676,13 @@ class TestContabilidadModelIntegracion:
     """Tests de integración con otros módulos."""
 
     def test_integracion_obras_pagos(self, contabilidad_model, mock_db_connection):
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import hashlib
 import os
 import sys
@@ -683,7 +690,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from modules.contabilidad.model import ContabilidadModel
+from rexus.modules.contabilidad.model import ContabilidadModel
 
         """Test integración con módulo de obras para pagos."""
         # Arrange

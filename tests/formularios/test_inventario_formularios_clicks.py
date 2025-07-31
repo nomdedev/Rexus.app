@@ -483,24 +483,31 @@ class TestFormulariosValidacion:
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 from PyQt6.QtWidgets import QDialog, QVBoxLayout, QFormLayout
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
-from modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView
 import sys
 
 from PyQt6.QtCore import Qt, QTimer, QDate

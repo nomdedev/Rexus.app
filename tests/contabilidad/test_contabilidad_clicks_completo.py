@@ -582,6 +582,13 @@ class TestContabilidadViewPerformance:
             # Filtrado debe ser rápido
             assert (end_time - start_time) < 1.0
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 import time
 from pathlib import Path
 
@@ -605,4 +612,4 @@ from PyQt6.QtWidgets import (
     unittest.mock,
 )
 
-from modules.contabilidad.view import ContabilidadView
+from rexus.modules.contabilidad.view import ContabilidadView

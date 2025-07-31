@@ -14,7 +14,7 @@ except ImportError:
     class MantenimientoModel:
         def __init__(self, db_connection):
 from pathlib import Path
-from modules.mantenimiento.model import MantenimientoModel
+from rexus.modules.mantenimiento.model import MantenimientoModel
 import sys
 
 import pytest

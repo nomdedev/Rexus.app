@@ -11,14 +11,21 @@ class DummyObrasModel:
         obra = {"id": self.id_counter, "nombre": datos[0] if isinstance(datos, (list, tuple)) else datos["nombre"], "cliente": datos[1] if isinstance(datos, (list, tuple)) else datos["cliente"]}
         self.obras.append(obra)
         self.id_counter += 1
-import pytest
-from modules.auditoria.model import AuditoriaModel
+import sys
+from pathlib import Path
 
-from modules.auditoria import controller as auditoria_controller
-from modules.contabilidad import controller as contabilidad_controller
-from modules.inventario import controller as inventario_controller
-from modules.obras import controller as obras_controller
-from modules.pedidos import controller as pedidos_controller
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import pytest
+from rexus.modules.auditoria.model import AuditoriaModel
+
+from rexus.modules.auditoria import controller as auditoria_controller
+from rexus.modules.contabilidad import controller as contabilidad_controller
+from rexus.modules.inventario import controller as inventario_controller
+from rexus.modules.obras import controller as obras_controller
+from rexus.modules.pedidos import controller as pedidos_controller
 from unittest.mock import MagicMock, patch
         return obra["id"]
     def obtener_obra_por_id(self, id_obra):
@@ -68,7 +75,7 @@ class DummyContabilidadModel:
                 return True
         raise ValueError("Factura no encontrada")
 
-# from modules.auditoria.model import AuditoriaModel # Movido a sección try/except
+# from rexus.modules.auditoria.model import AuditoriaModel # Movido a sección try/except
 
 class DummyAuditoriaModel(AuditoriaModel):
     def __init__(self):

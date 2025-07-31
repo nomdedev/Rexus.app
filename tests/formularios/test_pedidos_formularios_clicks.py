@@ -640,6 +640,13 @@ class TestInteraccionesAvanzadasPedidos:
                     descuento = float(descuento_item.text() or "0")
 
                     subtotal = cantidad * precio * (1 - descuento/100)
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 
@@ -669,7 +676,7 @@ from PyQt6.QtWidgets import (
     unittest.mock,
 )
 
-from modules.pedidos.view import PedidosView
+from rexus.modules.pedidos.view import PedidosView
 
                     tabla_productos.setItem(row, 4, subtotal_item)
 

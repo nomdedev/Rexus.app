@@ -153,13 +153,20 @@ def test_editar_obra_permiso_denegado(model, db_conn):
     )
     fila = model.listar_obras()[0]
     id_obra, rowversion_orig = fila[0], fila[6]
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
 from unittest.mock import Mock
 from unittest.mock import Mock
 
-from modules.auditoria.model import AuditoriaModel
-from modules.obras.controller import ObrasController
-from modules.obras.model import ObrasModel, OptimisticLockError
+from rexus.modules.auditoria.model import AuditoriaModel
+from rexus.modules.obras.controller import ObrasController
+from rexus.modules.obras.model import ObrasModel, OptimisticLockError
 import sqlite3
     class DummyUsuarios:
         def tiene_permiso(self, usuario, modulo, accion): return False

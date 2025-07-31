@@ -119,7 +119,7 @@ def test_alertas_retraso(mock_db):
 def test_stock_vehiculos(mock_db):
 from pathlib import Path
 from datetime import datetime
-from modules.logistica.model import LogisticaModel
+from rexus.modules.logistica.model import LogisticaModel
 import sys
 
 import pytest

@@ -3,8 +3,15 @@ Tests completos para MantenimientoModel.
 Cubre todas las funcionalidades, edge cases, validaciones y flujos de integración.
 """
 
-# from modules.mantenimiento.model import MantenimientoModel # Movido a sección try/except
+# from rexus.modules.mantenimiento.model import MantenimientoModel # Movido a sección try/except
 class TestMantenimientoModelComplete(unittest.TestCase):
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 

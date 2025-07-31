@@ -16,15 +16,22 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../.
 sys.modules['pandas'] = Mock()
 sys.modules['fpdf'] = Mock()
 sys.modules['fpdf.FPDF'] = Mock()
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 from unittest.mock import ANY, MagicMock, Mock, call, mock_open, patch
 
 import pytest
 
-from modules.inventario.model import InventarioModel
+from rexus.modules.inventario.model import InventarioModel
 
-# from modules.inventario.model import InventarioModel # Movido a sección try/except
+# from rexus.modules.inventario.model import InventarioModel # Movido a sección try/except
 
 
 @pytest.fixture

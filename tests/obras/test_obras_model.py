@@ -1,8 +1,15 @@
 @pytest.fixture
 def db_conn():
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
 
-from modules.obras.model import ObrasModel, OptimisticLockError
+from rexus.modules.obras.model import ObrasModel, OptimisticLockError
 import sqlite3
     conn = sqlite3.connect(":memory:")
     conn.execute("""

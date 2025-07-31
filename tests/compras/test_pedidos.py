@@ -24,11 +24,11 @@ from unittest.mock import MagicMock, patch
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from modules.compras.pedidos.controller import (
+from rexus.modules.compras.pedidos.controller import (
     ComprasPedidosController as PedidosController,
 )
-from modules.compras.pedidos.model import PedidosModel
-from modules.compras.pedidos.view import PedidosView
+from rexus.modules.compras.pedidos.model import PedidosModel
+from rexus.modules.compras.pedidos.view import PedidosView
 
         def __init__(self, view, model=None):
             self.view = view

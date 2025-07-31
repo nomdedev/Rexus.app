@@ -439,8 +439,8 @@ from unittest.mock import Mock
 from PyQt6.QtWidgets import QApplication
 
 from core.database import ObrasDatabaseConnection
-from modules.obras.controller import ObrasController
-from modules.obras.model import ObrasModel
+from rexus.modules.obras.controller import ObrasController
+from rexus.modules.obras.model import ObrasModel
 
         match = re.search(patron, mensaje_error, re.IGNORECASE)
         if match:

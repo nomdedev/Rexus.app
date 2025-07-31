@@ -7,11 +7,18 @@ def app():
 
 
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
 
 
 def test_vidrios_accesibilidad_tooltips(app):

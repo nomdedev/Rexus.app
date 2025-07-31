@@ -4,7 +4,7 @@ except ImportError:
     pytest.skip("Módulo no disponible")
 
 # Importar la vista principal de herrajes
-# from modules.herrajes.view import HerrajesView # Movido a sección try/except
+# from rexus.modules.herrajes.view import HerrajesView # Movido a sección try/except
 
 @pytest.fixture(scope="module")
 def app():
@@ -101,9 +101,16 @@ def test_autocompletado_codigo_herraje_modal(herrajes_view, qtbot):
     # Simula datos de herrajes para autocompletar
     herrajes_view.model = MagicMock()
     herrajes_view.model.obtener_herrajes.return_value = [
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import datetime
 from PyQt6.QtWidgets import QPushButton
-from modules.herrajes.view import HerrajesView
+from rexus.modules.herrajes.view import HerrajesView
 import sys
 
 from PyQt6.QtCore import Qt

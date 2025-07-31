@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from modules.inventario.model import InventarioModel
+from rexus.modules.inventario.model import InventarioModel
 
 
 @pytest.fixture

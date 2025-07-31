@@ -9,14 +9,21 @@ try:
 except ImportError:
     pytest.skip("Módulo no disponible")
 
-# from modules.auditoria.model import AuditoriaModel # Movido a sección try/except
+# from rexus.modules.auditoria.model import AuditoriaModel # Movido a sección try/except
 
+
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
 
 from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.auditoria.model import AuditoriaModel
+from rexus.modules.auditoria.model import AuditoriaModel
 
 
 @pytest.fixture

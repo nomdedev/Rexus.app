@@ -20,7 +20,7 @@ from unittest.mock import MagicMock, call, patch
 
 import pytest
 
-from modules.obras.model import ObrasModel
+from rexus.modules.obras.model import ObrasModel
 
 
 @pytest.fixture

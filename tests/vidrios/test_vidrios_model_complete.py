@@ -20,12 +20,19 @@ class TestVidriosModelInit(unittest.TestCase):
 
     def test_init_with_db_connection(self):
         """Test inicialización con conexión de BD válida."""
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 
-from modules.vidrios.model import VidriosModel
+from rexus.modules.vidrios.model import VidriosModel
 
         mock_db = Mock()
         model = VidriosModel(mock_db)

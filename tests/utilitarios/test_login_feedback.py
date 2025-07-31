@@ -27,13 +27,20 @@ class MockUsuariosModel(UsuariosModel):
         return ["Inventario"]
 
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import hashlib
 
 import pytest
 
-from modules.usuarios.login_controller import LoginController
-from modules.usuarios.login_view import LoginView
-from modules.usuarios.model import UsuariosModel
+from rexus.modules.usuarios.login_controller import LoginController
+from rexus.modules.usuarios.login_view import LoginView
+from rexus.modules.usuarios.model import UsuariosModel
 
 
 @pytest.fixture

@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.herrajes import controller, model
+from rexus.modules.herrajes import controller, model
 
             pytest.skip(f"Modelo de herrajes no disponible")
 

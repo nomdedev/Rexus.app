@@ -4,12 +4,19 @@ class MockDBConnection:
     def __init__(self):
         self.vidrios = []
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from PyQt6.QtWidgets import QApplication
 
 from core.event_bus import event_bus
-from modules.vidrios.model import VidriosModel
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.model import VidriosModel
+from rexus.modules.vidrios.view import VidriosView
 import unittest
         self.vidrios_obras = []
         self.last_id = 1

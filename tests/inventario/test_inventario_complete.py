@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.inventario import controller, model
+from rexus.modules.inventario import controller, model
 
             pytest.skip(f"Modelo de inventario no disponible")
 

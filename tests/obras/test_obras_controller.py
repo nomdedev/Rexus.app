@@ -1,8 +1,15 @@
 class DummyModel:
     def __init__(self):
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
 
-from modules.obras.controller import ObrasController
+from rexus.modules.obras.controller import ObrasController
 from unittest.mock import MagicMock, patch
         self.obras = []
         self.rowversion = {}

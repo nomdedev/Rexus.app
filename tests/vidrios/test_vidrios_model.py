@@ -1,6 +1,13 @@
 class TestVidriosModel(unittest.TestCase):
     def setUp(self):
-from modules.vidrios.model import VidriosModel
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+from rexus.modules.vidrios.model import VidriosModel
 from unittest.mock import Mock
 import unittest
         self.mock_db = Mock()

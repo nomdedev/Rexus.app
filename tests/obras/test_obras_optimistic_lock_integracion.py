@@ -5,10 +5,17 @@ def test_editar_obra_conflicto_rowversion(monkeypatch):
         Prueba el bloqueo optimista: si la rowversion cambia, debe lanzar OptimisticLockError.
         1. Inserta una obra y obtiene su rowversion.
         2. Simula un cambio externo (UPDATE directo).
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
     import pytest
 
     from core.database import ObrasDatabaseConnection
-    from modules.obras.model import ObrasModel, OptimisticLockError
+    from rexus.modules.obras.model import ObrasModel, OptimisticLockError
         3. Intenta editar con la rowversion antigua → debe fallar.
     """
     db = ObrasDatabaseConnection()

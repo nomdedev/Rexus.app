@@ -5,13 +5,20 @@ except Exception as e:
     print(f"DEBUG: Error importando ObrasView: {e}")
 
 # Ajustar path para importar el módulo correctamente
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from modules.obras.view import ObrasView
+from rexus.modules.obras.view import ObrasView
 
 dir_actual = os.path.dirname(os.path.abspath(__file__))
 modulo_path = os.path.abspath(os.path.join(dir_actual, "../modules/obras"))
