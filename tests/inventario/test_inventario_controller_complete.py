@@ -12,13 +12,20 @@ def mock_model():
     """Fixture para mock del modelo de inventario."""
     model = Mock()
     model.obtener_items = Mock(return_value=[])
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 from unittest.mock import ANY, MagicMock, Mock, call, mock_open, patch
 
 import pytest
 
-from modules.inventario.controller import InventarioController
+from rexus.modules.inventario.controller import InventarioController
 
     model.obtener_items_por_lotes = Mock(return_value=[])
     model.agregar_item = Mock()

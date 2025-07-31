@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.vidrios import controller, model
+from rexus.modules.vidrios import controller, model
 
             pytest.skip(f"Modelo de vidrios no disponible")
 

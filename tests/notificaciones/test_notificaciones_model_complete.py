@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 
-from modules.notificaciones.model import NotificacionesModel
+from rexus.modules.notificaciones.model import NotificacionesModel
 
     def mock_db(self):
         """Mock de base de datos para el modelo"""

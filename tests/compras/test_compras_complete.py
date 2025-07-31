@@ -784,14 +784,21 @@ class TestComprasSecurityAndValidation:
                 # Intentar crear pedido con SQL injection
 import sys
 from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from modules.compras.controller import ComprasController
-from modules.compras.model import ComprasModel
-from modules.compras.view import ComprasView
+from rexus.modules.compras.controller import ComprasController
+from rexus.modules.compras.model import ComprasModel
+from rexus.modules.compras.view import ComprasView
 
                 resultado = compras_model_secure.crear_pedido(ataque, ataque, ataque)
                 # El modelo debería sanitizar o rechazar estos inputs

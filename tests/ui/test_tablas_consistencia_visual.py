@@ -1,10 +1,17 @@
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
 from PyQt6.QtWidgets import QApplication, QTableWidget
 
-from src.modules.inventario.view import InventarioView
-from src.modules.obras.view import ObrasView
-from src.modules.usuarios.view import UsuariosView
-from src.modules.vidrios.view import VidriosView
+from rexus.modules.inventario.view import InventarioView
+from rexus.modules.obras.view import ObrasView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.vidrios.view import VidriosView
 
 
 def get_header_info(tabla):

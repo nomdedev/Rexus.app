@@ -48,7 +48,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 
-from modules.notificaciones import controller, model
+from rexus.modules.notificaciones import controller, model
 
             pytest.skip(f"Modelo de notificaciones no disponible")
 

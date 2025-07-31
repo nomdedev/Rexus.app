@@ -35,7 +35,7 @@ from pathlib import Path
 import pytest
 from PyQt6.QtWidgets import QApplication
 
-from modules.compras.pedidos.view import PedidosView
+from rexus.modules.compras.pedidos.view import PedidosView
 
         """Test básico de accesibilidad de la vista de pedidos."""
         if not PEDIDOS_VIEW_AVAILABLE:

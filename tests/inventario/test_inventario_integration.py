@@ -1,10 +1,17 @@
-# from modules.inventario.model import InventarioModel # Movido a sección try/except
+# from rexus.modules.inventario.model import InventarioModel # Movido a sección try/except
 
 class TestInventarioIntegration(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         # Usar un mock en vez de DatabaseConnection real para evitar conexión a base real
         cls.db = Mock()
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import unittest
 from unittest.mock import Mock
         cls.model = InventarioModel(cls.db)

@@ -40,14 +40,21 @@ def app():
 class PatchedObrasController(_ObrasController):
     def __init__(self, *args, **kwargs):
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 import pytest
 from PyQt6.QtCore import Qt
 from PyQt6.QtWidgets import QApplication, QDialog, QLineEdit, QMessageBox, QPushButton
 
-from modules.obras.controller import ObrasController as _ObrasController
-from modules.obras.produccion.view import ProduccionView
-from modules.obras.view import ObrasView
+from rexus.modules.obras.controller import ObrasController as _ObrasController
+from rexus.modules.obras.produccion.view import ProduccionView
+from rexus.modules.obras.view import ObrasView
 
         super().__init__(*args, **kwargs)
         self.auditoria_model = DummyAuditoriaModel()

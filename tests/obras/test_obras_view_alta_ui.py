@@ -30,10 +30,17 @@ def test_alta_obra_y_reflejo_en_tabla(qtbot):
     boton_guardar = getattr(dialogo, 'boton_guardar', None) or dialogo.findChild(QPushButton, "boton_guardar")
     assert boton_guardar is not None, "No se encontró el botón guardar en el diálogo"
     qtbot.mouseClick(boton_guardar, 1)
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtWidgets import QPushButton
 
-from modules.obras.view import ObrasView
+from rexus.modules.obras.view import ObrasView
 
     # Verificar que la obra aparece en la tabla
     tabla = view.tabla_obras

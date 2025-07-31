@@ -20,12 +20,19 @@ class TestVidriosControllerInit(unittest.TestCase):
 
     def test_init_with_all_parameters(self):
         """Test inicialización con todos los parámetros."""
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 
-from modules.vidrios.controller import VidriosController
+from rexus.modules.vidrios.controller import VidriosController
 
         mock_model = Mock()
         mock_view = Mock()

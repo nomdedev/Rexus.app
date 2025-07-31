@@ -3,13 +3,20 @@ Test de integración cruzada entre módulos.
 Verifica que la tabla de obras muestre correctamente los estados de pedidos de otros módulos.
 """
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import unittest
 
-# from modules.obras.controller import ObrasController # Movido a sección try/except
-# from modules.obras.model import ObrasModel # Movido a sección try/except
+# from rexus.modules.obras.controller import ObrasController # Movido a sección try/except
+# from rexus.modules.obras.model import ObrasModel # Movido a sección try/except
 from unittest.mock import Mock, patch
 
-# from modules.obras.view import ObrasView # Movido a sección try/except
+# from rexus.modules.obras.view import ObrasView # Movido a sección try/except
 
 
 class TestIntegracionCruzada(unittest.TestCase):

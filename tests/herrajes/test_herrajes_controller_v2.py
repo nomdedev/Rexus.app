@@ -642,10 +642,17 @@ if __name__ == '__main__':
     # Ejecutar tests
     unittest.main(verbosity=2)
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import logging
 import os
 import sys
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 
-from modules.herrajes.controller import HerrajesController, PermisoAuditoria
+from rexus.modules.herrajes.controller import HerrajesController, PermisoAuditoria

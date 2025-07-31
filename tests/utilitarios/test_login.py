@@ -5,13 +5,20 @@ class TestLogin(unittest.TestCase):
         self.db_connection = DatabaseConnection()
         self.db_connection.conectar_a_base("users")
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from PyQt6.QtWidgets import QApplication
 
 from core.database import DatabaseConnection
-from modules.usuarios.login_controller import LoginController
-from modules.usuarios.login_view import LoginView
-from modules.usuarios.model import UsuariosModel
+from rexus.modules.usuarios.login_controller import LoginController
+from rexus.modules.usuarios.login_view import LoginView
+from rexus.modules.usuarios.model import UsuariosModel
 import unittest
         # Crear tabla permisos_modulos si no existe (SQL Server compatible)
         self.db_connection.ejecutar_query('''

@@ -16,6 +16,13 @@ def mock_db_edge_cases():
 
 
 @pytest.fixture
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sqlite3
 import sys
@@ -27,7 +34,7 @@ from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from modules.inventario.model import InventarioModel
+from rexus.modules.inventario.model import InventarioModel
 
 
 def inventario_model_edge_cases(mock_db_edge_cases):

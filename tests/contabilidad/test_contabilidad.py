@@ -18,7 +18,7 @@ from pathlib import Path
 
 import pytest
 
-from modules.contabilidad.model import ContabilidadModel
+from rexus.modules.contabilidad.model import ContabilidadModel
 
             self.db = db_connection
 

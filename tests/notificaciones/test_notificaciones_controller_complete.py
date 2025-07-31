@@ -14,7 +14,7 @@ from unittest.mock import MagicMock, Mock, call, patch
 
 import pytest
 
-from modules.notificaciones.controller import (  # Act
+from rexus.modules.notificaciones.controller import (  # Act
     NotificacionesController,
     PermisoAuditoria,
     """,

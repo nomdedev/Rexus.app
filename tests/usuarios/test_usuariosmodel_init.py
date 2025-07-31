@@ -3,9 +3,16 @@
 # --- FIN DE NOTA DE SEGURIDAD ---
 
 class MockDBConnection:
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import pytest
 
-from modules.usuarios.model import UsuariosModel
+from rexus.modules.usuarios.model import UsuariosModel
     pass
 
 def test_usuariosmodel_init_requires_db_connection():

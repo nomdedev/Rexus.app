@@ -1,8 +1,15 @@
 class MockDB:
     def ejecutar_query(self, query, params):
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 
-from modules.contabilidad.model import ContabilidadModel  # Confirmar que la ruta es correcta
+from rexus.modules.contabilidad.model import ContabilidadModel  # Confirmar que la ruta es correcta
 import unittest
         # Simula una base de datos con un recibo existente
         if params[0] == 1:

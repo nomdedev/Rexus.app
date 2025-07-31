@@ -2,196 +2,225 @@
 Tests para las utilidades de seguridad SQL del módulo utils.sql_seguro y utils.sanitizador_sql.
 """
 
+import sys
+import unittest
+from pathlib import Path
+
 # Agregar el directorio raíz al path para que se puedan importar los módulos
 ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR))
+sys.path.append(str(ROOT_DIR / "src"))
 
-# Importar módulos a probar
-    validar_nombre_tabla, validar_nombre_columna,
-    construir_select_seguro, construir_update_seguro,
-    construir_insert_seguro, construir_delete_seguro,
-    TABLAS_PERMITIDAS, COLUMNAS_PERMITIDAS
+from src.utils.sql_security import (
+    SQLSecurityError,
+    SQLSecurityValidator,
+    SecureSQLBuilder,
+    validate_table_name,
+    validate_column_name,
+)
+from src.utils.data_sanitizer import (
+    DataSanitizer,
+    data_sanitizer,
+    sanitize_input,
 )
 
-    escapar_string_sql, sanitizar_numerico,
-    sanitizar_fecha_sql, sanitizar_lista_valores,
-    validar_consulta_sql, detectar_vulnerabilidades_consulta
-)
 
-# Importar excepciones
 class TestSqlSeguro(unittest.TestCase):
-    """Clase para pruebas de sql_seguro.py"""
+    """Clase para pruebas de sql_security.py"""
+
+    def setUp(self):
+        """Configurar el validador SQL para las pruebas."""
+        self.validator = SQLSecurityValidator()
+        self.builder = SecureSQLBuilder(self.validator)
 
     def test_validar_nombre_tabla(self):
         """Prueba validación de nombres de tablas."""
         # Comprobar que una tabla válida pasa la validación
-import sys
-from pathlib import Path
-
-from core.exceptions import InputValidationError, SecurityError
-from utils.sanitizador_sql import (
-    "users",
-    from,
-    import,
-    self.assertEqual,
-    unittest,
-    utils.sql_seguro,
-    validar_nombre_tabla,
-)
+        self.assertEqual(validate_table_name("usuarios"), "usuarios")
 
         # Comprobar que una tabla inválida lanza excepción
-        with self.assertRaises(SecurityError):
-            validar_nombre_tabla("tabla_no_permitida")
+        with self.assertRaises(SQLSecurityError):
+            validate_table_name("tabla_no_permitida")
 
         # Comprobar que una tabla con caracteres especiales lanza excepción
-        with self.assertRaises(SecurityError):
-            validar_nombre_tabla("users; DROP TABLE users;")
+        with self.assertRaises(SQLSecurityError):
+            validate_table_name("users; DROP TABLE users;")
 
     def test_validar_nombre_columna(self):
         """Prueba validación de nombres de columnas."""
         # Comprobar que una columna válida pasa la validación
-        self.assertEqual(validar_nombre_columna("users", "id"), "id")
+        self.assertEqual(validate_column_name("id"), "id")
+        self.assertEqual(validate_column_name("nombre_usuario"), "nombre_usuario")
 
-        # Comprobar que una columna inválida lanza excepción
-        with self.assertRaises(SecurityError):
-            validar_nombre_columna("users", "columna_no_permitida")
+        # Comprobar que una columna con caracteres especiales lanza excepción
+        with self.assertRaises(SQLSecurityError):
+            validate_column_name("id; DROP TABLE users;")
 
     def test_construir_select_seguro(self):
         """Prueba construcción de consultas SELECT seguras."""
         # SELECT simple
-        query, _ = construir_select_seguro("users")
-        self.assertEqual(query, "SELECT * FROM [users]")
+        query = self.builder.build_select_query("usuarios")
+        self.assertEqual(query, "SELECT * FROM usuarios")
 
         # SELECT con columnas específicas
-        query, _ = construir_select_seguro("users", ["id", "nombre", "email"])
-        self.assertEqual(query, "SELECT [id], [nombre], [email] FROM [users]")
+        query = self.builder.build_select_query("usuarios", ["id", "nombre", "email"])
+        self.assertEqual(query, "SELECT id, nombre, email FROM usuarios")
 
         # SELECT con WHERE
-        query, _ = construir_select_seguro("users", ["id", "nombre"], "id = ?")
-        self.assertEqual(query, "SELECT [id], [nombre] FROM [users] WHERE id = ?")
+        query = self.builder.build_select_query("usuarios", ["id", "nombre"], ["id = ?"])
+        self.assertEqual(query, "SELECT id, nombre FROM usuarios WHERE id = ?")
 
         # Debe fallar con tabla no permitida
-        with self.assertRaises(SecurityError):
-            construir_select_seguro("tabla_no_permitida")
+        with self.assertRaises(SQLSecurityError):
+            self.builder.build_select_query("tabla_no_permitida")
 
     def test_construir_update_seguro(self):
         """Prueba construcción de consultas UPDATE seguras."""
         # UPDATE simple
-        query, _ = construir_update_seguro("users", ["nombre", "email"], "id = ?")
-        self.assertEqual(query, "UPDATE [users] SET [nombre] = ?, [email] = ? WHERE id = ?")
+        query = self.builder.build_update_query("usuarios", ["nombre = ?", "email = ?"], ["id = ?"])
+        self.assertEqual(query, "UPDATE usuarios SET nombre = ?, email = ? WHERE id = ?")
 
         # Debe fallar con tabla no permitida
-        with self.assertRaises(SecurityError):
-            construir_update_seguro("tabla_no_permitida", ["nombre"])
+        with self.assertRaises(SQLSecurityError):
+            self.builder.build_update_query("tabla_no_permitida", ["nombre = ?"], ["id = ?"])
 
     def test_construir_insert_seguro(self):
         """Prueba construcción de consultas INSERT seguras."""
         # INSERT simple
-        query, _ = construir_insert_seguro("users", ["nombre", "email", "password_hash"])
-        self.assertEqual(
-            query,
-            "INSERT INTO [users] ([nombre], [email], [password_hash]) VALUES (?, ?, ?)"
-        )
+        query = self.builder.build_insert_query("usuarios", ["nombre", "email", "password_hash"])
+        self.assertEqual(query, "INSERT INTO usuarios (nombre, email, password_hash) VALUES (?, ?, ?)")
 
         # Debe fallar con tabla no permitida
-        with self.assertRaises(SecurityError):
-            construir_insert_seguro("tabla_no_permitida", ["nombre"])
+        with self.assertRaises(SQLSecurityError):
+            self.builder.build_insert_query("tabla_no_permitida", ["nombre"])
 
-    def test_construir_delete_seguro(self):
-        """Prueba construcción de consultas DELETE seguras."""
-        # DELETE con WHERE
-        query, _ = construir_delete_seguro("users", "id = ?")
-        self.assertEqual(query, "DELETE FROM [users] WHERE id = ?")
+    def test_validar_identificador_sql(self):
+        """Prueba validación de identificadores SQL."""
+        # Identificador válido
+        self.assertEqual(self.validator.validate_sql_identifier("campo_valido"), "campo_valido")
 
-        # DELETE sin WHERE debe fallar (protección)
-        with self.assertRaises(SecurityError):
-            construir_delete_seguro("users")
+        # Identificador con palabra reservada peligrosa
+        with self.assertRaises(SQLSecurityError):
+            self.validator.validate_sql_identifier("drop")
 
-        # Debe fallar con tabla no permitida
-        with self.assertRaises(SecurityError):
-            construir_delete_seguro("tabla_no_permitida", "id = ?")
+        # Identificador con caracteres especiales
+        with self.assertRaises(SQLSecurityError):
+            self.validator.validate_sql_identifier("campo; DROP")
 
 
-class TestSanitizadorSQL(unittest.TestCase):
-    """Clase para pruebas de sanitizador_sql.py"""
+class TestDataSanitizer(unittest.TestCase):
+    """Clase para pruebas de data_sanitizer.py"""
 
-    def test_escapar_string_sql(self):
-        """Prueba función de escape para strings SQL."""
-        # Comprobar escape de comillas simples
-        self.assertEqual(escapar_string_sql("Let's test"), "Let''s test")
+    def setUp(self):
+        """Configurar el sanitizador para las pruebas."""
+        self.sanitizer = DataSanitizer()
 
-        # Comprobar con valor None
-        self.assertIsNone(escapar_string_sql(None))
+    def test_sanitize_string(self):
+        """Prueba sanitización de strings."""
+        # String normal
+        self.assertEqual(self.sanitizer.sanitize_string("texto normal"), "texto normal")
 
-        # Comprobar con un valor numérico
-        self.assertEqual(escapar_string_sql(123), "123")
+        # String con HTML
+        result = self.sanitizer.sanitize_string("<script>alert('xss')</script>", allow_html=False)
+        self.assertNotIn("<script>", result)
 
-    def test_sanitizar_numerico(self):
+        # String vacío
+        self.assertEqual(self.sanitizer.sanitize_string(""), "")
+
+        # String muy largo
+        long_text = "a" * 2000
+        result = self.sanitizer.sanitize_string(long_text, max_length=100)
+        self.assertEqual(len(result), 100)
+
+    def test_sanitize_numeric(self):
         """Prueba sanitización de valores numéricos."""
         # Entero válido
-        self.assertEqual(sanitizar_numerico("123", "int"), 123)
+        self.assertEqual(self.sanitizer.sanitize_numeric("123"), 123.0)
 
         # Float válido
-        self.assertEqual(sanitizar_numerico("123.45", "float"), 123.45)
+        self.assertEqual(self.sanitizer.sanitize_numeric("123.45"), 123.45)
 
         # Valor inválido
-        with self.assertRaises(Exception):
-            sanitizar_numerico("no-numero", "int")
+        self.assertIsNone(self.sanitizer.sanitize_numeric("no-numero"))
 
-    def test_sanitizar_fecha_sql(self):
-        """Prueba sanitización de fechas para SQL."""
-        # Fecha válida
-        self.assertEqual(sanitizar_fecha_sql("2023-05-15"), "2023-05-15")
+        # Con límites
+        result = self.sanitizer.sanitize_numeric(150, min_val=0, max_val=100)
+        self.assertEqual(result, 100)
 
-        # Fecha inválida
-        with self.assertRaises(Exception):
-            sanitizar_fecha_sql("15/05/2023")  # Formato incorrecto
+    def test_sanitize_email(self):
+        """Prueba sanitización de emails."""
+        # Email válido
+        self.assertEqual(self.sanitizer.sanitize_email("user@example.com"), "user@example.com")
 
-    def test_sanitizar_lista_valores(self):
-        """Prueba sanitización de listas de valores para SQL IN()."""
-        # Lista de strings
-        valores = ["uno", "dos's", "tres"]
-        resultado = sanitizar_lista_valores(valores, "str")
-        self.assertEqual(resultado, ["uno", "dos''s", "tres"])
+        # Email con caracteres peligrosos
+        result = self.sanitizer.sanitize_email("user<script>@example.com")
+        self.assertNotIn("<script>", result)
 
-        # Lista de enteros
-        valores = ["1", 2, "3"]
-        resultado = sanitizar_lista_valores(valores, "int")
-        self.assertEqual(resultado, [1, 2, 3])
+        # Email vacío
+        self.assertEqual(self.sanitizer.sanitize_email(""), "")
 
-    def test_validar_consulta_sql(self):
-        """Prueba validación de consultas SQL potencialmente peligrosas."""
-        # Consulta segura
-        self.assertTrue(validar_consulta_sql("SELECT id, nombre FROM users WHERE id = ?"))
+    def test_sanitize_phone(self):
+        """Prueba sanitización de teléfonos."""
+        # Teléfono válido
+        self.assertEqual(self.sanitizer.sanitize_phone("+1-234-567-8900"), "+1-234-567-8900")
 
-        # Consulta peligrosa (SQL Injection) - debe lanzar SecurityError
-        with self.assertRaises(SecurityError) as context:
-            validar_consulta_sql("SELECT * FROM users WHERE id = 1 OR 1=1")
-        self.assertIn("OR 1=1", str(context.exception))
+        # Teléfono con caracteres no válidos
+        result = self.sanitizer.sanitize_phone("+1<script>2345678900")
+        self.assertNotIn("<script>", result)
 
-        # Consulta peligrosa (DROP TABLE) - debe lanzar SecurityError
-        with self.assertRaises(SecurityError) as context:
-            validar_consulta_sql("DROP TABLE users")
-        # Verificar que se detectó el patrón DROP
-        self.assertTrue("DROP" in str(context.exception) or "drop" in str(context.exception).lower())
+        # Teléfono vacío
+        self.assertEqual(self.sanitizer.sanitize_phone(""), "")
 
-    def test_detectar_vulnerabilidades_consulta(self):
-        """Prueba detección de vulnerabilidades en consultas SQL."""
-        # Consulta segura
-        vulnerabilidades = detectar_vulnerabilidades_consulta("SELECT id FROM users WHERE username = ?")
-        self.assertEqual(len(vulnerabilidades), 0)
+    def test_sanitize_filename(self):
+        """Prueba sanitización de nombres de archivo."""
+        # Nombre válido
+        self.assertEqual(self.sanitizer.sanitize_filename("documento.pdf"), "documento.pdf")
 
-        # Consulta con SELECT *
-        vulnerabilidades = detectar_vulnerabilidades_consulta("SELECT * FROM users")
-        self.assertEqual(len(vulnerabilidades), 1)
-        self.assertEqual(vulnerabilidades[0]['tipo'], 'buena_practica')
+        # Nombre con caracteres peligrosos
+        result = self.sanitizer.sanitize_filename("archivo<script>.exe")
+        self.assertNotIn("<script>", result)
 
-        # Consulta con UNION
-        vulnerabilidades = detectar_vulnerabilidades_consulta(
-            "SELECT id FROM users UNION SELECT password FROM users"
-        )
-        self.assertTrue(any(v['tipo'] == 'patron_peligroso' for v in vulnerabilidades))
+        # Nombre vacío
+        self.assertEqual(self.sanitizer.sanitize_filename(""), "untitled")
+
+    def test_sanitize_form_data(self):
+        """Prueba sanitización de datos de formulario."""
+        form_data = {
+            "nombre": "Juan Pérez",
+            "email": "juan@example.com",
+            "telefono": "+1-234-567-8900",
+            "precio": "123.45"
+        }
+        
+        result = self.sanitizer.sanitize_form_data(form_data)
+        
+        self.assertIn("nombre", result)
+        self.assertEqual(result["email"], "juan@example.com")
+        self.assertEqual(result["telefono"], "+1-234-567-8900")
+
+    def test_sql_injection_detection(self):
+        """Prueba detección de SQL injection."""
+        # Texto con SQL injection
+        malicious_input = "'; DROP TABLE users; --"
+        result = self.sanitizer.sanitize_string(malicious_input)
+        
+        # Verificar que se detectó y bloqueó
+        self.assertIn("[BLOCKED]", result)
+
+    def test_convenience_functions(self):
+        """Prueba funciones de conveniencia."""
+        # Email
+        result = sanitize_input("user@example.com", "email")
+        self.assertEqual(result, "user@example.com")
+
+        # Numérico
+        result = sanitize_input("123.45", "numeric")
+        self.assertEqual(result, 123.45)
+
+        # Teléfono
+        result = sanitize_input("+1-234-567-8900", "phone")
+        self.assertEqual(result, "+1-234-567-8900")
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

@@ -21,7 +21,7 @@ from unittest.mock import MagicMock
 
 import pytest
 
-from modules.compras.pedidos.model import PedidosModel
+from rexus.modules.compras.pedidos.model import PedidosModel
 
     PEDIDOS_MODEL_AVAILABLE = False
 

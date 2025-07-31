@@ -405,19 +405,26 @@ class TestInteraccionesAvanzadasUsuarios:
 if __name__ == "__main__":
     pytest.main([__file__, "-v"])
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
-from modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
+from rexus.modules.usuarios.view import UsuariosView
 import sys
 
 from PyQt6.QtCore import Qt, QTimer

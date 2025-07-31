@@ -457,6 +457,13 @@ class TestInventarioViewPerformanceClicks:
             assert (end_time - start_time) < 0.5
 
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 import time
 from pathlib import Path
 
@@ -480,4 +487,4 @@ from PyQt6.QtWidgets import (
     unittest.mock,
 )
 
-from modules.inventario.view import InventarioView
+from rexus.modules.inventario.view import InventarioView

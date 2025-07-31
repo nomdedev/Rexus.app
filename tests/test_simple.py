@@ -69,10 +69,17 @@ def test_audit():
             usuario_id=0,
             modulo="testing",
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 from core.database import DatabaseConnection
-from modules.auditoria.model import AuditoriaModel
-from modules.usuarios.model import UsuariosModel
+from rexus.modules.auditoria.model import AuditoriaModel
+from rexus.modules.usuarios.model import UsuariosModel
 
             tipo_evento="test",
             detalle="Test automático",

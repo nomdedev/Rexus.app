@@ -19,7 +19,7 @@ sys.path.append(str(ROOT_DIR))
 
 # Importar el modelo real de auditoría
 try:
-    from src.modules.auditoria.model import AuditoriaModel
+    from rexus.modules.auditoria.model import AuditoriaModel
 except ImportError:
     pytest.skip("Módulo auditoria no disponible", allow_module_level=True)
 

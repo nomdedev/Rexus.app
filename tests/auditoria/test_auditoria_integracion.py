@@ -1,12 +1,19 @@
-# from modules.auditoria.model import AuditoriaModel # Movido a sección try/except
+# from rexus.modules.auditoria.model import AuditoriaModel # Movido a sección try/except
 
+
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
 
 import re
 import unittest
 from unittest.mock import Mock
 
 try:
-    from modules.auditoria.model import AuditoriaModel
+    from rexus.modules.auditoria.model import AuditoriaModel
 except ImportError:
     AuditoriaModel = None
 

@@ -10,6 +10,13 @@ class TestMantenimientoControllerComplete(unittest.TestCase):
         """Configuración de clase para PyQt6."""
         if not QApplication.instance():
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 import unittest
 from unittest.mock import MagicMock, Mock, call, patch
 
@@ -23,12 +30,12 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from modules.mantenimiento.controller import (
+from rexus.modules.mantenimiento.controller import (
     MantenimientoController,
     PermisoAuditoria,
     permiso_auditoria_mantenimiento,
 )
-from modules.mantenimiento.model import MantenimientoModel
+from rexus.modules.mantenimiento.model import MantenimientoModel
 
             cls.app = QApplication(sys.argv)
         else:

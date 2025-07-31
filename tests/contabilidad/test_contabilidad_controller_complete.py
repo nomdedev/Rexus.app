@@ -895,6 +895,13 @@ class TestContabilidadControllerPermisos:
             # El decorador puede usar label en lugar de label_titulo para mostrar el mensaje
             assert (mock_view.label_titulo.setText.called or
                    mock_view.label.setText.called or
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 from unittest.mock import MagicMock, Mock, patch
@@ -902,7 +909,7 @@ from unittest.mock import MagicMock, Mock, patch
 import pytest
 from PyQt6.QtWidgets import QApplication, QTableWidgetItem
 
-from modules.contabilidad.controller import ContabilidadController
+from rexus.modules.contabilidad.controller import ContabilidadController
 
                    not mock_usuarios_model.tiene_permiso.return_value)
 

@@ -14,7 +14,7 @@ except ImportError:
     class ProduccionModel:
         def __init__(self, db_connection):
 from pathlib import Path
-from modules.produccion.model import ProduccionModel
+from rexus.modules.produccion.model import ProduccionModel
 import sys
 
 import pytest

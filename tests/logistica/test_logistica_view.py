@@ -1,11 +1,18 @@
 # Importar la vista a testear
-# from modules.logistica.view import LogisticaView # Movido a sección try/except
+# from rexus.modules.logistica.view import LogisticaView # Movido a sección try/except
 
 app = QApplication.instance() or QApplication(sys.argv)
 
 class DummyController:
     def __init__(self):
         self.edit_called = False
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import sys
 
 from PyQt6.QtWidgets import QApplication

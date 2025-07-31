@@ -18,6 +18,13 @@ Flujo de prueba:
 9. Validar datos en toda la aplicación
 """
 
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 from datetime import datetime, date, timedelta
@@ -30,16 +37,16 @@ sys.path.insert(0, str(ROOT_DIR))
 
 try:
     from src.core.database import DatabaseConnection
-    from src.modules.obras.model import ObrasModel
-    from src.modules.administracion.recursos_humanos.model import RecursosHumanosModel
-    from src.modules.administracion.contabilidad.model import ContabilidadModel
-    from src.modules.pedidos.model import PedidosModel
-    from src.modules.herrajes.model import HerrajesModel
-    from src.modules.vidrios.model import VidriosModel
-    from src.modules.mantenimiento.model import MantenimientoModel
-    from src.modules.inventario.model import InventarioModel
-    from src.modules.logistica.model import LogisticaModel
-    from src.modules.auditoria.model import AuditoriaModel
+    from rexus.modules.obras.model import ObrasModel
+    from rexus.modules.administracion.recursos_humanos.model import RecursosHumanosModel
+    from rexus.modules.administracion.contabilidad.model import ContabilidadModel
+    from rexus.modules.pedidos.model import PedidosModel
+    from rexus.modules.herrajes.model import HerrajesModel
+    from rexus.modules.vidrios.model import VidriosModel
+    from rexus.modules.mantenimiento.model import MantenimientoModel
+    from rexus.modules.inventario.model import InventarioModel
+    from rexus.modules.logistica.model import LogisticaModel
+    from rexus.modules.auditoria.model import AuditoriaModel
 except ImportError as e:
     print(f"❌ Error importando módulos: {e}")
     sys.exit(1)

@@ -96,7 +96,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, call, patch
 
-from modules.configuracion.model import ConfiguracionModel as RealConfiguracionModel
+from rexus.modules.configuracion.model import ConfiguracionModel as RealConfiguracionModel
 
 
 class TestConfiguracionBasico(unittest.TestCase):

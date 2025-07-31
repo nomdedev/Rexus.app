@@ -12,12 +12,19 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 def test_headers_correctos():
     app = QApplication.instance() or QApplication([])
     view = ObrasView()
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
 import os
 import sys
 
 from PyQt6.QtWidgets import QApplication
 
-from modules.obras.view import ObrasView
+from rexus.modules.obras.view import ObrasView
     headers = []
     for i in range(view.tabla_obras.columnCount()):
         item = view.tabla_obras.horizontalHeaderItem(i)

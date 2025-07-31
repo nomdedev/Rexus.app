@@ -518,12 +518,19 @@ class TestComprasIntegrationFixed:
                 # Step 2: Agregar item
 import sys
 from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
+from pathlib import Path
 from unittest.mock import MagicMock, Mock, patch
 
 import pytest
 
-from modules.compras.controller import ComprasController
-from modules.compras.model import ComprasModel
+from rexus.modules.compras.controller import ComprasController
+from rexus.modules.compras.model import ComprasModel
 
                 model.agregar_item_pedido(1, 1, 5, "piezas")
 

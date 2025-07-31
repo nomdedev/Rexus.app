@@ -20,12 +20,19 @@ def app():
 @pytest.mark.parametrize("boton,icono_esperado", [
     ("boton_agregar_vidrios_obra", ICONOS_ESPERADOS['add-material']),
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 
 import pytest
 from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QApplication, QDialog, QPushButton, QTableWidgetItem
 
-from modules.vidrios.view import VidriosView
+from rexus.modules.vidrios.view import VidriosView
 
 ])
 def test_iconos_botones_principales(app, boton, icono_esperado):

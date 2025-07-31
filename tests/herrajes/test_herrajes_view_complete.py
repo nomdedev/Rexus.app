@@ -21,8 +21,15 @@ if not QApplication.instance():
 # Agregar el directorio raíz al path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-# from modules.herrajes.view import HerrajesView # Movido a sección try/except, FeedbackBanner
+# from rexus.modules.herrajes.view import HerrajesView # Movido a sección try/except, FeedbackBanner
 
+
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
 
 import os
 import sys

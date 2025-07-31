@@ -3,6 +3,7 @@ Data Sanitizer - Rexus.app
 Comprehensive data sanitization for all user inputs.
 """
 
+import os
 import re
 import html
 import logging
@@ -80,7 +81,7 @@ class DataSanitizer:
         if self.sql_regex.search(text):
             self.logger.warning(f"Potential SQL injection attempt detected: {text[:100]}")
             # Replace suspicious patterns with safe alternatives
-            text = re.sub(self.sql_regex, '[BLOCKED]', text, flags=re.IGNORECASE)
+            text = self.sql_regex.sub('[BLOCKED]', text)
         
         return text
     

@@ -1,8 +1,15 @@
 class MockDBConnection:
     def __init__(self):
         self.last_query = None
-from modules.contabilidad.model import ContabilidadModel
-from modules.obras.model import ObrasModel
+import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+from rexus.modules.contabilidad.model import ContabilidadModel
+from rexus.modules.obras.model import ObrasModel
 from unittest.mock import MagicMock
 import unittest
         self.last_params = None

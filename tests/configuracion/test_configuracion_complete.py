@@ -56,7 +56,7 @@ import unittest
 from pathlib import Path
 from unittest.mock import MagicMock, patch
 
-from modules.configuracion import controller, model
+from rexus.modules.configuracion import controller, model
 
             # Es opcional que tenga modelo
             self.skipTest("Modelo de configuracion no disponible")

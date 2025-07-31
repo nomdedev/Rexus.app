@@ -655,6 +655,13 @@ class TestPedidosViewPerformance:
             end_time = time.time()
 
 import sys
+from pathlib import Path
+
+# Add project root to path
+ROOT_DIR = Path(__file__).resolve().parents[2]
+sys.path.append(str(ROOT_DIR))
+
+import sys
 import time
 from pathlib import Path
 
@@ -682,6 +689,6 @@ from PyQt6.QtWidgets import (  # Debe procesar rápidamente
     unittest.mock,
 )
 
-from modules.pedidos.view import PedidosView
+from rexus.modules.pedidos.view import PedidosView
 
     pytest.main([__file__, "-v"])
