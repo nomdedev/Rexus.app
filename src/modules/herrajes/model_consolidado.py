@@ -8,7 +8,8 @@ Actualizado para usar la nueva estructura de base de datos consolidada:
 """
 
 from typing import Any, Dict, List, Optional, Tuple
-from src.utils.sql_security import validate_table_name, load_sql_script, SQLSecurityError
+from src.utils.sql_security import validate_table_name, SQLSecurityError
+from src.utils.sql_loader import load_sql
 
 
 class HerrajesModel:
@@ -144,25 +145,13 @@ class HerrajesModel:
             tabla_productos = self._validate_table_name(self.tabla_productos)
 
             if tabla_productos == "productos":
-                # Usar tabla consolidada filtrando por categoría HERRAJE
-                query = """
-                SELECT 
-                    id, codigo, descripcion, categoria, subcategoria, tipo,
-                    stock_actual, stock_minimo, stock_maximo, stock_reservado, stock_disponible,
-                    precio_unitario, precio_promedio, costo_unitario, unidad_medida,
-                    ubicacion, color, material, marca, modelo, acabado,
-                    proveedor, codigo_proveedor, tiempo_entrega_dias,
-                    observaciones, codigo_qr, imagen_url, es_critico,
-                    estado, activo, fecha_creacion, fecha_actualizacion
-                FROM productos
-                WHERE categoria = 'HERRAJE' AND activo = 1
-                """
+                # Cargar query desde archivo SQL externo
+                query = load_sql("herrajes", "select_all_herrajes")
             else:
                 # Fallback a tabla legacy herrajes
                 try:
-                    script_path = "scripts/sql/select_herrajes.sql"
-                    query = load_sql_script(script_path)
-                except SQLSecurityError as e:
+                    query = load_sql("herrajes", "select_herrajes")
+                except Exception as e:
                     print(f"[ERROR HERRAJES] Error cargando script SQL: {e}")
                     query = f"SELECT * FROM {tabla_productos} WHERE estado = 'ACTIVO'"
 
@@ -644,10 +633,8 @@ class HerrajesModel:
             tabla_productos = self._validate_table_name(self.tabla_productos)
 
             if tabla_productos == "productos":
-                cursor.execute("""
-                    SELECT * FROM productos 
-                    WHERE id = ? AND categoria = 'HERRAJE' AND activo = 1
-                """, (herraje_id,))
+                sql_select = load_sql("herrajes", "select_by_id")
+                cursor.execute(sql_select, (herraje_id,))
             else:
                 cursor.execute("""
                     SELECT h.*, i.stock_actual, i.stock_reservado, 

@@ -25,7 +25,8 @@
       "Bash(touch:*)",
       "Bash(grep:*)",
       "Bash(rg:*)",
-      "Bash(sqlcmd:*)"
+      "Bash(sqlcmd:*)",
+      "Bash(PYTHONPATH=. python scripts/test/test_logistica_ascii.py)"
     ],
     "deny": []
   }

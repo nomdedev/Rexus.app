@@ -7,6 +7,11 @@ Gestiona la autenticación, permisos y CRUD completo de usuarios.
 import datetime
 import hashlib
 from typing import Any, Dict, List, Optional, Tuple
+from src.utils.sql_loader import load_sql
+from src.utils.form_validator import form_validator
+from src.utils.security_manager import security_manager
+from src.utils.data_sanitizer import data_sanitizer
+from src.utils.audit_logger import audit_logger, AuditEventType, AuditSeverity
 
 
 class UsuariosModel:
@@ -76,18 +81,20 @@ class UsuariosModel:
         )
         return
 
-    def obtener_usuario_por_nombre(self, nombre_usuario):
-        """Obtiene un usuario por su nombre."""
+    def obtener_usuario_por_nombre(self, nombre_usuario, ip_address=None):
+        """Obtiene un usuario por su nombre con validaciones de seguridad."""
         if not self.db_connection:
+            return None
+
+        # Check if account or IP is locked
+        is_locked, lock_reason = security_manager.is_account_locked(nombre_usuario, ip_address)
+        if is_locked:
+            print(f"[SECURITY] Login attempt blocked: {lock_reason}")
             return None
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_select = """
-            SELECT id, usuario, password_hash, nombre_completo, email, telefono, rol, estado,
-                   fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos, bloqueado_hasta, avatar, configuracion_personal, activo
-            FROM usuarios WHERE usuario = ?
-            """
+            sql_select = load_sql("usuarios", "select_user_by_username")
             cursor.execute(sql_select, (nombre_usuario,))
             row = cursor.fetchone()
             print(
@@ -147,6 +154,77 @@ class UsuariosModel:
                 "activo",
             ]
             return {clave: None for clave in claves_esperadas}
+    
+    def authenticate_user(self, username: str, password: str, ip_address: str = None) -> Tuple[bool, str, Optional[Dict]]:
+        """
+        Authenticate user with security controls.
+        
+        Args:
+            username: Username to authenticate
+            password: Password to verify
+            ip_address: IP address of the request
+            
+        Returns:
+            Tuple[bool, str, Optional[Dict]]: (success, message, user_data)
+        """
+        # Validate input
+        valid, error = form_validator.validate_username(username)
+        if not valid:
+            return False, f"Usuario inválido: {error}", None
+        
+        # Check if account or IP is locked
+        is_locked, lock_reason = security_manager.is_account_locked(username, ip_address)
+        if is_locked:
+            return False, lock_reason, None
+        
+        # Get user data
+        user_data = self.obtener_usuario_por_nombre(username, ip_address)
+        if not user_data:
+            # Record failed attempt even if user doesn't exist (to prevent enumeration)
+            security_manager.record_failed_attempt(username, ip_address)
+            
+            # Log failed login attempt
+            audit_logger.log_user_login(
+                username=username,
+                user_id=None,
+                ip_address=ip_address or "unknown",
+                success=False
+            )
+            
+            return False, "Usuario o contraseña incorrectos", None
+        
+        # Check if user is active
+        if not user_data.get('activo', True):
+            security_manager.record_failed_attempt(username, ip_address)
+            return False, "Cuenta desactivada", None
+        
+        # Verify password
+        stored_hash = user_data.get('password_hash', '')
+        if not self._verificar_password(password, stored_hash):
+            security_manager.record_failed_attempt(username, ip_address)
+            return False, "Usuario o contraseña incorrectos", None
+        
+        # Authentication successful
+        security_manager.record_successful_login(username, ip_address)
+        
+        # Log successful login
+        audit_logger.log_user_login(
+            username=username,
+            user_id=user_data['id'],
+            ip_address=ip_address or "unknown",
+            success=True
+        )
+        
+        # Update last login
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_update = load_sql("usuarios", "update_last_login")
+            cursor.execute(sql_update, (user_data['id'],))
+            self.db_connection.connection.commit()
+        except Exception as e:
+            print(f"[WARNING] Could not update last login: {e}")
+        
+        return True, "Autenticación exitosa", user_data
 
     def obtener_modulos_permitidos(self, usuario_data):
         """Obtiene los módulos permitidos para un usuario."""
@@ -177,7 +255,7 @@ class UsuariosModel:
 
     def crear_usuario(self, datos_usuario: Dict[str, Any]) -> Tuple[bool, str]:
         """
-        Crea un nuevo usuario en el sistema.
+        Crea un nuevo usuario en el sistema con validaciones completas.
 
         Args:
             datos_usuario: Diccionario con los datos del usuario
@@ -188,23 +266,27 @@ class UsuariosModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
+        # Sanitize input data
+        datos_usuario = data_sanitizer.sanitize_form_data(datos_usuario)
+        
+        # Validate form data
+        is_valid, errors = form_validator.validate_user_form(datos_usuario)
+        if not is_valid:
+            return False, "; ".join(errors)
+
         try:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar que el usuario no exista
-            cursor.execute(
-                "SELECT COUNT(*) FROM usuarios WHERE usuario = ?",
-                (datos_usuario["usuario"],),
-            )
+            sql_check_username = load_sql("usuarios", "check_username_exists")
+            cursor.execute(sql_check_username, (datos_usuario["usuario"],))
             if cursor.fetchone()[0] > 0:
                 return False, f"El usuario '{datos_usuario['usuario']}' ya existe"
 
             # Verificar que el email no exista
             if datos_usuario.get("email"):
-                cursor.execute(
-                    "SELECT COUNT(*) FROM usuarios WHERE email = ?",
-                    (datos_usuario["email"],),
-                )
+                sql_check_email = load_sql("usuarios", "check_email_exists")
+                cursor.execute(sql_check_email, (datos_usuario["email"],))
                 if cursor.fetchone()[0] > 0:
                     return (
                         False,

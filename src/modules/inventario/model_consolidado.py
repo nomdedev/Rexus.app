@@ -12,6 +12,7 @@ from io import BytesIO
 from typing import Any, Dict, List
 import qrcode
 from PIL import Image
+from src.utils.sql_loader import load_sql
 
 
 class InventarioModel:
@@ -114,20 +115,9 @@ class InventarioModel:
             cursor = self.db_connection.cursor()
             tabla_productos = self._validate_table_name(self.tabla_productos)
             
-            # Query base para tabla consolidada
+            # Cargar query desde archivo SQL externo
             if tabla_productos == "productos":
-                query = """
-                SELECT 
-                    id, codigo, descripcion, categoria, subcategoria, tipo,
-                    stock_actual, stock_minimo, stock_maximo, stock_reservado,
-                    stock_disponible, precio_unitario, precio_promedio, costo_unitario,
-                    unidad_medida, ubicacion, color, material, marca, modelo, acabado,
-                    proveedor, codigo_proveedor, observaciones, codigo_qr, imagen_url,
-                    estado, activo, fecha_creacion, fecha_actualizacion,
-                    usuario_creacion, usuario_modificacion
-                FROM productos
-                WHERE activo = 1
-                """
+                query = load_sql("inventario", "select_all_productos")
             else:
                 # Fallback para tabla legacy
                 query = """
@@ -209,9 +199,7 @@ class InventarioModel:
             tabla_productos = self._validate_table_name(self.tabla_productos)
 
             if tabla_productos == "productos":
-                sql_select = """
-                SELECT * FROM productos WHERE id = ? AND activo = 1
-                """
+                sql_select = load_sql("inventario", "select_by_id")
             else:
                 sql_select = """
                 SELECT * FROM inventario_perfiles WHERE id = ? AND activo = 1
@@ -488,16 +476,8 @@ class InventarioModel:
             tabla_movimientos = self._validate_table_name(self.tabla_movimientos)
 
             if tabla_movimientos == "movimientos_inventario":
-                # Usar tabla consolidada
-                sql_select = """
-                SELECT 
-                    id, producto_id, codigo_producto, descripcion_producto, categoria_producto,
-                    tipo_movimiento, cantidad, unidad_medida, stock_anterior, stock_nuevo,
-                    precio_unitario, documento_referencia, obra_id, motivo, observaciones,
-                    usuario_movimiento, fecha_movimiento
-                FROM movimientos_inventario
-                WHERE activo = 1 AND estado = 'CONFIRMADO'
-                """
+                # Cargar query desde archivo SQL externo
+                sql_select = load_sql("inventario", "select_movimientos")
 
                 params = []
                 if producto_id:
@@ -558,11 +538,7 @@ class InventarioModel:
             tabla_productos = self._validate_table_name(self.tabla_productos)
 
             if tabla_productos == "productos":
-                sql_select = """
-                SELECT DISTINCT categoria FROM productos
-                WHERE categoria IS NOT NULL AND categoria != '' AND activo = 1
-                ORDER BY categoria
-                """
+                sql_select = load_sql("inventario", "select_categorias")
             else:
                 sql_select = """
                 SELECT DISTINCT tipo FROM inventario_perfiles
@@ -625,9 +601,7 @@ class InventarioModel:
             tabla_productos = self._validate_table_name(self.tabla_productos)
 
             if tabla_productos == "productos":
-                sql_select = """
-                SELECT * FROM productos WHERE codigo = ? AND activo = 1
-                """
+                sql_select = load_sql("inventario", "select_by_codigo")
             else:
                 sql_select = """
                 SELECT * FROM inventario_perfiles WHERE codigo = ? AND activo = 1
