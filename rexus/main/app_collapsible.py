@@ -10,6 +10,7 @@ from typing import Any, Dict, Optional
 # Cargar variables de entorno antes de cualquier otra importación
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
     print("[ENV] Variables de entorno cargadas desde .env")
 except ImportError:
@@ -433,7 +434,7 @@ class MainWindow(QMainWindow):
                 min-height: 100px;
             }}
             QFrame:hover {{
-                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
         """)
 
@@ -636,7 +637,7 @@ def main():
         # user_data es el dict completo emitido por login_dialog
         modulos_permitidos = security_manager.get_user_modules(user_data.get("id", 1))
         main_window = MainWindow(user_data, modulos_permitidos)
-        main_window.show()
+        main_window.showFullScreen()
         login_dialog.close()
 
     def handle_login_failed(error):

@@ -417,7 +417,7 @@ def generar_informe_html(tablas, permisos, vulnerabilidades, recomendaciones):
             padding: 20px;
             margin-bottom: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            # box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente
         }}
         table {{
             width: 100%;
