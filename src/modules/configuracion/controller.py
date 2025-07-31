@@ -20,14 +20,12 @@ class ConfiguracionController(QObject):
     configuracion_exportada = pyqtSignal(str)  # archivo
     configuracion_importada = pyqtSignal(str)  # archivo
     
-    def __init__(self, view=None, db_connection=None, usuario_actual=None):
+    def __init__(self, model, view, db_connection=None, usuario_actual=None):
         super().__init__()
+        self.model = model
         self.view = view
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-        
-        # Inicializar modelo
-        self.model = ConfiguracionModel(db_connection)
         
         # Conectar señales si hay vista
         if self.view:

@@ -23,7 +23,9 @@
       "Bash(timeout:*)",
       "Bash(set PYTHONPATH=.)",
       "Bash(touch:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(sqlcmd:*)"
     ],
     "deny": []
   }

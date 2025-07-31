@@ -819,6 +819,20 @@ class InventarioView(QWidget):
         if self.controller:
             self.controller.generar_reporte_reservas(obra_id)
 
+    def filtrar_inventario_tiempo_real(self, texto_busqueda=""):
+        """Filtra el inventario en tiempo real mientras el usuario escribe."""
+        if self.controller:
+            filtros = {
+                "busqueda": texto_busqueda,
+                "categoria": getattr(self, 'categoria_filter', None) and self.categoria_filter.currentText() 
+                    if hasattr(self, 'categoria_filter') and self.categoria_filter.currentText() != "Todas las categorías"
+                    else None,
+                "estado": getattr(self, 'estado_stock_filter', None) and self.estado_stock_filter.currentText()
+                    if hasattr(self, 'estado_stock_filter') and self.estado_stock_filter.currentText() != "Todos"
+                    else None,
+            }
+            self.controller.buscar_productos(filtros)
+
     def filtrar_disponibilidad(self):
         """Filtra la tabla de disponibilidad."""
         if self.controller:
@@ -839,6 +853,11 @@ class InventarioView(QWidget):
         """Actualiza la tabla de disponibilidad."""
         if self.controller:
             self.controller.cargar_disponibilidad()
+
+    def buscar_productos(self, filtros=None):
+        """Busca productos en el inventario según los filtros especificados."""
+        if self.controller:
+            self.controller.buscar_productos(filtros or {})
 
     def ver_detalle_disponibilidad(self, item):
         """Muestra el detalle de disponibilidad de un producto."""

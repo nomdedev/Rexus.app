@@ -193,8 +193,13 @@ class AdministracionView(QWidget):
 
         for i, (titulo, key, color) in enumerate(cards_data):
             card = self.create_info_card(titulo, "0", color, small=True)
+            card.setFixedSize(40, 40)
             self.cards_resumen[key] = card
             resumen_layout.addWidget(card, i // 3, i % 3)
+            resumen_layout.setRowMinimumHeight(i // 3, 40)
+            resumen_layout.setColumnMinimumWidth(i % 3, 40)
+            resumen_layout.setRowStretch(i // 3, 0)
+            resumen_layout.setColumnStretch(i % 3, 0)
 
         layout.addWidget(resumen_frame)
 
@@ -1396,12 +1401,12 @@ class AdministracionView(QWidget):
         """Crea una tarjeta de información."""
         card = QFrame()
         # Ajuste para cuadrados más pequeños y box-shadow sutil
-        padding = "6px" if small else "12px"
-        margin = "2px" if small else "6px"
-        title_size = "10px" if small else "12px"
-        value_size = "14px" if small else "18px"
-        min_width = "50px" if small else "120px"
-        min_height = "30px" if small else "60px"
+        padding = "2px" if small else "8px"
+        margin = "1px" if small else "4px"
+        title_size = "8px"
+        value_size = "10px"
+        min_width = "40px"
+        min_height = "40px"
 
         card.setStyleSheet(f"""
             QFrame {{
@@ -1422,7 +1427,7 @@ class AdministracionView(QWidget):
         """)
 
         layout = QVBoxLayout(card)
-        layout.setSpacing(8)
+        layout.setSpacing(2)
 
         titulo_label = QLabel(titulo)
         titulo_label.setStyleSheet(f"""
@@ -1432,10 +1437,12 @@ class AdministracionView(QWidget):
                 font-weight: bold;
                 background: transparent;
                 border: none;
+                padding: 0px;
+                margin: 0px;
             }}
         """)
         titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        titulo_label.setWordWrap(True)
+        titulo_label.setWordWrap(False)
         layout.addWidget(titulo_label)
 
         valor_label = QLabel(valor)
@@ -1446,6 +1453,8 @@ class AdministracionView(QWidget):
                 font-weight: bold;
                 background: transparent;
                 border: none;
+                padding: 0px;
+                margin: 0px;
             }}
         """)
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1611,11 +1620,14 @@ class AdministracionView(QWidget):
             QLineEdit,
             QTextEdit,
         )
+
         from rexus.utils.form_styles import ModernFormBuilder, apply_modern_form_styles
 
         # Crear constructor de formulario moderno
         form_builder = ModernFormBuilder(self)
-        dialog = form_builder.create_form_dialog("💾 Nuevo Recibo", width=550, height=450)
+        dialog = form_builder.create_form_dialog(
+            "💾 Nuevo Recibo", width=550, height=450
+        )
 
         # Aplicar estilos modernos
         apply_modern_form_styles(dialog)
@@ -1626,28 +1638,36 @@ class AdministracionView(QWidget):
         # Campos del formulario
         self.recibo_numero = QLineEdit()
         self.recibo_numero.setPlaceholderText("Ej: REC-001")
-        form_builder.add_form_field("Número de Recibo", self.recibo_numero, required=True)
+        form_builder.add_form_field(
+            "Número de Recibo", self.recibo_numero, required=True
+        )
 
         self.recibo_cliente = QLineEdit()
         self.recibo_cliente.setPlaceholderText("Nombre del cliente")
         form_builder.add_form_field("Cliente", self.recibo_cliente, required=True)
 
         self.recibo_concepto = QComboBox()
-        self.recibo_concepto.addItems([
-            "Pago de Obra",
-            "Adelanto de Trabajo",
-            "Pago de Materiales",
-            "Servicios Profesionales",
-            "Otros",
-        ])
+        self.recibo_concepto.addItems(
+            [
+                "Pago de Obra",
+                "Adelanto de Trabajo",
+                "Pago de Materiales",
+                "Servicios Profesionales",
+                "Otros",
+            ]
+        )
         form_builder.add_form_field("Concepto", self.recibo_concepto, required=True)
 
         self.recibo_monto = QDoubleSpinBox()
         self.recibo_monto.setRange(0, 999999)
         self.recibo_monto.setDecimals(2)
         self.recibo_monto.setSuffix(" $")
-        form_builder.add_form_field("Monto", self.recibo_monto, required=True, 
-                                   help_text="Ingrese el monto en pesos argentinos")
+        form_builder.add_form_field(
+            "Monto",
+            self.recibo_monto,
+            required=True,
+            help_text="Ingrese el monto en pesos argentinos",
+        )
 
         self.recibo_fecha = QDateEdit()
         self.recibo_fecha.setDate(QDate.currentDate())
@@ -1657,14 +1677,19 @@ class AdministracionView(QWidget):
         self.recibo_observaciones = QTextEdit()
         self.recibo_observaciones.setMaximumHeight(80)
         self.recibo_observaciones.setPlaceholderText("Observaciones adicionales...")
-        form_builder.add_form_field("Observaciones", self.recibo_observaciones, 
-                                   help_text="Información adicional opcional")
+        form_builder.add_form_field(
+            "Observaciones",
+            self.recibo_observaciones,
+            help_text="Información adicional opcional",
+        )
 
         # Botones con estilos modernos
-        form_builder.add_button_row([
-            ("💾 Guardar Recibo", lambda: self.guardar_recibo(dialog), "success"),
-            ("❌ Cancelar", dialog.reject, "danger")
-        ])
+        form_builder.add_button_row(
+            [
+                ("💾 Guardar Recibo", lambda: self.guardar_recibo(dialog), "success"),
+                ("❌ Cancelar", dialog.reject, "danger"),
+            ]
+        )
 
         dialog.exec()
 

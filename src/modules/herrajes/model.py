@@ -6,7 +6,7 @@ Gestiona la compra por obra y asociación con proveedores.
 """
 
 from typing import Any, Dict, List, Optional, Tuple
-from rexus.utils.sql_security import validate_table_name, load_sql_script, SQLSecurityError
+from src.utils.sql_security import validate_table_name, load_sql_script, SQLSecurityError
 
 
 class HerrajesModel:

@@ -238,16 +238,31 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al actualizar estadísticas: {str(e)}")
 
-    def buscar_productos(self):
+    def cargar_inventario(self):
+        """Carga el inventario completo en la vista."""
+        try:
+            print("[INVENTARIO CONTROLLER] Iniciando carga completa de inventario...")
+            if self.model and self.view:
+                productos = self.model.obtener_todos_productos()
+                self.view.cargar_inventario_en_tabla(productos)
+                print(f"[INVENTARIO CONTROLLER] Inventario cargado: {len(productos)} productos")
+                self.actualizar_estadisticas()
+        except Exception as e:
+            print(f"[INVENTARIO CONTROLLER] Error en cargar_inventario: {e}")
+            self.error_ocurrido.emit(f"Error al cargar inventario: {str(e)}")
+
+    def buscar_productos(self, filtros=None):
         """Realiza búsqueda de productos."""
         try:
             if self.model and self.view:
-                filtros = {
-                    "busqueda": self.view.busqueda_input.text(),
-                    "categoria": self.view.categoria_combo.currentText()
-                    if self.view.categoria_combo.currentText() != "Todas"
-                    else None,
-                }
+                if filtros is None:
+                    # Usar filtros de la interfaz si no se proporcionan
+                    filtros = {
+                        "busqueda": self.view.busqueda_input.text() if hasattr(self.view, 'busqueda_input') else "",
+                        "categoria": self.view.categoria_combo.currentText()
+                        if hasattr(self.view, 'categoria_combo') and self.view.categoria_combo.currentText() != "Todas"
+                        else None,
+                    }
 
                 productos = self.model.buscar_productos(filtros)
                 self.view.cargar_inventario_en_tabla(productos)
