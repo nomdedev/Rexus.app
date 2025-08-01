@@ -4,22 +4,15 @@ Vista de Inventario
 Interfaz de usuario moderna para la gestión del inventario con sistema de reservas.
 """
 
-import datetime
-from typing import Any, Dict
-
-from PyQt6.QtCore import QDate, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QAbstractItemView,
-    QCheckBox,
     QComboBox,
-    QDateEdit,
     QDialog,
-    QDialogButtonBox,
     QDoubleSpinBox,
     QFormLayout,
     QFrame,
-    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
@@ -37,12 +30,65 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from rexus.utils.form_validators import FormValidator, FormValidatorManager, validacion_codigo_producto
+# Importar validadores con manejo de errores
+try:
+    from rexus.utils.form_validators import (
+        FormValidator,
+        FormValidatorManager,
+        validacion_codigo_producto,
+    )
+
+    VALIDATORS_AVAILABLE = True
+except ImportError:
+    print("[INFO] Form validators not available, using basic validation")
+    VALIDATORS_AVAILABLE = False
+
+    # Crear clases mock para evitar errores
+    class FormValidator:
+        @staticmethod
+        def validar_campo_obligatorio(value, name):
+            return bool(value.strip() if hasattr(value, "strip") else value)
+
+        @staticmethod
+        def validar_numero(value, min_val=None, max_val=None):
+            try:
+                num = float(value)
+                if min_val is not None and num < min_val:
+                    return False
+                if max_val is not None and num > max_val:
+                    return False
+                return True
+            except:
+                return False
+
+    class FormValidatorManager:
+        def __init__(self):
+            self.validaciones = []
+
+        def agregar_validacion(self, widget, validator, *args):
+            pass
+
+        def validar_formulario(self):
+            return True, []
+
+        def obtener_mensajes_error(self):
+            return []
+
+    def validacion_codigo_producto(value):
+        return bool(value.strip() if hasattr(value, "strip") else value)
+
 
 from .dialogs import ReservaDialog
+from .dialogs.missing_dialogs import (
+    DialogoEditarProducto,
+    DialogoHistorialProducto,
+    DialogoMovimientoInventario,
+)
 
 
 class InventarioView(QWidget):
+    # ...existing code...
+
     """Vista principal del módulo de inventario con sistema de reservas."""
 
     # Señales
@@ -183,7 +229,7 @@ class InventarioView(QWidget):
         # Conectar eventos con búsqueda en tiempo real
         self.busqueda_input.textChanged.connect(self.filtrar_inventario_tiempo_real)
         self.categoria_combo.currentTextChanged.connect(self.filtrar_inventario)
-        self.buscar_btn.clicked.connect(self.filtrar_inventario)  
+        self.buscar_btn.clicked.connect(self.filtrar_inventario)
         self.limpiar_btn.clicked.connect(self.limpiar_filtros_inventario)
 
         # Separador visual
@@ -198,31 +244,37 @@ class InventarioView(QWidget):
         self.nuevo_producto_btn.setToolTip("Nuevo Producto")
         self.nuevo_producto_btn.clicked.connect(self.mostrar_dialogo_nuevo_producto)
         control_layout.addWidget(self.nuevo_producto_btn)
-        
+
         self.editar_producto_btn = QPushButton("✏️")
         self.editar_producto_btn.setMaximumWidth(35)
         self.editar_producto_btn.setToolTip("Editar Producto")
+        self.editar_producto_btn.clicked.connect(self.editar_producto_seleccionado)
         control_layout.addWidget(self.editar_producto_btn)
-        
+
         self.eliminar_producto_btn = QPushButton("🗑️")
         self.eliminar_producto_btn.setMaximumWidth(35)
         self.eliminar_producto_btn.setToolTip("Eliminar Producto")
+        self.eliminar_producto_btn.clicked.connect(self.eliminar_producto_seleccionado)
         control_layout.addWidget(self.eliminar_producto_btn)
-        
+
         # Segundo separador
         separator2 = QFrame()
         separator2.setFrameShape(QFrame.Shape.VLine)
         separator2.setFrameShadow(QFrame.Shadow.Sunken)
         control_layout.addWidget(separator2)
-        
+
         self.movimiento_btn = QPushButton("📦")
         self.movimiento_btn.setMaximumWidth(35)
         self.movimiento_btn.setToolTip("Registrar Movimiento")
+        self.movimiento_btn.clicked.connect(
+            self.mostrar_dialogo_movimiento_seleccionado
+        )
         control_layout.addWidget(self.movimiento_btn)
-        
+
         self.exportar_btn = QPushButton("📄")
         self.exportar_btn.setMaximumWidth(35)
         self.exportar_btn.setToolTip("Exportar Inventario")
+        self.exportar_btn.clicked.connect(self.exportar_inventario)
         control_layout.addWidget(self.exportar_btn)
 
         control_layout.addStretch()
@@ -258,26 +310,30 @@ class InventarioView(QWidget):
         if header is not None:
             # Configurar anchos específicos para optimizar el espacio
             header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)  # Código
-            header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)  # Descripción
+            header.setSectionResizeMode(
+                1, QHeaderView.ResizeMode.Stretch
+            )  # Descripción
             header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)  # Categoría
             header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)  # Stock Actual
             header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)  # Stock Mínimo
-            header.setSectionResizeMode(5, QHeaderView.ResizeMode.Fixed)  # Stock Reservado
+            header.setSectionResizeMode(
+                5, QHeaderView.ResizeMode.Fixed
+            )  # Stock Reservado
             header.setSectionResizeMode(6, QHeaderView.ResizeMode.Fixed)  # Precio Unit.
             header.setSectionResizeMode(7, QHeaderView.ResizeMode.Fixed)  # Valor Total
             header.setSectionResizeMode(8, QHeaderView.ResizeMode.Fixed)  # Estado
             header.setSectionResizeMode(9, QHeaderView.ResizeMode.Fixed)  # Acciones
-            
+
             # Establecer anchos específicos (en píxeles)
-            self.tabla_inventario.setColumnWidth(0, 80)   # Código
-            self.tabla_inventario.setColumnWidth(2, 90)   # Categoría
-            self.tabla_inventario.setColumnWidth(3, 70)   # Stock Actual
-            self.tabla_inventario.setColumnWidth(4, 70)   # Stock Mínimo
-            self.tabla_inventario.setColumnWidth(5, 80)   # Stock Reservado
-            self.tabla_inventario.setColumnWidth(6, 85)   # Precio Unit.
-            self.tabla_inventario.setColumnWidth(7, 90)   # Valor Total
-            self.tabla_inventario.setColumnWidth(8, 70)   # Estado
-            self.tabla_inventario.setColumnWidth(9, 80)   # Acciones
+            self.tabla_inventario.setColumnWidth(0, 80)  # Código
+            self.tabla_inventario.setColumnWidth(2, 90)  # Categoría
+            self.tabla_inventario.setColumnWidth(3, 70)  # Stock Actual
+            self.tabla_inventario.setColumnWidth(4, 70)  # Stock Mínimo
+            self.tabla_inventario.setColumnWidth(5, 80)  # Stock Reservado
+            self.tabla_inventario.setColumnWidth(6, 85)  # Precio Unit.
+            self.tabla_inventario.setColumnWidth(7, 90)  # Valor Total
+            self.tabla_inventario.setColumnWidth(8, 70)  # Estado
+            self.tabla_inventario.setColumnWidth(9, 80)  # Acciones
         self.tabla_inventario.setAlternatingRowColors(True)
         self.tabla_inventario.setSelectionBehavior(
             QAbstractItemView.SelectionBehavior.SelectRows
@@ -676,7 +732,11 @@ class InventarioView(QWidget):
             acciones_btn = QPushButton("⚙️")
             acciones_btn.setMaximumWidth(35)
             acciones_btn.setToolTip("Acciones del producto")
-            acciones_btn.clicked.connect(lambda checked, producto=producto: self.mostrar_menu_acciones_producto(producto))
+            acciones_btn.clicked.connect(
+                lambda checked, producto=producto: self.mostrar_menu_acciones_producto(
+                    producto
+                )
+            )
             self.tabla_inventario.setCellWidget(row, 9, acciones_btn)
 
     def cargar_obras_en_selector(self, obras):
@@ -800,7 +860,7 @@ class InventarioView(QWidget):
 
         obra_id = self.obra_selector.currentData()
 
-        dialog = ReservaDialog(self, obra_id)
+        dialog = ReservaDialog(self, obra_id=obra_id, productos=[])
         if dialog.exec() == QDialog.DialogCode.Accepted:
             reserva_data = dialog.get_reserva_data()
             if self.controller:
@@ -881,8 +941,10 @@ class InventarioView(QWidget):
         """Filtra el inventario según los criterios de búsqueda."""
         if self.controller:
             filtros = {
-                'busqueda': self.busqueda_input.text(),
-                'categoria': self.categoria_combo.currentText() if self.categoria_combo.currentText() != 'Todas' else None
+                "busqueda": self.busqueda_input.text(),
+                "categoria": self.categoria_combo.currentText()
+                if self.categoria_combo.currentText() != "Todas"
+                else None,
             }
             self.controller.filtrar_inventario(filtros)
 
@@ -895,9 +957,9 @@ class InventarioView(QWidget):
 
     def mostrar_menu_acciones_producto(self, producto):
         """Muestra un menú con las acciones disponibles para un producto."""
-        from PyQt6.QtWidgets import QMenu
         from PyQt6.QtCore import QPoint
         from PyQt6.QtGui import QCursor
+        from PyQt6.QtWidgets import QMenu
 
         # Crear menú contextual
         menu = QMenu(self)
@@ -921,29 +983,50 @@ class InventarioView(QWidget):
 
         # Acciones disponibles
         accion_editar = menu.addAction("✏️ Editar Producto")
-        accion_editar.triggered.connect(lambda: self.editar_producto(producto))
+        if accion_editar is not None:
+            accion_editar.triggered.connect(
+                lambda checked, p=producto: self.editar_producto(p)
+            )
 
         accion_movimiento = menu.addAction("📦 Registrar Movimiento")
-        accion_movimiento.triggered.connect(lambda: self.mostrar_dialogo_movimiento(producto))
+        if accion_movimiento is not None:
+            accion_movimiento.triggered.connect(
+                lambda checked, p=producto: self.mostrar_dialogo_movimiento(p)
+            )
 
         accion_reservar = menu.addAction("🔒 Crear Reserva")
-        accion_reservar.triggered.connect(lambda: self.mostrar_dialogo_reserva(producto))
+        if accion_reservar is not None:
+            accion_reservar.triggered.connect(
+                lambda checked, p=producto: self.mostrar_dialogo_reserva(p)
+            )
 
         menu.addSeparator()
 
         accion_historial = menu.addAction("📊 Ver Historial")
-        accion_historial.triggered.connect(lambda: self.ver_historial_producto(producto))
+        if accion_historial is not None:
+            accion_historial.triggered.connect(
+                lambda checked, p=producto: self.ver_historial_producto(p)
+            )
 
         accion_detalle = menu.addAction("👁️ Ver Detalles")
-        accion_detalle.triggered.connect(lambda: self.ver_detalle_producto(producto))
+        if accion_detalle is not None:
+            accion_detalle.triggered.connect(
+                lambda checked, p=producto: self.ver_detalle_producto(p)
+            )
 
         menu.addSeparator()
 
         accion_duplicar = menu.addAction("📋 Duplicar Producto")
-        accion_duplicar.triggered.connect(lambda: self.duplicar_producto(producto))
+        if accion_duplicar is not None:
+            accion_duplicar.triggered.connect(
+                lambda checked, p=producto: self.duplicar_producto(p)
+            )
 
         accion_eliminar = menu.addAction("🗑️ Eliminar Producto")
-        accion_eliminar.triggered.connect(lambda: self.eliminar_producto(producto))
+        if accion_eliminar is not None:
+            accion_eliminar.triggered.connect(
+                lambda checked, p=producto: self.eliminar_producto(p)
+            )
 
         # Mostrar menú en la posición del cursor
         menu.exec(QCursor.pos())
@@ -955,7 +1038,9 @@ class InventarioView(QWidget):
             if dialogo.exec() == QDialog.DialogCode.Accepted:
                 datos_producto = dialogo.obtener_datos()
                 if self.controller:
-                    self.controller.actualizar_producto(producto.get('id'), datos_producto)
+                    self.controller.actualizar_producto(
+                        producto.get("id"), datos_producto
+                    )
                     self.controller.cargar_datos_iniciales()
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error editando producto: {str(e)}")
@@ -970,13 +1055,16 @@ class InventarioView(QWidget):
                     self.controller.registrar_movimiento(datos_movimiento)
                     self.controller.cargar_datos_iniciales()
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Error registrando movimiento: {str(e)}")
+            QMessageBox.critical(
+                self, "Error", f"Error registrando movimiento: {str(e)}"
+            )
 
     def mostrar_dialogo_reserva(self, producto):
         """Muestra el diálogo para crear una reserva."""
         try:
-            from .dialogs import ReservaDialog
-            dialogo = ReservaDialog(self, obra_id=None, producto=producto)
+            # ReservaDialog espera una lista de productos, no un producto individual
+            productos = [producto] if producto else []
+            dialogo = ReservaDialog(self, obra_id=None, productos=productos)
             if dialogo.exec() == QDialog.DialogCode.Accepted:
                 datos_reserva = dialogo.get_reserva_data()
                 if self.controller:
@@ -996,16 +1084,16 @@ class InventarioView(QWidget):
     def ver_detalle_producto(self, producto):
         """Muestra información detallada del producto."""
         try:
-            codigo = producto.get('codigo', 'N/A')
-            descripcion = producto.get('descripcion', 'N/A')
-            categoria = producto.get('categoria', 'N/A')
-            stock_actual = producto.get('stock_actual', 0)
-            stock_minimo = producto.get('stock_minimo', 0)
-            stock_reservado = producto.get('stock_reservado', 0)
-            precio = producto.get('precio_unitario', 0.0)
-            proveedor = producto.get('proveedor', 'N/A')
-            ubicacion = producto.get('ubicacion', 'N/A')
-            
+            codigo = producto.get("codigo", "N/A")
+            descripcion = producto.get("descripcion", "N/A")
+            categoria = producto.get("categoria", "N/A")
+            stock_actual = producto.get("stock_actual", 0)
+            stock_minimo = producto.get("stock_minimo", 0)
+            stock_reservado = producto.get("stock_reservado", 0)
+            precio = producto.get("precio_unitario", 0.0)
+            proveedor = producto.get("proveedor", "N/A")
+            ubicacion = producto.get("ubicacion", "N/A")
+
             detalle_html = f"""
             <div style='padding: 20px; font-family: Arial, sans-serif;'>
                 <h2 style='color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px;'>
@@ -1037,18 +1125,18 @@ class InventarioView(QWidget):
                     <h3 style='color: #2c3e50; margin-top: 0;'>📊 Estado del Stock</h3>
                     <p style='margin: 5px 0;'><strong>Stock Disponible:</strong> {stock_actual - stock_reservado} unidades</p>
                     <p style='margin: 5px 0;'><strong>Valor Total en Stock:</strong> ${stock_actual * precio:.2f}</p>
-                    {'<p style="color: #e74c3c; font-weight: bold;">⚠️ Stock bajo mínimo</p>' if stock_actual <= stock_minimo else ''}
+                    {'<p style="color: #e74c3c; font-weight: bold;">⚠️ Stock bajo mínimo</p>' if stock_actual <= stock_minimo else ""}
                 </div>
             </div>
             """
-            
+
             msg = QMessageBox(self)
             msg.setWindowTitle(f"Detalles - {codigo}")
             msg.setText(detalle_html)
             msg.setTextFormat(Qt.TextFormat.RichText)
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
-            
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error mostrando detalles: {str(e)}")
 
@@ -1056,38 +1144,42 @@ class InventarioView(QWidget):
         """Duplica un producto existente."""
         try:
             # Crear una copia del producto con nuevo código
-            codigo_original = producto.get('codigo', '')
+            codigo_original = producto.get("codigo", "")
             nuevo_codigo = f"{codigo_original}_COPIA"
-            
+
             respuesta = QMessageBox.question(
                 self,
                 "Duplicar Producto",
                 f"¿Está seguro de duplicar el producto '{codigo_original}'?\n\n"
                 f"Se creará un nuevo producto con código: {nuevo_codigo}",
-                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
             )
-            
+
             if respuesta == QMessageBox.StandardButton.Yes:
                 producto_duplicado = producto.copy()
-                producto_duplicado['codigo'] = nuevo_codigo
-                producto_duplicado['stock_actual'] = 0  # Nuevo producto empieza sin stock
-                producto_duplicado['stock_reservado'] = 0
-                
+                producto_duplicado["codigo"] = nuevo_codigo
+                producto_duplicado["stock_actual"] = (
+                    0  # Nuevo producto empieza sin stock
+                )
+                producto_duplicado["stock_reservado"] = 0
+
                 if self.controller:
                     self.controller.agregar_producto(producto_duplicado)
                     self.controller.cargar_datos_iniciales()
-                    QMessageBox.information(self, "Éxito", f"Producto duplicado como: {nuevo_codigo}")
-                    
+                    QMessageBox.information(
+                        self, "Éxito", f"Producto duplicado como: {nuevo_codigo}"
+                    )
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error duplicando producto: {str(e)}")
 
     def eliminar_producto(self, producto):
         """Elimina un producto del inventario."""
         try:
-            codigo = producto.get('codigo', 'N/A')
-            stock_actual = producto.get('stock_actual', 0)
-            stock_reservado = producto.get('stock_reservado', 0)
-            
+            codigo = producto.get("codigo", "N/A")
+            stock_actual = producto.get("stock_actual", 0)
+            stock_reservado = producto.get("stock_reservado", 0)
+
             # Verificar si tiene stock o reservas
             if stock_actual > 0 or stock_reservado > 0:
                 QMessageBox.warning(
@@ -1095,31 +1187,181 @@ class InventarioView(QWidget):
                     "No se puede eliminar",
                     f"No se puede eliminar el producto '{codigo}'.\n\n"
                     f"Razón: Tiene stock actual ({stock_actual}) o reservas ({stock_reservado}).\n\n"
-                    "Para eliminarlo, primero debe agotar el stock y liberar las reservas."
+                    "Para eliminarlo, primero debe agotar el stock y liberar las reservas.",
                 )
                 return
-            
+
             respuesta = QMessageBox.question(
                 self,
                 "Confirmar Eliminación",
                 f"¿Está seguro de eliminar el producto '{codigo}'?\n\n"
                 "Esta acción no se puede deshacer.",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                QMessageBox.StandardButton.No
+                QMessageBox.StandardButton.No,
             )
-            
+
             if respuesta == QMessageBox.StandardButton.Yes:
                 if self.controller:
-                    self.controller.eliminar_producto(producto.get('id'))
+                    self.controller.eliminar_producto(producto.get("id"))
                     self.controller.cargar_datos_iniciales()
-                    QMessageBox.information(self, "Éxito", f"Producto '{codigo}' eliminado correctamente.")
-                    
+                    QMessageBox.information(
+                        self, "Éxito", f"Producto '{codigo}' eliminado correctamente."
+                    )
+
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error eliminando producto: {str(e)}")
 
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+    def filtrar_inventario_tiempo_real(self):
+        """Filtra el inventario en tiempo real mientras el usuario escribe."""
+        from PyQt6.QtCore import QTimer
+
+        # Cancelar timer anterior si existe
+        if hasattr(self, "_search_timer"):
+            self._search_timer.stop()
+
+        # Crear nuevo timer con delay de 300ms para evitar búsquedas excesivas
+        self._search_timer = QTimer()
+        self._search_timer.setSingleShot(True)
+        self._search_timer.timeout.connect(self._ejecutar_busqueda_tiempo_real)
+        self._search_timer.start(300)
+
+    def _ejecutar_busqueda_tiempo_real(self):
+        """Ejecuta la búsqueda con un pequeño delay."""
+        try:
+            termino_busqueda = self.busqueda_input.text().strip()
+            categoria_seleccionada = self.categoria_combo.currentText()
+
+            # Si no hay término de búsqueda y no hay categoría específica, mostrar todos
+            if not termino_busqueda and categoria_seleccionada == "Todas":
+                if self.controller:
+                    self.controller.cargar_datos_iniciales()
+                return
+
+            # Aplicar filtros
+            self.filtrar_inventario()
+
+        except Exception as e:
+            print(f"[ERROR] Error en búsqueda tiempo real: {e}")
+
+    def editar_producto_seleccionado(self):
+        """Edita el producto seleccionado en la tabla."""
+        current_row = self.tabla_inventario.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(
+                self, "Advertencia", "Seleccione un producto para editar."
+            )
+            return
+
+        # Obtener datos del producto de la fila seleccionada con acceso seguro
+        codigo_item = self.tabla_inventario.item(current_row, 0)
+        descripcion_item = self.tabla_inventario.item(current_row, 1)
+        categoria_item = self.tabla_inventario.item(current_row, 2)
+        stock_item = self.tabla_inventario.item(current_row, 3)
+
+        codigo = codigo_item.text() if codigo_item is not None else ""
+        descripcion = descripcion_item.text() if descripcion_item is not None else ""
+        categoria = categoria_item.text() if categoria_item is not None else ""
+        stock_actual = (
+            int(stock_item.text())
+            if stock_item is not None and stock_item.text().isdigit()
+            else 0
+        )
+
+        # Crear producto mock para el diálogo
+        producto = {
+            "id": current_row,  # Mock ID
+            "codigo": codigo,
+            "descripcion": descripcion,
+            "categoria": categoria,
+            "stock_actual": stock_actual,
+        }
+
+        self.editar_producto(producto)
+
+    def eliminar_producto_seleccionado(self):
+        """Elimina el producto seleccionado en la tabla."""
+        current_row = self.tabla_inventario.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(
+                self, "Advertencia", "Seleccione un producto para eliminar."
+            )
+            return
+
+        # Obtener datos del producto de la fila seleccionada con acceso seguro
+        codigo_item = self.tabla_inventario.item(current_row, 0)
+        descripcion_item = self.tabla_inventario.item(current_row, 1)
+        stock_item = self.tabla_inventario.item(current_row, 3)
+        stock_reservado_item = self.tabla_inventario.item(current_row, 5)
+
+        codigo = codigo_item.text() if codigo_item is not None else ""
+        descripcion = descripcion_item.text() if descripcion_item is not None else ""
+        stock_actual = (
+            int(stock_item.text())
+            if stock_item is not None and stock_item.text().isdigit()
+            else 0
+        )
+        stock_reservado = (
+            int(stock_reservado_item.text())
+            if stock_reservado_item is not None
+            and stock_reservado_item.text().isdigit()
+            else 0
+        )
+
+        # Crear producto mock para el diálogo
+        producto = {
+            "id": current_row,  # Mock ID
+            "codigo": codigo,
+            "descripcion": descripcion,
+            "stock_actual": stock_actual,
+            "stock_reservado": stock_reservado,
+        }
+
+        self.eliminar_producto(producto)
+
+    def mostrar_dialogo_movimiento_seleccionado(self):
+        """Muestra el diálogo de movimiento para el producto seleccionado."""
+        current_row = self.tabla_inventario.currentRow()
+        if current_row < 0:
+            QMessageBox.warning(
+                self, "Advertencia", "Seleccione un producto para registrar movimiento."
+            )
+            return
+
+        # Obtener datos del producto de la fila seleccionada con acceso seguro
+        codigo_item = self.tabla_inventario.item(current_row, 0)
+        descripcion_item = self.tabla_inventario.item(current_row, 1)
+        stock_item = self.tabla_inventario.item(current_row, 3)
+
+        codigo = codigo_item.text() if codigo_item is not None else ""
+        descripcion = descripcion_item.text() if descripcion_item is not None else ""
+        stock_actual = (
+            int(stock_item.text())
+            if stock_item is not None and stock_item.text().isdigit()
+            else 0
+        )
+
+        # Crear producto mock para el diálogo
+        producto = {
+            "id": current_row,  # Mock ID
+            "codigo": codigo,
+            "descripcion": descripcion,
+            "stock_actual": stock_actual,
+        }
+
+        self.mostrar_dialogo_movimiento(producto)
+
+    def exportar_inventario(self):
+        """Exporta el inventario actual."""
+        if self.controller:
+            self.controller.exportar_inventario()
+        else:
+            QMessageBox.information(
+                self, "Información", "Función de exportación no disponible."
+            )
 
 
 class DialogoNuevoProducto(QDialog):
@@ -1161,7 +1403,9 @@ class DialogoNuevoProducto(QDialog):
 
         # Campo categoría
         self.tipo_combo = QComboBox()
-        self.tipo_combo.addItems(["Marco", "Vidrio", "Herraje", "Accesorio", "Sellador"])
+        self.tipo_combo.addItems(
+            ["Marco", "Vidrio", "Herraje", "Accesorio", "Sellador"]
+        )
         form_layout.addRow("📂 Tipo:", self.tipo_combo)
 
         # Campo acabado
@@ -1200,7 +1444,9 @@ class DialogoNuevoProducto(QDialog):
         # Campo observaciones
         self.observaciones_input = QTextEdit()
         self.observaciones_input.setMaximumHeight(80)
-        self.observaciones_input.setPlaceholderText("Observaciones adicionales (opcional)")
+        self.observaciones_input.setPlaceholderText(
+            "Observaciones adicionales (opcional)"
+        )
         form_layout.addRow("📋 Observaciones:", self.observaciones_input)
 
         form_widget.setWidget(form_content)
@@ -1209,11 +1455,11 @@ class DialogoNuevoProducto(QDialog):
 
         # Botones
         button_layout = QHBoxLayout()
-        
+
         self.cancel_btn = QPushButton("❌ Cancelar")
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setProperty("buttonType", "secondary")
-        
+
         self.save_btn = QPushButton("✅ Guardar Producto")
         self.save_btn.clicked.connect(self.validar_y_guardar)
         self.save_btn.setProperty("buttonType", "success")
@@ -1228,6 +1474,9 @@ class DialogoNuevoProducto(QDialog):
 
     def configurar_validaciones(self):
         """Configura las validaciones del formulario."""
+        if not VALIDATORS_AVAILABLE:
+            return
+
         # Validación de código obligatorio con formato específico
         self.validator_manager.agregar_validacion(
             self.codigo_input, validacion_codigo_producto
@@ -1235,7 +1484,9 @@ class DialogoNuevoProducto(QDialog):
 
         # Validación de descripción obligatoria
         self.validator_manager.agregar_validacion(
-            self.descripcion_input, FormValidator.validar_campo_obligatorio, "Descripción"
+            self.descripcion_input,
+            FormValidator.validar_campo_obligatorio,
+            "Descripción",
         )
 
         # Validación de precio
@@ -1250,17 +1501,33 @@ class DialogoNuevoProducto(QDialog):
 
     def validar_y_guardar(self):
         """Valida el formulario y guarda si es válido."""
-        es_valido, errores = self.validator_manager.validar_formulario()
-        
-        if not es_valido:
-            # Mostrar errores
-            mensajes_error = self.validator_manager.obtener_mensajes_error()
-            QMessageBox.warning(
-                self, 
-                "Errores de Validación", 
-                "Por favor corrige los siguientes errores:\n\n" + "\n".join(mensajes_error)
-            )
-            return
+        if VALIDATORS_AVAILABLE:
+            es_valido, errores = self.validator_manager.validar_formulario()
+
+            if not es_valido:
+                # Mostrar errores
+                mensajes_error = self.validator_manager.obtener_mensajes_error()
+                QMessageBox.warning(
+                    self,
+                    "Errores de Validación",
+                    "Por favor corrige los siguientes errores:\n\n"
+                    + "\n".join(mensajes_error),
+                )
+                return
+        else:
+            # Validación básica sin validators
+            if not self.codigo_input.text().strip():
+                QMessageBox.warning(self, "Error", "El código es obligatorio")
+                return
+            if not self.descripcion_input.text().strip():
+                QMessageBox.warning(self, "Error", "La descripción es obligatoria")
+                return
+            if self.precio_input.value() <= 0:
+                QMessageBox.warning(self, "Error", "El precio debe ser mayor a 0")
+                return
+            if not self.proveedor_input.text().strip():
+                QMessageBox.warning(self, "Error", "El proveedor es obligatorio")
+                return
 
         # Si todo es válido, aceptar el diálogo
         self.accept()
@@ -1268,29 +1535,33 @@ class DialogoNuevoProducto(QDialog):
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
         return {
-            'codigo': self.codigo_input.text().strip().upper(),
-            'descripcion': self.descripcion_input.text().strip(),
-            'tipo': self.tipo_combo.currentText(),
-            'acabado': self.acabado_combo.currentText(),
-            'cantidad': self.cantidad_input.value(),
-            'importe': self.precio_input.value(),
-            'unidad': self.unidad_combo.currentText(),
-            'proveedor': self.proveedor_input.text().strip(),
-            'ubicacion': self.ubicacion_input.text().strip(),
-            'observaciones': self.observaciones_input.toPlainText().strip()
+            "codigo": self.codigo_input.text().strip().upper(),
+            "descripcion": self.descripcion_input.text().strip(),
+            "tipo": self.tipo_combo.currentText(),
+            "acabado": self.acabado_combo.currentText(),
+            "cantidad": self.cantidad_input.value(),
+            "importe": self.precio_input.value(),
+            "unidad": self.unidad_combo.currentText(),
+            "proveedor": self.proveedor_input.text().strip(),
+            "ubicacion": self.ubicacion_input.text().strip(),
+            "observaciones": self.observaciones_input.toPlainText().strip(),
         }
-    
+
     def _setup_modern_styling(self):
         """Configura el estilizado moderno para el diálogo."""
-        from rexus.utils.form_styles import FormStyleManager, setup_form_widget
-        
-        # Aplicar estilos modernos
-        setup_form_widget(self, apply_animations=True)
-        
+        try:
+            from rexus.utils.form_styles import setup_form_widget
+
+            # Aplicar estilos modernos
+            setup_form_widget(self, apply_animations=True)
+        except ImportError:
+            # Si no existe el módulo de estilos, usar estilo básico
+            print("[INFO] Form styles module not available, using basic styling")
+
         # Configurar propiedades específicas de botones
         self.save_btn.setProperty("buttonType", "success")
         self.cancel_btn.setProperty("buttonType", "secondary")
-        
+
         # Configurar tooltips mejorados
         self.codigo_input.setToolTip("💡 Código único del producto (ej: PROD-001)")
         self.descripcion_input.setToolTip("📝 Descripción detallada del producto")
@@ -1298,133 +1569,92 @@ class DialogoNuevoProducto(QDialog):
         self.cantidad_input.setToolTip("📦 Cantidad inicial en inventario")
         self.proveedor_input.setToolTip("🏢 Nombre del proveedor principal")
         self.ubicacion_input.setToolTip("📍 Ubicación física en almacén")
-        
+
         # Refrescar estilos
-        self.style().polish(self)
-        
+        style = self.style()
+        if style is not None:
+            style.polish(self)
+
         # Configurar validación visual en tiempo real
         self._setup_realtime_validation()
-    
+
     def _setup_realtime_validation(self):
         """Configura validación visual en tiempo real."""
-        from rexus.utils.form_styles import FormStyleManager
-        
+        try:
+            from rexus.utils.form_styles import FormStyleManager
+        except ImportError:
+            # Si no existe FormStyleManager, usar validación básica
+            print("[INFO] FormStyleManager not available, using basic validation")
+            return
+
         def validate_codigo():
             text = self.codigo_input.text().strip()
             if not text:
                 FormStyleManager.apply_validation_state(
-                    self.codigo_input, 'invalid', 'El código es obligatorio'
+                    self.codigo_input, "invalid", "El código es obligatorio"
                 )
             elif len(text) < 3:
                 FormStyleManager.apply_validation_state(
-                    self.codigo_input, 'warning', 'El código debe tener al menos 3 caracteres'
+                    self.codigo_input,
+                    "warning",
+                    "El código debe tener al menos 3 caracteres",
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.codigo_input, 'valid', '✓ Código válido'
+                    self.codigo_input, "valid", "✓ Código válido"
                 )
-        
+
         def validate_descripcion():
             text = self.descripcion_input.text().strip()
             if not text:
                 FormStyleManager.apply_validation_state(
-                    self.descripcion_input, 'invalid', 'La descripción es obligatoria'
+                    self.descripcion_input, "invalid", "La descripción es obligatoria"
                 )
             elif len(text) < 5:
                 FormStyleManager.apply_validation_state(
-                    self.descripcion_input, 'warning', 'La descripción debe ser más descriptiva'
+                    self.descripcion_input,
+                    "warning",
+                    "La descripción debe ser más descriptiva",
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.descripcion_input, 'valid', '✓ Descripción válida'
+                    self.descripcion_input, "valid", "✓ Descripción válida"
                 )
-        
+
         def validate_precio():
             value = self.precio_input.value()
             if value <= 0:
                 FormStyleManager.apply_validation_state(
-                    self.precio_input, 'invalid', 'El precio debe ser mayor a 0'
+                    self.precio_input, "invalid", "El precio debe ser mayor a 0"
                 )
             elif value > 1000000:
                 FormStyleManager.apply_validation_state(
-                    self.precio_input, 'warning', 'Precio muy alto, verifique'
+                    self.precio_input, "warning", "Precio muy alto, verifique"
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.precio_input, 'valid', f'✓ ${value:,.2f}'
+                    self.precio_input, "valid", f"✓ ${value:,.2f}"
                 )
-        
+
         def validate_proveedor():
             text = self.proveedor_input.text().strip()
             if not text:
                 FormStyleManager.apply_validation_state(
-                    self.proveedor_input, 'invalid', 'El proveedor es obligatorio'
+                    self.proveedor_input, "invalid", "El proveedor es obligatorio"
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.proveedor_input, 'valid', '✓ Proveedor válido'
+                    self.proveedor_input, "valid", "✓ Proveedor válido"
                 )
-        
+
         # Conectar validaciones en tiempo real
         self.codigo_input.textChanged.connect(validate_codigo)
         self.descripcion_input.textChanged.connect(validate_descripcion)
         self.precio_input.valueChanged.connect(validate_precio)
         self.proveedor_input.textChanged.connect(validate_proveedor)
-        
+
         # Validar inicialmente
         validate_codigo()
         validate_descripcion()
         validate_precio()
         validate_proveedor()
-
-    def filtrar_inventario_tiempo_real(self):
-        """Filtra el inventario en tiempo real mientras el usuario escribe."""
-        from PyQt6.QtCore import QTimer
-        
-        # Cancelar timer anterior si existe
-        if hasattr(self, '_search_timer'):
-            self._search_timer.stop()
-        
-        # Crear nuevo timer con delay de 300ms para evitar búsquedas excesivas
-        self._search_timer = QTimer()
-        self._search_timer.setSingleShot(True)
-        self._search_timer.timeout.connect(self._ejecutar_busqueda_tiempo_real)
-        self._search_timer.start(300)
-
-    def _ejecutar_busqueda_tiempo_real(self):
-        """Ejecuta la búsqueda con un pequeño delay."""
-        try:
-            termino_busqueda = self.busqueda_input.text().strip()
-            categoria_seleccionada = self.categoria_combo.currentText()
-            
-            # Si no hay término de búsqueda y no hay categoría específica, mostrar todos
-            if not termino_busqueda and categoria_seleccionada == "Todas":
-                if self.controller:
-                    self.controller.cargar_datos_iniciales()
-                return
-            
-            # Aplicar filtros
-            self.filtrar_inventario()
-            
-        except Exception as e:
-            print(f"[ERROR] Error en búsqueda tiempo real: {e}")
-
-    def filtrar_inventario(self):
-        """Filtra el inventario según los criterios seleccionados."""
-        try:
-            if self.controller:
-                # Llamar al método de búsqueda del controlador
-                self.controller.buscar_productos()
-        except Exception as e:
-            print(f"[ERROR] Error al filtrar inventario: {e}")
-
-    def limpiar_filtros_inventario(self):
-        """Limpia todos los filtros aplicados."""
-        try:
-            self.busqueda_input.clear()
-            self.categoria_combo.setCurrentIndex(0)  # "Todas"
-            
-            if self.controller:
-                self.controller.limpiar_filtros()
-        except Exception as e:
-            print(f"[ERROR] Error al limpiar filtros: {e}")

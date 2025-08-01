@@ -248,6 +248,25 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error en búsqueda: {str(e)}")
 
+    def filtrar_inventario(self, filtros=None):
+        """Filtra el inventario según los criterios especificados."""
+        try:
+            if self.model and self.view:
+                if filtros is None:
+                    # Obtener filtros desde la vista
+                    filtros = {
+                        "busqueda": self.view.busqueda_input.text(),
+                        "categoria": self.view.categoria_combo.currentText()
+                        if self.view.categoria_combo.currentText() != "Todas"
+                        else None,
+                    }
+
+                productos = self.model.buscar_productos(filtros)
+                self.view.cargar_inventario_en_tabla(productos)
+
+        except Exception as e:
+            self.error_ocurrido.emit(f"Error al filtrar inventario: {str(e)}")
+
     def limpiar_filtros(self):
         """Limpia los filtros de búsqueda."""
         try:

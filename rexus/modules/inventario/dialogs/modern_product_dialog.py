@@ -10,12 +10,37 @@ from PyQt6.QtWidgets import (
     QCheckBox, QGroupBox, QVBoxLayout
 )
 
-# Importar componentes modernos
-import sys
-import os
-sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..', '..'))
-
-from utils.modern_form_components import ModernFormDialog, FormValidators
+# Importar componentes modernos con manejo de errores
+try:
+    from rexus.utils.modern_form_components import ModernFormDialog, FormValidators
+except ImportError:
+    print("[WARNING] Modern form components not available, using basic dialog")
+    from PyQt6.QtWidgets import QDialog as ModernFormDialog
+    
+    class FormValidators:
+        @staticmethod
+        def code_format(value):
+            return bool(value.strip() if hasattr(value, 'strip') else value)
+        
+        @staticmethod
+        def required_field(value):
+            return bool(value.strip() if hasattr(value, 'strip') else value)
+        
+        @staticmethod
+        def numeric_range(value, min_val=None, max_val=None):
+            try:
+                num = float(value)
+                if min_val is not None and num < min_val:
+                    return False
+                if max_val is not None and num > max_val:
+                    return False
+                return True
+            except:
+                return False
+        
+        @staticmethod
+        def email_format(value):
+            return '@' in str(value) if value else False
 
 
 class ModernProductDialog(ModernFormDialog):

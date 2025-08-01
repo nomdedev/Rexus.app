@@ -15,116 +15,116 @@ from .model import PedidosModel
 
 class PedidosController(QObject):
     """Controlador para el módulo de pedidos."""
-    
+
     # Señales para comunicación con otros módulos
     pedido_creado = pyqtSignal(dict)
     pedido_actualizado = pyqtSignal(dict)
     pedido_eliminado = pyqtSignal(int)
     estado_cambiado = pyqtSignal(int, str)
-    
+
     def __init__(self, view=None, db_connection=None, usuario_actual=None):
         super().__init__()
         self.view = view
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-        
+
         # Inicializar modelo
         self.model = PedidosModel(db_connection)
-        
+
         # Conectar señales si hay vista
         if self.view:
             self.conectar_señales()
             self.cargar_pedidos()
-        
+
     def conectar_señales(self):
         """Conecta las señales entre vista y controlador."""
         if not self.view:
             return
-            
+
         # Señales de la vista
-        if hasattr(self.view, 'solicitud_crear_pedido'):
+        if hasattr(self.view, "solicitud_crear_pedido"):
             self.view.solicitud_crear_pedido.connect(self.crear_pedido)
-        if hasattr(self.view, 'solicitud_actualizar_pedido'):
+        if hasattr(self.view, "solicitud_actualizar_pedido"):
             self.view.solicitud_actualizar_pedido.connect(self.actualizar_pedido)
-        if hasattr(self.view, 'solicitud_eliminar_pedido'):
+        if hasattr(self.view, "solicitud_eliminar_pedido"):
             self.view.solicitud_eliminar_pedido.connect(self.eliminar_pedido)
-        if hasattr(self.view, 'solicitud_cambiar_estado'):
+        if hasattr(self.view, "solicitud_cambiar_estado"):
             self.view.solicitud_cambiar_estado.connect(self.cambiar_estado)
-        
+
         # Establecer controlador en la vista
         self.view.set_controller(self)
-        
+
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales de pedidos."""
         self.cargar_pedidos()
-        
+
     def cargar_pedidos(self, filtros: Optional[Dict[str, Any]] = None):
         """Carga los pedidos desde el modelo."""
         try:
             pedidos = self.model.obtener_pedidos(filtros)
-            
-            if self.view and hasattr(self.view, 'cargar_pedidos_en_tabla'):
+
+            if self.view and hasattr(self.view, "cargar_pedidos_en_tabla"):
                 self.view.cargar_pedidos_en_tabla(pedidos)
-            
+
             # Actualizar estadísticas
             self.actualizar_estadisticas()
-            
+
             print(f"[PEDIDOS CONTROLLER] Cargados {len(pedidos)} pedidos")
-            
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error cargando pedidos: {e}")
             self.mostrar_error(f"Error cargando pedidos: {str(e)}")
-            
+
     def crear_pedido(self, datos_pedido: Dict[str, Any]):
         """Crea un nuevo pedido."""
         try:
             # Validar datos
             if not self.validar_datos_pedido(datos_pedido):
                 return
-                
+
             # Agregar usuario creador
             datos_pedido["usuario_creador"] = self.usuario_actual.get("id", 1)
-            
+
             # Crear pedido
             pedido_id = self.model.crear_pedido(datos_pedido)
-            
+
             if pedido_id:
                 self.mostrar_exito("Pedido creado exitosamente")
                 self.cargar_pedidos()
-                
+
                 # Emitir señal
                 pedido = self.model.obtener_pedido_por_id(pedido_id)
                 if pedido:
                     self.pedido_creado.emit(pedido)
-                    
+
                 # Volver a la lista
-                if self.view and hasattr(self.view, 'tab_widget'):
+                if self.view and hasattr(self.view, "tab_widget"):
                     self.view.tab_widget.setCurrentIndex(0)
             else:
                 self.mostrar_error("No se pudo crear el pedido")
-                
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error creando pedido: {e}")
             self.mostrar_error(f"Error creando pedido: {str(e)}")
-            
+
     def actualizar_pedido(self, datos_pedido: Dict[str, Any]):
         """Actualiza un pedido existente."""
         try:
             if not datos_pedido.get("id"):
                 self.mostrar_error("ID de pedido requerido para actualización")
                 return
-                
+
             # Validar datos
             if not self.validar_datos_pedido(datos_pedido, es_actualizacion=True):
                 return
-                
+
             # TODO: Implementar actualización de pedidos
             self.mostrar_info("Actualización de pedidos próximamente...")
-            
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error actualizando pedido: {e}")
             self.mostrar_error(f"Error actualizando pedido: {str(e)}")
-            
+
     def eliminar_pedido(self, pedido_id: str):
         """Elimina un pedido."""
         try:
@@ -136,100 +136,106 @@ class PedidosController(QObject):
                     f"¿Está seguro de eliminar el pedido {pedido_id}?\\n\\n"
                     "Esta acción no se puede deshacer.",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                    QMessageBox.StandardButton.No
+                    QMessageBox.StandardButton.No,
                 )
-                
+
                 if respuesta == QMessageBox.StandardButton.Yes:
                     # TODO: Implementar eliminación de pedidos
                     self.mostrar_info("Eliminación de pedidos próximamente...")
-                
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error eliminando pedido: {e}")
             self.mostrar_error(f"Error eliminando pedido: {str(e)}")
-            
+
     def cambiar_estado(self, pedido_id: str, nuevo_estado: str):
         """Cambia el estado de un pedido."""
         try:
             exito = self.model.actualizar_estado_pedido(
-                int(pedido_id), 
-                nuevo_estado, 
+                int(pedido_id),
+                nuevo_estado,
                 self.usuario_actual.get("id", 1),
-                f"Estado cambiado a {nuevo_estado}"
+                f"Estado cambiado a {nuevo_estado}",
             )
-            
+
             if exito:
                 self.mostrar_exito(f"Estado cambiado a {nuevo_estado}")
                 self.cargar_pedidos()
                 self.estado_cambiado.emit(int(pedido_id), nuevo_estado)
             else:
                 self.mostrar_error("No se pudo cambiar el estado del pedido")
-                
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error cambiando estado: {e}")
             self.mostrar_error(f"Error cambiando estado: {str(e)}")
-            
+
     def actualizar_estadisticas(self):
         """Actualiza las estadísticas del módulo."""
         try:
             stats = self.model.obtener_estadisticas()
-            
+
             # Actualizar estadísticas en la vista
-            if self.view and hasattr(self.view, 'actualizar_estadisticas_completas'):
+            if self.view and hasattr(self.view, "actualizar_estadisticas_completas"):
                 self.view.actualizar_estadisticas_completas(stats)
-                
+
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error actualizando estadísticas: {e}")
-            
-    def validar_datos_pedido(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
+
+    def validar_datos_pedido(
+        self, datos: Dict[str, Any], es_actualizacion: bool = False
+    ) -> bool:
         """Valida los datos del pedido."""
         errores = []
-        
+
         # Validaciones básicas
         if not datos.get("tipo_pedido"):
             errores.append("Tipo de pedido es obligatorio")
-            
+
         if not datos.get("prioridad"):
             errores.append("Prioridad es obligatoria")
-            
+
         if not datos.get("responsable_entrega"):
             errores.append("Responsable de entrega es obligatorio")
-            
+
         # Validar detalles del pedido
         detalles = datos.get("detalles", [])
         if not detalles:
             errores.append("El pedido debe tener al menos un producto")
-            
+
         for i, detalle in enumerate(detalles):
             if not detalle.get("descripcion"):
-                errores.append(f"Descripción requerida en producto {i+1}")
-                
+                errores.append(f"Descripción requerida en producto {i + 1}")
+
             if not detalle.get("cantidad") or detalle["cantidad"] <= 0:
-                errores.append(f"Cantidad debe ser mayor a 0 en producto {i+1}")
-                
+                errores.append(f"Cantidad debe ser mayor a 0 en producto {i + 1}")
+
             if not detalle.get("precio_unitario") or detalle["precio_unitario"] <= 0:
-                errores.append(f"Precio unitario debe ser mayor a 0 en producto {i+1}")
-                
+                errores.append(
+                    f"Precio unitario debe ser mayor a 0 en producto {i + 1}"
+                )
+
         # Validar fechas
         fecha_entrega = datos.get("fecha_entrega_solicitada")
         if fecha_entrega:
             if isinstance(fecha_entrega, str):
                 try:
-                    fecha_entrega = datetime.datetime.strptime(fecha_entrega, "%Y-%m-%d").date()
+                    fecha_entrega = datetime.datetime.strptime(
+                        fecha_entrega, "%Y-%m-%d"
+                    ).date()
                 except:
                     errores.append("Formato de fecha de entrega inválido")
-                    
+
             if fecha_entrega and fecha_entrega < datetime.date.today():
                 errores.append("La fecha de entrega no puede ser anterior a hoy")
-                
+
         if errores:
             mensaje_error = "Errores de validación:\\n\\n" + "\\n".join(
                 f"• {error}" for error in errores
             )
             self.mostrar_error(mensaje_error)
             return False
-            
+
         return True
-        
+
     def obtener_pedido_por_id(self, pedido_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un pedido por su ID."""
         try:
@@ -237,7 +243,7 @@ class PedidosController(QObject):
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error obteniendo pedido: {e}")
             return None
-            
+
     def buscar_productos_inventario(self, busqueda: str) -> List[Dict[str, Any]]:
         """Busca productos en el inventario."""
         try:
@@ -245,48 +251,50 @@ class PedidosController(QObject):
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error buscando productos: {e}")
             return []
-            
+
     def obtener_estados_validos(self) -> List[str]:
         """Obtiene la lista de estados válidos."""
         return list(self.model.ESTADOS.keys())
-        
+
     def obtener_tipos_pedido(self) -> List[str]:
         """Obtiene la lista de tipos de pedido."""
         return list(self.model.TIPOS_PEDIDO.keys())
-        
+
     def obtener_prioridades(self) -> List[str]:
         """Obtiene la lista de prioridades."""
         return list(self.model.PRIORIDADES.keys())
-        
+
     def set_usuario_actual(self, usuario: Dict[str, Any]):
         """Establece el usuario actual."""
         self.usuario_actual = usuario
-        print(f"[PEDIDOS CONTROLLER] Usuario actual: {usuario.get('nombre', 'Desconocido')}")
-        
+        print(
+            f"[PEDIDOS CONTROLLER] Usuario actual: {usuario.get('nombre', 'Desconocido')}"
+        )
+
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito."""
         if self.view:
             QMessageBox.information(self.view, "Éxito", mensaje)
-        
+
     def mostrar_error(self, mensaje: str):
         """Muestra un mensaje de error."""
         if self.view:
             QMessageBox.critical(self.view, "Error", mensaje)
-        
+
     def mostrar_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia."""
         if self.view:
             QMessageBox.warning(self.view, "Advertencia", mensaje)
-        
+
     def mostrar_info(self, mensaje: str):
         """Muestra un mensaje informativo."""
         if self.view:
             QMessageBox.information(self.view, "Información", mensaje)
-        
+
     def get_view(self):
         """Retorna la vista del módulo."""
         return self.view
-        
+
     def cleanup(self):
         """Limpia recursos al cerrar el módulo."""
         try:
