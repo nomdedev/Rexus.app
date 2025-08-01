@@ -1,9 +1,30 @@
 """
-Modelo de Vidrios
+Modelo de Vidrios - Rexus.app v2.0.0
 
 Maneja la lógica de negocio y acceso a datos para vidrios.
 Gestiona la compra por obra y asociación con proveedores.
+Incluye utilidades de seguridad integradas.
 """
+
+import sys
+from pathlib import Path
+
+# Importar utilidades de seguridad
+try:
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in vidrios: {e}")
+    SECURITY_AVAILABLE = False
+    # Fallback dummy classes
+    class DataSanitizer:
+        def sanitize_string(self, value, max_length=None): return str(value) if value else ""
+        def sanitize_numeric(self, value, min_val=None, max_val=None): return float(value) if value else 0.0
+        def sanitize_integer(self, value, min_val=None, max_val=None): return int(value) if value else 0
+    data_sanitizer = DataSanitizer()
 
 
 class VidriosModel:
@@ -20,6 +41,17 @@ class VidriosModel:
         self.tabla_vidrios = "vidrios"  # Tabla principal de vidrios en DB inventario
         self.tabla_vidrios_obra = "vidrios_obra"  # Tabla para asociar vidrios con obras
         self.tabla_pedidos_vidrios = "pedidos_vidrios"  # Tabla para pedidos por obra
+        
+        # Inicializar utilidades de seguridad
+        if SECURITY_AVAILABLE:
+            self.data_sanitizer = data_sanitizer
+            self.sql_validator = SQLSecurityValidator()
+            self.secure_builder = SecureSQLBuilder()
+            print("[VIDRIOS] Utilidades de seguridad inicializadas correctamente")
+        else:
+            self.data_sanitizer = DataSanitizer()
+            print("[VIDRIOS] Usando utilidades de seguridad básicas (fallback)")
+        
         if not self.db_connection:
             print(
                 "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
@@ -353,18 +385,28 @@ class VidriosModel:
 
     def buscar_vidrios(self, termino_busqueda):
         """
-        Busca vidrios por término de búsqueda.
+        Busca vidrios por término de búsqueda con sanitización de entrada.
 
         Args:
             termino_busqueda (str): Término a buscar
 
         Returns:
-            List[Dict]: Lista de vidrios que coinciden
+            tuple: (bool, list) - (éxito, lista de vidrios que coinciden)
         """
         if not self.db_connection or not termino_busqueda:
-            return []
+            return True, []
 
         try:
+            # Sanitizar término de búsqueda
+            termino_limpio = self.data_sanitizer.sanitize_string(
+                termino_busqueda, max_length=100
+            )
+            
+            if not termino_limpio:
+                return False, []
+            
+            print(f"[VIDRIOS] Búsqueda sanitizada: '{termino_limpio}'")
+
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
@@ -381,7 +423,7 @@ class VidriosModel:
                 ORDER BY tipo, espesor
             """
 
-            termino = f"%{termino_busqueda}%"
+            termino = f"%{termino_limpio}%"
             cursor.execute(query, (termino, termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -391,26 +433,88 @@ class VidriosModel:
                 vidrio = dict(zip(columnas, fila))
                 vidrios.append(vidrio)
 
-            return vidrios
+            print(f"[VIDRIOS] Encontrados {len(vidrios)} vidrios para '{termino_limpio}'")
+            return True, vidrios
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error buscando vidrios: {e}")
-            return []
+            return False, []
 
     def crear_vidrio(self, datos_vidrio):
         """
-        Crea un nuevo vidrio en la base de datos.
+        Crea un nuevo vidrio en la base de datos con sanitización completa.
 
         Args:
             datos_vidrio (dict): Datos del vidrio a crear
 
         Returns:
-            int: ID del vidrio creado o None si falla
+            tuple: (bool, str, int) - (éxito, mensaje, ID del vidrio creado)
         """
         if not self.db_connection:
-            return None
+            return False, "No hay conexión a la base de datos", None
 
         try:
+            # Sanitizar y validar todos los datos
+            datos_limpios = {}
+            
+            # Sanitizar strings
+            datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("codigo", ""), max_length=20
+            )
+            datos_limpios["descripcion"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("descripcion", ""), max_length=200
+            )
+            datos_limpios["tipo"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("tipo", ""), max_length=50
+            )
+            datos_limpios["proveedor"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("proveedor", ""), max_length=100
+            )
+            datos_limpios["color"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("color", ""), max_length=50
+            )
+            datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("tratamiento", ""), max_length=100
+            )
+            datos_limpios["dimensiones_disponibles"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+            )
+            datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("estado", "ACTIVO"), max_length=20
+            )
+            datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("observaciones", ""), max_length=500
+            )
+            
+            # Sanitizar numericos
+            datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
+                datos_vidrio.get("espesor", 0), min_val=0, max_val=50
+            )
+            
+            # Validar precio con lógica especial para campos de precio
+            precio_original = datos_vidrio.get("precio_m2")
+            if precio_original and precio_original != "":
+                precio_limpio = self.data_sanitizer.sanitize_numeric(
+                    precio_original, min_val=0
+                )
+                if precio_limpio is None:
+                    return False, "Precio por m2 inválido", None
+                datos_limpios["precio_m2"] = precio_limpio
+            else:
+                datos_limpios["precio_m2"] = 0.0
+
+            # Validaciones de campos obligatorios
+            if not datos_limpios["codigo"]:
+                return False, "El código del vidrio es obligatorio", None
+            if not datos_limpios["descripcion"]:
+                return False, "La descripción del vidrio es obligatoria", None
+            if not datos_limpios["tipo"]:
+                return False, "El tipo de vidrio es obligatorio", None
+            if not datos_limpios["proveedor"]:
+                return False, "El proveedor es obligatorio", None
+
+            print(f"[VIDRIOS] Creando vidrio: {datos_limpios['codigo']} - {datos_limpios['descripcion']}")
+
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
@@ -423,17 +527,17 @@ class VidriosModel:
             cursor.execute(
                 query,
                 (
-                    datos_vidrio.get("codigo", ""),
-                    datos_vidrio.get("descripcion", ""),
-                    datos_vidrio.get("tipo", ""),
-                    datos_vidrio.get("espesor", 0),
-                    datos_vidrio.get("proveedor", ""),
-                    datos_vidrio.get("precio_m2", 0),
-                    datos_vidrio.get("color", ""),
-                    datos_vidrio.get("tratamiento", ""),
-                    datos_vidrio.get("dimensiones_disponibles", ""),
-                    datos_vidrio.get("estado", "ACTIVO"),
-                    datos_vidrio.get("observaciones", ""),
+                    datos_limpios["codigo"],
+                    datos_limpios["descripcion"],
+                    datos_limpios["tipo"],
+                    datos_limpios["espesor"],
+                    datos_limpios["proveedor"],
+                    datos_limpios["precio_m2"],
+                    datos_limpios["color"],
+                    datos_limpios["tratamiento"],
+                    datos_limpios["dimensiones_disponibles"],
+                    datos_limpios["estado"],
+                    datos_limpios["observaciones"],
                 ),
             )
 
@@ -442,30 +546,92 @@ class VidriosModel:
             vidrio_id = cursor.fetchone()[0]
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Vidrio creado con ID: {vidrio_id}")
-            return vidrio_id
+            print(f"[VIDRIOS] Vidrio creado exitosamente con ID: {vidrio_id}")
+            return True, f"Vidrio '{datos_limpios['codigo']}' creado exitosamente", vidrio_id
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error creando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            return None
+            return False, f"Error creando vidrio: {str(e)}", None
 
     def actualizar_vidrio(self, vidrio_id, datos_vidrio):
         """
-        Actualiza un vidrio existente.
+        Actualiza un vidrio existente con sanitización completa.
 
         Args:
             vidrio_id (int): ID del vidrio a actualizar
             datos_vidrio (dict): Nuevos datos del vidrio
 
         Returns:
-            bool: True si fue exitoso
+            tuple: (bool, str) - (éxito, mensaje)
         """
         if not self.db_connection:
-            return False
+            return False, "No hay conexión a la base de datos"
 
         try:
+            # Validar ID
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
+            )
+            if vidrio_id_limpio is None:
+                return False, "ID de vidrio inválido"
+
+            # Sanitizar y validar todos los datos igual que en crear_vidrio
+            datos_limpios = {}
+            
+            datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("codigo", ""), max_length=20
+            )
+            datos_limpios["descripcion"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("descripcion", ""), max_length=200
+            )
+            datos_limpios["tipo"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("tipo", ""), max_length=50
+            )
+            datos_limpios["proveedor"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("proveedor", ""), max_length=100
+            )
+            datos_limpios["color"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("color", ""), max_length=50
+            )
+            datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("tratamiento", ""), max_length=100
+            )
+            datos_limpios["dimensiones_disponibles"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+            )
+            datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("estado", "ACTIVO"), max_length=20
+            )
+            datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
+                datos_vidrio.get("observaciones", ""), max_length=500
+            )
+            
+            datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
+                datos_vidrio.get("espesor", 0), min_val=0, max_val=50
+            )
+            
+            # Validar precio
+            precio_original = datos_vidrio.get("precio_m2")
+            if precio_original and precio_original != "":
+                precio_limpio = self.data_sanitizer.sanitize_numeric(
+                    precio_original, min_val=0
+                )
+                if precio_limpio is None:
+                    return False, "Precio por m2 inválido"
+                datos_limpios["precio_m2"] = precio_limpio
+            else:
+                datos_limpios["precio_m2"] = 0.0
+
+            # Validaciones de campos obligatorios
+            if not datos_limpios["codigo"]:
+                return False, "El código del vidrio es obligatorio"
+            if not datos_limpios["descripcion"]:
+                return False, "La descripción del vidrio es obligatoria"
+
+            print(f"[VIDRIOS] Actualizando vidrio ID {vidrio_id_limpio}: {datos_limpios['codigo']}")
+
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
@@ -479,56 +645,74 @@ class VidriosModel:
             cursor.execute(
                 query,
                 (
-                    datos_vidrio.get("codigo", ""),
-                    datos_vidrio.get("descripcion", ""),
-                    datos_vidrio.get("tipo", ""),
-                    datos_vidrio.get("espesor", 0),
-                    datos_vidrio.get("proveedor", ""),
-                    datos_vidrio.get("precio_m2", 0),
-                    datos_vidrio.get("color", ""),
-                    datos_vidrio.get("tratamiento", ""),
-                    datos_vidrio.get("dimensiones_disponibles", ""),
-                    datos_vidrio.get("estado", "ACTIVO"),
-                    datos_vidrio.get("observaciones", ""),
-                    vidrio_id,
+                    datos_limpios["codigo"],
+                    datos_limpios["descripcion"],
+                    datos_limpios["tipo"],
+                    datos_limpios["espesor"],
+                    datos_limpios["proveedor"],
+                    datos_limpios["precio_m2"],
+                    datos_limpios["color"],
+                    datos_limpios["tratamiento"],
+                    datos_limpios["dimensiones_disponibles"],
+                    datos_limpios["estado"],
+                    datos_limpios["observaciones"],
+                    vidrio_id_limpio,
                 ),
             )
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Vidrio {vidrio_id} actualizado exitosamente")
-            return True
+            print(f"[VIDRIOS] Vidrio {vidrio_id_limpio} actualizado exitosamente")
+            return True, f"Vidrio '{datos_limpios['codigo']}' actualizado exitosamente"
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error actualizando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            return False
+            return False, f"Error actualizando vidrio: {str(e)}"
 
     def eliminar_vidrio(self, vidrio_id):
         """
-        Elimina un vidrio (marca como inactivo).
+        Elimina un vidrio (marca como inactivo) con validación de entrada.
 
         Args:
             vidrio_id (int): ID del vidrio a eliminar
 
         Returns:
-            bool: True si fue exitoso
+            tuple: (bool, str) - (éxito, mensaje)
         """
         if not self.db_connection:
-            return False
+            return False, "No hay conexión a la base de datos"
 
         try:
+            # Validar ID
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
+            )
+            if vidrio_id_limpio is None:
+                return False, "ID de vidrio inválido"
+
             cursor = self.db_connection.connection.cursor()
+
+            # Verificar si el vidrio existe
+            cursor.execute(
+                f"SELECT codigo, descripcion FROM {self.tabla_vidrios} WHERE id = ?",
+                (vidrio_id_limpio,)
+            )
+            vidrio_info = cursor.fetchone()
+            if not vidrio_info:
+                return False, f"Vidrio con ID {vidrio_id_limpio} no encontrado"
+
+            codigo, descripcion = vidrio_info
 
             # Verificar si el vidrio está asignado a alguna obra
             cursor.execute(
                 f"SELECT COUNT(*) FROM {self.tabla_vidrios_obra} WHERE vidrio_id = ?",
-                (vidrio_id,),
+                (vidrio_id_limpio,),
             )
 
             if cursor.fetchone()[0] > 0:
                 print(
-                    f"[ADVERTENCIA] El vidrio {vidrio_id} está asignado a obras, se marcará como inactivo"
+                    f"[ADVERTENCIA] El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo"
                 )
                 # Marcar como inactivo en lugar de eliminar
                 query = f"""
@@ -536,36 +720,45 @@ class VidriosModel:
                     SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
                     WHERE id = ?
                 """
-                cursor.execute(query, (vidrio_id,))
+                cursor.execute(query, (vidrio_id_limpio,))
+                mensaje = f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
             else:
                 # Eliminar completamente si no está asignado
                 query = f"DELETE FROM {self.tabla_vidrios} WHERE id = ?"
-                cursor.execute(query, (vidrio_id,))
+                cursor.execute(query, (vidrio_id_limpio,))
+                mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Vidrio {vidrio_id} eliminado exitosamente")
-            return True
+            print(f"[VIDRIOS] {mensaje}")
+            return True, mensaje
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error eliminando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            return False
+            return False, f"Error eliminando vidrio: {str(e)}"
 
     def obtener_vidrio_por_id(self, vidrio_id):
         """
-        Obtiene un vidrio específico por su ID.
+        Obtiene un vidrio específico por su ID con validación.
 
         Args:
             vidrio_id (int): ID del vidrio
 
         Returns:
-            dict: Datos del vidrio o None si no existe
+            tuple: (bool, dict) - (éxito, datos del vidrio o None)
         """
         if not self.db_connection:
-            return None
+            return False, None
 
         try:
+            # Validar ID
+            vidrio_id_limpio = self.data_sanitizer.sanitize_integer(
+                vidrio_id, min_val=1
+            )
+            if vidrio_id_limpio is None:
+                return False, None
+
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
@@ -577,17 +770,18 @@ class VidriosModel:
                 WHERE id = ?
             """
 
-            cursor.execute(query, (vidrio_id,))
+            cursor.execute(query, (vidrio_id_limpio,))
             columnas = [column[0] for column in cursor.description]
             resultado = cursor.fetchone()
 
             if resultado:
-                return dict(zip(columnas, resultado))
-            return None
+                vidrio_data = dict(zip(columnas, resultado))
+                return True, vidrio_data
+            return False, None
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
-            return None
+            return False, None
 
     def _get_vidrios_demo(self):
         """Datos demo para cuando no hay conexión a base de datos."""

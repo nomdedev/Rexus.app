@@ -24,6 +24,54 @@ class ModuleManager:
     def __init__(self):
         self.loaded_modules = {}
     
+    def load_module(self, module_name: str, model_class, controller_class, view_class, db_connection=None):
+        """
+        Método de compatibilidad para cargar módulos.
+        
+        Args:
+            module_name: Nombre del módulo
+            model_class: Clase del modelo
+            controller_class: Clase del controlador  
+            view_class: Clase de la vista (puede ser None)
+            db_connection: Conexión a la base de datos
+            
+        Returns:
+            Controller instance or None if failed
+        """
+        try:
+            print(f"[{module_name}] Cargando módulo con load_module...")
+            
+            # Crear modelo
+            model = self._create_model_safely(model_class, db_connection, module_name)
+            
+            # Crear vista si está disponible
+            view = None
+            if view_class:
+                view = self._create_view_safely(view_class, module_name)
+            
+            # Crear controlador
+            controller = self._create_controller_safely(controller_class, model, view, module_name)
+            
+            # Cargar datos iniciales si el controlador tiene el método
+            if hasattr(controller, 'cargar_datos_iniciales'):
+                controller.cargar_datos_iniciales()
+            
+            # Registrar módulo
+            self.loaded_modules[module_name] = {
+                'model': model,
+                'view': view, 
+                'controller': controller
+            }
+            
+            print(f"[{module_name}] Módulo cargado exitosamente")
+            return controller
+            
+        except Exception as e:
+            print(f"[{module_name}] Error cargando módulo: {e}")
+            import traceback
+            traceback.print_exc()
+            return None
+    
     def create_module_safely(self, 
                            module_name: str, 
                            model_class, 
