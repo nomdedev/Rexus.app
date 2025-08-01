@@ -4,8 +4,6 @@ Vista de Logística Modernizada
 Interfaz moderna para la gestión de logística y transporte.
 """
 
-from datetime import datetime
-
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
