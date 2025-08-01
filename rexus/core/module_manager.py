@@ -46,15 +46,24 @@ class ModuleManager:
             QWidget: Vista del módulo o fallback
         """
         try:
+            print(f"[{module_name}] Iniciando carga de módulo...")
+            
             # 1. Crear instancias con validación
+            print(f"[{module_name}] Paso 1: Creando modelo...")
             model = self._create_model_safely(model_class, db_connection, module_name)
+            
+            print(f"[{module_name}] Paso 2: Creando vista...")
             view = self._create_view_safely(view_class, module_name)
+            
+            print(f"[{module_name}] Paso 3: Creando controlador...")
             controller = self._create_controller_safely(controller_class, model, view, module_name)
             
             # 2. Configurar conexiones
+            print(f"[{module_name}] Paso 4: Configurando conexiones...")
             self._setup_connections(view, controller, module_name)
             
             # 3. Cargar datos iniciales
+            print(f"[{module_name}] Paso 5: Cargando datos iniciales...")
             self._load_initial_data(controller, module_name)
             
             # 4. Registrar módulo exitoso
@@ -71,18 +80,28 @@ class ModuleManager:
         except Exception as e:
             print(f"❌ [{module_name}] Error cargando módulo: {e}")
             
+            # Mostrar traceback completo para debugging
+            import traceback
+            print(f"[{module_name}] Traceback completo:")
+            traceback.print_exc()
+            
             # Registrar fallo
             self.loaded_modules[module_name] = {
                 'status': 'failed',
                 'error': str(e)
             }
             
-            # SIEMPRE mostrar widget de error detallado en lugar del fallback genérico
-            return self._create_error_widget(module_name, str(e))
+            # Intentar usar fallback si está disponible, sino mostrar error
+            if fallback_callback:
+                print(f"[{module_name}] Usando fallback...")
+                return fallback_callback(module_name)
+            else:
+                return self._create_error_widget(module_name, str(e))
     
     def _create_model_safely(self, model_class, db_connection, module_name):
         """Crea modelo con validación de conexión BD."""
         try:
+            print(f"[{module_name}] Instanciando clase modelo: {model_class.__name__}")
             if db_connection:
                 model = model_class(db_connection)
                 print(f"[{module_name}] Modelo creado con conexión BD")
@@ -91,24 +110,35 @@ class ModuleManager:
                 print(f"[{module_name}] Modelo creado sin conexión BD (modo demo)")
             return model
         except Exception as e:
+            print(f"[{module_name}] Error específico en modelo: {e}")
+            import traceback
+            traceback.print_exc()
             raise Exception(f"Error creando modelo: {e}")
     
     def _create_view_safely(self, view_class, module_name):
         """Crea vista con validación de UI."""
         try:
+            print(f"[{module_name}] Instanciando clase vista: {view_class.__name__}")
             view = view_class()
             print(f"[{module_name}] Vista creada exitosamente")
             return view
         except Exception as e:
+            print(f"[{module_name}] Error específico en vista: {e}")
+            import traceback
+            traceback.print_exc()
             raise Exception(f"Error creando vista: {e}")
     
     def _create_controller_safely(self, controller_class, model, view, module_name):
         """Crea controlador con validación de dependencias."""
         try:
+            print(f"[{module_name}] Instanciando clase controlador: {controller_class.__name__}")
             controller = controller_class(model, view)
             print(f"[{module_name}] Controlador creado exitosamente")
             return controller
         except Exception as e:
+            print(f"[{module_name}] Error específico en controlador: {e}")
+            import traceback
+            traceback.print_exc()
             raise Exception(f"Error creando controlador: {e}")
     
     def _setup_connections(self, view, controller, module_name):

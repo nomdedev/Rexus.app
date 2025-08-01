@@ -178,6 +178,10 @@ class DatabaseConnection:
             except Exception as e:
                 print(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
             self._connection = None
+    
+    def close(self):
+        """Alias para disconnect() - cierra la conexión a la base de datos"""
+        self.disconnect()
 
     def cursor(self):
         """Obtiene un cursor de la conexión activa."""

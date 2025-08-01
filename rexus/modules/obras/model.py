@@ -1,7 +1,28 @@
-"""Modelo de Obras"""
+"""
+Modelo de Obras - Rexus.app v2.0.0
+
+Maneja la lógica de negocio y acceso a datos para obras.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
+"""
 
 import datetime
+import sys
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+    
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
+    
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in obras: {e}")
+    SECURITY_AVAILABLE = False
 
 
 class ObrasModel:
@@ -9,6 +30,18 @@ class ObrasModel:
         self.db_connection = db_connection
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
+        
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available:
+            self.data_sanitizer = data_sanitizer
+            self.sql_validator = SQLSecurityValidator()
+            print("OK [OBRAS] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            self.sql_validator = None
+            print("WARNING [OBRAS] Utilidades de seguridad no disponibles")
+            
         self._verificar_tablas()
 
     def _verificar_tablas(self):
@@ -64,7 +97,7 @@ class ObrasModel:
 
     def crear_obra(self, datos_obra: Dict[str, Any]) -> tuple[bool, str]:
         """
-        Crea una nueva obra en el sistema.
+        Crea una nueva obra en el sistema con sanitización completa de datos.
 
         Args:
             datos_obra: Diccionario con los datos de la obra
@@ -77,19 +110,65 @@ class ObrasModel:
 
         cursor = None
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            if self.security_available:
+                # Sanitizar todos los datos de entrada
+                datos_limpios = self.data_sanitizer.sanitize_form_data(datos_obra)
+                
+                # Validaciones específicas
+                if not datos_limpios.get("codigo"):
+                    return False, "El código de obra es requerido"
+                if not datos_limpios.get("nombre"):
+                    return False, "El nombre de obra es requerido"
+                if not datos_limpios.get("cliente"):
+                    return False, "El cliente es requerido"
+                    
+                # Validar email si se proporciona
+                if datos_limpios.get("email_contacto"):
+                    try:
+                        email_limpio = self.data_sanitizer.sanitize_email(datos_limpios["email_contacto"])
+                        if not email_limpio or len(email_limpio) < 5 or "@" not in email_limpio:
+                            return False, "Formato de email inválido"
+                        datos_limpios["email_contacto"] = email_limpio
+                    except Exception:
+                        return False, "Formato de email inválido"
+                
+                # Validar teléfono si se proporciona
+                if datos_limpios.get("telefono_contacto"):
+                    telefono_limpio = self.data_sanitizer.sanitize_phone(datos_limpios["telefono_contacto"])
+                    datos_limpios["telefono_contacto"] = telefono_limpio
+                    
+                # Validar presupuesto (manual porque el sanitizer no reconoce "presupuesto")
+                presupuesto_original = datos_obra.get("presupuesto_total")
+                if presupuesto_original and presupuesto_original != "":
+                    presupuesto_limpio = self.data_sanitizer.sanitize_numeric(
+                        presupuesto_original, min_val=0
+                    )
+                    if presupuesto_limpio is None:
+                        return False, "Presupuesto inválido"
+                    datos_limpios["presupuesto_total"] = presupuesto_limpio
+                else:
+                    datos_limpios["presupuesto_total"] = 0.0
+                    
+            else:
+                # Sin utilidades de seguridad, usar datos originales con precaución
+                datos_limpios = datos_obra.copy()
+                print("WARNING [OBRAS] Creando obra sin sanitización de seguridad")
+
             cursor = self.db_connection.cursor()
 
             # Verificar que no existe una obra con el mismo código
             cursor.execute(
                 "SELECT COUNT(*) FROM obras WHERE codigo = ?",
-                (datos_obra.get("codigo"),),
+                (datos_limpios.get("codigo"),),
             )
             if cursor.fetchone()[0] > 0:
                 return (
                     False,
-                    f"Ya existe una obra con el código {datos_obra.get('codigo')}",
+                    f"Ya existe una obra con el código {datos_limpios.get('codigo')}",
                 )
 
+            # Insertar obra con datos sanitizados
             sql_insert = """
             INSERT INTO obras
             (codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
@@ -101,29 +180,29 @@ class ObrasModel:
             cursor.execute(
                 sql_insert,
                 (
-                    datos_obra.get("codigo"),
-                    datos_obra.get("nombre"),
-                    datos_obra.get("descripcion", ""),
-                    datos_obra.get("cliente"),
-                    datos_obra.get("direccion", ""),
-                    datos_obra.get("telefono_contacto", ""),
-                    datos_obra.get("email_contacto", ""),
-                    datos_obra.get("fecha_inicio"),
-                    datos_obra.get("fecha_fin_estimada"),
-                    datos_obra.get("presupuesto_total", 0),
-                    datos_obra.get("estado", "PLANIFICACION"),
-                    datos_obra.get("tipo_obra", "CONSTRUCCION"),
-                    datos_obra.get("prioridad", "MEDIA"),
-                    datos_obra.get("responsable"),
-                    datos_obra.get("observaciones", ""),
-                    datos_obra.get("usuario_creacion", "SISTEMA"),
+                    datos_limpios.get("codigo"),
+                    datos_limpios.get("nombre"),
+                    datos_limpios.get("descripcion", ""),
+                    datos_limpios.get("cliente"),
+                    datos_limpios.get("direccion", ""),
+                    datos_limpios.get("telefono_contacto", ""),
+                    datos_limpios.get("email_contacto", ""),
+                    datos_limpios.get("fecha_inicio"),
+                    datos_limpios.get("fecha_fin_estimada"),
+                    datos_limpios.get("presupuesto_total", 0),
+                    datos_limpios.get("estado", "PLANIFICACION"),
+                    datos_limpios.get("tipo_obra", "CONSTRUCCION"),
+                    datos_limpios.get("prioridad", "MEDIA"),
+                    datos_limpios.get("responsable"),
+                    datos_limpios.get("observaciones", ""),
+                    datos_limpios.get("usuario_creacion", "SISTEMA"),
                 ),
             )
 
             self.db_connection.commit()
 
-            print(f"[OBRAS] Obra creada exitosamente: {datos_obra.get('codigo')}")
-            return True, f"Obra {datos_obra.get('codigo')} creada exitosamente"
+            print(f"[OBRAS] Obra creada exitosamente: {datos_limpios.get('codigo')}")
+            return True, f"Obra {datos_limpios.get('codigo')} creada exitosamente"
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error creando obra: {e}")

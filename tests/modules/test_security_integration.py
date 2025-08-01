@@ -13,6 +13,8 @@ sys.path.append(str(ROOT_DIR))
 
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.inventario.model import InventarioModel
+from rexus.modules.herrajes.model import HerrajesModel
+from rexus.modules.obras.model import ObrasModel
 
 
 class TestSecurityIntegration(unittest.TestCase):
@@ -22,6 +24,8 @@ class TestSecurityIntegration(unittest.TestCase):
         """Configurar tests."""
         self.usuarios_model = UsuariosModel()
         self.inventario_model = InventarioModel()
+        self.herrajes_model = HerrajesModel()
+        self.obras_model = ObrasModel()
     
     def test_usuarios_security_loaded(self):
         """Verificar que las utilidades de seguridad se cargan en usuarios."""
@@ -34,6 +38,18 @@ class TestSecurityIntegration(unittest.TestCase):
         self.assertTrue(self.inventario_model.security_available)
         self.assertIsNotNone(self.inventario_model.data_sanitizer)
         self.assertIsNotNone(self.inventario_model.sql_validator)
+    
+    def test_herrajes_security_loaded(self):
+        """Verificar que las utilidades de seguridad se cargan en herrajes."""
+        self.assertTrue(self.herrajes_model.security_available)
+        self.assertIsNotNone(self.herrajes_model.data_sanitizer)
+        self.assertIsNotNone(self.herrajes_model.sql_validator)
+    
+    def test_obras_security_loaded(self):
+        """Verificar que las utilidades de seguridad se cargan en obras."""
+        self.assertTrue(self.obras_model.security_available)
+        self.assertIsNotNone(self.obras_model.data_sanitizer)
+        self.assertIsNotNone(self.obras_model.sql_validator)
     
     def test_usuarios_data_sanitization(self):
         """Verificar que la sanitización funciona en el modelo usuarios."""

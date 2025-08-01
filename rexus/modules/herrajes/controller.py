@@ -20,14 +20,20 @@ class HerrajesController(QObject):
     herraje_eliminado = pyqtSignal(int)
     stock_actualizado = pyqtSignal(int, int)
 
-    def __init__(self, view=None, db_connection=None, usuario_actual=None):
+    def __init__(self, model=None, view=None, db_connection=None, usuario_actual=None):
         super().__init__()
-        self.view = view
+        
+        # Si model es pasado como primer parámetro (patrón MVC estándar)
+        if model is not None:
+            self.model = model
+            self.view = view
+        else:
+            # Compatibilidad hacia atrás: view como primer parámetro
+            self.view = model  # En este caso, 'model' es realmente 'view'
+            self.model = HerrajesModel(db_connection)
+            
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-        
-        # Inicializar modelo
-        self.model = HerrajesModel(db_connection)
 
         # Conectar señales si la vista está disponible
         if self.view:

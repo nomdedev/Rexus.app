@@ -134,6 +134,7 @@ class SimpleSecurityManager:
             "Configuración",
             "Compras",
             "Mantenimiento",
+            "Auditoría",
         ]
         print(f"[SIMPLE_AUTH] Módulos permitidos: {modules}")
         return modules
@@ -273,9 +274,20 @@ class MainWindow(QMainWindow):
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
 
+        print(f"[DEBUG] Módulos permitidos: {self.modulos_permitidos}")
+        
         for emoji, nombre, descripcion in modulos:
-            btn = self._create_module_button(emoji, nombre, descripcion)
-            modules_layout.addWidget(btn)
+            # Verificar si el usuario tiene permisos para este módulo
+            has_permission = nombre in self.modulos_permitidos
+            print(f"[DEBUG] Módulo '{nombre}': permisos={has_permission}")
+            
+            if has_permission:
+                btn = self._create_module_button(emoji, nombre, descripcion)
+                modules_layout.addWidget(btn)
+            else:
+                # Crear botón deshabilitado para módulos sin permisos
+                btn = self._create_disabled_module_button(emoji, nombre, "Sin permisos")
+                modules_layout.addWidget(btn)
 
         modules_layout.addStretch()
         scroll.setWidget(modules_widget)
@@ -315,6 +327,35 @@ QPushButton:pressed {
             """
         )
         btn.clicked.connect(lambda checked, name=nombre: self.show_module(name))
+        return btn
+
+    def _create_disabled_module_button(
+        self, emoji: str, nombre: str, descripcion: str
+    ) -> QPushButton:
+        """Crea un botón de módulo deshabilitado para módulos sin permisos"""
+        btn = QPushButton()
+        btn.setText(f"{emoji}  {nombre}")
+        btn.setToolTip(descripcion)
+        btn.setEnabled(False)
+        btn.setStyleSheet(
+            """
+QPushButton {
+    text-align: left;
+    padding: 15px 20px;
+    border: none;
+    color: #888888;
+    font-size: 14px;
+    font-weight: 400;
+    background-color: rgba(255, 255, 255, 0.08);
+    border-radius: 6px;
+    margin: 3px 8px;
+}
+QPushButton:disabled {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #666666;
+}
+            """
+        )
         return btn
 
     def _create_main_content(self, main_layout):
@@ -1083,6 +1124,7 @@ def main():
                 "Configuración",
                 "Compras",
                 "Mantenimiento",
+                "Auditoría",
             ]
 
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
