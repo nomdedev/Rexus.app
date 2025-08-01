@@ -3,10 +3,27 @@ Modelo de Herrajes - Rexus.app v2.0.0
 
 Maneja la lógica de negocio y acceso a datos para herrajes.
 Gestiona la compra por obra y asociación con proveedores.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
+import sys
+from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir / "src"))
+    
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
+    
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in herrajes: {e}")
+    SECURITY_AVAILABLE = False
 
 
 class HerrajesModel:
@@ -51,6 +68,18 @@ class HerrajesModel:
         self.tabla_herrajes_obra = "herrajes_obra"
         self.tabla_pedidos_herrajes = "pedidos_herrajes"
         self.tabla_herrajes_inventario = "herrajes_inventario"
+        
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available:
+            self.data_sanitizer = data_sanitizer
+            self.sql_validator = SQLSecurityValidator()
+            print("OK [HERRAJES] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            self.sql_validator = None
+            print("WARNING [HERRAJES] Utilidades de seguridad no disponibles")
+            
         if not self.db_connection:
             print(
                 "[ERROR HERRAJES] No hay conexión a la base de datos. El módulo no funcionará correctamente."
@@ -381,7 +410,7 @@ class HerrajesModel:
 
     def buscar_herrajes(self, termino_busqueda):
         """
-        Busca herrajes por término de búsqueda.
+        Busca herrajes por término de búsqueda con sanitización de entrada.
 
         Args:
             termino_busqueda (str): Término a buscar
@@ -393,6 +422,14 @@ class HerrajesModel:
             return []
 
         try:
+            # 🔒 SANITIZACIÓN DE ENTRADA
+            if self.security_available and termino_busqueda:
+                termino_limpio = self.data_sanitizer.sanitize_string(termino_busqueda, max_length=100)
+                if not termino_limpio:
+                    return []
+            else:
+                termino_limpio = termino_busqueda
+
             cursor = self.db_connection.cursor()
 
             query = """
@@ -408,7 +445,7 @@ class HerrajesModel:
                 ORDER BY codigo
             """
 
-            termino = f"%{termino_busqueda}%"
+            termino = f"%{termino_limpio}%"
             cursor.execute(query, (termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -426,7 +463,7 @@ class HerrajesModel:
 
     def crear_herraje(self, datos_herraje: Dict[str, Any]) -> Tuple[bool, str]:
         """
-        Crea un nuevo herraje.
+        Crea un nuevo herraje con sanitización completa de datos.
 
         Args:
             datos_herraje: Datos del herraje a crear
@@ -438,17 +475,44 @@ class HerrajesModel:
             return False, "Sin conexión a la base de datos"
 
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            if self.security_available:
+                # Sanitizar todos los datos de entrada
+                datos_limpios = self.data_sanitizer.sanitize_form_data(datos_herraje)
+                
+                # Validaciones específicas
+                if not datos_limpios.get("codigo"):
+                    return False, "El código es requerido"
+                if not datos_limpios.get("descripcion"):
+                    return False, "La descripción es requerida"
+                if not datos_limpios.get("proveedor"):
+                    return False, "El proveedor es requerido"
+                    
+                # Validar precio si se proporciona
+                precio_original = datos_herraje.get("precio_unitario")
+                precio_sanitizado = datos_limpios.get("precio_unitario")
+                
+                if precio_original and precio_original != "" and precio_sanitizado is None:
+                    return False, "Precio inválido"
+                elif precio_sanitizado is None:
+                    datos_limpios["precio_unitario"] = 0.0
+                    
+            else:
+                # Sin utilidades de seguridad, usar datos originales con precaución
+                datos_limpios = datos_herraje.copy()
+                print("WARNING [HERRAJES] Creando herraje sin sanitización de seguridad")
+
             cursor = self.db_connection.cursor()
 
             # Verificar que el código no exista
             cursor.execute(
                 "SELECT COUNT(*) FROM herrajes WHERE codigo = ?",
-                (datos_herraje["codigo"],),
+                (datos_limpios["codigo"],),
             )
             if cursor.fetchone()[0] > 0:
-                return False, f"El código '{datos_herraje['codigo']}' ya existe"
+                return False, f"El código '{datos_limpios['codigo']}' ya existe"
 
-            # Insertar herraje
+            # Insertar herraje con datos sanitizados
             cursor.execute(
                 """
                 INSERT INTO """
@@ -460,24 +524,24 @@ class HerrajesModel:
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    datos_herraje["codigo"],
-                    datos_herraje["descripcion"],
-                    datos_herraje.get("tipo", "OTRO"),
-                    datos_herraje["proveedor"],
-                    datos_herraje.get("precio_unitario", 0.00),
-                    datos_herraje.get("unidad_medida", "UNIDAD"),
-                    datos_herraje.get("categoria", ""),
-                    datos_herraje.get("estado", "ACTIVO"),
-                    datos_herraje.get("stock_minimo", 0),
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("observaciones", ""),
-                    datos_herraje.get("especificaciones", ""),
-                    datos_herraje.get("marca", ""),
-                    datos_herraje.get("modelo", ""),
-                    datos_herraje.get("color", ""),
-                    datos_herraje.get("material", ""),
-                    datos_herraje.get("dimensiones", ""),
-                    datos_herraje.get("peso", 0.0),
+                    datos_limpios["codigo"],
+                    datos_limpios["descripcion"],
+                    datos_limpios.get("tipo", "OTRO"),
+                    datos_limpios["proveedor"],
+                    datos_limpios.get("precio_unitario", 0.00),
+                    datos_limpios.get("unidad_medida", "UNIDAD"),
+                    datos_limpios.get("categoria", ""),
+                    datos_limpios.get("estado", "ACTIVO"),
+                    datos_limpios.get("stock_minimo", 0),
+                    datos_limpios.get("stock_actual", 0),
+                    datos_limpios.get("observaciones", ""),
+                    datos_limpios.get("especificaciones", ""),
+                    datos_limpios.get("marca", ""),
+                    datos_limpios.get("modelo", ""),
+                    datos_limpios.get("color", ""),
+                    datos_limpios.get("material", ""),
+                    datos_limpios.get("dimensiones", ""),
+                    datos_limpios.get("peso", 0.0),
                 ),
             )
 
@@ -502,7 +566,7 @@ class HerrajesModel:
             )
 
             self.db_connection.commit()
-            return True, f"Herraje '{datos_herraje['codigo']}' creado exitosamente"
+            return True, f"Herraje '{datos_limpios['codigo']}' creado exitosamente"
 
         except Exception as e:
             print(f"[ERROR HERRAJES] Error creando herraje: {e}")

@@ -20,14 +20,20 @@ class ConfiguracionController(QObject):
     configuracion_exportada = pyqtSignal(str)  # archivo
     configuracion_importada = pyqtSignal(str)  # archivo
     
-    def __init__(self, view=None, db_connection=None, usuario_actual=None):
+    def __init__(self, model=None, view=None, db_connection=None, usuario_actual=None):
         super().__init__()
-        self.view = view
+        
+        # Si model es pasado como primer parámetro (patrón MVC estándar)
+        if model is not None:
+            self.model = model
+            self.view = view
+        else:
+            # Compatibilidad hacia atrás: view como primer parámetro
+            self.view = model  # En este caso, 'model' es realmente 'view'
+            self.model = ConfiguracionModel(db_connection)
+            
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-        
-        # Inicializar modelo
-        self.model = ConfiguracionModel(db_connection)
         
         # Conectar señales si hay vista
         if self.view:
@@ -51,8 +57,9 @@ class ConfiguracionController(QObject):
         if hasattr(self.view, 'solicitud_probar_conexion_bd'):
             self.view.solicitud_probar_conexion_bd.connect(self.probar_conexion_bd)
         
-        # Establecer controlador en la vista
-        self.view.set_controller(self)
+        # Establecer controlador en la vista (si tiene este método)
+        if hasattr(self.view, 'set_controller'):
+            self.view.set_controller(self)
     
     def cargar_configuraciones(self):
         """Carga todas las configuraciones en la vista."""
