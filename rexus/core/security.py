@@ -644,42 +644,77 @@ class SecurityManager(QObject):
         try:
             # Basado en el rol del usuario actual, devolver módulos permitidos
             if self.current_role in ['admin', 'ADMIN']:
-                # Admin tiene acceso a todos los módulos
+                # Admin tiene acceso a todos los módulos - usar nombres con capitalización como UI
                 return [
-                    "inventario",
-                    "administracion", 
-                    "obras",
-                    "pedidos",
-                    "logistica",
-                    "herrajes",
-                    "vidrios",
-                    "usuarios",
-                    "auditoria",
-                    "configuracion",
-                    "compras",
-                    "mantenimiento"
+                    "Inventario",
+                    "Administración", 
+                    "Obras",
+                    "Pedidos",
+                    "Logística",
+                    "Herrajes",
+                    "Vidrios",
+                    "Usuarios",
+                    "Auditoría",
+                    "Configuración",
+                    "Compras",
+                    "Mantenimiento"
                 ]
             elif self.current_role in ['supervisor', 'SUPERVISOR']:
-                # Supervisor tiene acceso limitado
+                # Supervisor tiene acceso a gestión general
                 return [
-                    "inventario",
-                    "obras", 
-                    "pedidos",
-                    "logistica",
-                    "herrajes",
-                    "vidrios"
+                    "Inventario",
+                    "Obras", 
+                    "Pedidos",
+                    "Logística",
+                    "Herrajes",
+                    "Vidrios",
+                    "Compras",
+                    "Mantenimiento"
+                ]
+            elif self.current_role in ['contabilidad', 'CONTABILIDAD']:
+                # Especialista en contabilidad - módulos financieros y administrativos
+                return [
+                    "Administración",
+                    "Compras", 
+                    "Pedidos",
+                    "Obras",
+                    "Inventario",
+                    "Auditoría",
+                    "Usuarios"
+                ]
+            elif self.current_role in ['inventario', 'INVENTARIO']:
+                # Especialista en inventario - módulos de stock y materiales
+                return [
+                    "Inventario",
+                    "Herrajes",
+                    "Vidrios",
+                    "Compras",
+                    "Pedidos",
+                    "Logística",
+                    "Mantenimiento"
+                ]
+            elif self.current_role in ['obras', 'OBRAS']:
+                # Especialista en obras - módulos de construcción y proyectos
+                return [
+                    "Obras",
+                    "Inventario",
+                    "Herrajes",
+                    "Vidrios",
+                    "Pedidos",
+                    "Logística",
+                    "Mantenimiento"
                 ]
             else:
-                # Usuario básico - solo lectura
+                # Usuario básico - solo lectura en módulos esenciales
                 return [
-                    "inventario",
-                    "obras",
-                    "pedidos"
+                    "Inventario",
+                    "Obras",
+                    "Pedidos"
                 ]
 
         except Exception as e:
             print(f"ERROR obteniendo modulos del usuario: {e}")
-            return ["inventario", "obras"]  # Módulos mínimos
+            return ["Inventario", "Obras"]  # Módulos mínimos
 
     def get_current_user_string(self) -> Optional[str]:
         """Obtiene el nombre del usuario actual (para compatibilidad)."""
