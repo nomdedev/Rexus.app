@@ -10,10 +10,11 @@ Maneja la lógica de negocio para:
 - Control de costos logísticos
 """
 
-from datetime import datetime, date
+from datetime import date, datetime
 from decimal import Decimal
 
 from rexus.utils.demo_data_generator import DemoDataGenerator
+from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 
 
 class LogisticaModel:
@@ -50,7 +51,7 @@ class LogisticaModel:
                 self.tabla_proveedores_transporte,
                 self.tabla_rutas,
                 self.tabla_costos_logisticos,
-                self.tabla_obras
+                self.tabla_obras,
             ]
 
             for tabla in tablas:
@@ -61,10 +62,46 @@ class LogisticaModel:
                 if cursor.fetchone():
                     print(f"[LOGÍSTICA] Tabla '{tabla}' verificada correctamente.")
                 else:
-                    print(f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos.")
+                    print(
+                        f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos."
+                    )
 
         except Exception as e:
             print(f"[ERROR LOGÍSTICA] Error verificando tablas: {e}")
+
+    def _validate_table_name(self, table_name):
+        """
+        Valida que el nombre de tabla sea seguro para prevenir SQL injection.
+
+        Args:
+            table_name (str): Nombre de tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+
+        Raises:
+            SQLSecurityError: Si el nombre de tabla no es válido
+        """
+        try:
+            return validate_table_name(table_name)
+        except SQLSecurityError:
+            # Fallback a tabla por defecto si no es válida
+            if "transporte" in table_name.lower():
+                return "transportes"
+            elif "entrega" in table_name.lower():
+                if "detalle" in table_name.lower():
+                    return "detalle_entregas"
+                return "entregas"
+            elif "proveedor" in table_name.lower():
+                return "proveedores_transporte"
+            elif "ruta" in table_name.lower():
+                return "rutas"
+            elif "costo" in table_name.lower():
+                return "costos_logisticos"
+            elif "obra" in table_name.lower():
+                return "obras"
+            else:
+                raise SQLSecurityError(f"Nombre de tabla no válido: {table_name}")
 
     # MÉTODOS PARA TRANSPORTES
 
@@ -105,15 +142,19 @@ class LogisticaModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = """
+            query = (
+                """
                 SELECT 
                     t.id, t.codigo, t.tipo, t.proveedor, t.capacidad_kg,
                     t.capacidad_m3, t.costo_km, t.disponible, t.observaciones,
                     t.fecha_creacion, t.fecha_modificacion
                 FROM {self.tabla_transportes} t
-                WHERE """ + " AND ".join(conditions) + """
+                WHERE """
+                + " AND ".join(conditions)
+                + """
                 ORDER BY t.tipo, t.proveedor
             """
+            )
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -146,23 +187,28 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_transportes + """
+            query = (
+                """
+                INSERT INTO [{self._validate_table_name(self.tabla_transportes)}]
                 (codigo, tipo, proveedor, capacidad_kg, capacidad_m3, costo_km,
                  disponible, observaciones, activo, fecha_creacion, fecha_modificacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
             """
+            )
 
-            cursor.execute(query, (
-                datos_transporte.get('codigo', ''),
-                datos_transporte.get('tipo', ''),
-                datos_transporte.get('proveedor', ''),
-                datos_transporte.get('capacidad_kg', 0),
-                datos_transporte.get('capacidad_m3', 0),
-                datos_transporte.get('costo_km', 0),
-                datos_transporte.get('disponible', True),
-                datos_transporte.get('observaciones', '')
-            ))
+            cursor.execute(
+                query,
+                (
+                    datos_transporte.get("codigo", ""),
+                    datos_transporte.get("tipo", ""),
+                    datos_transporte.get("proveedor", ""),
+                    datos_transporte.get("capacidad_kg", 0),
+                    datos_transporte.get("capacidad_m3", 0),
+                    datos_transporte.get("costo_km", 0),
+                    datos_transporte.get("disponible", True),
+                    datos_transporte.get("observaciones", ""),
+                ),
+            )
 
             # Obtener ID del transporte creado
             cursor.execute("SELECT @@IDENTITY")
@@ -195,23 +241,28 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                UPDATE """ + self.tabla_transportes + """
+            query = (
+                """
+                UPDATE [{self._validate_table_name(self.tabla_transportes)}]
                 SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
                     costo_km = ?, disponible = ?, observaciones = ?, fecha_modificacion = GETDATE()
                 WHERE id = ?
             """
+            )
 
-            cursor.execute(query, (
-                datos_transporte.get('tipo', ''),
-                datos_transporte.get('proveedor', ''),
-                datos_transporte.get('capacidad_kg', 0),
-                datos_transporte.get('capacidad_m3', 0),
-                datos_transporte.get('costo_km', 0),
-                datos_transporte.get('disponible', True),
-                datos_transporte.get('observaciones', ''),
-                transporte_id
-            ))
+            cursor.execute(
+                query,
+                (
+                    datos_transporte.get("tipo", ""),
+                    datos_transporte.get("proveedor", ""),
+                    datos_transporte.get("capacidad_kg", 0),
+                    datos_transporte.get("capacidad_m3", 0),
+                    datos_transporte.get("costo_km", 0),
+                    datos_transporte.get("disponible", True),
+                    datos_transporte.get("observaciones", ""),
+                    transporte_id,
+                ),
+            )
 
             self.db_connection.commit()
             print(f"[LOGÍSTICA] Transporte {transporte_id} actualizado exitosamente")
@@ -238,7 +289,7 @@ class LogisticaModel:
         if not self.db_connection:
             # Modo demo: devolver datos demo
             if DemoDataGenerator.es_modo_demo():
-                return DemoDataGenerator.generar_logistica_demo()['entregas']
+                return DemoDataGenerator.generar_logistica_demo()["entregas"]
             return []
 
         try:
@@ -268,7 +319,8 @@ class LogisticaModel:
                     conditions.append("e.transporte_id = ?")
                     params.append(filtros["transporte_id"])
 
-            query = """
+            query = (
+                """
                 SELECT 
                     e.id, e.obra_id, o.nombre as obra_nombre, e.transporte_id,
                     t.codigo as transporte_codigo, t.proveedor as transporte_proveedor,
@@ -278,9 +330,12 @@ class LogisticaModel:
                 FROM {self.tabla_entregas} e
                 LEFT JOIN {self.tabla_obras} o ON e.obra_id = o.id
                 LEFT JOIN {self.tabla_transportes} t ON e.transporte_id = t.id
-                WHERE """ + " AND ".join(conditions) + """
+                WHERE """
+                + " AND ".join(conditions)
+                + """
                 ORDER BY e.fecha_programada DESC
             """
+            )
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -313,26 +368,31 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_entregas + """
+            query = (
+                """
+                INSERT INTO [{self._validate_table_name(self.tabla_entregas)}]
                 (obra_id, transporte_id, fecha_programada, direccion_entrega,
                  contacto, telefono, estado, observaciones, costo_envio,
                  usuario_creacion, fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
             """
+            )
 
-            cursor.execute(query, (
-                datos_entrega.get('obra_id'),
-                datos_entrega.get('transporte_id'),
-                datos_entrega.get('fecha_programada'),
-                datos_entrega.get('direccion_entrega', ''),
-                datos_entrega.get('contacto', ''),
-                datos_entrega.get('telefono', ''),
-                datos_entrega.get('estado', 'PROGRAMADA'),
-                datos_entrega.get('observaciones', ''),
-                datos_entrega.get('costo_envio', 0),
-                datos_entrega.get('usuario_creacion', 'SYSTEM')
-            ))
+            cursor.execute(
+                query,
+                (
+                    datos_entrega.get("obra_id"),
+                    datos_entrega.get("transporte_id"),
+                    datos_entrega.get("fecha_programada"),
+                    datos_entrega.get("direccion_entrega", ""),
+                    datos_entrega.get("contacto", ""),
+                    datos_entrega.get("telefono", ""),
+                    datos_entrega.get("estado", "PROGRAMADA"),
+                    datos_entrega.get("observaciones", ""),
+                    datos_entrega.get("costo_envio", 0),
+                    datos_entrega.get("usuario_creacion", "SYSTEM"),
+                ),
+            )
 
             # Obtener ID de la entrega creada
             cursor.execute("SELECT @@IDENTITY")
@@ -348,7 +408,7 @@ class LogisticaModel:
                 self.db_connection.rollback()
             return None
 
-    def actualizar_estado_entrega(self, entrega_id, nuevo_estado, observaciones=''):
+    def actualizar_estado_entrega(self, entrega_id, nuevo_estado, observaciones=""):
         """
         Actualiza el estado de una entrega.
 
@@ -367,23 +427,29 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
 
             # Si se marca como entregada, agregar fecha de entrega
-            if nuevo_estado == 'ENTREGADA':
-                query = """
-                    UPDATE """ + self.tabla_entregas + """
+            if nuevo_estado == "ENTREGADA":
+                query = (
+                    """
+                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
                     SET estado = ?, fecha_entrega = GETDATE(), observaciones = ?
                     WHERE id = ?
                 """
+                )
             else:
-                query = """
-                    UPDATE """ + self.tabla_entregas + """
+                query = (
+                    """
+                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
                     SET estado = ?, observaciones = ?
                     WHERE id = ?
                 """
+                )
 
             cursor.execute(query, (nuevo_estado, observaciones, entrega_id))
 
             self.db_connection.commit()
-            print(f"[LOGÍSTICA] Estado de entrega {entrega_id} actualizado a {nuevo_estado}")
+            print(
+                f"[LOGÍSTICA] Estado de entrega {entrega_id} actualizado a {nuevo_estado}"
+            )
             return True
 
         except Exception as e:
@@ -410,14 +476,16 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
+            query = (
+                """
                 SELECT 
                     d.id, d.entrega_id, d.producto, d.cantidad, d.peso_kg,
                     d.volumen_m3, d.observaciones
-                FROM """ + self.tabla_detalle_entregas + """ d
+                FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] d
                 WHERE d.entrega_id = ?
                 ORDER BY d.producto
             """
+            )
 
             cursor.execute(query, (entrega_id,))
             columnas = [column[0] for column in cursor.description]
@@ -451,20 +519,25 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_detalle_entregas + """
+            query = (
+                """
+                INSERT INTO [{self._validate_table_name(self.tabla_detalle_entregas)}]
                 (entrega_id, producto, cantidad, peso_kg, volumen_m3, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?)
             """
+            )
 
-            cursor.execute(query, (
-                entrega_id,
-                datos_producto.get('producto', ''),
-                datos_producto.get('cantidad', 0),
-                datos_producto.get('peso_kg', 0),
-                datos_producto.get('volumen_m3', 0),
-                datos_producto.get('observaciones', '')
-            ))
+            cursor.execute(
+                query,
+                (
+                    entrega_id,
+                    datos_producto.get("producto", ""),
+                    datos_producto.get("cantidad", 0),
+                    datos_producto.get("peso_kg", 0),
+                    datos_producto.get("volumen_m3", 0),
+                    datos_producto.get("observaciones", ""),
+                ),
+            )
 
             # Obtener ID del detalle creado
             cursor.execute("SELECT @@IDENTITY")
@@ -496,7 +569,7 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = "DELETE FROM " + self.tabla_detalle_entregas + " WHERE id = ?"
+            query = f"DELETE FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] WHERE id = ?"
             cursor.execute(query, (detalle_id,))
 
             self.db_connection.commit()
@@ -526,44 +599,58 @@ class LogisticaModel:
             estadisticas = {}
 
             # Total transportes
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_transportes + " WHERE activo = 1")
-            estadisticas['total_transportes'] = cursor.fetchone()[0]
+            cursor.execute(
+                "SELECT COUNT(*) FROM " + self.tabla_transportes + " WHERE activo = 1"
+            )
+            estadisticas["total_transportes"] = cursor.fetchone()[0]
 
             # Transportes disponibles
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_transportes + " WHERE activo = 1 AND disponible = 1")
-            estadisticas['transportes_disponibles'] = cursor.fetchone()[0]
+            cursor.execute(
+                "SELECT COUNT(*) FROM "
+                + self.tabla_transportes
+                + " WHERE activo = 1 AND disponible = 1"
+            )
+            estadisticas["transportes_disponibles"] = cursor.fetchone()[0]
 
             # Entregas por estado
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT estado, COUNT(*) as cantidad
-                FROM """ + self.tabla_entregas + """
+                FROM [{self._validate_table_name(self.tabla_entregas)}]
                 GROUP BY estado
-            """)
-            estadisticas['entregas_por_estado'] = dict(cursor.fetchall())
+            """
+            )
+            estadisticas["entregas_por_estado"] = dict(cursor.fetchall())
 
             # Entregas del mes actual
-            cursor.execute("""
-                SELECT COUNT(*) FROM """ + self.tabla_entregas + """
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """)
-            estadisticas['entregas_mes_actual'] = cursor.fetchone()[0]
+            """
+            )
+            estadisticas["entregas_mes_actual"] = cursor.fetchone()[0]
 
             # Entregas pendientes
-            cursor.execute("""
-                SELECT COUNT(*) FROM """ + self.tabla_entregas + """
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
                 WHERE estado IN ('PROGRAMADA', 'EN_TRANSITO')
-            """)
-            estadisticas['entregas_pendientes'] = cursor.fetchone()[0]
+            """
+            )
+            estadisticas["entregas_pendientes"] = cursor.fetchone()[0]
 
             # Costo total de envíos del mes
-            cursor.execute("""
-                SELECT SUM(costo_envio) FROM """ + self.tabla_entregas + """
+            cursor.execute(
+                """
+                SELECT SUM(costo_envio) FROM [{self._validate_table_name(self.tabla_entregas)}]
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """)
+            """
+            )
             resultado = cursor.fetchone()[0]
-            estadisticas['costo_envios_mes'] = float(resultado) if resultado else 0.0
+            estadisticas["costo_envios_mes"] = float(resultado) if resultado else 0.0
 
             return estadisticas
 
@@ -584,12 +671,14 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
+            query = (
+                """
                 SELECT id, nombre, direccion, estado
-                FROM """ + self.tabla_obras + """
+                FROM [{self._validate_table_name(self.tabla_obras)}]
                 WHERE activo = 1 AND estado != 'TERMINADA'
                 ORDER BY nombre
             """
+            )
 
             cursor.execute(query)
             columnas = [column[0] for column in cursor.description]
@@ -626,12 +715,15 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
 
             # Obtener información del transporte
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT costo_km, capacidad_kg, capacidad_m3
-                FROM """ + self.tabla_transportes + """
+                FROM [{self._validate_table_name(self.tabla_transportes)}]
                 WHERE id = ?
-            """, (transporte_id,))
-            
+            """,
+                (transporte_id,),
+            )
+
             resultado = cursor.fetchone()
             if not resultado:
                 return 0.0
@@ -643,12 +735,16 @@ class LogisticaModel:
 
             # Agregar costos adicionales por peso y volumen excedente
             costo_adicional = 0.0
-            
+
             if peso_kg > capacidad_kg:
-                costo_adicional += (peso_kg - capacidad_kg) * 0.5  # $0.5 por kg excedente
-            
+                costo_adicional += (
+                    peso_kg - capacidad_kg
+                ) * 0.5  # $0.5 por kg excedente
+
             if volumen_m3 > capacidad_m3:
-                costo_adicional += (volumen_m3 - capacidad_m3) * 10  # $10 por m³ excedente
+                costo_adicional += (
+                    volumen_m3 - capacidad_m3
+                ) * 10  # $10 por m³ excedente
 
             costo_total = costo_base + costo_adicional
 
