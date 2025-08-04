@@ -81,7 +81,7 @@ def actualizar_obras_existentes():
                 SET codigo = ?, 
                     fecha_medicion = ?, 
                     fecha_colocacion = ?,
-                    observaciones = COALESCE(observaciones, '') + ? 
+                    observaciones = COALESCE(observaciones, '') || ? 
                 WHERE id = ?
             """,
                 (

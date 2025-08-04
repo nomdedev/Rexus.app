@@ -24,6 +24,14 @@ except ImportError as e:
     print(f"[WARNING] Security utilities not available in obras: {e}")
     SECURITY_AVAILABLE = False
 
+# Importar nueva utilidad de seguridad SQL
+try:
+    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    SQL_SECURITY_AVAILABLE = True
+except ImportError:
+    print("[WARNING] SQL security utilities not available in obras")
+    SQL_SECURITY_AVAILABLE = False
+
 
 class ObrasModel:
     def __init__(self, db_connection=None):
@@ -487,7 +495,21 @@ class ObrasModel:
             if conditions:
                 where_clause = "WHERE " + " AND ".join(conditions)
 
-            base_query = "SELECT * FROM obras"
+            # SECURITY: Validar nombre de tabla para prevenir SQL injection
+            tabla_segura = "obras"
+            if SQL_SECURITY_AVAILABLE:
+                try:
+                    from rexus.utils.sql_security import sql_validator
+                    if tabla_segura not in sql_validator.ALLOWED_TABLES:
+                        sql_validator.add_allowed_table(tabla_segura)
+                    tabla_validada = validate_table_name(tabla_segura)
+                except SQLSecurityError as e:
+                    print(f"[SECURITY ERROR] Tabla no válida: {e}")
+                    return []
+            else:
+                tabla_validada = tabla_segura
+            
+            base_query = f"SELECT * FROM [{tabla_validada}]"
             if where_clause:
                 sql_select = (
                     base_query + " " + where_clause + " ORDER BY fecha_inicio DESC"

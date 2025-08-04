@@ -11,6 +11,7 @@ from PyQt6.QtWidgets import QMessageBox
 from .model import UsuariosModel
 from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
 from rexus.utils.message_system import show_success, show_error
+from rexus.utils.security import SecurityUtils
 
 
 class UsuariosController(QObject):
@@ -53,6 +54,52 @@ class UsuariosController(QObject):
         # Establecer controlador en la vista
         self.view.set_controller(self)
     
+    def sanitizar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
+        """Sanitiza los datos del usuario antes de la validación."""
+        datos_sanitizados = {}
+        
+        # Campos de texto que necesitan sanitización SQL y XSS
+        campos_texto = ['username', 'nombre_completo', 'email', 'telefono', 'direccion', 'notas']
+        
+        for campo in campos_texto:
+            if campo in datos and datos[campo]:
+                valor = str(datos[campo])
+                
+                # Verificar si el input es seguro
+                if not SecurityUtils.is_safe_input(valor):
+                    print(f"⚠️ [SECURITY] Input malicioso detectado en campo '{campo}': {valor}")
+                    # Sanitizar tanto SQL como XSS
+                    valor = SecurityUtils.sanitize_sql_input(valor)
+                    valor = SecurityUtils.sanitize_html_input(valor)
+                    print(f"✅ [SECURITY] Valor sanitizado para '{campo}': {valor}")
+                
+                datos_sanitizados[campo] = valor
+            else:
+                datos_sanitizados[campo] = datos.get(campo)
+        
+        # Campos que no necesitan sanitización (pero sí validación)
+        campos_seguros = ['id', 'password', 'rol', 'estado', 'permisos', 'fecha_creacion', 'ultimo_acceso']
+        
+        for campo in campos_seguros:
+            if campo in datos:
+                datos_sanitizados[campo] = datos[campo]
+        
+        # Validación especial para email
+        if 'email' in datos_sanitizados and datos_sanitizados['email']:
+            email = datos_sanitizados['email']
+            # Remover espacios y convertir a minúsculas
+            email = email.strip().lower()
+            # Validación básica de formato
+            if '@' in email and '.' in email:
+                datos_sanitizados['email'] = email
+            else:
+                print(f"⚠️ [SECURITY] Email con formato inválido: {email}")
+        
+        # Log de sanitización exitosa
+        print(f"✅ [SECURITY] Datos de usuario sanitizados correctamente")
+        
+        return datos_sanitizados
+    
     def cargar_usuarios(self):
         """Carga los usuarios desde el modelo."""
         try:
@@ -70,19 +117,22 @@ class UsuariosController(QObject):
     def crear_usuario(self, datos_usuario: Dict[str, Any]):
         """Crea un nuevo usuario."""
         try:
-            # Validar datos
-            if not self.validar_datos_usuario(datos_usuario):
+            # Sanitizar datos antes de validar
+            datos_sanitizados = self.sanitizar_datos_usuario(datos_usuario)
+            
+            # Validar datos sanitizados
+            if not self.validar_datos_usuario(datos_sanitizados):
                 return
                 
-            # Crear usuario
-            exito, mensaje = self.model.crear_usuario(datos_usuario)
+            # Crear usuario con datos sanitizados
+            exito, mensaje = self.model.crear_usuario(datos_sanitizados)
             
             if exito:
                 self.mostrar_exito(mensaje)
                 self.cargar_usuarios()
                 
                 # Emitir señal
-                usuario_creado = self.model.obtener_usuario_por_nombre(datos_usuario["username"])
+                usuario_creado = self.model.obtener_usuario_por_nombre(datos_sanitizados["username"])
                 if usuario_creado:
                     self.usuario_creado.emit(usuario_creado)
             else:
@@ -98,13 +148,16 @@ class UsuariosController(QObject):
             if not datos_usuario.get("id"):
                 self.mostrar_error("ID de usuario requerido para actualización")
                 return
+            
+            # Sanitizar datos antes de validar
+            datos_sanitizados = self.sanitizar_datos_usuario(datos_usuario)
                 
-            # Validar datos
-            if not self.validar_datos_usuario(datos_usuario, es_actualizacion=True):
+            # Validar datos sanitizados
+            if not self.validar_datos_usuario(datos_sanitizados, es_actualizacion=True):
                 return
                 
-            # Actualizar usuario
-            exito, mensaje = self.model.actualizar_usuario(datos_usuario["id"], datos_usuario)
+            # Actualizar usuario con datos sanitizados
+            exito, mensaje = self.model.actualizar_usuario(datos_sanitizados["id"], datos_sanitizados)
             
             if exito:
                 self.mostrar_exito(mensaje)
@@ -218,6 +271,11 @@ class UsuariosController(QObject):
             errores.append("Nombre de usuario es obligatorio")
         elif len(datos["username"]) < 3:
             errores.append("Nombre de usuario debe tener al menos 3 caracteres")
+        else:
+            # Validar unicidad del nombre de usuario
+            usuario_id_excluir = datos.get("id") if es_actualizacion else None
+            if self.model.verificar_unicidad_username(datos["username"], usuario_id_excluir):
+                errores.append("El nombre de usuario ya está en uso")
             
         if not datos.get("nombre_completo"):
             errores.append("Nombre completo es obligatorio")
@@ -237,6 +295,11 @@ class UsuariosController(QObject):
             email = datos["email"]
             if "@" not in email or "." not in email:
                 errores.append("Formato de email inválido")
+            else:
+                # Validar unicidad del email
+                usuario_id_excluir = datos.get("id") if es_actualizacion else None
+                if self.model.verificar_unicidad_email(email, usuario_id_excluir):
+                    errores.append("El email ya está registrado en el sistema")
         
         # Validar rol
         if not datos.get("rol"):
@@ -268,32 +331,195 @@ class UsuariosController(QObject):
         return True
     
     def autenticar_usuario(self, username: str, password: str) -> Optional[Dict[str, Any]]:
-        """Autentica un usuario y devuelve sus datos."""
+        """Autentica un usuario y devuelve sus datos con control de intentos fallidos."""
         try:
-            usuario = self.model.obtener_usuario_por_nombre(username)
+            # Sanitizar inputs de autenticación
+            username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+            username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+            
+            # Verificar que el input sanitizado sea seguro
+            if not SecurityUtils.is_safe_input(username_sanitizado):
+                print(f"⚠️ [SECURITY] Intento de login con username malicioso: {username}")
+                return None
+            
+            # 🔒 VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
+            bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
+            if bloqueado:
+                mensaje_bloqueo = f"Usuario bloqueado por exceso de intentos fallidos. "
+                if tiempo_restante > 0:
+                    mensaje_bloqueo += f"Intente nuevamente en {tiempo_restante} minutos."
+                else:
+                    mensaje_bloqueo += "Contacte al administrador."
+                
+                self.mostrar_error(mensaje_bloqueo)
+                
+                # Registrar intento de acceso en usuario bloqueado
+                self.registrar_auditoria(
+                    f"Intento de acceso a usuario bloqueado",
+                    "usuarios",
+                    {"username": username_sanitizado, "tiempo_restante": tiempo_restante}
+                )
+                
+                return None
+            
+            # Obtener datos del usuario
+            usuario = self.model.obtener_usuario_por_nombre(username_sanitizado)
             
             if not usuario:
+                # Usuario no existe - también incrementar contador para prevenir ataques de enumeración
+                print(f"⚠️ [SECURITY] Intento de login con usuario inexistente: {username}")
+                
+                # Registrar intento malicioso
+                self.registrar_auditoria(
+                    f"Intento de acceso con usuario inexistente",
+                    "usuarios", 
+                    {"username": username_sanitizado}
+                )
+                
                 return None
                 
             # Verificar contraseña
             if not self.model._verificar_password(password, usuario["password_hash"]):
+                # 🔒 CONTRASEÑA INCORRECTA - INCREMENTAR INTENTOS FALLIDOS
+                bloqueado, intentos, tiempo_bloqueo = self.model.incrementar_intentos_fallidos(username_sanitizado)
+                
+                if bloqueado:
+                    mensaje_error = f"Contraseña incorrecta. Usuario BLOQUEADO por {tiempo_bloqueo} minutos después de {intentos} intentos fallidos."
+                    self.mostrar_error(mensaje_error)
+                    
+                    # Registrar bloqueo de usuario
+                    self.registrar_auditoria(
+                        f"Usuario bloqueado por {intentos} intentos fallidos",
+                        "usuarios",
+                        {"usuario_id": usuario["id"], "username": username_sanitizado, "intentos": intentos, "tiempo_bloqueo": tiempo_bloqueo}
+                    )
+                else:
+                    intentos_restantes = 3 - intentos  # Máximo configurado en el modelo
+                    mensaje_error = f"Contraseña incorrecta. Intento {intentos} de 3. Quedan {intentos_restantes} intentos antes del bloqueo."
+                    self.mostrar_error(mensaje_error)
+                    
+                    # Registrar intento fallido
+                    self.registrar_auditoria(
+                        f"Intento de login fallido #{intentos}",
+                        "usuarios",
+                        {"usuario_id": usuario["id"], "username": username_sanitizado, "intentos": intentos}
+                    )
+                
                 return None
                 
+            # 🎉 LOGIN EXITOSO
+            
+            # Limpiar intentos fallidos
+            self.model.limpiar_intentos_fallidos(username_sanitizado)
+            
             # Actualizar último acceso
             self.model.actualizar_usuario(usuario["id"], {"ultimo_acceso": "NOW()"})
             
-            # Registrar auditoría
+            # Registrar auditoría de éxito
             self.registrar_auditoria(
                 f"Inicio de sesión exitoso",
                 "usuarios",
-                {"usuario_id": usuario["id"], "username": username}
+                {"usuario_id": usuario["id"], "username": username_sanitizado}
             )
+            
+            print(f"✅ [SECURITY] Login exitoso para usuario '{username_sanitizado}'")
             
             return usuario
             
         except Exception as e:
             print(f"[ERROR USUARIOS CONTROLLER] Error autenticando usuario: {e}")
+            
+            # En caso de error, registrar para auditoría
+            self.registrar_auditoria(
+                f"Error en proceso de autenticación",
+                "usuarios",
+                {"username": username, "error": str(e)}
+            )
+            
             return None
+    
+    def desbloquear_usuario(self, username: str) -> bool:
+        """
+        Desbloquea un usuario manualmente (solo para administradores).
+        
+        Args:
+            username: Nombre de usuario a desbloquear
+            
+        Returns:
+            bool: True si se desbloqueó exitosamente
+        """
+        try:
+            # Verificar que el usuario actual tenga permisos de administrador
+            # (esto se podría integrar con el sistema de permisos)
+            
+            # Sanitizar input
+            username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+            username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+            
+            if not SecurityUtils.is_safe_input(username_sanitizado):
+                print(f"⚠️ [SECURITY] Intento de desbloqueo con username malicioso: {username}")
+                return False
+            
+            # Desbloquear usuario
+            self.model.limpiar_intentos_fallidos(username_sanitizado)
+            
+            # Registrar acción de administrador
+            self.registrar_auditoria(
+                f"Usuario desbloqueado manualmente por administrador",
+                "usuarios",
+                {"username_desbloqueado": username_sanitizado, "admin_user": self.usuario_actual}
+            )
+            
+            self.mostrar_exito(f"Usuario '{username}' desbloqueado exitosamente")
+            print(f"✅ [ADMIN] Usuario '{username}' desbloqueado manualmente")
+            
+            return True
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS CONTROLLER] Error desbloqueando usuario: {e}")
+            self.mostrar_error(f"Error desbloqueando usuario: {str(e)}")
+            return False
+    
+    def obtener_estado_bloqueo_usuario(self, username: str) -> Dict[str, Any]:
+        """
+        Obtiene el estado de bloqueo de un usuario.
+        
+        Args:
+            username: Nombre de usuario
+            
+        Returns:
+            dict: Estado del bloqueo del usuario
+        """
+        try:
+            # Sanitizar input
+            username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+            username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+            
+            if not SecurityUtils.is_safe_input(username_sanitizado):
+                return {"error": "Username inválido"}
+            
+            # Verificar estado de bloqueo
+            bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
+            
+            # Obtener usuario para contar intentos actuales
+            usuario = self.model.obtener_usuario_por_nombre(username_sanitizado)
+            intentos_fallidos = 0
+            if usuario:
+                intentos_fallidos = usuario.get("intentos_fallidos", 0)
+            
+            estado = {
+                "username": username,
+                "bloqueado": bloqueado,
+                "tiempo_restante_minutos": tiempo_restante,
+                "intentos_fallidos": intentos_fallidos,
+                "max_intentos": 3  # Configurado en el modelo
+            }
+            
+            return estado
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e}")
+            return {"error": str(e)}
     
     def registrar_auditoria(self, accion: str, modulo: str, detalles: Dict[str, Any]):
         """Registra una acción en el log de auditoría."""

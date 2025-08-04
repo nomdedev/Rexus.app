@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import QMessageBox
 
 from rexus.core.security import get_security_manager
 from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.security import SecurityUtils
 
 
 class InventarioController(QObject):
@@ -93,6 +94,66 @@ class InventarioController(QObject):
                     modulo="INVENTARIO",
                     detalles=f"{descripcion}. Datos: {datos_adicionales}",
                 )
+    
+    def sanitizar_datos_producto(self, datos_producto):
+        """Sanitiza los datos del producto antes de procesarlos."""
+        datos_sanitizados = {}
+        
+        # Campos de texto que necesitan sanitización SQL y XSS
+        campos_texto = ['codigo', 'descripcion', 'tipo', 'acabado', 'ubicacion', 'proveedor', 'unidad', 'observaciones']
+        
+        for campo in campos_texto:
+            if campo in datos_producto and datos_producto[campo]:
+                valor = str(datos_producto[campo])
+                
+                # Verificar si el input es seguro
+                if not SecurityUtils.is_safe_input(valor):
+                    print(f"⚠️ [SECURITY INVENTARIO] Input malicioso detectado en campo '{campo}': {valor}")
+                    # Sanitizar tanto SQL como XSS
+                    valor = SecurityUtils.sanitize_sql_input(valor)
+                    valor = SecurityUtils.sanitize_html_input(valor)
+                    print(f"✅ [SECURITY INVENTARIO] Valor sanitizado para '{campo}': {valor}")
+                
+                datos_sanitizados[campo] = valor
+            else:
+                datos_sanitizados[campo] = datos_producto.get(campo)
+        
+        # Campos numéricos que necesitan validación
+        campos_numericos = ['stock_actual', 'stock_minimo', 'stock_maximo', 'importe', 'precio_compra', 'precio_venta']
+        
+        for campo in campos_numericos:
+            if campo in datos_producto and datos_producto[campo] is not None:
+                valor = datos_producto[campo]
+                
+                # Validar que sea numérico
+                if SecurityUtils.validate_numeric_input(valor):
+                    try:
+                        # Convertir a float y validar rango
+                        valor_num = float(valor)
+                        if valor_num < 0:
+                            print(f"⚠️ [SECURITY INVENTARIO] Valor numérico negativo detectado en '{campo}': {valor}")
+                            valor_num = 0  # Fallback a 0 para valores negativos
+                        datos_sanitizados[campo] = valor_num
+                    except (ValueError, TypeError):
+                        print(f"⚠️ [SECURITY INVENTARIO] Valor numérico inválido en '{campo}': {valor}")
+                        datos_sanitizados[campo] = 0  # Fallback seguro
+                else:
+                    print(f"⚠️ [SECURITY INVENTARIO] Valor no numérico en campo numérico '{campo}': {valor}")
+                    datos_sanitizados[campo] = 0  # Fallback seguro
+            else:
+                datos_sanitizados[campo] = datos_producto.get(campo, 0)
+        
+        # Campos que no necesitan sanitización especial
+        campos_seguros = ['id', 'activo', 'fecha_creacion', 'fecha_modificacion', 'usuario_creacion', 'usuario_modificacion']
+        
+        for campo in campos_seguros:
+            if campo in datos_producto:
+                datos_sanitizados[campo] = datos_producto[campo]
+        
+        # Log de sanitización exitosa
+        print(f"✅ [SECURITY INVENTARIO] Datos de producto sanitizados correctamente")
+        
+        return datos_sanitizados
 
     def conectar_senales(self):
         """Conecta las señales de la vista con los métodos del controlador."""
@@ -235,11 +296,31 @@ class InventarioController(QObject):
         """Realiza búsqueda de productos."""
         try:
             if self.model and self.view:
+                # Obtener y sanitizar filtros de la vista
+                busqueda_raw = self.view.busqueda_input.text()
+                categoria_raw = self.view.categoria_combo.currentText()
+                
+                # Sanitizar términos de búsqueda
+                busqueda_sanitizada = None
+                if busqueda_raw:
+                    busqueda_sanitizada = SecurityUtils.sanitize_sql_input(busqueda_raw)
+                    busqueda_sanitizada = SecurityUtils.sanitize_html_input(busqueda_sanitizada)
+                    
+                    # Verificar si el término de búsqueda es seguro
+                    if not SecurityUtils.is_safe_input(busqueda_sanitizada):
+                        print(f"⚠️ [SECURITY INVENTARIO] Término de búsqueda malicioso: {busqueda_raw}")
+                        if self.view:
+                            self.view.show_error("Término de búsqueda no válido. Se ha detectado contenido potencialmente malicioso.")
+                        return
+                
+                categoria_sanitizada = None
+                if categoria_raw and categoria_raw != "Todas":
+                    categoria_sanitizada = SecurityUtils.sanitize_sql_input(categoria_raw)
+                    categoria_sanitizada = SecurityUtils.sanitize_html_input(categoria_sanitizada)
+                
                 filtros = {
-                    "busqueda": self.view.busqueda_input.text(),
-                    "categoria": self.view.categoria_combo.currentText()
-                    if self.view.categoria_combo.currentText() != "Todas"
-                    else None,
+                    "busqueda": busqueda_sanitizada,
+                    "categoria": categoria_sanitizada,
                 }
 
                 productos = self.model.buscar_productos(filtros)
@@ -253,12 +334,28 @@ class InventarioController(QObject):
         try:
             if self.model and self.view:
                 if filtros is None:
-                    # Obtener filtros desde la vista
+                    # Obtener y sanitizar filtros desde la vista
+                    busqueda_raw = self.view.busqueda_input.text()
+                    categoria_raw = self.view.categoria_combo.currentText()
+                    
+                    # Sanitizar términos de búsqueda
+                    busqueda_sanitizada = None
+                    if busqueda_raw:
+                        busqueda_sanitizada = SecurityUtils.sanitize_sql_input(busqueda_raw)
+                        busqueda_sanitizada = SecurityUtils.sanitize_html_input(busqueda_sanitizada)
+                        
+                        if not SecurityUtils.is_safe_input(busqueda_sanitizada):
+                            print(f"⚠️ [SECURITY INVENTARIO] Filtro de búsqueda malicioso: {busqueda_raw}")
+                            return
+                    
+                    categoria_sanitizada = None
+                    if categoria_raw and categoria_raw != "Todas":
+                        categoria_sanitizada = SecurityUtils.sanitize_sql_input(categoria_raw)
+                        categoria_sanitizada = SecurityUtils.sanitize_html_input(categoria_sanitizada)
+                    
                     filtros = {
-                        "busqueda": self.view.busqueda_input.text(),
-                        "categoria": self.view.categoria_combo.currentText()
-                        if self.view.categoria_combo.currentText() != "Todas"
-                        else None,
+                        "busqueda": busqueda_sanitizada,
+                        "categoria": categoria_sanitizada,
                     }
 
                 productos = self.model.buscar_productos(filtros)
@@ -302,8 +399,11 @@ class InventarioController(QObject):
 
         try:
             if self.model:
-                # Crear el producto usando el modelo
-                exito = self.model.crear_producto(datos_producto)
+                # Sanitizar datos antes de crear el producto
+                datos_sanitizados = self.sanitizar_datos_producto(datos_producto)
+                
+                # Crear el producto usando el modelo con datos sanitizados
+                exito = self.model.crear_producto(datos_sanitizados)
                 
                 if exito:
                     if self.view:
@@ -312,8 +412,8 @@ class InventarioController(QObject):
                     # Log de auditoría
                     self.log_auditoria(
                         "PRODUCTO_CREADO", 
-                        f"Producto creado: {datos_producto.get('codigo', 'N/A')}", 
-                        datos_producto
+                        f"Producto creado: {datos_sanitizados.get('codigo', 'N/A')}", 
+                        datos_sanitizados
                     )
                     
                     # Recargar datos

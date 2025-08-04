@@ -25,6 +25,15 @@ except ImportError as e:
     print(f"[WARNING] Security utilities not available in herrajes: {e}")
     SECURITY_AVAILABLE = False
 
+# Importar cargador de scripts SQL
+try:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    SQL_LOADER_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] SQL Script Loader not available in herrajes: {e}")
+    SQL_LOADER_AVAILABLE = False
+    sql_script_loader = None
+
 
 class HerrajesModel:
     """Modelo para gestionar herrajes por obra y proveedor."""
@@ -363,6 +372,34 @@ class HerrajesModel:
                 "herrajes_por_proveedor": [],
             }
 
+        # Usar script SQL externo si está disponible
+        if SQL_LOADER_AVAILABLE and sql_script_loader:
+            try:
+                exito, resultados = sql_script_loader.execute_script(
+                    self.db_connection, 
+                    "herrajes", 
+                    "select_estadisticas_herrajes"
+                )
+                
+                if exito and resultados and len(resultados) >= 4:
+                    # El script devuelve 4 consultas separadas
+                    estadisticas = {
+                        "total_herrajes": resultados[0][0]["total_herrajes"] if resultados[0] else 0,
+                        "proveedores_activos": resultados[1][0]["proveedores_activos"] if resultados[1] else 0,
+                        "valor_total_inventario": float(resultados[2][0]["valor_total_inventario"] or 0.0) if resultados[2] else 0.0,
+                        "herrajes_por_proveedor": [
+                            {"proveedor": row["proveedor"], "cantidad": row["cantidad"]} 
+                            for row in resultados[3]
+                        ] if resultados[3] else []
+                    }
+                    
+                    print("✅ [HERRAJES] Estadísticas obtenidas usando script externo")
+                    return estadisticas
+                    
+            except Exception as e:
+                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consultas directas: {e}")
+        
+        # Fallback a consultas directas si el script loader no está disponible
         try:
             cursor = self.db_connection.cursor()
 
@@ -397,6 +434,7 @@ class HerrajesModel:
                 {"proveedor": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
 
+            print("⚠️ [HERRAJES] Estadísticas obtenidas usando consultas directas (fallback)")
             return estadisticas
 
         except Exception as e:

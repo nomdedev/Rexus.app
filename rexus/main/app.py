@@ -1086,7 +1086,7 @@ def main():
 
     def on_login_success(user_data):
         print(
-            f"✅ [LOGIN] Autenticación exitosa para {user_data.get('usuario', '???')} ({user_data.get('rol', '???')})"
+            f"✅ [LOGIN] Autenticación exitosa para {user_data.get('username', '???')} ({user_data.get('role', '???')})"
         )
         # Acceder al security_manager del contexto exterior
         nonlocal security_manager
@@ -1102,30 +1102,82 @@ def main():
             print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")
             return
 
-        # Usar el método correcto para obtener módulos permitidos
+        # 🔥 SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
         try:
+            # Establecer usuario y rol actual en SecurityManager
+            security_manager.current_user = user_data
+            security_manager.current_role = user_data.get('role', 'usuario')
+            
+            print(f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {security_manager.current_role}")
+            
+            # 🔍 DIAGNÓSTICO: Verificar estado del sistema de permisos
+            if hasattr(security_manager, 'diagnose_permissions'):
+                diagnosis = security_manager.diagnose_permissions()
+                if not diagnosis.get('has_admin_access') and user_data.get('role', '').upper() == 'ADMIN':
+                    print("⚠️ [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...")
+            
+            # Ahora obtener módulos permitidos
             modulos_permitidos = security_manager.get_user_modules(
                 user_data.get("id", 1)
             )
-        except AttributeError:
+            
+            print(f"[SECURITY] Módulos obtenidos para {security_manager.current_role}: {len(modulos_permitidos)} módulos")
+            print(f"[SECURITY] Lista de módulos: {modulos_permitidos}")
+            
+            # Verificación final para admin
+            if user_data.get('role', '').upper() == 'ADMIN' and len(modulos_permitidos) < 12:
+                print(f"⚠️ [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12")
+                print(f"⚠️ [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'")
+            
+        except AttributeError as e:
             # Si no tiene get_user_modules, permitir todos los módulos por defecto
-            print(
-                "[SECURITY] Usando SimpleSecurityManager, permitiendo todos los módulos"
-            )
-            modulos_permitidos = [
-                "Inventario",
-                "Obras",
-                "Administración",
-                "Logística",
-                "Herrajes",
-                "Vidrios",
-                "Pedidos",
-                "Usuarios",
-                "Configuración",
-                "Compras",
-                "Mantenimiento",
-                "Auditoría",
-            ]
+            print(f"[SECURITY] Error AttributeError: {e}")
+            print("[SECURITY] Usando SimpleSecurityManager o fallback, permitiendo todos los módulos")
+            
+            # Fallback inteligente basado en el rol del usuario
+            if user_data.get('role', '').upper() == 'ADMIN':
+                modulos_permitidos = [
+                    "Inventario",
+                    "Administración",
+                    "Obras",
+                    "Pedidos",
+                    "Logística",
+                    "Herrajes",
+                    "Vidrios",
+                    "Usuarios",
+                    "Auditoría",
+                    "Configuración",
+                    "Compras",
+                    "Mantenimiento",
+                ]
+            else:
+                modulos_permitidos = [
+                    "Inventario",
+                    "Obras",
+                    "Pedidos"
+                ]
+        except Exception as e:
+            print(f"[SECURITY] Error inesperado obteniendo módulos: {e}")
+            # Fallback de emergencia
+            if user_data.get('role', '').upper() == 'ADMIN':
+                modulos_permitidos = [
+                    "Inventario",
+                    "Administración", 
+                    "Obras",
+                    "Pedidos",
+                    "Logística",
+                    "Herrajes",
+                    "Vidrios",
+                    "Usuarios",
+                    "Auditoría",
+                    "Configuración",
+                    "Compras",
+                    "Mantenimiento",
+                ]
+                print(f"[SECURITY] Fallback: Admin detectado, asignando {len(modulos_permitidos)} módulos")
+            else:
+                modulos_permitidos = ["Inventario", "Obras", "Pedidos"]
+                print(f"[SECURITY] Fallback: Usuario básico, asignando {len(modulos_permitidos)} módulos")
 
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 

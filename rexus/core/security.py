@@ -10,7 +10,7 @@ import json
 import os
 import uuid
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Set
+from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
@@ -445,12 +445,40 @@ class SecurityManager(QObject):
         pass
 
     def hash_password(self, password: str) -> str:
-        """Genera hash de contraseña usando SHA-256."""
-        return hashlib.sha256(password.encode()).hexdigest()
+        """
+        Genera hash seguro de contraseña usando bcrypt/PBKDF2.
+        
+        ACTUALIZADO: Migrado de SHA-256 inseguro a hashing seguro con salt.
+        """
+        try:
+            from rexus.utils.password_security import hash_password_secure
+            return hash_password_secure(password)
+        except ImportError:
+            # Fallback temporal para compatibilidad (INSEGURO)
+            print("[WARNING] Sistema de hashing seguro no disponible - usando SHA-256 temporal")
+            return hashlib.sha256(password.encode()).hexdigest()
 
     def verify_password(self, password: str, password_hash: str) -> bool:
-        """Verifica una contraseña contra su hash."""
-        return hashlib.sha256(password.encode()).hexdigest() == password_hash
+        """
+        Verifica una contraseña contra su hash usando sistema seguro.
+        
+        ACTUALIZADO: Soporta hashes bcrypt/PBKDF2 y migración desde SHA-256.
+        """
+        try:
+            from rexus.utils.password_security import verify_password_secure, check_password_needs_rehash
+            
+            # Verificar con sistema seguro
+            is_valid = verify_password_secure(password, password_hash)
+            
+            # Si es válida y el hash necesita actualización, loggear para migración
+            if is_valid and check_password_needs_rehash(password_hash):
+                print(f"[SECURITY] Hash de contraseña necesita migración a formato seguro")
+            
+            return is_valid
+        except ImportError:
+            # Fallback temporal para compatibilidad (INSEGURO)
+            print("[WARNING] Sistema de verificación segura no disponible - usando SHA-256 temporal")
+            return hashlib.sha256(password.encode()).hexdigest() == password_hash
 
     def login(self, username: str, password: str) -> bool:
         """Autentica un usuario usando AuthManager."""
@@ -642,10 +670,15 @@ class SecurityManager(QObject):
     def get_user_modules(self, user_id: int) -> List[str]:
         """Obtiene los módulos a los que tiene acceso un usuario."""
         try:
+            # 🔍 DIAGNÓSTICO: Logging detallado para debug
+            print(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
+            print(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
+            print(f"[SECURITY DEBUG] current_user: {self.current_user}")
+            
             # Basado en el rol del usuario actual, devolver módulos permitidos
             if self.current_role in ['admin', 'ADMIN']:
                 # Admin tiene acceso a todos los módulos - usar nombres con capitalización como UI
-                return [
+                modules = [
                     "Inventario",
                     "Administración", 
                     "Obras",
@@ -659,6 +692,8 @@ class SecurityManager(QObject):
                     "Compras",
                     "Mantenimiento"
                 ]
+                print(f"[SECURITY DEBUG] Admin detectado, devolviendo {len(modules)} módulos")
+                return modules
             elif self.current_role in ['supervisor', 'SUPERVISOR']:
                 # Supervisor tiene acceso a gestión general
                 return [
@@ -706,19 +741,64 @@ class SecurityManager(QObject):
                 ]
             else:
                 # Usuario básico - solo lectura en módulos esenciales
-                return [
+                basic_modules = [
                     "Inventario",
                     "Obras",
                     "Pedidos"
                 ]
+                print(f"[SECURITY DEBUG] Rol no reconocido o usuario básico ('{self.current_role}'), devolviendo {len(basic_modules)} módulos básicos")
+                return basic_modules
 
         except Exception as e:
-            print(f"ERROR obteniendo modulos del usuario: {e}")
+            print(f"[SECURITY ERROR] Error obteniendo módulos del usuario: {e}")
+            print(f"[SECURITY ERROR] current_role en momento del error: '{self.current_role}'")
             return ["Inventario", "Obras"]  # Módulos mínimos
 
     def get_current_user_string(self) -> Optional[str]:
         """Obtiene el nombre del usuario actual (para compatibilidad)."""
         return self.current_user
+    
+    def diagnose_permissions(self) -> Dict[str, Any]:
+        """
+        Método de diagnóstico para verificar el estado del sistema de permisos.
+        
+        Returns:
+            Dict con información de diagnóstico
+        """
+        diagnosis = {
+            "security_manager_initialized": True,
+            "current_user": self.current_user,
+            "current_role": self.current_role,
+            "db_connection_status": "Connected" if self.db_connection else "Not connected",
+            "session_active": self.current_user is not None,
+        }
+        
+        # Verificar configuración de roles
+        if self.current_role:
+            diagnosis["role_recognized"] = self.current_role in [
+                'admin', 'ADMIN', 'supervisor', 'SUPERVISOR', 
+                'contabilidad', 'CONTABILIDAD', 'inventario', 'INVENTARIO',
+                'obras', 'OBRAS'
+            ]
+            
+            # Simular obtención de módulos para diagnóstico
+            try:
+                test_modules = self.get_user_modules(1)
+                diagnosis["modules_count"] = len(test_modules)
+                diagnosis["has_admin_access"] = len(test_modules) >= 12
+                diagnosis["modules_list"] = test_modules
+            except Exception as e:
+                diagnosis["modules_error"] = str(e)
+        else:
+            diagnosis["role_recognized"] = False
+            diagnosis["modules_count"] = 0
+            diagnosis["has_admin_access"] = False
+        
+        print(f"[SECURITY DIAGNOSIS] Estado del sistema de permisos:")
+        for key, value in diagnosis.items():
+            print(f"  {key}: {value}")
+        
+        return diagnosis
 
     def get_current_role(self) -> Optional[str]:
         """Obtiene el rol actual."""

@@ -25,6 +25,13 @@ from typing import Optional
 
 import pyodbc
 
+# Cargar variables de entorno
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    print("[WARNING] python-dotenv no disponible. Usando variables de sistema únicamente.")
+
 # Configuración desde variables de entorno (sin valores por defecto)
 DB_SERVER = os.getenv("DB_SERVER")
 DB_DRIVER = os.getenv("DB_DRIVER")
