@@ -194,6 +194,344 @@ class UsuariosModel:
             ]
             return {clave: None for clave in claves_esperadas}
 
+    def obtener_usuario_por_email(self, email):
+        """
+        Obtiene un usuario por su email con sanitización de entrada.
+        
+        Args:
+            email: Email del usuario a buscar
+            
+        Returns:
+            Dict con datos del usuario o None si no existe
+        """
+        if not self.db_connection:
+            return None
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available and email:
+            # Sanitizar el email para prevenir inyecciones
+            email_limpio = self.data_sanitizer.sanitize_email(email)
+            if not email_limpio:
+                return None
+        else:
+            email_limpio = email
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_select = """
+            SELECT id, usuario, password_hash, nombre_completo, email, telefono, rol, estado,
+                   fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos, bloqueado_hasta, avatar, configuracion_personal, activo
+            FROM usuarios WHERE email = ?
+            """
+            cursor.execute(sql_select, (email_limpio,))
+            row = cursor.fetchone()
+            
+            print(f"[DEBUG obtener_usuario_por_email] Buscando email: {email}")
+            print(f"[DEBUG obtener_usuario_por_email] Resultado row: {row}")
+            
+            if row:
+                columns = [desc[0] for desc in cursor.description]
+                usuario_dict = dict(zip(columns, row))
+                
+                # Definir todas las claves esperadas y asignar None si falta
+                claves_esperadas = [
+                    "id", "usuario", "password_hash", "nombre_completo", "email", "telefono", "rol", "estado",
+                    "fecha_creacion", "fecha_modificacion", "ultimo_acceso", "intentos_fallidos", 
+                    "bloqueado_hasta", "avatar", "configuracion_personal", "activo",
+                ]
+                
+                for clave in claves_esperadas:
+                    if clave not in usuario_dict:
+                        usuario_dict[clave] = None
+                        
+                print(f"[DEBUG obtener_usuario_por_email] Usuario dict: {usuario_dict}")
+                return usuario_dict
+                
+            print("[DEBUG obtener_usuario_por_email] No se encontró el usuario.")
+            return None
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error obteniendo usuario por email: {e}")
+            # Si hay error, devolver None
+            return None
+    
+    def verificar_unicidad_username(self, username, excluir_usuario_id=None):
+        """
+        Verifica si un nombre de usuario ya existe en la base de datos.
+        
+        Args:
+            username: Nombre de usuario a verificar
+            excluir_usuario_id: ID de usuario a excluir de la búsqueda (para actualizaciones)
+            
+        Returns:
+            bool: True si el username ya existe, False si está disponible
+        """
+        if not self.db_connection or not username:
+            return False
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available:
+            username_limpio = self.data_sanitizer.sanitize_string(username, max_length=50)
+            if not username_limpio:
+                return True  # Si no se puede sanitizar, considerarlo como existente por seguridad
+        else:
+            username_limpio = username
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            
+            if excluir_usuario_id:
+                sql_select = "SELECT COUNT(*) FROM usuarios WHERE usuario = ? AND id != ?"
+                cursor.execute(sql_select, (username_limpio, excluir_usuario_id))
+            else:
+                sql_select = "SELECT COUNT(*) FROM usuarios WHERE usuario = ?"
+                cursor.execute(sql_select, (username_limpio,))
+                
+            count = cursor.fetchone()[0]
+            existe = count > 0
+            
+            print(f"[DEBUG verificar_unicidad_username] Username '{username}' existe: {existe}")
+            return existe
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error verificando unicidad de username: {e}")
+            return True  # En caso de error, considerarlo como existente por seguridad
+    
+    def verificar_unicidad_email(self, email, excluir_usuario_id=None):
+        """
+        Verifica si un email ya existe en la base de datos.
+        
+        Args:
+            email: Email a verificar
+            excluir_usuario_id: ID de usuario a excluir de la búsqueda (para actualizaciones)
+            
+        Returns:
+            bool: True si el email ya existe, False si está disponible
+        """
+        if not self.db_connection or not email:
+            return False
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available:
+            email_limpio = self.data_sanitizer.sanitize_email(email)
+            if not email_limpio:
+                return True  # Si no se puede sanitizar, considerarlo como existente por seguridad
+        else:
+            email_limpio = email
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            
+            if excluir_usuario_id:
+                sql_select = "SELECT COUNT(*) FROM usuarios WHERE email = ? AND id != ?"
+                cursor.execute(sql_select, (email_limpio, excluir_usuario_id))
+            else:
+                sql_select = "SELECT COUNT(*) FROM usuarios WHERE email = ?"
+                cursor.execute(sql_select, (email_limpio,))
+                
+            count = cursor.fetchone()[0]
+            existe = count > 0
+            
+            print(f"[DEBUG verificar_unicidad_email] Email '{email}' existe: {existe}")
+            return existe
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error verificando unicidad de email: {e}")
+            return True  # En caso de error, considerarlo como existente por seguridad
+
+    def verificar_usuario_bloqueado(self, username):
+        """
+        Verifica si un usuario está bloqueado por exceso de intentos fallidos.
+        
+        Args:
+            username: Nombre de usuario a verificar
+            
+        Returns:
+            tuple: (bloqueado: bool, tiempo_restante: int en minutos)
+        """
+        if not self.db_connection or not username:
+            return False, 0
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available:
+            username_limpio = self.data_sanitizer.sanitize_string(username, max_length=50)
+            if not username_limpio:
+                return True, 999  # Si no se puede sanitizar, bloquear por seguridad
+        else:
+            username_limpio = username
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_select = """
+            SELECT intentos_fallidos, bloqueado_hasta 
+            FROM usuarios 
+            WHERE usuario = ?
+            """
+            cursor.execute(sql_select, (username_limpio,))
+            row = cursor.fetchone()
+            
+            if not row:
+                return False, 0  # Usuario no existe
+                
+            intentos_fallidos, bloqueado_hasta = row
+            
+            # Si no hay fecha de bloqueo, no está bloqueado
+            if not bloqueado_hasta:
+                return False, 0
+                
+            # Verificar si el tiempo de bloqueo ha expirado
+            from datetime import datetime
+            if isinstance(bloqueado_hasta, str):
+                # Convertir string a datetime si es necesario
+                try:
+                    bloqueado_hasta = datetime.fromisoformat(bloqueado_hasta.replace('Z', '+00:00'))
+                except:
+                    # Si no se puede parsear, asumir que no está bloqueado
+                    return False, 0
+            
+            ahora = datetime.now()
+            if ahora >= bloqueado_hasta:
+                # El bloqueo ha expirado, limpiar el bloqueo
+                self._limpiar_bloqueo_usuario(username_limpio)
+                return False, 0
+            else:
+                # Calcular tiempo restante en minutos
+                tiempo_restante = int((bloqueado_hasta - ahora).total_seconds() / 60)
+                print(f"[SECURITY] Usuario '{username}' bloqueado. Tiempo restante: {tiempo_restante} minutos")
+                return True, tiempo_restante
+                
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error verificando bloqueo de usuario: {e}")
+            return True, 999  # En caso de error, bloquear por seguridad
+
+    def incrementar_intentos_fallidos(self, username):
+        """
+        Incrementa el contador de intentos fallidos para un usuario y lo bloquea si es necesario.
+        
+        Args:
+            username: Nombre de usuario
+            
+        Returns:
+            tuple: (bloqueado: bool, intentos_actuales: int, tiempo_bloqueo: int en minutos)
+        """
+        if not self.db_connection or not username:
+            return False, 0, 0
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available:
+            username_limpio = self.data_sanitizer.sanitize_string(username, max_length=50)
+            if not username_limpio:
+                return True, 999, 999
+        else:
+            username_limpio = username
+            
+        # Configuración de bloqueo
+        MAX_INTENTOS = 3  # Máximo de intentos permitidos
+        TIEMPO_BLOQUEO_MINUTOS = 15  # Tiempo de bloqueo en minutos
+        
+        try:
+            cursor = self.db_connection.connection.cursor()
+            
+            # Obtener intentos actuales
+            sql_select = "SELECT intentos_fallidos FROM usuarios WHERE usuario = ?"
+            cursor.execute(sql_select, (username_limpio,))
+            row = cursor.fetchone()
+            
+            if not row:
+                return False, 0, 0  # Usuario no existe
+                
+            intentos_actuales = row[0] or 0
+            intentos_nuevos = intentos_actuales + 1
+            
+            if intentos_nuevos >= MAX_INTENTOS:
+                # Bloquear usuario
+                from datetime import datetime, timedelta
+                bloqueado_hasta = datetime.now() + timedelta(minutes=TIEMPO_BLOQUEO_MINUTOS)
+                
+                sql_update = """
+                UPDATE usuarios 
+                SET intentos_fallidos = ?, bloqueado_hasta = ? 
+                WHERE usuario = ?
+                """
+                cursor.execute(sql_update, (intentos_nuevos, bloqueado_hasta, username_limpio))
+                self.db_connection.connection.commit()
+                
+                print(f"🔒 [SECURITY] Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos")
+                print(f"🔒 [SECURITY] Bloqueo hasta: {bloqueado_hasta}")
+                
+                return True, intentos_nuevos, TIEMPO_BLOQUEO_MINUTOS
+            else:
+                # Solo incrementar contador
+                sql_update = "UPDATE usuarios SET intentos_fallidos = ? WHERE usuario = ?"
+                cursor.execute(sql_update, (intentos_nuevos, username_limpio))
+                self.db_connection.connection.commit()
+                
+                print(f"⚠️ [SECURITY] Intento fallido #{intentos_nuevos} para usuario '{username}'")
+                
+                return False, intentos_nuevos, 0
+                
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error incrementando intentos fallidos: {e}")
+            return True, 999, 999
+
+    def limpiar_intentos_fallidos(self, username):
+        """
+        Limpia los intentos fallidos de un usuario después de un login exitoso.
+        
+        Args:
+            username: Nombre de usuario
+        """
+        if not self.db_connection or not username:
+            return
+            
+        # 🔒 SANITIZACIÓN DE ENTRADA
+        if self.security_available:
+            username_limpio = self.data_sanitizer.sanitize_string(username, max_length=50)
+            if not username_limpio:
+                return
+        else:
+            username_limpio = username
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_update = """
+            UPDATE usuarios 
+            SET intentos_fallidos = 0, bloqueado_hasta = NULL 
+            WHERE usuario = ?
+            """
+            cursor.execute(sql_update, (username_limpio,))
+            self.db_connection.connection.commit()
+            
+            print(f"✅ [SECURITY] Intentos fallidos limpiados para usuario '{username}'")
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error limpiando intentos fallidos: {e}")
+
+    def _limpiar_bloqueo_usuario(self, username):
+        """
+        Método interno para limpiar el bloqueo de un usuario cuando ha expirado.
+        
+        Args:
+            username: Nombre de usuario (ya sanitizado)
+        """
+        if not self.db_connection:
+            return
+            
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_update = """
+            UPDATE usuarios 
+            SET intentos_fallidos = 0, bloqueado_hasta = NULL 
+            WHERE usuario = ?
+            """
+            cursor.execute(sql_update, (username,))
+            self.db_connection.connection.commit()
+            
+            print(f"✅ [SECURITY] Bloqueo expirado limpiado para usuario '{username}'")
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error limpiando bloqueo expirado: {e}")
+
     def obtener_modulos_permitidos(self, usuario_data):
         """Obtiene los módulos permitidos para un usuario."""
         if not usuario_data or not isinstance(usuario_data, dict):

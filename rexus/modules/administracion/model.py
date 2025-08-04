@@ -10,6 +10,14 @@ from datetime import date, datetime
 from decimal import Decimal
 from typing import Any, Dict, List, Optional
 
+# Importar utilidad de seguridad SQL
+try:
+    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    SQL_SECURITY_AVAILABLE = True
+except ImportError:
+    print("[WARNING] SQL security utilities not available in administracion")
+    SQL_SECURITY_AVAILABLE = False
+
 
 class ContabilidadModel:
     """Modelo completo de contabilidad con control de roles y auditoría."""
@@ -27,6 +35,39 @@ class ContabilidadModel:
 
         # Crear tablas si no existen
         self.crear_tablas()
+    
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+        
+        Args:
+            table_name: Nombre de tabla a validar
+            
+        Returns:
+            Nombre de tabla validado
+        """
+        if SQL_SECURITY_AVAILABLE:
+            try:
+                from rexus.utils.sql_security import sql_validator
+                # Agregar tablas de administración a lista blanca si no existen
+                admin_tables = {
+                    'libro_contable', 'recibos', 'pagos_obras', 'pagos_materiales',
+                    'empleados', 'departamentos', 'auditoria_contable'
+                }
+                for table in admin_tables:
+                    if table not in sql_validator.ALLOWED_TABLES:
+                        sql_validator.add_allowed_table(table)
+                
+                return validate_table_name(table_name)
+            except SQLSecurityError as e:
+                print(f"[SECURITY ERROR] Tabla no válida: {e}")
+                raise
+        else:
+            # Validación básica como fallback
+            import re
+            if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+                raise ValueError(f"Nombre de tabla inválido: {table_name}")
+            return table_name
 
     def crear_tablas(self):
         """Crea las tablas necesarias para el módulo de contabilidad."""

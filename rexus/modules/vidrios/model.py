@@ -57,6 +57,32 @@ class VidriosModel:
                 "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+    
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+        
+        Args:
+            table_name: Nombre de tabla a validar
+            
+        Returns:
+            Nombre de tabla validado
+            
+        Raises:
+            ValueError: Si el nombre de tabla no es válido
+        """
+        import re
+        
+        # Solo permitir nombres alfanuméricos y underscore
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+        
+        # Lista blanca de tablas permitidas
+        allowed_tables = {'vidrios', 'vidrios_obra', 'pedidos_vidrios'}
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+            
+        return table_name
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos."""
@@ -146,7 +172,7 @@ class VidriosModel:
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, dimensiones_disponibles,
                     estado, observaciones, fecha_actualizacion
-                FROM {self.tabla_vidrios}
+                FROM [{self._validate_table_name(self.tabla_vidrios)}]
                 WHERE """
                 + " AND ".join(conditions)
                 + """
@@ -190,8 +216,8 @@ class VidriosModel:
                     v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
                     v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,
                     vo.medidas_especificas, vo.fecha_asignacion, vo.observaciones as obs_obra
-                FROM {self.tabla_vidrios} v
-                INNER JOIN {self.tabla_vidrios_obra} vo ON v.id = vo.vidrio_id
+                FROM [{self._validate_table_name(self.tabla_vidrios)}] v
+                INNER JOIN [{self._validate_table_name(self.tabla_vidrios_obra)}] vo ON v.id = vo.vidrio_id
                 WHERE vo.obra_id = ?
                 ORDER BY v.tipo, v.espesor
             """
@@ -300,7 +326,7 @@ class VidriosModel:
             # Actualizar cantidades pedidas en vidrios_obra
             for vidrio in vidrios_lista:
                 query_update = f"""
-                    UPDATE {self.tabla_vidrios_obra}
+                    UPDATE [{self._validate_table_name(self.tabla_vidrios_obra)}]
                     SET metros_cuadrados_pedidos = metros_cuadrados_pedidos + ?
                     WHERE vidrio_id = ? AND obra_id = ?
                 """
@@ -362,7 +388,7 @@ class VidriosModel:
             # Vidrios por tipo
             cursor.execute(f"""
                 SELECT tipo, COUNT(*) as cantidad
-                FROM {self.tabla_vidrios}
+                FROM [{self._validate_table_name(self.tabla_vidrios)}]
                 WHERE estado = 'ACTIVO'
                 GROUP BY tipo
                 ORDER BY cantidad DESC
@@ -413,7 +439,7 @@ class VidriosModel:
                 SELECT
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, estado
-                FROM {self.tabla_vidrios}
+                FROM [{self._validate_table_name(self.tabla_vidrios)}]
                 WHERE
                     (codigo LIKE ? OR
                      descripcion LIKE ? OR
@@ -518,7 +544,7 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
-                INSERT INTO {self.tabla_vidrios}
+                INSERT INTO [{self._validate_table_name(self.tabla_vidrios)}]
                 (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
                  color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
@@ -635,7 +661,7 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             query = f"""
-                UPDATE {self.tabla_vidrios}
+                UPDATE [{self._validate_table_name(self.tabla_vidrios)}]
                 SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
                     precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
                     estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
@@ -695,7 +721,7 @@ class VidriosModel:
 
             # Verificar si el vidrio existe
             cursor.execute(
-                f"SELECT codigo, descripcion FROM {self.tabla_vidrios} WHERE id = ?",
+                f"SELECT codigo, descripcion FROM [{self._validate_table_name(self.tabla_vidrios)}] WHERE id = ?",
                 (vidrio_id_limpio,)
             )
             vidrio_info = cursor.fetchone()
@@ -706,7 +732,7 @@ class VidriosModel:
 
             # Verificar si el vidrio está asignado a alguna obra
             cursor.execute(
-                f"SELECT COUNT(*) FROM {self.tabla_vidrios_obra} WHERE vidrio_id = ?",
+                f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_vidrios_obra)}] WHERE vidrio_id = ?",
                 (vidrio_id_limpio,),
             )
 
@@ -716,7 +742,7 @@ class VidriosModel:
                 )
                 # Marcar como inactivo en lugar de eliminar
                 query = f"""
-                    UPDATE {self.tabla_vidrios}
+                    UPDATE [{self._validate_table_name(self.tabla_vidrios)}]
                     SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
                     WHERE id = ?
                 """
@@ -724,7 +750,7 @@ class VidriosModel:
                 mensaje = f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
             else:
                 # Eliminar completamente si no está asignado
-                query = f"DELETE FROM {self.tabla_vidrios} WHERE id = ?"
+                query = f"DELETE FROM [{self._validate_table_name(self.tabla_vidrios)}] WHERE id = ?"
                 cursor.execute(query, (vidrio_id_limpio,))
                 mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
@@ -766,7 +792,7 @@ class VidriosModel:
                     id, codigo, descripcion, tipo, espesor, proveedor,
                     precio_m2, color, tratamiento, dimensiones_disponibles,
                     estado, observaciones, fecha_actualizacion
-                FROM {self.tabla_vidrios}
+                FROM [{self._validate_table_name(self.tabla_vidrios)}]
                 WHERE id = ?
             """
 

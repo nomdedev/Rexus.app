@@ -28,6 +28,14 @@ except ImportError as e:
     print(f"[WARNING] Security utilities not available in inventario: {e}")
     SECURITY_AVAILABLE = False
 
+# Importar nueva utilidad de seguridad SQL
+try:
+    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    SQL_SECURITY_AVAILABLE = True
+except ImportError:
+    print("[WARNING] SQL security utilities not available in inventario")
+    SQL_SECURITY_AVAILABLE = False
+
 
 class InventarioModel:
     """Modelo para gestionar el inventario de productos."""
@@ -142,14 +150,29 @@ class InventarioModel:
             where_clause = " AND ".join(conditions)
 
             # Usar la tabla real inventario_perfiles con columnas existentes
-            base_query = """
+            # SECURITY: Validar nombre de tabla para prevenir SQL injection
+            tabla_segura = "inventario_perfiles"
+            if SQL_SECURITY_AVAILABLE:
+                try:
+                    # Agregar tabla a lista blanca si no existe
+                    from rexus.utils.sql_security import sql_validator
+                    if tabla_segura not in sql_validator.ALLOWED_TABLES:
+                        sql_validator.add_allowed_table(tabla_segura)
+                    tabla_validada = validate_table_name(tabla_segura)
+                except SQLSecurityError as e:
+                    print(f"[SECURITY ERROR] Tabla no válida: {e}")
+                    return []
+            else:
+                tabla_validada = tabla_segura
+            
+            base_query = f"""
             SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
                    stock_actual, stock_minimo, 0 as stock_maximo, importe as precio_unitario, 
                    importe as precio_promedio, ubicacion, proveedor, unidad as unidad_medida, 
                    'ACTIVO' as estado, GETDATE() as fecha_creacion, GETDATE() as fecha_modificacion, 
                    '' as observaciones, qr as codigo_qr,
                    stock_actual as stock_disponible, 0 as stock_reservado
-            FROM inventario_perfiles
+            FROM [{tabla_validada}]
             WHERE """
             sql_select = base_query + where_clause + " ORDER BY codigo"
 

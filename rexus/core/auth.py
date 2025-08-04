@@ -53,10 +53,16 @@ class AuthManager:
             
             user_data = user_data[0]  # Obtener primera fila
             
-            # Verificar password
-            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            # Verificar password usando sistema seguro
+            try:
+                from rexus.utils.password_security import verify_password_secure
+                is_password_valid = verify_password_secure(password, user_data[2])
+            except ImportError:
+                # Fallback temporal (INSEGURO)
+                password_hash = hashlib.sha256(password.encode()).hexdigest()
+                is_password_valid = (user_data[2] == password_hash)
             
-            if user_data[2] == password_hash:
+            if is_password_valid:
                 # Autenticación exitosa
                 nombre = user_data[5] or ''
                 apellido = user_data[6] or ''
@@ -170,8 +176,13 @@ class AuthManager:
             if existing_user:
                 return False
             
-            # Crear hash de contraseña
-            password_hash = hashlib.sha256(password.encode()).hexdigest()
+            # Crear hash seguro de contraseña
+            try:
+                from rexus.utils.password_security import hash_password_secure
+                password_hash = hash_password_secure(password)
+            except ImportError:
+                # Fallback temporal (INSEGURO)
+                password_hash = hashlib.sha256(password.encode()).hexdigest()
             
             # Insertar usuario
             result = self.db_connection.execute_non_query("""
@@ -200,8 +211,13 @@ class AuthManager:
             return False
         
         try:
-            # Crear hash de nueva contraseña
-            password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+            # Crear hash seguro de nueva contraseña
+            try:
+                from rexus.utils.password_security import hash_password_secure
+                password_hash = hash_password_secure(new_password)
+            except ImportError:
+                # Fallback temporal (INSEGURO)
+                password_hash = hashlib.sha256(new_password.encode()).hexdigest()
             
             # Actualizar contraseña
             result = self.db_connection.execute_non_query("""

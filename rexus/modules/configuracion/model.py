@@ -117,6 +117,32 @@ class ConfiguracionModel:
         # Inicializar configuración
         self._verificar_tablas()
         self._cargar_configuracion_inicial()
+    
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+        
+        Args:
+            table_name: Nombre de tabla a validar
+            
+        Returns:
+            Nombre de tabla validado
+            
+        Raises:
+            ValueError: Si el nombre de tabla no es válido
+        """
+        import re
+        
+        # Solo permitir nombres alfanuméricos y underscore
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+        
+        # Lista blanca de tablas permitidas
+        allowed_tables = {'configuracion_sistema'}
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+            
+        return table_name
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
@@ -156,7 +182,9 @@ class ConfiguracionModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si ya hay configuraciones
-            cursor.execute(f"SELECT COUNT(*) FROM {self.tabla_configuracion}")
+            # FIXED: SQL injection vulnerability - using proper table name validation
+            tabla_validada = self._validate_table_name(self.tabla_configuracion)
+            cursor.execute(f"SELECT COUNT(*) FROM [{tabla_validada}]")
             result = cursor.fetchone()
             count = result[0] if result else 0
 
@@ -170,7 +198,7 @@ class ConfiguracionModel:
 
                     cursor.execute(
                         f"""
-                        INSERT INTO {self.tabla_configuracion} 
+                        INSERT INTO [{self._validate_table_name(self.tabla_configuracion)}] 
                         (clave, valor, descripcion, tipo, categoria)
                         VALUES (?, ?, ?, ?, ?)
                     """,
@@ -230,10 +258,12 @@ class ConfiguracionModel:
             
             # Verificar si la columna 'activo' existe
             try:
-                cursor.execute(f"SELECT clave, valor FROM {self.tabla_configuracion} WHERE activo = 1")
+                tabla_validada = self._validate_table_name(self.tabla_configuracion)
+                cursor.execute(f"SELECT clave, valor FROM [{tabla_validada}] WHERE activo = 1")
             except:
                 # Si falla, la tabla podría no tener columna 'activo'
-                cursor.execute(f"SELECT clave, valor FROM {self.tabla_configuracion}")
+                tabla_validada = self._validate_table_name(self.tabla_configuracion)
+                cursor.execute(f"SELECT clave, valor FROM [{tabla_validada}]")
 
             self.config_cache = {}
             rows = cursor.fetchall()
@@ -300,7 +330,7 @@ class ConfiguracionModel:
                 try:
                     # Verificar si existe
                     cursor.execute(
-                        f"SELECT COUNT(*) FROM {self.tabla_configuracion} WHERE clave = ?",
+                        f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_configuracion)}] WHERE clave = ?",
                         (clave,),
                     )
                     result = cursor.fetchone()
@@ -311,7 +341,7 @@ class ConfiguracionModel:
                         try:
                             cursor.execute(
                                 f"""
-                                UPDATE {self.tabla_configuracion}
+                                UPDATE [{self._validate_table_name(self.tabla_configuracion)}]
                                 SET valor = ?, fecha_modificacion = GETDATE()
                                 WHERE clave = ?
                             """,
@@ -321,7 +351,7 @@ class ConfiguracionModel:
                             # Si no existe fecha_modificacion, usar versión simple
                             cursor.execute(
                                 f"""
-                                UPDATE {self.tabla_configuracion}
+                                UPDATE [{self._validate_table_name(self.tabla_configuracion)}]
                                 SET valor = ?
                                 WHERE clave = ?
                             """,
@@ -335,7 +365,7 @@ class ConfiguracionModel:
 
                         cursor.execute(
                             f"""
-                            INSERT INTO {self.tabla_configuracion}
+                            INSERT INTO [{self._validate_table_name(self.tabla_configuracion)}]
                             (clave, valor, descripcion, tipo, categoria)
                             VALUES (?, ?, ?, ?, ?)
                         """,
@@ -391,7 +421,7 @@ class ConfiguracionModel:
                 cursor.execute(
                     f"""
                     SELECT clave, valor, descripcion, tipo
-                    FROM {self.tabla_configuracion}
+                    FROM [{self._validate_table_name(self.tabla_configuracion)}]
                     WHERE categoria = ? AND activo = 1
                     ORDER BY clave
                 """,
@@ -402,7 +432,7 @@ class ConfiguracionModel:
                 cursor.execute(
                     f"""
                     SELECT clave, valor, descripcion, tipo
-                    FROM {self.tabla_configuracion}
+                    FROM [{self._validate_table_name(self.tabla_configuracion)}]
                     WHERE categoria = ?
                     ORDER BY clave
                 """,
@@ -449,7 +479,7 @@ class ConfiguracionModel:
                 cursor.execute(f"""
                     SELECT clave, valor, descripcion, tipo, categoria, 
                            fecha_modificacion
-                    FROM {self.tabla_configuracion}
+                    FROM [{self._validate_table_name(self.tabla_configuracion)}]
                     WHERE activo = 1
                     ORDER BY categoria, clave
                 """)
@@ -458,14 +488,14 @@ class ConfiguracionModel:
                     # Sin fecha_modificacion ni activo
                     cursor.execute(f"""
                         SELECT clave, valor, descripcion, tipo, categoria
-                        FROM {self.tabla_configuracion}
+                        FROM [{self._validate_table_name(self.tabla_configuracion)}]
                         ORDER BY categoria, clave
                     """)
                 except:
                     # Solo columnas básicas
                     cursor.execute(f"""
                         SELECT clave, valor
-                        FROM {self.tabla_configuracion}
+                        FROM [{self._validate_table_name(self.tabla_configuracion)}]
                         ORDER BY clave
                     """)
 
