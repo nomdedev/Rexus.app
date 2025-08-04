@@ -32,7 +32,7 @@ from datetime import datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtWidgets import QMessageBox, (
+from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDateEdit,
@@ -963,18 +963,6 @@ class UsuariosView(QWidget):
             if hasattr(self, "btn_eliminar"):
                 self.btn_eliminar.setEnabled(False)
 
-
-
-    def mostrar_mensaje(self, mensaje: str, tipo: str = "info"):
-        """Muestra mensaje de feedback al usuario."""
-        if tipo == "error":
-            QMessageBox.critical(self, "Error", mensaje)
-        elif tipo == "success":
-            QMessageBox.information(self, "Éxito", mensaje)
-        elif tipo == "warning":
-            QMessageBox.warning(self, "Advertencia", mensaje)
-        else:
-            QMessageBox.information(self, "Información", mensaje)
 
 class DialogoNuevoUsuario(QDialog):
     """Diálogo para crear un nuevo usuario."""
