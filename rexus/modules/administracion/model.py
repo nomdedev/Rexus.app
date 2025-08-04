@@ -265,7 +265,7 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
             cursor.execute(
                 """
-                INSERT INTO auditoria_contable
+                INSERT INTO [{self._validate_table_name(self.tabla_auditoria)}]_contable
                 (tabla_afectada, registro_id, accion, datos_anteriores, datos_nuevos, usuario, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
@@ -294,7 +294,7 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
             cursor.execute(
                 """
-                INSERT INTO departamentos
+                INSERT INTO [{self._validate_table_name(self.tabla_departamentos)}]
                 (codigo, nombre, descripcion, responsable, presupuesto_mensual, usuario_creacion, usuario_actualizacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
@@ -391,7 +391,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                INSERT INTO empleados
+                INSERT INTO [{self._validate_table_name(self.tabla_empleados)}]
                 (codigo, nombre, apellido, documento, email, telefono, departamento_id,
                  cargo, salario, fecha_ingreso, usuario_creacion, usuario_actualizacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -521,7 +521,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                INSERT INTO libro_contable
+                INSERT INTO [{self._validate_table_name(self.tabla_libro_contable)}]
                 (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                  obra_id, proveedor_id, empleado_id, departamento_id, cuenta_contable,
                  debe, haber, saldo, observaciones, usuario_creacion, usuario_actualizacion)
@@ -685,7 +685,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                INSERT INTO recibos
+                INSERT INTO [{self._validate_table_name(self.tabla_recibos)}]
                 (numero_recibo, fecha_emision, tipo_recibo, concepto, beneficiario,
                  obra_id, proveedor_id, empleado_id, monto, moneda, metodo_pago,
                  numero_comprobante, observaciones, usuario_creacion, usuario_actualizacion)
@@ -818,7 +818,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                UPDATE recibos
+                UPDATE [{self._validate_table_name(self.tabla_recibos)}]
                 SET impreso = 1, archivo_pdf = ?, fecha_actualizacion = GETDATE(),
                     usuario_actualizacion = ?
                 WHERE id = ?
@@ -864,7 +864,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                INSERT INTO pagos_obras
+                INSERT INTO [{self._validate_table_name(self.tabla_pagos_obras)}]
                 (obra_id, concepto, categoria, monto, fecha_pago, proveedor_id,
                  empleado_id, metodo_pago, numero_comprobante, observaciones,
                  usuario_creacion, usuario_actualizacion)
@@ -1003,7 +1003,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                INSERT INTO pagos_materiales
+                INSERT INTO [{self._validate_table_name(self.tabla_pagos_materiales)}]
                 (producto_id, proveedor_id, obra_id, cantidad, precio_unitario, total,
                  fecha_compra, saldo_pendiente, numero_factura, observaciones,
                  usuario_creacion, usuario_actualizacion)
