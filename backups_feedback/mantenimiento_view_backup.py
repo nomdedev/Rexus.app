@@ -23,7 +23,7 @@ SOFTWARE.
 
 """Vista de Mantenimiento""""""
 
-from PyQt6.QtWidgets import QMessageBox, QLabel, QVBoxLayout, QWidget
+from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 class MantenimientoView(QWidget):
     def __init__(self):

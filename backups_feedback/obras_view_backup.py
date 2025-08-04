@@ -711,18 +711,6 @@ class ObrasView(QWidget):
         self.mostrar_dialogo_nueva_obra()
 
 
-
-    def mostrar_mensaje(self, mensaje: str, tipo: str = "info"):
-        """Muestra mensaje de feedback al usuario."""
-        if tipo == "error":
-            QMessageBox.critical(self, "Error", mensaje)
-        elif tipo == "success":
-            QMessageBox.information(self, "Éxito", mensaje)
-        elif tipo == "warning":
-            QMessageBox.warning(self, "Advertencia", mensaje)
-        else:
-            QMessageBox.information(self, "Información", mensaje)
-
 class FormularioObraDialog(QDialog):
     """Diálogo para crear/editar obras."""
 

@@ -1,0 +1,1862 @@
+"""
+MIT License
+
+Copyright (c) 2024 Rexus.app
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+"""
+Vista de Administración
+
+Sistema completo de administración que incluye:
+- Contabilidad
+- Recursos Humanos
+- Reportes financieros
+- Gestión de empleados
+""""""
+
+from PyQt6.QtCore import QDate, Qt, QTimer, pyqtSignal
+from PyQt6.QtWidgets import (
+    QComboBox,
+    QDateEdit,
+    QFormLayout,
+    QFrame,
+    QGridLayout,
+    QGroupBox,
+    QHBoxLayout,
+    QLabel,
+    QMessageBox,
+    QPushButton,
+    QSpinBox,
+    QTableWidget,
+    QTabWidget,
+    QTextEdit,
+    QVBoxLayout,
+    QWidget,
+)
+
+
+class AdministracionView(QWidget):
+    """Vista principal del módulo de administración."""
+
+    # Señales para el controlador
+    crear_departamento_signal = pyqtSignal(dict)
+    crear_empleado_signal = pyqtSignal(dict)
+    crear_asiento_signal = pyqtSignal(dict)
+    crear_recibo_signal = pyqtSignal(dict)
+    imprimir_recibo_signal = pyqtSignal(int)
+    generar_reporte_signal = pyqtSignal(dict)
+    actualizar_datos_signal = pyqtSignal()
+
+    # Señales para recursos humanos
+    crear_empleado_rrhh_signal = pyqtSignal(dict)
+    actualizar_empleado_signal = pyqtSignal(int, dict)
+    eliminar_empleado_signal = pyqtSignal(int)
+    registrar_asistencia_signal = pyqtSignal(dict)
+    calcular_nomina_signal = pyqtSignal(dict)
+    generar_bono_signal = pyqtSignal(dict)
+    registrar_falta_signal = pyqtSignal(dict)
+
+    def __init__(self):
+        super().__init__()
+        self.datos_administrativos = {}
+        self.current_user = "ADMIN"
+        self.current_role = "ADMIN"
+        self.init_ui()
+
+    def init_ui(self):
+        """Inicializa la interfaz de usuario."""
+        layout = QVBoxLayout(self)
+        layout.setSpacing(10)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        # Header con controles (sin título)
+        header_layout = self.create_header()
+        layout.addLayout(header_layout)
+
+        # Tabs principales
+        self.tabs = QTabWidget()
+        self.tabs.setStyleSheet("""
+            QTabWidget::pane {
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                background-color: #ecf0f1;
+            }
+            QTabWidget::tab-bar {
+                alignment: center;
+            }
+            QTab {
+                background-color: #bdc3c7;
+                color: #2c3e50;
+                padding: 12px 20px;
+                margin-right: 2px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                font-weight: bold;
+                min-width: 120px;
+            }
+            QTab:selected {
+                background-color: #3498db;
+                color: white;
+            }
+            QTab:hover {
+                background-color: #5dade2;
+                color: white;
+            }
+        """)
+
+        # Crear tabs
+        self.create_tabs()
+
+        layout.addWidget(self.tabs)
+
+        # Status bar
+        self.status_bar = self.create_status_bar()
+        layout.addWidget(self.status_bar)
+
+        # Conectar señales
+        self.connect_signals()
+
+    def create_header(self):
+        """Crea el header con controles (sin título)."""
+        header_layout = QHBoxLayout()
+
+        header_layout.addStretch()
+
+        # Controles de usuario
+        user_frame = QFrame()
+        user_frame.setStyleSheet("""
+            QFrame {
+                background-color: #3498db;
+                border-radius: 10px;
+                padding: 5px;
+            }
+        """)
+        # user_layout = QHBoxLayout(user_frame)  # Eliminado porque no se usa
+
+        # User identification removed as requested
+
+        header_layout.addWidget(user_frame)
+
+        return header_layout
+
+    def create_tabs(self):
+        """Crea las pestañas principales."""
+        # Dashboard
+        self.dashboard_tab = self.create_dashboard_tab()
+        self.tabs.addTab(self.dashboard_tab, "📊 Dashboard")
+
+        # Contabilidad
+        self.contabilidad_tab = self.create_contabilidad_tab()
+        self.tabs.addTab(self.contabilidad_tab, "💰 Contabilidad")
+
+        # Recursos Humanos
+        self.recursos_humanos_tab = self.create_recursos_humanos_tab()
+        self.tabs.addTab(self.recursos_humanos_tab, "👥 Recursos Humanos")
+
+        # Reportes
+        self.reportes_tab = self.create_reportes_tab()
+        self.tabs.addTab(self.reportes_tab, "📈 Reportes")
+
+        # Auditoría
+        self.auditoria_tab = self.create_auditoria_tab()
+        self.tabs.addTab(self.auditoria_tab, "🔍 Auditoría")
+
+    def create_dashboard_tab(self):
+        """Crea la pestaña de dashboard."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Resumen general
+        resumen_frame = QGroupBox("📊 Resumen General")
+        resumen_frame.setStyleSheet("""
+            QGroupBox {
+                font-size: 14px;
+                font-weight: bold;
+                color: #2c3e50;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding-top: 5px;
+                margin-top: 5px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+            }
+        """)
+        resumen_layout = QGridLayout(resumen_frame)
+
+        # Cards de resumen
+        self.cards_resumen = {}
+        cards_data = [
+            ("💰 Total Ingresos", "total_ingresos", "#27ae60"),
+            ("💸 Total Egresos", "total_egresos", "#e74c3c"),
+            ("👥 Total Empleados", "total_empleados", "#3498db"),
+            ("📊 Nómina Mensual", "nomina_mensual", "#9b59b6"),
+            ("🏗️ Pagos por Obra", "pagos_obra", "#f39c12"),
+            ("📦 Compras Materiales", "compras_materiales", "#1abc9c"),
+        ]
+
+        for i, (titulo, key, color) in enumerate(cards_data):
+            card = self.create_info_card(titulo, "0", color, small=True)
+            self.cards_resumen[key] = card
+            resumen_layout.addWidget(card, i // 3, i % 3)
+
+        layout.addWidget(resumen_frame)
+
+        # Gráficos y estadísticas
+        graficos_frame = QGroupBox("📈 Estadísticas")
+        graficos_frame.setStyleSheet("""
+            QGroupBox {
+                font-size: 16px;
+                font-weight: bold;
+                color: #2c3e50;
+                border: 2px solid #3498db;
+                border-radius: 10px;
+                padding-top: 10px;
+                margin-top: 10px;
+            }
+        """)
+        graficos_layout = QHBoxLayout(graficos_frame)
+
+        # Resumen empleados
+        empleados_frame = QFrame()
+        empleados_frame.setStyleSheet("""
+            QFrame {
+                background-color: #ecf0f1;
+                border-radius: 10px;
+                padding: 15px;
+            }
+        """)
+        empleados_layout = QVBoxLayout(empleados_frame)
+
+        empleados_title = QLabel("👥 Empleados")
+        empleados_title.setStyleSheet(
+            "font-size: 16px; font-weight: bold; color: #2c3e50;"
+        )
+        empleados_layout.addWidget(empleados_title)
+
+        self.empleados_activos_label = QLabel("Activos: 0")
+        self.empleados_inactivos_label = QLabel("Inactivos: 0")
+        self.empleados_nuevos_label = QLabel("Nuevos este mes: 0")
+
+        empleados_layout.addWidget(self.empleados_activos_label)
+        empleados_layout.addWidget(self.empleados_inactivos_label)
+        empleados_layout.addWidget(self.empleados_nuevos_label)
+
+        graficos_layout.addWidget(empleados_frame)
+
+        # Resumen financiero
+        financiero_frame = QFrame()
+        financiero_frame.setStyleSheet("""
+            QFrame {
+                background-color: #ecf0f1;
+                border-radius: 10px;
+                padding: 15px;
+            }
+        """)
+        financiero_layout = QVBoxLayout(financiero_frame)
+
+        financiero_title = QLabel("💰 Financiero")
+        financiero_title.setStyleSheet(
+            "font-size: 16px; font-weight: bold; color: #2c3e50;"
+        )
+        financiero_layout.addWidget(financiero_title)
+
+        self.balance_label = QLabel("Balance: $0.00")
+        self.ingresos_mes_label = QLabel("Ingresos mes: $0.00")
+        self.gastos_mes_label = QLabel("Gastos mes: $0.00")
+
+        financiero_layout.addWidget(self.balance_label)
+        financiero_layout.addWidget(self.ingresos_mes_label)
+        financiero_layout.addWidget(self.gastos_mes_label)
+
+        graficos_layout.addWidget(financiero_frame)
+
+        layout.addWidget(graficos_frame)
+
+        return widget
+
+    def create_contabilidad_tab(self):
+        """Crea la pestaña de contabilidad."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Sub-tabs para contabilidad
+        contabilidad_tabs = QTabWidget()
+
+        # Libro Contable
+        libro_tab = self.create_libro_contable_tab()
+        contabilidad_tabs.addTab(libro_tab, "📚 Libro Contable")
+
+        # Recibos
+        recibos_tab = self.create_recibos_tab()
+        contabilidad_tabs.addTab(recibos_tab, "🧾 Recibos")
+
+        # Pagos por Obra
+        pagos_obra_tab = self.create_pagos_obra_tab()
+        contabilidad_tabs.addTab(pagos_obra_tab, "🏗️ Pagos por Obra")
+
+        # Materiales
+        materiales_tab = self.create_materiales_tab()
+        contabilidad_tabs.addTab(materiales_tab, "📦 Materiales")
+
+        layout.addWidget(contabilidad_tabs)
+
+        return widget
+
+    def create_recursos_humanos_tab(self):
+        """Crea la pestaña de recursos humanos."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Sub-tabs para recursos humanos
+        rrhh_tabs = QTabWidget()
+
+        # Empleados
+        empleados_tab = self.create_empleados_tab()
+        rrhh_tabs.addTab(empleados_tab, "👥 Empleados")
+
+        # Nómina
+        nomina_tab = self.create_nomina_tab()
+        rrhh_tabs.addTab(nomina_tab, "💰 Nómina")
+
+        # Asistencias
+        asistencias_tab = self.create_asistencias_tab()
+        rrhh_tabs.addTab(asistencias_tab, "🕐 Asistencias")
+
+        # Bonos y Descuentos
+        bonos_tab = self.create_bonos_tab()
+        rrhh_tabs.addTab(bonos_tab, "🎁 Bonos y Descuentos")
+
+        # Historial Laboral
+        historial_tab = self.create_historial_tab()
+        rrhh_tabs.addTab(historial_tab, "📋 Historial Laboral")
+
+        layout.addWidget(rrhh_tabs)
+
+        return widget
+
+    def create_empleados_tab(self):
+        """Crea la pestaña de empleados."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nuevo_empleado_btn = QPushButton("➕ Nuevo Empleado")
+        nuevo_empleado_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nuevo_empleado_btn.clicked.connect(self.show_nuevo_empleado_dialog)
+        toolbar.addWidget(nuevo_empleado_btn)
+
+        importar_btn = QPushButton("📥 Importar CSV")
+        importar_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #5dade2;
+            }
+        """)
+        importar_btn.clicked.connect(self.importar_empleados)
+        toolbar.addWidget(importar_btn)
+
+        toolbar.addStretch()
+
+        # Filtros
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("🏢 Departamento:"))
+        self.empleados_departamento_combo = QComboBox()
+        self.empleados_departamento_combo.addItems(["Todos los departamentos"])
+        filtros_layout.addWidget(self.empleados_departamento_combo)
+
+        filtros_layout.addWidget(QLabel("📊 Estado:"))
+        self.empleados_estado_combo = QComboBox()
+        self.empleados_estado_combo.addItems(
+            ["Todos", "ACTIVO", "INACTIVO", "VACACIONES", "LICENCIA"]
+        )
+        filtros_layout.addWidget(self.empleados_estado_combo)
+
+        buscar_empleados_btn = QPushButton("🔍 Buscar")
+        buscar_empleados_btn.clicked.connect(self.buscar_empleados)
+        filtros_layout.addWidget(buscar_empleados_btn)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de empleados
+        self.tabla_empleados = QTableWidget()
+        self.tabla_empleados.setColumnCount(12)
+        self.tabla_empleados.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Código",
+                "Nombre",
+                "Apellido",
+                "DNI",
+                "Teléfono",
+                "Departamento",
+                "Cargo",
+                "Salario",
+                "Fecha Ingreso",
+                "Estado",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_empleados.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_empleados.setAlternatingRowColors(True)
+        self.tabla_empleados.horizontalHeader().setStretchLastSection(True)
+        self.tabla_empleados.setSelectionBehavior(
+            QTableWidget.SelectionBehavior.SelectRows
+        )
+
+        layout.addWidget(self.tabla_empleados)
+
+        return widget
+
+    def create_nomina_tab(self):
+        """Crea la pestaña de nómina."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        calcular_nomina_btn = QPushButton("💰 Calcular Nómina")
+        calcular_nomina_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        calcular_nomina_btn.clicked.connect(self.calcular_nomina)
+        toolbar.addWidget(calcular_nomina_btn)
+
+        generar_recibos_btn = QPushButton("🧾 Generar Recibos")
+        generar_recibos_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #5dade2;
+            }
+        """)
+        generar_recibos_btn.clicked.connect(self.generar_recibos_sueldo)
+        toolbar.addWidget(generar_recibos_btn)
+
+        toolbar.addStretch()
+
+        # Filtros de período
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("📅 Período:"))
+        self.nomina_mes_combo = QComboBox()
+        self.nomina_mes_combo.addItems(
+            [
+                "Enero",
+                "Febrero",
+                "Marzo",
+                "Abril",
+                "Mayo",
+                "Junio",
+                "Julio",
+                "Agosto",
+                "Septiembre",
+                "Octubre",
+                "Noviembre",
+                "Diciembre",
+            ]
+        )
+        self.nomina_mes_combo.setCurrentIndex(QDate.currentDate().month() - 1)
+        filtros_layout.addWidget(self.nomina_mes_combo)
+
+        self.nomina_anio_spin = QSpinBox()
+        self.nomina_anio_spin.setRange(2020, 2030)
+        self.nomina_anio_spin.setValue(QDate.currentDate().year())
+        filtros_layout.addWidget(self.nomina_anio_spin)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de nómina
+        self.tabla_nomina = QTableWidget()
+        self.tabla_nomina.setColumnCount(10)
+        self.tabla_nomina.setHorizontalHeaderLabels(
+            [
+                "Empleado",
+                "Salario Base",
+                "Bonos",
+                "Descuentos",
+                "Días Trabajados",
+                "Horas Extra",
+                "Faltas",
+                "Bruto",
+                "Descuentos",
+                "Neto",
+            ]
+        )
+
+        self.tabla_nomina.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #27ae60;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_nomina.setAlternatingRowColors(True)
+        self.tabla_nomina.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_nomina)
+
+        return widget
+
+    def create_asistencias_tab(self):
+        """Crea la pestaña de asistencias."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        registrar_asistencia_btn = QPushButton("🕐 Registrar Asistencia")
+        registrar_asistencia_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        registrar_asistencia_btn.clicked.connect(self.registrar_asistencia)
+        toolbar.addWidget(registrar_asistencia_btn)
+
+        registrar_falta_btn = QPushButton("❌ Registrar Falta")
+        registrar_falta_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        registrar_falta_btn.clicked.connect(self.registrar_falta)
+        toolbar.addWidget(registrar_falta_btn)
+
+        toolbar.addStretch()
+
+        # Filtros
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("📅 Desde:"))
+        self.asistencia_fecha_desde = QDateEdit()
+        self.asistencia_fecha_desde.setDate(QDate.currentDate().addDays(-30))
+        self.asistencia_fecha_desde.setCalendarPopup(True)
+        filtros_layout.addWidget(self.asistencia_fecha_desde)
+
+        filtros_layout.addWidget(QLabel("📅 Hasta:"))
+        self.asistencia_fecha_hasta = QDateEdit()
+        self.asistencia_fecha_hasta.setDate(QDate.currentDate())
+        self.asistencia_fecha_hasta.setCalendarPopup(True)
+        filtros_layout.addWidget(self.asistencia_fecha_hasta)
+
+        buscar_asistencias_btn = QPushButton("🔍 Buscar")
+        buscar_asistencias_btn.clicked.connect(self.buscar_asistencias)
+        filtros_layout.addWidget(buscar_asistencias_btn)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de asistencias
+        self.tabla_asistencias = QTableWidget()
+        self.tabla_asistencias.setColumnCount(8)
+        self.tabla_asistencias.setHorizontalHeaderLabels(
+            [
+                "Empleado",
+                "Fecha",
+                "Hora Entrada",
+                "Hora Salida",
+                "Horas Trabajadas",
+                "Horas Extra",
+                "Tipo",
+                "Observaciones",
+            ]
+        )
+
+        self.tabla_asistencias.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #f39c12;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_asistencias.setAlternatingRowColors(True)
+        self.tabla_asistencias.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_asistencias)
+
+        return widget
+
+    def create_bonos_tab(self):
+        """Crea la pestaña de bonos y descuentos."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nuevo_bono_btn = QPushButton("🎁 Nuevo Bono")
+        nuevo_bono_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nuevo_bono_btn.clicked.connect(self.show_nuevo_bono_dialog)
+        toolbar.addWidget(nuevo_bono_btn)
+
+        nuevo_descuento_btn = QPushButton("💸 Nuevo Descuento")
+        nuevo_descuento_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #e74c3c;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #c0392b;
+            }
+        """)
+        nuevo_descuento_btn.clicked.connect(self.show_nuevo_descuento_dialog)
+        toolbar.addWidget(nuevo_descuento_btn)
+
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
+
+        # Tabla de bonos y descuentos
+        self.tabla_bonos = QTableWidget()
+        self.tabla_bonos.setColumnCount(9)
+        self.tabla_bonos.setHorizontalHeaderLabels(
+            [
+                "Empleado",
+                "Tipo",
+                "Concepto",
+                "Monto",
+                "Fecha",
+                "Período",
+                "Estado",
+                "Aplicado",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_bonos.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #9b59b6;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_bonos.setAlternatingRowColors(True)
+        self.tabla_bonos.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_bonos)
+
+        return widget
+
+    def create_historial_tab(self):
+        """Crea la pestaña de historial laboral."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        toolbar.addWidget(QLabel("📋 Historial Laboral"))
+
+        toolbar.addStretch()
+
+        # Filtros
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("👤 Empleado:"))
+        self.historial_empleado_combo = QComboBox()
+        self.historial_empleado_combo.addItems(["Todos los empleados"])
+        filtros_layout.addWidget(self.historial_empleado_combo)
+
+        filtros_layout.addWidget(QLabel("📂 Tipo:"))
+        self.historial_tipo_combo = QComboBox()
+        self.historial_tipo_combo.addItems(
+            [
+                "Todos",
+                "CONTRATACION",
+                "PROMOCION",
+                "CAMBIO_SALARIO",
+                "CAMBIO_DEPARTAMENTO",
+                "LICENCIA",
+                "VACACIONES",
+                "RENUNCIA",
+                "DESPIDO",
+            ]
+        )
+        filtros_layout.addWidget(self.historial_tipo_combo)
+
+        buscar_historial_btn = QPushButton("🔍 Buscar")
+        buscar_historial_btn.clicked.connect(self.buscar_historial)
+        filtros_layout.addWidget(buscar_historial_btn)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de historial
+        self.tabla_historial = QTableWidget()
+        self.tabla_historial.setColumnCount(7)
+        self.tabla_historial.setHorizontalHeaderLabels(
+            [
+                "Empleado",
+                "Tipo",
+                "Descripción",
+                "Fecha",
+                "Valor Anterior",
+                "Valor Nuevo",
+                "Usuario",
+            ]
+        )
+
+        self.tabla_historial.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #34495e;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_historial.setAlternatingRowColors(True)
+        self.tabla_historial.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_historial)
+
+        return widget
+
+    def create_libro_contable_tab(self):
+        """Crea la pestaña del libro contable."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nuevo_asiento_btn = QPushButton("➕ Nuevo Asiento")
+        nuevo_asiento_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nuevo_asiento_btn.clicked.connect(self.show_nuevo_asiento_dialog)
+        toolbar.addWidget(nuevo_asiento_btn)
+
+        toolbar.addStretch()
+
+        # Filtros
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("📅 Desde:"))
+        self.libro_fecha_desde = QDateEdit()
+        self.libro_fecha_desde.setDate(QDate.currentDate().addDays(-30))
+        self.libro_fecha_desde.setCalendarPopup(True)
+        filtros_layout.addWidget(self.libro_fecha_desde)
+
+        filtros_layout.addWidget(QLabel("📅 Hasta:"))
+        self.libro_fecha_hasta = QDateEdit()
+        self.libro_fecha_hasta.setDate(QDate.currentDate())
+        self.libro_fecha_hasta.setCalendarPopup(True)
+        filtros_layout.addWidget(self.libro_fecha_hasta)
+
+        filtros_layout.addWidget(QLabel("📂 Tipo:"))
+        self.libro_tipo_combo = QComboBox()
+        self.libro_tipo_combo.addItems(
+            ["Todos", "INGRESO", "EGRESO", "AJUSTE", "TRANSFERENCIA"]
+        )
+        filtros_layout.addWidget(self.libro_tipo_combo)
+
+        buscar_btn = QPushButton("🔍 Buscar")
+        buscar_btn.clicked.connect(self.buscar_libro_contable)
+        filtros_layout.addWidget(buscar_btn)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de asientos
+        self.tabla_libro = QTableWidget()
+        self.tabla_libro.setColumnCount(12)
+        self.tabla_libro.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Número",
+                "Fecha",
+                "Tipo",
+                "Concepto",
+                "Referencia",
+                "Debe",
+                "Haber",
+                "Saldo",
+                "Estado",
+                "Usuario",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_libro.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_libro.setAlternatingRowColors(True)
+        self.tabla_libro.horizontalHeader().setStretchLastSection(True)
+        self.tabla_libro.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+
+        layout.addWidget(self.tabla_libro)
+
+        return widget
+
+    def create_recibos_tab(self):
+        """Crea la pestaña de recibos."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nuevo_recibo_btn = QPushButton("➕ Nuevo Recibo")
+        nuevo_recibo_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nuevo_recibo_btn.clicked.connect(self.show_nuevo_recibo_dialog)
+        toolbar.addWidget(nuevo_recibo_btn)
+
+        imprimir_recibo_btn = QPushButton("🖨️ Imprimir Seleccionado")
+        imprimir_recibo_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #5dade2;
+            }
+        """)
+        imprimir_recibo_btn.clicked.connect(self.imprimir_recibo_seleccionado)
+        toolbar.addWidget(imprimir_recibo_btn)
+
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
+
+        # Tabla de recibos
+        self.tabla_recibos = QTableWidget()
+        self.tabla_recibos.setColumnCount(11)
+        self.tabla_recibos.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Número",
+                "Fecha",
+                "Tipo",
+                "Concepto",
+                "Beneficiario",
+                "Monto",
+                "Moneda",
+                "Estado",
+                "Impreso",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_recibos.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_recibos.setAlternatingRowColors(True)
+        self.tabla_recibos.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_recibos)
+
+        return widget
+
+    def create_pagos_obra_tab(self):
+        """Crea la pestaña de pagos por obra."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nuevo_pago_btn = QPushButton("➕ Nuevo Pago")
+        nuevo_pago_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nuevo_pago_btn.clicked.connect(self.show_nuevo_pago_obra_dialog)
+        toolbar.addWidget(nuevo_pago_btn)
+
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
+
+        # Tabla de pagos
+        self.tabla_pagos_obra = QTableWidget()
+        self.tabla_pagos_obra.setColumnCount(10)
+        self.tabla_pagos_obra.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Obra",
+                "Concepto",
+                "Categoría",
+                "Monto",
+                "Fecha",
+                "Método Pago",
+                "Estado",
+                "Usuario",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_pagos_obra.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_pagos_obra.setAlternatingRowColors(True)
+        self.tabla_pagos_obra.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_pagos_obra)
+
+        return widget
+
+    def create_materiales_tab(self):
+        """Crea la pestaña de materiales."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        nueva_compra_btn = QPushButton("➕ Nueva Compra")
+        nueva_compra_btn.setStyleSheet("""
+            QPushButton {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2ecc71;
+            }
+        """)
+        nueva_compra_btn.clicked.connect(self.show_nueva_compra_dialog)
+        toolbar.addWidget(nueva_compra_btn)
+
+        toolbar.addStretch()
+
+        layout.addLayout(toolbar)
+
+        # Tabla de materiales
+        self.tabla_materiales = QTableWidget()
+        self.tabla_materiales.setColumnCount(11)
+        self.tabla_materiales.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Producto",
+                "Proveedor",
+                "Cantidad",
+                "Precio Unit.",
+                "Total",
+                "Pagado",
+                "Pendiente",
+                "Estado",
+                "Fecha",
+                "Acciones",
+            ]
+        )
+
+        self.tabla_materiales.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_materiales.setAlternatingRowColors(True)
+        self.tabla_materiales.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_materiales)
+
+        return widget
+
+    def create_reportes_tab(self):
+        """Crea la pestaña de reportes."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Selector de tipo de reporte
+        selector_frame = QGroupBox("📊 Tipo de Reporte")
+        selector_layout = QGridLayout(selector_frame)
+
+        # Botones para diferentes tipos de reportes
+        reportes_btns = [
+            ("📚 Libro Contable", "libro_contable"),
+            ("🧾 Recibos", "recibos"),
+            ("👥 Nómina", "nomina"),
+            ("🕐 Asistencias", "asistencias"),
+            ("🎁 Bonos", "bonos"),
+            ("🏗️ Pagos por Obra", "pagos_obra"),
+            ("📦 Materiales", "materiales"),
+            ("📈 Resumen Ejecutivo", "resumen_ejecutivo"),
+        ]
+
+        for i, (texto, tipo) in enumerate(reportes_btns):
+            btn = QPushButton(texto)
+            btn.setStyleSheet("""
+                QPushButton {
+                    background-color: #3498db;
+                    color: white;
+                    padding: 15px;
+                    border-radius: 10px;
+                    font-weight: bold;
+                    font-size: 14px;
+                }
+                QPushButton:hover {
+                    background-color: #5dade2;
+                }
+            """)
+            btn.clicked.connect(lambda checked, t=tipo: self.generar_reporte(t))
+            selector_layout.addWidget(btn, i // 4, i % 4)
+
+        layout.addWidget(selector_frame)
+
+        # Parámetros del reporte
+        parametros_frame = QGroupBox("⚙️ Parámetros del Reporte")
+        parametros_layout = QFormLayout(parametros_frame)
+
+        self.reporte_fecha_desde = QDateEdit()
+        self.reporte_fecha_desde.setDate(QDate.currentDate().addDays(-30))
+        self.reporte_fecha_desde.setCalendarPopup(True)
+        parametros_layout.addRow("📅 Fecha Desde:", self.reporte_fecha_desde)
+
+        self.reporte_fecha_hasta = QDateEdit()
+        self.reporte_fecha_hasta.setDate(QDate.currentDate())
+        self.reporte_fecha_hasta.setCalendarPopup(True)
+        parametros_layout.addRow("📅 Fecha Hasta:", self.reporte_fecha_hasta)
+
+        self.reporte_formato_combo = QComboBox()
+        self.reporte_formato_combo.addItems(["PDF", "Excel", "CSV"])
+        parametros_layout.addRow("📄 Formato:", self.reporte_formato_combo)
+
+        layout.addWidget(parametros_frame)
+
+        # Área de vista previa
+        preview_frame = QGroupBox("👁️ Vista Previa")
+        preview_layout = QVBoxLayout(preview_frame)
+
+        self.preview_text = QTextEdit()
+        self.preview_text.setReadOnly(True)
+        self.preview_text.setPlainText(
+            "Seleccione un tipo de reporte para ver la vista previa..."
+        )
+        preview_layout.addWidget(self.preview_text)
+
+        layout.addWidget(preview_frame)
+
+        return widget
+
+    def create_auditoria_tab(self):
+        """Crea la pestaña de auditoría."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+
+        # Toolbar
+        toolbar = QHBoxLayout()
+
+        toolbar.addWidget(QLabel("🔍 Auditoría del Sistema"))
+
+        toolbar.addStretch()
+
+        # Filtros
+        filtros_frame = QFrame()
+        filtros_frame.setStyleSheet("""
+            QFrame {
+                border: 1px solid #bdc3c7;
+                border-radius: 5px;
+                padding: 5px;
+            }
+        """)
+        filtros_layout = QHBoxLayout(filtros_frame)
+
+        filtros_layout.addWidget(QLabel("📋 Tabla:"))
+        self.auditoria_tabla_combo = QComboBox()
+        self.auditoria_tabla_combo.addItems(
+            [
+                "Todas",
+                "libro_contable",
+                "recibos",
+                "empleados",
+                "nomina",
+                "asistencias",
+                "bonos",
+                "pagos_obras",
+                "pagos_materiales",
+            ]
+        )
+        filtros_layout.addWidget(self.auditoria_tabla_combo)
+
+        filtros_layout.addWidget(QLabel("👤 Usuario:"))
+        self.auditoria_usuario_combo = QComboBox()
+        self.auditoria_usuario_combo.addItems(["Todos"])
+        filtros_layout.addWidget(self.auditoria_usuario_combo)
+
+        buscar_auditoria_btn = QPushButton("🔍 Buscar")
+        buscar_auditoria_btn.clicked.connect(self.buscar_auditoria)
+        filtros_layout.addWidget(buscar_auditoria_btn)
+
+        toolbar.addWidget(filtros_frame)
+
+        layout.addLayout(toolbar)
+
+        # Tabla de auditoría
+        self.tabla_auditoria = QTableWidget()
+        self.tabla_auditoria.setColumnCount(8)
+        self.tabla_auditoria.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Tabla",
+                "Registro",
+                "Acción",
+                "Usuario",
+                "Fecha",
+                "Datos Anteriores",
+                "Datos Nuevos",
+            ]
+        )
+
+        self.tabla_auditoria.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border: none;
+            }
+            QHeaderView::section {
+                background-color: #3498db;
+                color: white;
+                padding: 10px;
+                font-weight: bold;
+                border: none;
+            }
+        """)
+
+        self.tabla_auditoria.setAlternatingRowColors(True)
+        self.tabla_auditoria.horizontalHeader().setStretchLastSection(True)
+
+        layout.addWidget(self.tabla_auditoria)
+
+        return widget
+
+    def create_info_card(self, titulo, valor, color, small=False):
+        """Crea una tarjeta de información."""
+        card = QFrame()
+        # Ajuste para cuadrados más pequeños y sombra sutil (usar QGraphicsDropShadowEffect en PyQt)
+        padding = "6px" if small else "12px"
+        margin = "2px" if small else "6px"
+        title_size = "10px" if small else "12px"
+        value_size = "14px" if small else "18px"
+        min_width = "80px" if small else "120px"
+        min_height = "40px" if small else "60px"
+
+        card.setStyleSheet(f"""
+            QFrame {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {color}, stop:1 {self._darken_color(color)});
+                border: none;
+                border-radius: 10px;
+                padding: {padding};
+                margin: {margin};
+                min-width: {min_width};
+                min-height: {min_height};
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            QFrame:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {self._lighten_color(color)}, stop:1 {color});
+            }}
+        """)
+
+        layout = QVBoxLayout(card)
+        layout.setSpacing(8)
+
+        titulo_label = QLabel(titulo)
+        titulo_label.setStyleSheet(f"""
+            QLabel {{
+                color: white;
+                font-size: {title_size};
+                font-weight: bold;
+                background: transparent;
+                border: none;
+            }}
+        """)
+        titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        titulo_label.setWordWrap(True)
+        layout.addWidget(titulo_label)
+
+        valor_label = QLabel(valor)
+        valor_label.setStyleSheet(f"""
+            QLabel {{
+                color: white;
+                font-size: {value_size};
+                font-weight: bold;
+                background: transparent;
+                border: none;
+            }}
+        """)
+        valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(valor_label)
+
+        return card
+
+    def _lighten_color(self, color):
+        """Aclara un color hexadecimal."""
+        color = color.lstrip("#")
+        rgb = tuple(int(color[i : i + 2], 16) for i in (0, 2, 4))
+        lightened = tuple(min(255, int(c * 1.2)) for c in rgb)
+        return f"#{lightened[0]:02x}{lightened[1]:02x}{lightened[2]:02x}"
+
+    def _darken_color(self, color):
+        """Oscurece un color hexadecimal."""
+        color = color.lstrip("#")
+        rgb = tuple(int(color[i : i + 2], 16) for i in (0, 2, 4))
+        darkened = tuple(max(0, int(c * 0.8)) for c in rgb)
+        return f"#{darkened[0]:02x}{darkened[1]:02x}{darkened[2]:02x}"
+
+    def create_status_bar(self):
+        """Crea la barra de estado."""
+        status_frame = QFrame()
+        status_frame.setStyleSheet("""
+            QFrame {
+                background-color: #34495e;
+                color: white;
+                padding: 5px;
+                border-radius: 5px;
+            }
+        """)
+
+        status_layout = QHBoxLayout(status_frame)
+
+        self.status_label = QLabel("✅ Sistema listo")
+        self.status_label.setStyleSheet("color: white; font-weight: bold;")
+        status_layout.addWidget(self.status_label)
+
+        status_layout.addStretch()
+
+        self.conexion_label = QLabel("🔗 Conectado a DB")
+        self.conexion_label.setStyleSheet("color: #2ecc71; font-weight: bold;")
+        status_layout.addWidget(self.conexion_label)
+
+        return status_frame
+
+    def connect_signals(self):
+        """Conecta las señales de la interfaz."""
+        # Las señales se conectarán con el controlador
+        pass
+
+    # MÉTODOS DE DIÁLOGOS - CONTABILIDAD
+    def show_nuevo_asiento_dialog(self):
+        """Muestra el diálogo para crear un nuevo asiento contable."""
+        from PyQt6.QtCore import QDate
+        from PyQt6.QtWidgets import (
+            QDateEdit,
+            QDialog,
+            QFormLayout,
+            QHBoxLayout,
+            QLineEdit,
+            QPushButton,
+            QTextEdit,
+            QVBoxLayout,
+        )
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Nuevo Asiento Contable")
+        dialog.setModal(True)
+        dialog.resize(450, 350)
+
+        layout = QVBoxLayout(dialog)
+
+        # Formulario
+        form_layout = QFormLayout()
+
+        fecha_input = QDateEdit()
+        fecha_input.setDate(QDate.currentDate())
+        concepto_input = QLineEdit()
+        monto_input = QLineEdit()
+        debe_input = QLineEdit()
+        haber_input = QLineEdit()
+        observaciones_input = QTextEdit()
+        observaciones_input.setMaximumHeight(80)
+
+        form_layout.addRow("Fecha:", fecha_input)
+        form_layout.addRow("Concepto:", concepto_input)
+        form_layout.addRow("Monto:", monto_input)
+        form_layout.addRow("Debe:", debe_input)
+        form_layout.addRow("Haber:", haber_input)
+        form_layout.addRow("Observaciones:", observaciones_input)
+
+        layout.addLayout(form_layout)
+
+        # Botones
+        button_layout = QHBoxLayout()
+
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+
+        save_btn = QPushButton("Guardar")
+        save_btn.clicked.connect(
+            lambda: self._save_asiento(
+                dialog,
+                fecha_input,
+                concepto_input,
+                monto_input,
+                debe_input,
+                haber_input,
+                observaciones_input,
+            )
+        )
+
+        button_layout.addWidget(cancel_btn)
+        button_layout.addWidget(save_btn)
+        layout.addLayout(button_layout)
+
+        dialog.exec()
+
+    def _save_asiento(
+        self,
+        dialog,
+        fecha_input,
+        concepto_input,
+        monto_input,
+        debe_input,
+        haber_input,
+        observaciones_input,
+    ):
+        """Guarda los datos del asiento contable."""
+        datos_asiento = {
+            "fecha": fecha_input.date().toPython(),
+            "concepto": concepto_input.text().strip(),
+            "monto": monto_input.text().strip(),
+            "debe": debe_input.text().strip(),
+            "haber": haber_input.text().strip(),
+            "observaciones": observaciones_input.toPlainText().strip(),
+        }
+
+        # Validación básica
+        if not all([datos_asiento["concepto"], datos_asiento["monto"]]):
+            QMessageBox.warning(dialog, "Error", "Concepto y monto son obligatorios")
+            return
+
+        try:
+            float(datos_asiento["monto"])
+        except ValueError:
+            QMessageBox.warning(dialog, "Error", "El monto debe ser un número válido")
+            return
+
+        # Emitir señal al controlador
+        self.crear_asiento_signal.emit(datos_asiento)
+        dialog.accept()
+
+    def show_nuevo_recibo_dialog(self):
+        """Muestra el diálogo para crear un nuevo recibo."""
+        pass
+
+    def show_nuevo_pago_obra_dialog(self):
+        """Muestra el diálogo para registrar un pago por obra."""
+        pass
+
+    def show_nueva_compra_dialog(self):
+        """Muestra el diálogo para registrar una nueva compra de material."""
+        pass
+
+    # MÉTODOS DE DIÁLOGOS - RECURSOS HUMANOS
+    def show_nuevo_empleado_dialog(self):
+        """Muestra el diálogo para crear un nuevo empleado."""
+        from PyQt6.QtWidgets import (
+            QDialog,
+            QFormLayout,
+            QHBoxLayout,
+            QLineEdit,
+            QPushButton,
+            QVBoxLayout,
+        )
+
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Nuevo Empleado")
+        dialog.setModal(True)
+        dialog.resize(400, 300)
+
+        layout = QVBoxLayout(dialog)
+
+        # Formulario
+        form_layout = QFormLayout()
+
+        nombre_input = QLineEdit()
+        apellido_input = QLineEdit()
+        dni_input = QLineEdit()
+        cargo_input = QLineEdit()
+        salario_input = QLineEdit()
+        email_input = QLineEdit()
+        telefono_input = QLineEdit()
+
+        form_layout.addRow("Nombre:", nombre_input)
+        form_layout.addRow("Apellido:", apellido_input)
+        form_layout.addRow("DNI:", dni_input)
+        form_layout.addRow("Cargo:", cargo_input)
+        form_layout.addRow("Salario:", salario_input)
+        form_layout.addRow("Email:", email_input)
+        form_layout.addRow("Teléfono:", telefono_input)
+
+        layout.addLayout(form_layout)
+
+        # Botones
+        button_layout = QHBoxLayout()
+
+        cancel_btn = QPushButton("Cancelar")
+        cancel_btn.clicked.connect(dialog.reject)
+
+        save_btn = QPushButton("Guardar")
+        save_btn.clicked.connect(
+            lambda: self._save_empleado(
+                dialog,
+                nombre_input,
+                apellido_input,
+                dni_input,
+                cargo_input,
+                salario_input,
+                email_input,
+                telefono_input,
+            )
+        )
+
+        button_layout.addWidget(cancel_btn)
+        button_layout.addWidget(save_btn)
+        layout.addLayout(button_layout)
+
+        dialog.exec()
+
+    def _save_empleado(
+        self,
+        dialog,
+        nombre_input,
+        apellido_input,
+        dni_input,
+        cargo_input,
+        salario_input,
+        email_input,
+        telefono_input,
+    ):
+        """Guarda los datos del empleado."""
+        datos_empleado = {
+            "nombre": nombre_input.text().strip(),
+            "apellido": apellido_input.text().strip(),
+            "dni": dni_input.text().strip(),
+            "cargo": cargo_input.text().strip(),
+            "salario": salario_input.text().strip(),
+            "email": email_input.text().strip(),
+            "telefono": telefono_input.text().strip(),
+        }
+
+        # Validación básica
+        if not all(
+            [
+                datos_empleado["nombre"],
+                datos_empleado["apellido"],
+                datos_empleado["dni"],
+            ]
+        ):
+            QMessageBox.warning(
+                dialog, "Error", "Nombre, apellido y DNI son obligatorios"
+            )
+            return
+
+        # Emitir señal al controlador
+        self.crear_empleado_rrhh_signal.emit(datos_empleado)
+        dialog.accept()
+
+    def show_nuevo_bono_dialog(self):
+        """Muestra el diálogo para crear un nuevo bono."""
+        pass
+
+    def show_nuevo_descuento_dialog(self):
+        """Muestra el diálogo para crear un nuevo descuento."""
+        pass
+
+    def registrar_asistencia(self):
+        """Registra asistencia de empleado."""
+        pass
+
+    def registrar_falta(self):
+        """Registra falta de empleado."""
+        pass
+
+    def calcular_nomina(self):
+        """Calcula la nómina del período."""
+        pass
+
+    def generar_recibos_sueldo(self):
+        """Genera recibos de sueldo."""
+        pass
+
+    def importar_empleados(self):
+        """Importa empleados desde CSV."""
+        pass
+
+    # MÉTODOS DE BÚSQUEDA Y ACTUALIZACIÓN
+    def buscar_libro_contable(self):
+        """Busca asientos en el libro contable."""
+        pass
+
+    def buscar_empleados(self):
+        """Busca empleados."""
+        pass
+
+    def buscar_asistencias(self):
+        """Busca asistencias."""
+        pass
+
+    def buscar_historial(self):
+        """Busca historial laboral."""
+        pass
+
+    def buscar_auditoria(self):
+        """Busca registros de auditoría."""
+        pass
+
+    def imprimir_recibo_seleccionado(self):
+        """Imprime el recibo seleccionado."""
+        pass
+
+    def generar_reporte(self, tipo_reporte):
+        """Genera un reporte del tipo especificado."""
+        pass
+
+    def refresh_data(self):
+        """Actualiza todos los datos de la interfaz."""
+        self.actualizar_datos_signal.emit()
+
+    def actualizar_dashboard(self, datos):
+        """Actualiza el dashboard con nuevos datos."""
+        if "resumen" in datos:
+            resumen = datos["resumen"]
+
+            # Actualizar cards
+            if "empleados" in resumen:
+                self.cards_resumen["total_empleados"].findChild(QLabel).setText(
+                    str(resumen["empleados"]["total"])
+                )
+                self.empleados_activos_label.setText(
+                    f"Activos: {resumen['empleados']['activos']}"
+                )
+                self.empleados_inactivos_label.setText(
+                    f"Inactivos: {resumen['empleados']['inactivos']}"
+                )
+
+            if "financiero" in resumen:
+                self.cards_resumen["total_ingresos"].findChild(QLabel).setText(
+                    f"${resumen['financiero']['ingresos']:,.2f}"
+                )
+                self.cards_resumen["total_egresos"].findChild(QLabel).setText(
+                    f"${resumen['financiero']['egresos']:,.2f}"
+                )
+                self.balance_label.setText(
+                    f"Balance: ${resumen['financiero']['balance']:,.2f}"
+                )
+
+            if "nomina" in resumen:
+                self.cards_resumen["nomina_mensual"].findChild(QLabel).setText(
+                    f"${resumen['nomina']['mensual']:,.2f}"
+                )
+
+    def mostrar_mensaje(self, titulo, mensaje, tipo="info"):
+        """Muestra un mensaje al usuario."""
+        msg_box = QMessageBox()
+        msg_box.setWindowTitle(titulo)
+        msg_box.setText(mensaje)
+
+        if tipo == "info":
+            msg_box.setIcon(QMessageBox.Icon.Information)
+        elif tipo == "warning":
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+        elif tipo == "error":
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+
+        msg_box.exec()
+
+    def actualizar_status(self, mensaje):
+        """Actualiza el mensaje de estado."""
+        self.status_label.setText(mensaje)
+
+        # Auto-limpiar después de 5 segundos
+        QTimer.singleShot(5000, lambda: self.status_label.setText("✅ Sistema listo"))
+
+
+# Alias para mantener compatibilidad
+ContabilidadView = AdministracionView

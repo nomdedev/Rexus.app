@@ -32,7 +32,7 @@ from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtWidgets import QMessageBox, (
+from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
     QDateEdit,
