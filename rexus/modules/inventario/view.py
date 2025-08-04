@@ -27,6 +27,7 @@ Interfaz de usuario moderna para la gestión del inventario con sistema de reser
 """
 
 from PyQt6.QtCore import Qt, pyqtSignal
+from .model import InventarioModel
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QAbstractItemView,
@@ -123,7 +124,9 @@ class InventarioView(QWidget):
 
     def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         super().__init__()
-        self.db_connection = db_connection
+        # Usar modelo en lugar de acceso directo a BD
+        self.model = InventarioModel(db_connection, usuario_actual)
+        self.usuario_actual = usuario_actual
         self.usuario_actual = usuario_actual
         self.controller = None
         self.init_ui()
@@ -1386,6 +1389,17 @@ class InventarioView(QWidget):
             )
 
 
+
+    def get_model(self):
+        """Retorna el modelo de inventario para operaciones de datos"""
+        return self.model
+    
+    def refresh_data(self):
+        """Actualiza los datos desde el modelo"""
+        if hasattr(self, 'model') and self.model:
+            # Llamar a métodos del modelo para actualizar la vista
+            # Este método debe ser implementado según las necesidades específicas
+            pass
 class DialogoNuevoProducto(QDialog):
     """Diálogo para agregar un nuevo producto al inventario."""
 
