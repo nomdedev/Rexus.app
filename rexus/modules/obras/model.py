@@ -1,4 +1,3 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
@@ -18,23 +17,27 @@ from typing import Any, Dict, List, Optional
 try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
-    sys.path.insert(0, str(root_dir / "src"))
-    
+    sys.path.insert(0, str(root_dir))
+
     from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
-    
+    from utils.sql_security import SQLSecurityValidator
+
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in obras: {e}")
     SECURITY_AVAILABLE = False
+    data_sanitizer = None
 
 # Importar nueva utilidad de seguridad SQL
 try:
-    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
     print("[WARNING] SQL security utilities not available in obras")
     SQL_SECURITY_AVAILABLE = False
+    validate_table_name = None
+    SQLSecurityError = Exception
 
 
 class ObrasModel:
@@ -42,7 +45,7 @@ class ObrasModel:
         self.db_connection = db_connection
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
-        
+
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         if self.security_available:
@@ -53,8 +56,99 @@ class ObrasModel:
             self.data_sanitizer = None
             self.sql_validator = None
             print("WARNING [OBRAS] Utilidades de seguridad no disponibles")
-            
+
         self._verificar_tablas()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+
+        Args:
+            table_name: Nombre de la tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+
+        Raises:
+            Exception: Si el nombre no es válido o contiene caracteres peligrosos
+        """
+        if SQL_SECURITY_AVAILABLE:
+            try:
+                return validate_table_name(table_name)
+            except SQLSecurityError as e:
+                print(f"[ERROR SEGURIDAD OBRAS] {str(e)}")
+                # Fallback a verificación básica
+                pass
+
+        # Verificación básica si la utilidad no está disponible
+        if not table_name or not isinstance(table_name, str):
+            raise ValueError("Nombre de tabla inválido")
+
+        # Eliminar espacios en blanco
+        table_name = table_name.strip()
+
+        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
+        if not all(c.isalnum() or c == "_" for c in table_name):
+            raise ValueError(
+                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
+            )
+
+        # Verificar longitud razonable
+        if len(table_name) > 64:
+            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
+
+        return table_name.lower()
+
+    def validar_obra_duplicada(
+        self, codigo_obra: str, id_obra_actual: Optional[int] = None
+    ) -> bool:
+        """
+        Valida si existe una obra duplicada por código.
+
+        Args:
+            codigo_obra: Código de obra a verificar
+            id_obra_actual: ID de la obra actual (para edición)
+
+        Returns:
+            bool: True si existe duplicado, False si no
+        """
+        if not self.db_connection or not codigo_obra:
+            return False
+
+        try:
+            # Sanitizar datos
+            codigo_limpio = codigo_obra.strip().upper()
+            if self.data_sanitizer:
+                codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
+
+            # Validar tabla
+            tabla_validada = self._validate_table_name(self.tabla_obras)
+
+            cursor = self.db_connection.cursor()
+
+            if id_obra_actual:
+                # Para edición, excluir la obra actual
+                query = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE UPPER(codigo) = ? AND id != ?"
+                )
+                cursor.execute(query, (codigo_limpio, id_obra_actual))
+            else:
+                # Para nueva obra
+                query = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE UPPER(codigo) = ?"
+                )
+                cursor.execute(query, (codigo_limpio,))
+
+            count = cursor.fetchone()[0]
+            return count > 0
+
+        except Exception as e:
+            print(f"[ERROR OBRAS] Error validando obra duplicada: {e}")
+            return False
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos."""
@@ -107,12 +201,15 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def crear_obra(self, datos_obra:
+    def crear_obra(
+        self,
+        datos_obra:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_obra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]) -> tuple[bool, str]:
+        Dict[str, Any],
+    ) -> tuple[bool, str]:
         """
         Crea una nueva obra en el sistema con sanitización completa de datos.
 
@@ -128,10 +225,10 @@ class ObrasModel:
         cursor = None
         try:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
-            if self.security_available:
+            if self.security_available and self.data_sanitizer:
                 # Sanitizar todos los datos de entrada
-                datos_limpios = self.data_sanitizer.sanitize_form_data(datos_obra)
-                
+                datos_limpios = self.data_sanitizer.sanitize_dict(datos_obra)
+
                 # Validaciones específicas
                 if not datos_limpios.get("codigo"):
                     return False, "El código de obra es requerido"
@@ -139,38 +236,57 @@ class ObrasModel:
                     return False, "El nombre de obra es requerido"
                 if not datos_limpios.get("cliente"):
                     return False, "El cliente es requerido"
-                    
+
                 # Validar email si se proporciona
                 if datos_limpios.get("email_contacto"):
                     try:
-                        email_limpio = self.data_sanitizer.sanitize_email(datos_limpios["email_contacto"])
-                        if not email_limpio or len(email_limpio) < 5 or "@" not in email_limpio:
+                        email_limpio = self.data_sanitizer.sanitize_string(
+                            datos_limpios["email_contacto"]
+                        )
+                        if (
+                            not email_limpio
+                            or len(email_limpio) < 5
+                            or "@" not in email_limpio
+                        ):
                             return False, "Formato de email inválido"
                         datos_limpios["email_contacto"] = email_limpio
                     except Exception:
                         return False, "Formato de email inválido"
-                
+
                 # Validar teléfono si se proporciona
                 if datos_limpios.get("telefono_contacto"):
-                    telefono_limpio = self.data_sanitizer.sanitize_phone(datos_limpios["telefono_contacto"])
+                    telefono_limpio = self.data_sanitizer.sanitize_string(
+                        datos_limpios["telefono_contacto"]
+                    )
                     datos_limpios["telefono_contacto"] = telefono_limpio
-                    
-                # Validar presupuesto (manual porque el sanitizer no reconoce "presupuesto")
+
+                # Validar presupuesto
                 presupuesto_original = datos_obra.get("presupuesto_total")
                 if presupuesto_original and presupuesto_original != "":
-                    presupuesto_limpio = self.data_sanitizer.sanitize_numeric(
-                        presupuesto_original, min_val=0
-                    )
-                    if presupuesto_limpio is None:
+                    try:
+                        # Usar float manualmente para presupuesto
+                        presupuesto_limpio = float(presupuesto_original)
+                        if presupuesto_limpio < 0:
+                            return False, "El presupuesto no puede ser negativo"
+                        datos_limpios["presupuesto_total"] = presupuesto_limpio
+                    except (ValueError, TypeError):
                         return False, "Presupuesto inválido"
-                    datos_limpios["presupuesto_total"] = presupuesto_limpio
                 else:
                     datos_limpios["presupuesto_total"] = 0.0
-                    
             else:
-                # Sin utilidades de seguridad, usar datos originales con precaución
-                datos_limpios = datos_obra.copy()
-                print("WARNING [OBRAS] Creando obra sin sanitización de seguridad")
+                # Fallback sin sanitización avanzada
+                datos_limpios = dict(datos_obra)
+                print(
+                    "[WARNING OBRAS] Sanitización no disponible, usando datos básicos"
+                )
+
+                # Validaciones básicas
+                if not datos_limpios.get("codigo"):
+                    return False, "El código de obra es requerido"
+                if not datos_limpios.get("nombre"):
+                    return False, "El nombre de obra es requerido"
+                if not datos_limpios.get("cliente"):
+                    return False, "El cliente es requerido"
 
             cursor = self.db_connection.cursor()
 
@@ -313,12 +429,14 @@ class ObrasModel:
                 cursor.close()
 
     def actualizar_obra(
-        self, obra_id:
+        self,
+        obra_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_obra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, datos_obra: Dict[str, Any]
+        int,
+        datos_obra: Dict[str, Any],
     ) -> tuple[bool, str]:
         """
         Actualiza los datos de una obra.
@@ -387,12 +505,15 @@ class ObrasModel:
                 cursor.close()
 
     def cambiar_estado_obra(
-        self, obra_id:
+        self,
+        obra_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('cambiar_estado_obra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, nuevo_estado: str, usuario: str = "SISTEMA"
+        int,
+        nuevo_estado: str,
+        usuario: str = "SISTEMA",
     ) -> tuple[bool, str]:
         """
         Cambia el estado de una obra.
@@ -519,6 +640,7 @@ class ObrasModel:
             if SQL_SECURITY_AVAILABLE:
                 try:
                     from rexus.utils.sql_security import sql_validator
+
                     if tabla_segura not in sql_validator.ALLOWED_TABLES:
                         sql_validator.add_allowed_table(tabla_segura)
                     tabla_validada = validate_table_name(tabla_segura)
@@ -527,7 +649,7 @@ class ObrasModel:
                     return []
             else:
                 tabla_validada = tabla_segura
-            
+
             base_query = f"SELECT * FROM [{tabla_validada}]"
             if where_clause:
                 sql_select = (
@@ -610,12 +732,16 @@ class ObrasModel:
             print(f"[ERROR OBRAS] Error obteniendo estadísticas: {e}")
             return {}
 
-    def eliminar_obra(self, obra_id:
+    def eliminar_obra(
+        self,
+        obra_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('eliminar_obra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, usuario: str = "SISTEMA") -> tuple[bool, str]:
+        int,
+        usuario: str = "SISTEMA",
+    ) -> tuple[bool, str]:
         """
         Elimina una obra del sistema (solo si no tiene movimientos asociados).
 

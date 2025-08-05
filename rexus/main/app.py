@@ -6,10 +6,10 @@ Aplicación principal que maneja la interfaz de usuario y la integración de mó
 Sigue principios de arquitectura MVC y patrones de diseño para mantenibilidad.
 """
 
+import datetime
 import os
 import platform
 import sys
-import datetime
 from pathlib import Path
 from typing import Any, Dict
 
@@ -91,28 +91,31 @@ class SimpleSecurityManager:
     def _load_secure_credentials(self):
         """Carga credenciales desde variables de entorno de forma segura"""
         import os
+
         from rexus.utils.security import SecurityUtils
-        
+
         # Solo cargar si está en modo desarrollo y se especifica explícitamente
         if os.environ.get("DEVELOPMENT_MODE") == "true":
             admin_user = os.environ.get("FALLBACK_ADMIN_USER")
             admin_password = os.environ.get("FALLBACK_ADMIN_PASSWORD")
-            
+
             if admin_user and admin_password:
                 # Hash seguro de la contraseña
                 hashed_password = SecurityUtils.hash_password(admin_password)
                 self.users = {
                     admin_user: {
-                        "rol": "ADMIN", 
-                        "id": 1, 
+                        "rol": "ADMIN",
+                        "id": 1,
                         "username": admin_user,
-                        "password_hash": hashed_password
+                        "password_hash": hashed_password,
                     }
                 }
                 print(f"[SIMPLE_AUTH] Usuario de desarrollo cargado: {admin_user}")
             else:
                 self.users = {}
-                print("[SIMPLE_AUTH] Modo desarrollo activo pero sin credenciales configuradas")
+                print(
+                    "[SIMPLE_AUTH] Modo desarrollo activo pero sin credenciales configuradas"
+                )
         else:
             self.users = {}
             print("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
@@ -120,34 +123,36 @@ class SimpleSecurityManager:
     def login(self, username: str, password: str) -> bool:
         """Autenticación segura con hashing"""
         print(f"[SIMPLE_AUTH] Intentando login: usuario='{username}'")
-        
+
         # Verificar si hay usuarios disponibles
         if not self.users:
             print("[SIMPLE_AUTH] No hay usuarios fallback disponibles")
             return False
-            
+
         user = self.users.get(username)
         if not user:
             print(f"[SIMPLE_AUTH] Usuario '{username}' no encontrado")
             return False
-            
+
         # Verificar contraseña con hash seguro
-        from rexus.utils.security import SecurityUtils
-        if SecurityUtils.verify_password(password, user.get("password_hash", "")):
-            print(f"[SIMPLE_AUTH] Login exitoso para {username}")
-            self.current_user_data = {k: v for k, v in user.items() if k != "password_hash"}
-            # Sincronizar atributos para compatibilidad
-            self.current_user = self.current_user_data
-            self.current_role = self.current_user_data.get("rol", "usuario")
-            return True
-        else:
-            print(f"[SIMPLE_AUTH] Contraseña incorrecta para {username}")
+        try:
+            from rexus.utils.security import SecurityUtils
+
+            if SecurityUtils.verify_password(password, user.get("password_hash", "")):
+                print(f"[SIMPLE_AUTH] Login exitoso para {username}")
+                self.current_user_data = {
+                    k: v for k, v in user.items() if k != "password_hash"
+                }
+                # Sincronizar atributos para compatibilidad
+                self.current_user = self.current_user_data
+                self.current_role = self.current_user_data.get("rol", "usuario")
+                return True
+            else:
+                print(f"[SIMPLE_AUTH] Contraseña incorrecta para {username}")
+                return False
+        except ImportError:
+            print("[SIMPLE_AUTH] SecurityUtils no disponible, login fallido")
             return False
-            print(f"[SIMPLE_AUTH] Login exitoso para {username}")
-            self.current_user_data = user.copy()
-            return True
-        print(f"[SIMPLE_AUTH] Login fallido para {username}")
-        return False
 
     def get_current_role(self) -> str:
         """Obtiene el rol actual"""
@@ -203,9 +208,11 @@ class SimpleSecurityManager:
         """Diagnóstica el estado de permisos del usuario actual"""
         return {
             "has_admin_access": self.current_role == "ADMIN",
-            "current_user": self.current_user_data.get("username") if self.current_user_data else None,
+            "current_user": self.current_user_data.get("username")
+            if self.current_user_data
+            else None,
             "current_role": self.current_role,
-            "permissions_loaded": True
+            "permissions_loaded": True,
         }
 
 
@@ -334,12 +341,12 @@ class MainWindow(QMainWindow):
         ]
 
         print(f"[DEBUG] Módulos permitidos: {self.modulos_permitidos}")
-        
+
         for emoji, nombre, descripcion in modulos:
             # Verificar si el usuario tiene permisos para este módulo
             has_permission = nombre in self.modulos_permitidos
             print(f"[DEBUG] Módulo '{nombre}': permisos={has_permission}")
-            
+
             if has_permission:
                 btn = self._create_module_button(emoji, nombre, descripcion)
                 modules_layout.addWidget(btn)
@@ -1114,11 +1121,14 @@ def main():
     # Inicializar sistema de backup automático
     try:
         from rexus.core.backup_integration import initialize_backup_system
+
         backup_initialized = initialize_backup_system()
         if backup_initialized:
             print("✅ Sistema de backup automático inicializado")
         else:
-            print("⚠️ Sistema de backup no se pudo inicializar, continuando sin backup automático")
+            print(
+                "⚠️ Sistema de backup no se pudo inicializar, continuando sin backup automático"
+            )
     except Exception as e:
         print(f"⚠️ Error inicializando sistema de backup: {e}")
 
@@ -1176,36 +1186,54 @@ def main():
         try:
             # Establecer usuario y rol actual en SecurityManager
             security_manager.current_user = user_data
-            security_manager.current_role = user_data.get('role', 'usuario')
-            
-            print(f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {security_manager.current_role}")
-            
+            security_manager.current_role = user_data.get("role", "usuario")
+
+            print(
+                f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {security_manager.current_role}"
+            )
+
             # 🔍 DIAGNÓSTICO: Verificar estado del sistema de permisos
-            if hasattr(security_manager, 'diagnose_permissions'):
+            if hasattr(security_manager, "diagnose_permissions"):
                 diagnosis = security_manager.diagnose_permissions()
-                if not diagnosis.get('has_admin_access') and user_data.get('role', '').upper() == 'ADMIN':
-                    print("⚠️ [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...")
-            
+                if (
+                    not diagnosis.get("has_admin_access")
+                    and user_data.get("role", "").upper() == "ADMIN"
+                ):
+                    print(
+                        "⚠️ [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema..."
+                    )
+
             # Ahora obtener módulos permitidos
             modulos_permitidos = security_manager.get_user_modules(
                 user_data.get("id", 1)
             )
-            
-            print(f"[SECURITY] Módulos obtenidos para {security_manager.current_role}: {len(modulos_permitidos)} módulos")
+
+            print(
+                f"[SECURITY] Módulos obtenidos para {security_manager.current_role}: {len(modulos_permitidos)} módulos"
+            )
             print(f"[SECURITY] Lista de módulos: {modulos_permitidos}")
-            
+
             # Verificación final para admin
-            if user_data.get('role', '').upper() == 'ADMIN' and len(modulos_permitidos) < 12:
-                print(f"⚠️ [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12")
-                print(f"⚠️ [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'")
-            
+            if (
+                user_data.get("role", "").upper() == "ADMIN"
+                and len(modulos_permitidos) < 12
+            ):
+                print(
+                    f"⚠️ [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12"
+                )
+                print(
+                    f"⚠️ [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
+                )
+
         except AttributeError as e:
             # Si no tiene get_user_modules, permitir todos los módulos por defecto
             print(f"[SECURITY] Error AttributeError: {e}")
-            print("[SECURITY] Usando SimpleSecurityManager o fallback, permitiendo todos los módulos")
-            
+            print(
+                "[SECURITY] Usando SimpleSecurityManager o fallback, permitiendo todos los módulos"
+            )
+
             # Fallback inteligente basado en el rol del usuario
-            if user_data.get('role', '').upper() == 'ADMIN':
+            if user_data.get("role", "").upper() == "ADMIN":
                 modulos_permitidos = [
                     "Inventario",
                     "Administración",
@@ -1221,18 +1249,14 @@ def main():
                     "Mantenimiento",
                 ]
             else:
-                modulos_permitidos = [
-                    "Inventario",
-                    "Obras",
-                    "Pedidos"
-                ]
+                modulos_permitidos = ["Inventario", "Obras", "Pedidos"]
         except Exception as e:
             print(f"[SECURITY] Error inesperado obteniendo módulos: {e}")
             # Fallback de emergencia
-            if user_data.get('role', '').upper() == 'ADMIN':
+            if user_data.get("role", "").upper() == "ADMIN":
                 modulos_permitidos = [
                     "Inventario",
-                    "Administración", 
+                    "Administración",
                     "Obras",
                     "Pedidos",
                     "Logística",
@@ -1244,10 +1268,14 @@ def main():
                     "Compras",
                     "Mantenimiento",
                 ]
-                print(f"[SECURITY] Fallback: Admin detectado, asignando {len(modulos_permitidos)} módulos")
+                print(
+                    f"[SECURITY] Fallback: Admin detectado, asignando {len(modulos_permitidos)} módulos"
+                )
             else:
                 modulos_permitidos = ["Inventario", "Obras", "Pedidos"]
-                print(f"[SECURITY] Fallback: Usuario básico, asignando {len(modulos_permitidos)} módulos")
+                print(
+                    f"[SECURITY] Fallback: Usuario básico, asignando {len(modulos_permitidos)} módulos"
+                )
 
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 

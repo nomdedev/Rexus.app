@@ -1,4 +1,3 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
@@ -11,56 +10,63 @@ Maneja el ciclo completo: creación, aprobación, entrega y facturación.
 
 import uuid
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple, Any
+from typing import Any, Dict, List, Optional, Tuple
+
+# Importar DataSanitizer para seguridad
+try:
+    from utils.data_sanitizer import DataSanitizer
+except ImportError:
+    from rexus.utils.data_sanitizer import DataSanitizer
 
 
 class PedidosModel:
     """Modelo para gestión completa de pedidos."""
-    
+
     # Estados de pedidos
     ESTADOS = {
-        'BORRADOR': 'Borrador',
-        'PENDIENTE': 'Pendiente de Aprobación', 
-        'APROBADO': 'Aprobado',
-        'EN_PREPARACION': 'En Preparación',
-        'LISTO_ENTREGA': 'Listo para Entrega',
-        'EN_TRANSITO': 'En Tránsito',
-        'ENTREGADO': 'Entregado',
-        'CANCELADO': 'Cancelado',
-        'FACTURADO': 'Facturado'
+        "BORRADOR": "Borrador",
+        "PENDIENTE": "Pendiente de Aprobación",
+        "APROBADO": "Aprobado",
+        "EN_PREPARACION": "En Preparación",
+        "LISTO_ENTREGA": "Listo para Entrega",
+        "EN_TRANSITO": "En Tránsito",
+        "ENTREGADO": "Entregado",
+        "CANCELADO": "Cancelado",
+        "FACTURADO": "Facturado",
     }
-    
+
     # Tipos de pedido
     TIPOS_PEDIDO = {
-        'MATERIAL': 'Material de Construcción',
-        'HERRAMIENTA': 'Herramientas',
-        'SERVICIO': 'Servicios',
-        'VIDRIO': 'Vidrios',
-        'HERRAJE': 'Herrajes',
-        'MIXTO': 'Mixto'
+        "MATERIAL": "Material de Construcción",
+        "HERRAMIENTA": "Herramientas",
+        "SERVICIO": "Servicios",
+        "VIDRIO": "Vidrios",
+        "HERRAJE": "Herrajes",
+        "MIXTO": "Mixto",
     }
-    
+
     # Prioridades
     PRIORIDADES = {
-        'BAJA': 'Baja',
-        'NORMAL': 'Normal', 
-        'ALTA': 'Alta',
-        'URGENTE': 'Urgente'
+        "BAJA": "Baja",
+        "NORMAL": "Normal",
+        "ALTA": "Alta",
+        "URGENTE": "Urgente",
     }
 
     def __init__(self, db_connection=None):
         """Inicializa el modelo de pedidos."""
         self.db_connection = db_connection
+        self.data_sanitizer = DataSanitizer()  # Para validación y sanitización
         self.create_tables()
 
     def create_tables(self):
         """Crea las tablas necesarias para pedidos."""
         if not self.db_connection:
             return
-        
+
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Tabla principal de pedidos
             cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos' AND xtype='U')
@@ -92,7 +98,7 @@ class PedidosModel:
                     activo BIT NOT NULL DEFAULT 1
                 )
             """)
-            
+
             # Tabla de detalle de pedidos
             cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_detalle' AND xtype='U')
@@ -115,7 +121,7 @@ class PedidosModel:
                     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
                 )
             """)
-            
+
             # Tabla de historial de estados
             cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_historial' AND xtype='U')
@@ -130,7 +136,7 @@ class PedidosModel:
                     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
                 )
             """)
-            
+
             # Tabla de entregas
             cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_entregas' AND xtype='U')
@@ -148,45 +154,141 @@ class PedidosModel:
                     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
                 )
             """)
-            
+
             # Índices para optimización
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pedidos_numero ON pedidos(numero_pedido)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pedidos_estado ON pedidos(estado)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pedidos_fecha ON pedidos(fecha_pedido)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_pedidos_obra ON pedidos(obra_id)")
-            
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_pedidos_numero ON pedidos(numero_pedido)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_pedidos_estado ON pedidos(estado)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_pedidos_fecha ON pedidos(fecha_pedido)"
+            )
+            cursor.execute(
+                "CREATE INDEX IF NOT EXISTS idx_pedidos_obra ON pedidos(obra_id)"
+            )
+
             self.db_connection.commit()
             print("[PEDIDOS] Tablas creadas exitosamente")
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error creando tablas: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+
+        Args:
+            table_name: Nombre de tabla a validar
+
+        Returns:
+            Nombre de tabla validado
+
+        Raises:
+            ValueError: Si el nombre de tabla no es válido
+        """
+        import re
+
+        # Solo permitir nombres alfanuméricos y underscore
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+
+        # Lista blanca de tablas permitidas para pedidos
+        allowed_tables = {
+            "pedidos",
+            "pedidos_detalle",
+            "pedidos_historial",
+            "clientes",
+            "obras",
+            "inventario_productos",
+            "proveedores",
+        }
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+
+        return table_name
+
+    def validar_pedido_duplicado(
+        self, numero_pedido: str, excluir_id: Optional[int] = None
+    ) -> bool:
+        """
+        Valida si un pedido ya existe (para evitar duplicados).
+
+        Args:
+            numero_pedido: Número de pedido a validar
+            excluir_id: ID a excluir de la validación (para actualizaciones)
+
+        Returns:
+            bool: True si existe duplicado, False si no existe
+        """
+        try:
+            if not self.db_connection:
+                return False
+
+            # Sanitizar la entrada
+            numero_sanitizado = self.data_sanitizer.sanitize_string(
+                str(numero_pedido).strip()
+            )
+
+            cursor = self.db_connection.cursor()
+            try:
+                tabla_validada = self._validate_table_name("pedidos")
+
+                if excluir_id:
+                    # Para actualizaciones, excluir el ID actual
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE numero_pedido = ? AND id != ?",
+                        (numero_sanitizado, excluir_id),
+                    )
+                else:
+                    # Para nuevos pedidos
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE numero_pedido = ?",
+                        (numero_sanitizado,),
+                    )
+
+                result = cursor.fetchone()
+                existe = result and result[0] > 0
+
+                return bool(existe)
+
+            finally:
+                cursor.close()
+
+        except Exception as e:
+            print(f"[PEDIDOS] Error validando pedido duplicado: {e}")
+            return False  # En caso de error, permitir la operación
 
     def generar_numero_pedido(self) -> str:
         """Genera un número único de pedido."""
         try:
             año_actual = datetime.now().year
             prefijo = f"PED-{año_actual}-"
-            
+
             if self.db_connection:
                 cursor = self.db_connection.cursor()
-                cursor.execute("""
+                cursor.execute(
+                    """
                     SELECT MAX(CAST(SUBSTRING(numero_pedido, LEN(?)+1, LEN(numero_pedido)) AS INT))
                     FROM pedidos 
                     WHERE numero_pedido LIKE ?
-                """, (prefijo, f"{prefijo}%"))
-                
+                """,
+                    (prefijo, f"{prefijo}%"),
+                )
+
                 result = cursor.fetchone()
                 ultimo_numero = result[0] if result and result[0] else 0
                 nuevo_numero = ultimo_numero + 1
-                
+
                 return f"{prefijo}{nuevo_numero:05d}"
             else:
                 # Fallback sin BD
                 timestamp = datetime.now().strftime("%m%d%H%M")
                 return f"PED-{año_actual}-{timestamp}"
-                
+
         except Exception as e:
             print(f"[PEDIDOS] Error generando número: {e}")
             # Fallback con UUID
@@ -196,166 +298,219 @@ class PedidosModel:
         """Valida que un cliente existe en el sistema."""
         if not self.db_connection or not cliente_id:
             return False
-            
+
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT COUNT(*) FROM clientes WHERE id = ? AND activo = 1", (cliente_id,))
+            cursor.execute(
+                "SELECT COUNT(*) FROM clientes WHERE id = ? AND activo = 1",
+                (cliente_id,),
+            )
             count = cursor.fetchone()[0]
             return count > 0
         except Exception as e:
             print(f"[ERROR PEDIDOS] Error validando cliente: {e}")
             return False
-    
+
     def validar_obra_existe(self, obra_id: int) -> bool:
         """Valida que una obra existe en el sistema."""
         if not self.db_connection or not obra_id:
             return False
-            
+
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT COUNT(*) FROM obras WHERE id = ? AND activo = 1", (obra_id,))
+            cursor.execute(
+                "SELECT COUNT(*) FROM obras WHERE id = ? AND activo = 1", (obra_id,)
+            )
             count = cursor.fetchone()[0]
             return count > 0
         except Exception as e:
             print(f"[ERROR PEDIDOS] Error validando obra: {e}")
             return False
 
-    def crear_pedido(self, datos_pedido:
+    def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_pedido'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]) -> Optional[int]:
-        """Crea un nuevo pedido con sus detalles."""
+        """Crea un nuevo pedido con sus detalles con validación y sanitización completas."""
         if not self.db_connection:
             return None
-        
-        # Validar relaciones críticas
-        cliente_id = datos_pedido.get('cliente_id')
-        obra_id = datos_pedido.get('obra_id')
-        
-        if cliente_id and not self.validar_cliente_existe(cliente_id):
-            raise ValueError(f"Cliente con ID {cliente_id} no existe o está inactivo")
-            
-        if obra_id and not self.validar_obra_existe(obra_id):
-            raise ValueError(f"Obra con ID {obra_id} no existe o está inactiva")
-            
+
         try:
+            # Validar y sanitizar datos de entrada
+            if not isinstance(datos_pedido, dict):
+                raise ValueError("Los datos del pedido deben ser un diccionario")
+
+            # Sanitizar datos críticos
+            datos_sanitizados = self.data_sanitizer.sanitize_dict(datos_pedido)
+
+            # Validar relaciones críticas
+            cliente_id = datos_sanitizados.get("cliente_id")
+            obra_id = datos_sanitizados.get("obra_id")
+
+            if cliente_id and not self.validar_cliente_existe(cliente_id):
+                raise ValueError(
+                    f"Cliente con ID {cliente_id} no existe o está inactivo"
+                )
+
+            if obra_id and not self.validar_obra_existe(obra_id):
+                raise ValueError(f"Obra con ID {obra_id} no existe o está inactiva")
+
+            # Validar campos obligatorios
+            tipo_pedido = datos_sanitizados.get("tipo_pedido", "MATERIAL")
+            if tipo_pedido not in self.TIPOS_PEDIDO:
+                raise ValueError(f"Tipo de pedido inválido: {tipo_pedido}")
+
+            prioridad = datos_sanitizados.get("prioridad", "NORMAL")
+            if prioridad not in self.PRIORIDADES:
+                raise ValueError(f"Prioridad inválida: {prioridad}")
+
             cursor = self.db_connection.cursor()
-            
+
             # Generar número de pedido
             numero_pedido = self.generar_numero_pedido()
-            
-            # Insertar pedido principal
-            cursor.execute("""
-                INSERT INTO pedidos (
+
+            # Verificar que no existe duplicado
+            if self.validar_pedido_duplicado(numero_pedido):
+                numero_pedido = self.generar_numero_pedido()  # Regenerar si existe
+
+            # Insertar pedido principal con datos sanitizados
+            tabla_pedidos = self._validate_table_name("pedidos")
+            cursor.execute(
+                f"""
+                INSERT INTO [{tabla_pedidos}] (
                     numero_pedido, cliente_id, obra_id, fecha_entrega_solicitada,
                     tipo_pedido, prioridad, observaciones, direccion_entrega,
                     responsable_entrega, telefono_contacto, usuario_creador
                 ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
-                numero_pedido,
-                datos_pedido.get('cliente_id'),
-                datos_pedido.get('obra_id'),
-                datos_pedido.get('fecha_entrega_solicitada'),
-                datos_pedido.get('tipo_pedido', 'MATERIAL'),
-                datos_pedido.get('prioridad', 'NORMAL'),
-                datos_pedido.get('observaciones', ''),
-                datos_pedido.get('direccion_entrega', ''),
-                datos_pedido.get('responsable_entrega', ''),
-                datos_pedido.get('telefono_contacto', ''),
-                datos_pedido.get('usuario_creador', 1)
-            ))
-            
+            """,
+                (
+                    numero_pedido,
+                    datos_sanitizados.get("cliente_id"),
+                    datos_sanitizados.get("obra_id"),
+                    datos_sanitizados.get("fecha_entrega_solicitada"),
+                    tipo_pedido,
+                    prioridad,
+                    datos_sanitizados.get("observaciones", ""),
+                    datos_sanitizados.get("direccion_entrega", ""),
+                    datos_sanitizados.get("responsable_entrega", ""),
+                    datos_sanitizados.get("telefono_contacto", ""),
+                    datos_sanitizados.get("usuario_creador", 1),
+                ),
+            )
+
             # Obtener ID del pedido creado
             cursor.execute("SELECT @@IDENTITY")
             pedido_id = cursor.fetchone()[0]
-            
-            # Insertar detalles del pedido
-            detalles = datos_pedido.get('detalles', [])
+
+            # Insertar detalles del pedido con validación
+            detalles = datos_sanitizados.get("detalles", [])
             total_pedido = 0
-            
+
+            tabla_detalle = self._validate_table_name("pedidos_detalle")
             for detalle in detalles:
-                cantidad = float(detalle.get('cantidad', 0))
-                precio_unitario = float(detalle.get('precio_unitario', 0))
-                descuento = float(detalle.get('descuento_item', 0))
+                # Validar y sanitizar cada detalle
+                if not isinstance(detalle, dict):
+                    continue
+
+                detalle_sanitizado = self.data_sanitizer.sanitize_dict(detalle)
+
+                cantidad = float(detalle_sanitizado.get("cantidad", 0))
+                precio_unitario = float(detalle_sanitizado.get("precio_unitario", 0))
+                descuento = float(detalle_sanitizado.get("descuento_item", 0))
+
+                # Validaciones de negocio
+                if cantidad <= 0:
+                    raise ValueError("La cantidad debe ser mayor a 0")
+                if precio_unitario < 0:
+                    raise ValueError("El precio unitario no puede ser negativo")
+
                 subtotal = (cantidad * precio_unitario) - descuento
                 total_pedido += subtotal
-                
-                cursor.execute("""
-                    INSERT INTO pedidos_detalle (
+
+                cursor.execute(
+                    f"""
+                    INSERT INTO [{tabla_detalle}] (
                         pedido_id, producto_id, codigo_producto, descripcion,
                         categoria, cantidad, unidad_medida, precio_unitario,
                         descuento_item, subtotal_item, observaciones_item
                     ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """, (
-                    pedido_id,
-                    detalle.get('producto_id'),
-                    detalle.get('codigo_producto', ''),
-                    detalle.get('descripcion', ''),
-                    detalle.get('categoria', ''),
-                    cantidad,
-                    detalle.get('unidad_medida', 'UND'),
-                    precio_unitario,
-                    descuento,
-                    subtotal,
-                    detalle.get('observaciones_item', '')
-                ))
-            
-            # Calcular impuestos y actualizar totales
+                """,
+                    (
+                        pedido_id,
+                        detalle_sanitizado.get("producto_id"),
+                        detalle_sanitizado.get("codigo_producto", ""),
+                        detalle_sanitizado.get("descripcion", ""),
+                        detalle_sanitizado.get("categoria", ""),
+                        cantidad,
+                        detalle_sanitizado.get("unidad_medida", "UND"),
+                        precio_unitario,
+                        descuento,
+                        subtotal,
+                        detalle_sanitizado.get("observaciones_item", ""),
+                    ),
+                )
+
+            # Calcular impuestos y actualizar totales con datos sanitizados
             impuestos = total_pedido * 0.19  # IVA 19%
-            descuento_general = float(datos_pedido.get('descuento', 0))
+            descuento_general = float(datos_sanitizados.get("descuento", 0))
             total_final = total_pedido - descuento_general + impuestos
-            
-            cursor.execute("""
-                UPDATE pedidos 
+
+            cursor.execute(
+                f"""
+                UPDATE [{tabla_pedidos}] 
                 SET subtotal = ?, descuento = ?, impuestos = ?, total = ?
                 WHERE id = ?
-            """, (total_pedido, descuento_general, impuestos, total_final, pedido_id))
-            
+            """,
+                (total_pedido, descuento_general, impuestos, total_final, pedido_id),
+            )
+
             # Registrar en historial
-            self.registrar_cambio_estado(pedido_id, None, 'BORRADOR', 
-                                       datos_pedido.get('usuario_creador', 1))
-            
+            self.registrar_cambio_estado(
+                pedido_id, None, "BORRADOR", datos_sanitizados.get("usuario_creador", 1)
+            )
+
             self.db_connection.commit()
             print(f"[PEDIDOS] Pedido {numero_pedido} creado exitosamente")
             return pedido_id
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error creando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
 
-    def obtener_pedidos(self, filtros: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+    def obtener_pedidos(
+        self, filtros: Optional[Dict[str, Any]] = None
+    ) -> List[Dict[str, Any]]:
         """Obtiene lista de pedidos con filtros opcionales."""
         if not self.db_connection:
             return []
-            
+
         try:
             cursor = self.db_connection.cursor()
-            
+
             where_clauses = ["p.activo = 1"]
             params = []
-            
+
             if filtros:
-                if filtros.get('estado'):
+                if filtros.get("estado"):
                     where_clauses.append("p.estado = ?")
-                    params.append(filtros['estado'])
-                    
-                if filtros.get('obra_id'):
+                    params.append(filtros["estado"])
+
+                if filtros.get("obra_id"):
                     where_clauses.append("p.obra_id = ?")
-                    params.append(filtros['obra_id'])
-                    
-                if filtros.get('fecha_desde'):
+                    params.append(filtros["obra_id"])
+
+                if filtros.get("fecha_desde"):
                     where_clauses.append("p.fecha_pedido >= ?")
-                    params.append(filtros['fecha_desde'])
-                    
-                if filtros.get('fecha_hasta'):
+                    params.append(filtros["fecha_desde"])
+
+                if filtros.get("fecha_hasta"):
                     where_clauses.append("p.fecha_pedido <= ?")
-                    params.append(filtros['fecha_hasta'])
-                    
-                if filtros.get('busqueda'):
+                    params.append(filtros["fecha_hasta"])
+
+                if filtros.get("busqueda"):
                     where_clauses.append("""
                         (p.numero_pedido LIKE ? OR 
                          p.observaciones LIKE ? OR
@@ -363,9 +518,9 @@ class PedidosModel:
                     """)
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
-            
+
             where_sql = " AND ".join(where_clauses)
-            
+
             query = f"""
                 SELECT 
                     p.id, p.numero_pedido, p.fecha_pedido, p.fecha_entrega_solicitada,
@@ -382,22 +537,36 @@ class PedidosModel:
                          p.responsable_entrega, p.obra_id
                 ORDER BY p.fecha_pedido DESC
             """
-            
+
             cursor.execute(query, params)
             columns = [desc[0] for desc in cursor.description]
-            
+
             pedidos = []
             for row in cursor.fetchall():
                 pedido = dict(zip(columns, row))
-                pedido['fecha_pedido'] = pedido['fecha_pedido'].strftime('%Y-%m-%d %H:%M') if pedido['fecha_pedido'] else ''
-                pedido['fecha_entrega_solicitada'] = pedido['fecha_entrega_solicitada'].strftime('%Y-%m-%d') if pedido['fecha_entrega_solicitada'] else ''
-                pedido['estado_texto'] = self.ESTADOS.get(pedido['estado'], pedido['estado'])
-                pedido['tipo_texto'] = self.TIPOS_PEDIDO.get(pedido['tipo_pedido'], pedido['tipo_pedido'])
-                pedido['prioridad_texto'] = self.PRIORIDADES.get(pedido['prioridad'], pedido['prioridad'])
+                pedido["fecha_pedido"] = (
+                    pedido["fecha_pedido"].strftime("%Y-%m-%d %H:%M")
+                    if pedido["fecha_pedido"]
+                    else ""
+                )
+                pedido["fecha_entrega_solicitada"] = (
+                    pedido["fecha_entrega_solicitada"].strftime("%Y-%m-%d")
+                    if pedido["fecha_entrega_solicitada"]
+                    else ""
+                )
+                pedido["estado_texto"] = self.ESTADOS.get(
+                    pedido["estado"], pedido["estado"]
+                )
+                pedido["tipo_texto"] = self.TIPOS_PEDIDO.get(
+                    pedido["tipo_pedido"], pedido["tipo_pedido"]
+                )
+                pedido["prioridad_texto"] = self.PRIORIDADES.get(
+                    pedido["prioridad"], pedido["prioridad"]
+                )
                 pedidos.append(pedido)
-            
+
             return pedidos
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error obteniendo pedidos: {e}")
             return self._get_datos_demo()
@@ -406,159 +575,191 @@ class PedidosModel:
         """Obtiene un pedido específico con todos sus detalles."""
         if not self.db_connection:
             return None
-            
+
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Obtener datos del pedido
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT * FROM pedidos WHERE id = ? AND activo = 1
-            """, (pedido_id,))
-            
+            """,
+                (pedido_id,),
+            )
+
             pedido_data = cursor.fetchone()
             if not pedido_data:
                 return None
-            
+
             columns = [desc[0] for desc in cursor.description]
             pedido = dict(zip(columns, pedido_data))
-            
+
             # Obtener detalles del pedido
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT * FROM pedidos_detalle WHERE pedido_id = ?
                 ORDER BY id
-            """, (pedido_id,))
-            
+            """,
+                (pedido_id,),
+            )
+
             detalle_columns = [desc[0] for desc in cursor.description]
             detalles = []
             for row in cursor.fetchall():
                 detalle = dict(zip(detalle_columns, row))
                 detalles.append(detalle)
-            
-            pedido['detalles'] = detalles
-            
+
+            pedido["detalles"] = detalles
+
             # Obtener historial
-            cursor.execute("""
+            cursor.execute(
+                """
                 SELECT * FROM pedidos_historial 
                 WHERE pedido_id = ?
                 ORDER BY fecha_cambio DESC
-            """, (pedido_id,))
-            
+            """,
+                (pedido_id,),
+            )
+
             historial_columns = [desc[0] for desc in cursor.description]
             historial = []
             for row in cursor.fetchall():
                 hist = dict(zip(historial_columns, row))
                 historial.append(hist)
-            
-            pedido['historial'] = historial
-            
+
+            pedido["historial"] = historial
+
             return pedido
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error obteniendo pedido {pedido_id}: {e}")
             return None
 
-    def actualizar_estado_pedido(self, pedido_id:
+    def actualizar_estado_pedido(
+        self,
+        pedido_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_estado_pedido'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, nuevo_estado: str, 
-                                usuario_id: int, observaciones: str = "") -> bool:
+        int,
+        nuevo_estado: str,
+        usuario_id: int,
+        observaciones: str = "",
+    ) -> bool:
         """Actualiza el estado de un pedido."""
         if not self.db_connection:
             return False
-            
+
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Obtener estado actual
             cursor.execute("SELECT estado FROM pedidos WHERE id = ?", (pedido_id,))
             result = cursor.fetchone()
             if not result:
                 return False
-            
+
             estado_anterior = result[0]
-            
+
             # Validar transición de estado
             if not self._validar_transicion_estado(estado_anterior, nuevo_estado):
-                print(f"[PEDIDOS] Transición inválida: {estado_anterior} -> {nuevo_estado}")
+                print(
+                    f"[PEDIDOS] Transición inválida: {estado_anterior} -> {nuevo_estado}"
+                )
                 return False
-            
+
             # Actualizar estado
-            cursor.execute("""
+            cursor.execute(
+                """
                 UPDATE pedidos 
                 SET estado = ?, fecha_modificacion = GETDATE()
                 WHERE id = ?
-            """, (nuevo_estado, pedido_id))
-            
+            """,
+                (nuevo_estado, pedido_id),
+            )
+
             # Si se aprueba, registrar fecha y usuario
-            if nuevo_estado == 'APROBADO':
-                cursor.execute("""
+            if nuevo_estado == "APROBADO":
+                cursor.execute(
+                    """
                     UPDATE pedidos 
                     SET usuario_aprobador = ?, fecha_aprobacion = GETDATE()
                     WHERE id = ?
-                """, (usuario_id, pedido_id))
-            
+                """,
+                    (usuario_id, pedido_id),
+                )
+
             # Registrar en historial
-            self.registrar_cambio_estado(pedido_id, estado_anterior, nuevo_estado, 
-                                       usuario_id, observaciones)
-            
+            self.registrar_cambio_estado(
+                pedido_id, estado_anterior, nuevo_estado, usuario_id, observaciones
+            )
+
             self.db_connection.commit()
             return True
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error actualizando estado: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
 
-    def registrar_cambio_estado(self, pedido_id: int, estado_anterior: Optional[str], 
-                              estado_nuevo: str, usuario_id: int, observaciones: str = ""):
+    def registrar_cambio_estado(
+        self,
+        pedido_id: int,
+        estado_anterior: Optional[str],
+        estado_nuevo: str,
+        usuario_id: int,
+        observaciones: str = "",
+    ):
         """Registra un cambio de estado en el historial."""
         if not self.db_connection:
             return
-            
+
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("""
+            cursor.execute(
+                """
                 INSERT INTO pedidos_historial (
                     pedido_id, estado_anterior, estado_nuevo, usuario_id, observaciones
                 ) VALUES (?, ?, ?, ?, ?)
-            """, (pedido_id, estado_anterior, estado_nuevo, usuario_id, observaciones))
-            
+            """,
+                (pedido_id, estado_anterior, estado_nuevo, usuario_id, observaciones),
+            )
+
         except Exception as e:
             print(f"[PEDIDOS] Error registrando historial: {e}")
 
     def _validar_transicion_estado(self, estado_actual: str, estado_nuevo: str) -> bool:
         """Valida si la transición de estado es válida."""
         transiciones_validas = {
-            'BORRADOR': ['PENDIENTE', 'CANCELADO'],
-            'PENDIENTE': ['APROBADO', 'CANCELADO'],
-            'APROBADO': ['EN_PREPARACION', 'CANCELADO'],
-            'EN_PREPARACION': ['LISTO_ENTREGA', 'CANCELADO'],
-            'LISTO_ENTREGA': ['EN_TRANSITO', 'ENTREGADO'],
-            'EN_TRANSITO': ['ENTREGADO'],
-            'ENTREGADO': ['FACTURADO'],
-            'CANCELADO': [],  # Estado final
-            'FACTURADO': []   # Estado final
+            "BORRADOR": ["PENDIENTE", "CANCELADO"],
+            "PENDIENTE": ["APROBADO", "CANCELADO"],
+            "APROBADO": ["EN_PREPARACION", "CANCELADO"],
+            "EN_PREPARACION": ["LISTO_ENTREGA", "CANCELADO"],
+            "LISTO_ENTREGA": ["EN_TRANSITO", "ENTREGADO"],
+            "EN_TRANSITO": ["ENTREGADO"],
+            "ENTREGADO": ["FACTURADO"],
+            "CANCELADO": [],  # Estado final
+            "FACTURADO": [],  # Estado final
         }
-        
+
         return estado_nuevo in transiciones_validas.get(estado_actual, [])
 
     def obtener_estadisticas(self) -> Dict[str, Any]:
         """Obtiene estadísticas generales de pedidos."""
         if not self.db_connection:
             return self._get_estadisticas_demo()
-            
+
         try:
             cursor = self.db_connection.cursor()
-            
+
             stats = {}
-            
+
             # Total pedidos
             cursor.execute("SELECT COUNT(*) FROM pedidos WHERE activo = 1")
-            stats['total_pedidos'] = cursor.fetchone()[0]
-            
+            stats["total_pedidos"] = cursor.fetchone()[0]
+
             # Por estado
             cursor.execute("""
                 SELECT estado, COUNT(*) 
@@ -566,29 +767,31 @@ class PedidosModel:
                 WHERE activo = 1 
                 GROUP BY estado
             """)
-            stats['por_estado'] = {row[0]: row[1] for row in cursor.fetchall()}
-            
+            stats["por_estado"] = {row[0]: row[1] for row in cursor.fetchall()}
+
             # Valor total
-            cursor.execute("SELECT SUM(total) FROM pedidos WHERE activo = 1 AND estado != 'CANCELADO'")
+            cursor.execute(
+                "SELECT SUM(total) FROM pedidos WHERE activo = 1 AND estado != 'CANCELADO'"
+            )
             result = cursor.fetchone()
-            stats['valor_total'] = float(result[0]) if result[0] else 0.0
-            
+            stats["valor_total"] = float(result[0]) if result[0] else 0.0
+
             # Pedidos urgentes
             cursor.execute("""
                 SELECT COUNT(*) FROM pedidos 
                 WHERE activo = 1 AND prioridad = 'URGENTE' AND estado NOT IN ('ENTREGADO', 'CANCELADO', 'FACTURADO')
             """)
-            stats['urgentes_pendientes'] = cursor.fetchone()[0]
-            
+            stats["urgentes_pendientes"] = cursor.fetchone()[0]
+
             # Pedidos del mes
             cursor.execute("""
                 SELECT COUNT(*) FROM pedidos 
                 WHERE activo = 1 AND MONTH(fecha_pedido) = MONTH(GETDATE()) AND YEAR(fecha_pedido) = YEAR(GETDATE())
             """)
-            stats['pedidos_mes'] = cursor.fetchone()[0]
-            
+            stats["pedidos_mes"] = cursor.fetchone()[0]
+
             return stats
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error obteniendo estadísticas: {e}")
             return self._get_estadisticas_demo()
@@ -597,28 +800,31 @@ class PedidosModel:
         """Busca productos en inventario para agregar a pedidos."""
         if not self.db_connection:
             return []
-            
+
         try:
             cursor = self.db_connection.cursor()
-            
-            cursor.execute("""
+
+            cursor.execute(
+                """
                 SELECT TOP 20
                     id, codigo, descripcion, categoria, stock_actual, precio_unitario
                 FROM inventario_perfiles 
                 WHERE activo = 1 
                 AND (codigo LIKE ? OR descripcion LIKE ? OR categoria LIKE ?)
                 ORDER BY descripcion
-            """, (f"%{busqueda}%", f"%{busqueda}%", f"%{busqueda}%"))
-            
+            """,
+                (f"%{busqueda}%", f"%{busqueda}%", f"%{busqueda}%"),
+            )
+
             columns = [desc[0] for desc in cursor.description]
             productos = []
-            
+
             for row in cursor.fetchall():
                 producto = dict(zip(columns, row))
                 productos.append(producto)
-            
+
             return productos
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error buscando productos: {e}")
             return []
@@ -627,56 +833,56 @@ class PedidosModel:
         """Datos demo cuando no hay conexión a BD."""
         return [
             {
-                'id': 1,
-                'numero_pedido': 'PED-2025-00001',
-                'fecha_pedido': '2025-01-15 10:30',
-                'fecha_entrega_solicitada': '2025-01-20',
-                'estado': 'PENDIENTE',
-                'estado_texto': 'Pendiente de Aprobación',
-                'tipo_pedido': 'MATERIAL',
-                'tipo_texto': 'Material de Construcción',
-                'prioridad': 'NORMAL',
-                'prioridad_texto': 'Normal',
-                'total': 1250.50,
-                'responsable_entrega': 'Juan Pérez',
-                'obra_id': 1,
-                'cantidad_items': 5,
-                'total_cantidad': 25.0,
-                'cantidad_pendiente': 25.0
+                "id": 1,
+                "numero_pedido": "PED-2025-00001",
+                "fecha_pedido": "2025-01-15 10:30",
+                "fecha_entrega_solicitada": "2025-01-20",
+                "estado": "PENDIENTE",
+                "estado_texto": "Pendiente de Aprobación",
+                "tipo_pedido": "MATERIAL",
+                "tipo_texto": "Material de Construcción",
+                "prioridad": "NORMAL",
+                "prioridad_texto": "Normal",
+                "total": 1250.50,
+                "responsable_entrega": "Juan Pérez",
+                "obra_id": 1,
+                "cantidad_items": 5,
+                "total_cantidad": 25.0,
+                "cantidad_pendiente": 25.0,
             },
             {
-                'id': 2,
-                'numero_pedido': 'PED-2025-00002',
-                'fecha_pedido': '2025-01-14 15:45',
-                'fecha_entrega_solicitada': '2025-01-18',
-                'estado': 'APROBADO',
-                'estado_texto': 'Aprobado',
-                'tipo_pedido': 'HERRAJE',
-                'tipo_texto': 'Herrajes',
-                'prioridad': 'ALTA',
-                'prioridad_texto': 'Alta',
-                'total': 850.75,
-                'responsable_entrega': 'María González',
-                'obra_id': 2,
-                'cantidad_items': 3,
-                'total_cantidad': 15.0,
-                'cantidad_pendiente': 0.0
-            }
+                "id": 2,
+                "numero_pedido": "PED-2025-00002",
+                "fecha_pedido": "2025-01-14 15:45",
+                "fecha_entrega_solicitada": "2025-01-18",
+                "estado": "APROBADO",
+                "estado_texto": "Aprobado",
+                "tipo_pedido": "HERRAJE",
+                "tipo_texto": "Herrajes",
+                "prioridad": "ALTA",
+                "prioridad_texto": "Alta",
+                "total": 850.75,
+                "responsable_entrega": "María González",
+                "obra_id": 2,
+                "cantidad_items": 3,
+                "total_cantidad": 15.0,
+                "cantidad_pendiente": 0.0,
+            },
         ]
 
     def _get_estadisticas_demo(self) -> Dict[str, Any]:
         """Estadísticas demo cuando no hay conexión a BD."""
         return {
-            'total_pedidos': 25,
-            'por_estado': {
-                'BORRADOR': 2,
-                'PENDIENTE': 5,
-                'APROBADO': 8,
-                'EN_PREPARACION': 3,
-                'ENTREGADO': 6,
-                'CANCELADO': 1
+            "total_pedidos": 25,
+            "por_estado": {
+                "BORRADOR": 2,
+                "PENDIENTE": 5,
+                "APROBADO": 8,
+                "EN_PREPARACION": 3,
+                "ENTREGADO": 6,
+                "CANCELADO": 1,
             },
-            'valor_total': 45750.25,
-            'urgentes_pendientes': 3,
-            'pedidos_mes': 15
+            "valor_total": 45750.25,
+            "urgentes_pendientes": 3,
+            "pedidos_mes": 15,
         }

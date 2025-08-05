@@ -1,3 +1,28 @@
+"""
+MIT License
+
+Copyright (c) 2024 Rexus.app
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Vista de Herrajes - Interfaz de gestión de herrajes y accesorios
+"""
 
 # 🔒 Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
@@ -7,20 +32,15 @@
 # Use SecurityUtils.sanitize_input() for text fields
 # Use SecurityUtils.validate_email() for email fields
 # XSS Protection Added
-"""
-Vista de Herrajes
 
+"""
 Interfaz modernizada para gestión de herrajes por obra.
 """
 
+import logging
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QFont
-from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
-from rexus.utils.form_validators import FormValidator, FormValidatorManager
-from rexus.modules.herrajes.improved_dialogs import HerrajeDialogManager, HerrajeObrasDialog, HerrajePedidosDialog
-from rexus.utils.format_utils import format_for_display, table_formatter
-from rexus.utils.security import SecurityUtils
-from rexus.core.auth_manager import AuthManager
 from PyQt6.QtWidgets import (
     QComboBox,
     QDialog,
@@ -44,6 +64,22 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from rexus.core.auth_manager import AuthManager
+from rexus.modules.herrajes.improved_dialogs import (
+    HerrajeDialogManager,
+    HerrajeObrasDialog,
+    HerrajePedidosDialog,
+)
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.format_utils import format_for_display, table_formatter
+from rexus.utils.message_system import (
+    ask_question,
+    show_error,
+    show_success,
+    show_warning,
+)
+from rexus.utils.security import SecurityUtils
+
 
 class HerrajesView(QWidget):
     """Vista principal para gestión de herrajes."""
@@ -57,14 +93,15 @@ class HerrajesView(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.logger = logging.getLogger(f"{__name__}.HerrajesView")
         self.controller = None
         self.herraje_actual = None
-        
+
         # Gestores de diálogos mejorados
         self.dialog_manager = None
         self.obras_dialog = None
         self.pedidos_dialog = None
-        
+
         self.init_ui()
 
     def init_ui(self):
@@ -288,8 +325,8 @@ class HerrajesView(QWidget):
         self.herrajes_table.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
-        
-        # Conectar selección de tabla  
+
+        # Conectar selección de tabla
         self.herrajes_table.itemSelectionChanged.connect(self.on_herraje_seleccionado)
 
         herrajes_layout.addWidget(self.herrajes_table)
@@ -303,10 +340,10 @@ class HerrajesView(QWidget):
         # Botones de acción
         self.crear_herraje_btn = QPushButton("➕ Crear Herraje")
         self.crear_herraje_btn.clicked.connect(self.crear_herraje_mejorado)
-        
+
         self.editar_herraje_btn = QPushButton("✏️ Editar Herraje")
         self.editar_herraje_btn.clicked.connect(self.editar_herraje_mejorado)
-        
+
         self.eliminar_herraje_btn = QPushButton("🗑️ Eliminar Herraje")
         self.eliminar_herraje_btn.clicked.connect(self.eliminar_herraje_mejorado)
 
@@ -334,17 +371,17 @@ class HerrajesView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador."""
         self.controller = controller
-        
+
         # Inicializar gestores de diálogos con el controlador
         self.dialog_manager = HerrajeDialogManager(self, controller)
         self.obras_dialog = HerrajeObrasDialog(self, controller)
         self.pedidos_dialog = HerrajePedidosDialog(self, controller)
-        
+
         if hasattr(self.controller, "cargar_datos_iniciales"):
             self.controller.cargar_datos_iniciales()
-    
+
     # ===== MÉTODOS MEJORADOS CON NUEVAS UTILIDADES =====
-    
+
     def crear_herraje_mejorado(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -360,7 +397,7 @@ class HerrajesView(QWidget):
             success = self.dialog_manager.show_create_dialog()
             if success:
                 self.actualizar_datos()  # Recargar la tabla
-    
+
     def editar_herraje_mejorado(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -369,14 +406,16 @@ class HerrajesView(QWidget):
 
         """Edita el herraje seleccionado usando el sistema mejorado."""
         if not self.herraje_actual:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para editar.")
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un herraje para editar."
+            )
             return
-        
+
         if self.dialog_manager:
             success = self.dialog_manager.show_edit_dialog(self.herraje_actual)
             if success:
                 self.actualizar_datos()  # Recargar la tabla
-    
+
     def eliminar_herraje_mejorado(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -385,27 +424,33 @@ class HerrajesView(QWidget):
 
         """Elimina el herraje seleccionado usando confirmación mejorada."""
         if not self.herraje_actual:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para eliminar.")
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un herraje para eliminar."
+            )
             return
-        
+
         if self.dialog_manager:
             success = self.dialog_manager.confirm_and_delete(self.herraje_actual)
             if success:
                 self.actualizar_datos()  # Recargar la tabla
-    
+
     def asignar_a_obra_mejorado(self):
         """Asigna el herraje a una obra usando diálogo mejorado."""
         if not self.herraje_actual:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para asignar a una obra.")
+            show_warning(
+                self,
+                "Sin selección",
+                "Por favor seleccione un herraje para asignar a una obra.",
+            )
             return
-        
+
         if self.obras_dialog:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+            # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
             self.obras_dialog.show_asignar_obra_dialog(self.herraje_actual)
-    
+
     def crear_pedido_mejorado(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -418,9 +463,9 @@ class HerrajesView(QWidget):
             herrajes_seleccionados = []
             if self.herraje_actual:
                 herrajes_seleccionados = [self.herraje_actual]
-            
+
             self.pedidos_dialog.show_crear_pedido_dialog(herrajes_seleccionados)
-    
+
     def on_herraje_seleccionado(self):
         """Maneja la selección de herraje en la tabla."""
         current_row = self.herrajes_table.currentRow()
@@ -435,15 +480,23 @@ class HerrajesView(QWidget):
                     if herraje_data:
                         self.herraje_actual = herraje_data
                         return
-            
+
             # Fallback: construir datos básicos desde la tabla
-            codigo = self.herrajes_table.item(current_row, 0).text() if self.herrajes_table.item(current_row, 0) else ""
-            descripcion = self.herrajes_table.item(current_row, 1).text() if self.herrajes_table.item(current_row, 1) else ""
-            
+            codigo = (
+                self.herrajes_table.item(current_row, 0).text()
+                if self.herrajes_table.item(current_row, 0)
+                else ""
+            )
+            descripcion = (
+                self.herrajes_table.item(current_row, 1).text()
+                if self.herrajes_table.item(current_row, 1)
+                else ""
+            )
+
             self.herraje_actual = {
-                'id': current_row + 1,  # ID temporal
-                'codigo': codigo,
-                'descripcion': descripcion
+                "id": current_row + 1,  # ID temporal
+                "codigo": codigo,
+                "descripcion": descripcion,
             }
         else:
             self.herraje_actual = None
@@ -469,9 +522,9 @@ class HerrajesView(QWidget):
                 table_item.setTextAlignment(Qt.AlignmentFlag.AlignCenter)
                 # Guardar el ID en el primer item para referencia
                 if col == 0:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+                    # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+                    # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+                    # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
                     table_item.setData(Qt.ItemDataRole.UserRole, herraje.get("id", 0))
                 self.herrajes_table.setItem(row, col, table_item)
@@ -538,20 +591,22 @@ class HerrajesView(QWidget):
             return
 
         # Obtener datos del herraje seleccionado
-        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(
+            Qt.ItemDataRole.UserRole
+        )
         codigo = self.herrajes_table.item(selected_row, 0).text()
         descripcion = self.herrajes_table.item(selected_row, 1).text()
-        
+
         # Crear diálogo de asignación
         dialog = DialogoAsignarObra(self, codigo, descripcion)
         if dialog.exec() == QDialog.DialogCode.Accepted:
             datos = dialog.obtener_datos()
             if self.controller:
                 self.controller.asignar_herraje_obra(
-                    int(herraje_id), 
-                    datos["obra_id"], 
-                    datos["cantidad"], 
-                    datos["observaciones"]
+                    int(herraje_id),
+                    datos["obra_id"],
+                    datos["cantidad"],
+                    datos["observaciones"],
                 )
 
     def show_crear_pedido_dialog(self):
@@ -562,11 +617,9 @@ class HerrajesView(QWidget):
             datos = dialog.obtener_datos()
             if self.controller:
                 self.controller.crear_pedido_obra(
-                    datos["obra_id"],
-                    datos["proveedor"],
-                    datos["herrajes_lista"]
+                    datos["obra_id"], datos["proveedor"], datos["herrajes_lista"]
                 )
-    
+
     def show_crear_herraje_dialog(self):
         """Muestra diálogo para crear nuevo herraje."""
         dialog = DialogoCrearHerrajeDialog(self)
@@ -574,7 +627,7 @@ class HerrajesView(QWidget):
             datos = dialog.obtener_datos()
             if self.controller:
                 self.controller.crear_herraje(datos)
-    
+
     def show_editar_herraje_dialog(self):
         """Muestra diálogo para editar herraje."""
         selected_row = self.herrajes_table.currentRow()
@@ -583,9 +636,11 @@ class HerrajesView(QWidget):
                 self, "Advertencia", "Seleccione un herraje de la tabla."
             )
             return
-        
-        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
-        
+
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(
+            Qt.ItemDataRole.UserRole
+        )
+
         if self.controller:
             herraje = self.controller.obtener_herraje_por_id(herraje_id)
             if herraje:
@@ -593,7 +648,7 @@ class HerrajesView(QWidget):
                 if dialog.exec() == QDialog.DialogCode.Accepted:
                     datos = dialog.obtener_datos()
                     self.controller.actualizar_herraje(herraje_id, datos)
-    
+
     def show_eliminar_herraje_dialog(self):
         """Elimina el herraje seleccionado."""
         selected_row = self.herrajes_table.currentRow()
@@ -602,13 +657,15 @@ class HerrajesView(QWidget):
                 self, "Advertencia", "Seleccione un herraje de la tabla."
             )
             return
-        
-        herraje_id = self.herrajes_table.item(selected_row, 0).data(Qt.ItemDataRole.UserRole)
-        
+
+        herraje_id = self.herrajes_table.item(selected_row, 0).data(
+            Qt.ItemDataRole.UserRole
+        )
+
         if self.controller:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+            # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
             self.controller.eliminar_herraje(herraje_id)
 
@@ -641,55 +698,83 @@ class HerrajesView(QWidget):
             datos_herraje = dialog.obtener_datos()
             if self.controller:
                 # Implementar creación de herraje en el controlador
-                show_success(self, "Herraje Creado", f"El herraje '{datos_herraje['descripcion']}' ha sido creado exitosamente.")
+                show_success(
+                    self,
+                    "Herraje Creado",
+                    f"El herraje '{datos_herraje['descripcion']}' ha sido creado exitosamente.",
+                )
                 self.actualizar_datos()
             else:
-                show_error(self, "Error", "No hay controlador disponible para crear el herraje.")
-    
+                show_error(
+                    self,
+                    "Error",
+                    "No hay controlador disponible para crear el herraje.",
+                )
+
     def show_editar_herraje_dialog(self):
         """Muestra el diálogo para editar un herraje existente."""
         # Obtener herraje seleccionado
         current_row = self.herrajes_table.currentRow()
         if current_row < 0:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para editar.")
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un herraje para editar."
+            )
             return
-            
+
         dialog = HerrajeDialog(self, titulo="Editar Herraje")
         # Aquí cargarías los datos del herraje seleccionado
         if dialog.exec() == QDialog.DialogCode.Accepted:
             datos_herraje = dialog.obtener_datos()
             if self.controller:
                 # Implementar edición de herraje en el controlador
-                show_success(self, "Herraje Actualizado", f"El herraje '{datos_herraje['descripcion']}' ha sido actualizado exitosamente.")
+                show_success(
+                    self,
+                    "Herraje Actualizado",
+                    f"El herraje '{datos_herraje['descripcion']}' ha sido actualizado exitosamente.",
+                )
                 self.actualizar_datos()
-    
+
     def show_eliminar_herraje_dialog(self):
         """Confirma y elimina un herraje."""
         current_row = self.herrajes_table.currentRow()
         if current_row < 0:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para eliminar.")
+            show_warning(
+                self, "Sin selección", "Por favor seleccione un herraje para eliminar."
+            )
             return
-            
+
         if ask_question(
             self,
             "Confirmar eliminación",
-            "¿Está seguro que desea eliminar este herraje?\n\nEsta acción no se puede deshacer."
+            "¿Está seguro que desea eliminar este herraje?\n\nEsta acción no se puede deshacer.",
         ):
             if self.controller:
                 # Implementar eliminación en el controlador
-                show_success(self, "Herraje Eliminado", "El herraje ha sido eliminado exitosamente.")
+                show_success(
+                    self,
+                    "Herraje Eliminado",
+                    "El herraje ha sido eliminado exitosamente.",
+                )
                 self.actualizar_datos()
-    
+
     def show_asignar_obra_dialog(self):
         """Muestra el diálogo para asignar herraje a una obra."""
         current_row = self.herrajes_table.currentRow()
         if current_row < 0:
-            show_warning(self, "Sin selección", "Por favor seleccione un herraje para asignar a una obra.")
+            show_warning(
+                self,
+                "Sin selección",
+                "Por favor seleccione un herraje para asignar a una obra.",
+            )
             return
-        
+
         # Aquí implementarías el diálogo de asignación a obra
-        show_success(self, "Asignación Exitosa", "El herraje ha sido asignado a la obra correctamente.")
-    
+        show_success(
+            self,
+            "Asignación Exitosa",
+            "El herraje ha sido asignado a la obra correctamente.",
+        )
+
     def show_crear_pedido_dialog(self):
         """Muestra el diálogo para crear un pedido."""
         # Implementar diálogo de pedido
@@ -711,47 +796,47 @@ class HerrajesView(QWidget):
 
 class DialogoAsignarObra(QDialog):
     """Diálogo para asignar herraje a obra."""
-    
+
     def __init__(self, parent=None, codigo_herraje="", descripcion=""):
         super().__init__(parent)
         self.setWindowTitle("Asignar Herraje a Obra")
         self.setModal(True)
         self.setFixedSize(400, 300)
-        
+
         self.codigo_herraje = codigo_herraje
         self.descripcion = descripcion
-        
+
         self.init_ui()
-    
+
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""
         layout = QVBoxLayout(self)
-        
+
         # Información del herraje
         info_label = QLabel(f"Herraje: {self.codigo_herraje} - {self.descripcion}")
         info_label.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         layout.addWidget(info_label)
-        
+
         # Formulario
         form_layout = QFormLayout()
-        
+
         self.obra_combo = QComboBox()
         self.obra_combo.addItems(["Obra 1", "Obra 2", "Obra 3"])  # Datos demo
-        
+
         self.cantidad_spin = QDoubleSpinBox()
         self.cantidad_spin.setMinimum(0.1)
         self.cantidad_spin.setMaximum(9999.0)
         self.cantidad_spin.setValue(1.0)
-        
+
         self.observaciones_text = QTextEdit()
         self.observaciones_text.setMaximumHeight(100)
-        
+
         form_layout.addRow("Obra:", self.obra_combo)
         form_layout.addRow("Cantidad:", self.cantidad_spin)
         form_layout.addRow("Observaciones:", self.observaciones_text)
-        
+
         layout.addLayout(form_layout)
-        
+
         # Botones
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -759,57 +844,61 @@ class DialogoAsignarObra(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-    
+
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
         return {
             "obra_id": self.obra_combo.currentIndex() + 1,
             "cantidad": self.cantidad_spin.value(),
-            "observaciones": self.observaciones_text.toPlainText()
+            "observaciones": self.observaciones_text.toPlainText(),
         }
 
 
 class DialogoCrearPedido(QDialog):
     """Diálogo para crear pedido de herrajes."""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Crear Pedido de Herrajes")
         self.setModal(True)
         self.setFixedSize(500, 400)
-        
+
         self.init_ui()
-    
+
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""
         layout = QVBoxLayout(self)
-        
+
         # Formulario
         form_layout = QFormLayout()
-        
+
         self.obra_combo = QComboBox()
         self.obra_combo.addItems(["Obra 1", "Obra 2", "Obra 3"])  # Datos demo
-        
+
         self.proveedor_combo = QComboBox()
-        self.proveedor_combo.addItems(["Proveedor A", "Proveedor B", "Proveedor C"])  # Datos demo
-        
+        self.proveedor_combo.addItems(
+            ["Proveedor A", "Proveedor B", "Proveedor C"]
+        )  # Datos demo
+
         self.observaciones_text = QTextEdit()
         self.observaciones_text.setMaximumHeight(100)
-        
+
         form_layout.addRow("Obra:", self.obra_combo)
         form_layout.addRow("Proveedor:", self.proveedor_combo)
         form_layout.addRow("Observaciones:", self.observaciones_text)
-        
+
         layout.addLayout(form_layout)
-        
+
         # Lista de herrajes (simplificada)
         herrajes_label = QLabel("Herrajes del pedido:")
         layout.addWidget(herrajes_label)
-        
+
         self.herrajes_list = QTextEdit()
-        self.herrajes_list.setPlainText("Herraje 1 - Cantidad: 5\nHeraje 2 - Cantidad: 3")
+        self.herrajes_list.setPlainText(
+            "Herraje 1 - Cantidad: 5\nHeraje 2 - Cantidad: 3"
+        )
         layout.addWidget(self.herrajes_list)
-        
+
         # Botones
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -817,7 +906,7 @@ class DialogoCrearPedido(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-    
+
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
         return {
@@ -825,56 +914,58 @@ class DialogoCrearPedido(QDialog):
             "proveedor": self.proveedor_combo.currentText(),
             "herrajes_lista": [
                 {"herraje_id": 1, "cantidad": 5, "precio_unitario": 10.0},
-                {"herraje_id": 2, "cantidad": 3, "precio_unitario": 15.0}
-            ]
+                {"herraje_id": 2, "cantidad": 3, "precio_unitario": 15.0},
+            ],
         }
 
 
 class DialogoCrearHerrajeDialog(QDialog):
     """Diálogo para crear/editar herraje."""
-    
+
     def __init__(self, parent=None, herraje=None):
         super().__init__(parent)
         self.setWindowTitle("Crear Herraje" if herraje is None else "Editar Herraje")
         self.setModal(True)
         self.setFixedSize(600, 700)
-        
+
         self.herraje = herraje
         self.init_ui()
-        
+
         if herraje:
             self.cargar_datos_herraje(herraje)
-    
+
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""
         layout = QVBoxLayout(self)
-        
+
         # Scroll area para el formulario
         scroll_area = QScrollArea()
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout(scroll_widget)
-        
+
         # Información básica
         info_group = QGroupBox("Información Básica")
         info_layout = QFormLayout(info_group)
-        
+
         self.codigo_input = QLineEdit()
         self.descripcion_input = QLineEdit()
         self.tipo_combo = QComboBox()
-        self.tipo_combo.addItems(["BISAGRA", "CERRADURA", "MANIJA", "TORNILLO", "RIEL", "SOPORTE", "OTRO"])
-        
+        self.tipo_combo.addItems(
+            ["BISAGRA", "CERRADURA", "MANIJA", "TORNILLO", "RIEL", "SOPORTE", "OTRO"]
+        )
+
         self.proveedor_input = QLineEdit()
         self.precio_spin = QDoubleSpinBox()
         self.precio_spin.setMaximum(99999.99)
         self.precio_spin.setDecimals(2)
-        
+
         self.unidad_combo = QComboBox()
         self.unidad_combo.addItems(["UNIDAD", "PAR", "JUEGO", "METRO", "KILOGRAMO"])
-        
+
         self.categoria_input = QLineEdit()
         self.estado_combo = QComboBox()
         self.estado_combo.addItems(["ACTIVO", "INACTIVO", "DESCONTINUADO"])
-        
+
         info_layout.addRow("Código:", self.codigo_input)
         info_layout.addRow("Descripción:", self.descripcion_input)
         info_layout.addRow("Tipo:", self.tipo_combo)
@@ -883,25 +974,25 @@ class DialogoCrearHerrajeDialog(QDialog):
         info_layout.addRow("Unidad:", self.unidad_combo)
         info_layout.addRow("Categoría:", self.categoria_input)
         info_layout.addRow("Estado:", self.estado_combo)
-        
+
         # Stock
         stock_group = QGroupBox("Stock")
         stock_layout = QFormLayout(stock_group)
-        
+
         self.stock_minimo_spin = QSpinBox()
         self.stock_minimo_spin.setMaximum(99999)
         self.stock_actual_spin = QSpinBox()
         self.stock_actual_spin.setMaximum(99999)
         self.ubicacion_input = QLineEdit()
-        
+
         stock_layout.addRow("Stock Mínimo:", self.stock_minimo_spin)
         stock_layout.addRow("Stock Actual:", self.stock_actual_spin)
         stock_layout.addRow("Ubicación:", self.ubicacion_input)
-        
+
         # Detalles técnicos
         detalles_group = QGroupBox("Detalles Técnicos")
         detalles_layout = QFormLayout(detalles_group)
-        
+
         self.marca_input = QLineEdit()
         self.modelo_input = QLineEdit()
         self.color_input = QLineEdit()
@@ -911,39 +1002,39 @@ class DialogoCrearHerrajeDialog(QDialog):
         self.peso_spin.setMaximum(9999.999)
         self.peso_spin.setDecimals(3)
         self.peso_spin.setSuffix(" kg")
-        
+
         detalles_layout.addRow("Marca:", self.marca_input)
         detalles_layout.addRow("Modelo:", self.modelo_input)
         detalles_layout.addRow("Color:", self.color_input)
         detalles_layout.addRow("Material:", self.material_input)
         detalles_layout.addRow("Dimensiones:", self.dimensiones_input)
         detalles_layout.addRow("Peso:", self.peso_spin)
-        
+
         # Observaciones
         obs_group = QGroupBox("Observaciones y Especificaciones")
         obs_layout = QVBoxLayout(obs_group)
-        
+
         self.observaciones_text = QTextEdit()
         self.observaciones_text.setMaximumHeight(80)
         self.especificaciones_text = QTextEdit()
         self.especificaciones_text.setMaximumHeight(80)
-        
+
         obs_layout.addWidget(QLabel("Observaciones:"))
         obs_layout.addWidget(self.observaciones_text)
         obs_layout.addWidget(QLabel("Especificaciones técnicas:"))
         obs_layout.addWidget(self.especificaciones_text)
-        
+
         # Agregar grupos al scroll
         scroll_layout.addWidget(info_group)
         scroll_layout.addWidget(stock_group)
         scroll_layout.addWidget(detalles_group)
         scroll_layout.addWidget(obs_group)
         scroll_layout.addStretch()
-        
+
         scroll_area.setWidget(scroll_widget)
         scroll_area.setWidgetResizable(True)
         layout.addWidget(scroll_area)
-        
+
         # Botones
         buttons = QDialogButtonBox(
             QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
@@ -951,7 +1042,7 @@ class DialogoCrearHerrajeDialog(QDialog):
         buttons.accepted.connect(self.accept)
         buttons.rejected.connect(self.reject)
         layout.addWidget(buttons)
-    
+
     def cargar_datos_herraje(self, herraje):
         """Carga los datos del herraje en el formulario."""
         self.codigo_input.setText(herraje.get("codigo", ""))
@@ -962,21 +1053,21 @@ class DialogoCrearHerrajeDialog(QDialog):
         self.unidad_combo.setCurrentText(herraje.get("unidad_medida", "UNIDAD"))
         self.categoria_input.setText(herraje.get("categoria", ""))
         self.estado_combo.setCurrentText(herraje.get("estado", "ACTIVO"))
-        
+
         self.stock_minimo_spin.setValue(herraje.get("stock_minimo", 0))
         self.stock_actual_spin.setValue(herraje.get("stock_actual", 0))
         self.ubicacion_input.setText(herraje.get("ubicacion", ""))
-        
+
         self.marca_input.setText(herraje.get("marca", ""))
         self.modelo_input.setText(herraje.get("modelo", ""))
         self.color_input.setText(herraje.get("color", ""))
         self.material_input.setText(herraje.get("material", ""))
         self.dimensiones_input.setText(herraje.get("dimensiones", ""))
         self.peso_spin.setValue(herraje.get("peso", 0.0))
-        
+
         self.observaciones_text.setText(herraje.get("observaciones", ""))
         self.especificaciones_text.setText(herraje.get("especificaciones", ""))
-    
+
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
         return {
@@ -998,5 +1089,5 @@ class DialogoCrearHerrajeDialog(QDialog):
             "dimensiones": self.dimensiones_input.text(),
             "peso": self.peso_spin.value(),
             "observaciones": self.observaciones_text.toPlainText(),
-            "especificaciones": self.especificaciones_text.toPlainText()
+            "especificaciones": self.especificaciones_text.toPlainText(),
         }

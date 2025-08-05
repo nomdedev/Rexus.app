@@ -1,4 +1,3 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
@@ -18,6 +17,12 @@ import json
 import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Importar DataSanitizer para seguridad
+try:
+    from utils.data_sanitizer import DataSanitizer
+except ImportError:
+    from rexus.utils.data_sanitizer import DataSanitizer
 
 
 class ConfiguracionModel:
@@ -111,6 +116,7 @@ class ConfiguracionModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.data_sanitizer = DataSanitizer()  # Para validación y sanitización
         self.tabla_configuracion = "configuracion_sistema"
         self.config_file = Path("config/rexus_config.json")
         self.config_cache = {}
@@ -121,32 +127,82 @@ class ConfiguracionModel:
         # Inicializar configuración
         self._verificar_tablas()
         self._cargar_configuracion_inicial()
-    
+
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
-        
+
         Args:
             table_name: Nombre de tabla a validar
-            
+
         Returns:
             Nombre de tabla validado
-            
+
         Raises:
             ValueError: Si el nombre de tabla no es válido
         """
         import re
-        
+
         # Solo permitir nombres alfanuméricos y underscore
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
             raise ValueError(f"Nombre de tabla inválido: {table_name}")
-        
+
         # Lista blanca de tablas permitidas
-        allowed_tables = {'configuracion_sistema'}
+        allowed_tables = {"configuracion_sistema"}
         if table_name not in allowed_tables:
             raise ValueError(f"Tabla no permitida: {table_name}")
-            
+
         return table_name
+
+    def validar_configuracion_duplicada(
+        self, clave: str, excluir_id: Optional[int] = None
+    ) -> bool:
+        """
+        Valida si una configuración ya existe (para evitar duplicados).
+
+        Args:
+            clave: Clave de configuración a validar
+            excluir_id: ID a excluir de la validación (para actualizaciones)
+
+        Returns:
+            bool: True si existe duplicado, False si no existe
+        """
+        try:
+            if not self.db_connection:
+                # Verificar en caché local si no hay BD
+                return clave in self.config_cache
+
+            # Sanitizar la clave de entrada
+            clave_sanitizada = self.data_sanitizer.sanitize_string(str(clave).strip())
+
+            cursor = self.db_connection.cursor()
+            try:
+                tabla_validada = self._validate_table_name(self.tabla_configuracion)
+
+                if excluir_id:
+                    # Para actualizaciones, excluir el ID actual
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE clave = ? AND id != ?",
+                        (clave_sanitizada, excluir_id),
+                    )
+                else:
+                    # Para nuevas configuraciones
+                    cursor.execute(
+                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE clave = ?",
+                        (clave_sanitizada,),
+                    )
+
+                result = cursor.fetchone()
+                existe = result and result[0] > 0
+
+                return bool(existe)
+
+            finally:
+                cursor.close()
+
+        except Exception as e:
+            print(f"[CONFIGURACION] Error validando configuración duplicada: {e}")
+            return False  # En caso de error, permitir la operación
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
@@ -156,24 +212,30 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Verificar si la tabla existe
             cursor.execute(
                 "SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype='U'",
                 (self.tabla_configuracion,),
             )
-            
+
             result = cursor.fetchone()
             if result and result[0] > 0:
-                print(f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente.")
+                print(
+                    f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente."
+                )
             else:
-                print(f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos")
+                print(
+                    f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos"
+                )
                 self.db_connection = None  # Deshabilitar BD y usar archivo
-                
+
             cursor.close()
 
         except Exception as e:
-            print(f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos")
+            print(
+                f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos"
+            )
             self.db_connection = None  # Fallback a archivo
 
     def _cargar_configuracion_inicial(self):
@@ -220,11 +282,13 @@ class ConfiguracionModel:
             self._cargar_cache()
 
         except Exception as e:
-            print(f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo")
+            print(
+                f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo"
+            )
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except:
+                except Exception:
                     pass
             # Fallback a archivo
             self.db_connection = None
@@ -259,12 +323,14 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Verificar si la columna 'activo' existe
             try:
                 tabla_validada = self._validate_table_name(self.tabla_configuracion)
-                cursor.execute(f"SELECT clave, valor FROM [{tabla_validada}] WHERE activo = 1")
-            except:
+                cursor.execute(
+                    f"SELECT clave, valor FROM [{tabla_validada}] WHERE activo = 1"
+                )
+            except Exception:
                 # Si falla, la tabla podría no tener columna 'activo'
                 tabla_validada = self._validate_table_name(self.tabla_configuracion)
                 cursor.execute(f"SELECT clave, valor FROM [{tabla_validada}]")
@@ -273,12 +339,16 @@ class ConfiguracionModel:
             rows = cursor.fetchall()
             for row in rows:
                 self.config_cache[row[0]] = row[1]
-                
+
             cursor.close()
-            print(f"[CONFIGURACION] Cache cargado con {len(self.config_cache)} configuraciones")
+            print(
+                f"[CONFIGURACION] Cache cargado con {len(self.config_cache)} configuraciones"
+            )
 
         except Exception as e:
-            print(f"[CONFIGURACION] Error cargando cache: {e} - usando configuración por defecto")
+            print(
+                f"[CONFIGURACION] Error cargando cache: {e} - usando configuración por defecto"
+            )
             self.config_cache = self.CONFIG_DEFAULTS.copy()
 
     def obtener_valor(self, clave: str, valor_por_defecto: Any = None) -> Any:
@@ -325,77 +395,106 @@ class ConfiguracionModel:
             Tuple[bool, str]: (éxito, mensaje)
         """
         try:
-            # Convertir valor a string para almacenamiento
-            valor_str = str(valor)
+            # Validar y sanitizar parámetros de entrada
+            if not clave or not isinstance(clave, str):
+                return (
+                    False,
+                    "La clave de configuración es obligatoria y debe ser string",
+                )
+
+            # Sanitizar entradas para prevenir XSS y ataques
+            clave_sanitizada = self.data_sanitizer.sanitize_string(clave.strip())
+            usuario_sanitizado = self.data_sanitizer.sanitize_string(
+                str(usuario).strip()
+            )
+
+            # Validar longitud de clave
+            if len(clave_sanitizada) > 100:
+                return (
+                    False,
+                    "La clave de configuración es demasiado larga (máximo 100 caracteres)",
+                )
+
+            # Convertir valor a string para almacenamiento (ya sanitizado internamente)
+            valor_str = self.data_sanitizer.sanitize_string(str(valor))
 
             if self.db_connection:
                 cursor = self.db_connection.cursor()
 
                 try:
-                    # Verificar si existe
+                    # Verificar si existe con parámetros seguros
+                    tabla_validada = self._validate_table_name(self.tabla_configuracion)
                     cursor.execute(
-                        f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_configuracion)}] WHERE clave = ?",
-                        (clave,),
+                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE clave = ?",
+                        (clave_sanitizada,),
                     )
                     result = cursor.fetchone()
                     existe = result[0] > 0 if result else False
 
                     if existe:
-                        # Actualizar
+                        # Actualizar con validación
                         try:
                             cursor.execute(
                                 f"""
-                                UPDATE [{self._validate_table_name(self.tabla_configuracion)}]
+                                UPDATE [{tabla_validada}]
                                 SET valor = ?, fecha_modificacion = GETDATE()
                                 WHERE clave = ?
                             """,
-                                (valor_str, clave),
+                                (valor_str, clave_sanitizada),
                             )
-                        except:
+                        except Exception:
                             # Si no existe fecha_modificacion, usar versión simple
                             cursor.execute(
                                 f"""
-                                UPDATE [{self._validate_table_name(self.tabla_configuracion)}]
+                                UPDATE [{tabla_validada}]
                                 SET valor = ?
                                 WHERE clave = ?
                             """,
-                                (valor_str, clave),
+                                (valor_str, clave_sanitizada),
                             )
                     else:
-                        # Insertar
-                        categoria = self._obtener_categoria_por_clave(clave)
-                        descripcion = self._obtener_descripcion_por_clave(clave)
+                        # Insertar con datos validados
+                        categoria = self._obtener_categoria_por_clave(clave_sanitizada)
+                        descripcion = self._obtener_descripcion_por_clave(
+                            clave_sanitizada
+                        )
                         tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
 
                         cursor.execute(
                             f"""
-                            INSERT INTO [{self._validate_table_name(self.tabla_configuracion)}]
+                            INSERT INTO [{tabla_validada}]
                             (clave, valor, descripcion, tipo, categoria)
                             VALUES (?, ?, ?, ?, ?)
                         """,
-                            (clave, valor_str, descripcion, tipo_dato, categoria),
+                            (
+                                clave_sanitizada,
+                                valor_str,
+                                descripcion,
+                                tipo_dato,
+                                categoria,
+                            ),
                         )
 
                     self.db_connection.commit()
-                    
+
                 finally:
                     cursor.close()
 
-            # Actualizar cache
-            self.config_cache[clave] = valor_str
+            # Actualizar cache con datos sanitizados
+            self.config_cache[clave_sanitizada] = valor_str
 
             # Guardar en archivo si no hay BD
             if not self.db_connection:
                 self._guardar_en_archivo()
 
-            return True, f"Configuración '{clave}' actualizada exitosamente"
+            return True, f"Configuración '{clave_sanitizada}' actualizada exitosamente"
 
         except Exception as e:
             print(f"[CONFIGURACION] Error estableciendo valor: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except:
+                except Exception:
                     pass
             return False, f"Error estableciendo configuración: {str(e)}"
 
@@ -419,7 +518,7 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             try:
                 # Intentar con columna activo
                 cursor.execute(
@@ -431,7 +530,7 @@ class ConfiguracionModel:
                 """,
                     (categoria,),
                 )
-            except:
+            except Exception:
                 # Si falla, usar sin columna activo
                 cursor.execute(
                     f"""
@@ -452,7 +551,7 @@ class ConfiguracionModel:
                     "tipo": row[3] if len(row) > 3 else "string",
                     "editable": True,
                 }
-                
+
             cursor.close()
             return configs
 
@@ -477,7 +576,7 @@ class ConfiguracionModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             try:
                 # Intentar con todas las columnas
                 cursor.execute(f"""
@@ -487,7 +586,7 @@ class ConfiguracionModel:
                     WHERE activo = 1
                     ORDER BY categoria, clave
                 """)
-            except:
+            except Exception:
                 try:
                     # Sin fecha_modificacion ni activo
                     cursor.execute(f"""
@@ -495,7 +594,7 @@ class ConfiguracionModel:
                         FROM [{self._validate_table_name(self.tabla_configuracion)}]
                         ORDER BY categoria, clave
                     """)
-                except:
+                except Exception:
                     # Solo columnas básicas
                     cursor.execute(f"""
                         SELECT clave, valor
@@ -505,7 +604,7 @@ class ConfiguracionModel:
 
             configuraciones = []
             rows = cursor.fetchall()
-            
+
             for row in rows:
                 if len(row) >= 5:
                     # Formato completo
@@ -527,9 +626,9 @@ class ConfiguracionModel:
                     }
                 else:
                     continue
-                    
+
                 configuraciones.append(config)
-                
+
             cursor.close()
             return configuraciones
 
@@ -555,12 +654,15 @@ class ConfiguracionModel:
         else:
             return False, f"No existe valor por defecto para '{clave}'"
 
-    def exportar_configuracion(self, archivo:
+    def exportar_configuracion(
+        self,
+        archivo:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('exportar_configuracion'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str) -> Tuple[bool, str]:
+        str,
+    ) -> Tuple[bool, str]:
         """
         Exporta la configuración actual a un archivo.
 
@@ -583,12 +685,14 @@ class ConfiguracionModel:
             return False, f"Error exportando configuración: {str(e)}"
 
     def importar_configuracion(
-        self, archivo:
+        self,
+        archivo:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('importar_configuracion'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str, usuario: str = "SISTEMA"
+        str,
+        usuario: str = "SISTEMA",
     ) -> Tuple[bool, str]:
         """
         Importa configuración desde un archivo.
