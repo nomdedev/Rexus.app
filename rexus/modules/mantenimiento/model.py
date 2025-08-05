@@ -269,7 +269,7 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             query = f"""
-                UPDATE {self.tabla_equipos}
+                UPDATE [{self._validate_table_name(self.tabla_equipos)}]
                 SET nombre = ?, tipo = ?, modelo = ?, marca = ?, numero_serie = ?,
                     fecha_adquisicion = ?, fecha_instalacion = ?, ubicacion = ?,
                     estado = ?, valor_adquisicion = ?, vida_util_anos = ?,
@@ -355,7 +355,7 @@ class MantenimientoModel:
                     h.numero_serie, h.fecha_adquisicion, h.ubicacion,
                     h.estado, h.valor_adquisicion, h.vida_util_anos,
                     h.observaciones, h.fecha_creacion
-                FROM {self.tabla_herramientas} h
+                FROM [{self._validate_table_name(self.tabla_herramientas)}] h
                 WHERE """
                 + " AND ".join(conditions)
                 + """
@@ -488,8 +488,8 @@ class MantenimientoModel:
                     m.tipo, m.descripcion, m.fecha_programada, m.fecha_realizacion,
                     m.estado, m.observaciones, m.costo_estimado, m.costo_real,
                     m.responsable, m.fecha_creacion
-                FROM {self.tabla_mantenimientos} m
-                LEFT JOIN {self.tabla_equipos} e ON m.equipo_id = e.id
+                FROM [{self._validate_table_name(self.tabla_mantenimientos)}] m
+                LEFT JOIN [{self._validate_table_name(self.tabla_equipos)}] e ON m.equipo_id = e.id
                 WHERE """
                 + " AND ".join(conditions)
                 + """

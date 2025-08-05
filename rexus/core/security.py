@@ -450,13 +450,9 @@ class SecurityManager(QObject):
         
         ACTUALIZADO: Migrado de SHA-256 inseguro a hashing seguro con salt.
         """
-        try:
-            from rexus.utils.password_security import hash_password_secure
-            return hash_password_secure(password)
-        except ImportError:
-            # Fallback temporal para compatibilidad (INSEGURO)
-            print("[WARNING] Sistema de hashing seguro no disponible - usando SHA-256 temporal")
-            return hashlib.sha256(password.encode()).hexdigest()
+        # Usar sistema de hashing seguro
+        from rexus.utils.password_security import hash_password_secure
+        return hash_password_secure(password)
 
     def verify_password(self, password: str, password_hash: str) -> bool:
         """
@@ -475,10 +471,9 @@ class SecurityManager(QObject):
                 print(f"[SECURITY] Hash de contraseña necesita migración a formato seguro")
             
             return is_valid
-        except ImportError:
-            # Fallback temporal para compatibilidad (INSEGURO)
-            print("[WARNING] Sistema de verificación segura no disponible - usando SHA-256 temporal")
-            return hashlib.sha256(password.encode()).hexdigest() == password_hash
+        except Exception as e:
+            print(f"[ERROR] Error verificando contraseña: {e}")
+            return False
 
     def login(self, username: str, password: str) -> bool:
         """Autentica un usuario usando AuthManager."""
