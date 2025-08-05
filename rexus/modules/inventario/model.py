@@ -13,10 +13,13 @@ import datetime
 import sys
 from io import BytesIO
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Tuple, Optional
 
 import qrcode
 from PIL import Image
+
+# Importar sistema de paginación
+from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
 
 # Importar utilidades de seguridad
 try:
@@ -41,7 +44,7 @@ except ImportError:
     SQL_SECURITY_AVAILABLE = False
 
 
-class InventarioModel:
+class InventarioModel(PaginatedTableMixin):
     """Modelo para gestionar el inventario de productos."""
 
     def __init__(self, db_connection=None):
@@ -51,6 +54,9 @@ class InventarioModel:
         Args:
             db_connection: Conexión a la base de datos
         """
+        # Inicializar mixin de paginación
+        super().__init__()
+        
         self.db_connection = db_connection
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
@@ -71,6 +77,112 @@ class InventarioModel:
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+    
+    def get_paginated_data(self, offset: int, limit: int, 
+                          filters: Optional[Dict] = None) -> Tuple[List[Dict], int]:
+        """
+        Implementación requerida por PaginatedTableMixin.
+        Obtiene productos del inventario con paginación.
+        
+        Args:
+            offset: Número de registros a saltar
+            limit: Número máximo de registros a devolver
+            filters: Filtros adicionales (categoria, activo, etc.)
+            
+        Returns:
+            Tupla (lista_productos, total_productos)
+        """
+        if not self.db_connection:
+            return [], 0
+        
+        try:
+            # Construir consulta base
+            base_query = f"""
+                SELECT id, codigo, nombre, categoria, tipo, marca, 
+                       cantidad_disponible, precio_unitario, proveedor,
+                       ubicacion_almacen, fecha_creacion, activo
+                FROM [{self.tabla_inventario}]
+                WHERE 1=1
+            """
+            
+            params = []
+            
+            # Aplicar filtros
+            if filters:
+                if filters.get('categoria'):
+                    base_query += " AND categoria = ?"
+                    params.append(filters['categoria'])
+                
+                if filters.get('activo') is not None:
+                    base_query += " AND activo = ?"
+                    params.append(1 if filters['activo'] else 0)
+                
+                if filters.get('search'):
+                    base_query += " AND (nombre LIKE ? OR codigo LIKE ? OR marca LIKE ?)"
+                    search_term = f"%{filters['search']}%"
+                    params.extend([search_term, search_term, search_term])
+            
+            # Crear consultas paginadas
+            paginated_query, count_query = create_pagination_query(base_query)
+            
+            # Obtener total de elementos
+            cursor = self.db_connection.cursor()
+            cursor.execute(count_query, params)
+            total_items = cursor.fetchone()[0]
+            
+            # Obtener datos paginados
+            cursor.execute(paginated_query, params + [offset, limit])
+            
+            productos = []
+            for row in cursor.fetchall():
+                producto = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'nombre': row[2],
+                    'categoria': row[3],
+                    'tipo': row[4],
+                    'marca': row[5],
+                    'cantidad_disponible': row[6],
+                    'precio_unitario': row[7],
+                    'proveedor': row[8],
+                    'ubicacion_almacen': row[9],
+                    'fecha_creacion': row[10],
+                    'activo': bool(row[11])
+                }
+                productos.append(producto)
+            
+            return productos, total_items
+            
+        except Exception as e:
+            print(f"Error obteniendo datos paginados de inventario: {e}")
+            return [], 0
+    
+    def obtener_productos_paginados(self, page: int = 1, page_size: int = 50,
+                                   categoria: str = None, activo: bool = None,
+                                   search: str = None) -> Tuple[List[Dict], Dict]:
+        """
+        Obtiene productos del inventario con paginación.
+        
+        Args:
+            page: Número de página (empezando desde 1)
+            page_size: Productos por página
+            categoria: Filtrar por categoría
+            activo: Filtrar por estado activo
+            search: Término de búsqueda
+            
+        Returns:
+            Tupla (lista_productos, información_paginación)
+        """
+        filters = {}
+        if categoria:
+            filters['categoria'] = categoria
+        if activo is not None:
+            filters['activo'] = activo
+        if search:
+            filters['search'] = search
+        
+        productos, pagination_info = self.get_paginated_results(page, page_size, filters)
+        return productos, pagination_info.to_dict()
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""

@@ -284,12 +284,7 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al cargar categorÃ­as: {str(e)}")
 
     def actualizar_estadisticas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadÃ­sticas generales."""
+        """Actualiza las estadísticas generales."""
         try:
             if self.model:
                 stats = self.model.obtener_estadisticas_generales()

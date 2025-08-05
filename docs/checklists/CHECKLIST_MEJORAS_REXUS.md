@@ -292,51 +292,70 @@ SOFTWARE.
 ---
 
 ## CONFIGURACIÓN
-### Alta Prioridad
-- [ ] Revisar lectura y escritura de parámetros en widgets de configuración.
-- [ ] Validar que la carga de configuraciones y parámetros no arroje excepciones.
-- [ ] Manejo de errores robusto en lectura de archivos y actualización de parámetros.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Mejorar tooltips explicativos en widgets de configuración.
-- [ ] Limpieza de imports y dependencias.
-### Baja Prioridad
-- [ ] Documentar el modelo de configuración y sus relaciones.
+  - [ ] Migrar todos los métodos principales a scripts externos en scripts/sql/ y validar parámetros
+  - [ ] Usar siempre parámetros en cursor.execute y evitar interpolación directa
+  - [ ] Auditar y testear todos los métodos de acceso a datos
+  - [ ] Validar y sanitizar todos los datos de entrada en formularios de configuración (parámetros, valores, fechas)
+  - [ ] Implementar validación de parámetros duplicados y límites máximos por tipo
+  - [ ] Revisar y mejorar feedback visual en la UI para operaciones de configuración (alta, baja, edición, errores)
+  - [ ] Auditar manejo de errores y logs en operaciones de configuración
+  - [ ] Validar integridad relacional entre configuración y otros módulos (inventario, usuarios, obras)
+  - [ ] Mejorar tooltips explicativos en widgets de configuración
+  - [ ] Limpieza de imports y dependencias
+  - [ ] Optimización de rendimiento y refactorización de funciones grandes
+  - [ ] Cobertura de tests automatizados: unitarios, edge cases, integración, UI
+  - [ ] Documentar el modelo de configuración y sus relaciones
 
 ---
 
 ## COMPRAS
-### Alta Prioridad
-- [ ] Funcionalidades faltantes: proveedores, órdenes, seguimiento.
-- [ ] Validar y sanitizar todos los datos de entrada.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Optimización de rendimiento y refactorización de funciones grandes.
-### Baja Prioridad
-- [ ] Documentar el modelo de compras y sus relaciones.
+  - [ ] Migrar todos los métodos principales a scripts externos en scripts/sql/ y validar parámetros
+  - [ ] Usar siempre parámetros en cursor.execute y evitar interpolación directa
+  - [ ] Auditar y testear todos los métodos de acceso a datos
+  - [ ] Validar y sanitizar todos los datos de entrada en formularios de compras (proveedores, órdenes, productos, fechas)
+  - [ ] Implementar validación de órdenes duplicadas y límites máximos por proveedor
+  - [ ] Revisar y mejorar feedback visual en la UI para operaciones de compras (alta, baja, edición, errores)
+  - [ ] Auditar manejo de errores y logs en operaciones de compras
+  - [ ] Validar integridad relacional entre compras y otros módulos (inventario, obras, proveedores)
+  - [ ] Mejorar tooltips y mensajes en controles y botones de acción
+  - [ ] Optimización de rendimiento y refactorización de funciones grandes
+  - [ ] Cobertura de tests automatizados: unitarios, edge cases, integración, UI
+  - [ ] Documentar el modelo de compras y sus relaciones
 
 ---
 
 ## MANTENIMIENTO
-### Alta Prioridad
-- [ ] Funcionalidades faltantes: programación, historial.
-- [ ] Validar y sanitizar todos los datos de entrada.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
-### Media Prioridad
-- [ ] Optimización de rendimiento y refactorización de funciones grandes.
-### Baja Prioridad
-- [ ] Documentar el modelo de mantenimiento y sus relaciones.
+  - [ ] Migrar todos los métodos principales a scripts externos en scripts/sql/ y validar parámetros
+  - [ ] Usar siempre parámetros en cursor.execute y evitar interpolación directa
+  - [ ] Auditar y testear todos los métodos de acceso a datos
+  - [ ] Validar y sanitizar todos los datos de entrada en formularios de mantenimiento (programación, historial, equipos, fechas)
+  - [ ] Implementar validación de programación duplicada y límites máximos por equipo
+  - [ ] Revisar y mejorar feedback visual en la UI para operaciones de mantenimiento (alta, baja, edición, errores)
+  - [ ] Auditar manejo de errores y logs en operaciones de mantenimiento
+  - [ ] Validar integridad relacional entre mantenimiento y otros módulos (inventario, obras, equipos)
+  - [ ] Mejorar tooltips y mensajes en controles y botones de acción
+  - [ ] Optimización de rendimiento y refactorización de funciones grandes
+  - [ ] Cobertura de tests automatizados: unitarios, edge cases, integración, UI
+  - [ ] Documentar el modelo de mantenimiento y sus relaciones
 
 ---
 
 ## OBRAS
 ### Alta Prioridad
-- [ ] Validar y sanitizar todos los datos de entrada.
-- [ ] Cobertura de tests automatizados (unitarios, edge cases, UI).
+  - [ ] Migrar todos los métodos principales a scripts externos en scripts/sql/ y validar parámetros
+  - [ ] Usar siempre parámetros en cursor.execute y evitar interpolación directa
+  - [ ] Auditar y testear todos los métodos de acceso a datos
+  - [ ] Validar y sanitizar todos los datos de entrada en formularios de obras (nombre, cliente, fechas, ubicaciones)
+  - [ ] Implementar validación de obras duplicadas y límites máximos por cliente
+  - [ ] Revisar y mejorar feedback visual en la UI para operaciones de obras (alta, baja, edición, errores)
+  - [ ] Auditar manejo de errores y logs en operaciones de obras
+  - [ ] Validar integridad relacional entre obras y otros módulos (inventario, clientes, compras, mantenimiento)
+  - [ ] Mejorar tooltips y mensajes en controles y botones de acción
+  - [ ] Optimización de rendimiento y refactorización de funciones grandes
+  - [ ] Cobertura de tests automatizados: unitarios, edge cases, integración, UI
+  - [ ] Documentar el modelo de obras y sus relaciones
 ### Media Prioridad
-- [ ] Optimización de rendimiento y refactorización de funciones grandes.
 ### Baja Prioridad
-- [ ] Documentar el modelo de obras y sus relaciones.
 
 ---
 
@@ -345,20 +364,43 @@ SOFTWARE.
 ### SEGURIDAD Y SQL SEGURO
   - [ ] Auditar y monitorear accesos y actividad.
   - [ ] Configurar análisis automático de seguridad en pipeline CI/CD.
+  - [ ] Migrar todas las consultas SQL a scripts externos en scripts/sql/ y validar parámetros en todos los módulos
+  - [ ] Usar siempre parámetros en cursor.execute y evitar interpolación directa
+  - [ ] Auditar y testear todos los métodos de acceso a datos en todos los módulos
+  - [ ] Validar y sanitizar todos los datos de entrada en formularios y endpoints
+  - [ ] Implementar validación de nombres de tablas y columnas en todas las consultas dinámicas
+  - [ ] Revisar todos los métodos que usan f-strings, + o .format para armar consultas
+  - [ ] Documentar cada método migrado y cada uno pendiente
+  - [ ] Actualizar TABLAS_PERMITIDAS y COLUMNAS_PERMITIDAS con todas las tablas y columnas del sistema
+  - [ ] Reemplazar SELECT/INSERT/UPDATE/DELETE directos por constructores seguros
+  - [ ] Verificar que siempre exista cláusula WHERE en DELETE/UPDATE
 
 ### VALIDACIÓN Y SANITIZACIÓN DE DATOS
   - [ ] Aplicar validación en todos los formularios (login, registro, edición, inventario, pedidos, configuración).
   - [ ] Revisar todos los campos donde se muestra contenido ingresado por el usuario.
   - [ ] Validar relaciones (cliente, productos, pedidos).
+  - [ ] Aplicar validación y sanitización en todos los formularios y endpoints (login, registro, edición, inventario, pedidos, configuración, obras, compras, mantenimiento)
+  - [ ] Revisar todos los campos donde se muestra contenido ingresado por el usuario
+  - [ ] Validar relaciones (cliente, productos, pedidos, inventario, obras, compras, mantenimiento)
+  - [ ] Implementar validadores centralizados y estandarizar manejo de errores de validación en la UI
+  - [ ] Documentar reglas de validación y sanitización implementadas
 
 ### EDGE CASES Y TESTS
   - [ ] Edge cases: datos límite, condiciones de error, concurrencia, datos corruptos, memoria/disco limitado, red lenta, usuario sin permisos, sesión expirada, múltiples logins, drag & drop, cookies/JS deshabilitado.
   - [ ] Pendiente: Tests de integración, concurrencia, subida de archivos, mocks
+  - [ ] Crear y ejecutar pruebas de edge cases: datos límite, condiciones de error, concurrencia, datos corruptos, memoria/disco limitado, red lenta, usuario sin permisos, sesión expirada, múltiples logins, drag & drop, cookies/JS deshabilitado
+  - [ ] Validar cobertura de tests automatizados y edge cases en todos los módulos
+  - [ ] Revisar y mejorar tests de integración y UI
+  - [ ] Documentar resultados y hallazgos en cada ciclo de QA
 
 ### USO DE UTILIDADES SQL SEGURAS
   - [ ] Parametrizar todas las consultas de autenticación, búsqueda y filtros.
   - [ ] Sanitizar parámetros de filtros y datos de perfil.
   - [ ] Validar datos de inventario y obras con `FormValidator`.
+  - [ ] Parametrizar todas las consultas de autenticación, búsqueda y filtros en todos los módulos
+  - [ ] Sanitizar parámetros de filtros y datos de perfil
+  - [ ] Validar datos de inventario, obras, compras, mantenimiento, usuarios con FormValidator
+  - [ ] Documentar el uso de utilidades SQL seguras en cada módulo
 
 [// --- FIN CHECKLIST UNIFICADO ORDENADO POR MÓDULO Y PRIORIDAD ---]
 
