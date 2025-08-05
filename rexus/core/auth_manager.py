@@ -86,6 +86,7 @@ class AuthManager:
     }
 
     current_user_role: Optional[UserRole] = None
+    current_user: Optional[str] = None
 
     @classmethod
     def set_current_user_role(cls, role: UserRole):
@@ -119,13 +120,17 @@ class AuthManager:
         return current_level >= required_level
 
     @classmethod
-    def authenticate_user(cls, username: str, password: str) -> bool:
+    def authenticate_user(cls, username: str, password: str):
         """Autentica un usuario contra la base de datos"""
         try:
             # Importar conexión a base de datos
             import hashlib
-            from rexus.utils.password_security import verify_password_secure, hash_password_secure
+
             from rexus.core.database import get_users_connection
+            from rexus.utils.password_security import (
+                hash_password_secure,
+                verify_password_secure,
+            )
 
             # Conectar a la base de datos de usuarios
             db = get_users_connection()
@@ -137,7 +142,7 @@ class AuthManager:
             # Buscar usuario en la base de datos
             result = db.execute_query(
                 """
-                SELECT usuario, password_hash, rol, estado
+                SELECT usuario, password_hash, rol, estado, nombre, apellido, email
                 FROM usuarios
                 WHERE usuario = ? AND estado = 'activo'
             """,
@@ -159,10 +164,12 @@ class AuthManager:
             except Exception:
                 # Fallback para contraseñas SHA-256 legacy (durante migración)
                 password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
-                password_valid = (password_hash == stored_hash)
-                
+                password_valid = password_hash == stored_hash
+
                 # Log de advertencia para contraseñas legacy
-                print(f"⚠️  Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada.")
+                print(
+                    f"⚠️  Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
+                )
 
             # Verificar contraseña
             if password_valid:
@@ -193,7 +200,16 @@ class AuthManager:
                     (username,),
                 )
 
-                return True
+                # Retornar información del usuario
+                user_info = {
+                    "username": user_data[0],
+                    "role": user_role,
+                    "nombre": user_data[4] if len(user_data) > 4 else "",
+                    "apellido": user_data[5] if len(user_data) > 5 else "",
+                    "email": user_data[6] if len(user_data) > 6 else "",
+                    "authenticated": True,
+                }
+                return user_info
             else:
                 print(f"❌ Contraseña incorrecta para usuario: {username}")
                 return False

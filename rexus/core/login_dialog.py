@@ -22,7 +22,7 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
 )
 
-from rexus.core.auth import get_auth_manager
+from rexus.core.auth_manager import AuthManager
 
 
 class LoginDialog(QDialog):
@@ -34,7 +34,6 @@ class LoginDialog(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.auth_manager = get_auth_manager()
         self.init_ui()
 
     def init_ui(self):
@@ -337,7 +336,7 @@ class LoginDialog(QDialog):
 
         # Intentar login
         try:
-            user = self.auth_manager.authenticate_user(username, password)
+            user = AuthManager.authenticate_user(username, password)
             if user:
                 # Login exitoso
                 self.login_successful.emit(user)  # Emitir dict completo del usuario
