@@ -24,6 +24,12 @@ Autor: Sistema de Mejora Automática
 Fecha: 2025-06-25
 """
 
+import re
+from datetime import datetime
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+
 class MejoradorFeedbackVisual:
     """Mejora automáticamente el feedback visual en módulos de PyQt6."""
 
@@ -37,7 +43,7 @@ class MejoradorFeedbackVisual:
 
         # Plantillas de código para mejoras
         self.plantillas = {
-            'feedback_label': '''
+            "feedback_label": """
         # --- FEEDBACK VISUAL MEJORADO ---
         self.label_feedback = QLabel("")
         self.label_feedback.setObjectName("label_feedback")
@@ -46,9 +52,8 @@ class MejoradorFeedbackVisual:
         self.label_feedback.setAccessibleDescription("Mensajes de estado y feedback para el usuario")
         self.main_layout.addWidget(self.label_feedback)
         self._feedback_timer = None
-''',
-
-            'mostrar_feedback_method': '''
+""",
+            "mostrar_feedback_method": '''
     def mostrar_feedback(self, mensaje, tipo="info"):
         """Muestra feedback visual al usuario con auto-ocultamiento."""
         if not hasattr(self, "label_feedback") or self.label_feedback is None:
@@ -97,8 +102,7 @@ class MejoradorFeedbackVisual:
         if hasattr(self, '_feedback_timer') and self._feedback_timer:
             self._feedback_timer.stop()
 ''',
-
-            'mostrar_carga_method': '''
+            "mostrar_carga_method": '''
     def mostrar_indicador_carga(self, mensaje="Procesando...", habilitar_ui=False):
         """Muestra indicador de carga y opcionalmente deshabilita la UI."""
         try:
@@ -133,77 +137,90 @@ class MejoradorFeedbackVisual:
         except ImportError:
             pass
 ''',
-
-            'imports_necesarios': '''from PyQt6.QtWidgets import QLabel
-'''
+            "imports_necesarios": """from PyQt6.QtWidgets import QLabel
+""",
         }
 
-    def analizar_modulo(self, modulo_path: Path) -> Dict[str, any]:
+    def analizar_modulo(self, modulo_path: Path) -> Dict[str, Any]:
         """Analiza un módulo para determinar qué mejoras de feedback necesita."""
         analisis = {
-            'nombre': modulo_path.name,
-            'archivos_analizados': [],
-            'mejoras_necesarias': [],
-            'tiene_feedback_basico': False,
-            'tiene_indicadores_carga': False,
-            'tiene_manejo_errores': False
+            "nombre": modulo_path.name,
+            "archivos_analizados": [],
+            "mejoras_necesarias": [],
+            "tiene_feedback_basico": False,
+            "tiene_indicadores_carga": False,
+            "tiene_manejo_errores": False,
         }
 
         view_file = modulo_path / "view.py"
         if not view_file.exists():
-            analisis['mejoras_necesarias'].append("No tiene archivo view.py")
+            analisis["mejoras_necesarias"].append("No tiene archivo view.py")
             return analisis
 
-        analisis['archivos_analizados'].append('view.py')
+        analisis["archivos_analizados"].append("view.py")
 
         try:
-            with open(view_file, 'r', encoding='utf-8', errors='ignore') as f:
+            with open(view_file, "r", encoding="utf-8", errors="ignore") as f:
                 contenido = f.read()
 
             # Analizar feedback existente
-            if 'mostrar_feedback' in contenido:
-                analisis['tiene_feedback_basico'] = True
+            if "mostrar_feedback" in contenido:
+                analisis["tiene_feedback_basico"] = True
             else:
-                analisis['mejoras_necesarias'].append("Agregar sistema de feedback básico")
+                analisis["mejoras_necesarias"].append(
+                    "Agregar sistema de feedback básico"
+                )
 
             # Analizar indicadores de carga
             patrones_carga = [
-                r'QProgressBar',
-                r'setCursor.*Wait',
-                r'loading',
-                r'cargando',
-                r'procesando'
+                r"QProgressBar",
+                r"setCursor.*Wait",
+                r"loading",
+                r"cargando",
+                r"procesando",
             ]
-            if any(re.search(patron, contenido, re.IGNORECASE) for patron in patrones_carga):
-                analisis['tiene_indicadores_carga'] = True
+            if any(
+                re.search(patron, contenido, re.IGNORECASE) for patron in patrones_carga
+            ):
+                analisis["tiene_indicadores_carga"] = True
             else:
-                analisis['mejoras_necesarias'].append("Agregar indicadores de carga")
+                analisis["mejoras_necesarias"].append("Agregar indicadores de carga")
 
             # Analizar manejo de errores visual
             patrones_error = [
-                r'QMessageBox.*error',
-                r'mostrar_feedback.*error',
-                r'setProperty.*error'
+                r"QMessageBox.*error",
+                r"mostrar_feedback.*error",
+                r"setProperty.*error",
             ]
-            if any(re.search(patron, contenido, re.IGNORECASE) for patron in patrones_error):
-                analisis['tiene_manejo_errores'] = True
+            if any(
+                re.search(patron, contenido, re.IGNORECASE) for patron in patrones_error
+            ):
+                analisis["tiene_manejo_errores"] = True
             else:
-                analisis['mejoras_necesarias'].append("Mejorar manejo visual de errores")
+                analisis["mejoras_necesarias"].append(
+                    "Mejorar manejo visual de errores"
+                )
 
             # Verificar estructura de UI básica
-            if 'QVBoxLayout' not in contenido and 'QHBoxLayout' not in contenido:
-                analisis['mejoras_necesarias'].append("Estructura de layout básica faltante")
+            if "QVBoxLayout" not in contenido and "QHBoxLayout" not in contenido:
+                analisis["mejoras_necesarias"].append(
+                    "Estructura de layout básica faltante"
+                )
 
             # Verificar accesibilidad
-            if 'setAccessible' not in contenido:
-                analisis['mejoras_necesarias'].append("Agregar soporte de accesibilidad")
+            if "setAccessible" not in contenido:
+                analisis["mejoras_necesarias"].append(
+                    "Agregar soporte de accesibilidad"
+                )
 
         except Exception as e:
-            analisis['mejoras_necesarias'].append(f"Error analizando archivo: {e}")
+            analisis["mejoras_necesarias"].append(f"Error analizando archivo: {e}")
 
         return analisis
 
-    def aplicar_mejoras_feedback(self, modulo_path: Path, analisis: Dict[str, any]) -> bool:
+    def aplicar_mejoras_feedback(
+        self, modulo_path: Path, analisis: Dict[str, Any]
+    ) -> bool:
         """Aplica mejoras de feedback visual al módulo."""
         view_file = modulo_path / "view.py"
         if not view_file.exists():
@@ -212,10 +229,10 @@ class MejoradorFeedbackVisual:
         # Crear backup
         backup_file = self.backup_dir / f"{modulo_path.name}_view_backup.py"
         try:
-            with open(view_file, 'r', encoding='utf-8') as f:
+            with open(view_file, "r", encoding="utf-8") as f:
                 contenido_original = f.read()
 
-            with open(backup_file, 'w', encoding='utf-8') as f:
+            with open(backup_file, "w", encoding="utf-8") as f:
                 f.write(contenido_original)
 
             print(f"✅ Backup creado: {backup_file}")
@@ -230,87 +247,102 @@ class MejoradorFeedbackVisual:
 
         try:
             # 1. Agregar imports si faltan
-            if 'from PyQt6.QtWidgets import' in contenido_mejorado:
-                if 'QLabel' not in contenido_mejorado:
+            if "from PyQt6.QtWidgets import" in contenido_mejorado:
+                if "QLabel" not in contenido_mejorado:
                     contenido_mejorado = re.sub(
-                        r'(from PyQt6\.QtWidgets import[^\\n]*)',
-                        r'\\1, QLabel',
-                        contenido_mejorado
+                        r"(from PyQt6\.QtWidgets import[^\\n]*)",
+                        r"\\1, QLabel",
+                        contenido_mejorado,
                     )
                     mejoras_aplicadas.append("Agregado import QLabel")
 
             # 2. Agregar sistema de feedback si no existe
-            if not analisis['tiene_feedback_basico']:
+            if not analisis["tiene_feedback_basico"]:
                 # Buscar el __init__ del widget principal
-                init_match = re.search(r'def __init__\(self[^)]*\):', contenido_mejorado)
+                init_match = re.search(
+                    r"def __init__\(self[^)]*\):", contenido_mejorado
+                )
                 if init_match:
                     # Buscar el primer layout
-                    layout_match = re.search(r'(self\\.main_layout\\.addWidget\\([^)]+\\))', contenido_mejorado)
+                    layout_match = re.search(
+                        r"(self\\.main_layout\\.addWidget\\([^)]+\\))",
+                        contenido_mejorado,
+                    )
                     if layout_match:
                         insert_pos = layout_match.end()
                         contenido_mejorado = (
-                            contenido_mejorado[:insert_pos] +
-                            self.plantillas['feedback_label'] +
-                            contenido_mejorado[insert_pos:]
+                            contenido_mejorado[:insert_pos]
+                            + self.plantillas["feedback_label"]
+                            + contenido_mejorado[insert_pos:]
                         )
-                        mejoras_aplicadas.append("Agregado label de feedback en __init__")
+                        mejoras_aplicadas.append(
+                            "Agregado label de feedback en __init__"
+                        )
 
                 # Agregar método mostrar_feedback al final de la clase
                 class_end = self._encontrar_final_clase(contenido_mejorado)
                 if class_end:
                     contenido_mejorado = (
-                        contenido_mejorado[:class_end] +
-                        self.plantillas['mostrar_feedback_method'] +
-                        contenido_mejorado[class_end:]
+                        contenido_mejorado[:class_end]
+                        + self.plantillas["mostrar_feedback_method"]
+                        + contenido_mejorado[class_end:]
                     )
                     mejoras_aplicadas.append("Agregado método mostrar_feedback")
 
             # 3. Agregar indicadores de carga si no existen
-            if not analisis['tiene_indicadores_carga']:
+            if not analisis["tiene_indicadores_carga"]:
                 class_end = self._encontrar_final_clase(contenido_mejorado)
                 if class_end:
                     contenido_mejorado = (
-                        contenido_mejorado[:class_end] +
-                        self.plantillas['mostrar_carga_method'] +
-                        contenido_mejorado[class_end:]
+                        contenido_mejorado[:class_end]
+                        + self.plantillas["mostrar_carga_method"]
+                        + contenido_mejorado[class_end:]
                     )
-                    mejoras_aplicadas.append("Agregados métodos de indicadores de carga")
+                    mejoras_aplicadas.append(
+                        "Agregados métodos de indicadores de carga"
+                    )
 
             # 4. Mejorar manejo de errores existente
-            if not analisis['tiene_manejo_errores']:
+            if not analisis["tiene_manejo_errores"]:
                 # Buscar excepciones sin feedback visual
-                patron_except = r'except[^:]*:[^}]*?print\\([^)]*\\)'
+                patron_except = r"except[^:]*:[^}]*?print\\([^)]*\\)"
                 matches = re.finditer(patron_except, contenido_mejorado)
                 for match in matches:
                     # Reemplazar print con mostrar_feedback
                     exception_block = match.group(0)
                     nuevo_block = re.sub(
-                        r'print\\([^)]*\\)',
+                        r"print\\([^)]*\\)",
                         'self.mostrar_feedback(f"Error: {e}", "error")',
-                        exception_block
+                        exception_block,
                     )
-                    contenido_mejorado = contenido_mejorado.replace(exception_block, nuevo_block)
+                    contenido_mejorado = contenido_mejorado.replace(
+                        exception_block, nuevo_block
+                    )
                     mejoras_aplicadas.append("Mejorado manejo visual de errores")
 
             # 5. Agregar llamadas a feedback en operaciones críticas
-            contenido_mejorado = self._agregar_feedback_operaciones_criticas(contenido_mejorado)
+            contenido_mejorado = self._agregar_feedback_operaciones_criticas(
+                contenido_mejorado
+            )
             if "Agregado feedback en operaciones" not in mejoras_aplicadas:
                 mejoras_aplicadas.append("Agregado feedback en operaciones críticas")
 
             # Guardar archivo mejorado
-            with open(view_file, 'w', encoding='utf-8') as f:
+            with open(view_file, "w", encoding="utf-8") as f:
                 f.write(contenido_mejorado)
 
-            print(f"✅ Mejoras aplicadas a {modulo_path.name}: {', '.join(mejoras_aplicadas)}")
+            print(
+                f"✅ Mejoras aplicadas a {modulo_path.name}: {', '.join(mejoras_aplicadas)}"
+            )
             return True
 
         except Exception as e:
             print(f"❌ Error aplicando mejoras a {modulo_path.name}: {e}")
             # Restaurar backup en caso de error
             try:
-                with open(backup_file, 'r', encoding='utf-8') as f:
+                with open(backup_file, "r", encoding="utf-8") as f:
                     contenido_backup = f.read()
-                with open(view_file, 'w', encoding='utf-8') as f:
+                with open(view_file, "w", encoding="utf-8") as f:
                     f.write(contenido_backup)
                 print(f"🔄 Archivo restaurado desde backup")
             except:
@@ -320,20 +352,20 @@ class MejoradorFeedbackVisual:
     def _encontrar_final_clase(self, contenido: str) -> Optional[int]:
         """Encuentra la posición del final de la clase principal."""
         # Buscar la última función/método de la clase
-        matches = list(re.finditer(r'\\n    def [^(]+\\([^)]*\\):', contenido))
+        matches = list(re.finditer(r"\\n    def [^(]+\\([^)]*\\):", contenido))
         if matches:
             last_method = matches[-1]
             # Buscar el final de este método
-            lines = contenido[last_method.start():].split('\\n')
+            lines = contenido[last_method.start() :].split("\\n")
             indent_level = None
             for i, line in enumerate(lines[1:], 1):
-                if line.strip() == '':
+                if line.strip() == "":
                     continue
                 current_indent = len(line) - len(line.lstrip())
                 if indent_level is None and line.strip():
                     indent_level = current_indent
                 elif line.strip() and current_indent <= 4:  # Vuelta al nivel de clase
-                    return last_method.start() + len('\\n'.join(lines[:i]))
+                    return last_method.start() + len("\\n".join(lines[:i]))
             # Si llegamos aquí, es el final del archivo
             return len(contenido)
         return None
@@ -342,10 +374,22 @@ class MejoradorFeedbackVisual:
         """Agrega feedback en operaciones críticas que no lo tienen."""
         # Operaciones que deberían tener feedback
         patrones_operaciones = [
-            (r'(def.*guardar[^:]*:[^\\n]*\\n)', 'self.mostrar_feedback("Guardando...", "cargando")\\n        '),
-            (r'(def.*eliminar[^:]*:[^\\n]*\\n)', 'self.mostrar_feedback("Eliminando...", "cargando")\\n        '),
-            (r'(def.*actualizar[^:]*:[^\\n]*\\n)', 'self.mostrar_feedback("Actualizando...", "cargando")\\n        '),
-            (r'(def.*cargar[^:]*:[^\\n]*\\n)', 'self.mostrar_feedback("Cargando datos...", "cargando")\\n        ')
+            (
+                r"(def.*guardar[^:]*:[^\\n]*\\n)",
+                'self.mostrar_feedback("Guardando...", "cargando")\\n        ',
+            ),
+            (
+                r"(def.*eliminar[^:]*:[^\\n]*\\n)",
+                'self.mostrar_feedback("Eliminando...", "cargando")\\n        ',
+            ),
+            (
+                r"(def.*actualizar[^:]*:[^\\n]*\\n)",
+                'self.mostrar_feedback("Actualizando...", "cargando")\\n        ',
+            ),
+            (
+                r"(def.*cargar[^:]*:[^\\n]*\\n)",
+                'self.mostrar_feedback("Cargando datos...", "cargando")\\n        ',
+            ),
         ]
 
         for patron, feedback in patrones_operaciones:
@@ -354,13 +398,19 @@ class MejoradorFeedbackVisual:
                 # Solo agregar si no hay ya feedback en esta función
                 funcion_start = match.start()
                 # Buscar el final de la función (siguiente def o final de clase)
-                next_def = re.search(r'\\n    def ', contenido[funcion_start + 10:])
-                funcion_end = funcion_start + 10 + next_def.start() if next_def else len(contenido)
+                next_def = re.search(r"\\n    def ", contenido[funcion_start + 10 :])
+                funcion_end = (
+                    funcion_start + 10 + next_def.start()
+                    if next_def
+                    else len(contenido)
+                )
                 funcion_content = contenido[funcion_start:funcion_end]
 
-                if 'mostrar_feedback' not in funcion_content:
+                if "mostrar_feedback" not in funcion_content:
                     # Agregar feedback al inicio de la función
-                    contenido = contenido.replace(match.group(1), match.group(1) + feedback)
+                    contenido = contenido.replace(
+                        match.group(1), match.group(1) + feedback
+                    )
 
         return contenido
 
@@ -374,16 +424,16 @@ class MejoradorFeedbackVisual:
         modulos_mejorados = []
 
         for modulo_dir in self.modulos_dir.iterdir():
-            if modulo_dir.is_dir() and not modulo_dir.name.startswith('.'):
+            if modulo_dir.is_dir() and not modulo_dir.name.startswith("."):
                 print(f"🔍 Analizando módulo: {modulo_dir.name}")
 
                 try:
                     analisis = self.analizar_modulo(modulo_dir)
                     modulos_procesados.append(analisis)
 
-                    if analisis['mejoras_necesarias']:
+                    if analisis["mejoras_necesarias"]:
                         print(f"⚠️ Mejoras necesarias en {modulo_dir.name}:")
-                        for mejora in analisis['mejoras_necesarias']:
+                        for mejora in analisis["mejoras_necesarias"]:
                             print(f"   - {mejora}")
 
                         # Aplicar mejoras
@@ -403,7 +453,9 @@ class MejoradorFeedbackVisual:
         print(f"   ✅ Módulos mejorados: {len(modulos_mejorados)}")
         print(f"   📋 Reporte generado en: mejoras_feedback_visual.md")
 
-    def _generar_reporte_mejoras(self, modulos_procesados: List[Dict], modulos_mejorados: List[str]):
+    def _generar_reporte_mejoras(
+        self, modulos_procesados: List[Dict], modulos_mejorados: List[str]
+    ):
         """Genera un reporte de las mejoras aplicadas."""
         reporte = f"""# Reporte de Mejoras de Feedback Visual
 
@@ -417,31 +469,25 @@ class MejoradorFeedbackVisual:
 """
 
         for modulo in modulos_mejorados:
-import re
-from datetime import datetime
-from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-
-from PyQt6.QtCore import Qt, QTimer
-from PyQt6.QtWidgets import QApplication
-
-from core.logger import log_error
-
             reporte += f"- ✅ **{modulo}** - Mejoras aplicadas\\n"
 
         reporte += "\\n### Análisis Detallado\\n\\n"
 
         for analisis in modulos_procesados:
-            estado = "✅ Completo" if not analisis['mejoras_necesarias'] else "⚠️ Necesita mejoras"
+            estado = (
+                "✅ Completo"
+                if not analisis["mejoras_necesarias"]
+                else "⚠️ Necesita mejoras"
+            )
             reporte += f"#### {analisis['nombre']} - {estado}\\n\\n"
 
             reporte += f"- **Feedback básico:** {'✅ Sí' if analisis['tiene_feedback_basico'] else '❌ No'}\\n"
             reporte += f"- **Indicadores de carga:** {'✅ Sí' if analisis['tiene_indicadores_carga'] else '❌ No'}\\n"
             reporte += f"- **Manejo de errores:** {'✅ Sí' if analisis['tiene_manejo_errores'] else '❌ No'}\\n"
 
-            if analisis['mejoras_necesarias']:
+            if analisis["mejoras_necesarias"]:
                 reporte += "\\n**Mejoras necesarias:**\\n"
-                for mejora in analisis['mejoras_necesarias']:
+                for mejora in analisis["mejoras_necesarias"]:
                     reporte += f"- {mejora}\\n"
 
             reporte += "\\n"
@@ -490,10 +536,11 @@ cp {self.backup_dir}/[modulo]_view_backup.py modules/[modulo]/view.py
 """
 
         reporte_file = self.proyecto_root / "mejoras_feedback_visual.md"
-        with open(reporte_file, 'w', encoding='utf-8') as f:
+        with open(reporte_file, "w", encoding="utf-8") as f:
             f.write(reporte)
 
         print(f"📋 Reporte generado: {reporte_file}")
+
 
 def main():
     """Función principal del script."""
@@ -514,6 +561,7 @@ def main():
     print("   2. Ajustar estilos si es necesario")
     print("   3. Ejecutar tests de UX")
     print("   4. Actualizar documentación")
+
 
 if __name__ == "__main__":
     main()

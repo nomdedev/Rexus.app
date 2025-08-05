@@ -1,196 +1,97 @@
 """
-Sistema unificado de manejo de errores para Rexus.app
-
-Este módulo proporciona utilidades para manejar errores de manera consistente
-a través de toda la aplicación, con feedback visual apropiado para el usuario.
+Sistema mejorado de manejo de errores para Rexus.app
 """
 
-import logging
 import traceback
+import sys
 from datetime import datetime
-from typing import Optional, Callable
+from typing import Optional, Callable, Any
+from rexus.utils.logging_config import get_logger
 
-from PyQt6.QtWidgets import QMessageBox, QWidget
-
-
-class ErrorHandler:
-    """Manejador centralizado de errores para la aplicación."""
+class RexusErrorHandler:
+    """Manejador centralizado de errores"""
     
-    @staticmethod
-    def configurar_logging():
-        """Configura el sistema de logging para errores."""
-        logging.basicConfig(
-            level=logging.ERROR,
-            format='%(asctime)s - %(levelname)s - %(module)s - %(message)s',
-            handlers=[
-                logging.FileHandler('logs/errores.log', encoding='utf-8'),
-                logging.StreamHandler()
-            ]
-        )
+    def __init__(self):
+        self.logger = get_logger('errors')
     
-    @staticmethod
-    def mostrar_error_critico(parent: Optional[QWidget], mensaje: str, detalle: Optional[str] = None):
-        """
-        Muestra un error crítico con QMessageBox.
+    def handle_exception(self, exc_type, exc_value, exc_traceback):
+        """Maneja excepciones no capturadas"""
+        if issubclass(exc_type, KeyboardInterrupt):
+            sys.__excepthook__(exc_type, exc_value, exc_traceback)
+            return
         
-        Args:
-            parent: Widget padre para el diálogo
-            mensaje: Mensaje principal del error
-            detalle: Detalle técnico opcional del error
-        """
-        msg_box = QMessageBox(parent)
-        msg_box.setIcon(QMessageBox.Icon.Critical)
-        msg_box.setWindowTitle("Error Crítico - Rexus.app")
-        msg_box.setText(mensaje)
+        error_msg = f"Uncaught exception: {exc_type.__name__}: {exc_value}"
+        self.logger.error(error_msg, exc_info=(exc_type, exc_value, exc_traceback))
         
-        if detalle:
-            msg_box.setDetailedText(detalle)
-        
-        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
-        msg_box.exec()
+        # Mostrar error amigable al usuario
+        self.show_user_friendly_error(str(exc_value))
     
-    @staticmethod
-    def mostrar_error_operacion(parent: Optional[QWidget], operacion: str, error: Exception):
-        """
-        Muestra un error de operación con contexto.
-        
-        Args:
-            parent: Widget padre para el diálogo
-            operacion: Descripción de la operación que falló
-            error: Excepción capturada
-        """
-        mensaje = f"Error al {operacion}"
-        detalle = f"Error técnico: {str(error)}"
-        
-        ErrorHandler.mostrar_error_critico(parent, mensaje, detalle)
-        ErrorHandler.log_error(f"Error en {operacion}", error)
-    
-    @staticmethod
-    def mostrar_advertencia(parent: Optional[QWidget], titulo: str, mensaje: str):
-        """
-        Muestra una advertencia al usuario.
-        
-        Args:
-            parent: Widget padre para el diálogo
-            titulo: Título de la advertencia
-            mensaje: Mensaje de la advertencia
-        """
-        QMessageBox.warning(parent, f"Advertencia - {titulo}", mensaje)
-    
-    @staticmethod
-    def mostrar_informacion(parent: Optional[QWidget], titulo: str, mensaje: str):
-        """
-        Muestra información al usuario.
-        
-        Args:
-            parent: Widget padre para el diálogo
-            titulo: Título del mensaje
-            mensaje: Mensaje informativo
-        """
-        QMessageBox.information(parent, f"Información - {titulo}", mensaje)
-    
-    @staticmethod
-    def confirmar_accion(parent: Optional[QWidget], titulo: str, mensaje: str) -> bool:
-        """
-        Solicita confirmación al usuario.
-        
-        Args:
-            parent: Widget padre para el diálogo
-            titulo: Título del diálogo
-            mensaje: Mensaje de confirmación
+    def show_user_friendly_error(self, error_message):
+        """Muestra error amigable al usuario"""
+        try:
+            from PyQt6.QtWidgets import QMessageBox
             
-        Returns:
-            True si el usuario confirma, False en caso contrario
-        """
-        respuesta = QMessageBox.question(
-            parent,
-            f"Confirmación - {titulo}",
-            mensaje,
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No
-        )
-        return respuesta == QMessageBox.StandardButton.Yes
-    
-    @staticmethod
-    def log_error(contexto: str, error: Exception):
-        """
-        Registra un error en el log.
-        
-        Args:
-            contexto: Contexto donde ocurrió el error
-            error: Excepción capturada
-        """
-        error_msg = f"{contexto}: {str(error)}"
-        error_detail = traceback.format_exc()
-        
-        logging.error(f"{error_msg}\n{error_detail}")
-        print(f"[ERROR] {datetime.now().isoformat()} - {error_msg}")
-    
-    @staticmethod
-    def manejar_error_base_datos(parent: Optional[QWidget], operacion: str, error: Exception):
-        """
-        Maneja específicamente errores de base de datos.
-        
-        Args:
-            parent: Widget padre para el diálogo
-            operacion: Operación que falló
-            error: Excepción de base de datos
-        """
-        mensaje = f"Error de base de datos al {operacion}"
-        
-        # Determinar el tipo de error específico
-        error_str = str(error).lower()
-        if "connection" in error_str or "login" in error_str:
-            detalle = "No se pudo conectar a la base de datos. Verifique la conexión y credenciales."
-        elif "timeout" in error_str:
-            detalle = "La operación tardó demasiado tiempo. Intente nuevamente."
-        elif "duplicate" in error_str or "unique" in error_str:
-            detalle = "El registro ya existe. Verifique los datos e intente con valores únicos."
-        elif "foreign key" in error_str:
-            detalle = "Error de integridad: el registro está relacionado con otros datos."
-        else:
-            detalle = f"Error técnico: {str(error)}"
-        
-        ErrorHandler.mostrar_error_critico(parent, mensaje, detalle)
-        ErrorHandler.log_error(f"Error BD - {operacion}", error)
+            msg_box = QMessageBox()
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+            msg_box.setWindowTitle("Error - Rexus.app")
+            msg_box.setText("Ha ocurrido un error inesperado")
+            msg_box.setDetailedText(f"Detalles técnicos:\n{error_message}")
+            msg_box.setInformativeText(
+                "El error ha sido registrado. "
+                "Si el problema persiste, contacte con soporte técnico."
+            )
+            msg_box.exec()
+        except:
+            # Fallback si PyQt no está disponible
+            print(f"ERROR: {error_message}")
 
+def error_boundary(func: Callable) -> Callable:
+    """Decorador para capturar errores en funciones"""
+    def wrapper(*args, **kwargs) -> Any:
+        try:
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger = get_logger('errors')
+            logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
+            
+            # Re-raise para que el llamador pueda manejar el error
+            raise
+    return wrapper
 
-def safe_execute(func: Callable, parent: Optional[QWidget] = None, 
-                operacion: str = "ejecutar operación", 
-                default_return=None):
-    """
-    Decorador/función para ejecutar operaciones de manera segura.
-    
-    Args:
-        func: Función a ejecutar
-        parent: Widget padre para mostrar errores
-        operacion: Descripción de la operación
-        default_return: Valor por defecto si hay error
-        
-    Returns:
-        Resultado de la función o default_return si hay error
-    """
+def safe_execute(func: Callable, default_return=None, log_errors=True) -> Any:
+    """Ejecuta función de forma segura con valor por defecto"""
     try:
         return func()
     except Exception as e:
-        ErrorHandler.mostrar_error_operacion(parent, operacion, e)
+        if log_errors:
+            logger = get_logger('errors')
+            logger.error(f"Safe execution failed: {str(e)}", exc_info=True)
         return default_return
 
+def validate_database_connection(func: Callable) -> Callable:
+    """Decorador para validar conexión de base de datos"""
+    def wrapper(*args, **kwargs):
+        try:
+            # Aquí iría la validación de conexión específica
+            return func(*args, **kwargs)
+        except Exception as e:
+            logger = get_logger('errors')
+            logger.error(f"Database operation failed: {str(e)}")
+            raise DatabaseConnectionError(f"Error de base de datos: {str(e)}")
+    return wrapper
 
-def safe_method_decorator(operacion: str = "ejecutar método"):
-    """
-    Decorador para métodos que maneja errores automáticamente.
-    
-    Args:
-        operacion: Descripción de la operación
-    """
-    def decorator(func):
-        def wrapper(self, *args, **kwargs):
-            try:
-                return func(self, *args, **kwargs)
-            except Exception as e:
-                parent = getattr(self, 'view', None) or getattr(self, 'parent', None)
-                ErrorHandler.mostrar_error_operacion(parent, operacion, e)
-                return None
-        return wrapper
-    return decorator
+class DatabaseConnectionError(Exception):
+    """Excepción para errores de conexión de base de datos"""
+    pass
+
+class ValidationError(Exception):
+    """Excepción para errores de validación"""
+    pass
+
+class SecurityError(Exception):
+    """Excepción para errores de seguridad"""
+    pass
+
+# Instalar el manejador global de errores
+error_handler = RexusErrorHandler()
+sys.excepthook = error_handler.handle_exception

@@ -18,8 +18,8 @@ from pathlib import Path
 
 from dotenv import load_dotenv
 
-# Configurar path del proyecto
-project_root = Path(__file__).parent
+# Configurar path del proyecto - ir dos niveles arriba para llegar a la raíz
+project_root = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(project_root))
 
 
@@ -66,7 +66,7 @@ def main():
         setup_environment()
 
         # Importar y ejecutar aplicación principal
-        from src.main.app import main as app_main
+        from rexus.main.app import main as app_main
 
         app_main()
 

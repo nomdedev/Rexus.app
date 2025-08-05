@@ -1,6 +1,6 @@
 """
-Diálogos faltantes para el módulo de inventario
-Implementaciones temporales para resolver errores de compilación
+DiÃ¡logos faltantes para el mÃ³dulo de inventario
+Implementaciones temporales para resolver errores de compilaciÃ³n
 """
 
 from typing import Dict, Any, Optional
@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QGroupBox, QHeaderView, QScrollArea
 )
 
-# Importar validadores si están disponibles
+# Importar validadores si estÃ¡n disponibles
 try:
     from rexus.utils.form_validators import FormValidator, FormValidatorManager
     VALIDATORS_AVAILABLE = True
@@ -22,7 +22,7 @@ except ImportError:
 
 
 class DialogoEditarProducto(QDialog):
-    """Diálogo para editar un producto existente"""
+    """DiÃ¡logo para editar un producto existente"""
     
     def __init__(self, parent=None, producto=None):
         super().__init__(parent)
@@ -37,8 +37,8 @@ class DialogoEditarProducto(QDialog):
         """Inicializa la interfaz"""
         layout = QVBoxLayout(self)
         
-        # Título
-        title_label = QLabel("✏️ Editar Producto")
+        # TÃ­tulo
+        title_label = QLabel("âï¸ Editar Producto")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("""
             QLabel {
@@ -60,12 +60,12 @@ class DialogoEditarProducto(QDialog):
         
         # Campos del formulario
         self.codigo_input = QLineEdit()
-        self.codigo_input.setPlaceholderText("Código del producto")
-        form_layout.addRow("Código:", self.codigo_input)
+        self.codigo_input.setPlaceholderText("CÃ³digo del producto")
+        form_layout.addRow("CÃ³digo:", self.codigo_input)
         
         self.descripcion_input = QLineEdit()
-        self.descripcion_input.setPlaceholderText("Descripción del producto")
-        form_layout.addRow("Descripción:", self.descripcion_input)
+        self.descripcion_input.setPlaceholderText("DescripciÃ³n del producto")
+        form_layout.addRow("DescripciÃ³n:", self.descripcion_input)
         
         self.tipo_combo = QComboBox()
         self.tipo_combo.addItems(["Marco", "Vidrio", "Herraje", "Accesorio", "Sellador"])
@@ -94,8 +94,8 @@ class DialogoEditarProducto(QDialog):
         form_layout.addRow("Proveedor:", self.proveedor_input)
         
         self.ubicacion_input = QLineEdit()
-        self.ubicacion_input.setPlaceholderText("Ubicación en almacén")
-        form_layout.addRow("Ubicación:", self.ubicacion_input)
+        self.ubicacion_input.setPlaceholderText("UbicaciÃ³n en almacÃ©n")
+        form_layout.addRow("UbicaciÃ³n:", self.ubicacion_input)
         
         self.observaciones_input = QTextEdit()
         self.observaciones_input.setMaximumHeight(80)
@@ -109,10 +109,10 @@ class DialogoEditarProducto(QDialog):
         # Botones
         button_layout = QHBoxLayout()
         
-        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn = QPushButton("â Cancelar")
         self.cancel_btn.clicked.connect(self.reject)
         
-        self.save_btn = QPushButton("✅ Actualizar")
+        self.save_btn = QPushButton("â Actualizar")
         self.save_btn.clicked.connect(self.validar_y_guardar)
         
         button_layout.addWidget(self.cancel_btn)
@@ -127,7 +127,7 @@ class DialogoEditarProducto(QDialog):
         self.codigo_input.setText(str(self.producto.get("codigo", "")))
         self.descripcion_input.setText(str(self.producto.get("descripcion", "")))
         
-        # Tipo/categoría
+        # Tipo/categorÃ­a
         tipo = str(self.producto.get("tipo", ""))
         if tipo:
             index = self.tipo_combo.findText(tipo)
@@ -156,13 +156,13 @@ class DialogoEditarProducto(QDialog):
         
     def validar_y_guardar(self):
         """Valida los datos y guarda"""
-        # Validaciones básicas
+        # Validaciones bÃ¡sicas
         if not self.codigo_input.text().strip():
-            QMessageBox.warning(self, "Error", "El código es obligatorio")
+            QMessageBox.warning(self, "Error", "El cÃ³digo es obligatorio")
             return
             
         if not self.descripcion_input.text().strip():
-            QMessageBox.warning(self, "Error", "La descripción es obligatoria")
+            QMessageBox.warning(self, "Error", "La descripciÃ³n es obligatoria")
             return
             
         if self.precio_input.value() <= 0:
@@ -188,7 +188,7 @@ class DialogoEditarProducto(QDialog):
 
 
 class DialogoMovimientoInventario(QDialog):
-    """Diálogo para registrar movimientos de inventario"""
+    """DiÃ¡logo para registrar movimientos de inventario"""
     
     def __init__(self, parent=None, producto=None):
         super().__init__(parent)
@@ -202,8 +202,8 @@ class DialogoMovimientoInventario(QDialog):
         """Inicializa la interfaz"""
         layout = QVBoxLayout(self)
         
-        # Título
-        title_label = QLabel("📦 Registrar Movimiento de Inventario")
+        # TÃ­tulo
+        title_label = QLabel("ð¦ Registrar Movimiento de Inventario")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("""
             QLabel {
@@ -218,13 +218,13 @@ class DialogoMovimientoInventario(QDialog):
         """)
         layout.addWidget(title_label)
         
-        # Información del producto
+        # InformaciÃ³n del producto
         if self.producto:
-            info_group = QGroupBox("Información del Producto")
+            info_group = QGroupBox("InformaciÃ³n del Producto")
             info_layout = QFormLayout(info_group)
             
-            info_layout.addRow("Código:", QLabel(str(self.producto.get("codigo", "N/A"))))
-            info_layout.addRow("Descripción:", QLabel(str(self.producto.get("descripcion", "N/A"))))
+            info_layout.addRow("CÃ³digo:", QLabel(str(self.producto.get("codigo", "N/A"))))
+            info_layout.addRow("DescripciÃ³n:", QLabel(str(self.producto.get("descripcion", "N/A"))))
             info_layout.addRow("Stock Actual:", QLabel(str(self.producto.get("stock_actual", 0))))
             
             layout.addWidget(info_group)
@@ -246,9 +246,9 @@ class DialogoMovimientoInventario(QDialog):
         self.cantidad_input.setValue(1)
         form_layout.addRow("Cantidad:", self.cantidad_input)
         
-        # Motivo/Razón
+        # Motivo/RazÃ³n
         self.motivo_input = QLineEdit()
-        self.motivo_input.setPlaceholderText("Razón del movimiento")
+        self.motivo_input.setPlaceholderText("RazÃ³n del movimiento")
         form_layout.addRow("Motivo:", self.motivo_input)
         
         # Fecha
@@ -268,10 +268,10 @@ class DialogoMovimientoInventario(QDialog):
         # Botones
         button_layout = QHBoxLayout()
         
-        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn = QPushButton("â Cancelar")
         self.cancel_btn.clicked.connect(self.reject)
         
-        self.save_btn = QPushButton("✅ Registrar Movimiento")
+        self.save_btn = QPushButton("â Registrar Movimiento")
         self.save_btn.clicked.connect(self.validar_y_guardar)
         
         button_layout.addWidget(self.cancel_btn)
@@ -314,7 +314,7 @@ class DialogoMovimientoInventario(QDialog):
 
 
 class DialogoHistorialProducto(QDialog):
-    """Diálogo para mostrar el historial de movimientos de un producto"""
+    """DiÃ¡logo para mostrar el historial de movimientos de un producto"""
     
     def __init__(self, parent=None, producto=None):
         super().__init__(parent)
@@ -329,19 +329,19 @@ class DialogoHistorialProducto(QDialog):
         """Inicializa la interfaz"""
         layout = QVBoxLayout(self)
         
-        # Información del producto
-        info_group = QGroupBox("📦 Información del Producto")
+        # InformaciÃ³n del producto
+        info_group = QGroupBox("ð¦ InformaciÃ³n del Producto")
         info_layout = QFormLayout(info_group)
         
-        info_layout.addRow("Código:", QLabel(str(self.producto.get("codigo", "N/A"))))
-        info_layout.addRow("Descripción:", QLabel(str(self.producto.get("descripcion", "N/A"))))
+        info_layout.addRow("CÃ³digo:", QLabel(str(self.producto.get("codigo", "N/A"))))
+        info_layout.addRow("DescripciÃ³n:", QLabel(str(self.producto.get("descripcion", "N/A"))))
         info_layout.addRow("Stock Actual:", QLabel(str(self.producto.get("stock_actual", 0))))
-        info_layout.addRow("Categoría:", QLabel(str(self.producto.get("categoria", "N/A"))))
+        info_layout.addRow("CategorÃ­a:", QLabel(str(self.producto.get("categoria", "N/A"))))
         
         layout.addWidget(info_group)
         
         # Tabla de historial
-        historial_group = QGroupBox("📊 Historial de Movimientos")
+        historial_group = QGroupBox("ð Historial de Movimientos")
         historial_layout = QVBoxLayout(historial_group)
         
         self.tabla_historial = QTableWidget()
@@ -373,11 +373,11 @@ class DialogoHistorialProducto(QDialog):
         historial_layout.addWidget(self.tabla_historial)
         layout.addWidget(historial_group)
         
-        # Botón cerrar
+        # BotÃ³n cerrar
         button_layout = QHBoxLayout()
         button_layout.addStretch()
         
-        self.close_btn = QPushButton("❌ Cerrar")
+        self.close_btn = QPushButton("â Cerrar")
         self.close_btn.clicked.connect(self.accept)
         button_layout.addWidget(self.close_btn)
         
@@ -385,7 +385,7 @@ class DialogoHistorialProducto(QDialog):
         
     def cargar_historial(self):
         """Carga el historial de movimientos (simulado)"""
-        # Datos de ejemplo - en implementación real vendría del controlador
+        # Datos de ejemplo - en implementaciÃ³n real vendrÃ­a del controlador
         movimientos_ejemplo = [
             {
                 "fecha": "2024-01-15",
@@ -408,7 +408,7 @@ class DialogoHistorialProducto(QDialog):
                 "tipo": "AJUSTE_POSITIVO",
                 "cantidad": 5,
                 "stock_resultante": 80,
-                "motivo": "Corrección de inventario",
+                "motivo": "CorrecciÃ³n de inventario",
                 "usuario": "supervisor"
             }
         ]
@@ -428,7 +428,7 @@ class DialogoHistorialProducto(QDialog):
             for col, item in enumerate(items):
                 table_item = QTableWidgetItem(str(item))
                 
-                # Colorear según tipo de movimiento
+                # Colorear segÃºn tipo de movimiento
                 if col == 1:  # Columna tipo
                     if item == "ENTRADA":
                         table_item.setBackground(Qt.GlobalColor.lightGreen)

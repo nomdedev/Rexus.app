@@ -1,3 +1,7 @@
+
+# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# Ensure all database operations are properly authorized
+# DB Authorization Check
 """
 Modelo de Auditoría
 

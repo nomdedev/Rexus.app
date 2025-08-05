@@ -9,6 +9,7 @@ Sigue principios de arquitectura MVC y patrones de diseño para mantenibilidad.
 import os
 import platform
 import sys
+import datetime
 from pathlib import Path
 from typing import Any, Dict
 
@@ -81,21 +82,67 @@ class SimpleSecurityManager:
 
     def __init__(self):
         self.current_user_data = None
-        # Usuarios hardcodeados para fallback (sin contraseña visible)
-        self.users = {"admin": {"rol": "ADMIN", "id": 1, "username": "admin"}}
+        self.current_user = None  # Para compatibilidad con SecurityManager
+        self.current_role = "usuario"  # Para compatibilidad con SecurityManager
+        # Sistema seguro sin credenciales hardcodeadas
+        # Las credenciales se cargan desde variables de entorno
+        self._load_secure_credentials()
+
+    def _load_secure_credentials(self):
+        """Carga credenciales desde variables de entorno de forma segura"""
+        import os
+        from rexus.utils.security import SecurityUtils
+        
+        # Solo cargar si está en modo desarrollo y se especifica explícitamente
+        if os.environ.get("DEVELOPMENT_MODE") == "true":
+            admin_user = os.environ.get("FALLBACK_ADMIN_USER")
+            admin_password = os.environ.get("FALLBACK_ADMIN_PASSWORD")
+            
+            if admin_user and admin_password:
+                # Hash seguro de la contraseña
+                hashed_password = SecurityUtils.hash_password(admin_password)
+                self.users = {
+                    admin_user: {
+                        "rol": "ADMIN", 
+                        "id": 1, 
+                        "username": admin_user,
+                        "password_hash": hashed_password
+                    }
+                }
+                print(f"[SIMPLE_AUTH] Usuario de desarrollo cargado: {admin_user}")
+            else:
+                self.users = {}
+                print("[SIMPLE_AUTH] Modo desarrollo activo pero sin credenciales configuradas")
+        else:
+            self.users = {}
+            print("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
 
     def login(self, username: str, password: str) -> bool:
-        """Autenticación simple (solo para pruebas, sin contraseña visible)"""
-        print(
-            f"[SIMPLE_AUTH] Intentando login: usuario='{username}' (contraseña oculta)"
-        )
+        """Autenticación segura con hashing"""
+        print(f"[SIMPLE_AUTH] Intentando login: usuario='{username}'")
+        
+        # Verificar si hay usuarios disponibles
+        if not self.users:
+            print("[SIMPLE_AUTH] No hay usuarios fallback disponibles")
+            return False
+            
         user = self.users.get(username)
-        print(f"[SIMPLE_AUTH] Usuario encontrado: {user is not None}")
-        # Permitir login solo si el usuario es 'admin' y la contraseña se pasa por variable de entorno (o rechazar siempre en producción)
-        import os
-
-        admin_pwd = os.environ.get("FALLBACK_ADMIN_PASSWORD", "admin")
-        if user and password == admin_pwd:
+        if not user:
+            print(f"[SIMPLE_AUTH] Usuario '{username}' no encontrado")
+            return False
+            
+        # Verificar contraseña con hash seguro
+        from rexus.utils.security import SecurityUtils
+        if SecurityUtils.verify_password(password, user.get("password_hash", "")):
+            print(f"[SIMPLE_AUTH] Login exitoso para {username}")
+            self.current_user_data = {k: v for k, v in user.items() if k != "password_hash"}
+            # Sincronizar atributos para compatibilidad
+            self.current_user = self.current_user_data
+            self.current_role = self.current_user_data.get("rol", "usuario")
+            return True
+        else:
+            print(f"[SIMPLE_AUTH] Contraseña incorrecta para {username}")
+            return False
             print(f"[SIMPLE_AUTH] Login exitoso para {username}")
             self.current_user_data = user.copy()
             return True
@@ -147,7 +194,19 @@ class SimpleSecurityManager:
         self, user_id: int, accion: str, modulo: str = None, detalles: str = None
     ):
         """Log simple de eventos"""
-        print(f"[SECURITY] Usuario {user_id}: {accion} en {modulo} - {detalles}")
+        timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        print(
+            f"[SECURITY_LOG] {timestamp} - Usuario:{user_id} - Acción:{accion} - Módulo:{modulo} - Detalles:{detalles}"
+        )
+
+    def diagnose_permissions(self) -> dict:
+        """Diagnóstica el estado de permisos del usuario actual"""
+        return {
+            "has_admin_access": self.current_role == "ADMIN",
+            "current_user": self.current_user_data.get("username") if self.current_user_data else None,
+            "current_role": self.current_role,
+            "permissions_loaded": True
+        }
 
 
 class MainWindow(QMainWindow):

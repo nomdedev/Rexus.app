@@ -25,18 +25,16 @@ SOFTWARE.
 Vista de Pedidos Modernizada
 
 Interfaz moderna para la gestión de pedidos del sistema.
-""""""
+"""
+"""
 
-import json
-from datetime import date, datetime
+from datetime import datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
-from PyQt6.QtWidgets import QMessageBox, (
-    QCheckBox,
+from PyQt6.QtWidgets import (
     QComboBox,
     QDateEdit,
-    QDialog,
     QDoubleSpinBox,
     QFormLayout,
     QFrame,
@@ -47,8 +45,6 @@ from PyQt6.QtWidgets import QMessageBox, (
     QLineEdit,
     QPushButton,
     QScrollArea,
-    QSpinBox,
-    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QTabWidget,
@@ -63,14 +59,9 @@ from rexus.modules.pedidos.improved_dialogs import (
     PedidoEstadoDialog,
 )
 from rexus.utils.format_utils import (
-    currency_formatter,
-    format_for_display,
     table_formatter,
 )
 from rexus.utils.message_system import (
-    ask_question,
-    show_error,
-    show_success,
     show_warning,
 )
 
@@ -108,6 +99,53 @@ class PedidosView(QWidget):
         # Header
         header_widget = self.crear_header()
         layout.addWidget(header_widget)
+
+        # Widget de feedback visual
+        self.label_feedback = QLabel("")
+        self.label_feedback.setVisible(False)
+        self.label_feedback.setStyleSheet("""
+            QLabel[feedback="info"] {
+                background-color: #d1ecf1;
+                color: #0c5460;
+                border: 1px solid #b6d7dd;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-weight: bold;
+            }
+            QLabel[feedback="exito"] {
+                background-color: #d4edda;
+                color: #155724;
+                border: 1px solid #c3e6cb;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-weight: bold;
+            }
+            QLabel[feedback="advertencia"] {
+                background-color: #fff3cd;
+                color: #856404;
+                border: 1px solid #ffeaa7;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-weight: bold;
+            }
+            QLabel[feedback="error"] {
+                background-color: #f8d7da;
+                color: #721c24;
+                border: 1px solid #f5c6cb;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-weight: bold;
+            }
+            QLabel[feedback="cargando"] {
+                background-color: #e2e3e5;
+                color: #383d41;
+                border: 1px solid #d6d8db;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-weight: bold;
+            }
+        """)
+        layout.addWidget(self.label_feedback)
 
         # Pestañas principales
         self.tab_widget = QTabWidget()
@@ -889,6 +927,54 @@ class PedidosView(QWidget):
 
         if hasattr(self.controller, "cargar_pedidos"):
             self.controller.cargar_pedidos()
+
+    def mostrar_mensaje(self, mensaje: str, tipo: str = "info"):
+        """Muestra un mensaje de feedback visual al usuario.
+
+        Args:
+            mensaje: El mensaje a mostrar
+            tipo: Tipo de mensaje ('info', 'exito', 'advertencia', 'error', 'cargando')
+        """
+        if not hasattr(self, "label_feedback") or self.label_feedback is None:
+            return
+
+        iconos = {
+            "info": "ℹ️ ",
+            "exito": "✅ ",
+            "advertencia": "⚠️ ",
+            "error": "❌ ",
+            "cargando": "🔄 ",
+        }
+        icono = iconos.get(tipo, "ℹ️ ")
+
+        self.label_feedback.clear()
+        self.label_feedback.setProperty("feedback", tipo)
+        self.label_feedback.setText(f"{icono}{mensaje}")
+        self.label_feedback.setVisible(True)
+        self.label_feedback.setAccessibleDescription(f"Mensaje de feedback tipo {tipo}")
+
+        # Auto-ocultar después de tiempo apropiado
+        tiempo = 6000 if tipo == "error" else 4000 if tipo == "advertencia" else 3000
+
+        try:
+            from PyQt6.QtCore import QTimer
+
+            if hasattr(self, "_feedback_timer") and self._feedback_timer:
+                self._feedback_timer.stop()
+            self._feedback_timer = QTimer(self)
+            self._feedback_timer.setSingleShot(True)
+            self._feedback_timer.timeout.connect(self.ocultar_feedback)
+            self._feedback_timer.start(tiempo)
+        except ImportError:
+            pass
+
+    def ocultar_feedback(self):
+        """Oculta el feedback visual."""
+        if hasattr(self, "label_feedback") and self.label_feedback:
+            self.label_feedback.setVisible(False)
+            self.label_feedback.clear()
+        if hasattr(self, "_feedback_timer") and self._feedback_timer:
+            self._feedback_timer.stop()
 
     # ===== MÉTODOS MEJORADOS CON NUEVAS UTILIDADES =====
 
