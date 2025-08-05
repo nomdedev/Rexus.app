@@ -74,6 +74,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error cargando datos iniciales: {e}")
             self.mostrar_error("Error cargando datos iniciales", str(e))
 
+    @auth_required(permission='CREATE')
     def crear_orden(self, datos_orden):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -114,6 +115,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
 
+    @auth_required(permission='UPDATE')
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -218,6 +220,7 @@ class ComprasController(QObject):
                 "proveedores_activos": [],
             }
 
+    @auth_required(permission='UPDATE')
     def actualizar_vista(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -241,6 +244,7 @@ class ComprasController(QObject):
         except Exception as e:
             print(f"[ERROR COMPRAS CONTROLLER] Error actualizando vista: {e}")
 
+    @auth_required(permission='MANAGE')
     def validar_datos_orden(self, datos):
         """
         Valida los datos de una orden antes de crearla.
@@ -323,6 +327,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
 
+    @auth_required(permission='CREATE')
     def crear_proveedor(self, datos_proveedor):
         """
         Crea un nuevo proveedor.
@@ -424,6 +429,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo items: {e}")
             return []
 
+    @auth_required(permission='CREATE')
     def agregar_item_compra(self, datos_item):
         """
         Agrega un item a una orden de compra.
@@ -503,6 +509,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS DE UTILIDAD ===
 
+    @auth_required(permission='EXPORT')
     def generar_reporte_completo(self):
         """
         Genera un reporte completo del módulo de compras.

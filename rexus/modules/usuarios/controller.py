@@ -9,7 +9,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from .model import UsuariosModel
-from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
 from rexus.utils.message_system import show_success, show_error
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_manager import AuthManager
@@ -115,6 +115,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error cargando usuarios: {e}")
             self.mostrar_error(f"Error cargando usuarios: {str(e)}")
     
+    @auth_required(permission='CREATE')
     def crear_usuario(self, datos_usuario:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -148,6 +149,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error creando usuario: {e}")
             self.mostrar_error(f"Error creando usuario: {str(e)}")
     
+    @auth_required(permission='UPDATE')
     def actualizar_usuario(self, datos_usuario:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -185,6 +187,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error actualizando usuario: {e}")
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
     
+    @auth_required(permission='DELETE')
     def eliminar_usuario(self, usuario_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -283,6 +286,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo permisos: {e}")
             return []
     
+    @auth_required(permission='MANAGE')
     def validar_datos_usuario(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
         """Valida los datos del usuario."""
         errores = []
@@ -542,6 +546,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e}")
             return {"error": str(e)}
     
+    @auth_required(permission='MANAGE')
     def registrar_auditoria(self, accion: str, modulo: str, detalles: Dict[str, Any]):
         """Registra una acción en el log de auditoría."""
         try:

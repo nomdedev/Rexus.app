@@ -1,0 +1,198 @@
+{
+  "timestamp": "20250805_133049",
+  "total_tests": 31,
+  "passed": 0,
+  "failed": 31,
+  "skipped": 0,
+  "success_rate": 0.0,
+  "estado": "CRÍTICO - No apto para deployment",
+  "duracion_segundos": 0.012860298156738281,
+  "tests": [
+    {
+      "test": "Inicio de aplicación",
+      "status": "FAIL",
+      "details": "main.py no encontrado",
+      "timestamp": "2025-08-05T13:30:49.446862"
+    },
+    {
+      "test": "Componentes de seguridad",
+      "status": "FAIL",
+      "details": "Error: No module named 'utils'",
+      "timestamp": "2025-08-05T13:30:49.448010"
+    },
+    {
+      "test": "Módulo administracion",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.448474"
+    },
+    {
+      "test": "Módulo auditoria",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.448745"
+    },
+    {
+      "test": "Módulo compras",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.448994"
+    },
+    {
+      "test": "Módulo configuracion",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.449237"
+    },
+    {
+      "test": "Módulo herrajes",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.449484"
+    },
+    {
+      "test": "Módulo inventario",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.449725"
+    },
+    {
+      "test": "Módulo logistica",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.449955"
+    },
+    {
+      "test": "Módulo mantenimiento",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.450198"
+    },
+    {
+      "test": "Módulo obras",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.450437"
+    },
+    {
+      "test": "Módulo pedidos",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.450678"
+    },
+    {
+      "test": "Módulo usuarios",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.450902"
+    },
+    {
+      "test": "Módulo vidrios",
+      "status": "FAIL",
+      "details": "Directorio no encontrado",
+      "timestamp": "2025-08-05T13:30:49.451187"
+    },
+    {
+      "test": "Test de módulos",
+      "status": "FAIL",
+      "details": "0/12 módulos OK (0.0%)",
+      "timestamp": "2025-08-05T13:30:49.451368"
+    },
+    {
+      "test": "Base de datos",
+      "status": "FAIL",
+      "details": "Error: No module named 'core'",
+      "timestamp": "2025-08-05T13:30:49.452526"
+    },
+    {
+      "test": "Archivo requirements.txt",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.452997"
+    },
+    {
+      "test": "Archivo Dockerfile",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.453293"
+    },
+    {
+      "test": "Archivo docker-compose.yml",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.453526"
+    },
+    {
+      "test": "Archivo main.py",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.453791"
+    },
+    {
+      "test": "Archivo config/rexus_config.json",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.454030"
+    },
+    {
+      "test": "Archivo utils/rexus_styles.py",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.454296"
+    },
+    {
+      "test": "Archivo core/security_manager.py",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.454532"
+    },
+    {
+      "test": "Archivo docs/UI_UX_STANDARDS.md",
+      "status": "FAIL",
+      "details": "Archivo no encontrado",
+      "timestamp": "2025-08-05T13:30:49.454822"
+    },
+    {
+      "test": "Archivos críticos",
+      "status": "FAIL",
+      "details": "0/8 archivos OK (0.0%)",
+      "timestamp": "2025-08-05T13:30:49.454984"
+    },
+    {
+      "test": "Scripts deployment",
+      "status": "FAIL",
+      "details": "Error: No module named 'config'",
+      "timestamp": "2025-08-05T13:30:49.456035"
+    },
+    {
+      "test": "Doc UI_UX_STANDARDS.md",
+      "status": "FAIL",
+      "details": "Documento no encontrado",
+      "timestamp": "2025-08-05T13:30:49.456466"
+    },
+    {
+      "test": "Doc COMO_EJECUTAR.md",
+      "status": "FAIL",
+      "details": "Documento no encontrado",
+      "timestamp": "2025-08-05T13:30:49.456854"
+    },
+    {
+      "test": "Doc REPORTE_PROGRESO_COMPLETO.md",
+      "status": "FAIL",
+      "details": "Documento no encontrado",
+      "timestamp": "2025-08-05T13:30:49.457124"
+    },
+    {
+      "test": "Doc README_ESTRUCTURA.md",
+      "status": "FAIL",
+      "details": "Documento no encontrado",
+      "timestamp": "2025-08-05T13:30:49.457390"
+    },
+    {
+      "test": "Documentación",
+      "status": "FAIL",
+      "details": "0/4 docs OK (0.0%)",
+      "timestamp": "2025-08-05T13:30:49.457563"
+    }
+  ]
+}

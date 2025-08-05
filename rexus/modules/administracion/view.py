@@ -45,6 +45,8 @@ Sistema completo de administración que incluye:
 
 from PyQt6.QtCore import QDate, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
+
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     QComboBox,
     QDateEdit,
     QFormLayout,
@@ -1457,7 +1459,7 @@ class AdministracionView(QWidget):
         """)
 
         layout = QVBoxLayout(card)
-        layout.setSpacing(8)
+        layout.setSpacing(10)
 
         titulo_label = QLabel(titulo)
         titulo_label.setStyleSheet(f"""

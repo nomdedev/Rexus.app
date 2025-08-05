@@ -62,6 +62,7 @@ from rexus.utils.format_utils import (
     table_formatter,
 )
 from rexus.utils.message_system import (
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     show_warning,
 )
 
@@ -77,6 +78,10 @@ class PedidosView(QWidget):
     solicitud_cambiar_estado = pyqtSignal(str, str)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.controller = None
         self.pedidos_data = []
@@ -173,9 +178,9 @@ class PedidosView(QWidget):
         # Título
         titulo_container = QVBoxLayout()
         titulo = QLabel("📋 Gestión de Pedidos")
-        titulo.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
+        titulo.setFont(QFont("Arial", 24, QFont.Weight.Bold))
         subtitulo = QLabel("Administración de pedidos y órdenes de compra")
-        subtitulo.setFont(QFont("Segoe UI", 12))
+        subtitulo.setFont(QFont("Arial", 12))
 
         titulo_container.addWidget(titulo)
         titulo_container.addWidget(subtitulo)
@@ -210,12 +215,12 @@ class PedidosView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
 
         valor_label = QLabel(valor)
-        valor_label.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))
+        valor_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         valor_label.setStyleSheet(f"color: {color};")
 
         titulo_label = QLabel(titulo)
-        titulo_label.setFont(QFont("Segoe UI", 10))
+        titulo_label.setFont(QFont("Arial", 10))
         titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         layout.addWidget(valor_label)
@@ -239,6 +244,7 @@ class PedidosView(QWidget):
 
         # Búsqueda
         self.search_input = QLineEdit()
+        self.search_input.setAccessibleName('Search Input')
         self.search_input.setPlaceholderText("🔍 Buscar pedidos...")
         self.search_input.textChanged.connect(self.filtrar_pedidos)
 
@@ -255,12 +261,18 @@ class PedidosView(QWidget):
 
         # Botones
         self.btn_nuevo_pedido = QPushButton("➕ Nuevo Pedido")
+        self.btn_nuevo_pedido.setToolTip('Agregar nuevo elemento - Botón Nuevo Pedido')
+        self.btn_nuevo_pedido.setAccessibleName('Botón Nuevo Pedido')
         self.btn_nuevo_pedido.clicked.connect(self.nuevo_pedido)
 
         self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
+        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.clicked.connect(self.cargar_pedidos)
 
         self.btn_exportar = QPushButton("📊 Exportar")
+        self.btn_exportar.setToolTip('Acción: Botón Exportar')
+        self.btn_exportar.setAccessibleName('Botón Exportar')
         self.btn_exportar.clicked.connect(self.exportar_pedidos)
 
         toolbar_layout.addWidget(self.search_input)
@@ -332,10 +344,12 @@ class PedidosView(QWidget):
         info_layout = QFormLayout(info_group)
 
         self.input_numero = QLineEdit()
+        self.input_numero.setAccessibleName('Input Numero')
         self.input_numero.setEnabled(False)
         self.date_pedido = QDateEdit()
         self.date_pedido.setDate(QDate.currentDate())
         self.input_cliente = QLineEdit()
+        self.input_cliente.setAccessibleName('Input Cliente')
         self.combo_estado = QComboBox()
         self.combo_estado.addItems(
             ["Pendiente", "En Proceso", "Completado", "Cancelado"]
@@ -343,6 +357,7 @@ class PedidosView(QWidget):
         self.combo_prioridad = QComboBox()
         self.combo_prioridad.addItems(["Baja", "Media", "Alta", "Urgente"])
         self.input_responsable = QLineEdit()
+        self.input_responsable.setAccessibleName('Input Responsable')
 
         info_layout.addRow("Número:", self.input_numero)
         info_layout.addRow("Fecha:", self.date_pedido)
@@ -366,6 +381,8 @@ class PedidosView(QWidget):
         # Botones para productos
         productos_botones = QHBoxLayout()
         self.btn_agregar_producto = QPushButton("➕ Agregar Producto")
+        self.btn_agregar_producto.setToolTip('Acción: Botón Agregar Producto')
+        self.btn_agregar_producto.setAccessibleName('Botón Agregar Producto')
         self.btn_agregar_producto.clicked.connect(self.agregar_producto)
         productos_botones.addWidget(self.btn_agregar_producto)
         productos_botones.addStretch()
@@ -402,16 +419,29 @@ class PedidosView(QWidget):
         self.text_notas.setMaximumHeight(100)
         notas_layout.addWidget(self.text_notas)
 
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.search_input, "search_input", 100)
+        self.form_protector.protect_field(self.input_numero, "input_numero", 100)
+        self.form_protector.protect_field(self.input_cliente, "input_cliente", 100)
+        self.form_protector.protect_field(self.input_responsable, "input_responsable", 100)
+        self.form_protector.protect_field(self.text_notas, "text_notas", 500)
+
         # Botones de acción
         botones_layout = QHBoxLayout()
 
         self.btn_guardar_pedido = QPushButton("💾 Guardar Pedido")
+        self.btn_guardar_pedido.setToolTip('Guardar cambios - Botón Guardar Pedido')
+        self.btn_guardar_pedido.setAccessibleName('Botón Guardar Pedido')
         self.btn_guardar_pedido.clicked.connect(self.guardar_pedido)
 
         self.btn_cancelar_edicion = QPushButton("❌ Cancelar")
+        self.btn_cancelar_edicion.setToolTip('Acción: Botón Cancelar Edicion')
+        self.btn_cancelar_edicion.setAccessibleName('Botón Cancelar Edicion')
         self.btn_cancelar_edicion.clicked.connect(self.cancelar_edicion)
 
         self.btn_imprimir = QPushButton("🖨️ Imprimir")
+        self.btn_imprimir.setToolTip('Acción: Botón Imprimir')
+        self.btn_imprimir.setAccessibleName('Botón Imprimir')
         self.btn_imprimir.clicked.connect(self.imprimir_pedido)
 
         botones_layout.addWidget(self.btn_guardar_pedido)
@@ -1087,3 +1117,32 @@ class PedidosView(QWidget):
         # Cargar en tabla existente
         if hasattr(self, "tabla_pedidos"):
             self.cargar_en_tabla_pedidos(formatted_data)
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

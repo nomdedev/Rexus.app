@@ -76,6 +76,10 @@ class ObrasView(QWidget):
     obra_editada = pyqtSignal(dict)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.controller = None
         self.vista_actual = "tabla"  # "tabla" o "cronograma"
@@ -151,6 +155,8 @@ class ObrasView(QWidget):
 
         # Botón para alternar entre tabla y cronograma
         self.btn_alternar_vista = QPushButton("📅 Vista Cronograma")
+        self.btn_alternar_vista.setToolTip('Acción: Botón Alternar Vista')
+        self.btn_alternar_vista.setAccessibleName('Botón Alternar Vista')
         self.btn_alternar_vista.setStyleSheet("""
             QPushButton {
                 background-color: rgba(255, 255, 255, 0.2);
@@ -315,6 +321,7 @@ class ObrasView(QWidget):
 
         # Filtro por responsable
         self.txt_filtro_responsable = QLineEdit()
+        self.txt_filtro_responsable.setAccessibleName('Txt Filtro Responsable')
         self.txt_filtro_responsable.setPlaceholderText("Buscar por responsable...")
         layout.addRow("Responsable:", self.txt_filtro_responsable)
 
@@ -336,6 +343,8 @@ class ObrasView(QWidget):
 
         # Botón aplicar filtros
         self.btn_aplicar_filtros = QPushButton("Aplicar Filtros")
+        self.btn_aplicar_filtros.setToolTip('Acción: Botón Aplicar Filtros')
+        self.btn_aplicar_filtros.setAccessibleName('Botón Aplicar Filtros')
         self.btn_aplicar_filtros.setStyleSheet("""
             QPushButton {
                 background-color:
@@ -428,22 +437,32 @@ class ObrasView(QWidget):
 
         # Botón nueva obra
         self.btn_nueva_obra = QPushButton("📄 Nueva Obra")
+        self.btn_nueva_obra.setToolTip('Acción: Botón Nueva Obra')
+        self.btn_nueva_obra.setAccessibleName('Botón Nueva Obra')
         self.btn_nueva_obra.setStyleSheet(self.estilo_boton_primario())
 
         # Botón editar obra
         self.btn_editar_obra = QPushButton("✏️ Editar")
+        self.btn_editar_obra.setToolTip('Editar información - Botón Campo dear Obra')
+        self.btn_editar_obra.setAccessibleName('Botón Campo dear Obra')
         self.btn_editar_obra.setStyleSheet(self.estilo_boton_secundario())
 
         # Botón eliminar obra
         self.btn_eliminar_obra = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar_obra.setToolTip('Eliminar elemento - Botón Eliminar Obra')
+        self.btn_eliminar_obra.setAccessibleName('Botón Eliminar Obra')
         self.btn_eliminar_obra.setStyleSheet(self.estilo_boton_peligro())
 
         # Botón cambiar estado
         self.btn_cambiar_estado = QPushButton("🔄 Cambiar Estado")
+        self.btn_cambiar_estado.setToolTip('Acción: Botón Cambiar Estado')
+        self.btn_cambiar_estado.setAccessibleName('Botón Cambiar Estado')
         self.btn_cambiar_estado.setStyleSheet(self.estilo_boton_secundario())
 
         # Botón actualizar
         self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
+        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.setStyleSheet(self.estilo_boton_secundario())
 
         # Agregar botones al layout
@@ -849,16 +868,19 @@ class FormularioObraDialog(QDialog):
         # Código (solo en creación)
         if not self.es_edicion:
             self.txt_codigo = QLineEdit()
+        self.txt_codigo.setAccessibleName('Txt Codigo')
             self.txt_codigo.setPlaceholderText("Ej: OBR-2024-001")
             form_layout.addRow("Código*:", self.txt_codigo)
 
         # Nombre
         self.txt_nombre = QLineEdit()
+        self.txt_nombre.setAccessibleName('Txt Nombre')
         self.txt_nombre.setPlaceholderText("Nombre de la obra")
         form_layout.addRow("Nombre*:", self.txt_nombre)
 
         # Cliente
         self.txt_cliente = QLineEdit()
+        self.txt_cliente.setAccessibleName('Txt Cliente')
         self.txt_cliente.setPlaceholderText("Nombre del cliente")
         form_layout.addRow("Cliente*:", self.txt_cliente)
 
@@ -870,21 +892,25 @@ class FormularioObraDialog(QDialog):
 
         # Responsable
         self.txt_responsable = QLineEdit()
+        self.txt_responsable.setAccessibleName('Txt Responsable')
         self.txt_responsable.setPlaceholderText("Responsable de la obra")
         form_layout.addRow("Responsable*:", self.txt_responsable)
 
         # Dirección
         self.txt_direccion = QLineEdit()
+        self.txt_direccion.setAccessibleName('Txt Direccion')
         self.txt_direccion.setPlaceholderText("Dirección de la obra")
         form_layout.addRow("Dirección:", self.txt_direccion)
 
         # Teléfono
         self.txt_telefono = QLineEdit()
+        self.txt_telefono.setAccessibleName('Txt Telefono')
         self.txt_telefono.setPlaceholderText("Teléfono de contacto")
         form_layout.addRow("Teléfono:", self.txt_telefono)
 
         # Email
         self.txt_email = QLineEdit()
+        self.txt_email.setAccessibleName('Txt Email')
         self.txt_email.setPlaceholderText("email@ejemplo.com")
         form_layout.addRow("Email:", self.txt_email)
 
@@ -926,17 +952,33 @@ class FormularioObraDialog(QDialog):
         self.txt_observaciones.setPlaceholderText("Observaciones adicionales...")
         form_layout.addRow("Observaciones:", self.txt_observaciones)
 
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.txt_filtro_responsable, "txt_filtro_responsable", 100)
+        self.form_protector.protect_field(self.txt_codigo, "txt_codigo", 50)
+        self.form_protector.protect_field(self.txt_nombre, "txt_nombre", 100)
+        self.form_protector.protect_field(self.txt_cliente, "txt_cliente", 100)
+        self.form_protector.protect_field(self.txt_responsable, "txt_responsable", 100)
+        self.form_protector.protect_field(self.txt_direccion, "txt_direccion", 100)
+        self.form_protector.protect_field(self.txt_telefono, "txt_telefono", 100)
+        self.form_protector.protect_field(self.txt_email, "txt_email", 100)
+        self.form_protector.protect_field(self.txt_descripcion, "txt_descripcion", 500)
+        self.form_protector.protect_field(self.txt_observaciones, "txt_observaciones", 100)
+
         layout.addLayout(form_layout)
 
         # Botones modernos
         button_layout = QHBoxLayout()
         
         self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn.setToolTip('Acción: Cancel Botón')
+        self.cancel_btn.setAccessibleName('Cancel Botón')
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setProperty("buttonType", "secondary")
         
         texto_boton = "💾 Actualizar Obra" if self.es_edicion else "✅ Crear Obra"
         self.save_btn = QPushButton(texto_boton)
+        self.save_btn.setToolTip('Acción: Save Botón')
+        self.save_btn.setAccessibleName('Save Botón')
         self.save_btn.clicked.connect(self.validar_y_aceptar)
         self.save_btn.setProperty("buttonType", "success")
         
@@ -1145,6 +1187,7 @@ class FormularioObraDialog(QDialog):
     def _setup_realtime_validation(self):
         """Configura validación visual en tiempo real."""
         from rexus.utils.form_styles import FormStyleManager
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
         
         def validate_codigo():
             if hasattr(self, 'txt_codigo'):
@@ -1246,3 +1289,32 @@ class FormularioObraDialog(QDialog):
         validate_responsable()
         validate_presupuesto()
         validate_email()
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

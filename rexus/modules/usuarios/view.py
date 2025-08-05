@@ -75,6 +75,7 @@ from rexus.modules.usuarios.improved_dialogs import (
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.message_system import (
 from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
 from rexus.core.auth_manager import AuthManager
     ask_question,
     show_error,
@@ -108,6 +109,10 @@ class UsuariosView(QWidget):
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         # Layout principal
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
@@ -150,9 +155,9 @@ class UsuariosView(QWidget):
         # Título
         titulo_container = QVBoxLayout()
         titulo = QLabel("👥 Gestión de Usuarios")
-        titulo.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
+        titulo.setFont(QFont("Arial", 24, QFont.Weight.Bold))
         subtitulo = QLabel("Administración de usuarios y permisos del sistema")
-        subtitulo.setFont(QFont("Segoe UI", 12))
+        subtitulo.setFont(QFont("Arial", 12))
 
         titulo_container.addWidget(titulo)
         titulo_container.addWidget(subtitulo)
@@ -203,12 +208,12 @@ class UsuariosView(QWidget):
 
         # Valor
         valor_label = QLabel(valor)
-        valor_label.setFont(QFont("Segoe UI", 18, QFont.Weight.Bold))
+        valor_label.setFont(QFont("Arial", 18, QFont.Weight.Bold))
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Título
         titulo_label = QLabel(titulo)
-        titulo_label.setFont(QFont("Segoe UI", 10))
+        titulo_label.setFont(QFont("Arial", 10))
         titulo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         layout.addWidget(valor_label)
@@ -241,6 +246,7 @@ class UsuariosView(QWidget):
 
         # Búsqueda
         self.search_input = QLineEdit()
+        self.search_input.setAccessibleName('Search Input')
         self.search_input.setPlaceholderText("🔍 Buscar usuarios...")
         self.search_input.textChanged.connect(self.filtrar_usuarios)
 
@@ -257,25 +263,37 @@ class UsuariosView(QWidget):
 
         # Botones de acción
         self.btn_nuevo = QPushButton("➕ Nuevo Usuario")
+        self.btn_nuevo.setToolTip('Agregar nuevo elemento - Botón Nuevo')
+        self.btn_nuevo.setAccessibleName('Botón Nuevo')
         self.btn_nuevo.clicked.connect(self.crear_usuario_mejorado)
 
         self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
+        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.clicked.connect(self.cargar_usuarios)
 
         # Botones adicionales para gestión mejorada
         self.btn_editar = QPushButton("✏️ Editar")
+        self.btn_editar.setToolTip('Editar información - Botón Campo dear')
+        self.btn_editar.setAccessibleName('Botón Campo dear')
         self.btn_editar.clicked.connect(self.editar_usuario_mejorado)
         self.btn_editar.setEnabled(False)
 
         self.btn_permisos = QPushButton("🔐 Permisos")
+        self.btn_permisos.setToolTip('Acción: Botón Permisos')
+        self.btn_permisos.setAccessibleName('Botón Permisos')
         self.btn_permisos.clicked.connect(self.gestionar_permisos)
         self.btn_permisos.setEnabled(False)
 
         self.btn_password = QPushButton("🔑 Reset Password")
+        self.btn_password.setToolTip('Acción: Botón Password')
+        self.btn_password.setAccessibleName('Botón Password')
         self.btn_password.clicked.connect(self.resetear_password_usuario)
         self.btn_password.setEnabled(False)
 
         self.btn_eliminar = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar.setToolTip('Eliminar elemento - Botón Eliminar')
+        self.btn_eliminar.setAccessibleName('Botón Eliminar')
         self.btn_eliminar.clicked.connect(self.eliminar_usuario_mejorado)
         self.btn_eliminar.setEnabled(False)
 
@@ -341,7 +359,7 @@ class UsuariosView(QWidget):
 
         # Título del panel
         titulo = QLabel("📋 Detalles del Usuario")
-        titulo.setFont(QFont("Segoe UI", 16, QFont.Weight.Bold))
+        titulo.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         layout.addWidget(titulo)
 
         # Área de scroll para el formulario
@@ -354,14 +372,24 @@ class UsuariosView(QWidget):
         info_layout = QFormLayout(info_group)
 
         self.input_usuario = QLineEdit()
+        self.input_usuario.setAccessibleName('Input Usuario')
         self.input_nombre = QLineEdit()
+        self.input_nombre.setAccessibleName('Input Nombre')
         self.input_email = QLineEdit()
+        self.input_email.setAccessibleName('Input Email')
         self.input_telefono = QLineEdit()
+        self.input_telefono.setAccessibleName('Input Telefono')
 
         info_layout.addRow("Usuario:", self.input_usuario)
         info_layout.addRow("Nombre:", self.input_nombre)
         info_layout.addRow("Email:", self.input_email)
         info_layout.addRow("Teléfono:", self.input_telefono)
+        
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.input_usuario, "usuario", 50)
+        self.form_protector.protect_field(self.input_nombre, "nombre", 100)
+        self.form_protector.protect_field(self.input_email, "email", 100)
+        self.form_protector.protect_field(self.input_telefono, "telefono", 20)
 
         # Configuración de cuenta
         config_group = QGroupBox("Configuración de Cuenta")
@@ -423,17 +451,26 @@ class UsuariosView(QWidget):
         self.text_notas = QTextEdit()
         self.text_notas.setMaximumHeight(100)
         notas_layout.addWidget(self.text_notas)
+        
+        # Proteger campo de notas contra XSS
+        self.form_protector.protect_field(self.text_notas, "notas", 500)
 
         # Botones de acción
         botones_layout = QHBoxLayout()
 
         self.btn_guardar = QPushButton("💾 Guardar")
+        self.btn_guardar.setToolTip('Guardar cambios - Botón Guardar')
+        self.btn_guardar.setAccessibleName('Botón Guardar')
         self.btn_guardar.clicked.connect(self.guardar_usuario)
 
         self.btn_eliminar = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar.setToolTip('Eliminar elemento - Botón Eliminar')
+        self.btn_eliminar.setAccessibleName('Botón Eliminar')
         self.btn_eliminar.clicked.connect(self.eliminar_usuario)
 
         self.btn_resetear_password = QPushButton("🔑 Reset Password")
+        self.btn_resetear_password.setToolTip('Acción: Botón Resetear Password')
+        self.btn_resetear_password.setAccessibleName('Botón Resetear Password')
         self.btn_resetear_password.clicked.connect(self.resetear_password)
 
         botones_layout.addWidget(self.btn_guardar)
@@ -1074,12 +1111,18 @@ class DialogoNuevoUsuario(QDialog):
         form_layout = QFormLayout()
 
         self.input_usuario = QLineEdit()
+        self.input_usuario.setAccessibleName('Input Usuario')
         self.input_nombre = QLineEdit()
+        self.input_nombre.setAccessibleName('Input Nombre')
         self.input_email = QLineEdit()
+        self.input_email.setAccessibleName('Input Email')
         self.input_telefono = QLineEdit()
+        self.input_telefono.setAccessibleName('Input Telefono')
         self.input_password = QLineEdit()
+        self.input_password.setAccessibleName('Input Password')
         self.input_password.setEchoMode(QLineEdit.EchoMode.Password)
         self.input_password_confirm = QLineEdit()
+        self.input_password_confirm.setAccessibleName('Input Password Confirm')
         self.input_password_confirm.setEchoMode(QLineEdit.EchoMode.Password)
 
         self.combo_rol = QComboBox()
@@ -1195,3 +1238,47 @@ class DialogoNuevoUsuario(QDialog):
             "rol": self.combo_rol.currentText(),
             "estado": "Activo",
         }
+    
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            getattr(self, 'usuario_actual', {}).get('username', 'unknown')
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.\n\n"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    @xss_protect('usuario', 'nombre', 'email', 'telefono', 'notas')
+    def guardar_usuario_seguro(self, datos_usuario: dict):
+        """Versión segura del método guardar_usuario con protección XSS."""
+        # Los datos ya están sanitizados por el decorador
+        return self.guardar_usuario_original(datos_usuario)
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            # Fallback manual
+            datos = {}
+            if hasattr(self, 'input_usuario'):
+                datos['usuario'] = XSSProtection.sanitize_text(self.input_usuario.text())
+            if hasattr(self, 'input_nombre'):
+                datos['nombre'] = XSSProtection.sanitize_text(self.input_nombre.text())
+            if hasattr(self, 'input_email'):
+                datos['email'] = XSSProtection.sanitize_text(self.input_email.text())
+            if hasattr(self, 'input_telefono'):
+                datos['telefono'] = XSSProtection.sanitize_text(self.input_telefono.text())
+            if hasattr(self, 'text_notas'):
+                datos['notas'] = XSSProtection.sanitize_text(self.text_notas.toPlainText())
+            return datos
