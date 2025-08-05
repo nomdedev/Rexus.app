@@ -2,6 +2,7 @@
 Controlador de Compras
 
 Maneja la lógica de negocio entre la vista y el modelo de compras.
+Incluye gestión de órdenes, proveedores y detalles de compra.
 """
 
 from datetime import date, datetime
@@ -10,6 +11,8 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.core.auth_manager import AuthManager
+from rexus.modules.compras.detalle_model import DetalleComprasModel
+from rexus.modules.compras.proveedores_model import ProveedoresModel
 
 
 class ComprasController(QObject):
@@ -31,6 +34,10 @@ class ComprasController(QObject):
         self.model = model
         self.view = view
         self.db_connection = db_connection
+
+        # Inicializar modelos adicionales
+        self.detalle_model = DetalleComprasModel(db_connection)
+        self.proveedores_model = ProveedoresModel(db_connection)
 
         # Conectar señales
         self.conectar_señales()
@@ -312,4 +319,229 @@ class ComprasController(QObject):
                 "estadisticas": {},
                 "compras_recientes": [],
                 "fecha_actualizacion": datetime.now().isoformat(),
+            }
+
+    # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
+
+    def crear_proveedor(self, datos_proveedor):
+        """
+        Crea un nuevo proveedor.
+
+        Args:
+            datos_proveedor: Diccionario con datos del proveedor
+        """
+        try:
+            exito = self.proveedores_model.crear_proveedor(
+                nombre=datos_proveedor.get("nombre", ""),
+                razon_social=datos_proveedor.get("razon_social", ""),
+                ruc=datos_proveedor.get("ruc", ""),
+                telefono=datos_proveedor.get("telefono", ""),
+                email=datos_proveedor.get("email", ""),
+                direccion=datos_proveedor.get("direccion", ""),
+                contacto_principal=datos_proveedor.get("contacto_principal", ""),
+                categoria=datos_proveedor.get("categoria", ""),
+                observaciones=datos_proveedor.get("observaciones", ""),
+                usuario_creacion=datos_proveedor.get("usuario_creacion", "Sistema")
+            )
+
+            if exito:
+                show_success(self.view, "Éxito", "Proveedor creado exitosamente")
+                return True
+            else:
+                show_error(self.view, "Error", "No se pudo crear el proveedor")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error creando proveedor: {e}")
+            show_error(self.view, "Error creando proveedor", str(e))
+            return False
+
+    def obtener_proveedores(self):
+        """
+        Obtiene todos los proveedores.
+
+        Returns:
+            List[Dict]: Lista de proveedores
+        """
+        try:
+            return self.proveedores_model.obtener_todos_proveedores()
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo proveedores: {e}")
+            return []
+
+    def buscar_proveedores(self, filtros):
+        """
+        Busca proveedores con filtros.
+
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+
+        Returns:
+            List[Dict]: Lista de proveedores filtrados
+        """
+        try:
+            return self.proveedores_model.buscar_proveedores(
+                nombre=filtros.get("nombre", ""),
+                categoria=filtros.get("categoria", ""),
+                estado=filtros.get("estado", ""),
+                ruc=filtros.get("ruc", "")
+            )
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error buscando proveedores: {e}")
+            return []
+
+    def obtener_estadisticas_proveedor(self, proveedor_id):
+        """
+        Obtiene estadísticas de un proveedor específico.
+
+        Args:
+            proveedor_id: ID del proveedor
+
+        Returns:
+            Dict: Estadísticas del proveedor
+        """
+        try:
+            return self.proveedores_model.obtener_estadisticas_proveedor(proveedor_id)
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo estadísticas proveedor: {e}")
+            return {}
+
+    # === MÉTODOS PARA GESTIÓN DE DETALLES DE COMPRAS ===
+
+    def obtener_items_compra(self, compra_id):
+        """
+        Obtiene los items de una orden de compra.
+
+        Args:
+            compra_id: ID de la orden de compra
+
+        Returns:
+            List[Dict]: Lista de items
+        """
+        try:
+            return self.detalle_model.obtener_items_compra(compra_id)
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo items: {e}")
+            return []
+
+    def agregar_item_compra(self, datos_item):
+        """
+        Agrega un item a una orden de compra.
+
+        Args:
+            datos_item: Diccionario con datos del item
+        """
+        try:
+            exito = self.detalle_model.agregar_item_compra(
+                compra_id=datos_item.get("compra_id"),
+                descripcion=datos_item.get("descripcion", ""),
+                categoria=datos_item.get("categoria", ""),
+                cantidad=datos_item.get("cantidad", 1),
+                precio_unitario=datos_item.get("precio_unitario", 0.0),
+                unidad=datos_item.get("unidad", "UN"),
+                observaciones=datos_item.get("observaciones", ""),
+                usuario_creacion=datos_item.get("usuario_creacion", "Sistema")
+            )
+
+            if exito:
+                show_success(self.view, "Éxito", "Item agregado exitosamente")
+                return True
+            else:
+                show_error(self.view, "Error", "No se pudo agregar el item")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error agregando item: {e}")
+            show_error(self.view, "Error agregando item", str(e))
+            return False
+
+    def obtener_resumen_compra(self, compra_id):
+        """
+        Obtiene el resumen financiero de una orden de compra.
+
+        Args:
+            compra_id: ID de la orden de compra
+
+        Returns:
+            Dict: Resumen financiero
+        """
+        try:
+            return self.detalle_model.obtener_resumen_compra(compra_id)
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo resumen: {e}")
+            return {}
+
+    def obtener_productos_por_categoria(self):
+        """
+        Obtiene productos agrupados por categoría.
+
+        Returns:
+            Dict: Productos por categoría
+        """
+        try:
+            return self.detalle_model.obtener_productos_por_categoria()
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo productos por categoría: {e}")
+            return {}
+
+    def buscar_productos_similares(self, descripcion, limite=10):
+        """
+        Busca productos similares para sugerencias.
+
+        Args:
+            descripcion: Descripción a buscar
+            limite: Número máximo de resultados
+
+        Returns:
+            List[Dict]: Lista de productos similares
+        """
+        try:
+            return self.detalle_model.buscar_productos_similares(descripcion, limite)
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error buscando productos similares: {e}")
+            return []
+
+    # === MÉTODOS DE UTILIDAD ===
+
+    def generar_reporte_completo(self):
+        """
+        Genera un reporte completo del módulo de compras.
+
+        Returns:
+            Dict: Reporte completo
+        """
+        try:
+            # Obtener estadísticas generales
+            stats_generales = self.model.obtener_estadisticas_compras()
+            
+            # Obtener datos de proveedores
+            proveedores = self.proveedores_model.obtener_todos_proveedores()
+            
+            # Obtener productos por categoría
+            productos_categoria = self.detalle_model.obtener_productos_por_categoria()
+            
+            # Obtener compras recientes
+            compras_recientes = self.model.obtener_todas_compras()[:20]  # Últimas 20
+
+            return {
+                "fecha_reporte": datetime.now().isoformat(),
+                "estadisticas_generales": stats_generales,
+                "total_proveedores": len(proveedores),
+                "proveedores_activos": len([p for p in proveedores if p.get("estado") == "ACTIVO"]),
+                "categorias_productos": list(productos_categoria.keys()),
+                "total_categorias": len(productos_categoria),
+                "compras_recientes": compras_recientes,
+                "resumen": {
+                    "modulo": "Compras",
+                    "estado": "Operativo",
+                    "ultima_actualizacion": datetime.now().isoformat()
+                }
+            }
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error generando reporte: {e}")
+            return {
+                "fecha_reporte": datetime.now().isoformat(),
+                "error": str(e),
+                "estado": "Error"
             }

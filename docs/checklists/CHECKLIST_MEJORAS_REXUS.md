@@ -66,29 +66,13 @@
 - [ ] Mejorar feedback visual en login, registro y formularios (tooltips, loaders, mensajes claros).
 - [ ] Refactorizar funciones grandes (>50 líneas) y mejorar modularidad.
 - [ ] Mejorar documentación técnica y de usuario (manuales, guías de API, onboarding).
-- [ ] Implementar dashboard de administración avanzado y exportación de reportes.
-- [ ] Mejorar cobertura de tests (edge cases, integración, UI, seguridad).
-- [ ] Sincronizar e integrar módulos (inventario, obras, compras, etc.) para evitar duplicidad de datos.
-- [ ] Validar encoding y manejo de caracteres especiales en toda la app.
-
-## BAJA PRIORIDAD
 - [ ] Documentar modelos y relaciones de inventario, herrajes, vidrios y usuarios.
-- [ ] Mejorar tooltips y mensajes en controles secundarios.
 - [ ] Optimizar rendimiento en módulos menos críticos.
-- [ ] Implementar modo oscuro y accesibilidad avanzada.
 - [ ] Auditar y mejorar scripts de mantenimiento y verificación.
 
-## SEGURIDAD Y SQL SEGURO
-- [ ] Validar y sanitizar todos los datos de entrada (revisar módulos con cobertura <100%).
 - [ ] Auditar y testear todos los métodos de acceso a datos.
 - [ ] Implementar validación de nombres de tablas y columnas en consultas dinámicas.
 - [ ] Documentar y registrar cada método migrado a SQL seguro.
-- [ ] Revisar todos los métodos que usan f-strings, + o .format para armar consultas.
-
-## TESTING Y QA
-- [ ] Crear y ejecutar pruebas de penetración (SQLi, XSS, fuerza bruta).
-- [ ] Validar cobertura de tests automatizados y edge cases.
-- [ ] Revisar y mejorar tests de integración y UI.
 - [ ] Documentar resultados y hallazgos en cada ciclo de QA.
 
 ## DOCUMENTACIÓN Y DESPLIEGUE
