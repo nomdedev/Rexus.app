@@ -1111,6 +1111,17 @@ def main():
         )
         security_manager = None
 
+    # Inicializar sistema de backup automático
+    try:
+        from rexus.core.backup_integration import initialize_backup_system
+        backup_initialized = initialize_backup_system()
+        if backup_initialized:
+            print("✅ Sistema de backup automático inicializado")
+        else:
+            print("⚠️ Sistema de backup no se pudo inicializar, continuando sin backup automático")
+    except Exception as e:
+        print(f"⚠️ Error inicializando sistema de backup: {e}")
+
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
 

@@ -19,7 +19,50 @@ class AuthManager:
         self.session_active = False
         
         # La conexión se creará cuando sea necesaria
+
+
+# Variable global para mantener el usuario actual (singleton)
+_current_user = None
+_auth_manager_instance = None
+
+
+def get_current_user() -> Optional[Dict[str, Any]]:
+    """
+    Obtiene el usuario actualmente autenticado.
     
+    Returns:
+        Dict con información del usuario o None si no está autenticado
+    """
+    global _current_user
+    if _current_user:
+        return _current_user
+    
+    # Intentar obtener del auth manager
+    global _auth_manager_instance
+    if _auth_manager_instance and _auth_manager_instance.current_user:
+        _current_user = _auth_manager_instance.current_user
+        return _current_user
+    
+    return None
+
+
+def set_current_user(user_data: Dict[str, Any]):
+    """
+    Establece el usuario actual después de la autenticación.
+    
+    Args:
+        user_data: Información del usuario autenticado
+    """
+    global _current_user
+    _current_user = user_data
+
+
+def clear_current_user():
+    """Limpia el usuario actual (logout)."""
+    global _current_user
+    _current_user = None
+
+
     def authenticate_user(self, username: str, password: str) -> Optional[Dict[str, Any]]:
         """
         Autentica un usuario con username y password
