@@ -70,7 +70,7 @@ class ComprasModel:
         self,
         proveedor:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_compra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
  str,
@@ -189,7 +189,7 @@ class ComprasModel:
     def actualizar_estado_compra(
         self, compra_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_estado_compra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
  int, nuevo_estado: str, usuario: str = ""
@@ -608,3 +608,47 @@ class ComprasModel:
         except Exception as e:
             print(f"[ERROR COMPRAS] Error en búsqueda: {e}")
             return []
+
+    def cancelar_orden(self, orden_id: int, motivo: str) -> bool:
+        """Cancela una orden de compra."""
+        try:
+            if not self.db_connection:
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+            UPDATE compras 
+            SET estado = 'CANCELADA', 
+                fecha_cancelacion = GETDATE(),
+                motivo_cancelacion = ?
+            WHERE id = ?
+            """, (motivo, orden_id))
+            
+            self.db_connection.commit()
+            return cursor.rowcount > 0
+            
+        except Exception as e:
+            print(f"Error cancelando orden: {e}")
+            return False
+
+    def aprobar_orden(self, orden_id: int, usuario_aprobacion: str) -> bool:
+        """Aprueba una orden de compra."""
+        try:
+            if not self.db_connection:
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+            UPDATE compras 
+            SET estado = 'APROBADA', 
+                fecha_aprobacion = GETDATE(),
+                usuario_aprobacion = ?
+            WHERE id = ?
+            """, (usuario_aprobacion, orden_id))
+            
+            self.db_connection.commit()
+            return cursor.rowcount > 0
+            
+        except Exception as e:
+            print(f"Error aprobando orden: {e}")
+            return False

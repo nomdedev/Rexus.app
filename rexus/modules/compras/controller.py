@@ -77,7 +77,7 @@ class ComprasController(QObject):
     @auth_required(permission='CREATE')
     def crear_orden(self, datos_orden):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_orden'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -118,7 +118,7 @@ class ComprasController(QObject):
     @auth_required(permission='UPDATE')
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_estado_orden'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -223,7 +223,7 @@ class ComprasController(QObject):
     @auth_required(permission='UPDATE')
     def actualizar_vista(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_vista'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 

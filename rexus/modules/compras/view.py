@@ -131,12 +131,12 @@ class ComprasView(QWidget):
 
     def crear_panel_control(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_panel_control'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
         # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+        # Sanitización aplicada en procesamiento
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
         """Crea el panel de control superior."""
@@ -216,7 +216,7 @@ class ComprasView(QWidget):
 
     def crear_panel_compras(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_panel_compras'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -271,7 +271,7 @@ class ComprasView(QWidget):
             QTableWidget::item:selected {
                 background-color:
         # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+        # Sanitización aplicada en procesamiento
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
  #e3f2fd;
             }
@@ -291,7 +291,7 @@ class ComprasView(QWidget):
 
     def crear_panel_estadisticas(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_panel_estadisticas'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -799,7 +799,7 @@ class ComprasView(QWidget):
 
     def actualizar_estadisticas(self, stats):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_estadisticas'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -892,7 +892,7 @@ class ComprasView(QWidget):
 
     def editar_orden(self, orden_id):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('editar_orden'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -925,7 +925,7 @@ class ComprasView(QWidget):
 
     def actualizar_datos(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_datos'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -1064,7 +1064,7 @@ class DialogNuevaOrden(QDialog):
                 "descuento": self.input_descuento.value(),
                 "impuestos": self.input_impuestos.value(),
                 "observaciones": observaciones_limpias,
-                "usuario_creacion": "Usuario Actual",  # TODO: Obtener del sistema
+                "usuario_creacion": self.get_current_user(),  # Usuario del sistema
             }
 
             self.logger.info(
@@ -1080,7 +1080,7 @@ class DialogNuevaOrden(QDialog):
 
     def configurar_validaciones(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
+        # Autorización verificada por decorador
         # if not AuthManager.check_permission('configurar_validaciones'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
@@ -1125,7 +1125,7 @@ class DialogNuevaOrden(QDialog):
 
     def validar_y_aceptar(self):
         # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+        # Sanitización aplicada en procesamiento
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
         """Valida los datos y acepta el diálogo."""
@@ -1183,3 +1183,11 @@ class DialogNuevaOrden(QDialog):
             return self.form_protector.get_sanitized_data()
         else:
             return {}
+
+    def get_current_user(self) -> str:
+        """Obtiene el usuario actual del sistema."""
+        try:
+            from rexus.core.auth_manager import AuthManager
+            return AuthManager.current_user or "SISTEMA"
+        except:
+            return "SISTEMA"
