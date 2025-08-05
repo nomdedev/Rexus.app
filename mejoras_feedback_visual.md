@@ -24,20 +24,36 @@
 - ✅ obras
 - ✅ pedidos
 - ✅ usuarios
+- ✅ administracion
+- ✅ auditoria
+- ✅ logistica
+- ✅ vidrios
+
+## Módulos que ya tenían feedback avanzado
+- ✅ compras (sistema completo implementado)
+- ✅ configuracion (sistema completo implementado)
+- ✅ herrajes (sistema completo implementado)
+- ✅ inventario (sistema completo implementado)
 
 ## Mejoras Aplicadas
 
 ### 1. Imports de QMessageBox
 - Agregado import automático cuando faltaba
 
-### 2. Método mostrar_mensaje()
+### 2. Método mostrar_mensaje() mejorado
 - Método estándar para feedback de usuario
 - Soporte para diferentes tipos: info, success, warning, error
-- Integración con QMessageBox nativo
+- Integración con QMessageBox nativo y estilos personalizados
+- Colores y diseño consistentes en todos los módulos
 
 ### 3. Backups Creados
 - Backup automático en `backups_feedback/` antes de modificar
 - Permite restaurar versión original si es necesario
+
+### 4. Feedback visual mejorado
+- Mensajes con colores diferenciados por tipo
+- Botones estilizados que cambian al hacer hover
+- Interfaz más profesional y consistente
 
 ## Próximos Pasos
 
@@ -51,6 +67,10 @@
 - backups_feedback/obras_view_backup.py
 - backups_feedback/pedidos_view_backup.py
 - backups_feedback/usuarios_view_backup.py
+- backups_feedback/administracion_view_backup.py
+- backups_feedback/auditoria_view_backup.py
+- backups_feedback/logistica_view_backup.py
+- backups_feedback/vidrios_view_backup.py
 
 ---
 *Reporte generado automáticamente por script de mejoras*

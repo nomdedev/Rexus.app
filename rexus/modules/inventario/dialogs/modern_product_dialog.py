@@ -1,5 +1,5 @@
 """
-Diálogo moderno mejorado para productos de inventario
+DiÃ¡logo moderno mejorado para productos de inventario
 Incluye todos los campos de la base de datos con feedback visual avanzado
 """
 
@@ -44,7 +44,7 @@ except ImportError:
 
 
 class ModernProductDialog(ModernFormDialog):
-    """Diálogo moderno para crear/editar productos de inventario"""
+    """DiÃ¡logo moderno para crear/editar productos de inventario"""
     
     def __init__(self, parent=None, product_data: Optional[Dict] = None):
         self.product_data = product_data
@@ -61,59 +61,59 @@ class ModernProductDialog(ModernFormDialog):
     def setup_form_fields(self):
         """Configura todos los campos del formulario"""
         
-        # SECCIÓN: INFORMACIÓN BÁSICA
-        basic_section = self.add_section("📦 Información Básica")
+        # SECCIÃN: INFORMACIÃN BÃSICA
+        basic_section = self.add_section("ð¦ InformaciÃ³n BÃ¡sica")
         basic_layout = QVBoxLayout(basic_section)
         
-        # Código del producto
+        # CÃ³digo del producto
         codigo_input = QLineEdit()
         codigo_input.setPlaceholderText("Ej: INV-001234, HER-5678")
         self.add_field(
-            "codigo", "Código del Producto", codigo_input, 
+            "codigo", "CÃ³digo del Producto", codigo_input, 
             required=True,
-            tooltip="Código único para identificar el producto (formato: AAA-123456)",
+            tooltip="CÃ³digo Ãºnico para identificar el producto (formato: AAA-123456)",
             validation_func=FormValidators.code_format
         )
         
-        # Descripción
+        # DescripciÃ³n
         descripcion_input = QLineEdit()
-        descripcion_input.setPlaceholderText("Descripción detallada del producto")
+        descripcion_input.setPlaceholderText("DescripciÃ³n detallada del producto")
         self.add_field(
-            "descripcion", "Descripción", descripcion_input,
+            "descripcion", "DescripciÃ³n", descripcion_input,
             required=True,
-            tooltip="Descripción clara y detallada del producto",
+            tooltip="DescripciÃ³n clara y detallada del producto",
             validation_func=FormValidators.required_field
         )
         
-        # Categoria y subcategoría
+        # Categoria y subcategorÃ­a
         categoria_combo = QComboBox()
         categoria_combo.addItems([
             "INVENTARIO", "HERRAJE", "VIDRIO", "MARCO", "ACCESORIO", 
             "SELLADOR", "HERRAMIENTA", "MATERIAL"
         ])
         self.add_field(
-            "categoria", "Categoría", categoria_combo,
+            "categoria", "CategorÃ­a", categoria_combo,
             required=True,
-            tooltip="Categoría principal del producto"
+            tooltip="CategorÃ­a principal del producto"
         )
         
         subcategoria_input = QLineEdit()
         subcategoria_input.setPlaceholderText("Ej: Bisagras, Manijas, Perfiles")
         self.add_field(
-            "subcategoria", "Subcategoría", subcategoria_input,
-            tooltip="Subcategoría específica dentro de la categoría principal"
+            "subcategoria", "SubcategorÃ­a", subcategoria_input,
+            tooltip="SubcategorÃ­a especÃ­fica dentro de la categorÃ­a principal"
         )
         
-        # Tipo específico
+        # Tipo especÃ­fico
         tipo_input = QLineEdit()
-        tipo_input.setPlaceholderText("Tipo específico del producto")
+        tipo_input.setPlaceholderText("Tipo especÃ­fico del producto")
         self.add_field(
             "tipo", "Tipo", tipo_input,
-            tooltip="Tipo o modelo específico del producto"
+            tooltip="Tipo o modelo especÃ­fico del producto"
         )
         
-        # SECCIÓN: STOCK Y CANTIDADES
-        stock_section = self.add_section("📊 Control de Stock")
+        # SECCIÃN: STOCK Y CANTIDADES
+        stock_section = self.add_section("ð Control de Stock")
         stock_layout = QVBoxLayout(stock_section)
         
         # Stock actual
@@ -126,36 +126,36 @@ class ModernProductDialog(ModernFormDialog):
             tooltip="Cantidad actual en inventario"
         )
         
-        # Stock mínimo
+        # Stock mÃ­nimo
         stock_minimo_input = QSpinBox()
         stock_minimo_input.setRange(0, 999999)
         stock_minimo_input.setSuffix(" unidades")
         self.add_field(
-            "stock_minimo", "Stock Mínimo", stock_minimo_input,
-            tooltip="Cantidad mínima antes de reorden"
+            "stock_minimo", "Stock MÃ­nimo", stock_minimo_input,
+            tooltip="Cantidad mÃ­nima antes de reorden"
         )
         
-        # Stock máximo
+        # Stock mÃ¡ximo
         stock_maximo_input = QSpinBox()
         stock_maximo_input.setRange(0, 999999)
         stock_maximo_input.setSuffix(" unidades")
         self.add_field(
-            "stock_maximo", "Stock Máximo", stock_maximo_input,
-            tooltip="Capacidad máxima de almacenamiento"
+            "stock_maximo", "Stock MÃ¡ximo", stock_maximo_input,
+            tooltip="Capacidad mÃ¡xima de almacenamiento"
         )
         
         # Stock reservado
         stock_reservado_input = QSpinBox()
         stock_reservado_input.setRange(0, 999999)
         stock_reservado_input.setSuffix(" unidades")
-        stock_reservado_input.setEnabled(False)  # Solo lectura, se calcula automáticamente
+        stock_reservado_input.setEnabled(False)  # Solo lectura, se calcula automÃ¡ticamente
         self.add_field(
             "stock_reservado", "Stock Reservado", stock_reservado_input,
             tooltip="Cantidad reservada para pedidos (solo lectura)"
         )
         
-        # SECCIÓN: PRECIOS Y COSTOS
-        precio_section = self.add_section("💰 Precios y Costos")
+        # SECCIÃN: PRECIOS Y COSTOS
+        precio_section = self.add_section("ð° Precios y Costos")
         precio_layout = QVBoxLayout(precio_section)
         
         # Precio unitario
@@ -187,7 +187,7 @@ class ModernProductDialog(ModernFormDialog):
         costo_unitario_input.setPrefix("$ ")
         self.add_field(
             "costo_unitario", "Costo Unitario", costo_unitario_input,
-            tooltip="Costo de adquisición por unidad"
+            tooltip="Costo de adquisiciÃ³n por unidad"
         )
         
         # Unidad de medida
@@ -201,16 +201,16 @@ class ModernProductDialog(ModernFormDialog):
             tooltip="Unidad en la que se mide el producto"
         )
         
-        # SECCIÓN: CARACTERÍSTICAS FÍSICAS
-        caracteristicas_section = self.add_section("🔧 Características Físicas")
+        # SECCIÃN: CARACTERÃSTICAS FÃSICAS
+        caracteristicas_section = self.add_section("ð§ CaracterÃ­sticas FÃ­sicas")
         caracteristicas_layout = QVBoxLayout(caracteristicas_section)
         
-        # Ubicación
+        # UbicaciÃ³n
         ubicacion_input = QLineEdit()
-        ubicacion_input.setPlaceholderText("Ej: Estante A-1, Depósito 2")
+        ubicacion_input.setPlaceholderText("Ej: Estante A-1, DepÃ³sito 2")
         self.add_field(
-            "ubicacion", "Ubicación", ubicacion_input,
-            tooltip="Ubicación física en el almacén"
+            "ubicacion", "UbicaciÃ³n", ubicacion_input,
+            tooltip="UbicaciÃ³n fÃ­sica en el almacÃ©n"
         )
         
         # Color
@@ -239,10 +239,10 @@ class ModernProductDialog(ModernFormDialog):
         
         # Modelo
         modelo_input = QLineEdit()
-        modelo_input.setPlaceholderText("Modelo específico")
+        modelo_input.setPlaceholderText("Modelo especÃ­fico")
         self.add_field(
             "modelo", "Modelo", modelo_input,
-            tooltip="Modelo o referencia específica"
+            tooltip="Modelo o referencia especÃ­fica"
         )
         
         # Acabado
@@ -257,8 +257,8 @@ class ModernProductDialog(ModernFormDialog):
             tooltip="Acabado superficial del producto"
         )
         
-        # SECCIÓN: PROVEEDOR Y LOGÍSTICA
-        proveedor_section = self.add_section("🏢 Proveedor y Logística")
+        # SECCIÃN: PROVEEDOR Y LOGÃSTICA
+        proveedor_section = self.add_section("ð¢ Proveedor y LogÃ­stica")
         proveedor_layout = QVBoxLayout(proveedor_section)
         
         # Proveedor
@@ -271,25 +271,25 @@ class ModernProductDialog(ModernFormDialog):
             validation_func=FormValidators.required_field
         )
         
-        # Código del proveedor
+        # CÃ³digo del proveedor
         codigo_proveedor_input = QLineEdit()
-        codigo_proveedor_input.setPlaceholderText("Código en catálogo del proveedor")
+        codigo_proveedor_input.setPlaceholderText("CÃ³digo en catÃ¡logo del proveedor")
         self.add_field(
-            "codigo_proveedor", "Código del Proveedor", codigo_proveedor_input,
-            tooltip="Código o referencia del producto en el catálogo del proveedor"
+            "codigo_proveedor", "CÃ³digo del Proveedor", codigo_proveedor_input,
+            tooltip="CÃ³digo o referencia del producto en el catÃ¡logo del proveedor"
         )
         
         # Tiempo de entrega
         tiempo_entrega_input = QSpinBox()
         tiempo_entrega_input.setRange(0, 365)
-        tiempo_entrega_input.setSuffix(" días")
+        tiempo_entrega_input.setSuffix(" dÃ­as")
         self.add_field(
             "tiempo_entrega_dias", "Tiempo de Entrega", tiempo_entrega_input,
-            tooltip="Tiempo estimado de entrega en días"
+            tooltip="Tiempo estimado de entrega en dÃ­as"
         )
         
-        # SECCIÓN: INFORMACIÓN ADICIONAL
-        adicional_section = self.add_section("📋 Información Adicional")
+        # SECCIÃN: INFORMACIÃN ADICIONAL
+        adicional_section = self.add_section("ð InformaciÃ³n Adicional")
         adicional_layout = QVBoxLayout(adicional_section)
         
         # Observaciones
@@ -298,15 +298,15 @@ class ModernProductDialog(ModernFormDialog):
         observaciones_input.setPlaceholderText("Observaciones, notas especiales, instrucciones de manejo...")
         self.add_field(
             "observaciones", "Observaciones", observaciones_input,
-            tooltip="Información adicional sobre el producto"
+            tooltip="InformaciÃ³n adicional sobre el producto"
         )
         
-        # Código QR
+        # CÃ³digo QR
         codigo_qr_input = QLineEdit()
-        codigo_qr_input.setPlaceholderText("Código QR o código de barras")
+        codigo_qr_input.setPlaceholderText("CÃ³digo QR o cÃ³digo de barras")
         self.add_field(
-            "codigo_qr", "Código QR/Barras", codigo_qr_input,
-            tooltip="Código QR o de barras para identificación rápida"
+            "codigo_qr", "CÃ³digo QR/Barras", codigo_qr_input,
+            tooltip="CÃ³digo QR o de barras para identificaciÃ³n rÃ¡pida"
         )
         
         # URL de imagen
@@ -320,17 +320,17 @@ class ModernProductDialog(ModernFormDialog):
         # Propiedades especiales
         propiedades_input = QTextEdit()
         propiedades_input.setMaximumHeight(80)
-        propiedades_input.setPlaceholderText("Propiedades técnicas especiales en formato JSON")
+        propiedades_input.setPlaceholderText("Propiedades tÃ©cnicas especiales en formato JSON")
         self.add_field(
             "propiedades_especiales", "Propiedades Especiales", propiedades_input,
-            tooltip="Propiedades técnicas adicionales en formato JSON"
+            tooltip="Propiedades tÃ©cnicas adicionales en formato JSON"
         )
         
         # Estado del producto
         estado_combo = QComboBox()
         estado_combo.addItems([
             "DISPONIBLE", "AGOTADO", "DESCONTINUADO", "EN_TRANSITO", 
-            "RESERVADO", "DAÑADO", "EN_REVISION"
+            "RESERVADO", "DAÃADO", "EN_REVISION"
         ])
         self.add_field(
             "estado", "Estado", estado_combo,
@@ -343,11 +343,11 @@ class ModernProductDialog(ModernFormDialog):
         activo_checkbox.setChecked(True)
         self.add_field(
             "activo", "Activo", activo_checkbox,
-            tooltip="Marcar si el producto está activo en el sistema"
+            tooltip="Marcar si el producto estÃ¡ activo en el sistema"
         )
         
     def load_product_data(self):
-        """Carga los datos del producto para edición"""
+        """Carga los datos del producto para ediciÃ³n"""
         if not self.product_data:
             return
             
@@ -372,16 +372,16 @@ class ModernProductDialog(ModernFormDialog):
         return self.get_form_data()
         
     def validate_business_rules(self) -> tuple[bool, str]:
-        """Valida reglas de negocio específicas"""
+        """Valida reglas de negocio especÃ­ficas"""
         data = self.get_form_data()
         
-        # Validar que stock mínimo <= stock máximo
+        # Validar que stock mÃ­nimo <= stock mÃ¡ximo
         if data.get("stock_minimo", 0) > data.get("stock_maximo", 0):
-            return False, "El stock mínimo no puede ser mayor al stock máximo"
+            return False, "El stock mÃ­nimo no puede ser mayor al stock mÃ¡ximo"
             
-        # Validar que stock actual no exceda stock máximo
+        # Validar que stock actual no exceda stock mÃ¡ximo
         if data.get("stock_actual", 0) > data.get("stock_maximo", 0):
-            return False, "El stock actual no puede exceder el stock máximo"
+            return False, "El stock actual no puede exceder el stock mÃ¡ximo"
             
         # Validar que precio unitario > costo unitario
         precio = data.get("precio_unitario", 0)
@@ -393,7 +393,7 @@ class ModernProductDialog(ModernFormDialog):
         
     def validate_and_save(self):
         """Valida incluyendo reglas de negocio antes de guardar"""
-        # Validación estándar de campos
+        # ValidaciÃ³n estÃ¡ndar de campos
         all_valid = True
         for field in self.fields.values():
             if not field.validate():
@@ -406,19 +406,19 @@ class ModernProductDialog(ModernFormDialog):
         is_valid, error_message = self.validate_business_rules()
         if not is_valid:
             from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "Error de Validación", error_message)
+            QMessageBox.warning(self, "Error de ValidaciÃ³n", error_message)
             return
             
         # Mostrar loading y proceder con guardado
         self.show_loading("Guardando producto...")
         
-        # Simular guardado (reemplazar con lógica real)
+        # Simular guardado (reemplazar con lÃ³gica real)
         from PyQt6.QtCore import QTimer
         QTimer.singleShot(2000, self.on_save_complete)
 
 
 if __name__ == "__main__":
-    """Test del diálogo moderno"""
+    """Test del diÃ¡logo moderno"""
     from PyQt6.QtWidgets import QApplication
     
     app = QApplication(sys.argv)

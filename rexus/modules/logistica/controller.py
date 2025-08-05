@@ -2,6 +2,7 @@
 
 from PyQt6.QtCore import QObject
 from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.core.auth_manager import AuthManager
 
 
 class LogisticaController(QObject):
