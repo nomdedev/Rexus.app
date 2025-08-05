@@ -1,7 +1,7 @@
 """Controlador de Logística"""
 
 from PyQt6.QtCore import QObject
-from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
 from rexus.core.auth_manager import AuthManager
 
 
@@ -33,6 +33,7 @@ class LogisticaController(QObject):
             except Exception as e:
                 print(f"Error cargando entregas: {e}")
 
+    @auth_required(permission='CREATE')
     def guardar_entrega(self, datos):
         """Guarda una nueva entrega."""
         if self.model:
@@ -53,6 +54,7 @@ class LogisticaController(QObject):
             except Exception as e:
                 print(f"Error cargando servicios: {e}")
 
+    @auth_required(permission='CREATE')
     def guardar_service(self, datos):
         """Guarda un nuevo servicio."""
         if self.model and hasattr(self.model, 'crear_service'):

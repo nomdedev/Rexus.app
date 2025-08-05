@@ -79,6 +79,7 @@ from rexus.utils.message_system import (
     show_warning,
 )
 from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
 
 
 class HerrajesView(QWidget):
@@ -92,6 +93,10 @@ class HerrajesView(QWidget):
     obtener_estadisticas = pyqtSignal()
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.logger = logging.getLogger(f"{__name__}.HerrajesView")
         self.controller = None
@@ -265,6 +270,7 @@ class HerrajesView(QWidget):
 
         # Búsqueda general
         self.search_input = QLineEdit()
+        self.search_input.setAccessibleName('Search Input')
         self.search_input.setPlaceholderText(
             "Buscar por código, descripción o proveedor..."
         )
@@ -285,6 +291,8 @@ class HerrajesView(QWidget):
 
         # Botón de limpiar filtros
         self.clear_filters_btn = QPushButton("Limpiar Filtros")
+        self.clear_filters_btn.setToolTip('Acción: Clear Filters Botón')
+        self.clear_filters_btn.setAccessibleName('Clear Filters Botón')
         self.clear_filters_btn.clicked.connect(self.clear_filters)
 
         filters_layout.addWidget(QLabel("Buscar:"))
@@ -339,24 +347,38 @@ class HerrajesView(QWidget):
 
         # Botones de acción
         self.crear_herraje_btn = QPushButton("➕ Crear Herraje")
+        self.crear_herraje_btn.setToolTip('Acción: Crear Herraje Botón')
+        self.crear_herraje_btn.setAccessibleName('Crear Herraje Botón')
         self.crear_herraje_btn.clicked.connect(self.crear_herraje_mejorado)
 
         self.editar_herraje_btn = QPushButton("✏️ Editar Herraje")
+        self.editar_herraje_btn.setToolTip('Editar información - Campo dear Herraje Botón')
+        self.editar_herraje_btn.setAccessibleName('Campo dear Herraje Botón')
         self.editar_herraje_btn.clicked.connect(self.editar_herraje_mejorado)
 
         self.eliminar_herraje_btn = QPushButton("🗑️ Eliminar Herraje")
+        self.eliminar_herraje_btn.setToolTip('Eliminar elemento - Eliminar Herraje Botón')
+        self.eliminar_herraje_btn.setAccessibleName('Eliminar Herraje Botón')
         self.eliminar_herraje_btn.clicked.connect(self.eliminar_herraje_mejorado)
 
         self.asignar_obra_btn = QPushButton("📋 Asignar a Obra")
+        self.asignar_obra_btn.setToolTip('Acción: Asignar Obra Botón')
+        self.asignar_obra_btn.setAccessibleName('Asignar Obra Botón')
         self.asignar_obra_btn.clicked.connect(self.asignar_a_obra_mejorado)
 
         self.crear_pedido_btn = QPushButton("🛒 Crear Pedido")
+        self.crear_pedido_btn.setToolTip('Acción: Crear Pedido Botón')
+        self.crear_pedido_btn.setAccessibleName('Crear Pedido Botón')
         self.crear_pedido_btn.clicked.connect(self.crear_pedido_mejorado)
 
         self.actualizar_btn = QPushButton("🔄 Actualizar")
+        self.actualizar_btn.setToolTip('Acción: Actualizar Botón')
+        self.actualizar_btn.setAccessibleName('Actualizar Botón')
         self.actualizar_btn.clicked.connect(self.actualizar_datos)
 
         self.estadisticas_btn = QPushButton("📊 Ver Estadísticas")
+        self.estadisticas_btn.setToolTip('Acción: Estadisticas Botón')
+        self.estadisticas_btn.setAccessibleName('Estadisticas Botón')
         self.estadisticas_btn.clicked.connect(self.show_estadisticas)
 
         actions_layout.addWidget(self.crear_herraje_btn)
@@ -948,13 +970,16 @@ class DialogoCrearHerrajeDialog(QDialog):
         info_layout = QFormLayout(info_group)
 
         self.codigo_input = QLineEdit()
+        self.codigo_input.setAccessibleName('Codigo Input')
         self.descripcion_input = QLineEdit()
+        self.descripcion_input.setAccessibleName('Descripcion Input')
         self.tipo_combo = QComboBox()
         self.tipo_combo.addItems(
             ["BISAGRA", "CERRADURA", "MANIJA", "TORNILLO", "RIEL", "SOPORTE", "OTRO"]
         )
 
         self.proveedor_input = QLineEdit()
+        self.proveedor_input.setAccessibleName('Proveedor Input')
         self.precio_spin = QDoubleSpinBox()
         self.precio_spin.setMaximum(99999.99)
         self.precio_spin.setDecimals(2)
@@ -963,6 +988,7 @@ class DialogoCrearHerrajeDialog(QDialog):
         self.unidad_combo.addItems(["UNIDAD", "PAR", "JUEGO", "METRO", "KILOGRAMO"])
 
         self.categoria_input = QLineEdit()
+        self.categoria_input.setAccessibleName('Categoria Input')
         self.estado_combo = QComboBox()
         self.estado_combo.addItems(["ACTIVO", "INACTIVO", "DESCONTINUADO"])
 
@@ -984,6 +1010,7 @@ class DialogoCrearHerrajeDialog(QDialog):
         self.stock_actual_spin = QSpinBox()
         self.stock_actual_spin.setMaximum(99999)
         self.ubicacion_input = QLineEdit()
+        self.ubicacion_input.setAccessibleName('Ubicacion Input')
 
         stock_layout.addRow("Stock Mínimo:", self.stock_minimo_spin)
         stock_layout.addRow("Stock Actual:", self.stock_actual_spin)
@@ -994,10 +1021,15 @@ class DialogoCrearHerrajeDialog(QDialog):
         detalles_layout = QFormLayout(detalles_group)
 
         self.marca_input = QLineEdit()
+        self.marca_input.setAccessibleName('Marca Input')
         self.modelo_input = QLineEdit()
+        self.modelo_input.setAccessibleName('Modelo Input')
         self.color_input = QLineEdit()
+        self.color_input.setAccessibleName('Color Input')
         self.material_input = QLineEdit()
+        self.material_input.setAccessibleName('Material Input')
         self.dimensiones_input = QLineEdit()
+        self.dimensiones_input.setAccessibleName('Dimensiones Input')
         self.peso_spin = QDoubleSpinBox()
         self.peso_spin.setMaximum(9999.999)
         self.peso_spin.setDecimals(3)
@@ -1018,6 +1050,24 @@ class DialogoCrearHerrajeDialog(QDialog):
         self.observaciones_text.setMaximumHeight(80)
         self.especificaciones_text = QTextEdit()
         self.especificaciones_text.setMaximumHeight(80)
+
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.search_input, "search_input", 100)
+        self.form_protector.protect_field(self.codigo_input, "codigo_input", 50)
+        self.form_protector.protect_field(self.descripcion_input, "descripcion_input", 500)
+        self.form_protector.protect_field(self.proveedor_input, "proveedor_input", 100)
+        self.form_protector.protect_field(self.categoria_input, "categoria_input", 100)
+        self.form_protector.protect_field(self.ubicacion_input, "ubicacion_input", 100)
+        self.form_protector.protect_field(self.marca_input, "marca_input", 100)
+        self.form_protector.protect_field(self.modelo_input, "modelo_input", 100)
+        self.form_protector.protect_field(self.color_input, "color_input", 100)
+        self.form_protector.protect_field(self.material_input, "material_input", 100)
+        self.form_protector.protect_field(self.dimensiones_input, "dimensiones_input", 100)
+        self.form_protector.protect_field(self.observaciones_text, "observaciones_text", 100)
+        self.form_protector.protect_field(self.observaciones_text, "observaciones_text", 100)
+        self.form_protector.protect_field(self.herrajes_list, "herrajes_list", 100)
+        self.form_protector.protect_field(self.observaciones_text, "observaciones_text", 100)
+        self.form_protector.protect_field(self.especificaciones_text, "especificaciones_text", 100)
 
         obs_layout.addWidget(QLabel("Observaciones:"))
         obs_layout.addWidget(self.observaciones_text)
@@ -1091,3 +1141,32 @@ class DialogoCrearHerrajeDialog(QDialog):
             "observaciones": self.observaciones_text.toPlainText(),
             "especificaciones": self.especificaciones_text.toPlainText(),
         }
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

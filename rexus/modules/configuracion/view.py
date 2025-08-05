@@ -33,6 +33,8 @@ from typing import Any, Dict, List
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
+
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     QCheckBox,
     QColorDialog,
     QComboBox,
@@ -65,6 +67,10 @@ class ConfiguracionView(QWidget):
     solicitud_probar_conexion_bd = pyqtSignal()
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.controller = None
         self.configuraciones_data = []
@@ -182,11 +188,11 @@ class ConfiguracionView(QWidget):
         layout = QVBoxLayout(header)
 
         titulo = QLabel("⚙️ Configuración del Sistema")
-        titulo.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
+        titulo.setFont(QFont("Arial", 24, QFont.Weight.Bold))
         titulo.setStyleSheet("color: #2c3e50; margin-bottom: 5px;")
 
         subtitulo = QLabel("Gestión de configuraciones y parámetros del sistema")
-        subtitulo.setFont(QFont("Segoe UI", 12))
+        subtitulo.setFont(QFont("Arial", 12))
         subtitulo.setStyleSheet("color: #7f8c8d;")
 
         layout.addWidget(titulo)
@@ -1034,3 +1040,32 @@ class ConfiguracionView(QWidget):
             self.label_feedback.clear()
         if hasattr(self, "_feedback_timer") and self._feedback_timer:
             self._feedback_timer.stop()
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

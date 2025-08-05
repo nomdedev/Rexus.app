@@ -35,6 +35,8 @@ import datetime
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
+
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     QComboBox,
     QDateEdit,
     QFrame,
@@ -64,6 +66,10 @@ class AuditoriaView(QWidget):
     limpiar_solicitud = pyqtSignal(int)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.init_ui()
 
@@ -148,8 +154,12 @@ class AuditoriaView(QWidget):
         # Filtro por usuario
         filter_row1.addWidget(QLabel("Usuario:"))
         self.filtro_usuario = QLineEdit()
+        self.filtro_usuario.setAccessibleName('Filtro Usuario')
         self.filtro_usuario.setPlaceholderText("Nombre de usuario...")
         filter_row1.addWidget(self.filtro_usuario)
+
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.filtro_usuario, "filtro_usuario", 100)
 
         filters_layout.addLayout(filter_row1)
 
@@ -360,7 +370,7 @@ class AuditoriaView(QWidget):
         layout = QVBoxLayout(card)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.setContentsMargins(2, 2, 2, 2)
-        layout.setSpacing(0)
+        layout.setSpacing(5)
 
         # Valor prominente
         value_label = QLabel(value)
@@ -530,3 +540,32 @@ class AuditoriaView(QWidget):
             QMessageBox.information(self, "Éxito", mensaje)
         else:
             QMessageBox.information(self, "Información", mensaje)
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

@@ -35,6 +35,7 @@ from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
 from rexus.utils.data_sanitizer import DataSanitizer
 from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
 
 
 class MantenimientoView(QWidget):
@@ -44,6 +45,10 @@ class MantenimientoView(QWidget):
     """
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.label_feedback = None
         self._feedback_timer = None
@@ -201,3 +206,32 @@ class MantenimientoView(QWidget):
 
         except Exception as e:
             self.logger.error(f"Error al ocultar feedback: {str(e)}")
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

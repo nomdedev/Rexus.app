@@ -68,6 +68,7 @@ from PyQt6.QtWidgets import (
 
 # Importar validadores con manejo de errores
 try:
+    from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     from rexus.utils.form_validators import (
         FormValidator,
         FormValidatorManager,
@@ -168,7 +169,7 @@ class InventarioView(QWidget):
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         main_layout = QVBoxLayout(self)
-        main_layout.setSpacing(8)  # Reduced spacing
+        main_layout.setSpacing(10)  # Reduced spacing
         main_layout.setContentsMargins(10, 8, 10, 8)  # Reduced margins
 
         # Pestañas principales (sin título)
@@ -244,7 +245,7 @@ class InventarioView(QWidget):
         """Crea la pestaña de inventario general."""
         inventario_widget = QWidget()
         layout = QVBoxLayout(inventario_widget)
-        layout.setSpacing(6)  # Compact spacing
+        layout.setSpacing(5)  # Compact spacing
 
         # Panel de filtros y acciones combinado - más compacto
         control_frame = QFrame()
@@ -257,12 +258,13 @@ class InventarioView(QWidget):
             }
         """)
         control_layout = QHBoxLayout(control_frame)
-        control_layout.setSpacing(8)
+        control_layout.setSpacing(10)
         control_layout.setContentsMargins(8, 6, 8, 6)
 
         # Búsqueda por código/descripción
         control_layout.addWidget(QLabel("Buscar:"))
         self.busqueda_input = QLineEdit()
+        self.busqueda_input.setAccessibleName('Busqueda Input')
         self.busqueda_input.setPlaceholderText("Código o descripción...")
         self.busqueda_input.setMaximumWidth(200)
         control_layout.addWidget(self.busqueda_input)
@@ -276,11 +278,13 @@ class InventarioView(QWidget):
 
         # Botones de filtrado
         self.buscar_btn = QPushButton("🔍")
+        self.buscar_btn.setAccessibleName('Buscar Botón')
         self.buscar_btn.setMaximumWidth(35)
         self.buscar_btn.setToolTip("Buscar")
         control_layout.addWidget(self.buscar_btn)
 
         self.limpiar_btn = QPushButton("🧹")
+        self.limpiar_btn.setAccessibleName('Limpiar Botón')
         self.limpiar_btn.setMaximumWidth(35)
         self.limpiar_btn.setToolTip("Limpiar filtros")
         control_layout.addWidget(self.limpiar_btn)
@@ -299,18 +303,24 @@ class InventarioView(QWidget):
 
         # Acciones principales - más compactas
         self.nuevo_producto_btn = QPushButton("➕")
+        self.nuevo_producto_btn.setToolTip('Agregar nuevo elemento - Nuevo Producto Botón')
+        self.nuevo_producto_btn.setAccessibleName('Nuevo Producto Botón')
         self.nuevo_producto_btn.setMaximumWidth(35)
         self.nuevo_producto_btn.setToolTip("Nuevo Producto")
         self.nuevo_producto_btn.clicked.connect(self.mostrar_dialogo_nuevo_producto)
         control_layout.addWidget(self.nuevo_producto_btn)
 
         self.editar_producto_btn = QPushButton("✏️")
+        self.editar_producto_btn.setToolTip('Editar información - Campo dear Producto Botón')
+        self.editar_producto_btn.setAccessibleName('Campo dear Producto Botón')
         self.editar_producto_btn.setMaximumWidth(35)
         self.editar_producto_btn.setToolTip("Editar Producto")
         self.editar_producto_btn.clicked.connect(self.editar_producto_seleccionado)
         control_layout.addWidget(self.editar_producto_btn)
 
         self.eliminar_producto_btn = QPushButton("🗑️")
+        self.eliminar_producto_btn.setToolTip('Eliminar elemento - Eliminar Producto Botón')
+        self.eliminar_producto_btn.setAccessibleName('Eliminar Producto Botón')
         self.eliminar_producto_btn.setMaximumWidth(35)
         self.eliminar_producto_btn.setToolTip("Eliminar Producto")
         self.eliminar_producto_btn.clicked.connect(self.eliminar_producto_seleccionado)
@@ -323,6 +333,7 @@ class InventarioView(QWidget):
         control_layout.addWidget(separator2)
 
         self.movimiento_btn = QPushButton("📦")
+        self.movimiento_btn.setAccessibleName('Movimiento Botón')
         self.movimiento_btn.setMaximumWidth(35)
         self.movimiento_btn.setToolTip("Registrar Movimiento")
         self.movimiento_btn.clicked.connect(
@@ -331,6 +342,7 @@ class InventarioView(QWidget):
         control_layout.addWidget(self.movimiento_btn)
 
         self.exportar_btn = QPushButton("📄")
+        self.exportar_btn.setAccessibleName('Exportar Botón')
         self.exportar_btn.setMaximumWidth(35)
         self.exportar_btn.setToolTip("Exportar Inventario")
         self.exportar_btn.clicked.connect(self.exportar_inventario)
@@ -449,11 +461,15 @@ class InventarioView(QWidget):
 
         # Botón para crear nueva reserva
         self.nueva_reserva_btn = QPushButton("➕ Nueva Reserva")
+        self.nueva_reserva_btn.setToolTip('Acción: Nueva Reserva Botón')
+        self.nueva_reserva_btn.setAccessibleName('Nueva Reserva Botón')
         self.nueva_reserva_btn.clicked.connect(self.show_nueva_reserva_dialog)
         selector_layout.addWidget(self.nueva_reserva_btn)
 
         # Botón para generar reporte
         self.reporte_reservas_btn = QPushButton("📊 Generar Reporte")
+        self.reporte_reservas_btn.setToolTip('Acción: Reporte Reservas Botón')
+        self.reporte_reservas_btn.setAccessibleName('Reporte Reservas Botón')
         self.reporte_reservas_btn.clicked.connect(self.generar_reporte_reservas)
         selector_layout.addWidget(self.reporte_reservas_btn)
 
@@ -557,12 +573,15 @@ class InventarioView(QWidget):
         # Búsqueda por código/descripción
         filtros_layout.addWidget(QLabel("Buscar:"))
         self.busqueda_disponibilidad = QLineEdit()
+        self.busqueda_disponibilidad.setAccessibleName('Busqueda Disponibilidad')
         self.busqueda_disponibilidad.setPlaceholderText("Código o descripción...")
         self.busqueda_disponibilidad.textChanged.connect(self.filtrar_disponibilidad)
         filtros_layout.addWidget(self.busqueda_disponibilidad)
 
         # Botón actualizar
         self.actualizar_disponibilidad_btn = QPushButton("🔄 Actualizar")
+        self.actualizar_disponibilidad_btn.setToolTip('Acción: Actualizar Disponibilidad Botón')
+        self.actualizar_disponibilidad_btn.setAccessibleName('Actualizar Disponibilidad Botón')
         self.actualizar_disponibilidad_btn.clicked.connect(
             self.actualizar_disponibilidad
         )
@@ -1500,11 +1519,13 @@ class DialogoNuevoProducto(QDialog):
 
         # Campo código
         self.codigo_input = QLineEdit()
+        self.codigo_input.setAccessibleName('Codigo Input')
         self.codigo_input.setPlaceholderText("Ej: VID-1234, HER-5678")
         form_layout.addRow("🏷️ Código:", self.codigo_input)
 
         # Campo descripción
         self.descripcion_input = QLineEdit()
+        self.descripcion_input.setAccessibleName('Descripcion Input')
         self.descripcion_input.setPlaceholderText("Descripción del producto")
         form_layout.addRow("📝 Descripción:", self.descripcion_input)
 
@@ -1540,11 +1561,13 @@ class DialogoNuevoProducto(QDialog):
 
         # Campo proveedor
         self.proveedor_input = QLineEdit()
+        self.proveedor_input.setAccessibleName('Proveedor Input')
         self.proveedor_input.setPlaceholderText("Nombre del proveedor")
         form_layout.addRow("🏢 Proveedor:", self.proveedor_input)
 
         # Campo ubicación
         self.ubicacion_input = QLineEdit()
+        self.ubicacion_input.setAccessibleName('Ubicacion Input')
         self.ubicacion_input.setPlaceholderText("Ej: Estante A-1")
         form_layout.addRow("📍 Ubicación:", self.ubicacion_input)
 
@@ -1564,10 +1587,14 @@ class DialogoNuevoProducto(QDialog):
         button_layout = QHBoxLayout()
 
         self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn.setToolTip('Acción: Cancel Botón')
+        self.cancel_btn.setAccessibleName('Cancel Botón')
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setProperty("buttonType", "secondary")
 
         self.save_btn = QPushButton("✅ Guardar Producto")
+        self.save_btn.setToolTip('Acción: Save Botón')
+        self.save_btn.setAccessibleName('Save Botón')
         self.save_btn.clicked.connect(self.validar_y_guardar)
         self.save_btn.setProperty("buttonType", "success")
 

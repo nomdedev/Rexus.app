@@ -50,6 +50,8 @@ except ImportError:
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
+
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     QCheckBox,
     QComboBox,
     QDialog,
@@ -88,6 +90,10 @@ class VidriosView(QWidget):
     filtrar_requested = pyqtSignal(dict)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.logger = logging.getLogger(f"{__name__}.VidriosView")
         self.vidrios_data = []
@@ -118,6 +124,8 @@ class VidriosView(QWidget):
 
         # Botones principales
         self.btn_agregar = QPushButton("➕ Agregar Vidrio")
+        self.btn_agregar.setToolTip('Acción: Botón Agregar')
+        self.btn_agregar.setAccessibleName('Botón Agregar')
         self.btn_agregar.setStyleSheet("""
             QPushButton {
                 background-color: #27ae60;
@@ -135,6 +143,8 @@ class VidriosView(QWidget):
         header_layout.addWidget(self.btn_agregar)
 
         self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
+        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.setStyleSheet("""
             QPushButton {
                 background-color: #3498db;
@@ -190,6 +200,7 @@ class VidriosView(QWidget):
 
         # Búsqueda
         self.search_input = QLineEdit()
+        self.search_input.setAccessibleName('Search Input')
         self.search_input.setPlaceholderText("Buscar vidrios...")
         self.search_input.textChanged.connect(self.filtrar_busqueda)
         self.search_input.setMaximumWidth(180)
@@ -250,10 +261,14 @@ class VidriosView(QWidget):
         acciones_layout = QVBoxLayout(acciones_group)
 
         self.btn_asignar_obra = QPushButton("📋 Asignar a Obra")
+        self.btn_asignar_obra.setToolTip('Acción: Botón Asignar Obra')
+        self.btn_asignar_obra.setAccessibleName('Botón Asignar Obra')
         self.btn_asignar_obra.clicked.connect(self.abrir_dialogo_asignar_obra)
         acciones_layout.addWidget(self.btn_asignar_obra)
 
         self.btn_crear_pedido = QPushButton("📄 Crear Pedido")
+        self.btn_crear_pedido.setToolTip('Acción: Botón Crear Pedido')
+        self.btn_crear_pedido.setAccessibleName('Botón Crear Pedido')
         self.btn_crear_pedido.clicked.connect(self.abrir_dialogo_crear_pedido)
         acciones_layout.addWidget(self.btn_crear_pedido)
 
@@ -589,19 +604,25 @@ class VidrioDialog(QDialog):
         form_layout = QFormLayout()
 
         self.input_codigo = QLineEdit()
+        self.input_codigo.setAccessibleName('Input Codigo')
         self.input_descripcion = QLineEdit()
+        self.input_descripcion.setAccessibleName('Input Descripcion')
         self.combo_tipo = QComboBox()
         self.combo_tipo.addItems(["Templado", "Laminado", "Común", "Espejo"])
         self.input_espesor = QDoubleSpinBox()
         self.input_espesor.setSuffix(" mm")
         self.input_espesor.setRange(1, 50)
         self.input_proveedor = QLineEdit()
+        self.input_proveedor.setAccessibleName('Input Proveedor')
         self.input_precio = QDoubleSpinBox()
         self.input_precio.setPrefix("$")
         self.input_precio.setRange(0, 999999)
         self.input_color = QLineEdit()
+        self.input_color.setAccessibleName('Input Color')
         self.input_tratamiento = QLineEdit()
+        self.input_tratamiento.setAccessibleName('Input Tratamiento')
         self.input_dimensiones = QLineEdit()
+        self.input_dimensiones.setAccessibleName('Input Dimensiones')
         self.combo_estado = QComboBox()
         self.combo_estado.addItems(["ACTIVO", "INACTIVO", "DESCONTINUADO"])
         self.input_observaciones = QTextEdit()
@@ -767,6 +788,19 @@ class CrearPedidoDialog(QDialog):
         self.input_obra_id.setRange(1, 999999)
 
         self.input_proveedor = QLineEdit()
+        self.input_proveedor.setAccessibleName('Input Proveedor')
+
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.search_input, "search_input", 100)
+        self.form_protector.protect_field(self.input_codigo, "input_codigo", 50)
+        self.form_protector.protect_field(self.input_descripcion, "input_descripcion", 500)
+        self.form_protector.protect_field(self.input_proveedor, "input_proveedor", 100)
+        self.form_protector.protect_field(self.input_color, "input_color", 100)
+        self.form_protector.protect_field(self.input_tratamiento, "input_tratamiento", 100)
+        self.form_protector.protect_field(self.input_dimensiones, "input_dimensiones", 100)
+        self.form_protector.protect_field(self.input_proveedor, "input_proveedor", 100)
+        self.form_protector.protect_field(self.input_observaciones, "input_observaciones", 100)
+        self.form_protector.protect_field(self.input_medidas, "input_medidas", 100)
 
         form_layout.addRow("ID Obra:", self.input_obra_id)
         form_layout.addRow("Proveedor:", self.input_proveedor)
@@ -843,3 +877,32 @@ class CrearPedidoDialog(QDialog):
             "proveedor": self.input_proveedor.text(),
             "vidrios_lista": vidrios_lista,
         }
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}

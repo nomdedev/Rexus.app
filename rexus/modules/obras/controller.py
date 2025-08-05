@@ -1,6 +1,7 @@
 """Controlador de Obras"""
 
 import datetime
+from rexus.core.auth_manager import AuthManager, auth_required
 from typing import Any, Dict, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -70,6 +71,7 @@ class ObrasController(QObject):
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error mostrando formulario: {e}")
 
+    @auth_required(permission='CREATE')
     def agregar_obra(self, datos_obra:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -79,6 +81,7 @@ class ObrasController(QObject):
         """Alias para crear_obra - usado por la vista del diálogo."""
         return self.crear_obra(datos_obra)
 
+    @auth_required(permission='CREATE')
     def crear_obra(self, datos_obra:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -123,6 +126,7 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error creando obra: {str(e)}")
             return False
 
+    @auth_required(permission='UPDATE')
     def editar_obra_seleccionada(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -149,6 +153,7 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error editando obra: {e}")
             self.mostrar_mensaje_error(f"Error editando obra: {str(e)}")
 
+    @auth_required(permission='UPDATE')
     def actualizar_obra(self, obra_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -192,6 +197,7 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error actualizando obra: {str(e)}")
             return False
 
+    @auth_required(permission='DELETE')
     def eliminar_obra_seleccionada(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -286,6 +292,7 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error filtrando obras: {e}")
             self.mostrar_mensaje_error(f"Error filtrando obras: {str(e)}")
 
+    @auth_required(permission='UPDATE')
     def actualizar_estadisticas(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -300,6 +307,7 @@ class ObrasController(QObject):
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error actualizando estadísticas: {e}")
 
+    @auth_required(permission='MANAGE')
     def validar_datos_obra(
         self, datos_obra: Dict[str, Any], es_actualizacion: bool = False
     ) -> bool:

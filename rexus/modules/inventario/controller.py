@@ -9,7 +9,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from rexus.core.security import get_security_manager
-from rexus.utils.error_handler import ErrorHandler, safe_method_decorator
+from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_manager import AuthManager
 
@@ -40,6 +40,7 @@ class InventarioController(QObject):
         """Establece el gestor de seguridad."""
         self.security_manager = security_manager
 
+    @auth_required(permission='MANAGE')
     def verificar_permiso(self, accion):
         """Verifica si el usuario tiene permiso para realizar una acciÃ³n."""
         if not self.security_manager:
@@ -283,6 +284,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al cargar categorÃ­as: {str(e)}")
 
+    @auth_required(permission='UPDATE')
     def actualizar_estadisticas(self):
         """Actualiza las estadísticas generales."""
         try:
@@ -377,6 +379,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al limpiar filtros: {str(e)}")
 
+    @auth_required(permission='CREATE')
     def nuevo_producto(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -397,6 +400,7 @@ class InventarioController(QObject):
         self.log_auditoria("CREAR_PRODUCTO", "Intento de crear nuevo producto")
 
     @safe_method_decorator
+    @auth_required(permission='CREATE')
     def agregar_producto(self, datos_producto):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -444,6 +448,7 @@ class InventarioController(QObject):
                 self.view.show_error(error_msg)
             self.error_ocurrido.emit(error_msg)
 
+    @auth_required(permission='UPDATE')
     def editar_producto(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -461,6 +466,7 @@ class InventarioController(QObject):
 
         self.log_auditoria("EDITAR_PRODUCTO", "Intento de editar producto")
 
+    @auth_required(permission='DELETE')
     def eliminar_producto(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -478,6 +484,7 @@ class InventarioController(QObject):
 
         self.log_auditoria("ELIMINAR_PRODUCTO", "Intento de eliminar producto")
 
+    @auth_required(permission='MANAGE')
     def registrar_movimiento(self):
         """Registra movimiento de inventario."""
         if not self.verificar_permiso("movimiento_inventario"):
@@ -490,6 +497,7 @@ class InventarioController(QObject):
 
         self.log_auditoria("MOVIMIENTO_INVENTARIO", "Intento de registrar movimiento")
 
+    @auth_required(permission='EXPORT')
     def exportar_inventario(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -528,6 +536,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al cargar reservas: {str(e)}")
 
+    @auth_required(permission='CREATE')
     def crear_reserva(self, reserva_data):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -563,6 +572,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al crear reserva: {str(e)}")
 
+    @auth_required(permission='MANAGE')
     def liberar_reserva(self, reserva_id):
         """Libera una reserva de material."""
         if not self.verificar_permiso("liberar_reserva"):
@@ -590,6 +600,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al liberar reserva: {str(e)}")
 
+    @auth_required(permission='EXPORT')
     def generar_reporte_reservas(self, obra_id):
         """Genera un reporte de reservas para una obra."""
         if not self.verificar_permiso("exportar_inventario"):
@@ -634,6 +645,7 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al cargar disponibilidad: {str(e)}")
 
+    @auth_required(permission='UPDATE')
     def actualizar_por_obra(self, obra_id):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual

@@ -44,6 +44,17 @@ except ImportError:
 class UsuariosModel:
     """Modelo para gestión completa de usuarios y autenticación."""
 
+    # Configuración de seguridad avanzada
+    MAX_LOGIN_ATTEMPTS = 3  # Máximo de intentos de login
+    LOCKOUT_DURATION = 900  # 15 minutos en segundos
+    MIN_PASSWORD_LENGTH = 8
+    PASSWORD_COMPLEXITY_RULES = {
+        "uppercase": True,
+        "lowercase": True,
+        "digits": True,
+        "special_chars": True,
+    }
+
     # Roles disponibles
     ROLES = {
         "ADMIN": "Administrador",
@@ -212,6 +223,212 @@ class UsuariosModel:
         except Exception as e:
             print(f"[ERROR USUARIOS] Error validando usuario duplicado: {e}")
             return resultado
+
+    def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
+        """
+        Registra un intento de login y actualiza el contador de intentos fallidos.
+
+        Args:
+            username: Nombre de usuario
+            exitoso: Si el login fue exitoso
+        """
+        if not self.db_connection:
+            return
+
+        try:
+            # Sanitizar username
+            if self.data_sanitizer:
+                username_limpio = self.data_sanitizer.sanitize_string(username)
+            else:
+                username_limpio = username.strip()
+
+            cursor = self.db_connection.cursor()
+            tabla_validada = self._validate_table_name(self.tabla_usuarios)
+
+            if exitoso:
+                # Reset intentos fallidos si login exitoso
+                query = f"UPDATE [{tabla_validada}] SET intentos_fallidos = 0, ultimo_acceso = GETDATE() WHERE LOWER(username) = ?"
+                cursor.execute(query, (username_limpio.lower(),))
+            else:
+                # Incrementar intentos fallidos
+                query = f"""
+                UPDATE [{tabla_validada}] 
+                SET intentos_fallidos = ISNULL(intentos_fallidos, 0) + 1,
+                    ultimo_intento_fallido = GETDATE()
+                WHERE LOWER(username) = ?
+                """
+                cursor.execute(query, (username_limpio.lower(),))
+
+            self.db_connection.commit()
+
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error registrando intento login: {e}")
+
+    def verificar_cuenta_bloqueada(self, username: str) -> bool:
+        """
+        Verifica si una cuenta está bloqueada por exceso de intentos fallidos.
+
+        Args:
+            username: Nombre de usuario a verificar
+
+        Returns:
+            bool: True si la cuenta está bloqueada
+        """
+        if not self.db_connection:
+            return False
+
+        try:
+            # Sanitizar username
+            if self.data_sanitizer:
+                username_limpio = self.data_sanitizer.sanitize_string(username)
+            else:
+                username_limpio = username.strip()
+
+            cursor = self.db_connection.cursor()
+            tabla_validada = self._validate_table_name(self.tabla_usuarios)
+
+            # Verificar intentos fallidos y tiempo transcurrido
+            query = f"""
+            SELECT 
+                ISNULL(intentos_fallidos, 0) as intentos,
+                ultimo_intento_fallido,
+                CASE 
+                    WHEN ultimo_intento_fallido IS NULL THEN 1
+                    WHEN DATEDIFF(SECOND, ultimo_intento_fallido, GETDATE()) > ?
+                    THEN 1
+                    ELSE 0
+                END as tiempo_expirado
+            FROM [{tabla_validada}] 
+            WHERE LOWER(username) = ?
+            """
+
+            cursor.execute(query, (self.LOCKOUT_DURATION, username_limpio.lower()))
+            resultado = cursor.fetchone()
+
+            if not resultado:
+                return False
+
+            intentos, ultimo_intento, tiempo_expirado = resultado
+
+            # Si el tiempo de bloqueo ha expirado, reset intentos
+            if tiempo_expirado and intentos >= self.MAX_LOGIN_ATTEMPTS:
+                self.reset_intentos_login(username)
+                return False
+
+            # Cuenta bloqueada si excede intentos máximos
+            return intentos >= self.MAX_LOGIN_ATTEMPTS
+
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error verificando cuenta bloqueada: {e}")
+            return False
+
+    def reset_intentos_login(self, username: str) -> bool:
+        """
+        Resetea los intentos de login de un usuario.
+
+        Args:
+            username: Nombre de usuario
+
+        Returns:
+            bool: True si se reseteo correctamente
+        """
+        if not self.db_connection:
+            return False
+
+        try:
+            # Sanitizar username
+            if self.data_sanitizer:
+                username_limpio = self.data_sanitizer.sanitize_string(username)
+            else:
+                username_limpio = username.strip()
+
+            cursor = self.db_connection.cursor()
+            tabla_validada = self._validate_table_name(self.tabla_usuarios)
+
+            query = f"UPDATE [{tabla_validada}] SET intentos_fallidos = 0 WHERE LOWER(username) = ?"
+            cursor.execute(query, (username_limpio.lower(),))
+            self.db_connection.commit()
+
+            return cursor.rowcount > 0
+
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error reseteando intentos login: {e}")
+            return False
+
+    def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
+        """
+        Valida la fortaleza de una contraseña según las reglas de seguridad.
+
+        Args:
+            password: Contraseña a validar
+
+        Returns:
+            Dict con el resultado de la validación
+        """
+        resultado = {"valida": True, "errores": [], "puntuacion": 0}
+
+        if not password:
+            resultado["valida"] = False
+            resultado["errores"].append("La contraseña es requerida")
+            return resultado
+
+        # Longitud mínima
+        if len(password) < self.MIN_PASSWORD_LENGTH:
+            resultado["valida"] = False
+            resultado["errores"].append(
+                f"La contraseña debe tener al menos {self.MIN_PASSWORD_LENGTH} caracteres"
+            )
+        else:
+            resultado["puntuacion"] += 1
+
+        # Verificar mayúsculas
+        if self.PASSWORD_COMPLEXITY_RULES["uppercase"]:
+            if not any(c.isupper() for c in password):
+                resultado["valida"] = False
+                resultado["errores"].append(
+                    "La contraseña debe contener al menos una letra mayúscula"
+                )
+            else:
+                resultado["puntuacion"] += 1
+
+        # Verificar minúsculas
+        if self.PASSWORD_COMPLEXITY_RULES["lowercase"]:
+            if not any(c.islower() for c in password):
+                resultado["valida"] = False
+                resultado["errores"].append(
+                    "La contraseña debe contener al menos una letra minúscula"
+                )
+            else:
+                resultado["puntuacion"] += 1
+
+        # Verificar dígitos
+        if self.PASSWORD_COMPLEXITY_RULES["digits"]:
+            if not any(c.isdigit() for c in password):
+                resultado["valida"] = False
+                resultado["errores"].append(
+                    "La contraseña debe contener al menos un número"
+                )
+            else:
+                resultado["puntuacion"] += 1
+
+        # Verificar caracteres especiales
+        if self.PASSWORD_COMPLEXITY_RULES["special_chars"]:
+            special_chars = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+            if not any(c in special_chars for c in password):
+                resultado["valida"] = False
+                resultado["errores"].append(
+                    "La contraseña debe contener al menos un carácter especial"
+                )
+            else:
+                resultado["puntuacion"] += 1
+
+        # Puntuación adicional por longitud
+        if len(password) >= 12:
+            resultado["puntuacion"] += 1
+        if len(password) >= 16:
+            resultado["puntuacion"] += 1
+
+        return resultado
 
     def _crear_tablas_si_no_existen(self):
         """
@@ -734,6 +951,106 @@ class UsuariosModel:
             return [m.strip() for m in permisos.split(",")]
         else:
             return ["Configuración"]
+
+    def autenticar_usuario_seguro(self, username: str, password: str) -> Dict[str, Any]:
+        """
+        Autentica un usuario con todas las validaciones de seguridad avanzadas.
+
+        Args:
+            username: Nombre de usuario
+            password: Contraseña en texto plano
+
+        Returns:
+            Dict con resultado de la autenticación:
+            {
+                'success': bool,
+                'user_data': dict | None,
+                'message': str,
+                'blocked_until': datetime | None,
+                'attempts_remaining': int
+            }
+        """
+        resultado = {
+            "success": False,
+            "user_data": None,
+            "message": "",
+            "blocked_until": None,
+            "attempts_remaining": 0,
+        }
+
+        if not username or not password:
+            resultado["message"] = "Usuario y contraseña son requeridos"
+            return resultado
+
+        try:
+            # 1. Verificar si la cuenta está bloqueada
+            if self.verificar_cuenta_bloqueada(username):
+                resultado["message"] = (
+                    f"Cuenta bloqueada por exceso de intentos fallidos. Intente después de {self.LOCKOUT_DURATION // 60} minutos"
+                )
+                return resultado
+
+            # 2. Obtener datos del usuario
+            usuario_data = self.obtener_usuario_por_nombre(username)
+
+            if not usuario_data:
+                # Registrar intento fallido para prevenir enumeración de usuarios
+                self.registrar_intento_login(username, exitoso=False)
+                resultado["message"] = "Credenciales inválidas"
+                return resultado
+
+            # 3. Verificar estado de la cuenta
+            if not usuario_data.get("activo", True):
+                resultado["message"] = "Cuenta desactivada"
+                return resultado
+
+            # 4. Verificar contraseña
+            password_hash_almacenado = usuario_data.get("password_hash", "")
+            if not password_hash_almacenado or not self._verificar_password(
+                password, password_hash_almacenado
+            ):
+                # Registrar intento fallido
+                self.registrar_intento_login(username, exitoso=False)
+
+                # Calcular intentos restantes
+                intentos_actuales = (usuario_data.get("intentos_fallidos") or 0) + 1
+                intentos_restantes = max(0, self.MAX_LOGIN_ATTEMPTS - intentos_actuales)
+
+                resultado["attempts_remaining"] = intentos_restantes
+
+                if intentos_restantes <= 0:
+                    resultado["message"] = (
+                        f"Cuenta bloqueada por exceso de intentos. Intente después de {self.LOCKOUT_DURATION // 60} minutos"
+                    )
+                else:
+                    resultado["message"] = (
+                        f"Credenciales inválidas. {intentos_restantes} intentos restantes"
+                    )
+
+                return resultado
+
+            # 5. Login exitoso - limpiar intentos fallidos
+            self.registrar_intento_login(username, exitoso=True)
+
+            # 6. Preparar datos del usuario para la sesión (sin password_hash)
+            user_session_data = usuario_data.copy()
+            user_session_data.pop("password_hash", None)
+
+            resultado.update(
+                {
+                    "success": True,
+                    "user_data": user_session_data,
+                    "message": "Autenticación exitosa",
+                    "attempts_remaining": self.MAX_LOGIN_ATTEMPTS,
+                }
+            )
+
+            return resultado
+
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error en autenticación segura: {e}")
+            resultado["message"] = "Error interno en la autenticación"
+            return resultado
 
     def crear_usuario(
         self,

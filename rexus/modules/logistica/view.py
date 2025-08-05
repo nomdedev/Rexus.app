@@ -73,6 +73,7 @@ from rexus.utils.form_validators import (
     validacion_direccion,
 )
 from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
 
 
 class LogisticaView(QWidget):
@@ -85,6 +86,10 @@ class LogisticaView(QWidget):
     eliminar_entrega_solicitada = pyqtSignal(int)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.controller = None
         self.entregas_data = []
@@ -185,6 +190,7 @@ class LogisticaView(QWidget):
 
         # Búsqueda
         self.search_input = QLineEdit()
+        self.search_input.setAccessibleName('Search Input')
         self.search_input.setPlaceholderText("Buscar entregas...")
         self.search_input.setFixedWidth(200)
         filtros_layout.addWidget(QLabel("Buscar:"))
@@ -276,11 +282,13 @@ class LogisticaView(QWidget):
 
         # Cliente/Destino
         self.input_cliente = QLineEdit()
+        self.input_cliente.setAccessibleName('Input Cliente')
         self.input_cliente.setPlaceholderText("Nombre del cliente o destino")
         self.input_cliente.setFixedWidth(300)
 
         # Dirección
         self.input_direccion = QLineEdit()
+        self.input_direccion.setAccessibleName('Input Direccion')
         self.input_direccion.setPlaceholderText("Dirección completa de entrega")
         self.input_direccion.setFixedWidth(400)
 
@@ -292,11 +300,13 @@ class LogisticaView(QWidget):
 
         # Hora programada
         self.input_hora = QLineEdit()
+        self.input_hora.setAccessibleName('Input Hora')
         self.input_hora.setPlaceholderText("HH:MM")
         self.input_hora.setFixedWidth(100)
 
         # Contacto
         self.input_contacto = QLineEdit()
+        self.input_contacto.setAccessibleName('Input Contacto')
         self.input_contacto.setPlaceholderText("Teléfono de contacto")
         self.input_contacto.setFixedWidth(200)
 
@@ -1410,12 +1420,15 @@ class DialogoNuevaEntrega(QDialog):
 
         # Campos del formulario
         self.input_direccion = QLineEdit()
+        self.input_direccion.setAccessibleName('Input Direccion')
         self.input_direccion.setPlaceholderText("Ingrese la dirección de entrega")
 
         self.input_contacto = QLineEdit()
+        self.input_contacto.setAccessibleName('Input Contacto')
         self.input_contacto.setPlaceholderText("Nombre del contacto")
 
         self.input_telefono = QLineEdit()
+        self.input_telefono.setAccessibleName('Input Telefono')
         self.input_telefono.setPlaceholderText("+54 11 1234-5678")
 
         self.date_programada = QDateEdit()
@@ -1430,6 +1443,18 @@ class DialogoNuevaEntrega(QDialog):
         self.text_observaciones = QTextEdit()
         self.text_observaciones.setMaximumHeight(80)
         self.text_observaciones.setPlaceholderText("Observaciones adicionales...")
+
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.search_input, "search_input", 100)
+        self.form_protector.protect_field(self.input_cliente, "input_cliente", 100)
+        self.form_protector.protect_field(self.input_direccion, "input_direccion", 100)
+        self.form_protector.protect_field(self.input_hora, "input_hora", 100)
+        self.form_protector.protect_field(self.input_contacto, "input_contacto", 100)
+        self.form_protector.protect_field(self.input_direccion, "input_direccion", 100)
+        self.form_protector.protect_field(self.input_contacto, "input_contacto", 100)
+        self.form_protector.protect_field(self.input_telefono, "input_telefono", 100)
+        self.form_protector.protect_field(self.text_observaciones, "text_observaciones", 100)
+        self.form_protector.protect_field(self.text_observaciones, "text_observaciones", 100)
 
         # Agregar campos al formulario
         form_layout.addRow("📍 Dirección:", self.input_direccion)
@@ -1550,4 +1575,33 @@ class DialogoNuevaEntrega(QDialog):
 
         except Exception as e:
             self.logger.error(f"Error al obtener datos del formulario: {str(e)}")
+            return {}
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
             return {}

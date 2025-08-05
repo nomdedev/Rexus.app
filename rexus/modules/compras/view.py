@@ -80,6 +80,7 @@ from rexus.utils.message_system import (
     show_warning,
 )
 from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
 
 
 class ComprasView(QWidget):
@@ -91,6 +92,10 @@ class ComprasView(QWidget):
     busqueda_realizada = pyqtSignal(dict)
 
     def __init__(self):
+        # Inicializar protección XSS
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
+        
         super().__init__()
         self.controller = None
         self.logger = logging.getLogger(__name__)
@@ -151,11 +156,14 @@ class ComprasView(QWidget):
 
         # Botón Nueva Orden
         self.btn_nueva_orden = QPushButton("Nueva Orden")
+        self.btn_nueva_orden.setToolTip('Acción: Botón Nueva Orden')
+        self.btn_nueva_orden.setAccessibleName('Botón Nueva Orden')
         self.btn_nueva_orden.setIcon(QIcon("📋"))
         self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
 
         # Búsqueda
         self.input_busqueda = QLineEdit()
+        self.input_busqueda.setAccessibleName('Input Busqueda')
         self.input_busqueda.setPlaceholderText(
             "Buscar por proveedor o número de orden..."
         )
@@ -181,10 +189,14 @@ class ComprasView(QWidget):
 
         # Botón buscar
         self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar.setToolTip('Buscar elementos - Botón Buscar')
+        self.btn_buscar.setAccessibleName('Botón Buscar')
         self.btn_buscar.clicked.connect(self.buscar_compras)
 
         # Botón actualizar
         self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
+        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
 
         # Agregar widgets
@@ -952,7 +964,9 @@ class DialogNuevaOrden(QDialog):
 
         # Campos
         self.input_proveedor = QLineEdit()
+        self.input_proveedor.setAccessibleName('Input Proveedor')
         self.input_numero_orden = QLineEdit()
+        self.input_numero_orden.setAccessibleName('Input Numero Orden')
         self.date_pedido = QDateEdit()
         self.date_pedido.setDate(QDate.currentDate())
         self.date_pedido.setCalendarPopup(True)
@@ -976,6 +990,13 @@ class DialogNuevaOrden(QDialog):
 
         self.input_observaciones = QTextEdit()
         self.input_observaciones.setMaximumHeight(100)
+
+        # Proteger campos contra XSS
+        self.form_protector.protect_field(self.input_busqueda, "input_busqueda", 100)
+        self.form_protector.protect_field(self.input_proveedor, "input_proveedor", 100)
+        self.form_protector.protect_field(self.input_numero_orden, "input_numero_orden", 100)
+        self.form_protector.protect_field(self.texto_estados, "texto_estados", 100)
+        self.form_protector.protect_field(self.input_observaciones, "input_observaciones", 100)
 
         # Agregar campos al formulario
         form_layout.addRow("Proveedor:", self.input_proveedor)
@@ -1133,3 +1154,32 @@ class DialogNuevaOrden(QDialog):
 
         # Si todo es válido, aceptar el diálogo
         self.accept()
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja la detección de contenido peligroso en formularios."""
+        from rexus.utils.security import log_security_event
+        from rexus.utils.message_system import show_warning
+        
+        # Log del evento de seguridad
+        log_security_event(
+            "XSS_ATTEMPT",
+            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
+            "unknown"
+        )
+        
+        # Mostrar advertencia al usuario
+        show_warning(
+            self,
+            "Contenido No Permitido",
+            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
+
+"
+            "El contenido ha sido automáticamente sanitizado por seguridad."
+        )
+    
+    def obtener_datos_seguros(self) -> dict:
+        """Obtiene datos del formulario con sanitización XSS."""
+        if hasattr(self, 'form_protector'):
+            return self.form_protector.get_sanitized_data()
+        else:
+            return {}
