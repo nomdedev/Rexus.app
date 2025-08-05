@@ -1038,12 +1038,14 @@ class UsuariosModel:
             return self._get_estadisticas_demo()
 
     def _hashear_password(self, password: str) -> str:
-        """Hashea una contraseña."""
-        return hashlib.sha256(password.encode()).hexdigest()
+        """Hashea una contraseña usando sistema seguro."""
+        from rexus.utils.password_security import hash_password_secure
+        return hash_password_secure(password)
 
     def _verificar_password(self, password: str, hash_almacenado: str) -> bool:
-        """Verifica una contraseña contra su hash."""
-        return self._hashear_password(password) == hash_almacenado
+        """Verifica una contraseña contra su hash usando sistema seguro."""
+        from rexus.utils.password_security import verify_password_secure
+        return verify_password_secure(password, hash_almacenado)
 
     def _get_usuarios_demo(self) -> List[Dict[str, Any]]:
         """Datos demo cuando no hay conexión a BD."""

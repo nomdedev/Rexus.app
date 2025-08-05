@@ -54,13 +54,9 @@ class AuthManager:
             user_data = user_data[0]  # Obtener primera fila
             
             # Verificar password usando sistema seguro
-            try:
-                from rexus.utils.password_security import verify_password_secure
-                is_password_valid = verify_password_secure(password, user_data[2])
-            except ImportError:
-                # Fallback temporal (INSEGURO)
-                password_hash = hashlib.sha256(password.encode()).hexdigest()
-                is_password_valid = (user_data[2] == password_hash)
+            # Verificar contraseña con sistema seguro
+            from rexus.utils.password_security import verify_password_secure
+            is_password_valid = verify_password_secure(password, user_data[2])
             
             if is_password_valid:
                 # Autenticación exitosa
@@ -177,12 +173,9 @@ class AuthManager:
                 return False
             
             # Crear hash seguro de contraseña
-            try:
-                from rexus.utils.password_security import hash_password_secure
-                password_hash = hash_password_secure(password)
-            except ImportError:
-                # Fallback temporal (INSEGURO)
-                password_hash = hashlib.sha256(password.encode()).hexdigest()
+            # Usar sistema de hashing seguro
+            from rexus.utils.password_security import hash_password_secure
+            password_hash = hash_password_secure(password)
             
             # Insertar usuario
             result = self.db_connection.execute_non_query("""
@@ -212,12 +205,9 @@ class AuthManager:
         
         try:
             # Crear hash seguro de nueva contraseña
-            try:
-                from rexus.utils.password_security import hash_password_secure
-                password_hash = hash_password_secure(new_password)
-            except ImportError:
-                # Fallback temporal (INSEGURO)
-                password_hash = hashlib.sha256(new_password.encode()).hexdigest()
+            # Usar sistema de hashing seguro
+            from rexus.utils.password_security import hash_password_secure
+            password_hash = hash_password_secure(new_password)
             
             # Actualizar contraseña
             result = self.db_connection.execute_non_query("""

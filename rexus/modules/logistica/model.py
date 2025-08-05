@@ -153,7 +153,7 @@ class LogisticaModel:
                     t.id, t.codigo, t.tipo, t.proveedor, t.capacidad_kg,
                     t.capacidad_m3, t.costo_km, t.disponible, t.observaciones,
                     t.fecha_creacion, t.fecha_modificacion
-                FROM {self.tabla_transportes} t
+                FROM [{self._validate_table_name(self.tabla_transportes)}] t
                 WHERE """
                 + " AND ".join(conditions)
                 + """
@@ -342,9 +342,9 @@ class LogisticaModel:
                     e.fecha_programada, e.fecha_entrega, e.direccion_entrega,
                     e.contacto, e.telefono, e.estado, e.observaciones,
                     e.costo_envio, e.usuario_creacion, e.fecha_creacion
-                FROM {self.tabla_entregas} e
-                LEFT JOIN {self.tabla_obras} o ON e.obra_id = o.id
-                LEFT JOIN {self.tabla_transportes} t ON e.transporte_id = t.id
+                FROM [{self._validate_table_name(self.tabla_entregas)}] e
+                LEFT JOIN [{self._validate_table_name(self.tabla_obras)}] o ON e.obra_id = o.id
+                LEFT JOIN [{self._validate_table_name(self.tabla_transportes)}] t ON e.transporte_id = t.id
                 WHERE """
                 + " AND ".join(conditions)
                 + """

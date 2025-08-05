@@ -478,8 +478,8 @@ class ContabilidadModel:
                 SELECT e.id, e.codigo, e.nombre, e.apellido, e.documento, e.email,
                        e.telefono, e.departamento_id, d.nombre as departamento,
                        e.cargo, e.salario, e.fecha_ingreso, e.estado
-                FROM empleados e
-                LEFT JOIN departamentos d ON e.departamento_id = d.id
+                FROM [{self._validate_table_name('empleados')}] e
+                LEFT JOIN [{self._validate_table_name('departamentos')}] d ON e.departamento_id = d.id
             """
 
             conditions = []
@@ -628,8 +628,8 @@ class ContabilidadModel:
                        lc.empleado_id, lc.departamento_id, d.nombre as departamento,
                        lc.cuenta_contable, lc.debe, lc.haber, lc.saldo, lc.estado,
                        lc.observaciones, lc.fecha_creacion, lc.usuario_creacion
-                FROM libro_contable lc
-                LEFT JOIN departamentos d ON lc.departamento_id = d.id
+                FROM [{self._validate_table_name('libro_contable')}] lc
+                LEFT JOIN [{self._validate_table_name('departamentos')}] d ON lc.departamento_id = d.id
             """
 
             conditions = []
@@ -796,7 +796,7 @@ class ContabilidadModel:
                        r.empleado_id, r.monto, r.moneda, r.metodo_pago,
                        r.numero_comprobante, r.estado, r.impreso, r.archivo_pdf,
                        r.observaciones, r.fecha_creacion, r.usuario_creacion
-                FROM recibos r
+                FROM [{self._validate_table_name('recibos')}] r
             """
 
             conditions = []
@@ -972,7 +972,7 @@ class ContabilidadModel:
                        po.fecha_pago, po.proveedor_id, po.empleado_id, po.recibo_id,
                        po.metodo_pago, po.numero_comprobante, po.estado, po.observaciones,
                        po.fecha_creacion, po.usuario_creacion
-                FROM pagos_obras po
+                FROM [{self._validate_table_name('pagos_obras')}] po
             """
 
             conditions = []
@@ -1130,7 +1130,7 @@ class ContabilidadModel:
 
             cursor.execute(
                 """
-                UPDATE pagos_materiales
+                UPDATE [{self._validate_table_name('pagos_materiales')}]
                 SET monto_pagado = ?, saldo_pendiente = ?, estado_pago = ?,
                     fecha_pago = ?, fecha_actualizacion = GETDATE(),
                     usuario_actualizacion = ?
