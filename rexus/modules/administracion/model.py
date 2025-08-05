@@ -1,30 +1,49 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
-Modelo de Contabilidad
+Modelo de Administración - Rexus.app v2.0.0
 
-Sistema completo de contabilidad para Stock.App v1.1.3
-Incluye: libro contable, recibos, pagos, estadísticas, control de roles
+Sistema completo de administración y contabilidad.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
+import sys
 import uuid
 from datetime import date, datetime
 from decimal import Decimal
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir))
+
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator
+
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in administracion: {e}")
+    SECURITY_AVAILABLE = False
+    data_sanitizer = None
 
 # Importar utilidad de seguridad SQL
 try:
-    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
     print("[WARNING] SQL security utilities not available in administracion")
     SQL_SECURITY_AVAILABLE = False
+    validate_table_name = None
+    SQLSecurityError = Exception
 
 
 class ContabilidadModel:
-    """Modelo completo de contabilidad con control de roles y auditoría."""
+    """Modelo completo de administración y contabilidad con control de roles y auditoría."""
 
     def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         self.db_connection = db_connection
@@ -37,49 +56,144 @@ class ContabilidadModel:
         self.tabla_departamentos = "departamentos"
         self.tabla_auditoria = "auditoria_contable"
 
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available and data_sanitizer:
+            self.data_sanitizer = data_sanitizer
+            print("OK [ADMINISTRACION] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            print("WARNING [ADMINISTRACION] Utilidades de seguridad no disponibles")
+
         # Crear tablas si no existen
         self.crear_tablas()
-    
+
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
-        
+
         Args:
             table_name: Nombre de tabla a validar
-            
+
         Returns:
-            Nombre de tabla validado
+            str: Nombre de tabla validado
+
+        Raises:
+            Exception: Si el nombre no es válido o contiene caracteres peligrosos
         """
-        if SQL_SECURITY_AVAILABLE:
+        if SQL_SECURITY_AVAILABLE and validate_table_name:
             try:
-                from rexus.utils.sql_security import sql_validator
-                # Agregar tablas de administración a lista blanca si no existen
-                admin_tables = {
-                    'libro_contable', 'recibos', 'pagos_obras', 'pagos_materiales',
-                    'empleados', 'departamentos', 'auditoria_contable'
-                }
-                for table in admin_tables:
-                    if table not in sql_validator.ALLOWED_TABLES:
-                        sql_validator.add_allowed_table(table)
-                
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                print(f"[SECURITY ERROR] Tabla no válida: {e}")
-                raise
-        else:
-            # Validación básica como fallback
-            import re
-            if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
-                raise ValueError(f"Nombre de tabla inválido: {table_name}")
-            return table_name
-    
+                print(f"[ERROR SEGURIDAD ADMINISTRACION] {str(e)}")
+                # Fallback a verificación básica
+                pass
+
+        # Verificación básica si la utilidad no está disponible
+        if not table_name or not isinstance(table_name, str):
+            raise ValueError("Nombre de tabla inválido")
+
+        # Eliminar espacios en blanco
+        table_name = table_name.strip()
+
+        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
+        if not all(c.isalnum() or c == "_" for c in table_name):
+            raise ValueError(
+                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
+            )
+
+        # Verificar longitud razonable
+        if len(table_name) > 64:
+            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
+
+        return table_name.lower()
+
+    def validar_departamento_duplicado(
+        self, codigo: str, nombre: str, id_departamento_actual: Optional[int] = None
+    ) -> Dict[str, bool]:
+        """
+        Valida si existe un departamento duplicado por código o nombre.
+
+        Args:
+            codigo: Código del departamento a verificar
+            nombre: Nombre del departamento a verificar
+            id_departamento_actual: ID del departamento actual (para edición)
+
+        Returns:
+            Dict[str, bool]: {"codigo_duplicado": bool, "nombre_duplicado": bool}
+        """
+        resultado = {"codigo_duplicado": False, "nombre_duplicado": False}
+
+        if not self.db_connection:
+            return resultado
+
+        try:
+            # Sanitizar datos
+            if self.data_sanitizer:
+                codigo_limpio = self.data_sanitizer.sanitize_string(codigo)
+                nombre_limpio = self.data_sanitizer.sanitize_string(nombre)
+            else:
+                codigo_limpio = codigo.strip()
+                nombre_limpio = nombre.strip()
+
+            # Validar tabla
+            tabla_validada = self._validate_table_name(self.tabla_departamentos)
+
+            cursor = self.db_connection.cursor()
+
+            # Verificar código duplicado
+            if id_departamento_actual:
+                query_codigo = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE LOWER(codigo) = ? AND id != ?"
+                )
+                cursor.execute(
+                    query_codigo, (codigo_limpio.lower(), id_departamento_actual)
+                )
+            else:
+                query_codigo = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE LOWER(codigo) = ?"
+                )
+                cursor.execute(query_codigo, (codigo_limpio.lower(),))
+
+            resultado["codigo_duplicado"] = cursor.fetchone()[0] > 0
+
+            # Verificar nombre duplicado
+            if id_departamento_actual:
+                query_nombre = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE LOWER(nombre) = ? AND id != ?"
+                )
+                cursor.execute(
+                    query_nombre, (nombre_limpio.lower(), id_departamento_actual)
+                )
+            else:
+                query_nombre = (
+                    "SELECT COUNT(*) FROM ["
+                    + tabla_validada
+                    + "] WHERE LOWER(nombre) = ?"
+                )
+                cursor.execute(query_nombre, (nombre_limpio.lower(),))
+
+            resultado["nombre_duplicado"] = cursor.fetchone()[0] > 0
+
+            return resultado
+
+        except Exception as e:
+            print(f"[ERROR ADMINISTRACION] Error validando departamento duplicado: {e}")
+            return resultado
+
     def _validate_limit(self, limite):
         """
         Valida el parámetro de límite para prevenir SQL injection.
-        
+
         Args:
             limite: Límite a validar
-            
+
         Returns:
             int: Límite validado y seguro
         """
@@ -322,20 +436,54 @@ class ContabilidadModel:
         # if not AuthManager.check_permission('crear_departamento'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
-        """Crea un nuevo departamento."""
+        """Crea un nuevo departamento con validación de seguridad."""
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            if self.data_sanitizer:
+                codigo_limpio = self.data_sanitizer.sanitize_string(codigo)
+                nombre_limpio = self.data_sanitizer.sanitize_string(nombre)
+                descripcion_limpia = self.data_sanitizer.sanitize_string(descripcion)
+                responsable_limpio = self.data_sanitizer.sanitize_string(responsable)
+            else:
+                codigo_limpio = codigo.strip()
+                nombre_limpio = nombre.strip()
+                descripcion_limpia = descripcion.strip()
+                responsable_limpio = responsable.strip()
+
+            # Validar datos obligatorios
+            if not codigo_limpio or not nombre_limpio:
+                return False, "Código y nombre son requeridos"
+
+            # Verificar duplicados
+            duplicados = self.validar_departamento_duplicado(
+                codigo_limpio, nombre_limpio
+            )
+            if duplicados["codigo_duplicado"]:
+                return (
+                    False,
+                    f"Ya existe un departamento con el código: {codigo_limpio}",
+                )
+            if duplicados["nombre_duplicado"]:
+                return (
+                    False,
+                    f"Ya existe un departamento con el nombre: {nombre_limpio}",
+                )
+
+            # Validar tabla
+            tabla_validada = self._validate_table_name(self.tabla_departamentos)
+
             cursor = self.db_connection.cursor()
             cursor.execute(
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_departamentos)}]
+                f"""
+                INSERT INTO [{tabla_validada}]
                 (codigo, nombre, descripcion, responsable, presupuesto_mensual, usuario_creacion, usuario_actualizacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
-                    codigo,
-                    nombre,
-                    descripcion,
-                    responsable,
+                    codigo_limpio,
+                    nombre_limpio,
+                    descripcion_limpia,
+                    responsable_limpio,
                     presupuesto_mensual,
                     self.usuario_actual,
                     self.usuario_actual,

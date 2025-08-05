@@ -1,4 +1,3 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
@@ -11,19 +10,23 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Configurar logger para el módulo
+logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
-    
+
     from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
-    
+    from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
+
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in herrajes: {e}")
@@ -32,6 +35,7 @@ except ImportError as e:
 # Importar cargador de scripts SQL
 try:
     from rexus.utils.sql_script_loader import sql_script_loader
+
     SQL_LOADER_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] SQL Script Loader not available in herrajes: {e}")
@@ -81,7 +85,7 @@ class HerrajesModel:
         self.tabla_herrajes_obra = "herrajes_obra"
         self.tabla_pedidos_herrajes = "pedidos_herrajes"
         self.tabla_herrajes_inventario = "herrajes_inventario"
-        
+
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         if self.security_available:
@@ -92,7 +96,7 @@ class HerrajesModel:
             self.data_sanitizer = None
             self.sql_validator = None
             print("WARNING [HERRAJES] Utilidades de seguridad no disponibles")
-            
+
         if not self.db_connection:
             print(
                 "[ERROR HERRAJES] No hay conexión a la base de datos. El módulo no funcionará correctamente."
@@ -385,29 +389,39 @@ class HerrajesModel:
         if SQL_LOADER_AVAILABLE and sql_script_loader:
             try:
                 exito, resultados = sql_script_loader.execute_script(
-                    self.db_connection, 
-                    "herrajes", 
-                    "select_estadisticas_herrajes"
+                    self.db_connection, "herrajes", "select_estadisticas_herrajes"
                 )
-                
+
                 if exito and resultados and len(resultados) >= 4:
                     # El script devuelve 4 consultas separadas
                     estadisticas = {
-                        "total_herrajes": resultados[0][0]["total_herrajes"] if resultados[0] else 0,
-                        "proveedores_activos": resultados[1][0]["proveedores_activos"] if resultados[1] else 0,
-                        "valor_total_inventario": float(resultados[2][0]["valor_total_inventario"] or 0.0) if resultados[2] else 0.0,
+                        "total_herrajes": resultados[0][0]["total_herrajes"]
+                        if resultados[0]
+                        else 0,
+                        "proveedores_activos": resultados[1][0]["proveedores_activos"]
+                        if resultados[1]
+                        else 0,
+                        "valor_total_inventario": float(
+                            resultados[2][0]["valor_total_inventario"] or 0.0
+                        )
+                        if resultados[2]
+                        else 0.0,
                         "herrajes_por_proveedor": [
-                            {"proveedor": row["proveedor"], "cantidad": row["cantidad"]} 
+                            {"proveedor": row["proveedor"], "cantidad": row["cantidad"]}
                             for row in resultados[3]
-                        ] if resultados[3] else []
+                        ]
+                        if resultados[3]
+                        else [],
                     }
-                    
+
                     print("✅ [HERRAJES] Estadísticas obtenidas usando script externo")
                     return estadisticas
-                    
+
             except Exception as e:
-                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consultas directas: {e}")
-        
+                print(
+                    f"⚠️ [HERRAJES] Error usando script externo, fallback a consultas directas: {e}"
+                )
+
         # Fallback a consultas directas si el script loader no está disponible
         try:
             cursor = self.db_connection.cursor()
@@ -443,7 +457,9 @@ class HerrajesModel:
                 {"proveedor": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
 
-            print("⚠️ [HERRAJES] Estadísticas obtenidas usando consultas directas (fallback)")
+            print(
+                "⚠️ [HERRAJES] Estadísticas obtenidas usando consultas directas (fallback)"
+            )
             return estadisticas
 
         except Exception as e:
@@ -471,7 +487,9 @@ class HerrajesModel:
         try:
             # 🔒 SANITIZACIÓN DE ENTRADA
             if self.security_available and termino_busqueda:
-                termino_limpio = self.data_sanitizer.sanitize_string(termino_busqueda, max_length=100)
+                termino_limpio = self.data_sanitizer.sanitize_string(
+                    termino_busqueda, max_length=100
+                )
                 if not termino_limpio:
                     return []
             else:
@@ -508,12 +526,15 @@ class HerrajesModel:
             print(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
             return []
 
-    def crear_herraje(self, datos_herraje:
+    def crear_herraje(
+        self,
+        datos_herraje:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_herraje'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]) -> Tuple[bool, str]:
+        Dict[str, Any],
+    ) -> Tuple[bool, str]:
         """
         Crea un nuevo herraje con sanitización completa de datos.
 
@@ -531,7 +552,7 @@ class HerrajesModel:
             if self.security_available:
                 # Sanitizar todos los datos de entrada
                 datos_limpios = self.data_sanitizer.sanitize_form_data(datos_herraje)
-                
+
                 # Validaciones específicas
                 if not datos_limpios.get("codigo"):
                     return False, "El código es requerido"
@@ -539,20 +560,26 @@ class HerrajesModel:
                     return False, "La descripción es requerida"
                 if not datos_limpios.get("proveedor"):
                     return False, "El proveedor es requerido"
-                    
+
                 # Validar precio si se proporciona
                 precio_original = datos_herraje.get("precio_unitario")
                 precio_sanitizado = datos_limpios.get("precio_unitario")
-                
-                if precio_original and precio_original != "" and precio_sanitizado is None:
+
+                if (
+                    precio_original
+                    and precio_original != ""
+                    and precio_sanitizado is None
+                ):
                     return False, "Precio inválido"
                 elif precio_sanitizado is None:
                     datos_limpios["precio_unitario"] = 0.0
-                    
+
             else:
                 # Sin utilidades de seguridad, usar datos originales con precaución
                 datos_limpios = datos_herraje.copy()
-                print("WARNING [HERRAJES] Creando herraje sin sanitización de seguridad")
+                print(
+                    "WARNING [HERRAJES] Creando herraje sin sanitización de seguridad"
+                )
 
             cursor = self.db_connection.cursor()
 
@@ -627,12 +654,14 @@ class HerrajesModel:
             return False, f"Error creando herraje: {str(e)}"
 
     def actualizar_herraje(
-        self, herraje_id:
+        self,
+        herraje_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_herraje'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, datos_herraje: Dict[str, Any]
+        int,
+        datos_herraje: Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
         Actualiza un herraje existente.
@@ -715,12 +744,15 @@ class HerrajesModel:
                 self.db_connection.rollback()
             return False, f"Error actualizando herraje: {str(e)}"
 
-    def eliminar_herraje(self, herraje_id:
+    def eliminar_herraje(
+        self,
+        herraje_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('eliminar_herraje'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int) -> Tuple[bool, str]:
+        int,
+    ) -> Tuple[bool, str]:
         """
         Elimina un herraje (eliminación lógica).
 
@@ -841,12 +873,15 @@ class HerrajesModel:
             return []
 
     def actualizar_stock(
-        self, herraje_id:
+        self,
+        herraje_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_stock'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, nuevo_stock: int, tipo_movimiento: str = "AJUSTE"
+        int,
+        nuevo_stock: int,
+        tipo_movimiento: str = "AJUSTE",
     ) -> Tuple[bool, str]:
         """
         Actualiza el stock de un herraje.

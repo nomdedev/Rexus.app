@@ -1,4 +1,3 @@
-
 # 🔒 Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
 # Form Access Control
@@ -39,6 +38,8 @@ Vista de Inventario
 Interfaz de usuario moderna para la gestión del inventario con sistema de reservas.
 """
 
+import logging
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
@@ -72,20 +73,24 @@ try:
         FormValidatorManager,
         validacion_codigo_producto,
     )
+    from utils.data_sanitizer import DataSanitizer
 
     VALIDATORS_AVAILABLE = True
+    SANITIZER_AVAILABLE = True
+    data_sanitizer = DataSanitizer()
 except ImportError:
     print("[INFO] Form validators not available, using basic validation")
     VALIDATORS_AVAILABLE = False
+    SANITIZER_AVAILABLE = False
+    data_sanitizer = None
 
     # Crear clases mock para evitar errores
     class FormValidator:
         @staticmethod
         def validar_campo_obligatorio(value, name):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            if SANITIZER_AVAILABLE and data_sanitizer and hasattr(value, "strip"):
+                value = data_sanitizer.sanitize_string(value)
             return bool(value.strip() if hasattr(value, "strip") else value)
 
         @staticmethod
@@ -105,14 +110,18 @@ except ImportError:
             self.validaciones = []
 
         def agregar_validacion(self, widget, validator, *args):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('agregar_validacion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
+            # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+            # TODO: Implementar @auth_required o verificación manual
+            # if not AuthManager.check_permission('agregar_validacion'):
+            #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            if SANITIZER_AVAILABLE and data_sanitizer and hasattr(widget, "text"):
+                current_text = widget.text()
+                if isinstance(current_text, str):
+                    sanitized_text = data_sanitizer.sanitize_string(current_text)
+                    if sanitized_text != current_text:
+                        widget.setText(sanitized_text)
 
             pass
 
@@ -135,8 +144,6 @@ from .dialogs.missing_dialogs import (
 
 
 class InventarioView(QWidget):
-    # ...existing code...
-
     """Vista principal del módulo de inventario con sistema de reservas."""
 
     # Señales
@@ -149,9 +156,13 @@ class InventarioView(QWidget):
 
     def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         super().__init__()
+        self.logger = logging.getLogger(f"{__name__}.InventarioView")
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual
         self.controller = None
+        self.logger.info(
+            f"Inicializando vista de inventario para usuario: {usuario_actual}"
+        )
         self.init_ui()
 
     def init_ui(self):
@@ -861,11 +872,7 @@ class InventarioView(QWidget):
             # Botón para ver detalles
             detalle_btn = QPushButton("👁️ Ver Detalle")
             detalle_btn.clicked.connect(
-                lambda checked, i=item:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
- self.ver_detalle_disponibilidad(i)
+                lambda checked, i=item: self.ver_detalle_disponibilidad(i)
             )
             self.disponibilidad_table.setCellWidget(row, 8, detalle_btn)
 
@@ -880,11 +887,7 @@ class InventarioView(QWidget):
             str(stats.get("total_productos", 0))
         )
         self.stats_widgets["valor_total"].setText(
-            f"${stats.get('valor_total', 0.0):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-.2f}"
+            f"${stats.get('valor_total', 0.0):.2f}"
         )
         self.stats_widgets["stock_bajo"].setText(str(stats.get("stock_bajo", 0)))
         self.stats_widgets["productos_activos"].setText(
@@ -956,12 +959,13 @@ class InventarioView(QWidget):
             self.controller.generar_reporte_reservas(obra_id)
 
     def filtrar_disponibilidad(self):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-
+        # 🔒 PROTECCIÓN XSS: Sanitizar búsqueda de usuario
         """Filtra la tabla de disponibilidad."""
         if self.controller:
+            busqueda_text = self.busqueda_disponibilidad.text()
+            if SANITIZER_AVAILABLE and data_sanitizer and busqueda_text:
+                busqueda_text = data_sanitizer.sanitize_string(busqueda_text)
+
             filtros = {
                 "categoria": self.categoria_filter.currentText()
                 if self.categoria_filter.currentText() != "Todas las categorías"
@@ -969,9 +973,7 @@ class InventarioView(QWidget):
                 "estado": self.estado_stock_filter.currentText()
                 if self.estado_stock_filter.currentText() != "Todos"
                 else None,
-                "busqueda": self.busqueda_disponibilidad.text()
-                if self.busqueda_disponibilidad.text()
-                else None,
+                "busqueda": busqueda_text if busqueda_text else None,
             }
             self.controller.filtrar_disponibilidad(filtros)
 
@@ -992,14 +994,17 @@ class InventarioView(QWidget):
 
     def show_error(self, mensaje):
         """Muestra mensaje de error."""
+        self.logger.error(f"Error mostrado al usuario: {mensaje}")
         QMessageBox.critical(self, "Error", mensaje)
 
     def show_success(self, mensaje):
         """Muestra mensaje de éxito."""
+        self.logger.info(f"Operación exitosa: {mensaje}")
         QMessageBox.information(self, "Éxito", mensaje)
 
     def show_info(self, titulo, mensaje):
         """Muestra mensaje informativo."""
+        self.logger.info(f"Información mostrada - {titulo}: {mensaje}")
         QMessageBox.information(self, titulo, mensaje)
 
     def mostrar_dialogo_nuevo_producto(self):
@@ -1469,10 +1474,12 @@ class DialogoNuevoProducto(QDialog):
 
     def __init__(self, parent=None):
         super().__init__(parent)
+        self.logger = logging.getLogger(f"{__name__}.DialogoNuevoProducto")
         self.validator_manager = FormValidatorManager()
         self.setWindowTitle("Nuevo Producto")
         self.setModal(True)
         self.setFixedSize(500, 650)
+        self.logger.debug("Inicializando diálogo de nuevo producto")
         self.init_ui()
         self._setup_modern_styling()
 
@@ -1605,9 +1612,19 @@ class DialogoNuevoProducto(QDialog):
         )
 
     def validar_y_guardar(self):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto antes de validar
+        if SANITIZER_AVAILABLE and data_sanitizer:
+            # Sanitizar campos de texto
+            codigo_text = data_sanitizer.sanitize_string(self.codigo_input.text())
+            descripcion_text = data_sanitizer.sanitize_string(
+                self.descripcion_input.text()
+            )
+            proveedor_text = data_sanitizer.sanitize_string(self.proveedor_input.text())
+
+            # Aplicar texto sanitizado a los campos
+            self.codigo_input.setText(codigo_text)
+            self.descripcion_input.setText(descripcion_text)
+            self.proveedor_input.setText(proveedor_text)
 
         """Valida el formulario y guarda si es válido."""
         if VALIDATORS_AVAILABLE:
@@ -1639,6 +1656,7 @@ class DialogoNuevoProducto(QDialog):
                 return
 
         # Si todo es válido, aceptar el diálogo
+        self.logger.info(f"Producto validado correctamente: {self.codigo_input.text()}")
         self.accept()
 
     def obtener_datos(self):

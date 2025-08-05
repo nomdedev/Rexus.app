@@ -1,3 +1,28 @@
+"""
+MIT License
+
+Copyright (c) 2024 Rexus.app
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+Vista de Vidrios - Interfaz de gestión de vidrios y cristales
+"""
 
 # 🔒 Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
@@ -7,9 +32,20 @@
 # Use SecurityUtils.sanitize_input() for text fields
 # Use SecurityUtils.validate_email() for email fields
 # XSS Protection Added
-"""Vista de Vidrios"""
 
+import logging
 import os
+
+# Importar DataSanitizer con manejo de errores
+try:
+    from utils.data_sanitizer import DataSanitizer
+
+    SANITIZER_AVAILABLE = True
+    data_sanitizer = DataSanitizer()
+except ImportError:
+    print("[INFO] DataSanitizer not available, using basic validation")
+    SANITIZER_AVAILABLE = False
+    data_sanitizer = None
 
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon, QPixmap
@@ -53,7 +89,9 @@ class VidriosView(QWidget):
 
     def __init__(self):
         super().__init__()
+        self.logger = logging.getLogger(f"{__name__}.VidriosView")
         self.vidrios_data = []
+        self.logger.info("Inicializando vista de vidrios")
         self.init_ui()
         self.setup_timer()
 
@@ -310,6 +348,12 @@ class VidriosView(QWidget):
     def realizar_busqueda(self):
         """Realiza la búsqueda."""
         termino = self.search_input.text().strip()
+
+        # 🔒 PROTECCIÓN XSS: Sanitizar entrada de búsqueda
+        if SANITIZER_AVAILABLE and data_sanitizer and termino:
+            termino = data_sanitizer.sanitize_string(termino)
+            self.logger.debug(f"Término de búsqueda sanitizado: {termino}")
+
         if termino:
             self.buscar_requested.emit(termino)
         else:
@@ -326,9 +370,9 @@ class VidriosView(QWidget):
             filtros["proveedor"] = self.combo_proveedor.currentText()
 
         if self.combo_espesor.currentText() != "Todos":
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+            # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
             filtros["espesor"] = self.combo_espesor.currentText().replace("mm", "")
 
@@ -372,11 +416,7 @@ class VidriosView(QWidget):
                 row, 5, QTableWidgetItem(str(vidrio.get("proveedor", "")))
             )
             self.tabla_vidrios.setItem(
-                row, 6, QTableWidgetItem(f"${vidrio.get('precio_m2', 0):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-.2f}")
+                row, 6, QTableWidgetItem(f"${vidrio.get('precio_m2', 0):.2f}")
             )
             self.tabla_vidrios.setItem(
                 row, 7, QTableWidgetItem(str(vidrio.get("color", "")))
@@ -473,9 +513,9 @@ class VidriosView(QWidget):
     def abrir_dialogo_crear_pedido(self):
         """Abre el diálogo para crear un pedido."""
         if not self.vidrios_data:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
+            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
+            # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
             QMessageBox.warning(self, "Advertencia", "No hay vidrios disponibles")
             return
@@ -519,10 +559,12 @@ class VidriosView(QWidget):
 
     def mostrar_mensaje(self, mensaje):
         """Muestra un mensaje informativo."""
+        self.logger.info(f"Mensaje mostrado: {mensaje}")
         QMessageBox.information(self, "Vidrios", mensaje)
 
     def mostrar_error(self, mensaje):
         """Muestra un mensaje de error."""
+        self.logger.error(f"Error mostrado al usuario: {mensaje}")
         QMessageBox.critical(self, "Error - Vidrios", mensaje)
 
 
@@ -608,18 +650,36 @@ class VidrioDialog(QDialog):
 
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
+        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        codigo = self.input_codigo.text()
+        descripcion = self.input_descripcion.text()
+        proveedor = self.input_proveedor.text()
+        color = self.input_color.text()
+        tratamiento = self.input_tratamiento.text()
+        dimensiones = self.input_dimensiones.text()
+        observaciones = self.input_observaciones.toPlainText()
+
+        if SANITIZER_AVAILABLE and data_sanitizer:
+            codigo = data_sanitizer.sanitize_string(codigo)
+            descripcion = data_sanitizer.sanitize_string(descripcion)
+            proveedor = data_sanitizer.sanitize_string(proveedor)
+            color = data_sanitizer.sanitize_string(color)
+            tratamiento = data_sanitizer.sanitize_string(tratamiento)
+            dimensiones = data_sanitizer.sanitize_string(dimensiones)
+            observaciones = data_sanitizer.sanitize_string(observaciones)
+
         return {
-            "codigo": self.input_codigo.text(),
-            "descripcion": self.input_descripcion.text(),
+            "codigo": codigo,
+            "descripcion": descripcion,
             "tipo": self.combo_tipo.currentText(),
             "espesor": self.input_espesor.value(),
-            "proveedor": self.input_proveedor.text(),
+            "proveedor": proveedor,
             "precio_m2": self.input_precio.value(),
-            "color": self.input_color.text(),
-            "tratamiento": self.input_tratamiento.text(),
-            "dimensiones_disponibles": self.input_dimensiones.text(),
+            "color": color,
+            "tratamiento": tratamiento,
+            "dimensiones_disponibles": dimensiones,
             "estado": self.combo_estado.currentText(),
-            "observaciones": self.input_observaciones.toPlainText(),
+            "observaciones": observaciones,
         }
 
 

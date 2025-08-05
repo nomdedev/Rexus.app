@@ -1,4 +1,3 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
@@ -13,7 +12,7 @@ import datetime
 import sys
 from io import BytesIO
 from pathlib import Path
-from typing import Any, Dict, List, Tuple, Optional
+from typing import Any, Dict, List, Optional, Tuple
 
 import qrcode
 from PIL import Image
@@ -26,10 +25,10 @@ try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
-    
+
     from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SQLSecurityValidator, SecureSQLBuilder
-    
+    from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
+
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in inventario: {e}")
@@ -37,11 +36,14 @@ except ImportError as e:
 
 # Importar nueva utilidad de seguridad SQL
 try:
-    from rexus.utils.sql_security import validate_table_name, SQLSecurityError
+    from rexus.utils.sql_script_loader import sql_script_loader
+    from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
     print("[WARNING] SQL security utilities not available in inventario")
     SQL_SECURITY_AVAILABLE = False
+    sql_script_loader = None
 
 
 class InventarioModel(PaginatedTableMixin):
@@ -56,12 +58,12 @@ class InventarioModel(PaginatedTableMixin):
         """
         # Inicializar mixin de paginación
         super().__init__()
-        
+
         self.db_connection = db_connection
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
         self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
-        
+
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         if self.security_available:
@@ -77,111 +79,200 @@ class InventarioModel(PaginatedTableMixin):
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
-    
-    def get_paginated_data(self, offset: int, limit: int, 
-                          filters: Optional[Dict] = None) -> Tuple[List[Dict], int]:
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+
+        Args:
+            table_name: Nombre de la tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+
+        Raises:
+            Exception: Si el nombre no es válido o contiene caracteres peligrosos
+        """
+        if SQL_SECURITY_AVAILABLE:
+            try:
+                return validate_table_name(table_name)
+            except SQLSecurityError as e:
+                print(f"[ERROR SEGURIDAD] {str(e)}")
+                # Fallback a verificación básica
+                pass
+
+        # Verificación básica si la utilidad no está disponible
+        if not table_name or not isinstance(table_name, str):
+            raise ValueError("Nombre de tabla inválido")
+
+        # Eliminar espacios en blanco
+        table_name = table_name.strip()
+
+        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
+        if not all(c.isalnum() or c == "_" for c in table_name):
+            raise ValueError(
+                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
+            )
+
+        # Verificar longitud razonable
+        if len(table_name) > 64:
+            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
+
+        return table_name.lower()
+
+    def get_paginated_data(
+        self, offset: int, limit: int, filters: Optional[Dict] = None
+    ) -> Tuple[List[Dict], int]:
         """
         Implementación requerida por PaginatedTableMixin.
         Obtiene productos del inventario con paginación.
-        
+
         Args:
             offset: Número de registros a saltar
             limit: Número máximo de registros a devolver
             filters: Filtros adicionales (categoria, activo, etc.)
-            
+
         Returns:
             Tupla (lista_productos, total_productos)
         """
         if not self.db_connection:
             return [], 0
-        
+
         try:
-            # Construir consulta base
+            # Usar script SQL externo si está disponible
+            if SQL_SECURITY_AVAILABLE and sql_script_loader:
+                script_content = sql_script_loader.load_script(
+                    "inventario/select_all_productos"
+                )
+                if script_content:
+                    cursor = self.db_connection.cursor()
+                    cursor.execute(script_content)
+                    productos = []
+
+                    for row in cursor.fetchall():
+                        if row and len(row) > 11:
+                            productos.append(
+                                {
+                                    "id": row[0],
+                                    "codigo": row[1],
+                                    "nombre": row[2] if len(row) > 2 else "",
+                                    "categoria": row[3] if len(row) > 3 else "",
+                                    "tipo": row[4] if len(row) > 4 else "",
+                                    "marca": row[5] if len(row) > 5 else "",
+                                    "cantidad_disponible": row[6]
+                                    if len(row) > 6
+                                    else 0,
+                                    "precio_unitario": row[7] if len(row) > 7 else 0.0,
+                                    "proveedor": row[8] if len(row) > 8 else "",
+                                    "ubicacion_almacen": row[9] if len(row) > 9 else "",
+                                    "fecha_creacion": row[10]
+                                    if len(row) > 10
+                                    else None,
+                                    "activo": bool(row[11]) if len(row) > 11 else True,
+                                }
+                            )
+
+                    # Aplicar paginación
+                    total_items = len(productos)
+                    productos_paginados = productos[offset : offset + limit]
+                    return productos_paginados, total_items
+
+            # Fallback: usar consulta segura validando tabla
+            tabla_validada = validate_table_name(self.tabla_inventario)
             base_query = f"""
                 SELECT id, codigo, nombre, categoria, tipo, marca, 
                        cantidad_disponible, precio_unitario, proveedor,
                        ubicacion_almacen, fecha_creacion, activo
-                FROM [{self.tabla_inventario}]
+                FROM [{tabla_validada}]
                 WHERE 1=1
             """
-            
+
             params = []
-            
+
             # Aplicar filtros
             if filters:
-                if filters.get('categoria'):
+                if filters.get("categoria"):
                     base_query += " AND categoria = ?"
-                    params.append(filters['categoria'])
-                
-                if filters.get('activo') is not None:
+                    params.append(filters["categoria"])
+
+                if filters.get("activo") is not None:
                     base_query += " AND activo = ?"
-                    params.append(1 if filters['activo'] else 0)
-                
-                if filters.get('search'):
-                    base_query += " AND (nombre LIKE ? OR codigo LIKE ? OR marca LIKE ?)"
+                    params.append(1 if filters["activo"] else 0)
+
+                if filters.get("search"):
+                    base_query += (
+                        " AND (nombre LIKE ? OR codigo LIKE ? OR marca LIKE ?)"
+                    )
                     search_term = f"%{filters['search']}%"
                     params.extend([search_term, search_term, search_term])
-            
+
             # Crear consultas paginadas
             paginated_query, count_query = create_pagination_query(base_query)
-            
+
             # Obtener total de elementos
             cursor = self.db_connection.cursor()
             cursor.execute(count_query, params)
             total_items = cursor.fetchone()[0]
-            
+
             # Obtener datos paginados
             cursor.execute(paginated_query, params + [offset, limit])
-            
+
             productos = []
             for row in cursor.fetchall():
                 producto = {
-                    'id': row[0],
-                    'codigo': row[1],
-                    'nombre': row[2],
-                    'categoria': row[3],
-                    'tipo': row[4],
-                    'marca': row[5],
-                    'cantidad_disponible': row[6],
-                    'precio_unitario': row[7],
-                    'proveedor': row[8],
-                    'ubicacion_almacen': row[9],
-                    'fecha_creacion': row[10],
-                    'activo': bool(row[11])
+                    "id": row[0],
+                    "codigo": row[1],
+                    "nombre": row[2],
+                    "categoria": row[3],
+                    "tipo": row[4],
+                    "marca": row[5],
+                    "cantidad_disponible": row[6],
+                    "precio_unitario": row[7],
+                    "proveedor": row[8],
+                    "ubicacion_almacen": row[9],
+                    "fecha_creacion": row[10],
+                    "activo": bool(row[11]),
                 }
                 productos.append(producto)
-            
+
             return productos, total_items
-            
+
         except Exception as e:
             print(f"Error obteniendo datos paginados de inventario: {e}")
             return [], 0
-    
-    def obtener_productos_paginados(self, page: int = 1, page_size: int = 50,
-                                   categoria: str = None, activo: bool = None,
-                                   search: str = None) -> Tuple[List[Dict], Dict]:
+
+    def obtener_productos_paginados(
+        self,
+        page: int = 1,
+        page_size: int = 50,
+        categoria: str = None,
+        activo: bool = None,
+        search: str = None,
+    ) -> Tuple[List[Dict], Dict]:
         """
         Obtiene productos del inventario con paginación.
-        
+
         Args:
             page: Número de página (empezando desde 1)
             page_size: Productos por página
             categoria: Filtrar por categoría
             activo: Filtrar por estado activo
             search: Término de búsqueda
-            
+
         Returns:
             Tupla (lista_productos, información_paginación)
         """
         filters = {}
         if categoria:
-            filters['categoria'] = categoria
+            filters["categoria"] = categoria
         if activo is not None:
-            filters['activo'] = activo
+            filters["activo"] = activo
         if search:
-            filters['search'] = search
-        
-        productos, pagination_info = self.get_paginated_results(page, page_size, filters)
+            filters["search"] = search
+
+        productos, pagination_info = self.get_paginated_results(
+            page, page_size, filters
+        )
         return productos, pagination_info.to_dict()
 
     def _verificar_tablas(self):
@@ -272,6 +363,7 @@ class InventarioModel(PaginatedTableMixin):
                 try:
                     # Agregar tabla a lista blanca si no existe
                     from rexus.utils.sql_security import sql_validator
+
                     if tabla_segura not in sql_validator.ALLOWED_TABLES:
                         sql_validator.add_allowed_table(tabla_segura)
                     tabla_validada = validate_table_name(tabla_segura)
@@ -280,7 +372,7 @@ class InventarioModel(PaginatedTableMixin):
                     return []
             else:
                 tabla_validada = tabla_segura
-            
+
             base_query = f"""
             SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
                    stock_actual, stock_minimo, 0 as stock_maximo, importe as precio_unitario, 
@@ -324,6 +416,69 @@ class InventarioModel(PaginatedTableMixin):
             return "BAJO"
         else:
             return "OK"
+
+    def validar_stock_negativo(self, cantidad_nueva, producto_id=None):
+        """
+        Valida que el stock no sea negativo y esté dentro de límites.
+
+        Args:
+            cantidad_nueva: Nueva cantidad de stock a validar
+            producto_id: ID del producto (opcional para validaciones adicionales)
+
+        Returns:
+            dict: {'valido': bool, 'mensaje': str, 'stock_disponible': int}
+        """
+        try:
+            # Validar que la cantidad no sea negativa
+            if cantidad_nueva < 0:
+                return {
+                    "valido": False,
+                    "mensaje": "El stock no puede ser negativo",
+                    "stock_disponible": 0,
+                }
+
+            # Validar límite máximo (ej: 999999)
+            MAX_STOCK = 999999
+            if cantidad_nueva > MAX_STOCK:
+                return {
+                    "valido": False,
+                    "mensaje": f"El stock no puede superar {MAX_STOCK} unidades",
+                    "stock_disponible": MAX_STOCK,
+                }
+
+            # Si se proporciona producto_id, verificar stock actual
+            if producto_id and self.db_connection:
+                cursor = self.db_connection.cursor()
+                cursor.execute(
+                    "SELECT stock_actual, stock_minimo, stock_maximo FROM productos WHERE id = ?",
+                    (producto_id,),
+                )
+                row = cursor.fetchone()
+
+                if row:
+                    stock_actual, stock_minimo, stock_maximo = row
+
+                    # Verificar límites específicos del producto
+                    if stock_maximo and cantidad_nueva > stock_maximo:
+                        return {
+                            "valido": False,
+                            "mensaje": f"El stock no puede superar el máximo permitido ({stock_maximo})",
+                            "stock_disponible": stock_maximo,
+                        }
+
+            return {
+                "valido": True,
+                "mensaje": "Stock válido",
+                "stock_disponible": int(cantidad_nueva),
+            }
+
+        except Exception as e:
+            print(f"[ERROR] Error validando stock: {e}")
+            return {
+                "valido": False,
+                "mensaje": "Error en validación de stock",
+                "stock_disponible": 0,
+            }
 
     def obtener_producto_por_id(self, producto_id):
         """Obtiene un producto específico por ID."""
@@ -2340,30 +2495,111 @@ class InventarioModel(PaginatedTableMixin):
             }
 
     def obtener_productos_disponibles_para_reserva(self):
-        """Obtiene productos que tienen stock disponible para reserva."""
-        try:
-            cursor = self.db_connection.cursor()
+        """
+        Obtiene productos que tienen stock disponible para reserva.
 
-            query = (
-                """
-                SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
-                       i.precio_unitario, i.unidad_medida,
-                       COALESCE(r.stock_reservado, 0) as stock_reservado,
-                       (i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                FROM """
-                + self.tabla_inventario
-                + """ i
-                LEFT JOIN (
-                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
-                    FROM reservas_inventario
-                    WHERE estado = 'ACTIVA'
-                    GROUP BY producto_id
-                ) r ON i.id = r.producto_id
-                WHERE i.activo = 1
-                AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0
-                ORDER BY i.codigo
-            """
+        Returns:
+            list: Lista de productos disponibles para reserva
+        """
+        # Verificar conexión a base de datos
+        if not self.db_connection:
+            print(
+                "[ERROR] Sin conexión a base de datos en obtener_productos_disponibles_para_reserva"
             )
+            return []
+
+        try:
+            # Validar nombre de tabla para prevenir SQL Injection
+            tabla_inventario_segura = self._validate_table_name(self.tabla_inventario)
+            tabla_reservas_segura = self._validate_table_name("reservas_inventario")
+
+            # Usar consulta SQL con parámetros seguros
+            if SQL_SECURITY_AVAILABLE and sql_script_loader:
+                try:
+                    # Intentar usar el script loader para consultas seguras
+                    cursor = self.db_connection.cursor()
+                    # Primero crear una vista temporal de las reservas para usar con SQL script loader
+                    cursor.execute(
+                        "CREATE TEMPORARY VIEW IF NOT EXISTS temp_reservas AS "
+                        f"SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
+                        f"FROM [{tabla_reservas_segura}] "
+                        "WHERE estado = 'ACTIVA' GROUP BY producto_id"
+                    )
+
+                    # Ejecutar consulta principal
+                    cursor.execute(
+                        "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
+                        "i.precio_unitario, i.unidad_medida, "
+                        "COALESCE(r.stock_reservado, 0) as stock_reservado, "
+                        "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
+                        f"FROM [{tabla_inventario_segura}] i "
+                        "LEFT JOIN temp_reservas r ON i.id = r.producto_id "
+                        "WHERE i.activo = 1 "
+                        "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
+                        "ORDER BY i.codigo"
+                    )
+                except Exception as e:
+                    print(f"[ERROR] Error al usar script loader: {e}")
+                    # Fallback a consulta directa (aún segura)
+                    cursor = self.db_connection.cursor()
+                    query = (
+                        "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
+                        "i.precio_unitario, i.unidad_medida, "
+                        "COALESCE(r.stock_reservado, 0) as stock_reservado, "
+                        "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
+                        f"FROM [{tabla_inventario_segura}] i "
+                        "LEFT JOIN ("
+                        "    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
+                        f"    FROM [{tabla_reservas_segura}] "
+                        "    WHERE estado = 'ACTIVA' "
+                        "    GROUP BY producto_id "
+                        ") r ON i.id = r.producto_id "
+                        "WHERE i.activo = 1 "
+                        "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
+                        "ORDER BY i.codigo"
+                    )
+                    cursor.execute(query)
+            else:
+                # Fallback a consulta directa (aún segura)
+                cursor = self.db_connection.cursor()
+                query = (
+                    "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
+                    "i.precio_unitario, i.unidad_medida, "
+                    "COALESCE(r.stock_reservado, 0) as stock_reservado, "
+                    "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
+                    f"FROM [{tabla_inventario_segura}] i "
+                    "LEFT JOIN ("
+                    "    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
+                    f"    FROM [{tabla_reservas_segura}] "
+                    "    WHERE estado = 'ACTIVA' "
+                    "    GROUP BY producto_id "
+                    ") r ON i.id = r.producto_id "
+                    "WHERE i.activo = 1 "
+                    "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
+                    "ORDER BY i.codigo"
+                )
+                cursor.execute(query)
+
+            # Procesar resultados
+            productos = []
+            for row in cursor.fetchall():
+                producto = {
+                    "id": row[0],
+                    "codigo": row[1],
+                    "descripcion": row[2],
+                    "categoria": row[3],
+                    "stock_actual": row[4],
+                    "precio_unitario": row[5],
+                    "unidad_medida": row[6],
+                    "stock_reservado": row[7],
+                    "stock_disponible": row[8],
+                }
+                productos.append(producto)
+
+            return productos
+        except Exception as e:
+            print(f"[ERROR] Error en obtener_productos_disponibles_para_reserva: {e}")
+            return []
 
             cursor.execute(query)
 

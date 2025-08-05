@@ -1,19 +1,47 @@
-
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
-Modelo de Auditoría
+Modelo de Auditoría - Rexus.app v2.0.0
 
 Maneja la lógica de negocio y acceso a datos para el sistema de auditoría.
+Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
-from typing import Any, Dict, List
+import sys
+from pathlib import Path
+from typing import Any, Dict, List, Optional
+
+# Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir))
+
+    from utils.data_sanitizer import DataSanitizer, data_sanitizer
+    from utils.sql_security import SQLSecurityValidator
+
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] Security utilities not available in auditoria: {e}")
+    SECURITY_AVAILABLE = False
+    data_sanitizer = None
+
+# Importar nueva utilidad de seguridad SQL
+try:
+    from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+
+    SQL_SECURITY_AVAILABLE = True
+except ImportError:
+    print("[WARNING] SQL security utilities not available in auditoria")
+    SQL_SECURITY_AVAILABLE = False
+    validate_table_name = None
+    SQLSecurityError = Exception
 
 
 class AuditoriaModel:
-    """Modelo para gestionar los registros de auditoría del sistema."""
+    """Modelo para gestionar los registros de auditoría del sistema con seguridad."""
 
     def __init__(self, db_connection=None):
         """
@@ -24,7 +52,57 @@ class AuditoriaModel:
         """
         self.db_connection = db_connection
         self.tabla_auditoria = "auditoria_log"
+
+        # Inicializar utilidades de seguridad
+        self.security_available = SECURITY_AVAILABLE
+        if self.security_available and data_sanitizer:
+            self.data_sanitizer = data_sanitizer
+            print("OK [AUDITORIA] Utilidades de seguridad cargadas")
+        else:
+            self.data_sanitizer = None
+            print("WARNING [AUDITORIA] Utilidades de seguridad no disponibles")
+
         self._crear_tabla_si_no_existe()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+
+        Args:
+            table_name: Nombre de la tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+
+        Raises:
+            Exception: Si el nombre no es válido o contiene caracteres peligrosos
+        """
+        if SQL_SECURITY_AVAILABLE and validate_table_name:
+            try:
+                return validate_table_name(table_name)
+            except SQLSecurityError as e:
+                print(f"[ERROR SEGURIDAD AUDITORIA] {str(e)}")
+                # Fallback a verificación básica
+                pass
+
+        # Verificación básica si la utilidad no está disponible
+        if not table_name or not isinstance(table_name, str):
+            raise ValueError("Nombre de tabla inválido")
+
+        # Eliminar espacios en blanco
+        table_name = table_name.strip()
+
+        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
+        if not all(c.isalnum() or c == "_" for c in table_name):
+            raise ValueError(
+                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
+            )
+
+        # Verificar longitud razonable
+        if len(table_name) > 64:
+            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
+
+        return table_name.lower()
 
     def _crear_tabla_si_no_existe(self):
         """Verifica que la tabla de auditoría exista en la base de datos."""
@@ -75,7 +153,7 @@ class AuditoriaModel:
         error_mensaje: str = "",
     ) -> bool:
         """
-        Registra una acción en el log de auditoría.
+        Registra una acción en el log de auditoría con sanitización de datos.
 
         Args:
             usuario: Usuario que realizó la acción
@@ -98,14 +176,63 @@ class AuditoriaModel:
             return self._guardar_log_local(usuario, modulo, accion, descripcion)
 
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            if self.data_sanitizer:
+                usuario_limpio = self.data_sanitizer.sanitize_string(usuario)
+                modulo_limpio = self.data_sanitizer.sanitize_string(modulo)
+                accion_limpia = self.data_sanitizer.sanitize_string(accion)
+                descripcion_limpia = self.data_sanitizer.sanitize_string(descripcion)
+                tabla_afectada_limpia = self.data_sanitizer.sanitize_string(
+                    tabla_afectada
+                )
+                registro_id_limpio = self.data_sanitizer.sanitize_string(registro_id)
+                nivel_criticidad_limpio = self.data_sanitizer.sanitize_string(
+                    nivel_criticidad
+                )
+                resultado_limpio = self.data_sanitizer.sanitize_string(resultado)
+                error_mensaje_limpio = self.data_sanitizer.sanitize_string(
+                    error_mensaje
+                )
+            else:
+                usuario_limpio = usuario.strip()
+                modulo_limpio = modulo.strip()
+                accion_limpia = accion.strip()
+                descripcion_limpia = descripcion.strip()
+                tabla_afectada_limpia = tabla_afectada.strip()
+                registro_id_limpio = registro_id.strip()
+                nivel_criticidad_limpio = nivel_criticidad.strip()
+                resultado_limpio = resultado.strip()
+                error_mensaje_limpio = error_mensaje.strip()
+
+            # Validar tabla
+            tabla_validada = self._validate_table_name(self.tabla_auditoria)
+
             cursor = self.db_connection.connection.cursor()
 
-            # Convertir diccionarios a string JSON si existen
-            valores_ant_str = str(valores_anteriores) if valores_anteriores else None
-            valores_new_str = str(valores_nuevos) if valores_nuevos else None
+            # Convertir diccionarios a string JSON si existen (sanitizados)
+            valores_ant_str = None
+            valores_new_str = None
 
-            sql_insert = """
-            INSERT INTO auditoria_log
+            if valores_anteriores:
+                if self.data_sanitizer:
+                    valores_anteriores_limpios = self.data_sanitizer.sanitize_dict(
+                        valores_anteriores
+                    )
+                    valores_ant_str = str(valores_anteriores_limpios)
+                else:
+                    valores_ant_str = str(valores_anteriores)
+
+            if valores_nuevos:
+                if self.data_sanitizer:
+                    valores_nuevos_limpios = self.data_sanitizer.sanitize_dict(
+                        valores_nuevos
+                    )
+                    valores_new_str = str(valores_nuevos_limpios)
+                else:
+                    valores_new_str = str(valores_nuevos)
+
+            sql_insert = f"""
+            INSERT INTO [{tabla_validada}]
             (usuario, modulo, accion, descripcion, tabla_afectada, registro_id,
              valores_anteriores, valores_nuevos, nivel_criticidad, resultado, error_mensaje)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -114,17 +241,17 @@ class AuditoriaModel:
             cursor.execute(
                 sql_insert,
                 (
-                    usuario,
-                    modulo,
-                    accion,
-                    descripcion,
-                    tabla_afectada,
-                    registro_id,
+                    usuario_limpio,
+                    modulo_limpio,
+                    accion_limpia,
+                    descripcion_limpia,
+                    tabla_afectada_limpia,
+                    registro_id_limpio,
                     valores_ant_str,
                     valores_new_str,
-                    nivel_criticidad,
-                    resultado,
-                    error_mensaje,
+                    nivel_criticidad_limpio,
+                    resultado_limpio,
+                    error_mensaje_limpio,
                 ),
             )
 
@@ -170,7 +297,7 @@ class AuditoriaModel:
         limite: int = 1000,
     ) -> List[Dict]:
         """
-        Obtiene registros de auditoría con filtros.
+        Obtiene registros de auditoría con filtros y sanitización.
 
         Args:
             fecha_inicio: Fecha de inicio del rango
@@ -187,6 +314,32 @@ class AuditoriaModel:
             return []
 
         try:
+            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE PARÁMETROS
+            if self.data_sanitizer:
+                usuario_limpio = (
+                    self.data_sanitizer.sanitize_string(usuario) if usuario else ""
+                )
+                modulo_limpio = (
+                    self.data_sanitizer.sanitize_string(modulo) if modulo else ""
+                )
+                nivel_criticidad_limpio = (
+                    self.data_sanitizer.sanitize_string(nivel_criticidad)
+                    if nivel_criticidad
+                    else ""
+                )
+            else:
+                usuario_limpio = usuario.strip() if usuario else ""
+                modulo_limpio = modulo.strip() if modulo else ""
+                nivel_criticidad_limpio = (
+                    nivel_criticidad.strip() if nivel_criticidad else ""
+                )
+
+            # Validar límite para evitar DoS
+            limite_seguro = min(max(1, int(limite)), 10000)  # Entre 1 y 10000
+
+            # Validar tabla
+            tabla_validada = self._validate_table_name(self.tabla_auditoria)
+
             cursor = self.db_connection.connection.cursor()
 
             # Construir query con filtros
@@ -201,27 +354,27 @@ class AuditoriaModel:
                 conditions.append("fecha_hora <= ?")
                 params.append(fecha_fin + datetime.timedelta(days=1))
 
-            if usuario:
+            if usuario_limpio:
                 conditions.append("usuario LIKE ?")
-                params.append(f"%{usuario}%")
+                params.append(f"%{usuario_limpio}%")
 
-            if modulo:
+            if modulo_limpio:
                 conditions.append("modulo = ?")
-                params.append(modulo)
+                params.append(modulo_limpio)
 
-            if nivel_criticidad:
+            if nivel_criticidad_limpio:
                 conditions.append("nivel_criticidad = ?")
-                params.append(nivel_criticidad)
+                params.append(nivel_criticidad_limpio)
 
             where_clause = ""
             if conditions:
                 where_clause = "WHERE " + " AND ".join(conditions)
 
             sql_select = f"""
-            SELECT TOP {limite}
+            SELECT TOP {limite_seguro}
                 id, fecha_hora, usuario, modulo, accion, descripcion,
                 tabla_afectada, registro_id, nivel_criticidad, resultado
-            FROM auditoria_log
+            FROM [{tabla_validada}]
             {where_clause}
             ORDER BY fecha_hora DESC
             """

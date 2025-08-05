@@ -90,8 +90,11 @@
 
 ### 9. Plan de Corrección de Seguridad (FASE 1 - CRÍTICA)
 - 🔴 **INMEDIATO (0-7 días)**:
-  - [ ] Corregir SQL injection en `rexus/modules/mantenimiento/model.py`
-  - [ ] Auditar y corregir `rexus/modules/logistica/model.py`
+  - [✅] Corregir SQL injection en `rexus/modules/mantenimiento/model.py` - **COMPLETADO** (5-Agosto-2025)
+  - [✅] Auditar y corregir `rexus/modules/logistica/model.py` - **COMPLETADO** (5-Agosto-2025)
+  - [✅] Corregir SQL injection en `rexus/modules/inventario/model.py` - **COMPLETADO** (5-Agosto-2025)
+  - [✅] Implementar seguridad en `rexus/modules/obras/model.py` - **COMPLETADO** (5-Agosto-2025)
+  - [🟡] Auditar y corregir `rexus/modules/usuarios/model.py` - **EN PROGRESO** (5-Agosto-2025)
   - [ ] Remover credenciales hardcodeadas de `rexus/main/app.py`
   - [ ] Securizar archivo `.env` y variables de entorno
   - [ ] Implementar hashing seguro de contraseñas (bcrypt/PBKDF2)
