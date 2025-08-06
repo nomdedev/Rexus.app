@@ -120,7 +120,8 @@ class ObrasController(QObject):
             return False
 
     @auth_required
-    def editar_obra_seleccionada(self):"""Edita la obra seleccionada en la tabla."""
+    def editar_obra_seleccionada(self):
+        """Edita la obra seleccionada en la tabla."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
@@ -171,7 +172,8 @@ class ObrasController(QObject):
             return False
 
     @admin_required
-    def eliminar_obra_seleccionada(self):"""Elimina la obra seleccionada."""
+    def eliminar_obra_seleccionada(self):
+        """Elimina la obra seleccionada."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
@@ -205,7 +207,8 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error eliminando obra: {e}")
             self.mostrar_mensaje_error(f"Error eliminando obra: {str(e)}")
 
-    def cambiar_estado_obra(self):"""Cambia el estado de la obra seleccionada."""
+    def cambiar_estado_obra(self):
+        """Cambia el estado de la obra seleccionada."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:

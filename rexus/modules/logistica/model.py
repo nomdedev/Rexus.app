@@ -176,7 +176,8 @@ class LogisticaModel:
             print(f"[ERROR LOGÍSTICA] Error obteniendo transportes: {e}")
             return []
 
-    def crear_transporte(self, datos_transporte):"""
+    def crear_transporte(self, datos_transporte):
+        """
         Crea un nuevo transporte.
 
         Args:

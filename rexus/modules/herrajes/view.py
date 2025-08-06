@@ -10,7 +10,10 @@ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 copies of the Software, and to permit persons to whom the Software is
 furnished to do so, subject to the following conditions:
 
-The above copyright notice and this permission notice shall be included in all
+The above copyright notice and this permission notice sh        # Estados de botones principales
+        self.btn_nuevo_herraje.setEnabled(not loading)
+        self.btn_buscar.setEnabled(not loading)
+        self.btn_actualizar.setEnabled(not loading)e included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -124,32 +127,8 @@ class HerrajesView(QWidget):
 #         """)
 #         titulo_layout.addWidget(title_label)
 
-        # Botón de configuración
-        self.btn_configuracion = QPushButton("⚙️ Configuración")
-        self.btn_configuracion.setStyleSheet("""
-            QPushButton {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: rgba(255, 255, 255, 0.3);
-                border-color: rgba(255, 255, 255, 0.5);
-            }
-            QPushButton:disabled {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.5);
-                border-color: rgba(255, 255, 255, 0.2);
-            }
-        """)
-        self.btn_configuracion.setToolTip("⚙️ Configuración del módulo de herrajes")
-        titulo_layout.addWidget(self.btn_configuracion)
-
-        layout.addWidget(titulo_container)
+        # Aplicar tema del módulo
+        style_manager.apply_module_theme(self)
 
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""
@@ -575,7 +554,6 @@ class HerrajesView(QWidget):
         self.btn_nuevo.setEnabled(not loading)
         self.btn_buscar.setEnabled(not loading)
         self.btn_actualizar.setEnabled(not loading)
-        self.btn_configuracion.setEnabled(not loading)
         
         # Estados de botones de acción
         selected = self.tabla_principal.currentRow() >= 0
@@ -595,6 +573,12 @@ class HerrajesView(QWidget):
         hay_seleccion = self.tabla_principal.currentRow() >= 0
         self.btn_editar.setEnabled(hay_seleccion)
         self.btn_eliminar.setEnabled(hay_seleccion)
+        
+        # Habilitar/deshabilitar botones de integración
+        if hasattr(self, 'btn_transferir_inventario'):
+            self.btn_transferir_inventario.setEnabled(hay_seleccion)
+        if hasattr(self, 'btn_crear_reserva'):
+            self.btn_crear_reserva.setEnabled(hay_seleccion)
 
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas mostradas en el panel."""
