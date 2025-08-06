@@ -56,9 +56,8 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
-,
     QSpinBox,
-    QLabel)
+)
 
 from rexus.modules.usuarios.improved_dialogs import (
     UsuarioDialogManager,

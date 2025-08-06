@@ -1,4 +1,28 @@
 """
+MIT License
+
+Copyright (c) 2024 Rexus.app
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+"""
+
+"""
 Diálogo de Login - Rexus.app v2.0.0
 
 Sistema de autenticación con interfaz minimalista y profesional
@@ -336,13 +360,41 @@ class LoginDialog(QDialog):
 
         # Intentar login
         try:
-            user = AuthManager.authenticate_user(username, password)
-            if user:
-                # Login exitoso
-                self.login_successful.emit(user)  # Emitir dict completo del usuario
+            result = AuthManager.authenticate_user(username, password)
+            
+            # Verificar si el resultado es un dict con error (rate limiting o credenciales incorrectas)
+            if isinstance(result, dict):
+                if "error" in result:
+                    error_msg = result["error"]
+                    
+                    # Verificar si hay información de rate limiting
+                    if "remaining_attempts" in result:
+                        remaining = result["remaining_attempts"]
+                        if remaining > 0:
+                            error_msg += f"\nIntentos restantes: {remaining}"
+                        else:
+                            error_msg = "Demasiados intentos fallidos. Usuario temporalmente bloqueado."
+                    
+                    self.show_error(error_msg)
+                    self.login_failed.emit(error_msg)
+                    self.password_edit.clear()
+                    
+                    # Si hay intentos restantes, enfocar campo de contraseña, sino usuario
+                    if "remaining_attempts" in result and result["remaining_attempts"] > 0:
+                        self.password_edit.setFocus()
+                    else:
+                        self.username_edit.setFocus()
+                        
+                elif "authenticated" in result:
+                    # Login exitoso
+                    self.login_successful.emit(result)
+                    self.accept()
+            elif result:
+                # Login exitoso (formato legacy)
+                self.login_successful.emit(result)
                 self.accept()
             else:
-                # Login fallido
+                # Login fallido (formato legacy)
                 error_msg = "Credenciales incorrectas"
                 self.show_error(error_msg)
                 self.login_failed.emit(error_msg)

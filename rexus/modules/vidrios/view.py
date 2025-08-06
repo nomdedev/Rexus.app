@@ -42,6 +42,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
+
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
@@ -67,7 +70,7 @@ class VidriosView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
 
         # Título moderno
-        self.crear_titulo(layout)
+        StandardComponents.create_title("🪟 Gestión de Vidrios", layout)
 
         # Panel de control
         control_panel = self.crear_panel_control()
@@ -78,7 +81,7 @@ class VidriosView(QWidget):
         layout.addWidget(stats_panel)
 
         # Tabla principal
-        self.tabla_principal = QTableWidget()
+        self.tabla_principal = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
 
@@ -88,34 +91,34 @@ class VidriosView(QWidget):
         # Inicializar protección XSS
         self.init_xss_protection()
 
-    def crear_titulo(self, layout: QVBoxLayout):
-        """Crea el título moderno de la vista."""
-        titulo_container = QFrame()
-        titulo_container.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                           stop:0 #20c997, stop:1 #17a2b8);
-                border-radius: 8px;
-                padding: 6px;
-                margin-bottom: 10px;
-            }
-        """)
-
-        titulo_layout = QHBoxLayout(titulo_container)
-
-        # Título principal
-        title_label = QLabel("🪟 Gestión de Vidrios")
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 16px;
-                font-weight: bold;
-                color: white;
-                background: transparent;
-                padding: 0;
-                margin: 0;
-            }
-        """)
-        titulo_layout.addWidget(title_label)
+    # def crear_titulo(self, layout: QVBoxLayout):
+#         """Crea el título moderno de la vista."""
+#         titulo_container = QFrame()
+#         titulo_container.setStyleSheet("""
+#             QFrame {
+#                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+#                                            stop:0 #20c997, stop:1 #17a2b8);
+#                 border-radius: 8px;
+#                 padding: 6px;
+#                 margin-bottom: 10px;
+#             }
+#         """)
+# 
+#         titulo_layout = QHBoxLayout(titulo_container)
+# 
+#         # Título principal
+#         title_label = QLabel("🪟 Gestión de Vidrios")
+#         title_label.setStyleSheet("""
+#             QLabel {
+#                 font-size: 16px;
+#                 font-weight: bold;
+#                 color: white;
+#                 background: transparent;
+#                 padding: 0;
+#                 margin: 0;
+#             }
+#         """)
+#         titulo_layout.addWidget(title_label)
 
         # Botón de configuración
         self.btn_configuracion = QPushButton("⚙️ Configuración")

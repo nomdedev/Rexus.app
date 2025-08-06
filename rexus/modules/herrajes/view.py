@@ -42,6 +42,9 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
+
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
@@ -67,7 +70,7 @@ class HerrajesView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
 
         # Título moderno
-        self.crear_titulo(layout)
+        StandardComponents.create_title("🔧 Gestión de Herrajes", layout)
 
         # Panel de control
         control_panel = self.crear_panel_control()
@@ -77,8 +80,12 @@ class HerrajesView(QWidget):
         stats_panel = self.crear_panel_estadisticas()
         layout.addWidget(stats_panel)
 
+        # Panel de integración con inventario
+        integration_panel = self.crear_panel_integracion()
+        layout.addWidget(integration_panel)
+
         # Tabla principal
-        self.tabla_principal = QTableWidget()
+        self.tabla_principal = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
 
@@ -88,34 +95,34 @@ class HerrajesView(QWidget):
         # Inicializar protección XSS
         self.init_xss_protection()
 
-    def crear_titulo(self, layout: QVBoxLayout):
-        """Crea el título moderno de la vista."""
-        titulo_container = QFrame()
-        titulo_container.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                           stop:0 #6c757d, stop:1 #495057);
-                border-radius: 8px;
-                padding: 6px;
-                margin-bottom: 10px;
-            }
-        """)
-
-        titulo_layout = QHBoxLayout(titulo_container)
-
-        # Título principal
-        title_label = QLabel("🔧 Gestión de Herrajes")
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 16px;
-                font-weight: bold;
-                color: white;
-                background: transparent;
-                padding: 0;
-                margin: 0;
-            }
-        """)
-        titulo_layout.addWidget(title_label)
+    # def crear_titulo(self, layout: QVBoxLayout):
+#         """Crea el título moderno de la vista."""
+#         titulo_container = QFrame()
+#         titulo_container.setStyleSheet("""
+#             QFrame {
+#                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+#                                            stop:0 #6c757d, stop:1 #495057);
+#                 border-radius: 8px;
+#                 padding: 6px;
+#                 margin-bottom: 10px;
+#             }
+#         """)
+# 
+#         titulo_layout = QHBoxLayout(titulo_container)
+# 
+#         # Título principal
+#         title_label = QLabel("🔧 Gestión de Herrajes")
+#         title_label.setStyleSheet("""
+#             QLabel {
+#                 font-size: 16px;
+#                 font-weight: bold;
+#                 color: white;
+#                 background: transparent;
+#                 padding: 0;
+#                 margin: 0;
+#             }
+#         """)
+#         titulo_layout.addWidget(title_label)
 
         # Botón de configuración
         self.btn_configuracion = QPushButton("⚙️ Configuración")
@@ -644,6 +651,244 @@ class HerrajesView(QWidget):
             btn_editar = QPushButton("Editar")
             btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
+
+    def crear_panel_integracion(self):
+        """Crea el panel de integración con inventario."""
+        panel = QGroupBox("🔗 Integración con Inventario")
+        panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #28a745;
+                border-radius: 8px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #28a745;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+
+        # Botón sincronizar con inventario
+        self.btn_sincronizar_inventario = QPushButton("🔄 Sincronizar con Inventario")
+        self.btn_sincronizar_inventario.setStyleSheet("""
+            QPushButton {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 13px;
+                min-width: 160px;
+            }
+            QPushButton:hover {
+                background-color: #218838;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_sincronizar_inventario.setToolTip("🔄 Sincroniza herrajes con el inventario general")
+        self.btn_sincronizar_inventario.clicked.connect(self.sincronizar_inventario)
+        layout.addWidget(self.btn_sincronizar_inventario)
+
+        # Botón resumen de integración
+        self.btn_resumen_integracion = QPushButton("📊 Resumen Integración")
+        self.btn_resumen_integracion.setStyleSheet("""
+            QPushButton {
+                background-color: #17a2b8;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 13px;
+                min-width: 140px;
+            }
+            QPushButton:hover {
+                background-color: #138496;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_resumen_integracion.setToolTip("📊 Muestra resumen del estado de integración")
+        self.btn_resumen_integracion.clicked.connect(self.mostrar_resumen_integracion)
+        layout.addWidget(self.btn_resumen_integracion)
+
+        # Botón transferir a inventario
+        self.btn_transferir_inventario = QPushButton("📦 Transferir a Inventario")
+        self.btn_transferir_inventario.setStyleSheet("""
+            QPushButton {
+                background-color: #6f42c1;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 13px;
+                min-width: 160px;
+            }
+            QPushButton:hover {
+                background-color: #5a36a3;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_transferir_inventario.setToolTip("📦 Transfiere herraje seleccionado al inventario general")
+        self.btn_transferir_inventario.setEnabled(False)
+        self.btn_transferir_inventario.clicked.connect(self.transferir_a_inventario)
+        layout.addWidget(self.btn_transferir_inventario)
+
+        # Botón crear reserva
+        self.btn_crear_reserva = QPushButton("📝 Crear Reserva")
+        self.btn_crear_reserva.setStyleSheet("""
+            QPushButton {
+                background-color: #fd7e14;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 13px;
+                min-width: 120px;
+            }
+            QPushButton:hover {
+                background-color: #e8690b;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_crear_reserva.setToolTip("📝 Crear reserva del herraje para una obra")
+        self.btn_crear_reserva.setEnabled(False)
+        self.btn_crear_reserva.clicked.connect(self.crear_reserva_obra)
+        layout.addWidget(self.btn_crear_reserva)
+
+        return panel
+
+    def sincronizar_inventario(self):
+        """Sincroniza herrajes con el inventario general."""
+        if hasattr(self, "controller") and self.controller:
+            self.controller.sincronizar_con_inventario()
+        else:
+            show_warning(self, "Sin controlador", "No hay controlador disponible para la sincronización")
+
+    def mostrar_resumen_integracion(self):
+        """Muestra el resumen de integración."""
+        if hasattr(self, "controller") and self.controller:
+            self.controller.mostrar_resumen_integracion()
+        else:
+            show_warning(self, "Sin controlador", "No hay controlador disponible")
+
+    def transferir_a_inventario(self):
+        """Transfiere herraje seleccionado al inventario."""
+        if not hasattr(self, "controller") or not self.controller:
+            show_warning(self, "Sin controlador", "No hay controlador disponible")
+            return
+            
+        # Obtener herraje seleccionado
+        fila_seleccionada = self.tabla_principal.currentRow()
+        if fila_seleccionada < 0:
+            show_warning(self, "Sin selección", "Debe seleccionar un herraje para transferir")
+            return
+            
+        # Obtener ID del herraje (asumiendo que está en la primera columna)
+        id_item = self.tabla_principal.item(fila_seleccionada, 0)
+        if not id_item:
+            show_error(self, "Error", "No se pudo obtener el ID del herraje seleccionado")
+            return
+            
+        try:
+            herraje_id = int(id_item.text())
+            
+            # Solicitar cantidad al usuario
+            from PyQt6.QtWidgets import QInputDialog
+            cantidad, ok = QInputDialog.getInt(
+                self, 
+                "Cantidad a Transferir", 
+                "Ingrese la cantidad a transferir:",
+                value=1, min=1, max=9999
+            )
+            
+            if ok and cantidad > 0:
+                self.controller.transferir_a_inventario(herraje_id, cantidad)
+                
+        except ValueError:
+            show_error(self, "Error", "ID de herraje inválido")
+
+    def crear_reserva_obra(self):
+        """Crea una reserva del herraje para una obra."""
+        if not hasattr(self, "controller") or not self.controller:
+            show_warning(self, "Sin controlador", "No hay controlador disponible")
+            return
+            
+        # Obtener herraje seleccionado
+        fila_seleccionada = self.tabla_principal.currentRow()
+        if fila_seleccionada < 0:
+            show_warning(self, "Sin selección", "Debe seleccionar un herraje para crear reserva")
+            return
+            
+        # Obtener ID del herraje
+        id_item = self.tabla_principal.item(fila_seleccionada, 0)
+        if not id_item:
+            show_error(self, "Error", "No se pudo obtener el ID del herraje seleccionado")
+            return
+            
+        try:
+            herraje_id = int(id_item.text())
+            
+            # Solicitar datos de la reserva
+            from PyQt6.QtWidgets import QInputDialog
+            
+            # Solicitar ID de obra
+            obra_id, ok_obra = QInputDialog.getInt(
+                self,
+                "ID de Obra",
+                "Ingrese el ID de la obra:",
+                value=1, min=1, max=9999
+            )
+            
+            if not ok_obra:
+                return
+                
+            # Solicitar cantidad
+            cantidad, ok_cantidad = QInputDialog.getInt(
+                self,
+                "Cantidad a Reservar",
+                "Ingrese la cantidad a reservar:",
+                value=1, min=1, max=9999
+            )
+            
+            if not ok_cantidad:
+                return
+                
+            # Solicitar observaciones
+            observaciones, ok_obs = QInputDialog.getText(
+                self,
+                "Observaciones",
+                "Observaciones (opcional):"
+            )
+            
+            if ok_cantidad and cantidad > 0:
+                self.controller.crear_reserva_para_obra(
+                    herraje_id, obra_id, cantidad, observaciones if ok_obs else ""
+                )
+                
+        except ValueError:
+            show_error(self, "Error", "ID de herraje inválido")
 
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""

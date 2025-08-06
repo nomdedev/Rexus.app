@@ -76,7 +76,7 @@ class ConfiguracionView(QWidget):
         layout.addWidget(control_panel)
         
         # Tabla principal
-        self.tabla_principal = QTableWidget()
+        self.tabla_principal = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
         
