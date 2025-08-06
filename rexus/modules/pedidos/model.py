@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -19,7 +20,6 @@ try:
     from utils.data_sanitizer import DataSanitizer
 except ImportError:
     from rexus.utils.data_sanitizer import DataSanitizer
-
 
 class PedidosModel:
     """Modelo para gestión completa de pedidos."""
@@ -329,12 +329,7 @@ class PedidosModel:
             print(f"[ERROR PEDIDOS] Error validando obra: {e}")
             return False
 
-    def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        """Crea un nuevo pedido con sus detalles con validación y sanitización completas."""
+    def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:"""Crea un nuevo pedido con sus detalles con validación y sanitización completas."""
         if not self.db_connection:
             return None
 
@@ -639,12 +634,7 @@ class PedidosModel:
 
     def actualizar_estado_pedido(
         self,
-        pedido_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estado_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        pedido_id:int,
         nuevo_estado: str,
         usuario_id: int,
         observaciones: str = "",

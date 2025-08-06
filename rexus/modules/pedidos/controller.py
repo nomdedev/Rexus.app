@@ -10,9 +10,9 @@ from typing import Any, Dict, List, Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 from .model import PedidosModel
-
 
 class PedidosController(QObject):
     """Controlador para el módulo de pedidos."""
@@ -76,12 +76,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error cargando pedidos: {e}")
             self.mostrar_error(f"Error cargando pedidos: {str(e)}")
 
-    def crear_pedido(self, datos_pedido:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]):
+    def crear_pedido(self, datos_pedido:Dict[str, Any]):
         """Crea un nuevo pedido."""
         try:
             # Validar datos
@@ -113,12 +108,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error creando pedido: {e}")
             self.mostrar_error(f"Error creando pedido: {str(e)}")
 
-    def actualizar_pedido(self, datos_pedido:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]):
+    def actualizar_pedido(self, datos_pedido:Dict[str, Any]):
         """Actualiza un pedido existente."""
         try:
             if not datos_pedido.get("id"):
@@ -136,12 +126,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error actualizando pedido: {e}")
             self.mostrar_error(f"Error actualizando pedido: {str(e)}")
 
-    def eliminar_pedido(self, pedido_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str):
+    def eliminar_pedido(self, pedido_id:str):
         """Elimina un pedido."""
         try:
             # Confirmar eliminación
@@ -163,12 +148,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error eliminando pedido: {e}")
             self.mostrar_error(f"Error eliminando pedido: {str(e)}")
 
-    def cambiar_estado(self, pedido_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('cambiar_estado'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str, nuevo_estado: str):
+    def cambiar_estado(self, pedido_id:str, nuevo_estado: str):
         """Cambia el estado de un pedido."""
         try:
             exito = self.model.actualizar_estado_pedido(
@@ -189,13 +169,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error cambiando estado: {e}")
             self.mostrar_error(f"Error cambiando estado: {str(e)}")
 
-    def actualizar_estadisticas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadísticas del módulo."""
+    def actualizar_estadisticas(self):"""Actualiza las estadísticas del módulo."""
         try:
             stats = self.model.obtener_estadisticas()
 

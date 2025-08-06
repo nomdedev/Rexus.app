@@ -3,7 +3,7 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
-
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class VidriosController(QObject):
     
@@ -65,13 +65,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error en búsqueda: {e}")
 
-    def agregar_vidrio(self, datos_vidrio):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('agregar_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Agrega un nuevo vidrio."""
+    def agregar_vidrio(self, datos_vidrio):"""Agrega un nuevo vidrio."""
         if not self.model:
             return
             
@@ -86,13 +80,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error agregando vidrio: {e}")
 
-    def editar_vidrio(self, vidrio_id, datos_vidrio):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('editar_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Edita un vidrio existente."""
+    def editar_vidrio(self, vidrio_id, datos_vidrio):"""Edita un vidrio existente."""
         if not self.model:
             return
             
@@ -106,13 +94,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error editando vidrio: {e}")
 
-    def eliminar_vidrio(self, vidrio_id):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Elimina un vidrio."""
+    def eliminar_vidrio(self, vidrio_id):"""Elimina un vidrio."""
         if not self.model:
             return
             
@@ -139,13 +121,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error asignando vidrio a obra: {e}")
 
-    def crear_pedido(self, obra_id, proveedor, vidrios_lista):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un pedido de vidrios para una obra."""
+    def crear_pedido(self, obra_id, proveedor, vidrios_lista):"""Crea un pedido de vidrios para una obra."""
         if not self.model:
             return
             
@@ -174,13 +150,7 @@ class VidriosController(QObject):
             self.mostrar_error(f"Error obteniendo vidrios por obra: {e}")
             return []
 
-    def actualizar_por_obra(self, obra_data):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_por_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza vidrios cuando se crea una obra."""
+    def actualizar_por_obra(self, obra_data):"""Actualiza vidrios cuando se crea una obra."""
         print(f"[VIDRIOS] Actualizando por obra: {obra_data}")
 
     def mostrar_mensaje(self, mensaje):

@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Optional
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt6.QtWidgets import QMessageBox
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 from .model import HerrajesModel
-
 
 class HerrajesController(QObject):
     """Controlador para la gestión de herrajes."""
@@ -158,13 +158,7 @@ class HerrajesController(QObject):
                 self.view.show_error(f"Error asignando herraje: {e}")
 
     @pyqtSlot(int, str, list)
-    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un pedido de herrajes para una obra."""
+    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):"""Crea un pedido de herrajes para una obra."""
         try:
             if self.model:
                 pedido_id = self.model.crear_pedido_obra(
@@ -240,13 +234,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             if self.view and hasattr(self.view, "show_error"):
                 self.view.show_error(f"Error mostrando estadísticas: {e}")
 
-    def actualizar_datos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_datos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza todos los datos de la vista."""
+    def actualizar_datos(self):"""Actualiza todos los datos de la vista."""
         self.cargar_datos_iniciales()
 
     def get_herrajes_data(self):
@@ -257,12 +245,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo datos: {e}")
             return []
     
-    def crear_herraje(self, datos_herraje:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]):
+    def crear_herraje(self, datos_herraje:Dict[str, Any]):
         """Crea un nuevo herraje."""
         try:
             exito, mensaje = self.model.crear_herraje(datos_herraje)
@@ -282,12 +265,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error creando herraje: {e}")
             self.mostrar_error(f"Error creando herraje: {str(e)}")
     
-    def actualizar_herraje(self, herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, datos_herraje: Dict[str, Any]):
+    def actualizar_herraje(self, herraje_id:int, datos_herraje: Dict[str, Any]):
         """Actualiza un herraje existente."""
         try:
             exito, mensaje = self.model.actualizar_herraje(herraje_id, datos_herraje)
@@ -307,12 +285,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error actualizando herraje: {e}")
             self.mostrar_error(f"Error actualizando herraje: {str(e)}")
     
-    def eliminar_herraje(self, herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int):
+    def eliminar_herraje(self, herraje_id:int):
         """Elimina un herraje."""
         try:
             # Confirmar eliminación
@@ -340,12 +313,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error eliminando herraje: {e}")
             self.mostrar_error(f"Error eliminando herraje: {str(e)}")
     
-    def actualizar_stock_herraje(self, herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_stock_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, nuevo_stock: int, tipo_movimiento: str = "AJUSTE"):
+    def actualizar_stock_herraje(self, herraje_id:int, nuevo_stock: int, tipo_movimiento: str = "AJUSTE"):
         """Actualiza el stock de un herraje."""
         try:
             exito, mensaje = self.model.actualizar_stock(herraje_id, nuevo_stock, tipo_movimiento)

@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -43,12 +44,10 @@ except ImportError:
     validate_table_name = None
     SQLSecurityError = Exception
 
-
 class AdministracionModel(ContabilidadModel):
     """Alias para compatibilidad con tests y controladores."""
 
     pass
-
 
 class ContabilidadModel:
     """Modelo completo de administración y contabilidad con control de roles y auditoría."""
@@ -214,13 +213,7 @@ class ContabilidadModel:
         # Si no es válido, usar límite por defecto
         return 100
 
-    def crear_tablas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_tablas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea las tablas necesarias para el módulo de contabilidad."""
+    def crear_tablas(self):"""Crea las tablas necesarias para el módulo de contabilidad."""
         if not self.db_connection:
             return
 
@@ -438,13 +431,7 @@ class ContabilidadModel:
     # GESTIÓN DE DEPARTAMENTOS
     def crear_departamento(
         self, codigo, nombre, descripcion="", responsable="", presupuesto_mensual=0
-    ):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_departamento'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo departamento con validación de seguridad."""
+    ):"""Crea un nuevo departamento con validación de seguridad."""
         try:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if self.data_sanitizer:
@@ -570,13 +557,7 @@ class ContabilidadModel:
         cargo="",
         salario=0,
         fecha_ingreso=None,
-    ):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_empleado'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo empleado."""
+    ):"""Crea un nuevo empleado."""
         try:
             cursor = self.db_connection.cursor()
 
@@ -696,13 +677,7 @@ class ContabilidadModel:
         debe=0,
         haber=0,
         observaciones="",
-    ):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_asiento_contable'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo asiento contable."""
+    ):"""Crea un nuevo asiento contable."""
         try:
             cursor = self.db_connection.cursor()
 
@@ -869,13 +844,7 @@ class ContabilidadModel:
         metodo_pago="EFECTIVO",
         numero_comprobante="",
         observaciones="",
-    ):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_recibo'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo recibo."""
+    ):"""Crea un nuevo recibo."""
         try:
             cursor = self.db_connection.cursor()
 

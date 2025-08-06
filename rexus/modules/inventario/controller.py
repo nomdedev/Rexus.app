@@ -9,10 +9,10 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
 from rexus.core.security import get_security_manager
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required
-
 
 class InventarioController(QObject):
     """Controlador para el mÃ³dulo de inventario con sistema de reservas."""
@@ -380,13 +380,7 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al limpiar filtros: {str(e)}")
 
     @auth_required
-    def nuevo_producto(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('nuevo_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Abre diÃ¡logo para agregar nuevo producto."""
+    def nuevo_producto(self):"""Abre diÃ¡logo para agregar nuevo producto."""
         if not self.verificar_permiso("crear_producto"):
             self.mostrar_error_permiso("crear producto")
             return
@@ -401,13 +395,7 @@ class InventarioController(QObject):
 
     @safe_method_decorator
     @auth_required
-    def agregar_producto(self, datos_producto):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('agregar_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Agrega un nuevo producto al inventario."""
+    def agregar_producto(self, datos_producto):"""Agrega un nuevo producto al inventario."""
         if not self.verificar_permiso("crear_producto"):
             self.mostrar_error_permiso("crear producto")
             return
@@ -449,13 +437,7 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(error_msg)
 
     @auth_required
-    def editar_producto(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('editar_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Abre diÃ¡logo para editar producto seleccionado."""
+    def editar_producto(self):"""Abre diÃ¡logo para editar producto seleccionado."""
         if not self.verificar_permiso("editar_producto"):
             self.mostrar_error_permiso("editar producto")
             return
@@ -467,13 +449,7 @@ class InventarioController(QObject):
         self.log_auditoria("EDITAR_PRODUCTO", "Intento de editar producto")
 
     @admin_required
-    def eliminar_producto(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Elimina producto seleccionado."""
+    def eliminar_producto(self):"""Elimina producto seleccionado."""
         if not self.verificar_permiso("eliminar_producto"):
             self.mostrar_error_permiso("eliminar producto")
             return
@@ -498,13 +474,7 @@ class InventarioController(QObject):
         self.log_auditoria("MOVIMIENTO_INVENTARIO", "Intento de registrar movimiento")
 
     @manager_required
-    def exportar_inventario(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_inventario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Exporta inventario a archivo."""
+    def exportar_inventario(self):"""Exporta inventario a archivo."""
         if not self.verificar_permiso("exportar_inventario"):
             self.mostrar_error_permiso("exportar inventario")
             return
@@ -537,13 +507,7 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al cargar reservas: {str(e)}")
 
     @auth_required
-    def crear_reserva(self, reserva_data):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_reserva'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea una nueva reserva de material."""
+    def crear_reserva(self, reserva_data):"""Crea una nueva reserva de material."""
         if not self.verificar_permiso("crear_reserva"):
             self.mostrar_error_permiso("crear reserva")
             return
@@ -646,13 +610,7 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al cargar disponibilidad: {str(e)}")
 
     @auth_required
-    def actualizar_por_obra(self, obra_id):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_por_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza datos cuando se modifica una obra."""
+    def actualizar_por_obra(self, obra_id):"""Actualiza datos cuando se modifica una obra."""
         try:
             self.cargar_obras()
             self.cargar_reservas_obra(obra_id)

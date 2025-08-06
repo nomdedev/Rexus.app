@@ -19,13 +19,13 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # Importar DataSanitizer para seguridad
 try:
     from utils.data_sanitizer import DataSanitizer
 except ImportError:
     from rexus.utils.data_sanitizer import DataSanitizer
-
 
 class ConfiguracionModel:
     """Modelo para gestión de configuraciones del sistema."""
@@ -658,12 +658,7 @@ class ConfiguracionModel:
 
     def exportar_configuracion(
         self,
-        archivo:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_configuracion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        str,
+        archivo:str,
     ) -> Tuple[bool, str]:
         """
         Exporta la configuración actual a un archivo.
@@ -688,12 +683,7 @@ class ConfiguracionModel:
 
     def importar_configuracion(
         self,
-        archivo:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('importar_configuracion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        str,
+        archivo:str,
         usuario: str = "SISTEMA",
     ) -> Tuple[bool, str]:
         """

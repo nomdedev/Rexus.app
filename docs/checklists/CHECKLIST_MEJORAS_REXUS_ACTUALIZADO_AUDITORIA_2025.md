@@ -1,36 +1,6 @@
 # Checklist de Mejoras Rexus.app - Actualizado con Auditoría Integral 2025
 
-## 🎉 MEJORAS CRÍTICAS COMPLETADAS RECIENTEMENTE
-
-### ✅ SQL INJECTION CRÍTICAS - COMPLETAMENTE REPARADAS (Agosto 2025)
-- **Estado**: ✅ **COMPLETADO** - Todas las vulnerabilidades críticas identificadas han sido reparadas
-- **Impacto**: CRÍTICO - Eliminación completa del riesgo de compromiso de base de datos
-- **Detalles**:
-  - ✅ **MantenimientoModel**: 3 vulnerabilidades críticas reparadas
-    - ✅ Línea 272: `UPDATE {self.tabla_equipos}` → `UPDATE [{self._validate_table_name(self.tabla_equipos)}]`
-    - ✅ Línea 358: `FROM {self.tabla_herramientas}` → `FROM [{self._validate_table_name(self.tabla_herramientas)}]`
-    - ✅ Líneas 491-492: JOIN statements con validación de tablas
-  - ✅ **LogisticaModel**: 2 vulnerabilidades críticas reparadas
-    - ✅ Línea 156: `FROM {self.tabla_transportes}` → `FROM [{self._validate_table_name(self.tabla_transportes)}]`
-    - ✅ Líneas 345-347: Múltiples JOIN statements con validación
-  - ✅ **AdministracionModel**: 6+ correcciones de seguridad aplicadas
-    - ✅ Tablas hardcodeadas reemplazadas con validación: empleados, departamentos, libro_contable, recibos, pagos_obras, pagos_materiales
-    - ✅ Cláusulas WHERE dinámicas verificadas como seguras (parametrizadas)
-
-### ✅ MIT LICENSE HEADERS - CUMPLIMIENTO LEGAL MEJORADO
-- **Estado**: 🟡 **PARCIALMENTE COMPLETADO** - Headers agregados a archivos críticos
-- **Impacto**: ALTO - Mejora significativa en cumplimiento de licencia open source
-- **Detalles**:
-  - ✅ `rexus/modules/obras/view.py` - Header MIT completo agregado
-  - ✅ `rexus/modules/usuarios/view.py` - Header MIT completo agregado
-  - ✅ `rexus/modules/administracion/view.py` - Header MIT completo agregado
-  - ✅ `rexus/modules/inventario/view.py` - Header MIT agregado previamente
-  - ❌ **Pendiente**: 8 archivos view.py restantes sin headers MIT
-
-### ✅ AUDITORÍA INTEGRAL COMPLETADA (Agosto 2025)
-- **Estado**: ✅ **COMPLETADO** - Auditoría técnica completa de 11 áreas principales
-- **Impacto**: INFORMATIVO - Identificación sistemática de 127 puntos de mejora
-- **Documentación**: `docs/auditoria/AUDITORIA_INTEGRAL_REXUS_2025.md`
+## 🔄 MEJORAS PENDIENTES - CHECKLIST ACTIVO
 
 ---
 
@@ -81,16 +51,6 @@ def obtener_productos(self):
 - ❌ Sistema de órdenes de compra faltante
 - ❌ Seguimiento de pedidos no funcional
 - ❌ Integración con inventario pendiente
-
-**Mantenimiento**: ✅ COMPLETADO - Desarrollo completo con mejoras avanzadas
-- ✅ Sistema de programación implementado con validaciones
-- ✅ Historial de mantenimientos completo con logging
-- ✅ Integración con equipos completa y sanitizada  
-- ✅ Reportes de mantenimiento con feedback visual
-- ✅ Validación de máquinas duplicadas
-- ✅ DataSanitizer implementado en todos los formularios
-- ✅ Sistema de logging avanzado
-- ✅ Documentación técnica completa
 
 ### 2. RENDIMIENTO CRÍTICO (1-2 semanas)
 - ❌ **Paginación**: Tablas grandes sin paginación (inventario, obras, pedidos)
@@ -239,7 +199,6 @@ CREATE INDEX idx_pedidos_fecha ON pedidos(fecha_creacion);
 - **Despliegue**: 60/100 🟠 (básico funcional)
 - **Dependencias**: 80/100 🟡 (bien gestionado)
 - **Rendimiento**: 55/100 🟠 (optimización requerida)
-- **Mantenimiento**: 92/100 ✅ (completamente implementado con mejoras avanzadas)
 
 ### **Puntuación General**: 67/100 🟡 **BUENO**
 
@@ -253,11 +212,10 @@ CREATE INDEX idx_pedidos_fecha ON pedidos(fecha_creacion);
 3. Añadir paginación a tablas grandes
 
 ### Semana 3-6: ALTO  
-1. ✅ Completar módulo Mantenimiento (COMPLETADO)
-2. Finalizar módulo Compras
-3. Implementar @auth_required en controladores
-4. Estandarizar UI entre módulos
-5. Aumentar cobertura de tests
+1. Finalizar módulo Compras
+2. Implementar @auth_required en controladores
+3. Estandarizar UI entre módulos
+4. Aumentar cobertura de tests
 
 ### Mes 2-3: MEDIO
 1. Optimizar base de datos (índices, constraints)
@@ -280,7 +238,6 @@ CREATE INDEX idx_pedidos_fecha ON pedidos(fecha_creacion);
 - [ ] Backup automatizado funcional y probado
 - [ ] Zero vulnerabilidades SHA-256 en código
 - [ ] Paginación implementada en todas las tablas >1000 registros
-- [x] Módulo Mantenimiento 100% funcional ✅
 - [ ] Módulo Compras 100% funcional (en desarrollo)
 
 **ALTO** - Criterios de aceptación:

@@ -7,9 +7,9 @@ from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QTableWidgetItem
 
 from rexus.core.auth_manager import AuthManager, admin_required, auth_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
-
 
 class ObrasController(QObject):
     # Señales para comunicación con otros módulos
@@ -120,13 +120,7 @@ class ObrasController(QObject):
             return False
 
     @auth_required
-    def editar_obra_seleccionada(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('editar_obra_seleccionada'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Edita la obra seleccionada en la tabla."""
+    def editar_obra_seleccionada(self):"""Edita la obra seleccionada en la tabla."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
@@ -177,13 +171,7 @@ class ObrasController(QObject):
             return False
 
     @admin_required
-    def eliminar_obra_seleccionada(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_obra_seleccionada'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Elimina la obra seleccionada."""
+    def eliminar_obra_seleccionada(self):"""Elimina la obra seleccionada."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
@@ -217,13 +205,7 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error eliminando obra: {e}")
             self.mostrar_mensaje_error(f"Error eliminando obra: {str(e)}")
 
-    def cambiar_estado_obra(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('cambiar_estado_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Cambia el estado de la obra seleccionada."""
+    def cambiar_estado_obra(self):"""Cambia el estado de la obra seleccionada."""
         try:
             obra_seleccionada = self.view.obtener_obra_seleccionada()
             if not obra_seleccionada:
@@ -271,13 +253,7 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error filtrando obras: {str(e)}")
 
     @auth_required
-    def actualizar_estadisticas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadísticas mostradas en la vista."""
+    def actualizar_estadisticas(self):"""Actualiza las estadísticas mostradas en la vista."""
         try:
             estadisticas = self.model.obtener_estadisticas_obras()
             if hasattr(self.view, "actualizar_estadisticas"):

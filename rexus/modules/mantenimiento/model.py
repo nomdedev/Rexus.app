@@ -18,7 +18,7 @@ from decimal import Decimal
 
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 from rexus.core.auth_manager import AuthManager
-
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class MantenimientoModel:
     """Modelo para gestionar mantenimiento de equipos y herramientas."""
@@ -173,13 +173,7 @@ class MantenimientoModel:
             print(f"[ERROR MANTENIMIENTO] Error obteniendo equipos: {e}")
             return []
 
-    def crear_equipo(self, datos_equipo):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_equipo'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_equipo(self, datos_equipo):"""
         Crea un nuevo equipo.
 
         Args:
@@ -246,13 +240,7 @@ class MantenimientoModel:
                 self.db_connection.rollback()
             return None
 
-    def actualizar_equipo(self, equipo_id, datos_equipo):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_equipo'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def actualizar_equipo(self, equipo_id, datos_equipo):"""
         Actualiza un equipo existente.
 
         Args:
@@ -378,13 +366,7 @@ class MantenimientoModel:
             print(f"[ERROR MANTENIMIENTO] Error obteniendo herramientas: {e}")
             return []
 
-    def crear_herramienta(self, datos_herramienta):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_herramienta'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_herramienta(self, datos_herramienta):"""
         Crea una nueva herramienta.
 
         Args:
@@ -512,13 +494,7 @@ class MantenimientoModel:
             print(f"[ERROR MANTENIMIENTO] Error obteniendo mantenimientos: {e}")
             return []
 
-    def crear_mantenimiento(self, datos_mantenimiento):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_mantenimiento'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_mantenimiento(self, datos_mantenimiento):"""
         Crea un nuevo mantenimiento.
 
         Args:

@@ -55,6 +55,7 @@ from PyQt6.QtWidgets import (
 )
 
 from rexus.core.auth_manager import AuthManager
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
@@ -63,7 +64,6 @@ from rexus.utils.xss_protection import FormProtector, XSSProtection
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 
 from .cronograma_view import CronogramaObrasView
-
 
 class ObrasView(QWidget):
     obra_agregada = pyqtSignal(dict)
@@ -649,7 +649,6 @@ class ObrasView(QWidget):
         except Exception as e:
             show_error(self, f"Error mostrando detalles: {e}")
 
-
 class DialogoObra(QDialog):
     def __init__(self, parent=None, obra_datos: Optional[Dict[str, Any]] = None):
         super().__init__(parent)
@@ -1063,13 +1062,7 @@ class DialogoObra(QDialog):
 
         return datos
 
-    def configurar_validaciones(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('configurar_validaciones'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Configura las validaciones del formulario."""
+    def configurar_validaciones(self):"""Configura las validaciones del formulario."""
         # Código obligatorio (solo para nuevas obras)
         if not self.es_edicion:
             self.validator_manager.agregar_validacion(
