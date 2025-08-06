@@ -260,6 +260,54 @@ class VerificadorDespliegue:
             else:
                 self.log_verificacion(f"Módulo {modulo}", False, "view.py no existe")
 
+    def verificar_secrets_hardcodeados(self):
+        """Verifica que no existan contraseñas, claves, tokens o secretos hardcodeados en el código fuente."""
+        print("\n🔒 VERIFICANDO QUE NO HAYA SECRETS HARDCODEADOS...")
+        patrones = [
+            r"password\s*=\s*['\"]",
+            r"contraseña\s*=\s*['\"]",
+            r"passwd\s*=\s*['\"]",
+            r"clave\s*=\s*['\"]",
+            r"pwd\s*=\s*['\"]",
+            r"secret\s*=\s*['\"]",
+            r"secreto\s*=\s*['\"]",
+            r"api_key\s*=\s*['\"]",
+            r"token\s*=\s*['\"]",
+            r"AUTH\s*=\s*['\"]",
+            r"USER\s*=\s*['\"]",
+            r"PASS\s*=\s*['\"]",
+        ]
+        base = self.base_path
+        encontrados = []
+        for root, dirs, files in os.walk(base):
+            for file in files:
+                if file.endswith(".py"):
+                    path = Path(root) / file
+                    try:
+                        with open(path, "r", encoding="utf-8") as f:
+                            contenido = f.read()
+                        for patron in patrones:
+                            import re
+
+                            for match in re.finditer(patron, contenido):
+                                linea = contenido[: match.start()].count("\n") + 1
+                                encontrados.append((str(path), linea, match.group()))
+                    except Exception as e:
+                        self.log_verificacion(
+                            f"Archivo {path}", False, f"Error leyendo: {e}"
+                        )
+        if encontrados:
+            for archivo, linea, texto in encontrados:
+                self.log_verificacion(
+                    f"Secretos hardcodeados en {archivo}",
+                    False,
+                    f"Línea {linea}: {texto}",
+                )
+        else:
+            self.log_verificacion(
+                "Secrets hardcodeados", True, "No se encontraron en el código fuente"
+            )
+
     def generar_reporte_final(self):
         """Genera reporte final de verificación"""
         print("\n" + "=" * 80)
@@ -336,6 +384,7 @@ class VerificadorDespliegue:
         self.verificar_dependencias_python()
         self.verificar_configuracion()
         self.verificar_modulos_aplicacion()
+        self.verificar_secrets_hardcodeados()
 
         # Generar reporte final
         listo_para_despliegue = self.generar_reporte_final()

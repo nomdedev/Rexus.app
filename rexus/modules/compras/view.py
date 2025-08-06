@@ -78,13 +78,70 @@ class ComprasView(QWidget):
         self.controller = None
         self.init_ui()
 
+    def crear_titulo(self, layout: QVBoxLayout):
+        """Crea el título moderno de la vista."""
+        titulo_container = QFrame()
+        titulo_container.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                           stop:0 #3498db, stop:1 #2980b9);
+                border-radius: 8px;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+        """)
+
+        titulo_layout = QHBoxLayout(titulo_container)
+
+        # Título principal
+        title_label = QLabel("💼 Gestión de Compras")
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: white;
+                background: transparent;
+                padding: 0;
+                margin: 0;
+            }
+        """)
+        titulo_layout.addWidget(title_label)
+
+        # Botón de configuración
+        self.btn_configuracion = QPushButton("⚙️ Configuración")
+        self.btn_configuracion.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: bold;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+                border-color: rgba(255, 255, 255, 0.5);
+            }
+            QPushButton:disabled {
+                background-color: rgba(255, 255, 255, 0.1);
+                color: rgba(255, 255, 255, 0.5);
+                border-color: rgba(255, 255, 255, 0.2);
+            }
+        """)
+        self.btn_configuracion.setToolTip("⚙️ Configuración del módulo de compras")
+        titulo_layout.addWidget(self.btn_configuracion)
+
+        layout.addWidget(titulo_container)
+
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(20, 20, 20, 20)
-        layout.setSpacing(20)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(10)
 
-        # Título removido según solicitado
+        # Título moderno
+        self.crear_titulo(layout)
 
         # Panel de control
         control_panel = self.crear_panel_control()
@@ -103,42 +160,96 @@ class ComprasView(QWidget):
         
         layout.addWidget(tab_widget)
 
-        # Aplicar estilo general
-        self.aplicar_estilo()
+        # Aplicar estilos modernos
+        self.configurar_estilos()
 
     def crear_panel_control(self):
-        """Crea el panel de control superior."""
-        panel = QFrame()
-        panel.setFrameStyle(QFrame.Shape.Box)
+        """Crea el panel de control superior con botones modernos."""
+        panel = QGroupBox("🎛️ Panel de Control")
         panel.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffffff, stop:1 #f8f9fa);
-                border: 1px solid #dee2e6;
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #3498db;
                 border-radius: 8px;
-                padding: 15px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #3498db;
             }
         """)
 
         layout = QHBoxLayout(panel)
 
         # Botón Nueva Orden
-        self.btn_nueva_orden = QPushButton("Nueva Orden")
-        self.btn_nueva_orden.setIcon(QIcon("📋"))
+        self.btn_nueva_orden = QPushButton("➕ Nueva Orden")
+        self.btn_nueva_orden.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 16px;
+                font-weight: bold;
+                font-size: 14px;
+                min-width: 120px;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_nueva_orden.setToolTip("➕ Crear una nueva orden de compra")
         self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
 
         # Búsqueda
         self.input_busqueda = QLineEdit()
-        self.input_busqueda.setPlaceholderText(
-            "Buscar por proveedor o número de orden..."
-        )
+        self.input_busqueda.setPlaceholderText("🔍 Buscar por proveedor o número de orden...")
+        self.input_busqueda.setToolTip("🔍 Buscar órdenes por proveedor, número o descripción")
+        self.input_busqueda.setStyleSheet("""
+            QLineEdit {
+                border: 2px solid #ced4da;
+                border-radius: 6px;
+                padding: 10px 12px;
+                font-size: 14px;
+                min-width: 200px;
+            }
+            QLineEdit:focus {
+                border-color: #3498db;
+            }
+        """)
         self.input_busqueda.returnPressed.connect(self.buscar_compras)
 
         # Filtro por estado
         self.combo_estado = QComboBox()
-        self.combo_estado.addItems(
-            ["Todos", "PENDIENTE", "APROBADA", "RECIBIDA", "CANCELADA"]
-        )
+        self.combo_estado.addItems([
+            "📋 Todos los estados",
+            "⏳ PENDIENTE",
+            "✅ APROBADA",
+            "🚚 RECIBIDA",
+            "❌ CANCELADA"
+        ])
+        self.combo_estado.setToolTip("📊 Filtrar órdenes por estado")
+        self.combo_estado.setStyleSheet("""
+            QComboBox {
+                border: 2px solid #ced4da;
+                border-radius: 6px;
+                padding: 10px 12px;
+                font-size: 14px;
+                min-width: 150px;
+            }
+            QComboBox:focus {
+                border-color: #3498db;
+            }
+        """)
         self.combo_estado.currentTextChanged.connect(self.buscar_compras)
 
         # Filtro por fechas
@@ -153,23 +264,71 @@ class ComprasView(QWidget):
         self.date_hasta.dateChanged.connect(self.buscar_compras)
 
         # Botón buscar
-        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar = QPushButton("🔍 Buscar")
+        self.btn_buscar.setStyleSheet("""
+            QPushButton {
+                background-color: #007bff;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 16px;
+                font-weight: bold;
+                font-size: 14px;
+                min-width: 100px;
+            }
+            QPushButton:hover {
+                background-color: #0069d9;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         self.btn_buscar.clicked.connect(self.buscar_compras)
 
         # Botón actualizar
-        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar.setStyleSheet("""
+            QPushButton {
+                background-color: #28a745;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 16px;
+                font-weight: bold;
+                font-size: 14px;
+                min-width: 100px;
+            }
+            QPushButton:hover {
+                background-color: #218838;
+            }
+            QPushButton:disabled {
+                background-color: #adb5bd;
+                color: #6c757d;
+            }
+        """)
+        self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de órdenes")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
 
-        # Agregar widgets
+        # Agregar widgets con mejor organización
         layout.addWidget(self.btn_nueva_orden)
-        layout.addWidget(QLabel("Buscar:"))
         layout.addWidget(self.input_busqueda)
-        layout.addWidget(QLabel("Estado:"))
         layout.addWidget(self.combo_estado)
-        layout.addWidget(QLabel("Desde:"))
-        layout.addWidget(self.date_desde)
-        layout.addWidget(QLabel("Hasta:"))
-        layout.addWidget(self.date_hasta)
+        
+        # Sección de fechas
+        fechas_layout = QHBoxLayout()
+        fechas_layout.addWidget(QLabel("📅 Desde:"))
+        fechas_layout.addWidget(self.date_desde)
+        fechas_layout.addWidget(QLabel("📅 Hasta:"))
+        fechas_layout.addWidget(self.date_hasta)
+        
+        fechas_widget = QWidget()
+        fechas_widget.setLayout(fechas_layout)
+        layout.addWidget(fechas_widget)
+        
+        # Separador y botones de acción
+        layout.addStretch()
         layout.addWidget(self.btn_buscar)
         layout.addWidget(self.btn_actualizar)
 
@@ -513,60 +672,95 @@ class ComprasView(QWidget):
 
         return panel
 
-    def aplicar_estilo(self):
-        """Aplica el estilo general al widget."""
+    def configurar_estilos(self):
+        """Configura los estilos modernos usando FormStyleManager."""
+        try:
+            from rexus.utils.form_styles import FormStyleManager, setup_form_widget
+            
+            # Aplicar estilos modernos del FormStyleManager
+            setup_form_widget(self, apply_animations=True)
+            
+            # Estilos específicos del módulo de compras
+            self.setStyleSheet("""
+                QWidget {
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                    background-color: #f8f9fa;
+                }
+                QGroupBox {
+                    font-weight: bold;
+                    border-radius: 8px;
+                    margin-top: 1ex;
+                    padding-top: 10px;
+                }
+                QGroupBox::title {
+                    subcontrol-origin: margin;
+                    left: 10px;
+                    padding: 0 5px 0 5px;
+                }
+                QDateEdit {
+                    border: 2px solid #ced4da;
+                    border-radius: 6px;
+                    padding: 10px 12px;
+                    font-size: 14px;
+                    background-color: white;
+                }
+                QDateEdit:focus {
+                    border-color: #3498db;
+                }
+            """)
+            
+        except ImportError:
+            print("[WARNING] FormStyleManager no disponible, usando estilos básicos")
+            self.aplicar_estilo_basico()
+
+    def aplicar_estilo_basico(self):
+        """Aplica estilos básicos como fallback."""
         self.setStyleSheet("""
             QWidget {
                 background-color: #f8f9fa;
-                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                font-size: 12px;
+                font-family: 'Segoe UI', Arial, sans-serif;
             }
             QPushButton {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #3498db, stop:1 #2980b9);
+                background-color: #3498db;
                 color: white;
                 border: none;
-                padding: 6px 12px;
+                padding: 8px 16px;
                 border-radius: 4px;
                 font-weight: bold;
-                font-size: 12px;
-                min-width: 80px;
-                max-height: 28px;
             }
             QPushButton:hover {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #5dade2, stop:1 #3498db);
-            }
-            QPushButton:pressed {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #2980b9, stop:1 #1f618d);
+                background-color: #2980b9;
             }
             QLineEdit, QComboBox, QDateEdit {
-                border: 2px solid #bdc3c7;
-                border-radius: 6px;
-                padding: 8px 12px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                padding: 8px;
                 font-size: 14px;
+            }
+            QTableWidget {
                 background-color: white;
-            }
-            QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
-                border-color: #3498db;
-                outline: none;
-            }
-            QGroupBox {
-                font-weight: bold;
-                border: 2px solid #bdc3c7;
-                border-radius: 8px;
-                margin: 10px 0;
-                padding-top: 15px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #2c3e50;
-                font-size: 14px;
+                gridline-color: #dee2e6;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
             }
         """)
+
+    def set_loading_state(self, loading: bool):
+        """Maneja el estado de carga de la interfaz."""
+        # Estados de botones principales
+        self.btn_nueva_orden.setEnabled(not loading)
+        self.btn_buscar.setEnabled(not loading)
+        self.btn_actualizar.setEnabled(not loading)
+        if hasattr(self, 'btn_configuracion'):
+            self.btn_configuracion.setEnabled(not loading)
+        
+        # Cambiar textos durante loading
+        if loading:
+            self.btn_actualizar.setText("⏳ Actualizando...")
+            self.btn_buscar.setText("🔍 Buscando...")
+        else:
+            self.btn_actualizar.setText("🔄 Actualizar")
+            self.btn_buscar.setText("🔍 Buscar")
 
     def abrir_dialog_nueva_orden(self):
         """Abre el diálogo para crear una nueva orden."""
