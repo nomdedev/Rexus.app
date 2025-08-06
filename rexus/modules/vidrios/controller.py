@@ -65,7 +65,8 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error en búsqueda: {e}")
 
-    def agregar_vidrio(self, datos_vidrio):"""Agrega un nuevo vidrio."""
+    def agregar_vidrio(self, datos_vidrio):
+        """Agrega un nuevo vidrio."""
         if not self.model:
             return
             
@@ -80,7 +81,8 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error agregando vidrio: {e}")
 
-    def editar_vidrio(self, vidrio_id, datos_vidrio):"""Edita un vidrio existente."""
+    def editar_vidrio(self, vidrio_id, datos_vidrio):
+        """Edita un vidrio existente."""
         if not self.model:
             return
             

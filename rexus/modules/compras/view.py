@@ -104,9 +104,6 @@ class ComprasView(QWidget):
         # Título estandarizado
         StandardComponents.create_title("💼 Gestión de Compras", layout)
 
-        # Título estandarizado
-        StandardComponents.create_title("🛒 Gestión de Compras", layout)
-
         # Panel de control estandarizado
         control_panel = StandardComponents.create_control_panel()
         self.setup_control_panel(control_panel)

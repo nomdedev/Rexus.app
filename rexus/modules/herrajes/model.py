@@ -306,7 +306,8 @@ class HerrajesModel:
             print(f"[ERROR HERRAJES] Error asignando herraje a obra: {e}")
             return False
 
-    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):"""
+    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
+        """
         Crea un pedido de herrajes para una obra específica.
 
         Args:

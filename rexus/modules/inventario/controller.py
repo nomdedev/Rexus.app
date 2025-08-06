@@ -425,7 +425,8 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al limpiar filtros: {str(e)}")
 
     @auth_required
-    def nuevo_producto(self):"""Abre diÃ¡logo para agregar nuevo producto."""
+    def nuevo_producto(self):
+        """Abre diálogo para agregar nuevo producto."""
         if not self.verificar_permiso("crear_producto"):
             self.mostrar_error_permiso("crear producto")
             return
@@ -440,7 +441,8 @@ class InventarioController(QObject):
 
     @safe_method_decorator
     @auth_required
-    def agregar_producto(self, datos_producto):"""Agrega un nuevo producto al inventario."""
+    def agregar_producto(self, datos_producto):
+        """Agrega un nuevo producto al inventario."""
         if not self.verificar_permiso("crear_producto"):
             self.mostrar_error_permiso("crear producto")
             return
