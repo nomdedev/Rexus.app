@@ -169,7 +169,8 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error cambiando estado: {e}")
             self.mostrar_error(f"Error cambiando estado: {str(e)}")
 
-    def actualizar_estadisticas(self):"""Actualiza las estadísticas del módulo."""
+    def actualizar_estadisticas(self):
+        """Actualiza las estadísticas del módulo."""
         try:
             stats = self.model.obtener_estadisticas()
 
