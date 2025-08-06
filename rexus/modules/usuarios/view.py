@@ -56,7 +56,9 @@ from PyQt6.QtWidgets import (
     QTextEdit,
     QVBoxLayout,
     QWidget,
-)
+,
+    QSpinBox,
+    QLabel)
 
 from rexus.modules.usuarios.improved_dialogs import (
     UsuarioDialogManager,
@@ -206,6 +208,118 @@ class UsuariosView(QWidget):
             self.tabla_usuarios.setItem(row, 4, QTableWidgetItem(str(usuario.get("rol", ""))))
             self.tabla_usuarios.setItem(row, 5, QTableWidgetItem(str(usuario.get("estado", ""))))
     
+
+    def crear_controles_paginacion(self):
+        """Crea los controles de paginación"""
+        paginacion_layout = QHBoxLayout()
+        
+        # Etiqueta de información
+        self.info_label = QLabel("Mostrando 1-50 de 0 registros")
+        paginacion_layout.addWidget(self.info_label)
+        
+        paginacion_layout.addStretch()
+        
+        # Controles de navegación
+        self.btn_primera = QPushButton("<<")
+        self.btn_primera.setMaximumWidth(40)
+        self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
+        paginacion_layout.addWidget(self.btn_primera)
+        
+        self.btn_anterior = QPushButton("<")
+        self.btn_anterior.setMaximumWidth(30)
+        self.btn_anterior.clicked.connect(self.pagina_anterior)
+        paginacion_layout.addWidget(self.btn_anterior)
+        
+        # Control de página actual
+        self.pagina_actual_spin = QSpinBox()
+        self.pagina_actual_spin.setMinimum(1)
+        self.pagina_actual_spin.setMaximum(1)
+        self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
+        self.pagina_actual_spin.setMaximumWidth(60)
+        paginacion_layout.addWidget(QLabel("Página:"))
+        paginacion_layout.addWidget(self.pagina_actual_spin)
+        
+        self.total_paginas_label = QLabel("de 1")
+        paginacion_layout.addWidget(self.total_paginas_label)
+        
+        self.btn_siguiente = QPushButton(">")
+        self.btn_siguiente.setMaximumWidth(30)
+        self.btn_siguiente.clicked.connect(self.pagina_siguiente)
+        paginacion_layout.addWidget(self.btn_siguiente)
+        
+        self.btn_ultima = QPushButton(">>")
+        self.btn_ultima.setMaximumWidth(40)
+        self.btn_ultima.clicked.connect(self.ultima_pagina)
+        paginacion_layout.addWidget(self.btn_ultima)
+        
+        # Selector de registros por página
+        paginacion_layout.addWidget(QLabel("Registros por página:"))
+        self.registros_por_pagina_combo = QComboBox()
+        self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
+        self.registros_por_pagina_combo.setCurrentText("50")
+        self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
+        paginacion_layout.addWidget(self.registros_por_pagina_combo)
+        
+        return paginacion_layout
+    
+    def actualizar_controles_paginacion(self, pagina_actual, total_paginas, total_registros, registros_mostrados):
+        """Actualiza los controles de paginación"""
+        if hasattr(self, 'info_label'):
+            inicio = ((pagina_actual - 1) * int(self.registros_por_pagina_combo.currentText())) + 1
+            fin = min(inicio + registros_mostrados - 1, total_registros)
+            self.info_label.setText(f"Mostrando {inicio}-{fin} de {total_registros} registros")
+        
+        if hasattr(self, 'pagina_actual_spin'):
+            self.pagina_actual_spin.blockSignals(True)
+            self.pagina_actual_spin.setValue(pagina_actual)
+            self.pagina_actual_spin.setMaximum(max(1, total_paginas))
+            self.pagina_actual_spin.blockSignals(False)
+        
+        if hasattr(self, 'total_paginas_label'):
+            self.total_paginas_label.setText(f"de {total_paginas}")
+        
+        # Habilitar/deshabilitar botones
+        if hasattr(self, 'btn_primera'):
+            self.btn_primera.setEnabled(pagina_actual > 1)
+            self.btn_anterior.setEnabled(pagina_actual > 1)
+            self.btn_siguiente.setEnabled(pagina_actual < total_paginas)
+            self.btn_ultima.setEnabled(pagina_actual < total_paginas)
+    
+    def ir_a_pagina(self, pagina):
+        """Va a una página específica"""
+        if hasattr(self.controller, 'cargar_pagina'):
+            self.controller.cargar_pagina(pagina)
+    
+    def pagina_anterior(self):
+        """Va a la página anterior"""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            if pagina_actual > 1:
+                self.ir_a_pagina(pagina_actual - 1)
+    
+    def pagina_siguiente(self):
+        """Va a la página siguiente"""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            total_paginas = self.pagina_actual_spin.maximum()
+            if pagina_actual < total_paginas:
+                self.ir_a_pagina(pagina_actual + 1)
+    
+    def ultima_pagina(self):
+        """Va a la última página"""
+        if hasattr(self, 'pagina_actual_spin'):
+            total_paginas = self.pagina_actual_spin.maximum()
+            self.ir_a_pagina(total_paginas)
+    
+    def cambiar_pagina(self, pagina):
+        """Cambia a la página seleccionada"""
+        self.ir_a_pagina(pagina)
+    
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página"""
+        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
+            self.controller.cambiar_registros_por_pagina(int(registros))
+
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller

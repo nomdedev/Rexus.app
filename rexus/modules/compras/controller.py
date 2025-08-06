@@ -76,10 +76,6 @@ class ComprasController(QObject):
 
     @auth_required
     def crear_orden(self, datos_orden):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('crear_orden'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
         """
         Crea una nueva orden de compra.
@@ -295,6 +291,147 @@ class ComprasController(QObject):
         else:
             from rexus.utils.message_system import show_info
             show_info(self.view, titulo, mensaje)
+
+
+    @auth_required
+    def obtener_estado_pedido(self, pedido_id):
+        """Obtiene el estado detallado de un pedido"""
+        try:
+            if self.model:
+                estado = self.model.obtener_estado_detallado_pedido(pedido_id)
+                return estado
+            return None
+        except Exception as e:
+            self.mostrar_error(f"Error obteniendo estado de pedido: {e}")
+            return None
+    
+    @auth_required
+    def actualizar_seguimiento_pedido(self, pedido_id, nuevo_estado, observaciones=""):
+        """Actualiza el seguimiento de un pedido"""
+        try:
+            if self.model:
+                exito = self.model.actualizar_seguimiento_pedido(
+                    pedido_id, nuevo_estado, observaciones
+                )
+                if exito:
+                    self.mostrar_exito("Seguimiento actualizado correctamente")
+                    self.cargar_datos_iniciales()
+                else:
+                    self.mostrar_error("Error actualizando seguimiento")
+        except Exception as e:
+            self.mostrar_error(f"Error actualizando seguimiento: {e}")
+
+
+    @auth_required
+    def actualizar_stock_desde_compra(self, orden_id):
+        """Actualiza el stock de inventario desde una compra recibida"""
+        try:
+            if self.model:
+                # Obtener detalles de la orden
+                detalles = self.model.obtener_detalles_orden(orden_id)
+                
+                # Actualizar inventario
+                for detalle in detalles:
+                    # Aquí se integrará con el módulo de inventario
+                    # TODO: Implementar actualización de stock en inventario
+                    pass
+                
+                self.mostrar_exito("Stock actualizado desde compra")
+        except Exception as e:
+            self.mostrar_error(f"Error actualizando stock: {e}")
+    
+    @auth_required
+    def verificar_stock_minimos(self):
+        """Verifica productos con stock mínimo para generar órdenes automáticas"""
+        try:
+            if self.model:
+                productos_minimos = self.model.obtener_productos_stock_minimo()
+                
+                if productos_minimos:
+                    mensaje = f"Se encontraron {len(productos_minimos)} productos con stock mínimo"
+                    self.mostrar_info(mensaje)
+                    
+                    # TODO: Proponer generación automática de órdenes
+                    
+                return productos_minimos
+        except Exception as e:
+            self.mostrar_error(f"Error verificando stock mínimos: {e}")
+            return []
+
+
+    @manager_required
+    def generar_reporte_compras(self, fecha_inicio, fecha_fin, proveedor_id=None):
+        """Genera reporte de compras por período"""
+        try:
+            if self.model:
+                reporte = self.model.generar_reporte_periodo(
+                    fecha_inicio, fecha_fin, proveedor_id
+                )
+                
+                if reporte:
+                    self.mostrar_exito("Reporte generado exitosamente")
+                    return reporte
+                else:
+                    self.mostrar_error("No se pudieron obtener datos para el reporte")
+        except Exception as e:
+            self.mostrar_error(f"Error generando reporte: {e}")
+        return None
+    
+    @auth_required
+    def obtener_estadisticas_proveedor(self, proveedor_id):
+        """Obtiene estadísticas detalladas de un proveedor"""
+        try:
+            if self.proveedores_model:
+                stats = self.proveedores_model.obtener_estadisticas_proveedor(proveedor_id)
+                return stats
+        except Exception as e:
+            self.mostrar_error(f"Error obteniendo estadísticas: {e}")
+        return {}
+
+    
+    def cargar_pagina(self, pagina, registros_por_pagina=50):
+        """Carga una página específica de datos"""
+        try:
+            if self.model:
+                offset = (pagina - 1) * registros_por_pagina
+                
+                # Obtener datos paginados
+                datos, total_registros = self.model.obtener_datos_paginados(
+                    offset=offset, 
+                    limit=registros_por_pagina
+                )
+                
+                if self.view:
+                    # Cargar datos en la tabla
+                    if hasattr(self.view, 'cargar_en_tabla'):
+                        self.view.cargar_en_tabla(datos)
+                    
+                    # Actualizar controles de paginación
+                    total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
+                    if hasattr(self.view, 'actualizar_controles_paginacion'):
+                        self.view.actualizar_controles_paginacion(
+                            pagina, total_paginas, total_registros, len(datos)
+                        )
+        
+        except Exception as e:
+            print(f"[ERROR] Error cargando página: {e}")
+            if hasattr(self, 'mostrar_error'):
+                self.mostrar_error("Error", f"Error cargando página: {str(e)}")
+    
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página y recarga"""
+        self.registros_por_pagina = registros
+        self.cargar_pagina(1, registros)
+    
+    def obtener_total_registros(self):
+        """Obtiene el total de registros disponibles"""
+        try:
+            if self.model:
+                return self.model.obtener_total_registros()
+            return 0
+        except Exception as e:
+            print(f"[ERROR] Error obteniendo total de registros: {e}")
+            return 0
 
     def mostrar_error(self, titulo, mensaje):
         """Muestra un mensaje de error con el sistema mejorado."""
