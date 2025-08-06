@@ -1,5 +1,9 @@
+from rexus.core.auth_decorators import (
+    admin_required,
+    auth_required,
+    permission_required,
+)
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -42,6 +46,7 @@ except ImportError:
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
+
 
 class UsuariosModel:
     """Modelo para gestión completa de usuarios y autenticación."""
@@ -184,20 +189,18 @@ class UsuariosModel:
 
             # Verificar username duplicado
             if id_usuario_actual:
-                query_username = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(username) = ? AND id != ?"
-                )
+                query_username = """
+                    SELECT COUNT(*) FROM usuarios 
+                    WHERE LOWER(username) = ? AND id != ?
+                """
                 cursor.execute(
                     query_username, (username_limpio.lower(), id_usuario_actual)
                 )
             else:
-                query_username = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(username) = ?"
-                )
+                query_username = """
+                    SELECT COUNT(*) FROM usuarios 
+                    WHERE LOWER(username) = ?
+                """
                 cursor.execute(query_username, (username_limpio.lower(),))
 
             resultado["username_duplicado"] = cursor.fetchone()[0] > 0
@@ -443,7 +446,8 @@ class UsuariosModel:
         print("   Para crear las tablas, ejecutar: database/create_tables.sql")
         return
 
-    def crear_usuarios_iniciales(self):"""ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
+    def crear_usuarios_iniciales(self):
+        """ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
         print("❌ SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
         print(
             "   Los usuarios deben ser creados manualmente por el administrador del sistema"
@@ -1050,7 +1054,7 @@ class UsuariosModel:
 
     def crear_usuario(
         self,
-        datos_usuario:Dict[str, Any],
+        datos_usuario: Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
         Crea un nuevo usuario en el sistema con validación y sanitización completa.
@@ -1246,7 +1250,7 @@ class UsuariosModel:
 
     def actualizar_usuario(
         self,
-        usuario_id:int,
+        usuario_id: int,
         datos_usuario: Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
@@ -1330,7 +1334,7 @@ class UsuariosModel:
 
     def eliminar_usuario(
         self,
-        usuario_id:int,
+        usuario_id: int,
     ) -> Tuple[bool, str]:
         """
         Elimina un usuario del sistema (eliminación lógica).
@@ -1411,7 +1415,7 @@ class UsuariosModel:
 
     def cambiar_password(
         self,
-        usuario_id:int,
+        usuario_id: int,
         password_actual: str,
         password_nueva: str,
     ) -> Tuple[bool, str]:
@@ -1583,58 +1587,58 @@ class UsuariosModel:
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
         """
         Obtiene datos paginados de la tabla principal
-        
+
         Args:
             offset: Número de registros a saltar
             limit: Número máximo de registros a devolver
             filtros: Filtros adicionales a aplicar
-            
+
         Returns:
             tuple: (datos, total_registros)
         """
         try:
             if not self.db_connection:
                 return [], 0
-            
+
             cursor = self.db_connection.cursor()
-            
+
             # Query base
             base_query = self._get_base_query()
             count_query = self._get_count_query()
-            
+
             # Aplicar filtros si existen
             where_clause = ""
             params = []
-            
+
             if filtros:
                 where_conditions = []
                 for campo, valor in filtros.items():
                     if valor:
                         where_conditions.append(f"{campo} LIKE ?")
                         params.append(f"%{valor}%")
-                
+
                 if where_conditions:
                     where_clause = " WHERE " + " AND ".join(where_conditions)
-            
+
             # Obtener total de registros
             full_count_query = count_query + where_clause
             cursor.execute(full_count_query, params)
             total_registros = cursor.fetchone()[0]
-            
+
             # Obtener datos paginados
             paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
             cursor.execute(paginated_query, params + [offset, limit])
-            
+
             datos = []
             for row in cursor.fetchall():
                 datos.append(self._row_to_dict(row, cursor.description))
-            
+
             return datos, total_registros
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo datos paginados: {e}")
             return [], 0
-    
+
     def obtener_total_registros(self, filtros=None):
         """Obtiene el total de registros disponibles"""
         try:
@@ -1643,18 +1647,18 @@ class UsuariosModel:
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
-    
+
     def _get_base_query(self):
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
         # Esta es una implementación genérica
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
+        tabla_principal = getattr(self, "tabla_principal", "tabla_principal")
         return f"SELECT * FROM {tabla_principal}"
-    
+
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
+        tabla_principal = getattr(self, "tabla_principal", "tabla_principal")
         return f"SELECT COUNT(*) FROM {tabla_principal}"
-    
+
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}

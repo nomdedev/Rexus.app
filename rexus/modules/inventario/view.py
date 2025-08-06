@@ -34,40 +34,36 @@ Vista de Inventario
 Interfaz de usuario moderna para la gestión del inventario con sistema de reservas.
 """
 
-import logging
-
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
-    QDialog,
-    QDoubleSpinBox,
-    QFormLayout,
     QFrame,
     QGroupBox,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QLineEdit,
-    QMessageBox,
     QPushButton,
-    QScrollArea,
     QSpinBox,
-    QTableWidget,
     QTableWidgetItem,
-    QTabWidget,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
-from rexus.utils.message_system import show_error, show_success, show_warning, ask_question
-from rexus.utils.security import SecurityUtils
-from rexus.utils.xss_protection import FormProtector, XSSProtection
+from rexus.utils.message_system import show_error, show_success, show_warning
+from rexus.utils.xss_protection import FormProtector
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+
+# Importar sistemas de mejora UI/UX
+try:
+    from rexus.ui.smart_tooltips import smart_tooltips
+    from rexus.ui.contextual_error_system import contextual_error_system
+    from rexus.ui.keyboard_navigation import keyboard_navigation
+    ENHANCED_UI_AVAILABLE = True
+except ImportError:
+    ENHANCED_UI_AVAILABLE = False
 
 
 class InventarioView(QWidget):
@@ -115,61 +111,80 @@ class InventarioView(QWidget):
         # Aplicar tema del módulo
         style_manager.apply_module_theme(self)
 
-    def crear_titulo(self, layout: QVBoxLayout):
-        """Crea el título moderno de la vista."""
-        titulo_container = QFrame()
-        titulo_container.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                           stop:0 #28a745, stop:1 #20c997);
-                border-radius: 8px;
-                padding: 6px;
-                margin-bottom: 10px;
-            }
-        """)
+        # Integrar smart tooltips si está disponible
+        if ENHANCED_UI_AVAILABLE:
+            self._integrate_smart_tooltips()
+            self._setup_keyboard_navigation()
+        else:
+            self._setup_basic_tooltips()
+            self._setup_basic_navigation()
 
-        titulo_layout = QHBoxLayout(titulo_container)
+    def _integrate_smart_tooltips(self):
+        """Integra tooltips inteligentes en todos los controles."""
+        try:
+            # Tooltips contextuales para controles principales
+            smart_tooltips.add_contextual_tooltip(
+                self.btn_nuevo_producto,
+                "Crear Producto",
+                "Abre el formulario para registrar un nuevo producto en el inventario. Se solicitará código, descripción, categoría, precio y stock inicial.",
+                "💡 Tip: Use códigos únicos para evitar duplicados"
+            )
+            
+            smart_tooltips.add_contextual_tooltip(
+                self.input_busqueda,
+                "Búsqueda Inteligente",
+                "Busque productos por código, descripción o categoría. Soporte para búsqueda parcial y filtros avanzados.",
+                "🔍 Ejemplos: 'VID001', 'cristal', 'herrajes'"
+            )
+            
+            smart_tooltips.add_contextual_tooltip(
+                self.combo_categoria,
+                "Filtro de Categoría",
+                "Filtre productos por categoría específica para una búsqueda más rápida y organizada.",
+                "📂 Use 'Todas' para ver inventario completo"
+            )
+                
+        except Exception as e:
+            print(f"[WARNING] Error integrando smart tooltips: {e}")
+            self._setup_basic_tooltips()
 
-        # Título principal
-        title_label = QLabel("📦 Gestión de Inventario")
-        title_label.setStyleSheet("""
-            QLabel {
-                font-size: 16px;
-                font-weight: bold;
-                color: white;
-                background: transparent;
-                padding: 0;
-                margin: 0;
-            }
-        """)
-        titulo_layout.addWidget(title_label)
+    def _setup_basic_tooltips(self):
+        """Configura tooltips básicos como fallback."""
+        self.btn_nuevo_producto.setToolTip("➕ Crear un nuevo producto en el inventario")
+        self.input_busqueda.setToolTip("🔍 Buscar productos por código, descripción o categoría")
+        self.combo_categoria.setToolTip("📂 Filtrar productos por categoría")
+        self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
+        self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de inventario")
+        self.btn_editar.setToolTip("✏️ Editar producto seleccionado")
+        self.btn_eliminar.setToolTip("🗑️ Eliminar producto seleccionado")
 
-        # Botón de configuración
-        self.btn_configuracion = QPushButton("⚙️ Configuración")
-        self.btn_configuracion.setStyleSheet("""
-            QPushButton {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: rgba(255, 255, 255, 0.3);
-                border-color: rgba(255, 255, 255, 0.5);
-            }
-            QPushButton:disabled {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.5);
-                border-color: rgba(255, 255, 255, 0.2);
-            }
-        """)
-        self.btn_configuracion.setToolTip("⚙️ Configuración del módulo de inventario")
-        titulo_layout.addWidget(self.btn_configuracion)
+    def _setup_keyboard_navigation(self):
+        """Configura navegación por teclado avanzada."""
+        try:
+            keyboard_navigation.setup_tab_order(self, [
+                self.btn_nuevo_producto,
+                self.input_busqueda,
+                self.combo_categoria,
+                self.btn_buscar,
+                self.btn_actualizar,
+                self.tabla_inventario,
+                self.btn_editar,
+                self.btn_eliminar
+            ])
+        except Exception as e:
+            print(f"[WARNING] Error configurando navegación por teclado: {e}")
+            self._setup_basic_navigation()
 
-        layout.addWidget(titulo_container)
+    def _setup_basic_navigation(self):
+        """Configura navegación básica por teclado."""
+        # Configuración básica de tab order
+        self.setTabOrder(self.btn_nuevo_producto, self.input_busqueda)
+        self.setTabOrder(self.input_busqueda, self.combo_categoria)
+        self.setTabOrder(self.combo_categoria, self.btn_buscar)
+        self.setTabOrder(self.btn_buscar, self.btn_actualizar)
+        self.setTabOrder(self.btn_actualizar, self.tabla_inventario)
+        self.setTabOrder(self.tabla_inventario, self.btn_editar)
+        self.setTabOrder(self.btn_editar, self.btn_eliminar)
 
     def setup_control_panel(self, panel):
         """Configura el panel de control con componentes estandarizados."""
@@ -177,13 +192,11 @@ class InventarioView(QWidget):
 
         # Botón Nuevo Producto estandarizado
         self.btn_nuevo_producto = StandardComponents.create_primary_button("➕ Nuevo Producto")
-        self.btn_nuevo_producto.setToolTip("➕ Crear un nuevo producto en el inventario")
         layout.addWidget(self.btn_nuevo_producto)
 
-        # Campo de búsqueda
+        # Campo de búsqueda con tooltip mejorado
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar por código o descripción...")
-        self.input_busqueda.setToolTip("🔍 Buscar productos por código, descripción o categoría")
         self.input_busqueda.setStyleSheet("""
             QLineEdit {
                 border: 2px solid #ced4da;
@@ -198,7 +211,7 @@ class InventarioView(QWidget):
         """)
         layout.addWidget(self.input_busqueda)
 
-        # Filtro de categoría
+        # Filtro de categoría con tooltips
         self.combo_categoria = QComboBox()
         self.combo_categoria.addItems([
             "📂 Todas las categorías",
@@ -209,7 +222,6 @@ class InventarioView(QWidget):
             "⚡ Eléctricos",
             "🚰 Plomería"
         ])
-        self.combo_categoria.setToolTip("📂 Filtrar productos por categoría")
         self.combo_categoria.setStyleSheet("""
             QComboBox {
                 border: 2px solid #ced4da;
@@ -234,28 +246,21 @@ class InventarioView(QWidget):
         """)
         layout.addWidget(self.combo_categoria)
 
-        # Botón buscar estandarizado
+        # Botones estandarizados
         self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
-        self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         layout.addWidget(self.btn_buscar)
 
-        # Botón actualizar estandarizado
         self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
-        self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de inventario")
         layout.addWidget(self.btn_actualizar)
 
         # Separador y botones de acción
         layout.addStretch()
         
-        # Botón editar estandarizado
         self.btn_editar = StandardComponents.create_secondary_button("✏️ Editar")
-        self.btn_editar.setToolTip("✏️ Editar producto seleccionado")
         self.btn_editar.setEnabled(False)
         layout.addWidget(self.btn_editar)
 
-        # Botón eliminar estandarizado
         self.btn_eliminar = StandardComponents.create_danger_button("🗑️ Eliminar")
-        self.btn_eliminar.setToolTip("🗑️ Eliminar producto seleccionado")
         self.btn_eliminar.setEnabled(False)
         layout.addWidget(self.btn_eliminar)
 
@@ -362,14 +367,15 @@ class InventarioView(QWidget):
 
         # Configurar tamaños de columnas
         header = self.tabla_inventario.horizontalHeader()
-        header.resizeSection(0, 100)  # Código
-        header.resizeSection(1, 200)  # Descripción
-        header.resizeSection(2, 130)  # Categoría
-        header.resizeSection(3, 80)   # Stock
-        header.resizeSection(4, 100)  # Precio
-        header.resizeSection(5, 100)  # Estado
-        header.resizeSection(6, 140)  # Última Actualización
-        header.setStretchLastSection(True)  # Acciones
+        if header:  # Verificar que header existe
+            header.resizeSection(0, 100)  # Código
+            header.resizeSection(1, 200)  # Descripción
+            header.resizeSection(2, 130)  # Categoría
+            header.resizeSection(3, 80)   # Stock
+            header.resizeSection(4, 100)  # Precio
+            header.resizeSection(5, 100)  # Estado
+            header.resizeSection(6, 140)  # Última Actualización
+            header.setStretchLastSection(True)  # Acciones
 
         # Configuraciones visuales
         self.tabla_inventario.setAlternatingRowColors(True)
@@ -409,70 +415,12 @@ class InventarioView(QWidget):
         # Conectar señal de selección
         self.tabla_inventario.itemSelectionChanged.connect(self.on_producto_seleccionado)
 
-    def configurar_estilos(self):
-        """Configura los estilos modernos usando FormStyleManager."""
-        try:
-            from rexus.utils.form_styles import FormStyleManager, setup_form_widget
-            
-            # Aplicar estilos modernos del FormStyleManager
-            setup_form_widget(self, apply_animations=True)
-            
-            # Estilos específicos del módulo de inventario
-            self.setStyleSheet("""
-                QWidget {
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    background-color: #f8f9fa;
-                }
-                QGroupBox {
-                    font-weight: bold;
-                    border-radius: 8px;
-                    margin-top: 1ex;
-                    padding-top: 10px;
-                }
-                QGroupBox::title {
-                    subcontrol-origin: margin;
-                    left: 10px;
-                    padding: 0 5px 0 5px;
-                }
-            """)
-            
-        except ImportError:
-            print("[WARNING] FormStyleManager no disponible, usando estilos básicos")
-            self.aplicar_estilo_basico()
-
-    def aplicar_estilo_basico(self):
-        """Aplica estilos básicos como fallback."""
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f8f9fa;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QLineEdit, QComboBox {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                padding: 8px;
-                font-size: 14px;
-            }
-        """)
-
     def set_loading_state(self, loading: bool):
         """Maneja el estado de carga de la interfaz."""
         # Estados de botones principales
         self.btn_nuevo_producto.setEnabled(not loading)
         self.btn_buscar.setEnabled(not loading)
         self.btn_actualizar.setEnabled(not loading)
-        self.btn_configuracion.setEnabled(not loading)
         
         # Estados de botones de acción
         selected = self.tabla_inventario.currentRow() >= 0
@@ -510,7 +458,7 @@ class InventarioView(QWidget):
                 self.lbl_valor_total.valor_label.setText(f"${valor_total:,.2f}")
                 
         except Exception as e:
-            show_error(self, f"Error actualizando estadísticas: {e}")
+            show_error(self, "Error de Estadísticas", f"Error actualizando estadísticas: {e}")
 
     def cargar_productos_en_tabla(self, productos):
         """Carga productos en la tabla con estilos modernos."""
@@ -591,7 +539,7 @@ class InventarioView(QWidget):
                 self.tabla_inventario.setCellWidget(fila, 7, btn_acciones)
                 
         except Exception as e:
-            show_error(self, f"Error cargando productos en tabla: {e}")
+            show_error(self, "Error de Tabla", f"Error cargando productos en tabla: {e}")
 
     def mostrar_detalles_producto(self, producto_id):
         """Muestra los detalles de un producto."""
@@ -610,14 +558,14 @@ class InventarioView(QWidget):
                     📅 Última Actualización: {producto.get('fecha_actualizacion', 'N/A')}
                     """
                     
-                    show_success(self, f"Detalles del Producto:\n{detalles}")
+                    show_success(self, "Detalles del Producto", f"{detalles}")
                     
         except Exception as e:
-            show_error(self, f"Error mostrando detalles del producto: {e}")
+            show_error(self, "Error de Producto", f"Error mostrando detalles del producto: {e}")
 
     def _on_dangerous_content(self, campo, contenido):
         """Maneja detección de contenido peligroso XSS."""
-        show_warning(self, f"⚠️ Contenido potencialmente peligroso detectado en {campo}: {contenido[:50]}...")
+        show_warning(self, "Contenido Peligroso", f"⚠️ Contenido potencialmente peligroso detectado en {campo}: {contenido[:50]}...")
 
     def obtener_producto_seleccionado(self):
         """Obtiene los datos del producto seleccionado."""
@@ -630,34 +578,8 @@ class InventarioView(QWidget):
         return None
 
     def cargar_inventario_en_tabla(self, productos):
-        """Carga los productos en la tabla."""
-        self.tabla_inventario.setRowCount(len(productos))
-
-        for row, producto in enumerate(productos):
-            self.tabla_inventario.setItem(
-                row, 0, QTableWidgetItem(str(producto.get("codigo", "")))
-            )
-            self.tabla_inventario.setItem(
-                row, 1, QTableWidgetItem(str(producto.get("descripcion", "")))
-            )
-            self.tabla_inventario.setItem(
-                row, 2, QTableWidgetItem(str(producto.get("categoria", "")))
-            )
-            self.tabla_inventario.setItem(
-                row, 3, QTableWidgetItem(str(producto.get("stock_actual", "")))
-            )
-            self.tabla_inventario.setItem(
-                row, 4, QTableWidgetItem(f"${producto.get('precio_unitario', 0):.2f}")
-            )
-            self.tabla_inventario.setItem(
-                row, 5, QTableWidgetItem(str(producto.get("estado", "")))
-            )
-
-            # Botón de acciones
-            btn_editar = QPushButton("Editar")
-            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
-            self.tabla_inventario.setCellWidget(row, 6, btn_editar)
-
+        """Método alternativo para cargar productos en la tabla."""
+        self.cargar_productos_en_tabla(productos)
 
     def crear_controles_paginacion(self):
         """Crea los controles de paginación"""
@@ -737,7 +659,7 @@ class InventarioView(QWidget):
     
     def ir_a_pagina(self, pagina):
         """Va a una página específica"""
-        if hasattr(self.controller, 'cargar_pagina'):
+        if hasattr(self, 'controller') and self.controller and hasattr(self.controller, 'cargar_pagina'):
             self.controller.cargar_pagina(pagina)
     
     def pagina_anterior(self):
@@ -767,7 +689,7 @@ class InventarioView(QWidget):
     
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página"""
-        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
+        if hasattr(self, 'controller') and self.controller and hasattr(self.controller, 'cambiar_registros_por_pagina'):
             self.controller.cambiar_registros_por_pagina(int(registros))
 
     def set_controller(self, controller):

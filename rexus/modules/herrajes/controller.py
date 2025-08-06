@@ -11,6 +11,7 @@ from rexus.core.auth_manager import auth_required, admin_required, manager_requi
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 from .model import HerrajesModel
+from .inventario_integration import HerrajesInventarioIntegration
 
 class HerrajesController(QObject):
     """Controlador para la gestión de herrajes."""
@@ -35,6 +36,9 @@ class HerrajesController(QObject):
             
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
+        
+        # Inicializar integración con inventario
+        self.integracion_inventario = HerrajesInventarioIntegration(db_connection)
 
         # Conectar señales si la vista está disponible
         if self.view:
@@ -158,7 +162,8 @@ class HerrajesController(QObject):
                 self.view.show_error(f"Error asignando herraje: {e}")
 
     @pyqtSlot(int, str, list)
-    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):"""Crea un pedido de herrajes para una obra."""
+    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
+        """Crea un pedido de herrajes para una obra."""
         try:
             if self.model:
                 pedido_id = self.model.crear_pedido_obra(
@@ -234,7 +239,8 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             if self.view and hasattr(self.view, "show_error"):
                 self.view.show_error(f"Error mostrando estadísticas: {e}")
 
-    def actualizar_datos(self):"""Actualiza todos los datos de la vista."""
+    def actualizar_datos(self):
+        """Actualiza todos los datos de la vista."""
         self.cargar_datos_iniciales()
 
     def get_herrajes_data(self):
@@ -394,3 +400,192 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             # Cerrar conexiones, etc.
         except Exception as e:
             print(f"[ERROR HERRAJES CONTROLLER] Error en cleanup: {e}")
+    
+    # ========================================
+    # MÉTODOS DE INTEGRACIÓN CON INVENTARIO
+    # ========================================
+    
+    def sincronizar_con_inventario(self):
+        """Sincroniza herrajes con el inventario general."""
+        try:
+            exito, mensaje, stats = self.integracion_inventario.sincronizar_stock_herrajes()
+            
+            if exito:
+                self.mostrar_exito(f"Sincronización completada:\n{mensaje}")
+                self.cargar_datos_iniciales()  # Refrescar vista
+                
+                # Mostrar estadísticas detalladas
+                if stats:
+                    detalle = f"""
+Estadísticas de sincronización:
+• Herrajes procesados: {stats.get('herrajes_sincronizados', 0)}
+• Nuevos en inventario: {stats.get('herrajes_creados', 0)}
+• Actualizados: {stats.get('herrajes_actualizados', 0)}
+• Errores: {stats.get('errores', 0)}
+                    """
+                    self.mostrar_info(detalle)
+            else:
+                self.mostrar_error(f"Error en sincronización: {mensaje}")
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error sincronizando: {e}")
+            self.mostrar_error(f"Error sincronizando con inventario: {str(e)}")
+    
+    def transferir_a_inventario(self, herraje_id: int, cantidad: int):
+        """Transfiere herrajes al inventario general."""
+        try:
+            if not herraje_id or cantidad <= 0:
+                self.mostrar_advertencia("Datos de transferencia inválidos")
+                return
+                
+            # Confirmar transferencia
+            herraje = self.obtener_herraje_por_id(herraje_id)
+            if not herraje:
+                self.mostrar_error("Herraje no encontrado")
+                return
+            
+            respuesta = QMessageBox.question(
+                self.view,
+                "Confirmar Transferencia",
+                f"¿Transferir {cantidad} unidades de '{herraje.get('descripcion', 'N/A')}' al inventario general?\n\n"
+                f"Esta acción reducirá el stock de herrajes.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if respuesta == QMessageBox.StandardButton.Yes:
+                exito, mensaje = self.integracion_inventario.transferir_herraje_a_inventario(
+                    herraje_id, cantidad
+                )
+                
+                if exito:
+                    self.mostrar_exito(mensaje)
+                    self.cargar_datos_iniciales()
+                else:
+                    self.mostrar_error(mensaje)
+                    
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error en transferencia: {e}")
+            self.mostrar_error(f"Error en transferencia: {str(e)}")
+    
+    def crear_reserva_para_obra(self, herraje_id: int, obra_id: int, cantidad: int, observaciones: str = ""):
+        """Crea una reserva de herraje para una obra específica."""
+        try:
+            if not herraje_id or not obra_id or cantidad <= 0:
+                self.mostrar_advertencia("Datos de reserva inválidos")
+                return
+                
+            exito, mensaje = self.integracion_inventario.crear_reserva_herraje(
+                herraje_id, obra_id, cantidad, observaciones
+            )
+            
+            if exito:
+                self.mostrar_exito(mensaje)
+                self.cargar_datos_iniciales()
+            else:
+                self.mostrar_error(mensaje)
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error creando reserva: {e}")
+            self.mostrar_error(f"Error creando reserva: {str(e)}")
+    
+    def mostrar_resumen_integracion(self):
+        """Muestra el resumen del estado de integración."""
+        try:
+            resumen = self.integracion_inventario.obtener_resumen_integracion()
+            
+            # Crear mensaje informativo
+            mensaje = f"""
+RESUMEN INTEGRACIÓN HERRAJES-INVENTARIO
+
+📊 Estado General:
+• Herrajes totales: {resumen.get('herrajes_total', 0)}
+• En inventario general: {resumen.get('herrajes_en_inventario', 0)}
+• Reservas activas: {resumen.get('reservas_activas', 0)}
+• Valor total herrajes: ${resumen.get('valor_total_herrajes', 0.0):,.2f}
+
+"""
+            
+            # Añadir discrepancias si existen
+            discrepancias = resumen.get('discrepancias', [])
+            if discrepancias:
+                mensaje += f"\n⚠️ Discrepancias encontradas ({len(discrepancias)}):\n"
+                for disc in discrepancias[:5]:  # Mostrar máximo 5
+                    mensaje += f"• {disc['codigo']}: Stock Herrajes={disc['stock_herrajes']}, Stock Inventario={disc['stock_inventario']}\n"
+                if len(discrepancias) > 5:
+                    mensaje += f"... y {len(discrepancias) - 5} más\n"
+            else:
+                mensaje += "\n✅ Sin discrepancias de stock\n"
+            
+            # Mostrar resumen
+            msg_box = QMessageBox()
+            msg_box.setWindowTitle("Resumen Integración Herrajes-Inventario")
+            msg_box.setText(mensaje)
+            msg_box.setIcon(QMessageBox.Icon.Information)
+            
+            # Añadir botones para acciones adicionales
+            btn_sincronizar = msg_box.addButton("Sincronizar", QMessageBox.ButtonRole.ActionRole)
+            btn_corregir = msg_box.addButton("Corregir Discrepancias", QMessageBox.ButtonRole.ActionRole)
+            msg_box.addButton("Cerrar", QMessageBox.ButtonRole.RejectRole)
+            
+            msg_box.exec()
+            
+            # Procesar acción del usuario
+            if msg_box.clickedButton() == btn_sincronizar:
+                self.sincronizar_con_inventario()
+            elif msg_box.clickedButton() == btn_corregir and discrepancias:
+                self.corregir_discrepancias()
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error mostrando resumen: {e}")
+            self.mostrar_error(f"Error obteniendo resumen de integración: {str(e)}")
+    
+    def corregir_discrepancias(self):
+        """Corrige las discrepancias de stock entre herrajes e inventario."""
+        try:
+            # Confirmar acción
+            respuesta = QMessageBox.question(
+                self.view,
+                "Confirmar Corrección",
+                "¿Corregir automáticamente las discrepancias de stock?\n\n"
+                "Se usará el stock de herrajes como fuente de verdad.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if respuesta == QMessageBox.StandardButton.Yes:
+                exito, mensaje, correcciones = self.integracion_inventario.corregir_discrepancias()
+                
+                if exito:
+                    self.mostrar_exito(f"{mensaje}")
+                    self.cargar_datos_iniciales()
+                else:
+                    self.mostrar_error(mensaje)
+                    
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error corrigiendo discrepancias: {e}")
+            self.mostrar_error(f"Error corrigiendo discrepancias: {str(e)}")
+    
+    def exportar_herrajes_a_inventario(self):
+        """Exporta todos los herrajes al inventario general."""
+        try:
+            # Confirmar exportación masiva
+            respuesta = QMessageBox.question(
+                self.view,
+                "Confirmar Exportación",
+                "¿Exportar todos los herrajes activos al inventario general?\n\n"
+                "Esta operación puede tomar tiempo dependiendo de la cantidad de herrajes.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+            
+            if respuesta == QMessageBox.StandardButton.Yes:
+                self.sincronizar_con_inventario()  # La sincronización es equivalente
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES CONTROLLER] Error en exportación: {e}")
+            self.mostrar_error(f"Error exportando herrajes: {str(e)}")
+    
+    def get_integration_service(self):
+        """Retorna el servicio de integración para uso externo."""
+        return self.integracion_inventario

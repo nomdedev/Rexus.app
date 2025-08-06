@@ -36,13 +36,15 @@ from PyQt6.QtWidgets import (
     QLabel,
     QLineEdit,
     QPushButton,
+    QSpinBox,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
-,
-    QSpinBox,
-    QLabel)
+)
+
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.utils.security import SecurityUtils
@@ -71,7 +73,7 @@ class PedidosView(QWidget):
         layout.addWidget(control_panel)
         
         # Tabla principal
-        self.tabla_principal = QTableWidget()
+        self.tabla_principal = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
         
