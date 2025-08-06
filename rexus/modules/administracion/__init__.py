@@ -1,7 +1,7 @@
-"""Módulo de Contabilidad"""
+"""Módulo de Administracion"""
 
-from .controller import ContabilidadController
-from .model import ContabilidadModel
-from .view import ContabilidadView
+from .controller import AdministracionController
+from .model import AdministracionModel
+from .view import AdministracionView
 
-__all__ = ["ContabilidadModel", "ContabilidadView", "ContabilidadController"]
+__all__ = ["AdministracionModel", "AdministracionView", "AdministracionController"]

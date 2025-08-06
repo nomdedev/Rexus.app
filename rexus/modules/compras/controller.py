@@ -10,7 +10,7 @@ from datetime import date, datetime
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.utils.message_system import show_success, show_error, show_warning
-from rexus.core.auth_manager import AuthManager
+from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
 
@@ -74,7 +74,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error cargando datos iniciales: {e}")
             self.mostrar_error("Error cargando datos iniciales", str(e))
 
-    @auth_required(permission='CREATE')
+    @auth_required
     def crear_orden(self, datos_orden):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
@@ -115,7 +115,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
 
-    @auth_required(permission='UPDATE')
+    @auth_required
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
@@ -220,7 +220,7 @@ class ComprasController(QObject):
                 "proveedores_activos": [],
             }
 
-    @auth_required(permission='UPDATE')
+    @auth_required
     def actualizar_vista(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
@@ -244,7 +244,7 @@ class ComprasController(QObject):
         except Exception as e:
             print(f"[ERROR COMPRAS CONTROLLER] Error actualizando vista: {e}")
 
-    @auth_required(permission='MANAGE')
+    @admin_required
     def validar_datos_orden(self, datos):
         """
         Valida los datos de una orden antes de crearla.
@@ -327,7 +327,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
 
-    @auth_required(permission='CREATE')
+    @auth_required
     def crear_proveedor(self, datos_proveedor):
         """
         Crea un nuevo proveedor.
@@ -429,7 +429,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo items: {e}")
             return []
 
-    @auth_required(permission='CREATE')
+    @auth_required
     def agregar_item_compra(self, datos_item):
         """
         Agrega un item a una orden de compra.
@@ -509,7 +509,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS DE UTILIDAD ===
 
-    @auth_required(permission='EXPORT')
+    @manager_required
     def generar_reporte_completo(self):
         """
         Genera un reporte completo del módulo de compras.

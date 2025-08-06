@@ -15,6 +15,8 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from rexus.core.auth_manager import admin_required, auth_required, manager_required
+
 # Configurar logger para el módulo
 logger = logging.getLogger(__name__)
 

@@ -1,11 +1,14 @@
 """Controlador de Obras"""
 
 import datetime
-from rexus.core.auth_manager import AuthManager, auth_required
 from typing import Any, Dict, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt6.QtWidgets import QTableWidgetItem
+
+from rexus.core.auth_manager import AuthManager, admin_required, auth_required
+# Importar sistema moderno de mensajes
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 
 
 class ObrasController(QObject):
@@ -71,23 +74,13 @@ class ObrasController(QObject):
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error mostrando formulario: {e}")
 
-    @auth_required(permission='CREATE')
-    def agregar_obra(self, datos_obra:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('agregar_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]) -> bool:
+    @auth_required
+    def agregar_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """Alias para crear_obra - usado por la vista del diálogo."""
         return self.crear_obra(datos_obra)
 
-    @auth_required(permission='CREATE')
-    def crear_obra(self, datos_obra:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]) -> bool:
+    @auth_required
+    def crear_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """
         Crea una nueva obra con los datos proporcionados.
 
@@ -126,7 +119,7 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error creando obra: {str(e)}")
             return False
 
-    @auth_required(permission='UPDATE')
+    @auth_required
     def editar_obra_seleccionada(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -153,30 +146,16 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error editando obra: {e}")
             self.mostrar_mensaje_error(f"Error editando obra: {str(e)}")
 
-    @auth_required(permission='UPDATE')
-    def actualizar_obra(self, obra_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, datos_obra: Dict[str, Any]) -> bool:
-        """
-        Actualiza una obra existente.
-
-        Args:
-            obra_id: ID de la obra a actualizar
-            datos_obra: Nuevos datos de la obra
-
-        Returns:
-            bool: True si se actualizó exitosamente
-        """
+    @auth_required
+    def actualizar_obra(self, obra_id: int, datos_actualizados: Dict[str, Any]) -> bool:
+        """Actualiza una obra existente con nuevos datos."""
         try:
-            if not self.validar_datos_obra(datos_obra, es_actualizacion=True):
+            if not self.validar_datos_obra(datos_actualizados, es_actualizacion=True):
                 return False
 
-            datos_obra["usuario_modificacion"] = self.usuario_actual
+            datos_actualizados["usuario_modificacion"] = self.usuario_actual
 
-            exito, mensaje = self.model.actualizar_obra(obra_id, datos_obra)
+            exito, mensaje = self.model.actualizar_obra(obra_id, datos_actualizados)
 
             if exito:
                 self.mostrar_mensaje_exito(mensaje)
@@ -197,7 +176,7 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error actualizando obra: {str(e)}")
             return False
 
-    @auth_required(permission='DELETE')
+    @admin_required
     def eliminar_obra_seleccionada(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -213,10 +192,9 @@ class ObrasController(QObject):
                 )
                 return
 
-            # Confirmar eliminación
-            respuesta = QMessageBox.question(
+            # Confirmar eliminación con sistema moderno
+            respuesta = ask_question(
                 self.view,
-                "Confirmar eliminación",
                 f"¿Está seguro de eliminar la obra '{obra_seleccionada['codigo']}'?\n\n"
                 "Esta acción no se puede deshacer.",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
@@ -292,7 +270,7 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error filtrando obras: {e}")
             self.mostrar_mensaje_error(f"Error filtrando obras: {str(e)}")
 
-    @auth_required(permission='UPDATE')
+    @auth_required
     def actualizar_estadisticas(self):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -307,7 +285,7 @@ class ObrasController(QObject):
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error actualizando estadísticas: {e}")
 
-    @auth_required(permission='MANAGE')
+    @auth_required
     def validar_datos_obra(
         self, datos_obra: Dict[str, Any], es_actualizacion: bool = False
     ) -> bool:
@@ -390,13 +368,13 @@ class ObrasController(QObject):
         print(f"[OBRAS CONTROLLER] Usuario actual: {usuario}")
 
     def mostrar_mensaje_exito(self, mensaje: str):
-        """Muestra un mensaje de éxito."""
-        QMessageBox.information(self.view, "Éxito", mensaje)
+        """Muestra un mensaje de éxito con sistema moderno."""
+        show_success(self.view, mensaje)
 
     def mostrar_mensaje_error(self, mensaje: str):
-        """Muestra un mensaje de error."""
-        QMessageBox.critical(self.view, "Error", mensaje)
+        """Muestra un mensaje de error con sistema moderno."""
+        show_error(self.view, mensaje)
 
     def mostrar_mensaje_advertencia(self, mensaje: str):
-        """Muestra un mensaje de advertencia."""
-        QMessageBox.warning(self.view, "Advertencia", mensaje)
+        """Muestra un mensaje de advertencia con sistema moderno."""
+        show_warning(self.view, mensaje)

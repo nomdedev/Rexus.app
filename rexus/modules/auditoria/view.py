@@ -1,4 +1,3 @@
-
 """
 MIT License
 
@@ -22,550 +21,215 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Vista de Auditoría - Interfaz de usuario para el sistema de auditoría y monitoreo
+Vista de Auditoria - Interfaz de auditoría
 """
 
-# 🔒 XSS Protection Added - Validate all user inputs
-# Use SecurityUtils.sanitize_input() for text fields
-# Use SecurityUtils.validate_email() for email fields
-# XSS Protection Added
+import logging
 
-import datetime
-
-from PyQt6.QtCore import QDate, Qt, pyqtSignal
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-
-from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
     QComboBox,
-    QDateEdit,
     QFrame,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
     QLabel,
     QLineEdit,
-    QMessageBox,
     QPushButton,
-    QSplitter,
     QTableWidget,
     QTableWidgetItem,
-    QTabWidget,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
+from rexus.utils.message_system import show_error, show_success, show_warning
+from rexus.utils.security import SecurityUtils
+from rexus.utils.xss_protection import FormProtector, XSSProtection
+
 
 class AuditoriaView(QWidget):
-    """Vista principal del módulo de auditoría."""
+    """Vista principal del módulo de auditoria."""
 
     # Señales
-    filtrar_solicitud = pyqtSignal(dict)
-    exportar_solicitud = pyqtSignal(str)
-    limpiar_solicitud = pyqtSignal(int)
+    datos_actualizados = pyqtSignal()
+    error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        # Inicializar protección XSS
-        self.form_protector = FormProtector(self)
-        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
-        
         super().__init__()
+        self.controller = None
+        self.form_protector = None
         self.init_ui()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
-        self.setWindowTitle("Auditoría del Sistema")
+        layout = QVBoxLayout(self)
 
-        # Layout principal
-        main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(20, 20, 20, 20)
-        main_layout.setSpacing(15)
+        # Panel de control
+        control_panel = self.crear_panel_control()
+        layout.addWidget(control_panel)
 
-        # Título
-        title_label = QLabel("📊 Auditoría del Sistema")
-        title_label.setObjectName("titleLabel")
-        title_label.setStyleSheet("""
-            QLabel#titleLabel {
-                font-size: 24px;
-                font-weight: bold;
-                color: #2c3e50;
-                margin-bottom: 10px;
-            }
-        """)
-        main_layout.addWidget(title_label)
+        # Tabla principal
+        self.tabla_principal = QTableWidget()
+        self.configurar_tabla()
+        layout.addWidget(self.tabla_principal)
 
-        # Crear tabs
-        tab_widget = QTabWidget()
-        tab_widget.setStyleSheet("""
-            QTabWidget::pane {
-                border: 1px solid #bdc3c7;
+        # Aplicar estilo
+        self.aplicar_estilo()
+
+        # Inicializar protección XSS
+        self.init_xss_protection()
+
+    def init_xss_protection(self):
+        """Inicializa la protección XSS para los campos del formulario."""
+        try:
+            self.form_protector = FormProtector()
+
+            # Proteger campos si existen
+            if hasattr(self, "input_busqueda"):
+                self.form_protector.protect_field(self.input_busqueda, "busqueda")
+
+        except Exception as e:
+            logging.error(f"Error inicializando protección XSS: {e}")
+
+    def crear_panel_control(self):
+        """Crea el panel de control superior."""
+        panel = QFrame()
+        panel.setFrameStyle(QFrame.Shape.Box)
+        panel.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #ffffff, stop:1 #f8f9fa);
+                border: 1px solid #dee2e6;
                 border-radius: 8px;
-                background: white;
-            }
-            QTabBar::tab {
-                background: #ecf0f1;
-                border: 1px solid #bdc3c7;
-                padding: 8px 16px;
-                margin-right: 2px;
-                border-radius: 4px 4px 0 0;
-            }
-            QTabBar::tab:selected {
-                background: #3498db;
-                color: white;
+                padding: 15px;
             }
         """)
 
-        # Tab de registros
-        self.tab_registros = self._create_registros_tab()
-        tab_widget.addTab(self.tab_registros, "📋 Registros")
+        layout = QHBoxLayout(panel)
 
-        # Tab de estadísticas
-        self.tab_estadisticas = self._create_estadisticas_tab()
-        tab_widget.addTab(self.tab_estadisticas, "📈 Estadísticas")
+        # Botón Nuevo
+        self.btn_nuevo = QPushButton("Nuevo")
+        self.btn_nuevo.clicked.connect(self.nuevo_registro)
+        layout.addWidget(self.btn_nuevo)
 
-        main_layout.addWidget(tab_widget)
+        # Campo de búsqueda
+        self.input_busqueda = QLineEdit()
+        self.input_busqueda.setPlaceholderText("Buscar...")
+        self.input_busqueda.returnPressed.connect(self.buscar)
+        layout.addWidget(self.input_busqueda)
 
-    def _create_registros_tab(self):
-        """Crea la pestaña de registros de auditoría."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
+        # Botón buscar
+        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar.clicked.connect(self.buscar)
+        layout.addWidget(self.btn_buscar)
 
-        # Panel de filtros
-        filters_group = QGroupBox("🔍 Filtros de Búsqueda")
-        filters_layout = QVBoxLayout(filters_group)
+        # Botón actualizar
+        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar.clicked.connect(self.actualizar_datos)
+        layout.addWidget(self.btn_actualizar)
 
-        # Primera fila de filtros
-        filter_row1 = QHBoxLayout()
+        return panel
 
-        # Filtro por fechas
-        filter_row1.addWidget(QLabel("Desde:"))
-        self.fecha_inicio = QDateEdit()
-        self.fecha_inicio.setDate(QDate.currentDate().addDays(-30))
-        self.fecha_inicio.setCalendarPopup(True)
-        filter_row1.addWidget(self.fecha_inicio)
-
-        filter_row1.addWidget(QLabel("Hasta:"))
-        self.fecha_fin = QDateEdit()
-        self.fecha_fin.setDate(QDate.currentDate())
-        self.fecha_fin.setCalendarPopup(True)
-        filter_row1.addWidget(self.fecha_fin)
-
-        # Filtro por usuario
-        filter_row1.addWidget(QLabel("Usuario:"))
-        self.filtro_usuario = QLineEdit()
-        self.filtro_usuario.setAccessibleName('Filtro Usuario')
-        self.filtro_usuario.setPlaceholderText("Nombre de usuario...")
-        filter_row1.addWidget(self.filtro_usuario)
-
-        # Proteger campos contra XSS
-        self.form_protector.protect_field(self.filtro_usuario, "filtro_usuario", 100)
-
-        filters_layout.addLayout(filter_row1)
-
-        # Segunda fila de filtros
-        filter_row2 = QHBoxLayout()
-
-        # Filtro por módulo
-        filter_row2.addWidget(QLabel("Módulo:"))
-        self.filtro_modulo = QComboBox()
-        self.filtro_modulo.addItems(
-            [
-                "Todos",
-                "Inventario",
-                "Obras",
-                "Logística",
-                "Herrajes",
-                "Pedidos",
-                "Usuarios",
-                "Configuración",
-                "Auditoría",
-                "Contabilidad",
-                "Mantenimiento",
-                "Vidrios",
-            ]
-        )
-        filter_row2.addWidget(self.filtro_modulo)
-
-        # Filtro por criticidad
-        filter_row2.addWidget(QLabel("Criticidad:"))
-        self.filtro_criticidad = QComboBox()
-        self.filtro_criticidad.addItems(["Todas", "BAJA", "MEDIA", "ALTA", "CRÍTICA"])
-        filter_row2.addWidget(self.filtro_criticidad)
-
-        # Botones de acción
-        btn_filtrar = QPushButton("🔍 Filtrar")
-        btn_filtrar.setObjectName("primaryButton")
-        btn_filtrar.clicked.connect(self._emit_filtrar)
-        filter_row2.addWidget(btn_filtrar)
-
-        btn_limpiar_filtros = QPushButton("🗑️ Limpiar")
-        btn_limpiar_filtros.clicked.connect(self._limpiar_filtros)
-        filter_row2.addWidget(btn_limpiar_filtros)
-
-        filter_row2.addStretch()
-
-        filters_layout.addLayout(filter_row2)
-        layout.addWidget(filters_group)
-
-        # Tabla de registros
-        self.tabla_registros = QTableWidget()
-        self.tabla_registros.setColumnCount(8)
-        self.tabla_registros.setHorizontalHeaderLabels(
-            [
-                "Fecha/Hora",
-                "Usuario",
-                "Módulo",
-                "Acción",
-                "Descripción",
-                "Tabla",
-                "Criticidad",
-                "Resultado",
-            ]
+    def configurar_tabla(self):
+        """Configura la tabla principal."""
+        self.tabla_principal.setColumnCount(5)
+        self.tabla_principal.setHorizontalHeaderLabels(
+            ["ID", "Nombre", "Descripción", "Estado", "Acciones"]
         )
 
-        # Configurar tabla
-        header = self.tabla_registros.horizontalHeader()
-        if header is not None:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(2, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(3, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(4, QHeaderView.ResizeMode.Stretch)
-            header.setSectionResizeMode(5, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(6, QHeaderView.ResizeMode.ResizeToContents)
-            header.setSectionResizeMode(7, QHeaderView.ResizeMode.ResizeToContents)
+        # Configurar encabezados
+        header = self.tabla_principal.horizontalHeader()
+        if header:
+            header.setStretchLastSection(True)
 
-        self.tabla_registros.setAlternatingRowColors(True)
-        self.tabla_registros.setSelectionBehavior(
+        self.tabla_principal.setAlternatingRowColors(True)
+        self.tabla_principal.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
-        self.tabla_registros.setStyleSheet("""
-            QTableWidget {
-                border: 1px solid #bdc3c7;
-                border-radius: 8px;
-                background-color: white;
-                gridline-color: #ecf0f1;
+
+    def aplicar_estilo(self):
+        """Aplica el estilo general."""
+        self.setStyleSheet(f"""
+            QWidget {
+            background - color: #f8f9fa;
+                font-family: 'Segoe UI', Arial, sans-serif;
             }
-            QTableWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #ecf0f1;
-            }
-            QTableWidget::item:selected {
-                background-color: #3498db;
+            QPushButton {
+            background - color: #e83e8c;
                 color: white;
-            }
-            QHeaderView::section {
-                background-color: #34495e;
-                color: white;
-                padding: 10px;
                 border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
                 font-weight: bold;
             }
+            QPushButton:hover {
+            opacity: 0.8;
+            }
+            QLineEdit, QComboBox {
+            border: 1px solid #ced4da;
+                border-radius: 4px;
+                padding: 8px;
+                font-size: 14px;
+            }
+            QTableWidget {
+            background - color: white;
+                gridline-color: #dee2e6;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
         """)
 
-        layout.addWidget(self.tabla_registros)
+    def nuevo_registro(self):
+        """Abre el diálogo para crear un nuevo registro."""
+        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
 
-        # Panel de acciones
-        actions_layout = QHBoxLayout()
+    def buscar(self):
+        """Busca registros según los criterios especificados."""
+        if self.controller:
+            filtros = {"busqueda": self.input_busqueda.text()}
+            self.controller.buscar(filtros)
 
-        btn_exportar = QPushButton("📁 Exportar CSV")
-        btn_exportar.clicked.connect(self._emit_exportar)
-        actions_layout.addWidget(btn_exportar)
+    def actualizar_datos(self):
+        """Actualiza los datos de la tabla."""
+        if self.controller:
+            self.controller.cargar_datos()
 
-        btn_limpiar_antiguos = QPushButton("🗑️ Limpiar Antiguos")
-        btn_limpiar_antiguos.clicked.connect(self._solicitar_limpiar)
-        actions_layout.addWidget(btn_limpiar_antiguos)
+    def cargar_datos_en_tabla(self, datos):
+        """Carga los datos en la tabla."""
+        self.tabla_principal.setRowCount(len(datos))
 
-        actions_layout.addStretch()
-
-        # Contador de registros
-        self.label_contador = QLabel("Registros: 0")
-        self.label_contador.setStyleSheet("font-weight: bold; color: #7f8c8d;")
-        actions_layout.addWidget(self.label_contador)
-
-        layout.addLayout(actions_layout)
-
-        return widget
-
-    def _create_estadisticas_tab(self):
-        """Crea la pestaña de estadísticas."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Panel de resumen
-        resumen_group = QGroupBox("📊 Resumen General (últimos 30 días)")
-        resumen_layout = QHBoxLayout(resumen_group)
-
-        # Tarjetas de estadísticas pequeñas
-        self.card_total = self._create_stat_card("Total Acciones", "0", "#3498db")
-        self.card_criticas = self._create_stat_card("Acciones Críticas", "0", "#e74c3c")
-        self.card_fallidas = self._create_stat_card("Acciones Fallidas", "0", "#f39c12")
-
-        # Agregar cards con espaciado
-        resumen_layout.addWidget(self.card_total)
-        resumen_layout.addSpacing(10)
-        resumen_layout.addWidget(self.card_criticas)
-        resumen_layout.addSpacing(10)
-        resumen_layout.addWidget(self.card_fallidas)
-        resumen_layout.addStretch()
-
-        layout.addWidget(resumen_group)
-
-        # Splitter para gráficos
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-
-        # Panel de módulos más activos
-        modulos_group = QGroupBox("📈 Módulos Más Activos")
-        modulos_layout = QVBoxLayout(modulos_group)
-
-        self.tabla_modulos = QTableWidget()
-        self.tabla_modulos.setColumnCount(2)
-        self.tabla_modulos.setHorizontalHeaderLabels(["Módulo", "Acciones"])
-        header = self.tabla_modulos.horizontalHeader()
-        if header is not None:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        modulos_layout.addWidget(self.tabla_modulos)
-
-        splitter.addWidget(modulos_group)
-
-        # Panel de usuarios más activos
-        usuarios_group = QGroupBox("👤 Usuarios Más Activos")
-        usuarios_layout = QVBoxLayout(usuarios_group)
-
-        self.tabla_usuarios = QTableWidget()
-        self.tabla_usuarios.setColumnCount(2)
-        self.tabla_usuarios.setHorizontalHeaderLabels(["Usuario", "Acciones"])
-        header = self.tabla_usuarios.horizontalHeader()
-        if header is not None:
-            header.setSectionResizeMode(0, QHeaderView.ResizeMode.Stretch)
-        usuarios_layout.addWidget(self.tabla_usuarios)
-
-        splitter.addWidget(usuarios_group)
-
-        layout.addWidget(splitter)
-
-        return widget
-
-    def _create_stat_card(self, title, value, color):
-        """Crea una tarjeta de estadística pequeña 40x40px."""
-        card = QFrame()
-        card.setFrameStyle(QFrame.Shape.Box)
-        card.setFixedSize(40, 40)
-        card.setStyleSheet(f"""
-            QFrame {{
-                border: 2px solid {color};
-                border-radius: 6px;
-                background-color: white;
-                margin: 2px;
-            }}
-            QLabel {{
-                border: none;
-                background: transparent;
-                margin: 0px;
-                padding: 0px;
-            }}
-        """)
-
-        layout = QVBoxLayout(card)
-        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.setContentsMargins(2, 2, 2, 2)
-        layout.setSpacing(5)
-
-        # Valor prominente
-        value_label = QLabel(value)
-        value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        value_label.setStyleSheet(
-            f"color: {color}; font-weight: bold; font-size: 12px;"
-        )
-        value_label.setObjectName("valueLabel")
-        layout.addWidget(value_label)
-
-        # Título más pequeño
-        title_label = QLabel(title[:3])  # Solo primeras 3 letras
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label.setStyleSheet(
-            f"color: {color}; font-weight: normal; font-size: 7px;"
-        )
-        layout.addWidget(title_label)
-
-        # Tooltip con el título completo
-        card.setToolTip(title)
-
-        return card
-
-    def _emit_filtrar(self):
-        """Emite la señal de filtrado con los parámetros."""
-        filtros = {
-            "fecha_inicio": self.fecha_inicio.date().toPython(),
-            "fecha_fin": self.fecha_fin.date().toPython(),
-            "usuario": self.filtro_usuario.text().strip(),
-            "modulo": self.filtro_modulo.currentText()
-            if self.filtro_modulo.currentText() != "Todos"
-            else "",
-            "criticidad": self.filtro_criticidad.currentText()
-            if self.filtro_criticidad.currentText() != "Todas"
-            else "",
-        }
-        self.filtrar_solicitud.emit(filtros)
-
-    def _limpiar_filtros(self):
-        """Limpia todos los filtros."""
-        self.fecha_inicio.setDate(QDate.currentDate().addDays(-30))
-        self.fecha_fin.setDate(QDate.currentDate())
-        self.filtro_usuario.clear()
-        self.filtro_modulo.setCurrentIndex(0)
-        self.filtro_criticidad.setCurrentIndex(0)
-
-    def _emit_exportar(self):
-        """Emite la señal de exportación."""
-        self.exportar_solicitud.emit("csv")
-
-    def _solicitar_limpiar(self):
-        """Solicita confirmación para limpiar registros antiguos."""
-        reply = QMessageBox.question(
-            self,
-            "Confirmar Limpieza",
-            "¿Desea eliminar registros de auditoría anteriores a 365 días?\n\n"
-            "Los registros críticos se conservarán.",
-            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-            QMessageBox.StandardButton.No,
-        )
-
-        if reply == QMessageBox.StandardButton.Yes:
-            self.limpiar_solicitud.emit(365)
-
-    def actualizar_registros(self, registros):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_registros'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-
-        """Actualiza la tabla de registros."""
-        self.tabla_registros.setRowCount(len(registros))
-
-        for i, registro in enumerate(registros):
-            # Formatear fecha
-            fecha_str = ""
-            if isinstance(registro.get("fecha_hora"), datetime.datetime):
-                fecha_str = registro["fecha_hora"].strftime("%d/%m/%Y %H:%M")
-            elif registro.get("fecha_hora"):
-                fecha_str = str(registro["fecha_hora"])
-
-            items = [
-                fecha_str,
-                registro.get("usuario", ""),
-                registro.get("modulo", ""),
-                registro.get("accion", ""),
-                registro.get("descripcion", ""),
-                registro.get("tabla_afectada", ""),
-                registro.get("nivel_criticidad", ""),
-                registro.get("resultado", ""),
-            ]
-
-            for j, item_text in enumerate(items):
-                item = QTableWidgetItem(str(item_text))
-
-                # Colorear según criticidad y resultado
-                if j == 6:  # Columna criticidad
-                    if item_text == "CRÍTICA":
-                        item.setBackground(QColor("#e74c3c"))
-                        item.setForeground(QColor("white"))
-                    elif item_text == "ALTA":
-                        item.setBackground(QColor("#f39c12"))
-                        item.setForeground(QColor("white"))
-
-                if j == 7:  # Columna resultado
-                    if item_text == "FALLIDO":
-                        item.setBackground(QColor("#e74c3c"))
-                        item.setForeground(QColor("white"))
-                    elif item_text == "EXITOSO":
-                        item.setBackground(QColor("#27ae60"))
-                        item.setForeground(QColor("white"))
-
-                self.tabla_registros.setItem(i, j, item)
-
-        # Actualizar contador
-        self.label_contador.setText(f"Registros:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
- {len(registros)}")
-
-    def actualizar_estadisticas(self, estadisticas):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadísticas mostradas."""
-        # Actualizar tarjetas de resumen
-        total = estadisticas.get("total_acciones", 0)
-        criticas = estadisticas.get("acciones_criticas", 0)
-        fallidas = estadisticas.get("acciones_fallidas", 0)
-
-        self.card_total.findChild(QLabel, "valueLabel").setText(str(total))
-        self.card_criticas.findChild(QLabel, "valueLabel").setText(str(criticas))
-        self.card_fallidas.findChild(QLabel, "valueLabel").setText(str(fallidas))
-
-        # Actualizar tabla de módulos
-        modulos = estadisticas.get("acciones_por_modulo", [])
-        self.tabla_modulos.setRowCount(len(modulos))
-
-        for i, modulo in enumerate(modulos):
-            self.tabla_modulos.setItem(i, 0, QTableWidgetItem(modulo["nombre"]))
-            self.tabla_modulos.setItem(i, 1, QTableWidgetItem(str(modulo["cantidad"])))
-
-        # Actualizar tabla de usuarios
-        usuarios = estadisticas.get("acciones_por_usuario", [])
-        self.tabla_usuarios.setRowCount(len(usuarios))
-
-        for i, usuario in enumerate(usuarios):
-            self.tabla_usuarios.setItem(i, 0, QTableWidgetItem(usuario["nombre"]))
-            self.tabla_usuarios.setItem(
-                i, 1, QTableWidgetItem(str(usuario["cantidad"]))
+        for row, registro in enumerate(datos):
+            self.tabla_principal.setItem(
+                row, 0, QTableWidgetItem(str(registro.get("id", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 1, QTableWidgetItem(str(registro.get("nombre", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 2, QTableWidgetItem(str(registro.get("descripcion", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 3, QTableWidgetItem(str(registro.get("estado", "")))
             )
 
-    def mostrar_mensaje(self, mensaje, tipo="info"):
-        """Muestra un mensaje al usuario."""
-        if tipo == "error":
-            QMessageBox.critical(self, "Error", mensaje)
-        elif tipo == "warning":
-            QMessageBox.warning(self, "Advertencia", mensaje)
-        elif tipo == "success":
-            QMessageBox.information(self, "Éxito", mensaje)
-        else:
-            QMessageBox.information(self, "Información", mensaje)
+            # Botón de acciones
+            btn_editar = QPushButton("Editar")
+            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
-    def _on_dangerous_content(self, field_name: str, content: str):
-        """Maneja la detección de contenido peligroso en formularios."""
-        from rexus.utils.security import log_security_event
-        from rexus.utils.message_system import show_warning
-        
-        # Log del evento de seguridad
-        log_security_event(
-            "XSS_ATTEMPT",
-            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
-            "unknown"
-        )
-        
-        # Mostrar advertencia al usuario
-        show_warning(
-            self,
-            "Contenido No Permitido",
-            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
-
-"
-            "El contenido ha sido automáticamente sanitizado por seguridad."
-        )
-    
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""
-        if hasattr(self, 'form_protector'):
+        if hasattr(self, "form_protector") and self.form_protector:
             return self.form_protector.get_sanitized_data()
         else:
-            return {}
+            # Fallback manual
+            datos = {}
+            if hasattr(self, "input_busqueda"):
+                datos["busqueda"] = XSSProtection.sanitize_text(
+                    self.input_busqueda.text()
+                )
+            return datos
+
+    def set_controller(self, controller):
+        """Establece el controlador para la vista."""
+        self.controller = controller
