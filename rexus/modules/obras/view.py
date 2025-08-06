@@ -81,7 +81,7 @@ class ObrasView(QWidget):
         )
 
         self.init_ui()
-        self.configurar_estilos()
+        style_manager.apply_module_theme(self)
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
@@ -90,8 +90,8 @@ class ObrasView(QWidget):
         layout_principal.setSpacing(10)
         layout_principal.setContentsMargins(10, 10, 10, 10)
 
-        # Título
-        self.crear_titulo(layout_principal)
+        # Título estandarizado
+        StandardComponents.create_title("🏢 Gestión de Obras", layout_principal)
 
         # Contenedor de vistas con QStackedWidget
         self.stacked_widget = QStackedWidget()
@@ -296,106 +296,34 @@ class ObrasView(QWidget):
         # Barra de herramientas
         toolbar_layout = QHBoxLayout()
         
-        # Botón nueva obra
-        self.btn_nueva_obra = QPushButton("➕ Nueva Obra")
-        self.btn_nueva_obra.setStyleSheet("""
-            QPushButton {
-                background-color: #27ae60;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #229954;
-            }
-            QPushButton:disabled {
-                background-color: #bdc3c7;
-                color: #7f8c8d;
-            }
-        """)
+        # Botón nueva obra estandarizado
+        self.btn_nueva_obra = StandardComponents.create_primary_button("➕ Nueva Obra")
         self.btn_nueva_obra.setToolTip("➕ Crear una nueva obra")
         toolbar_layout.addWidget(self.btn_nueva_obra)
 
-        # Botón editar obra
-        self.btn_editar_obra = QPushButton("✏️ Editar")
-        self.btn_editar_obra.setStyleSheet("""
-            QPushButton {
-                background-color: #f39c12;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #e67e22;
-            }
-            QPushButton:disabled {
-                background-color: #bdc3c7;
-                color: #7f8c8d;
-            }
-        """)
+        # Botón editar obra estandarizado
+        self.btn_editar_obra = StandardComponents.create_secondary_button("✏️ Editar")
         self.btn_editar_obra.setToolTip("✏️ Editar obra seleccionada")
         self.btn_editar_obra.setEnabled(False)
         toolbar_layout.addWidget(self.btn_editar_obra)
 
-        # Botón eliminar obra
-        self.btn_eliminar_obra = QPushButton("🗑️ Eliminar")
-        self.btn_eliminar_obra.setStyleSheet("""
-            QPushButton {
-                background-color: #e74c3c;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #c0392b;
-            }
-            QPushButton:disabled {
-                background-color: #bdc3c7;
-                color: #7f8c8d;
-            }
-        """)
+        # Botón eliminar obra estandarizado
+        self.btn_eliminar_obra = StandardComponents.create_danger_button("🗑️ Eliminar")
         self.btn_eliminar_obra.setToolTip("🗑️ Eliminar obra seleccionada")
         self.btn_eliminar_obra.setEnabled(False)
         toolbar_layout.addWidget(self.btn_eliminar_obra)
 
         toolbar_layout.addStretch()
         
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
-        self.btn_actualizar.setStyleSheet("""
-            QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: #5a6268;
-            }
-            QPushButton:disabled {
-                background-color: #bdc3c7;
-                color: #7f8c8d;
-            }
-        """)
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
         self.btn_actualizar.setToolTip("🔄 Actualizar lista de obras")
         toolbar_layout.addWidget(self.btn_actualizar)
 
         layout.addLayout(toolbar_layout)
 
-        # Tabla de obras
-        self.tabla_obras = QTableWidget()
+        # Tabla de obras estandarizada
+        self.tabla_obras = StandardComponents.create_standard_table()
         self.tabla_obras.setColumnCount(9)
         self.tabla_obras.setHorizontalHeaderLabels([
             "Código", "Nombre", "Cliente", "Responsable", 

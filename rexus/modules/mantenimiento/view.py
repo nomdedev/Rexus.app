@@ -45,6 +45,8 @@ from PyQt6.QtWidgets import (
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 
 class MantenimientoView(QWidget):
@@ -63,18 +65,24 @@ class MantenimientoView(QWidget):
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(10)
 
-        # Panel de control
-        control_panel = self.crear_panel_control()
+        # Título estandarizado
+        StandardComponents.create_title("🔧 Gestión de Mantenimiento", layout)
+
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
         layout.addWidget(control_panel)
 
-        # Tabla principal
-        self.tabla_principal = QTableWidget()
+        # Tabla estandarizada
+        self.tabla_principal = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
 
-        # Aplicar estilo
-        self.aplicar_estilo()
+        # Aplicar tema del módulo
+        style_manager.apply_module_theme(self)
 
         # Inicializar protección XSS
         self.init_xss_protection()
@@ -91,24 +99,12 @@ class MantenimientoView(QWidget):
         except Exception as e:
             logging.error(f"Error inicializando protección XSS: {e}")
 
-    def crear_panel_control(self):
-        """Crea el panel de control superior."""
-        panel = QFrame()
-        panel.setFrameStyle(QFrame.Shape.Box)
-        panel.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffffff, stop:1 #f8f9fa);
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 15px;
-            }
-        """)
-
+    def setup_control_panel(self, panel):
+        """Configura el panel de control con componentes estandarizados."""
         layout = QHBoxLayout(panel)
 
-        # Botón Nuevo
-        self.btn_nuevo = QPushButton("Nuevo")
+        # Botón Nuevo estandarizado
+        self.btn_nuevo = StandardComponents.create_primary_button("🔧 Nuevo Mantenimiento")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
 
@@ -118,17 +114,15 @@ class MantenimientoView(QWidget):
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
 
-        # Botón buscar
-        self.btn_buscar = QPushButton("Buscar")
+        # Botón buscar estandarizado
+        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
 
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("Actualizar")
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
-
-        return panel
 
     def configurar_tabla(self):
         """Configura la tabla principal."""
