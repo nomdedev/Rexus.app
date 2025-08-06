@@ -67,6 +67,8 @@ from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import XSSProtection, FormProtector
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 
 class UsuariosView(QWidget):
@@ -85,37 +87,31 @@ class UsuariosView(QWidget):
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(10)
         
-        # Panel de control
-        control_panel = self.crear_panel_control()
+        # Título estandarizado
+        StandardComponents.create_title("👥 Gestión de Usuarios", layout)
+        
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
         layout.addWidget(control_panel)
         
-        # Tabla de usuarios
-        self.tabla_usuarios = QTableWidget()
+        # Tabla estandarizada
+        self.tabla_usuarios = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_usuarios)
         
-        # Aplicar estilo
-        self.aplicar_estilo()
+        # Aplicar tema del módulo
+        style_manager.apply_module_theme(self)
     
-    def crear_panel_control(self):
-        """Crea el panel de control superior."""
-        panel = QFrame()
-        panel.setFrameStyle(QFrame.Shape.Box)
-        panel.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffffff, stop:1 #f8f9fa);
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 15px;
-            }
-        """)
-        
+    def setup_control_panel(self, panel):
+        """Configura el panel de control con componentes estandarizados."""
         layout = QHBoxLayout(panel)
         
-        # Botón Nuevo Usuario
-        self.btn_nuevo_usuario = QPushButton("Nuevo Usuario")
+        # Botón Nuevo Usuario estandarizado
+        self.btn_nuevo_usuario = StandardComponents.create_primary_button("👥 Nuevo Usuario")
         self.btn_nuevo_usuario.clicked.connect(self.nuevo_usuario)
         layout.addWidget(self.btn_nuevo_usuario)
         
@@ -125,17 +121,15 @@ class UsuariosView(QWidget):
         self.input_busqueda.returnPressed.connect(self.buscar_usuarios)
         layout.addWidget(self.input_busqueda)
         
-        # Botón buscar
-        self.btn_buscar = QPushButton("Buscar")
+        # Botón buscar estandarizado
+        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
         self.btn_buscar.clicked.connect(self.buscar_usuarios)
         layout.addWidget(self.btn_buscar)
         
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("Actualizar")
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
-        
-        return panel
     
     def configurar_tabla(self):
         """Configura la tabla de usuarios."""

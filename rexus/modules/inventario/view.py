@@ -66,6 +66,8 @@ from rexus.core.auth_manager import admin_required, auth_required, manager_requi
 from rexus.utils.message_system import show_error, show_success, show_warning, ask_question
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 
 class InventarioView(QWidget):
@@ -93,24 +95,25 @@ class InventarioView(QWidget):
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        # Título moderno
-        self.crear_titulo(layout)
+        # Título estandarizado
+        StandardComponents.create_title("📦 Gestión de Inventario", layout)
 
-        # Panel de control
-        control_panel = self.crear_panel_control()
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
         layout.addWidget(control_panel)
 
         # Panel de estadísticas
         stats_panel = self.crear_panel_estadisticas()
         layout.addWidget(stats_panel)
 
-        # Tabla de inventario
-        self.tabla_inventario = QTableWidget()
+        # Tabla estandarizada
+        self.tabla_inventario = StandardComponents.create_standard_table()
         self.configurar_tabla()
         layout.addWidget(self.tabla_inventario)
 
-        # Aplicar estilos modernos
-        self.configurar_estilos()
+        # Aplicar tema del módulo
+        style_manager.apply_module_theme(self)
 
     def crear_titulo(self, layout: QVBoxLayout):
         """Crea el título moderno de la vista."""
@@ -168,50 +171,12 @@ class InventarioView(QWidget):
 
         layout.addWidget(titulo_container)
 
-    def crear_panel_control(self):
-        """Crea el panel de control superior con botones modernos."""
-        panel = QGroupBox("🎛️ Panel de Control")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #28a745;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #28a745;
-            }
-        """)
-
+    def setup_control_panel(self, panel):
+        """Configura el panel de control con componentes estandarizados."""
         layout = QHBoxLayout(panel)
 
-        # Botón Nuevo Producto
-        self.btn_nuevo_producto = QPushButton("➕ Nuevo Producto")
-        self.btn_nuevo_producto.setStyleSheet("""
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 130px;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QPushButton:disabled {
-                background-color: #6c757d;
-                color: #adb5bd;
-            }
-        """)
+        # Botón Nuevo Producto estandarizado
+        self.btn_nuevo_producto = StandardComponents.create_primary_button("➕ Nuevo Producto")
         self.btn_nuevo_producto.setToolTip("➕ Crear un nuevo producto en el inventario")
         layout.addWidget(self.btn_nuevo_producto)
 
@@ -269,103 +234,27 @@ class InventarioView(QWidget):
         """)
         layout.addWidget(self.combo_categoria)
 
-        # Botón buscar
-        self.btn_buscar = QPushButton("🔍 Buscar")
-        self.btn_buscar.setStyleSheet("""
-            QPushButton {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #0069d9;
-            }
-            QPushButton:disabled {
-                background-color: #6c757d;
-                color: #adb5bd;
-            }
-        """)
+        # Botón buscar estandarizado
+        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
         self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         layout.addWidget(self.btn_buscar)
 
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
-        self.btn_actualizar.setStyleSheet("""
-            QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #545b62;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
         self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de inventario")
         layout.addWidget(self.btn_actualizar)
 
         # Separador y botones de acción
         layout.addStretch()
         
-        # Botón editar
-        self.btn_editar = QPushButton("✏️ Editar")
-        self.btn_editar.setStyleSheet("""
-            QPushButton {
-                background-color: #ffc107;
-                color: #212529;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #ffcd39;
-            }
-            QPushButton:disabled {
-                background-color: #6c757d;
-                color: #adb5bd;
-            }
-        """)
+        # Botón editar estandarizado
+        self.btn_editar = StandardComponents.create_secondary_button("✏️ Editar")
         self.btn_editar.setToolTip("✏️ Editar producto seleccionado")
         self.btn_editar.setEnabled(False)
         layout.addWidget(self.btn_editar)
 
-        # Botón eliminar
-        self.btn_eliminar = QPushButton("🗑️ Eliminar")
-        self.btn_eliminar.setStyleSheet("""
-            QPushButton {
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #c82333;
-            }
-            QPushButton:disabled {
-                background-color: #6c757d;
-                color: #adb5bd;
-            }
-        """)
+        # Botón eliminar estandarizado
+        self.btn_eliminar = StandardComponents.create_danger_button("🗑️ Eliminar")
         self.btn_eliminar.setToolTip("🗑️ Eliminar producto seleccionado")
         self.btn_eliminar.setEnabled(False)
         layout.addWidget(self.btn_eliminar)

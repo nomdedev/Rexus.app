@@ -21,11 +21,9 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-"""
 Vista de Compras
 
 Interfaz de usuario para el módulo de compras.
-"""
 """
 
 
@@ -36,6 +34,8 @@ from PyQt6.QtGui import QFont, QIcon
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 from rexus.utils.security import SecurityUtils
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -140,11 +140,12 @@ class ComprasView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
-        # Título moderno
-        self.crear_titulo(layout)
+        # Título estandarizado
+        StandardComponents.create_title("🛒 Gestión de Compras", layout)
 
-        # Panel de control
-        control_panel = self.crear_panel_control()
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
         layout.addWidget(control_panel)
 
         # Crear tabs
@@ -160,55 +161,18 @@ class ComprasView(QWidget):
         
         layout.addWidget(tab_widget)
 
-        # Aplicar estilos modernos
-        self.configurar_estilos()
+        # Aplicar tema del módulo
+        style_manager.apply_module_theme(self)
 
-    def crear_panel_control(self):
-        """Crea el panel de control superior con botones modernos."""
-        panel = QGroupBox("🎛️ Panel de Control")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #3498db;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #3498db;
-            }
-        """)
-
+    def setup_control_panel(self, panel):
+        """Configura el panel de control con componentes estandarizados."""
         layout = QHBoxLayout(panel)
 
-        # Botón Nueva Orden
-        self.btn_nueva_orden = QPushButton("➕ Nueva Orden")
-        self.btn_nueva_orden.setStyleSheet("""
-            QPushButton {
-                background-color: #3498db;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 120px;
-            }
-            QPushButton:hover {
-                background-color: #2980b9;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón Nueva Orden estandarizado
+        self.btn_nueva_orden = StandardComponents.create_primary_button("➕ Nueva Orden")
         self.btn_nueva_orden.setToolTip("➕ Crear una nueva orden de compra")
         self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
+        layout.addWidget(self.btn_nueva_orden)
 
         # Búsqueda
         self.input_busqueda = QLineEdit()
@@ -263,51 +227,13 @@ class ComprasView(QWidget):
         self.date_hasta.setCalendarPopup(True)
         self.date_hasta.dateChanged.connect(self.buscar_compras)
 
-        # Botón buscar
-        self.btn_buscar = QPushButton("🔍 Buscar")
-        self.btn_buscar.setStyleSheet("""
-            QPushButton {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #0069d9;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón buscar estandarizado
+        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
         self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         self.btn_buscar.clicked.connect(self.buscar_compras)
 
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
-        self.btn_actualizar.setStyleSheet("""
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_success_button("🔄 Actualizar")
         self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de órdenes")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
 
@@ -339,8 +265,8 @@ class ComprasView(QWidget):
         panel = QGroupBox("Órdenes de Compra")
         layout = QVBoxLayout(panel)
 
-        # Tabla de compras
-        self.tabla_compras = QTableWidget()
+        # Tabla de compras estandarizada
+        self.tabla_compras = StandardComponents.create_standard_table()
         self.tabla_compras.setColumnCount(10)
         self.tabla_compras.setHorizontalHeaderLabels(
             [
