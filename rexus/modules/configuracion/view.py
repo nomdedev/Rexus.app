@@ -45,6 +45,8 @@ from PyQt6.QtWidgets import (
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import XSSProtection, FormProtector
+from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 
 class ConfiguracionView(QWidget):
@@ -63,9 +65,14 @@ class ConfiguracionView(QWidget):
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setSpacing(10)
         
-        # Panel de control
-        control_panel = self.crear_panel_control()
+        # Título estandarizado
+        StandardComponents.create_title("Configuración del Sistema", layout)
+        
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
         layout.addWidget(control_panel)
         
         # Tabla principal

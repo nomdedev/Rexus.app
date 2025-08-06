@@ -44,6 +44,10 @@ except ImportError:
     SQLSecurityError = Exception
 
 
+class AdministracionModel(ContabilidadModel):
+    """Alias para compatibilidad con tests y controladores."""
+    pass
+
 class ContabilidadModel:
     """Modelo completo de administración y contabilidad con control de roles y auditoría."""
 

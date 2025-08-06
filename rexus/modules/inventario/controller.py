@@ -706,12 +706,14 @@ class InventarioController(QObject):
         except Exception as e:
             self.error_ocurrido.emit(f"Error al mostrar detalle: {str(e)}")
 
+    @auth_required
     def obtener_productos(self):
         """Obtiene todos los productos del inventario."""
         if self.model:
             return self.model.obtener_todos_productos()
         return []
 
+    @auth_required
     def obtener_productos_disponibles(self):
         """Obtiene productos disponibles para reserva."""
         if self.model:
