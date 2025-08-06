@@ -9,6 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
+from rexus.core.auth_manager import auth_required, admin_required, manager_required
 
 from .model import PedidosModel
 

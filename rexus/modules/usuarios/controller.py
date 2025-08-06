@@ -115,7 +115,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error cargando usuarios: {e}")
             self.mostrar_error(f"Error cargando usuarios: {str(e)}")
     
-    @auth_required(permission='CREATE')
+    @auth_required
     def crear_usuario(self, datos_usuario:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -149,7 +149,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error creando usuario: {e}")
             self.mostrar_error(f"Error creando usuario: {str(e)}")
     
-    @auth_required(permission='UPDATE')
+    @auth_required
     def actualizar_usuario(self, datos_usuario:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -187,7 +187,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error actualizando usuario: {e}")
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
     
-    @auth_required(permission='DELETE')
+    @admin_required
     def eliminar_usuario(self, usuario_id:
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
@@ -286,7 +286,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo permisos: {e}")
             return []
     
-    @auth_required(permission='MANAGE')
+    @admin_required
     def validar_datos_usuario(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
         """Valida los datos del usuario."""
         errores = []
@@ -546,7 +546,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error obteniendo estado de bloqueo: {e}")
             return {"error": str(e)}
     
-    @auth_required(permission='MANAGE')
+    @admin_required
     def registrar_auditoria(self, accion: str, modulo: str, detalles: Dict[str, Any]):
         """Registra una acción en el log de auditoría."""
         try:

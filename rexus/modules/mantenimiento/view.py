@@ -21,217 +21,215 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Vista de Mantenimiento
+Vista de Mantenimiento - Interfaz de mantenimiento
 """
-
-# 🔒 XSS Protection Added - Validate all user inputs
-# Use SecurityUtils.sanitize_input() for text fields
-# Use SecurityUtils.validate_email() for email fields
-# XSS Protection Added
 
 import logging
 
-from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtWidgets import (
+    QComboBox,
+    QFrame,
+    QGroupBox,
+    QHBoxLayout,
+    QHeaderView,
+    QLabel,
+    QLineEdit,
+    QPushButton,
+    QTableWidget,
+    QTableWidgetItem,
+    QVBoxLayout,
+    QWidget,
+)
 
-from rexus.utils.data_sanitizer import DataSanitizer
+from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
-from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
+from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 
 class MantenimientoView(QWidget):
-    """
-    Vista principal para la gestión de mantenimientos.
-    Permite mostrar el estado, feedback visual y cargar la vista completa.
-    """
+    """Vista principal del módulo de mantenimiento."""
+
+    # Señales
+    datos_actualizados = pyqtSignal()
+    error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        # Inicializar protección XSS
-        self.form_protector = FormProtector(self)
-        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
-        
         super().__init__()
-        self.label_feedback = None
-        self._feedback_timer = None
-        self.logger = logging.getLogger(__name__)
+        self.controller = None
+        self.form_protector = None
         self.init_ui()
 
     def init_ui(self):
-        # Intentar cargar la vista completa primero
+        """Inicializa la interfaz de usuario."""
+        layout = QVBoxLayout(self)
+
+        # Panel de control
+        control_panel = self.crear_panel_control()
+        layout.addWidget(control_panel)
+
+        # Tabla principal
+        self.tabla_principal = QTableWidget()
+        self.configurar_tabla()
+        layout.addWidget(self.tabla_principal)
+
+        # Aplicar estilo
+        self.aplicar_estilo()
+
+        # Inicializar protección XSS
+        self.init_xss_protection()
+
+    def init_xss_protection(self):
+        """Inicializa la protección XSS para los campos del formulario."""
         try:
-            self.logger.info("Iniciando carga de vista completa de mantenimiento")
-            from .view_completa import MantenimientoCompletaView
+            self.form_protector = FormProtector()
 
-            completa_view = MantenimientoCompletaView()
-
-            # Crear un layout para contener la vista completa
-            layout = QVBoxLayout(self)
-            layout.setContentsMargins(0, 0, 0, 0)
-
-            # Agregar label de feedback
-            self.label_feedback = QLabel("")
-            self.label_feedback.setObjectName("label_feedback")
-            self.label_feedback.setVisible(False)
-            self.label_feedback.setAccessibleName("Mensaje de feedback")
-            self.label_feedback.setAccessibleDescription(
-                "Mensajes de estado y feedback para el usuario"
-            )
-            self.label_feedback.setStyleSheet("""
-                QLabel[feedback="info"] { 
-                    color: #2980b9; background: #e8f4fd; 
-                    border: 1px solid #2980b9; border-radius: 4px; 
-                    padding: 8px; margin: 4px; font-weight: bold; 
-                }
-                QLabel[feedback="exito"] { 
-                    color: #27ae60; background: #edfcf1; 
-                    border: 1px solid #27ae60; border-radius: 4px; 
-                    padding: 8px; margin: 4px; font-weight: bold; 
-                }
-                QLabel[feedback="advertencia"] { 
-                    color: #f39c12; background: #fef9e7; 
-                    border: 1px solid #f39c12; border-radius: 4px; 
-                    padding: 8px; margin: 4px; font-weight: bold; 
-                }
-                QLabel[feedback="error"] { 
-                    color: #e74c3c; background: #fdeaea; 
-                    border: 1px solid #e74c3c; border-radius: 4px; 
-                    padding: 8px; margin: 4px; font-weight: bold; 
-                }
-                QLabel[feedback="cargando"] { 
-                    color: #8e44ad; background: #f4ecf7; 
-                    border: 1px solid #8e44ad; border-radius: 4px; 
-                    padding: 8px; margin: 4px; font-weight: bold; 
-                }
-            """)
-            layout.addWidget(self.label_feedback)
-            layout.addWidget(completa_view)
-
-            self.logger.info("Vista completa de mantenimiento cargada exitosamente")
+            # Proteger campos si existen
+            if hasattr(self, "input_busqueda"):
+                self.form_protector.protect_field(self.input_busqueda, "busqueda")
 
         except Exception as e:
-            self.logger.error(
-                f"Error cargando vista completa de mantenimiento: {str(e)}"
-            )
-            # Fallback a vista simple si hay problemas
-            layout = QVBoxLayout(self)
+            logging.error(f"Error inicializando protección XSS: {e}")
 
-            # Agregar label de feedback también al fallback
-            self.label_feedback = QLabel("")
-            self.label_feedback.setObjectName("label_feedback")
-            self.label_feedback.setVisible(False)
-            layout.addWidget(self.label_feedback)
-
-            title_label = QLabel("🔧 Mantenimiento")
-            title_label.setStyleSheet(
-                "font-size: 24px; font-weight: bold; color: #2c3e50;"
-            )
-            layout.addWidget(title_label)
-
-            error_label = QLabel("Vista completa no disponible. Usando vista básica.")
-            error_label.setStyleSheet("color: #e74c3c; font-style: italic;")
-            layout.addWidget(error_label)
-
-            print(f"Error cargando vista completa de mantenimiento: {e}")
-
-    def mostrar_mensaje(self, mensaje: str, tipo: str = "info"):
-        """Muestra un mensaje de feedback visual al usuario.
-
-        Args:
-            mensaje: El mensaje a mostrar
-            tipo: Tipo de mensaje ('info', 'exito', 'advertencia', 'error', 'cargando')
-        """
-        try:
-            self.logger.info(
-                f"Mostrando mensaje de feedback - Tipo: {tipo}, Mensaje: {mensaje}"
-            )
-
-            if not hasattr(self, "label_feedback") or self.label_feedback is None:
-                self.logger.warning("Label de feedback no disponible")
-                return
-
-            # Sanitizar mensaje de entrada
-            mensaje_limpio = (
-                DataSanitizer.sanitize_text(mensaje)
-                if hasattr(DataSanitizer, "sanitize_text")
-                else mensaje
-            )
-
-            iconos = {
-                "info": "ℹ️ ",
-                "exito": "✅ ",
-                "advertencia": "⚠️ ",
-                "error": "❌ ",
-                "cargando": "🔄 ",
+    def crear_panel_control(self):
+        """Crea el panel de control superior."""
+        panel = QFrame()
+        panel.setFrameStyle(QFrame.Shape.Box)
+        panel.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #ffffff, stop:1 #f8f9fa);
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                padding: 15px;
             }
-            icono = iconos.get(tipo, "ℹ️ ")
+        """)
 
-            self.label_feedback.clear()
-            self.label_feedback.setProperty("feedback", tipo)
-            self.label_feedback.setText(f"{icono}{mensaje_limpio}")
-            self.label_feedback.setVisible(True)
-            self.label_feedback.setAccessibleDescription(
-                f"Mensaje de feedback tipo {tipo}"
+        layout = QHBoxLayout(panel)
+
+        # Botón Nuevo
+        self.btn_nuevo = QPushButton("Nuevo")
+        self.btn_nuevo.clicked.connect(self.nuevo_registro)
+        layout.addWidget(self.btn_nuevo)
+
+        # Campo de búsqueda
+        self.input_busqueda = QLineEdit()
+        self.input_busqueda.setPlaceholderText("Buscar...")
+        self.input_busqueda.returnPressed.connect(self.buscar)
+        layout.addWidget(self.input_busqueda)
+
+        # Botón buscar
+        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar.clicked.connect(self.buscar)
+        layout.addWidget(self.btn_buscar)
+
+        # Botón actualizar
+        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar.clicked.connect(self.actualizar_datos)
+        layout.addWidget(self.btn_actualizar)
+
+        return panel
+
+    def configurar_tabla(self):
+        """Configura la tabla principal."""
+        self.tabla_principal.setColumnCount(5)
+        self.tabla_principal.setHorizontalHeaderLabels(
+            ["ID", "Nombre", "Descripción", "Estado", "Acciones"]
+        )
+
+        # Configurar encabezados
+        header = self.tabla_principal.horizontalHeader()
+        if header:
+            header.setStretchLastSection(True)
+
+        self.tabla_principal.setAlternatingRowColors(True)
+        self.tabla_principal.setSelectionBehavior(
+            QTableWidget.SelectionBehavior.SelectRows
+        )
+
+    def aplicar_estilo(self):
+        """Aplica el estilo general."""
+        self.setStyleSheet(f"""
+            QWidget {
+            background - color: #f8f9fa;
+                font-family: 'Segoe UI', Arial, sans-serif;
+            }
+            QPushButton {
+            background - color: #6f42c1;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+            opacity: 0.8;
+            }
+            QLineEdit, QComboBox {
+            border: 1px solid #ced4da;
+                border-radius: 4px;
+                padding: 8px;
+                font-size: 14px;
+            }
+            QTableWidget {
+            background - color: white;
+                gridline-color: #dee2e6;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
+        """)
+
+    def nuevo_registro(self):
+        """Abre el diálogo para crear un nuevo registro."""
+        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
+
+    def buscar(self):
+        """Busca registros según los criterios especificados."""
+        if self.controller:
+            filtros = {"busqueda": self.input_busqueda.text()}
+            self.controller.buscar(filtros)
+
+    def actualizar_datos(self):
+        """Actualiza los datos de la tabla."""
+        if self.controller:
+            self.controller.cargar_datos()
+
+    def cargar_datos_en_tabla(self, datos):
+        """Carga los datos en la tabla."""
+        self.tabla_principal.setRowCount(len(datos))
+
+        for row, registro in enumerate(datos):
+            self.tabla_principal.setItem(
+                row, 0, QTableWidgetItem(str(registro.get("id", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 1, QTableWidgetItem(str(registro.get("nombre", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 2, QTableWidgetItem(str(registro.get("descripcion", "")))
+            )
+            self.tabla_principal.setItem(
+                row, 3, QTableWidgetItem(str(registro.get("estado", "")))
             )
 
-            # Auto-ocultar después de tiempo apropiado
-            tiempo = (
-                6000 if tipo == "error" else 4000 if tipo == "advertencia" else 3000
-            )
+            # Botón de acciones
+            btn_editar = QPushButton("Editar")
+            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
-            try:
-                from PyQt6.QtCore import QTimer
-
-                if hasattr(self, "_feedback_timer") and self._feedback_timer:
-                    self._feedback_timer.stop()
-                self._feedback_timer = QTimer(self)
-                self._feedback_timer.setSingleShot(True)
-                self._feedback_timer.timeout.connect(self.ocultar_feedback)
-                self._feedback_timer.start(tiempo)
-            except ImportError:
-                self.logger.warning("QTimer no disponible para auto-ocultar feedback")
-                pass
-
-        except Exception as e:
-            self.logger.error(f"Error al mostrar mensaje de feedback: {str(e)}")
-
-    def ocultar_feedback(self):
-        """Oculta el feedback visual."""
-        try:
-            self.logger.debug("Ocultando feedback visual")
-
-            if hasattr(self, "label_feedback") and self.label_feedback:
-                self.label_feedback.setVisible(False)
-                self.label_feedback.clear()
-            if hasattr(self, "_feedback_timer") and self._feedback_timer:
-                self._feedback_timer.stop()
-
-        except Exception as e:
-            self.logger.error(f"Error al ocultar feedback: {str(e)}")
-
-    def _on_dangerous_content(self, field_name: str, content: str):
-        """Maneja la detección de contenido peligroso en formularios."""
-        from rexus.utils.security import log_security_event
-        from rexus.utils.message_system import show_warning
-        
-        # Log del evento de seguridad
-        log_security_event(
-            "XSS_ATTEMPT",
-            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
-            "unknown"
-        )
-        
-        # Mostrar advertencia al usuario
-        show_warning(
-            self,
-            "Contenido No Permitido",
-            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
-
-"
-            "El contenido ha sido automáticamente sanitizado por seguridad."
-        )
-    
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""
-        if hasattr(self, 'form_protector'):
+        if hasattr(self, "form_protector") and self.form_protector:
             return self.form_protector.get_sanitized_data()
         else:
-            return {}
+            # Fallback manual
+            datos = {}
+            if hasattr(self, "input_busqueda"):
+                datos["busqueda"] = XSSProtection.sanitize_text(
+                    self.input_busqueda.text()
+                )
+            return datos
+
+    def set_controller(self, controller):
+        """Establece el controlador para la vista."""
+        self.controller = controller

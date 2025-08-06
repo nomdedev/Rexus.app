@@ -48,6 +48,28 @@
     "backup_intervalo_horas": "24",
     "backup_directorio": "./backups",
     "backup_mantener_dias": "30",
+    "modules": {
+        "inventario": "enabled",
+        "usuarios": "enabled",
+        "obras": "enabled",
+        "pedidos": "enabled",
+        "herrajes": "enabled",
+        "vidrios": "enabled",
+        "administracion": "enabled",
+        "mantenimiento": "enabled",
+        "logistica": "enabled",
+        "configuracion": "enabled",
+        "auditoria": "enabled"
+    },
+    "paths": {
+        "static": "./static",
+        "templates": "./templates",
+        "uploads": "./uploads",
+        "logs": "./logs",
+        "backups": "./backups",
+        "scripts": "./scripts",
+        "config": "./config"
+    },
     "backup_comprimir": "true",
     "integraciones_email_smtp_server": "",
     "integraciones_email_smtp_port": "587",

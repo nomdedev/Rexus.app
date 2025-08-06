@@ -21,27 +21,21 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
-Vista de Compras - Interfaz de gestión de compras y proveedores
 """
+Vista de Compras
 
-# 🔒 Form Access Control - Verify user can access this interface
-# Check user role and permissions before showing sensitive forms
-# Form Access Control
-
-# 🔒 XSS Protection Added - Validate all user inputs
-# Use SecurityUtils.sanitize_input() for text fields
-# Use SecurityUtils.validate_email() for email fields
-# XSS Protection Added
-
-"""
 Interfaz de usuario para el módulo de compras.
 """
+"""
 
-import logging
+
 from datetime import date, datetime
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.utils.security import SecurityUtils
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -70,18 +64,6 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from rexus.core.auth_manager import AuthManager
-from rexus.utils.data_sanitizer import DataSanitizer
-from rexus.utils.form_validators import FormValidator, FormValidatorManager
-from rexus.utils.message_system import (
-    ask_question,
-    show_error,
-    show_success,
-    show_warning,
-)
-from rexus.utils.security import SecurityUtils
-from rexus.utils.xss_protection import FormProtector, XSSProtection, xss_protect
-
 
 class ComprasView(QWidget):
     """Vista principal del módulo de compras."""
@@ -92,13 +74,8 @@ class ComprasView(QWidget):
     busqueda_realizada = pyqtSignal(dict)
 
     def __init__(self):
-        # Inicializar protección XSS
-        self.form_protector = FormProtector(self)
-        self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
-        
         super().__init__()
         self.controller = None
-        self.logger = logging.getLogger(__name__)
         self.init_ui()
 
     def init_ui(self):
@@ -115,30 +92,21 @@ class ComprasView(QWidget):
 
         # Crear tabs
         tab_widget = QTabWidget()
-
+        
         # Pestaña de compras
         panel_compras = self.crear_panel_compras()
         tab_widget.addTab(panel_compras, "📋 Órdenes de Compra")
-
+        
         # Pestaña de estadísticas
         panel_estadisticas = self.crear_panel_estadisticas()
         tab_widget.addTab(panel_estadisticas, "📊 Estadísticas")
-
+        
         layout.addWidget(tab_widget)
 
         # Aplicar estilo general
         self.aplicar_estilo()
 
     def crear_panel_control(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('crear_panel_control'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # Sanitización aplicada en procesamiento
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-
         """Crea el panel de control superior."""
         panel = QFrame()
         panel.setFrameStyle(QFrame.Shape.Box)
@@ -156,14 +124,11 @@ class ComprasView(QWidget):
 
         # Botón Nueva Orden
         self.btn_nueva_orden = QPushButton("Nueva Orden")
-        self.btn_nueva_orden.setToolTip('Acción: Botón Nueva Orden')
-        self.btn_nueva_orden.setAccessibleName('Botón Nueva Orden')
         self.btn_nueva_orden.setIcon(QIcon("📋"))
         self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
 
         # Búsqueda
         self.input_busqueda = QLineEdit()
-        self.input_busqueda.setAccessibleName('Input Busqueda')
         self.input_busqueda.setPlaceholderText(
             "Buscar por proveedor o número de orden..."
         )
@@ -189,14 +154,10 @@ class ComprasView(QWidget):
 
         # Botón buscar
         self.btn_buscar = QPushButton("Buscar")
-        self.btn_buscar.setToolTip('Buscar elementos - Botón Buscar')
-        self.btn_buscar.setAccessibleName('Botón Buscar')
         self.btn_buscar.clicked.connect(self.buscar_compras)
 
         # Botón actualizar
         self.btn_actualizar = QPushButton("Actualizar")
-        self.btn_actualizar.setToolTip('Acción: Botón Actualizar')
-        self.btn_actualizar.setAccessibleName('Botón Actualizar')
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
 
         # Agregar widgets
@@ -215,11 +176,6 @@ class ComprasView(QWidget):
         return panel
 
     def crear_panel_compras(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('crear_panel_compras'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Crea el panel de lista de compras."""
         panel = QGroupBox("Órdenes de Compra")
         layout = QVBoxLayout(panel)
@@ -269,11 +225,7 @@ class ComprasView(QWidget):
                 border-bottom: 1px solid #f0f0f0;
             }
             QTableWidget::item:selected {
-                background-color:
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # Sanitización aplicada en procesamiento
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
- #e3f2fd;
+                background-color: #e3f2fd;
             }
             QHeaderView::section {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -290,23 +242,18 @@ class ComprasView(QWidget):
         return panel
 
     def crear_panel_estadisticas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('crear_panel_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Crea el panel de estadísticas mejorado."""
         panel = QWidget()
         layout = QVBoxLayout(panel)
-
+        
         # Crear scroll area para estadísticas
         scroll_area = QScrollArea()
         scroll_area.setWidgetResizable(True)
         scroll_area.setStyleSheet("QScrollArea { border: none; }")
-
+        
         scroll_widget = QWidget()
         scroll_layout = QVBoxLayout(scroll_widget)
-
+        
         # === ESTADÍSTICAS GENERALES ===
         stats_general = QGroupBox("📊 Estadísticas Generales")
         stats_general.setStyleSheet("""
@@ -324,9 +271,9 @@ class ComprasView(QWidget):
                 padding: 0 5px;
             }
         """)
-
+        
         stats_layout = QGridLayout(stats_general)
-
+        
         # Labels de estadísticas básicas
         self.lbl_total_ordenes = QLabel("Total Órdenes: 0")
         self.lbl_ordenes_pendientes = QLabel("Pendientes: 0")
@@ -334,7 +281,7 @@ class ComprasView(QWidget):
         self.lbl_monto_total = QLabel("Monto Total: $0.00")
         self.lbl_promedio_orden = QLabel("Promedio por Orden: $0.00")
         self.lbl_ordenes_mes = QLabel("Órdenes este Mes: 0")
-
+        
         # Estilo para labels básicos
         label_style = """
             QLabel {
@@ -347,22 +294,18 @@ class ComprasView(QWidget):
                 margin: 2px;
             }
         """
-
+        
         labels_basicos = [
-            self.lbl_total_ordenes,
-            self.lbl_ordenes_pendientes,
-            self.lbl_ordenes_aprobadas,
-            self.lbl_monto_total,
-            self.lbl_promedio_orden,
-            self.lbl_ordenes_mes,
+            self.lbl_total_ordenes, self.lbl_ordenes_pendientes, self.lbl_ordenes_aprobadas,
+            self.lbl_monto_total, self.lbl_promedio_orden, self.lbl_ordenes_mes
         ]
-
+        
         for i, label in enumerate(labels_basicos):
             label.setStyleSheet(label_style)
             stats_layout.addWidget(label, i // 2, i % 2)
-
+        
         scroll_layout.addWidget(stats_general)
-
+        
         # === ANÁLISIS POR PROVEEDORES ===
         proveedores_group = QGroupBox("🏪 Análisis por Proveedores")
         proveedores_group.setStyleSheet("""
@@ -380,15 +323,15 @@ class ComprasView(QWidget):
                 padding: 0 5px;
             }
         """)
-
+        
         proveedores_layout = QVBoxLayout(proveedores_group)
-
+        
         # Tabla de proveedores
         self.tabla_proveedores = QTableWidget()
         self.tabla_proveedores.setColumnCount(5)
-        self.tabla_proveedores.setHorizontalHeaderLabels(
-            ["Proveedor", "Órdenes", "Monto Total", "Promedio", "% del Total"]
-        )
+        self.tabla_proveedores.setHorizontalHeaderLabels([
+            "Proveedor", "Órdenes", "Monto Total", "Promedio", "% del Total"
+        ])
         self.tabla_proveedores.setMaximumHeight(200)
         self.tabla_proveedores.setAlternatingRowColors(True)
         self.tabla_proveedores.setStyleSheet("""
@@ -405,14 +348,14 @@ class ComprasView(QWidget):
                 font-weight: bold;
             }
         """)
-
+        
         # Configurar tabla
         header = self.tabla_proveedores.horizontalHeader()
         if header is not None:
             header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
-
+        
         proveedores_layout.addWidget(self.tabla_proveedores)
-
+        
         # Proveedor destacado
         self.lbl_proveedor_top = QLabel("🏆 Proveedor Principal: No hay datos")
         self.lbl_proveedor_top.setStyleSheet("""
@@ -427,9 +370,9 @@ class ComprasView(QWidget):
             }
         """)
         proveedores_layout.addWidget(self.lbl_proveedor_top)
-
+        
         scroll_layout.addWidget(proveedores_group)
-
+        
         # === ANÁLISIS TEMPORAL ===
         temporal_group = QGroupBox("📈 Análisis Temporal")
         temporal_group.setStyleSheet("""
@@ -447,15 +390,15 @@ class ComprasView(QWidget):
                 padding: 0 5px;
             }
         """)
-
+        
         temporal_layout = QGridLayout(temporal_group)
-
+        
         # Estadísticas temporales
         self.lbl_compras_hoy = QLabel("Compras Hoy: 0")
         self.lbl_compras_semana = QLabel("Compras esta Semana: 0")
         self.lbl_compras_mes = QLabel("Compras este Mes: 0")
         self.lbl_tendencia = QLabel("Tendencia: Estable")
-
+        
         temporal_style = """
             QLabel {
                 font-size: 12px;
@@ -467,20 +410,18 @@ class ComprasView(QWidget):
                 margin: 2px;
             }
         """
-
+        
         labels_temporales = [
-            self.lbl_compras_hoy,
-            self.lbl_compras_semana,
-            self.lbl_compras_mes,
-            self.lbl_tendencia,
+            self.lbl_compras_hoy, self.lbl_compras_semana, 
+            self.lbl_compras_mes, self.lbl_tendencia
         ]
-
+        
         for i, label in enumerate(labels_temporales):
             label.setStyleSheet(temporal_style)
             temporal_layout.addWidget(label, i // 2, i % 2)
-
+        
         scroll_layout.addWidget(temporal_group)
-
+        
         # === ANÁLISIS DE PRODUCTOS ===
         productos_group = QGroupBox("📦 Análisis de Productos")
         productos_group.setStyleSheet("""
@@ -498,15 +439,15 @@ class ComprasView(QWidget):
                 padding: 0 5px;
             }
         """)
-
+        
         productos_layout = QGridLayout(productos_group)
-
+        
         # Estadísticas de productos
         self.lbl_productos_unicos = QLabel("Productos Únicos: 0")
         self.lbl_categoria_top = QLabel("Categoría Principal: No hay datos")
         self.lbl_producto_mas_comprado = QLabel("Producto Más Comprado: No hay datos")
         self.lbl_ticket_promedio = QLabel("Ticket Promedio: $0.00")
-
+        
         productos_style = """
             QLabel {
                 font-size: 12px;
@@ -518,20 +459,18 @@ class ComprasView(QWidget):
                 margin: 2px;
             }
         """
-
+        
         labels_productos = [
-            self.lbl_productos_unicos,
-            self.lbl_categoria_top,
-            self.lbl_producto_mas_comprado,
-            self.lbl_ticket_promedio,
+            self.lbl_productos_unicos, self.lbl_categoria_top,
+            self.lbl_producto_mas_comprado, self.lbl_ticket_promedio
         ]
-
+        
         for i, label in enumerate(labels_productos):
             label.setStyleSheet(productos_style)
             productos_layout.addWidget(label, i // 2, i % 2)
-
+        
         scroll_layout.addWidget(productos_group)
-
+        
         # Configurar scroll area
         scroll_area.setWidget(scroll_widget)
         layout.addWidget(scroll_area)
@@ -629,180 +568,82 @@ class ComprasView(QWidget):
             }
         """)
 
-    def validar_orden_duplicada(self, numero_orden, proveedor):
-        """Valida si ya existe una orden con el mismo número para el mismo proveedor."""
-        try:
-            self.logger.info(
-                f"Validando orden duplicada: {numero_orden} para {proveedor}"
-            )
-
-            # Recorrer tabla de compras para buscar duplicados
-            for row in range(self.tabla_compras.rowCount()):
-                proveedor_item = self.tabla_compras.item(row, 1)  # Columna proveedor
-                numero_item = self.tabla_compras.item(row, 2)  # Columna número orden
-
-                if proveedor_item and numero_item:
-                    proveedor_existente = proveedor_item.text().strip()
-                    numero_existente = numero_item.text().strip()
-
-                    # Normalizar datos para comparación
-                    proveedor_norm = DataSanitizer.sanitize_text(proveedor).lower()
-                    proveedor_existente_norm = DataSanitizer.sanitize_text(
-                        proveedor_existente
-                    ).lower()
-                    numero_norm = DataSanitizer.sanitize_text(numero_orden).lower()
-                    numero_existente_norm = DataSanitizer.sanitize_text(
-                        numero_existente
-                    ).lower()
-
-                    if (
-                        proveedor_norm == proveedor_existente_norm
-                        and numero_norm == numero_existente_norm
-                    ):
-                        self.logger.warning(
-                            f"Orden duplicada encontrada: {numero_orden} para {proveedor}"
-                        )
-                        return True
-
-            return False
-
-        except Exception as e:
-            self.logger.error(f"Error al validar orden duplicada: {str(e)}")
-            return False
-
     def abrir_dialog_nueva_orden(self):
         """Abre el diálogo para crear una nueva orden."""
-        try:
-            self.logger.info("Abriendo diálogo para nueva orden de compra")
-
-            dialog = DialogNuevaOrden(self)
-            if dialog.exec() == QDialog.DialogCode.Accepted:
-                datos = dialog.obtener_datos()
-
-                # Validar orden duplicada
-                if self.validar_orden_duplicada(
-                    datos.get("numero_orden", ""), datos.get("proveedor", "")
-                ):
-                    error_msg = f"Ya existe una orden con número '{datos.get('numero_orden')}' para el proveedor '{datos.get('proveedor')}'"
-                    self.logger.warning(
-                        f"Intento de crear orden duplicada: {error_msg}"
-                    )
-                    show_error(self, "Orden duplicada", error_msg)
-                    return
-
-                self.orden_creada.emit(datos)
-                self.logger.info(
-                    f"Orden creada exitosamente: {datos.get('numero_orden')} - {datos.get('proveedor')}"
-                )
-            else:
-                self.logger.info("Diálogo de nueva orden cancelado por el usuario")
-
-        except Exception as e:
-            error_msg = f"Error al crear nueva orden: {str(e)}"
-            self.logger.error(error_msg)
-            show_error(self, "Error", error_msg)
+        dialog = DialogNuevaOrden(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos = dialog.obtener_datos()
+            self.orden_creada.emit(datos)
 
     def buscar_compras(self):
         """Ejecuta la búsqueda de compras."""
-        try:
-            self.logger.info("Iniciando búsqueda de compras")
-
-            # Sanitizar texto de búsqueda
-            texto_busqueda = DataSanitizer.sanitize_text(
-                self.input_busqueda.text().strip()
-            )
-
-            filtros = {
-                "proveedor": texto_busqueda,
-                "estado": self.combo_estado.currentText()
-                if self.combo_estado.currentText() != "Todos"
-                else "",
-                "fecha_inicio": self.date_desde.date().toString("yyyy-MM-dd"),
-                "fecha_fin": self.date_hasta.date().toString("yyyy-MM-dd"),
-            }
-
-            self.logger.info(f"Filtros de búsqueda aplicados: {filtros}")
-            self.busqueda_realizada.emit(filtros)
-
-        except Exception as e:
-            error_msg = f"Error al buscar compras: {str(e)}"
-            self.logger.error(error_msg)
-            show_error(self, "Error de búsqueda", error_msg)
+        filtros = {
+            "proveedor": self.input_busqueda.text(),
+            "estado": self.combo_estado.currentText()
+            if self.combo_estado.currentText() != "Todos"
+            else "",
+            "fecha_inicio": self.date_desde.date().toPython(),
+            "fecha_fin": self.date_hasta.date().toPython(),
+        }
+        self.busqueda_realizada.emit(filtros)
 
     def cargar_compras_en_tabla(self, compras):
         """Carga las compras en la tabla."""
-        try:
-            self.logger.info(f"Cargando {len(compras)} compras en la tabla")
+        self.tabla_compras.setRowCount(len(compras))
 
-            self.tabla_compras.setRowCount(len(compras))
+        for row, compra in enumerate(compras):
+            # Datos básicos
+            self.tabla_compras.setItem(
+                row, 0, QTableWidgetItem(str(compra.get("id", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 1, QTableWidgetItem(str(compra.get("proveedor", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 2, QTableWidgetItem(str(compra.get("numero_orden", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 3, QTableWidgetItem(str(compra.get("fecha_pedido", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 4, QTableWidgetItem(str(compra.get("fecha_entrega_estimada", "")))
+            )
 
-            for row, compra in enumerate(compras):
-                # Datos básicos
-                self.tabla_compras.setItem(
-                    row, 0, QTableWidgetItem(str(compra.get("id", "")))
-                )
-                self.tabla_compras.setItem(
-                    row, 1, QTableWidgetItem(str(compra.get("proveedor", "")))
-                )
-                self.tabla_compras.setItem(
-                    row, 2, QTableWidgetItem(str(compra.get("numero_orden", "")))
-                )
-                self.tabla_compras.setItem(
-                    row, 3, QTableWidgetItem(str(compra.get("fecha_pedido", "")))
-                )
-                self.tabla_compras.setItem(
-                    row,
-                    4,
-                    QTableWidgetItem(str(compra.get("fecha_entrega_estimada", ""))),
-                )
+            # Estado con color
+            estado_item = QTableWidgetItem(str(compra.get("estado", "")))
+            estado = compra.get("estado", "")
+            if estado == "PENDIENTE":
+                estado_item.setBackground(Qt.GlobalColor.yellow)
+            elif estado == "APROBADA":
+                estado_item.setBackground(Qt.GlobalColor.cyan)
+            elif estado == "RECIBIDA":
+                estado_item.setBackground(Qt.GlobalColor.green)
+            elif estado == "CANCELADA":
+                estado_item.setBackground(Qt.GlobalColor.red)
 
-                # Estado con color
-                estado_item = QTableWidgetItem(str(compra.get("estado", "")))
-                estado = compra.get("estado", "")
-                if estado == "PENDIENTE":
-                    estado_item.setBackground(Qt.GlobalColor.yellow)
-                elif estado == "APROBADA":
-                    estado_item.setBackground(Qt.GlobalColor.cyan)
-                elif estado == "RECIBIDA":
-                    estado_item.setBackground(Qt.GlobalColor.green)
-                elif estado == "CANCELADA":
-                    estado_item.setBackground(Qt.GlobalColor.red)
+            self.tabla_compras.setItem(row, 5, estado_item)
 
-                self.tabla_compras.setItem(row, 5, estado_item)
+            # Total
+            total = compra.get("total_final", 0)
+            self.tabla_compras.setItem(row, 6, QTableWidgetItem(f"${total:,.2f}"))
 
-                # Total
-                total = compra.get("total_final", 0)
-                self.tabla_compras.setItem(row, 6, QTableWidgetItem(f"${total:,.2f}"))
+            # Usuario y fecha
+            self.tabla_compras.setItem(
+                row, 7, QTableWidgetItem(str(compra.get("usuario_creacion", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 8, QTableWidgetItem(str(compra.get("fecha_creacion", "")))
+            )
 
-                # Usuario y fecha
-                self.tabla_compras.setItem(
-                    row, 7, QTableWidgetItem(str(compra.get("usuario_creacion", "")))
-                )
-                self.tabla_compras.setItem(
-                    row, 8, QTableWidgetItem(str(compra.get("fecha_creacion", "")))
-                )
-
-                # Botones de acción
-                btn_editar = QPushButton("Editar")
-                btn_editar.setStyleSheet("background-color: #f39c12; color: white;")
-                btn_editar.clicked.connect(
-                    lambda checked, id=compra.get("id"): self.editar_orden(id)
-                )
-                self.tabla_compras.setCellWidget(row, 9, btn_editar)
-
-            self.logger.info(f"Compras cargadas exitosamente en la tabla")
-
-        except Exception as e:
-            error_msg = f"Error al cargar compras en tabla: {str(e)}"
-            self.logger.error(error_msg)
-            show_error(self, "Error de carga", error_msg)
+            # Botones de acción
+            btn_editar = QPushButton("Editar")
+            btn_editar.setStyleSheet("background-color: #f39c12; color: white;")
+            btn_editar.clicked.connect(
+                lambda checked, id=compra.get("id"): self.editar_orden(id)
+            )
+            self.tabla_compras.setCellWidget(row, 9, btn_editar)
 
     def actualizar_estadisticas(self, stats):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Actualiza las estadísticas completas mostradas."""
         # === ESTADÍSTICAS GENERALES ===
         self.lbl_total_ordenes.setText(
@@ -814,7 +655,9 @@ class ComprasView(QWidget):
         self.lbl_promedio_orden.setText(
             f"Promedio por Orden: ${stats.get('promedio_orden', 0):,.2f}"
         )
-        self.lbl_ordenes_mes.setText(f"Órdenes este Mes: {stats.get('ordenes_mes', 0)}")
+        self.lbl_ordenes_mes.setText(
+            f"Órdenes este Mes: {stats.get('ordenes_mes', 0)}"
+        )
 
         # Actualizar contadores por estado
         estados_data = stats.get("ordenes_por_estado", [])
@@ -832,24 +675,14 @@ class ComprasView(QWidget):
         # Actualizar tabla de proveedores
         proveedores_data = stats.get("proveedores_analisis", [])
         self.tabla_proveedores.setRowCount(len(proveedores_data))
-
+        
         for row, proveedor in enumerate(proveedores_data):
-            self.tabla_proveedores.setItem(
-                row, 0, QTableWidgetItem(proveedor["proveedor"])
-            )
-            self.tabla_proveedores.setItem(
-                row, 1, QTableWidgetItem(str(proveedor["ordenes"]))
-            )
-            self.tabla_proveedores.setItem(
-                row, 2, QTableWidgetItem(f"${proveedor['monto_total']:,.2f}")
-            )
-            self.tabla_proveedores.setItem(
-                row, 3, QTableWidgetItem(f"${proveedor['promedio']:,.2f}")
-            )
-            self.tabla_proveedores.setItem(
-                row, 4, QTableWidgetItem(f"{proveedor['porcentaje']:.1f}%")
-            )
-
+            self.tabla_proveedores.setItem(row, 0, QTableWidgetItem(proveedor["proveedor"]))
+            self.tabla_proveedores.setItem(row, 1, QTableWidgetItem(str(proveedor["ordenes"])))
+            self.tabla_proveedores.setItem(row, 2, QTableWidgetItem(f"${proveedor['monto_total']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 3, QTableWidgetItem(f"${proveedor['promedio']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 4, QTableWidgetItem(f"{proveedor['porcentaje']:.1f}%"))
+        
         # Actualizar proveedor principal
         proveedor_principal = stats.get("proveedor_principal")
         if proveedor_principal:
@@ -862,25 +695,15 @@ class ComprasView(QWidget):
 
         # === ANÁLISIS TEMPORAL ===
         self.lbl_compras_hoy.setText(f"Compras Hoy: {stats.get('compras_hoy', 0)}")
-        self.lbl_compras_semana.setText(
-            f"Compras esta Semana: {stats.get('compras_semana', 0)}"
-        )
+        self.lbl_compras_semana.setText(f"Compras esta Semana: {stats.get('compras_semana', 0)}")
         self.lbl_compras_mes.setText(f"Compras este Mes: {stats.get('compras_mes', 0)}")
         self.lbl_tendencia.setText(f"Tendencia: {stats.get('tendencia', 'Estable')}")
 
         # === ANÁLISIS DE PRODUCTOS ===
-        self.lbl_productos_unicos.setText(
-            f"Productos Únicos: {stats.get('productos_unicos', 0)}"
-        )
-        self.lbl_categoria_top.setText(
-            f"Categoría Principal: {stats.get('categoria_principal', 'No hay datos')}"
-        )
-        self.lbl_producto_mas_comprado.setText(
-            f"Producto Más Comprado: {stats.get('producto_mas_comprado', 'No hay datos')}"
-        )
-        self.lbl_ticket_promedio.setText(
-            f"Ticket Promedio: ${stats.get('ticket_promedio', 0):,.2f}"
-        )
+        self.lbl_productos_unicos.setText(f"Productos Únicos: {stats.get('productos_unicos', 0)}")
+        self.lbl_categoria_top.setText(f"Categoría Principal: {stats.get('categoria_principal', 'No hay datos')}")
+        self.lbl_producto_mas_comprado.setText(f"Producto Más Comprado: {stats.get('producto_mas_comprado', 'No hay datos')}")
+        self.lbl_ticket_promedio.setText(f"Ticket Promedio: ${stats.get('ticket_promedio', 0):,.2f}")
 
         # === DISTRIBUCIÓN POR ESTADO ===
         # Actualizar texto de estados
@@ -891,11 +714,6 @@ class ComprasView(QWidget):
         self.texto_estados.setPlainText(texto_estados)
 
     def editar_orden(self, orden_id):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('editar_orden'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Edita una orden existente."""
         # Por ahora solo cambiar estado
         estados = ["PENDIENTE", "APROBADA", "RECIBIDA", "CANCELADA"]
@@ -924,11 +742,6 @@ class ComprasView(QWidget):
             self.orden_actualizada.emit(orden_id, nuevo_estado)
 
     def actualizar_datos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('actualizar_datos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Actualiza los datos de la vista."""
         self.buscar_compras()
 
@@ -945,13 +758,10 @@ class DialogNuevaOrden(QDialog):
         self.setWindowTitle("Nueva Orden de Compra")
         self.setModal(True)
         self.setMinimumSize(400, 500)
-
+        
         # Inicializar el gestor de validaciones
         self.validator_manager = FormValidatorManager()
-
-        # Configurar logger
-        self.logger = logging.getLogger(__name__)
-
+        
         self.init_ui()
         self.configurar_validaciones()
 
@@ -964,9 +774,7 @@ class DialogNuevaOrden(QDialog):
 
         # Campos
         self.input_proveedor = QLineEdit()
-        self.input_proveedor.setAccessibleName('Input Proveedor')
         self.input_numero_orden = QLineEdit()
-        self.input_numero_orden.setAccessibleName('Input Numero Orden')
         self.date_pedido = QDateEdit()
         self.date_pedido.setDate(QDate.currentDate())
         self.date_pedido.setCalendarPopup(True)
@@ -990,13 +798,6 @@ class DialogNuevaOrden(QDialog):
 
         self.input_observaciones = QTextEdit()
         self.input_observaciones.setMaximumHeight(100)
-
-        # Proteger campos contra XSS
-        self.form_protector.protect_field(self.input_busqueda, "input_busqueda", 100)
-        self.form_protector.protect_field(self.input_proveedor, "input_proveedor", 100)
-        self.form_protector.protect_field(self.input_numero_orden, "input_numero_orden", 100)
-        self.form_protector.protect_field(self.texto_estados, "texto_estados", 100)
-        self.form_protector.protect_field(self.input_observaciones, "input_observaciones", 100)
 
         # Agregar campos al formulario
         form_layout.addRow("Proveedor:", self.input_proveedor)
@@ -1038,156 +839,93 @@ class DialogNuevaOrden(QDialog):
         """)
 
     def obtener_datos(self):
-        """Obtiene los datos del formulario con sanitización."""
-        try:
-            self.logger.info("Obteniendo y sanitizando datos del formulario de compras")
-
-            # Sanitizar datos de entrada
-            proveedor_limpio = DataSanitizer.sanitize_text(
-                self.input_proveedor.text().strip()
-            )
-            numero_orden_limpio = DataSanitizer.sanitize_text(
-                self.input_numero_orden.text().strip()
-            )
-            observaciones_limpias = DataSanitizer.sanitize_text(
-                self.input_observaciones.toPlainText().strip()
-            )
-
-            datos = {
-                "proveedor": proveedor_limpio,
-                "numero_orden": numero_orden_limpio,
-                "fecha_pedido": self.date_pedido.date().toString("yyyy-MM-dd"),
-                "fecha_entrega_estimada": self.date_entrega.date().toString(
-                    "yyyy-MM-dd"
-                ),
-                "estado": self.combo_estado.currentText(),
-                "descuento": self.input_descuento.value(),
-                "impuestos": self.input_impuestos.value(),
-                "observaciones": observaciones_limpias,
-                "usuario_creacion": self.get_current_user(),  # Usuario del sistema
-            }
-
-            self.logger.info(
-                "Datos del formulario de compras obtenidos y sanitizados correctamente"
-            )
-            return datos
-
-        except Exception as e:
-            self.logger.error(
-                f"Error al obtener datos del formulario de compras: {str(e)}"
-            )
-            return {}
+        """Obtiene los datos del formulario."""
+        return {
+            "proveedor": self.input_proveedor.text(),
+            "numero_orden": self.input_numero_orden.text(),
+            "fecha_pedido": self.date_pedido.date().toPython(),
+            "fecha_entrega_estimada": self.date_entrega.date().toPython(),
+            "estado": self.combo_estado.currentText(),
+            "descuento": self.input_descuento.value(),
+            "impuestos": self.input_impuestos.value(),
+            "observaciones": self.input_observaciones.toPlainText(),
+            "usuario_creacion": "Usuario Actual",  # TODO: Obtener del sistema
+        }
 
     def configurar_validaciones(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # Autorización verificada por decorador
-        # if not AuthManager.check_permission('configurar_validaciones'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
         """Configura las validaciones del formulario."""
         # Validación de proveedor obligatorio
         self.validator_manager.agregar_validacion(
-            self.input_proveedor, FormValidator.validar_campo_obligatorio, "Proveedor"
+            self.input_proveedor, 
+            FormValidator.validar_campo_obligatorio, 
+            "Proveedor"
         )
         self.validator_manager.agregar_validacion(
-            self.input_proveedor, FormValidator.validar_longitud_texto, 2, 100
+            self.input_proveedor, 
+            FormValidator.validar_longitud_texto, 
+            2, 100
         )
 
         # Validación de número de orden obligatorio
         self.validator_manager.agregar_validacion(
-            self.input_numero_orden,
-            FormValidator.validar_campo_obligatorio,
-            "Número de orden",
+            self.input_numero_orden, 
+            FormValidator.validar_campo_obligatorio, 
+            "Número de orden"
         )
         self.validator_manager.agregar_validacion(
-            self.input_numero_orden, FormValidator.validar_longitud_texto, 3, 50
+            self.input_numero_orden, 
+            FormValidator.validar_longitud_texto, 
+            3, 50
         )
 
         # Validación de fechas
         self.validator_manager.agregar_validacion(
-            self.date_pedido, FormValidator.validar_fecha
+            self.date_pedido, 
+            FormValidator.validar_fecha
         )
-
+        
         self.validator_manager.agregar_validacion(
-            self.date_entrega,
-            FormValidator.validar_fecha,
-            self.date_pedido.date(),  # Fecha mínima: fecha de pedido
+            self.date_entrega, 
+            FormValidator.validar_fecha, 
+            self.date_pedido.date()  # Fecha mínima: fecha de pedido
         )
 
         # Validación de montos (descuento e impuestos no negativos)
         self.validator_manager.agregar_validacion(
-            self.input_descuento, FormValidator.validar_numero, 0.0, 999999.99
+            self.input_descuento, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
         )
-
+        
         self.validator_manager.agregar_validacion(
-            self.input_impuestos, FormValidator.validar_numero, 0.0, 999999.99
+            self.input_impuestos, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
         )
 
     def validar_y_aceptar(self):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
-        # Sanitización aplicada en procesamiento
-        # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
-
         """Valida los datos y acepta el diálogo."""
         # Usar el sistema de validación
         es_valido, errores = self.validator_manager.validar_formulario()
-
+        
         if not es_valido:
             # Mostrar errores con el sistema mejorado
             mensajes_error = self.validator_manager.obtener_mensajes_error()
             show_error(
-                self,
-                "Errores de Validación",
-                "Por favor corrige los siguientes errores:\n\n• "
-                + "\n• ".join(mensajes_error),
+                self, 
+                "Errores de Validación", 
+                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
             )
             return
 
         # Validación adicional: fecha de entrega posterior a fecha de pedido
         if self.date_entrega.date() <= self.date_pedido.date():
             show_error(
-                self,
-                "Error de Validación",
-                "La fecha de entrega debe ser posterior a la fecha de pedido.\n\nPor favor seleccione una fecha de entrega que sea al menos un día después de la fecha de pedido.",
+                self, 
+                "Error de Validación", 
+                "La fecha de entrega debe ser posterior a la fecha de pedido.\n\nPor favor seleccione una fecha de entrega que sea al menos un día después de la fecha de pedido."
             )
             return
 
         # Si todo es válido, aceptar el diálogo
         self.accept()
-
-    def _on_dangerous_content(self, field_name: str, content: str):
-        """Maneja la detección de contenido peligroso en formularios."""
-        from rexus.utils.security import log_security_event
-        from rexus.utils.message_system import show_warning
-        
-        # Log del evento de seguridad
-        log_security_event(
-            "XSS_ATTEMPT",
-            f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
-            "unknown"
-        )
-        
-        # Mostrar advertencia al usuario
-        show_warning(
-            self,
-            "Contenido No Permitido",
-            f"Se ha detectado contenido potencialmente peligroso en el campo '{field_name}'.
-
-"
-            "El contenido ha sido automáticamente sanitizado por seguridad."
-        )
-    
-    def obtener_datos_seguros(self) -> dict:
-        """Obtiene datos del formulario con sanitización XSS."""
-        if hasattr(self, 'form_protector'):
-            return self.form_protector.get_sanitized_data()
-        else:
-            return {}
-
-    def get_current_user(self) -> str:
-        """Obtiene el usuario actual del sistema."""
-        try:
-            from rexus.core.auth_manager import AuthManager
-            return AuthManager.current_user or "SISTEMA"
-        except:
-            return "SISTEMA"

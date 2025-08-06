@@ -60,7 +60,7 @@ def add_mit_header_to_file(file_path: str) -> bool:
     try:
         file_path_obj = Path(file_path)
         if not file_path_obj.exists():
-            print(f"⚠️ Archivo no encontrado: {file_path}")
+            print(f"[WARNING] Archivo no encontrado: {file_path}")
             return False
 
         # Leer contenido actual
@@ -69,7 +69,7 @@ def add_mit_header_to_file(file_path: str) -> bool:
 
         # Verificar si ya tiene MIT header
         if "MIT License" in contenido:
-            print(f"✅ {file_path}: Ya tiene MIT header")
+            print(f"[OK] {file_path}: Ya tiene MIT header")
             return True
 
         # Crear backup
@@ -125,17 +125,17 @@ def add_mit_header_to_file(file_path: str) -> bool:
         with open(file_path_obj, "w", encoding="utf-8") as f:
             f.write(nuevo_contenido)
 
-        print(f"✅ {file_path}: MIT header agregado")
+        print(f"[OK] {file_path}: MIT header agregado")
         return True
 
     except Exception as e:
-        print(f"❌ Error procesando {file_path}: {e}")
+        print(f"[ERROR] Error procesando {file_path}: {e}")
         return False
 
 
 def main():
     """Función principal."""
-    print("🏷️ AGREGANDO MIT LICENSE HEADERS")
+    print("AGREGANDO MIT LICENSE HEADERS")
     print("=" * 50)
 
     files_to_process = get_files_to_process()
@@ -143,27 +143,27 @@ def main():
     files_updated = 0
 
     for file_path in files_to_process:
-        print(f"🔍 Procesando: {file_path}")
+        print(f"Procesando: {file_path}")
         files_processed += 1
 
         if add_mit_header_to_file(file_path):
             files_updated += 1
 
     print("\n" + "=" * 50)
-    print(f"📊 RESUMEN:")
-    print(f"   📋 Archivos procesados: {files_processed}")
-    print(f"   ✅ Archivos actualizados: {files_updated}")
-    print(f"   💾 Backups creados en: backups_mit/")
+    print(f"RESUMEN:")
+    print(f"   Archivos procesados: {files_processed}")
+    print(f"   Archivos actualizados: {files_updated}")
+    print(f"   Backups creados en: backups_mit/")
 
     if files_updated > 0:
-        print(f"\n🎉 MIT HEADERS AGREGADOS EXITOSAMENTE")
-        print(f"📝 Archivos modificados: {files_updated}")
-        print("\n🔧 PRÓXIMOS PASOS:")
+        print(f"\n[EXITO] MIT HEADERS AGREGADOS EXITOSAMENTE")
+        print(f"Archivos modificados: {files_updated}")
+        print("\nPROXIMOS PASOS:")
         print("   1. Revisar los headers agregados")
         print("   2. Hacer commit de los cambios")
         print("   3. Continuar con tests y validación")
     else:
-        print(f"\n✨ TODOS LOS ARCHIVOS YA TIENEN MIT HEADERS")
+        print(f"\n[INFO] TODOS LOS ARCHIVOS YA TIENEN MIT HEADERS")
 
 
 if __name__ == "__main__":

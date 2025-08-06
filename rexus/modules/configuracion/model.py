@@ -18,6 +18,8 @@ import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
+from rexus.core.auth_manager import admin_required, auth_required, manager_required
+
 # Importar DataSanitizer para seguridad
 try:
     from utils.data_sanitizer import DataSanitizer

@@ -1,27 +1,37 @@
+
 """
-Vista de Configuración - Rexus.app v2.0.0
+Vista de Compras
 
-Interfaz moderna para gestión de configuraciones del sistema.
+Interfaz de usuario para el módulo de compras.
 """
 
-from typing import Any, Dict, List
+from datetime import date, datetime
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont, QIcon
+from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.utils.security import SecurityUtils
 from PyQt6.QtWidgets import (
-    QCheckBox,
-    QColorDialog,
+    QAbstractItemView,
     QComboBox,
+    QDateEdit,
+    QDialog,
+    QDialogButtonBox,
     QDoubleSpinBox,
     QFormLayout,
     QFrame,
+    QGridLayout,
     QGroupBox,
     QHBoxLayout,
+    QHeaderView,
     QLabel,
     QLineEdit,
+    QMessageBox,
     QPushButton,
     QScrollArea,
     QSpinBox,
+    QSplitter,
     QTableWidget,
     QTableWidgetItem,
     QTabWidget,
@@ -31,983 +41,867 @@ from PyQt6.QtWidgets import (
 )
 
 
-class ConfiguracionView(QWidget):
-    """Vista modernizada para gestión de configuraciones del sistema."""
+class ComprasView(QWidget):
+    """Vista principal del módulo de compras."""
 
     # Señales
-    solicitud_actualizar_configuracion = pyqtSignal(str, object)  # clave, valor
-    solicitud_restaurar_configuracion = pyqtSignal(str)  # clave
-    solicitud_exportar_configuracion = pyqtSignal()
-    solicitud_importar_configuracion = pyqtSignal()
-    solicitud_probar_conexion_bd = pyqtSignal()
+    orden_creada = pyqtSignal(dict)
+    orden_actualizada = pyqtSignal(int, str)
+    busqueda_realizada = pyqtSignal(dict)
 
     def __init__(self):
         super().__init__()
         self.controller = None
-        self.configuraciones_data = []
-        self.widgets_configuracion = {}
-
         self.init_ui()
-        self.aplicar_estilos()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
-        layout.setSpacing(10)
-        layout.setContentsMargins(15, 15, 15, 15)
+        layout.setContentsMargins(20, 20, 20, 20)
+        layout.setSpacing(20)
 
-        # Header
-        header_widget = self.crear_header()
-        layout.addWidget(header_widget)
+        # Título removido según solicitado
 
-        # Widget de feedback visual
-        self.label_feedback = QLabel("")
-        self.label_feedback.setVisible(False)
-        self.label_feedback.setStyleSheet("""
-            QLabel[feedback="info"] {
-                background-color: #d1ecf1;
-                color: #0c5460;
-                border: 1px solid #b6d7dd;
-                border-radius: 6px;
-                padding: 8px 12px;
-                font-weight: bold;
-            }
-            QLabel[feedback="exito"] {
-                background-color: #d4edda;
-                color: #155724;
-                border: 1px solid #c3e6cb;
-                border-radius: 6px;
-                padding: 8px 12px;
-                font-weight: bold;
-            }
-            QLabel[feedback="advertencia"] {
-                background-color: #fff3cd;
-                color: #856404;
-                border: 1px solid #ffeaa7;
-                border-radius: 6px;
-                padding: 8px 12px;
-                font-weight: bold;
-            }
-            QLabel[feedback="error"] {
-                background-color: #f8d7da;
-                color: #721c24;
-                border: 1px solid #f5c6cb;
-                border-radius: 6px;
-                padding: 8px 12px;
-                font-weight: bold;
-            }
-            QLabel[feedback="cargando"] {
-                background-color: #e2e3e5;
-                color: #383d41;
-                border: 1px solid #d6d8db;
-                border-radius: 6px;
-                padding: 8px 12px;
-                font-weight: bold;
+        # Panel de control
+        control_panel = self.crear_panel_control()
+        layout.addWidget(control_panel)
+
+        # Crear tabs
+        tab_widget = QTabWidget()
+        
+        # Pestaña de compras
+        panel_compras = self.crear_panel_compras()
+        tab_widget.addTab(panel_compras, "📋 Órdenes de Compra")
+        
+        # Pestaña de estadísticas
+        panel_estadisticas = self.crear_panel_estadisticas()
+        tab_widget.addTab(panel_estadisticas, "📊 Estadísticas")
+        
+        layout.addWidget(tab_widget)
+
+        # Aplicar estilo general
+        self.aplicar_estilo()
+
+    def crear_panel_control(self):
+        """Crea el panel de control superior."""
+        panel = QFrame()
+        panel.setFrameStyle(QFrame.Shape.Box)
+        panel.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #ffffff, stop:1 #f8f9fa);
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                padding: 15px;
             }
         """)
-        layout.addWidget(self.label_feedback)
 
-        # Tabs de configuración
-        self.tab_widget = QTabWidget()
-
-        # Pestaña de Base de Datos
-        tab_database = self.crear_tab_database()
-        self.tab_widget.addTab(tab_database, "🗄️ Base de Datos")
-
-        # Pestaña de Empresa
-        tab_empresa = self.crear_tab_empresa()
-        self.tab_widget.addTab(tab_empresa, "🏢 Empresa")
-
-        # Pestaña de Sistema
-        tab_sistema = self.crear_tab_sistema()
-        self.tab_widget.addTab(tab_sistema, "⚙️ Sistema")
-
-        # Pestaña de Usuarios
-        tab_usuarios = self.crear_tab_usuarios()
-        self.tab_widget.addTab(tab_usuarios, "👥 Usuarios")
-
-        # Pestaña de Reportes
-        tab_reportes = self.crear_tab_reportes()
-        self.tab_widget.addTab(tab_reportes, "📊 Reportes")
-
-        # Pestaña de Tema
-        tab_tema = self.crear_tab_tema()
-        self.tab_widget.addTab(tab_tema, "🎨 Tema")
-
-        # Pestaña de Backup
-        tab_backup = self.crear_tab_backup()
-        self.tab_widget.addTab(tab_backup, "💾 Backup")
-
-        # Pestaña de Integraciones
-        tab_integraciones = self.crear_tab_integraciones()
-        self.tab_widget.addTab(tab_integraciones, "🔗 Integraciones")
-
-        # Pestaña de Todas las Configuraciones
-        tab_todas = self.crear_tab_todas_configuraciones()
-        self.tab_widget.addTab(tab_todas, "📋 Todas")
-
-        layout.addWidget(self.tab_widget)
-
-        # Panel de acciones
-        acciones_widget = self.crear_panel_acciones()
-        layout.addWidget(acciones_widget)
-
-    def crear_header(self):
-        """Crea el header con título."""
-        header = QFrame()
-        header.setFixedHeight(80)
-        layout = QVBoxLayout(header)
-
-        titulo = QLabel("⚙️ Configuración del Sistema")
-        titulo.setFont(QFont("Segoe UI", 24, QFont.Weight.Bold))
-        titulo.setStyleSheet("color: #2c3e50; margin-bottom: 5px;")
-
-        subtitulo = QLabel("Gestión de configuraciones y parámetros del sistema")
-        subtitulo.setFont(QFont("Segoe UI", 12))
-        subtitulo.setStyleSheet("color: #7f8c8d;")
-
-        layout.addWidget(titulo)
-        layout.addWidget(subtitulo)
-        layout.addStretch()
-
-        return header
-
-    def crear_tab_database(self):
-        """Crea la pestaña de configuración de base de datos."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Grupo de configuración de conexión
-        group_conexion = QGroupBox("Configuración de Conexión")
-        form_layout = QFormLayout(group_conexion)
-
-        # Crear campos de configuración
-        self.widgets_configuracion["db_server"] = QLineEdit()
-        self.widgets_configuracion["db_port"] = QSpinBox()
-        self.widgets_configuracion["db_port"].setRange(1, 65535)
-        self.widgets_configuracion["db_name"] = QLineEdit()
-        self.widgets_configuracion["db_user"] = QLineEdit()
-        self.widgets_configuracion["db_timeout"] = QSpinBox()
-        self.widgets_configuracion["db_timeout"].setRange(1, 300)
-        self.widgets_configuracion["db_timeout"].setSuffix(" seg")
-        self.widgets_configuracion["db_pool_size"] = QSpinBox()
-        self.widgets_configuracion["db_pool_size"].setRange(1, 100)
-
-        form_layout.addRow("Servidor:", self.widgets_configuracion["db_server"])
-        form_layout.addRow("Puerto:", self.widgets_configuracion["db_port"])
-        form_layout.addRow("Base de datos:", self.widgets_configuracion["db_name"])
-        form_layout.addRow("Usuario:", self.widgets_configuracion["db_user"])
-        form_layout.addRow("Timeout:", self.widgets_configuracion["db_timeout"])
-        form_layout.addRow("Pool Size:", self.widgets_configuracion["db_pool_size"])
-
-        # Botón de prueba de conexión
-        btn_probar = QPushButton("🔍 Probar Conexión")
-        btn_probar.clicked.connect(self.solicitud_probar_conexion_bd.emit)
-        form_layout.addRow("", btn_probar)
-
-        layout.addWidget(group_conexion)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_empresa(self):
-        """Crea la pestaña de configuración de empresa."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Scroll para el formulario
-        scroll_area = QScrollArea()
-        scroll_widget = QWidget()
-        scroll_layout = QVBoxLayout(scroll_widget)
-
-        # Información básica
-        group_basica = QGroupBox("Información Básica")
-        form_basica = QFormLayout(group_basica)
-
-        self.widgets_configuracion["empresa_nombre"] = QLineEdit()
-        self.widgets_configuracion["empresa_nit"] = QLineEdit()
-        self.widgets_configuracion["empresa_direccion"] = QLineEdit()
-        self.widgets_configuracion["empresa_telefono"] = QLineEdit()
-        self.widgets_configuracion["empresa_email"] = QLineEdit()
-        self.widgets_configuracion["empresa_web"] = QLineEdit()
-
-        form_basica.addRow("Nombre:", self.widgets_configuracion["empresa_nombre"])
-        form_basica.addRow("NIT:", self.widgets_configuracion["empresa_nit"])
-        form_basica.addRow(
-            "Dirección:", self.widgets_configuracion["empresa_direccion"]
-        )
-        form_basica.addRow("Teléfono:", self.widgets_configuracion["empresa_telefono"])
-        form_basica.addRow("Email:", self.widgets_configuracion["empresa_email"])
-        form_basica.addRow("Sitio web:", self.widgets_configuracion["empresa_web"])
-
-        # Información adicional
-        group_adicional = QGroupBox("Información Adicional")
-        form_adicional = QFormLayout(group_adicional)
-
-        self.widgets_configuracion["empresa_moneda"] = QComboBox()
-        self.widgets_configuracion["empresa_moneda"].addItems(["COP", "USD", "EUR"])
-        self.widgets_configuracion["empresa_pais"] = QLineEdit()
-        self.widgets_configuracion["empresa_ciudad"] = QLineEdit()
-        self.widgets_configuracion["empresa_logo"] = QLineEdit()
-
-        form_adicional.addRow("Moneda:", self.widgets_configuracion["empresa_moneda"])
-        form_adicional.addRow("País:", self.widgets_configuracion["empresa_pais"])
-        form_adicional.addRow("Ciudad:", self.widgets_configuracion["empresa_ciudad"])
-        form_adicional.addRow("Logo (URL):", self.widgets_configuracion["empresa_logo"])
-
-        scroll_layout.addWidget(group_basica)
-        scroll_layout.addWidget(group_adicional)
-        scroll_layout.addStretch()
-
-        scroll_area.setWidget(scroll_widget)
-        scroll_area.setWidgetResizable(True)
-        layout.addWidget(scroll_area)
-
-        return widget
-
-    def crear_tab_sistema(self):
-        """Crea la pestaña de configuración del sistema."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Scroll para el formulario
-        scroll_area = QScrollArea()
-        scroll_widget = QWidget()
-        scroll_layout = QVBoxLayout(scroll_widget)
-
-        # Configuración general
-        group_general = QGroupBox("Configuración General")
-        form_general = QFormLayout(group_general)
-
-        self.widgets_configuracion["sistema_version"] = QLineEdit()
-        self.widgets_configuracion["sistema_version"].setReadOnly(True)
-        self.widgets_configuracion["sistema_modo_debug"] = QCheckBox()
-        self.widgets_configuracion["sistema_logs_nivel"] = QComboBox()
-        self.widgets_configuracion["sistema_logs_nivel"].addItems(
-            ["DEBUG", "INFO", "WARNING", "ERROR"]
-        )
-        self.widgets_configuracion["sistema_max_backups"] = QSpinBox()
-        self.widgets_configuracion["sistema_max_backups"].setRange(1, 365)
-
-        form_general.addRow("Versión:", self.widgets_configuracion["sistema_version"])
-        form_general.addRow(
-            "Modo Debug:", self.widgets_configuracion["sistema_modo_debug"]
-        )
-        form_general.addRow(
-            "Nivel de Logs:", self.widgets_configuracion["sistema_logs_nivel"]
-        )
-        form_general.addRow(
-            "Máx. Backups:", self.widgets_configuracion["sistema_max_backups"]
-        )
-
-        # Configuración de sesión
-        group_sesion = QGroupBox("Configuración de Sesión")
-        form_sesion = QFormLayout(group_sesion)
-
-        self.widgets_configuracion["sistema_timeout_sesion"] = QSpinBox()
-        self.widgets_configuracion["sistema_timeout_sesion"].setRange(300, 86400)
-        self.widgets_configuracion["sistema_timeout_sesion"].setSuffix(" seg")
-        self.widgets_configuracion["sistema_max_intentos_login"] = QSpinBox()
-        self.widgets_configuracion["sistema_max_intentos_login"].setRange(1, 10)
-
-        form_sesion.addRow(
-            "Timeout Sesión:", self.widgets_configuracion["sistema_timeout_sesion"]
-        )
-        form_sesion.addRow(
-            "Máx. Intentos Login:",
-            self.widgets_configuracion["sistema_max_intentos_login"],
-        )
-
-        # Configuración regional
-        group_regional = QGroupBox("Configuración Regional")
-        form_regional = QFormLayout(group_regional)
-
-        self.widgets_configuracion["sistema_idioma"] = QComboBox()
-        self.widgets_configuracion["sistema_idioma"].addItems(["es", "en", "pt"])
-        self.widgets_configuracion["sistema_zona_horaria"] = QComboBox()
-        self.widgets_configuracion["sistema_zona_horaria"].addItems(
-            ["America/Bogota", "America/New_York", "Europe/Madrid"]
-        )
-        self.widgets_configuracion["sistema_formato_fecha"] = QComboBox()
-        self.widgets_configuracion["sistema_formato_fecha"].addItems(
-            ["DD/MM/YYYY", "MM/DD/YYYY", "YYYY-MM-DD"]
-        )
-        self.widgets_configuracion["sistema_formato_hora"] = QComboBox()
-        self.widgets_configuracion["sistema_formato_hora"].addItems(
-            ["HH:mm:ss", "HH:mm", "hh:mm:ss AM/PM"]
-        )
-
-        form_regional.addRow("Idioma:", self.widgets_configuracion["sistema_idioma"])
-        form_regional.addRow(
-            "Zona Horaria:", self.widgets_configuracion["sistema_zona_horaria"]
-        )
-        form_regional.addRow(
-            "Formato Fecha:", self.widgets_configuracion["sistema_formato_fecha"]
-        )
-        form_regional.addRow(
-            "Formato Hora:", self.widgets_configuracion["sistema_formato_hora"]
-        )
-
-        scroll_layout.addWidget(group_general)
-        scroll_layout.addWidget(group_sesion)
-        scroll_layout.addWidget(group_regional)
-        scroll_layout.addStretch()
-
-        scroll_area.setWidget(scroll_widget)
-        scroll_area.setWidgetResizable(True)
-        layout.addWidget(scroll_area)
-
-        return widget
-
-    def crear_tab_usuarios(self):
-        """Crea la pestaña de configuración de usuarios."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Políticas de contraseña
-        group_password = QGroupBox("Políticas de Contraseña")
-        form_password = QFormLayout(group_password)
-
-        self.widgets_configuracion["usuarios_password_min_length"] = QSpinBox()
-        self.widgets_configuracion["usuarios_password_min_length"].setRange(4, 50)
-        self.widgets_configuracion["usuarios_password_require_numbers"] = QCheckBox()
-        self.widgets_configuracion["usuarios_password_require_symbols"] = QCheckBox()
-        self.widgets_configuracion["usuarios_password_expire_days"] = QSpinBox()
-        self.widgets_configuracion["usuarios_password_expire_days"].setRange(0, 365)
-        self.widgets_configuracion["usuarios_password_expire_days"].setSuffix(" días")
-
-        form_password.addRow(
-            "Long. Mínima:", self.widgets_configuracion["usuarios_password_min_length"]
-        )
-        form_password.addRow(
-            "Requerir Números:",
-            self.widgets_configuracion["usuarios_password_require_numbers"],
-        )
-        form_password.addRow(
-            "Requerir Símbolos:",
-            self.widgets_configuracion["usuarios_password_require_symbols"],
-        )
-        form_password.addRow(
-            "Expirar en:", self.widgets_configuracion["usuarios_password_expire_days"]
-        )
-
-        # Configuración de sesión
-        group_session = QGroupBox("Configuración de Sesión")
-        form_session = QFormLayout(group_session)
-
-        self.widgets_configuracion["usuarios_session_timeout"] = QSpinBox()
-        self.widgets_configuracion["usuarios_session_timeout"].setRange(300, 86400)
-        self.widgets_configuracion["usuarios_session_timeout"].setSuffix(" seg")
-        self.widgets_configuracion["usuarios_max_sessions"] = QSpinBox()
-        self.widgets_configuracion["usuarios_max_sessions"].setRange(1, 10)
-
-        form_session.addRow(
-            "Timeout Sesión:", self.widgets_configuracion["usuarios_session_timeout"]
-        )
-        form_session.addRow(
-            "Máx. Sesiones:", self.widgets_configuracion["usuarios_max_sessions"]
-        )
-
-        layout.addWidget(group_password)
-        layout.addWidget(group_session)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_reportes(self):
-        """Crea la pestaña de configuración de reportes."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Configuración de reportes
-        group_reportes = QGroupBox("Configuración de Reportes")
-        form_reportes = QFormLayout(group_reportes)
-
-        self.widgets_configuracion["reportes_formato_default"] = QComboBox()
-        self.widgets_configuracion["reportes_formato_default"].addItems(
-            ["PDF", "Excel", "Word"]
-        )
-        self.widgets_configuracion["reportes_autor_default"] = QLineEdit()
-        self.widgets_configuracion["reportes_logo_incluir"] = QCheckBox()
-        self.widgets_configuracion["reportes_pie_pagina"] = QLineEdit()
-        self.widgets_configuracion["reportes_max_registros"] = QSpinBox()
-        self.widgets_configuracion["reportes_max_registros"].setRange(100, 1000000)
-
-        form_reportes.addRow(
-            "Formato por Defecto:",
-            self.widgets_configuracion["reportes_formato_default"],
-        )
-        form_reportes.addRow(
-            "Autor por Defecto:", self.widgets_configuracion["reportes_autor_default"]
-        )
-        form_reportes.addRow(
-            "Incluir Logo:", self.widgets_configuracion["reportes_logo_incluir"]
-        )
-        form_reportes.addRow(
-            "Pie de Página:", self.widgets_configuracion["reportes_pie_pagina"]
-        )
-        form_reportes.addRow(
-            "Máx. Registros:", self.widgets_configuracion["reportes_max_registros"]
-        )
-
-        layout.addWidget(group_reportes)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_tema(self):
-        """Crea la pestaña de configuración del tema."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Configuración de colores
-        group_colores = QGroupBox("Configuración de Colores")
-        form_colores = QFormLayout(group_colores)
-
-        # Crear botones de color
-        self.widgets_configuracion["tema_color_primario"] = self.crear_selector_color()
-        self.widgets_configuracion["tema_color_secundario"] = (
-            self.crear_selector_color()
-        )
-        self.widgets_configuracion["tema_color_exito"] = self.crear_selector_color()
-        self.widgets_configuracion["tema_color_error"] = self.crear_selector_color()
-        self.widgets_configuracion["tema_color_warning"] = self.crear_selector_color()
-
-        form_colores.addRow(
-            "Color Primario:", self.widgets_configuracion["tema_color_primario"]
-        )
-        form_colores.addRow(
-            "Color Secundario:", self.widgets_configuracion["tema_color_secundario"]
-        )
-        form_colores.addRow(
-            "Color Éxito:", self.widgets_configuracion["tema_color_exito"]
-        )
-        form_colores.addRow(
-            "Color Error:", self.widgets_configuracion["tema_color_error"]
-        )
-        form_colores.addRow(
-            "Color Warning:", self.widgets_configuracion["tema_color_warning"]
-        )
-
-        # Configuración de fuentes
-        group_fuentes = QGroupBox("Configuración de Fuentes")
-        form_fuentes = QFormLayout(group_fuentes)
-
-        self.widgets_configuracion["tema_fuente_familia"] = QComboBox()
-        self.widgets_configuracion["tema_fuente_familia"].addItems(
-            ["Segoe UI", "Arial", "Helvetica", "Times New Roman"]
-        )
-        self.widgets_configuracion["tema_fuente_tamaño"] = QSpinBox()
-        self.widgets_configuracion["tema_fuente_tamaño"].setRange(8, 24)
-        self.widgets_configuracion["tema_fuente_tamaño"].setSuffix(" px")
-        self.widgets_configuracion["tema_modo_oscuro"] = QCheckBox()
-
-        form_fuentes.addRow(
-            "Familia de Fuente:", self.widgets_configuracion["tema_fuente_familia"]
-        )
-        form_fuentes.addRow(
-            "Tamaño de Fuente:", self.widgets_configuracion["tema_fuente_tamaño"]
-        )
-        form_fuentes.addRow(
-            "Modo Oscuro:", self.widgets_configuracion["tema_modo_oscuro"]
-        )
-
-        layout.addWidget(group_colores)
-        layout.addWidget(group_fuentes)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_backup(self):
-        """Crea la pestaña de configuración de backup."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Configuración de backup
-        group_backup = QGroupBox("Configuración de Backup")
-        form_backup = QFormLayout(group_backup)
-
-        self.widgets_configuracion["backup_auto_habilitado"] = QCheckBox()
-        self.widgets_configuracion["backup_intervalo_horas"] = QSpinBox()
-        self.widgets_configuracion["backup_intervalo_horas"].setRange(1, 168)
-        self.widgets_configuracion["backup_intervalo_horas"].setSuffix(" horas")
-        self.widgets_configuracion["backup_directorio"] = QLineEdit()
-        self.widgets_configuracion["backup_mantener_dias"] = QSpinBox()
-        self.widgets_configuracion["backup_mantener_dias"].setRange(1, 365)
-        self.widgets_configuracion["backup_mantener_dias"].setSuffix(" días")
-        self.widgets_configuracion["backup_comprimir"] = QCheckBox()
-
-        form_backup.addRow(
-            "Backup Automático:", self.widgets_configuracion["backup_auto_habilitado"]
-        )
-        form_backup.addRow(
-            "Intervalo:", self.widgets_configuracion["backup_intervalo_horas"]
-        )
-        form_backup.addRow(
-            "Directorio:", self.widgets_configuracion["backup_directorio"]
-        )
-        form_backup.addRow(
-            "Mantener por:", self.widgets_configuracion["backup_mantener_dias"]
-        )
-        form_backup.addRow("Comprimir:", self.widgets_configuracion["backup_comprimir"])
-
-        layout.addWidget(group_backup)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_integraciones(self):
-        """Crea la pestaña de configuración de integraciones."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Configuración de email
-        group_email = QGroupBox("Configuración de Email")
-        form_email = QFormLayout(group_email)
-
-        self.widgets_configuracion["integraciones_email_smtp_server"] = QLineEdit()
-        self.widgets_configuracion["integraciones_email_smtp_port"] = QSpinBox()
-        self.widgets_configuracion["integraciones_email_smtp_port"].setRange(1, 65535)
-        self.widgets_configuracion["integraciones_email_usuario"] = QLineEdit()
-        self.widgets_configuracion["integraciones_email_ssl"] = QCheckBox()
-
-        form_email.addRow(
-            "Servidor SMTP:",
-            self.widgets_configuracion["integraciones_email_smtp_server"],
-        )
-        form_email.addRow(
-            "Puerto SMTP:", self.widgets_configuracion["integraciones_email_smtp_port"]
-        )
-        form_email.addRow(
-            "Usuario:", self.widgets_configuracion["integraciones_email_usuario"]
-        )
-        form_email.addRow(
-            "Usar SSL:", self.widgets_configuracion["integraciones_email_ssl"]
-        )
-
-        # Configuración de API
-        group_api = QGroupBox("Configuración de API")
-        form_api = QFormLayout(group_api)
-
-        self.widgets_configuracion["integraciones_api_timeout"] = QSpinBox()
-        self.widgets_configuracion["integraciones_api_timeout"].setRange(5, 300)
-        self.widgets_configuracion["integraciones_api_timeout"].setSuffix(" seg")
-        self.widgets_configuracion["integraciones_webhook_url"] = QLineEdit()
-
-        form_api.addRow(
-            "Timeout API:", self.widgets_configuracion["integraciones_api_timeout"]
-        )
-        form_api.addRow(
-            "Webhook URL:", self.widgets_configuracion["integraciones_webhook_url"]
-        )
-
-        layout.addWidget(group_email)
-        layout.addWidget(group_api)
-        layout.addStretch()
-
-        return widget
-
-    def crear_tab_todas_configuraciones(self):
-        """Crea la pestaña con todas las configuraciones."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
-
-        # Tabla de configuraciones
-        self.tabla_configuraciones = QTableWidget()
-        self.tabla_configuraciones.setColumnCount(5)
-        self.tabla_configuraciones.setHorizontalHeaderLabels(
-            ["Clave", "Valor", "Descripción", "Categoría", "Acciones"]
-        )
-
-        # Configurar tabla
-        header = self.tabla_configuraciones.horizontalHeader()
-        header.setStretchLastSection(True)
-
-        layout.addWidget(self.tabla_configuraciones)
-
-        return widget
-
-    def crear_panel_acciones(self):
-        """Crea el panel de acciones."""
-        panel = QFrame()
         layout = QHBoxLayout(panel)
 
-        # Botones de acción
-        btn_guardar = QPushButton("💾 Guardar Configuraciones")
-        btn_guardar.clicked.connect(self.guardar_configuraciones)
+        # Botón Nueva Orden
+        self.btn_nueva_orden = QPushButton("Nueva Orden")
+        self.btn_nueva_orden.setIcon(QIcon("📋"))
+        self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
 
-        btn_restaurar = QPushButton("🔄 Restaurar Defecto")
-        btn_restaurar.clicked.connect(self.restaurar_configuraciones)
+        # Búsqueda
+        self.input_busqueda = QLineEdit()
+        self.input_busqueda.setPlaceholderText(
+            "Buscar por proveedor o número de orden..."
+        )
+        self.input_busqueda.returnPressed.connect(self.buscar_compras)
 
-        btn_exportar = QPushButton("📤 Exportar")
-        btn_exportar.clicked.connect(self.solicitud_exportar_configuracion.emit)
+        # Filtro por estado
+        self.combo_estado = QComboBox()
+        self.combo_estado.addItems(
+            ["Todos", "PENDIENTE", "APROBADA", "RECIBIDA", "CANCELADA"]
+        )
+        self.combo_estado.currentTextChanged.connect(self.buscar_compras)
 
-        btn_importar = QPushButton("📥 Importar")
-        btn_importar.clicked.connect(self.solicitud_importar_configuracion.emit)
+        # Filtro por fechas
+        self.date_desde = QDateEdit()
+        self.date_desde.setDate(QDate.currentDate().addMonths(-3))
+        self.date_desde.setCalendarPopup(True)
+        self.date_desde.dateChanged.connect(self.buscar_compras)
 
-        layout.addWidget(btn_guardar)
-        layout.addWidget(btn_restaurar)
-        layout.addWidget(btn_exportar)
-        layout.addWidget(btn_importar)
-        layout.addStretch()
+        self.date_hasta = QDateEdit()
+        self.date_hasta.setDate(QDate.currentDate())
+        self.date_hasta.setCalendarPopup(True)
+        self.date_hasta.dateChanged.connect(self.buscar_compras)
+
+        # Botón buscar
+        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar.clicked.connect(self.buscar_compras)
+
+        # Botón actualizar
+        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar.clicked.connect(self.actualizar_datos)
+
+        # Agregar widgets
+        layout.addWidget(self.btn_nueva_orden)
+        layout.addWidget(QLabel("Buscar:"))
+        layout.addWidget(self.input_busqueda)
+        layout.addWidget(QLabel("Estado:"))
+        layout.addWidget(self.combo_estado)
+        layout.addWidget(QLabel("Desde:"))
+        layout.addWidget(self.date_desde)
+        layout.addWidget(QLabel("Hasta:"))
+        layout.addWidget(self.date_hasta)
+        layout.addWidget(self.btn_buscar)
+        layout.addWidget(self.btn_actualizar)
 
         return panel
 
-    def crear_selector_color(self):
-        """Crea un selector de color."""
-        widget = QWidget()
-        layout = QHBoxLayout(widget)
-        layout.setContentsMargins(0, 0, 0, 0)
+    def crear_panel_compras(self):
+        """Crea el panel de lista de compras."""
+        panel = QGroupBox("Órdenes de Compra")
+        layout = QVBoxLayout(panel)
 
-        color_display = QLabel()
-        color_display.setFixedSize(30, 20)
-        color_display.setStyleSheet(
-            "border: 1px solid #ccc; background-color: #3498db;"
+        # Tabla de compras
+        self.tabla_compras = QTableWidget()
+        self.tabla_compras.setColumnCount(10)
+        self.tabla_compras.setHorizontalHeaderLabels(
+            [
+                "ID",
+                "Proveedor",
+                "Número Orden",
+                "Fecha Pedido",
+                "Fecha Entrega",
+                "Estado",
+                "Total",
+                "Usuario",
+                "Fecha Creación",
+                "Acciones",
+            ]
         )
 
-        btn_color = QPushButton("Seleccionar Color")
-        btn_color.clicked.connect(lambda: self.seleccionar_color(color_display))
+        # Configurar tabla
+        header = self.tabla_compras.horizontalHeader()
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+            header.setStretchLastSection(True)
 
-        layout.addWidget(color_display)
-        layout.addWidget(btn_color)
-        layout.addStretch()
-
-        # Agregar referencia al display para poder acceder desde afuera
-        widget.color_display = color_display
-
-        return widget
-
-    def seleccionar_color(self, display_widget):
-        """Abre el selector de color."""
-        color = QColorDialog.getColor()
-        if color.isValid():
-            display_widget.setStyleSheet(
-                f"border: 1px solid #ccc; background-color: {color.name()};"
-            )
-
-    def cargar_configuraciones(self, configuraciones: List[Dict[str, Any]]):
-        """Carga las configuraciones en la interfaz."""
-        self.configuraciones_data = configuraciones
-
-        # Cargar en widgets específicos
-        for config in configuraciones:
-            clave = config["clave"]
-            valor = config["valor"]
-
-            if clave in self.widgets_configuracion:
-                self.establecer_valor_widget(clave, valor)
-
-        # Cargar en tabla
-        self.cargar_tabla_configuraciones()
-
-    def establecer_valor_widget(self, clave: str, valor: str):
-        """Establece el valor en un widget específico."""
-        widget = self.widgets_configuracion[clave]
-
-        if isinstance(widget, QLineEdit):
-            widget.setText(valor)
-        elif isinstance(widget, QSpinBox):
-            widget.setValue(int(valor) if valor.isdigit() else 0)
-        elif isinstance(widget, QDoubleSpinBox):
-            try:
-                widget.setValue(float(valor))
-            except ValueError:
-                widget.setValue(0.0)
-        elif isinstance(widget, QCheckBox):
-            widget.setChecked(valor.lower() == "true")
-        elif isinstance(widget, QComboBox):
-            index = widget.findText(valor)
-            if index >= 0:
-                widget.setCurrentIndex(index)
-        elif hasattr(widget, "color_display"):  # Selector de color
-            widget.color_display.setStyleSheet(
-                f"border: 1px solid #ccc; background-color: {valor};"
-            )
-
-    def cargar_tabla_configuraciones(self):
-        """Carga las configuraciones en la tabla."""
-        self.tabla_configuraciones.setRowCount(len(self.configuraciones_data))
-
-        for row, config in enumerate(self.configuraciones_data):
-            # Clave
-            self.tabla_configuraciones.setItem(
-                row, 0, QTableWidgetItem(config["clave"])
-            )
-
-            # Valor
-            self.tabla_configuraciones.setItem(
-                row, 1, QTableWidgetItem(str(config["valor"]))
-            )
-
-            # Descripción
-            self.tabla_configuraciones.setItem(
-                row, 2, QTableWidgetItem(config.get("descripcion", ""))
-            )
-
-            # Categoría
-            self.tabla_configuraciones.setItem(
-                row, 3, QTableWidgetItem(config.get("categoria", ""))
-            )
-
-            # Botón de restaurar
-            btn_restaurar = QPushButton("🔄 Restaurar")
-            btn_restaurar.clicked.connect(
-                lambda checked,
-                c=config["clave"]: self.solicitud_restaurar_configuracion.emit(c)
-            )
-            self.tabla_configuraciones.setCellWidget(row, 4, btn_restaurar)
-
-    def guardar_configuraciones(self):
-        """Guarda todas las configuraciones."""
-        for clave, widget in self.widgets_configuracion.items():
-            valor = self.obtener_valor_widget(widget)
-            if valor is not None:
-                self.solicitud_actualizar_configuracion.emit(clave, valor)
-
-    def obtener_valor_widget(self, widget):
-        """Obtiene el valor de un widget."""
-        if isinstance(widget, QLineEdit):
-            return widget.text()
-        elif isinstance(widget, QSpinBox):
-            return widget.value()
-        elif isinstance(widget, QDoubleSpinBox):
-            return widget.value()
-        elif isinstance(widget, QCheckBox):
-            return widget.isChecked()
-        elif isinstance(widget, QComboBox):
-            return widget.currentText()
-        elif hasattr(widget, "color_display"):  # Selector de color
-            style = widget.color_display.styleSheet()
-            # Extraer el color del estilo
-            if "background-color:" in style:
-                return style.split("background-color:")[1].split(";")[0].strip()
-        return None
-
-    def restaurar_configuraciones(self):
-        """Restaura las configuraciones seleccionadas."""
-        # Por ahora, mostrar mensaje
-        from PyQt6.QtWidgets import QMessageBox
-
-        QMessageBox.information(
-            self,
-            "Restaurar",
-            "Seleccione configuraciones específicas en la tabla para restaurar.",
+        self.tabla_compras.setAlternatingRowColors(True)
+        self.tabla_compras.setSelectionBehavior(
+            QAbstractItemView.SelectionBehavior.SelectRows
+        )
+        self.tabla_compras.setSelectionMode(
+            QAbstractItemView.SelectionMode.SingleSelection
         )
 
-    def aplicar_cambio_tema(self, clave: str, valor: Any):
-        """Aplica un cambio de tema."""
-        if clave.startswith("tema_color_"):
-            # Aplicar cambio de color
-            self.aplicar_estilos()
+        # Estilo de la tabla
+        self.tabla_compras.setStyleSheet("""
+            QTableWidget {
+                background-color: white;
+                gridline-color: #e0e0e0;
+                border: 1px solid #ddd;
+                border-radius: 8px;
+            }
+            QTableWidget::item {
+                padding: 12px;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            QTableWidget::item:selected {
+                background-color: #e3f2fd;
+            }
+            QHeaderView::section {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #f8f9fa, stop:1 #e9ecef);
+                border: 1px solid #dee2e6;
+                padding: 12px;
+                font-weight: bold;
+                color: #495057;
+            }
+        """)
 
-    def aplicar_estilos(self):
-        """Aplica estilos modernos al widget."""
+        layout.addWidget(self.tabla_compras)
+
+        return panel
+
+    def crear_panel_estadisticas(self):
+        """Crea el panel de estadísticas mejorado."""
+        panel = QWidget()
+        layout = QVBoxLayout(panel)
+        
+        # Crear scroll area para estadísticas
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setStyleSheet("QScrollArea { border: none; }")
+        
+        scroll_widget = QWidget()
+        scroll_layout = QVBoxLayout(scroll_widget)
+        
+        # === ESTADÍSTICAS GENERALES ===
+        stats_general = QGroupBox("📊 Estadísticas Generales")
+        stats_general.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #3498db;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        stats_layout = QGridLayout(stats_general)
+        
+        # Labels de estadísticas básicas
+        self.lbl_total_ordenes = QLabel("Total Órdenes: 0")
+        self.lbl_ordenes_pendientes = QLabel("Pendientes: 0")
+        self.lbl_ordenes_aprobadas = QLabel("Aprobadas: 0")
+        self.lbl_monto_total = QLabel("Monto Total: $0.00")
+        self.lbl_promedio_orden = QLabel("Promedio por Orden: $0.00")
+        self.lbl_ordenes_mes = QLabel("Órdenes este Mes: 0")
+        
+        # Estilo para labels básicos
+        label_style = """
+            QLabel {
+                font-size: 12px;
+                font-weight: bold;
+                color: #2c3e50;
+                padding: 8px;
+                background-color: #ecf0f1;
+                border-radius: 4px;
+                margin: 2px;
+            }
+        """
+        
+        labels_basicos = [
+            self.lbl_total_ordenes, self.lbl_ordenes_pendientes, self.lbl_ordenes_aprobadas,
+            self.lbl_monto_total, self.lbl_promedio_orden, self.lbl_ordenes_mes
+        ]
+        
+        for i, label in enumerate(labels_basicos):
+            label.setStyleSheet(label_style)
+            stats_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(stats_general)
+        
+        # === ANÁLISIS POR PROVEEDORES ===
+        proveedores_group = QGroupBox("🏪 Análisis por Proveedores")
+        proveedores_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #27ae60;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        proveedores_layout = QVBoxLayout(proveedores_group)
+        
+        # Tabla de proveedores
+        self.tabla_proveedores = QTableWidget()
+        self.tabla_proveedores.setColumnCount(5)
+        self.tabla_proveedores.setHorizontalHeaderLabels([
+            "Proveedor", "Órdenes", "Monto Total", "Promedio", "% del Total"
+        ])
+        self.tabla_proveedores.setMaximumHeight(200)
+        self.tabla_proveedores.setAlternatingRowColors(True)
+        self.tabla_proveedores.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #bdc3c7;
+                background-color: white;
+                alternate-background-color: #f8f9fa;
+            }
+            QHeaderView::section {
+                background-color: #27ae60;
+                color: white;
+                padding: 8px;
+                border: 1px solid #229954;
+                font-weight: bold;
+            }
+        """)
+        
+        # Configurar tabla
+        header = self.tabla_proveedores.horizontalHeader()
+        if header is not None:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        
+        proveedores_layout.addWidget(self.tabla_proveedores)
+        
+        # Proveedor destacado
+        self.lbl_proveedor_top = QLabel("🏆 Proveedor Principal: No hay datos")
+        self.lbl_proveedor_top.setStyleSheet("""
+            QLabel {
+                font-size: 13px;
+                font-weight: bold;
+                color: #27ae60;
+                padding: 10px;
+                background-color: #d5f4e6;
+                border-radius: 6px;
+                margin: 5px;
+            }
+        """)
+        proveedores_layout.addWidget(self.lbl_proveedor_top)
+        
+        scroll_layout.addWidget(proveedores_group)
+        
+        # === ANÁLISIS TEMPORAL ===
+        temporal_group = QGroupBox("📈 Análisis Temporal")
+        temporal_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #e74c3c;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        temporal_layout = QGridLayout(temporal_group)
+        
+        # Estadísticas temporales
+        self.lbl_compras_hoy = QLabel("Compras Hoy: 0")
+        self.lbl_compras_semana = QLabel("Compras esta Semana: 0")
+        self.lbl_compras_mes = QLabel("Compras este Mes: 0")
+        self.lbl_tendencia = QLabel("Tendencia: Estable")
+        
+        temporal_style = """
+            QLabel {
+                font-size: 12px;
+                font-weight: bold;
+                color: #e74c3c;
+                padding: 8px;
+                background-color: #fdf2f2;
+                border-radius: 4px;
+                margin: 2px;
+            }
+        """
+        
+        labels_temporales = [
+            self.lbl_compras_hoy, self.lbl_compras_semana, 
+            self.lbl_compras_mes, self.lbl_tendencia
+        ]
+        
+        for i, label in enumerate(labels_temporales):
+            label.setStyleSheet(temporal_style)
+            temporal_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(temporal_group)
+        
+        # === ANÁLISIS DE PRODUCTOS ===
+        productos_group = QGroupBox("📦 Análisis de Productos")
+        productos_group.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #f39c12;
+                border-radius: 8px;
+                margin-top: 10px;
+                padding-top: 10px;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px;
+            }
+        """)
+        
+        productos_layout = QGridLayout(productos_group)
+        
+        # Estadísticas de productos
+        self.lbl_productos_unicos = QLabel("Productos Únicos: 0")
+        self.lbl_categoria_top = QLabel("Categoría Principal: No hay datos")
+        self.lbl_producto_mas_comprado = QLabel("Producto Más Comprado: No hay datos")
+        self.lbl_ticket_promedio = QLabel("Ticket Promedio: $0.00")
+        
+        productos_style = """
+            QLabel {
+                font-size: 12px;
+                font-weight: bold;
+                color: #f39c12;
+                padding: 8px;
+                background-color: #fef9e7;
+                border-radius: 4px;
+                margin: 2px;
+            }
+        """
+        
+        labels_productos = [
+            self.lbl_productos_unicos, self.lbl_categoria_top,
+            self.lbl_producto_mas_comprado, self.lbl_ticket_promedio
+        ]
+        
+        for i, label in enumerate(labels_productos):
+            label.setStyleSheet(productos_style)
+            productos_layout.addWidget(label, i // 2, i % 2)
+        
+        scroll_layout.addWidget(productos_group)
+        
+        # Configurar scroll area
+        scroll_area.setWidget(scroll_widget)
+        layout.addWidget(scroll_area)
+
+        # Gráfico de estados (texto por ahora)
+        self.estados_frame = QFrame()
+        self.estados_frame.setFrameStyle(QFrame.Shape.Box)
+        self.estados_frame.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #ffffff, stop:1 #f8f9fa);
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                padding: 15px;
+            }
+        """)
+
+        estados_layout = QVBoxLayout(self.estados_frame)
+
+        titulo_estados = QLabel("Distribución por Estado")
+        titulo_estados.setFont(QFont("Arial", 12, QFont.Weight.Bold))
+        titulo_estados.setStyleSheet("color: #2c3e50; margin-bottom: 10px;")
+        estados_layout.addWidget(titulo_estados)
+
+        self.texto_estados = QTextEdit()
+        self.texto_estados.setMaximumHeight(150)
+        self.texto_estados.setReadOnly(True)
+        self.texto_estados.setStyleSheet("""
+            QTextEdit {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 8px;
+                font-family: monospace;
+            }
+        """)
+        estados_layout.addWidget(self.texto_estados)
+
+        layout.addWidget(self.estados_frame)
+
+        return panel
+
+    def aplicar_estilo(self):
+        """Aplica el estilo general al widget."""
         self.setStyleSheet("""
             QWidget {
                 background-color: #f8f9fa;
                 font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                font-size: 12px;
             }
-            
-            QTabWidget::pane {
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                background-color: white;
-                padding: 10px;
-            }
-            
-            QTabBar::tab {
-                background: linear-gradient(135deg, #ecf0f1, #d5dbdb);
-                border: 1px solid #bdc3c7;
-                border-bottom: none;
-                padding: 12px 24px;
-                margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                font-weight: bold;
-                color: #2c3e50;
-            }
-            
-            QTabBar::tab:selected {
-                background: linear-gradient(135deg, #3498db, #2980b9);
+            QPushButton {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #3498db, stop:1 #2980b9);
                 color: white;
-                border-bottom: 2px solid #3498db;
+                border: none;
+                padding: 6px 12px;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 12px;
+                min-width: 80px;
+                max-height: 28px;
             }
-            
-            QTabBar::tab:hover {
-                background: linear-gradient(135deg, #d5dbdb, #bdc3c7);
+            QPushButton:hover {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #5dade2, stop:1 #3498db);
             }
-            
+            QPushButton:pressed {
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 #2980b9, stop:1 #1f618d);
+            }
+            QLineEdit, QComboBox, QDateEdit {
+                border: 2px solid #bdc3c7;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-size: 14px;
+                background-color: white;
+            }
+            QLineEdit:focus, QComboBox:focus, QDateEdit:focus {
+                border-color: #3498db;
+                outline: none;
+            }
             QGroupBox {
                 font-weight: bold;
-                font-size: 14px;
-                color: #2c3e50;
-                border: 2px solid #e9ecef;
+                border: 2px solid #bdc3c7;
                 border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-                background-color: white;
+                margin: 10px 0;
+                padding-top: 15px;
             }
-            
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 10px;
                 padding: 0 5px 0 5px;
-                background-color: #f8f9fa;
-            }
-            
-            QLabel {
                 color: #2c3e50;
-                font-weight: 500;
-            }
-            
-            QLineEdit {
-                padding: 8px 12px;
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
                 font-size: 14px;
-                background-color: white;
-            }
-            
-            QLineEdit:focus {
-                border-color: #3498db;
-                outline: none;
-            }
-            
-            QPushButton {
-                background: linear-gradient(135deg, #3498db, #2980b9);
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 6px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 100px;
-            }
-            
-            QPushButton:hover {
-                background: linear-gradient(135deg, #2980b9, #1f618d);
-            }
-            
-            QPushButton:pressed {
-                background: linear-gradient(135deg, #1f618d, #154360);
-            }
-            
-            QComboBox {
-                padding: 8px 12px;
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
-                background-color: white;
-                min-width: 100px;
-            }
-            
-            QComboBox:focus {
-                border-color: #3498db;
-            }
-            
-            QSpinBox, QDoubleSpinBox {
-                padding: 8px 12px;
-                border: 2px solid #e9ecef;
-                border-radius: 6px;
-                background-color: white;
-            }
-            
-            QSpinBox:focus, QDoubleSpinBox:focus {
-                border-color: #3498db;
-            }
-            
-            QCheckBox {
-                spacing: 8px;
-                font-size: 13px;
-            }
-            
-            QCheckBox::indicator {
-                width: 16px;
-                height: 16px;
-                border: 2px solid #bdc3c7;
-                border-radius: 3px;
-                background-color: white;
-            }
-            
-            QCheckBox::indicator:checked {
-                background-color: #3498db;
-                border-color: #3498db;
-            }
-            
-            QTableWidget {
-                background-color: white;
-                alternate-background-color: #f8f9fa;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                gridline-color: #e9ecef;
-            }
-            
-            QTableWidget::item {
-                padding: 8px;
-                border: none;
-            }
-            
-            QTableWidget::item:selected {
-                background-color: #3498db;
-                color: white;
-            }
-            
-            QHeaderView::section {
-                background: linear-gradient(135deg, #34495e, #2c3e50);
-                color: white;
-                padding: 10px;
-                border: none;
-                font-weight: bold;
             }
         """)
+
+    def abrir_dialog_nueva_orden(self):
+        """Abre el diálogo para crear una nueva orden."""
+        dialog = DialogNuevaOrden(self)
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            datos = dialog.obtener_datos()
+            self.orden_creada.emit(datos)
+
+    def buscar_compras(self):
+        """Ejecuta la búsqueda de compras."""
+        filtros = {
+            "proveedor": self.input_busqueda.text(),
+            "estado": self.combo_estado.currentText()
+            if self.combo_estado.currentText() != "Todos"
+            else "",
+            "fecha_inicio": self.date_desde.date().toPython(),
+            "fecha_fin": self.date_hasta.date().toPython(),
+        }
+        self.busqueda_realizada.emit(filtros)
+
+    def cargar_compras_en_tabla(self, compras):
+        """Carga las compras en la tabla."""
+        self.tabla_compras.setRowCount(len(compras))
+
+        for row, compra in enumerate(compras):
+            # Datos básicos
+            self.tabla_compras.setItem(
+                row, 0, QTableWidgetItem(str(compra.get("id", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 1, QTableWidgetItem(str(compra.get("proveedor", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 2, QTableWidgetItem(str(compra.get("numero_orden", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 3, QTableWidgetItem(str(compra.get("fecha_pedido", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 4, QTableWidgetItem(str(compra.get("fecha_entrega_estimada", "")))
+            )
+
+            # Estado con color
+            estado_item = QTableWidgetItem(str(compra.get("estado", "")))
+            estado = compra.get("estado", "")
+            if estado == "PENDIENTE":
+                estado_item.setBackground(Qt.GlobalColor.yellow)
+            elif estado == "APROBADA":
+                estado_item.setBackground(Qt.GlobalColor.cyan)
+            elif estado == "RECIBIDA":
+                estado_item.setBackground(Qt.GlobalColor.green)
+            elif estado == "CANCELADA":
+                estado_item.setBackground(Qt.GlobalColor.red)
+
+            self.tabla_compras.setItem(row, 5, estado_item)
+
+            # Total
+            total = compra.get("total_final", 0)
+            self.tabla_compras.setItem(row, 6, QTableWidgetItem(f"${total:,.2f}"))
+
+            # Usuario y fecha
+            self.tabla_compras.setItem(
+                row, 7, QTableWidgetItem(str(compra.get("usuario_creacion", "")))
+            )
+            self.tabla_compras.setItem(
+                row, 8, QTableWidgetItem(str(compra.get("fecha_creacion", "")))
+            )
+
+            # Botones de acción
+            btn_editar = QPushButton("Editar")
+            btn_editar.setStyleSheet("background-color: #f39c12; color: white;")
+            btn_editar.clicked.connect(
+                lambda checked, id=compra.get("id"): self.editar_orden(id)
+            )
+            self.tabla_compras.setCellWidget(row, 9, btn_editar)
+
+    def actualizar_estadisticas(self, stats):
+        """Actualiza las estadísticas completas mostradas."""
+        # === ESTADÍSTICAS GENERALES ===
+        self.lbl_total_ordenes.setText(
+            f"Total Órdenes: {stats.get('total_ordenes', 0)}"
+        )
+        self.lbl_monto_total.setText(
+            f"Monto Total: ${stats.get('monto_total', 0):,.2f}"
+        )
+        self.lbl_promedio_orden.setText(
+            f"Promedio por Orden: ${stats.get('promedio_orden', 0):,.2f}"
+        )
+        self.lbl_ordenes_mes.setText(
+            f"Órdenes este Mes: {stats.get('ordenes_mes', 0)}"
+        )
+
+        # Actualizar contadores por estado
+        estados_data = stats.get("ordenes_por_estado", [])
+        pendientes = next(
+            (x["cantidad"] for x in estados_data if x["estado"] == "PENDIENTE"), 0
+        )
+        aprobadas = next(
+            (x["cantidad"] for x in estados_data if x["estado"] == "APROBADA"), 0
+        )
+
+        self.lbl_ordenes_pendientes.setText(f"Pendientes: {pendientes}")
+        self.lbl_ordenes_aprobadas.setText(f"Aprobadas: {aprobadas}")
+
+        # === ANÁLISIS POR PROVEEDORES ===
+        # Actualizar tabla de proveedores
+        proveedores_data = stats.get("proveedores_analisis", [])
+        self.tabla_proveedores.setRowCount(len(proveedores_data))
+        
+        for row, proveedor in enumerate(proveedores_data):
+            self.tabla_proveedores.setItem(row, 0, QTableWidgetItem(proveedor["proveedor"]))
+            self.tabla_proveedores.setItem(row, 1, QTableWidgetItem(str(proveedor["ordenes"])))
+            self.tabla_proveedores.setItem(row, 2, QTableWidgetItem(f"${proveedor['monto_total']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 3, QTableWidgetItem(f"${proveedor['promedio']:,.2f}"))
+            self.tabla_proveedores.setItem(row, 4, QTableWidgetItem(f"{proveedor['porcentaje']:.1f}%"))
+        
+        # Actualizar proveedor principal
+        proveedor_principal = stats.get("proveedor_principal")
+        if proveedor_principal:
+            self.lbl_proveedor_top.setText(
+                f"🏆 Proveedor Principal: {proveedor_principal['proveedor']} "
+                f"({proveedor_principal['ordenes']} órdenes - ${proveedor_principal['monto_total']:,.2f})"
+            )
+        else:
+            self.lbl_proveedor_top.setText("🏆 Proveedor Principal: No hay datos")
+
+        # === ANÁLISIS TEMPORAL ===
+        self.lbl_compras_hoy.setText(f"Compras Hoy: {stats.get('compras_hoy', 0)}")
+        self.lbl_compras_semana.setText(f"Compras esta Semana: {stats.get('compras_semana', 0)}")
+        self.lbl_compras_mes.setText(f"Compras este Mes: {stats.get('compras_mes', 0)}")
+        self.lbl_tendencia.setText(f"Tendencia: {stats.get('tendencia', 'Estable')}")
+
+        # === ANÁLISIS DE PRODUCTOS ===
+        self.lbl_productos_unicos.setText(f"Productos Únicos: {stats.get('productos_unicos', 0)}")
+        self.lbl_categoria_top.setText(f"Categoría Principal: {stats.get('categoria_principal', 'No hay datos')}")
+        self.lbl_producto_mas_comprado.setText(f"Producto Más Comprado: {stats.get('producto_mas_comprado', 'No hay datos')}")
+        self.lbl_ticket_promedio.setText(f"Ticket Promedio: ${stats.get('ticket_promedio', 0):,.2f}")
+
+        # === DISTRIBUCIÓN POR ESTADO ===
+        # Actualizar texto de estados
+        texto_estados = "Distribución por Estado:\n\n"
+        for estado_data in estados_data:
+            texto_estados += f"• {estado_data['estado']}: {estado_data['cantidad']}\n"
+
+        self.texto_estados.setPlainText(texto_estados)
+
+    def editar_orden(self, orden_id):
+        """Edita una orden existente."""
+        # Por ahora solo cambiar estado
+        estados = ["PENDIENTE", "APROBADA", "RECIBIDA", "CANCELADA"]
+
+        # Crear un diálogo simple para cambiar estado
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Cambiar Estado")
+        dialog.setModal(True)
+
+        layout = QVBoxLayout(dialog)
+
+        combo_estado = QComboBox()
+        combo_estado.addItems(estados)
+        layout.addWidget(QLabel("Nuevo Estado:"))
+        layout.addWidget(combo_estado)
+
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(dialog.accept)
+        buttons.rejected.connect(dialog.reject)
+        layout.addWidget(buttons)
+
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            nuevo_estado = combo_estado.currentText()
+            self.orden_actualizada.emit(orden_id, nuevo_estado)
+
+    def actualizar_datos(self):
+        """Actualiza los datos de la vista."""
+        self.buscar_compras()
 
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
 
-    def mostrar_mensaje(self, mensaje: str, tipo: str = "info"):
-        """Muestra un mensaje de feedback visual al usuario.
 
-        Args:
-            mensaje: El mensaje a mostrar
-            tipo: Tipo de mensaje ('info', 'exito', 'advertencia', 'error', 'cargando')
-        """
-        if not hasattr(self, "label_feedback") or self.label_feedback is None:
+class DialogNuevaOrden(QDialog):
+    """Diálogo para crear una nueva orden de compra."""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Nueva Orden de Compra")
+        self.setModal(True)
+        self.setMinimumSize(400, 500)
+        
+        # Inicializar el gestor de validaciones
+        self.validator_manager = FormValidatorManager()
+        
+        self.init_ui()
+        self.configurar_validaciones()
+
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+
+        # Formulario
+        form_layout = QFormLayout()
+
+        # Campos
+        self.input_proveedor = QLineEdit()
+        self.input_numero_orden = QLineEdit()
+        self.date_pedido = QDateEdit()
+        self.date_pedido.setDate(QDate.currentDate())
+        self.date_pedido.setCalendarPopup(True)
+
+        self.date_entrega = QDateEdit()
+        self.date_entrega.setDate(QDate.currentDate().addDays(30))
+        self.date_entrega.setCalendarPopup(True)
+
+        self.combo_estado = QComboBox()
+        self.combo_estado.addItems(["PENDIENTE", "APROBADA"])
+
+        self.input_descuento = QDoubleSpinBox()
+        self.input_descuento.setRange(0, 999999)
+        self.input_descuento.setDecimals(2)
+        self.input_descuento.setSuffix(" $")
+
+        self.input_impuestos = QDoubleSpinBox()
+        self.input_impuestos.setRange(0, 999999)
+        self.input_impuestos.setDecimals(2)
+        self.input_impuestos.setSuffix(" $")
+
+        self.input_observaciones = QTextEdit()
+        self.input_observaciones.setMaximumHeight(100)
+
+        # Agregar campos al formulario
+        form_layout.addRow("Proveedor:", self.input_proveedor)
+        form_layout.addRow("Número de Orden:", self.input_numero_orden)
+        form_layout.addRow("Fecha Pedido:", self.date_pedido)
+        form_layout.addRow("Fecha Entrega:", self.date_entrega)
+        form_layout.addRow("Estado:", self.combo_estado)
+        form_layout.addRow("Descuento:", self.input_descuento)
+        form_layout.addRow("Impuestos:", self.input_impuestos)
+        form_layout.addRow("Observaciones:", self.input_observaciones)
+
+        layout.addLayout(form_layout)
+
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.validar_y_aceptar)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+
+        # Aplicar estilo
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            QLineEdit, QComboBox, QDateEdit, QTextEdit, QDoubleSpinBox {
+                border: 2px solid #bdc3c7;
+                border-radius: 6px;
+                padding: 8px 12px;
+                font-size: 14px;
+                background-color: white;
+            }
+            QLineEdit:focus, QComboBox:focus, QDateEdit:focus, QTextEdit:focus, QDoubleSpinBox:focus {
+                border-color: #3498db;
+                outline: none;
+            }
+        """)
+
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "proveedor": self.input_proveedor.text(),
+            "numero_orden": self.input_numero_orden.text(),
+            "fecha_pedido": self.date_pedido.date().toPython(),
+            "fecha_entrega_estimada": self.date_entrega.date().toPython(),
+            "estado": self.combo_estado.currentText(),
+            "descuento": self.input_descuento.value(),
+            "impuestos": self.input_impuestos.value(),
+            "observaciones": self.input_observaciones.toPlainText(),
+            "usuario_creacion": "Usuario Actual",  # TODO: Obtener del sistema
+        }
+
+    def configurar_validaciones(self):
+        """Configura las validaciones del formulario."""
+        # Validación de proveedor obligatorio
+        self.validator_manager.agregar_validacion(
+            self.input_proveedor, 
+            FormValidator.validar_campo_obligatorio, 
+            "Proveedor"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_proveedor, 
+            FormValidator.validar_longitud_texto, 
+            2, 100
+        )
+
+        # Validación de número de orden obligatorio
+        self.validator_manager.agregar_validacion(
+            self.input_numero_orden, 
+            FormValidator.validar_campo_obligatorio, 
+            "Número de orden"
+        )
+        self.validator_manager.agregar_validacion(
+            self.input_numero_orden, 
+            FormValidator.validar_longitud_texto, 
+            3, 50
+        )
+
+        # Validación de fechas
+        self.validator_manager.agregar_validacion(
+            self.date_pedido, 
+            FormValidator.validar_fecha
+        )
+        
+        self.validator_manager.agregar_validacion(
+            self.date_entrega, 
+            FormValidator.validar_fecha, 
+            self.date_pedido.date()  # Fecha mínima: fecha de pedido
+        )
+
+        # Validación de montos (descuento e impuestos no negativos)
+        self.validator_manager.agregar_validacion(
+            self.input_descuento, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
+        )
+        
+        self.validator_manager.agregar_validacion(
+            self.input_impuestos, 
+            FormValidator.validar_numero, 
+            0.0, 999999.99
+        )
+
+    def validar_y_aceptar(self):
+        """Valida los datos y acepta el diálogo."""
+        # Usar el sistema de validación
+        es_valido, errores = self.validator_manager.validar_formulario()
+        
+        if not es_valido:
+            # Mostrar errores con el sistema mejorado
+            mensajes_error = self.validator_manager.obtener_mensajes_error()
+            show_error(
+                self, 
+                "Errores de Validación", 
+                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
+            )
             return
 
-        iconos = {
-            "info": "ℹ️ ",
-            "exito": "✅ ",
-            "advertencia": "⚠️ ",
-            "error": "❌ ",
-            "cargando": "🔄 ",
-        }
-        icono = iconos.get(tipo, "ℹ️ ")
+        # Validación adicional: fecha de entrega posterior a fecha de pedido
+        if self.date_entrega.date() <= self.date_pedido.date():
+            show_error(
+                self, 
+                "Error de Validación", 
+                "La fecha de entrega debe ser posterior a la fecha de pedido.\n\nPor favor seleccione una fecha de entrega que sea al menos un día después de la fecha de pedido."
+            )
+            return
 
-        self.label_feedback.clear()
-        self.label_feedback.setProperty("feedback", tipo)
-        self.label_feedback.setText(f"{icono}{mensaje}")
-        self.label_feedback.setVisible(True)
-        self.label_feedback.setAccessibleDescription(f"Mensaje de feedback tipo {tipo}")
-
-        # Auto-ocultar después de tiempo apropiado
-        tiempo = 6000 if tipo == "error" else 4000 if tipo == "advertencia" else 3000
-
-        try:
-            from PyQt6.QtCore import QTimer
-
-            if hasattr(self, "_feedback_timer") and self._feedback_timer:
-                self._feedback_timer.stop()
-            self._feedback_timer = QTimer(self)
-            self._feedback_timer.setSingleShot(True)
-            self._feedback_timer.timeout.connect(self.ocultar_feedback)
-            self._feedback_timer.start(tiempo)
-        except ImportError:
-            pass
-
-    def ocultar_feedback(self):
-        """Oculta el feedback visual."""
-        if hasattr(self, "label_feedback") and self.label_feedback:
-            self.label_feedback.setVisible(False)
-            self.label_feedback.clear()
-        if hasattr(self, "_feedback_timer") and self._feedback_timer:
-            self._feedback_timer.stop()
+        # Si todo es válido, aceptar el diálogo
+        self.accept()

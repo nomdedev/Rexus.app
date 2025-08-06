@@ -10,6 +10,7 @@ from datetime import datetime
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
+from rexus.core.auth_manager import auth_required, admin_required, manager_required
 
 
 class AuditoriaController(QObject):
