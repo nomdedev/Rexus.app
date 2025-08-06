@@ -128,7 +128,8 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
 
-    def actualizar_estadisticas_generales(self, estadisticas):"""Actualiza las estadísticas generales con datos de los submódulos."""
+    def actualizar_estadisticas_generales(self, estadisticas):
+        """Actualiza las estadísticas generales con datos de los submódulos."""
         try:
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)

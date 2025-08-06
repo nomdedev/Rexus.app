@@ -107,7 +107,8 @@ class AuditoriaController(QObject):
             print(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
             self.view.mostrar_mensaje(f"Error aplicando filtros: {e}", tipo="error")
 
-    def exportar_datos(self, formato="csv"):"""
+    def exportar_datos(self, formato="csv"):
+        """
         Exporta los datos de auditoría a un archivo.
 
         Args:
@@ -317,7 +318,8 @@ class AuditoriaController(QObject):
             print(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
             return False
 
-    def actualizar_estadisticas(self):"""Actualiza las estadísticas mostradas en la vista."""
+    def actualizar_estadisticas(self):
+        """Actualiza las estadísticas mostradas en la vista."""
         if not self.model or not self.view:
             return
 

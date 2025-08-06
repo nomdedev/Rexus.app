@@ -142,7 +142,8 @@ class ConfiguracionController(QObject):
             print(f"[ERROR CONFIGURACION CONTROLLER] Error restaurando configuración: {e}")
             self.mostrar_error(f"Error restaurando configuración: {str(e)}")
     
-    def exportar_configuracion(self):"""Exporta la configuración actual a un archivo."""
+    def exportar_configuracion(self):
+        """Exporta la configuración actual a un archivo."""
         try:
             if self.view:
                 archivo, _ = QFileDialog.getSaveFileName(
@@ -165,7 +166,8 @@ class ConfiguracionController(QObject):
             print(f"[ERROR CONFIGURACION CONTROLLER] Error exportando configuración: {e}")
             self.mostrar_error(f"Error exportando configuración: {str(e)}")
     
-    def importar_configuracion(self):"""Importa configuración desde un archivo."""
+    def importar_configuracion(self):
+        """Importa configuración desde un archivo."""
         try:
             if self.view:
                 archivo, _ = QFileDialog.getOpenFileName(
