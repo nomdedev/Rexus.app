@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -41,7 +42,6 @@ except ImportError:
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
-
 
 class UsuariosModel:
     """Modelo para gestión completa de usuarios y autenticación."""
@@ -443,13 +443,7 @@ class UsuariosModel:
         print("   Para crear las tablas, ejecutar: database/create_tables.sql")
         return
 
-    def crear_usuarios_iniciales(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_usuarios_iniciales'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
+    def crear_usuarios_iniciales(self):"""ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
         print("❌ SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
         print(
             "   Los usuarios deben ser creados manualmente por el administrador del sistema"
@@ -1056,12 +1050,7 @@ class UsuariosModel:
 
     def crear_usuario(
         self,
-        datos_usuario:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        Dict[str, Any],
+        datos_usuario:Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
         Crea un nuevo usuario en el sistema con validación y sanitización completa.
@@ -1257,12 +1246,7 @@ class UsuariosModel:
 
     def actualizar_usuario(
         self,
-        usuario_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        usuario_id:int,
         datos_usuario: Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
@@ -1346,12 +1330,7 @@ class UsuariosModel:
 
     def eliminar_usuario(
         self,
-        usuario_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        usuario_id:int,
     ) -> Tuple[bool, str]:
         """
         Elimina un usuario del sistema (eliminación lógica).
@@ -1432,12 +1411,7 @@ class UsuariosModel:
 
     def cambiar_password(
         self,
-        usuario_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('cambiar_password'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        usuario_id:int,
         password_actual: str,
         password_nueva: str,
     ) -> Tuple[bool, str]:

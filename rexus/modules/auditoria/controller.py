@@ -11,7 +11,7 @@ from datetime import datetime
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
-
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class AuditoriaController(QObject):
     """Controlador para el módulo de auditoría."""
@@ -107,13 +107,7 @@ class AuditoriaController(QObject):
             print(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
             self.view.mostrar_mensaje(f"Error aplicando filtros: {e}", tipo="error")
 
-    def exportar_datos(self, formato="csv"):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_datos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def exportar_datos(self, formato="csv"):"""
         Exporta los datos de auditoría a un archivo.
 
         Args:
@@ -323,13 +317,7 @@ class AuditoriaController(QObject):
             print(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
             return False
 
-    def actualizar_estadisticas(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadísticas mostradas en la vista."""
+    def actualizar_estadisticas(self):"""Actualiza las estadísticas mostradas en la vista."""
         if not self.model or not self.view:
             return
 

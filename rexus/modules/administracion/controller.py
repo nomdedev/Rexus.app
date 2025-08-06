@@ -14,12 +14,12 @@ from datetime import date, datetime
 from PyQt6.QtCore import QObject, QTimer, pyqtSlot
 
 from rexus.core.security import get_security_manager
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.core.auth_manager import AuthManager
 
 # Importar submódulos
 from .contabilidad import ContabilidadModel, ContabilidadController
 from .recursos_humanos import RecursosHumanosModel, RecursosHumanosController
-
 
 class AdministracionController(QObject):
     """Controlador principal del módulo de administración."""
@@ -128,13 +128,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
 
-    def actualizar_estadisticas_generales(self, estadisticas):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_estadisticas_generales'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza las estadísticas generales con datos de los submódulos."""
+    def actualizar_estadisticas_generales(self, estadisticas):"""Actualiza las estadísticas generales con datos de los submódulos."""
         try:
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)
@@ -177,13 +171,7 @@ class AdministracionController(QObject):
                 self.view.actualizar_status(f"❌ Error cargando datos: {str(e)}")
 
     @pyqtSlot()
-    def actualizar_datos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_datos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza todos los datos de la interfaz."""
+    def actualizar_datos(self):"""Actualiza todos los datos de la interfaz."""
         try:
             if not self.model or not self.view:
                 return
@@ -208,13 +196,7 @@ class AdministracionController(QObject):
             if self.view:
                 self.view.actualizar_status(f"❌ Error actualizando: {str(e)}")
 
-    def actualizar_dashboard(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_dashboard'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza el dashboard con resumen de datos."""
+    def actualizar_dashboard(self):"""Actualiza el dashboard con resumen de datos."""
         try:
             # Obtener resumen contable
             resumen = self.model.obtener_resumen_contable()
@@ -225,13 +207,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando dashboard: {e}")
 
-    def actualizar_libro_contable(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_libro_contable'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla del libro contable."""
+    def actualizar_libro_contable(self):"""Actualiza la tabla del libro contable."""
         try:
             if not self.view:
                 return
@@ -257,13 +233,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando libro contable: {e}")
 
-    def actualizar_recibos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_recibos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de recibos."""
+    def actualizar_recibos(self):"""Actualiza la tabla de recibos."""
         try:
             if not self.view:
                 return
@@ -289,13 +259,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando recibos: {e}")
 
-    def actualizar_pagos_obra(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_pagos_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de pagos por obra."""
+    def actualizar_pagos_obra(self):"""Actualiza la tabla de pagos por obra."""
         try:
             if not self.view:
                 return
@@ -313,13 +277,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando pagos por obra: {e}")
 
-    def actualizar_materiales(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_materiales'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de materiales."""
+    def actualizar_materiales(self):"""Actualiza la tabla de materiales."""
         try:
             if not self.view:
                 return
@@ -337,13 +295,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando materiales: {e}")
 
-    def actualizar_departamentos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_departamentos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de departamentos."""
+    def actualizar_departamentos(self):"""Actualiza la tabla de departamentos."""
         try:
             if not self.view:
                 return
@@ -357,13 +309,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando departamentos: {e}")
 
-    def actualizar_empleados(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_empleados'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de empleados."""
+    def actualizar_empleados(self):"""Actualiza la tabla de empleados."""
         try:
             if not self.view:
                 return
@@ -385,13 +331,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando empleados: {e}")
 
-    def actualizar_auditoria(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_auditoria'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza la tabla de auditoría."""
+    def actualizar_auditoria(self):"""Actualiza la tabla de auditoría."""
         try:
             if not self.view:
                 return
@@ -414,13 +354,7 @@ class AdministracionController(QObject):
 
     # MÉTODOS PARA CREAR REGISTROS
     @pyqtSlot(dict)
-    def crear_departamento(self, datos):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_departamento'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo departamento."""
+    def crear_departamento(self, datos):"""Crea un nuevo departamento."""
         try:
             if not self.verificar_permisos("crear_departamento"):
                 return
@@ -455,13 +389,7 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_empleado(self, datos):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_empleado'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo empleado."""
+    def crear_empleado(self, datos):"""Crea un nuevo empleado."""
         try:
             if not self.verificar_permisos("crear_empleado"):
                 return
@@ -501,13 +429,7 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_asiento_contable(self, datos):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_asiento_contable'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo asiento contable."""
+    def crear_asiento_contable(self, datos):"""Crea un nuevo asiento contable."""
         try:
             if not self.verificar_permisos("crear_asiento"):
                 return
@@ -547,13 +469,7 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_recibo(self, datos):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_recibo'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Crea un nuevo recibo."""
+    def crear_recibo(self, datos):"""Crea un nuevo recibo."""
         try:
             if not self.verificar_permisos("crear_recibo"):
                 return
@@ -876,13 +792,7 @@ class AdministracionController(QObject):
             print(f"Error obteniendo estadísticas de departamento: {e}")
             return None
 
-    def exportar_datos(self, tipo_datos, formato="JSON"):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_datos'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Exporta datos del sistema en diferentes formatos."""
+    def exportar_datos(self, tipo_datos, formato="JSON"):"""Exporta datos del sistema en diferentes formatos."""
         try:
             if not self.verificar_permisos("exportar_datos"):
                 return None

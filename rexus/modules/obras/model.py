@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -40,7 +41,6 @@ except ImportError:
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
-
 
 class ObrasModel:
     def __init__(self, db_connection=None):
@@ -205,12 +205,7 @@ class ObrasModel:
 
     def crear_obra(
         self,
-        datos_obra:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        Dict[str, Any],
+        datos_obra:Dict[str, Any],
     ) -> tuple[bool, str]:
         """
         Crea una nueva obra en el sistema con sanitización completa de datos.
@@ -432,12 +427,7 @@ class ObrasModel:
 
     def actualizar_obra(
         self,
-        obra_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        obra_id:int,
         datos_obra: Dict[str, Any],
     ) -> tuple[bool, str]:
         """
@@ -508,12 +498,7 @@ class ObrasModel:
 
     def cambiar_estado_obra(
         self,
-        obra_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('cambiar_estado_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        obra_id:int,
         nuevo_estado: str,
         usuario: str = "SISTEMA",
     ) -> tuple[bool, str]:
@@ -736,12 +721,7 @@ class ObrasModel:
 
     def eliminar_obra(
         self,
-        obra_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        obra_id:int,
         usuario: str = "SISTEMA",
     ) -> tuple[bool, str]:
         """

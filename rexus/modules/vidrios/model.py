@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -30,7 +31,6 @@ except ImportError as e:
         def sanitize_numeric(self, value, min_val=None, max_val=None): return float(value) if value else 0.0
         def sanitize_integer(self, value, min_val=None, max_val=None): return int(value) if value else 0
     data_sanitizer = DataSanitizer()
-
 
 class VidriosModel:
     """Modelo para gestionar vidrios por obra y proveedor."""
@@ -294,13 +294,7 @@ class VidriosModel:
             print(f"[ERROR VIDRIOS] Error asignando vidrio a obra: {e}")
             return False
 
-    def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):"""
         Crea un pedido de vidrios para una obra específica.
 
         Args:
@@ -476,13 +470,7 @@ class VidriosModel:
             print(f"[ERROR VIDRIOS] Error buscando vidrios: {e}")
             return False, []
 
-    def crear_vidrio(self, datos_vidrio):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_vidrio(self, datos_vidrio):"""
         Crea un nuevo vidrio en la base de datos con sanitización completa.
 
         Args:
@@ -596,13 +584,7 @@ class VidriosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error creando vidrio: {str(e)}", None
 
-    def actualizar_vidrio(self, vidrio_id, datos_vidrio):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def actualizar_vidrio(self, vidrio_id, datos_vidrio):"""
         Actualiza un vidrio existente con sanitización completa.
 
         Args:
@@ -716,13 +698,7 @@ class VidriosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error actualizando vidrio: {str(e)}"
 
-    def eliminar_vidrio(self, vidrio_id):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_vidrio'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def eliminar_vidrio(self, vidrio_id):"""
         Elimina un vidrio (marca como inactivo) con validación de entrada.
 
         Args:

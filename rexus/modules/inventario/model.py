@@ -1,4 +1,5 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -46,7 +47,6 @@ except ImportError:
     print("[WARNING] SQL security utilities not available in inventario")
     SQL_SECURITY_AVAILABLE = False
     sql_script_loader = None
-
 
 class InventarioModel(PaginatedTableMixin):
     """Modelo para gestionar el inventario de productos."""
@@ -532,13 +532,7 @@ class InventarioModel(PaginatedTableMixin):
             print(f"[ERROR INVENTARIO] Error obteniendo producto por código: {e}")
             return None
 
-    def crear_producto(self, datos_producto, usuario="SISTEMA"):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_producto(self, datos_producto, usuario="SISTEMA"):"""
         Crea un nuevo producto en el inventario.
 
         Args:
@@ -617,13 +611,7 @@ class InventarioModel(PaginatedTableMixin):
                 self.db_connection.connection.rollback()
             return None
 
-    def actualizar_producto(self, producto_id, datos_producto, usuario="SISTEMA"):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_producto'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def actualizar_producto(self, producto_id, datos_producto, usuario="SISTEMA"):"""
         Actualiza un producto existente.
 
         Args:
@@ -906,13 +894,7 @@ class InventarioModel(PaginatedTableMixin):
             print(f"[ERROR INVENTARIO] Error obteniendo categorías: {e}")
             return []
 
-    def actualizar_qr_y_campos_por_descripcion(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_qr_y_campos_por_descripcion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Actualiza códigos QR y campos faltantes para productos existentes."""
+    def actualizar_qr_y_campos_por_descripcion(self):"""Actualiza códigos QR y campos faltantes para productos existentes."""
         if not self.db_connection:
             return
 
@@ -1646,13 +1628,7 @@ class InventarioModel(PaginatedTableMixin):
             print(f"[ERROR INVENTARIO] Error generando código de barras: {e}")
             return None
 
-    def actualizar_precios_masivo(self, actualizaciones, usuario="SISTEMA"):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_precios_masivo'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def actualizar_precios_masivo(self, actualizaciones, usuario="SISTEMA"):"""
         Actualiza precios de múltiples productos en una sola operación.
 
         Args:
@@ -1743,13 +1719,7 @@ class InventarioModel(PaginatedTableMixin):
                 self.db_connection.connection.rollback()
             return exitosos, fallidos
 
-    def exportar_datos_excel(self, filtros=None):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_datos_excel'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def exportar_datos_excel(self, filtros=None):"""
         Prepara datos para exportación a Excel.
 
         Args:

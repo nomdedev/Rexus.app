@@ -13,7 +13,7 @@ from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_b
 from rexus.utils.message_system import show_success, show_error
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_manager import AuthManager
-
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class UsuariosController(QObject):
     """Controlador para el módulo de usuarios."""
@@ -116,12 +116,7 @@ class UsuariosController(QObject):
             self.mostrar_error(f"Error cargando usuarios: {str(e)}")
     
     @auth_required
-    def crear_usuario(self, datos_usuario:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]):
+    def crear_usuario(self, datos_usuario:Dict[str, Any]):
         """Crea un nuevo usuario."""
         try:
             # Sanitizar datos antes de validar
@@ -150,12 +145,7 @@ class UsuariosController(QObject):
             self.mostrar_error(f"Error creando usuario: {str(e)}")
     
     @auth_required
-    def actualizar_usuario(self, datos_usuario:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- Dict[str, Any]):
+    def actualizar_usuario(self, datos_usuario:Dict[str, Any]):
         """Actualiza un usuario existente."""
         try:
             if not datos_usuario.get("id"):
@@ -188,12 +178,7 @@ class UsuariosController(QObject):
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
     
     @admin_required
-    def eliminar_usuario(self, usuario_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_usuario'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str):
+    def eliminar_usuario(self, usuario_id:str):
         """Elimina un usuario."""
         try:
             # Confirmar eliminación
@@ -222,12 +207,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error eliminando usuario: {e}")
             self.mostrar_error(f"Error eliminando usuario: {str(e)}")
     
-    def cambiar_password(self, usuario_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('cambiar_password'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- int, password_actual: str, password_nueva: str):
+    def cambiar_password(self, usuario_id:int, password_actual: str, password_nueva: str):
         """Cambia la contraseña de un usuario."""
         try:
             exito, mensaje = self.model.cambiar_password(usuario_id, password_actual, password_nueva)

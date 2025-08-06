@@ -8,9 +8,9 @@ from typing import Any, Dict, List, Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from rexus.core.auth_manager import auth_required, admin_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 from .model import ConfiguracionModel
-
 
 class ConfiguracionController(QObject):
     """Controlador para la gestión de configuraciones del sistema."""
@@ -90,12 +90,7 @@ class ConfiguracionController(QObject):
             print(f"[ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones por categoría: {e}")
             self.mostrar_error(f"Error cargando configuraciones: {str(e)}")
     
-    def actualizar_configuracion(self, clave:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_configuracion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
- str, valor: Any):
+    def actualizar_configuracion(self, clave:str, valor: Any):
         """Actualiza una configuración."""
         try:
             usuario = self.usuario_actual.get("nombre", "SISTEMA")
@@ -147,13 +142,7 @@ class ConfiguracionController(QObject):
             print(f"[ERROR CONFIGURACION CONTROLLER] Error restaurando configuración: {e}")
             self.mostrar_error(f"Error restaurando configuración: {str(e)}")
     
-    def exportar_configuracion(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('exportar_configuracion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Exporta la configuración actual a un archivo."""
+    def exportar_configuracion(self):"""Exporta la configuración actual a un archivo."""
         try:
             if self.view:
                 archivo, _ = QFileDialog.getSaveFileName(
@@ -176,13 +165,7 @@ class ConfiguracionController(QObject):
             print(f"[ERROR CONFIGURACION CONTROLLER] Error exportando configuración: {e}")
             self.mostrar_error(f"Error exportando configuración: {str(e)}")
     
-    def importar_configuracion(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('importar_configuracion'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """Importa configuración desde un archivo."""
+    def importar_configuracion(self):"""Importa configuración desde un archivo."""
         try:
             if self.view:
                 archivo, _ = QFileDialog.getOpenFileName(

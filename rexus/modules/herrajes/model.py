@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # Configurar logger para el módulo
 logger = logging.getLogger(__name__)
@@ -43,7 +44,6 @@ except ImportError as e:
     print(f"[WARNING] SQL Script Loader not available in herrajes: {e}")
     SQL_LOADER_AVAILABLE = False
     sql_script_loader = None
-
 
 class HerrajesModel:
     """Modelo para gestionar herrajes por obra y proveedor."""
@@ -306,13 +306,7 @@ class HerrajesModel:
             print(f"[ERROR HERRAJES] Error asignando herraje a obra: {e}")
             return False
 
-    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_pedido_obra'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-
-        """
+    def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):"""
         Crea un pedido de herrajes para una obra específica.
 
         Args:
@@ -530,12 +524,7 @@ class HerrajesModel:
 
     def crear_herraje(
         self,
-        datos_herraje:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('crear_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        Dict[str, Any],
+        datos_herraje:Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
         Crea un nuevo herraje con sanitización completa de datos.
@@ -657,12 +646,7 @@ class HerrajesModel:
 
     def actualizar_herraje(
         self,
-        herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        herraje_id:int,
         datos_herraje: Dict[str, Any],
     ) -> Tuple[bool, str]:
         """
@@ -748,12 +732,7 @@ class HerrajesModel:
 
     def eliminar_herraje(
         self,
-        herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('eliminar_herraje'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        herraje_id:int,
     ) -> Tuple[bool, str]:
         """
         Elimina un herraje (eliminación lógica).
@@ -876,12 +855,7 @@ class HerrajesModel:
 
     def actualizar_stock(
         self,
-        herraje_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
-        # TODO: Implementar @auth_required o verificación manual
-        # if not AuthManager.check_permission('actualizar_stock'):
-        #     raise PermissionError("Acceso denegado - Permisos insuficientes")
-        int,
+        herraje_id:int,
         nuevo_stock: int,
         tipo_movimiento: str = "AJUSTE",
     ) -> Tuple[bool, str]:
