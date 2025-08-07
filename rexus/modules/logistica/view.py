@@ -29,26 +29,21 @@ import logging
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
-    QDateEdit,
     QFrame,
     QGroupBox,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QLineEdit,
     QPushButton,
     QTableWidget,
     QTableWidgetItem,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
 )
 
 from rexus.ui.standard_components import StandardComponents
-from rexus.ui.style_manager import style_manager
 
-from rexus.utils.message_system import show_error, show_success, show_warning
-from rexus.utils.security import SecurityUtils
+from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 

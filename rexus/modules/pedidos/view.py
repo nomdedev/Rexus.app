@@ -150,34 +150,89 @@ class PedidosView(QWidget):
         self.tabla_principal.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
     
     def aplicar_estilo(self):
-        """Aplica el estilo general."""
+        """Aplica el estilo general con alto contraste."""
         self.setStyleSheet("""
+            /* Estilo de alto contraste para pedidos */
             QWidget {
-                background-color: #f8f9fa;
+                background-color: #ffffff;
+                color: #000000;
                 font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 13px;
             }
+            
             QPushButton {
-                background-color: #fd7e14;
-                color: white;
-                border: none;
-                padding: 8px 16px;
+                background-color: #0078d4;
+                color: #ffffff;
+                border: 2px solid #0078d4;
                 border-radius: 4px;
+                padding: 8px 16px;
                 font-weight: bold;
+                font-size: 13px;
             }
+            
             QPushButton:hover {
-                opacity: 0.8;
+                background-color: #106ebe;
+                border-color: #106ebe;
             }
+            
+            QPushButton:pressed {
+                background-color: #005a9e;
+                border-color: #005a9e;
+            }
+            
             QLineEdit, QComboBox {
-                border: 1px solid #ced4da;
+                background-color: #ffffff;
+                color: #000000;
+                border: 2px solid #cccccc;
                 border-radius: 4px;
                 padding: 8px;
-                font-size: 14px;
+                font-size: 13px;
             }
+            
+            QLineEdit:focus, QComboBox:focus {
+                border-color: #0078d4;
+            }
+            
             QTableWidget {
-                background-color: white;
-                gridline-color: #dee2e6;
-                border: 1px solid #dee2e6;
+                background-color: #ffffff;
+                color: #000000;
+                gridline-color: #dddddd;
+                border: 2px solid #cccccc;
                 border-radius: 4px;
+                selection-background-color: #0078d4;
+                selection-color: #ffffff;
+                font-size: 13px;
+            }
+            
+            QTableWidget::item {
+                background-color: #ffffff;
+                color: #000000;
+                border: 1px solid #dddddd;
+                padding: 8px;
+            }
+            
+            QTableWidget::item:selected {
+                background-color: #0078d4;
+                color: #ffffff;
+            }
+            
+            QTableWidget::item:hover {
+                background-color: #f0f0f0;
+                color: #000000;
+            }
+            
+            QHeaderView::section {
+                background-color: #f8f9fa;
+                color: #000000;
+                border: 1px solid #cccccc;
+                padding: 8px;
+                font-weight: bold;
+                font-size: 13px;
+            }
+            
+            QLabel {
+                color: #000000;
+                font-size: 13px;
             }
         """)
     

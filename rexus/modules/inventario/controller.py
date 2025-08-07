@@ -132,11 +132,134 @@ class InventarioController(QObject):
         else:
             print(f"⚠️ No encontrado: {nombre_boton}")
 
+    def cargar_inventario_paginado(self, pagina=1, registros_por_pagina=100):
+        """Carga inventario con paginación mejorada."""
+        try:
+            print(f"[INVENTARIO CONTROLLER] Cargando página {pagina}, {registros_por_pagina} registros...")
+            
+            if not self.model:
+                print("[ERROR] No hay modelo disponible")
+                return
+            
+            # Calcular offset
+            offset = (pagina - 1) * registros_por_pagina
+            
+            productos = []
+            total = 0
+            
+            # Intentar con múltiples métodos del modelo
+            if hasattr(self.model, "obtener_productos_paginados_inicial"):
+                resultado = self.model.obtener_productos_paginados_inicial(
+                    offset, registros_por_pagina
+                )
+                if isinstance(resultado, dict):
+                    productos = resultado.get("productos", resultado.get("items", []))
+                    total = resultado.get("total", len(productos))
+                else:
+                    productos = resultado or []
+                    total = len(productos)
+                    
+            elif hasattr(self.model, "obtener_productos_paginados"):
+                resultado = self.model.obtener_productos_paginados(
+                    page=pagina, page_size=registros_por_pagina
+                )
+                if isinstance(resultado, tuple) and len(resultado) == 2:
+                    productos, info_paginacion = resultado
+                    total = info_paginacion.get("total_records", len(productos))
+                elif isinstance(resultado, dict):
+                    productos = resultado.get("productos", resultado.get("items", []))
+                    total = resultado.get("total", len(productos))
+                else:
+                    productos = resultado or []
+                    total = len(productos)
+            else:
+                # Fallback: cargar datos y paginar manualmente
+                productos = self._cargar_datos_inventario_simple()
+                total = len(productos)
+                # Aplicar paginación manual
+                productos = productos[offset:offset + registros_por_pagina]
+            
+            print(f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total")
+            
+            # Actualizar vista con datos paginados
+            if self.view and hasattr(self.view, 'actualizar_tabla_inventario'):
+                self.view.actualizar_tabla_inventario(productos, total)
+            elif self.view and hasattr(self.view, 'actualizar_tabla'):
+                # Fallback para vista antigua
+                self.view.actualizar_tabla(productos)
+                
+            return productos, total
+            
+        except Exception as e:
+            print(f"[ERROR INVENTARIO CONTROLLER] Error en paginación: {e}")
+            self._mostrar_error("cargar inventario paginado", e)
+            return [], 0
+
+    def _cargar_datos_inventario_simple(self):
+        """Carga datos de inventario de forma simple para fallback."""
+        try:
+            if hasattr(self.model, 'db_connection') and self.model.db_connection:
+                cursor = self.model.db_connection.cursor()
+                
+                # Query simple para obtener todos los productos
+                query = """
+                    SELECT TOP 1000
+                        id, codigo, descripcion, categoria, stock_actual, 
+                        precio_unitario, estado, ubicacion, fecha_actualizacion
+                    FROM inventario_perfiles 
+                    WHERE activo = 1
+                    ORDER BY codigo ASC
+                """
+                
+                cursor.execute(query)
+                rows = cursor.fetchall()
+                
+                productos = []
+                for row in rows:
+                    productos.append({
+                        'id': row[0],
+                        'codigo': row[1] if row[1] else f'PROD{row[0]:03d}',
+                        'descripcion': row[2] if row[2] else f'Producto {row[0]}',
+                        'categoria': row[3] if row[3] else 'Sin categoría',
+                        'stock_actual': row[4] if row[4] is not None else 0,
+                        'precio_unitario': float(row[5]) if row[5] is not None else 0.0,
+                        'estado': row[6] if row[6] else 'Activo',
+                        'ubicacion': row[7] if row[7] else 'Sin ubicación',
+                        'fecha_actualizacion': str(row[8]) if row[8] else '2025-08-07'
+                    })
+                
+                return productos
+                
+            else:
+                # Datos de ejemplo si no hay conexión
+                return self._generar_datos_ejemplo()
+                
+        except Exception as e:
+            print(f"[ERROR] Error cargando datos simples: {e}")
+            return self._generar_datos_ejemplo()
+            
+    def _generar_datos_ejemplo(self):
+        """Genera datos de ejemplo para pruebas."""
+        productos = []
+        for i in range(1, 501):  # 500 productos de ejemplo
+            productos.append({
+                'id': i,
+                'codigo': f'PROD{i:03d}',
+                'descripcion': f'Producto de ejemplo {i}',
+                'categoria': ['Herrajes', 'Vidrios', 'Herramientas', 'Materiales'][i % 4],
+                'stock_actual': (i * 7) % 100,
+                'precio_unitario': round(25.50 + (i * 0.5), 2),
+                'estado': 'Activo' if i % 10 != 0 else 'Inactivo',
+                'ubicacion': f'{chr(65 + (i % 5))}-{(i % 20):02d}',
+                'fecha_actualizacion': '2025-08-07'
+            })
+        return productos
+
     def cargar_inventario_inicial(self):
         """Carga inicial del inventario sin restricciones de autenticación."""
         try:
             print("[INVENTARIO CONTROLLER] Carga inicial de inventario...")
-            self._cargar_datos_inventario()
+            self.cargar_inventario_paginado(1, 100)
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error en carga inicial: {e}")
 
@@ -145,99 +268,14 @@ class InventarioController(QObject):
         """Carga el inventario completo."""
         try:
             print("[INVENTARIO CONTROLLER] Cargando inventario...")
-            self._cargar_datos_inventario()
+            self.cargar_inventario_paginado(1, 100)
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error cargando inventario: {e}")
 
     def _cargar_datos_inventario(self):
         """Método privado para cargar datos del inventario."""
-        if not self.model:
-            print("[ERROR] No hay modelo disponible")
-            return
-
-        productos = []
-        total = 0
-
-        try:
-            # Intentar múltiples métodos del modelo
-            if hasattr(self.model, "obtener_productos_paginados_inicial"):
-                # Usar método sin autenticación para carga inicial
-                resultado = self.model.obtener_productos_paginados_inicial(0, 100)
-                if isinstance(resultado, dict):
-                    productos = resultado.get("productos", resultado.get("items", []))
-                    total = resultado.get("total", len(productos))
-                else:
-                    productos = resultado or []
-                    total = len(productos)
-                print(
-                    f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total (método inicial)"
-                )
-            elif hasattr(self.model, "obtener_productos_paginados"):
-                try:
-                    # Intentar con argumentos posicionales
-                    resultado = self.model.obtener_productos_paginados(0, 100)
-                    if isinstance(resultado, dict):
-                        productos = resultado.get(
-                            "productos", resultado.get("items", [])
-                        )
-                        total = resultado.get("total", len(productos))
-                    else:
-                        productos = resultado or []
-                        total = len(productos)
-                    print(
-                        f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total"
-                    )
-                except Exception as e:
-                    print(f"[ADVERTENCIA] Error con obtener_productos_paginados: {e}")
-                    # Intentar método alternativo
-                    if hasattr(self.model, "obtener_listado_paginado"):
-                        resultado = self.model.obtener_listado_paginado(0, 100)
-                        productos = (
-                            resultado.get("items", [])
-                            if isinstance(resultado, dict)
-                            else resultado or []
-                        )
-                        total = len(productos)
-
-            if not productos:
-                # Métodos de respaldo
-                if hasattr(self.model, "obtener_productos"):
-                    productos = self.model.obtener_productos() or []
-                elif hasattr(self.model, "get_all_productos"):
-                    productos = self.model.get_all_productos() or []
-
-                print(
-                    f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos (método alternativo)"
-                )
-
-        except Exception as e:
-            print(f"[ERROR] Error cargando productos: {e}")
-            # Crear datos de ejemplo para testing
-            productos = [
-                {
-                    "id": 1,
-                    "codigo": "PROD001",
-                    "descripcion": "Producto de ejemplo 1",
-                    "categoria": "Categoria A",
-                    "stock": 50,
-                    "precio": 100.0,
-                },
-                {
-                    "id": 2,
-                    "codigo": "PROD002",
-                    "descripcion": "Producto de ejemplo 2",
-                    "categoria": "Categoria B",
-                    "stock": 30,
-                    "precio": 150.0,
-                },
-            ]
-            print("[INVENTARIO CONTROLLER] Usando productos de ejemplo")
-
-        # Actualizar vista
-        self._actualizar_vista_productos(productos)
-
-        # Emitir señal de datos actualizados
-        self.datos_actualizados.emit()
+        # Redirigir al método de paginación
+        return self.cargar_inventario_paginado(1, 100)
 
     def _actualizar_vista_productos(self, productos):
         """Actualiza la vista con la lista de productos."""
