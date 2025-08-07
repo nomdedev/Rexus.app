@@ -168,14 +168,6 @@ except ImportError:
 
     style_manager = None
 
-
-# Import global para testing - permite mocking
-try:
-    from .model import ObrasModel
-except ImportError:
-    # Fallback para testing
-    ObrasModel = None
-
 from .cronograma_view import CronogramaObrasView
 
 
@@ -308,19 +300,13 @@ class ObrasView(QWidget):
     def init_model(self):
         """Inicializar el modelo de obras."""
         try:
+            from .model import ObrasModel
             from rexus.core.database import get_inventario_connection
             
             print("[OBRAS VIEW] Inicializando modelo...")
-            
-            # Verificar que ObrasModel esté disponible
-            if ObrasModel is None:
-                print("[OBRAS VIEW] ObrasModel no disponible")
-                self.model = None
-                return
-            
             # Obtener conexión a la base de datos
             db_conn = get_inventario_connection(auto_connect=True)
-            if db_conn and db_conn.connection:
+            if db_conn.connection:
                 self.model = ObrasModel(db_conn.connection)
                 print("[OBRAS VIEW] Modelo inicializado correctamente")
             else:
