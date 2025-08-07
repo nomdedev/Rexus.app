@@ -47,6 +47,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QSpinBox,
     QTableWidgetItem,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -95,27 +96,44 @@ class InventarioView(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        """Inicializa la interfaz de usuario."""
+        """Inicializa la interfaz de usuario con pestañas."""
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        # Título estandarizado
-        StandardComponents.create_title("📦 Gestión de Inventario", layout)
+        # Crear sistema de pestañas
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setStyleSheet("""
+            QTabWidget::pane {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: white;
+            }
+            QTabBar::tab {
+                background-color: #f8f9fa;
+                color: #495057;
+                padding: 12px 20px;
+                margin-right: 2px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                font-weight: 500;
+            }
+            QTabBar::tab:selected {
+                background-color: white;
+                color: #2c3e50;
+                font-weight: bold;
+            }
+        """)
 
-        # Panel de control estandarizado
-        control_panel = StandardComponents.create_control_panel()
-        self.setup_control_panel(control_panel)
-        layout.addWidget(control_panel)
+        # Pestaña de Gestión de Inventario
+        tab_gestion = self.crear_tab_gestion()
+        self.tab_widget.addTab(tab_gestion, "📦 Gestión")
 
-        # Panel de estadísticas
-        stats_panel = self.crear_panel_estadisticas()
-        layout.addWidget(stats_panel)
+        # Pestaña de Estadísticas
+        tab_estadisticas = self.crear_tab_estadisticas()
+        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
 
-        # Tabla estandarizada
-        self.tabla_inventario = StandardComponents.create_standard_table()
-        self.configurar_tabla()
-        layout.addWidget(self.tabla_inventario)
+        layout.addWidget(self.tab_widget)
 
         # Aplicar tema del módulo
         style_manager.apply_module_theme(self, "inventario")
@@ -124,9 +142,156 @@ class InventarioView(QWidget):
         self._setup_keyboard_navigation()
         self._setup_tooltips()
 
+    def crear_tab_gestion(self):
+        """Crea la pestaña de gestión de inventario."""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
+
+        # Panel de control estandarizado
+        control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
+        layout.addWidget(control_panel)
+
+        # Tabla estandarizada
+        self.tabla_inventario = StandardComponents.create_standard_table()
+        self.configurar_tabla()
+        layout.addWidget(self.tabla_inventario)
+
         # Configurar controles de paginación
         paginacion_layout = self.crear_controles_paginacion()
         layout.addLayout(paginacion_layout)
+
+        return tab
+
+    def crear_tab_estadisticas(self):
+        """Crea la pestaña de estadísticas del inventario."""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setSpacing(15)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        # Panel de estadísticas principales
+        stats_panel = self.crear_panel_estadisticas()
+        layout.addWidget(stats_panel)
+
+        # Panel de gráficos (placeholder)
+        graficos_panel = self.crear_panel_graficos()
+        layout.addWidget(graficos_panel)
+
+        # Panel de reportes rápidos
+        reportes_panel = self.crear_panel_reportes()
+        layout.addWidget(reportes_panel)
+
+        layout.addStretch()
+        return tab
+
+    def crear_panel_graficos(self):
+        """Crea el panel de gráficos y análisis visual."""
+        panel = QGroupBox("📈 Análisis Visual")
+        panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #6f42c1;
+                border-radius: 8px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #6f42c1;
+            }
+        """)
+
+        layout = QVBoxLayout(panel)
+        
+        # Placeholder para gráficos
+        placeholder = QLabel("📊 Gráficos de inventario próximamente")
+        placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        placeholder.setStyleSheet("color: #6c757d; font-size: 14px; padding: 20px;")
+        layout.addWidget(placeholder)
+
+        return panel
+
+    def crear_panel_reportes(self):
+        """Crea el panel de reportes rápidos."""
+        panel = QGroupBox("📄 Reportes Rápidos")
+        panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #20c997;
+                border-radius: 8px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #20c997;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+        
+        # Botones de reportes
+        btn_reporte_stock = QPushButton("📋 Reporte Stock Bajo")
+        btn_reporte_stock.setStyleSheet("""
+            QPushButton {
+                background-color: #20c997;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #1ba085;
+            }
+        """)
+        layout.addWidget(btn_reporte_stock)
+
+        btn_reporte_valorizado = QPushButton("💰 Reporte Valorizado")
+        btn_reporte_valorizado.setStyleSheet("""
+            QPushButton {
+                background-color: #fd7e14;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #e8630a;
+            }
+        """)
+        layout.addWidget(btn_reporte_valorizado)
+
+        btn_reporte_movimientos = QPushButton("📦 Reporte Movimientos")
+        btn_reporte_movimientos.setStyleSheet("""
+            QPushButton {
+                background-color: #6610f2;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #520dc2;
+            }
+        """)
+        layout.addWidget(btn_reporte_movimientos)
+
+        layout.addStretch()
+        return panel
 
     def _setup_tooltips(self):
         """Configura tooltips estandarizados para todos los controles."""
@@ -324,9 +489,6 @@ class InventarioView(QWidget):
         valor_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_lbl)
 
-        # Guardar referencia al label del valor para actualizar
-        setattr(widget, "valor_label", valor_lbl)
-
         return widget
 
     def configurar_tabla(self):
@@ -430,20 +592,27 @@ class InventarioView(QWidget):
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas mostradas en el panel."""
         try:
-            if hasattr(self.lbl_total_productos, "valor_label"):
-                self.lbl_total_productos.valor_label.setText(
-                    str(stats.get("total_productos", 0))
-                )
+            # Buscar los labels de valor dentro de cada widget de estadística
+            if hasattr(self, 'lbl_total_productos'):
+                valor_labels = self.lbl_total_productos.findChildren(QLabel)
+                if len(valor_labels) >= 2:  # Segundo label es el valor
+                    valor_labels[1].setText(str(stats.get("total_productos", 0)))
 
-            if hasattr(self.lbl_stock_bajo, "valor_label"):
-                self.lbl_stock_bajo.valor_label.setText(str(stats.get("stock_bajo", 0)))
+            if hasattr(self, 'lbl_stock_bajo'):
+                valor_labels = self.lbl_stock_bajo.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(str(stats.get("stock_bajo", 0)))
 
-            if hasattr(self.lbl_sin_stock, "valor_label"):
-                self.lbl_sin_stock.valor_label.setText(str(stats.get("sin_stock", 0)))
+            if hasattr(self, 'lbl_sin_stock'):
+                valor_labels = self.lbl_sin_stock.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(str(stats.get("sin_stock", 0)))
 
-            if hasattr(self.lbl_valor_total, "valor_label"):
+            if hasattr(self, 'lbl_valor_total'):
                 valor_total = stats.get("valor_total", 0.0)
-                self.lbl_valor_total.valor_label.setText(f"${valor_total:,.2f}")
+                valor_labels = self.lbl_valor_total.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(f"${valor_total:,.2f}")
 
         except Exception as e:
             show_error(

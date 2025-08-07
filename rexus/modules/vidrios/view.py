@@ -65,14 +65,11 @@ class VidriosView(QWidget):
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
+    layout = QVBoxLayout(self)
+    layout.setSpacing(10)
+    layout.setContentsMargins(10, 10, 10, 10)
 
-        # Título moderno
-        StandardComponents.create_title("🪟 Gestión de Vidrios", layout)
-
-        # Panel de control
+    # Panel de control
         control_panel = self.crear_panel_control()
         layout.addWidget(control_panel)
 
