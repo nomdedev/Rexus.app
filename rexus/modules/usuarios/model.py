@@ -1155,7 +1155,7 @@ class UsuariosModel:
             )
 
             # Obtener ID del usuario creado
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute("SELECT SCOPE_IDENTITY()")
             usuario_id = cursor.fetchone()[0]
 
             # Asignar permisos por defecto
@@ -1650,13 +1650,15 @@ class UsuariosModel:
     def _get_base_query(self):
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
         # Esta es una implementación genérica
-        tabla_principal = getattr(self, "tabla_principal", "tabla_principal")
-        return f"SELECT * FROM {tabla_principal}"
+        tabla_principal = getattr(self, "tabla_principal", "usuarios")
+        tabla_validada = self._validate_table_name(tabla_principal)
+        return f"SELECT * FROM [{tabla_validada}]"
 
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
-        tabla_principal = getattr(self, "tabla_principal", "tabla_principal")
-        return f"SELECT COUNT(*) FROM {tabla_principal}"
+        tabla_principal = getattr(self, "tabla_principal", "usuarios")
+        tabla_validada = self._validate_table_name(tabla_principal)
+        return f"SELECT COUNT(*) FROM [{tabla_validada}]"
 
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""

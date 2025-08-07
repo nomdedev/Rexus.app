@@ -12,22 +12,24 @@ Arquitectura modular:
 
 from typing import Any, Dict, List, Optional
 
-# Imports de submódulos
-from .submodules.productos_manager import ProductosManager
-from .submodules.obras_manager import ObrasManager
-from .submodules.consultas_manager import ConsultasManager
-
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+
+from .submodules.consultas_manager import ConsultasManager
+from .submodules.obras_manager import ObrasManager
+
+# Imports de submódulos
+from .submodules.productos_manager import ProductosManager
 
 # DataSanitizer unificado
 try:
     from rexus.utils.data_sanitizer import DataSanitizer
 except ImportError:
+
     class DataSanitizer:
         def sanitize_string(self, text, max_length=None):
             return str(text) if text else ""
-        
+
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
 
@@ -35,7 +37,7 @@ except ImportError:
 class ModeloVidriosRefactorizado:
     """
     Modelo refactorizado para gestión de vidrios.
-    
+
     Delega operaciones a submódulos especializados mientras
     mantiene la interfaz compatible con el controlador existente.
     """
@@ -44,14 +46,14 @@ class ModeloVidriosRefactorizado:
         """Inicializa el modelo con los submódulos especializados."""
         self.db_connection = db_connection
         self.data_sanitizer = DataSanitizer()
-        
+
         # Inicializar submódulos especializados
         self.productos_manager = ProductosManager(db_connection)
         self.obras_manager = ObrasManager(db_connection)
         self.consultas_manager = ConsultasManager(db_connection)
 
     # ====== MÉTODOS DE COMPATIBILIDAD HACIA ATRÁS ======
-    
+
     @auth_required
     @permission_required("view_inventario")
     def obtener_todos_vidrios(self) -> List[Dict[str, Any]]:
@@ -101,7 +103,9 @@ class ModeloVidriosRefactorizado:
     @permission_required("view_inventario")
     def validar_disponibilidad(self, vidrio_id: int, cantidad_requerida: int) -> bool:
         """Valida si hay stock suficiente."""
-        return self.productos_manager.validar_disponibilidad(vidrio_id, cantidad_requerida)
+        return self.productos_manager.validar_disponibilidad(
+            vidrio_id, cantidad_requerida
+        )
 
     def calcular_area_vidrio(self, ancho: float, alto: float) -> float:
         """Calcula el área de un vidrio."""
@@ -110,12 +114,7 @@ class ModeloVidriosRefactorizado:
     # Delegación a ObrasManager
     @auth_required
     @permission_required("edit_obras")
-    def asignar_vidrio_obra(
-        self, 
-        vidrio_id: int, 
-        obra_id: int, 
-        cantidad: int
-    ) -> bool:
+    def asignar_vidrio_obra(self, vidrio_id: int, obra_id: int, cantidad: int) -> bool:
         """Asigna vidrios a una obra."""
         return self.obras_manager.asignar_vidrio_obra(vidrio_id, obra_id, cantidad)
 
@@ -159,10 +158,10 @@ class ModeloVidriosRefactorizado:
     @auth_required
     @permission_required("view_inventario")
     def obtener_vidrios_paginados(
-        self, 
-        page: int = 1, 
+        self,
+        page: int = 1,
         per_page: int = 20,
-        filtros: Optional[Dict[str, Any]] = None
+        filtros: Optional[Dict[str, Any]] = None,
     ) -> Dict[str, Any]:
         """Obtiene vidrios con paginación."""
         return self.consultas_manager.obtener_vidrios_paginados(page, per_page, filtros)
@@ -184,72 +183,74 @@ class ModeloVidriosRefactorizado:
     def obtener_info_modular(self) -> Dict[str, Any]:
         """Obtiene información sobre la estructura modular."""
         return {
-            'modelo': 'ModeloVidriosRefactorizado',
-            'version': '2.0',
-            'submodulos': [
+            "modelo": "ModeloVidriosRefactorizado",
+            "version": "2.0",
+            "submodulos": [
                 {
-                    'nombre': 'ProductosManager',
-                    'responsabilidad': 'CRUD de vidrios y validaciones',
-                    'metodos_publicos': [
-                        'obtener_vidrio_por_id',
-                        'crear_vidrio', 
-                        'actualizar_vidrio',
-                        'eliminar_vidrio',
-                        'actualizar_stock',
-                        'actualizar_precio',
-                        'validar_disponibilidad',
-                        'calcular_area_vidrio'
-                    ]
+                    "nombre": "ProductosManager",
+                    "responsabilidad": "CRUD de vidrios y validaciones",
+                    "metodos_publicos": [
+                        "obtener_vidrio_por_id",
+                        "crear_vidrio",
+                        "actualizar_vidrio",
+                        "eliminar_vidrio",
+                        "actualizar_stock",
+                        "actualizar_precio",
+                        "validar_disponibilidad",
+                        "calcular_area_vidrio",
+                    ],
                 },
                 {
-                    'nombre': 'ObrasManager',
-                    'responsabilidad': 'Asignación de vidrios a obras',
-                    'metodos_publicos': [
-                        'asignar_vidrio_obra',
-                        'crear_pedido_obra',
-                        'obtener_vidrios_obra',
-                        'obtener_resumen_obra',
-                        'actualizar_estado_pedido'
-                    ]
+                    "nombre": "ObrasManager",
+                    "responsabilidad": "Asignación de vidrios a obras",
+                    "metodos_publicos": [
+                        "asignar_vidrio_obra",
+                        "crear_pedido_obra",
+                        "obtener_vidrios_obra",
+                        "obtener_resumen_obra",
+                        "actualizar_estado_pedido",
+                    ],
                 },
                 {
-                    'nombre': 'ConsultasManager',
-                    'responsabilidad': 'Búsquedas, filtros y estadísticas',
-                    'metodos_publicos': [
-                        'obtener_todos_vidrios',
-                        'buscar_vidrios',
-                        'obtener_estadisticas_vidrios',
-                        'obtener_vidrios_paginados',
-                        'obtener_vidrios_stock_bajo',
-                        'obtener_reporte_proveedores'
-                    ]
-                }
+                    "nombre": "ConsultasManager",
+                    "responsabilidad": "Búsquedas, filtros y estadísticas",
+                    "metodos_publicos": [
+                        "obtener_todos_vidrios",
+                        "buscar_vidrios",
+                        "obtener_estadisticas_vidrios",
+                        "obtener_vidrios_paginados",
+                        "obtener_vidrios_stock_bajo",
+                        "obtener_reporte_proveedores",
+                    ],
+                },
             ],
-            'caracteristicas': [
-                'Compatibilidad hacia atrás completa',
-                'Separación clara de responsabilidades',
-                'SQL externalizado',
-                'Seguridad unificada',
-                'Validaciones robustas'
-            ]
+            "caracteristicas": [
+                "Compatibilidad hacia atrás completa",
+                "Separación clara de responsabilidades",
+                "SQL externalizado",
+                "Seguridad unificada",
+                "Validaciones robustas",
+            ],
         }
 
     def verificar_conectividad_modulos(self) -> Dict[str, bool]:
         """Verifica que todos los submódulos estén conectados correctamente."""
         return {
-            'productos_manager': self.productos_manager is not None,
-            'obras_manager': self.obras_manager is not None,
-            'consultas_manager': self.consultas_manager is not None,
-            'db_connection': self.db_connection is not None
+            "productos_manager": self.productos_manager is not None,
+            "obras_manager": self.obras_manager is not None,
+            "consultas_manager": self.consultas_manager is not None,
+            "db_connection": self.db_connection is not None,
         }
 
     # ====== MÉTODOS LEGACY DEPRECADOS (para transición) ======
-    
+
     def obtener_lista_vidrios(self) -> List[Dict[str, Any]]:
         """
         DEPRECADO: Usar obtener_todos_vidrios() o obtener_vidrios_paginados()
         """
-        print("⚠️  Método deprecado. Usar obtener_todos_vidrios() o obtener_vidrios_paginados()")
+        print(
+            "⚠️  Método deprecado. Usar obtener_todos_vidrios() o obtener_vidrios_paginados()"
+        )
         return self.obtener_todos_vidrios()
 
     def buscar_vidrio(self, criterio: str) -> List[Dict[str, Any]]:
@@ -269,17 +270,18 @@ class ModeloVidriosRefactorizado:
 
 # ====== FUNCIÓN DE MIGRACIÓN AUTOMÁTICA ======
 
+
 def migrar_desde_modelo_legacy(modelo_legacy) -> ModeloVidriosRefactorizado:
     """
     Migra automáticamente desde un modelo legacy al refactorizado.
-    
+
     Args:
         modelo_legacy: Instancia del modelo anterior
-        
+
     Returns:
         ModeloVidriosRefactorizado: Nueva instancia con datos migrados
     """
-    if hasattr(modelo_legacy, 'db_connection'):
+    if hasattr(modelo_legacy, "db_connection"):
         return ModeloVidriosRefactorizado(modelo_legacy.db_connection)
     else:
         return ModeloVidriosRefactorizado()

@@ -2,12 +2,9 @@
 Submódulos de Vidrios - Rexus.app
 
 Arquitectura modular para gestión de vidrios:
-
-- productos_manager.py: CRUD de productos vidrios, validaciones
-- obras_manager.py: Asignaciones de vidrios a obras, pedidos
-- consultas_manager.py: Búsquedas, filtros, estadísticas
-
-Cada submódulo es independiente y especializado.
+- ProductosManager: CRUD de productos de vidrio
+- ObrasManager: Asignación de vidrios a obras
+- ConsultasManager: Búsquedas, filtros y estadísticas
 """
 
 from .consultas_manager import ConsultasManager

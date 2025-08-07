@@ -1,4 +1,8 @@
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.core.auth_decorators import (
+    admin_required,
+    auth_required,
+    permission_required,
+)
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -16,16 +20,25 @@ from pathlib import Path
 
 # Importar utilidades requeridas
 from rexus.utils.sql_script_loader import sql_script_loader
+
 try:
     from rexus.utils.data_sanitizer import DataSanitizer
+
     data_sanitizer = DataSanitizer()
 except ImportError:
     # Fallback básico si no está disponible
     class DataSanitizer:
-        def sanitize_string(self, value, max_length=None): return str(value) if value else ""
-        def sanitize_numeric(self, value, min_val=None, max_val=None): return float(value) if value else 0.0
-        def sanitize_integer(self, value, min_val=None, max_val=None): return int(value) if value else 0
+        def sanitize_string(self, value, max_length=None):
+            return str(value) if value else ""
+
+        def sanitize_numeric(self, value, min_val=None, max_val=None):
+            return float(value) if value else 0.0
+
+        def sanitize_integer(self, value, min_val=None, max_val=None):
+            return int(value) if value else 0
+
     data_sanitizer = DataSanitizer()
+
 
 class VidriosModel:
     """Modelo para gestionar vidrios por obra y proveedor."""
@@ -41,43 +54,43 @@ class VidriosModel:
         self.tabla_vidrios = "vidrios"  # Tabla principal de vidrios en DB inventario
         self.tabla_vidrios_obra = "vidrios_obra"  # Tabla para asociar vidrios con obras
         self.tabla_pedidos_vidrios = "pedidos_vidrios"  # Tabla para pedidos por obra
-        
+
         # Configurar cargador de scripts SQL
         self.sql_loader = sql_script_loader
-        
+
         # Inicializar utilidades de seguridad
         self.data_sanitizer = data_sanitizer
-        
+
         if not self.db_connection:
             print(
                 "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
-    
+
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
-        
+
         Args:
             table_name: Nombre de tabla a validar
-            
+
         Returns:
             Nombre de tabla validado
-            
+
         Raises:
             ValueError: Si el nombre de tabla no es válido
         """
         import re
-        
+
         # Solo permitir nombres alfanuméricos y underscore
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
             raise ValueError(f"Nombre de tabla inválido: {table_name}")
-        
+
         # Lista blanca de tablas permitidas
-        allowed_tables = {'vidrios', 'vidrios_obra', 'pedidos_vidrios'}
+        allowed_tables = {"vidrios", "vidrios_obra", "pedidos_vidrios"}
         if table_name not in allowed_tables:
             raise ValueError(f"Tabla no permitida: {table_name}")
-            
+
         return table_name
 
     def _verificar_tablas(self):
@@ -163,7 +176,9 @@ class VidriosModel:
                     params.append(filtros["espesor"])
 
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/select_vidrios_filtered')
+            script_content = self.sql_loader.load_script(
+                "vidrios/select_vidrios_filtered"
+            )
             # Construir query completa con filtros dinámicos
             where_clause = " AND ".join(conditions)
             query = script_content.replace("WHERE 1=1", f"WHERE {where_clause}")
@@ -199,7 +214,9 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/select_vidrios_por_obra')
+            script_content = self.sql_loader.load_script(
+                "vidrios/select_vidrios_por_obra"
+            )
             cursor.execute(script_content, (obra_id,))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -300,14 +317,19 @@ class VidriosModel:
             cursor.execute(query_pedido, (obra_id, proveedor, total_estimado))
 
             # Obtener ID del pedido creado
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute("SELECT SCOPE_IDENTITY()")
             pedido_id = cursor.fetchone()[0]
 
             # Actualizar cantidades pedidas en vidrios_obra
             for vidrio in vidrios_lista:
                 # Usar script SQL externo
-                script_content = self.sql_loader.load_script('vidrios/update_metros_pedidos')
-                cursor.execute(script_content, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
+                script_content = self.sql_loader.load_script(
+                    "vidrios/update_metros_pedidos"
+                )
+                cursor.execute(
+                    script_content,
+                    (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id),
+                )
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Pedido {pedido_id} creado para obra {obra_id}")
@@ -360,7 +382,9 @@ class VidriosModel:
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
             # Vidrios por tipo usando script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/select_estadisticas_tipos')
+            script_content = self.sql_loader.load_script(
+                "vidrios/select_estadisticas_tipos"
+            )
             cursor.execute(script_content)
             estadisticas["vidrios_por_tipo"] = [
                 {"tipo": row[0], "cantidad": row[1]} for row in cursor.fetchall()
@@ -396,18 +420,18 @@ class VidriosModel:
             termino_limpio = self.data_sanitizer.sanitize_string(
                 termino_busqueda, max_length=100
             )
-            
+
             if not termino_limpio:
                 return False, []
-            
+
             print(f"[VIDRIOS] Búsqueda sanitizada: '{termino_limpio}'")
 
             cursor = self.db_connection.connection.cursor()
 
             termino = f"%{termino_limpio}%"
-            
+
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/buscar_vidrios')
+            script_content = self.sql_loader.load_script("vidrios/buscar_vidrios")
             cursor.execute(script_content, (termino, termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -417,7 +441,9 @@ class VidriosModel:
                 vidrio = dict(zip(columnas, fila))
                 vidrios.append(vidrio)
 
-            print(f"[VIDRIOS] Encontrados {len(vidrios)} vidrios para '{termino_limpio}'")
+            print(
+                f"[VIDRIOS] Encontrados {len(vidrios)} vidrios para '{termino_limpio}'"
+            )
             return True, vidrios
 
         except Exception as e:
@@ -441,7 +467,7 @@ class VidriosModel:
         try:
             # Sanitizar y validar todos los datos
             datos_limpios = {}
-            
+
             # Sanitizar strings
             datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("codigo", ""), max_length=20
@@ -461,8 +487,10 @@ class VidriosModel:
             datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("tratamiento", ""), max_length=100
             )
-            datos_limpios["dimensiones_disponibles"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+            datos_limpios["dimensiones_disponibles"] = (
+                self.data_sanitizer.sanitize_string(
+                    datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+                )
             )
             datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("estado", "ACTIVO"), max_length=20
@@ -470,12 +498,12 @@ class VidriosModel:
             datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("observaciones", ""), max_length=500
             )
-            
+
             # Sanitizar numericos
             datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
                 datos_vidrio.get("espesor", 0), min_val=0, max_val=50
             )
-            
+
             # Validar precio con lógica especial para campos de precio
             precio_original = datos_vidrio.get("precio_m2")
             if precio_original and precio_original != "":
@@ -498,33 +526,42 @@ class VidriosModel:
             if not datos_limpios["proveedor"]:
                 return False, "El proveedor es obligatorio", None
 
-            print(f"[VIDRIOS] Creando vidrio: {datos_limpios['codigo']} - {datos_limpios['descripcion']}")
+            print(
+                f"[VIDRIOS] Creando vidrio: {datos_limpios['codigo']} - {datos_limpios['descripcion']}"
+            )
 
             cursor = self.db_connection.connection.cursor()
 
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/insert_vidrio_nuevo')
-            cursor.execute(script_content, (
-                datos_limpios["codigo"],
-                datos_limpios["descripcion"],
-                datos_limpios["tipo"],
-                datos_limpios["espesor"],
-                datos_limpios["proveedor"],
-                datos_limpios["precio_m2"],
-                datos_limpios["color"],
-                datos_limpios["tratamiento"],
-                datos_limpios["dimensiones_disponibles"],
-                datos_limpios["estado"],
-                datos_limpios["observaciones"],
-            ))
+            script_content = self.sql_loader.load_script("vidrios/insert_vidrio_nuevo")
+            cursor.execute(
+                script_content,
+                (
+                    datos_limpios["codigo"],
+                    datos_limpios["descripcion"],
+                    datos_limpios["tipo"],
+                    datos_limpios["espesor"],
+                    datos_limpios["proveedor"],
+                    datos_limpios["precio_m2"],
+                    datos_limpios["color"],
+                    datos_limpios["tratamiento"],
+                    datos_limpios["dimensiones_disponibles"],
+                    datos_limpios["estado"],
+                    datos_limpios["observaciones"],
+                ),
+            )
 
             # Obtener ID del vidrio creado
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute("SELECT SCOPE_IDENTITY()")
             vidrio_id = cursor.fetchone()[0]
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Vidrio creado exitosamente con ID: {vidrio_id}")
-            return True, f"Vidrio '{datos_limpios['codigo']}' creado exitosamente", vidrio_id
+            return (
+                True,
+                f"Vidrio '{datos_limpios['codigo']}' creado exitosamente",
+                vidrio_id,
+            )
 
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error creando vidrio: {e}")
@@ -557,7 +594,7 @@ class VidriosModel:
 
             # Sanitizar y validar todos los datos igual que en crear_vidrio
             datos_limpios = {}
-            
+
             datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("codigo", ""), max_length=20
             )
@@ -576,8 +613,10 @@ class VidriosModel:
             datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("tratamiento", ""), max_length=100
             )
-            datos_limpios["dimensiones_disponibles"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+            datos_limpios["dimensiones_disponibles"] = (
+                self.data_sanitizer.sanitize_string(
+                    datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
+                )
             )
             datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("estado", "ACTIVO"), max_length=20
@@ -585,11 +624,11 @@ class VidriosModel:
             datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
                 datos_vidrio.get("observaciones", ""), max_length=500
             )
-            
+
             datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
                 datos_vidrio.get("espesor", 0), min_val=0, max_val=50
             )
-            
+
             # Validar precio
             precio_original = datos_vidrio.get("precio_m2")
             if precio_original and precio_original != "":
@@ -608,26 +647,31 @@ class VidriosModel:
             if not datos_limpios["descripcion"]:
                 return False, "La descripción del vidrio es obligatoria"
 
-            print(f"[VIDRIOS] Actualizando vidrio ID {vidrio_id_limpio}: {datos_limpios['codigo']}")
+            print(
+                f"[VIDRIOS] Actualizando vidrio ID {vidrio_id_limpio}: {datos_limpios['codigo']}"
+            )
 
             cursor = self.db_connection.connection.cursor()
 
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/update_vidrio')
-            cursor.execute(script_content, (
-                datos_limpios["codigo"],
-                datos_limpios["descripcion"],
-                datos_limpios["tipo"],
-                datos_limpios["espesor"],
-                datos_limpios["proveedor"],
-                datos_limpios["precio_m2"],
-                datos_limpios["color"],
-                datos_limpios["tratamiento"],
-                datos_limpios["dimensiones_disponibles"],
-                datos_limpios["estado"],
-                datos_limpios["observaciones"],
-                vidrio_id_limpio,
-            ))
+            script_content = self.sql_loader.load_script("vidrios/update_vidrio")
+            cursor.execute(
+                script_content,
+                (
+                    datos_limpios["codigo"],
+                    datos_limpios["descripcion"],
+                    datos_limpios["tipo"],
+                    datos_limpios["espesor"],
+                    datos_limpios["proveedor"],
+                    datos_limpios["precio_m2"],
+                    datos_limpios["color"],
+                    datos_limpios["tratamiento"],
+                    datos_limpios["dimensiones_disponibles"],
+                    datos_limpios["estado"],
+                    datos_limpios["observaciones"],
+                    vidrio_id_limpio,
+                ),
+            )
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Vidrio {vidrio_id_limpio} actualizado exitosamente")
@@ -664,9 +708,9 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar si el vidrio existe usando script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/select_vidrio_info')
+            script_content = self.sql_loader.load_script("vidrios/select_vidrio_info")
             cursor.execute(script_content, (vidrio_id_limpio,))
-                
+
             vidrio_info = cursor.fetchone()
             if not vidrio_info:
                 return False, f"Vidrio con ID {vidrio_id_limpio} no encontrado"
@@ -674,7 +718,7 @@ class VidriosModel:
             codigo, descripcion = vidrio_info
 
             # Verificar si el vidrio está asignado a alguna obra usando script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/count_vidrio_obras')
+            script_content = self.sql_loader.load_script("vidrios/count_vidrio_obras")
             cursor.execute(script_content, (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:
@@ -682,12 +726,16 @@ class VidriosModel:
                     f"[ADVERTENCIA] El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo"
                 )
                 # Marcar como inactivo en lugar de eliminar usando script SQL externo
-                script_content = self.sql_loader.load_script('vidrios/update_vidrio_inactivo')
+                script_content = self.sql_loader.load_script(
+                    "vidrios/update_vidrio_inactivo"
+                )
                 cursor.execute(script_content, (vidrio_id_limpio,))
-                mensaje = f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
+                mensaje = (
+                    f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
+                )
             else:
                 # Eliminar completamente si no está asignado usando script SQL externo
-                script_content = self.sql_loader.load_script('vidrios/delete_vidrio')
+                script_content = self.sql_loader.load_script("vidrios/delete_vidrio")
                 cursor.execute(script_content, (vidrio_id_limpio,))
                 mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
@@ -725,7 +773,7 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Usar script SQL externo
-            script_content = self.sql_loader.load_script('vidrios/select_vidrio_por_id')
+            script_content = self.sql_loader.load_script("vidrios/select_vidrio_por_id")
             cursor.execute(script_content, (vidrio_id_limpio,))
             columnas = [column[0] for column in cursor.description]
             resultado = cursor.fetchone()
@@ -813,3 +861,8 @@ class VidriosModel:
                 "observaciones": "Vidrio especial para divisiones",
             },
         ]
+
+
+# ====== ALIAS PARA COMPATIBILIDAD ======
+# Alias para mantener compatibilidad con imports existentes
+ModeloVidrios = VidriosModel

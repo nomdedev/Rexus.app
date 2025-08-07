@@ -12,31 +12,29 @@ Arquitectura modular v2.0 con compatibilidad hacia atrás.
 """
 
 # Exportar el modelo principal y vistas
-from .model import ModeloVidrios
-from .view import VidriosView
+from .controller import VidriosController
+from .model import ModeloVidrios, VidriosModel
 
 # Exportar modelo refactorizado
 from .model_refactorizado import ModeloVidriosRefactorizado
+from .submodules.consultas_manager import ConsultasManager
+from .submodules.obras_manager import ObrasManager
 
 # Exportar submódulos especializados
 from .submodules.productos_manager import ProductosManager
-from .submodules.obras_manager import ObrasManager
-from .submodules.consultas_manager import ConsultasManager
+from .view import VidriosView
 
 __all__ = [
     # Compatibilidad hacia atrás
-    'ModeloVidrios', 
-    'VidriosView',
-    
+    "ModeloVidrios",
+    "VidriosModel",
+    "VidriosView",
+    "VidriosController",
     # Nueva arquitectura modular
-    'ModeloVidriosRefactorizado',
-    'ProductosManager',
-    'ObrasManager', 
-    'ConsultasManager'
+    "ModeloVidriosRefactorizado",
+    "ProductosManager",
+    "ObrasManager",
+    "ConsultasManager",
 ]
-
-from .controller import VidriosController
-from .model import VidriosModel
-from .view import VidriosView
 
 __all__ = ["VidriosModel", "VidriosView", "VidriosController"]
