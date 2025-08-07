@@ -31,6 +31,3 @@ class ProduccionView(QWidget):
 
     def init_ui(self):
         layout = QVBoxLayout(self)
-        title_label = QLabel("⚙️ Producción")
-        title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #2c3e50;")
-        layout.addWidget(title_label)

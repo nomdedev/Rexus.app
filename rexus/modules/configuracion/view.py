@@ -68,9 +68,6 @@ class ConfiguracionView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
         
-        # Título estandarizado
-        StandardComponents.create_title("Configuración del Sistema", layout)
-        
         # Panel de control estandarizado
         control_panel = StandardComponents.create_control_panel()
         layout.addWidget(control_panel)

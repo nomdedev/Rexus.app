@@ -206,10 +206,7 @@ class ObrasView(QWidget):
         layout_principal.setSpacing(10)
         layout_principal.setContentsMargins(10, 10, 10, 10)
 
-        # Título estandarizado
-        StandardComponents.create_title("🏢 Gestión de Obras", layout_principal)
-
-        # Contenedor de vistas con QStackedWidget
+    # Contenedor de vistas con QStackedWidget
         self.stacked_widget = QStackedWidget()
 
         # Vista de tabla (existente)

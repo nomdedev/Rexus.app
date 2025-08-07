@@ -72,8 +72,6 @@ class LogisticaView(QWidget):
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        # Título moderno
-        StandardComponents.create_title("🚚 Gestión de Logística", layout)
 
         # Panel de control
         control_panel = self.crear_panel_control()

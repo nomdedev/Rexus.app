@@ -102,8 +102,6 @@ class ComprasView(QWidget):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(10)
 
-        # Título estandarizado
-        StandardComponents.create_title("💼 Gestión de Compras", layout)
 
         # Panel de control estandarizado
         control_panel = StandardComponents.create_control_panel()

@@ -41,6 +41,7 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QTableWidget,
     QTableWidgetItem,
+    QTabWidget,
     QVBoxLayout,
     QWidget,
 )
@@ -67,21 +68,61 @@ class HerrajesView(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        """Inicializa la interfaz de usuario."""
+        """Inicializa la interfaz de usuario con pestañas."""
         layout = QVBoxLayout(self)
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
 
-        # Título moderno
-        StandardComponents.create_title("🔧 Gestión de Herrajes", layout)
+        # Crear sistema de pestañas
+        self.tab_widget = QTabWidget()
+        self.tab_widget.setStyleSheet("""
+            QTabWidget::pane {
+                border: 1px solid #ddd;
+                border-radius: 8px;
+                background-color: white;
+            }
+            QTabBar::tab {
+                background-color: #f8f9fa;
+                color: #495057;
+                padding: 12px 20px;
+                margin-right: 2px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                font-weight: 500;
+            }
+            QTabBar::tab:selected {
+                background-color: white;
+                color: #2c3e50;
+                font-weight: bold;
+            }
+        """)
+
+        # Pestaña de Gestión de Herrajes
+        tab_gestion = self.crear_tab_gestion()
+        self.tab_widget.addTab(tab_gestion, "🔧 Gestión")
+
+        # Pestaña de Estadísticas
+        tab_estadisticas = self.crear_tab_estadisticas()
+        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
+
+        layout.addWidget(self.tab_widget)
+
+        # Aplicar estilos modernos
+        self.configurar_estilos()
+
+        # Inicializar protección XSS
+        self.init_xss_protection()
+
+    def crear_tab_gestion(self):
+        """Crea la pestaña de gestión de herrajes."""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setSpacing(10)
+        layout.setContentsMargins(10, 10, 10, 10)
 
         # Panel de control
         control_panel = self.crear_panel_control()
         layout.addWidget(control_panel)
-
-        # Panel de estadísticas
-        stats_panel = self.crear_panel_estadisticas()
-        layout.addWidget(stats_panel)
 
         # Panel de integración con inventario
         integration_panel = self.crear_panel_integracion()
@@ -92,11 +133,135 @@ class HerrajesView(QWidget):
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
 
-        # Aplicar estilos modernos
-        self.configurar_estilos()
+        return tab
 
-        # Inicializar protección XSS
-        self.init_xss_protection()
+    def crear_tab_estadisticas(self):
+        """Crea la pestaña de estadísticas de herrajes."""
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        layout.setSpacing(15)
+        layout.setContentsMargins(20, 20, 20, 20)
+
+        # Panel de estadísticas principales
+        stats_panel = self.crear_panel_estadisticas()
+        layout.addWidget(stats_panel)
+
+        # Panel de análisis de stock
+        stock_panel = self.crear_panel_analisis_stock()
+        layout.addWidget(stock_panel)
+
+        # Panel de reportes de herrajes
+        reportes_panel = self.crear_panel_reportes_herrajes()
+        layout.addWidget(reportes_panel)
+
+        layout.addStretch()
+        return tab
+
+    def crear_panel_analisis_stock(self):
+        """Crea el panel de análisis de stock."""
+        panel = QGroupBox("📈 Análisis de Stock")
+        panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #6f42c1;
+                border-radius: 8px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #6f42c1;
+            }
+        """)
+
+        layout = QVBoxLayout(panel)
+        
+        # Placeholder para análisis de stock
+        placeholder = QLabel("📊 Análisis de stock próximamente")
+        placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        placeholder.setStyleSheet("color: #6c757d; font-size: 14px; padding: 20px;")
+        layout.addWidget(placeholder)
+
+        return panel
+
+    def crear_panel_reportes_herrajes(self):
+        """Crea el panel de reportes de herrajes."""
+        panel = QGroupBox("📄 Reportes de Herrajes")
+        panel.setStyleSheet("""
+            QGroupBox {
+                font-weight: bold;
+                font-size: 14px;
+                border: 2px solid #20c997;
+                border-radius: 8px;
+                margin-top: 1ex;
+                padding-top: 10px;
+                background-color: white;
+            }
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 10px;
+                padding: 0 5px 0 5px;
+                color: #20c997;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+        
+        # Botones de reportes
+        btn_reporte_stock = QPushButton("📋 Herrajes por Stock")
+        btn_reporte_stock.setStyleSheet("""
+            QPushButton {
+                background-color: #20c997;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #1ba085;
+            }
+        """)
+        layout.addWidget(btn_reporte_stock)
+
+        btn_reporte_categorias = QPushButton("📊 Por Categorías")
+        btn_reporte_categorias.setStyleSheet("""
+            QPushButton {
+                background-color: #fd7e14;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #e8630a;
+            }
+        """)
+        layout.addWidget(btn_reporte_categorias)
+
+        btn_reporte_proveedores = QPushButton("🏭 Por Proveedores")
+        btn_reporte_proveedores.setStyleSheet("""
+            QPushButton {
+                background-color: #6610f2;
+                color: white;
+                border: none;
+                padding: 10px 15px;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #520dc2;
+            }
+        """)
+        layout.addWidget(btn_reporte_proveedores)
+
+        layout.addStretch()
+        return panel
 
     # def crear_titulo(self, layout: QVBoxLayout):
 #         """Crea el título moderno de la vista."""
@@ -583,20 +748,29 @@ class HerrajesView(QWidget):
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas mostradas en el panel."""
         try:
-            if hasattr(self.lbl_total_herrajes, 'valor_label'):
-                self.lbl_total_herrajes.valor_label.setText(str(stats.get('total_herrajes', 0)))
-            
-            if hasattr(self.lbl_herrajes_activos, 'valor_label'):
-                self.lbl_herrajes_activos.valor_label.setText(str(stats.get('herrajes_activos', 0)))
-            
-            if hasattr(self.lbl_herrajes_inactivos, 'valor_label'):
-                self.lbl_herrajes_inactivos.valor_label.setText(str(stats.get('herrajes_inactivos', 0)))
-            
-            if hasattr(self.lbl_tipos_disponibles, 'valor_label'):
-                self.lbl_tipos_disponibles.valor_label.setText(str(stats.get('tipos_disponibles', 0)))
-                
+            # Buscar los labels de valor dentro de cada widget de estadística
+            if hasattr(self, 'lbl_total_herrajes'):
+                valor_labels = self.lbl_total_herrajes.findChildren(QLabel)
+                if len(valor_labels) >= 2:  # Segundo label es el valor
+                    valor_labels[1].setText(str(stats.get("total_herrajes", 0)))
+
+            if hasattr(self, 'lbl_herrajes_activos'):
+                valor_labels = self.lbl_herrajes_activos.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(str(stats.get("herrajes_activos", 0)))
+
+            if hasattr(self, 'lbl_herrajes_inactivos'):
+                valor_labels = self.lbl_herrajes_inactivos.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(str(stats.get("herrajes_inactivos", 0)))
+
+            if hasattr(self, 'lbl_tipos_disponibles'):
+                valor_labels = self.lbl_tipos_disponibles.findChildren(QLabel)
+                if len(valor_labels) >= 2:
+                    valor_labels[1].setText(str(stats.get("tipos_disponibles", 0)))
+
         except Exception as e:
-            show_error(self, f"Error actualizando estadísticas: {e}")
+            show_error(self, "Error de Estadísticas", f"Error actualizando estadísticas: {e}")
 
     def nuevo_registro(self):
         """Abre el diálogo para crear un nuevo registro."""
