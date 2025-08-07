@@ -50,6 +50,7 @@ class ComprasPedidosController(QObject):
 
     @auth_required
     @permission_required("crear_pedidos")
+    @auth_required
     def crear_nuevo_pedido(self, datos_pedido: Dict[str, Any]):
         """
         Crea un nuevo pedido de compra.
@@ -111,6 +112,7 @@ class ComprasPedidosController(QObject):
 
     @auth_required
     @permission_required("modificar_pedidos")
+    @auth_required
     def actualizar_estado_pedido(self, pedido_id: int, nuevo_estado: str):
         """
         Actualiza el estado de un pedido.

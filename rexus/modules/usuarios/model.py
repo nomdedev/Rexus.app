@@ -3,7 +3,6 @@ from rexus.core.auth_decorators import (
     auth_required,
     permission_required,
 )
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized

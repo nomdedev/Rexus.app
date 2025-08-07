@@ -10,7 +10,8 @@ from datetime import date, datetime
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.utils.message_system import show_success, show_error, show_warning
-from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required
+from rexus.core.auth_manager import AuthManager
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
 
@@ -75,6 +76,7 @@ class ComprasController(QObject):
             self.mostrar_error("Error cargando datos iniciales", str(e))
 
     @auth_required
+    @auth_required
     def crear_orden(self, datos_orden):
 
         """
@@ -111,6 +113,7 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
 
+    @auth_required
     @auth_required
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
@@ -464,6 +467,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
 
+    @auth_required
     @auth_required
     def crear_proveedor(self, datos_proveedor):
         """

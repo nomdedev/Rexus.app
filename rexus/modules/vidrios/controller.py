@@ -2,7 +2,6 @@
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
-from rexus.core.auth_manager import auth_required, admin_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class VidriosController(QObject):
@@ -96,6 +95,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error editando vidrio: {e}")
 
+    @admin_required
     def eliminar_vidrio(self, vidrio_id):
         """Elimina un vidrio."""
         if not self.model:
@@ -124,6 +124,7 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error asignando vidrio a obra: {e}")
 
+    @auth_required
     def crear_pedido(self, obra_id, proveedor, vidrios_lista):
         """Crea un pedido de vidrios para una obra."""
         if not self.model:
