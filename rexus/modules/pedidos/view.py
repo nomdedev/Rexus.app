@@ -151,7 +151,7 @@ class PedidosView(QWidget):
     
     def aplicar_estilo(self):
         """Aplica el estilo general."""
-        self.setStyleSheet(f"""
+        self.setStyleSheet("""
             QWidget {
                 background-color: #f8f9fa;
                 font-family: 'Segoe UI', Arial, sans-serif;

@@ -5,7 +5,13 @@ import logging
 from pathlib import Path
 
 class SQLScriptLoader:
-    def __init__(self, scripts_dir="sql"):
+    def __init__(self, scripts_dir=None):
+        if scripts_dir is None:
+            # Auto-detect scripts directory relative to the project root
+            current_file = Path(__file__)
+            project_root = current_file.parent.parent.parent  # Go up from rexus/utils/
+            scripts_dir = project_root / "scripts" / "sql"
+        
         self.scripts_dir = Path(scripts_dir)
         self.logger = logging.getLogger(__name__)
     

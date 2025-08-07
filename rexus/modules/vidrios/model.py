@@ -15,6 +15,15 @@ Incluye utilidades de seguridad integradas.
 import sys
 from pathlib import Path
 
+# Importar cargador de scripts SQL
+try:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    SQL_SCRIPTS_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] SQL Script Loader not available in vidrios: {e}")
+    SQL_SCRIPTS_AVAILABLE = False
+    sql_script_loader = None
+
 # Importar utilidades de seguridad
 try:
     root_dir = Path(__file__).parent.parent.parent.parent
@@ -47,6 +56,11 @@ class VidriosModel:
         self.tabla_vidrios_obra = "vidrios_obra"  # Tabla para asociar vidrios con obras
         self.tabla_pedidos_vidrios = "pedidos_vidrios"  # Tabla para pedidos por obra
         
+        # Configurar cargador de scripts SQL
+        self.sql_loader = sql_script_loader if SQL_SCRIPTS_AVAILABLE else None
+        if not self.sql_loader:
+            print("[WARNING VIDRIOS] SQL Script Loader no disponible - usando queries embebidas")
+            
         # Inicializar utilidades de seguridad
         if SECURITY_AVAILABLE:
             self.data_sanitizer = data_sanitizer
@@ -171,21 +185,50 @@ class VidriosModel:
                     conditions.append("espesor = ?")
                     params.append(filtros["espesor"])
 
-            query = (
-                f"""
-                SELECT
-                    id, codigo, descripcion, tipo, espesor, proveedor,
-                    precio_m2, color, tratamiento, dimensiones_disponibles,
-                    estado, observaciones, fecha_actualizacion
-                FROM [{self._validate_table_name(self.tabla_vidrios)}]
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY tipo, espesor
-            """
-            )
-
-            cursor.execute(query, params)
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/select_vidrios_filtered')
+                    if script_content:
+                        # Construir query completa con filtros dinámicos
+                        where_clause = " AND ".join(conditions)
+                        query = script_content.replace("WHERE 1=1", f"WHERE {where_clause}")
+                        cursor.execute(query, params)
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = (
+                        f"""
+                        SELECT
+                            id, codigo, descripcion, tipo, espesor, proveedor,
+                            precio_m2, color, tratamiento, dimensiones_disponibles,
+                            estado, observaciones, fecha_actualizacion
+                        FROM [{tabla_validada}]
+                        WHERE """
+                        + " AND ".join(conditions)
+                        + """
+                        ORDER BY tipo, espesor
+                    """
+                    )
+                    cursor.execute(query, params)
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                query = (
+                    f"""
+                    SELECT
+                        id, codigo, descripcion, tipo, espesor, proveedor,
+                        precio_m2, color, tratamiento, dimensiones_disponibles,
+                        estado, observaciones, fecha_actualizacion
+                    FROM [{tabla_validada}]
+                    WHERE """
+                    + " AND ".join(conditions)
+                    + """
+                    ORDER BY tipo, espesor
+                """
+                )
+                cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -216,18 +259,43 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                SELECT
-                    v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
-                    v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,
-                    vo.medidas_especificas, vo.fecha_asignacion, vo.observaciones as obs_obra
-                FROM [{self._validate_table_name(self.tabla_vidrios)}] v
-                INNER JOIN [{self._validate_table_name(self.tabla_vidrios_obra)}] vo ON v.id = vo.vidrio_id
-                WHERE vo.obra_id = ?
-                ORDER BY v.tipo, v.espesor
-            """
-
-            cursor.execute(query, (obra_id,))
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/select_vidrios_por_obra')
+                    if script_content:
+                        cursor.execute(script_content, (obra_id,))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_vidrios_validada = self._validate_table_name(self.tabla_vidrios)
+                    tabla_obra_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                    query = f"""
+                        SELECT
+                            v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
+                            v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,
+                            vo.medidas_especificas, vo.fecha_asignacion, vo.observaciones as obs_obra
+                        FROM [{tabla_vidrios_validada}] v
+                        INNER JOIN [{tabla_obra_validada}] vo ON v.id = vo.vidrio_id
+                        WHERE vo.obra_id = ?
+                        ORDER BY v.tipo, v.espesor
+                    """
+                    cursor.execute(query, (obra_id,))
+            else:
+                tabla_vidrios_validada = self._validate_table_name(self.tabla_vidrios)
+                tabla_obra_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                query = f"""
+                    SELECT
+                        v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
+                        v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,
+                        vo.medidas_especificas, vo.fecha_asignacion, vo.observaciones as obs_obra
+                    FROM [{tabla_vidrios_validada}] v
+                    INNER JOIN [{tabla_obra_validada}] vo ON v.id = vo.vidrio_id
+                    WHERE vo.obra_id = ?
+                    ORDER BY v.tipo, v.espesor
+                """
+                cursor.execute(query, (obra_id,))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -330,15 +398,31 @@ class VidriosModel:
 
             # Actualizar cantidades pedidas en vidrios_obra
             for vidrio in vidrios_lista:
-                query_update = f"""
-                    UPDATE [{self._validate_table_name(self.tabla_vidrios_obra)}]
-                    SET metros_cuadrados_pedidos = metros_cuadrados_pedidos + ?
-                    WHERE vidrio_id = ? AND obra_id = ?
-                """
-                cursor.execute(
-                    query_update,
-                    (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id),
-                )
+                # Usar script SQL externo si está disponible
+                if self.sql_loader:
+                    try:
+                        script_content = self.sql_loader.load_script('vidrios/update_metros_pedidos')
+                        if script_content:
+                            cursor.execute(script_content, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
+                        else:
+                            raise Exception("No se pudo cargar el script SQL")
+                    except Exception as e:
+                        print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                        tabla_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                        query_update = f"""
+                            UPDATE [{tabla_validada}]
+                            SET metros_cuadrados_pedidos = metros_cuadrados_pedidos + ?
+                            WHERE vidrio_id = ? AND obra_id = ?
+                        """
+                        cursor.execute(query_update, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
+                else:
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                    query_update = f"""
+                        UPDATE [{tabla_validada}]
+                        SET metros_cuadrados_pedidos = metros_cuadrados_pedidos + ?
+                        WHERE vidrio_id = ? AND obra_id = ?
+                    """
+                    cursor.execute(query_update, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Pedido {pedido_id} creado para obra {obra_id}")
@@ -390,14 +474,33 @@ class VidriosModel:
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
-            # Vidrios por tipo
-            cursor.execute(f"""
-                SELECT tipo, COUNT(*) as cantidad
-                FROM [{self._validate_table_name(self.tabla_vidrios)}]
-                WHERE estado = 'ACTIVO'
-                GROUP BY tipo
-                ORDER BY cantidad DESC
-            """)
+            # Vidrios por tipo usando script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/select_estadisticas_tipos')
+                    if script_content:
+                        cursor.execute(script_content)
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    cursor.execute(f"""
+                        SELECT tipo, COUNT(*) as cantidad
+                        FROM [{tabla_validada}]
+                        WHERE estado = 'ACTIVO'
+                        GROUP BY tipo
+                        ORDER BY cantidad DESC
+                    """)
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                cursor.execute(f"""
+                    SELECT tipo, COUNT(*) as cantidad
+                    FROM [{tabla_validada}]
+                    WHERE estado = 'ACTIVO'
+                    GROUP BY tipo
+                    ORDER BY cantidad DESC
+                """)
             estadisticas["vidrios_por_tipo"] = [
                 {"tipo": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
@@ -440,22 +543,49 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                SELECT
-                    id, codigo, descripcion, tipo, espesor, proveedor,
-                    precio_m2, color, tratamiento, estado
-                FROM [{self._validate_table_name(self.tabla_vidrios)}]
-                WHERE
-                    (codigo LIKE ? OR
-                     descripcion LIKE ? OR
-                     tipo LIKE ? OR
-                     proveedor LIKE ?)
-                    AND estado = 'ACTIVO'
-                ORDER BY tipo, espesor
-            """
-
             termino = f"%{termino_limpio}%"
-            cursor.execute(query, (termino, termino, termino, termino))
+            
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/buscar_vidrios')
+                    if script_content:
+                        cursor.execute(script_content, (termino, termino, termino, termino))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"""
+                        SELECT
+                            id, codigo, descripcion, tipo, espesor, proveedor,
+                            precio_m2, color, tratamiento, estado
+                        FROM [{tabla_validada}]
+                        WHERE
+                            (codigo LIKE ? OR
+                             descripcion LIKE ? OR
+                             tipo LIKE ? OR
+                             proveedor LIKE ?)
+                            AND estado = 'ACTIVO'
+                        ORDER BY tipo, espesor
+                    """
+                    cursor.execute(query, (termino, termino, termino, termino))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                query = f"""
+                    SELECT
+                        id, codigo, descripcion, tipo, espesor, proveedor,
+                        precio_m2, color, tratamiento, estado
+                    FROM [{tabla_validada}]
+                    WHERE
+                        (codigo LIKE ? OR
+                         descripcion LIKE ? OR
+                         tipo LIKE ? OR
+                         proveedor LIKE ?)
+                        AND estado = 'ACTIVO'
+                    ORDER BY tipo, espesor
+                """
+                cursor.execute(query, (termino, termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -548,16 +678,57 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                INSERT INTO [{self._validate_table_name(self.tabla_vidrios)}]
-                (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
-                 color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
-
-            cursor.execute(
-                query,
-                (
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/insert_vidrio_nuevo')
+                    if script_content:
+                        cursor.execute(script_content, (
+                            datos_limpios["codigo"],
+                            datos_limpios["descripcion"],
+                            datos_limpios["tipo"],
+                            datos_limpios["espesor"],
+                            datos_limpios["proveedor"],
+                            datos_limpios["precio_m2"],
+                            datos_limpios["color"],
+                            datos_limpios["tratamiento"],
+                            datos_limpios["dimensiones_disponibles"],
+                            datos_limpios["estado"],
+                            datos_limpios["observaciones"],
+                        ))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"""
+                        INSERT INTO [{tabla_validada}]
+                        (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
+                         color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
+                    """
+                    cursor.execute(query, (
+                        datos_limpios["codigo"],
+                        datos_limpios["descripcion"],
+                        datos_limpios["tipo"],
+                        datos_limpios["espesor"],
+                        datos_limpios["proveedor"],
+                        datos_limpios["precio_m2"],
+                        datos_limpios["color"],
+                        datos_limpios["tratamiento"],
+                        datos_limpios["dimensiones_disponibles"],
+                        datos_limpios["estado"],
+                        datos_limpios["observaciones"],
+                    ))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                query = f"""
+                    INSERT INTO [{tabla_validada}]
+                    (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
+                     color, tratamiento, dimensiones_disponibles, estado, observaciones, fecha_actualizacion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
+                """
+                cursor.execute(query, (
                     datos_limpios["codigo"],
                     datos_limpios["descripcion"],
                     datos_limpios["tipo"],
@@ -569,8 +740,7 @@ class VidriosModel:
                     datos_limpios["dimensiones_disponibles"],
                     datos_limpios["estado"],
                     datos_limpios["observaciones"],
-                ),
-            )
+                ))
 
             # Obtener ID del vidrio creado
             cursor.execute("SELECT @@IDENTITY")
@@ -665,17 +835,61 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                UPDATE [{self._validate_table_name(self.tabla_vidrios)}]
-                SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
-                    precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
-                    estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """
-
-            cursor.execute(
-                query,
-                (
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/update_vidrio')
+                    if script_content:
+                        cursor.execute(script_content, (
+                            datos_limpios["codigo"],
+                            datos_limpios["descripcion"],
+                            datos_limpios["tipo"],
+                            datos_limpios["espesor"],
+                            datos_limpios["proveedor"],
+                            datos_limpios["precio_m2"],
+                            datos_limpios["color"],
+                            datos_limpios["tratamiento"],
+                            datos_limpios["dimensiones_disponibles"],
+                            datos_limpios["estado"],
+                            datos_limpios["observaciones"],
+                            vidrio_id_limpio,
+                        ))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"""
+                        UPDATE [{tabla_validada}]
+                        SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
+                            precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
+                            estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
+                        WHERE id = ?
+                    """
+                    cursor.execute(query, (
+                        datos_limpios["codigo"],
+                        datos_limpios["descripcion"],
+                        datos_limpios["tipo"],
+                        datos_limpios["espesor"],
+                        datos_limpios["proveedor"],
+                        datos_limpios["precio_m2"],
+                        datos_limpios["color"],
+                        datos_limpios["tratamiento"],
+                        datos_limpios["dimensiones_disponibles"],
+                        datos_limpios["estado"],
+                        datos_limpios["observaciones"],
+                        vidrio_id_limpio,
+                    ))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                query = f"""
+                    UPDATE [{tabla_validada}]
+                    SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, proveedor = ?,
+                        precio_m2 = ?, color = ?, tratamiento = ?, dimensiones_disponibles = ?,
+                        estado = ?, observaciones = ?, fecha_actualizacion = GETDATE()
+                    WHERE id = ?
+                """
+                cursor.execute(query, (
                     datos_limpios["codigo"],
                     datos_limpios["descripcion"],
                     datos_limpios["tipo"],
@@ -688,8 +902,7 @@ class VidriosModel:
                     datos_limpios["estado"],
                     datos_limpios["observaciones"],
                     vidrio_id_limpio,
-                ),
-            )
+                ))
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Vidrio {vidrio_id_limpio} actualizado exitosamente")
@@ -724,39 +937,84 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            # Verificar si el vidrio existe
-            cursor.execute(
-                f"SELECT codigo, descripcion FROM [{self._validate_table_name(self.tabla_vidrios)}] WHERE id = ?",
-                (vidrio_id_limpio,)
-            )
+            # Verificar si el vidrio existe usando script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/select_vidrio_info')
+                    if script_content:
+                        cursor.execute(script_content, (vidrio_id_limpio,))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    cursor.execute(f"SELECT codigo, descripcion FROM [{tabla_validada}] WHERE id = ?", (vidrio_id_limpio,))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                cursor.execute(f"SELECT codigo, descripcion FROM [{tabla_validada}] WHERE id = ?", (vidrio_id_limpio,))
+                
             vidrio_info = cursor.fetchone()
             if not vidrio_info:
                 return False, f"Vidrio con ID {vidrio_id_limpio} no encontrado"
 
             codigo, descripcion = vidrio_info
 
-            # Verificar si el vidrio está asignado a alguna obra
-            cursor.execute(
-                f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_vidrios_obra)}] WHERE vidrio_id = ?",
-                (vidrio_id_limpio,),
-            )
+            # Verificar si el vidrio está asignado a alguna obra usando script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/count_vidrio_obras')
+                    if script_content:
+                        cursor.execute(script_content, (vidrio_id_limpio,))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                    cursor.execute(f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE vidrio_id = ?", (vidrio_id_limpio,))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios_obra)
+                cursor.execute(f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE vidrio_id = ?", (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:
                 print(
                     f"[ADVERTENCIA] El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo"
                 )
-                # Marcar como inactivo en lugar de eliminar
-                query = f"""
-                    UPDATE [{self._validate_table_name(self.tabla_vidrios)}]
-                    SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
-                    WHERE id = ?
-                """
-                cursor.execute(query, (vidrio_id_limpio,))
+                # Marcar como inactivo en lugar de eliminar usando script SQL externo si está disponible
+                if self.sql_loader:
+                    try:
+                        script_content = self.sql_loader.load_script('vidrios/update_vidrio_inactivo')
+                        if script_content:
+                            cursor.execute(script_content, (vidrio_id_limpio,))
+                        else:
+                            raise Exception("No se pudo cargar el script SQL")
+                    except Exception as e:
+                        print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                        tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                        query = f"UPDATE [{tabla_validada}] SET estado = 'INACTIVO', fecha_actualizacion = GETDATE() WHERE id = ?"
+                        cursor.execute(query, (vidrio_id_limpio,))
+                else:
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"UPDATE [{tabla_validada}] SET estado = 'INACTIVO', fecha_actualizacion = GETDATE() WHERE id = ?"
+                    cursor.execute(query, (vidrio_id_limpio,))
                 mensaje = f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
             else:
-                # Eliminar completamente si no está asignado
-                query = f"DELETE FROM [{self._validate_table_name(self.tabla_vidrios)}] WHERE id = ?"
-                cursor.execute(query, (vidrio_id_limpio,))
+                # Eliminar completamente si no está asignado usando script SQL externo si está disponible
+                if self.sql_loader:
+                    try:
+                        script_content = self.sql_loader.load_script('vidrios/delete_vidrio')
+                        if script_content:
+                            cursor.execute(script_content, (vidrio_id_limpio,))
+                        else:
+                            raise Exception("No se pudo cargar el script SQL")
+                    except Exception as e:
+                        print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                        tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                        query = f"DELETE FROM [{tabla_validada}] WHERE id = ?"
+                        cursor.execute(query, (vidrio_id_limpio,))
+                else:
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"DELETE FROM [{tabla_validada}] WHERE id = ?"
+                    cursor.execute(query, (vidrio_id_limpio,))
                 mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
             self.db_connection.connection.commit()
@@ -792,16 +1050,37 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            query = f"""
-                SELECT
-                    id, codigo, descripcion, tipo, espesor, proveedor,
-                    precio_m2, color, tratamiento, dimensiones_disponibles,
-                    estado, observaciones, fecha_actualizacion
-                FROM [{self._validate_table_name(self.tabla_vidrios)}]
-                WHERE id = ?
-            """
-
-            cursor.execute(query, (vidrio_id_limpio,))
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('vidrios/select_vidrio_por_id')
+                    if script_content:
+                        cursor.execute(script_content, (vidrio_id_limpio,))
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                    query = f"""
+                        SELECT
+                            id, codigo, descripcion, tipo, espesor, proveedor,
+                            precio_m2, color, tratamiento, dimensiones_disponibles,
+                            estado, observaciones, fecha_actualizacion
+                        FROM [{tabla_validada}]
+                        WHERE id = ?
+                    """
+                    cursor.execute(query, (vidrio_id_limpio,))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_vidrios)
+                query = f"""
+                    SELECT
+                        id, codigo, descripcion, tipo, espesor, proveedor,
+                        precio_m2, color, tratamiento, dimensiones_disponibles,
+                        estado, observaciones, fecha_actualizacion
+                    FROM [{tabla_validada}]
+                    WHERE id = ?
+                """
+                cursor.execute(query, (vidrio_id_limpio,))
             columnas = [column[0] for column in cursor.description]
             resultado = cursor.fetchone()
 

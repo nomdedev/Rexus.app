@@ -994,7 +994,6 @@ security_manager = None
 
 def get_security_manager() -> SecurityManager:
     """Obtiene la instancia global del gestor de seguridad."""
-    global security_manager
     return security_manager
 
 

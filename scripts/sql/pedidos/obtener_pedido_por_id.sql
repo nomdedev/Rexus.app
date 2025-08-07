@@ -1,0 +1,35 @@
+-- Obtener pedido por ID con detalles completos
+-- Archivo: obtener_pedido_por_id.sql
+-- Módulo: Pedidos
+-- Descripción: Obtiene un pedido específico con todos sus detalles
+
+SELECT 
+    p.id,
+    p.numero_pedido,
+    p.cliente_id,
+    p.obra_id,
+    p.fecha_pedido,
+    p.fecha_entrega_solicitada,
+    p.fecha_entrega_real,
+    p.estado,
+    p.tipo_pedido,
+    p.prioridad,
+    p.subtotal,
+    p.descuento,
+    p.impuestos,
+    p.total,
+    p.observaciones,
+    p.direccion_entrega,
+    p.responsable_entrega,
+    p.telefono_contacto,
+    p.usuario_creador,
+    p.usuario_aprobador,
+    p.fecha_aprobacion,
+    p.motivo_cancelacion,
+    p.fecha_creacion,
+    p.fecha_modificacion
+FROM [pedidos] p
+WHERE p.id = @pedido_id AND p.activo = 1;
+
+-- Ejemplo de uso en Python:
+-- cursor.execute(query, {'pedido_id': pedido_id})

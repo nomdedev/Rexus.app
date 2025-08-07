@@ -14,18 +14,22 @@ Gestiona todas las configuraciones del sistema incluyendo:
 """
 
 import json
-import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+# Nota: Los decoradores admin_required y auth_required no se usan en este archivo.
 
-# Importar DataSanitizer para seguridad
+
+# Importar DataSanitizer para seguridad - usar versión compatible
 try:
     from utils.data_sanitizer import DataSanitizer
+
+    _SANITIZER_TYPE = "utils"
 except ImportError:
     from rexus.utils.data_sanitizer import DataSanitizer
+
+    _SANITIZER_TYPE = "rexus"
+
 
 class ConfiguracionModel:
     """Modelo para gestión de configuraciones del sistema."""
@@ -38,11 +42,8 @@ class ConfiguracionModel:
         "USUARIOS": "Usuarios",
         "REPORTES": "Reportes",
         "TEMA": "Tema",
-        "BACKUP": "Backup",
-        "INTEGRACIONES": "Integraciones",
     }
 
-    # Configuraciones por defecto
     CONFIG_DEFAULTS = {
         # Base de datos (deben ser configurados por el usuario, nunca por defecto)
         "db_server": "",  # Debe configurarse en .env o por el usuario
@@ -118,7 +119,11 @@ class ConfiguracionModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()  # Para validación y sanitización
+        # Inicializar sanitizador con método compatible
+        if _SANITIZER_TYPE == "utils":
+            self.data_sanitizer = DataSanitizer()
+        else:
+            self.data_sanitizer = DataSanitizer
         self.tabla_configuracion = "configuracion_sistema"
         self.config_file = Path("config/rexus_config.json")
         self.config_cache = {}
@@ -127,8 +132,27 @@ class ConfiguracionModel:
         self.config_file.parent.mkdir(exist_ok=True)
 
         # Inicializar configuración
-        self._verificar_tablas()
         self._cargar_configuracion_inicial()
+
+    def _sanitize_text(self, text: str) -> str:
+        """
+        Sanitiza texto usando el método apropiado según la versión de DataSanitizer.
+
+        Args:
+            text: Texto a sanitizar
+
+        Returns:
+            str: Texto sanitizado
+        """
+        if not isinstance(text, str):
+            text = str(text) if text is not None else ""
+
+        if _SANITIZER_TYPE == "utils":
+            # Versión de utils con método de instancia
+            return self.data_sanitizer.sanitize_string(text)
+        else:
+            # Versión de rexus con método estático
+            return self.data_sanitizer.sanitize_text(text)
 
     def _validate_table_name(self, table_name: str) -> str:
         """
@@ -156,6 +180,81 @@ class ConfiguracionModel:
 
         return table_name
 
+    def _cargar_configuracion_inicial(self):
+        """Carga la configuración inicial en la base de datos usando SQL externo."""
+        if not self.db_connection:
+            self._cargar_desde_archivo()
+            return
+
+        try:
+            from rexus.utils.sql_query_manager import SQLQueryManager
+
+            sql_manager = getattr(self, "sql_manager", SQLQueryManager())
+            cursor = self.db_connection.cursor()
+            # Verificar si ya hay configuraciones
+            query_count = sql_manager.get_query("configuracion", "count_all_configs")
+            cursor.execute(query_count)
+            result = cursor.fetchone()
+            count = result[0] if result else 0
+
+            if count == 0:
+                print("[CONFIGURACION] Insertando configuraciones por defecto...")
+                # Insertar configuraciones por defecto
+                query_insert = sql_manager.get_query(
+                    "configuracion", "insert_config_default"
+                )
+                for clave, valor in self.CONFIG_DEFAULTS.items():
+                    categoria = self._obtener_categoria_por_clave(clave)
+                    descripcion = self._obtener_descripcion_por_clave(clave)
+                    tipo_dato = self._obtener_tipo_dato_por_valor(valor)
+                    cursor.execute(
+                        query_insert, (clave, valor, descripcion, tipo_dato, categoria)
+                    )
+                self.db_connection.commit()
+                print("[CONFIGURACION] Configuración inicial cargada en BD")
+            else:
+                print(f"[CONFIGURACION] {count} configuraciones ya existentes en BD")
+
+            cursor.close()
+            # Cargar configuración en cache
+            self._cargar_cache()
+        except Exception as e:
+            print(
+                f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo"
+            )
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except Exception:
+                    pass
+            # Fallback a archivo
+            self.db_connection = None
+            self._cargar_desde_archivo()
+
+        try:
+            from rexus.utils.sql_query_manager import SQLQueryManager
+
+            sql_manager = getattr(self, "sql_manager", SQLQueryManager())
+            cursor = self.db_connection.cursor()
+            query = sql_manager.get_query("configuracion", "check_table_exists")
+            cursor.execute(query, (self.tabla_configuracion,))
+            result = cursor.fetchone()
+            if result and result[0] > 0:
+                print(
+                    f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente."
+                )
+            else:
+                print(
+                    f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos"
+                )
+                self.db_connection = None  # Deshabilitar BD y usar archivo
+            cursor.close()
+        except Exception as e:
+            print(
+                f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos"
+            )
+            self.db_connection = None  # Fallback a archivo
+
     def validar_configuracion_duplicada(
         self, clave: str, excluir_id: Optional[int] = None
     ) -> bool:
@@ -175,126 +274,38 @@ class ConfiguracionModel:
                 return clave in self.config_cache
 
             # Sanitizar la clave de entrada
-            clave_sanitizada = self.data_sanitizer.sanitize_string(str(clave).strip())
+            clave_sanitizada = self._sanitize_text(str(clave).strip())
 
             cursor = self.db_connection.cursor()
             try:
-                tabla_validada = self._validate_table_name(self.tabla_configuracion)
-
                 if excluir_id:
-                    # Para actualizaciones, excluir el ID actual
-                    cursor.execute(
-                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE clave = ? AND id != ?",
-                        (clave_sanitizada, excluir_id),
+                    # Consulta externa: count_config_by_key_exclude_id.sql
+                    from rexus.utils.sql_query_manager import SQLQueryManager
+
+                    sql_manager = getattr(self, "sql_manager", SQLQueryManager())
+                    query = sql_manager.get_query(
+                        "configuracion", "count_config_by_key_exclude_id"
                     )
+                    cursor.execute(query, (clave_sanitizada, excluir_id))
                 else:
-                    # Para nuevas configuraciones
-                    cursor.execute(
-                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE clave = ?",
-                        (clave_sanitizada,),
+                    # Consulta externa: count_config_by_key.sql
+                    from rexus.utils.sql_query_manager import SQLQueryManager
+
+                    sql_manager = getattr(self, "sql_manager", SQLQueryManager())
+                    query = sql_manager.get_query(
+                        "configuracion", "count_config_by_key"
                     )
+                    cursor.execute(query, (clave_sanitizada,))
 
                 result = cursor.fetchone()
                 existe = result and result[0] > 0
-
                 return bool(existe)
-
             finally:
                 cursor.close()
-
         except Exception as e:
             print(f"[CONFIGURACION] Error validando configuración duplicada: {e}")
             return False  # En caso de error, permitir la operación
-
-    def _verificar_tablas(self):
-        """Verifica que las tablas necesarias existan en la base de datos. NO CREA TABLAS."""
-        if not self.db_connection:
-            print("[CONFIGURACION] Sin conexión BD - usando archivo de configuración")
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Verificar si la tabla existe
-            cursor.execute(
-                "SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_configuracion,),
-            )
-
-            result = cursor.fetchone()
-            if result and result[0] > 0:
-                print(
-                    f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente."
-                )
-            else:
-                print(
-                    f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos"
-                )
-                self.db_connection = None  # Deshabilitar BD y usar archivo
-
-            cursor.close()
-
-        except Exception as e:
-            print(
-                f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos"
-            )
-            self.db_connection = None  # Fallback a archivo
-
-    def _cargar_configuracion_inicial(self):
-        """Carga la configuración inicial en la base de datos."""
-        if not self.db_connection:
-            self._cargar_desde_archivo()
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Verificar si ya hay configuraciones
-            # FIXED: SQL injection vulnerability - using proper table name validation
-            tabla_validada = self._validate_table_name(self.tabla_configuracion)
-            cursor.execute(f"SELECT COUNT(*) FROM [{tabla_validada}]")
-            result = cursor.fetchone()
-            count = result[0] if result else 0
-
-            if count == 0:
-                print("[CONFIGURACION] Insertando configuraciones por defecto...")
-                # Insertar configuraciones por defecto
-                for clave, valor in self.CONFIG_DEFAULTS.items():
-                    categoria = self._obtener_categoria_por_clave(clave)
-                    descripcion = self._obtener_descripcion_por_clave(clave)
-                    tipo_dato = self._obtener_tipo_dato_por_valor(valor)
-
-                    cursor.execute(
-                        f"""
-                        INSERT INTO [{self._validate_table_name(self.tabla_configuracion)}] 
-                        (clave, valor, descripcion, tipo, categoria)
-                        VALUES (?, ?, ?, ?, ?)
-                    """,
-                        (clave, valor, descripcion, tipo_dato, categoria),
-                    )
-
-                self.db_connection.commit()
-                print("[CONFIGURACION] Configuración inicial cargada en BD")
-            else:
-                print(f"[CONFIGURACION] {count} configuraciones ya existentes en BD")
-
-            cursor.close()
-
-            # Cargar configuración en cache
-            self._cargar_cache()
-
-        except Exception as e:
-            print(
-                f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo"
-            )
-            if self.db_connection:
-                try:
-                    self.db_connection.rollback()
-                except Exception:
-                    pass
-            # Fallback a archivo
-            self.db_connection = None
-            self._cargar_desde_archivo()
+        # Código duplicado y SQL embebido eliminado tras migración a SQL externo
 
     def _cargar_desde_archivo(self):
         """Carga configuración desde archivo JSON."""
@@ -332,9 +343,13 @@ class ConfiguracionModel:
                 cursor.execute(
                     f"SELECT clave, valor FROM [{tabla_validada}] WHERE activo = 1"
                 )
-            except Exception:
+            except Exception as e:
                 # Si falla, la tabla podría no tener columna 'activo'
                 tabla_validada = self._validate_table_name(self.tabla_configuracion)
+                # ADVERTENCIA: El nombre de tabla está validado, pero evitar f-strings en SQL si es posible
+                print(
+                    f"[CONFIGURACION] Error al consultar con 'activo': {e}, intentando sin columna 'activo'"
+                )
                 cursor.execute(f"SELECT clave, valor FROM [{tabla_validada}]")
 
             self.config_cache = {}
@@ -405,10 +420,8 @@ class ConfiguracionModel:
                 )
 
             # Sanitizar entradas para prevenir XSS y ataques
-            clave_sanitizada = self.data_sanitizer.sanitize_string(clave.strip())
-            usuario_sanitizado = self.data_sanitizer.sanitize_string(
-                str(usuario).strip()
-            )
+            clave_sanitizada = self._sanitize_text(clave.strip())
+            # usuario_sanitizado eliminado porque no se usa
 
             # Validar longitud de clave
             if len(clave_sanitizada) > 100:
@@ -417,8 +430,8 @@ class ConfiguracionModel:
                     "La clave de configuración es demasiado larga (máximo 100 caracteres)",
                 )
 
-            # Convertir valor a string para almacenamiento (ya sanitizado internamente)
-            valor_str = self.data_sanitizer.sanitize_string(str(valor))
+            # Convertir valor a string para almacenamiento
+            valor_str = self._sanitize_text(str(valor))
 
             if self.db_connection:
                 cursor = self.db_connection.cursor()
@@ -444,8 +457,11 @@ class ConfiguracionModel:
                             """,
                                 (valor_str, clave_sanitizada),
                             )
-                        except Exception:
+                        except Exception as e:
                             # Si no existe fecha_modificacion, usar versión simple
+                            print(
+                                f"[CONFIGURACION] Error actualizando con fecha_modificacion: {e}, usando versión simple"
+                            )
                             cursor.execute(
                                 f"""
                                 UPDATE [{tabla_validada}]
@@ -496,8 +512,8 @@ class ConfiguracionModel:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as e:
+                    print(f"[CONFIGURACION] Error en rollback: {e}")
             return False, f"Error estableciendo configuración: {str(e)}"
 
     def obtener_configuracion_por_categoria(self, categoria: str) -> Dict[str, Any]:
@@ -658,7 +674,7 @@ class ConfiguracionModel:
 
     def exportar_configuracion(
         self,
-        archivo:str,
+        archivo: str,
     ) -> Tuple[bool, str]:
         """
         Exporta la configuración actual a un archivo.
@@ -683,7 +699,7 @@ class ConfiguracionModel:
 
     def importar_configuracion(
         self,
-        archivo:str,
+        archivo: str,
         usuario: str = "SISTEMA",
     ) -> Tuple[bool, str]:
         """

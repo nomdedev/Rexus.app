@@ -4,7 +4,7 @@ import datetime
 from typing import Any, Dict, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 from rexus.core.auth_manager import AuthManager, admin_required, auth_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required

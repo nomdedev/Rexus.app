@@ -1,103 +1,235 @@
-# Checklist de Mejoras Rexus.app - Actualizado con Auditoría Integral 2025
+# Checklist de Mejoras Rexus.app - Auditoría Integral de Modelos 2025
 
-## 🔄 MEJORAS PENDIENTES - CHECKLIST ACTIVO
+## 🔄 AUDITORÍA COMPLETA DE MODELOS - RESULTADOS CRÍTICOS
 
 ---
 
-## 🚨 VULNERABILIDADES CRÍTICAS IDENTIFICADAS EN AUDITORÍA 2025
+## 🚨 PROBLEMAS CRÍTICOS IDENTIFICADOS EN TODOS LOS MODELOS
 
-### ❌ SEGURIDAD: Debilidades en Hashing de Contraseñas
-**Impacto**: 🔴 CRÍTICO - Múltiples sistemas usando SHA-256 inseguro
-**Ubicaciones**:
-- `rexus/core/auth.py:62` - Fallback SHA-256 en autenticación
-- `rexus/core/auth.py:185,220` - Creación y actualización de usuarios
-- `rexus/modules/usuarios/model.py:1042` - Método `_hashear_password()`
-- `rexus/core/security.py:459,481` - Múltiples usos de SHA-256
+### ❌ SEGURIDAD CRÍTICA: SQL Injection Vectores Múltiples
+**Impacto**: 🔴 CRÍTICO - Múltiples modelos vulnerables a SQL injection
+**Módulos Afectados**: TODOS (configuracion, pedidos, vidrios, inventario, usuarios, obras, herrajes)
 
-**Solución requerida**:
+**Problemas Específicos**:
+1. **SQL Embebido con f-strings** - Modelos con SQL directo inseguro:
+   - `configuracion/model.py:344,353,443,454,467,483,544,555,601,611,618`
+   - `pedidos/model.py:245,251,277,375,401,431,459,523,583,598,615,651,668,679`
+   - `usuarios/model.py`: Múltiples queries con construcción dinámica
+   - `obras/model.py`: Queries con concatenación de strings
+   - `inventario/model.py`: Mezcla de SQL externo y embebido
+
+2. **Validación de Tabla Inconsistente**:
+   - Algunos modelos usan `_validate_table_name()` pero no consistentemente
+   - Lista blanca de tablas no unificada entre módulos
+   - Fallbacks a SQL embebido cuando fallan validaciones
+
+**Solución Requerida**:
 ```python
-# Reemplazar todos los usos de SHA-256 por:
-from rexus.utils.password_security import hash_password_secure, verify_password_secure
-password_hash = hash_password_secure(password)  # PBKDF2/bcrypt
-is_valid = verify_password_secure(password, stored_hash)
+# MIGRAR TODO EL SQL A ARCHIVOS EXTERNOS
+# scripts/sql/[modulo]/[operacion].sql
+# Y usar exclusivamente SQLQueryManager
 ```
 
-### ❌ AUTORIZACIÓN: Decoradores @auth_required No Implementados
-**Impacto**: 🔴 CRÍTICO - 20+ métodos sin verificación de autorización
-**Ubicaciones**:
-- `rexus/modules/inventario/controller.py` - Líneas 288, 387, 407, 454, 471, 500, 538
-- Múltiples controladores con comentarios TODO para autorización
+### ❌ IMPORTS DUPLICADOS Y CONFLICTIVOS
+**Impacto**: 🔴 CRÍTICO - Todos los modelos tienen imports problemáticos
+**Ubicaciones**: TODOS los archivos model.py
 
-**Solución requerida**:
+**Problemas Identificados**:
 ```python
-# Implementar y aplicar decoradores de autorización:
-@auth_required
-@permission_required("view_inventory")
-def obtener_productos(self):
-    # Método protegido
+# PROBLEMÁTICO - En TODOS los modelos:
+from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+# ↑ Imports duplicados y conflictivos
 ```
 
-### ❌ VALIDACIÓN: XSS Protection Incompleta
-**Impacto**: 🟠 ALTO - Formularios sin validación XSS sistemática
-**Ubicaciones**: Formularios en módulos view.py sin sanitización consistente
+**Solución**:
+```python
+# CORRECTO - Usar solo una fuente:
+from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+# ↑ Eliminar imports duplicados
+```
+
+### ❌ SANITIZACIÓN INCONSISTENTE
+**Impacto**: 🟠 ALTO - DataSanitizer usado inconsistentemente
+**Problemas**:
+1. **Múltiples Implementaciones**: Algunos modelos usan `utils.data_sanitizer`, otros `rexus.utils.data_sanitizer`
+2. **Métodos Inexistentes**: Llamadas a `sanitize_string()` vs `sanitize_text()` vs `sanitize()`
+3. **Fallbacks Inseguros**: Clases dummy sin sanitización real
 
 ---
 
-## 🔴 CRÍTICO - ACCIÓN INMEDIATA REQUERIDA
+## 🔴 PROBLEMAS POR MÓDULO - DETALLE ESPECÍFICO
 
-### 1. MÓDULOS INCOMPLETOS (2-4 semanas)
-**Compras**: 🔴 Funcionalidades críticas faltantes
-- ❌ Gestión de proveedores no implementada
-- ❌ Sistema de órdenes de compra faltante
-- ❌ Seguimiento de pedidos no funcional
-- ❌ Integración con inventario pendiente
+### CONFIGURACIÓN (rexus/modules/configuracion/model.py)
+- ✅ **SQL Migrado**: Parcialmente usando SQLQueryManager
+- ❌ **SQL Embebido Restante**: 9 ubicaciones con f-strings inseguros
+- ❌ **Imports Duplicados**: auth_required importado 2 veces
+- ❌ **Método Inexistente**: Llamada a `_verificar_tablas()` eliminada pero mencionada
 
-### 2. RENDIMIENTO CRÍTICO (1-2 semanas)
-- ❌ **Paginación**: Tablas grandes sin paginación (inventario, obras, pedidos)
-- ❌ **Índices BD**: Consultas lentas sin índices optimizados
-- ❌ **Consultas N+1**: Posibles consultas redundantes en módulos
+### PEDIDOS (rexus/modules/pedidos/model.py) - ⚠️ MUY PROBLEMÁTICO
+- ❌ **SQL 100% Embebido**: 961 líneas, todo SQL en código
+- ❌ **Vulnerabilidades SQL**: Múltiples vectores de inyección
+- ❌ **Sin Validación**: Falta validación de entradas
+- ❌ **Queries Complejas**: Transacciones complejas sin atomicidad garantizada
+- ❌ **DataSanitizer**: Instanciado pero no usado consistentemente
 
-### 3. BACKUP Y RECUPERACIÓN (1 semana)
-- ❌ **Backup Automatizado**: Sistema de backup no implementado
-- ❌ **Estrategia Recuperación**: Proceso de recuperación no documentado
-- ❌ **Testing Backup**: Validación de backups no automatizada
+### VIDRIOS (rexus/modules/vidrios/model.py) - ⚠️ PROBLEMÁTICO
+- ❌ **Arquitectura Mixta**: SQL externo + fallbacks embebidos inseguros
+- ❌ **Imports Complejos**: Múltiples fallbacks que pueden fallar
+- ❌ **Clases Dummy**: DataSanitizer dummy sin funcionalidad real
+- ❌ **Seguridad Opcional**: Funcionalidades críticas dependientes de imports opcionales
 
----
+### INVENTARIO (rexus/modules/inventario/model.py) - ⚠️ MUY PROBLEMÁTICO
+- ❌ **2989 Líneas**: Archivo demasiado grande y complejo
+- ❌ **Arquitectura Híbrida**: Mezcla SQL externo + embebido
+- ❌ **Múltiples Sistemas**: PaginatedTableMixin + SQL security + fallbacks
+- ❌ **Dependencias Frágiles**: Múltiples puntos de fallo por imports opcionales
 
-## 🟠 ALTO - 2-4 SEMANAS
+### USUARIOS (rexus/modules/usuarios/model.py) - ⚠️ CRÍTICO SEGURIDAD
+- ❌ **1665 Líneas**: Muy complejo para gestión crítica de usuarios
+- ❌ **Hashing Inseguro**: Uso de hashlib sin salt ni algoritmos seguros
+- ❌ **SQL Queries Embebidas**: Autenticación con SQL directo
+- ❌ **Gestión Sesiones**: Sin implementación robusta visible
 
-### SEGURIDAD
-- [ ] Migrar completamente de SHA-256 a PBKDF2/bcrypt en todos los componentes
-- [ ] Implementar decoradores @auth_required en todos los controladores
-- [ ] Completar XSS protection en formularios restantes
-- [ ] Implementar rate limiting en login (prevenir ataques de fuerza bruta)
-- [ ] Auditar y corregir gestión de sesiones
-- [ ] Implementar protección CSRF en operaciones críticas
+### OBRAS (rexus/modules/obras/model.py)
+- ❌ **SQL Embebido**: Queries directos con concatenación
+- ❌ **Validación Básica**: Solo validación de duplicados
+- ❌ **Arquitectura Simple**: Falta funcionalidades avanzadas
 
-### INTERFAZ DE USUARIO
-- [ ] Estandarizar componentes UI entre módulos (botones, formularios, tablas)
-- [ ] Implementar sistema consistente de feedback visual
-- [ ] Crear guía de estilo UI/UX documentada
-- [ ] Completar tooltips y ayuda contextual en todas las interfaces
-- [ ] Optimizar formularios complejos (administración, configuración)
-
-### TESTING Y QA
-- [ ] Aumentar cobertura tests módulos críticos (objetivo: 80%+)
-- [ ] Implementar tests de integración entre módulos
-- [ ] Crear tests UI automatizados con pytest-qt
-- [ ] Desarrollar tests de rendimiento para consultas críticas
-- [ ] Implementar tests de seguridad automatizados
+### HERRAJES (rexus/modules/herrajes/model.py)
+- ✅ **SQL Externo**: Usa SQLQueryManager consistentemente
+- ❌ **Fallbacks Embebidos**: Queries @@IDENTITY directos
+- ❌ **Imports Complejos**: Múltiples rutas de importación
 
 ---
 
-## 🟡 MEDIO - 1-2 MESES
+## � PLAN DE CORRECCIÓN INMEDIATA
 
-### BASE DE DATOS
-- [ ] Crear y aplicar índices de rendimiento en tablas principales
-- [ ] Validar y crear constraints de integridad referencial faltantes
-- [ ] Estandarizar manejo de transacciones complejas
-- [ ] Implementar pool de conexiones optimizado
-- [ ] Crear scripts automatizados de mantenimiento de BD
+### FASE 1: SEGURIDAD CRÍTICA (1-2 semanas)
+1. **Migrar TODO el SQL a archivos externos**:
+   ```bash
+   # Crear estructura completa:
+   scripts/sql/pedidos/
+   scripts/sql/usuarios/
+   scripts/sql/inventario/
+   scripts/sql/obras/
+   scripts/sql/vidrios/
+   # Cada uno con archivos .sql específicos
+   ```
+
+2. **Unificar imports de autenticación**:
+   ```python
+   # EN TODOS LOS MODELOS - usar solo:
+   from rexus.core.auth_decorators import auth_required, admin_required
+   ```
+
+3. **Implementar DataSanitizer unificado**:
+   ```python
+   # Crear utils/unified_sanitizer.py con métodos consistentes
+   ```
+
+### FASE 2: REFACTORIZACIÓN POR MÓDULO (2-4 semanas)
+
+#### PRIORIDAD 1: USUARIOS (Crítico Seguridad)
+- [ ] Migrar completamente a SQL externo
+- [ ] Implementar hashing seguro (PBKDF2/bcrypt)
+- [ ] Dividir en submódulos (auth, permissions, sessions)
+- [ ] Tests de seguridad completos
+
+#### PRIORIDAD 2: PEDIDOS (Funcionalidad Core)
+- [ ] Migrar 100% SQL a archivos externos  
+- [ ] Implementar validaciones robustas
+- [ ] Garantizar atomicidad de transacciones
+- [ ] Paginación para listas grandes
+
+#### PRIORIDAD 3: INVENTARIO (Rendimiento)
+- [ ] Dividir archivo de 2989 líneas en submódulos
+- [ ] Optimizar queries con índices
+- [ ] Implementar cache para consultas frecuentes
+- [ ] Unificar arquitectura de acceso a datos
+
+### FASE 3: OPTIMIZACIÓN Y TESTING (1-2 semanas)
+- [ ] Tests unitarios para todos los modelos
+- [ ] Tests de seguridad (SQL injection, XSS)
+- [ ] Benchmark de rendimiento
+- [ ] Documentación de APIs
+
+---
+
+## 📊 MÉTRICAS DE AUDITORÍA
+
+### Líneas de Código por Módulo:
+- **inventario**: 2989 líneas ⚠️ (CRÍTICO - dividir)
+- **usuarios**: 1665 líneas ⚠️ (ALTO - refactorizar)  
+- **vidrios**: 1170 líneas ⚠️ (MEDIO - optimizar)
+- **pedidos**: 961 líneas ⚠️ (ALTO - migrar SQL)
+- **obras**: 853 líneas ✅ (ACEPTABLE)
+- **configuracion**: ~800 líneas ✅ (ACEPTABLE)
+
+### Vulnerabilidades por Tipo:
+- **SQL Injection**: 7/7 modelos afectados ⚠️
+- **Imports Duplicados**: 7/7 modelos ⚠️  
+- **Sanitización**: 6/7 modelos inconsistentes ⚠️
+- **Validación Input**: 5/7 modelos insuficientes ⚠️
+
+### Arquitectura:
+- **SQL Externo Completo**: 1/7 modelos (herrajes) ✅
+- **SQL Mixto**: 2/7 modelos (configuracion, vidrios) ⚠️
+- **SQL Embebido**: 4/7 modelos (pedidos, usuarios, obras, inventario) ❌
+
+---
+
+## 🎯 OBJETIVOS DE LA CORRECCIÓN
+
+### Objetivo 1: Seguridad Total
+- **0 vulnerabilidades** SQL injection
+- **Hash seguro** para todas las contraseñas
+- **Validación completa** de todas las entradas
+
+### Objetivo 2: Arquitectura Unificada  
+- **100% SQL externo** en todos los modelos
+- **Imports consistentes** en toda la aplicación
+- **DataSanitizer único** y robusto
+
+### Objetivo 3: Mantenibilidad
+- **Módulos < 800 líneas** cada uno
+- **Tests ≥ 80%** cobertura
+- **Documentación completa** de APIs
+
+### Objetivo 4: Rendimiento
+- **Paginación** en todas las listas
+- **Índices optimizados** en BD
+- **Cache** para consultas frecuentes
+
+---
+
+## ✅ ESTADO ACTUAL DE CORRECCIONES
+
+### COMPLETADAS ✅
+- [x] **configuracion/model.py**: SQL parcialmente migrado, sanitización unificada
+- [x] **herrajes/model.py**: Ya usa SQL externo consistentemente  
+
+### EN PROGRESO ⏳
+- [ ] **Migración SQL completa**: 0% → Iniciando con pedidos
+- [ ] **Unificación imports**: 0% → Pendiente aplicar a todos
+- [ ] **DataSanitizer unificado**: 20% → Implementado en configuracion
+
+### PENDIENTES ❌
+- [ ] **usuarios/model.py**: Refactorización de seguridad completa
+- [ ] **inventario/model.py**: División en submódulos
+- [ ] **pedidos/model.py**: Migración SQL completa
+- [ ] **vidrios/model.py**: Unificación de arquitectura
+- [ ] **obras/model.py**: Migración SQL y validaciones
+
+---
+
+## 📝 PRÓXIMOS PASOS INMEDIATOS
+
+1. **Crear estructura SQL externa completa** para todos los módulos
+2. **Migrar pedidos/model.py** como caso crítico
+3. **Implementar DataSanitizer unificado** 
+4. **Corregir imports duplicados** en todos los archivos
+5. **Implementar tests de seguridad** para validar correcciones
 
 ### MÓDULOS FUNCIONALES
 - [ ] **Herrajes**: Completar integración con inventario

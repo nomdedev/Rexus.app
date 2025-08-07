@@ -488,7 +488,6 @@ _audit_system = None
 
 def get_audit_system() -> AuditSystem:
     """Obtiene la instancia global del sistema de auditoría."""
-    global _audit_system
     return _audit_system
 
 

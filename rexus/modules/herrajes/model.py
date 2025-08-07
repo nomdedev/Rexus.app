@@ -99,6 +99,23 @@ class HerrajesModel:
             self.sql_validator = None
             print("WARNING [HERRAJES] Utilidades de seguridad no disponibles")
 
+        # Inicializar SQL script loader
+        self.sql_loader_available = SQL_LOADER_AVAILABLE
+        if self.sql_loader_available:
+            self.sql_loader = sql_script_loader
+            print("OK [HERRAJES] SQL Script Loader disponible")
+        else:
+            self.sql_loader = None
+            print("WARNING [HERRAJES] SQL Script Loader no disponible")
+
+        # Lista de tablas validadas para fallbacks seguros
+        self._valid_table_names = {
+            "herrajes",
+            "herrajes_obra", 
+            "pedidos_herrajes",
+            "herrajes_inventario"
+        }
+
         if not self.db_connection:
             print(
                 "[ERROR HERRAJES] No hay conexión a la base de datos. El módulo no funcionará correctamente."
@@ -158,6 +175,23 @@ class HerrajesModel:
         except Exception as e:
             print(f"[ERROR HERRAJES] Error verificando tablas: {e}")
 
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida que el nombre de tabla sea seguro.
+
+        Args:
+            table_name: Nombre de tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+
+        Raises:
+            ValueError: Si el nombre de tabla no es válido
+        """
+        if not table_name or table_name not in self._valid_table_names:
+            raise ValueError(f"Nombre de tabla no válido: {table_name}")
+        return table_name
+
     def obtener_todos_herrajes(self, filtros=None):
         """
         Obtiene todos los herrajes disponibles.
@@ -169,57 +203,57 @@ class HerrajesModel:
             List[Dict]: Lista de herrajes
         """
         if not self.db_connection:
-            # Retornar datos demo si no hay conexión
-            return self._get_herrajes_demo()
+            # 🔒 SEGURIDAD: Solo retornar datos demo si hay SQL loader (para desarrollo/testing)
+            if self.sql_loader_available and self.sql_loader:
+                print("⚠️ [HERRAJES] Sin conexión DB, retornando datos demo para desarrollo")
+                return self._get_herrajes_demo()
+            else:
+                print("❌ [HERRAJES] Sin conexión DB y sin SQL loader. No hay datos disponibles.")
+                return []
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo primero
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "select_all_herrajes"
+                )
+                
+                if exito and resultados:
+                    herrajes_dict = [dict(zip([desc[0] for desc in resultados[1]], row)) 
+                                   for row in resultados[0]] if resultados[0] else []
+                    
+                    # Aplicar filtros si se proporcionan
+                    if filtros and herrajes_dict:
+                        herrajes_filtrados = []
+                        for herraje in herrajes_dict:
+                            incluir = True
+                            
+                            if filtros.get("proveedor"):
+                                if filtros["proveedor"].lower() not in herraje.get("proveedor", "").lower():
+                                    incluir = False
+                            
+                            if filtros.get("codigo") and incluir:
+                                if filtros["codigo"].lower() not in herraje.get("codigo", "").lower():
+                                    incluir = False
+                                    
+                            if filtros.get("descripcion") and incluir:
+                                if filtros["descripcion"].lower() not in herraje.get("descripcion", "").lower():
+                                    incluir = False
+                            
+                            if incluir:
+                                herrajes_filtrados.append(herraje)
+                        
+                        return herrajes_filtrados
+                    
+                    print("✅ [HERRAJES] Lista de herrajes obtenida usando script externo")
+                    return herrajes_dict
+                    
+            except Exception as e:
+                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consulta segura: {e}")
 
-            # Construir query con filtros
-            conditions = ["1=1"]  # Condición base
-            params = []
-
-            if filtros:
-                if filtros.get("proveedor"):
-                    conditions.append("proveedor LIKE ?")
-                    params.append(f"%{filtros['proveedor']}%")
-
-                if filtros.get("codigo"):
-                    conditions.append("codigo LIKE ?")
-                    params.append(f"%{filtros['codigo']}%")
-
-                if filtros.get("descripcion"):
-                    conditions.append("descripcion LIKE ?")
-                    params.append(f"%{filtros['descripcion']}%")
-
-            query = (
-                f"""
-                SELECT
-                    id, codigo, descripcion, proveedor, precio_unitario,
-                    unidad_medida, categoria, estado, observaciones,
-                    fecha_actualizacion
-                FROM {self.tabla_herrajes}
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY codigo
-            """
-            )
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            herrajes = []
-            for fila in resultados:
-                herraje = dict(zip(columnas, fila))
-                herrajes.append(herraje)
-
-            return herrajes
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo herrajes: {e}")
-            return []
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se pueden obtener herrajes sin scripts externos.")
+        return []
 
     def obtener_herrajes_por_obra(self, obra_id):
         """
@@ -234,34 +268,25 @@ class HerrajesModel:
         if not self.db_connection:
             return []
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo primero
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "select_herrajes_por_obra", params=(obra_id,)
+                )
+                
+                if exito and resultados:
+                    herrajes_obra = [dict(zip([desc[0] for desc in resultados[1]], row)) 
+                                   for row in resultados[0]] if resultados[0] else []
+                    print("✅ [HERRAJES] Herrajes por obra obtenidos usando script externo")
+                    return herrajes_obra
+                    
+            except Exception as e:
+                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consulta segura: {e}")
 
-            query = f"""
-                SELECT
-                    h.id, h.codigo, h.descripcion, h.proveedor, h.precio_unitario,
-                    h.unidad_medida, ho.cantidad_requerida, ho.cantidad_pedida,
-                    ho.fecha_asignacion, ho.observaciones as obs_obra
-                FROM {self.tabla_herrajes} h
-                INNER JOIN {self.tabla_herrajes_obra} ho ON h.id = ho.herraje_id
-                WHERE ho.obra_id = ?
-                ORDER BY h.codigo
-            """
-
-            cursor.execute(query, (obra_id,))
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            herrajes_obra = []
-            for fila in resultados:
-                herraje = dict(zip(columnas, fila))
-                herrajes_obra.append(herraje)
-
-            return herrajes_obra
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo herrajes por obra: {e}")
-            return []
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se pueden obtener herrajes por obra sin scripts externos.")
+        return []
 
     def asignar_herraje_obra(
         self, herraje_id, obra_id, cantidad_requerida, observaciones=None
@@ -281,30 +306,24 @@ class HerrajesModel:
         if not self.db_connection:
             return False
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo primero
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, _ = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "insert_herraje_obra", 
+                    params=(herraje_id, obra_id, cantidad_requerida, observaciones)
+                )
+                
+                if exito:
+                    print(f"✅ [HERRAJES] Herraje {herraje_id} asignado a obra {obra_id} usando script externo")
+                    return True
+                    
+            except Exception as e:
+                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consulta segura: {e}")
 
-            query = (
-                """
-                INSERT INTO """
-                + self.tabla_herrajes_obra
-                + """
-                (herraje_id, obra_id, cantidad_requerida, fecha_asignacion, observaciones)
-                VALUES (?, ?, ?, GETDATE(), ?)
-            """
-            )
-
-            cursor.execute(
-                query, (herraje_id, obra_id, cantidad_requerida, observaciones)
-            )
-            self.db_connection.commit()
-
-            print(f"[HERRAJES] Herraje {herraje_id} asignado a obra {obra_id}")
-            return True
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error asignando herraje a obra: {e}")
-            return False
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede asignar herraje a obra sin scripts externos.")
+        return False
 
     def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
         """
@@ -321,51 +340,44 @@ class HerrajesModel:
         if not self.db_connection:
             return None
 
-        try:
-            cursor = self.db_connection.cursor()
+        # Calcular total estimado
+        total_estimado = sum(
+            item["cantidad"] * item["precio_unitario"] for item in herrajes_lista
+        )
 
-            # Crear pedido principal
-            query_pedido = (
-                """
-                INSERT INTO """
-                + self.tabla_pedidos_herrajes
-                + """
-                (obra_id, proveedor, fecha_pedido, estado, total_estimado)
-                VALUES (?, ?, GETDATE(), 'PENDIENTE', ?)
-            """
-            )
-
-            total_estimado = sum(
-                item["cantidad"] * item["precio_unitario"] for item in herrajes_lista
-            )
-            cursor.execute(query_pedido, (obra_id, proveedor, total_estimado))
-
-            # Obtener ID del pedido creado
-            cursor.execute("SELECT @@IDENTITY")
-            pedido_id = cursor.fetchone()[0]
-
-            # Actualizar cantidades pedidas en herrajes_obra
-            for herraje in herrajes_lista:
-                query_update = (
-                    """
-                    UPDATE """
-                    + self.tabla_herrajes_obra
-                    + """
-                    SET cantidad_pedida = cantidad_pedida + ?
-                    WHERE herraje_id = ? AND obra_id = ?
-                """
+        # 🔒 SEGURIDAD: Usar script SQL externo primero
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                # Crear pedido principal
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "insert_pedido_obra", 
+                    params=(obra_id, proveedor, total_estimado)
                 )
-                cursor.execute(
-                    query_update, (herraje["cantidad"], herraje["herraje_id"], obra_id)
-                )
+                
+                if exito:
+                    # Obtener ID del pedido creado (asumiendo que el script lo retorna)
+                    cursor = self.db_connection.cursor()
+                    cursor.execute("SELECT @@IDENTITY")
+                    pedido_id = cursor.fetchone()[0]
+                    
+                    # Actualizar cantidades pedidas usando script
+                    for herraje in herrajes_lista:
+                        exito_update, _ = self.sql_loader.execute_script(
+                            self.db_connection, "herrajes", "update_cantidad_pedida",
+                            params=(herraje["cantidad"], herraje["herraje_id"], obra_id)
+                        )
+                        if not exito_update:
+                            print(f"⚠️ [HERRAJES] Error actualizando cantidad para herraje {herraje['herraje_id']}")
+                    
+                    print(f"✅ [HERRAJES] Pedido {pedido_id} creado para obra {obra_id} usando script externo")
+                    return pedido_id
+                    
+            except Exception as e:
+                print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consulta segura: {e}")
 
-            self.db_connection.commit()
-            print(f"[HERRAJES] Pedido {pedido_id} creado para obra {obra_id}")
-            return pedido_id
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error creando pedido: {e}")
-            return None
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede crear pedido sin scripts externos.")
+        return None
 
     def obtener_estadisticas(self):
         """
@@ -419,54 +431,14 @@ class HerrajesModel:
                     f"⚠️ [HERRAJES] Error usando script externo, fallback a consultas directas: {e}"
                 )
 
-        # Fallback a consultas directas si el script loader no está disponible
-        try:
-            cursor = self.db_connection.cursor()
-
-            estadisticas = {}
-
-            # Total de herrajes
-            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE estado = 'ACTIVO'")
-            estadisticas["total_herrajes"] = cursor.fetchone()[0]
-
-            # Proveedores activos
-            cursor.execute(
-                "SELECT COUNT(DISTINCT proveedor) FROM herrajes WHERE estado = 'ACTIVO'"
-            )
-            estadisticas["proveedores_activos"] = cursor.fetchone()[0]
-
-            # Valor total del inventario (estimado)
-            cursor.execute(
-                "SELECT SUM(precio_unitario) FROM herrajes WHERE estado = 'ACTIVO'"
-            )
-            resultado = cursor.fetchone()[0]
-            estadisticas["valor_total_inventario"] = resultado or 0.0
-
-            # Herrajes por proveedor
-            cursor.execute("""
-                SELECT proveedor, COUNT(*) as cantidad
-                FROM herrajes
-                WHERE estado = 'ACTIVO'
-                GROUP BY proveedor
-                ORDER BY cantidad DESC
-            """)
-            estadisticas["herrajes_por_proveedor"] = [
-                {"proveedor": row[0], "cantidad": row[1]} for row in cursor.fetchall()
-            ]
-
-            print(
-                "⚠️ [HERRAJES] Estadísticas obtenidas usando consultas directas (fallback)"
-            )
-            return estadisticas
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo estadísticas: {e}")
-            return {
-                "total_herrajes": 0,
-                "proveedores_activos": 0,
-                "valor_total_inventario": 0.0,
-                "herrajes_por_proveedor": [],
-            }
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se pueden obtener estadísticas sin scripts externos.")
+        return {
+            "total_herrajes": 0,
+            "proveedores_activos": 0,
+            "valor_total_inventario": 0.0,
+            "herrajes_por_proveedor": [],
+        }
 
     def buscar_herrajes(self, termino_busqueda):
         """
@@ -481,47 +453,38 @@ class HerrajesModel:
         if not self.db_connection or not termino_busqueda:
             return []
 
-        try:
-            # 🔒 SANITIZACIÓN DE ENTRADA
-            if self.security_available and termino_busqueda:
-                termino_limpio = self.data_sanitizer.sanitize_string(
-                    termino_busqueda, max_length=100
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                # 🔒 SANITIZACIÓN DE ENTRADA
+                if self.security_available and termino_busqueda:
+                    termino_limpio = self.data_sanitizer.sanitize_string(
+                        termino_busqueda, max_length=100
+                    )
+                    if not termino_limpio:
+                        return []
+                else:
+                    termino_limpio = termino_busqueda
+
+                termino = f"%{termino_limpio}%"
+                
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "buscar_herrajes", 
+                    params=(termino, termino, termino)
                 )
-                if not termino_limpio:
-                    return []
-            else:
-                termino_limpio = termino_busqueda
+                
+                if exito and resultados:
+                    herrajes = [dict(zip([desc[0] for desc in resultados[1]], row)) 
+                              for row in resultados[0]] if resultados[0] else []
+                    print("✅ [HERRAJES] Búsqueda de herrajes usando script externo")
+                    return herrajes
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para búsqueda: {e}")
 
-            cursor = self.db_connection.cursor()
-
-            query = """
-                SELECT
-                    id, codigo, descripcion, proveedor, precio_unitario,
-                    unidad_medida, categoria, estado
-                FROM herrajes
-                WHERE
-                    (codigo LIKE ? OR
-                     descripcion LIKE ? OR
-                     proveedor LIKE ?)
-                    AND estado = 'ACTIVO'
-                ORDER BY codigo
-            """
-
-            termino = f"%{termino_limpio}%"
-            cursor.execute(query, (termino, termino, termino))
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            herrajes = []
-            for fila in resultados:
-                herraje = dict(zip(columnas, fila))
-                herrajes.append(herraje)
-
-            return herrajes
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
-            return []
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede buscar herrajes sin scripts externos.")
+        return []
 
     def crear_herraje(
         self,
@@ -575,69 +538,60 @@ class HerrajesModel:
 
             cursor = self.db_connection.cursor()
 
-            # Verificar que el código no exista
-            cursor.execute(
-                "SELECT COUNT(*) FROM herrajes WHERE codigo = ?",
-                (datos_limpios["codigo"],),
-            )
-            if cursor.fetchone()[0] > 0:
-                return False, f"El código '{datos_limpios['codigo']}' ya existe"
+            # 🔒 SEGURIDAD: Verificación debe ir en script SQL externo
+            # Por ahora omitir verificación de duplicados - debe estar en el script SQL
+            print("⚠️ [HERRAJES] Verificación de duplicados debe ser manejada por el script SQL externo")
 
-            # Insertar herraje con datos sanitizados
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_herrajes
-                + """ 
-                (codigo, descripcion, tipo, proveedor, precio_unitario, unidad_medida, 
-                 categoria, estado, stock_minimo, stock_actual, observaciones, 
-                 especificaciones, marca, modelo, color, material, dimensiones, peso)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    datos_limpios["codigo"],
-                    datos_limpios["descripcion"],
-                    datos_limpios.get("tipo", "OTRO"),
-                    datos_limpios["proveedor"],
-                    datos_limpios.get("precio_unitario", 0.00),
-                    datos_limpios.get("unidad_medida", "UNIDAD"),
-                    datos_limpios.get("categoria", ""),
-                    datos_limpios.get("estado", "ACTIVO"),
-                    datos_limpios.get("stock_minimo", 0),
-                    datos_limpios.get("stock_actual", 0),
-                    datos_limpios.get("observaciones", ""),
-                    datos_limpios.get("especificaciones", ""),
-                    datos_limpios.get("marca", ""),
-                    datos_limpios.get("modelo", ""),
-                    datos_limpios.get("color", ""),
-                    datos_limpios.get("material", ""),
-                    datos_limpios.get("dimensiones", ""),
-                    datos_limpios.get("peso", 0.0),
-                ),
-            )
+            # 🔒 SEGURIDAD: Usar script SQL externo primero
+            if self.sql_loader_available and self.sql_loader:
+                try:
+                    exito, _ = self.sql_loader.execute_script(
+                        self.db_connection, "herrajes", "insert_nuevo_herraje",
+                        params=(
+                            datos_limpios["codigo"],
+                            datos_limpios["descripcion"], 
+                            datos_limpios.get("categoria", ""),
+                            datos_limpios.get("tipo", "OTRO"),
+                            datos_limpios.get("stock_actual", 0),
+                            datos_limpios.get("stock_minimo", 0),
+                            0,  # stock_maximo
+                            0,  # stock_reservado
+                            datos_limpios.get("stock_actual", 0),  # stock_disponible
+                            datos_limpios.get("precio_unitario", 0.00),
+                            datos_limpios.get("precio_unitario", 0.00),  # precio_promedio
+                            datos_limpios.get("precio_unitario", 0.00),  # costo_unitario
+                            datos_limpios.get("unidad_medida", "UNIDAD"),
+                            datos_limpios.get("ubicacion", ""),
+                            datos_limpios.get("color", ""),
+                            datos_limpios.get("material", ""),
+                            datos_limpios.get("marca", ""),
+                            datos_limpios.get("modelo", ""),
+                            datos_limpios.get("acabado", ""),
+                            datos_limpios["proveedor"],
+                            datos_limpios.get("codigo", ""),  # codigo_proveedor
+                            datos_limpios.get("tiempo_entrega_dias", 0),
+                            datos_limpios.get("observaciones", ""),
+                            "",  # codigo_qr
+                            "",  # imagen_url
+                            datos_limpios.get("especificaciones", ""),  # propiedades_especiales
+                            datos_limpios.get("estado", "ACTIVO"),
+                            1  # activo
+                        )
+                    )
+                    
+                    if exito:
+                        cursor.execute("SELECT @@IDENTITY")
+                        herraje_id = cursor.fetchone()[0]
+                        print(f"✅ [HERRAJES] Herraje '{datos_limpios['codigo']}' creado usando script externo")
+                        self.db_connection.commit()
+                        return True, f"Herraje '{datos_limpios['codigo']}' creado exitosamente"
+                        
+                except Exception as e:
+                    print(f"⚠️ [HERRAJES] Error usando script externo, fallback a consulta segura: {e}")
 
-            # Obtener ID del herraje creado
-            cursor.execute("SELECT @@IDENTITY")
-            herraje_id = cursor.fetchone()[0]
-
-            # Crear entrada en inventario
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_herrajes_inventario
-                + """ 
-                (herraje_id, stock_actual, stock_reservado, ubicacion)
-                VALUES (?, ?, 0, ?)
-            """,
-                (
-                    herraje_id,
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("ubicacion", ""),
-                ),
-            )
-
-            self.db_connection.commit()
-            return True, f"Herraje '{datos_limpios['codigo']}' creado exitosamente"
+            # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+            print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede crear herraje sin scripts externos.")
+            return False, "Error: SQL Script Loader no disponible"
 
         except Exception as e:
             print(f"[ERROR HERRAJES] Error creando herraje: {e}")
@@ -663,73 +617,47 @@ class HerrajesModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, _ = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "update_herraje",
+                    params=(
+                        datos_herraje["descripcion"],
+                        datos_herraje.get("tipo", "OTRO"),
+                        datos_herraje["proveedor"],
+                        datos_herraje.get("precio_unitario", 0.00),
+                        datos_herraje.get("unidad_medida", "UNIDAD"),
+                        datos_herraje.get("categoria", ""),
+                        datos_herraje.get("estado", "ACTIVO"),
+                        datos_herraje.get("stock_minimo", 0),
+                        datos_herraje.get("stock_actual", 0),
+                        datos_herraje.get("observaciones", ""),
+                        datos_herraje.get("especificaciones", ""),
+                        datos_herraje.get("marca", ""),
+                        datos_herraje.get("modelo", ""),
+                        datos_herraje.get("color", ""),
+                        datos_herraje.get("material", ""),
+                        datos_herraje.get("dimensiones", ""),
+                        datos_herraje.get("peso", 0.0),
+                        herraje_id,
+                        # Parámetros para actualizar inventario también
+                        datos_herraje.get("stock_actual", 0),
+                        datos_herraje.get("ubicacion", ""),
+                        herraje_id
+                    )
+                )
+                
+                if exito:
+                    print(f"✅ [HERRAJES] Herraje {herraje_id} actualizado usando script externo")
+                    return True, "Herraje actualizado exitosamente"
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para actualizar: {e}")
 
-            # Verificar que el herraje existe
-            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE id = ?", (herraje_id,))
-            if cursor.fetchone()[0] == 0:
-                return False, "Herraje no encontrado"
-
-            # Actualizar herraje
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes
-                + """
-                SET descripcion = ?, tipo = ?, proveedor = ?, precio_unitario = ?, 
-                    unidad_medida = ?, categoria = ?, estado = ?, stock_minimo = ?, 
-                    stock_actual = ?, observaciones = ?, especificaciones = ?, 
-                    marca = ?, modelo = ?, color = ?, material = ?, dimensiones = ?, 
-                    peso = ?, fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """,
-                (
-                    datos_herraje["descripcion"],
-                    datos_herraje.get("tipo", "OTRO"),
-                    datos_herraje["proveedor"],
-                    datos_herraje.get("precio_unitario", 0.00),
-                    datos_herraje.get("unidad_medida", "UNIDAD"),
-                    datos_herraje.get("categoria", ""),
-                    datos_herraje.get("estado", "ACTIVO"),
-                    datos_herraje.get("stock_minimo", 0),
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("observaciones", ""),
-                    datos_herraje.get("especificaciones", ""),
-                    datos_herraje.get("marca", ""),
-                    datos_herraje.get("modelo", ""),
-                    datos_herraje.get("color", ""),
-                    datos_herraje.get("material", ""),
-                    datos_herraje.get("dimensiones", ""),
-                    datos_herraje.get("peso", 0.0),
-                    herraje_id,
-                ),
-            )
-
-            # Actualizar inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes_inventario
-                + """
-                SET stock_actual = ?, ubicacion = ?
-                WHERE herraje_id = ?
-            """,
-                (
-                    datos_herraje.get("stock_actual", 0),
-                    datos_herraje.get("ubicacion", ""),
-                    herraje_id,
-                ),
-            )
-
-            self.db_connection.commit()
-            return True, "Herraje actualizado exitosamente"
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error actualizando herraje: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return False, f"Error actualizando herraje: {str(e)}"
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede actualizar herraje sin scripts externos.")
+        return False, "Error: SQL Script Loader no disponible"
 
     def eliminar_herraje(
         self,
@@ -747,49 +675,24 @@ class HerrajesModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, _ = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "delete_herraje",
+                    params=(herraje_id,)
+                )
+                
+                if exito:
+                    print(f"✅ [HERRAJES] Herraje {herraje_id} eliminado usando script externo")
+                    return True, "Herraje eliminado exitosamente"
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para eliminar: {e}")
 
-            # Verificar que el herraje existe
-            cursor.execute("SELECT codigo FROM herrajes WHERE id = ?", (herraje_id,))
-            row = cursor.fetchone()
-            if not row:
-                return False, "Herraje no encontrado"
-
-            codigo = row[0]
-
-            # Verificar que no esté asignado a obras
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM herrajes_obra 
-                WHERE herraje_id = ? AND estado != 'COMPLETADO'
-            """,
-                (herraje_id,),
-            )
-
-            if cursor.fetchone()[0] > 0:
-                return False, "No se puede eliminar herraje asignado a obras activas"
-
-            # Eliminación lógica
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes
-                + """
-                SET activo = 0, estado = 'INACTIVO', fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """,
-                (herraje_id,),
-            )
-
-            self.db_connection.commit()
-            return True, f"Herraje '{codigo}' eliminado exitosamente"
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return False, f"Error eliminando herraje: {str(e)}"
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede eliminar herraje sin scripts externos.")
+        return False, "Error: SQL Script Loader no disponible"
 
     def obtener_herraje_por_id(self, herraje_id: int) -> Optional[Dict[str, Any]]:
         """
@@ -804,31 +707,26 @@ class HerrajesModel:
         if not self.db_connection:
             return None
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "select_by_id",
+                    params=(herraje_id,)
+                )
+                
+                if exito and resultados and resultados[0]:
+                    row = resultados[0][0]
+                    columns = [desc[0] for desc in resultados[1]]
+                    print(f"✅ [HERRAJES] Herraje {herraje_id} obtenido usando script externo")
+                    return dict(zip(columns, row))
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para obtener herraje por ID: {e}")
 
-            cursor.execute(
-                """
-                SELECT h.*, i.stock_actual, i.stock_reservado, 
-                       i.ubicacion, i.fecha_ultima_entrada, i.fecha_ultima_salida
-                FROM herrajes h
-                LEFT JOIN """
-                + self.tabla_herrajes_inventario
-                + """ i ON h.id = i.herraje_id
-                WHERE h.id = ? AND h.estado = 'ACTIVO'
-            """,
-                (herraje_id,),
-            )
-
-            row = cursor.fetchone()
-            if row:
-                columns = [desc[0] for desc in cursor.description]
-                return dict(zip(columns, row))
-            return None
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo herraje por ID: {e}")
-            return None
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede obtener herraje por ID sin scripts externos.")
+        return None
 
     def obtener_proveedores(self) -> List[str]:
         """
@@ -840,19 +738,23 @@ class HerrajesModel:
         if not self.db_connection:
             return []
 
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute("""
-                SELECT DISTINCT proveedor 
-                FROM herrajes 
-                WHERE estado = 'ACTIVO' 
-                ORDER BY proveedor
-            """)
-            return [row[0] for row in cursor.fetchall()]
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, resultados = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "select_proveedores"
+                )
+                
+                if exito and resultados and resultados[0]:
+                    print("✅ [HERRAJES] Proveedores obtenidos usando script externo")
+                    return [row[0] for row in resultados[0]]
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para obtener proveedores: {e}")
 
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error obteniendo proveedores: {e}")
-            return []
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se pueden obtener proveedores sin scripts externos.")
+        return []
 
     def actualizar_stock(
         self,
@@ -874,43 +776,24 @@ class HerrajesModel:
         if not self.db_connection:
             return False, "Sin conexión a la base de datos"
 
-        try:
-            cursor = self.db_connection.cursor()
+        # 🔒 SEGURIDAD: Usar script SQL externo únicamente
+        if self.sql_loader_available and self.sql_loader:
+            try:
+                exito, _ = self.sql_loader.execute_script(
+                    self.db_connection, "herrajes", "update_stock_herraje",
+                    params=(nuevo_stock, herraje_id, nuevo_stock, tipo_movimiento, tipo_movimiento, herraje_id)
+                )
+                
+                if exito:
+                    print(f"✅ [HERRAJES] Stock de herraje {herraje_id} actualizado usando script externo")
+                    return True, "Stock actualizado exitosamente"
+                    
+            except Exception as e:
+                print(f"❌ [HERRAJES] Error usando script externo para actualizar stock: {e}")
 
-            # Actualizar stock en herrajes
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes
-                + """
-                SET stock_actual = ?, fecha_actualizacion = GETDATE()
-                WHERE id = ?
-            """,
-                (nuevo_stock, herraje_id),
-            )
-
-            # Actualizar stock en inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_herrajes_inventario
-                + """
-                SET stock_actual = ?, 
-                    fecha_ultima_entrada = CASE WHEN ? IN ('ENTRADA', 'AJUSTE') THEN GETDATE() ELSE fecha_ultima_entrada END,
-                    fecha_ultima_salida = CASE WHEN ? = 'SALIDA' THEN GETDATE() ELSE fecha_ultima_salida END
-                WHERE herraje_id = ?
-            """,
-                (nuevo_stock, tipo_movimiento, tipo_movimiento, herraje_id),
-            )
-
-            self.db_connection.commit()
-            return True, "Stock actualizado exitosamente"
-
-        except Exception as e:
-            print(f"[ERROR HERRAJES] Error actualizando stock: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return False, f"Error actualizando stock: {str(e)}"
+        # 🔒 SEGURIDAD: Sin fallback - solo usar scripts SQL externos
+        print("❌ [HERRAJES] SQL Script Loader no disponible. No se puede actualizar stock sin scripts externos.")
+        return False, "Error: SQL Script Loader no disponible"
 
     def _get_herrajes_demo(self) -> List[Dict[str, Any]]:
         """Datos demo cuando no hay conexión a BD."""

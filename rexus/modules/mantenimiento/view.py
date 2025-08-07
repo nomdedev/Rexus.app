@@ -143,13 +143,13 @@ class MantenimientoView(QWidget):
 
     def aplicar_estilo(self):
         """Aplica el estilo general."""
-        self.setStyleSheet(f"""
+        self.setStyleSheet("""
             QWidget {
-            background - color: #f8f9fa;
+            background-color: #f8f9fa;
                 font-family: 'Segoe UI', Arial, sans-serif;
             }
             QPushButton {
-            background - color: #6f42c1;
+            background-color: #6f42c1;
                 color: white;
                 border: none;
                 padding: 8px 16px;
@@ -166,7 +166,7 @@ class MantenimientoView(QWidget):
                 font-size: 14px;
             }
             QTableWidget {
-            background - color: white;
+            background-color: white;
                 gridline-color: #dee2e6;
                 border: 1px solid #dee2e6;
                 border-radius: 4px;
