@@ -1,13 +1,15 @@
+#!/usr/bin/env python3
 """
-MIT License
+Vista de Inventario Mejorada - Rexus.app
 
-Copyright (c) 2024 Rexus.app
-
-Vista de Inventario Mejorada - Soluciona limitaciones de paginación y funcionalidades faltantes
+Soluciona los problemas identificados:
+1. Paginación limitada a 50 items
+2. Funcionalidades faltantes (buscador, asociación materiales-obras)  
+3. Interfaz incompleta
 """
 
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer
-from PyQt6.QtGui import QColor, QFont
+from PyQt6.QtGui import QColor, QPixmap, QFont
 from PyQt6.QtWidgets import (
     QAbstractItemView,
     QComboBox,
@@ -23,15 +25,18 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QCheckBox,
+    QDateEdit,
     QTextEdit,
     QSplitter,
     QHeaderView,
     QMessageBox,
     QProgressBar,
+    QScrollArea
 )
 
 # Importar componentes del framework UI estandarizado
 from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.xss_protection import FormProtector
 
@@ -42,7 +47,7 @@ except ImportError:
     ObrasAsociadasDialog = None
 
 
-class InventarioView(QWidget):
+class InventarioViewMejorada(QWidget):
     """Vista mejorada del módulo de inventario con todas las funcionalidades."""
 
     # Señales para comunicación MVC
@@ -339,15 +344,11 @@ class InventarioView(QWidget):
         acciones_layout = QVBoxLayout(acciones_group)
         
         self.btn_reporte_stock_bajo = QPushButton("📋 Reporte Stock Bajo")
-        self.btn_movimiento = QPushButton("📦 Registrar Movimiento")
+        self.btn_movimientos = QPushButton("📦 Registrar Movimiento")
         self.btn_asociar_obra = QPushButton("🏗️ Asociar a Obra")
         self.btn_generar_qr = QPushButton("📱 Generar QR")
         
-        # Establecer nombres de objeto para que el controlador los encuentre
-        self.btn_movimiento.setObjectName("btn_movimiento")
-        self.btn_limpiar = self.btn_limpiar_busqueda  # Alias para compatibilidad
-        
-        for btn in [self.btn_reporte_stock_bajo, self.btn_movimiento, 
+        for btn in [self.btn_reporte_stock_bajo, self.btn_movimientos, 
                    self.btn_asociar_obra, self.btn_generar_qr]:
             btn.setMinimumHeight(35)
             acciones_layout.addWidget(btn)
@@ -417,7 +418,7 @@ class InventarioView(QWidget):
         # Configurar columnas con más información
         columnas = [
             "📋 Código", "📝 Descripción", "📂 Categoría", "📦 Stock", 
-            "💰 Precio", "📊 Estado", "📍 Ubicación", "📅 Actualización"
+            "💰 Precio", "📊 Estado", "📍 Ubicación", "📅 Actualización", "⚡ Acciones"
         ]
         
         self.tabla_inventario.setColumnCount(len(columnas))
@@ -425,14 +426,16 @@ class InventarioView(QWidget):
         
         # Configurar header
         header = self.tabla_inventario.horizontalHeader()
-        header.setStretchLastSection(True)
+        header.setStretchLastSection(False)
         
         # Tamaños de columnas optimizados
-        anchos = [80, 200, 100, 70, 80, 80, 100, 120]
+        anchos = [80, 200, 100, 70, 80, 80, 100, 120, 100]
         for i, ancho in enumerate(anchos):
-            if i < len(anchos):
-                header.resizeSection(i, ancho)
+            header.resizeSection(i, ancho)
             
+        # Última columna se expande
+        header.setSectionResizeMode(len(columnas)-1, QHeaderView.ResizeMode.Stretch)
+        
         # Configuraciones de tabla
         self.tabla_inventario.setAlternatingRowColors(True)
         self.tabla_inventario.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -442,46 +445,6 @@ class InventarioView(QWidget):
         # Conectar señales
         self.tabla_inventario.itemSelectionChanged.connect(self.on_producto_seleccionado)
         self.tabla_inventario.itemDoubleClicked.connect(self.on_item_doble_click)
-        
-        # Aplicar estilos de alto contraste
-        self.aplicar_estilos_tabla()
-        
-    def aplicar_estilos_tabla(self):
-        """Aplica estilos de alto contraste a la tabla."""
-        estilo_tabla = """
-        QTableWidget {
-            gridline-color: #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #cccccc !important;
-            border-radius: 4px !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item {
-            padding: 8px !important;
-            border: 1px solid #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item:selected {
-            background-color: #0078d4 !important;
-            color: #ffffff !important;
-        }
-        QTableWidget::item:hover {
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-        QHeaderView::section {
-            background-color: #f8f9fa !important;
-            padding: 8px !important;
-            border: 1px solid #cccccc !important;
-            font-weight: bold !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        """
-        self.tabla_inventario.setStyleSheet(estilo_tabla)
         
     def aplicar_estilos_mejorados(self):
         """Aplica estilos mejorados y consistentes."""
@@ -504,6 +467,31 @@ class InventarioView(QWidget):
             subcontrol-origin: margin;
             left: 10px;
             padding: 0 5px 0 5px;
+        }
+        
+        QTableWidget {
+            gridline-color: #ecf0f1;
+            background-color: #ffffff;
+            alternate-background-color: #f8f9fa;
+            selection-background-color: #3498db;
+            selection-color: white;
+        }
+        
+        QTableWidget::item {
+            padding: 8px;
+            border: none;
+        }
+        
+        QTableWidget::item:hover {
+            background-color: #e8f4fd;
+        }
+        
+        QHeaderView::section {
+            background-color: #34495e;
+            color: white;
+            padding: 8px;
+            border: 1px solid #2c3e50;
+            font-weight: bold;
         }
         
         QPushButton {
@@ -608,6 +596,8 @@ class InventarioView(QWidget):
         # Habilitar/deshabilitar botones
         self.btn_editar.setEnabled(hay_seleccion)
         self.btn_eliminar.setEnabled(hay_seleccion)
+        self.btn_asociar_obra.setEnabled(hay_seleccion)
+        self.btn_generar_qr.setEnabled(hay_seleccion)
         
         if hay_seleccion and fila < len(self.productos_actuales):
             producto = self.productos_actuales[fila]
@@ -699,40 +689,29 @@ class InventarioView(QWidget):
         
     def cargar_datos_con_filtros(self):
         """Carga datos aplicando filtros y paginación actuales."""
-        if self.controller and hasattr(self.controller, 'cargar_inventario_paginado'):
+        if self.controller:
             # Emitir señal para que el controlador cargue los datos
             self.solicitar_cargar_pagina.emit(self.pagina_actual, self.registros_por_pagina)
-        elif self.controller and hasattr(self.controller, 'cargar_inventario'):
-            # Fallback para controladores que no soportan paginación
-            self.controller.cargar_inventario()
         else:
             # Fallback con datos de ejemplo
             self.mostrar_datos_ejemplo()
             
     def mostrar_datos_ejemplo(self):
         """Muestra datos de ejemplo cuando no hay controlador."""
-        productos_ejemplo = []
+        productos_ejemplo = [
+            {
+                'id': 1, 'codigo': 'PROD001', 'descripcion': 'Producto de ejemplo 1',
+                'categoria': 'Herrajes', 'stock_actual': 100, 'precio_unitario': 25.50,
+                'estado': 'Activo', 'ubicacion': 'A-01', 'fecha_actualizacion': '2025-08-07'
+            },
+            {
+                'id': 2, 'codigo': 'PROD002', 'descripcion': 'Producto de ejemplo 2', 
+                'categoria': 'Vidrios', 'stock_actual': 50, 'precio_unitario': 45.00,
+                'estado': 'Activo', 'ubicacion': 'B-02', 'fecha_actualizacion': '2025-08-07'
+            }
+        ]
         
-        # Generar más productos de ejemplo para probar paginación
-        for i in range(1, 251):  # 250 productos de ejemplo
-            productos_ejemplo.append({
-                'id': i, 
-                'codigo': f'PROD{i:03d}', 
-                'descripcion': f'Producto de ejemplo {i}',
-                'categoria': ['Herrajes', 'Vidrios', 'Herramientas', 'Materiales'][i % 4],
-                'stock_actual': (i * 7) % 100,  # Variación en stock
-                'precio_unitario': round(25.50 + (i * 0.5), 2),
-                'estado': 'Activo' if i % 10 != 0 else 'Inactivo',
-                'ubicacion': f'{chr(65 + (i % 5))}-{(i % 20):02d}',
-                'fecha_actualizacion': '2025-08-07'
-            })
-        
-        # Aplicar paginación a los datos de ejemplo
-        inicio = (self.pagina_actual - 1) * self.registros_por_pagina
-        fin = inicio + self.registros_por_pagina
-        productos_pagina = productos_ejemplo[inicio:fin]
-        
-        self.actualizar_tabla_inventario(productos_pagina, len(productos_ejemplo))
+        self.actualizar_tabla_inventario(productos_ejemplo, len(productos_ejemplo))
         
     def actualizar_tabla_inventario(self, productos, total_registros=None):
         """Actualiza la tabla con los productos recibidos."""
@@ -789,6 +768,12 @@ class InventarioView(QWidget):
                 
                 # Fecha actualización
                 self.tabla_inventario.setItem(fila, 7, QTableWidgetItem(str(producto.get('fecha_actualizacion', ''))))
+                
+                # Botón de acciones
+                btn_acciones = QPushButton("👁️ Ver")
+                btn_acciones.setMaximumWidth(60)
+                btn_acciones.clicked.connect(lambda checked, p=producto: self.ver_detalles_producto(p))
+                self.tabla_inventario.setCellWidget(fila, 8, btn_acciones)
             
             # Actualizar controles
             self.actualizar_controles_paginacion()
@@ -800,6 +785,25 @@ class InventarioView(QWidget):
         except Exception as e:
             show_error(self, "Error", f"Error actualizando tabla: {str(e)}")
             self.progress_bar.setVisible(False)
+            
+    def ver_detalles_producto(self, producto):
+        """Muestra detalles completos de un producto."""
+        try:
+            detalles = f"""
+📋 Código: {producto.get('codigo', 'N/A')}
+📝 Descripción: {producto.get('descripcion', 'N/A')}
+📂 Categoría: {producto.get('categoria', 'N/A')}
+📦 Stock actual: {producto.get('stock_actual', 0)} unidades
+💰 Precio unitario: ${producto.get('precio_unitario', 0):,.2f}
+📊 Estado: {producto.get('estado', 'N/A')}
+📍 Ubicación: {producto.get('ubicacion', 'Sin especificar')}
+📅 Última actualización: {producto.get('fecha_actualizacion', 'N/A')}
+            """
+            
+            QMessageBox.information(self, "Detalles del Producto", detalles)
+            
+        except Exception as e:
+            show_error(self, "Error", f"Error mostrando detalles: {str(e)}")
             
     def actualizar_estadisticas(self):
         """Actualiza las estadísticas del panel lateral."""
@@ -831,46 +835,12 @@ class InventarioView(QWidget):
         if hasattr(controller, 'buscar_productos'):
             self.solicitar_busqueda.connect(controller.buscar_productos)
             
-        # Conectar botones principales
-        if hasattr(controller, 'nuevo_producto'):
-            self.btn_nuevo_producto.clicked.connect(controller.nuevo_producto)
-            
-        if hasattr(controller, 'editar_producto'):
-            self.btn_editar.clicked.connect(lambda: controller.editar_producto(self.obtener_producto_seleccionado_id()))
-            
-        if hasattr(controller, 'eliminar_producto'):
-            self.btn_eliminar.clicked.connect(lambda: controller.eliminar_producto(self.obtener_producto_seleccionado_id()))
-            
-        if hasattr(controller, 'exportar_inventario'):
-            self.btn_exportar.clicked.connect(controller.exportar_inventario)
-            
-        if hasattr(controller, 'importar_inventario'):
-            self.btn_importar.clicked.connect(controller.importar_inventario)
-            
-        if hasattr(controller, 'registrar_movimiento'):
-            self.btn_movimiento.clicked.connect(controller.registrar_movimiento)
-            
-    def obtener_producto_seleccionado_id(self):
-        """Obtiene el ID del producto seleccionado."""
-        fila = self.tabla_inventario.currentRow()
-        if 0 <= fila < len(self.productos_actuales):
-            return self.productos_actuales[fila].get('id')
-        return None
-        
-    # === MÉTODOS DE COMPATIBILIDAD CON VISTA ANTERIOR ===
-    
-    def actualizar_tabla(self, productos):
-        """Método de compatibilidad para actualizar_tabla_inventario."""
-        self.actualizar_tabla_inventario(productos)
-        
-    def mostrar_productos(self, productos):
-        """Método de compatibilidad para mostrar productos."""
-        self.actualizar_tabla_inventario(productos)
-        
-    def cargar_datos(self, datos):
-        """Método de compatibilidad para cargar datos."""
-        self.actualizar_tabla_inventario(datos)
-        
-    def cargar_inventario_inicial(self):
-        """Carga inicial del inventario."""
-        self.cargar_inventario()
+        # Conectar botones
+        self.btn_nuevo_producto.clicked.connect(controller.nuevo_producto if hasattr(controller, 'nuevo_producto') else lambda: None)
+        self.btn_editar.clicked.connect(controller.editar_producto if hasattr(controller, 'editar_producto') else lambda: None)
+        self.btn_eliminar.clicked.connect(controller.eliminar_producto if hasattr(controller, 'eliminar_producto') else lambda: None)
+        self.btn_exportar.clicked.connect(controller.exportar_inventario if hasattr(controller, 'exportar_inventario') else lambda: None)
+        self.btn_importar.clicked.connect(controller.importar_inventario if hasattr(controller, 'importar_inventario') else lambda: None)
+
+# Alias para compatibilidad
+InventarioView = InventarioViewMejorada

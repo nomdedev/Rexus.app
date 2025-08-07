@@ -14,6 +14,16 @@ from typing import Any, Optional, Union
 
 
 class DataSanitizer:
+    @staticmethod
+    def sanitize_string(value, max_length=None):
+        s = DataSanitizer.sanitize_text(value)
+        if max_length is not None:
+            return s[:max_length]
+        return s
+
+    @staticmethod
+    def sanitize_dict(data_dict):
+        return DataSanitizer.clean_dict(data_dict)
     """Clase para sanitización de datos de entrada."""
     
     @staticmethod

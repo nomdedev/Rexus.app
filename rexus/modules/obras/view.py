@@ -36,17 +36,13 @@ from PyQt6.QtWidgets import (
     QDialogButtonBox,
     QDoubleSpinBox,
     QFormLayout,
-    QFrame,
     QGroupBox,
     QHBoxLayout,
     QLabel,
     QLineEdit,
-    QMessageBox,
     QPushButton,
-    QSpinBox,
     QSplitter,
     QStackedWidget,
-    QTableWidget,
     QTableWidgetItem,
     QTextEdit,
     QVBoxLayout,
@@ -74,6 +70,7 @@ except ImportError:
     print("[WARNING] StandardComponents y style_manager no disponibles")
 
     # Crear fallback para StandardComponents
+    from PyQt6.QtWidgets import QTableWidget
     class StandardComponents:
         @staticmethod
         def create_title(text, layout):
@@ -149,7 +146,8 @@ except ImportError:
 
         @staticmethod
         def create_standard_table():
-            table = StandardComponents.create_standard_table()
+            from PyQt6.QtWidgets import QTableWidget
+            table = QTableWidget()
             table.setStyleSheet("""
                 QTableWidget {
                     gridline-color: #ddd;
@@ -180,6 +178,7 @@ class ObrasView(QWidget):
     def __init__(self):
         super().__init__()
         self.controller = None
+        self.model = None  # Agregar referencia directa al modelo
         self.vista_actual = "tabla"  # "tabla" o "cronograma"
 
         # Inicializar protección XSS
@@ -195,9 +194,175 @@ class ObrasView(QWidget):
         self.init_ui()
         if style_manager:
             style_manager.apply_module_theme(self)
+        else:
+            # Aplicar estilos personalizados para mejor contraste
+            self.apply_high_contrast_style()
 
         # Configurar tooltips inteligentes después de crear la UI
         self.setup_smart_tooltips()
+        
+        # Inicializar modelo y cargar datos después de crear la UI
+        self.init_model()
+        self.cargar_datos_iniciales()
+
+    def apply_high_contrast_style(self):
+        """Aplicar estilos de alto contraste para mejor legibilidad."""
+        high_contrast_style = """
+        /* Estilo general de alto contraste */
+        QWidget {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+        }
+        
+        /* Tabla de obras */
+        QTableWidget {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #cccccc;
+            gridline-color: #dddddd;
+            selection-background-color: #0078d4;
+            selection-color: #ffffff;
+            font-size: 13px;
+        }
+        
+        QTableWidget::item {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #dddddd;
+            padding: 8px;
+        }
+        
+        QTableWidget::item:selected {
+            background-color: #0078d4;
+            color: #ffffff;
+        }
+        
+        QTableWidget::item:hover {
+            background-color: #f0f0f0;
+            color: #000000;
+        }
+        
+        /* Headers de la tabla */
+        QHeaderView::section {
+            background-color: #f8f9fa;
+            color: #000000;
+            border: 1px solid #cccccc;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        /* Botones */
+        QPushButton {
+            background-color: #0078d4;
+            color: #ffffff;
+            border: 2px solid #0078d4;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        QPushButton:hover {
+            background-color: #106ebe;
+            border-color: #106ebe;
+        }
+        
+        QPushButton:pressed {
+            background-color: #005a9e;
+            border-color: #005a9e;
+        }
+        
+        /* Filtros */
+        QComboBox, QLineEdit {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #cccccc;
+            border-radius: 4px;
+            padding: 6px;
+            font-size: 13px;
+        }
+        
+        QComboBox:focus, QLineEdit:focus {
+            border-color: #0078d4;
+        }
+        
+        /* Panel de estadísticas */
+        QLabel {
+            color: #000000;
+            font-size: 13px;
+        }
+        """
+        self.setStyleSheet(high_contrast_style)
+
+    def init_model(self):
+        """Inicializar el modelo de obras."""
+        try:
+            from .model import ObrasModel
+            from rexus.core.database import get_inventario_connection
+            
+            print("[OBRAS VIEW] Inicializando modelo...")
+            # Obtener conexión a la base de datos
+            db_conn = get_inventario_connection(auto_connect=True)
+            if db_conn.connection:
+                self.model = ObrasModel(db_conn.connection)
+                print("[OBRAS VIEW] Modelo inicializado correctamente")
+            else:
+                print("[OBRAS VIEW] Error: No se pudo conectar a la base de datos")
+                self.model = None
+        except Exception as e:
+            print(f"[OBRAS VIEW] Error inicializando modelo: {e}")
+            import traceback
+            traceback.print_exc()
+            self.model = None
+
+    def cargar_datos_iniciales(self):
+        """Cargar datos iniciales en la tabla."""
+        if self.model is None:
+            print("[OBRAS VIEW] No hay modelo disponible para cargar datos")
+            return
+            
+        try:
+            obras = self.model.obtener_todas_obras()
+            if obras:
+                # Convertir tuplas a diccionarios usando el mapeo real de la base de datos
+                # Índices según la estructura real: 0:id, 1:nombre, 5:cliente, 6:estado, 20:codigo, 21:responsable, etc.
+                obras_dict = []
+                for obra in obras:
+                    obra_dict = {
+                        'id': obra[0] if len(obra) > 0 else '',           # id
+                        'codigo': obra[20] if len(obra) > 20 else '',     # codigo (índice 20)
+                        'nombre': obra[1] if len(obra) > 1 else '',       # nombre (índice 1)
+                        'descripcion': obra[26] if len(obra) > 26 else '', # descripcion (índice 26)
+                        'cliente': obra[5] if len(obra) > 5 else '',      # cliente (índice 5)
+                        'fecha_inicio': obra[22] if len(obra) > 22 else '', # fecha_inicio (índice 22)
+                        'fecha_fin_estimada': obra[23] if len(obra) > 23 else '', # fecha_fin_estimada (índice 23)
+                        'estado': obra[6] if len(obra) > 6 else '',       # estado (índice 6)
+                        'presupuesto_inicial': obra[24] if len(obra) > 24 else 0, # presupuesto_total (índice 24)
+                        'responsable': obra[21] if len(obra) > 21 else '' # responsable (índice 21)
+                    }
+                    obras_dict.append(obra_dict)
+                
+                self.cargar_obras_en_tabla(obras_dict)
+                print(f"[OBRAS VIEW] Cargadas {len(obras_dict)} obras en la tabla")
+            else:
+                print("[OBRAS VIEW] No hay obras para mostrar")
+                self.cargar_obras_en_tabla([])
+        except Exception as e:
+            print(f"[OBRAS VIEW] Error cargando datos iniciales: {e}")
+            import traceback
+            traceback.print_exc()
+            self.cargar_obras_en_tabla([])
+
+    def actualizar_datos(self):
+        """Actualizar datos desde la base de datos."""
+        self.cargar_datos_iniciales()
+        
+        # Inicializar modelo y cargar datos
+        self.init_model()
+        self.cargar_datos_iniciales()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
@@ -646,85 +811,68 @@ class ObrasView(QWidget):
             self.tabla_obras.setRowCount(len(obras))
 
             for fila, obra in enumerate(obras):
-                # Código
-                self.tabla_obras.setItem(
-                    fila, 0, QTableWidgetItem(str(obra.get("codigo", "")))
-                )
+                # Columna 0: Código
+                codigo = obra.get("codigo", "") if isinstance(obra, dict) else str(obra[1]) if len(obra) > 1 else ""
+                self.tabla_obras.setItem(fila, 0, QTableWidgetItem(str(codigo)))
 
-                # Nombre
-                self.tabla_obras.setItem(
-                    fila, 1, QTableWidgetItem(str(obra.get("nombre", "")))
-                )
+                # Columna 1: Nombre
+                nombre = obra.get("nombre", "") if isinstance(obra, dict) else str(obra[2]) if len(obra) > 2 else ""
+                self.tabla_obras.setItem(fila, 1, QTableWidgetItem(str(nombre)))
 
-                # Cliente
-                self.tabla_obras.setItem(
-                    fila, 2, QTableWidgetItem(str(obra.get("cliente", "")))
-                )
+                # Columna 2: Cliente
+                cliente = obra.get("cliente", "") if isinstance(obra, dict) else str(obra[4]) if len(obra) > 4 else ""
+                self.tabla_obras.setItem(fila, 2, QTableWidgetItem(str(cliente)))
 
-                # Responsable
-                self.tabla_obras.setItem(
-                    fila, 3, QTableWidgetItem(str(obra.get("responsable", "")))
-                )
+                # Columna 3: Responsable
+                responsable = obra.get("responsable", "") if isinstance(obra, dict) else str(obra[10]) if len(obra) > 10 else ""
+                self.tabla_obras.setItem(fila, 3, QTableWidgetItem(str(responsable)))
 
-                # Fecha Inicio
-                fecha_inicio = obra.get("fecha_inicio", "")
+                # Columna 4: Fecha Inicio
+                fecha_inicio = obra.get("fecha_inicio", "") if isinstance(obra, dict) else str(obra[5]) if len(obra) > 5 else ""
                 if fecha_inicio:
                     if isinstance(fecha_inicio, str):
                         fecha_inicio = fecha_inicio[:10]  # Solo la fecha, sin hora
                 self.tabla_obras.setItem(fila, 4, QTableWidgetItem(str(fecha_inicio)))
 
-                # Fecha Fin
-                fecha_fin = obra.get("fecha_fin_estimada", "")
+                # Columna 5: Fecha Fin
+                fecha_fin = obra.get("fecha_fin_estimada", "") if isinstance(obra, dict) else str(obra[6]) if len(obra) > 6 else ""
                 if fecha_fin:
                     if isinstance(fecha_fin, str):
                         fecha_fin = fecha_fin[:10]
                 self.tabla_obras.setItem(fila, 5, QTableWidgetItem(str(fecha_fin)))
 
-                # Estado
-                estado = obra.get("estado", "PLANIFICACION")
-                item_estado = QTableWidgetItem(str(estado))
+                # Columna 6: Estado
+                estado = obra.get("estado", "") if isinstance(obra, dict) else str(obra[8]) if len(obra) > 8 else ""
+                self.tabla_obras.setItem(fila, 6, QTableWidgetItem(str(estado)))
 
-                # Colorear según estado
-                if estado == "EN_PROCESO":
-                    item_estado.setBackground(Qt.GlobalColor.yellow)
-                elif estado == "FINALIZADA":
-                    item_estado.setBackground(Qt.GlobalColor.green)
-                elif estado == "CANCELADA":
-                    item_estado.setBackground(Qt.GlobalColor.red)
+                # Columna 7: Presupuesto
+                presupuesto = obra.get("presupuesto_inicial", "") if isinstance(obra, dict) else str(obra[11]) if len(obra) > 11 else ""
+                if presupuesto:
+                    try:
+                        presupuesto_formatted = f"${float(presupuesto):,.2f}"
+                    except (ValueError, TypeError):
+                        presupuesto_formatted = str(presupuesto)
+                else:
+                    presupuesto_formatted = ""
+                self.tabla_obras.setItem(fila, 7, QTableWidgetItem(presupuesto_formatted))
 
-                self.tabla_obras.setItem(fila, 6, item_estado)
-
-                # Presupuesto
-                presupuesto = obra.get("presupuesto_total", 0)
-                self.tabla_obras.setItem(
-                    fila, 7, QTableWidgetItem(f"${presupuesto:,.2f}")
-                )
-
-                # Acciones (botón de detalles)
-                btn_detalles = QPushButton("👁️ Ver")
-                btn_detalles.setStyleSheet("""
-                    QPushButton {
-                        background-color: #17a2b8;
-                        color: white;
-                        border: none;
-                        border-radius: 3px;
-                        padding: 5px 10px;
-                        font-size: 12px;
-                    }
-                    QPushButton:hover {
-                        background-color: #138496;
-                    }
-                """)
-                btn_detalles.setToolTip("👁️ Ver detalles completos de la obra")
-                btn_detalles.clicked.connect(
-                    lambda checked, obra_id=obra.get("id"): self.mostrar_detalles_obra(
-                        obra_id
-                    )
-                )
-                self.tabla_obras.setCellWidget(fila, 8, btn_detalles)
+                # Columna 8: Acciones (botón editar)
+                btn_editar = QPushButton("Editar")
+                btn_editar.clicked.connect(lambda checked, f=fila: self.editar_obra_desde_tabla(f))
+                self.tabla_obras.setCellWidget(fila, 8, btn_editar)
 
         except Exception as e:
-            show_error(self, "Error de tabla", f"Error cargando obras en tabla: {e}")
+            print(f"[OBRAS VIEW] Error cargando obras en tabla: {e}")
+
+    def editar_obra_desde_tabla(self, fila):
+        """Edita una obra desde la tabla."""
+        try:
+            # Obtener datos de la fila
+            codigo = self.tabla_obras.item(fila, 0).text() if self.tabla_obras.item(fila, 0) else ""
+            print(f"[OBRAS VIEW] Editando obra con código: {codigo}")
+            # TODO: Implementar lógica de edición
+        except Exception as e:
+            print(f"[OBRAS VIEW] Error editando obra: {e}")
 
     def mostrar_detalles_obra(self, obra_id):
         """Muestra los detalles de una obra."""
@@ -732,23 +880,10 @@ class ObrasView(QWidget):
             if hasattr(self, "controller") and self.controller:
                 obra = self.controller.model.obtener_obra_por_id(obra_id)
                 if obra:
-                    # Aquí podrías abrir un diálogo de detalles
-                    detalles = f"""
-                    📋 Código: {obra.get("codigo", "N/A")}
-                    🏗️ Nombre: {obra.get("nombre", "N/A")}
-                    👤 Cliente: {obra.get("cliente", "N/A")}
-                    👷 Responsable: {obra.get("responsable", "N/A")}
-                    📍 Dirección: {obra.get("direccion", "N/A")}
-                    💰 Presupuesto: ${obra.get("presupuesto_total", 0):,.2f}
-                    📊 Estado: {obra.get("estado", "N/A")}
-                    """
-
-                    show_success(
-                        self, "Detalles de obra", f"Detalles de la Obra:\n{detalles}"
-                    )
-
+                    # TODO: Abrir diálogo de detalles
+                    print(f"[OBRAS VIEW] Mostrando detalles de obra ID: {obra_id}")
         except Exception as e:
-            show_error(self, "Error de detalles", f"Error mostrando detalles: {e}")
+            print(f"[OBRAS VIEW] Error mostrando detalles: {e}")
 
 
 class DialogoObra(QDialog):

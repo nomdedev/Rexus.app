@@ -1,5 +1,3 @@
-@pytest.fixture
-def db_conn():
 import sys
 from pathlib import Path
 
@@ -8,9 +6,12 @@ ROOT_DIR = Path(__file__).resolve().parents[2]
 sys.path.append(str(ROOT_DIR))
 
 import pytest
+import sqlite3
 
 from rexus.modules.obras.model import ObrasModel, OptimisticLockError
-import sqlite3
+
+@pytest.fixture
+def db_conn():
     conn = sqlite3.connect(":memory:")
     conn.execute("""
         CREATE TABLE obras (

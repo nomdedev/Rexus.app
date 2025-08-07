@@ -31,17 +31,16 @@ Interfaz de usuario para el módulo de compras.
 """
 
 
-from datetime import date, datetime
 from typing import Dict
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon
+from PyQt6.QtGui import QFont
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 
 # XSS Protection imports
 from rexus.utils.xss_protection import XSSProtection, FormProtector
 from rexus.utils.security import SecurityUtils
-from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.utils.message_system import show_error
 from rexus.utils.security import SecurityUtils
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
@@ -60,13 +59,10 @@ from PyQt6.QtWidgets import (
     QHeaderView,
     QLabel,
     QLineEdit,
-    QMessageBox,
     QPlainTextEdit,
     QPushButton,
     QScrollArea,
     QSpinBox,
-    QSplitter,
-    QTableWidget,
     QTableWidgetItem,
     QTabWidget,
     QTextEdit,

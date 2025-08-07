@@ -35,7 +35,6 @@ from PyQt6.QtWidgets import (
     QFrame,
     QGroupBox,
     QHBoxLayout,
-    QHeaderView,
     QLabel,
     QLineEdit,
     QPushButton,
@@ -49,8 +48,7 @@ from PyQt6.QtWidgets import (
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 
-from rexus.utils.message_system import show_error, show_success, show_warning
-from rexus.utils.security import SecurityUtils
+from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 
@@ -293,7 +291,124 @@ class HerrajesView(QWidget):
 #         titulo_layout.addWidget(title_label)
 
         # Aplicar tema del módulo
-        style_manager.apply_module_theme(self)
+        try:
+            style_manager.apply_module_theme(self)
+        except Exception as e:
+            print(f"[HERRAJES] Error aplicando tema: {e}")
+            # Aplicar estilos de alto contraste como fallback
+            self.apply_high_contrast_style()
+
+    def apply_high_contrast_style(self):
+        """Aplicar estilos de alto contraste para mejor legibilidad."""
+        high_contrast_style = """
+        /* Estilo general de alto contraste para herrajes */
+        QWidget {
+            background-color: #ffffff;
+            color: #000000;
+            font-family: "Segoe UI", Arial, sans-serif;
+            font-size: 13px;
+        }
+        
+        /* Tabla principal */
+        QTableWidget {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #cccccc;
+            gridline-color: #dddddd;
+            selection-background-color: #0078d4;
+            selection-color: #ffffff;
+            font-size: 13px;
+        }
+        
+        QTableWidget::item {
+            background-color: #ffffff;
+            color: #000000;
+            border: 1px solid #dddddd;
+            padding: 8px;
+        }
+        
+        QTableWidget::item:selected {
+            background-color: #0078d4;
+            color: #ffffff;
+        }
+        
+        QTableWidget::item:hover {
+            background-color: #f0f0f0;
+            color: #000000;
+        }
+        
+        /* Headers de la tabla */
+        QHeaderView::section {
+            background-color: #f8f9fa;
+            color: #000000;
+            border: 1px solid #cccccc;
+            padding: 8px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+        
+        /* Botones */
+        QPushButton {
+            background-color: #0078d4;
+            color: #ffffff;
+            border: 2px solid #0078d4;
+            border-radius: 4px;
+            padding: 8px 16px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+        
+        QPushButton:hover {
+            background-color: #106ebe;
+            border-color: #106ebe;
+        }
+        
+        QPushButton:pressed {
+            background-color: #005a9e;
+            border-color: #005a9e;
+        }
+        
+        /* Filtros y campos de entrada */
+        QComboBox, QLineEdit {
+            background-color: #ffffff;
+            color: #000000;
+            border: 2px solid #cccccc;
+            border-radius: 4px;
+            padding: 6px;
+            font-size: 13px;
+        }
+        
+        QComboBox:focus, QLineEdit:focus {
+            border-color: #0078d4;
+        }
+        
+        /* Tabs */
+        QTabWidget::pane {
+            border: 2px solid #cccccc;
+            background-color: #ffffff;
+        }
+        
+        QTabBar::tab {
+            background-color: #f8f9fa;
+            color: #000000;
+            border: 1px solid #cccccc;
+            padding: 8px 16px;
+            font-size: 13px;
+        }
+        
+        QTabBar::tab:selected {
+            background-color: #ffffff;
+            color: #000000;
+            border-bottom: 2px solid #0078d4;
+        }
+        
+        /* Labels */
+        QLabel {
+            color: #000000;
+            font-size: 13px;
+        }
+        """
+        self.setStyleSheet(high_contrast_style)
 
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""

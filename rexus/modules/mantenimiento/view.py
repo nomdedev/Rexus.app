@@ -26,14 +26,9 @@ Vista de Mantenimiento - Interfaz de mantenimiento
 
 import logging
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
-    QComboBox,
-    QFrame,
-    QGroupBox,
     QHBoxLayout,
-    QHeaderView,
-    QLabel,
     QLineEdit,
     QPushButton,
     QTableWidget,
@@ -42,8 +37,7 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
-from rexus.utils.message_system import show_error, show_success, show_warning
-from rexus.utils.security import SecurityUtils
+from rexus.utils.message_system import show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
