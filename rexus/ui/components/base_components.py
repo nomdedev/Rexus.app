@@ -603,6 +603,68 @@ class RexusLayoutHelper:
         return layout
 
 
+# Añadir métodos de compatibilidad a las clases existentes
+RexusLabel.apply_icon_style = lambda self, color_type="primary": None
+RexusLabel.apply_subtitle_style = lambda self, color_type="primary": None  
+RexusLabel.apply_stat_value_style = lambda self, color_type="primary": None
+RexusButton.apply_action_button_style = lambda self: None
+RexusLineEdit.apply_search_style = lambda self: None
+RexusComboBox.apply_filter_style = lambda self: None
+RexusColors.get_background_color = classmethod(lambda cls, color_type: cls.get_background_color_static(color_type))
+RexusColors.get_text_color = classmethod(lambda cls, color_type: cls.get_text_color_static(color_type))
+
+# Métodos estáticos de compatibilidad para RexusColors
+@classmethod
+def get_background_color_static(cls, color_type):
+    """Método estático para obtener colores de fondo."""
+    colors = {
+        'primary': cls.PRIMARY_LIGHT,
+        'success': "#d4edda", 
+        'warning': "#fff3cd",
+        'danger': "#f8d7da",
+        'info': cls.PRIMARY_LIGHT
+    }
+    from PyQt6.QtGui import QColor
+    return QColor(colors.get(color_type, colors['primary']))
+
+@classmethod 
+def get_text_color_static(cls, color_type):
+    """Método estático para obtener colores de texto."""
+    colors = {
+        'primary': cls.PRIMARY,
+        'success': cls.SUCCESS,
+        'warning': "#856404", 
+        'danger': cls.ERROR,
+        'info': cls.INFO
+    }
+    from PyQt6.QtGui import QColor
+    return QColor(colors.get(color_type, colors['primary']))
+    
+RexusColors.get_background_color_static = get_background_color_static
+RexusColors.get_text_color_static = get_text_color_static
+
+# Añadir método setup_columns a RexusTable
+def setup_columns_method(self, columnas):
+    """Configura columnas de la tabla con compatibilidad."""
+    self.setColumnCount(len(columnas))
+    
+    headers = []
+    for i, columna in enumerate(columnas):
+        header_text = f"{columna.get('icono', '')} {columna.get('titulo', '')}"
+        headers.append(header_text.strip())
+        
+        # Configurar ancho
+        if columna.get('ancho', 0) > 0:
+            self.setColumnWidth(i, columna['ancho'])
+        elif columna.get('ancho') == -1:
+            header = self.horizontalHeader()
+            if header:
+                header.setStretchLastSection(True)
+    
+    self.setHorizontalHeaderLabels(headers)
+    
+RexusTable.setup_columns = setup_columns_method
+
 class RexusSpinBox(QSpinBox):
     """SpinBox con estilo Rexus"""
 
@@ -665,3 +727,73 @@ class RexusSpinBox(QSpinBox):
         self.setMinimum(1)
         self.setMaximum(9999)
         self.setValue(1)
+        
+    # Métodos de compatibilidad para el sistema Inventario migrado
+    def apply_icon_style(self, color_type="primary"):
+        """Aplica estilo de icono para compatibilidad."""
+        pass  # Los estilos ya están aplicados
+    
+    def apply_subtitle_style(self, color_type="primary"):
+        """Aplica estilo de subtítulo para compatibilidad."""
+        pass  # Los estilos ya están aplicados
+        
+    def apply_stat_value_style(self, color_type="primary"):
+        """Aplica estilo de valor estadístico para compatibilidad."""
+        pass  # Los estilos ya están aplicados
+        
+    def apply_action_button_style(self):
+        """Aplica estilo para botones de acción en tabla."""
+        pass  # Los estilos ya están aplicados
+        
+    def apply_search_style(self):
+        """Aplica estilo de campo de búsqueda."""
+        pass  # Los estilos ya están aplicados
+        
+    def apply_filter_style(self):
+        """Aplica estilo de filtro."""
+        pass  # Los estilos ya están aplicados
+        
+    def setup_columns(self, columnas):
+        """Configura columnas de la tabla con compatibilidad."""
+        self.setColumnCount(len(columnas))
+        
+        headers = []
+        for i, columna in enumerate(columnas):
+            header_text = f"{columna.get('icono', '')} {columna.get('titulo', '')}"
+            headers.append(header_text.strip())
+            
+            # Configurar ancho
+            if columna.get('ancho', 0) > 0:
+                self.setColumnWidth(i, columna['ancho'])
+            elif columna.get('ancho') == -1:
+                header = self.horizontalHeader()
+                if header:
+                    header.setStretchLastSection(True)
+        
+        self.setHorizontalHeaderLabels(headers)
+        
+    @classmethod
+    def get_background_color(cls, color_type):
+        """Método de compatibilidad para obtener colores de fondo."""
+        colors = {
+            'primary': cls.PRIMARY_LIGHT,
+            'success': "#d4edda", 
+            'warning': "#fff3cd",
+            'danger': "#f8d7da",
+            'info': cls.PRIMARY_LIGHT
+        }
+        from PyQt6.QtGui import QColor
+        return QColor(colors.get(color_type, colors['primary']))
+    
+    @classmethod
+    def get_text_color(cls, color_type):
+        """Método de compatibilidad para obtener colores de texto."""
+        colors = {
+            'primary': cls.PRIMARY,
+            'success': cls.SUCCESS,
+            'warning': "#856404", 
+            'danger': cls.ERROR,
+            'info': cls.INFO
+        }
+        from PyQt6.QtGui import QColor
+        return QColor(colors.get(color_type, colors['primary']))

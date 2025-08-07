@@ -51,28 +51,36 @@ from PyQt6.QtWidgets import (
     QWidget,
 )
 
+# Importar componentes del framework UI estandarizado
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusColors,
+    RexusComboBox,
+    RexusFonts,
+    RexusFrame,
+    RexusGroupBox,
+    RexusLabel,
+    RexusLineEdit,
+    RexusTable,
+)
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 from rexus.utils.message_system import show_error, show_success, show_warning
+from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector
-
-# Importar sistemas de mejora UI/UX
-try:
-    from rexus.ui.contextual_error_system import contextual_error_system
-    from rexus.ui.keyboard_navigation import keyboard_navigation
-    from rexus.ui.smart_tooltips import smart_tooltips
-
-    ENHANCED_UI_AVAILABLE = True
-except ImportError:
-    ENHANCED_UI_AVAILABLE = False
 
 
 class InventarioView(QWidget):
-    """Vista principal del módulo de inventario."""
+    """Vista principal del módulo de inventario - Framework UI Estandarizado."""
 
-    # Señales
+    # Señales para comunicación MVC
     datos_actualizados = pyqtSignal()
     error_ocurrido = pyqtSignal(str)
+    solicitar_producto_detalles = pyqtSignal(int)
+    solicitar_busqueda = pyqtSignal(dict)
+    solicitar_crear_producto = pyqtSignal()
+    solicitar_editar_producto = pyqtSignal(int)
+    solicitar_eliminar_producto = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -110,89 +118,66 @@ class InventarioView(QWidget):
         layout.addWidget(self.tabla_inventario)
 
         # Aplicar tema del módulo
-        style_manager.apply_module_theme(self)
+        style_manager.apply_module_theme(self, "inventario")
 
-        # Integrar smart tooltips si está disponible
-        if ENHANCED_UI_AVAILABLE:
-            self._integrate_smart_tooltips()
-            self._setup_keyboard_navigation()
-        else:
-            self._setup_basic_tooltips()
-            self._setup_basic_navigation()
+        # Configurar navegación y tooltips
+        self._setup_keyboard_navigation()
+        self._setup_tooltips()
 
-    def _integrate_smart_tooltips(self):
-        """Integra tooltips inteligentes en todos los controles."""
-        try:
-            # Tooltips contextuales para controles principales
-            smart_tooltips.add_contextual_tooltip(
-                self.btn_nuevo_producto,
-                "Crear Producto",
-                "Abre el formulario para registrar un nuevo producto en el inventario. Se solicitará código, descripción, categoría, precio y stock inicial.",
-                "💡 Tip: Use códigos únicos para evitar duplicados",
-            )
+        # Configurar controles de paginación
+        paginacion_layout = self.crear_controles_paginacion()
+        layout.addLayout(paginacion_layout)
 
-            smart_tooltips.add_contextual_tooltip(
-                self.input_busqueda,
-                "Búsqueda Inteligente",
-                "Busque productos por código, descripción o categoría. Soporte para búsqueda parcial y filtros avanzados.",
-                "🔍 Ejemplos: 'VID001', 'cristal', 'herrajes'",
-            )
+    def _setup_tooltips(self):
+        """Configura tooltips estandarizados para todos los controles."""
+        tooltips = {
+            "btn_nuevo_producto": "➕ Crear un nuevo producto en el inventario",
+            "input_busqueda": "🔍 Buscar productos por código, descripción o categoría",
+            "combo_categoria": "📂 Filtrar productos por categoría específica",
+            "btn_buscar": "🔍 Ejecutar búsqueda con filtros actuales",
+            "btn_actualizar": "🔄 Actualizar lista completa de inventario",
+            "btn_editar": "✏️ Editar producto seleccionado",
+            "btn_eliminar": "🗑️ Eliminar producto seleccionado",
+            "btn_limpiar": "🧹 Limpiar filtros de búsqueda",
+            "btn_movimiento": "📦 Registrar movimiento de inventario",
+            "btn_exportar": "📤 Exportar inventario a archivo",
+        }
 
-            smart_tooltips.add_contextual_tooltip(
-                self.combo_categoria,
-                "Filtro de Categoría",
-                "Filtre productos por categoría específica para una búsqueda más rápida y organizada.",
-                "📂 Use 'Todas' para ver inventario completo",
-            )
-
-        except Exception as e:
-            print(f"[WARNING] Error integrando smart tooltips: {e}")
-            self._setup_basic_tooltips()
-
-    def _setup_basic_tooltips(self):
-        """Configura tooltips básicos como fallback."""
-        self.btn_nuevo_producto.setToolTip(
-            "➕ Crear un nuevo producto en el inventario"
-        )
-        self.input_busqueda.setToolTip(
-            "🔍 Buscar productos por código, descripción o categoría"
-        )
-        self.combo_categoria.setToolTip("📂 Filtrar productos por categoría")
-        self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
-        self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de inventario")
-        self.btn_editar.setToolTip("✏️ Editar producto seleccionado")
-        self.btn_eliminar.setToolTip("🗑️ Eliminar producto seleccionado")
+        for control_name, tooltip_text in tooltips.items():
+            if hasattr(self, control_name):
+                control = getattr(self, control_name)
+                if control:
+                    control.setToolTip(tooltip_text)
 
     def _setup_keyboard_navigation(self):
-        """Configura navegación por teclado avanzada."""
+        """Configura navegación estándar por teclado."""
         try:
-            keyboard_navigation.setup_tab_order(
-                self,
-                [
-                    self.btn_nuevo_producto,
-                    self.input_busqueda,
-                    self.combo_categoria,
-                    self.btn_buscar,
-                    self.btn_actualizar,
-                    self.tabla_inventario,
-                    self.btn_editar,
-                    self.btn_eliminar,
-                ],
-            )
-        except Exception as e:
-            print(f"[WARNING] Error configurando navegación por teclado: {e}")
-            self._setup_basic_navigation()
+            # Orden de tabulación lógico
+            tab_order = [
+                "btn_nuevo_producto",
+                "input_busqueda",
+                "combo_categoria",
+                "btn_buscar",
+                "btn_actualizar",
+                "tabla_inventario",
+                "btn_editar",
+                "btn_eliminar",
+                "btn_limpiar",
+                "btn_movimiento",
+                "btn_exportar",
+            ]
 
-    def _setup_basic_navigation(self):
-        """Configura navegación básica por teclado."""
-        # Configuración básica de tab order
-        self.setTabOrder(self.btn_nuevo_producto, self.input_busqueda)
-        self.setTabOrder(self.input_busqueda, self.combo_categoria)
-        self.setTabOrder(self.combo_categoria, self.btn_buscar)
-        self.setTabOrder(self.btn_buscar, self.btn_actualizar)
-        self.setTabOrder(self.btn_actualizar, self.tabla_inventario)
-        self.setTabOrder(self.tabla_inventario, self.btn_editar)
-        self.setTabOrder(self.btn_editar, self.btn_eliminar)
+            # Establecer orden de tabulación
+            previous_widget = None
+            for control_name in tab_order:
+                if hasattr(self, control_name):
+                    current_widget = getattr(self, control_name)
+                    if current_widget and previous_widget:
+                        self.setTabOrder(previous_widget, current_widget)
+                    previous_widget = current_widget
+
+        except Exception as e:
+            print(f"[WARNING] Error configurando navegación: {e}")
 
     def setup_control_panel(self, panel):
         """Configura el panel de control con componentes estandarizados."""
@@ -204,67 +189,32 @@ class InventarioView(QWidget):
         )
         layout.addWidget(self.btn_nuevo_producto)
 
-        # Campo de búsqueda con tooltip mejorado
+        # Campo de búsqueda
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar por código o descripción...")
-        self.input_busqueda.setStyleSheet("""
-            QLineEdit {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 200px;
-            }
-            QLineEdit:focus {
-                border-color: #28a745;
-            }
-        """)
+        self.input_busqueda.setFixedWidth(200)
         layout.addWidget(self.input_busqueda)
 
-        # Filtro de categoría con tooltips
+        # Filtro de categoría
+        categorias = [
+            "Todas las categorías",
+            "Herramientas",
+            "Vidrios",
+            "Herrajes",
+            "Materiales",
+            "Eléctricos",
+            "Plomería",
+        ]
         self.combo_categoria = QComboBox()
-        self.combo_categoria.addItems(
-            [
-                "📂 Todas las categorías",
-                "🔧 Herramientas",
-                "🪟 Vidrios",
-                "🔩 Herrajes",
-                "🧱 Materiales",
-                "⚡ Eléctricos",
-                "🚰 Plomería",
-            ]
-        )
-        self.combo_categoria.setStyleSheet("""
-            QComboBox {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 180px;
-            }
-            QComboBox:focus {
-                border-color: #28a745;
-            }
-            QComboBox::drop-down {
-                border: none;
-                width: 30px;
-            }
-            QComboBox::down-arrow {
-                image: none;
-                border: none;
-                width: 12px;
-                height: 12px;
-            }
-        """)
+        self.combo_categoria.addItems(categorias)
+        self.combo_categoria.setFixedWidth(180)
         layout.addWidget(self.combo_categoria)
 
-        # Botones estandarizados
-        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        # Botones
+        self.btn_buscar = QPushButton("🔍 Buscar")
         layout.addWidget(self.btn_buscar)
 
-        self.btn_actualizar = StandardComponents.create_secondary_button(
-            "🔄 Actualizar"
-        )
+        self.btn_actualizar = QPushButton("🔄 Actualizar")
         layout.addWidget(self.btn_actualizar)
 
         # Separador y botones de acción
