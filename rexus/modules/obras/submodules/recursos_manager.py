@@ -10,7 +10,7 @@ Responsabilidades:
 """
 
 from datetime import datetime
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
@@ -227,7 +227,7 @@ class RecursosManager:
 
         try:
             cursor = self.db_connection.cursor()
-            resumen = {"obra_id": obra_id}
+            resumen: Dict[str, Any] = {"obra_id": obra_id}
 
             # Resumen de materiales
             query_materiales = self.sql_manager.get_query(
@@ -268,15 +268,19 @@ class RecursosManager:
             cursor = self.db_connection.cursor()
 
             # Determinar tabla según tipo de material
-            tabla_material = self._obtener_tabla_material(tipo_material)
+            tabla_material = self._validate_table_name(
+                self._obtener_tabla_material(tipo_material)
+            )
 
-            query = f"""
-                SELECT stock 
-                FROM {tabla_material} 
-                WHERE id = %(material_id)s AND activo = 1
-            """
+            # Usar consulta preparada sin f-string
+            if tabla_material == "vidrios":
+                query = "SELECT stock FROM vidrios WHERE id = %s AND activo = 1"
+            elif tabla_material == "inventario":
+                query = "SELECT cantidad_disponible FROM inventario WHERE id = %s AND activo = 1"
+            else:
+                return False
 
-            cursor.execute(query, {"material_id": material_id})
+            cursor.execute(query, (material_id,))
             result = cursor.fetchone()
 
             if not result:
@@ -294,16 +298,19 @@ class RecursosManager:
     ) -> None:
         """Actualiza el stock del material."""
         try:
-            tabla_material = self._obtener_tabla_material(tipo_material)
+            tabla_material = self._validate_table_name(
+                self._obtener_tabla_material(tipo_material)
+            )
 
-            query = f"""
-                UPDATE {tabla_material} 
-                SET stock = stock - %(cantidad)s,
-                    fecha_modificacion = GETDATE()
-                WHERE id = %(material_id)s
-            """
+            # Usar consulta preparada sin f-string
+            if tabla_material == "vidrios":
+                query = "UPDATE vidrios SET stock = stock - %s, fecha_modificacion = GETDATE() WHERE id = %s"
+            elif tabla_material == "inventario":
+                query = "UPDATE inventario SET cantidad_disponible = cantidad_disponible - %s, fecha_modificacion = GETDATE() WHERE id = %s"
+            else:
+                return
 
-            cursor.execute(query, {"material_id": material_id, "cantidad": cantidad})
+            cursor.execute(query, (cantidad, material_id))
 
         except Exception as e:
             print(f"Error actualizando stock: {str(e)}")
@@ -377,6 +384,24 @@ class RecursosManager:
             print(f"Error calculando costo total: {str(e)}")
             return 0.0
 
+    def _validate_table_name(self, table_name: str) -> str:
+        """Valida nombre de tabla contra lista blanca."""
+        import re
+
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+
+        tablas_permitidas = {
+            "vidrios",
+            "inventario",
+            "obra_materiales",
+            "obra_personal",
+            "personal",
+        }
+        if table_name not in tablas_permitidas:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+        return table_name
+
     def _obtener_tabla_material(self, tipo_material: str) -> str:
         """Obtiene el nombre de tabla según el tipo de material."""
         tablas_material = {
@@ -388,23 +413,3 @@ class RecursosManager:
 
         tabla = tablas_material.get(tipo_material.lower(), "vidrios")
         return self._validate_table_name(tabla)
-
-    def _validate_table_name(self, table_name: str) -> str:
-        """Valida nombre de tabla contra lista blanca."""
-        import re
-
-        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
-            raise ValueError(f"Nombre de tabla inválido: {table_name}")
-
-        tablas_permitidas = {
-            "vidrios",
-            "herrajes",
-            "accesorios",
-            "materiales",
-            "obra_materiales",
-            "obra_personal",
-            "obras",
-        }
-        if table_name not in tablas_permitidas:
-            raise ValueError(f"Tabla no permitida: {table_name}")
-        return table_name

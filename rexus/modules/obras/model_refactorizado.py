@@ -140,7 +140,11 @@ class ModeloObrasRefactorizado:
     @auth_required
     @permission_required("edit_obras")
     def asignar_personal_obra(
-        self, obra_id: int, personal_id: int, rol: str, fecha_inicio: datetime = None
+        self,
+        obra_id: int,
+        personal_id: int,
+        rol: str,
+        fecha_inicio: Optional[datetime] = None,
     ) -> bool:
         """Asigna personal a una obra."""
         return self.recursos_manager.asignar_personal_obra(
@@ -186,7 +190,9 @@ class ModeloObrasRefactorizado:
     @auth_required
     @permission_required("view_obras")
     def obtener_reporte_productividad(
-        self, fecha_inicio: datetime = None, fecha_fin: datetime = None
+        self,
+        fecha_inicio: Optional[datetime] = None,
+        fecha_fin: Optional[datetime] = None,
     ) -> Dict[str, Any]:
         """Genera reporte de productividad."""
         return self.consultas_manager.obtener_reporte_productividad(
