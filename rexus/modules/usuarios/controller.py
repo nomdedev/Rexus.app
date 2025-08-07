@@ -114,6 +114,7 @@ class UsuariosController(QObject):
             self.mostrar_error(f"Error cargando usuarios: {str(e)}")
     
     @auth_required
+    @admin_required
     def crear_usuario(self, datos_usuario:Dict[str, Any]):
         """Crea un nuevo usuario."""
         try:
@@ -142,6 +143,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error creando usuario: {e}")
             self.mostrar_error(f"Error creando usuario: {str(e)}")
     
+    @auth_required
     @auth_required
     def actualizar_usuario(self, datos_usuario:Dict[str, Any]):
         """Actualiza un usuario existente."""
@@ -175,6 +177,7 @@ class UsuariosController(QObject):
             print(f"[ERROR USUARIOS CONTROLLER] Error actualizando usuario: {e}")
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
     
+    @admin_required
     @admin_required
     def eliminar_usuario(self, usuario_id:str):
         """Elimina un usuario."""

@@ -7,7 +7,6 @@ Maneja la lógica entre el modelo y la vista para herrajes.
 from typing import Any, Dict, List, Optional
 from PyQt6.QtCore import QObject, pyqtSignal, pyqtSlot
 from PyQt6.QtWidgets import QMessageBox
-from rexus.core.auth_manager import auth_required, admin_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 from .model import HerrajesModel
@@ -162,6 +161,7 @@ class HerrajesController(QObject):
                 self.view.show_error(f"Error asignando herraje: {e}")
 
     @pyqtSlot(int, str, list)
+    @auth_required
     def crear_pedido_obra(self, obra_id, proveedor, herrajes_lista):
         """Crea un pedido de herrajes para una obra."""
         try:
@@ -251,6 +251,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo datos: {e}")
             return []
     
+    @auth_required
     def crear_herraje(self, datos_herraje:Dict[str, Any]):
         """Crea un nuevo herraje."""
         try:
@@ -271,6 +272,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error creando herraje: {e}")
             self.mostrar_error(f"Error creando herraje: {str(e)}")
     
+    @auth_required
     def actualizar_herraje(self, herraje_id:int, datos_herraje: Dict[str, Any]):
         """Actualiza un herraje existente."""
         try:
@@ -291,6 +293,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error actualizando herraje: {e}")
             self.mostrar_error(f"Error actualizando herraje: {str(e)}")
     
+    @admin_required
     def eliminar_herraje(self, herraje_id:int):
         """Elimina un herraje."""
         try:
@@ -319,6 +322,7 @@ ESTADÍSTICAS DETALLADAS DE HERRAJES
             print(f"[ERROR HERRAJES CONTROLLER] Error eliminando herraje: {e}")
             self.mostrar_error(f"Error eliminando herraje: {str(e)}")
     
+    @auth_required
     def actualizar_stock_herraje(self, herraje_id:int, nuevo_stock: int, tipo_movimiento: str = "AJUSTE"):
         """Actualiza el stock de un herraje."""
         try:
@@ -468,6 +472,7 @@ Estadísticas de sincronización:
             print(f"[ERROR HERRAJES CONTROLLER] Error en transferencia: {e}")
             self.mostrar_error(f"Error en transferencia: {str(e)}")
     
+    @auth_required
     def crear_reserva_para_obra(self, herraje_id: int, obra_id: int, cantidad: int, observaciones: str = ""):
         """Crea una reserva de herraje para una obra específica."""
         try:
