@@ -31,6 +31,7 @@ Implementa diálogos CRUD modernos usando las utilidades dialog_utils.py
 from typing import Dict, Any, Optional, List
 from PyQt6.QtWidgets import QWidget, QDialog, QVBoxLayout, QHBoxLayout, QTableWidget, QTableWidgetItem, QPushButton, QLabel
 from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 from datetime import date, timedelta
 
 from rexus.utils.dialog_utils import CrudDialogManager, create_standard_form_config, BaseFormDialog

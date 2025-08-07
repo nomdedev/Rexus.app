@@ -329,7 +329,8 @@ class PedidosModel:
             print(f"[ERROR PEDIDOS] Error validando obra: {e}")
             return False
 
-    def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:"""Crea un nuevo pedido con sus detalles con validación y sanitización completas."""
+    def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:
+        """Crea un nuevo pedido con sus detalles con validación y sanitización completas."""
         if not self.db_connection:
             return None
 

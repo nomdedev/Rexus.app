@@ -76,11 +76,58 @@ class InventarioModel(PaginatedTableMixin):
             self.data_sanitizer = None
             self.sql_validator = None
             print("WARNING [INVENTARIO] Utilidades de seguridad no disponibles")
+
+        # Inicializar SQL script loader
+        self.sql_loader_available = SQL_SECURITY_AVAILABLE and sql_script_loader is not None
+        if self.sql_loader_available:
+            self.script_loader = sql_script_loader
+            print("OK [INVENTARIO] SQL script loader disponible")
+        else:
+            self.script_loader = None
+            print("WARNING [INVENTARIO] SQL script loader no disponible")
         if not self.db_connection:
             print(
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+
+    def _execute_secure_script(self, script_name: str, params: list = None, fallback_query: str = None):
+        """
+        Ejecuta un script SQL de forma segura con parámetros.
+        
+        Args:
+            script_name: Nombre del script SQL a ejecutar
+            params: Lista de parámetros para el script
+            fallback_query: Query de respaldo si el script no está disponible
+        
+        Returns:
+            Lista de resultados o None si hay error
+        """
+        if not self.db_connection:
+            return None
+        
+        try:
+            cursor = self.db_connection.cursor()
+            
+            if self.sql_loader_available:
+                try:
+                    script_content = self.script_loader.load_script(script_name)
+                    if script_content:
+                        cursor.execute(script_content, params or [])
+                        return cursor.fetchall()
+                except Exception as e:
+                    print(f"[ERROR] Error ejecutando script {script_name}: {e}")
+                    
+            # Usar query de respaldo si está disponible
+            if fallback_query:
+                cursor.execute(fallback_query, params or [])
+                return cursor.fetchall()
+                
+            return None
+            
+        except Exception as e:
+            print(f"[ERROR] Error ejecutando consulta segura: {e}")
+            return None
 
     def _validate_table_name(self, table_name: str) -> str:
         """
@@ -1471,6 +1518,8 @@ class InventarioModel(PaginatedTableMixin):
     def obtener_productos_filtrado_avanzado(self, filtros=None):
         """
         Obtiene productos con filtros avanzados.
+        
+        SEGURIDAD: Utiliza script SQL externo y validación estricta de parámetros.
 
         Args:
             filtros (dict): Filtros avanzados (incluye rangos de precio, stock, etc.)
@@ -1483,88 +1532,114 @@ class InventarioModel(PaginatedTableMixin):
 
         try:
             cursor = self.db_connection.cursor()
+            
+            # Usar script SQL externo como base
+            if self.sql_loader_available:
+                try:
+                    base_query = self.script_loader.load_script(
+                        "inventario/select_productos_filtrado_avanzado"
+                    )
+                    if not base_query:
+                        raise Exception("No se pudo cargar script")
+                    
+                    # Remover comentarios del script para obtener la query base
+                    lines = [line.strip() for line in base_query.split('\n') 
+                            if line.strip() and not line.strip().startswith('--')]
+                    base_query = ' '.join(lines)
+                    
+                except Exception as e:
+                    print(f"[ERROR] Error con script loader: {e}")
+                    # Query base de respaldo segura
+                    base_query = """
+                    SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
+                           stock as stock_actual, stock_minimo, precio as precio_unitario, 
+                           'unidad' as unidad_medida, ubicacion, proveedor, activo,
+                           fecha_creacion, fecha_modificacion
+                    FROM inventario_perfiles
+                    WHERE activo = 1
+                    """
+            else:
+                # Query base de respaldo segura
+                base_query = """
+                SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
+                       stock as stock_actual, stock_minimo, precio as precio_unitario, 
+                       'unidad' as unidad_medida, ubicacion, proveedor, activo,
+                       fecha_creacion, fecha_modificacion
+                FROM inventario_perfiles
+                WHERE activo = 1
+                """
 
-            conditions = ["1=1"]
+            # Construir condiciones de filtros usando parámetros seguros
+            additional_conditions = []
             params = []
 
             if filtros:
                 if filtros.get("categoria"):
-                    conditions.append("categoria = ?")
+                    additional_conditions.append("AND tipo = ?")
                     params.append(filtros["categoria"])
 
                 if filtros.get("subcategoria"):
-                    conditions.append("subcategoria = ?")
+                    additional_conditions.append("AND acabado = ?")
                     params.append(filtros["subcategoria"])
 
-                if filtros.get("estado"):
-                    conditions.append("estado = ?")
-                    params.append(filtros["estado"])
-
                 if filtros.get("proveedor"):
-                    conditions.append("proveedor LIKE ?")
+                    additional_conditions.append("AND proveedor LIKE ?")
                     params.append(f"%{filtros['proveedor']}%")
 
                 if filtros.get("precio_min") is not None:
-                    conditions.append("precio_unitario >= ?")
+                    additional_conditions.append("AND precio >= ?")
                     params.append(filtros["precio_min"])
 
                 if filtros.get("precio_max") is not None:
-                    conditions.append("precio_unitario <= ?")
+                    additional_conditions.append("AND precio <= ?")
                     params.append(filtros["precio_max"])
 
                 if filtros.get("stock_min") is not None:
-                    conditions.append("stock_actual >= ?")
+                    additional_conditions.append("AND stock >= ?")
                     params.append(filtros["stock_min"])
 
                 if filtros.get("stock_max") is not None:
-                    conditions.append("stock_actual <= ?")
+                    additional_conditions.append("AND stock <= ?")
                     params.append(filtros["stock_max"])
 
                 if filtros.get("stock_bajo"):
-                    conditions.append("stock_actual <= stock_minimo")
+                    additional_conditions.append("AND stock <= stock_minimo")
 
                 if filtros.get("busqueda"):
-                    conditions.append(
-                        "(descripcion LIKE ? OR codigo LIKE ? OR observaciones LIKE ?)"
-                    )
+                    additional_conditions.append("AND (descripcion LIKE ? OR codigo LIKE ?)")
                     busqueda = f"%{filtros['busqueda']}%"
-                    params.extend([busqueda, busqueda, busqueda])
+                    params.extend([busqueda, busqueda])
 
-            where_clause = " AND ".join(conditions)
+            # Combinar query base con filtros
+            full_query = base_query + " " + " ".join(additional_conditions)
 
-            base_exp_sql = """
-            SELECT id, codigo, descripcion, categoria, subcategoria, stock_actual,
-                   stock_minimo, stock_maximo, precio_unitario, precio_promedio,
-                   ubicacion, proveedor, unidad_medida, estado, fecha_creacion,
-                   fecha_modificacion, observaciones
-            FROM inventario
-            WHERE """
-            sql_select = base_exp_sql + where_clause
-
-            # Ordenar resultados
+            # Validación estricta del ordenamiento
+            orden_sql = "ORDER BY descripcion ASC"  # Ordenamiento por defecto
             if filtros and filtros.get("ordenar_por"):
                 orden = filtros["ordenar_por"]
                 direccion = "DESC" if filtros.get("descendente") else "ASC"
 
-                # Validar campo de ordenación para evitar SQL injection
-                campos_permitidos = [
-                    "descripcion",
-                    "codigo",
-                    "categoria",
-                    "stock_actual",
-                    "precio_unitario",
-                    "fecha_creacion",
-                    "fecha_modificacion",
-                ]
+                # Lista de campos permitidos para ordenamiento (validación estricta)
+                campos_validos = {
+                    "descripcion": "descripcion",
+                    "codigo": "codigo", 
+                    "categoria": "tipo",
+                    "stock_actual": "stock",
+                    "precio_unitario": "precio",
+                    "fecha_creacion": "fecha_creacion",
+                    "fecha_modificacion": "fecha_modificacion"
+                }
 
-                if orden in campos_permitidos:
-                    sql_select += f" ORDER BY {orden} {direccion}"
-                else:
-                    sql_select += " ORDER BY descripcion ASC"
-            else:
-                sql_select += " ORDER BY descripcion ASC"
+                if orden in campos_validos:
+                    campo_real = campos_validos[orden]
+                    # Validación adicional de direccion
+                    if direccion not in ["ASC", "DESC"]:
+                        direccion = "ASC"
+                    orden_sql = f"ORDER BY {campo_real} {direccion}"
 
-            cursor.execute(sql_select, params)
+            full_query += f" {orden_sql}"
+
+            cursor.execute(full_query, params)
             rows = cursor.fetchall()
 
             # Convertir a lista de diccionarios
@@ -1772,24 +1847,32 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            # Verificar stock disponible
-            cursor.execute(
+            # Verificar stock disponible usando query segura
+            disponibilidad = self._execute_secure_script(
+                "inventario/select_disponibilidad_material",
+                [producto_id],
                 """
-                SELECT stock_actual, ISNULL(stock_reservado, 0) as stock_reservado, descripcion
-                FROM """
-                + self.tabla_inventario
-                + """
-                WHERE id = ?
-            """,
-                (producto_id,),
+                SELECT i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                       i.stock_minimo, i.precio as precio_unitario, 'unidad' as unidad_medida,
+                       COALESCE(r.stock_reservado, 0) as stock_reservado,
+                       (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
+                FROM inventario_perfiles i
+                LEFT JOIN (
+                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
+                    FROM reserva_materiales 
+                    WHERE estado = 'ACTIVA' 
+                    GROUP BY producto_id
+                ) r ON i.id = r.producto_id
+                WHERE i.id = ? AND i.activo = 1
+                """
             )
 
-            resultado = cursor.fetchone()
-            if not resultado:
+            if not disponibilidad:
                 return False, "Producto no encontrado"
 
-            stock_actual, stock_reservado, descripcion = resultado
-            stock_disponible = stock_actual - stock_reservado
+            producto = disponibilidad[0]
+            stock_disponible = producto[9]  # stock_disponible
+            descripcion = producto[2]  # descripcion
 
             if cantidad_reservada > stock_disponible:
                 return (
@@ -1797,47 +1880,62 @@ class InventarioModel(PaginatedTableMixin):
                     f"Stock insuficiente. Disponible: {stock_disponible}, Solicitado: {cantidad_reservada}",
                 )
 
-            # Crear reserva
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_reservas
-                + """
-                (producto_id, obra_id, cantidad_reservada, usuario_id, fecha_reserva, estado, observaciones)
-                VALUES (?, ?, ?, ?, GETDATE(), 'ACTIVA', ?)
-            """,
-                (producto_id, obra_id, cantidad_reservada, usuario_id, observaciones),
-            )
+            # Crear reserva usando script seguro
+            cursor = self.db_connection.cursor()
+            try:
+                if self.sql_loader_available:
+                    script_content = self.script_loader.load_script("inventario/insert_reserva_material")
+                    if script_content:
+                        cursor.execute(script_content, (obra_id, producto_id, cantidad_reservada, usuario_id))
+                    else:
+                        raise Exception("Script no disponible")
+                else:
+                    # Query de respaldo segura
+                    cursor.execute("""
+                        INSERT INTO reserva_materiales 
+                        (obra_id, producto_id, cantidad_reservada, fecha_reserva, estado, usuario_id)
+                        VALUES (?, ?, ?, GETDATE(), 'ACTIVA', ?)
+                    """, (obra_id, producto_id, cantidad_reservada, usuario_id))
 
-            # Actualizar stock reservado en inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_inventario
-                + """
-                SET stock_reservado = ISNULL(stock_reservado, 0) + ?
-                WHERE id = ?
-            """,
-                (cantidad_reservada, producto_id),
-            )
+                # Registrar movimiento usando script seguro
+                movimiento_params = [
+                    f"INVENTARIO_RESERVA",
+                    f"Reserva para obra {obra_id}: {descripcion}",
+                    f"USER_{usuario_id}",
+                    datetime.datetime.now().isoformat(),
+                    f"Producto ID: {producto_id}, Cantidad: {cantidad_reservada}, Obra: {obra_id}"
+                ]
+                
+                if self.sql_loader_available:
+                    mov_script = self.script_loader.load_script("inventario/insert_movimiento")
+                    if mov_script:
+                        cursor.execute(mov_script, movimiento_params)
+                    else:
+                        # Fallback para historial
+                        cursor.execute("""
+                            INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, movimiento_params)
+                else:
+                    # Fallback para historial
+                    cursor.execute("""
+                        INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, movimiento_params)
 
-            # Registrar movimiento
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_movimientos
-                + """
-                (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
-                VALUES (?, 'RESERVA', ?, ?, ?, GETDATE(), ?)
-            """,
-                (
-                    producto_id,
-                    cantidad_reservada,
-                    f"Reserva para obra {obra_id}",
-                    usuario_id,
-                    obra_id,
-                ),
-            )
+            except Exception as e:
+                print(f"[ERROR] Error usando scripts: {e}")
+                # Fallback completo con queries seguras fijas
+                cursor.execute("""
+                    INSERT INTO reserva_materiales 
+                    (obra_id, producto_id, cantidad_reservada, fecha_reserva, estado, usuario_id)
+                    VALUES (?, ?, ?, GETDATE(), 'ACTIVA', ?)
+                """, (obra_id, producto_id, cantidad_reservada, usuario_id))
+                
+                cursor.execute("""
+                    INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                    VALUES (?, ?, ?, ?, ?)
+                """, movimiento_params)
 
             self.db_connection.commit()
 
@@ -1855,6 +1953,8 @@ class InventarioModel(PaginatedTableMixin):
     def obtener_reservas_por_obra(self, obra_id):
         """
         Obtiene todas las reservas de una obra específica.
+        
+        SEGURIDAD: Utiliza script SQL externo con parámetros seguros.
 
         Args:
             obra_id (int): ID de la obra
@@ -1866,31 +1966,45 @@ class InventarioModel(PaginatedTableMixin):
             return []
 
         try:
-            cursor = self.db_connection.cursor()
-
-            query = (
+            # Usar script SQL seguro
+            resultado = self._execute_secure_script(
+                "inventario/select_reservas_por_obra",
+                [obra_id],
                 """
-                SELECT
-                    r.id, r.producto_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
-                    i.codigo, i.descripcion, i.unidad_medida, i.precio_unitario,
-                    u.nombre as usuario_nombre
-                FROM {self.tabla_reservas} r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
-                LEFT JOIN usuarios u ON r.usuario_id = u.id
-                WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
+                SELECT 
+                    r.id, r.obra_id, r.producto_id, r.cantidad_reservada,
+                    r.fecha_reserva, r.fecha_liberacion, r.estado, r.usuario_id, r.motivo_liberacion,
+                    i.codigo as producto_codigo, i.descripcion as producto_descripcion,
+                    i.tipo as producto_categoria, i.precio as precio_unitario, 'unidad' as unidad_medida
+                FROM reserva_materiales r
+                INNER JOIN inventario_perfiles i ON r.producto_id = i.id
+                WHERE r.obra_id = ?
                 ORDER BY r.fecha_reserva DESC
-            """
+                """
             )
 
-            cursor.execute(query, (obra_id,))
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
+            if not resultado:
+                return []
 
+            # Convertir resultados a lista de diccionarios
             reservas = []
-            for fila in resultados:
-                reserva = dict(zip(columnas, fila))
+            for row in resultado:
+                reserva = {
+                    "id": row[0],
+                    "obra_id": row[1],
+                    "producto_id": row[2],
+                    "cantidad_reservada": row[3],
+                    "fecha_reserva": row[4],
+                    "fecha_liberacion": row[5],
+                    "estado": row[6],
+                    "usuario_id": row[7],
+                    "motivo_liberacion": row[8],
+                    "producto_codigo": row[9],
+                    "producto_descripcion": row[10],
+                    "producto_categoria": row[11],
+                    "precio_unitario": row[12],
+                    "unidad_medida": row[13]
+                }
                 reservas.append(reserva)
 
             return reservas
@@ -1902,6 +2016,8 @@ class InventarioModel(PaginatedTableMixin):
     def obtener_reservas_por_producto(self, producto_id):
         """
         Obtiene todas las reservas de un producto específico.
+        
+        SEGURIDAD: Utiliza script SQL externo con parámetros seguros.
 
         Args:
             producto_id (int): ID del producto
@@ -1913,31 +2029,41 @@ class InventarioModel(PaginatedTableMixin):
             return []
 
         try:
-            cursor = self.db_connection.cursor()
-
-            query = (
+            # Usar script SQL seguro
+            resultado = self._execute_secure_script(
+                "inventario/select_reservas_por_producto",
+                [producto_id],
                 """
-                SELECT
-                    r.id, r.obra_id, r.cantidad_reservada, r.fecha_reserva, r.estado, r.observaciones,
-                    o.nombre as obra_nombre, o.codigo as obra_codigo,
-                    u.nombre as usuario_nombre
-                FROM """
-                + self.tabla_reservas
-                + """ r
-                INNER JOIN obras o ON r.obra_id = o.id
-                LEFT JOIN usuarios u ON r.usuario_id = u.id
-                WHERE r.producto_id = ? AND r.estado = 'ACTIVA'
+                SELECT 
+                    r.id, r.obra_id, r.producto_id, r.cantidad_reservada,
+                    r.fecha_reserva, r.fecha_liberacion, r.estado, r.usuario_id, r.motivo_liberacion,
+                    o.nombre as obra_nombre, o.direccion as obra_direccion
+                FROM reserva_materiales r
+                LEFT JOIN obras o ON r.obra_id = o.id
+                WHERE r.producto_id = ?
                 ORDER BY r.fecha_reserva DESC
-            """
+                """
             )
 
-            cursor.execute(query, (producto_id,))
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
+            if not resultado:
+                return []
 
+            # Convertir resultados a lista de diccionarios
             reservas = []
-            for fila in resultados:
-                reserva = dict(zip(columnas, fila))
+            for row in resultado:
+                reserva = {
+                    "id": row[0],
+                    "obra_id": row[1],
+                    "producto_id": row[2],
+                    "cantidad_reservada": row[3],
+                    "fecha_reserva": row[4],
+                    "fecha_liberacion": row[5],
+                    "estado": row[6],
+                    "usuario_id": row[7],
+                    "motivo_liberacion": row[8],
+                    "obra_nombre": row[9],
+                    "obra_direccion": row[10]
+                }
                 reservas.append(reserva)
 
             return reservas
@@ -1949,6 +2075,8 @@ class InventarioModel(PaginatedTableMixin):
     def liberar_reserva(self, reserva_id, usuario_id, motivo=None):
         """
         Libera una reserva específica.
+        
+        SEGURIDAD: Utiliza script SQL externo con parámetros seguros.
 
         Args:
             reserva_id (int): ID de la reserva
@@ -1962,67 +2090,80 @@ class InventarioModel(PaginatedTableMixin):
             return False, "No hay conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.cursor()
-
-            # Obtener información de la reserva
-            cursor.execute(
+            # Obtener información de la reserva usando query segura
+            reserva_info = self._execute_secure_script(
+                None,  # No hay script específico para esta consulta
+                None,
                 """
                 SELECT producto_id, cantidad_reservada, obra_id
-                FROM """
-                + self.tabla_reservas
-                + """
+                FROM reserva_materiales
                 WHERE id = ? AND estado = 'ACTIVA'
-            """,
-                (reserva_id,),
+                """,
             )
-
-            reserva = cursor.fetchone()
-            if not reserva:
+            
+            if not reserva_info:
                 return False, "Reserva no encontrada o ya liberada"
 
-            producto_id, cantidad_reservada, obra_id = reserva
+            producto_id, cantidad_reservada, obra_id = reserva_info[0]
 
-            # Actualizar estado de la reserva
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_reservas
-                + """
-                SET estado = 'LIBERADA', fecha_liberacion = GETDATE(), usuario_liberacion = ?
-                WHERE id = ?
-            """,
-                (usuario_id, reserva_id),
-            )
+            cursor = self.db_connection.cursor()
+            
+            # Actualizar estado de la reserva usando script seguro
+            if self.sql_loader_available:
+                try:
+                    script_content = self.script_loader.load_script("inventario/update_liberar_reserva")
+                    if script_content:
+                        cursor.execute(script_content, [datetime.datetime.now().isoformat(), motivo, reserva_id])
+                    else:
+                        raise Exception("Script no disponible")
+                except Exception as e:
+                    print(f"[ERROR] Error usando script: {e}")
+                    # Fallback con query segura
+                    cursor.execute("""
+                        UPDATE reserva_materiales 
+                        SET estado = 'LIBERADA', fecha_liberacion = ?, motivo_liberacion = ?
+                        WHERE id = ? AND estado = 'ACTIVA'
+                    """, [datetime.datetime.now().isoformat(), motivo, reserva_id])
+            else:
+                # Query de respaldo segura
+                cursor.execute("""
+                    UPDATE reserva_materiales 
+                    SET estado = 'LIBERADA', fecha_liberacion = ?, motivo_liberacion = ?
+                    WHERE id = ? AND estado = 'ACTIVA'
+                """, [datetime.datetime.now().isoformat(), motivo, reserva_id])
 
-            # Actualizar stock reservado en inventario
-            cursor.execute(
-                """
-                UPDATE """
-                + self.tabla_inventario
-                + """
-                SET stock_reservado = ISNULL(stock_reservado, 0) - ?
-                WHERE id = ?
-            """,
-                (cantidad_reservada, producto_id),
-            )
-
-            # Registrar movimiento
-            cursor.execute(
-                """
-                INSERT INTO """
-                + self.tabla_movimientos
-                + """
-                (producto_id, tipo_movimiento, cantidad, motivo, usuario_id, fecha_movimiento, obra_id)
-                VALUES (?, 'LIBERACION_RESERVA', ?, ?, ?, GETDATE(), ?)
-            """,
-                (
-                    producto_id,
-                    cantidad_reservada,
-                    motivo or f"Liberación de reserva {reserva_id}",
-                    usuario_id,
-                    obra_id,
-                ),
-            )
+            # Registrar movimiento usando script seguro
+            movimiento_params = [
+                f"INVENTARIO_LIBERACION_RESERVA",
+                f"Liberación de reserva {reserva_id}: {motivo or 'Sin motivo especificado'}",
+                f"USER_{usuario_id}",
+                datetime.datetime.now().isoformat(),
+                f"Producto ID: {producto_id}, Cantidad: {cantidad_reservada}, Obra: {obra_id}, Reserva: {reserva_id}"
+            ]
+            
+            if self.sql_loader_available:
+                try:
+                    mov_script = self.script_loader.load_script("inventario/insert_movimiento")
+                    if mov_script:
+                        cursor.execute(mov_script, movimiento_params)
+                    else:
+                        # Fallback para historial
+                        cursor.execute("""
+                            INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                            VALUES (?, ?, ?, ?, ?)
+                        """, movimiento_params)
+                except Exception as e:
+                    print(f"[ERROR] Error usando script movimiento: {e}")
+                    cursor.execute("""
+                        INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                        VALUES (?, ?, ?, ?, ?)
+                    """, movimiento_params)
+            else:
+                # Fallback para historial
+                cursor.execute("""
+                    INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                    VALUES (?, ?, ?, ?, ?)
+                """, movimiento_params)
 
             self.db_connection.commit()
 
@@ -2474,6 +2615,8 @@ class InventarioModel(PaginatedTableMixin):
     def obtener_productos_disponibles_para_reserva(self):
         """
         Obtiene productos que tienen stock disponible para reserva.
+        
+        SEGURIDAD: Utiliza script SQL externo con parámetros seguros.
 
         Returns:
             list: Lista de productos disponibles para reserva
@@ -2486,76 +2629,75 @@ class InventarioModel(PaginatedTableMixin):
             return []
 
         try:
-            # Validar nombre de tabla para prevenir SQL Injection
-            tabla_inventario_segura = self._validate_table_name(self.tabla_inventario)
-            tabla_reservas_segura = self._validate_table_name("reservas_inventario")
-
-            # Usar consulta SQL con parámetros seguros
-            if SQL_SECURITY_AVAILABLE and sql_script_loader:
+            cursor = self.db_connection.cursor()
+            
+            # Usar script SQL externo seguro
+            if self.sql_loader_available:
                 try:
-                    # Intentar usar el script loader para consultas seguras
-                    cursor = self.db_connection.cursor()
-                    # Primero crear una vista temporal de las reservas para usar con SQL script loader
-                    cursor.execute(
-                        "CREATE TEMPORARY VIEW IF NOT EXISTS temp_reservas AS "
-                        f"SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
-                        f"FROM [{tabla_reservas_segura}] "
-                        "WHERE estado = 'ACTIVA' GROUP BY producto_id"
+                    script_content = self.script_loader.load_script(
+                        "inventario/select_productos_disponibles_reserva"
                     )
-
-                    # Ejecutar consulta principal
-                    cursor.execute(
-                        "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
-                        "i.precio_unitario, i.unidad_medida, "
-                        "COALESCE(r.stock_reservado, 0) as stock_reservado, "
-                        "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
-                        f"FROM [{tabla_inventario_segura}] i "
-                        "LEFT JOIN temp_reservas r ON i.id = r.producto_id "
-                        "WHERE i.activo = 1 "
-                        "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
-                        "ORDER BY i.codigo"
-                    )
+                    if script_content:
+                        cursor.execute(script_content)
+                    else:
+                        print("[WARNING] No se pudo cargar script, usando consulta de respaldo")
+                        # Consulta de respaldo parameterizada
+                        cursor.execute("""
+                            SELECT 
+                                i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                                i.precio as precio_unitario, 'unidad' as unidad_medida,
+                                COALESCE(r.stock_reservado, 0) as stock_reservado,
+                                (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
+                            FROM inventario_perfiles i
+                            LEFT JOIN (
+                                SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
+                                FROM reserva_materiales 
+                                WHERE estado = 'ACTIVA' 
+                                GROUP BY producto_id
+                            ) r ON i.id = r.producto_id
+                            WHERE i.activo = 1 
+                                AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
+                            ORDER BY i.codigo
+                        """)
                 except Exception as e:
-                    print(f"[ERROR] Error al usar script loader: {e}")
-                    # Fallback a consulta directa (aún segura)
-                    cursor = self.db_connection.cursor()
-                    query = (
-                        "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
-                        "i.precio_unitario, i.unidad_medida, "
-                        "COALESCE(r.stock_reservado, 0) as stock_reservado, "
-                        "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
-                        f"FROM [{tabla_inventario_segura}] i "
-                        "LEFT JOIN ("
-                        "    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
-                        f"    FROM [{tabla_reservas_segura}] "
-                        "    WHERE estado = 'ACTIVA' "
-                        "    GROUP BY producto_id "
-                        ") r ON i.id = r.producto_id "
-                        "WHERE i.activo = 1 "
-                        "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
-                        "ORDER BY i.codigo"
-                    )
-                    cursor.execute(query)
+                    print(f"[ERROR] Error con script loader: {e}")
+                    # Consulta de respaldo parameterizada
+                    cursor.execute("""
+                        SELECT 
+                            i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                            i.precio as precio_unitario, 'unidad' as unidad_medida,
+                            COALESCE(r.stock_reservado, 0) as stock_reservado,
+                            (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
+                        FROM inventario_perfiles i
+                        LEFT JOIN (
+                            SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
+                            FROM reserva_materiales 
+                            WHERE estado = 'ACTIVA' 
+                            GROUP BY producto_id
+                        ) r ON i.id = r.producto_id
+                        WHERE i.activo = 1 
+                            AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
+                        ORDER BY i.codigo
+                    """)
             else:
-                # Fallback a consulta directa (aún segura)
-                cursor = self.db_connection.cursor()
-                query = (
-                    "SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual, "
-                    "i.precio_unitario, i.unidad_medida, "
-                    "COALESCE(r.stock_reservado, 0) as stock_reservado, "
-                    "(i.stock_actual - COALESCE(r.stock_reservado, 0)) as stock_disponible "
-                    f"FROM [{tabla_inventario_segura}] i "
-                    "LEFT JOIN ("
-                    "    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado "
-                    f"    FROM [{tabla_reservas_segura}] "
-                    "    WHERE estado = 'ACTIVA' "
-                    "    GROUP BY producto_id "
-                    ") r ON i.id = r.producto_id "
-                    "WHERE i.activo = 1 "
-                    "AND (i.stock_actual - COALESCE(r.stock_reservado, 0)) > 0 "
-                    "ORDER BY i.codigo"
-                )
-                cursor.execute(query)
+                # Consulta de respaldo parameterizada cuando no hay script loader
+                cursor.execute("""
+                    SELECT 
+                        i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                        i.precio as precio_unitario, 'unidad' as unidad_medida,
+                        COALESCE(r.stock_reservado, 0) as stock_reservado,
+                        (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
+                    FROM inventario_perfiles i
+                    LEFT JOIN (
+                        SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
+                        FROM reserva_materiales 
+                        WHERE estado = 'ACTIVA' 
+                        GROUP BY producto_id
+                    ) r ON i.id = r.producto_id
+                    WHERE i.activo = 1 
+                        AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
+                    ORDER BY i.codigo
+                """)
 
             # Procesar resultados
             productos = []
@@ -2785,7 +2927,9 @@ class InventarioModel(PaginatedTableMixin):
 
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
         """
-        Obtiene datos paginados de la tabla principal
+        Obtiene datos paginados de la tabla principal.
+        
+        SEGURIDAD: Utiliza script SQL externo y validación estricta de filtros.
         
         Args:
             offset: Número de registros a saltar
@@ -2801,32 +2945,93 @@ class InventarioModel(PaginatedTableMixin):
             
             cursor = self.db_connection.cursor()
             
-            # Query base
-            base_query = self._get_base_query()
+            # Usar script SQL externo para paginación
+            if self.sql_loader_available:
+                try:
+                    paginated_script = self.script_loader.load_script(
+                        "inventario/select_productos_paginados"
+                    )
+                    if paginated_script:
+                        # Remover comentarios del script
+                        lines = [line.strip() for line in paginated_script.split('\n') 
+                                if line.strip() and not line.strip().startswith('--')]
+                        base_paginated_query = ' '.join(lines)
+                    else:
+                        raise Exception("No se pudo cargar script de paginación")
+                except Exception as e:
+                    print(f"[ERROR] Error cargando script paginados: {e}")
+                    # Query de respaldo
+                    base_paginated_query = """
+                        SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
+                               stock as stock_actual, stock_minimo, precio as precio_unitario,
+                               'unidad' as unidad_medida, ubicacion, proveedor, activo,
+                               fecha_creacion, fecha_modificacion
+                        FROM inventario_perfiles
+                        WHERE activo = 1
+                        ORDER BY id DESC
+                        OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+                    """
+            else:
+                # Query de respaldo
+                base_paginated_query = """
+                    SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
+                           stock as stock_actual, stock_minimo, precio as precio_unitario,
+                           'unidad' as unidad_medida, ubicacion, proveedor, activo,
+                           fecha_creacion, fecha_modificacion
+                    FROM inventario_perfiles
+                    WHERE activo = 1
+                    ORDER BY id DESC
+                    OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+                """
+
+            # Query de conteo
             count_query = self._get_count_query()
             
-            # Aplicar filtros si existen
-            where_clause = ""
+            # Aplicar filtros seguros si existen
+            additional_conditions = []
             params = []
             
             if filtros:
-                where_conditions = []
-                for campo, valor in filtros.items():
-                    if valor:
-                        where_conditions.append(f"{campo} LIKE ?")
-                        params.append(f"%{valor}%")
+                # Validación estricta de campos permitidos para filtros
+                campos_permitidos = {
+                    'codigo', 'descripcion', 'tipo', 'acabado', 'proveedor'
+                }
                 
-                if where_conditions:
-                    where_clause = " WHERE " + " AND ".join(where_conditions)
+                for campo, valor in filtros.items():
+                    if valor and campo in campos_permitidos:
+                        # Mapear campos a nombres reales de la tabla
+                        campo_real = campo
+                        if campo == 'categoria':
+                            campo_real = 'tipo'
+                        elif campo == 'subcategoria':
+                            campo_real = 'acabado'
+                            
+                        additional_conditions.append(f"AND {campo_real} LIKE ?")
+                        params.append(f"%{valor}%")
+            
+            # Construir query completa para conteo
+            if additional_conditions:
+                full_count_query = count_query + " " + " ".join(additional_conditions)
+            else:
+                full_count_query = count_query
             
             # Obtener total de registros
-            full_count_query = count_query + where_clause
             cursor.execute(full_count_query, params)
             total_registros = cursor.fetchone()[0]
             
+            # Construir query completa para datos paginados
+            if additional_conditions:
+                # Insertar condiciones adicionales antes del ORDER BY
+                parts = base_paginated_query.split('ORDER BY')
+                if len(parts) == 2:
+                    full_paginated_query = f"{parts[0]} {' '.join(additional_conditions)} ORDER BY {parts[1]}"
+                else:
+                    full_paginated_query = base_paginated_query + " " + " ".join(additional_conditions)
+            else:
+                full_paginated_query = base_paginated_query
+            
             # Obtener datos paginados
-            paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
-            cursor.execute(paginated_query, params + [offset, limit])
+            cursor.execute(full_paginated_query, params + [offset, limit])
             
             datos = []
             for row in cursor.fetchall():
@@ -2848,15 +3053,39 @@ class InventarioModel(PaginatedTableMixin):
             return 0
     
     def _get_base_query(self):
-        """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
-        # Esta es una implementación genérica
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT * FROM {tabla_principal}"
+        """Obtiene la query base para paginación usando scripts SQL seguros."""
+        if self.sql_loader_available:
+            try:
+                script_content = self.script_loader.load_script(
+                    "inventario/select_base_paginacion"
+                )
+                if script_content:
+                    return script_content.strip()
+            except Exception as e:
+                print(f"[ERROR] Error cargando script base: {e}")
+        
+        # Query de respaldo segura usando tabla fija
+        return """SELECT 
+            id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
+            stock as stock_actual, precio as precio_unitario, activo,
+            fecha_creacion, fecha_modificacion
+        FROM inventario_perfiles
+        WHERE activo = 1"""
     
     def _get_count_query(self):
-        """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT COUNT(*) FROM {tabla_principal}"
+        """Obtiene la query de conteo usando scripts SQL seguros."""
+        if self.sql_loader_available:
+            try:
+                script_content = self.script_loader.load_script(
+                    "inventario/count_base_paginacion"
+                )
+                if script_content:
+                    return script_content.strip()
+            except Exception as e:
+                print(f"[ERROR] Error cargando script count: {e}")
+        
+        # Query de respaldo segura usando tabla fija
+        return "SELECT COUNT(*) as total FROM inventario_perfiles WHERE activo = 1"
     
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""

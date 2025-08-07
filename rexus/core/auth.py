@@ -38,7 +38,6 @@ def get_current_user() -> Optional[Dict[str, Any]]:
         return _current_user
     
     # Intentar obtener del auth manager
-    global _auth_manager_instance
     if _auth_manager_instance and _auth_manager_instance.current_user:
         _current_user = _auth_manager_instance.current_user
         return _current_user

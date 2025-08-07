@@ -10,6 +10,17 @@ Maneja la lógica de negocio para:
 
 from datetime import datetime, date
 from decimal import Decimal
+import sys
+from pathlib import Path
+
+# Importar cargador de scripts SQL
+try:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    SQL_SCRIPTS_AVAILABLE = True
+except ImportError as e:
+    print(f"[WARNING] SQL Script Loader not available in contabilidad: {e}")
+    SQL_SCRIPTS_AVAILABLE = False
+    sql_script_loader = None
 
 
 class ContabilidadModel:
@@ -28,7 +39,42 @@ class ContabilidadModel:
         self.tabla_pagos_obra = "pagos_obra"
         self.tabla_pagos_materiales = "pagos_materiales"
         self.tabla_departamentos = "departamentos"
+        
+        # Configurar cargador de scripts SQL
+        self.sql_loader = sql_script_loader if SQL_SCRIPTS_AVAILABLE else None
+        if not self.sql_loader:
+            print("[WARNING CONTABILIDAD] SQL Script Loader no disponible - usando queries embebidas")
+            
         self._verificar_tablas()
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """
+        Valida el nombre de tabla para prevenir SQL injection.
+        
+        Args:
+            table_name: Nombre de tabla a validar
+            
+        Returns:
+            Nombre de tabla validado
+            
+        Raises:
+            ValueError: Si el nombre de tabla no es válido
+        """
+        import re
+        
+        # Solo permitir nombres alfanuméricos y underscore
+        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+        
+        # Lista blanca de tablas permitidas
+        allowed_tables = {
+            'libro_contable', 'recibos', 'pagos_obra', 
+            'pagos_materiales', 'departamentos'
+        }
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+            
+        return table_name
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos."""
@@ -93,17 +139,53 @@ class ContabilidadModel:
                 conditions.append("tipo_asiento = ?")
                 params.append(tipo)
 
-            query = """
-                SELECT 
-                    id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
-                    referencia, debe, haber, saldo, estado, usuario_creacion,
-                    fecha_creacion, fecha_modificacion
-                FROM {self.tabla_libro_contable}
-                WHERE """ + " AND ".join(conditions) + """
-                ORDER BY fecha_asiento DESC, numero_asiento DESC
-            """
-
-            cursor.execute(query, params)
+            # Usar script SQL externo si está disponible
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('contabilidad/select_asientos_contables')
+                    if script_content:
+                        # Preparar parámetros para el script SQL: fecha_desde, fecha_desde, fecha_hasta, fecha_hasta, tipo, tipo, tipo
+                        script_params = [
+                            fecha_desde, fecha_desde,  # Para el primer filtro
+                            fecha_hasta, fecha_hasta,  # Para el segundo filtro
+                            tipo, tipo, tipo  # Para el tercer filtro (tipo != "Todos")
+                        ]
+                        cursor.execute(script_content, script_params)
+                    else:
+                        raise Exception("No se pudo cargar el script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    # Fallback con query validada
+                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                    query = f"""
+                        SELECT 
+                            id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
+                            referencia, debe, haber, saldo, estado, usuario_creacion,
+                            fecha_creacion, fecha_modificacion
+                        FROM [{tabla_validada}]
+                        WHERE 1=1
+                        {" AND fecha_asiento >= ?" if fecha_desde else ""}
+                        {" AND fecha_asiento <= ?" if fecha_hasta else ""}
+                        {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
+                        ORDER BY fecha_asiento DESC, numero_asiento DESC
+                    """
+                    cursor.execute(query, params)
+            else:
+                # Fallback con query validada
+                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                query = f"""
+                    SELECT 
+                        id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
+                        referencia, debe, haber, saldo, estado, usuario_creacion,
+                        fecha_creacion, fecha_modificacion
+                    FROM [{tabla_validada}]
+                    WHERE 1=1
+                    {" AND fecha_asiento >= ?" if fecha_desde else ""}
+                    {" AND fecha_asiento <= ?" if fecha_hasta else ""}
+                    {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
+                    ORDER BY fecha_asiento DESC, numero_asiento DESC
+                """
+                cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -134,8 +216,22 @@ class ContabilidadModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Generar número de asiento
-            cursor.execute("SELECT MAX(numero_asiento) FROM " + self.tabla_libro_contable)
+            # Generar número de asiento usando script SQL seguro
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('contabilidad/select_max_numero_asiento')
+                    if script_content:
+                        cursor.execute(script_content)
+                    else:
+                        raise Exception("No se pudo cargar script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                    cursor.execute(f"SELECT MAX(numero_asiento) FROM [{tabla_validada}]")
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                cursor.execute(f"SELECT MAX(numero_asiento) FROM [{tabla_validada}]")
+                
             ultimo_numero = cursor.fetchone()[0]
             numero_asiento = (ultimo_numero or 0) + 1
 
@@ -144,25 +240,67 @@ class ContabilidadModel:
             haber = float(datos_asiento.get('haber', 0))
             saldo = debe - haber
 
-            query = """
-                INSERT INTO """ + self.tabla_libro_contable + """
-                (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
-                 debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
-            """
+            # Insertar asiento usando script SQL seguro
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('contabilidad/insert_asiento_contable')
+                    if script_content:
+                        cursor.execute(script_content, (
+                            numero_asiento,
+                            datos_asiento.get('fecha_asiento'),
+                            datos_asiento.get('tipo_asiento'),
+                            datos_asiento.get('concepto'),
+                            datos_asiento.get('referencia', ''),
+                            debe,
+                            haber,
+                            saldo,
+                            datos_asiento.get('estado', 'ACTIVO'),
+                            datos_asiento.get('usuario_creacion', 'SYSTEM')
+                        ))
+                    else:
+                        raise Exception("No se pudo cargar script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                    query = f"""
+                        INSERT INTO [{tabla_validada}]
+                        (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
+                         debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
+                    """
+                    cursor.execute(query, (
+                        numero_asiento,
+                        datos_asiento.get('fecha_asiento'),
+                        datos_asiento.get('tipo_asiento'),
+                        datos_asiento.get('concepto'),
+                        datos_asiento.get('referencia', ''),
+                        debe,
+                        haber,
+                        saldo,
+                        datos_asiento.get('estado', 'ACTIVO'),
+                        datos_asiento.get('usuario_creacion', 'SYSTEM')
+                    ))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                query = f"""
+                    INSERT INTO [{tabla_validada}]
+                    (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
+                     debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
+                """
+                cursor.execute(query, (
+                    numero_asiento,
+                    datos_asiento.get('fecha_asiento'),
+                    datos_asiento.get('tipo_asiento'),
+                    datos_asiento.get('concepto'),
+                    datos_asiento.get('referencia', ''),
+                    debe,
+                    haber,
+                    saldo,
+                    datos_asiento.get('estado', 'ACTIVO'),
+                    datos_asiento.get('usuario_creacion', 'SYSTEM')
+                ))
 
-            cursor.execute(query, (
-                numero_asiento,
-                datos_asiento.get('fecha_asiento'),
-                datos_asiento.get('tipo_asiento'),
-                datos_asiento.get('concepto'),
-                datos_asiento.get('referencia', ''),
-                debe,
-                haber,
-                saldo,
-                datos_asiento.get('estado', 'ACTIVO'),
-                datos_asiento.get('usuario_creacion', 'SYSTEM')
-            ))
 
             # Obtener ID del asiento creado
             cursor.execute("SELECT @@IDENTITY")
@@ -200,24 +338,63 @@ class ContabilidadModel:
             haber = float(datos_asiento.get('haber', 0))
             saldo = debe - haber
 
-            query = """
-                UPDATE """ + self.tabla_libro_contable + """
-                SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
-                    debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
-
-            cursor.execute(query, (
-                datos_asiento.get('fecha_asiento'),
-                datos_asiento.get('tipo_asiento'),
-                datos_asiento.get('concepto'),
-                datos_asiento.get('referencia', ''),
-                debe,
-                haber,
-                saldo,
-                datos_asiento.get('estado', 'ACTIVO'),
-                asiento_id
-            ))
+            # Actualizar asiento usando script SQL seguro
+            if self.sql_loader:
+                try:
+                    script_content = self.sql_loader.load_script('contabilidad/update_asiento_contable')
+                    if script_content:
+                        cursor.execute(script_content, (
+                            datos_asiento.get('fecha_asiento'),
+                            datos_asiento.get('tipo_asiento'),
+                            datos_asiento.get('concepto'),
+                            datos_asiento.get('referencia', ''),
+                            debe,
+                            haber,
+                            saldo,
+                            datos_asiento.get('estado', 'ACTIVO'),
+                            asiento_id
+                        ))
+                    else:
+                        raise Exception("No se pudo cargar script SQL")
+                except Exception as e:
+                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                    query = f"""
+                        UPDATE [{tabla_validada}]
+                        SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
+                            debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
+                        WHERE id = ?
+                    """
+                    cursor.execute(query, (
+                        datos_asiento.get('fecha_asiento'),
+                        datos_asiento.get('tipo_asiento'),
+                        datos_asiento.get('concepto'),
+                        datos_asiento.get('referencia', ''),
+                        debe,
+                        haber,
+                        saldo,
+                        datos_asiento.get('estado', 'ACTIVO'),
+                        asiento_id
+                    ))
+            else:
+                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+                query = f"""
+                    UPDATE [{tabla_validada}]
+                    SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
+                        debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
+                    WHERE id = ?
+                """
+                cursor.execute(query, (
+                    datos_asiento.get('fecha_asiento'),
+                    datos_asiento.get('tipo_asiento'),
+                    datos_asiento.get('concepto'),
+                    datos_asiento.get('referencia', ''),
+                    debe,
+                    haber,
+                    saldo,
+                    datos_asiento.get('estado', 'ACTIVO'),
+                    asiento_id
+                ))
 
             self.db_connection.commit()
             print(f"[CONTABILIDAD] Asiento {asiento_id} actualizado exitosamente")

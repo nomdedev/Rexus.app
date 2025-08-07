@@ -27,6 +27,7 @@ Diálogo moderno mejorado para obras
 Incluye todos los campos de la base de datos con feedback visual avanzado
 """
 
+import sys
 from typing import Optional, Dict, Any
 from PyQt6.QtCore import Qt, QDate
 from PyQt6.QtWidgets import (

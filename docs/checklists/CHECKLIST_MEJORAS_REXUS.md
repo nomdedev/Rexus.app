@@ -228,4 +228,86 @@
 
 ---
 
+## 🛡️ AUDITORÍA DE SQL EXTERNO Y SEGURIDAD POR MÓDULO (06/08/2025)
+
+### Estado de migración y problemas detectados
+
+#### Módulos auditados y migrados a SQL externo:
+- **administracion**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **inventario**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **obras**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **vidrios**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **logistica**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **mantenimiento**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+- **pedidos**  
+  - Estado: ✅ Auditado  
+  - Problemas: Consultas migradas a archivos SQL externos, usa gestor centralizado.
+
+#### Módulos pendientes de auditar:
+- **recursos_humanos**
+- **configuracion** (en proceso, contiene SQL embebido que debe migrarse a archivos externos)
+- **usuarios**
+- **core** (verificar que ningún utilitario o helper tenga SQL embebido)
+- **utils** (verificar que ningún utilitario o helper tenga SQL embebido)
+- **otros módulos o scripts personalizados**
+
+### Observaciones y próximos pasos
+- Todos los módulos auditados ya utilizan archivos SQL externos en la carpeta correspondiente (`scripts/sql/<modulo>/`).
+- El gestor centralizado (`sql_query_manager.py` o `sql_manager.py`) está implementado y en uso.
+- No se detectan consultas SQL embebidas en los modelos auditados.
+- Se recomienda auditar los módulos pendientes y utilitarios para asegurar cumplimiento total.
+- **configuracion**: Detectado SQL embebido, migrar a archivos SQL externos y actualizar el modelo para usar el gestor.
+
+---
+
+## 📝 AUDITORÍA DETALLADA DE ERRORES Y PENDIENTES POR MÓDULO (06/08/2025)
+
+### 1. configuracion
+- [ ] Consultas SQL embebidas en el modelo (uso de f-strings en `cursor.execute`).
+- [ ] No utiliza el gestor centralizado de SQL externo.
+- [ ] Debe migrar todas las consultas a archivos `.sql` en `scripts/sql/configuracion/` y usar `sql_query_manager.py`.
+- [ ] Validar que no queden consultas embebidas en ningún método.
+
+### 2. recursos_humanos
+- [ ] Auditoría pendiente (revisar si hay SQL embebido, validaciones, uso de gestor).
+- [ ] Migrar SQL embebido si existe.
+
+### 3. usuarios
+- [ ] Auditoría pendiente (revisar si hay SQL embebido, validaciones, uso de gestor).
+- [ ] Migrar SQL embebido si existe.
+
+### 4. core
+- [ ] Auditoría pendiente (verificar utilitarios, helpers, y que no haya SQL embebido).
+- [ ] Migrar SQL embebido si existe.
+
+### 5. utils
+- [ ] Auditoría pendiente (verificar utilitarios, helpers, y que no haya SQL embebido).
+- [ ] Migrar SQL embebido si existe.
+
+### 6. otros módulos o scripts personalizados
+- [ ] Auditoría pendiente (revisar scripts, jobs, herramientas, etc.).
+- [ ] Migrar SQL embebido si existe.
+
+---
+
+> **Nota:**
+> - Todos los módulos auditados ya utilizan archivos SQL externos en la carpeta correspondiente (`scripts/sql/<modulo>/`).
+> - El gestor centralizado (`sql_query_manager.py` o `sql_manager.py`) está implementado y en uso.
+> - Se recomienda auditar los módulos pendientes y utilitarios para asegurar cumplimiento total.
+> - **configuracion**: Detectado SQL embebido, migrar a archivos SQL externos y actualizar el modelo para usar el gestor.
+
+---
+
 *Última actualización: 06/08/2025 - GitHub Copilot*

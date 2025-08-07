@@ -44,16 +44,17 @@ except ImportError:
     validate_table_name = None
     SQLSecurityError = Exception
 
-class AdministracionModel(ContabilidadModel):
-    """Alias para compatibilidad con tests y controladores."""
-
-    pass
-
 class ContabilidadModel:
     """Modelo completo de administración y contabilidad con control de roles y auditoría."""
 
     def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         self.db_connection = db_connection
+
+class AdministracionModel(ContabilidadModel):
+    """Alias para compatibilidad con tests y controladores."""
+    
+    def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
+        super().__init__(db_connection, usuario_actual)
         self.usuario_actual = usuario_actual
         self.tabla_libro_contable = "libro_contable"
         self.tabla_recibos = "recibos"

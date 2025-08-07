@@ -120,32 +120,6 @@ class VidriosView(QWidget):
 #         """)
 #         titulo_layout.addWidget(title_label)
 
-        # Botón de configuración
-        self.btn_configuracion = QPushButton("⚙️ Configuración")
-        self.btn_configuracion.setStyleSheet("""
-            QPushButton {
-                background-color: rgba(255, 255, 255, 0.2);
-                color: white;
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 14px;
-            }
-            QPushButton:hover {
-                background-color: rgba(255, 255, 255, 0.3);
-                border-color: rgba(255, 255, 255, 0.5);
-            }
-            QPushButton:disabled {
-                background-color: rgba(255, 255, 255, 0.1);
-                color: rgba(255, 255, 255, 0.5);
-                border-color: rgba(255, 255, 255, 0.2);
-            }
-        """)
-        self.btn_configuracion.setToolTip("⚙️ Configuración del módulo de vidrios")
-        titulo_layout.addWidget(self.btn_configuracion)
-
-        layout.addWidget(titulo_container)
 
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""
@@ -573,7 +547,6 @@ class VidriosView(QWidget):
         self.btn_nuevo.setEnabled(not loading)
         self.btn_buscar.setEnabled(not loading)
         self.btn_actualizar.setEnabled(not loading)
-        self.btn_configuracion.setEnabled(not loading)
         
         # Estados de botones de acción
         selected = self.tabla_principal.currentRow() >= 0

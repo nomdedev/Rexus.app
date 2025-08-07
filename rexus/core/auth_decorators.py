@@ -85,10 +85,10 @@ def permission_required(permission: str):
         @functools.wraps(func)
         def wrapper(self, *args, **kwargs):
             # Primero verificar autenticación
-            if not hasattr(wrapper, '_auth_required'):
+            if not hasattr(func, '_auth_required'):
                 # Aplicar auth_required automáticamente
-                wrapper = auth_required(wrapper)
-                return wrapper(self, *args, **kwargs)
+                auth_func = auth_required(func)
+                return auth_func(self, *args, **kwargs)
             
             # Verificar permiso específico
             try:
@@ -141,8 +141,8 @@ def role_required(*roles: str):
         def wrapper(self, *args, **kwargs):
             # Verificar autenticación primero
             if not hasattr(self, 'current_user') or not self.current_user:
-                wrapper = auth_required(wrapper)
-                return wrapper(self, *args, **kwargs)
+                auth_func = auth_required(func)
+                return auth_func(self, *args, **kwargs)
             
             # Verificar rol
             user_role = self.current_user.get('role', 'user')

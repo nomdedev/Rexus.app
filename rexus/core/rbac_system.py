@@ -662,7 +662,6 @@ _rbac_system = None
 
 def get_rbac_system() -> RBACSystem:
     """Obtiene la instancia global del sistema RBAC."""
-    global _rbac_system
     return _rbac_system
 
 
