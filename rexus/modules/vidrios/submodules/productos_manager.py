@@ -17,7 +17,18 @@ from rexus.core.auth_decorators import auth_required, permission_required
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
 except ImportError:
-    from rexus.utils.sql_script_loader import sql_script_loader as SQLQueryManager
+    # Fallback al script loader
+    from rexus.utils.sql_script_loader import sql_script_loader
+
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            # Construir nombre del script sin extensión
+            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            return self.sql_loader.load_script(script_name)
+
 
 # DataSanitizer unificado
 try:
@@ -303,3 +314,106 @@ class ProductosManager:
 
         except Exception:
             return 0.0
+
+    @auth_required
+    @permission_required("edit_inventario")
+    def actualizar_stock(self, vidrio_id: int, nuevo_stock: int) -> bool:
+        """Actualiza solo el stock de un vidrio."""
+        if not self.db_connection or not vidrio_id:
+            return False
+
+        try:
+            stock_sanitizado = self.data_sanitizer.sanitize_integer(
+                nuevo_stock, min_val=0
+            )
+
+            cursor = self.db_connection.cursor()
+
+            # Actualización específica de stock
+            query = """
+                UPDATE vidrios 
+                SET stock = %(stock)s,
+                    fecha_modificacion = GETDATE()
+                WHERE id = %(vidrio_id)s AND activo = 1
+            """
+
+            cursor.execute(query, {"stock": stock_sanitizado, "vidrio_id": vidrio_id})
+
+            self.db_connection.commit()
+            return cursor.rowcount > 0
+
+        except Exception as e:
+            if self.db_connection:
+                self.db_connection.rollback()
+            print(f"Error actualizando stock: {str(e)}")
+            return False
+
+    @auth_required
+    @permission_required("edit_inventario")
+    def actualizar_precio(self, vidrio_id: int, nuevo_precio: float) -> bool:
+        """Actualiza solo el precio de un vidrio."""
+        if not self.db_connection or not vidrio_id:
+            return False
+
+        try:
+            precio_sanitizado = self.data_sanitizer.sanitize_numeric(
+                nuevo_precio, min_val=0
+            )
+
+            if precio_sanitizado <= 0:
+                raise ValueError("El precio debe ser mayor a 0")
+
+            cursor = self.db_connection.cursor()
+
+            # Actualización específica de precio
+            query = """
+                UPDATE vidrios 
+                SET precio = %(precio)s,
+                    fecha_modificacion = GETDATE()
+                WHERE id = %(vidrio_id)s AND activo = 1
+            """
+
+            cursor.execute(query, {"precio": precio_sanitizado, "vidrio_id": vidrio_id})
+
+            self.db_connection.commit()
+            return cursor.rowcount > 0
+
+        except Exception as e:
+            if self.db_connection:
+                self.db_connection.rollback()
+            print(f"Error actualizando precio: {str(e)}")
+            return False
+
+    @auth_required
+    @permission_required("view_inventario")
+    def validar_disponibilidad(self, vidrio_id: int, cantidad_requerida: int) -> bool:
+        """Valida si hay stock suficiente para la cantidad requerida."""
+        if not self.db_connection or not vidrio_id:
+            return False
+
+        try:
+            cantidad_sanitizada = self.data_sanitizer.sanitize_integer(
+                cantidad_requerida, min_val=1
+            )
+
+            cursor = self.db_connection.cursor()
+
+            # Consultar stock actual
+            query = """
+                SELECT stock 
+                FROM vidrios 
+                WHERE id = %(vidrio_id)s AND activo = 1
+            """
+
+            cursor.execute(query, {"vidrio_id": vidrio_id})
+            result = cursor.fetchone()
+
+            if not result:
+                return False
+
+            stock_actual = result[0] or 0
+            return stock_actual >= cantidad_sanitizada
+
+        except Exception as e:
+            print(f"Error validando disponibilidad: {str(e)}")
+            return False
