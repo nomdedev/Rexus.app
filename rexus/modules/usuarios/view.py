@@ -36,28 +36,28 @@ from datetime import datetime
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
-    QCheckBox,
-    QComboBox,
-    QDateEdit,
-    QDialog,
-    QFormLayout,
-    QFrame,
-    QGridLayout,
-    QGroupBox,
     QHBoxLayout,
-    QHeaderView,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QScrollArea,
-    QSplitter,
-    QTableWidget,
     QTableWidgetItem,
-    QTextEdit,
     QVBoxLayout,
     QWidget,
-    QSpinBox,
+    QLabel,
 )
+
+# Importar componentes del framework de estandarización UI
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusGroupBox,
+    RexusFrame,
+    RexusSpinBox,
+    RexusColors,
+    RexusFonts,
+    RexusLayoutHelper
+)
+from rexus.ui.templates.base_module_view import BaseModuleView
 
 from rexus.modules.usuarios.improved_dialogs import (
     UsuarioDialogManager,
@@ -72,7 +72,7 @@ from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 
 
-class UsuariosView(QWidget):
+class UsuariosView(BaseModuleView):
     """Vista principal del módulo de usuarios."""
     
     # Señales
@@ -81,59 +81,54 @@ class UsuariosView(QWidget):
     solicitud_eliminar_usuario = pyqtSignal(str)
     
     def __init__(self):
-        super().__init__()
+        super().__init__("👥 Gestión de Usuarios")
         self.controller = None
-        self.init_ui()
+        self.setup_usuarios_ui()
     
-    def init_ui(self):
-        """Inicializa la interfaz de usuario."""
-        layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(10)
+    def setup_usuarios_ui(self):
+        """Configura la UI específica del módulo de usuarios."""
+        # Configurar controles específicos
+        self.setup_usuarios_controls()
         
-        # Título estandarizado
-        StandardComponents.create_title("👥 Gestión de Usuarios", layout)
-        
-        # Panel de control estandarizado
-        control_panel = StandardComponents.create_control_panel()
-        self.setup_control_panel(control_panel)
-        layout.addWidget(control_panel)
-        
-        # Tabla estandarizada
-        self.tabla_usuarios = StandardComponents.create_standard_table()
-        self.configurar_tabla()
-        layout.addWidget(self.tabla_usuarios)
+        # Configurar tabla de usuarios
+        self.setup_usuarios_table()
         
         # Aplicar tema del módulo
-        style_manager.apply_module_theme(self)
+        self.apply_theme()
     
-    def setup_control_panel(self, panel):
-        """Configura el panel de control con componentes estandarizados."""
-        layout = QHBoxLayout(panel)
+    def setup_usuarios_controls(self):
+        """Configura los controles específicos del módulo de usuarios."""
+        # Añadir controles al panel principal
+        controls_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        # Botón Nuevo Usuario estandarizado
-        self.btn_nuevo_usuario = StandardComponents.create_primary_button("👥 Nuevo Usuario")
+        # Botón Nuevo Usuario con componente Rexus
+        self.btn_nuevo_usuario = RexusButton("👥 Nuevo Usuario", "primary")
         self.btn_nuevo_usuario.clicked.connect(self.nuevo_usuario)
-        layout.addWidget(self.btn_nuevo_usuario)
+        controls_layout.addWidget(self.btn_nuevo_usuario)
         
-        # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
+        # Campo de búsqueda con componente Rexus
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar usuario...")
         self.input_busqueda.returnPressed.connect(self.buscar_usuarios)
-        layout.addWidget(self.input_busqueda)
+        controls_layout.addWidget(self.input_busqueda)
         
-        # Botón buscar estandarizado
-        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        # Botón buscar con componente Rexus
+        self.btn_buscar = RexusButton("🔍 Buscar", "secondary")
         self.btn_buscar.clicked.connect(self.buscar_usuarios)
-        layout.addWidget(self.btn_buscar)
+        controls_layout.addWidget(self.btn_buscar)
         
-        # Botón actualizar estandarizado
-        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
+        # Botón actualizar con componente Rexus
+        self.btn_actualizar = RexusButton("🔄 Actualizar", "secondary")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
-        layout.addWidget(self.btn_actualizar)
+        controls_layout.addWidget(self.btn_actualizar)
+        
+        # Añadir controles al área principal
+        self.add_to_main_content(controls_layout)
     
-    def configurar_tabla(self):
-        """Configura la tabla de usuarios."""
+    def setup_usuarios_table(self):
+        """Configura la tabla de usuarios con componentes Rexus."""
+        # Crear tabla con componente Rexus
+        self.tabla_usuarios = RexusTable()
         self.tabla_usuarios.setColumnCount(6)
         self.tabla_usuarios.setHorizontalHeaderLabels([
             "ID", "Usuario", "Nombre", "Email", "Rol", "Estado"
@@ -144,39 +139,18 @@ class UsuariosView(QWidget):
         if header:
             header.setStretchLastSection(True)
         
-        self.tabla_usuarios.setAlternatingRowColors(True)
-        self.tabla_usuarios.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        # Añadir tabla al contenido principal
+        self.set_main_table(self.tabla_usuarios)
     
-    def aplicar_estilo(self):
-        """Aplica el estilo general."""
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f8f9fa;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            QPushButton {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #0056b3;
-            }
-            QLineEdit {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                padding: 8px;
-                font-size: 14px;
-            }
-            QTableWidget {
-                background-color: white;
-                gridline-color: #dee2e6;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-            }
+    def apply_theme(self):
+        """Aplica el tema usando los colores del framework."""
+        # El tema se aplica automáticamente por los componentes Rexus
+        # Solo configuramos colores específicos si es necesario
+        self.setStyleSheet(f"""
+            QWidget {{
+                background-color: {RexusColors.BACKGROUND};
+                font-family: {RexusFonts.FAMILY};
+            }}
         """)
     
     def nuevo_usuario(self):
@@ -212,48 +186,48 @@ class UsuariosView(QWidget):
         """Crea los controles de paginación"""
         paginacion_layout = QHBoxLayout()
         
-        # Etiqueta de información
-        self.info_label = QLabel("Mostrando 1-50 de 0 registros")
+        # Etiqueta de información con componente Rexus
+        self.info_label = RexusLabel("Mostrando 1-50 de 0 registros", "body")
         paginacion_layout.addWidget(self.info_label)
         
         paginacion_layout.addStretch()
         
-        # Controles de navegación
-        self.btn_primera = QPushButton("<<")
+        # Controles de navegación con componentes Rexus
+        self.btn_primera = RexusButton("<<", "secondary")
         self.btn_primera.setMaximumWidth(40)
         self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
         paginacion_layout.addWidget(self.btn_primera)
         
-        self.btn_anterior = QPushButton("<")
+        self.btn_anterior = RexusButton("<", "secondary")
         self.btn_anterior.setMaximumWidth(30)
         self.btn_anterior.clicked.connect(self.pagina_anterior)
         paginacion_layout.addWidget(self.btn_anterior)
         
-        # Control de página actual
-        self.pagina_actual_spin = QSpinBox()
+        # Control de página actual con componentes Rexus
+        self.pagina_actual_spin = RexusSpinBox()
         self.pagina_actual_spin.setMinimum(1)
         self.pagina_actual_spin.setMaximum(1)
         self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
         self.pagina_actual_spin.setMaximumWidth(60)
-        paginacion_layout.addWidget(QLabel("Página:"))
+        paginacion_layout.addWidget(RexusLabel("Página:", "body"))
         paginacion_layout.addWidget(self.pagina_actual_spin)
         
-        self.total_paginas_label = QLabel("de 1")
+        self.total_paginas_label = RexusLabel("de 1", "body")
         paginacion_layout.addWidget(self.total_paginas_label)
         
-        self.btn_siguiente = QPushButton(">")
+        self.btn_siguiente = RexusButton(">", "secondary")
         self.btn_siguiente.setMaximumWidth(30)
         self.btn_siguiente.clicked.connect(self.pagina_siguiente)
         paginacion_layout.addWidget(self.btn_siguiente)
         
-        self.btn_ultima = QPushButton(">>")
+        self.btn_ultima = RexusButton(">>", "secondary")
         self.btn_ultima.setMaximumWidth(40)
         self.btn_ultima.clicked.connect(self.ultima_pagina)
         paginacion_layout.addWidget(self.btn_ultima)
         
-        # Selector de registros por página
-        paginacion_layout.addWidget(QLabel("Registros por página:"))
-        self.registros_por_pagina_combo = QComboBox()
+        # Selector de registros por página con componentes Rexus
+        paginacion_layout.addWidget(RexusLabel("Registros por página:", "body"))
+        self.registros_por_pagina_combo = RexusComboBox()
         self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
         self.registros_por_pagina_combo.setCurrentText("50")
         self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
