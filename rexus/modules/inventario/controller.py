@@ -484,7 +484,8 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(error_msg)
 
     @auth_required
-    def editar_producto(self):"""Abre diÃ¡logo para editar producto seleccionado."""
+    def editar_producto(self):
+        """Abre diÃ¡logo para editar producto seleccionado."""
         if not self.verificar_permiso("editar_producto"):
             self.mostrar_error_permiso("editar producto")
             return
@@ -496,7 +497,8 @@ class InventarioController(QObject):
         self.log_auditoria("EDITAR_PRODUCTO", "Intento de editar producto")
 
     @admin_required
-    def eliminar_producto(self):"""Elimina producto seleccionado."""
+    def eliminar_producto(self):
+        """Elimina producto seleccionado."""
         if not self.verificar_permiso("eliminar_producto"):
             self.mostrar_error_permiso("eliminar producto")
             return
@@ -521,7 +523,8 @@ class InventarioController(QObject):
         self.log_auditoria("MOVIMIENTO_INVENTARIO", "Intento de registrar movimiento")
 
     @manager_required
-    def exportar_inventario(self):"""Exporta inventario a archivo."""
+    def exportar_inventario(self):
+        """Exporta inventario a archivo."""
         if not self.verificar_permiso("exportar_inventario"):
             self.mostrar_error_permiso("exportar inventario")
             return
@@ -554,7 +557,8 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al cargar reservas: {str(e)}")
 
     @auth_required
-    def crear_reserva(self, reserva_data):"""Crea una nueva reserva de material."""
+    def crear_reserva(self, reserva_data):
+        """Crea una nueva reserva de material."""
         if not self.verificar_permiso("crear_reserva"):
             self.mostrar_error_permiso("crear reserva")
             return
@@ -657,7 +661,8 @@ class InventarioController(QObject):
             self.error_ocurrido.emit(f"Error al cargar disponibilidad: {str(e)}")
 
     @auth_required
-    def actualizar_por_obra(self, obra_id):"""Actualiza datos cuando se modifica una obra."""
+    def actualizar_por_obra(self, obra_id):
+        """Actualiza datos cuando se modifica una obra."""
         try:
             self.cargar_obras()
             self.cargar_reservas_obra(obra_id)

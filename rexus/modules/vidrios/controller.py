@@ -96,7 +96,8 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error editando vidrio: {e}")
 
-    def eliminar_vidrio(self, vidrio_id):"""Elimina un vidrio."""
+    def eliminar_vidrio(self, vidrio_id):
+        """Elimina un vidrio."""
         if not self.model:
             return
             
@@ -123,7 +124,8 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error asignando vidrio a obra: {e}")
 
-    def crear_pedido(self, obra_id, proveedor, vidrios_lista):"""Crea un pedido de vidrios para una obra."""
+    def crear_pedido(self, obra_id, proveedor, vidrios_lista):
+        """Crea un pedido de vidrios para una obra."""
         if not self.model:
             return
             
@@ -152,7 +154,8 @@ class VidriosController(QObject):
             self.mostrar_error(f"Error obteniendo vidrios por obra: {e}")
             return []
 
-    def actualizar_por_obra(self, obra_data):"""Actualiza vidrios cuando se crea una obra."""
+    def actualizar_por_obra(self, obra_data):
+        """Actualiza vidrios cuando se crea una obra."""
         print(f"[VIDRIOS] Actualizando por obra: {obra_data}")
 
     def mostrar_mensaje(self, mensaje):

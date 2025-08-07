@@ -294,7 +294,8 @@ class VidriosModel:
             print(f"[ERROR VIDRIOS] Error asignando vidrio a obra: {e}")
             return False
 
-    def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):"""
+    def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):
+        """
         Crea un pedido de vidrios para una obra específica.
 
         Args:
@@ -470,7 +471,8 @@ class VidriosModel:
             print(f"[ERROR VIDRIOS] Error buscando vidrios: {e}")
             return False, []
 
-    def crear_vidrio(self, datos_vidrio):"""
+    def crear_vidrio(self, datos_vidrio):
+        """
         Crea un nuevo vidrio en la base de datos con sanitización completa.
 
         Args:
@@ -584,7 +586,8 @@ class VidriosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error creando vidrio: {str(e)}", None
 
-    def actualizar_vidrio(self, vidrio_id, datos_vidrio):"""
+    def actualizar_vidrio(self, vidrio_id, datos_vidrio):
+        """
         Actualiza un vidrio existente con sanitización completa.
 
         Args:
@@ -698,7 +701,8 @@ class VidriosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error actualizando vidrio: {str(e)}"
 
-    def eliminar_vidrio(self, vidrio_id):"""
+    def eliminar_vidrio(self, vidrio_id):
+        """
         Elimina un vidrio (marca como inactivo) con validación de entrada.
 
         Args:

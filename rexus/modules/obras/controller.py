@@ -256,7 +256,8 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error filtrando obras: {str(e)}")
 
     @auth_required
-    def actualizar_estadisticas(self):"""Actualiza las estadísticas mostradas en la vista."""
+    def actualizar_estadisticas(self):
+        """Actualiza las estadísticas mostradas en la vista."""
         try:
             estadisticas = self.model.obtener_estadisticas_obras()
             if hasattr(self.view, "actualizar_estadisticas"):

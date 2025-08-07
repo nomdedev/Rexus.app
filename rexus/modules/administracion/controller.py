@@ -172,7 +172,8 @@ class AdministracionController(QObject):
                 self.view.actualizar_status(f"❌ Error cargando datos: {str(e)}")
 
     @pyqtSlot()
-    def actualizar_datos(self):"""Actualiza todos los datos de la interfaz."""
+    def actualizar_datos(self):
+        """Actualiza todos los datos de la interfaz."""
         try:
             if not self.model or not self.view:
                 return
@@ -197,8 +198,13 @@ class AdministracionController(QObject):
             if self.view:
                 self.view.actualizar_status(f"❌ Error actualizando: {str(e)}")
 
-    def actualizar_dashboard(self):"""Actualiza el dashboard con resumen de datos."""
+    def actualizar_dashboard(self):
+        """Actualiza el dashboard con resumen de datos."""
         try:
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_dashboard")
+                return
+            
             # Obtener resumen contable
             resumen = self.model.obtener_resumen_contable()
 
@@ -208,9 +214,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando dashboard: {e}")
 
-    def actualizar_libro_contable(self):"""Actualiza la tabla del libro contable."""
+    def actualizar_libro_contable(self):
+        """Actualiza la tabla del libro contable."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_libro_contable")
                 return
 
             # Obtener fechas de filtro
@@ -234,9 +245,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando libro contable: {e}")
 
-    def actualizar_recibos(self):"""Actualiza la tabla de recibos."""
+    def actualizar_recibos(self):
+        """Actualiza la tabla de recibos."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_recibos")
                 return
 
             # Obtener fechas de filtro
@@ -260,9 +276,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando recibos: {e}")
 
-    def actualizar_pagos_obra(self):"""Actualiza la tabla de pagos por obra."""
+    def actualizar_pagos_obra(self):
+        """Actualiza la tabla de pagos por obra."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_pagos_obra")
                 return
 
             # Obtener filtros
@@ -278,7 +299,8 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando pagos por obra: {e}")
 
-    def actualizar_materiales(self):"""Actualiza la tabla de materiales."""
+    def actualizar_materiales(self):
+        """Actualiza la tabla de materiales."""
         try:
             if not self.view:
                 return
@@ -296,9 +318,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando materiales: {e}")
 
-    def actualizar_departamentos(self):"""Actualiza la tabla de departamentos."""
+    def actualizar_departamentos(self):
+        """Actualiza la tabla de departamentos."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_departamentos")
                 return
 
             # Obtener departamentos
@@ -310,9 +337,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando departamentos: {e}")
 
-    def actualizar_empleados(self):"""Actualiza la tabla de empleados."""
+    def actualizar_empleados(self):
+        """Actualiza la tabla de empleados."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_empleados")
                 return
 
             # Obtener filtros
@@ -332,9 +364,14 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando empleados: {e}")
 
-    def actualizar_auditoria(self):"""Actualiza la tabla de auditoría."""
+    def actualizar_auditoria(self):
+        """Actualiza la tabla de auditoría."""
         try:
             if not self.view:
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en actualizar_auditoria")
                 return
 
             # Obtener filtros
@@ -355,9 +392,18 @@ class AdministracionController(QObject):
 
     # MÉTODOS PARA CREAR REGISTROS
     @pyqtSlot(dict)
-    def crear_departamento(self, datos):"""Crea un nuevo departamento."""
+    def crear_departamento(self, datos):
+        """Crea un nuevo departamento."""
         try:
             if not self.verificar_permisos("crear_departamento"):
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en crear_departamento")
+                if self.view:
+                    self.view.mostrar_mensaje(
+                        "Error", "Modelo no disponible", "error"
+                    )
                 return
 
             departamento_id = self.model.crear_departamento(
@@ -390,9 +436,18 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_empleado(self, datos):"""Crea un nuevo empleado."""
+    def crear_empleado(self, datos):
+        """Crea un nuevo empleado."""
         try:
             if not self.verificar_permisos("crear_empleado"):
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en crear_empleado")
+                if self.view:
+                    self.view.mostrar_mensaje(
+                        "Error", "Modelo no disponible", "error"
+                    )
                 return
 
             empleado_id = self.model.crear_empleado(
@@ -430,9 +485,18 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_asiento_contable(self, datos):"""Crea un nuevo asiento contable."""
+    def crear_asiento_contable(self, datos):
+        """Crea un nuevo asiento contable."""
         try:
             if not self.verificar_permisos("crear_asiento"):
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en crear_asiento_contable")
+                if self.view:
+                    self.view.mostrar_mensaje(
+                        "Error", "Modelo no disponible", "error"
+                    )
                 return
 
             asiento_id = self.model.crear_asiento_contable(
@@ -470,9 +534,18 @@ class AdministracionController(QObject):
                 )
 
     @pyqtSlot(dict)
-    def crear_recibo(self, datos):"""Crea un nuevo recibo."""
+    def crear_recibo(self, datos):
+        """Crea un nuevo recibo."""
         try:
             if not self.verificar_permisos("crear_recibo"):
+                return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en crear_recibo")
+                if self.view:
+                    self.view.mostrar_mensaje(
+                        "Error", "Modelo no disponible", "error"
+                    )
                 return
 
             recibo_id = self.model.crear_recibo(
@@ -515,6 +588,14 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("imprimir_recibo"):
                 return
+            
+            if not self.model:
+                print("[ERROR] self.model es None en imprimir_recibo")
+                if self.view:
+                    self.view.mostrar_mensaje(
+                        "Error", "Modelo no disponible", "error"
+                    )
+                return
 
             # Generar PDF del recibo
             archivo_pdf = self.generar_pdf_recibo(recibo_id)
@@ -550,6 +631,10 @@ class AdministracionController(QObject):
     def generar_pdf_recibo(self, recibo_id):
         """Genera un archivo PDF del recibo."""
         try:
+            if not self.model:
+                print("[ERROR] self.model es None en generar_pdf_recibo")
+                return None
+                
             # Obtener datos del recibo
             recibos = self.model.obtener_recibos()
             recibo = None
@@ -638,6 +723,10 @@ class AdministracionController(QObject):
     def obtener_datos_reporte(self, tipo_reporte, fecha_desde, fecha_hasta):
         """Obtiene los datos para el reporte especificado."""
         try:
+            if not self.model:
+                print("[ERROR] self.model es None en obtener_datos_reporte")
+                return None
+                
             if tipo_reporte == "libro_contable":
                 return self.model.obtener_libro_contable(fecha_desde, fecha_hasta)
             elif tipo_reporte == "recibos":
@@ -749,6 +838,7 @@ class AdministracionController(QObject):
                 "crear_recibo",
                 "imprimir_recibo",
                 "generar_reporte",
+                "exportar_datos",
             ]
 
             permisos_supervisor = [
@@ -788,16 +878,24 @@ class AdministracionController(QObject):
     def obtener_estadisticas_departamento(self, departamento_id):
         """Obtiene estadísticas de un departamento específico."""
         try:
+            if not self.model:
+                print("[ERROR] self.model es None en obtener_estadisticas_departamento")
+                return None
             return self.model.obtener_estadisticas_departamento(departamento_id)
         except Exception as e:
             print(f"Error obteniendo estadísticas de departamento: {e}")
             return None
 
-    def exportar_datos(self, tipo_datos, formato="JSON"):"""Exporta datos del sistema en diferentes formatos."""
+    def exportar_datos(self, tipo_datos, formato="JSON"):
+        """
+        Exporta datos del sistema en diferentes formatos.
+        """
         try:
             if not self.verificar_permisos("exportar_datos"):
                 return None
-
+            if not self.model:
+                print("[ERROR] self.model es None en exportar_datos")
+                return None
             # Obtener datos según el tipo
             if tipo_datos == "completo":
                 datos = {

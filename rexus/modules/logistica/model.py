@@ -229,7 +229,8 @@ class LogisticaModel:
                 self.db_connection.rollback()
             return None
 
-    def actualizar_transporte(self, transporte_id, datos_transporte):"""
+    def actualizar_transporte(self, transporte_id, datos_transporte):
+        """
         Actualiza un transporte existente.
 
         Args:
@@ -356,7 +357,8 @@ class LogisticaModel:
             print(f"[ERROR LOGÍSTICA] Error obteniendo entregas: {e}")
             return []
 
-    def crear_entrega(self, datos_entrega):"""
+    def crear_entrega(self, datos_entrega):
+        """
         Crea una nueva entrega.
 
         Args:
@@ -411,7 +413,8 @@ class LogisticaModel:
                 self.db_connection.rollback()
             return None
 
-    def actualizar_estado_entrega(self, entrega_id, nuevo_estado, observaciones=""):"""
+    def actualizar_estado_entrega(self, entrega_id, nuevo_estado, observaciones=""):
+        """
         Actualiza el estado de una entrega.
 
         Args:
@@ -504,7 +507,8 @@ class LogisticaModel:
             print(f"[ERROR LOGÍSTICA] Error obteniendo detalle de entrega: {e}")
             return []
 
-    def agregar_producto_entrega(self, entrega_id, datos_producto):"""
+    def agregar_producto_entrega(self, entrega_id, datos_producto):
+        """
         Agrega un producto a una entrega.
 
         Args:
@@ -554,7 +558,8 @@ class LogisticaModel:
                 self.db_connection.rollback()
             return None
 
-    def eliminar_producto_entrega(self, detalle_id):"""
+    def eliminar_producto_entrega(self, detalle_id):
+        """
         Elimina un producto de una entrega.
 
         Args:
