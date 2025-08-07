@@ -1,4 +1,3 @@
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
@@ -16,31 +15,19 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-# Importar utilidades de seguridad
+# Importar utilidades requeridas
+from rexus.utils.sql_script_loader import sql_script_loader
 try:
-    # Agregar ruta src al path para imports de seguridad
-    root_dir = Path(__file__).parent.parent.parent.parent
-    sys.path.insert(0, str(root_dir))
-
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SQLSecurityValidator
-
-    SECURITY_AVAILABLE = True
-except ImportError as e:
-    print(f"[WARNING] Security utilities not available in obras: {e}")
-    SECURITY_AVAILABLE = False
-    data_sanitizer = None
-
-# Importar nueva utilidad de seguridad SQL
-try:
-    from rexus.utils.sql_security import SQLSecurityError, validate_table_name
-
-    SQL_SECURITY_AVAILABLE = True
+    from rexus.utils.data_sanitizer import DataSanitizer
+    data_sanitizer = DataSanitizer()
 except ImportError:
-    print("[WARNING] SQL security utilities not available in obras")
-    SQL_SECURITY_AVAILABLE = False
-    validate_table_name = None
-    SQLSecurityError = Exception
+    # Fallback básico si no está disponible
+    class DataSanitizer:
+        def sanitize_string(self, value, max_length=None): return str(value) if value else ""
+        def sanitize_numeric(self, value, min_val=None, max_val=None): return float(value) if value else 0.0
+        def sanitize_integer(self, value, min_val=None, max_val=None): return int(value) if value else 0
+        def sanitize_dict(self, data_dict): return dict(data_dict)
+    data_sanitizer = DataSanitizer()
 
 class ObrasModel:
     def __init__(self, db_connection=None):
@@ -48,16 +35,9 @@ class ObrasModel:
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
 
-        # Inicializar utilidades de seguridad
-        self.security_available = SECURITY_AVAILABLE
-        if self.security_available:
-            self.data_sanitizer = data_sanitizer
-            self.sql_validator = SQLSecurityValidator()
-            print("OK [OBRAS] Utilidades de seguridad cargadas")
-        else:
-            self.data_sanitizer = None
-            self.sql_validator = None
-            print("WARNING [OBRAS] Utilidades de seguridad no disponibles")
+        # Configurar cargador de scripts SQL y sanitización
+        self.sql_loader = sql_script_loader
+        self.data_sanitizer = data_sanitizer
 
         self._verificar_tablas()
 
@@ -70,36 +50,12 @@ class ObrasModel:
 
         Returns:
             str: Nombre de tabla validado
-
-        Raises:
-            Exception: Si el nombre no es válido o contiene caracteres peligrosos
         """
-        if SQL_SECURITY_AVAILABLE:
-            try:
-                return validate_table_name(table_name)
-            except SQLSecurityError as e:
-                print(f"[ERROR SEGURIDAD OBRAS] {str(e)}")
-                # Fallback a verificación básica
-                pass
-
-        # Verificación básica si la utilidad no está disponible
-        if not table_name or not isinstance(table_name, str):
-            raise ValueError("Nombre de tabla inválido")
-
-        # Eliminar espacios en blanco
-        table_name = table_name.strip()
-
-        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
-        if not all(c.isalnum() or c == "_" for c in table_name):
-            raise ValueError(
-                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
-            )
-
-        # Verificar longitud razonable
-        if len(table_name) > 64:
-            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
-
-        return table_name.lower()
+        # Lista blanca de tablas permitidas
+        allowed_tables = {'obras', 'detalles_obra'}
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+        return table_name
 
     def validar_obra_duplicada(
         self, codigo_obra: str, id_obra_actual: Optional[int] = None
@@ -123,27 +79,16 @@ class ObrasModel:
             if self.data_sanitizer:
                 codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
 
-            # Validar tabla
-            tabla_validada = self._validate_table_name(self.tabla_obras)
-
             cursor = self.db_connection.cursor()
 
             if id_obra_actual:
                 # Para edición, excluir la obra actual
-                query = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE UPPER(codigo) = ? AND id != ?"
-                )
-                cursor.execute(query, (codigo_limpio, id_obra_actual))
+                script_content = self.sql_loader.load_script('obras/count_duplicados_codigo_exclude')
+                cursor.execute(script_content, (codigo_limpio, id_obra_actual))
             else:
                 # Para nueva obra
-                query = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE UPPER(codigo) = ?"
-                )
-                cursor.execute(query, (codigo_limpio,))
+                script_content = self.sql_loader.load_script('obras/count_duplicados_codigo')
+                cursor.execute(script_content, (codigo_limpio,))
 
             count = cursor.fetchone()[0]
             return count > 0
@@ -203,6 +148,7 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
+    @auth_required
     def crear_obra(
         self,
         datos_obra:Dict[str, Any],
@@ -221,77 +167,35 @@ class ObrasModel:
 
         cursor = None
         try:
-            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
-            if self.security_available and self.data_sanitizer:
-                # Sanitizar todos los datos de entrada
-                datos_limpios = self.data_sanitizer.sanitize_dict(datos_obra)
+            # Sanitizar y validar datos
+            datos_limpios = self.data_sanitizer.sanitize_dict(datos_obra)
 
-                # Validaciones específicas
-                if not datos_limpios.get("codigo"):
-                    return False, "El código de obra es requerido"
-                if not datos_limpios.get("nombre"):
-                    return False, "El nombre de obra es requerido"
-                if not datos_limpios.get("cliente"):
-                    return False, "El cliente es requerido"
+            # Validaciones específicas
+            if not datos_limpios.get("codigo"):
+                return False, "El código de obra es requerido"
+            if not datos_limpios.get("nombre"):
+                return False, "El nombre de obra es requerido"
+            if not datos_limpios.get("cliente"):
+                return False, "El cliente es requerido"
 
-                # Validar email si se proporciona
-                if datos_limpios.get("email_contacto"):
-                    try:
-                        email_limpio = self.data_sanitizer.sanitize_string(
-                            datos_limpios["email_contacto"]
-                        )
-                        if (
-                            not email_limpio
-                            or len(email_limpio) < 5
-                            or "@" not in email_limpio
-                        ):
-                            return False, "Formato de email inválido"
-                        datos_limpios["email_contacto"] = email_limpio
-                    except Exception:
-                        return False, "Formato de email inválido"
-
-                # Validar teléfono si se proporciona
-                if datos_limpios.get("telefono_contacto"):
-                    telefono_limpio = self.data_sanitizer.sanitize_string(
-                        datos_limpios["telefono_contacto"]
-                    )
-                    datos_limpios["telefono_contacto"] = telefono_limpio
-
-                # Validar presupuesto
-                presupuesto_original = datos_obra.get("presupuesto_total")
-                if presupuesto_original and presupuesto_original != "":
-                    try:
-                        # Usar float manualmente para presupuesto
-                        presupuesto_limpio = float(presupuesto_original)
-                        if presupuesto_limpio < 0:
-                            return False, "El presupuesto no puede ser negativo"
-                        datos_limpios["presupuesto_total"] = presupuesto_limpio
-                    except (ValueError, TypeError):
-                        return False, "Presupuesto inválido"
-                else:
-                    datos_limpios["presupuesto_total"] = 0.0
+            # Validar presupuesto
+            presupuesto_original = datos_obra.get("presupuesto_total")
+            if presupuesto_original and presupuesto_original != "":
+                try:
+                    presupuesto_limpio = float(presupuesto_original)
+                    if presupuesto_limpio < 0:
+                        return False, "El presupuesto no puede ser negativo"
+                    datos_limpios["presupuesto_total"] = presupuesto_limpio
+                except (ValueError, TypeError):
+                    return False, "Presupuesto inválido"
             else:
-                # Fallback sin sanitización avanzada
-                datos_limpios = dict(datos_obra)
-                print(
-                    "[WARNING OBRAS] Sanitización no disponible, usando datos básicos"
-                )
-
-                # Validaciones básicas
-                if not datos_limpios.get("codigo"):
-                    return False, "El código de obra es requerido"
-                if not datos_limpios.get("nombre"):
-                    return False, "El nombre de obra es requerido"
-                if not datos_limpios.get("cliente"):
-                    return False, "El cliente es requerido"
+                datos_limpios["presupuesto_total"] = 0.0
 
             cursor = self.db_connection.cursor()
 
             # Verificar que no existe una obra con el mismo código
-            cursor.execute(
-                "SELECT COUNT(*) FROM obras WHERE codigo = ?",
-                (datos_limpios.get("codigo"),),
-            )
+            script_content = self.sql_loader.load_script('obras/count_duplicados_codigo')
+            cursor.execute(script_content, (datos_limpios.get("codigo"),))
             if cursor.fetchone()[0] > 0:
                 return (
                     False,
@@ -299,35 +203,25 @@ class ObrasModel:
                 )
 
             # Insertar obra con datos sanitizados
-            sql_insert = """
-            INSERT INTO obras
-            (codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
-             email_contacto, fecha_inicio, fecha_fin_estimada, presupuesto_total,
-             estado, tipo_obra, prioridad, responsable, observaciones, usuario_creacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """
-
-            cursor.execute(
-                sql_insert,
-                (
-                    datos_limpios.get("codigo"),
-                    datos_limpios.get("nombre"),
-                    datos_limpios.get("descripcion", ""),
-                    datos_limpios.get("cliente"),
-                    datos_limpios.get("direccion", ""),
-                    datos_limpios.get("telefono_contacto", ""),
-                    datos_limpios.get("email_contacto", ""),
-                    datos_limpios.get("fecha_inicio"),
-                    datos_limpios.get("fecha_fin_estimada"),
-                    datos_limpios.get("presupuesto_total", 0),
-                    datos_limpios.get("estado", "PLANIFICACION"),
-                    datos_limpios.get("tipo_obra", "CONSTRUCCION"),
-                    datos_limpios.get("prioridad", "MEDIA"),
-                    datos_limpios.get("responsable"),
-                    datos_limpios.get("observaciones", ""),
-                    datos_limpios.get("usuario_creacion", "SISTEMA"),
-                ),
-            )
+            script_content = self.sql_loader.load_script('obras/insert_obra')
+            cursor.execute(script_content, (
+                datos_limpios.get("codigo"),
+                datos_limpios.get("nombre"),
+                datos_limpios.get("descripcion", ""),
+                datos_limpios.get("cliente"),
+                datos_limpios.get("direccion", ""),
+                datos_limpios.get("telefono_contacto", ""),
+                datos_limpios.get("email_contacto", ""),
+                datos_limpios.get("fecha_inicio"),
+                datos_limpios.get("fecha_fin_estimada"),
+                datos_limpios.get("presupuesto_total", 0),
+                datos_limpios.get("estado", "PLANIFICACION"),
+                datos_limpios.get("tipo_obra", "CONSTRUCCION"),
+                datos_limpios.get("prioridad", "MEDIA"),
+                datos_limpios.get("responsable"),
+                datos_limpios.get("observaciones", ""),
+                datos_limpios.get("usuario_creacion", "SISTEMA"),
+            ))
 
             self.db_connection.commit()
 
@@ -351,17 +245,8 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                """
-                SELECT
-                    id, codigo, nombre, cliente, estado, responsable,
-                    fecha_inicio, fecha_fin_estimada, presupuesto_total,
-                    tipo_obra, progreso, descripcion, ubicacion,
-                    created_at, updated_at
-                FROM obras
-                ORDER BY fecha_inicio DESC
-                """
-            )
+            script_content = self.sql_loader.load_script('obras/select_all_obras')
+            cursor.execute(script_content)
             rows = cursor.fetchall()
             columnas = [column[0] for column in cursor.description]
             return [dict(zip(columnas, row)) for row in rows]
@@ -380,18 +265,8 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                """
-                SELECT
-                    id, codigo, nombre, cliente, estado, responsable,
-                    fecha_inicio, fecha_fin_estimada, presupuesto_total,
-                    tipo_obra, progreso, descripcion, ubicacion,
-                    created_at, updated_at
-                FROM obras
-                WHERE id = ?
-            """,
-                (obra_id,),
-            )
+            script_content = self.sql_loader.load_script('obras/select_obra_por_id')
+            cursor.execute(script_content, (obra_id,))
 
             return cursor.fetchone()
 
@@ -410,7 +285,8 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT * FROM obras WHERE codigo = ?", (codigo,))
+            script_content = self.sql_loader.load_script('obras/select_obra_por_codigo')
+            cursor.execute(script_content, (codigo,))
 
             row = cursor.fetchone()
             if row:
@@ -425,6 +301,7 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
+    @auth_required
     def actualizar_obra(
         self,
         obra_id:int,
@@ -447,36 +324,24 @@ class ObrasModel:
         try:
             cursor = self.db_connection.cursor()
 
-            sql_update = """
-            UPDATE obras
-            SET nombre = ?, descripcion = ?, cliente = ?, direccion = ?,
-                telefono_contacto = ?, email_contacto = ?, fecha_fin_estimada = ?,
-                presupuesto_total = ?, estado = ?, tipo_obra = ?, prioridad = ?,
-                responsable = ?, observaciones = ?, fecha_modificacion = GETDATE(),
-                usuario_modificacion = ?
-            WHERE id = ?
-            """
-
-            cursor.execute(
-                sql_update,
-                (
-                    datos_obra.get("nombre"),
-                    datos_obra.get("descripcion"),
-                    datos_obra.get("cliente"),
-                    datos_obra.get("direccion"),
-                    datos_obra.get("telefono_contacto"),
-                    datos_obra.get("email_contacto"),
-                    datos_obra.get("fecha_fin_estimada"),
-                    datos_obra.get("presupuesto_total"),
-                    datos_obra.get("estado"),
-                    datos_obra.get("tipo_obra"),
-                    datos_obra.get("prioridad"),
-                    datos_obra.get("responsable"),
-                    datos_obra.get("observaciones"),
-                    datos_obra.get("usuario_modificacion", "SISTEMA"),
-                    obra_id,
-                ),
-            )
+            script_content = self.sql_loader.load_script('obras/update_obra')
+            cursor.execute(script_content, (
+                datos_obra.get("nombre"),
+                datos_obra.get("descripcion"),
+                datos_obra.get("cliente"),
+                datos_obra.get("direccion"),
+                datos_obra.get("telefono_contacto"),
+                datos_obra.get("email_contacto"),
+                datos_obra.get("fecha_fin_estimada"),
+                datos_obra.get("presupuesto_total"),
+                datos_obra.get("estado"),
+                datos_obra.get("tipo_obra"),
+                datos_obra.get("prioridad"),
+                datos_obra.get("responsable"),
+                datos_obra.get("observaciones"),
+                datos_obra.get("usuario_modificacion", "SISTEMA"),
+                obra_id,
+            ))
 
             if cursor.rowcount > 0:
                 self.db_connection.commit()
@@ -496,6 +361,7 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
+    @auth_required
     def cambiar_estado_obra(
         self,
         obra_id:int,
@@ -535,7 +401,8 @@ class ObrasModel:
             cursor = self.db_connection.cursor()
 
             # Obtener estado actual
-            cursor.execute("SELECT estado FROM obras WHERE id = ?", (obra_id,))
+            script_content = self.sql_loader.load_script('obras/select_estado_obra')
+            cursor.execute(script_content, (obra_id,))
             resultado = cursor.fetchone()
             if not resultado:
                 return False, "Obra no encontrada"
@@ -543,21 +410,14 @@ class ObrasModel:
             estado_actual = resultado[0]
 
             # Actualizar estado
-            sql_update = """
-            UPDATE obras
-            SET estado = ?, fecha_modificacion = GETDATE(), usuario_modificacion = ?
-            WHERE id = ?
-            """
-
-            cursor.execute(sql_update, (nuevo_estado, usuario, obra_id))
+            script_content = self.sql_loader.load_script('obras/update_estado_obra')
+            cursor.execute(script_content, (nuevo_estado, usuario, obra_id))
             self.db_connection.commit()
 
             # Si se finaliza la obra, actualizar fecha de finalización
             if nuevo_estado == "FINALIZADA":
-                cursor.execute(
-                    "UPDATE obras SET fecha_fin_real = GETDATE() WHERE id = ?",
-                    (obra_id,),
-                )
+                script_content = self.sql_loader.load_script('obras/update_fecha_finalizacion')
+                cursor.execute(script_content, (obra_id,))
                 self.db_connection.commit()
 
             return True, f"Estado cambiado de {estado_actual} a {nuevo_estado}"
@@ -599,7 +459,7 @@ class ObrasModel:
         try:
             cursor = self.db_connection.cursor()
 
-            conditions = []
+            conditions = ["1=1"]  # Condición base
             params = []
 
             if estado:
@@ -618,34 +478,11 @@ class ObrasModel:
                 conditions.append("fecha_inicio <= ?")
                 params.append(fecha_fin)
 
-            where_clause = ""
-            if conditions:
-                where_clause = "WHERE " + " AND ".join(conditions)
-
-            # SECURITY: Validar nombre de tabla para prevenir SQL injection
-            tabla_segura = "obras"
-            if SQL_SECURITY_AVAILABLE:
-                try:
-                    from rexus.utils.sql_security import sql_validator
-
-                    if tabla_segura not in sql_validator.ALLOWED_TABLES:
-                        sql_validator.add_allowed_table(tabla_segura)
-                    tabla_validada = validate_table_name(tabla_segura)
-                except SQLSecurityError as e:
-                    print(f"[SECURITY ERROR] Tabla no válida: {e}")
-                    return []
-            else:
-                tabla_validada = tabla_segura
-
-            base_query = f"SELECT * FROM [{tabla_validada}]"
-            if where_clause:
-                sql_select = (
-                    base_query + " " + where_clause + " ORDER BY fecha_inicio DESC"
-                )
-            else:
-                sql_select = base_query + " ORDER BY fecha_inicio DESC"
-
-            cursor.execute(sql_select, params)
+            # Usar script SQL externo con filtros dinámicos
+            script_content = self.sql_loader.load_script('obras/select_obras_filtradas')
+            where_clause = " AND ".join(conditions)
+            query = script_content.replace("WHERE 1=1", f"WHERE {where_clause}")
+            cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             obras = []
 
@@ -670,45 +507,31 @@ class ObrasModel:
             estadisticas = {}
 
             # Total de obras
-            cursor.execute("SELECT COUNT(*) FROM obras")
+            script_content = self.sql_loader.load_script('obras/select_estadisticas_obras')
+            cursor.execute(script_content)
             estadisticas["total_obras"] = cursor.fetchone()[0]
 
             # Obras por estado
-            cursor.execute(
-                """
-                SELECT estado, COUNT(*) as cantidad
-                FROM obras
-                GROUP BY estado
-                ORDER BY cantidad DESC
-            """
-            )
+            script_content = self.sql_loader.load_script('obras/select_estadisticas_por_estado')
+            cursor.execute(script_content)
             estadisticas["obras_por_estado"] = [
                 {"estado": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
 
             # Obras activas (en proceso y planificación)
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM obras
-                WHERE estado IN ('PLANIFICACION', 'EN_PROCESO')
-            """
-            )
+            script_content = self.sql_loader.load_script('obras/select_obras_activas')
+            cursor.execute(script_content)
             estadisticas["obras_activas"] = cursor.fetchone()[0]
 
             # Presupuesto total
-            cursor.execute("SELECT SUM(presupuesto_total) FROM obras")
+            script_content = self.sql_loader.load_script('obras/select_presupuesto_total')
+            cursor.execute(script_content)
             resultado = cursor.fetchone()[0]
             estadisticas["presupuesto_total"] = resultado if resultado else 0
 
             # Obras por responsable
-            cursor.execute(
-                """
-                SELECT responsable, COUNT(*) as cantidad
-                FROM obras
-                GROUP BY responsable
-                ORDER BY cantidad DESC
-            """
-            )
+            script_content = self.sql_loader.load_script('obras/select_estadisticas_por_responsable')
+            cursor.execute(script_content)
             estadisticas["obras_por_responsable"] = [
                 {"responsable": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
@@ -719,6 +542,7 @@ class ObrasModel:
             print(f"[ERROR OBRAS] Error obteniendo estadísticas: {e}")
             return {}
 
+    @admin_required
     def eliminar_obra(
         self,
         obra_id:int,
@@ -741,7 +565,8 @@ class ObrasModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si la obra existe
-            cursor.execute("SELECT codigo, estado FROM obras WHERE id = ?", (obra_id,))
+            script_content = self.sql_loader.load_script('obras/select_info_obra')
+            cursor.execute(script_content, (obra_id,))
             resultado = cursor.fetchone()
             if not resultado:
                 return False, "Obra no encontrada"
@@ -749,9 +574,8 @@ class ObrasModel:
             codigo_obra, estado = resultado
 
             # Verificar si tiene detalles asociados
-            cursor.execute(
-                "SELECT COUNT(*) FROM detalles_obra WHERE obra_id = ?", (obra_id,)
-            )
+            script_content = self.sql_loader.load_script('obras/count_detalles_obra')
+            cursor.execute(script_content, (obra_id,))
             if cursor.fetchone()[0] > 0:
                 return (
                     False,
@@ -763,7 +587,8 @@ class ObrasModel:
                 return False, f"No se puede eliminar una obra en estado {estado}"
 
             # Eliminar la obra
-            cursor.execute("DELETE FROM obras WHERE id = ?", (obra_id,))
+            script_content = self.sql_loader.load_script('obras/delete_obra')
+            cursor.execute(script_content, (obra_id,))
             self.db_connection.commit()
 
             return True, f"Obra {codigo_obra} eliminada exitosamente"

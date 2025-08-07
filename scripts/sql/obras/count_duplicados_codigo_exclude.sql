@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM obras WHERE UPPER(codigo) = ? AND id != ?
