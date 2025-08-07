@@ -199,7 +199,7 @@ class ModeloInventarioRefactorizado:
         orden: str = "descripcion ASC",
     ) -> Dict[str, Any]:
         """Obtiene productos con paginación para carga inicial sin autenticación."""
-        return self.consultas_manager.obtener_productos_paginados(
+        return self.consultas_manager.obtener_productos_paginados_inicial(
             offset, limit, filtros, orden
         )
 

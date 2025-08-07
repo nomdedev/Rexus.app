@@ -48,6 +48,14 @@ class StyleManager:
         'consolidated': 'consolidated_theme_clean.qss'
     }
     
+    # Mapa de estilos específicos por módulo
+    MODULE_STYLES = {
+        'inventario': 'inventario.qss',
+        'administracion': 'administracion.qss',
+        'obras': 'obras.qss',
+        'usuarios': 'usuarios.qss'
+    }
+    
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
@@ -219,30 +227,74 @@ class StyleManager:
             }
         """
     
-    def apply_module_theme(self, widget: QWidget) -> bool:
+    def apply_module_theme(self, widget: QWidget, module_name: str = None) -> bool:
         """Aplica tema específico a un módulo."""
         try:
             # Aplicar propiedades para identificación
             widget.setProperty("moduleView", True)
             
-            # Aplicar estilos del módulo
+            # Aplicar estilos del módulo base
             current_style = widget.styleSheet()
             module_styles = self.get_module_styles()
             
-            # Combinar estilos existentes con los del módulo
-            combined_style = f"{current_style}\n{module_styles}"
+            # Cargar estilos específicos del módulo si existe
+            specific_styles = ""
+            if module_name and module_name in self.MODULE_STYLES:
+                specific_styles = self.load_module_stylesheet(module_name)
+            
+            # Combinar todos los estilos
+            combined_style = f"{current_style}\n{module_styles}\n{specific_styles}"
             widget.setStyleSheet(combined_style)
             
             # Forzar actualización de estilos
             widget.style().unpolish(widget)
             widget.style().polish(widget)
             
-            logging.info(f"Tema de módulo aplicado a {widget.__class__.__name__}")
+            logging.info(f"Tema de módulo aplicado a {widget.__class__.__name__} ({module_name})")
             return True
             
         except Exception as e:
             logging.error(f"Error aplicando tema a módulo: {e}")
             return False
+            
+    def load_module_stylesheet(self, module_name: str) -> str:
+        """Carga hoja de estilos específica de un módulo."""
+        try:
+            if module_name not in self.MODULE_STYLES:
+                return ""
+                
+            stylesheet_path = self._themes_path / self.MODULE_STYLES[module_name]
+            
+            if stylesheet_path.exists():
+                with open(stylesheet_path, 'r', encoding='utf-8') as file:
+                    return file.read()
+            else:
+                logging.warning(f"Archivo de estilos no encontrado: {stylesheet_path}")
+                return ""
+                
+        except Exception as e:
+            logging.error(f"Error cargando estilos del módulo {module_name}: {e}")
+            return ""
+            
+    def apply_stats_panel_theme(self, panel_widget):
+        """Aplica tema específico a paneles de estadísticas."""
+        panel_widget.setObjectName("panel_estadisticas")
+        
+    def apply_stat_card_theme(self, card_widget, color_class):
+        """Aplica tema a tarjetas de estadísticas individuales."""
+        card_widget.setProperty("class", "stat-widget")
+        if color_class:
+            card_widget.setProperty("colorType", color_class)
+            
+    def apply_table_theme(self, table_widget, module_name: str):
+        """Aplica tema específico a tablas."""
+        table_widget.setObjectName(f"tabla_{module_name}")
+        table_widget.setProperty("standardTable", True)
+        
+    def apply_input_theme(self, input_widget):
+        """Aplica tema a campos de entrada."""
+        if hasattr(input_widget, 'setObjectName'):
+            input_widget.setObjectName("input_busqueda")
     
     def get_current_theme(self) -> str:
         """Retorna el tema actualmente activo."""
