@@ -230,7 +230,7 @@ class ModuleManager:
             loader_method_map = {
                 "usuarios": "cargar_usuarios",
                 "obras": "cargar_obras",
-                "inventario": "cargar_inventario",
+                "inventario": "cargar_inventario_inicial",
                 "compras": "cargar_compras",
                 "pedidos": "cargar_pedidos",
                 "logistica": "cargar_logistica",

@@ -9,7 +9,7 @@ Controlador completamente funcional que maneja todos los errores identificados:
 """
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox
 
 try:
     from rexus.core.auth_decorators import auth_required, permission_required
@@ -36,7 +36,7 @@ except ImportError:
             self.current_user = {"username": "SISTEMA"}
 
 
-class InventarioController(QObject):
+class InventarioControllerCompleto(QObject):
     """Controlador completo y corregido para el módulo de inventario."""
 
     # Señales
@@ -70,8 +70,7 @@ class InventarioController(QObject):
         try:
             print("[INVENTARIO CONTROLLER] Inicializando controlador completo...")
             self.conectar_senales()
-            # No cargar datos en inicialización para evitar problemas de autenticación
-            # Los datos se cargarán posteriormente con cargar_inventario_inicial
+            self.cargar_inventario()
             print("[INVENTARIO CONTROLLER] ✅ Controlador inicializado exitosamente")
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error en inicialización: {e}")
@@ -132,75 +131,39 @@ class InventarioController(QObject):
         else:
             print(f"⚠️ No encontrado: {nombre_boton}")
 
-    def cargar_inventario_inicial(self):
-        """Carga inicial del inventario sin restricciones de autenticación."""
-        try:
-            print("[INVENTARIO CONTROLLER] Carga inicial de inventario...")
-            self._cargar_datos_inventario()
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en carga inicial: {e}")
-
     @auth_required
     def cargar_inventario(self):
         """Carga el inventario completo."""
         try:
             print("[INVENTARIO CONTROLLER] Cargando inventario...")
-            self._cargar_datos_inventario()
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error cargando inventario: {e}")
 
-    def _cargar_datos_inventario(self):
-        """Método privado para cargar datos del inventario."""
-        if not self.model:
-            print("[ERROR] No hay modelo disponible")
-            return
+            if not self.model:
+                print("[ERROR] No hay modelo disponible")
+                return
 
-        productos = []
-        total = 0
-
-        try:
-            # Intentar múltiples métodos del modelo
-            if hasattr(self.model, "obtener_productos_paginados_inicial"):
-                # Usar método sin autenticación para carga inicial
-                resultado = self.model.obtener_productos_paginados_inicial(0, 100)
-                if isinstance(resultado, dict):
-                    productos = resultado.get("productos", resultado.get("items", []))
-                    total = resultado.get("total", len(productos))
-                else:
-                    productos = resultado or []
-                    total = len(productos)
-                print(
-                    f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total (método inicial)"
+            # Usar el método del modelo refactorizado
+            if hasattr(self.model, "obtener_productos_paginados"):
+                resultado = self.model.obtener_productos_paginados(offset=0, limit=100)
+                productos = (
+                    resultado.get("productos", [])
+                    if isinstance(resultado, dict)
+                    else []
                 )
-            elif hasattr(self.model, "obtener_productos_paginados"):
-                try:
-                    # Intentar con argumentos posicionales
-                    resultado = self.model.obtener_productos_paginados(0, 100)
-                    if isinstance(resultado, dict):
-                        productos = resultado.get(
-                            "productos", resultado.get("items", [])
-                        )
-                        total = resultado.get("total", len(productos))
-                    else:
-                        productos = resultado or []
-                        total = len(productos)
-                    print(
-                        f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total"
-                    )
-                except Exception as e:
-                    print(f"[ADVERTENCIA] Error con obtener_productos_paginados: {e}")
-                    # Intentar método alternativo
-                    if hasattr(self.model, "obtener_listado_paginado"):
-                        resultado = self.model.obtener_listado_paginado(0, 100)
-                        productos = (
-                            resultado.get("items", [])
-                            if isinstance(resultado, dict)
-                            else resultado or []
-                        )
-                        total = len(productos)
+                total = (
+                    resultado.get("total", 0)
+                    if isinstance(resultado, dict)
+                    else len(productos)
+                )
+                print(
+                    f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total"
+                )
+            else:
+                print(
+                    "[ADVERTENCIA] Método obtener_productos_paginados no disponible, intentando alternativa"
+                )
+                productos = []
 
-            if not productos:
-                # Métodos de respaldo
+                # Intentar método alternativo
                 if hasattr(self.model, "obtener_productos"):
                     productos = self.model.obtener_productos() or []
                 elif hasattr(self.model, "get_all_productos"):
@@ -210,95 +173,33 @@ class InventarioController(QObject):
                     f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos (método alternativo)"
                 )
 
+            # Actualizar vista
+            self._actualizar_vista_productos(productos)
+
+            # Emitir señal de datos actualizados
+            self.datos_actualizados.emit()
+
         except Exception as e:
-            print(f"[ERROR] Error cargando productos: {e}")
-            # Crear datos de ejemplo para testing
-            productos = [
-                {
-                    "id": 1,
-                    "codigo": "PROD001",
-                    "descripcion": "Producto de ejemplo 1",
-                    "categoria": "Categoria A",
-                    "stock": 50,
-                    "precio": 100.0,
-                },
-                {
-                    "id": 2,
-                    "codigo": "PROD002",
-                    "descripcion": "Producto de ejemplo 2",
-                    "categoria": "Categoria B",
-                    "stock": 30,
-                    "precio": 150.0,
-                },
-            ]
-            print("[INVENTARIO CONTROLLER] Usando productos de ejemplo")
-
-        # Actualizar vista
-        self._actualizar_vista_productos(productos)
-
-        # Emitir señal de datos actualizados
-        self.datos_actualizados.emit()
+            print(f"[ERROR INVENTARIO CONTROLLER] Error cargando inventario: {e}")
+            self._mostrar_error("cargar inventario", e)
 
     def _actualizar_vista_productos(self, productos):
         """Actualiza la vista con la lista de productos."""
         if not self.view:
-            print("⚠️ No hay vista disponible")
             return
 
-        print(
-            f"[INVENTARIO CONTROLLER] Actualizando vista con {len(productos)} productos"
-        )
-
         # Intentar diferentes métodos de actualización
-        try:
-            if hasattr(self.view, "actualizar_tabla"):
-                self.view.actualizar_tabla(productos)
-                print("✅ Vista actualizada con actualizar_tabla")
-            elif hasattr(self.view, "mostrar_productos"):
-                self.view.mostrar_productos(productos)
-                print("✅ Vista actualizada con mostrar_productos")
-            elif hasattr(self.view, "cargar_datos"):
-                self.view.cargar_datos(productos)
-                print("✅ Vista actualizada con cargar_datos")
-            elif hasattr(self.view, "tabla_inventario"):
-                # Actualizar tabla directamente si existe
-                tabla = self.view.tabla_inventario
-                if tabla:
-                    tabla.setRowCount(len(productos))
-                    for row, producto in enumerate(productos):
-                        if isinstance(producto, dict):
-                            # Asegurar que tenemos las columnas básicas
-                            codigo = str(producto.get("codigo", f"PROD{row + 1}"))
-                            descripcion = str(
-                                producto.get("descripcion", f"Producto {row + 1}")
-                            )
-                            categoria = str(producto.get("categoria", "General"))
-                            stock = str(producto.get("stock", 0))
-                            precio = str(producto.get("precio", 0.0))
-
-                            # Establecer valores en la tabla
-                            tabla.setItem(row, 0, QTableWidgetItem(codigo))
-                            tabla.setItem(row, 1, QTableWidgetItem(descripcion))
-                            tabla.setItem(row, 2, QTableWidgetItem(categoria))
-                            tabla.setItem(row, 3, QTableWidgetItem(stock))
-                            tabla.setItem(row, 4, QTableWidgetItem(precio))
-
-                    print("✅ Vista actualizada directamente en tabla_inventario")
-                else:
-                    print("⚠️ tabla_inventario existe pero es None")
-            else:
-                print("⚠️ No se encontró método para actualizar la vista")
-                # Listar métodos disponibles para debug
-                metodos = [
-                    method for method in dir(self.view) if not method.startswith("_")
-                ]
-                print(f"📋 Métodos disponibles en vista: {metodos[:10]}...")
-
-        except Exception as e:
-            print(f"❌ Error actualizando vista: {e}")
-            import traceback
-
-            traceback.print_exc()
+        if hasattr(self.view, "actualizar_tabla"):
+            self.view.actualizar_tabla(productos)
+            print("✅ Vista actualizada con actualizar_tabla")
+        elif hasattr(self.view, "mostrar_productos"):
+            self.view.mostrar_productos(productos)
+            print("✅ Vista actualizada con mostrar_productos")
+        elif hasattr(self.view, "cargar_datos"):
+            self.view.cargar_datos(productos)
+            print("✅ Vista actualizada con cargar_datos")
+        else:
+            print("⚠️ No se encontró método para actualizar la vista")
 
     @auth_required
     def buscar_productos(self):

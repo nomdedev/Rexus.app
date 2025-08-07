@@ -16,7 +16,27 @@ import qrcode
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.core.sql_query_manager import SQLQueryManager
+
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    # Fallback al script loader
+    from rexus.utils.sql_script_loader import sql_script_loader
+
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            # Construir nombre del script sin extensión
+            script_name = filename.replace(".sql", "")
+            return self.sql_loader(script_name)
+
+        def execute_query(self, query, params=None):
+            # Placeholder para compatibilidad
+            return None
+
 
 # DataSanitizer unificado
 try:

@@ -6,7 +6,9 @@ Incluye arquitectura modular con submódulos especializados.
 """
 
 from .controller import InventarioController
-from .model import InventarioModel
+from .model_inventario_refactorizado import (
+    ModeloInventarioRefactorizado as InventarioModel,
+)
 
 # Submódulos especializados
 from .submodules import ConsultasManager, MovimientosManager, ProductosManager

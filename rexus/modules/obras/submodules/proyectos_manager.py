@@ -85,7 +85,7 @@ class ProyectosManager:
 
             # Usar SQL externo para consulta
             query = self.sql_manager.get_query(self.sql_path, "obtener_obra_por_id")
-            cursor.execute(query, {"obra_id": obra_id})
+            cursor.execute(query, (obra_id,))
 
             row = cursor.fetchone()
             if not row:
@@ -118,7 +118,20 @@ class ProyectosManager:
 
             # Usar SQL externo para inserción
             query = self.sql_manager.get_query(self.sql_path, "insertar_obra")
-            cursor.execute(query, datos_sanitizados)
+            cursor.execute(
+                query,
+                (
+                    datos_sanitizados.get("nombre"),
+                    datos_sanitizados.get("descripcion"),
+                    datos_sanitizados.get("cliente"),
+                    datos_sanitizados.get("estado"),
+                    datos_sanitizados.get("fecha_inicio"),
+                    datos_sanitizados.get("fecha_fin_estimada"),
+                    datos_sanitizados.get("presupuesto"),
+                    datos_sanitizados.get("direccion"),
+                    "",  # notas vacías por defecto
+                ),
+            )
 
             # Obtener ID de la obra recién creada
             obra_id = cursor.lastrowid
@@ -152,7 +165,23 @@ class ProyectosManager:
 
             # Usar SQL externo para actualización
             query = self.sql_manager.get_query(self.sql_path, "actualizar_obra")
-            cursor.execute(query, datos_sanitizados)
+            cursor.execute(
+                query,
+                (
+                    datos_sanitizados.get("nombre"),
+                    datos_sanitizados.get("descripcion"),
+                    datos_sanitizados.get("cliente"),
+                    datos_sanitizados.get("estado"),
+                    datos_sanitizados.get("fecha_inicio"),
+                    datos_sanitizados.get("fecha_fin_estimada"),
+                    None,  # fecha_fin_real
+                    datos_sanitizados.get("presupuesto"),
+                    None,  # costo_real
+                    datos_sanitizados.get("direccion"),
+                    "",  # notas
+                    obra_id,
+                ),
+            )
 
             self.db_connection.commit()
             return cursor.rowcount > 0
@@ -179,7 +208,7 @@ class ProyectosManager:
 
             # Usar SQL externo para eliminación
             query = self.sql_manager.get_query(self.sql_path, "eliminar_obra")
-            cursor.execute(query, {"obra_id": obra_id})
+            cursor.execute(query, (obra_id,))
 
             self.db_connection.commit()
             return cursor.rowcount > 0
@@ -208,14 +237,7 @@ class ProyectosManager:
 
             # Actualizar estado
             query = self.sql_manager.get_query(self.sql_path, "cambiar_estado_obra")
-            cursor.execute(
-                query,
-                {
-                    "obra_id": obra_id,
-                    "estado": estado_sanitizado,
-                    "fecha_cambio": datetime.now(),
-                },
-            )
+            cursor.execute(query, (estado_sanitizado, obra_id))
 
             self.db_connection.commit()
             return cursor.rowcount > 0
@@ -283,7 +305,7 @@ class ProyectosManager:
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(self.sql_path, "obtener_detalles_obra")
-            cursor.execute(query, {"obra_id": obra_id})
+            cursor.execute(query, (obra_id,))
 
             detalles = []
             columns = [column[0] for column in cursor.description]
@@ -325,12 +347,12 @@ class ProyectosManager:
             query = self.sql_manager.get_query(self.sql_path, "crear_fase_inicial")
             cursor.execute(
                 query,
-                {
-                    "obra_id": obra_id,
-                    "nombre_fase": "Planificación",
-                    "descripcion": "Fase inicial de planificación",
-                    "fecha_inicio": datetime.now(),
-                },
+                (
+                    obra_id,
+                    "Planificación",
+                    "Fase inicial de planificación",
+                    datetime.now(),
+                ),
             )
         except Exception as e:
             print(f"Error creando fase inicial: {str(e)}")
@@ -346,7 +368,7 @@ class ProyectosManager:
             query = self.sql_manager.get_query(
                 self.sql_path, "verificar_recursos_asignados"
             )
-            cursor.execute(query, {"obra_id": obra_id})
+            cursor.execute(query, (obra_id,))
 
             result = cursor.fetchone()
             return (result[0] if result else 0) > 0
@@ -390,7 +412,7 @@ class ProyectosManager:
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(self.sql_path, "calcular_progreso_obra")
-            cursor.execute(query, {"obra_id": obra_id})
+            cursor.execute(query, (obra_id,))
 
             result = cursor.fetchone()
             return float(result[0]) if result and result[0] else 0.0
