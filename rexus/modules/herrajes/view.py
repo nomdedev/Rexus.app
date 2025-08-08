@@ -32,8 +32,6 @@ import logging
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QTableWidgetItem,
-    QWidget,
-    QTabWidget,
     QAbstractItemView,
 )
 
@@ -103,7 +101,7 @@ class HerrajesView(BaseModuleView):
     
     def crear_tab_gestion(self):
         """Crea la pestaña de gestión de herrajes."""
-        tab = QWidget()
+        tab = RexusFrame()
         layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -126,7 +124,7 @@ class HerrajesView(BaseModuleView):
 
     def crear_tab_estadisticas(self):
         """Crea la pestaña de estadísticas de herrajes."""
-        tab = QWidget()
+        tab = RexusFrame()
         layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
@@ -178,34 +176,6 @@ class HerrajesView(BaseModuleView):
         panel.setLayout(layout)
         return panel
 
-    # def crear_titulo(self, layout: QVBoxLayout):
-#         """Crea el título moderno de la vista."""
-#         titulo_container = QFrame()
-#         titulo_container.setStyleSheet("""
-#             QFrame {
-#                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-#                                            stop:0 #6c757d, stop:1 #495057);
-#                 border-radius: 8px;
-#                 padding: 6px;
-#                 margin-bottom: 10px;
-#             }
-#         """)
-# 
-#         titulo_layout = QHBoxLayout(titulo_container)
-# 
-#         # Título principal
-#         title_label = QLabel("🔧 Gestión de Herrajes")
-#         title_label.setStyleSheet("""
-#             QLabel {
-#                 font-size: 16px;
-#                 font-weight: bold;
-#                 color: white;
-#                 background: transparent;
-#                 padding: 0;
-#                 margin: 0;
-#             }
-#         """)
-#         titulo_layout.addWidget(title_label)
 
         # Aplicar tema del módulo
         try:
@@ -217,115 +187,8 @@ class HerrajesView(BaseModuleView):
 
     def apply_high_contrast_style(self):
         """Aplicar estilos de alto contraste para mejor legibilidad."""
-        high_contrast_style = """
-        /* Estilo general de alto contraste para herrajes */
-        QWidget {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: "Segoe UI", Arial, sans-serif;
-            font-size: 13px;
-        }
-        
-        /* Tabla principal */
-        QTableWidget {
-            background-color: #ffffff;
-            color: #000000;
-            border: 2px solid #cccccc;
-            gridline-color: #dddddd;
-            selection-background-color: #0078d4;
-            selection-color: #ffffff;
-            font-size: 13px;
-        }
-        
-        QTableWidget::item {
-            background-color: #ffffff;
-            color: #000000;
-            border: 1px solid #dddddd;
-            padding: 8px;
-        }
-        
-        QTableWidget::item:selected {
-            background-color: #0078d4;
-            color: #ffffff;
-        }
-        
-        QTableWidget::item:hover {
-            background-color: #f0f0f0;
-            color: #000000;
-        }
-        
-        /* Headers de la tabla */
-        QHeaderView::section {
-            background-color: #f8f9fa;
-            color: #000000;
-            border: 1px solid #cccccc;
-            padding: 8px;
-            font-weight: bold;
-            font-size: 13px;
-        }
-        
-        /* Botones */
-        QPushButton {
-            background-color: #0078d4;
-            color: #ffffff;
-            border: 2px solid #0078d4;
-            border-radius: 4px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: bold;
-        }
-        
-        QPushButton:hover {
-            background-color: #106ebe;
-            border-color: #106ebe;
-        }
-        
-        QPushButton:pressed {
-            background-color: #005a9e;
-            border-color: #005a9e;
-        }
-        
-        /* Filtros y campos de entrada */
-        QComboBox, QLineEdit {
-            background-color: #ffffff;
-            color: #000000;
-            border: 2px solid #cccccc;
-            border-radius: 4px;
-            padding: 6px;
-            font-size: 13px;
-        }
-        
-        QComboBox:focus, QLineEdit:focus {
-            border-color: #0078d4;
-        }
-        
-        /* Tabs */
-        QTabWidget::pane {
-            border: 2px solid #cccccc;
-            background-color: #ffffff;
-        }
-        
-        QTabBar::tab {
-            background-color: #f8f9fa;
-            color: #000000;
-            border: 1px solid #cccccc;
-            padding: 8px 16px;
-            font-size: 13px;
-        }
-        
-        QTabBar::tab:selected {
-            background-color: #ffffff;
-            color: #000000;
-            border-bottom: 2px solid #0078d4;
-        }
-        
-        /* Labels */
-        QLabel {
-            color: #000000;
-            font-size: 13px;
-        }
-        """
-        self.setStyleSheet(high_contrast_style)
+        # Los estilos de alto contraste ahora se manejan a través del sistema unificado de temas
+        style_manager.apply_theme(self, "high_contrast")
 
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""
@@ -346,51 +209,18 @@ class HerrajesView(BaseModuleView):
 
         # Botón Nuevo Herraje con componente Rexus
         self.btn_nuevo = RexusButton("➕ Nuevo Herraje", "primary")
-        self.btn_nuevo.setStyleSheet("""
-            QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 130px;
-            }
-            QPushButton:hover {
-                background-color: #5a6268;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
         self.btn_nuevo.setToolTip("➕ Crear un nuevo herraje en el sistema")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
 
-        # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
-        self.input_busqueda.setPlaceholderText("🔍 Buscar herraje por nombre o descripción...")
+        # Campo de búsqueda usando componente Rexus
+        self.input_busqueda = RexusLineEdit("🔍 Buscar herraje por nombre o descripción...")
         self.input_busqueda.setToolTip("🔍 Buscar herrajes por nombre, descripción o tipo")
-        self.input_busqueda.setStyleSheet("""
-            QLineEdit {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 200px;
-            }
-            QLineEdit:focus {
-                border-color: #6c757d;
-            }
-        """)
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
 
-        # Filtro de tipo
-        self.combo_tipo = QComboBox()
-        self.combo_tipo.addItems([
+        # Filtro de tipo usando componente Rexus
+        self.combo_tipo = RexusComboBox([
             "🔩 Todos los tipos",
             "⚙️ Tornillería",
             "🔗 Cadenas",
@@ -400,66 +230,16 @@ class HerrajesView(BaseModuleView):
             "📏 Medición"
         ])
         self.combo_tipo.setToolTip("🔩 Filtrar herrajes por tipo")
-        self.combo_tipo.setStyleSheet("""
-            QComboBox {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 160px;
-            }
-            QComboBox:focus {
-                border-color: #6c757d;
-            }
-        """)
         layout.addWidget(self.combo_tipo)
 
-        # Botón buscar
-        self.btn_buscar = QPushButton("🔍 Buscar")
-        self.btn_buscar.setStyleSheet("""
-            QPushButton {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #0069d9;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón buscar usando componente Rexus
+        self.btn_buscar = RexusButton("🔍 Buscar", "primary")
         self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
 
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
-        self.btn_actualizar.setStyleSheet("""
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón actualizar usando componente Rexus
+        self.btn_actualizar = RexusButton("🔄 Actualizar", "success")
         self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de herrajes")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
@@ -467,52 +247,14 @@ class HerrajesView(BaseModuleView):
         # Separador y botones de acción
         layout.addStretch()
         
-        # Botón editar
-        self.btn_editar = QPushButton("✏️ Editar")
-        self.btn_editar.setStyleSheet("""
-            QPushButton {
-                background-color: #ffc107;
-                color: #212529;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #ffcd39;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón editar usando componente Rexus
+        self.btn_editar = RexusButton("✏️ Editar", "warning")
         self.btn_editar.setToolTip("✏️ Editar herraje seleccionado")
         self.btn_editar.setEnabled(False)
         layout.addWidget(self.btn_editar)
 
-        # Botón eliminar
-        self.btn_eliminar = QPushButton("🗑️ Eliminar")
-        self.btn_eliminar.setStyleSheet("""
-            QPushButton {
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #c82333;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón eliminar usando componente Rexus
+        self.btn_eliminar = RexusButton("🗑️ Eliminar", "danger")
         self.btn_eliminar.setToolTip("🗑️ Eliminar herraje seleccionado")
         self.btn_eliminar.setEnabled(False)
         layout.addWidget(self.btn_eliminar)
@@ -521,26 +263,9 @@ class HerrajesView(BaseModuleView):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de herrajes."""
-        panel = QGroupBox("📊 Estadísticas de Herrajes")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #17a2b8;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #17a2b8;
-            }
-        """)
+        panel = RexusGroupBox("📊 Estadísticas de Herrajes")
 
-        layout = QHBoxLayout(panel)
+        layout = RexusLayoutHelper.create_horizontal_layout()
 
         # Total herrajes
         self.lbl_total_herrajes = self.crear_stat_widget("🔩", "Total Herrajes", "0", "#17a2b8")
@@ -562,40 +287,25 @@ class HerrajesView(BaseModuleView):
 
     def crear_stat_widget(self, icono, titulo, valor, color):
         """Crea un widget de estadística individual."""
-        widget = QFrame()
-        widget.setStyleSheet(f"""
-            QFrame {{
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 10px;
-            }}
-            QFrame:hover {{
-                border-color: {color};
-                background-color: #f8f9fa;
-            }}
-        """)
+        widget = RexusFrame()
         
-        layout = QVBoxLayout(widget)
+        layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(5)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Icono y título
-        header_layout = QHBoxLayout()
+        header_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        icono_lbl = QLabel(icono)
-        icono_lbl.setStyleSheet(f"font-size: 18px; color: {color};")
+        icono_lbl = RexusLabel(icono, "subtitle")
         header_layout.addWidget(icono_lbl)
         
-        titulo_lbl = QLabel(titulo)
-        titulo_lbl.setStyleSheet(f"font-weight: bold; color: {color}; font-size: 12px;")
+        titulo_lbl = RexusLabel(titulo, "caption")
         header_layout.addWidget(titulo_lbl)
         
         layout.addLayout(header_layout)
 
         # Valor
-        valor_lbl = QLabel(valor)
-        valor_lbl.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
+        valor_lbl = RexusLabel(valor, "heading")
         valor_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_lbl)
 
@@ -629,37 +339,7 @@ class HerrajesView(BaseModuleView):
 
         # Configuraciones visuales
         self.tabla_principal.setAlternatingRowColors(True)
-        self.tabla_principal.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        
-        # Estilos de tabla modernos
-        self.tabla_principal.setStyleSheet("""
-            QTableWidget {
-                gridline-color: #dee2e6;
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                font-size: 13px;
-            }
-            QTableWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #f1f3f4;
-            }
-            QTableWidget::item:selected {
-                background-color: #e7f3ff;
-                color: #0066cc;
-            }
-            QTableWidget::item:hover {
-                background-color: #f8f9fa;
-            }
-            QHeaderView::section {
-                background-color: #f8f9fa;
-                padding: 10px;
-                border: none;
-                border-bottom: 2px solid #dee2e6;
-                font-weight: bold;
-                color: #495057;
-            }
-        """)
+        self.tabla_principal.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         
         # Conectar señal de selección
         self.tabla_principal.itemSelectionChanged.connect(self.on_herraje_seleccionado)
@@ -677,58 +357,11 @@ class HerrajesView(BaseModuleView):
         # Los estilos ahora los maneja el sistema unificado de temas
         pass
     
-    def configurar_estilos_legacy(self):
-        """Legacy method - deprecated."""
-        # Legacy code removed - now using unified theme system
-        pass
-        # Old QGroupBox {
-                    font-weight: bold;
-                    border-radius: 8px;
-                    margin-top: 1ex;
-                    padding-top: 10px;
-                }
-                QGroupBox::title {
-                    subcontrol-origin: margin;
-                    left: 10px;
-                    padding: 0 5px 0 5px;
-                }
-            """)
-            
-        except ImportError:
-            print("[WARNING] FormStyleManager no disponible, usando estilos básicos")
-            self.aplicar_estilo_basico()
 
     def aplicar_estilo_basico(self):
-        """Aplica estilos básicos como fallback (sin sintaxis incorrecta)."""
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f8f9fa;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            QPushButton {
-                background-color: #6c757d;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #5a6268;
-            }
-            QLineEdit, QComboBox {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                padding: 8px;
-                font-size: 14px;
-            }
-            QTableWidget {
-                background-color: white;
-                gridline-color: #dee2e6;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-            }
-        """)
+        """Aplica estilos básicos como fallback."""
+        # Los estilos básicos ahora se manejan a través del sistema unificado de temas
+        style_manager.apply_theme(self, "default")
 
     def set_loading_state(self, loading: bool):
         """Maneja el estado de carga de la interfaz."""
@@ -767,22 +400,22 @@ class HerrajesView(BaseModuleView):
         try:
             # Buscar los labels de valor dentro de cada widget de estadística
             if hasattr(self, 'lbl_total_herrajes'):
-                valor_labels = self.lbl_total_herrajes.findChildren(QLabel)
+                valor_labels = self.lbl_total_herrajes.findChildren(RexusLabel)
                 if len(valor_labels) >= 2:  # Segundo label es el valor
                     valor_labels[1].setText(str(stats.get("total_herrajes", 0)))
 
             if hasattr(self, 'lbl_herrajes_activos'):
-                valor_labels = self.lbl_herrajes_activos.findChildren(QLabel)
+                valor_labels = self.lbl_herrajes_activos.findChildren(RexusLabel)
                 if len(valor_labels) >= 2:
                     valor_labels[1].setText(str(stats.get("herrajes_activos", 0)))
 
             if hasattr(self, 'lbl_herrajes_inactivos'):
-                valor_labels = self.lbl_herrajes_inactivos.findChildren(QLabel)
+                valor_labels = self.lbl_herrajes_inactivos.findChildren(RexusLabel)
                 if len(valor_labels) >= 2:
                     valor_labels[1].setText(str(stats.get("herrajes_inactivos", 0)))
 
             if hasattr(self, 'lbl_tipos_disponibles'):
-                valor_labels = self.lbl_tipos_disponibles.findChildren(QLabel)
+                valor_labels = self.lbl_tipos_disponibles.findChildren(RexusLabel)
                 if len(valor_labels) >= 2:
                     valor_labels[1].setText(str(stats.get("tipos_disponibles", 0)))
 
@@ -822,131 +455,37 @@ class HerrajesView(BaseModuleView):
                 row, 3, QTableWidgetItem(str(registro.get("estado", "")))
             )
 
-            # Botón de acciones
-            btn_editar = QPushButton("Editar")
-            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            # Botón de acciones usando componente Rexus
+            btn_editar = RexusButton("Editar", "warning")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
     def crear_panel_integracion(self):
         """Crea el panel de integración con inventario."""
-        panel = QGroupBox("🔗 Integración con Inventario")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #28a745;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #28a745;
-            }
-        """)
+        panel = RexusGroupBox("🔗 Integración con Inventario")
 
-        layout = QHBoxLayout(panel)
+        layout = RexusLayoutHelper.create_horizontal_layout()
 
-        # Botón sincronizar con inventario
-        self.btn_sincronizar_inventario = QPushButton("🔄 Sincronizar con Inventario")
-        self.btn_sincronizar_inventario.setStyleSheet("""
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 160px;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón sincronizar con inventario usando componente Rexus
+        self.btn_sincronizar_inventario = RexusButton("🔄 Sincronizar con Inventario", "success")
         self.btn_sincronizar_inventario.setToolTip("🔄 Sincroniza herrajes con el inventario general")
         self.btn_sincronizar_inventario.clicked.connect(self.sincronizar_inventario)
         layout.addWidget(self.btn_sincronizar_inventario)
 
-        # Botón resumen de integración
-        self.btn_resumen_integracion = QPushButton("📊 Resumen Integración")
-        self.btn_resumen_integracion.setStyleSheet("""
-            QPushButton {
-                background-color: #17a2b8;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 140px;
-            }
-            QPushButton:hover {
-                background-color: #138496;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón resumen de integración usando componente Rexus
+        self.btn_resumen_integracion = RexusButton("📊 Resumen Integración", "info")
         self.btn_resumen_integracion.setToolTip("📊 Muestra resumen del estado de integración")
         self.btn_resumen_integracion.clicked.connect(self.mostrar_resumen_integracion)
         layout.addWidget(self.btn_resumen_integracion)
 
-        # Botón transferir a inventario
-        self.btn_transferir_inventario = QPushButton("📦 Transferir a Inventario")
-        self.btn_transferir_inventario.setStyleSheet("""
-            QPushButton {
-                background-color: #6f42c1;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 160px;
-            }
-            QPushButton:hover {
-                background-color: #5a36a3;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón transferir a inventario usando componente Rexus
+        self.btn_transferir_inventario = RexusButton("📦 Transferir a Inventario", "secondary")
         self.btn_transferir_inventario.setToolTip("📦 Transfiere herraje seleccionado al inventario general")
         self.btn_transferir_inventario.setEnabled(False)
         self.btn_transferir_inventario.clicked.connect(self.transferir_a_inventario)
         layout.addWidget(self.btn_transferir_inventario)
 
-        # Botón crear reserva
-        self.btn_crear_reserva = QPushButton("📝 Crear Reserva")
-        self.btn_crear_reserva.setStyleSheet("""
-            QPushButton {
-                background-color: #fd7e14;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 13px;
-                min-width: 120px;
-            }
-            QPushButton:hover {
-                background-color: #e8690b;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón crear reserva usando componente Rexus
+        self.btn_crear_reserva = RexusButton("📝 Crear Reserva", "warning")
         self.btn_crear_reserva.setToolTip("📝 Crear reserva del herraje para una obra")
         self.btn_crear_reserva.setEnabled(False)
         self.btn_crear_reserva.clicked.connect(self.crear_reserva_obra)
@@ -989,9 +528,8 @@ class HerrajesView(BaseModuleView):
         try:
             herraje_id = int(id_item.text())
             
-            # Solicitar cantidad al usuario
-            from PyQt6.QtWidgets import QInputDialog
-            cantidad, ok = QInputDialog.getInt(
+            # Solicitar cantidad al usuario usando StandardComponents
+            cantidad, ok = StandardComponents.get_integer_input(
                 self, 
                 "Cantidad a Transferir", 
                 "Ingrese la cantidad a transferir:",
@@ -1025,11 +563,10 @@ class HerrajesView(BaseModuleView):
         try:
             herraje_id = int(id_item.text())
             
-            # Solicitar datos de la reserva
-            from PyQt6.QtWidgets import QInputDialog
+            # Solicitar datos de la reserva usando StandardComponents
             
             # Solicitar ID de obra
-            obra_id, ok_obra = QInputDialog.getInt(
+            obra_id, ok_obra = StandardComponents.get_integer_input(
                 self,
                 "ID de Obra",
                 "Ingrese el ID de la obra:",
@@ -1040,7 +577,7 @@ class HerrajesView(BaseModuleView):
                 return
                 
             # Solicitar cantidad
-            cantidad, ok_cantidad = QInputDialog.getInt(
+            cantidad, ok_cantidad = StandardComponents.get_integer_input(
                 self,
                 "Cantidad a Reservar",
                 "Ingrese la cantidad a reservar:",
@@ -1051,7 +588,7 @@ class HerrajesView(BaseModuleView):
                 return
                 
             # Solicitar observaciones
-            observaciones, ok_obs = QInputDialog.getText(
+            observaciones, ok_obs = StandardComponents.get_text_input(
                 self,
                 "Observaciones",
                 "Observaciones (opcional):"

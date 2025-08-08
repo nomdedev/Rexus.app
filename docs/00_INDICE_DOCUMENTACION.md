@@ -75,6 +75,21 @@ Reporte integral de la auditoría de seguridad realizada.
 
 ---
 
+## Auditorías
+
+- docs/auditorias/00_resumen.md: Índice y resumen de auditoría
+- docs/auditorias/01_utils.md: Auditoría del módulo utils
+- docs/auditorias/02_api.md: Auditoría del módulo api
+- docs/auditorias/03_core.md: Auditoría del módulo core
+- docs/auditorias/04_main.md: Auditoría del módulo main
+- docs/auditorias/05_modules.md: Auditoría del módulo modules
+- docs/auditorias/06_security.md: Auditoría del módulo security
+- docs/auditorias/07_ui.md: Auditoría del módulo ui
+- docs/auditorias/08_scripts.md: Auditoría de scripts y archivos sueltos
+- docs/auditorias/99_otros.md: Auditoría de otros archivos
+
+---
+
 ## HERRAMIENTAS DE VALIDACIÓN 🔧
 
 ### tests/integration/security_validation.py 🆕 NUEVO

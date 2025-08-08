@@ -13,11 +13,15 @@ import pickle
 import hashlib
 import threading
 import gzip
+import logging
 from typing import Any, Dict, Optional, Tuple, List, Callable
 from datetime import datetime, timedelta
 from dataclasses import dataclass
 from functools import wraps
 import weakref
+
+# Configure secure logging
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -84,11 +88,19 @@ class CacheManager:
     
     def _serialize_value(self, value: Any) -> Tuple[bytes, bool]:
         """Serializa y opcionalmente comprime un valor."""
-        # Serializar
-        if isinstance(value, (str, int, float, bool)):
-            serialized = json.dumps(value).encode('utf-8')
-        else:
-            serialized = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
+        # WARNING: This method uses pickle for complex objects.
+        # Only use with trusted data to prevent deserialization attacks.
+        try:
+            # Serializar
+            if isinstance(value, (str, int, float, bool, type(None))):
+                serialized = json.dumps(value).encode('utf-8')
+            else:
+                # Log pickle usage for security auditing
+                logger.debug(f"Using pickle serialization for type: {type(value).__name__}")
+                serialized = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
+        except Exception as e:
+            logger.error(f"Error serializing cache value: {e}")
+            raise
         
         # Comprimir si supera el umbral
         compressed = False
@@ -98,8 +110,8 @@ class CacheManager:
                 if len(compressed_data) < len(serialized):
                     serialized = compressed_data
                     compressed = True
-            except:
-                pass  # Si falla la compresión, usar datos sin comprimir
+            except Exception as e:
+                logger.warning(f"Compression failed, using uncompressed data: {e}")
         
         return serialized, compressed
     
@@ -109,16 +121,22 @@ class CacheManager:
         if compressed:
             try:
                 data = gzip.decompress(data)
-            except:
+            except Exception as e:
+                logger.error(f"Error decompressing cache data: {e}")
                 raise ValueError("Error descomprimiendo datos del caché")
         
         # Deserializar
         try:
             # Intentar JSON primero (más rápido para tipos simples)
             return json.loads(data.decode('utf-8'))
-        except:
-            # Usar pickle para objetos complejos
-            return pickle.loads(data)
+        except (json.JSONDecodeError, UnicodeDecodeError):
+            try:
+                # Usar pickle para objetos complejos (ONLY for trusted data)
+                logger.debug("Using pickle deserialization for cached object")
+                return pickle.loads(data)
+            except Exception as e:
+                logger.error(f"Error deserializing cache data: {e}")
+                raise
     
     def _cleanup_expired(self):
         """Limpia entradas expiradas del caché."""
@@ -204,7 +222,7 @@ class CacheManager:
                 return True
                 
             except Exception as e:
-                print(f"Error almacenando en caché: {e}")
+                logger.error(f"Error storing value in cache: {e}", exc_info=True)
                 return False
     
     def get(self, key: Any, default: Any = None) -> Any:
@@ -259,7 +277,7 @@ class CacheManager:
                 return value
                 
             except Exception as e:
-                print(f"Error obteniendo del caché: {e}")
+                logger.error(f"Error retrieving value from cache: {e}", exc_info=True)
                 if self.enable_metrics:
                     self._stats.misses += 1
                 return default

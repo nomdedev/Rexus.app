@@ -14,6 +14,7 @@ from rexus.core.auth_manager import AuthManager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
+from rexus.modules.compras.inventory_integration import InventoryIntegration
 
 
 class ComprasController(QObject):
@@ -39,6 +40,15 @@ class ComprasController(QObject):
         # Inicializar modelos adicionales
         self.detalle_model = DetalleComprasModel(db_connection)
         self.proveedores_model = ProveedoresModel(db_connection)
+        
+        # Inicializar integración de inventario
+        try:
+            from rexus.core.database import get_inventario_connection
+            inventario_db = get_inventario_connection()
+            self.inventory_integration = InventoryIntegration(db_connection, inventario_db)
+        except Exception as e:
+            print(f"[WARNING] No se pudo inicializar integración de inventario: {e}")
+            self.inventory_integration = None
 
         # Conectar señales
         self.conectar_señales()
@@ -76,9 +86,7 @@ class ComprasController(QObject):
             self.mostrar_error("Error cargando datos iniciales", str(e))
 
     @auth_required
-    @auth_required
     def crear_orden(self, datos_orden):
-
         """
         Crea una nueva orden de compra.
 
@@ -113,7 +121,6 @@ class ComprasController(QObject):
             print(f"[ERROR COMPRAS CONTROLLER] Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
 
-    @auth_required
     @auth_required
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
@@ -294,6 +301,97 @@ class ComprasController(QObject):
         else:
             from rexus.utils.message_system import show_info
             show_info(self.view, titulo, mensaje)
+    
+    @auth_required
+    def procesar_recepcion_orden(self, orden_id, items_recibidos, datos_seguimiento):
+        """
+        Procesa la recepción completa de una orden con integración al inventario.
+        
+        Args:
+            orden_id: ID de la orden
+            items_recibidos: Lista de items recibidos con cantidades
+            datos_seguimiento: Datos del seguimiento de entrega
+        """
+        try:
+            # Actualizar estado de la orden
+            exito_estado = self.actualizar_estado_orden(orden_id, "RECIBIDA")
+            
+            if not exito_estado:
+                self.mostrar_error("Error", "No se pudo actualizar el estado de la orden")
+                return False
+            
+            # Procesar integración con inventario si está disponible
+            if self.inventory_integration:
+                exito_inventario = self.inventory_integration.procesar_recepcion_completa(
+                    orden_id, items_recibidos
+                )
+                
+                if exito_inventario:
+                    self.mostrar_mensaje("Éxito", 
+                        "Orden recibida y inventario actualizado correctamente")
+                else:
+                    show_warning(self.view, "Advertencia", 
+                        "Orden recibida pero hubo problemas actualizando el inventario")
+            else:
+                show_warning(self.view, "Advertencia", 
+                    "Orden recibida pero integración de inventario no disponible")
+            
+            # Registrar seguimiento
+            self._registrar_seguimiento_orden(orden_id, datos_seguimiento)
+            
+            # Actualizar vista
+            self.datos_actualizados.emit()
+            
+            return True
+            
+        except Exception as e:
+            print(f"[ERROR] Error procesando recepción de orden: {e}")
+            self.mostrar_error("Error", f"Error procesando recepción: {str(e)}")
+            return False
+    
+    def _registrar_seguimiento_orden(self, orden_id, datos_seguimiento):
+        """Registra información de seguimiento de la orden."""
+        try:
+            # Aquí se registrarían los datos de seguimiento en la base de datos
+            # Por ahora solo log para demostrar la funcionalidad
+            print(f"[INFO] Seguimiento registrado para orden {orden_id}: {datos_seguimiento}")
+            
+        except Exception as e:
+            print(f"[ERROR] Error registrando seguimiento: {e}")
+    
+    @auth_required 
+    def verificar_disponibilidad_antes_orden(self, items_solicitud):
+        """
+        Verifica disponibilidad en inventario antes de crear una orden.
+        
+        Args:
+            items_solicitud: Lista de items solicitados
+            
+        Returns:
+            dict: Resultado de la verificación
+        """
+        try:
+            if not self.inventory_integration:
+                return {
+                    'disponible_completo': True,
+                    'advertencia': 'Verificación de inventario no disponible'
+                }
+            
+            resultado = self.inventory_integration.verificar_disponibilidad_stock(items_solicitud)
+            
+            if not resultado.get('disponible_completo', True):
+                advertencias = resultado.get('advertencias', [])
+                show_warning(
+                    self.view, 
+                    "Stock Insuficiente",
+                    "Algunos items no tienen stock suficiente:\n" + "\n".join(advertencias)
+                )
+            
+            return resultado
+            
+        except Exception as e:
+            print(f"[ERROR] Error verificando disponibilidad: {e}")
+            return {'disponible_completo': False, 'error': str(e)}
 
 
     @auth_required
@@ -362,7 +460,7 @@ class ComprasController(QObject):
             return []
 
 
-    @manager_required
+    @admin_required
     def generar_reporte_compras(self, fecha_inicio, fecha_fin, proveedor_id=None):
         """Genera reporte de compras por período"""
         try:
@@ -467,7 +565,6 @@ class ComprasController(QObject):
 
     # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
 
-    @auth_required
     @auth_required
     def crear_proveedor(self, datos_proveedor):
         """
@@ -650,7 +747,7 @@ class ComprasController(QObject):
 
     # === MÉTODOS DE UTILIDAD ===
 
-    @manager_required
+    @admin_required
     def generar_reporte_completo(self):
         """
         Genera un reporte completo del módulo de compras.

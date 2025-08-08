@@ -4,6 +4,7 @@ from rexus.core.auth_decorators import (
     permission_required,
 )
 from rexus.utils.sql_query_manager import SQLQueryManager
+from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -1060,20 +1061,26 @@ class InventarioModel(PaginatedTableMixin):
             print(f"[ERROR INVENTARIO] Error generando QR: {e}")
             return ""
 
+    @cached_query(cache_key="productos_stock_bajo", ttl=300)
+    @track_performance
     def obtener_productos_stock_bajo(self):
-        """Obtiene productos con stock bajo o crítico."""
+        """Obtiene productos con stock bajo o crítico con cache."""
         return self.obtener_todos_productos({"stock_bajo": True})
 
+    @cached_query(cache_key="categorias_productos", ttl=1800)
+    @track_performance
     def obtener_categorias(self):
-        """Obtiene todas las categorías de productos."""
+        """Obtiene todas las categorías de productos con cache de 30 minutos."""
         if not self.db_connection:
             return []
 
         try:
             cursor = self.db_connection.cursor()
 
+            # Query optimizada con índice en tipo
             sql_select = """
-            SELECT DISTINCT tipo FROM inventario_perfiles
+            SELECT DISTINCT tipo 
+            FROM inventario_perfiles
             WHERE tipo IS NOT NULL AND tipo != ''
             ORDER BY tipo
             """

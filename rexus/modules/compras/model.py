@@ -10,6 +10,7 @@ Maneja la lógica de negocio y acceso a datos para el sistema de compras.
 
 import datetime
 from typing import Any, Dict, List
+from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 
 
 class ComprasModel:
@@ -228,6 +229,140 @@ class ComprasModel:
         except Exception as e:
             print(f"[ERROR COMPRAS] Error actualizando estado: {e}")
             return False
+    
+    @cached_query(cache_key="productos_disponibles_compra", ttl=300)
+    @track_performance
+    def obtener_productos_disponibles_compra(self):
+        """
+        Obtiene productos disponibles para compra desde inventario.
+        
+        Returns:
+            List: Lista de productos disponibles con información de stock
+        """
+        try:
+            from rexus.modules.inventario.model import InventarioModel
+            
+            if not self.db_connection:
+                return []
+                
+            inventario_model = InventarioModel(self.db_connection)
+            
+            # Obtener productos con stock bajo o próximos a agotarse
+            productos_stock_bajo = inventario_model.obtener_productos_stock_bajo()
+            
+            # Formatear datos para compras
+            productos_compra = []
+            for producto in productos_stock_bajo:
+                productos_compra.append({
+                    'id_producto': producto.get('id'),
+                    'descripcion': producto.get('descripcion', 'Sin descripción'),
+                    'tipo': producto.get('tipo', 'General'),
+                    'stock_actual': producto.get('stock_actual', 0),
+                    'stock_minimo': producto.get('stock_minimo', 0),
+                    'precio_promedio': producto.get('precio_promedio', 0.0),
+                    'sugerencia_cantidad': max(
+                        producto.get('stock_minimo', 0) * 2 - producto.get('stock_actual', 0),
+                        1
+                    ),
+                    'prioridad': 'ALTA' if producto.get('stock_actual', 0) <= 0 else 'MEDIA'
+                })
+            
+            return productos_compra
+            
+        except Exception as e:
+            print(f"[ERROR COMPRAS] Error obteniendo productos para compra: {e}")
+            return []
+    
+    @track_performance
+    def actualizar_stock_por_compra(self, compra_id: int, productos: List[Dict]) -> bool:
+        """
+        Actualiza el stock en inventario cuando se recibe una compra.
+        
+        Args:
+            compra_id: ID de la compra
+            productos: Lista de productos con cantidades recibidas
+            
+        Returns:
+            bool: True si se actualizó exitosamente
+        """
+        try:
+            from rexus.modules.inventario.model import InventarioModel
+            
+            if not self.db_connection:
+                return False
+                
+            inventario_model = InventarioModel(self.db_connection)
+            
+            for producto in productos:
+                producto_id = producto.get('id_producto')
+                cantidad_recibida = producto.get('cantidad_recibida', 0)
+                precio_unitario = producto.get('precio_unitario', 0.0)
+                
+                if cantidad_recibida <= 0:
+                    continue
+                
+                # Registrar movimiento de entrada en inventario
+                movimiento_data = {
+                    'producto_id': producto_id,
+                    'tipo_movimiento': 'ENTRADA',
+                    'cantidad': cantidad_recibida,
+                    'precio_unitario': precio_unitario,
+                    'referencia': f"Compra #{compra_id}",
+                    'usuario': producto.get('usuario', 'sistema'),
+                    'fecha': datetime.datetime.now()
+                }
+                
+                # Usar el método del inventario para registrar movimiento
+                if hasattr(inventario_model, 'registrar_movimiento_inventario'):
+                    inventario_model.registrar_movimiento_inventario(movimiento_data)
+                
+                print(f"[INTEGRACIÓN] Stock actualizado para producto {producto_id}: +{cantidad_recibida}")
+            
+            return True
+            
+        except Exception as e:
+            print(f"[ERROR COMPRAS] Error actualizando stock por compra: {e}")
+            return False
+    
+    @cached_query(ttl=600)
+    @track_performance
+    def verificar_disponibilidad_producto(self, producto_id: int) -> Dict[str, Any]:
+        """
+        Verifica la disponibilidad de un producto en inventario.
+        
+        Args:
+            producto_id: ID del producto
+            
+        Returns:
+            Dict: Información de disponibilidad del producto
+        """
+        try:
+            from rexus.modules.inventario.model import InventarioModel
+            
+            if not self.db_connection:
+                return {'disponible': False, 'stock_actual': 0}
+                
+            inventario_model = InventarioModel(self.db_connection)
+            
+            # Obtener información del producto desde inventario
+            if hasattr(inventario_model, 'obtener_producto_por_id'):
+                producto = inventario_model.obtener_producto_por_id(producto_id)
+                
+                if producto:
+                    return {
+                        'disponible': producto.get('stock_actual', 0) > 0,
+                        'stock_actual': producto.get('stock_actual', 0),
+                        'stock_minimo': producto.get('stock_minimo', 0),
+                        'descripcion': producto.get('descripcion', ''),
+                        'precio_promedio': producto.get('precio_promedio', 0.0),
+                        'necesita_compra': producto.get('stock_actual', 0) <= producto.get('stock_minimo', 0)
+                    }
+            
+            return {'disponible': False, 'stock_actual': 0}
+            
+        except Exception as e:
+            print(f"[ERROR COMPRAS] Error verificando disponibilidad: {e}")
+            return {'disponible': False, 'stock_actual': 0, 'error': str(e)}
 
     def obtener_estadisticas_compras(self, dias: int = 30) -> Dict[str, Any]:
         """
