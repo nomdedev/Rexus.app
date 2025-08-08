@@ -143,96 +143,12 @@ class UsuariosView(BaseModuleView):
         self.set_main_table(self.tabla_usuarios)
     
     def apply_theme(self):
-        """Aplica el tema usando alto contraste para mejor legibilidad."""
-        # Aplicar estilos de alto contraste
-        self.setStyleSheet("""
-            /* Estilo de alto contraste para usuarios */
-            QWidget {
-                background-color: #ffffff;
-                color: #000000;
-                font-family: "Segoe UI", Arial, sans-serif;
-                font-size: 13px;
-            }
-            
-            /* Tabla de usuarios */
-            QTableWidget {
-                background-color: #ffffff;
-                color: #000000;
-                border: 2px solid #cccccc;
-                gridline-color: #dddddd;
-                selection-background-color: #0078d4;
-                selection-color: #ffffff;
-                font-size: 13px;
-            }
-            
-            QTableWidget::item {
-                background-color: #ffffff;
-                color: #000000;
-                border: 1px solid #dddddd;
-                padding: 8px;
-            }
-            
-            QTableWidget::item:selected {
-                background-color: #0078d4;
-                color: #ffffff;
-            }
-            
-            QTableWidget::item:hover {
-                background-color: #f0f0f0;
-                color: #000000;
-            }
-            
-            /* Headers de la tabla */
-            QHeaderView::section {
-                background-color: #f8f9fa;
-                color: #000000;
-                border: 1px solid #cccccc;
-                padding: 8px;
-                font-weight: bold;
-                font-size: 13px;
-            }
-            
-            /* Botones */
-            QPushButton {
-                background-color: #0078d4;
-                color: #ffffff;
-                border: 2px solid #0078d4;
-                border-radius: 4px;
-                padding: 8px 16px;
-                font-size: 13px;
-                font-weight: bold;
-            }
-            
-            QPushButton:hover {
-                background-color: #106ebe;
-                border-color: #106ebe;
-            }
-            
-            QPushButton:pressed {
-                background-color: #005a9e;
-                border-color: #005a9e;
-            }
-            
-            /* Campos de entrada */
-            QLineEdit, QComboBox {
-                background-color: #ffffff;
-                color: #000000;
-                border: 2px solid #cccccc;
-                border-radius: 4px;
-                padding: 6px;
-                font-size: 13px;
-            }
-            
-            QLineEdit:focus, QComboBox:focus {
-                border-color: #0078d4;
-            }
-            
-            /* Labels */
-            QLabel {
-                color: #000000;
-                font-size: 13px;
-            }
-        """)
+        """Aplica el tema usando el sistema unificado de Rexus."""
+        # Usar el sistema de temas de Rexus en lugar de CSS inline
+        style_manager.apply_theme(self, "high_contrast")
+        
+        # Configuraciones específicas para el módulo de usuarios si es necesario
+        self._apply_usuarios_specific_styling()
     
     def nuevo_usuario(self):
         """Abre el diálogo para crear un nuevo usuario."""

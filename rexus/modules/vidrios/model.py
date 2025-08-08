@@ -21,23 +21,21 @@ from pathlib import Path
 # Importar utilidades requeridas
 from rexus.utils.sql_script_loader import sql_script_loader
 
+# Importar sistema unificado de sanitización
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-
-    data_sanitizer = DataSanitizer()
+    from rexus.utils.unified_sanitizer import unified_sanitizer as data_sanitizer
+    SANITIZER_AVAILABLE = True
+    print("OK [VIDRIOS] Sistema unificado de sanitización cargado")
 except ImportError:
-    # Fallback básico si no está disponible
-    class DataSanitizer:
-        def sanitize_string(self, value, max_length=None):
-            return str(value) if value else ""
-
-        def sanitize_numeric(self, value, min_val=None, max_val=None):
-            return float(value) if value else 0.0
-
-        def sanitize_integer(self, value, min_val=None, max_val=None):
-            return int(value) if value else 0
-
-    data_sanitizer = DataSanitizer()
+    try:
+        from rexus.utils.data_sanitizer import DataSanitizer
+        data_sanitizer = DataSanitizer()
+        SANITIZER_AVAILABLE = True
+        print("OK [VIDRIOS] DataSanitizer legacy cargado")
+    except ImportError:
+        print("ERROR [VIDRIOS] No se pudo cargar ningún sistema de sanitización")
+        SANITIZER_AVAILABLE = False
+        data_sanitizer = None
 
 
 class VidriosModel:
@@ -59,13 +57,139 @@ class VidriosModel:
         self.sql_loader = sql_script_loader
 
         # Inicializar utilidades de seguridad
-        self.data_sanitizer = data_sanitizer
+        self.sanitizer_available = SANITIZER_AVAILABLE
+        if self.sanitizer_available:
+            self.data_sanitizer = data_sanitizer
+            print("OK [VIDRIOS] Sanitizador inicializado correctamente")
+        else:
+            self.data_sanitizer = None
+            print("WARNING [VIDRIOS] Sin sistema de sanitización - funcionalidad limitada")
 
         if not self.db_connection:
             print(
                 "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+    
+    def _sanitizar_entrada_segura(self, value, tipo='string', **kwargs):
+        """
+        Sanitiza entrada de forma segura manejando la disponibilidad del sanitizador.
+        
+        Args:
+            value: Valor a sanitizar
+            tipo: Tipo de sanitización ('string', 'numeric', 'integer')
+            **kwargs: Argumentos adicionales (max_length, min_val, max_val)
+            
+        Returns:
+            Valor sanitizado o fallback seguro
+        """
+        if not self.sanitizer_available or not self.data_sanitizer:
+            # Fallback seguro básico
+            if tipo == 'string':
+                if value is None:
+                    return ""
+                result = str(value).strip()
+                max_length = kwargs.get('max_length')
+                if max_length:
+                    result = result[:max_length]
+                return result
+            elif tipo == 'numeric':
+                try:
+                    result = float(value) if value is not None else 0.0
+                    min_val = kwargs.get('min_val')
+                    max_val = kwargs.get('max_val')
+                    if min_val is not None and result < min_val:
+                        result = min_val
+                    if max_val is not None and result > max_val:
+                        result = max_val
+                    return result
+                except (ValueError, TypeError):
+                    return 0.0
+            elif tipo == 'integer':
+                try:
+                    result = int(float(value)) if value is not None else 0
+                    min_val = kwargs.get('min_val')
+                    max_val = kwargs.get('max_val')
+                    if min_val is not None and result < min_val:
+                        result = min_val
+                    if max_val is not None and result > max_val:
+                        result = max_val
+                    return result
+                except (ValueError, TypeError):
+                    return 0
+            else:
+                return value
+        
+        # Usar sanitizador disponible
+        try:
+            if tipo == 'string':
+                return self.data_sanitizer.sanitize_string(value, kwargs.get('max_length'))
+            elif tipo == 'numeric':
+                return self.data_sanitizer.sanitize_numeric(value, kwargs.get('min_val'), kwargs.get('max_val'))
+            elif tipo == 'integer':
+                return self.data_sanitizer.sanitize_integer(value, kwargs.get('min_val'), kwargs.get('max_val'))
+            else:
+                return value
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error en sanitización: {e}")
+            # Fallback en caso de error
+            return self._sanitizar_entrada_segura(value, tipo, **kwargs)
+    
+    def _sanitizar_datos_vidrio(self, datos_vidrio: dict) -> dict:
+        """
+        Sanitiza todos los datos de un vidrio de forma centralizada.
+        
+        Args:
+            datos_vidrio: Diccionario con datos del vidrio a sanitizar
+            
+        Returns:
+            Diccionario con datos sanitizados
+        """
+        datos_limpios = {}
+        
+        # Sanitizar strings con longitudes apropiadas
+        datos_limpios["codigo"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("codigo", ""), 'string', max_length=20
+        )
+        datos_limpios["descripcion"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("descripcion", ""), 'string', max_length=200
+        )
+        datos_limpios["tipo"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("tipo", ""), 'string', max_length=50
+        )
+        datos_limpios["proveedor"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("proveedor", ""), 'string', max_length=100
+        )
+        datos_limpios["color"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("color", ""), 'string', max_length=50
+        )
+        datos_limpios["tratamiento"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("tratamiento", ""), 'string', max_length=50
+        )
+        datos_limpios["dimensiones_especiales"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("dimensiones_especiales", ""), 'string', max_length=100
+        )
+        datos_limpios["estado"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("estado", "ACTIVO"), 'string', max_length=20
+        )
+        datos_limpios["observaciones"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("observaciones", ""), 'string', max_length=500
+        )
+        
+        # Sanitizar valores numéricos
+        datos_limpios["espesor"] = self._sanitizar_entrada_segura(
+            datos_vidrio.get("espesor", 0), 'numeric', min_val=0, max_val=100
+        )
+        
+        # Manejar precios (pueden ser múltiples)
+        for campo_precio in ["precio_unitario", "precio_metro2", "precio_compra"]:
+            if campo_precio in datos_vidrio:
+                precio_limpio = self._sanitizar_entrada_segura(
+                    datos_vidrio[campo_precio], 'numeric', min_val=0, max_val=999999.99
+                )
+                datos_limpios[campo_precio] = precio_limpio
+        
+        return datos_limpios
 
     def _validate_table_name(self, table_name: str) -> str:
         """
@@ -417,8 +541,8 @@ class VidriosModel:
 
         try:
             # Sanitizar término de búsqueda
-            termino_limpio = self.data_sanitizer.sanitize_string(
-                termino_busqueda, max_length=100
+            termino_limpio = self._sanitizar_entrada_segura(
+                termino_busqueda, 'string', max_length=100
             )
 
             if not termino_limpio:
@@ -465,50 +589,14 @@ class VidriosModel:
             return False, "No hay conexión a la base de datos", None
 
         try:
-            # Sanitizar y validar todos los datos
-            datos_limpios = {}
+            # Sanitizar y validar todos los datos usando función centralizada
+            datos_limpios = self._sanitizar_datos_vidrio(datos_vidrio)
 
-            # Sanitizar strings
-            datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("codigo", ""), max_length=20
-            )
-            datos_limpios["descripcion"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("descripcion", ""), max_length=200
-            )
-            datos_limpios["tipo"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("tipo", ""), max_length=50
-            )
-            datos_limpios["proveedor"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("proveedor", ""), max_length=100
-            )
-            datos_limpios["color"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("color", ""), max_length=50
-            )
-            datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("tratamiento", ""), max_length=100
-            )
-            datos_limpios["dimensiones_disponibles"] = (
-                self.data_sanitizer.sanitize_string(
-                    datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
-                )
-            )
-            datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("estado", "ACTIVO"), max_length=20
-            )
-            datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
-                datos_vidrio.get("observaciones", ""), max_length=500
-            )
-
-            # Sanitizar numericos
-            datos_limpios["espesor"] = self.data_sanitizer.sanitize_numeric(
-                datos_vidrio.get("espesor", 0), min_val=0, max_val=50
-            )
-
-            # Validar precio con lógica especial para campos de precio
+            # Validación específica de precio que no está en la función centralizada
             precio_original = datos_vidrio.get("precio_m2")
             if precio_original and precio_original != "":
-                precio_limpio = self.data_sanitizer.sanitize_numeric(
-                    precio_original, min_val=0
+                precio_limpio = self._sanitizar_entrada_segura(
+                    precio_original, 'numeric', min_val=0
                 )
                 if precio_limpio is None:
                     return False, "Precio por m2 inválido", None

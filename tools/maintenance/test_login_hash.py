@@ -54,17 +54,33 @@ def test_password_hash():
             print(f"Rol: {db_rol}")
             print(f"Estado: {db_estado}")
             
-            # Probar diferentes contraseñas
+            # 🔒 SEGURIDAD: Usar sistema de verificación seguro
+            import sys
+            from pathlib import Path
+            sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+            from rexus.utils.password_security import verify_password_secure
+            
+            # Probar diferentes contraseñas de forma segura
             test_passwords = ["admin", "Admin", "123456", "password"]
             
-            print(f"\nProbando diferentes contraseñas:")
+            print(f"\nProbando diferentes contraseñas (verificación segura):")
             for test_pwd in test_passwords:
-                computed_hash = hashlib.sha256(test_pwd.encode()).hexdigest()
-                matches = computed_hash == db_hash
-                print(f"  '{test_pwd}' -> {computed_hash[:20]}... {'COINCIDE' if matches else 'NO COINCIDE'}")
-                
-                if matches:
-                    print(f"  *** CONTRASEÑA CORRECTA: '{test_pwd}' ***")
+                try:
+                    # ✅ Verificación segura en lugar de SHA256 simple
+                    matches = verify_password_secure(test_pwd, db_hash)
+                    print(f"  '{test_pwd}' -> {'COINCIDE' if matches else 'NO COINCIDE'}")
+                    
+                    if matches:
+                        print(f"  *** CONTRASEÑA CORRECTA: '{test_pwd}' ***")
+                except Exception as e:
+                    # Si el hash existente es SHA256, intentar migración
+                    computed_hash = hashlib.sha256(test_pwd.encode()).hexdigest()
+                    matches = computed_hash == db_hash
+                    print(f"  '{test_pwd}' -> {computed_hash[:20]}... {'COINCIDE (HASH LEGACY)' if matches else 'NO COINCIDE'}")
+                    
+                    if matches:
+                        print(f"  *** CONTRASEÑA CORRECTA (HASH LEGACY): '{test_pwd}' ***")
+                        print(f"  ⚠️  RECOMENDACIÓN: Migrar hash a sistema seguro")
         
         else:
             print("No se encontro usuario 'admin'")

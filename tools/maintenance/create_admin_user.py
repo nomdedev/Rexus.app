@@ -47,10 +47,19 @@ def create_admin_user():
         cursor.execute("DELETE FROM usuarios WHERE usuario = 'admin'")
         conn.commit()
         
-        # 2. Crear hash de contraseña para 'admin'
-        admin_password = 'admin'
-        password_hash = hashlib.sha256(admin_password.encode()).hexdigest()
-        print(f"2. Hash de contraseña generado: {password_hash}")
+        # 🔒 SEGURIDAD: 2. Hash seguro de contraseña
+        import getpass
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+        from rexus.utils.password_security import hash_password_secure
+        
+        admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
+        
+        if not admin_password or len(admin_password) < 8:
+            print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+            return
+            
+        password_hash = hash_password_secure(admin_password)
+        print("✅ 2. Hash seguro de contraseña generado")
         
         # 3. Insertar usuario admin
         print("3. Insertando usuario admin...")
@@ -109,11 +118,12 @@ def create_admin_user():
         cursor.close()
         conn.close()
         
-        print(f"\n✓ USUARIO ADMIN CREADO EXITOSAMENTE")
-        print(f"Credenciales:")
-        print(f"  Usuario: admin")
-        print(f"  Contraseña: admin")
-        print(f"  Rol: admin")
+        print("\n✓ USUARIO ADMIN CREADO EXITOSAMENTE")
+        print("Credenciales:")
+        print("  Usuario: admin")
+        print("  Contraseña: [La que ingresó]")
+        print("  Rol: admin")
+        print("\n🔒 SEGURIDAD: Contraseña hasheada de forma segura")
         
         return True
         

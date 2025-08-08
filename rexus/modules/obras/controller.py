@@ -33,7 +33,9 @@ class ObrasController(QObject):
         self.logistica_controller = logistica_controller
         self.usuario_actual = "SISTEMA"
 
+        # Asegurar que la vista tiene referencia al controller
         if self.view:
+            self.view.controller = self
             self.conectar_señales()
 
     def conectar_señales(self):
@@ -237,19 +239,30 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error cambiando estado: {e}")
             self.mostrar_mensaje_error(f"Error cambiando estado: {str(e)}")
 
+    def aplicar_filtros(self, filtros):
+        """Aplica filtros a las obras."""
+        try:
+            if not self.model:
+                self.mostrar_mensaje_error("Modelo no inicializado")
+                return
+                
+            obras = self.model.obtener_obras_filtradas(filtros)
+            self.view.cargar_obras_en_tabla(obras)
+            self.actualizar_estadisticas()
+            print(f"[OBRAS CONTROLLER] Filtradas {len(obras)} obras")
+
+        except Exception as e:
+            print(f"[ERROR OBRAS CONTROLLER] Error aplicando filtros: {e}")
+            self.mostrar_mensaje_error(f"Error aplicando filtros: {str(e)}")
+
     def filtrar_obras(self):
         """Filtra las obras según los criterios seleccionados."""
         try:
-            filtros = self.view.obtener_filtros_aplicados()
-            obras = self.model.obtener_obras_filtradas(
-                estado=filtros.get("estado", ""),
-                responsable=filtros.get("responsable", ""),
-                fecha_inicio=filtros.get("fecha_inicio"),
-                fecha_fin=filtros.get("fecha_fin"),
-            )
-
-            self.view.cargar_obras_en_tabla(obras)
-            print(f"[OBRAS CONTROLLER] Filtradas {len(obras)} obras")
+            if hasattr(self.view, 'obtener_filtros_aplicados'):
+                filtros = self.view.obtener_filtros_aplicados()
+                self.aplicar_filtros(filtros)
+            else:
+                print("[OBRAS CONTROLLER] Vista no tiene método obtener_filtros_aplicados")
 
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error filtrando obras: {e}")

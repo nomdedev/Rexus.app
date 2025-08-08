@@ -10,28 +10,34 @@ from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtGui import QColor, QFont
 from PyQt6.QtWidgets import (
     QAbstractItemView,
-    QComboBox,
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QSpinBox,
     QTableWidgetItem,
     QTabWidget,
-    QVBoxLayout,
     QWidget,
-    QCheckBox,
-    QTextEdit,
     QSplitter,
     QHeaderView,
     QMessageBox,
-    QProgressBar,
 )
 
-# Importar componentes del framework UI estandarizado
+# Importar componentes del framework de estandarización UI
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusGroupBox,
+    RexusFrame,
+    RexusSpinBox,
+    RexusCheckBox,
+    RexusTextEdit,
+    RexusProgressBar,
+    RexusColors,
+    RexusFonts,
+    RexusLayoutHelper
+)
+from rexus.ui.templates.base_module_view import BaseModuleView
 from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.xss_protection import FormProtector
 
@@ -42,7 +48,7 @@ except ImportError:
     ObrasAsociadasDialog = None
 
 
-class InventarioView(QWidget):
+class InventarioView(BaseModuleView):
     """Vista mejorada del módulo de inventario con todas las funcionalidades."""
 
     # Señales para comunicación MVC
@@ -58,7 +64,7 @@ class InventarioView(QWidget):
     solicitar_importar = pyqtSignal()
 
     def __init__(self):
-        super().__init__()
+        super().__init__("📦 Gestión de Inventario")
         self.controller = None
         self.productos_actuales = []
         self.filtros_activos = {}
@@ -80,26 +86,20 @@ class InventarioView(QWidget):
             self._on_dangerous_content
         )
 
-        self.init_ui()
+        self.setup_inventario_ui()
 
-    def init_ui(self):
-        """Inicializa la interfaz de usuario mejorada."""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(5)
-        layout.setContentsMargins(5, 5, 5, 5)
-
-        # Header con información y controles principales
-        header_widget = self.crear_header()
-        layout.addWidget(header_widget)
-
+    def setup_inventario_ui(self):
+        """Configura la UI específica del módulo de inventario."""
+        # Configurar controles específicos
+        self.setup_inventario_controls()
+        
         # Panel de filtros avanzados (colapsable)
         self.panel_filtros = self.crear_panel_filtros_avanzados()
-        layout.addWidget(self.panel_filtros)
+        self.add_to_main_content(self.panel_filtros)
 
         # Splitter principal para dividir tabla y panel lateral
         splitter = QSplitter(Qt.Orientation.Horizontal)
-        layout.addWidget(splitter)
-
+        
         # Widget principal de la tabla
         tabla_widget = self.crear_widget_tabla_principal()
         splitter.addWidget(tabla_widget)
@@ -110,100 +110,59 @@ class InventarioView(QWidget):
 
         # Configurar proporciones del splitter
         splitter.setSizes([700, 300])  # 70% tabla, 30% panel lateral
+        
+        self.add_to_main_content(splitter)
 
         # Panel de información y paginación en la parte inferior
         footer_widget = self.crear_footer()
-        layout.addWidget(footer_widget)
+        self.add_to_main_content(footer_widget)
 
-        # Aplicar estilos
-        self.aplicar_estilos_mejorados()
+        # Aplicar tema del módulo
+        self.apply_theme()
         
-    def crear_header(self):
-        """Crea el header con título y controles principales."""
-        header = QFrame()
-        header.setFrameStyle(QFrame.Shape.Box)
-        header.setMaximumHeight(80)
+    def setup_inventario_controls(self):
+        """Configura los controles específicos del módulo de inventario."""
+        # Añadir controles al panel principal
+        controls_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        layout = QHBoxLayout(header)
+        # Botones principales de acción con componentes Rexus
+        self.btn_nuevo_producto = RexusButton("➕ Nuevo Producto", "primary")
+        controls_layout.addWidget(self.btn_nuevo_producto)
         
-        # Título del módulo
-        titulo = QLabel("📦 GESTIÓN DE INVENTARIO")
-        titulo.setFont(QFont("Arial", 14, QFont.Weight.Bold))
-        titulo.setStyleSheet("color: #2c3e50; padding: 10px;")
-        layout.addWidget(titulo)
+        self.btn_importar = RexusButton("📥 Importar", "secondary")
+        controls_layout.addWidget(self.btn_importar)
         
-        layout.addStretch()
+        self.btn_exportar = RexusButton("📤 Exportar", "secondary")
+        controls_layout.addWidget(self.btn_exportar)
         
-        # Botones principales de acción
-        self.btn_nuevo_producto = QPushButton("➕ Nuevo Producto")
-        self.btn_nuevo_producto.setStyleSheet("""
-            QPushButton {
-                background-color: #27ae60;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover { background-color: #2ecc71; }
-        """)
-        layout.addWidget(self.btn_nuevo_producto)
-        
-        self.btn_importar = QPushButton("📥 Importar")
-        self.btn_importar.setStyleSheet("""
-            QPushButton {
-                background-color: #3498db;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover { background-color: #5dade2; }
-        """)
-        layout.addWidget(self.btn_importar)
-        
-        self.btn_exportar = QPushButton("📤 Exportar")
-        self.btn_exportar.setStyleSheet("""
-            QPushButton {
-                background-color: #8e44ad;
-                color: white;
-                border: none;
-                padding: 10px 20px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover { background-color: #a569bd; }
-        """)
-        layout.addWidget(self.btn_exportar)
-        
-        return header
+        # Añadir controles al área principal
+        self.add_to_main_content(controls_layout)
         
     def crear_panel_filtros_avanzados(self):
         """Crea panel de filtros avanzados y búsqueda."""
-        panel = QGroupBox("🔍 Búsqueda y Filtros Avanzados")
+        panel = RexusGroupBox("🔍 Búsqueda y Filtros Avanzados")
         panel.setCheckable(True)
         panel.setChecked(True)  # Expandido por defecto
         
-        layout = QVBoxLayout(panel)
+        layout = RexusLayoutHelper.create_vertical_layout()
         
         # Primera fila - Búsqueda principal
-        fila1 = QHBoxLayout()
+        fila1 = RexusLayoutHelper.create_horizontal_layout()
         
         # Campo de búsqueda principal con búsqueda en tiempo real
-        self.input_busqueda = QLineEdit()
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar por código, descripción, categoría...")
         self.input_busqueda.textChanged.connect(self.on_texto_busqueda_cambiado)
         self.input_busqueda.setMinimumWidth(300)
-        fila1.addWidget(QLabel("Búsqueda:"))
+        fila1.addWidget(RexusLabel("Búsqueda:", "body"))
         fila1.addWidget(self.input_busqueda)
         
         # Botón buscar y limpiar
-        self.btn_buscar = QPushButton("🔍 Buscar")
+        self.btn_buscar = RexusButton("🔍 Buscar", "secondary")
         self.btn_buscar.clicked.connect(self.ejecutar_busqueda)
         fila1.addWidget(self.btn_buscar)
         
-        self.btn_limpiar_busqueda = QPushButton("🧹 Limpiar")
+        self.btn_limpiar_busqueda = RexusButton("🧹 Limpiar", "secondary")
         self.btn_limpiar_busqueda.clicked.connect(self.limpiar_busqueda)
         fila1.addWidget(self.btn_limpiar_busqueda)
         
@@ -211,11 +170,11 @@ class InventarioView(QWidget):
         layout.addLayout(fila1)
         
         # Segunda fila - Filtros específicos
-        fila2 = QHBoxLayout()
+        fila2 = RexusLayoutHelper.create_horizontal_layout()
         
         # Filtro por categoría
-        fila2.addWidget(QLabel("Categoría:"))
-        self.combo_categoria = QComboBox()
+        fila2.addWidget(RexusLabel("Categoría:", "body"))
+        self.combo_categoria = RexusComboBox()
         self.combo_categoria.addItems([
             "Todas", "Herrajes", "Vidrios", "Herramientas", 
             "Materiales", "Eléctricos", "Plomería", "Accesorios"
@@ -224,8 +183,8 @@ class InventarioView(QWidget):
         fila2.addWidget(self.combo_categoria)
         
         # Filtro por stock
-        fila2.addWidget(QLabel("Stock:"))
-        self.combo_stock = QComboBox()
+        fila2.addWidget(RexusLabel("Stock:", "body"))
+        self.combo_stock = RexusComboBox()
         self.combo_stock.addItems([
             "Todos", "Con stock", "Stock bajo", "Sin stock", "Stock crítico"
         ])
@@ -233,8 +192,8 @@ class InventarioView(QWidget):
         fila2.addWidget(self.combo_stock)
         
         # Filtro por estado
-        fila2.addWidget(QLabel("Estado:"))
-        self.combo_estado = QComboBox()
+        fila2.addWidget(RexusLabel("Estado:", "body"))
+        self.combo_estado = RexusComboBox()
         self.combo_estado.addItems(["Todos", "Activo", "Inactivo", "Descontinuado"])
         self.combo_estado.currentTextChanged.connect(self.aplicar_filtros)
         fila2.addWidget(self.combo_estado)
@@ -243,26 +202,26 @@ class InventarioView(QWidget):
         layout.addLayout(fila2)
         
         # Tercera fila - Configuración de vista
-        fila3 = QHBoxLayout()
+        fila3 = RexusLayoutHelper.create_horizontal_layout()
         
-        fila3.addWidget(QLabel("Registros por página:"))
-        self.combo_registros = QComboBox()
+        fila3.addWidget(RexusLabel("Registros por página:", "body"))
+        self.combo_registros = RexusComboBox()
         self.combo_registros.addItems(["25", "50", "100", "200", "500", "1000"])
         self.combo_registros.setCurrentText("100")
         self.combo_registros.currentTextChanged.connect(self.cambiar_registros_por_pagina)
         fila3.addWidget(self.combo_registros)
         
         # Mostrar/ocultar columnas
-        self.check_mostrar_codigo = QCheckBox("Código")
+        self.check_mostrar_codigo = RexusCheckBox("Código")
         self.check_mostrar_codigo.setChecked(True)
-        self.check_mostrar_descripcion = QCheckBox("Descripción")
+        self.check_mostrar_descripcion = RexusCheckBox("Descripción")
         self.check_mostrar_descripcion.setChecked(True)
-        self.check_mostrar_stock = QCheckBox("Stock")
+        self.check_mostrar_stock = RexusCheckBox("Stock")
         self.check_mostrar_stock.setChecked(True)
-        self.check_mostrar_precio = QCheckBox("Precio")
+        self.check_mostrar_precio = RexusCheckBox("Precio")
         self.check_mostrar_precio.setChecked(True)
         
-        fila3.addWidget(QLabel("Mostrar:"))
+        fila3.addWidget(RexusLabel("Mostrar:", "body"))
         fila3.addWidget(self.check_mostrar_codigo)
         fila3.addWidget(self.check_mostrar_descripcion)
         fila3.addWidget(self.check_mostrar_stock)
@@ -276,72 +235,78 @@ class InventarioView(QWidget):
         fila3.addStretch()
         layout.addLayout(fila3)
         
+        panel.setLayout(layout)
         return panel
         
     def crear_widget_tabla_principal(self):
         """Crea el widget principal con la tabla de inventario."""
         widget = QWidget()
-        layout = QVBoxLayout(widget)
+        layout = RexusLayoutHelper.create_vertical_layout()
         layout.setContentsMargins(0, 0, 0, 0)
         
         # Barra de herramientas de la tabla
-        toolbar = QHBoxLayout()
+        toolbar = RexusLayoutHelper.create_horizontal_layout()
         
         # Información de registros
-        self.lbl_info_registros = QLabel("Cargando...")
+        self.lbl_info_registros = RexusLabel("Cargando...", "body")
         toolbar.addWidget(self.lbl_info_registros)
         
         toolbar.addStretch()
         
         # Botones de acción de tabla
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar = RexusButton("🔄 Actualizar", "secondary")
         self.btn_actualizar.clicked.connect(self.cargar_inventario)
         toolbar.addWidget(self.btn_actualizar)
         
-        self.btn_editar = QPushButton("✏️ Editar")
+        self.btn_editar = RexusButton("✏️ Editar", "secondary")
         self.btn_editar.setEnabled(False)
         toolbar.addWidget(self.btn_editar)
         
-        self.btn_eliminar = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar = RexusButton("🗑️ Eliminar", "danger")
         self.btn_eliminar.setEnabled(False)
         toolbar.addWidget(self.btn_eliminar)
         
         layout.addLayout(toolbar)
         
         # Crear tabla mejorada
-        self.tabla_inventario = StandardComponents.create_standard_table()
+        self.tabla_inventario = RexusTable()
         self.configurar_tabla_mejorada()
+        
+        # Usar el método de BaseModuleView para configurar la tabla principal
+        self.set_main_table(self.tabla_inventario)
+        
         layout.addWidget(self.tabla_inventario)
         
+        widget.setLayout(layout)
         return widget
         
     def crear_panel_lateral(self):
         """Crea panel lateral con funcionalidades adicionales."""
         panel = QWidget()
-        layout = QVBoxLayout(panel)
+        layout = RexusLayoutHelper.create_vertical_layout()
         
         # Panel de estadísticas rápidas
-        stats_group = QGroupBox("📊 Estadísticas")
-        stats_layout = QVBoxLayout(stats_group)
+        stats_group = RexusGroupBox("📊 Estadísticas")
+        stats_layout = RexusLayoutHelper.create_vertical_layout()
         
-        self.lbl_total_productos = QLabel("Total: 0")
-        self.lbl_stock_critico = QLabel("Stock crítico: 0")
-        self.lbl_valor_total = QLabel("Valor total: $0")
+        self.lbl_total_productos = RexusLabel("Total: 0", "body")
+        self.lbl_stock_critico = RexusLabel("Stock crítico: 0", "body")
+        self.lbl_valor_total = RexusLabel("Valor total: $0", "body")
         
         for lbl in [self.lbl_total_productos, self.lbl_stock_critico, self.lbl_valor_total]:
-            lbl.setStyleSheet("padding: 5px; border: 1px solid #ddd; margin: 2px;")
             stats_layout.addWidget(lbl)
             
+        stats_group.setLayout(stats_layout)
         layout.addWidget(stats_group)
         
         # Panel de acciones rápidas
-        acciones_group = QGroupBox("⚡ Acciones Rápidas")
-        acciones_layout = QVBoxLayout(acciones_group)
+        acciones_group = RexusGroupBox("⚡ Acciones Rápidas")
+        acciones_layout = RexusLayoutHelper.create_vertical_layout()
         
-        self.btn_reporte_stock_bajo = QPushButton("📋 Reporte Stock Bajo")
-        self.btn_movimiento = QPushButton("📦 Registrar Movimiento")
-        self.btn_asociar_obra = QPushButton("🏗️ Asociar a Obra")
-        self.btn_generar_qr = QPushButton("📱 Generar QR")
+        self.btn_reporte_stock_bajo = RexusButton("📋 Reporte Stock Bajo", "secondary")
+        self.btn_movimiento = RexusButton("📦 Registrar Movimiento", "secondary")
+        self.btn_asociar_obra = RexusButton("🏗️ Asociar a Obra", "secondary")
+        self.btn_generar_qr = RexusButton("📱 Generar QR", "secondary")
         
         # Establecer nombres de objeto para que el controlador los encuentre
         self.btn_movimiento.setObjectName("btn_movimiento")
@@ -352,49 +317,51 @@ class InventarioView(QWidget):
             btn.setMinimumHeight(35)
             acciones_layout.addWidget(btn)
             
+        acciones_group.setLayout(acciones_layout)
         layout.addWidget(acciones_group)
         
         # Panel de información del producto seleccionado
-        info_group = QGroupBox("ℹ️ Producto Seleccionado")
-        info_layout = QVBoxLayout(info_group)
+        info_group = RexusGroupBox("ℹ️ Producto Seleccionado")
+        info_layout = RexusLayoutHelper.create_vertical_layout()
         
-        self.info_producto = QTextEdit()
+        self.info_producto = RexusTextEdit()
         self.info_producto.setMaximumHeight(150)
         self.info_producto.setReadOnly(True)
         self.info_producto.setText("Seleccione un producto para ver detalles")
         info_layout.addWidget(self.info_producto)
         
+        info_group.setLayout(info_layout)
         layout.addWidget(info_group)
         
         layout.addStretch()
+        panel.setLayout(layout)
         return panel
         
     def crear_footer(self):
         """Crea footer con paginación y controles."""
-        footer = QFrame()
-        footer.setFrameStyle(QFrame.Shape.Box)
+        footer = RexusFrame()
         footer.setMaximumHeight(50)
         
-        layout = QHBoxLayout(footer)
+        layout = RexusLayoutHelper.create_horizontal_layout()
         
         # Progreso de carga
-        self.progress_bar = QProgressBar()
+        self.progress_bar = RexusProgressBar()
         self.progress_bar.setVisible(False)
         layout.addWidget(self.progress_bar)
         
         # Información de paginación
-        self.lbl_paginacion = QLabel("Página 1 de 1")
+        self.lbl_paginacion = RexusLabel("Página 1 de 1", "body")
         layout.addWidget(self.lbl_paginacion)
         
         layout.addStretch()
         
         # Controles de paginación
-        self.btn_primera_pagina = QPushButton("⏮️")
-        self.btn_pagina_anterior = QPushButton("◀️")
-        self.spin_pagina = QSpinBox()
+        self.btn_primera_pagina = RexusButton("⏮️", "secondary")
+        self.btn_pagina_anterior = RexusButton("◀️", "secondary")
+        self.spin_pagina = RexusSpinBox()
         self.spin_pagina.setMinimum(1)
-        self.btn_pagina_siguiente = QPushButton("▶️")
-        self.btn_ultima_pagina = QPushButton("⏭️")
+        self.btn_pagina_siguiente = RexusButton("▶️", "secondary")
+        self.btn_ultima_pagina = RexusButton("⏭️", "secondary")
         
         # Conectar señales de paginación
         self.btn_primera_pagina.clicked.connect(lambda: self.ir_a_pagina(1))
@@ -410,6 +377,7 @@ class InventarioView(QWidget):
             
         layout.addWidget(self.spin_pagina)
         
+        footer.setLayout(layout)
         return footer
         
     def configurar_tabla_mejorada(self):
@@ -443,99 +411,117 @@ class InventarioView(QWidget):
         self.tabla_inventario.itemSelectionChanged.connect(self.on_producto_seleccionado)
         self.tabla_inventario.itemDoubleClicked.connect(self.on_item_doble_click)
         
-        # Aplicar estilos de alto contraste
-        self.aplicar_estilos_tabla()
+        # Los estilos se aplicarán por el tema unificado
         
     def aplicar_estilos_tabla(self):
         """Aplica estilos de alto contraste a la tabla."""
-        estilo_tabla = """
-        QTableWidget {
-            gridline-color: #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #cccccc !important;
-            border-radius: 4px !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item {
-            padding: 8px !important;
-            border: 1px solid #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item:selected {
-            background-color: #0078d4 !important;
-            color: #ffffff !important;
-        }
-        QTableWidget::item:hover {
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-        QHeaderView::section {
-            background-color: #f8f9fa !important;
-            padding: 8px !important;
-            border: 1px solid #cccccc !important;
-            font-weight: bold !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        """
-        self.tabla_inventario.setStyleSheet(estilo_tabla)
+        # Los estilos de tabla ahora los maneja el sistema unificado de temas
+        pass
         
-    def aplicar_estilos_mejorados(self):
-        """Aplica estilos mejorados y consistentes."""
-        estilo = """
-        /* ESTILOS MEJORADOS PARA INVENTARIO */
-        QWidget {
-            font-family: "Segoe UI", Arial, sans-serif;
-            font-size: 12px;
-        }
+    def apply_theme(self):
+        """Aplica el tema usando el sistema unificado de Rexus."""
+        # Usar el sistema de temas de Rexus en lugar de CSS inline
+        style_manager.apply_theme(self, "high_contrast")
         
-        QGroupBox {
-            font-weight: bold;
-            border: 2px solid #bdc3c7;
-            border-radius: 5px;
-            margin-top: 1ex;
-            padding-top: 10px;
-        }
+        # Configuraciones específicas para el módulo de inventario si es necesario
+        self._apply_inventario_specific_styling()
+    
+    def _apply_inventario_specific_styling(self):
+        """Aplica estilos específicos del módulo de inventario."""
+        # Aplicar estilos de alto contraste a la tabla si existe
+        if hasattr(self, 'tabla_inventario'):
+            self.aplicar_estilos_tabla()
+    
+    def crear_controles_paginacion(self):
+        """Crea los controles de paginación compatibles con BaseModuleView."""
+        paginacion_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        QGroupBox::title {
-            subcontrol-origin: margin;
-            left: 10px;
-            padding: 0 5px 0 5px;
-        }
+        # Etiqueta de información con componente Rexus
+        self.info_label = RexusLabel("Mostrando 1-100 de 0 registros", "body")
+        paginacion_layout.addWidget(self.info_label)
         
-        QPushButton {
-            background-color: #ecf0f1;
-            border: 1px solid #bdc3c7;
-            border-radius: 4px;
-            padding: 6px 12px;
-            font-weight: bold;
-        }
+        paginacion_layout.addStretch()
         
-        QPushButton:hover {
-            background-color: #d5dbdb;
-            border-color: #95a5a6;
-        }
+        # Controles de navegación con componentes Rexus
+        self.btn_primera = RexusButton("<<", "secondary")
+        self.btn_primera.setMaximumWidth(40)
+        self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
+        paginacion_layout.addWidget(self.btn_primera)
         
-        QPushButton:pressed {
-            background-color: #bdc3c7;
-        }
+        self.btn_anterior = RexusButton("<", "secondary")
+        self.btn_anterior.setMaximumWidth(30)
+        self.btn_anterior.clicked.connect(self.pagina_anterior)
+        paginacion_layout.addWidget(self.btn_anterior)
         
-        QLineEdit, QComboBox {
-            border: 2px solid #bdc3c7;
-            border-radius: 4px;
-            padding: 6px;
-            background-color: white;
-        }
+        # Control de página actual con componentes Rexus
+        self.pagina_actual_spin = RexusSpinBox()
+        self.pagina_actual_spin.setMinimum(1)
+        self.pagina_actual_spin.setMaximum(1)
+        self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
+        self.pagina_actual_spin.setMaximumWidth(60)
+        paginacion_layout.addWidget(RexusLabel("Página:", "body"))
+        paginacion_layout.addWidget(self.pagina_actual_spin)
         
-        QLineEdit:focus, QComboBox:focus {
-            border-color: #3498db;
-        }
-        """
+        self.total_paginas_label = RexusLabel("de 1", "body")
+        paginacion_layout.addWidget(self.total_paginas_label)
         
-        self.setStyleSheet(estilo)
+        self.btn_siguiente = RexusButton(">", "secondary")
+        self.btn_siguiente.setMaximumWidth(30)
+        self.btn_siguiente.clicked.connect(self.pagina_siguiente)
+        paginacion_layout.addWidget(self.btn_siguiente)
+        
+        self.btn_ultima = RexusButton(">>", "secondary")
+        self.btn_ultima.setMaximumWidth(40)
+        self.btn_ultima.clicked.connect(self.ir_a_ultima_pagina)
+        paginacion_layout.addWidget(self.btn_ultima)
+        
+        # Selector de registros por página con componentes Rexus
+        paginacion_layout.addWidget(RexusLabel("Registros por página:", "body"))
+        self.registros_por_pagina_combo = RexusComboBox()
+        self.registros_por_pagina_combo.addItems(["25", "50", "100", "200", "500", "1000"])
+        self.registros_por_pagina_combo.setCurrentText("100")
+        self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina_combo)
+        paginacion_layout.addWidget(self.registros_por_pagina_combo)
+        
+        return paginacion_layout
+    
+    def cambiar_registros_por_pagina_combo(self, registros):
+        """Cambia la cantidad de registros por página desde el combo de paginación."""
+        try:
+            nuevo_valor = int(registros)
+            if nuevo_valor != self.registros_por_pagina:
+                self.registros_por_pagina = nuevo_valor
+                self.pagina_actual = 1  # Resetear a primera página
+                self.cargar_datos_con_filtros()
+        except ValueError:
+            pass
+    
+    def cambiar_pagina(self, pagina):
+        """Cambia a la página seleccionada desde el spinner."""
+        self.ir_a_pagina(pagina)
+    
+    def actualizar_controles_paginacion_base(self, pagina_actual, total_paginas, total_registros, registros_mostrados):
+        """Actualiza los controles de paginación del BaseModuleView."""
+        if hasattr(self, 'info_label'):
+            inicio = ((pagina_actual - 1) * int(self.registros_por_pagina_combo.currentText())) + 1
+            fin = min(inicio + registros_mostrados - 1, total_registros)
+            self.info_label.setText(f"Mostrando {inicio}-{fin} de {total_registros} registros")
+        
+        if hasattr(self, 'pagina_actual_spin'):
+            self.pagina_actual_spin.blockSignals(True)
+            self.pagina_actual_spin.setValue(pagina_actual)
+            self.pagina_actual_spin.setMaximum(max(1, total_paginas))
+            self.pagina_actual_spin.blockSignals(False)
+        
+        if hasattr(self, 'total_paginas_label'):
+            self.total_paginas_label.setText(f"de {total_paginas}")
+        
+        # Habilitar/deshabilitar botones
+        if hasattr(self, 'btn_primera'):
+            self.btn_primera.setEnabled(pagina_actual > 1)
+            self.btn_anterior.setEnabled(pagina_actual > 1)
+            self.btn_siguiente.setEnabled(pagina_actual < total_paginas)
+            self.btn_ultima.setEnabled(pagina_actual < total_paginas)
         
     # === MÉTODOS DE FUNCIONALIDAD ===
     
@@ -670,24 +656,37 @@ class InventarioView(QWidget):
         
     def actualizar_controles_paginacion(self):
         """Actualiza los controles de paginación."""
-        # Actualizar labels
-        self.lbl_paginacion.setText(f"Página {self.pagina_actual} de {self.total_paginas}")
+        # Actualizar labels existentes del footer
+        if hasattr(self, 'lbl_paginacion'):
+            self.lbl_paginacion.setText(f"Página {self.pagina_actual} de {self.total_paginas}")
         
-        inicio = (self.pagina_actual - 1) * self.registros_por_pagina + 1
-        fin = min(inicio + len(self.productos_actuales) - 1, self.total_registros)
-        self.lbl_info_registros.setText(f"Mostrando {inicio}-{fin} de {self.total_registros} registros")
+        if hasattr(self, 'lbl_info_registros'):
+            inicio = (self.pagina_actual - 1) * self.registros_por_pagina + 1
+            fin = min(inicio + len(self.productos_actuales) - 1, self.total_registros)
+            self.lbl_info_registros.setText(f"Mostrando {inicio}-{fin} de {self.total_registros} registros")
         
-        # Actualizar spinner
-        self.spin_pagina.blockSignals(True)
-        self.spin_pagina.setMaximum(max(1, self.total_paginas))
-        self.spin_pagina.setValue(self.pagina_actual)
-        self.spin_pagina.blockSignals(False)
+        # Actualizar spinner del footer
+        if hasattr(self, 'spin_pagina'):
+            self.spin_pagina.blockSignals(True)
+            self.spin_pagina.setMaximum(max(1, self.total_paginas))
+            self.spin_pagina.setValue(self.pagina_actual)
+            self.spin_pagina.blockSignals(False)
         
-        # Habilitar/deshabilitar botones
-        self.btn_primera_pagina.setEnabled(self.pagina_actual > 1)
-        self.btn_pagina_anterior.setEnabled(self.pagina_actual > 1)
-        self.btn_pagina_siguiente.setEnabled(self.pagina_actual < self.total_paginas)
-        self.btn_ultima_pagina.setEnabled(self.pagina_actual < self.total_paginas)
+        # Habilitar/deshabilitar botones del footer
+        if hasattr(self, 'btn_primera_pagina'):
+            self.btn_primera_pagina.setEnabled(self.pagina_actual > 1)
+            self.btn_pagina_anterior.setEnabled(self.pagina_actual > 1)
+            self.btn_pagina_siguiente.setEnabled(self.pagina_actual < self.total_paginas)
+            self.btn_ultima_pagina.setEnabled(self.pagina_actual < self.total_paginas)
+        
+        # También actualizar controles de BaseModuleView si existen
+        if hasattr(self, 'actualizar_controles_paginacion_base'):
+            self.actualizar_controles_paginacion_base(
+                self.pagina_actual, 
+                self.total_paginas, 
+                self.total_registros, 
+                len(self.productos_actuales)
+            )
         
     # === MÉTODOS DE DATOS ===
     

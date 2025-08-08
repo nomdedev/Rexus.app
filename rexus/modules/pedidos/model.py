@@ -1,14 +1,16 @@
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
-# DB Authorization Check
 """
 Modelo de Pedidos - Rexus.app v2.0.0
 
 Gestión completa de pedidos con integración a inventario y obras.
 Maneja el ciclo completo: creación, aprobación, entrega y facturación.
+
+MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import uuid
@@ -17,9 +19,26 @@ from typing import Any, Dict, List, Optional, Tuple
 
 # Importar DataSanitizer para seguridad
 try:
-    from utils.data_sanitizer import DataSanitizer
-except ImportError:
     from rexus.utils.data_sanitizer import DataSanitizer
+except ImportError:
+    try:
+        from utils.data_sanitizer import DataSanitizer
+    except ImportError:
+        # Fallback seguro - crear clase básica
+        class DataSanitizer:
+            @staticmethod
+            def sanitize_input(data):
+                return str(data).strip() if data else ""
+            
+            @staticmethod
+            def sanitize_string(data):
+                return str(data).strip() if data else ""
+                
+            @staticmethod  
+            def sanitize_dict(data_dict):
+                if not isinstance(data_dict, dict):
+                    return {}
+                return {k: str(v).strip() if v else "" for k, v in data_dict.items()}
 
 class PedidosModel:
     """Modelo para gestión completa de pedidos."""
@@ -59,125 +78,46 @@ class PedidosModel:
         """Inicializa el modelo de pedidos."""
         self.db_connection = db_connection
         self.data_sanitizer = DataSanitizer()  # Para validación y sanitización
+        self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
+        
+        # Validar conexión a BD
+        if not self.db_connection:
+            raise ValueError("Conexión a base de datos requerida")
+            
+        # Inicializar tablas
+        self._crear_tablas_si_no_existen()
         self.create_tables()
 
-    def create_tables(self):
-        """Crea las tablas necesarias para pedidos."""
-        if not self.db_connection:
-            return
-
+    def _crear_tablas_si_no_existen(self):
+        """Crea las tablas necesarias para pedidos usando SQL externo."""
         try:
             cursor = self.db_connection.cursor()
-
-            # Tabla principal de pedidos
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos' AND xtype='U')
-                CREATE TABLE pedidos (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    numero_pedido NVARCHAR(50) UNIQUE NOT NULL,
-                    cliente_id INT,
-                    obra_id INT,
-                    fecha_pedido DATETIME NOT NULL DEFAULT GETDATE(),
-                    fecha_entrega_solicitada DATETIME,
-                    fecha_entrega_real DATETIME,
-                    estado NVARCHAR(50) NOT NULL DEFAULT 'BORRADOR',
-                    tipo_pedido NVARCHAR(50) NOT NULL DEFAULT 'MATERIAL',
-                    prioridad NVARCHAR(20) NOT NULL DEFAULT 'NORMAL',
-                    subtotal DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    descuento DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    impuestos DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    total DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    observaciones NTEXT,
-                    direccion_entrega NTEXT,
-                    responsable_entrega NVARCHAR(100),
-                    telefono_contacto NVARCHAR(50),
-                    usuario_creador INT,
-                    usuario_aprobador INT,
-                    fecha_aprobacion DATETIME,
-                    motivo_cancelacion NTEXT,
-                    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    fecha_modificacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    activo BIT NOT NULL DEFAULT 1
-                )
-            """)
-
-            # Tabla de detalle de pedidos
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_detalle' AND xtype='U')
-                CREATE TABLE pedidos_detalle (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    pedido_id INT NOT NULL,
-                    producto_id INT,
-                    codigo_producto NVARCHAR(50),
-                    descripcion NVARCHAR(255) NOT NULL,
-                    categoria NVARCHAR(100),
-                    cantidad DECIMAL(10,3) NOT NULL,
-                    unidad_medida NVARCHAR(20) NOT NULL DEFAULT 'UND',
-                    precio_unitario DECIMAL(12,2) NOT NULL,
-                    descuento_item DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    subtotal_item DECIMAL(12,2) NOT NULL,
-                    observaciones_item NTEXT,
-                    cantidad_entregada DECIMAL(10,3) NOT NULL DEFAULT 0,
-                    cantidad_pendiente AS (cantidad - cantidad_entregada) PERSISTED,
-                    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
-                )
-            """)
-
-            # Tabla de historial de estados
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_historial' AND xtype='U')
-                CREATE TABLE pedidos_historial (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    pedido_id INT NOT NULL,
-                    estado_anterior NVARCHAR(50),
-                    estado_nuevo NVARCHAR(50) NOT NULL,
-                    fecha_cambio DATETIME NOT NULL DEFAULT GETDATE(),
-                    usuario_id INT,
-                    observaciones NTEXT,
-                    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
-                )
-            """)
-
-            # Tabla de entregas
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_entregas' AND xtype='U')
-                CREATE TABLE pedidos_entregas (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    pedido_id INT NOT NULL,
-                    numero_entrega NVARCHAR(50) NOT NULL,
-                    fecha_entrega DATETIME NOT NULL,
-                    responsable_entrega NVARCHAR(100),
-                    quien_recibe NVARCHAR(100),
-                    observaciones NTEXT,
-                    total_entregado DECIMAL(12,2) NOT NULL DEFAULT 0,
-                    documento_transporte NVARCHAR(100),
-                    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
-                    FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
-                )
-            """)
-
-            # Índices para optimización
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_pedidos_numero ON pedidos(numero_pedido)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_pedidos_estado ON pedidos(estado)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_pedidos_fecha ON pedidos(fecha_pedido)"
-            )
-            cursor.execute(
-                "CREATE INDEX IF NOT EXISTS idx_pedidos_obra ON pedidos(obra_id)"
-            )
-
+            
+            # Ejecutar scripts SQL externos para crear tablas
+            queries_tablas = [
+                'create_pedidos_table',
+                'create_pedidos_detalle_table', 
+                'create_pedidos_historial_table',
+                'create_pedidos_entregas_table'
+            ]
+            
+            for query_name in queries_tablas:
+                sql = self.sql_manager.get_query('pedidos', query_name)
+                if sql:
+                    cursor.execute(sql)
+                    
             self.db_connection.commit()
-            print("[PEDIDOS] Tablas creadas exitosamente")
-
+            print("[PEDIDOS] Tablas verificadas/creadas exitosamente")
+            
         except Exception as e:
             print(f"[PEDIDOS] Error creando tablas: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
+    
+    # Método legacy mantenido para compatibilidad
+    def create_tables(self):
+        """Método legacy - usar _crear_tablas_si_no_existen()."""
+        return self._crear_tablas_si_no_existen()
 
     def _validate_table_name(self, table_name: str) -> str:
         """
@@ -237,20 +177,14 @@ class PedidosModel:
 
             cursor = self.db_connection.cursor()
             try:
-                tabla_validada = self._validate_table_name("pedidos")
-
                 if excluir_id:
                     # Para actualizaciones, excluir el ID actual
-                    cursor.execute(
-                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE numero_pedido = ? AND id != ?",
-                        (numero_sanitizado, excluir_id),
-                    )
+                    sql = self.sql_manager.get_query('pedidos', 'validar_pedido_duplicado_edicion')
+                    cursor.execute(sql, (numero_sanitizado, excluir_id))
                 else:
-                    # Para nuevos pedidos
-                    cursor.execute(
-                        f"SELECT COUNT(*) FROM [{tabla_validada}] WHERE numero_pedido = ?",
-                        (numero_sanitizado,),
-                    )
+                    # Para nuevos pedidos  
+                    sql = self.sql_manager.get_query('pedidos', 'validar_pedido_duplicado_creacion')
+                    cursor.execute(sql, (numero_sanitizado,))
 
                 result = cursor.fetchone()
                 existe = result and result[0] > 0
@@ -373,15 +307,9 @@ class PedidosModel:
                 numero_pedido = self.generar_numero_pedido()  # Regenerar si existe
 
             # Insertar pedido principal con datos sanitizados
-            tabla_pedidos = self._validate_table_name("pedidos")
+            sql = self.sql_manager.get_query('pedidos', 'insertar_pedido_principal')
             cursor.execute(
-                f"""
-                INSERT INTO [{tabla_pedidos}] (
-                    numero_pedido, cliente_id, obra_id, fecha_entrega_solicitada,
-                    tipo_pedido, prioridad, observaciones, direccion_entrega,
-                    responsable_entrega, telefono_contacto, usuario_creador
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """,
+                sql,
                 (
                     numero_pedido,
                     datos_sanitizados.get("cliente_id"),
@@ -427,13 +355,7 @@ class PedidosModel:
                 total_pedido += subtotal
 
                 cursor.execute(
-                    f"""
-                    INSERT INTO [{tabla_detalle}] (
-                        pedido_id, producto_id, codigo_producto, descripcion,
-                        categoria, cantidad, unidad_medida, precio_unitario,
-                        descuento_item, subtotal_item, observaciones_item
-                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-                """,
+                    self.sql_manager.get_query('pedidos', 'insertar_detalle_pedido'),
                     (
                         pedido_id,
                         detalle_sanitizado.get("producto_id"),
@@ -455,11 +377,7 @@ class PedidosModel:
             total_final = total_pedido - descuento_general + impuestos
 
             cursor.execute(
-                f"""
-                UPDATE [{tabla_pedidos}] 
-                SET subtotal = ?, descuento = ?, impuestos = ?, total = ?
-                WHERE id = ?
-            """,
+                self.sql_manager.get_query('pedidos', 'actualizar_totales_pedido'),
                 (total_pedido, descuento_general, impuestos, total_final, pedido_id),
             )
 
@@ -519,22 +437,14 @@ class PedidosModel:
 
             where_sql = " AND ".join(where_clauses)
 
-            query = f"""
-                SELECT 
-                    p.id, p.numero_pedido, p.fecha_pedido, p.fecha_entrega_solicitada,
-                    p.estado, p.tipo_pedido, p.prioridad, p.total, p.observaciones,
-                    p.responsable_entrega, p.obra_id,
-                    COUNT(pd.id) as cantidad_items,
-                    SUM(pd.cantidad) as total_cantidad,
-                    SUM(CASE WHEN pd.cantidad_pendiente > 0 THEN pd.cantidad_pendiente ELSE 0 END) as cantidad_pendiente
-                FROM pedidos p
-                LEFT JOIN pedidos_detalle pd ON p.id = pd.pedido_id
-                WHERE {where_sql}
-                GROUP BY p.id, p.numero_pedido, p.fecha_pedido, p.fecha_entrega_solicitada,
-                         p.estado, p.tipo_pedido, p.prioridad, p.total, p.observaciones,
-                         p.responsable_entrega, p.obra_id
-                ORDER BY p.fecha_pedido DESC
-            """
+            # Obtener consulta base y agregar filtros de manera segura
+            query_base = self.sql_manager.get_query('pedidos', 'obtener_pedidos_base')
+            
+            # Reemplazar el WHERE base con nuestros filtros dinámicos
+            query = query_base.replace(
+                "WHERE p.activo = 1",
+                f"WHERE {where_sql}"
+            )
 
             cursor.execute(query, params)
             columns = [desc[0] for desc in cursor.description]
@@ -945,15 +855,36 @@ class PedidosModel:
             return 0
     
     def _get_base_query(self):
-        """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
-        # Esta es una implementación genérica
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT * FROM {tabla_principal}"
+        """Obtiene la query base para paginación usando SQL externo."""
+        # White-list de tablas permitidas para paginación
+        tabla_queries = {
+            'pedidos': 'get_base_query_pedidos',
+            'pedidos_detalle': 'get_base_query_pedidos_detalle',
+            'pedidos_historial': 'get_base_query_pedidos_historial'
+        }
+        
+        tabla_principal = getattr(self, 'tabla_principal', 'pedidos')
+        if tabla_principal in tabla_queries:
+            return self.sql_manager.get_query('pedidos', tabla_queries[tabla_principal])
+        else:
+            # Fallback seguro para tabla por defecto
+            return self.sql_manager.get_query('pedidos', 'get_base_query_pedidos')
     
     def _get_count_query(self):
-        """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT COUNT(*) FROM {tabla_principal}"
+        """Obtiene la query de conteo usando SQL externo."""
+        # White-list de tablas permitidas para conteo
+        tabla_queries = {
+            'pedidos': 'get_count_query_pedidos',
+            'pedidos_detalle': 'get_count_query_pedidos_detalle', 
+            'pedidos_historial': 'get_count_query_pedidos_historial'
+        }
+        
+        tabla_principal = getattr(self, 'tabla_principal', 'pedidos')
+        if tabla_principal in tabla_queries:
+            return self.sql_manager.get_query('pedidos', tabla_queries[tabla_principal])
+        else:
+            # Fallback seguro para tabla por defecto
+            return self.sql_manager.get_query('pedidos', 'get_count_query_pedidos')
     
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
