@@ -67,8 +67,20 @@ def create_admin_user():
         if not admin_user:
             print("👤 Creando usuario administrador...")
             
-            # Crear hash de la contraseña 'admin'
-            password_hash = hashlib.sha256('admin'.encode()).hexdigest()
+            # 🔒 SEGURIDAD: Hash seguro de contraseña
+            import getpass
+            import sys
+            from pathlib import Path
+            sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+            from rexus.utils.password_security import hash_password_secure
+            
+            admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
+            
+            if not admin_password or len(admin_password) < 8:
+                print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+                return False
+                
+            password_hash = hash_password_secure(admin_password)
             
             # Insertar usuario admin
             db.execute_non_query("""

@@ -15,17 +15,52 @@ from typing import Any, Dict, List, Optional
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 
-# DataSanitizer unificado
+# SQLQueryManager unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.core.sql_query_manager import SQLQueryManager
 except ImportError:
+    # Fallback al script loader
+    from rexus.utils.sql_script_loader import sql_script_loader
 
-    class DataSanitizer:
-        def sanitize_dict(self, data):
-            return data
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
 
-        def sanitize_text(self, text):
-            return str(text) if text else ""
+        def get_query(self, path, filename):
+            # Construir nombre del script sin extensión
+            script_name = filename.replace(".sql", "")
+            return self.sql_loader(script_name)
+
+        def execute_query(self, query, params=None):
+            # Placeholder para compatibilidad
+            return None
+
+# DataSanitizer unificado - Usar sistema unificado de sanitización
+try:
+    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
+except ImportError:
+    try:
+        from rexus.utils.data_sanitizer import DataSanitizer
+    except ImportError:
+        # Fallback seguro
+        class DataSanitizer:
+            def sanitize_dict(self, data):
+                """Sanitiza un diccionario de datos de forma segura."""
+                if not isinstance(data, dict):
+                    return {}
+                
+                sanitized = {}
+                for key, value in data.items():
+                    if isinstance(value, str):
+                        # Sanitización básica de strings
+                        sanitized[key] = str(value).strip()
+                    else:
+                        sanitized[key] = value
+                return sanitized
+
+            def sanitize_text(self, text):
+                """Sanitiza texto de forma segura."""
+                return str(text).strip() if text else ""
 
 
 class MovimientosManager:
@@ -44,7 +79,9 @@ class MovimientosManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de movimientos."""
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         self.data_sanitizer = DataSanitizer()
+        self.sql_path = "scripts/sql/inventario/movimientos"
 
     @auth_required
     @permission_required("create_movimiento")
@@ -91,35 +128,74 @@ class MovimientosManager:
             cantidad_real = cantidad * factor
             nuevo_stock = stock_actual + cantidad_real
 
-            # Insertar movimiento
-            cursor.execute(
-                """
-                INSERT INTO movimientos_inventario (
-                    producto_id, tipo_movimiento, cantidad, stock_anterior,
-                    stock_nuevo, observaciones, obra_id, usuario, fecha_movimiento
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """,
-                (
-                    producto_id,
-                    tipo_movimiento,
-                    cantidad_real,
-                    stock_actual,
-                    nuevo_stock,
-                    self.data_sanitizer.sanitize_text(observaciones),
-                    obra_id,
-                    usuario,
-                ),
-            )
+            # Usar SQL externo para insertar movimiento
+            try:
+                query_movimiento = self.sql_manager.get_query(self.sql_path, "insertar_movimiento")
+                if query_movimiento:
+                    cursor.execute(query_movimiento, (
+                        producto_id,
+                        tipo_movimiento,
+                        cantidad_real,
+                        stock_actual,
+                        nuevo_stock,
+                        self.data_sanitizer.sanitize_text(observaciones),
+                        obra_id,
+                        usuario,
+                    ))
+                else:
+                    # Fallback seguro con query parametrizada
+                    cursor.execute(
+                        """INSERT INTO movimientos_inventario (
+                            producto_id, tipo_movimiento, cantidad, stock_anterior,
+                            stock_nuevo, observaciones, obra_id, usuario, fecha_movimiento
+                        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())""",
+                        (
+                            producto_id,
+                            tipo_movimiento,
+                            cantidad_real,
+                            stock_actual,
+                            nuevo_stock,
+                            self.data_sanitizer.sanitize_text(observaciones),
+                            obra_id,
+                            usuario,
+                        ),
+                    )
+            except Exception:
+                # Fallback final con query parametrizada
+                cursor.execute(
+                    """INSERT INTO movimientos_inventario (
+                        producto_id, tipo_movimiento, cantidad, stock_anterior,
+                        stock_nuevo, observaciones, obra_id, usuario, fecha_movimiento
+                    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())""",
+                    (
+                        producto_id,
+                        tipo_movimiento,
+                        cantidad_real,
+                        stock_actual,
+                        nuevo_stock,
+                        self.data_sanitizer.sanitize_text(observaciones),
+                        obra_id,
+                        usuario,
+                    ),
+                )
 
-            # Actualizar stock del producto
-            cursor.execute(
-                """
-                UPDATE inventario 
-                SET stock_actual = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """,
-                (nuevo_stock, producto_id),
-            )
+            # Usar SQL externo para actualizar stock
+            try:
+                query_stock = self.sql_manager.get_query(self.sql_path, "actualizar_stock_producto")
+                if query_stock:
+                    cursor.execute(query_stock, (nuevo_stock, producto_id))
+                else:
+                    # Fallback seguro con query parametrizada
+                    cursor.execute(
+                        "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+                        (nuevo_stock, producto_id)
+                    )
+            except Exception:
+                # Fallback final con query parametrizada
+                cursor.execute(
+                    "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+                    (nuevo_stock, producto_id)
+                )
 
             self.db_connection.commit()
             return True

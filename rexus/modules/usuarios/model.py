@@ -3,15 +3,18 @@ from rexus.core.auth_decorators import (
     auth_required,
     permission_required,
 )
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
-# DB Authorization Check
 """
 Modelo de Usuarios - Rexus.app v2.0.0
 
 Gestiona la autenticación, permisos y CRUD completo de usuarios.
 Incluye utilidades de seguridad para prevenir SQL injection y XSS.
+
+MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import datetime
@@ -101,6 +104,9 @@ class UsuariosModel:
         self.tabla_roles = "roles"
         self.tabla_permisos = "permisos_usuario"
         self.tabla_sesiones = "sesiones_usuario"
+        
+        # Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()
 
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
@@ -251,16 +257,11 @@ class UsuariosModel:
 
             if exitoso:
                 # Reset intentos fallidos si login exitoso
-                query = f"UPDATE [{tabla_validada}] SET intentos_fallidos = 0, ultimo_acceso = GETDATE() WHERE LOWER(username) = ?"
+                query = self.sql_manager.get_query('usuarios', 'actualizar_acceso_exitoso')
                 cursor.execute(query, (username_limpio.lower(),))
             else:
                 # Incrementar intentos fallidos
-                query = f"""
-                UPDATE [{tabla_validada}] 
-                SET intentos_fallidos = ISNULL(intentos_fallidos, 0) + 1,
-                    ultimo_intento_fallido = GETDATE()
-                WHERE LOWER(username) = ?
-                """
+                query = self.sql_manager.get_query('usuarios', 'incrementar_intentos_fallidos')
                 cursor.execute(query, (username_limpio.lower(),))
 
             self.db_connection.commit()
@@ -292,19 +293,7 @@ class UsuariosModel:
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
             # Verificar intentos fallidos y tiempo transcurrido
-            query = f"""
-            SELECT 
-                ISNULL(intentos_fallidos, 0) as intentos,
-                ultimo_intento_fallido,
-                CASE 
-                    WHEN ultimo_intento_fallido IS NULL THEN 1
-                    WHEN DATEDIFF(SECOND, ultimo_intento_fallido, GETDATE()) > ?
-                    THEN 1
-                    ELSE 0
-                END as tiempo_expirado
-            FROM [{tabla_validada}] 
-            WHERE LOWER(username) = ?
-            """
+            query = self.sql_manager.get_query('usuarios', 'verificar_bloqueo_cuenta')
 
             cursor.execute(query, (self.LOCKOUT_DURATION, username_limpio.lower()))
             resultado = cursor.fetchone()
@@ -349,7 +338,7 @@ class UsuariosModel:
             cursor = self.db_connection.cursor()
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
-            query = f"UPDATE [{tabla_validada}] SET intentos_fallidos = 0 WHERE LOWER(username) = ?"
+            query = self.sql_manager.get_query('usuarios', 'resetear_intentos_fallidos')
             cursor.execute(query, (username_limpio.lower(),))
             self.db_connection.commit()
 
@@ -1069,8 +1058,11 @@ class UsuariosModel:
 
         try:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
-            if self.security_available and self.data_sanitizer:
-                # Sanitizar todos los datos de entrada
+            if unified_sanitizer:
+                # Usar sanitizador unificado refactorizado
+                datos_limpios = unified_sanitizer.sanitize_dict(datos_usuario)
+            elif self.security_available and self.data_sanitizer:
+                # Fallback a sanitizador legacy
                 datos_limpios = self.data_sanitizer.sanitize_dict(datos_usuario)
 
                 # Validaciones específicas
@@ -1648,18 +1640,107 @@ class UsuariosModel:
             return 0
 
     def _get_base_query(self):
-        """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
-        # Esta es una implementación genérica
+        """Obtiene la query base para paginación usando SQL externo."""
+        # White-list de tablas permitidas para paginación
+        tabla_queries = {
+            'usuarios': 'get_base_query_usuarios',
+            'roles': 'get_base_query_roles',
+            'permisos_usuario': 'get_base_query_permisos'
+        }
+        
         tabla_principal = getattr(self, "tabla_principal", "usuarios")
-        tabla_validada = self._validate_table_name(tabla_principal)
-        return f"SELECT * FROM [{tabla_validada}]"
+        if tabla_principal in tabla_queries:
+            return self.sql_manager.get_query('usuarios', tabla_queries[tabla_principal])
+        else:
+            # Fallback seguro para tabla por defecto
+            return self.sql_manager.get_query('usuarios', 'get_base_query_usuarios')
 
     def _get_count_query(self):
-        """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
+        """Obtiene la query de conteo usando SQL externo."""
+        # White-list de tablas permitidas para conteo
+        tabla_queries = {
+            'usuarios': 'get_count_query_usuarios',
+            'roles': 'get_count_query_roles',
+            'permisos_usuario': 'get_count_query_permisos'
+        }
+        
         tabla_principal = getattr(self, "tabla_principal", "usuarios")
-        tabla_validada = self._validate_table_name(tabla_principal)
-        return f"SELECT COUNT(*) FROM [{tabla_validada}]"
+        if tabla_principal in tabla_queries:
+            return self.sql_manager.get_query('usuarios', tabla_queries[tabla_principal])
+        else:
+            # Fallback seguro para tabla por defecto
+            return self.sql_manager.get_query('usuarios', 'get_count_query_usuarios')
 
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}
+
+    # === MÉTODOS DE GESTORES ESPECIALIZADOS ===
+    
+    def crear_sesion(self, usuario_id: int, username: str, ip_address: str = None, user_agent: str = None) -> Dict[str, Any]:
+        """Crea una nueva sesión para un usuario."""
+        if self.sessions_manager:
+            return self.sessions_manager.crear_sesion(usuario_id, username, ip_address, user_agent)
+        return {'success': False, 'message': 'Gestor de sesiones no disponible'}
+    
+    def validar_sesion(self, session_id: str) -> Dict[str, Any]:
+        """Valida si una sesión es válida."""
+        if self.sessions_manager:
+            return self.sessions_manager.validar_sesion(session_id)
+        return {'valid': False, 'message': 'Gestor de sesiones no disponible'}
+    
+    def cerrar_sesion(self, session_id: str) -> Dict[str, Any]:
+        """Cierra una sesión específica."""
+        if self.sessions_manager:
+            return self.sessions_manager.cerrar_sesion(session_id)
+        return {'success': False, 'message': 'Gestor de sesiones no disponible'}
+    
+    def verificar_permiso_usuario(self, usuario_id: int, modulo: str, accion: str) -> bool:
+        """Verifica si un usuario tiene un permiso específico."""
+        if self.permissions_manager:
+            return self.permissions_manager.verificar_permiso_usuario(usuario_id, modulo, accion)
+        return False
+    
+    def asignar_permiso_usuario(self, usuario_id: int, modulo: str, accion: str) -> Dict[str, Any]:
+        """Asigna un permiso específico a un usuario."""
+        if self.permissions_manager:
+            return self.permissions_manager.asignar_permiso_usuario(usuario_id, modulo, accion)
+        return {'success': False, 'message': 'Gestor de permisos no disponible'}
+    
+    def cambiar_rol_usuario(self, usuario_id: int, nuevo_rol: str) -> Dict[str, Any]:
+        """Cambia el rol de un usuario."""
+        if self.permissions_manager:
+            return self.permissions_manager.cambiar_rol_usuario(usuario_id, nuevo_rol)
+        return {'success': False, 'message': 'Gestor de permisos no disponible'}
+    
+    def obtener_todos_usuarios_con_gestores(self, incluir_inactivos: bool = False) -> List[Dict[str, Any]]:
+        """Obtiene todos los usuarios usando el ProfilesManager."""
+        if self.profiles_manager:
+            return self.profiles_manager.obtener_todos_usuarios(incluir_inactivos)
+        return self.obtener_todos_usuarios()
+    
+    def actualizar_usuario_con_gestores(self, usuario_id: int, datos_actualizados: Dict[str, Any]) -> Dict[str, Any]:
+        """Actualiza un usuario usando el ProfilesManager."""
+        if self.profiles_manager:
+            return self.profiles_manager.actualizar_usuario(usuario_id, datos_actualizados)
+        success, message = self.actualizar_usuario(usuario_id, datos_actualizados)
+        return {'success': success, 'message': message}
+    
+    def validar_fortaleza_password_segura(self, password: str) -> Dict[str, Any]:
+        """Valida la fortaleza de una contraseña usando el AuthenticationManager."""
+        if self.auth_manager:
+            return self.auth_manager.validar_fortaleza_password(password)
+        return self.validar_fortaleza_password(password)
+    
+    def obtener_estadisticas_completas(self) -> Dict[str, Any]:
+        """Obtiene estadísticas completas del sistema de usuarios."""
+        estadisticas = self.obtener_estadisticas_usuarios()
+        
+        # Agregar estadísticas de gestores especializados
+        if self.sessions_manager:
+            estadisticas['sesiones'] = self.sessions_manager.obtener_estadisticas_sesiones()
+        
+        if self.permissions_manager:
+            estadisticas['permisos'] = self.permissions_manager.obtener_estadisticas_permisos()
+        
+        return estadisticas

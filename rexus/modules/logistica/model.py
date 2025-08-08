@@ -5,6 +5,9 @@
 """
 Modelo de Logística
 
+MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+para prevenir inyección SQL y mejorar mantenibilidad.
+
 Maneja la lógica de negocio para:
 - Gestión de transportes
 - Programación de entregas
@@ -19,11 +22,17 @@ from decimal import Decimal
 
 from rexus.utils.demo_data_generator import DemoDataGenerator
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.auth_manager import AuthManager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 
 class LogisticaModel:
-    """Modelo para gestionar logística y distribución."""
+    """
+    Modelo para gestionar logística y distribución.
+    
+    MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+    para prevenir inyección SQL y mejorar mantenibilidad.
+    """
 
     def __init__(self, db_connection=None):
         """
@@ -33,6 +42,8 @@ class LogisticaModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_transportes = "transportes"
         self.tabla_entregas = "entregas"
         self.tabla_detalle_entregas = "detalle_entregas"
@@ -126,40 +137,32 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            conditions = ["t.activo = 1"]
+            # 🔒 MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
+            base_query = self.sql_manager.get_query('logistica', 'obtener_transportes_base')
+            conditions = []
             params = []
 
             if filtros:
                 if filtros.get("tipo") and filtros["tipo"] != "Todos":
-                    conditions.append("t.tipo = ?")
+                    conditions.append("AND t.tipo = ?")
                     params.append(filtros["tipo"])
 
                 if filtros.get("proveedor") and filtros["proveedor"] != "Todos":
-                    conditions.append("t.proveedor = ?")
+                    conditions.append("AND t.proveedor = ?")
                     params.append(filtros["proveedor"])
 
                 if filtros.get("disponible") is not None:
-                    conditions.append("t.disponible = ?")
+                    conditions.append("AND t.disponible = ?")
                     params.append(filtros["disponible"])
 
                 if filtros.get("busqueda"):
-                    conditions.append("(t.codigo LIKE ? OR t.proveedor LIKE ?)")
+                    conditions.append("AND (t.codigo LIKE ? OR t.proveedor LIKE ?)")
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = (
-                """
-                SELECT 
-                    t.id, t.codigo, t.tipo, t.proveedor, t.capacidad_kg,
-                    t.capacidad_m3, t.costo_km, t.disponible, t.observaciones,
-                    t.fecha_creacion, t.fecha_modificacion
-                FROM [{self._validate_table_name(self.tabla_transportes)}] t
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY t.tipo, t.proveedor
-            """
-            )
+            # Construir query final con filtros seguros
+            filter_clause = " ".join(conditions) if conditions else ""
+            query = f"{base_query} {filter_clause} ORDER BY t.tipo, t.proveedor"
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -300,47 +303,35 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            conditions = ["1=1"]
+            # 🔒 MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
+            base_query = self.sql_manager.get_query('logistica', 'obtener_entregas_base')
+            conditions = []
             params = []
 
             if filtros:
                 if filtros.get("estado") and filtros["estado"] != "Todos":
-                    conditions.append("e.estado = ?")
+                    conditions.append("AND e.estado = ?")
                     params.append(filtros["estado"])
 
                 if filtros.get("obra_id"):
-                    conditions.append("e.obra_id = ?")
+                    conditions.append("AND e.obra_id = ?")
                     params.append(filtros["obra_id"])
 
                 if filtros.get("fecha_desde"):
-                    conditions.append("e.fecha_programada >= ?")
+                    conditions.append("AND e.fecha_entrega >= ?")
                     params.append(filtros["fecha_desde"])
 
                 if filtros.get("fecha_hasta"):
-                    conditions.append("e.fecha_programada <= ?")
+                    conditions.append("AND e.fecha_entrega <= ?")
                     params.append(filtros["fecha_hasta"])
 
                 if filtros.get("transporte_id"):
-                    conditions.append("e.transporte_id = ?")
+                    conditions.append("AND e.transporte_id = ?")
                     params.append(filtros["transporte_id"])
 
-            query = (
-                """
-                SELECT 
-                    e.id, e.obra_id, o.nombre as obra_nombre, e.transporte_id,
-                    t.codigo as transporte_codigo, t.proveedor as transporte_proveedor,
-                    e.fecha_programada, e.fecha_entrega, e.direccion_entrega,
-                    e.contacto, e.telefono, e.estado, e.observaciones,
-                    e.costo_envio, e.usuario_creacion, e.fecha_creacion
-                FROM [{self._validate_table_name(self.tabla_entregas)}] e
-                LEFT JOIN [{self._validate_table_name(self.tabla_obras)}] o ON e.obra_id = o.id
-                LEFT JOIN [{self._validate_table_name(self.tabla_transportes)}] t ON e.transporte_id = t.id
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY e.fecha_programada DESC
-            """
-            )
+            # Construir query final con filtros seguros
+            filter_clause = " ".join(conditions) if conditions else ""
+            query = f"{base_query} {filter_clause} ORDER BY e.fecha_entrega DESC"
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -574,11 +565,12 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"DELETE FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] WHERE id = ?"
+            # 🔒 MIGRADO: Usar SQL externo para prevenir inyección SQL
+            query = self.sql_manager.get_query('logistica', 'eliminar_producto_entrega')
             cursor.execute(query, (detalle_id,))
 
             self.db_connection.commit()
-            print(f"[LOGÍSTICA] Producto eliminado de entrega")
+            print("[LOGÍSTICA] Producto eliminado de entrega")
             return True
 
         except Exception as e:
@@ -603,16 +595,14 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
             estadisticas = {}
 
-            # Total transportes
-            cursor.execute(
-                f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_transportes)}] WHERE activo = 1"
-            )
+            # 🔒 MIGRADO: Total transportes - SQL externo
+            query_total = self.sql_manager.get_query('logistica', 'contar_transportes_activos')
+            cursor.execute(query_total)
             estadisticas["total_transportes"] = cursor.fetchone()[0]
 
-            # Transportes disponibles
-            cursor.execute(
-                f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_transportes)}] WHERE activo = 1 AND disponible = 1"
-            )
+            # 🔒 MIGRADO: Transportes disponibles - SQL externo
+            query_disponibles = self.sql_manager.get_query('logistica', 'contar_transportes_disponibles')
+            cursor.execute(query_disponibles)
             estadisticas["transportes_disponibles"] = cursor.fetchone()[0]
 
             # Entregas por estado

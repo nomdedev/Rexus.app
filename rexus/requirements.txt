@@ -7,7 +7,7 @@
 # ===== FRAMEWORK PRINCIPAL =====
 PyQt6>=6.9.0,<7.0.0
 PyQt6-Qt6>=6.9.0,<7.0.0
-PyQt6-tools>=6.9.0,<7.0.0
+
 PyQt6-WebEngine>=6.9.0,<7.0.0
 
 # ===== MAPAS INTERACTIVOS =====
@@ -38,6 +38,8 @@ python-dateutil>=2.9.0,<3.0.0
 pytz>=2024.1
 colorama>=0.4.6,<1.0.0
 click>=8.1.0,<9.0.0
+psutil>=5.9.0
+schedule>=1.2.0
 
 # ===== SEGURIDAD =====
 cryptography>=42.0.0,<43.0.0

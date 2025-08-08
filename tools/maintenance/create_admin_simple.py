@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
-Crear usuario admin - versión simple
+Crear usuario admin - versión SEGURA
+Usa hashing robusto y contraseñas no hardcodeadas
 """
 
 import os
 import sys
-import hashlib
 from pathlib import Path
 from dotenv import load_dotenv
 
@@ -39,9 +39,25 @@ def create_admin():
         conn = pyodbc.connect(connection_string, timeout=10)
         cursor = conn.cursor()
         
-        # Hash para contraseña 'admin'
-        password_hash = hashlib.sha256('admin'.encode()).hexdigest()
-        print(f"Hash: {password_hash}")
+        # 🔒 SEGURIDAD: Usar sistema de hashing seguro en lugar de SHA256 simple
+        # Importar sistema seguro de contraseñas
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+        
+        from rexus.utils.password_security import hash_password_secure
+        
+        # Solicitar contraseña admin de forma segura
+        import getpass
+        admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
+        
+        if not admin_password or len(admin_password) < 8:
+            print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+            return
+            
+        # Hash seguro de contraseña
+        password_hash = hash_password_secure(admin_password)
+        print("✅ Hash seguro generado")
         
         # Insertar usuario
         print("Insertando usuario admin...")

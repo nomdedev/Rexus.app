@@ -1,3 +1,7 @@
+import pytest
+import sys
+from PyQt6.QtWidgets import QApplication
+
 @pytest.fixture(scope="module")
 def app():
     app = QApplication.instance()

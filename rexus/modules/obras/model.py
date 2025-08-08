@@ -1,8 +1,16 @@
 import datetime
+import logging
 from typing import Any, Dict, List, Optional
 
 from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.utils.sql_script_loader import sql_script_loader
+from rexus.utils.sql_query_manager import SQLQueryManager
+
+# 🔒 MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+# para prevenir inyección SQL y mejorar mantenibilidad.
+
+# Configurar logger para el módulo
+logger = logging.getLogger(__name__)
 
 # Constantes
 DB_ERROR_MESSAGE = "Sin conexión a la base de datos"
@@ -92,11 +100,30 @@ except ImportError:
             return bool(value)
         def sanitize(self, value):
             return value
+        def sanitize_integer(self, value, min_val=None, max_val=None):
+            try:
+                val = int(value)
+                if min_val is not None:
+                    val = max(val, min_val)
+                if max_val is not None:
+                    val = min(val, max_val)
+                return val
+            except Exception:
+                return 0
     data_sanitizer = DataSanitizer()
 
 class ObrasModel:
+    """
+    Modelo para gestionar obras.
+    
+    MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+    para prevenir inyección SQL y mejorar mantenibilidad.
+    """
+    
     def __init__(self, db_connection=None, data_sanitizer_instance=None):
         self.db_connection = db_connection
+        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
         self.sql_loader = sql_script_loader
@@ -259,7 +286,7 @@ class ObrasModel:
                     f"Ya existe una obra con el código {datos_limpios.get('codigo')}",
                 )
 
-            # Insertar obra con datos sanitizados
+            # Insertar obra con datos sanitizados - parámetros correctos según SQL actualizado
             script_content = self.sql_loader.load_script('obras/insert_obra')
             cursor.execute(script_content, (
                 datos_limpios.get("codigo"),
@@ -268,12 +295,11 @@ class ObrasModel:
                 datos_limpios.get("cliente"),
                 datos_limpios.get("direccion", ""),
                 datos_limpios.get("telefono_contacto", ""),
-                datos_limpios.get("email_contacto", ""),
                 datos_limpios.get("fecha_inicio"),
                 datos_limpios.get("fecha_fin_estimada"),
                 datos_limpios.get("presupuesto_total", 0),
                 datos_limpios.get("estado", "PLANIFICACION"),
-                datos_limpios.get("tipo_obra", "CONSTRUCCION"),
+                datos_limpios.get("tipo_obra", "RESIDENCIAL"),
                 datos_limpios.get("prioridad", "MEDIA"),
                 datos_limpios.get("responsable"),
                 datos_limpios.get("observaciones", ""),
@@ -282,7 +308,10 @@ class ObrasModel:
 
             self.db_connection.commit()
 
+            # Log de auditoria
+            logger.info(f"Obra creada exitosamente: {datos_limpios.get('codigo')} por usuario {datos_limpios.get('usuario_creacion', 'SISTEMA')}")
             print(f"[OBRAS] Obra creada exitosamente: {datos_limpios.get('codigo')}")
+            
             return True, f"Obra {datos_limpios.get('codigo')} creada exitosamente"
 
         except Exception as e:
@@ -407,8 +436,9 @@ class ObrasModel:
             cursor.execute(query, (offset, limit))
             obras = cursor.fetchall()
             
-            # Query para total count
-            cursor.execute("SELECT COUNT(*) FROM obras WHERE activo = 1")
+            # 🔒 Query para total count usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'count_obras_activas')
+            cursor.execute(sql)
             total = cursor.fetchone()[0]
             
             return obras, total
@@ -499,6 +529,204 @@ class ObrasModel:
         except Exception as e:
             print(f"[ERROR OBRAS] Error obteniendo obra por ID: {e}")
             return None
+        finally:
+            if cursor:
+                cursor.close()
+
+    def actualizar_obra(self, obra_id: int, datos_actualizados: Dict[str, Any]):
+        """Actualiza una obra existente."""
+        if not self.db_connection:
+            return False, DB_ERROR_MESSAGE
+
+        cursor = None
+        try:
+            # Sanitizar datos
+            datos_limpios = self.data_sanitizer.sanitize_dict(datos_actualizados)
+            
+            # Validar ID
+            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
+            if obra_id_limpio <= 0:
+                return False, "ID de obra inválido"
+
+            cursor = self.db_connection.cursor()
+
+            # Verificar que la obra existe
+            cursor.execute("SELECT COUNT(*) FROM obras WHERE id = ? AND activo = 1", (obra_id_limpio,))
+            if cursor.fetchone()[0] == 0:
+                return False, "La obra no existe o está inactiva"
+
+            # 🔒 Usar consulta SQL externa segura para actualización
+            params = {
+                "obra_id": obra_id_limpio,
+                "nombre": datos_limpios.get('nombre'),
+                "descripcion": datos_limpios.get('descripcion'),
+                "direccion": datos_limpios.get('direccion'),
+                "cliente": datos_limpios.get('cliente'),
+                "estado": datos_limpios.get('estado'),
+                "fecha_inicio": datos_limpios.get('fecha_inicio'),
+                "fecha_fin_estimada": datos_limpios.get('fecha_fin_estimada'),
+                "presupuesto_total": datos_limpios.get('presupuesto_total'),
+                "presupuesto_utilizado": datos_limpios.get('presupuesto_utilizado'),
+                "observaciones": datos_limpios.get('observaciones')
+            }
+            
+            sql = self.sql_manager.get_query('obras', 'actualizar_obra_completa')
+            cursor.execute(sql, params)
+            
+            if cursor.rowcount == 0:
+                return False, "No se pudo actualizar la obra"
+            
+            self.db_connection.commit()
+            return True, f"Obra actualizada exitosamente"
+
+        except Exception as e:
+            print(f"[ERROR OBRAS] Error actualizando obra: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except Exception:
+                    pass
+            return False, f"Error actualizando obra: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+
+    def eliminar_obra(self, obra_id: int, usuario_eliminacion: str):
+        """Elimina lógicamente una obra (soft delete)."""
+        if not self.db_connection:
+            return False, DB_ERROR_MESSAGE
+
+        cursor = None
+        try:
+            # Sanitizar datos
+            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
+            usuario_limpio = self.data_sanitizer.sanitize_string(usuario_eliminacion, 50)
+            
+            if obra_id_limpio <= 0:
+                return False, "ID de obra inválido"
+            if not usuario_limpio:
+                return False, "Usuario de eliminación es requerido"
+
+            cursor = self.db_connection.cursor()
+
+            # 🔒 Verificar que la obra existe usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'verificar_obra_codigo')
+            cursor.execute(sql, {"obra_id": obra_id_limpio})
+            result = cursor.fetchone()
+            if not result:
+                return False, "La obra no existe o ya está eliminada"
+            
+            codigo_obra = result[0]
+
+            # 🔒 Soft delete usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'eliminar_obra_logica')
+            cursor.execute(sql, {"obra_id": obra_id_limpio, "usuario": usuario_limpio})
+            
+            if cursor.rowcount == 0:
+                return False, "No se pudo eliminar la obra"
+            
+            self.db_connection.commit()
+            return True, f"Obra {codigo_obra} eliminada exitosamente"
+
+        except Exception as e:
+            print(f"[ERROR OBRAS] Error eliminando obra: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except Exception:
+                    pass
+            return False, f"Error eliminando obra: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+
+    def cambiar_estado_obra(self, obra_id: int, nuevo_estado: str, usuario_cambio: str):
+        """Cambia el estado de una obra."""
+        if not self.db_connection:
+            return False, DB_ERROR_MESSAGE
+
+        cursor = None
+        try:
+            # Sanitizar datos
+            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
+            estado_limpio = self.data_sanitizer.sanitize_string(nuevo_estado, 20)
+            usuario_limpio = self.data_sanitizer.sanitize_string(usuario_cambio, 50)
+            
+            estados_validos = ['PLANIFICACION', 'EN_PROCESO', 'PAUSADA', 'FINALIZADA', 'CANCELADA']
+            if estado_limpio not in estados_validos:
+                return False, f"Estado inválido. Debe ser uno de: {', '.join(estados_validos)}"
+
+            cursor = self.db_connection.cursor()
+
+            # Actualizar estado
+            cursor.execute("""
+                UPDATE obras 
+                SET estado = ?, updated_at = GETDATE(), usuario_modificacion = ?
+                WHERE id = ? AND activo = 1
+            """, (estado_limpio, usuario_limpio, obra_id_limpio))
+            
+            if cursor.rowcount == 0:
+                return False, "No se pudo cambiar el estado de la obra"
+            
+            self.db_connection.commit()
+            return True, f"Estado cambiado a {estado_limpio}"
+
+        except Exception as e:
+            print(f"[ERROR OBRAS] Error cambiando estado: {e}")
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except Exception:
+                    pass
+            return False, f"Error cambiando estado: {str(e)}"
+        finally:
+            if cursor:
+                cursor.close()
+
+    def obtener_estadisticas_obras(self):
+        """Obtiene estadísticas generales de obras."""
+        if not self.db_connection:
+            return {}
+
+        cursor = None
+        try:
+            cursor = self.db_connection.cursor()
+            
+            estadisticas = {}
+            
+            # 🔒 Total de obras activas usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'count_obras_activas')
+            cursor.execute(sql)
+            estadisticas['total_obras'] = cursor.fetchone()[0]
+            
+            # Obras por estado
+            cursor.execute("""
+                SELECT estado, COUNT(*) 
+                FROM obras 
+                WHERE activo = 1 
+                GROUP BY estado
+            """)
+            
+            estadisticas['obras_activas'] = 0
+            estadisticas['obras_finalizadas'] = 0
+            
+            for estado, cantidad in cursor.fetchall():
+                if estado == 'EN_PROCESO':
+                    estadisticas['obras_activas'] = cantidad
+                elif estado == 'FINALIZADA':
+                    estadisticas['obras_finalizadas'] = cantidad
+            
+            # 🔒 Presupuesto total usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'suma_presupuesto_total')
+            cursor.execute(sql)
+            result = cursor.fetchone()[0]
+            estadisticas['presupuesto_total'] = float(result) if result else 0.0
+            
+            return estadisticas
+
+        except Exception as e:
+            print(f"[ERROR OBRAS] Error obteniendo estadísticas: {e}")
+            return {}
         finally:
             if cursor:
                 cursor.close()

@@ -31,20 +31,27 @@ import logging
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QComboBox,
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTableWidget,
     QTableWidgetItem,
-    QTabWidget,
-    QVBoxLayout,
     QWidget,
+    QTabWidget,
+    QAbstractItemView,
 )
 
+# Importar componentes del framework de estandarización UI
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusGroupBox,
+    RexusFrame,
+    RexusTabWidget,
+    RexusColors,
+    RexusFonts,
+    RexusLayoutHelper
+)
+from rexus.ui.templates.base_module_view import BaseModuleView
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 
@@ -52,7 +59,7 @@ from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 
-class HerrajesView(QWidget):
+class HerrajesView(BaseModuleView):
     """Vista principal del módulo de herrajes."""
 
     # Señales
@@ -60,40 +67,18 @@ class HerrajesView(QWidget):
     error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        super().__init__()
+        super().__init__("🔧 Gestión de Herrajes")
         self.controller = None
         self.form_protector = None
-        self.init_ui()
+        self.setup_herrajes_ui()
 
-    def init_ui(self):
-        """Inicializa la interfaz de usuario con pestañas."""
-        layout = QVBoxLayout(self)
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
-
-        # Crear sistema de pestañas
-        self.tab_widget = QTabWidget()
-        self.tab_widget.setStyleSheet("""
-            QTabWidget::pane {
-                border: 1px solid #ddd;
-                border-radius: 8px;
-                background-color: white;
-            }
-            QTabBar::tab {
-                background-color: #f8f9fa;
-                color: #495057;
-                padding: 12px 20px;
-                margin-right: 2px;
-                border-top-left-radius: 8px;
-                border-top-right-radius: 8px;
-                font-weight: 500;
-            }
-            QTabBar::tab:selected {
-                background-color: white;
-                color: #2c3e50;
-                font-weight: bold;
-            }
-        """)
+    def setup_herrajes_ui(self):
+        """Configura la UI específica del módulo de herrajes."""
+        # Configurar controles específicos
+        self.setup_herrajes_controls()
+        
+        # Crear sistema de pestañas usando RexusTabWidget
+        self.tab_widget = RexusTabWidget()
 
         # Pestaña de Gestión de Herrajes
         tab_gestion = self.crear_tab_gestion()
@@ -103,18 +88,23 @@ class HerrajesView(QWidget):
         tab_estadisticas = self.crear_tab_estadisticas()
         self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
 
-        layout.addWidget(self.tab_widget)
+        self.add_to_main_content(self.tab_widget)
 
-        # Aplicar estilos modernos
-        self.configurar_estilos()
+        # Aplicar tema del módulo
+        self.apply_theme()
 
         # Inicializar protección XSS
         self.init_xss_protection()
 
+    def setup_herrajes_controls(self):
+        """Configura los controles específicos del módulo de herrajes."""
+        # Los controles principales se configurarán dentro de las pestañas
+        pass
+    
     def crear_tab_gestion(self):
         """Crea la pestaña de gestión de herrajes."""
         tab = QWidget()
-        layout = QVBoxLayout(tab)
+        layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(10)
         layout.setContentsMargins(10, 10, 10, 10)
 
@@ -127,16 +117,17 @@ class HerrajesView(QWidget):
         layout.addWidget(integration_panel)
 
         # Tabla principal
-        self.tabla_principal = StandardComponents.create_standard_table()
+        self.tabla_principal = RexusTable()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
 
+        tab.setLayout(layout)
         return tab
 
     def crear_tab_estadisticas(self):
         """Crea la pestaña de estadísticas de herrajes."""
         tab = QWidget()
-        layout = QVBoxLayout(tab)
+        layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(15)
         layout.setContentsMargins(20, 20, 20, 20)
 
@@ -153,112 +144,38 @@ class HerrajesView(QWidget):
         layout.addWidget(reportes_panel)
 
         layout.addStretch()
+        tab.setLayout(layout)
         return tab
 
     def crear_panel_analisis_stock(self):
         """Crea el panel de análisis de stock."""
-        panel = QGroupBox("📈 Análisis de Stock")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #6f42c1;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #6f42c1;
-            }
-        """)
-
-        layout = QVBoxLayout(panel)
+        panel = RexusGroupBox("📈 Análisis de Stock")
+        layout = RexusLayoutHelper.create_vertical_layout()
         
         # Placeholder para análisis de stock
-        placeholder = QLabel("📊 Análisis de stock próximamente")
+        placeholder = RexusLabel("📊 Análisis de stock próximamente", "body")
         placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        placeholder.setStyleSheet("color: #6c757d; font-size: 14px; padding: 20px;")
         layout.addWidget(placeholder)
 
+        panel.setLayout(layout)
         return panel
 
     def crear_panel_reportes_herrajes(self):
         """Crea el panel de reportes de herrajes."""
-        panel = QGroupBox("📄 Reportes de Herrajes")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #20c997;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #20c997;
-            }
-        """)
-
-        layout = QHBoxLayout(panel)
+        panel = RexusGroupBox("📄 Reportes de Herrajes")
+        layout = RexusLayoutHelper.create_horizontal_layout()
         
-        # Botones de reportes
-        btn_reporte_stock = QPushButton("📋 Herrajes por Stock")
-        btn_reporte_stock.setStyleSheet("""
-            QPushButton {
-                background-color: #20c997;
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #1ba085;
-            }
-        """)
+        # Botones de reportes con componentes Rexus
+        btn_reporte_stock = RexusButton("📋 Herrajes por Stock", "primary")
         layout.addWidget(btn_reporte_stock)
 
-        btn_reporte_categorias = QPushButton("📊 Por Categorías")
-        btn_reporte_categorias.setStyleSheet("""
-            QPushButton {
-                background-color: #fd7e14;
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #e8630a;
-            }
-        """)
+        btn_reporte_categorias = RexusButton("📊 Por Categorías", "secondary")
         layout.addWidget(btn_reporte_categorias)
 
-        btn_reporte_proveedores = QPushButton("🏭 Por Proveedores")
-        btn_reporte_proveedores.setStyleSheet("""
-            QPushButton {
-                background-color: #6610f2;
-                color: white;
-                border: none;
-                padding: 10px 15px;
-                border-radius: 5px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #520dc2;
-            }
-        """)
+        btn_reporte_proveedores = RexusButton("🏭 Por Proveedores", "secondary")
         layout.addWidget(btn_reporte_proveedores)
-
         layout.addStretch()
+        panel.setLayout(layout)
         return panel
 
     # def crear_titulo(self, layout: QVBoxLayout):
@@ -424,29 +341,11 @@ class HerrajesView(QWidget):
 
     def crear_panel_control(self):
         """Crea el panel de control superior con botones modernos."""
-        panel = QGroupBox("🎛️ Panel de Control")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #6c757d;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #6c757d;
-            }
-        """)
+        panel = RexusGroupBox("🎛️ Panel de Control")
+        layout = RexusLayoutHelper.create_horizontal_layout()
 
-        layout = QHBoxLayout(panel)
-
-        # Botón Nuevo Herraje
-        self.btn_nuevo = QPushButton("➕ Nuevo Herraje")
+        # Botón Nuevo Herraje con componente Rexus
+        self.btn_nuevo = RexusButton("➕ Nuevo Herraje", "primary")
         self.btn_nuevo.setStyleSheet("""
             QPushButton {
                 background-color: #6c757d;
@@ -765,21 +664,24 @@ class HerrajesView(QWidget):
         # Conectar señal de selección
         self.tabla_principal.itemSelectionChanged.connect(self.on_herraje_seleccionado)
 
-    def configurar_estilos(self):
-        """Configura los estilos modernos usando FormStyleManager."""
-        try:
-            from rexus.utils.form_styles import FormStyleManager, setup_form_widget
-            
-            # Aplicar estilos modernos del FormStyleManager
-            setup_form_widget(self, apply_animations=True)
-            
-            # Estilos específicos del módulo de herrajes
-            self.setStyleSheet("""
-                QWidget {
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    background-color: #f8f9fa;
-                }
-                QGroupBox {
+    def apply_theme(self):
+        """Aplica el tema usando el sistema unificado de Rexus."""
+        # Usar el sistema de temas de Rexus en lugar de CSS inline
+        style_manager.apply_theme(self, "high_contrast")
+        
+        # Configuraciones específicas para el módulo de herrajes si es necesario
+        self._apply_herrajes_specific_styling()
+    
+    def _apply_herrajes_specific_styling(self):
+        """Aplica estilos específicos del módulo de herrajes."""
+        # Los estilos ahora los maneja el sistema unificado de temas
+        pass
+    
+    def configurar_estilos_legacy(self):
+        """Legacy method - deprecated."""
+        # Legacy code removed - now using unified theme system
+        pass
+        # Old QGroupBox {
                     font-weight: bold;
                     border-radius: 8px;
                     margin-top: 1ex;

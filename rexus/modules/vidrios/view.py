@@ -28,26 +28,33 @@ import logging
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QComboBox,
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
-    QTableWidget,
     QTableWidgetItem,
-    QVBoxLayout,
     QWidget,
+    QAbstractItemView,
 )
 
+# Importar componentes del framework de estandarización UI
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusGroupBox,
+    RexusFrame,
+    RexusColors,
+    RexusFonts,
+    RexusLayoutHelper
+)
+from rexus.ui.templates.base_module_view import BaseModuleView
 from rexus.ui.standard_components import StandardComponents
+from rexus.ui.style_manager import style_manager
 
 from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 
-class VidriosView(QWidget):
+class VidriosView(BaseModuleView):
     """Vista principal del módulo de vidrios."""
 
     # Señales
@@ -55,65 +62,30 @@ class VidriosView(QWidget):
     error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        super().__init__()
+        super().__init__("🪟 Gestión de Vidrios")
         self.controller = None
         self.form_protector = None
-        self.init_ui()
+        self.setup_vidrios_ui()
 
-    def init_ui(self):
-        """Inicializa la interfaz de usuario."""
-    layout = QVBoxLayout(self)
-    layout.setSpacing(10)
-    layout.setContentsMargins(10, 10, 10, 10)
-
-    # Panel de control
-        control_panel = self.crear_panel_control()
-        layout.addWidget(control_panel)
-
+    def setup_vidrios_ui(self):
+        """Configura la UI específica del módulo de vidrios."""
+        # Configurar controles específicos
+        self.setup_vidrios_controls()
+        
         # Panel de estadísticas
         stats_panel = self.crear_panel_estadisticas()
-        layout.addWidget(stats_panel)
+        self.add_to_main_content(stats_panel)
 
         # Tabla principal
-        self.tabla_principal = StandardComponents.create_standard_table()
+        self.tabla_principal = RexusTable()
         self.configurar_tabla()
-        layout.addWidget(self.tabla_principal)
+        self.set_main_table(self.tabla_principal)
 
-        # Aplicar estilos modernos
-        self.configurar_estilos()
+        # Aplicar tema del módulo
+        self.apply_theme()
 
         # Inicializar protección XSS
         self.init_xss_protection()
-
-    # def crear_titulo(self, layout: QVBoxLayout):
-#         """Crea el título moderno de la vista."""
-#         titulo_container = QFrame()
-#         titulo_container.setStyleSheet("""
-#             QFrame {
-#                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-#                                            stop:0 #20c997, stop:1 #17a2b8);
-#                 border-radius: 8px;
-#                 padding: 6px;
-#                 margin-bottom: 10px;
-#             }
-#         """)
-# 
-#         titulo_layout = QHBoxLayout(titulo_container)
-# 
-#         # Título principal
-#         title_label = QLabel("🪟 Gestión de Vidrios")
-#         title_label.setStyleSheet("""
-#             QLabel {
-#                 font-size: 16px;
-#                 font-weight: bold;
-#                 color: white;
-#                 background: transparent;
-#                 padding: 0;
-#                 margin: 0;
-#             }
-#         """)
-#         titulo_layout.addWidget(title_label)
-
 
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""
@@ -127,75 +99,26 @@ class VidriosView(QWidget):
         except Exception as e:
             logging.error(f"Error inicializando protección XSS: {e}")
 
-    def crear_panel_control(self):
-        """Crea el panel de control superior con botones modernos."""
-        panel = QGroupBox("🎛️ Panel de Control")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #20c997;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #20c997;
-            }
-        """)
-
-        layout = QHBoxLayout(panel)
-
-        # Botón Nuevo Vidrio
-        self.btn_nuevo = QPushButton("➕ Nuevo Vidrio")
-        self.btn_nuevo.setStyleSheet("""
-            QPushButton {
-                background-color: #20c997;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 130px;
-            }
-            QPushButton:hover {
-                background-color: #1ba085;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+    def setup_vidrios_controls(self):
+        """Configura los controles específicos del módulo de vidrios."""
+        # Añadir controles al panel principal
+        controls_layout = RexusLayoutHelper.create_horizontal_layout()
+        
+        # Botón Nuevo Vidrio con componente Rexus
+        self.btn_nuevo = RexusButton("➕ Nuevo Vidrio", "primary")
         self.btn_nuevo.setToolTip("➕ Crear un nuevo vidrio en el sistema")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
-        layout.addWidget(self.btn_nuevo)
+        controls_layout.addWidget(self.btn_nuevo)
 
-        # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
+        # Campo de búsqueda con componente Rexus
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar vidrio por tipo, medida o descripción...")
         self.input_busqueda.setToolTip("🔍 Buscar vidrios por tipo, dimensiones o características")
-        self.input_busqueda.setStyleSheet("""
-            QLineEdit {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 200px;
-            }
-            QLineEdit:focus {
-                border-color: #20c997;
-            }
-        """)
         self.input_busqueda.returnPressed.connect(self.buscar)
-        layout.addWidget(self.input_busqueda)
+        controls_layout.addWidget(self.input_busqueda)
 
-        # Filtro de tipo
-        self.combo_tipo = QComboBox()
+        # Filtro de tipo con componente Rexus
+        self.combo_tipo = RexusComboBox()
         self.combo_tipo.addItems([
             "🪟 Todos los tipos",
             "🔲 Claro",
@@ -206,147 +129,41 @@ class VidriosView(QWidget):
             "📏 Doble Vidriado"
         ])
         self.combo_tipo.setToolTip("🪟 Filtrar vidrios por tipo")
-        self.combo_tipo.setStyleSheet("""
-            QComboBox {
-                border: 2px solid #ced4da;
-                border-radius: 6px;
-                padding: 10px 12px;
-                font-size: 14px;
-                min-width: 160px;
-            }
-            QComboBox:focus {
-                border-color: #20c997;
-            }
-        """)
-        layout.addWidget(self.combo_tipo)
+        controls_layout.addWidget(self.combo_tipo)
 
-        # Botón buscar
-        self.btn_buscar = QPushButton("🔍 Buscar")
-        self.btn_buscar.setStyleSheet("""
-            QPushButton {
-                background-color: #007bff;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #0069d9;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón buscar con componente Rexus
+        self.btn_buscar = RexusButton("🔍 Buscar", "secondary")
         self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
         self.btn_buscar.clicked.connect(self.buscar)
-        layout.addWidget(self.btn_buscar)
+        controls_layout.addWidget(self.btn_buscar)
 
-        # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
-        self.btn_actualizar.setStyleSheet("""
-            QPushButton {
-                background-color: #28a745;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #218838;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón actualizar con componente Rexus
+        self.btn_actualizar = RexusButton("🔄 Actualizar", "secondary")
         self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de vidrios")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
-        layout.addWidget(self.btn_actualizar)
+        controls_layout.addWidget(self.btn_actualizar)
 
-        # Separador y botones de acción
-        layout.addStretch()
+        controls_layout.addStretch()
         
-        # Botón editar
-        self.btn_editar = QPushButton("✏️ Editar")
-        self.btn_editar.setStyleSheet("""
-            QPushButton {
-                background-color: #ffc107;
-                color: #212529;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #ffcd39;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón editar con componente Rexus
+        self.btn_editar = RexusButton("✏️ Editar", "warning")
         self.btn_editar.setToolTip("✏️ Editar vidrio seleccionado")
         self.btn_editar.setEnabled(False)
-        layout.addWidget(self.btn_editar)
+        controls_layout.addWidget(self.btn_editar)
 
-        # Botón eliminar
-        self.btn_eliminar = QPushButton("🗑️ Eliminar")
-        self.btn_eliminar.setStyleSheet("""
-            QPushButton {
-                background-color: #dc3545;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 10px 16px;
-                font-weight: bold;
-                font-size: 14px;
-                min-width: 100px;
-            }
-            QPushButton:hover {
-                background-color: #c82333;
-            }
-            QPushButton:disabled {
-                background-color: #adb5bd;
-                color: #6c757d;
-            }
-        """)
+        # Botón eliminar con componente Rexus
+        self.btn_eliminar = RexusButton("🗑️ Eliminar", "danger")
         self.btn_eliminar.setToolTip("🗑️ Eliminar vidrio seleccionado")
         self.btn_eliminar.setEnabled(False)
-        layout.addWidget(self.btn_eliminar)
-
-        return panel
+        controls_layout.addWidget(self.btn_eliminar)
+        
+        # Añadir controles al área principal
+        self.add_to_main_content(controls_layout)
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de vidrios."""
-        panel = QGroupBox("📊 Estadísticas de Vidrios")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #17a2b8;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-                background-color: white;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                color: #17a2b8;
-            }
-        """)
-
-        layout = QHBoxLayout(panel)
+        panel = RexusGroupBox("📊 Estadísticas de Vidrios")
+        layout = RexusLayoutHelper.create_horizontal_layout()
 
         # Total vidrios
         self.lbl_total_vidrios = self.crear_stat_widget("🪟", "Total Vidrios", "0", "#17a2b8")
@@ -364,50 +181,37 @@ class VidriosView(QWidget):
         self.lbl_tipos_vidrios = self.crear_stat_widget("📂", "Tipos", "0", "#6c757d")
         layout.addWidget(self.lbl_tipos_vidrios)
 
+        panel.setLayout(layout)
         return panel
 
     def crear_stat_widget(self, icono, titulo, valor, color):
         """Crea un widget de estadística individual."""
-        widget = QFrame()
-        widget.setStyleSheet(f"""
-            QFrame {{
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 10px;
-            }}
-            QFrame:hover {{
-                border-color: {color};
-                background-color: #f8f9fa;
-            }}
-        """)
+        widget = RexusFrame()
         
-        layout = QVBoxLayout(widget)
+        layout = RexusLayoutHelper.create_vertical_layout()
         layout.setSpacing(5)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Icono y título
-        header_layout = QHBoxLayout()
+        header_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        icono_lbl = QLabel(icono)
-        icono_lbl.setStyleSheet(f"font-size: 18px; color: {color};")
+        icono_lbl = RexusLabel(icono, "heading")
         header_layout.addWidget(icono_lbl)
         
-        titulo_lbl = QLabel(titulo)
-        titulo_lbl.setStyleSheet(f"font-weight: bold; color: {color}; font-size: 12px;")
+        titulo_lbl = RexusLabel(titulo, "caption")
         header_layout.addWidget(titulo_lbl)
         
         layout.addLayout(header_layout)
 
         # Valor
-        valor_lbl = QLabel(valor)
-        valor_lbl.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
+        valor_lbl = RexusLabel(valor, "heading")
         valor_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_lbl)
 
         # Guardar referencia al label del valor para actualizar
         setattr(widget, 'valor_label', valor_lbl)
         
+        widget.setLayout(layout)
         return widget
 
     def configurar_tabla(self):
@@ -437,103 +241,25 @@ class VidriosView(QWidget):
 
         # Configuraciones visuales
         self.tabla_principal.setAlternatingRowColors(True)
-        self.tabla_principal.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.tabla_principal.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
         
-        # Estilos de tabla modernos
-        self.tabla_principal.setStyleSheet("""
-            QTableWidget {
-                gridline-color: #dee2e6;
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                font-size: 13px;
-            }
-            QTableWidget::item {
-                padding: 8px;
-                border-bottom: 1px solid #f1f3f4;
-            }
-            QTableWidget::item:selected {
-                background-color: #e7f3ff;
-                color: #0066cc;
-            }
-            QTableWidget::item:hover {
-                background-color: #f8f9fa;
-            }
-            QHeaderView::section {
-                background-color: #f8f9fa;
-                padding: 10px;
-                border: none;
-                border-bottom: 2px solid #dee2e6;
-                font-weight: bold;
-                color: #495057;
-            }
-        """)
+        # Los estilos se aplicarán por el tema unificado
         
         # Conectar señal de selección
         self.tabla_principal.itemSelectionChanged.connect(self.on_vidrio_seleccionado)
 
-    def configurar_estilos(self):
-        """Configura los estilos modernos usando FormStyleManager."""
-        try:
-            from rexus.utils.form_styles import FormStyleManager, setup_form_widget
-            
-            # Aplicar estilos modernos del FormStyleManager
-            setup_form_widget(self, apply_animations=True)
-            
-            # Estilos específicos del módulo de vidrios
-            self.setStyleSheet("""
-                QWidget {
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                    background-color: #f8f9fa;
-                }
-                QGroupBox {
-                    font-weight: bold;
-                    border-radius: 8px;
-                    margin-top: 1ex;
-                    padding-top: 10px;
-                }
-                QGroupBox::title {
-                    subcontrol-origin: margin;
-                    left: 10px;
-                    padding: 0 5px 0 5px;
-                }
-            """)
-            
-        except ImportError:
-            print("[WARNING] FormStyleManager no disponible, usando estilos básicos")
-            self.aplicar_estilo_basico()
-
-    def aplicar_estilo_basico(self):
-        """Aplica estilos básicos como fallback (sin sintaxis incorrecta)."""
-        self.setStyleSheet("""
-            QWidget {
-                background-color: #f8f9fa;
-                font-family: 'Segoe UI', Arial, sans-serif;
-            }
-            QPushButton {
-                background-color: #20c997;
-                color: white;
-                border: none;
-                padding: 8px 16px;
-                border-radius: 4px;
-                font-weight: bold;
-            }
-            QPushButton:hover {
-                background-color: #1ba085;
-            }
-            QLineEdit, QComboBox {
-                border: 1px solid #ced4da;
-                border-radius: 4px;
-                padding: 8px;
-                font-size: 14px;
-            }
-            QTableWidget {
-                background-color: white;
-                gridline-color: #dee2e6;
-                border: 1px solid #dee2e6;
-                border-radius: 4px;
-            }
-        """)
+    def apply_theme(self):
+        """Aplica el tema usando el sistema unificado de Rexus."""
+        # Usar el sistema de temas de Rexus en lugar de CSS inline
+        style_manager.apply_theme(self, "high_contrast")
+        
+        # Configuraciones específicas para el módulo de vidrios si es necesario
+        self._apply_vidrios_specific_styling()
+    
+    def _apply_vidrios_specific_styling(self):
+        """Aplica estilos específicos del módulo de vidrios."""
+        # Los estilos ahora los maneja el sistema unificado de temas
+        pass
 
     def set_loading_state(self, loading: bool):
         """Maneja el estado de carga de la interfaz."""
@@ -612,9 +338,8 @@ class VidriosView(QWidget):
                 row, 3, QTableWidgetItem(str(registro.get("estado", "")))
             )
 
-            # Botón de acciones
-            btn_editar = QPushButton("Editar")
-            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            # Botón de acciones con componente Rexus
+            btn_editar = RexusButton("Editar", "warning")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
     def obtener_datos_seguros(self) -> dict:

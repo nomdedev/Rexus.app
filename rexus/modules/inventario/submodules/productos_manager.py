@@ -38,20 +38,35 @@ except ImportError:
             return None
 
 
-# DataSanitizer unificado
+# DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
 except ImportError:
     try:
-        from utils.data_sanitizer import DataSanitizer
+        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+        try:
+            from utils.data_sanitizer import DataSanitizer
+        except ImportError:
+            # Fallback seguro
+            class DataSanitizer:
+                def sanitize_dict(self, data):
+                    """Sanitiza un diccionario de datos de forma segura."""
+                    if not isinstance(data, dict):
+                        return {}
+                    
+                    sanitized = {}
+                    for key, value in data.items():
+                        if isinstance(value, str):
+                            # Sanitización básica de strings
+                            sanitized[key] = str(value).strip()
+                        else:
+                            sanitized[key] = value
+                    return sanitized
 
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                return data
-
-            def sanitize_text(self, text):
-                return str(text) if text else ""
+                def sanitize_text(self, text):
+                    """Sanitiza texto de forma segura."""
+                    return str(text).strip() if text else ""
 
 
 class ProductosManager:
@@ -181,8 +196,8 @@ class ProductosManager:
 
             cursor.execute(query, params)
 
-            # Obtener ID del producto creado
-            cursor.execute("SELECT @@IDENTITY")
+            # Obtener ID del producto creado usando SCOPE_IDENTITY() seguro
+            cursor.execute("SELECT SCOPE_IDENTITY()")
             producto_id = cursor.fetchone()[0]
 
             self.db_connection.commit()

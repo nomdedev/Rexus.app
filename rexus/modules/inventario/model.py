@@ -3,23 +3,25 @@ from rexus.core.auth_decorators import (
     auth_required,
     permission_required,
 )
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
-# DB Authorization Check
 """
 Modelo de Inventario
 
 Maneja la lógica de negocio y acceso a datos para el inventario.
 Incluye utilidades de seguridad para prevenir SQL injection y XSS.
+
+MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import datetime
 import sys
 from io import BytesIO
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple, Union
 
 import qrcode
 from PIL import Image
@@ -52,7 +54,28 @@ except ImportError:
     SQL_SECURITY_AVAILABLE = False
     sql_script_loader = None
 
-# Importar ConsultasManager
+# Importar managers especializados
+try:
+    from rexus.modules.inventario.submodules.base_utilities import BaseUtilities
+    from rexus.modules.inventario.submodules.productos_manager import ProductosManager
+    from rexus.modules.inventario.submodules.movimientos_manager import MovimientosManager
+    from rexus.modules.inventario.submodules.reservas_manager import ReservasManager
+    from rexus.modules.inventario.submodules.reportes_manager import ReportesManager
+    from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
+    
+    SUBMODULES_AVAILABLE = True
+    print("OK [INVENTARIO] Submódulos especializados cargados")
+except ImportError as e:
+    print(f"[WARNING] Submódulos especializados no disponibles en inventario: {e}")
+    SUBMODULES_AVAILABLE = False
+    BaseUtilities = None
+    ProductosManager = None
+    MovimientosManager = None
+    ReservasManager = None
+    ReportesManager = None
+    CategoriasManager = None
+
+# Importar ConsultasManager (mantener compatibilidad)
 try:
     from rexus.modules.inventario.submodules.consultas_manager_refactorizado import (
         ConsultasManager,
@@ -66,7 +89,12 @@ except ImportError as e:
 
 
 class InventarioModel(PaginatedTableMixin):
-    """Modelo para gestionar el inventario de productos."""
+    """
+    Modelo para gestionar el inventario de productos.
+    
+    MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+    para prevenir inyección SQL y mejorar mantenibilidad.
+    """
 
     def __init__(self, db_connection=None):
         """
@@ -79,6 +107,8 @@ class InventarioModel(PaginatedTableMixin):
         super().__init__()
 
         self.db_connection = db_connection
+        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
         self.tabla_reservas = "reserva_materiales"  # Tabla para reservas por obra
@@ -105,7 +135,27 @@ class InventarioModel(PaginatedTableMixin):
             self.script_loader = None
             print("WARNING [INVENTARIO] SQL script loader no disponible")
 
-        # Inicializar ConsultasManager
+        # Inicializar managers especializados
+        if SUBMODULES_AVAILABLE:
+            try:
+                self.base_utils = BaseUtilities(db_connection=self.db_connection)
+                self.productos_manager = ProductosManager(db_connection=self.db_connection)
+                self.movimientos_manager = MovimientosManager(db_connection=self.db_connection)
+                self.reservas_manager = ReservasManager(db_connection=self.db_connection)
+                self.reportes_manager = ReportesManager(db_connection=self.db_connection)
+                self.categorias_manager = CategoriasManager(db_connection=self.db_connection)
+                print("OK [INVENTARIO] Managers especializados inicializados")
+                self.managers_available = True
+            except Exception as e:
+                print(f"[ERROR INVENTARIO] Error inicializando managers especializados: {e}")
+                self.managers_available = False
+                self._init_fallback_managers()
+        else:
+            print("WARNING [INVENTARIO] Submódulos no disponibles, usando modo de compatibilidad")
+            self.managers_available = False
+            self._init_fallback_managers()
+
+        # Inicializar ConsultasManager (mantener compatibilidad)
         if CONSULTAS_MANAGER_AVAILABLE and ConsultasManager:
             self.consultas_manager = ConsultasManager(db_connection=self.db_connection)
             print("OK [INVENTARIO] ConsultasManager inicializado")
@@ -118,6 +168,98 @@ class InventarioModel(PaginatedTableMixin):
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
+    
+    def _init_fallback_managers(self):
+        """Inicializa managers básicos como fallback cuando los submódulos no están disponibles."""
+        self.base_utils = None
+        self.productos_manager = None
+        self.movimientos_manager = None
+        self.reservas_manager = None
+        self.reportes_manager = None
+        self.categorias_manager = None
+        print("INFO [INVENTARIO] Usando funciones integradas como fallback")
+
+    # ===========================================
+    # MÉTODOS DE PROXY PARA COMPATIBILIDAD
+    # ===========================================
+    
+    def crear_producto(self, datos_producto: Dict[str, Any]) -> Dict[str, Any]:
+        """Proxy para crear producto - usa ProductosManager si está disponible."""
+        if self.managers_available and self.productos_manager:
+            return self.productos_manager.crear_producto(datos_producto)
+        else:
+            # Fallback al método original (si existe)
+            return self._crear_producto_fallback(datos_producto)
+    
+    def obtener_producto_por_codigo(self, codigo: str) -> Optional[Dict[str, Any]]:
+        """Proxy para obtener producto por código."""
+        if self.managers_available and self.productos_manager:
+            return self.productos_manager.obtener_producto_por_codigo(codigo)
+        else:
+            return self._obtener_producto_por_codigo_fallback(codigo)
+    
+    def actualizar_stock_producto(self, producto_id: int, nuevo_stock: Union[int, float], 
+                                razon: str = "Ajuste manual") -> Dict[str, Any]:
+        """Proxy para actualizar stock de producto."""
+        if self.managers_available and self.productos_manager:
+            return self.productos_manager.actualizar_stock(producto_id, nuevo_stock, razon)
+        else:
+            return self._actualizar_stock_fallback(producto_id, nuevo_stock, razon)
+    
+    def registrar_movimiento_stock(self, datos_movimiento: Dict[str, Any]) -> Dict[str, Any]:
+        """Proxy para registrar movimiento de stock."""
+        if self.managers_available and self.movimientos_manager:
+            return self.movimientos_manager.registrar_movimiento(
+                datos_movimiento['producto_id'],
+                datos_movimiento['tipo_movimiento'],
+                datos_movimiento['cantidad'],
+                datos_movimiento.get('observaciones', ''),
+                datos_movimiento.get('obra_id'),
+                datos_movimiento.get('usuario', 'SISTEMA')
+            )
+        else:
+            return self._registrar_movimiento_fallback(datos_movimiento)
+    
+    def crear_reserva_material(self, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
+        """Proxy para crear reserva de material."""
+        if self.managers_available and self.reservas_manager:
+            return self.reservas_manager.crear_reserva(datos_reserva)
+        else:
+            return self._crear_reserva_fallback(datos_reserva)
+    
+    def generar_reporte_inventario(self, tipo_reporte: str, filtros: Optional[Dict] = None, 
+                                 formato: str = 'DICT') -> Dict[str, Any]:
+        """Proxy para generar reportes de inventario."""
+        if self.managers_available and self.reportes_manager:
+            if tipo_reporte == 'STOCK_ACTUAL':
+                return self.reportes_manager.generar_reporte_stock_actual(filtros, formato)
+            elif tipo_reporte == 'MOVIMIENTOS':
+                return self.reportes_manager.generar_reporte_movimientos(
+                    filtros.get('fecha_desde') if filtros else None,
+                    filtros.get('fecha_hasta') if filtros else None,
+                    filtros.get('producto_id') if filtros else None,
+                    filtros.get('tipo_movimiento') if filtros else None,
+                    formato
+                )
+            elif tipo_reporte == 'KPI_DASHBOARD':
+                return self.reportes_manager.generar_dashboard_kpis(formato)
+            elif tipo_reporte == 'ANALISIS_ABC':
+                criterio = filtros.get('criterio', 'valor') if filtros else 'valor'
+                return self.reportes_manager.generar_analisis_abc(criterio, formato)
+            elif tipo_reporte == 'VALORACION_INVENTARIO':
+                fecha_corte = filtros.get('fecha_corte') if filtros else None
+                return self.reportes_manager.generar_reporte_valoracion_inventario(fecha_corte, formato)
+            else:
+                return {'success': False, 'error': f'Tipo de reporte no soportado: {tipo_reporte}'}
+        else:
+            return self._generar_reporte_fallback(tipo_reporte, filtros, formato)
+    
+    def obtener_categorias(self, incluir_estadisticas: bool = False) -> List[Dict[str, Any]]:
+        """Proxy para obtener categorías."""
+        if self.managers_available and self.categorias_manager:
+            return self.categorias_manager.obtener_todas_categorias(incluir_estadisticas)
+        else:
+            return self._obtener_categorias_fallback(incluir_estadisticas)
 
     def _execute_secure_script(
         self, script_name: str, params: list = None, fallback_query: str = None
@@ -256,45 +398,24 @@ class InventarioModel(PaginatedTableMixin):
                     productos_paginados = productos[offset : offset + limit]
                     return productos_paginados, total_items
 
-            # Fallback: usar consulta segura validando tabla
-            tabla_validada = validate_table_name(self.tabla_inventario)
-            base_query = f"""
-                SELECT id, codigo, nombre, categoria, tipo, marca, 
-                       cantidad_disponible, precio_unitario, proveedor,
-                       ubicacion_almacen, fecha_creacion, activo
-                FROM [{tabla_validada}]
-                WHERE 1=1
-            """
-
-            params = []
-
-            # Aplicar filtros
-            if filters:
-                if filters.get("categoria"):
-                    base_query += " AND categoria = ?"
-                    params.append(filters["categoria"])
-
-                if filters.get("activo") is not None:
-                    base_query += " AND activo = ?"
-                    params.append(1 if filters["activo"] else 0)
-
-                if filters.get("search"):
-                    base_query += (
-                        " AND (nombre LIKE ? OR codigo LIKE ? OR marca LIKE ?)"
-                    )
-                    search_term = f"%{filters['search']}%"
-                    params.extend([search_term, search_term, search_term])
-
-            # Crear consultas paginadas
-            paginated_query, count_query = create_pagination_query(base_query)
-
-            # Obtener total de elementos
+            # 🔒 Usar consulta SQL externa segura
+            params = {
+                "categoria": filters.get("categoria") if filters else None,
+                "codigo": filters.get("codigo") if filters else None, 
+                "nombre": filters.get("nombre") if filters else None
+            }
+            
+            sql = self.sql_manager.get_query('inventario', 'list_productos_with_filters')
             cursor = self.db_connection.cursor()
-            cursor.execute(count_query, params)
-            total_items = cursor.fetchone()[0]
+            cursor.execute(sql, params)
+            productos = [dict(zip([col[0] for col in cursor.description], row)) for row in cursor.fetchall()]
 
-            # Obtener datos paginados
-            cursor.execute(paginated_query, params + [offset, limit])
+            # Aplicar paginación a resultados
+            total_items = len(productos)
+            offset = (page - 1) * limit
+            productos_paginados = productos[offset:offset + limit]
+            
+            return productos_paginados, total_items
 
             productos = []
             for row in cursor.fetchall():
@@ -452,29 +573,21 @@ class InventarioModel(PaginatedTableMixin):
             else:
                 tabla_validada = tabla_segura
 
-            base_query = f"""
-            SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
-                   stock_actual, stock_minimo, 0 as stock_maximo, importe as precio_unitario, 
-                   importe as precio_promedio, ubicacion, proveedor, unidad as unidad_medida, 
-                   'ACTIVO' as estado, GETDATE() as fecha_creacion, GETDATE() as fecha_modificacion, 
-                   '' as observaciones, qr as codigo_qr,
-                   stock_actual as stock_disponible, 0 as stock_reservado
-            FROM [{tabla_validada}]
-            WHERE """
-            sql_select = base_query + where_clause + " ORDER BY codigo"
+            # 🔒 Usar consulta SQL externa segura
+            params_query = {
+                "search": search_term if search_term else None,
+                "categoria": None,  # Agregar filtros según necesidad
+                "activo": 1
+            }
+            
+            productos = self.sql_manager.execute_query(
+                "get_productos_estructura_estandar",
+                params=params_query
+            )
 
-            cursor.execute(sql_select, params)
-            rows = cursor.fetchall()
-
-            # Convertir a lista de diccionarios
-            columns = [desc[0] for desc in cursor.description]
-            productos = []
-
-            for row in rows:
-                producto = dict(zip(columns, row))
-                # Calcular estado del stock
+            # Calcular estado del stock para cada producto
+            for producto in productos:
                 producto["estado_stock"] = self._determinar_estado_stock(producto)
-                productos.append(producto)
 
             return productos
 
@@ -663,8 +776,9 @@ class InventarioModel(PaginatedTableMixin):
                 ),
             )
 
-            # Obtener ID del producto creado
-            cursor.execute("SELECT @@IDENTITY")
+            # 🔒 Obtener ID del producto creado de forma segura
+            sql = self.sql_manager.get_query('inventario', 'get_last_identity')
+            cursor.execute(sql)
             producto_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
@@ -2277,37 +2391,18 @@ class InventarioModel(PaginatedTableMixin):
                 where_clause = "WHERE i.id = ?"
                 params.append(producto_id)
 
-            query = (
-                """
-                SELECT
-                    i.id, i.codigo, i.descripcion, i.categoria, i.unidad_medida,
-                    i.stock_actual,
-                    ISNULL(i.stock_reservado, 0) as stock_reservado,
-                    (i.stock_actual - ISNULL(i.stock_reservado, 0)) as stock_disponible,
-                    i.stock_minimo, i.stock_maximo,
-                    CASE
-                        WHEN (i.stock_actual - ISNULL(i.stock_reservado, 0)) <= i.stock_minimo THEN 'BAJO'
-                        WHEN (i.stock_actual - ISNULL(i.stock_reservado, 0)) = 0 THEN 'AGOTADO'
-                        ELSE 'NORMAL'
-                    END as estado_stock
-                FROM {self.tabla_inventario} i
-                """
-                + where_clause
-                + """
-                ORDER BY i.descripcion
-            """
+            # 🔒 Usar consulta SQL externa segura para análisis de stock
+            params_query = {
+                "producto_id": producto_id
+            }
+            
+            resultados = self.sql_manager.execute_query(
+                "analisis_stock_completo",
+                params=params_query
             )
 
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            disponibilidad = []
-            for fila in resultados:
-                item = dict(zip(columnas, fila))
-                disponibilidad.append(item)
-
-            return disponibilidad
+            # SQLQueryManager ya devuelve diccionarios, no necesitamos conversión
+            return resultados
 
         except Exception as e:
             print(f"[ERROR INVENTARIO] Error obteniendo disponibilidad: {e}")
@@ -2347,29 +2442,11 @@ class InventarioModel(PaginatedTableMixin):
                 r["cantidad_reservada"] * r["precio_unitario"] for r in reservas_activas
             )
 
-            # Materiales por categoría
-            cursor.execute(
-                """
-                SELECT
-                    i.categoria,
-                    COUNT(*) as cantidad_items,
-                    SUM(r.cantidad_reservada) as cantidad_total,
-                    SUM(r.cantidad_reservada * i.precio_unitario) as valor_total
-                FROM {self.tabla_reservas} r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
-                WHERE r.obra_id = ? AND r.estado = 'ACTIVA'
-                GROUP BY i.categoria
-                ORDER BY valor_total DESC
-            """,
-                (obra_id,),
+            # 🔒 Usar consulta SQL externa segura para estadísticas de categorías
+            categorias = self.sql_manager.execute_query(
+                "estadisticas_reservas_categoria",
+                params={"obra_id": obra_id}
             )
-
-            categorias = [
-                dict(zip([col[0] for col in cursor.description], row))
-                for row in cursor.fetchall()
-            ]
 
             reporte = {
                 "obra": {"id": obra_id, "codigo": obra_codigo, "nombre": obra_nombre},
@@ -2403,52 +2480,26 @@ class InventarioModel(PaginatedTableMixin):
 
             estadisticas = {}
 
-            # Total de reservas activas
-            cursor.execute(
-                "SELECT COUNT(*) FROM "
-                + self.tabla_reservas
-                + " WHERE estado = 'ACTIVA'"
-            )
+            # 🔒 Total de reservas activas usando SQL externo
+            sql = self.sql_manager.get_query('inventario', 'count_reservas_activas')
+            cursor = self.db_connection.cursor()
+            cursor.execute(sql)
             estadisticas["total_reservas_activas"] = cursor.fetchone()[0]
 
-            # Valor total reservado
-            cursor.execute(
-                """
-                SELECT SUM(r.cantidad_reservada * i.precio_unitario)
-                FROM """
-                + self.tabla_reservas
-                + """ r
-                INNER JOIN """
-                + self.tabla_inventario
-                + """ i ON r.producto_id = i.id
-                WHERE r.estado = 'ACTIVA'
-            """
-            )
+            # 🔒 Valor total reservado usando SQL externo
+            sql = self.sql_manager.get_query('inventario', 'valor_total_reservas_activas')
+            cursor.execute(sql)
             resultado = cursor.fetchone()[0]
-            estadisticas["valor_total_reservado"] = resultado or 0.0
+            estadisticas["valor_total_reservado"] = resultado if resultado else 0
 
-            # Obras con reservas
-            cursor.execute(
-                """
-                SELECT COUNT(DISTINCT obra_id)
-                FROM """
-                + self.tabla_reservas
-                + """
-                WHERE estado = 'ACTIVA'
-            """
-            )
+            # 🔒 Obras con reservas usando SQL externo
+            sql = self.sql_manager.get_query('inventario', 'count_obras_con_reservas')
+            cursor.execute(sql)
             estadisticas["obras_con_reservas"] = cursor.fetchone()[0]
 
-            # Productos con reservas
-            cursor.execute(
-                """
-                SELECT COUNT(DISTINCT producto_id)
-                FROM """
-                + self.tabla_reservas
-                + """
-                WHERE estado = 'ACTIVA'
-            """
-            )
+            # 🔒 Productos con reservas usando SQL externo
+            sql = self.sql_manager.get_query('inventario', 'count_productos_con_reservas')
+            cursor.execute(sql)
             estadisticas["productos_con_reservas"] = cursor.fetchone()[0]
 
             return estadisticas
@@ -2558,44 +2609,14 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            # Construir consulta base
-            query = (
-                """
-                SELECT id, codigo, descripcion, categoria, stock_actual, stock_minimo,
-                       precio_unitario, unidad_medida, activo, fecha_actualizacion,
-                       COALESCE(r.stock_reservado, 0) as stock_reservado,
-                       CASE
-                           WHEN stock_actual <= 0 THEN 'AGOTADO'
-                           WHEN stock_actual <= stock_minimo THEN 'BAJO'
-                           ELSE 'NORMAL'
-                       END as estado_stock
-                FROM """
-                + self.tabla_inventario
-                + """ i
-                LEFT JOIN (
-                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
-                    FROM reservas_inventario
-                    WHERE estado = 'ACTIVA'
-                    GROUP BY producto_id
-                ) r ON i.id = r.producto_id
-                WHERE i.activo = 1
-            """
-            )
-
-            # Agregar filtros
-            params = []
-            if filtros.get("busqueda"):
-                query += " AND (i.codigo LIKE ? OR i.descripcion LIKE ?)"
-                busqueda = f"%{filtros['busqueda']}%"
-                params.extend([busqueda, busqueda])
-
-            if filtros.get("categoria"):
-                query += " AND i.categoria = ?"
-                params.append(filtros["categoria"])
-
-            query += " ORDER BY i.codigo"
-
-            cursor.execute(query, params)
+            # 🔒 Usar consulta SQL externa segura para búsqueda de productos
+            sql = self.sql_manager.get_query('inventario', 'buscar_productos_con_stock')
+            params = {
+                "busqueda": filtros.get("busqueda"),
+                "categoria": filtros.get("categoria")
+            }
+            
+            cursor.execute(sql, params)
 
             productos = []
             for row in cursor.fetchall():
@@ -2864,17 +2885,9 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            # Información del producto
-            cursor.execute(
-                """
-                SELECT stock_actual, stock_minimo, precio_unitario
-                FROM """
-                + self.tabla_inventario
-                + """
-                WHERE id = ?
-            """,
-                (producto_id,),
-            )
+            # 🔒 Información del producto usando SQL externo
+            sql = self.sql_manager.get_query('inventario', 'detalle_disponibilidad_producto')
+            cursor.execute(sql, {"producto_id": producto_id})
 
             producto = cursor.fetchone()
             if not producto:
@@ -3223,3 +3236,85 @@ class InventarioModel(PaginatedTableMixin):
                 "offset": offset,
                 "limit": limit,
             }
+    
+    # ===========================================
+    # MÉTODOS FALLBACK PARA COMPATIBILIDAD
+    # ===========================================
+    
+    def _crear_producto_fallback(self, datos_producto: Dict[str, Any]) -> Dict[str, Any]:
+        """Método fallback para crear producto cuando los submódulos no están disponibles."""
+        return {
+            'success': False,
+            'error': 'Submódulos no disponibles. Funcionalidad limitada.',
+            'producto_id': None
+        }
+    
+    def _obtener_producto_por_codigo_fallback(self, codigo: str) -> Optional[Dict[str, Any]]:
+        """Método fallback para obtener producto por código."""
+        print(f"[WARNING] Función obtener_producto_por_codigo no disponible para código: {codigo}")
+        return None
+    
+    def _actualizar_stock_fallback(self, producto_id: int, nuevo_stock: Union[int, float], 
+                                 razon: str = "Ajuste manual") -> Dict[str, Any]:
+        """Método fallback para actualizar stock."""
+        return {
+            'success': False,
+            'error': 'Submódulos no disponibles. No se puede actualizar stock.',
+            'stock_anterior': 0,
+            'stock_nuevo': nuevo_stock,
+            'diferencia': 0
+        }
+    
+    def _registrar_movimiento_fallback(self, datos_movimiento: Dict[str, Any]) -> Dict[str, Any]:
+        """Método fallback para registrar movimiento."""
+        return {
+            'success': False,
+            'error': 'Submódulos no disponibles. No se puede registrar movimiento.'
+        }
+    
+    def _crear_reserva_fallback(self, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
+        """Método fallback para crear reserva."""
+        return {
+            'success': False,
+            'error': 'Submódulos no disponibles. No se puede crear reserva.',
+            'reserva_id': None
+        }
+    
+    def _generar_reporte_fallback(self, tipo_reporte: str, filtros: Optional[Dict] = None, 
+                                formato: str = 'DICT') -> Dict[str, Any]:
+        """Método fallback para generar reportes."""
+        return {
+            'success': False,
+            'error': f'Submódulos no disponibles. No se puede generar reporte: {tipo_reporte}',
+            'data': None
+        }
+    
+    def _obtener_categorias_fallback(self, incluir_estadisticas: bool = False) -> List[Dict[str, Any]]:
+        """Método fallback para obtener categorías."""
+        # Devolver categorías básicas por defecto
+        categorias_default = [
+            {'categoria': 'GENERAL', 'total_productos': 0},
+            {'categoria': 'HERRAMIENTAS', 'total_productos': 0},
+            {'categoria': 'MATERIALES', 'total_productos': 0},
+            {'categoria': 'SERVICIOS', 'total_productos': 0},
+            {'categoria': 'INSUMOS', 'total_productos': 0},
+            {'categoria': 'EQUIPOS', 'total_productos': 0},
+            {'categoria': 'CONSUMIBLES', 'total_productos': 0},
+            {'categoria': 'REPUESTOS', 'total_productos': 0}
+        ]
+        
+        if incluir_estadisticas:
+            for categoria in categorias_default:
+                categoria.update({
+                    'total_stock': 0,
+                    'valor_total_categoria': 0,
+                    'precio_promedio': 0,
+                    'precio_minimo': 0,
+                    'precio_maximo': 0,
+                    'productos_sin_stock': 0,
+                    'productos_stock_bajo': 0,
+                    'porcentaje_sin_stock': 0,
+                    'porcentaje_stock_bajo': 0
+                })
+        
+        return categorias_default

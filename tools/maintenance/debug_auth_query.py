@@ -85,17 +85,32 @@ def debug_auth_query():
         print(f"   Apellido: {user_record[6]}")
         print(f"   Email: {user_record[7]}")
         
-        # Verificar password
+        # 🔒 SEGURIDAD: Verificar password con sistema seguro
+        import sys
+        from pathlib import Path
+        sys.path.insert(0, str(Path(__file__).parent.parent.parent))
+        from rexus.utils.password_security import verify_password_secure
+        
         test_password = "admin"
-        computed_hash = hashlib.sha256(test_password.encode()).hexdigest()
         
-        print(f"\n5. Verificación de contraseña:")
+        print(f"\n5. Verificación de contraseña (sistema seguro):")
         print(f"   Password ingresado: '{test_password}'")
-        print(f"   Hash calculado: {computed_hash}")
-        print(f"   Hash en BD: {user_record[2]}")
-        print(f"   Coinciden: {'SI' if computed_hash == user_record[2] else 'NO'}")
+        print(f"   Hash en BD: {user_record[2][:20]}...")
         
-        if computed_hash == user_record[2]:
+        try:
+            # ✅ Verificación segura
+            password_matches = verify_password_secure(test_password, user_record[2])
+            print(f"   Verificación segura: {'SI' if password_matches else 'NO'}")
+        except Exception:
+            # Fallback para hashes legacy SHA256
+            computed_hash = hashlib.sha256(test_password.encode()).hexdigest()
+            password_matches = computed_hash == user_record[2]
+            print(f"   Hash calculado (legacy): {computed_hash}")
+            print(f"   Coinciden (legacy): {'SI' if password_matches else 'NO'}")
+            if password_matches:
+                print(f"   ⚠️  HASH LEGACY DETECTADO - Recomiende migración a sistema seguro")
+        
+        if password_matches:
             print(f"\n6. Creando diccionario de usuario:")
             user_info = {
                 'id': user_record[0],
