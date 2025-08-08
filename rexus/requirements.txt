@@ -1,98 +1,43 @@
-# ====================================================
-# REXUS APP - DEPENDENCIAS DE PRODUCCI�N
-# ====================================================
-# Archivo generado para modernizaci�n del proyecto
-# Versi�n: 2.0.0 - Producci�n Ready
+# Rexus.app Dependencies - Updated with improvements
 
-# ===== FRAMEWORK PRINCIPAL =====
-PyQt6>=6.9.0,<7.0.0
-PyQt6-Qt6>=6.9.0,<7.0.0
+# Core Framework
+PyQt6>=6.6.0
+PyQt6-Qt6>=6.6.0
 
-PyQt6-WebEngine>=6.9.0,<7.0.0
+# Database
+sqlite3  # Built-in Python module
 
-# ===== MAPAS INTERACTIVOS =====
-folium>=0.16.0,<1.0.0
+# Security
+cryptography>=41.0.0
+bcrypt>=4.0.0
 
-# ===== BASE DE DATOS =====
-pyodbc>=5.0.1,<6.0.0
-sqlalchemy>=2.0.0,<3.0.0
-alembic>=1.13.0,<2.0.0
-
-# ===== AN�LISIS DE DATOS =====
-pandas>=2.2.2,<3.0.0
-numpy>=1.24.0,<2.0.0
-openpyxl>=3.1.2,<4.0.0
-xlsxwriter>=3.1.0,<4.0.0
-
-# ===== GENERACI�N DE REPORTES =====
-reportlab>=4.4.0,<5.0.0
-matplotlib>=3.8.4,<4.0.0
-Pillow>=10.3.0,<11.0.0
-fpdf2>=2.7.0,<3.0.0
-
-# ===== QR Y C�DIGOS =====
-qrcode[pil]>=7.4.2,<8.0.0
-
-# ===== UTILIDADES SISTEMA =====
-python-dateutil>=2.9.0,<3.0.0
-pytz>=2024.1
-colorama>=0.4.6,<1.0.0
-click>=8.1.0,<9.0.0
+# Performance Monitoring
 psutil>=5.9.0
-schedule>=1.2.0
 
-# ===== SEGURIDAD =====
-cryptography>=42.0.0,<43.0.0
-bcrypt>=4.1.0,<5.0.0
-pyjwt>=2.8.0,<3.0.0
+# Development and Testing
+pytest>=7.4.0
+pytest-qt>=4.2.0
+pytest-cov>=4.1.0
+black>=23.7.0
+flake8>=6.0.0
 
-# ===== CONFIGURACI�N =====
-python-dotenv>=1.0.0,<2.0.0
-pydantic>=2.5.0,<3.0.0
-toml>=0.10.2,<1.0.0
+# Optional Web Components (graceful degradation)
+PyQt6-WebEngine>=6.6.0  # Optional for web features
 
-# ===== LOGGING Y MONITOREO =====
-structlog>=24.1.0,<25.0.0
-loguru>=0.7.0,<1.0.0
+# Logging and Monitoring
+colorlog>=6.7.0  # For colored console logs
 
-# ===== DESARROLLO Y TESTING =====
-pytest>=8.2.0,<9.0.0
-pytest-cov>=4.0.0,<5.0.0
-pytest-mock>=3.12.0,<4.0.0
-pytest-qt>=4.3.0,<5.0.0
-pytest-xvfb>=3.0.0,<4.0.0
+# Configuration
+python-dotenv>=1.0.0  # For .env file support
 
-# ===== CALIDAD DE C�DIGO =====
-black>=24.0.0,<25.0.0
-isort>=5.13.0,<6.0.0
-flake8>=7.0.0,<8.0.0
-mypy>=1.8.0,<2.0.0
-bandit>=1.7.0,<2.0.0
+# Data Processing
+pandas>=2.0.0  # For data export/import features
+openpyxl>=3.1.0  # For Excel file support
 
-# ===== DOCUMENTACI�N =====
-sphinx>=7.2.0,<8.0.0
-sphinx-rtd-theme>=2.0.0,<3.0.0
+# Utilities
+pathlib  # Built-in Python module
+typing-extensions>=4.7.0
 
-# ===== NETWORKING Y API =====
-requests>=2.31.0,<3.0.0
-httpx>=0.26.0,<1.0.0
-websockets>=12.0,<13.0
-
-# ===== CACHE Y PERFORMANCE =====
-redis>=5.0.0,<6.0.0
-diskcache>=5.6.0,<6.0.0
-
-# ===== FORMATO Y SERIALIZACI�N =====
-pyyaml>=6.0.1,<7.0.0
-marshmallow>=3.20.0,<4.0.0
-
-# ===== WINDOWS ESPEC�FICO =====
-# Soporte espec�fico para Windows
-pywin32>=306; sys_platform == "win32"
-wmi>=1.5.1; sys_platform == "win32"
-
-# ===== OPCIONAL - DESARROLLO =====
-# Descomenta si necesitas herramientas adicionales de desarrollo
-# jupyter>=1.0.0,<2.0.0
-# notebook>=7.0.0,<8.0.0
-# ipython>=8.0.0,<9.0.0
+# Optimizations
+lru-cache>=0.1.0  # Cache LRU adicional
+memory-profiler>=0.60.0  # Profiling de memoria

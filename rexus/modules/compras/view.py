@@ -40,7 +40,7 @@ from rexus.utils.form_validators import FormValidator, FormValidatorManager
 # XSS Protection imports
 from rexus.utils.xss_protection import XSSProtection, FormProtector
 from rexus.utils.security import SecurityUtils
-from rexus.utils.message_system import show_error
+from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
@@ -129,6 +129,18 @@ class ComprasView(QWidget):
         self.btn_nueva_orden.setToolTip("➕ Crear una nueva orden de compra")
         self.btn_nueva_orden.clicked.connect(self.abrir_dialog_nueva_orden)
         layout.addWidget(self.btn_nueva_orden)
+        
+        # Botón Gestionar Proveedores
+        self.btn_proveedores = StandardComponents.create_secondary_button("🏢 Proveedores")
+        self.btn_proveedores.setToolTip("🏢 Gestionar proveedores")
+        self.btn_proveedores.clicked.connect(self.abrir_dialog_proveedores)
+        layout.addWidget(self.btn_proveedores)
+        
+        # Botón Seguimiento de Entregas
+        self.btn_seguimiento = StandardComponents.create_info_button("🚚 Seguimiento")
+        self.btn_seguimiento.setToolTip("🚚 Seguimiento de entregas")
+        self.btn_seguimiento.clicked.connect(self.abrir_seguimiento_entrega)
+        layout.addWidget(self.btn_seguimiento)
 
         # Búsqueda
         self.input_busqueda = QLineEdit()
@@ -213,6 +225,18 @@ class ComprasView(QWidget):
         layout.addStretch()
         layout.addWidget(self.btn_buscar)
         layout.addWidget(self.btn_actualizar)
+        
+        # Botón de reportes
+        self.btn_reporte = StandardComponents.create_info_button("📊 Reporte")
+        self.btn_reporte.setToolTip("📊 Generar reporte de compras")
+        self.btn_reporte.clicked.connect(self.exportar_reporte_compras)
+        layout.addWidget(self.btn_reporte)
+        
+        # Botón de integración con inventario
+        self.btn_inventario = StandardComponents.create_warning_button("📦 Stock Bajo")
+        self.btn_inventario.setToolTip("📦 Ver productos con stock bajo para comprar")
+        self.btn_inventario.clicked.connect(self.ver_productos_stock_bajo)
+        layout.addWidget(self.btn_inventario)
 
         return panel
 
@@ -633,6 +657,14 @@ class ComprasView(QWidget):
         self.btn_nueva_orden.setEnabled(not loading)
         self.btn_buscar.setEnabled(not loading)
         self.btn_actualizar.setEnabled(not loading)
+        
+        # Nuevos botones
+        if hasattr(self, 'btn_proveedores'):
+            self.btn_proveedores.setEnabled(not loading)
+        if hasattr(self, 'btn_seguimiento'):
+            self.btn_seguimiento.setEnabled(not loading)
+        if hasattr(self, 'btn_reporte'):
+            self.btn_reporte.setEnabled(not loading)
         if hasattr(self, 'btn_configuracion'):
             self.btn_configuracion.setEnabled(not loading)
         
@@ -711,13 +743,27 @@ class ComprasView(QWidget):
                 row, 8, QTableWidgetItem(str(compra.get("fecha_creacion", "")))
             )
 
-            # Botones de acción
-            btn_editar = QPushButton("Editar")
-            btn_editar.setStyleSheet("background-color: #f39c12; color: white;")
+            # Botones de acción - Layout horizontal con múltiples botones
+            acciones_layout = QHBoxLayout()
+            acciones_widget = QWidget()
+            
+            # Botón Editar
+            btn_editar = StandardComponents.create_warning_button("Editar")
             btn_editar.clicked.connect(
                 lambda checked, id=compra.get("id"): self.editar_orden(id)
             )
-            self.tabla_compras.setCellWidget(row, 9, btn_editar)
+            acciones_layout.addWidget(btn_editar)
+            
+            # Botón Seguimiento
+            btn_seguimiento = StandardComponents.create_info_button("Seguimiento")
+            btn_seguimiento.clicked.connect(
+                lambda checked, id=compra.get("id"): self.ver_seguimiento_orden(id)
+            )
+            acciones_layout.addWidget(btn_seguimiento)
+            
+            acciones_layout.setContentsMargins(2, 2, 2, 2)
+            acciones_widget.setLayout(acciones_layout)
+            self.tabla_compras.setCellWidget(row, 9, acciones_widget)
 
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas completas mostradas."""
@@ -824,6 +870,186 @@ class ComprasView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+    
+    def abrir_dialog_proveedores(self):
+        """Abre el diálogo de gestión de proveedores."""
+        try:
+            from rexus.modules.compras.dialogs import DialogProveedor
+            
+            dialog = DialogProveedor(self)
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                datos_proveedor = dialog.obtener_datos()
+                
+                # Crear el proveedor a través del controlador
+                if self.controller:
+                    exito = self.controller.crear_proveedor(datos_proveedor)
+                    if exito:
+                        show_success(self, "Éxito", "Proveedor creado exitosamente")
+                    else:
+                        show_error(self, "Error", "No se pudo crear el proveedor")
+                        
+        except ImportError as e:
+            show_error(self, "Error", f"No se pudo cargar el diálogo de proveedores: {e}")
+        except Exception as e:
+            show_error(self, "Error", f"Error abriendo diálogo de proveedores: {e}")
+    
+    def abrir_seguimiento_entrega(self):
+        """Abre el seguimiento de entregas para la orden seleccionada."""
+        # Verificar que hay una orden seleccionada
+        fila_seleccionada = self.tabla_compras.currentRow()
+        if fila_seleccionada < 0:
+            show_warning(self, "Sin selección", "Debe seleccionar una orden para ver el seguimiento")
+            return
+        
+        try:
+            # Obtener ID de la orden seleccionada
+            id_item = self.tabla_compras.item(fila_seleccionada, 0)
+            if not id_item:
+                show_error(self, "Error", "No se pudo obtener el ID de la orden")
+                return
+            
+            orden_id = int(id_item.text())
+            self.ver_seguimiento_orden(orden_id)
+            
+        except ValueError:
+            show_error(self, "Error", "ID de orden inválido")
+        except Exception as e:
+            show_error(self, "Error", f"Error abriendo seguimiento: {e}")
+    
+    def ver_seguimiento_orden(self, orden_id):
+        """Ve el seguimiento de una orden específica."""
+        try:
+            from rexus.modules.compras.dialogs import DialogSeguimiento
+            
+            # Obtener datos de la orden desde el controlador
+            if not self.controller:
+                show_error(self, "Error", "No hay controlador disponible")
+                return
+            
+            # Por ahora usar datos básicos, el controlador debería proporcionar obtener_orden_por_id
+            orden_data = {
+                "id": orden_id,
+                "numero_orden": f"ORD-{orden_id:06d}",
+                "proveedor": "Proveedor Demo",
+                "fecha_pedido": "2024-08-08",
+                "fecha_entrega_estimada": "2024-08-15",
+                "total_final": 1500.00,
+                "estado": "PENDIENTE"
+            }
+            
+            dialog = DialogSeguimiento(self, orden_data)
+            if dialog.exec() == QDialog.DialogCode.Accepted:
+                datos_seguimiento = dialog.obtener_datos_seguimiento()
+                
+                # Actualizar seguimiento a través del controlador
+                if hasattr(self.controller, 'actualizar_seguimiento_pedido'):
+                    self.controller.actualizar_seguimiento_pedido(
+                        orden_id,
+                        datos_seguimiento["nuevo_estado"],
+                        datos_seguimiento.get("motivo", "")
+                    )
+                else:
+                    show_warning(self, "Funcionalidad en desarrollo", 
+                               "El seguimiento de pedidos está en desarrollo")
+                
+        except ImportError as e:
+            show_error(self, "Error", f"No se pudo cargar el diálogo de seguimiento: {e}")
+        except Exception as e:
+            show_error(self, "Error", f"Error en seguimiento de orden: {e}")
+    
+    def mostrar_estadisticas_proveedor(self, proveedor_id):
+        """Muestra estadísticas detalladas de un proveedor."""
+        try:
+            if self.controller and hasattr(self.controller, 'obtener_estadisticas_proveedor'):
+                stats = self.controller.obtener_estadisticas_proveedor(proveedor_id)
+                
+                # Crear diálogo simple para mostrar estadísticas
+                dialog = QDialog(self)
+                dialog.setWindowTitle("Estadísticas de Proveedor")
+                dialog.setMinimumSize(400, 300)
+                
+                layout = QVBoxLayout(dialog)
+                
+                # Mostrar estadísticas en texto
+                texto_stats = QTextEdit()
+                texto_stats.setReadOnly(True)
+                
+                stats_text = f"""
+                Estadísticas del Proveedor:
+                
+                Total Órdenes: {stats.get('total_ordenes', 0)}
+                Monto Total: ${stats.get('monto_total', 0):,.2f}
+                Promedio por Orden: ${stats.get('promedio_orden', 0):,.2f}
+                Órdenes Completadas: {stats.get('ordenes_completadas', 0)}
+                Órdenes Pendientes: {stats.get('ordenes_pendientes', 0)}
+                """
+                
+                texto_stats.setPlainText(stats_text)
+                layout.addWidget(texto_stats)
+                
+                # Botón cerrar
+                btn_cerrar = StandardComponents.create_primary_button("Cerrar")
+                btn_cerrar.clicked.connect(dialog.accept)
+                layout.addWidget(btn_cerrar)
+                
+                dialog.exec()
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "Las estadísticas de proveedor no están disponibles")
+                           
+        except Exception as e:
+            show_error(self, "Error", f"Error mostrando estadísticas: {e}")
+    
+    def exportar_reporte_compras(self):
+        """Exporta un reporte de compras."""
+        try:
+            if self.controller and hasattr(self.controller, 'generar_reporte_completo'):
+                # Obtener fechas del filtro
+                fecha_inicio = self.date_desde.date().toPython()
+                fecha_fin = self.date_hasta.date().toPython()
+                
+                reporte = self.controller.generar_reporte_completo()
+                
+                if reporte:
+                    # Por ahora mostrar en diálogo, luego se puede exportar a Excel/PDF
+                    dialog = QDialog(self)
+                    dialog.setWindowTitle("Reporte de Compras")
+                    dialog.setMinimumSize(600, 400)
+                    
+                    layout = QVBoxLayout(dialog)
+                    
+                    texto_reporte = QTextEdit()
+                    texto_reporte.setReadOnly(True)
+                    
+                    reporte_text = f"""
+                    REPORTE DE COMPRAS
+                    Fecha: {reporte.get('fecha_reporte', '')}
+                    
+                    ESTADÍSTICAS GENERALES:
+                    - Total Proveedores: {reporte.get('total_proveedores', 0)}
+                    - Proveedores Activos: {reporte.get('proveedores_activos', 0)}
+                    - Total Categorías: {reporte.get('total_categorias', 0)}
+                    
+                    ESTADO DEL MÓDULO: {reporte.get('resumen', {}).get('estado', 'N/A')}
+                    """
+                    
+                    texto_reporte.setPlainText(reporte_text)
+                    layout.addWidget(texto_reporte)
+                    
+                    # Botón cerrar
+                    btn_cerrar = StandardComponents.create_primary_button("Cerrar")
+                    btn_cerrar.clicked.connect(dialog.accept)
+                    layout.addWidget(btn_cerrar)
+                    
+                    dialog.exec()
+                else:
+                    show_error(self, "Error", "No se pudo generar el reporte")
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "La generación de reportes no está disponible")
+                           
+        except Exception as e:
+            show_error(self, "Error", f"Error generando reporte: {e}")
 
 
 class DialogNuevaOrden(QDialog):
@@ -978,6 +1204,92 @@ class DialogNuevaOrden(QDialog):
             FormValidator.validar_numero, 
             0.0, 999999.99
         )
+    
+    def ver_productos_stock_bajo(self):
+        """Muestra productos con stock bajo que necesitan compra."""
+        try:
+            if not self.controller:
+                show_warning("Sin controlador", "El controlador no está disponible")
+                return
+            
+            # Obtener productos con stock bajo desde el modelo
+            productos = self.controller.model.obtener_productos_disponibles_compra()
+            
+            if not productos:
+                show_info("Sin productos", "No hay productos con stock bajo en este momento")
+                return
+            
+            # Crear diálogo simple para mostrar información
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Productos con Stock Bajo")
+            dialog.setModal(True)
+            dialog.resize(800, 600)
+            
+            layout = QVBoxLayout(dialog)
+            
+            # Título
+            title_label = QLabel("📦 Productos que Necesitan Compra")
+            title_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #d32f2f; margin: 10px;")
+            layout.addWidget(title_label)
+            
+            # Información
+            info_label = QLabel(f"Se encontraron {len(productos)} productos con stock bajo o crítico.")
+            info_label.setStyleSheet("color: #666; margin: 5px;")
+            layout.addWidget(info_label)
+            
+            # Tabla de productos
+            tabla = StandardComponents.create_standard_table()
+            tabla.setColumnCount(6)
+            tabla.setHorizontalHeaderLabels([
+                "Producto", "Tipo", "Stock Actual", 
+                "Stock Mínimo", "Cantidad Sugerida", "Prioridad"
+            ])
+            
+            tabla.setRowCount(len(productos))
+            
+            for row, producto in enumerate(productos):
+                tabla.setItem(row, 0, QTableWidgetItem(producto.get('descripcion', '')))
+                tabla.setItem(row, 1, QTableWidgetItem(producto.get('tipo', '')))
+                tabla.setItem(row, 2, QTableWidgetItem(str(producto.get('stock_actual', 0))))
+                tabla.setItem(row, 3, QTableWidgetItem(str(producto.get('stock_minimo', 0))))
+                tabla.setItem(row, 4, QTableWidgetItem(str(producto.get('sugerencia_cantidad', 0))))
+                
+                # Prioridad con color
+                prioridad_item = QTableWidgetItem(producto.get('prioridad', 'MEDIA'))
+                if producto.get('prioridad') == 'ALTA':
+                    prioridad_item.setBackground(QColor('#ffcdd2'))
+                tabla.setItem(row, 5, prioridad_item)
+            
+            tabla.resizeColumnsToContents()
+            layout.addWidget(tabla)
+            
+            # Botones
+            buttons_layout = QHBoxLayout()
+            buttons_layout.addStretch()
+            
+            btn_cerrar = StandardComponents.create_secondary_button("Cerrar")
+            btn_cerrar.clicked.connect(dialog.close)
+            buttons_layout.addWidget(btn_cerrar)
+            
+            btn_nueva_orden = StandardComponents.create_success_button("Nueva Orden de Compra")
+            btn_nueva_orden.clicked.connect(lambda: self.nueva_orden_desde_inventario(dialog))
+            buttons_layout.addWidget(btn_nueva_orden)
+            
+            layout.addLayout(buttons_layout)
+            
+            dialog.exec()
+            
+        except Exception as e:
+            show_error("Error", f"Error obteniendo productos con stock bajo: {str(e)}")
+            print(f"[ERROR COMPRAS] Error en ver_productos_stock_bajo: {e}")
+    
+    def nueva_orden_desde_inventario(self, dialog_parent):
+        """Abre diálogo de nueva orden y cierra el de inventario."""
+        try:
+            dialog_parent.close()
+            self.nueva_orden()
+        except Exception as e:
+            print(f"[ERROR] Error abriendo nueva orden desde inventario: {e}")
 
 
     def crear_controles_paginacion(self):

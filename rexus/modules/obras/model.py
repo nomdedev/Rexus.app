@@ -5,6 +5,7 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.sql_query_manager import SQLQueryManager
+from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 
 # 🔒 MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
 # para prevenir inyección SQL y mejorar mantenibilidad.
@@ -450,12 +451,19 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def obtener_todas_obras(self):
+    @cached_query(cache_key="todas_obras", ttl=300)
+    @track_performance
+    @paginated(page_size=50)
+    def obtener_todas_obras(self, limit=None, offset=0):
         """
-        Obtiene todas las obras activas.
+        Obtiene todas las obras activas con paginación y cache.
+
+        Args:
+            limit: Límite de resultados (agregado por decorator)
+            offset: Offset para paginación (agregado por decorator)
 
         Returns:
-            list: Lista de todas las obras
+            list: Lista de obras paginadas
         """
         if not self.db_connection:
             return []
@@ -464,14 +472,17 @@ class ObrasModel:
         try:
             cursor = self.db_connection.cursor()
             
-            # Query para obtener todas las obras
+            # Query optimizada con paginación
             query = """
-            SELECT * FROM obras 
+            SELECT id, codigo_obra, nombre_obra, cliente, estado, 
+                   fecha_creacion, fecha_actualizacion, presupuesto_total 
+            FROM obras 
             WHERE activo = 1 
             ORDER BY fecha_creacion DESC
+            LIMIT ? OFFSET ?
             """
             
-            cursor.execute(query)
+            cursor.execute(query, (limit or 50, offset))
             obras = cursor.fetchall()
             
             return obras
@@ -483,9 +494,12 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
+    @cached_query(ttl=600)
+    @track_performance
+    @prevent_n_plus_one(batch_key="obras_by_id")
     def obtener_obra_por_id(self, obra_id: int):
         """
-        Obtiene una obra por su ID.
+        Obtiene una obra por su ID con cache y prevención N+1.
 
         Args:
             obra_id: ID de la obra
@@ -500,8 +514,12 @@ class ObrasModel:
         try:
             cursor = self.db_connection.cursor()
             
+            # Query optimizada sin SELECT *
             query = """
-            SELECT * FROM obras 
+            SELECT id, codigo_obra, nombre_obra, cliente, estado, 
+                   fecha_creacion, fecha_actualizacion, presupuesto_total,
+                   descripcion, ubicacion, activo
+            FROM obras 
             WHERE id = ? AND activo = 1
             """
             
@@ -683,8 +701,10 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
+    @cached_query(cache_key="estadisticas_obras", ttl=900)
+    @track_performance
     def obtener_estadisticas_obras(self):
-        """Obtiene estadísticas generales de obras."""
+        """Obtiene estadísticas generales de obras con cache de 15 minutos."""
         if not self.db_connection:
             return {}
 
@@ -694,27 +714,29 @@ class ObrasModel:
             
             estadisticas = {}
             
-            # 🔒 Total de obras activas usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'count_obras_activas')
-            cursor.execute(sql)
-            estadisticas['total_obras'] = cursor.fetchone()[0]
-            
-            # Obras por estado
+            # Query optimizada que obtiene todas las estadísticas en una consulta
             cursor.execute("""
-                SELECT estado, COUNT(*) 
+                SELECT 
+                    COUNT(*) as total_obras,
+                    SUM(CASE WHEN estado = 'EN_PROCESO' THEN 1 ELSE 0 END) as obras_activas,
+                    SUM(CASE WHEN estado = 'FINALIZADA' THEN 1 ELSE 0 END) as obras_finalizadas,
+                    SUM(CASE WHEN estado = 'PENDIENTE' THEN 1 ELSE 0 END) as obras_pendientes,
+                    AVG(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE NULL END) as presupuesto_promedio,
+                    SUM(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE 0 END) as presupuesto_total_acumulado
                 FROM obras 
-                WHERE activo = 1 
-                GROUP BY estado
+                WHERE activo = 1
             """)
             
-            estadisticas['obras_activas'] = 0
-            estadisticas['obras_finalizadas'] = 0
-            
-            for estado, cantidad in cursor.fetchall():
-                if estado == 'EN_PROCESO':
-                    estadisticas['obras_activas'] = cantidad
-                elif estado == 'FINALIZADA':
-                    estadisticas['obras_finalizadas'] = cantidad
+            row = cursor.fetchone()
+            if row:
+                estadisticas = {
+                    'total_obras': row[0] or 0,
+                    'obras_activas': row[1] or 0,
+                    'obras_finalizadas': row[2] or 0,
+                    'obras_pendientes': row[3] or 0,
+                    'presupuesto_promedio': round(row[4] or 0, 2),
+                    'presupuesto_total_acumulado': round(row[5] or 0, 2)
+                }
             
             # 🔒 Presupuesto total usando SQL externo
             sql = self.sql_manager.get_query('obras', 'suma_presupuesto_total')

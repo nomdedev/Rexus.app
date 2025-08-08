@@ -9,8 +9,12 @@ import shutil
 import os
 import json
 import time
+import logging
 from pathlib import Path
 from typing import List, Dict
+
+# Configure secure logging
+logger = logging.getLogger(__name__)
 
 class BackupCompressor:
     """Compresor de backups y archivos de log"""
@@ -22,12 +26,22 @@ class BackupCompressor:
     
     def compress_file(self, source_path: str, compressed_path: str = None) -> str:
         """Comprime un archivo individual"""
-        source = Path(source_path)
+        # Sanitize and validate paths
+        source = Path(os.path.normpath(source_path))
         if not source.exists():
+            logger.error(f"Archivo no encontrado durante compresión: {source.name}")
             raise FileNotFoundError(f"Archivo no encontrado: {source_path}")
+        
+        # Check file permissions before proceeding
+        if not os.access(source, os.R_OK):
+            logger.error(f"Sin permisos de lectura para archivo: {source.name}")
+            raise PermissionError(f"Sin permisos de lectura: {source_path}")
         
         if compressed_path is None:
             compressed_path = str(source) + ".gz"
+        
+        # Validate compressed path
+        compressed_path = os.path.normpath(compressed_path)
         
         with open(source, 'rb') as f_in:
             with gzip.open(compressed_path, 'wb', compresslevel=self.compression_level) as f_out:
@@ -86,7 +100,7 @@ class BackupCompressor:
                     log_file.unlink()
                     compressed_files.append(result)
                 except Exception as e:
-                    print(f"Error comprimiendo {log_file}: {e}")
+                    logger.error(f"Error comprimiendo archivo de log: {e}", exc_info=True)
         
         return compressed_files
     
@@ -98,10 +112,16 @@ class BackupCompressor:
         removed_files = []
         for backup_file in backup_files[max_backups:]:
             try:
+                # Check permissions before deletion
+                if not os.access(backup_file, os.W_OK):
+                    logger.warning(f"Sin permisos de escritura para eliminar backup: {backup_file.name}")
+                    continue
+                    
                 backup_file.unlink()
                 removed_files.append(str(backup_file))
+                logger.info(f"Backup antiguo eliminado exitosamente: {backup_file.name}")
             except Exception as e:
-                print(f"Error eliminando backup {backup_file}: {e}")
+                logger.error(f"Error eliminando backup: {e}", exc_info=True)
         
         return removed_files
     

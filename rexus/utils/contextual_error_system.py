@@ -3,11 +3,15 @@ Sistema de Mensajes de Error Contextualizados Mejorado - Rexus.app
 Proporciona mensajes de error específicos con sugerencias de solución
 """
 
+import logging
 from dataclasses import dataclass
 from enum import Enum
 from typing import Callable, Dict, List, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
+
+# Configure secure logging
+logger = logging.getLogger(__name__)
 from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QDialog,
