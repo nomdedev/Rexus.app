@@ -25,7 +25,7 @@ Vista de Obras - Interfaz de gestión de obras y proyectos
 """
 
 import datetime
-from typing import Any, Dict, Optional, List
+from typing import Any, Dict, Optional
 
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -211,7 +211,7 @@ class ObrasView(QWidget):
         
         # Inicializar modelo y cargar datos después de crear la UI
         self.init_model()
-        self.cargar_datos_iniciales_seguro()
+        self.cargar_datos_iniciales()
 
     def apply_high_contrast_style(self):
         """Aplicar estilos de alto contraste para mejor legibilidad."""
@@ -372,11 +372,11 @@ class ObrasView(QWidget):
 
     def actualizar_datos(self):
         """Actualizar datos desde la base de datos."""
-        self.cargar_datos_iniciales_seguro()
+        self.cargar_datos_iniciales()
         
         # Inicializar modelo y cargar datos
         self.init_model()
-        self.cargar_datos_iniciales_seguro()
+        self.cargar_datos_iniciales()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
@@ -820,64 +820,64 @@ class ObrasView(QWidget):
             )
 
     def cargar_obras_en_tabla(self, obras):
-        """Carga las obras en la tabla usando el mapper centralizado."""
+        """Carga las obras en la tabla."""
         try:
-            from .data_mapper import ObrasDataMapper, ObrasTableHelper
-            
-            # Limpiar tabla
-            self.tabla_obras.setRowCount(0)
-            
-            if not obras:
-                print("[OBRAS VIEW] No hay obras para mostrar")
-                return
-            
-            # Configurar número de filas
             self.tabla_obras.setRowCount(len(obras))
-            
+
             for fila, obra in enumerate(obras):
-                self._cargar_fila_obra(fila, obra)
-                
-            print(f"[OBRAS VIEW] {len(obras)} obras cargadas en tabla")
-            
+                # Columna 0: Código
+                codigo = obra.get("codigo", "") if isinstance(obra, dict) else str(obra[1]) if len(obra) > 1 else ""
+                self.tabla_obras.setItem(fila, 0, QTableWidgetItem(str(codigo)))
+
+                # Columna 1: Nombre
+                nombre = obra.get("nombre", "") if isinstance(obra, dict) else str(obra[2]) if len(obra) > 2 else ""
+                self.tabla_obras.setItem(fila, 1, QTableWidgetItem(str(nombre)))
+
+                # Columna 2: Cliente
+                cliente = obra.get("cliente", "") if isinstance(obra, dict) else str(obra[4]) if len(obra) > 4 else ""
+                self.tabla_obras.setItem(fila, 2, QTableWidgetItem(str(cliente)))
+
+                # Columna 3: Responsable
+                responsable = obra.get("responsable", "") if isinstance(obra, dict) else str(obra[10]) if len(obra) > 10 else ""
+                self.tabla_obras.setItem(fila, 3, QTableWidgetItem(str(responsable)))
+
+                # Columna 4: Fecha Inicio
+                fecha_inicio = obra.get("fecha_inicio", "") if isinstance(obra, dict) else str(obra[5]) if len(obra) > 5 else ""
+                if fecha_inicio:
+                    if isinstance(fecha_inicio, str):
+                        fecha_inicio = fecha_inicio[:10]  # Solo la fecha, sin hora
+                self.tabla_obras.setItem(fila, 4, QTableWidgetItem(str(fecha_inicio)))
+
+                # Columna 5: Fecha Fin
+                fecha_fin = obra.get("fecha_fin_estimada", "") if isinstance(obra, dict) else str(obra[6]) if len(obra) > 6 else ""
+                if fecha_fin:
+                    if isinstance(fecha_fin, str):
+                        fecha_fin = fecha_fin[:10]
+                self.tabla_obras.setItem(fila, 5, QTableWidgetItem(str(fecha_fin)))
+
+                # Columna 6: Estado
+                estado = obra.get("estado", "") if isinstance(obra, dict) else str(obra[8]) if len(obra) > 8 else ""
+                self.tabla_obras.setItem(fila, 6, QTableWidgetItem(str(estado)))
+
+                # Columna 7: Presupuesto
+                presupuesto = obra.get("presupuesto_inicial", "") if isinstance(obra, dict) else str(obra[11]) if len(obra) > 11 else ""
+                if presupuesto:
+                    try:
+                        presupuesto_formatted = f"${float(presupuesto):,.2f}"
+                    except (ValueError, TypeError):
+                        presupuesto_formatted = str(presupuesto)
+                else:
+                    presupuesto_formatted = ""
+                self.tabla_obras.setItem(fila, 7, QTableWidgetItem(presupuesto_formatted))
+
+                # Columna 8: Acciones (botón editar)
+                btn_editar = QPushButton("Editar")
+                btn_editar.clicked.connect(lambda checked, f=fila: self.editar_obra_desde_tabla(f))
+                self.tabla_obras.setCellWidget(fila, 8, btn_editar)
+
         except Exception as e:
             print(f"[OBRAS VIEW] Error cargando obras en tabla: {e}")
-            import traceback
-            traceback.print_exc()
-    
-    def _cargar_fila_obra(self, fila: int, obra):
-        """Carga una fila individual de obra en la tabla."""
-        try:
-            from .data_mapper import ObrasDataMapper, ObrasTableHelper
-            from PyQt6.QtWidgets import QTableWidgetItem
-            
-            # Convertir obra a diccionario si es necesario
-            if isinstance(obra, dict):
-                obra_dict = obra
-            else:
-                # Es tupla de la BD
-                obra_dict = ObrasDataMapper.tupla_a_dict(obra)
-            
-            # Obtener datos formateados para la tabla
-            datos_fila = ObrasDataMapper.dict_a_fila_tabla(obra_dict)
-            
-            # Cargar datos en las columnas
-            for columna, dato in enumerate(datos_fila):
-                item = QTableWidgetItem(str(dato))
-                self.tabla_obras.setItem(fila, columna, item)
-            
-            # Agregar botón de acción en la última columna
-            btn_editar = ObrasTableHelper.crear_boton_accion(
-                "Editar", 
-                self.editar_obra_desde_tabla, 
-                fila
-            )
-            self.tabla_obras.setCellWidget(fila, ObrasDataMapper.INDICES_TABLA['acciones'], btn_editar)
-            
-        except Exception as e:
-            print(f"[OBRAS VIEW] Error cargando fila {fila}: {e}")
-            # Llenar con datos vacíos en caso de error
-            for columna in range(8):  # 8 columnas de datos
-                self.tabla_obras.setItem(fila, columna, QTableWidgetItem(""))
+
     def editar_obra_desde_tabla(self, fila):
         """Edita una obra desde la tabla."""
         try:
@@ -898,63 +898,6 @@ class ObrasView(QWidget):
                     print(f"[OBRAS VIEW] Mostrando detalles de obra ID: {obra_id}")
         except Exception as e:
             print(f"[OBRAS VIEW] Error mostrando detalles: {e}")
-
-
-
-    def validar_datos_obra(self, datos_obra: Dict[str, Any]) -> tuple[bool, List[str]]:
-        """Valida los datos de una obra antes de procesarlos."""
-        try:
-            from .data_mapper import ObrasValidator
-            return ObrasValidator.validar_obra_dict(datos_obra)
-        except Exception as e:
-            print(f"[OBRAS VIEW] Error en validación: {e}")
-            return False, [f"Error en validación: {str(e)}"]
-    
-    def mostrar_errores_validacion(self, errores: List[str]):
-        """Muestra errores de validación al usuario."""
-        try:
-            from rexus.utils.message_system import show_error
-            mensaje = "Errores encontrados:\n\n" + "\n".join(f"• {error}" for error in errores)
-            show_error(self, "⚠️ Datos inválidos", mensaje)
-        except Exception as e:
-            print(f"[OBRAS VIEW] Error mostrando errores: {e}")
-    
-    def cargar_datos_iniciales_seguro(self):
-        """Versión segura de cargar_datos_iniciales con mejor manejo de errores."""
-        try:
-            if self.model is None:
-                print("[OBRAS VIEW] No hay modelo disponible para cargar datos")
-                self.cargar_obras_en_tabla([])
-                return
-            
-            print("[OBRAS VIEW] Cargando datos iniciales...")
-            obras = self.model.obtener_todas_obras()
-            
-            if obras:
-                # Usar el mapper para convertir datos
-                from .data_mapper import ObrasDataMapper
-                obras_dict = ObrasDataMapper.lista_tuplas_a_dicts(obras)
-                
-                # Validar datos antes de cargar
-                obras_validas = []
-                for obra in obras_dict:
-                    es_valida, errores = self.validar_datos_obra(obra)
-                    if es_valida:
-                        obras_validas.append(obra)
-                    else:
-                        print(f"[OBRAS VIEW] Obra inválida ignorada: {obra.get('codigo', 'Sin código')} - {errores}")
-                
-                self.cargar_obras_en_tabla(obras_validas)
-                print(f"[OBRAS VIEW] {len(obras_validas)} obras válidas cargadas de {len(obras)} totales")
-            else:
-                print("[OBRAS VIEW] No hay obras para mostrar")
-                self.cargar_obras_en_tabla([])
-                
-        except Exception as e:
-            print(f"[OBRAS VIEW] Error cargando datos iniciales: {e}")
-            import traceback
-            traceback.print_exc()
-            self.cargar_obras_en_tabla([])
 
 
 class DialogoObra(QDialog):
