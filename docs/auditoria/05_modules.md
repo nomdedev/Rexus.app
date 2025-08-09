@@ -11,15 +11,21 @@ Controlador principal del módulo de administración. Integra submódulos, manej
 - No hay logging estructurado de errores o eventos críticos.
 - No hay validación profunda de dependencias.
 - No hay pruebas unitarias incluidas.
+ - No se valida explícitamente el usuario y rol en cada operación crítica (solo al inicio), lo que puede generar inconsistencias si el usuario cambia de sesión o rol.
 
 **Riesgos:**
 - Sin logging, difícil auditoría de fallos o accesos indebidos.
 - Sin validación, posible error silencioso en dependencias.
+ - Inconsistencias de permisos si el usuario cambia de rol o sesión durante la operación.
 
 **Recomendaciones:**
 - Añadir logging estructurado de eventos críticos.
 - Validar dependencias y estados de submódulos.
 - Añadir pruebas unitarias.
+ - Validar usuario y rol en cada operación crítica, no solo al inicio.
+ - Reforzar el uso de decoradores de seguridad en todos los métodos públicos.
+ - Documentar los flujos de seguridad y dependencias del controlador.
+ - Añadir logs de auditoría para todas las operaciones administrativas relevantes.
 
 **Cumplimiento:**
 - MITRE CWE: Parcial (CWE-391, CWE-778)
@@ -66,6 +72,7 @@ Vista funcional e integrada para administración, conecta con el controlador y s
 - No hay logging/auditoría de accesos o cambios críticos.
 - No hay validación de datos de entrada en todos los formularios.
 - No hay pruebas unitarias incluidas.
+ - No se documentan explícitamente los puntos de entrada de usuario ni las protecciones aplicadas en la vista.
 
 **Riesgos:**
 - Sin logging/auditoría, difícil rastrear accesos o cambios indebidos.
@@ -75,6 +82,8 @@ Vista funcional e integrada para administración, conecta con el controlador y s
 - Añadir logging/auditoría de accesos y cambios críticos.
 - Validar datos de entrada en todos los formularios.
 - Añadir pruebas unitarias.
+ - Documentar explícitamente los puntos de entrada de usuario y las protecciones aplicadas.
+ - Documentar los flujos de seguridad y puntos de entrada de usuario en la vista.
 
 **Cumplimiento:**
 - MITRE CWE: Parcial (CWE-79, CWE-89, CWE-778)
@@ -123,6 +132,7 @@ Archivo de inicialización para el submódulo administración.
 
 **Recomendaciones:**
 - Ninguna.
+ - Si se agregan inicializaciones automáticas o lógica, auditar nuevamente.
 
 **Cumplimiento:**
 - N/A

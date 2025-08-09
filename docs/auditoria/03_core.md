@@ -1,9 +1,18 @@
 # AUDITORÍA MÓDULO CORE
 
-## audit_system.py
+**Fecha:** 8 de agosto de 2025
+**Estándares:** MITRE CWE, OWASP Top 10, MIT Secure Coding, NIST
 
-**Resumen:**
-Sistema centralizado de auditoría y logging de seguridad. Registra accesos, cambios críticos, acciones sensibles y actividades sospechosas. Permite reportes de compliance.
+---
+
+## Resumen Ejecutivo
+- Auditoría de los sistemas centrales: logging, auditoría, cache, scripts utilitarios y mantenimiento.
+- Se identifican buenas prácticas, pero también riesgos en cifrado, rotación de logs, integridad y pruebas.
+
+---
+
+## audit_system.py
+**Resumen:** Sistema centralizado de auditoría y logging de seguridad. Registra accesos, cambios críticos, acciones sensibles y actividades sospechosas. Permite reportes de compliance.
 
 **Hallazgos:**
 - Enumera y clasifica eventos y niveles de auditoría correctamente.
@@ -33,9 +42,7 @@ Sistema centralizado de auditoría y logging de seguridad. Registra accesos, cam
 ---
 
 ## audit_trail.py
-
-**Resumen:**
-Sistema de audit trail para registrar cambios en la base de datos con timestamps, usuario y detalles de la acción.
+**Resumen:** Sistema de audit trail para registrar cambios en la base de datos con timestamps, usuario y detalles de la acción.
 
 **Hallazgos:**
 - Registra cambios con usuario, acción, datos antes/después y detalles.
@@ -59,6 +66,49 @@ Sistema de audit trail para registrar cambios en la base de datos con timestamps
 - MIT Secure Coding: Parcial
 
 ---
+
+## cache_manager.py
+**Descripción:** Sistema de caché distribuido, con soporte para backends en memoria, Redis y DiskCache, estadísticas, locking y decoradores para cachear funciones.
+
+**Hallazgos:**
+- Soporte para múltiples backends de caché (memoria, Redis, DiskCache).
+- Uso de locking para concurrencia segura y estadísticas de uso.
+- Decoradores para cachear funciones y métodos.
+- Manejo de expiración y limpieza automática de entradas.
+- Uso de logging estructurado para eventos y errores de caché.
+- No hay cifrado de datos en caché ni validación de permisos de archivos/directorios.
+- No hay logging/auditoría estructurada de errores críticos o fallos de backend.
+- No hay integración con sistemas externos de monitoreo o alertas.
+- No hay pruebas automáticas de recuperación ante fallos de backend.
+
+**Recomendaciones:**
+- Considerar cifrado de datos en caché y validación de permisos de archivos/directorios.
+- Agregar logging/auditoría de errores críticos y fallos de backend.
+- Considerar integración con sistemas externos de monitoreo/alertas.
+- Implementar pruebas automáticas de recuperación ante fallos de backend.
+
+**Cumplimiento:**
+- Parcial. Cumple funciones avanzadas de caché, pero puede reforzarse la seguridad, monitoreo y manejo de errores críticos.
+
+---
+
+## scripts utilitarios y de mantenimiento
+**Descripción:** Scripts para actualización de obras, agregados de licencias, corrección de sintaxis, etc.
+
+**Hallazgos:**
+- Manipulan archivos fuente en lote, riesgo de corrupción si hay errores en los patrones.
+- No hay validación de backup ni logging estructurado.
+
+**Recomendaciones:**
+- Hacer backup antes de modificar archivos.
+- Agregar logging estructurado y validación de cambios.
+
+**Cumplimiento:** Parcial.
+
+---
+
+## Cumplimiento General
+- Cumple parcialmente buenas prácticas de seguridad y robustez, pero requiere refuerzo en cifrado, logging, validación y pruebas automáticas.
 
 ## auth.py
 
