@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -43,11 +44,9 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -106,7 +105,7 @@ class CategoriasManager:
         """
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/inventario/categorias"
         self.logger = logging.getLogger(__name__)
         
@@ -253,7 +252,7 @@ class CategoriasManager:
         
         try:
             # Sanitizar categoría
-            categoria_limpia = self.data_sanitizer.sanitize_text(categoria)
+            categoria_limpia = sanitize_string(categoria)
             if not categoria_limpia:
                 return {
                     'success': False,
@@ -361,7 +360,7 @@ class CategoriasManager:
         
         try:
             # Validar y sanitizar nombre
-            nombre_limpio = self.data_sanitizer.sanitize_text(nombre_categoria)
+            nombre_limpio = sanitize_string(nombre_categoria)
             if not nombre_limpio or len(nombre_limpio) < 2:
                 return {
                     'success': False,
@@ -382,11 +381,11 @@ class CategoriasManager:
             
             # Intentar crear en tabla independiente si existe
             if self._tabla_categorias_existe():
-                descripcion_limpia = self.data_sanitizer.sanitize_text(descripcion)[:500]
+                descripcion_limpia = sanitize_string(descripcion)[:500]
                 categoria_padre_limpia = None
                 
                 if categoria_padre:
-                    categoria_padre_limpia = self.data_sanitizer.sanitize_text(categoria_padre).upper()
+                    categoria_padre_limpia = sanitize_string(categoria_padre).upper()
                     if not self._existe_categoria(categoria_padre_limpia):
                         cursor.close()
                         return {
@@ -458,8 +457,8 @@ class CategoriasManager:
         
         try:
             # Validar y sanitizar nombres
-            categoria_actual_limpia = self.data_sanitizer.sanitize_text(categoria_actual).upper()
-            categoria_nueva_limpia = self.data_sanitizer.sanitize_text(categoria_nueva).upper()
+            categoria_actual_limpia = sanitize_string(categoria_actual).upper()
+            categoria_nueva_limpia = sanitize_string(categoria_nueva).upper()
             
             if not categoria_actual_limpia or not categoria_nueva_limpia:
                 return {
@@ -572,8 +571,8 @@ class CategoriasManager:
         
         try:
             # Validar y sanitizar nombres
-            origen_limpia = self.data_sanitizer.sanitize_text(categoria_origen).upper()
-            destino_limpia = self.data_sanitizer.sanitize_text(categoria_destino).upper()
+            origen_limpia = sanitize_string(categoria_origen).upper()
+            destino_limpia = sanitize_string(categoria_destino).upper()
             
             if not origen_limpia or not destino_limpia:
                 return {

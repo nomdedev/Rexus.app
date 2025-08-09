@@ -6,6 +6,7 @@ Maneja la gestión de proveedores para el módulo de compras.
 
 from typing import Any, Dict, List, Optional
 from rexus.utils.security import SecurityUtils
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProveedoresModel:

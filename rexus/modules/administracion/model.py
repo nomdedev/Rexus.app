@@ -1,5 +1,7 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -24,7 +26,6 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
     from utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
@@ -63,15 +64,14 @@ class AdministracionModel(ContabilidadModel):
         self.tabla_empleados = "empleados"
         self.tabla_departamentos = "departamentos"
         self.tabla_auditoria = "auditoria_contable"
+        
+        # Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()
 
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
-        if self.security_available and data_sanitizer:
-            self.data_sanitizer = data_sanitizer
-            print("OK [ADMINISTRACION] Utilidades de seguridad cargadas")
-        else:
-            self.data_sanitizer = None
-            print("WARNING [ADMINISTRACION] Utilidades de seguridad no disponibles")
+        self.sanitizer = unified_sanitizer
+        print("OK [ADMINISTRACION] Sistema unificado de sanitización cargado")
 
         # Crear tablas si no existen
         self.crear_tablas()
@@ -138,8 +138,8 @@ class AdministracionModel(ContabilidadModel):
         try:
             # Sanitizar datos
             if self.data_sanitizer:
-                codigo_limpio = self.data_sanitizer.sanitize_string(codigo)
-                nombre_limpio = self.data_sanitizer.sanitize_string(nombre)
+                codigo_limpio = sanitize_string(codigo)
+                nombre_limpio = sanitize_string(nombre)
             else:
                 codigo_limpio = codigo.strip()
                 nombre_limpio = nombre.strip()
@@ -151,40 +151,20 @@ class AdministracionModel(ContabilidadModel):
 
             # Verificar código duplicado
             if id_departamento_actual:
-                query_codigo = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(codigo) = ? AND id != ?"
-                )
-                cursor.execute(
-                    query_codigo, (codigo_limpio.lower(), id_departamento_actual)
-                )
+                query_codigo = self.sql_manager.get_query('administracion/count_departamento_codigo_duplicado_exclude')
+                cursor.execute(query_codigo, (codigo_limpio.lower(), id_departamento_actual))
             else:
-                query_codigo = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(codigo) = ?"
-                )
+                query_codigo = self.sql_manager.get_query('administracion/count_departamento_codigo_duplicado')
                 cursor.execute(query_codigo, (codigo_limpio.lower(),))
 
             resultado["codigo_duplicado"] = cursor.fetchone()[0] > 0
 
             # Verificar nombre duplicado
             if id_departamento_actual:
-                query_nombre = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(nombre) = ? AND id != ?"
-                )
-                cursor.execute(
-                    query_nombre, (nombre_limpio.lower(), id_departamento_actual)
-                )
+                query_nombre = self.sql_manager.get_query('administracion/count_departamento_nombre_duplicado_exclude')
+                cursor.execute(query_nombre, (nombre_limpio.lower(), id_departamento_actual))
             else:
-                query_nombre = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(nombre) = ?"
-                )
+                query_nombre = self.sql_manager.get_query('administracion/count_departamento_nombre_duplicado')
                 cursor.execute(query_nombre, (nombre_limpio.lower(),))
 
             resultado["nombre_duplicado"] = cursor.fetchone()[0] > 0
@@ -438,10 +418,10 @@ class AdministracionModel(ContabilidadModel):
         try:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if self.data_sanitizer:
-                codigo_limpio = self.data_sanitizer.sanitize_string(codigo)
-                nombre_limpio = self.data_sanitizer.sanitize_string(nombre)
-                descripcion_limpia = self.data_sanitizer.sanitize_string(descripcion)
-                responsable_limpio = self.data_sanitizer.sanitize_string(responsable)
+                codigo_limpio = sanitize_string(codigo)
+                nombre_limpio = sanitize_string(nombre)
+                descripcion_limpia = sanitize_string(descripcion)
+                responsable_limpio = sanitize_string(responsable)
             else:
                 codigo_limpio = codigo.strip()
                 nombre_limpio = nombre.strip()
@@ -471,22 +451,16 @@ class AdministracionModel(ContabilidadModel):
             tabla_validada = self._validate_table_name(self.tabla_departamentos)
 
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                f"""
-                INSERT INTO [{tabla_validada}]
-                (codigo, nombre, descripcion, responsable, presupuesto_mensual, usuario_creacion, usuario_actualizacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
-                (
-                    codigo_limpio,
-                    nombre_limpio,
-                    descripcion_limpia,
-                    responsable_limpio,
-                    presupuesto_mensual,
-                    self.usuario_actual,
-                    self.usuario_actual,
-                ),
-            )
+            query_insert = self.sql_manager.get_query('administracion/insert_departamento')
+            cursor.execute(query_insert, (
+                codigo_limpio,
+                nombre_limpio,
+                descripcion_limpia,
+                responsable_limpio,
+                presupuesto_mensual,
+                self.usuario_actual,
+                self.usuario_actual,
+            ))
 
             departamento_id = cursor.lastrowid
             self.db_connection.commit()
@@ -1462,12 +1436,8 @@ class AdministracionModel(ContabilidadModel):
             empleados_row = cursor.fetchone()
 
             # Presupuesto del departamento
-            cursor.execute(
-                """
-                SELECT presupuesto_mensual FROM departamentos WHERE id = ?
-            """,
-                (departamento_id,),
-            )
+            query_presupuesto = self.sql_manager.get_query('administracion/select_presupuesto_departamento')
+            cursor.execute(query_presupuesto, (departamento_id,))
 
             presupuesto_row = cursor.fetchone()
 

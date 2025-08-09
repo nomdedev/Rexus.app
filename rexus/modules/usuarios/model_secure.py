@@ -17,6 +17,7 @@ import datetime
 import hashlib
 import re
 from typing import Any, Dict, List, Optional, Tuple
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class UsuariosModelSecure:

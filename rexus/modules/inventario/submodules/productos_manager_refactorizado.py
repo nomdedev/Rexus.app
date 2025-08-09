@@ -13,6 +13,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado con fallback
 try:
@@ -37,18 +38,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
-    except ImportError:
+    class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
 
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                return data if data else {}
+        def sanitize_text(self, text):
+            return str(text) if text else ""
 
-            def sanitize_text(self, text):
-                return str(text) if text else ""
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
             def sanitize_integer(self, value, min_val=None, max_val=None):
                 return int(value) if value else 0
@@ -60,8 +61,8 @@ class ProductosManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de productos."""
         self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sql_manager = None  # SQLQueryManager()
+        self.sanitizer = DataSanitizer()
 
     def _validate_table_name(self, table_name: str) -> str:
         """Valida nombre de tabla contra lista blanca."""
@@ -82,7 +83,7 @@ class ProductosManager:
 
         try:
             # Sanitizar datos
-            datos_limpios = self.data_sanitizer.sanitize_dict(datos_producto)
+            datos_limpios = self.sanitizer.sanitize_dict(datos_producto)
 
             # Validaciones básicas
             if not datos_limpios.get("codigo"):
@@ -100,10 +101,10 @@ class ProductosManager:
                 "codigo": datos_limpios["codigo"],
                 "descripcion": datos_limpios["descripcion"],
                 "categoria": datos_limpios.get("categoria", "General"),
-                "stock_actual": self.data_sanitizer.sanitize_integer(
+                "stock_actual": self.sanitizer.sanitize_integer(
                     datos_limpios.get("stock_inicial", 0)
                 ),
-                "stock_minimo": self.data_sanitizer.sanitize_integer(
+                "stock_minimo": self.sanitizer.sanitize_integer(
                     datos_limpios.get("stock_minimo", 0)
                 ),
                 "precio_unitario": float(datos_limpios.get("precio_unitario", 0.0)),
@@ -186,7 +187,7 @@ class ProductosManager:
 
         try:
             # Sanitizar datos
-            datos_limpios = self.data_sanitizer.sanitize_dict(datos_actualizacion)
+            datos_limpios = self.sanitizer.sanitize_dict(datos_actualizacion)
 
             # Construir campos a actualizar
             campos_actualizables = [

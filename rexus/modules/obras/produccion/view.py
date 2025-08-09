@@ -22,6 +22,7 @@
 """Vista de Producción"""
 
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProduccionView(QWidget):

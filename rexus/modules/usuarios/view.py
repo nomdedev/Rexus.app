@@ -41,6 +41,14 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
     QLabel,
+    QDialog,
+    QFormLayout,
+    QLineEdit,
+    QComboBox,
+    QCheckBox,
+    QDateEdit,
+    QTextEdit,
+    QDialogButtonBox,
 )
 
 # Importar componentes del framework de estandarización UI
@@ -57,6 +65,7 @@ from rexus.ui.components.base_components import (
     RexusFonts,
     RexusLayoutHelper
 )
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.ui.templates.base_module_view import BaseModuleView
 
 from rexus.modules.usuarios.improved_dialogs import (
@@ -152,14 +161,51 @@ class UsuariosView(BaseModuleView):
     
     def nuevo_usuario(self):
         """Abre el diálogo para crear un nuevo usuario."""
-        # TODO: Implementar diálogo
-        show_warning(self, "Función en desarrollo", "Diálogo de nuevo usuario en desarrollo")
+        dialogo = DialogoUsuario(self)
+        
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            if dialogo.validar_datos():
+                datos = dialogo.obtener_datos()
+                
+                if self.controller:
+                    try:
+                        exito = self.controller.crear_usuario(datos)
+                        if exito:
+                            from rexus.utils.message_system import show_success
+                            show_success(self, "Éxito", "Usuario creado exitosamente.")
+                            self.actualizar_datos()
+                        else:
+                            from rexus.utils.message_system import show_error
+                            show_error(self, "Error", "No se pudo crear el usuario.")
+                    except Exception as e:
+                        from rexus.utils.message_system import show_error
+                        show_error(self, "Error", f"Error al crear usuario: {str(e)}")
+                else:
+                    from rexus.utils.message_system import show_warning
+                    show_warning(self, "Advertencia", "No hay controlador disponible.")
     
     def buscar_usuarios(self):
         """Busca usuarios según el término ingresado."""
-        termino = self.input_busqueda.text()
-        # TODO: Implementar búsqueda
-        print(f"Buscando usuarios: {termino}")
+        termino = self.input_busqueda.text().strip()
+        
+        if not termino:
+            # Si no hay término, mostrar todos los usuarios
+            self.actualizar_datos()
+            return
+            
+        if self.controller:
+            try:
+                # Buscar usuarios usando el controlador
+                usuarios = self.controller.buscar_usuarios(termino)
+                if usuarios is not None:
+                    self.actualizar_tabla(usuarios)
+                    self.lbl_info.setText(f"Encontrados {len(usuarios)} usuarios")
+                else:
+                    show_error(self, "Error", "Error al buscar usuarios")
+            except Exception as e:
+                show_error(self, "Error", f"Error en la búsqueda: {str(e)}")
+        else:
+            show_warning(self, "Sin Controlador", "No hay controlador disponible para realizar la búsqueda")
     
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""
@@ -293,3 +339,202 @@ class UsuariosView(BaseModuleView):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class DialogoUsuario(QDialog):
+    """Diálogo para crear/editar usuarios."""
+    
+    def __init__(self, parent=None, usuario=None):
+        super().__init__(parent)
+        self.usuario = usuario
+        self.init_ui()
+        
+        if usuario:
+            self.cargar_datos(usuario)
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        self.setWindowTitle("Nuevo Usuario" if not self.usuario else "Editar Usuario")
+        self.setModal(True)
+        self.resize(450, 500)
+        
+        layout = QVBoxLayout(self)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Información Personal
+        self.input_username = QLineEdit()
+        self.input_username.setPlaceholderText("Nombre de usuario único")
+        form_layout.addRow("Usuario:", self.input_username)
+        
+        self.input_nombre = QLineEdit()
+        self.input_nombre.setPlaceholderText("Nombre completo")
+        form_layout.addRow("Nombre:", self.input_nombre)
+        
+        self.input_email = QLineEdit()
+        self.input_email.setPlaceholderText("email@ejemplo.com")
+        form_layout.addRow("Email:", self.input_email)
+        
+        self.input_password = QLineEdit()
+        self.input_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.input_password.setPlaceholderText("Contraseña")
+        form_layout.addRow("Contraseña:", self.input_password)
+        
+        self.input_confirm_password = QLineEdit()
+        self.input_confirm_password.setEchoMode(QLineEdit.EchoMode.Password)
+        self.input_confirm_password.setPlaceholderText("Confirmar contraseña")
+        form_layout.addRow("Confirmar:", self.input_confirm_password)
+        
+        # Información del Sistema
+        self.combo_role = QComboBox()
+        self.combo_role.addItems(["Usuario", "Operador", "Supervisor", "Administrador", "Super Admin"])
+        form_layout.addRow("Rol:", self.combo_role)
+        
+        self.combo_departamento = QComboBox()
+        self.combo_departamento.addItems([
+            "Administración", "Inventario", "Obras", "Mantenimiento", 
+            "Compras", "Logística", "IT", "Recursos Humanos"
+        ])
+        form_layout.addRow("Departamento:", self.combo_departamento)
+        
+        # Estado y Configuración
+        self.check_activo = QCheckBox("Usuario activo")
+        self.check_activo.setChecked(True)
+        form_layout.addRow("Estado:", self.check_activo)
+        
+        self.check_cambiar_password = QCheckBox("Debe cambiar contraseña en el próximo login")
+        form_layout.addRow("Seguridad:", self.check_cambiar_password)
+        
+        self.input_fecha_caducidad = QDateEdit()
+        self.input_fecha_caducidad.setCalendarPopup(True)
+        from PyQt6.QtCore import QDate
+        self.input_fecha_caducidad.setDate(QDate.currentDate().addDays(365))
+        form_layout.addRow("Caducidad:", self.input_fecha_caducidad)
+        
+        # Observaciones
+        self.input_observaciones = QTextEdit()
+        self.input_observaciones.setPlaceholderText("Observaciones adicionales")
+        self.input_observaciones.setMaximumHeight(80)
+        form_layout.addRow("Observaciones:", self.input_observaciones)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+        
+        # Aplicar estilo
+        self.aplicar_estilo()
+    
+    def aplicar_estilo(self):
+        """Aplica estilo al diálogo."""
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #f8f9fa;
+            }
+            QLineEdit, QTextEdit, QComboBox, QDateEdit {
+                padding: 8px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                background-color: white;
+            }
+            QCheckBox {
+                font-weight: bold;
+                padding: 4px;
+            }
+            QPushButton {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+        """)
+    
+    def cargar_datos(self, usuario):
+        """Carga los datos de un usuario existente."""
+        self.input_username.setText(usuario.get("username", ""))
+        self.input_nombre.setText(usuario.get("nombre", ""))
+        self.input_email.setText(usuario.get("email", ""))
+        self.input_observaciones.setPlainText(usuario.get("observaciones", ""))
+        
+        # Cargar combos
+        role = usuario.get("role", "Usuario")
+        index = self.combo_role.findText(role)
+        if index >= 0:
+            self.combo_role.setCurrentIndex(index)
+            
+        departamento = usuario.get("departamento", "Administración")
+        index = self.combo_departamento.findText(departamento)
+        if index >= 0:
+            self.combo_departamento.setCurrentIndex(index)
+        
+        self.check_activo.setChecked(usuario.get("activo", True))
+        self.check_cambiar_password.setChecked(usuario.get("cambiar_password", False))
+        
+        # No cargar la contraseña por seguridad
+        self.input_password.setPlaceholderText("Dejar vacío para no cambiar")
+        self.input_confirm_password.setPlaceholderText("Dejar vacío para no cambiar")
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "username": self.input_username.text().strip(),
+            "nombre": self.input_nombre.text().strip(),
+            "email": self.input_email.text().strip(),
+            "password": self.input_password.text(),
+            "role": self.combo_role.currentText(),
+            "departamento": self.combo_departamento.currentText(),
+            "activo": self.check_activo.isChecked(),
+            "cambiar_password": self.check_cambiar_password.isChecked(),
+            "fecha_caducidad": self.input_fecha_caducidad.date().toString("yyyy-MM-dd"),
+            "observaciones": self.input_observaciones.toPlainText().strip()
+        }
+    
+    def validar_datos(self):
+        """Valida los datos del formulario."""
+        from rexus.utils.message_system import show_error
+        datos = self.obtener_datos()
+        
+        if not datos["username"]:
+            show_error(self, "Error de Validación", "El nombre de usuario es obligatorio.")
+            return False
+        
+        if len(datos["username"]) < 3:
+            show_error(self, "Error de Validación", "El nombre de usuario debe tener al menos 3 caracteres.")
+            return False
+        
+        if not datos["nombre"]:
+            show_error(self, "Error de Validación", "El nombre completo es obligatorio.")
+            return False
+        
+        if not datos["email"]:
+            show_error(self, "Error de Validación", "El email es obligatorio.")
+            return False
+        
+        # Validar formato de email básico
+        import re
+        email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        if not re.match(email_pattern, datos["email"]):
+            show_error(self, "Error de Validación", "El formato del email no es válido.")
+            return False
+        
+        # Validar contraseña solo si se está creando un nuevo usuario o se ha ingresado una
+        if not self.usuario or datos["password"]:
+            if not datos["password"]:
+                show_error(self, "Error de Validación", "La contraseña es obligatoria.")
+                return False
+            
+            if len(datos["password"]) < 6:
+                show_error(self, "Error de Validación", "La contraseña debe tener al menos 6 caracteres.")
+                return False
+            
+            if datos["password"] != self.input_confirm_password.text():
+                show_error(self, "Error de Validación", "Las contraseñas no coinciden.")
+                return False
+        
+        return True

@@ -16,6 +16,7 @@ import qrcode
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -40,14 +41,11 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         try:
-            from utils.data_sanitizer import DataSanitizer
-        except ImportError:
+                    except ImportError:
             # Fallback seguro
             class DataSanitizer:
                 def sanitize_dict(self, data):
@@ -76,7 +74,7 @@ class ProductosManager:
         """Inicializa el gestor de productos."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/inventario/productos"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -121,7 +119,7 @@ class ProductosManager:
             cursor = self.db_connection.cursor()
 
             # Sanitizar código de búsqueda
-            codigo_sanitizado = self.data_sanitizer.sanitize_text(codigo)
+            codigo_sanitizado = sanitize_string(codigo)
 
             # Usar SQL externo para consulta
             query = self.sql_manager.get_query(
@@ -153,7 +151,7 @@ class ProductosManager:
             if not isinstance(datos_producto, dict):
                 raise ValueError("Los datos del producto deben ser un diccionario")
 
-            datos_sanitizados = self.data_sanitizer.sanitize_dict(datos_producto)
+            datos_sanitizados = self.sanitizer.sanitize_dict(datos_producto)
 
             # Validar campos obligatorios
             if not datos_sanitizados.get("codigo"):
@@ -223,7 +221,7 @@ class ProductosManager:
                 raise ValueError(f"Producto {producto_id} no encontrado")
 
             # Sanitizar datos
-            datos_sanitizados = self.data_sanitizer.sanitize_dict(datos_producto)
+            datos_sanitizados = self.sanitizer.sanitize_dict(datos_producto)
 
             cursor = self.db_connection.cursor()
 

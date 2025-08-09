@@ -28,6 +28,7 @@ Muestra las obras en un cronograma visual para facilitar la planificación y seg
 
 import datetime
 from typing import Any, Dict, List, Optional
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from PyQt6.QtCore import QDate, QRect, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen

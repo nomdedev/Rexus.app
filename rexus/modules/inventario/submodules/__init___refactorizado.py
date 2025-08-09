@@ -14,5 +14,6 @@ probada en usuarios, obras y vidrios.
 from .consultas_manager_refactorizado import ConsultasManager
 from .movimientos_manager_refactorizado import MovimientosManager
 from .productos_manager_refactorizado import ProductosManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 __all__ = ["ProductosManager", "MovimientosManager", "ConsultasManager"]

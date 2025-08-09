@@ -17,6 +17,7 @@ from typing import Any, Dict, List, Optional, Tuple
 
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Configurar logger para el módulo
 logger = logging.getLogger(__name__)
@@ -26,10 +27,7 @@ try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
-
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
     from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
-
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in herrajes: {e}")
@@ -459,7 +457,7 @@ class HerrajesModel:
             try:
                 # 🔒 SANITIZACIÓN DE ENTRADA
                 if self.security_available and termino_busqueda:
-                    termino_limpio = self.data_sanitizer.sanitize_string(
+                    termino_limpio = sanitize_string(
                         termino_busqueda, max_length=100
                     )
                     if not termino_limpio:

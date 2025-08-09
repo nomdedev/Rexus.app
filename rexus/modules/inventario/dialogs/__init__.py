@@ -3,6 +3,7 @@ Diálogos del módulo de inventario.
 """
 
 from .reserva_dialog import ReservaDialog
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar diálogos adicionales con manejo de errores
 try:

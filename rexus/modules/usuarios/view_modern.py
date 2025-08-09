@@ -56,6 +56,7 @@ from PyQt6.QtWidgets import (
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 from rexus.utils.loading_manager import LoadingManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class UsuariosViewModern(QWidget):

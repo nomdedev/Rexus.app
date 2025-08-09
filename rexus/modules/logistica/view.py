@@ -29,6 +29,9 @@ import logging
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QComboBox,
+    QDialog,
+    QDialogButtonBox,
+    QFormLayout,
     QFrame,
     QGroupBox,
     QHBoxLayout,
@@ -39,9 +42,26 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QTextEdit,
+    QDateEdit,
+    QDoubleSpinBox,
+    QSpinBox,
+)
+
+# Importar componentes Rexus
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusFrame,
+    RexusGroupBox,
+    RexusLayoutHelper
 )
 
 from rexus.ui.standard_components import StandardComponents
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector, XSSProtection
@@ -89,7 +109,7 @@ class LogisticaView(QWidget):
 
     # def crear_titulo(self, layout: QVBoxLayout):
 #         """Crea el título moderno de la vista."""
-#         titulo_container = QFrame()
+#         titulo_container = RexusFrame()
 #         titulo_container.setStyleSheet("""
 #             QFrame {
 #                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
@@ -103,7 +123,7 @@ class LogisticaView(QWidget):
 #         titulo_layout = QHBoxLayout(titulo_container)
 # 
 #         # Título principal
-#         title_label = QLabel("🚚 Gestión de Logística")
+#         title_label = RexusLabel("🚚 Gestión de Logística")
 #         title_label.setStyleSheet("""
 #             QLabel {
 #                 font-size: 16px;
@@ -117,7 +137,7 @@ class LogisticaView(QWidget):
 #         titulo_layout.addWidget(title_label)
 
         # Botón de configuración
-        self.btn_configuracion = QPushButton("⚙️ Configuración")
+        self.btn_configuracion = RexusButton("⚙️ Configuración")
         self.btn_configuracion.setStyleSheet("""
             QPushButton {
                 background-color: rgba(255, 255, 255, 0.2);
@@ -161,7 +181,7 @@ class LogisticaView(QWidget):
 
     def crear_panel_control(self):
         """Crea el panel de control superior con botones modernos."""
-        panel = QGroupBox("🎛️ Panel de Control")
+        panel = RexusGroupBox("🎛️ Panel de Control")
         panel.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -183,7 +203,7 @@ class LogisticaView(QWidget):
         layout = QHBoxLayout(panel)
 
         # Botón Nuevo Transporte
-        self.btn_nuevo_transporte = QPushButton("➕ Nuevo Transporte")
+        self.btn_nuevo_transporte = RexusButton("➕ Nuevo Transporte")
         self.btn_nuevo_transporte.setStyleSheet("""
             QPushButton {
                 background-color: #17a2b8;
@@ -208,7 +228,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.btn_nuevo_transporte)
 
         # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar por destino, conductor o placa...")
         self.input_busqueda.setToolTip("🔍 Buscar transportes por destino, conductor o placa del vehículo")
         self.input_busqueda.setStyleSheet("""
@@ -227,7 +247,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.input_busqueda)
 
         # Filtro de estado
-        self.combo_estado = QComboBox()
+        self.combo_estado = RexusComboBox()
         self.combo_estado.addItems([
             "🚚 Todos los estados",
             "⏳ PENDIENTE",
@@ -252,7 +272,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.combo_estado)
 
         # Botón buscar
-        self.btn_buscar = QPushButton("🔍 Buscar")
+        self.btn_buscar = RexusButton("🔍 Buscar")
         self.btn_buscar.setStyleSheet("""
             QPushButton {
                 background-color: #007bff;
@@ -277,7 +297,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.btn_buscar)
 
         # Botón actualizar
-        self.btn_actualizar = QPushButton("🔄 Actualizar")
+        self.btn_actualizar = RexusButton("🔄 Actualizar")
         self.btn_actualizar.setStyleSheet("""
             QPushButton {
                 background-color: #28a745;
@@ -305,7 +325,7 @@ class LogisticaView(QWidget):
         layout.addStretch()
         
         # Botón editar
-        self.btn_editar = QPushButton("✏️ Editar")
+        self.btn_editar = RexusButton("✏️ Editar")
         self.btn_editar.setStyleSheet("""
             QPushButton {
                 background-color: #ffc107;
@@ -330,7 +350,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.btn_editar)
 
         # Botón eliminar
-        self.btn_eliminar = QPushButton("🗑️ Eliminar")
+        self.btn_eliminar = RexusButton("🗑️ Eliminar")
         self.btn_eliminar.setStyleSheet("""
             QPushButton {
                 background-color: #dc3545;
@@ -358,7 +378,7 @@ class LogisticaView(QWidget):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de logística."""
-        panel = QGroupBox("📊 Estadísticas de Logística")
+        panel = RexusGroupBox("📊 Estadísticas de Logística")
         panel.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -399,7 +419,7 @@ class LogisticaView(QWidget):
 
     def crear_stat_widget(self, icono, titulo, valor, color):
         """Crea un widget de estadística individual."""
-        widget = QFrame()
+        widget = RexusFrame()
         widget.setStyleSheet(f"""
             QFrame {{
                 background-color: white;
@@ -420,18 +440,18 @@ class LogisticaView(QWidget):
         # Icono y título
         header_layout = QHBoxLayout()
         
-        icono_lbl = QLabel(icono)
+        icono_lbl = RexusLabel(icono)
         icono_lbl.setStyleSheet(f"font-size: 18px; color: {color};")
         header_layout.addWidget(icono_lbl)
         
-        titulo_lbl = QLabel(titulo)
+        titulo_lbl = RexusLabel(titulo)
         titulo_lbl.setStyleSheet(f"font-weight: bold; color: {color}; font-size: 12px;")
         header_layout.addWidget(titulo_lbl)
         
         layout.addLayout(header_layout)
 
         # Valor
-        valor_lbl = QLabel(valor)
+        valor_lbl = RexusLabel(valor)
         valor_lbl.setStyleSheet(f"font-size: 20px; font-weight: bold; color: {color};")
         valor_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(valor_lbl)
@@ -468,7 +488,7 @@ class LogisticaView(QWidget):
 
         # Configuraciones visuales
         self.tabla_transportes.setAlternatingRowColors(True)
-        self.tabla_transportes.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.tabla_transportes.setSelectionBehavior(RexusTable.SelectionBehavior.SelectRows)
         
         # Estilos de tabla modernos
         self.tabla_transportes.setStyleSheet("""
@@ -613,9 +633,25 @@ class LogisticaView(QWidget):
 
     def nuevo_transporte(self):
         """Abre el diálogo para crear un nuevo transporte."""
-        show_warning(
-            self, "Función en desarrollo", "Diálogo de nuevo transporte en desarrollo"
-        )
+        dialogo = DialogoTransporte(self)
+        
+        if dialogo.exec() == dialogo.DialogCode.Accepted:
+            if dialogo.validar_datos():
+                datos = dialogo.obtener_datos()
+                
+                if self.controller:
+                    try:
+                        exito = self.controller.crear_transporte(datos)
+                        if exito:
+                            from rexus.utils.message_system import show_success
+                            show_success(self, "Éxito", "Transporte creado exitosamente.")
+                            self.actualizar_datos()
+                        else:
+                            show_error(self, "Error", "No se pudo crear el transporte.")
+                    except Exception as e:
+                        show_error(self, "Error", f"Error al crear transporte: {str(e)}")
+                else:
+                    show_warning(self, "Advertencia", "No hay controlador disponible.")
 
     def buscar_transportes(self):
         """Busca transportes según los criterios especificados."""
@@ -658,7 +694,7 @@ class LogisticaView(QWidget):
             )
 
             # Botón de acciones
-            btn_editar = QPushButton("Editar")
+            btn_editar = RexusButton("Editar")
             btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
             self.tabla_transportes.setCellWidget(row, 6, btn_editar)
 
@@ -678,3 +714,245 @@ class LogisticaView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class DialogoTransporte(QDialog):
+    """Diálogo para crear/editar transportes."""
+    
+    def __init__(self, parent=None, transporte=None):
+        super().__init__(parent)
+        self.transporte = transporte
+        self.init_ui()
+        
+        if transporte:
+            self.cargar_datos(transporte)
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        self.setWindowTitle("Nuevo Transporte" if not self.transporte else "Editar Transporte")
+        self.setModal(True)
+        self.resize(500, 600)
+        
+        layout = QVBoxLayout(self)
+        
+        # Título
+        titulo = RexusLabel("🚚 " + ("Nuevo Transporte" if not self.transporte else "Editar Transporte"))
+        titulo.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: white;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                          stop:0 #17a2b8, stop:1 #6c757d);
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 20px;
+            }
+        """)
+        layout.addWidget(titulo)
+        
+        # Formulario principal
+        form_layout = QFormLayout()
+        
+        # Información básica del transporte
+        self.input_codigo = RexusLineEdit()
+        self.input_codigo.setPlaceholderText("Ej: LOG-2024-001")
+        form_layout.addRow("📋 Código:", self.input_codigo)
+        
+        self.input_destino = RexusLineEdit()
+        self.input_destino.setPlaceholderText("Destino de entrega")
+        form_layout.addRow("📍 Destino:", self.input_destino)
+        
+        self.input_origen = RexusLineEdit()
+        self.input_origen.setPlaceholderText("Punto de origen")
+        form_layout.addRow("🏠 Origen:", self.input_origen)
+        
+        # Información del vehículo y conductor
+        self.input_vehiculo = RexusLineEdit()
+        self.input_vehiculo.setPlaceholderText("Placa del vehículo")
+        form_layout.addRow("🚛 Vehículo:", self.input_vehiculo)
+        
+        self.input_conductor = RexusLineEdit()
+        self.input_conductor.setPlaceholderText("Nombre del conductor")
+        form_layout.addRow("👨‍💼 Conductor:", self.input_conductor)
+        
+        self.input_telefono = RexusLineEdit()
+        self.input_telefono.setPlaceholderText("Teléfono del conductor")
+        form_layout.addRow("📱 Teléfono:", self.input_telefono)
+        
+        # Fechas y tiempos
+        from PyQt6.QtCore import QDate
+        self.date_salida = QDateEdit()
+        self.date_salida.setDate(QDate.currentDate())
+        self.date_salida.setCalendarPopup(True)
+        form_layout.addRow("📅 Fecha Salida:", self.date_salida)
+        
+        self.date_llegada_estimada = QDateEdit()
+        self.date_llegada_estimada.setDate(QDate.currentDate().addDays(1))
+        self.date_llegada_estimada.setCalendarPopup(True)
+        form_layout.addRow("📅 Llegada Estimada:", self.date_llegada_estimada)
+        
+        # Información de carga
+        self.input_peso = QDoubleSpinBox()
+        self.input_peso.setRange(0.0, 99999.99)
+        self.input_peso.setSuffix(" kg")
+        self.input_peso.setDecimals(2)
+        form_layout.addRow("⚖️ Peso:", self.input_peso)
+        
+        self.input_volumen = QDoubleSpinBox()
+        self.input_volumen.setRange(0.0, 9999.99)
+        self.input_volumen.setSuffix(" m³")
+        self.input_volumen.setDecimals(2)
+        form_layout.addRow("📦 Volumen:", self.input_volumen)
+        
+        # Estado y prioridad
+        self.combo_estado = RexusComboBox()
+        self.combo_estado.addItems(["PENDIENTE", "EN_TRANSITO", "ENTREGADO", "CANCELADO"])
+        form_layout.addRow("📊 Estado:", self.combo_estado)
+        
+        self.combo_prioridad = RexusComboBox()
+        self.combo_prioridad.addItems(["BAJA", "NORMAL", "ALTA", "URGENTE"])
+        self.combo_prioridad.setCurrentText("NORMAL")
+        form_layout.addRow("⚡ Prioridad:", self.combo_prioridad)
+        
+        # Costos
+        self.input_costo_transporte = QDoubleSpinBox()
+        self.input_costo_transporte.setRange(0.0, 999999.99)
+        self.input_costo_transporte.setPrefix("$ ")
+        self.input_costo_transporte.setDecimals(2)
+        form_layout.addRow("💰 Costo Transporte:", self.input_costo_transporte)
+        
+        # Observaciones
+        self.input_observaciones = QTextEdit()
+        self.input_observaciones.setPlaceholderText("Observaciones adicionales del transporte")
+        self.input_observaciones.setMaximumHeight(80)
+        form_layout.addRow("📝 Observaciones:", self.input_observaciones)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+        
+        # Aplicar estilo
+        self.aplicar_estilo()
+    
+    def aplicar_estilo(self):
+        """Aplica estilo al diálogo."""
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #f8f9fa;
+            }
+            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit {
+                padding: 8px;
+                border: 2px solid #ced4da;
+                border-radius: 4px;
+                background-color: white;
+                font-size: 13px;
+            }
+            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus {
+                border-color: #17a2b8;
+            }
+            QPushButton {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-weight: bold;
+                font-size: 13px;
+            }
+            QFormLayout QLabel {
+                font-weight: bold;
+                color: #495057;
+            }
+        """)
+    
+    def cargar_datos(self, transporte):
+        """Carga los datos de un transporte existente."""
+        self.input_codigo.setText(transporte.get("codigo", ""))
+        self.input_destino.setText(transporte.get("destino", ""))
+        self.input_origen.setText(transporte.get("origen", ""))
+        self.input_vehiculo.setText(transporte.get("vehiculo", ""))
+        self.input_conductor.setText(transporte.get("conductor", ""))
+        self.input_telefono.setText(transporte.get("telefono", ""))
+        self.input_peso.setValue(transporte.get("peso", 0.0))
+        self.input_volumen.setValue(transporte.get("volumen", 0.0))
+        self.input_costo_transporte.setValue(transporte.get("costo_transporte", 0.0))
+        self.input_observaciones.setPlainText(transporte.get("observaciones", ""))
+        
+        # Cargar combos
+        estado = transporte.get("estado", "PENDIENTE")
+        index = self.combo_estado.findText(estado)
+        if index >= 0:
+            self.combo_estado.setCurrentIndex(index)
+            
+        prioridad = transporte.get("prioridad", "NORMAL")
+        index = self.combo_prioridad.findText(prioridad)
+        if index >= 0:
+            self.combo_prioridad.setCurrentIndex(index)
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "codigo": self.input_codigo.text().strip(),
+            "destino": self.input_destino.text().strip(),
+            "origen": self.input_origen.text().strip(),
+            "vehiculo": self.input_vehiculo.text().strip(),
+            "conductor": self.input_conductor.text().strip(),
+            "telefono": self.input_telefono.text().strip(),
+            "fecha_salida": self.date_salida.date().toString("yyyy-MM-dd"),
+            "fecha_llegada_estimada": self.date_llegada_estimada.date().toString("yyyy-MM-dd"),
+            "peso": self.input_peso.value(),
+            "volumen": self.input_volumen.value(),
+            "estado": self.combo_estado.currentText(),
+            "prioridad": self.combo_prioridad.currentText(),
+            "costo_transporte": self.input_costo_transporte.value(),
+            "observaciones": self.input_observaciones.toPlainText().strip()
+        }
+    
+    def validar_datos(self):
+        """Valida los datos del formulario."""
+        datos = self.obtener_datos()
+        
+        if not datos["codigo"]:
+            show_error(self, "Error de Validación", "El código es obligatorio.")
+            return False
+        
+        if not datos["destino"]:
+            show_error(self, "Error de Validación", "El destino es obligatorio.")
+            return False
+        
+        if not datos["origen"]:
+            show_error(self, "Error de Validación", "El origen es obligatorio.")
+            return False
+        
+        if not datos["conductor"]:
+            show_error(self, "Error de Validación", "El conductor es obligatorio.")
+            return False
+        
+        if not datos["vehiculo"]:
+            show_error(self, "Error de Validación", "El vehículo (placa) es obligatorio.")
+            return False
+        
+        # Validar fechas
+        from PyQt6.QtCore import QDate
+        fecha_salida = self.date_salida.date()
+        fecha_llegada = self.date_llegada_estimada.date()
+        
+        if fecha_llegada <= fecha_salida:
+            show_error(self, "Error de Validación", "La fecha de llegada debe ser posterior a la fecha de salida.")
+            return False
+        
+        # Validar peso y volumen
+        if datos["peso"] <= 0:
+            show_error(self, "Error de Validación", "El peso debe ser mayor a 0.")
+            return False
+        
+        if datos["volumen"] <= 0:
+            show_error(self, "Error de Validación", "El volumen debe ser mayor a 0.")
+            return False
+        
+        return True

@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 from rexus.core.auth_decorators import auth_required
 from rexus.utils.security import SecurityUtils
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 logger = logging.getLogger(__name__)
 

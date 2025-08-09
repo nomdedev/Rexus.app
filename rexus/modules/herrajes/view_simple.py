@@ -56,6 +56,7 @@ from PyQt6.QtWidgets import (
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 from rexus.utils.contextual_error_system import (
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     contextual_error_manager,
     show_database_error,
     show_validation_error,

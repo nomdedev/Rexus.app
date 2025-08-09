@@ -14,6 +14,7 @@ from rexus.utils.message_system import show_success, show_error
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_manager import AuthManager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 class UsuariosController(QObject):
     """Controlador para el módulo de usuarios."""
@@ -112,6 +113,37 @@ class UsuariosController(QObject):
         except Exception as e:
             print(f"[ERROR USUARIOS CONTROLLER] Error cargando usuarios: {e}")
             self.mostrar_error(f"Error cargando usuarios: {str(e)}")
+    
+    def buscar_usuarios(self, termino_busqueda: str) -> Optional[List[Dict]]:
+        """
+        Busca usuarios por nombre, username o email.
+        
+        Args:
+            termino_busqueda: Término a buscar
+            
+        Returns:
+            Lista de usuarios encontrados o None en caso de error
+        """
+        try:
+            # Sanitizar término de búsqueda
+            termino_sanitizado = SecurityUtils.sanitize_sql_input(str(termino_busqueda))
+            termino_sanitizado = SecurityUtils.sanitize_html_input(termino_sanitizado)
+            
+            if not SecurityUtils.is_safe_input(termino_sanitizado):
+                print(f"⚠️ [SECURITY] Término de búsqueda malicioso: {termino_busqueda}")
+                return None
+            
+            # Buscar usuarios usando el modelo
+            usuarios = self.model.buscar_usuarios(termino_sanitizado)
+            
+            print(f"[USUARIOS CONTROLLER] Búsqueda '{termino_sanitizado}': {len(usuarios)} resultados")
+            
+            return usuarios
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS CONTROLLER] Error buscando usuarios: {e}")
+            self.mostrar_error(f"Error buscando usuarios: {str(e)}")
+            return None
     
     @auth_required
     @admin_required

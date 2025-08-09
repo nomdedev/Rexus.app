@@ -21,6 +21,7 @@ logger = logging.getLogger(__name__)
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -44,11 +45,9 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -104,7 +103,7 @@ class ReservasManager:
         """
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/inventario/reservas"
         self.logger = logging.getLogger(__name__)
         
@@ -448,7 +447,7 @@ class ReservasManager:
                 cursor.execute(query, (
                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     cantidad_consumida,
-                    self.data_sanitizer.sanitize_text(motivo),
+                    sanitize_string(motivo),
                     datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                     reserva_id
                 ))
@@ -469,7 +468,7 @@ class ReservasManager:
                 cursor.execute(query, (
                     nueva_cantidad_reservada,
                     cantidad_consumida,
-                    self.data_sanitizer.sanitize_text(observacion_parcial),
+                    sanitize_string(observacion_parcial),
                     reserva_id
                 ))
                 
@@ -886,7 +885,7 @@ class ReservasManager:
             
             cursor.execute(query, (
                 nuevo_estado,
-                self.data_sanitizer.sanitize_text(motivo),
+                sanitize_string(motivo),
                 datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
                 reserva_id
             ))

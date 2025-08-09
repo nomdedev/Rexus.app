@@ -3,7 +3,8 @@ MIT License
 
 Copyright (c) 2024 Rexus.app
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
+Permission is hereby granted, free of charge, to any person obtaining         # Botón nuevo
+        self.btn_nuevo = RexusButton("Nuevo")copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -28,20 +29,31 @@ import logging
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
-    QComboBox,
     QFrame,
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
-    QLabel,
-    QLineEdit,
-    QPushButton,
     QSpinBox,
     QTableWidget,
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QDialog,
+    QFormLayout,
+    QTextEdit,
+    QDateEdit,
+    QDoubleSpinBox,
+    QDialogButtonBox,
 )
+
+from rexus.ui.components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable
+)
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
@@ -99,36 +111,27 @@ class PedidosView(QWidget):
         """Crea el panel de control superior."""
         panel = QFrame()
         panel.setFrameStyle(QFrame.Shape.Box)
-        panel.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 #ffffff, stop:1 #f8f9fa);
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                padding: 15px;
-            }
-        """)
         
         layout = QHBoxLayout(panel)
         
         # Botón Nuevo
-        self.btn_nuevo = QPushButton("Nuevo")
+        self.btn_nuevo = RexusButton("Nuevo")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
         
         # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar...")
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
         
         # Botón buscar
-        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar = RexusButton("Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
         
         # Botón actualizar
-        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar = RexusButton("Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
         
@@ -151,94 +154,29 @@ class PedidosView(QWidget):
     
     def aplicar_estilo(self):
         """Aplica el estilo general con alto contraste."""
-        self.setStyleSheet("""
-            /* Estilo de alto contraste para pedidos */
-            QWidget {
-                background-color: #ffffff;
-                color: #000000;
-                font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 13px;
-            }
-            
-            QPushButton {
-                background-color: #0078d4;
-                color: #ffffff;
-                border: 2px solid #0078d4;
-                border-radius: 4px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 13px;
-            }
-            
-            QPushButton:hover {
-                background-color: #106ebe;
-                border-color: #106ebe;
-            }
-            
-            QPushButton:pressed {
-                background-color: #005a9e;
-                border-color: #005a9e;
-            }
-            
-            QLineEdit, QComboBox {
-                background-color: #ffffff;
-                color: #000000;
-                border: 2px solid #cccccc;
-                border-radius: 4px;
-                padding: 8px;
-                font-size: 13px;
-            }
-            
-            QLineEdit:focus, QComboBox:focus {
-                border-color: #0078d4;
-            }
-            
-            QTableWidget {
-                background-color: #ffffff;
-                color: #000000;
-                gridline-color: #dddddd;
-                border: 2px solid #cccccc;
-                border-radius: 4px;
-                selection-background-color: #0078d4;
-                selection-color: #ffffff;
-                font-size: 13px;
-            }
-            
-            QTableWidget::item {
-                background-color: #ffffff;
-                color: #000000;
-                border: 1px solid #dddddd;
-                padding: 8px;
-            }
-            
-            QTableWidget::item:selected {
-                background-color: #0078d4;
-                color: #ffffff;
-            }
-            
-            QTableWidget::item:hover {
-                background-color: #f0f0f0;
-                color: #000000;
-            }
-            
-            QHeaderView::section {
-                background-color: #f8f9fa;
-                color: #000000;
-                border: 1px solid #cccccc;
-                padding: 8px;
-                font-weight: bold;
-                font-size: 13px;
-            }
-            
-            QLabel {
-                color: #000000;
-                font-size: 13px;
-            }
-        """)
+        # Se ha migrado a usar componentes Rexus
+        # Los estilos se manejan automáticamente por el style_manager
     
     def nuevo_registro(self):
         """Abre el diálogo para crear un nuevo registro."""
-        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
+        dialogo = DialogoPedido(self)
+        
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            if dialogo.validar_datos():
+                datos = dialogo.obtener_datos()
+                
+                if self.controller:
+                    try:
+                        exito = self.controller.crear_pedido(datos)
+                        if exito:
+                            show_success(self, "Éxito", "Pedido creado exitosamente.")
+                            self.actualizar_datos()
+                        else:
+                            show_error(self, "Error", "No se pudo crear el pedido.")
+                    except Exception as e:
+                        show_error(self, "Error", f"Error al crear pedido: {str(e)}")
+                else:
+                    show_warning(self, "Advertencia", "No hay controlador disponible.")
     
     def buscar(self):
         """Busca registros según los criterios especificados."""
@@ -262,8 +200,7 @@ class PedidosView(QWidget):
             self.tabla_principal.setItem(row, 3, QTableWidgetItem(str(registro.get("estado", ""))))
             
             # Botón de acciones
-            btn_editar = QPushButton("Editar")
-            btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            btn_editar = RexusButton("Editar")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
     
     def obtener_datos_seguros(self) -> dict:
@@ -283,18 +220,18 @@ class PedidosView(QWidget):
         paginacion_layout = QHBoxLayout()
         
         # Etiqueta de información
-        self.info_label = QLabel("Mostrando 1-50 de 0 registros")
+        self.info_label = RexusLabel("Mostrando 1-50 de 0 registros")
         paginacion_layout.addWidget(self.info_label)
         
         paginacion_layout.addStretch()
         
         # Controles de navegación
-        self.btn_primera = QPushButton("<<")
+        self.btn_primera = RexusButton("<<")
         self.btn_primera.setMaximumWidth(40)
         self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
         paginacion_layout.addWidget(self.btn_primera)
         
-        self.btn_anterior = QPushButton("<")
+        self.btn_anterior = RexusButton("<")
         self.btn_anterior.setMaximumWidth(30)
         self.btn_anterior.clicked.connect(self.pagina_anterior)
         paginacion_layout.addWidget(self.btn_anterior)
@@ -305,25 +242,25 @@ class PedidosView(QWidget):
         self.pagina_actual_spin.setMaximum(1)
         self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
         self.pagina_actual_spin.setMaximumWidth(60)
-        paginacion_layout.addWidget(QLabel("Página:"))
+        paginacion_layout.addWidget(RexusLabel("Página:"))
         paginacion_layout.addWidget(self.pagina_actual_spin)
         
-        self.total_paginas_label = QLabel("de 1")
+        self.total_paginas_label = RexusLabel("de 1")
         paginacion_layout.addWidget(self.total_paginas_label)
         
-        self.btn_siguiente = QPushButton(">")
+        self.btn_siguiente = RexusButton(">")
         self.btn_siguiente.setMaximumWidth(30)
         self.btn_siguiente.clicked.connect(self.pagina_siguiente)
         paginacion_layout.addWidget(self.btn_siguiente)
         
-        self.btn_ultima = QPushButton(">>")
+        self.btn_ultima = RexusButton(">>")
         self.btn_ultima.setMaximumWidth(40)
         self.btn_ultima.clicked.connect(self.ultima_pagina)
         paginacion_layout.addWidget(self.btn_ultima)
         
         # Selector de registros por página
-        paginacion_layout.addWidget(QLabel("Registros por página:"))
-        self.registros_por_pagina_combo = QComboBox()
+        paginacion_layout.addWidget(RexusLabel("Registros por página:"))
+        self.registros_por_pagina_combo = RexusComboBox()
         self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
         self.registros_por_pagina_combo.setCurrentText("50")
         self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
@@ -392,3 +329,158 @@ class PedidosView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class DialogoPedido(QDialog):
+    """Diálogo para crear/editar pedidos."""
+    
+    def __init__(self, parent=None, pedido=None):
+        super().__init__(parent)
+        self.pedido = pedido
+        self.init_ui()
+        
+        if pedido:
+            self.cargar_datos(pedido)
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        self.setWindowTitle("Nuevo Pedido" if not self.pedido else "Editar Pedido")
+        self.setModal(True)
+        self.resize(500, 450)
+        
+        layout = QVBoxLayout(self)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Información del Cliente
+        self.input_cliente = RexusLineEdit()
+        self.input_cliente.setPlaceholderText("Nombre del cliente")
+        form_layout.addRow("Cliente:", self.input_cliente)
+        
+        self.input_contacto = RexusLineEdit()
+        self.input_contacto.setPlaceholderText("Teléfono o email")
+        form_layout.addRow("Contacto:", self.input_contacto)
+        
+        # Información del Pedido
+        self.combo_tipo = RexusComboBox()
+        self.combo_tipo.addItems(["Obra Nueva", "Reparación", "Mantenimiento", "Emergencia"])
+        form_layout.addRow("Tipo:", self.combo_tipo)
+        
+        self.combo_prioridad = RexusComboBox()
+        self.combo_prioridad.addItems(["Baja", "Normal", "Alta", "Urgente"])
+        self.combo_prioridad.setCurrentText("Normal")
+        form_layout.addRow("Prioridad:", self.combo_prioridad)
+        
+        self.input_fecha_entrega = QDateEdit()
+        self.input_fecha_entrega.setCalendarPopup(True)
+        from PyQt6.QtCore import QDate
+        self.input_fecha_entrega.setDate(QDate.currentDate().addDays(7))
+        form_layout.addRow("Fecha Entrega:", self.input_fecha_entrega)
+        
+        # Descripción
+        self.input_descripcion = QTextEdit()
+        self.input_descripcion.setPlaceholderText("Descripción detallada del pedido")
+        self.input_descripcion.setMaximumHeight(100)
+        form_layout.addRow("Descripción:", self.input_descripcion)
+        
+        # Ubicación y Dirección
+        self.input_direccion = QTextEdit()
+        self.input_direccion.setPlaceholderText("Dirección de entrega")
+        self.input_direccion.setMaximumHeight(60)
+        form_layout.addRow("Dirección:", self.input_direccion)
+        
+        # Información Comercial
+        self.input_presupuesto = QDoubleSpinBox()
+        self.input_presupuesto.setMaximum(999999.99)
+        self.input_presupuesto.setSuffix(" €")
+        form_layout.addRow("Presupuesto:", self.input_presupuesto)
+        
+        self.combo_estado = RexusComboBox()
+        self.combo_estado.addItems(["Pendiente", "En Proceso", "Listo", "Entregado", "Cancelado"])
+        form_layout.addRow("Estado:", self.combo_estado)
+        
+        # Observaciones
+        self.input_observaciones = QTextEdit()
+        self.input_observaciones.setPlaceholderText("Observaciones adicionales")
+        self.input_observaciones.setMaximumHeight(60)
+        form_layout.addRow("Observaciones:", self.input_observaciones)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+        
+        # Aplicar estilo
+        self.aplicar_estilo()
+    
+    def aplicar_estilo(self):
+        """Estilos manejados por el style_manager de Rexus."""
+        pass
+    
+    def cargar_datos(self, pedido):
+        """Carga los datos de un pedido existente."""
+        self.input_cliente.setText(pedido.get("cliente", ""))
+        self.input_contacto.setText(pedido.get("contacto", ""))
+        self.input_descripcion.setPlainText(pedido.get("descripcion", ""))
+        self.input_direccion.setPlainText(pedido.get("direccion", ""))
+        self.input_observaciones.setPlainText(pedido.get("observaciones", ""))
+        self.input_presupuesto.setValue(pedido.get("presupuesto", 0.0))
+        
+        # Cargar combos
+        tipo = pedido.get("tipo", "Obra Nueva")
+        index = self.combo_tipo.findText(tipo)
+        if index >= 0:
+            self.combo_tipo.setCurrentIndex(index)
+            
+        prioridad = pedido.get("prioridad", "Normal")
+        index = self.combo_prioridad.findText(prioridad)
+        if index >= 0:
+            self.combo_prioridad.setCurrentIndex(index)
+            
+        estado = pedido.get("estado", "Pendiente")
+        index = self.combo_estado.findText(estado)
+        if index >= 0:
+            self.combo_estado.setCurrentIndex(index)
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "cliente": self.input_cliente.text().strip(),
+            "contacto": self.input_contacto.text().strip(),
+            "tipo": self.combo_tipo.currentText(),
+            "prioridad": self.combo_prioridad.currentText(),
+            "fecha_entrega": self.input_fecha_entrega.date().toString("yyyy-MM-dd"),
+            "descripcion": self.input_descripcion.toPlainText().strip(),
+            "direccion": self.input_direccion.toPlainText().strip(),
+            "presupuesto": self.input_presupuesto.value(),
+            "estado": self.combo_estado.currentText(),
+            "observaciones": self.input_observaciones.toPlainText().strip()
+        }
+    
+    def validar_datos(self):
+        """Valida los datos del formulario."""
+        datos = self.obtener_datos()
+        
+        if not datos["cliente"]:
+            show_error(self, "Error de Validación", "El nombre del cliente es obligatorio.")
+            return False
+        
+        if not datos["descripcion"]:
+            show_error(self, "Error de Validación", "La descripción del pedido es obligatoria.")
+            return False
+        
+        if len(datos["descripcion"]) < 10:
+            show_error(self, "Error de Validación", "La descripción debe tener al menos 10 caracteres.")
+            return False
+        
+        if datos["presupuesto"] <= 0:
+            show_error(self, "Error de Validación", "El presupuesto debe ser mayor a 0.")
+            return False
+        
+        return True

@@ -16,6 +16,7 @@ from pathlib import Path
 # Importar cargador de scripts SQL
 try:
     from rexus.utils.sql_script_loader import sql_script_loader
+    from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     SQL_SCRIPTS_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] SQL Script Loader not available in contabilidad: {e}")

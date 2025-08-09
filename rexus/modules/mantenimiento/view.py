@@ -35,9 +35,25 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QDialog,
+    QFormLayout,
+    QSpinBox,
+    QDoubleSpinBox,
+    QDateEdit,
 )
 
-from rexus.utils.message_system import show_warning
+from rexus.utils.message_system import show_warning, show_error, show_success
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusColors,
+)
+
+# Importar utilidades de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
@@ -165,8 +181,17 @@ class MantenimientoView(QWidget):
         """)
 
     def nuevo_registro(self):
-        """Abre el diálogo para crear un nuevo registro."""
-        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
+        """Abre el diálogo para crear un nuevo mantenimiento."""
+        dialog = NuevoMantenimientoDialog(self)
+        if dialog.exec() == dialog.Accepted:
+            datos = dialog.obtener_datos()
+            if self.controller:
+                resultado = self.controller.crear_mantenimiento(datos)
+                if resultado:  # Éxito (devuelve ID)
+                    show_success(self, "Mantenimiento Creado", f"Mantenimiento creado con ID: {resultado}")
+                    self.actualizar_datos()
+                else:  # Error
+                    show_error(self, "Error", "No se pudo crear el mantenimiento")
 
     def buscar(self):
         """Busca registros según los criterios especificados."""
@@ -218,3 +243,138 @@ class MantenimientoView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class NuevoMantenimientoDialog(QDialog):
+    """Diálogo para crear un nuevo mantenimiento."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Nuevo Mantenimiento")
+        self.setModal(True)
+        self.setFixedSize(500, 600)
+        self.setupUI()
+        
+    def setupUI(self):
+        """Configura la interfaz del diálogo."""
+        from PyQt6.QtCore import QDate
+        
+        layout = QVBoxLayout(self)
+        
+        # Título
+        titulo = RexusLabel("Crear Nuevo Mantenimiento", "title")
+        layout.addWidget(titulo)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Equipo ID (obligatorio)
+        self.equipo_id_input = QSpinBox()
+        self.equipo_id_input.setRange(1, 999999)
+        self.equipo_id_input.setValue(1)
+        form_layout.addRow("ID del Equipo*:", self.equipo_id_input)
+        
+        # Tipo de mantenimiento
+        self.tipo_input = RexusComboBox()
+        self.tipo_input.addItems([
+            "PREVENTIVO",
+            "CORRECTIVO",
+            "PREDICTIVO",
+            "EMERGENCIA",
+            "INSPECCION"
+        ])
+        form_layout.addRow("Tipo*:", self.tipo_input)
+        
+        # Descripción (obligatorio)
+        self.descripcion_input = RexusLineEdit()
+        self.descripcion_input.setPlaceholderText("Descripción del mantenimiento")
+        self.descripcion_input.setMaxLength(500)
+        form_layout.addRow("Descripción*:", self.descripcion_input)
+        
+        # Fecha programada
+        self.fecha_programada_input = QDateEdit()
+        self.fecha_programada_input.setDate(QDate.currentDate())
+        self.fecha_programada_input.setCalendarPopup(True)
+        form_layout.addRow("Fecha Programada:", self.fecha_programada_input)
+        
+        # Estado
+        self.estado_input = RexusComboBox()
+        self.estado_input.addItems([
+            "PROGRAMADO",
+            "EN_PROGRESO",
+            "COMPLETADO",
+            "CANCELADO",
+            "PENDIENTE"
+        ])
+        form_layout.addRow("Estado:", self.estado_input)
+        
+        # Costo estimado
+        self.costo_estimado_input = QDoubleSpinBox()
+        self.costo_estimado_input.setRange(0.0, 999999.99)
+        self.costo_estimado_input.setPrefix("$ ")
+        self.costo_estimado_input.setDecimals(2)
+        form_layout.addRow("Costo Estimado:", self.costo_estimado_input)
+        
+        # Responsable
+        self.responsable_input = RexusLineEdit()
+        self.responsable_input.setPlaceholderText("Nombre del responsable")
+        self.responsable_input.setMaxLength(100)
+        form_layout.addRow("Responsable:", self.responsable_input)
+        
+        # Observaciones
+        self.observaciones_input = RexusLineEdit()
+        self.observaciones_input.setPlaceholderText("Observaciones adicionales")
+        self.observaciones_input.setMaxLength(500)
+        form_layout.addRow("Observaciones:", self.observaciones_input)
+        
+        layout.addLayout(form_layout)
+        
+        # Nota de campos obligatorios
+        nota = RexusLabel("* Campos obligatorios", "caption")
+        nota.setStyleSheet(f"color: {RexusColors.TEXT_SECONDARY}; font-style: italic;")
+        layout.addWidget(nota)
+        
+        layout.addStretch()
+        
+        # Botones
+        botones_layout = QHBoxLayout()
+        
+        self.btn_cancelar = RexusButton("Cancelar", "secondary")
+        self.btn_cancelar.clicked.connect(self.reject)
+        botones_layout.addWidget(self.btn_cancelar)
+        
+        botones_layout.addStretch()
+        
+        self.btn_crear = RexusButton("Crear Mantenimiento", "primary")
+        self.btn_crear.clicked.connect(self.validar_y_aceptar)
+        botones_layout.addWidget(self.btn_crear)
+        
+        layout.addLayout(botones_layout)
+        
+    def validar_y_aceptar(self):
+        """Valida los datos antes de aceptar."""
+        # Validar campos obligatorios
+        if self.equipo_id_input.value() <= 0:
+            show_error(self, "Error", "Debe especificar un ID de equipo válido")
+            self.equipo_id_input.setFocus()
+            return
+            
+        if not self.descripcion_input.text().strip():
+            show_error(self, "Error", "La descripción es obligatoria")
+            self.descripcion_input.setFocus()
+            return
+            
+        self.accept()
+        
+    def obtener_datos(self):
+        """Retorna los datos del formulario."""
+        return {
+            "equipo_id": self.equipo_id_input.value(),
+            "tipo": self.tipo_input.currentText(),
+            "descripcion": self.descripcion_input.text().strip(),
+            "fecha_programada": self.fecha_programada_input.date().toString("yyyy-MM-dd"),
+            "estado": self.estado_input.currentText(),
+            "costo_estimado": self.costo_estimado_input.value(),
+            "responsable": self.responsable_input.text().strip() or "",
+            "observaciones": self.observaciones_input.text().strip() or "",
+        }

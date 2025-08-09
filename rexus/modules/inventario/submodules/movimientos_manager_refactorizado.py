@@ -17,21 +17,18 @@ from rexus.core.auth_decorators import auth_required, permission_required
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
-    except ImportError:
+    class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
 
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                return data if data else {}
+        def sanitize_text(self, text):
+            return str(text) if text else ""
 
-            def sanitize_text(self, text):
-                return str(text) if text else ""
-
-            def sanitize_integer(self, value, min_val=None, max_val=None):
-                return int(value) if value else 0
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
 
 class MovimientosManager:
@@ -50,7 +47,7 @@ class MovimientosManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de movimientos."""
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
 
     @auth_required
     @permission_required("create_movimiento")
@@ -64,7 +61,7 @@ class MovimientosManager:
 
         try:
             # Sanitizar datos
-            datos_limpios = self.data_sanitizer.sanitize_dict(datos_movimiento)
+            datos_limpios = self.sanitizer.sanitize_dict(datos_movimiento)
 
             # Validaciones básicas
             if not datos_limpios.get("producto_id"):
@@ -79,7 +76,7 @@ class MovimientosManager:
                 )
 
             # Validar cantidad
-            cantidad = self.data_sanitizer.sanitize_integer(
+            cantidad = self.sanitizer.sanitize_integer(
                 datos_limpios.get("cantidad", 0)
             )
             if cantidad <= 0:

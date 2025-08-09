@@ -33,6 +33,12 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QAbstractItemView,
+    QDialog,
+    QFormLayout,
+    QHBoxLayout,
+    QVBoxLayout,
+    QSpinBox,
+    QDoubleSpinBox,
 )
 
 # Importar componentes del framework de estandarización UI
@@ -53,7 +59,7 @@ from rexus.ui.templates.base_module_view import BaseModuleView
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 
-from rexus.utils.message_system import show_error, show_warning
+from rexus.utils.message_system import show_error, show_warning, show_success
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 
 
@@ -63,6 +69,11 @@ class HerrajesView(BaseModuleView):
     # Señales
     datos_actualizados = pyqtSignal()
     error_ocurrido = pyqtSignal(str)
+
+    # Constantes para mensajes de error
+    MSG_SIN_CONTROLADOR = "Sin controlador"
+    MSG_NO_CONTROLADOR_DISPONIBLE = "No hay controlador disponible"
+    MSG_NO_CONTROLADOR_SINCRONIZACION = "No hay controlador disponible para la sincronización"
 
     def __init__(self):
         super().__init__("🔧 Gestión de Herrajes")
@@ -423,8 +434,17 @@ class HerrajesView(BaseModuleView):
             show_error(self, "Error de Estadísticas", f"Error actualizando estadísticas: {e}")
 
     def nuevo_registro(self):
-        """Abre el diálogo para crear un nuevo registro."""
-        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
+        """Abre el diálogo para crear un nuevo herraje."""
+        dialog = NuevoHerrajeDialog(self)
+        if dialog.exec() == dialog.Accepted:
+            datos = dialog.obtener_datos()
+            if self.controller:
+                resultado = self.controller.crear_herraje(datos)
+                if resultado[0]:  # Éxito
+                    show_success(self, "Herraje Creado", resultado[1])
+                    self.actualizar_datos()
+                else:  # Error
+                    show_error(self, "Error", resultado[1])
 
     def buscar(self):
         """Busca registros según los criterios especificados."""
@@ -498,7 +518,7 @@ class HerrajesView(BaseModuleView):
         if hasattr(self, "controller") and self.controller:
             self.controller.sincronizar_con_inventario()
         else:
-            show_warning(self, "Sin controlador", "No hay controlador disponible para la sincronización")
+            show_warning(self, self.MSG_SIN_CONTROLADOR, self.MSG_NO_CONTROLADOR_SINCRONIZACION)
 
     def mostrar_resumen_integracion(self):
         """Muestra el resumen de integración."""
@@ -618,3 +638,165 @@ class HerrajesView(BaseModuleView):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+
+class NuevoHerrajeDialog(QDialog):
+    """Diálogo para crear un nuevo herraje."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Nuevo Herraje")
+        self.setModal(True)
+        self.setFixedSize(500, 650)
+        self.setupUI()
+        
+    def setupUI(self):
+        """Configura la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Título
+        titulo = RexusLabel("Crear Nuevo Herraje", "title")
+        layout.addWidget(titulo)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Campos obligatorios
+        self.codigo_input = RexusLineEdit()
+        self.codigo_input.setPlaceholderText("Ej: H001, HER-001")
+        self.codigo_input.setMaxLength(20)
+        form_layout.addRow("Código*:", self.codigo_input)
+        
+        self.descripcion_input = RexusLineEdit()
+        self.descripcion_input.setPlaceholderText("Descripción del herraje")
+        self.descripcion_input.setMaxLength(200)
+        form_layout.addRow("Descripción*:", self.descripcion_input)
+        
+        self.proveedor_input = RexusComboBox()
+        self.proveedor_input.addItems([
+            "Kawneer",
+            "Schüco",
+            "Reynaers",
+            "Technal",
+            "Cortizo",
+            "ALUCOIL",
+            "Otro"
+        ])
+        self.proveedor_input.setEditable(True)
+        form_layout.addRow("Proveedor*:", self.proveedor_input)
+        
+        # Categoría y tipo
+        self.categoria_input = RexusLineEdit()
+        self.categoria_input.setPlaceholderText("Ej: Bisagras, Cerraduras, etc.")
+        self.categoria_input.setMaxLength(100)
+        form_layout.addRow("Categoría:", self.categoria_input)
+        
+        self.tipo_input = RexusComboBox()
+        self.tipo_input.addItems([
+            "BISAGRA",
+            "CERRADURA", 
+            "MANILLA",
+            "PESTILLO",
+            "GUÍA",
+            "RODAMIENTO",
+            "TORNILLERÍA",
+            "SELLADO",
+            "OTRO"
+        ])
+        self.tipo_input.setEditable(True)
+        form_layout.addRow("Tipo:", self.tipo_input)
+        
+        # Stock
+        self.stock_actual_input = QSpinBox()
+        self.stock_actual_input.setRange(0, 99999)
+        self.stock_actual_input.setValue(0)
+        form_layout.addRow("Stock Actual:", self.stock_actual_input)
+        
+        self.stock_minimo_input = QSpinBox()
+        self.stock_minimo_input.setRange(0, 99999)
+        self.stock_minimo_input.setValue(1)
+        form_layout.addRow("Stock Mínimo:", self.stock_minimo_input)
+        
+        # Precios
+        self.precio_unitario_input = QDoubleSpinBox()
+        self.precio_unitario_input.setRange(0.0, 99999.99)
+        self.precio_unitario_input.setPrefix("$ ")
+        self.precio_unitario_input.setDecimals(2)
+        form_layout.addRow("Precio Unitario:", self.precio_unitario_input)
+        
+        self.precio_compra_input = QDoubleSpinBox()
+        self.precio_compra_input.setRange(0.0, 99999.99)
+        self.precio_compra_input.setPrefix("$ ")
+        self.precio_compra_input.setDecimals(2)
+        form_layout.addRow("Precio Compra:", self.precio_compra_input)
+        
+        # Ubicación
+        self.ubicacion_input = RexusLineEdit()
+        self.ubicacion_input.setPlaceholderText("Ej: Almacén A-1, Estante 3")
+        self.ubicacion_input.setMaxLength(100)
+        form_layout.addRow("Ubicación:", self.ubicacion_input)
+        
+        # Observaciones
+        self.observaciones_input = RexusLineEdit()
+        self.observaciones_input.setPlaceholderText("Notas adicionales del herraje")
+        self.observaciones_input.setMaxLength(500)
+        form_layout.addRow("Observaciones:", self.observaciones_input)
+        
+        layout.addLayout(form_layout)
+        
+        # Nota de campos obligatorios
+        nota = RexusLabel("* Campos obligatorios", "caption")
+        layout.addWidget(nota)
+        
+        layout.addStretch()
+        
+        # Botones
+        botones_layout = QHBoxLayout()
+        
+        self.btn_cancelar = RexusButton("Cancelar", "secondary")
+        self.btn_cancelar.clicked.connect(self.reject)
+        botones_layout.addWidget(self.btn_cancelar)
+        
+        botones_layout.addStretch()
+        
+        self.btn_crear = RexusButton("Crear Herraje", "primary")
+        self.btn_crear.clicked.connect(self.validar_y_aceptar)
+        botones_layout.addWidget(self.btn_crear)
+        
+        layout.addLayout(botones_layout)
+        
+    def validar_y_aceptar(self):
+        """Valida los datos antes de aceptar."""
+        # Validar campos obligatorios
+        if not self.codigo_input.text().strip():
+            show_error(self, "Error", "El código es obligatorio")
+            self.codigo_input.setFocus()
+            return
+            
+        if not self.descripcion_input.text().strip():
+            show_error(self, "Error", "La descripción es obligatoria")
+            self.descripcion_input.setFocus()
+            return
+            
+        if not self.proveedor_input.currentText().strip():
+            show_error(self, "Error", "El proveedor es obligatorio")
+            self.proveedor_input.setFocus()
+            return
+            
+        self.accept()
+        
+    def obtener_datos(self):
+        """Retorna los datos del formulario."""
+        return {
+            "codigo": self.codigo_input.text().strip(),
+            "descripcion": self.descripcion_input.text().strip(),
+            "proveedor": self.proveedor_input.currentText().strip(),
+            "categoria": self.categoria_input.text().strip() or "",
+            "tipo": self.tipo_input.currentText().strip() or "OTRO",
+            "stock_actual": self.stock_actual_input.value(),
+            "stock_minimo": self.stock_minimo_input.value(),
+            "precio_unitario": self.precio_unitario_input.value(),
+            "precio_compra": self.precio_compra_input.value(),
+            "ubicacion": self.ubicacion_input.text().strip() or "",
+            "observaciones": self.observaciones_input.text().strip() or "",
+        }

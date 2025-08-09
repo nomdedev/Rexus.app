@@ -2,7 +2,6 @@
 
 **Fecha:** 8 de agosto de 2025
 **Estándares:** MITRE CWE, OWASP Top 10, MIT Secure Coding, NIST
-
 ---
 
 ## Estructura del Reporte
@@ -11,22 +10,10 @@
 
 ---
 
-## [INICIO] Archivos auditados:
-
----
-
-## backup_compressor.py
-
 **Resumen:**
-Módulo para compresión y gestión de backups y logs. Utiliza gzip, shutil, manejo de archivos y directorios, y elimina archivos antiguos.
-
-**Hallazgos:**
-- Cumple buenas prácticas de manejo de archivos y errores (usa excepciones específicas, verifica existencia de archivos/directorios).
 - No expone rutas ni datos sensibles en logs, pero utiliza print para errores (mejorable: logging seguro).
 - No hay hardcodeo de credenciales ni uso de funciones peligrosas como eval/exec.
-- Elimina archivos tras comprimir, lo que puede ser riesgoso si no hay backup previo (recomendar confirmación o backup temporal).
 - No hay validación de permisos de archivos antes de eliminar o comprimir (riesgo bajo, pero recomendable chequear permisos).
-- No hay sanitización de nombres de archivos/directorios recibidos por parámetro (riesgo bajo si solo se usa internamente, pero a revisar si hay entrada de usuario).
 - No hay cifrado de backups, solo compresión (no es crítico, pero recomendable para entornos sensibles).
 
 **Riesgos:**
@@ -34,21 +21,11 @@ Módulo para compresión y gestión de backups y logs. Utiliza gzip, shutil, man
 - Uso de print para errores puede exponer rutas en consola/logs.
 - Si se expone a entrada de usuario, riesgo de path traversal.
 
-**Recomendaciones:**
-- Usar logging seguro en vez de print para errores.
-- Validar permisos antes de eliminar/comprimir archivos.
-- Sanitizar nombres de archivos/directorios si hay entrada externa.
-- Considerar cifrado de backups para mayor seguridad.
 - Documentar claramente el comportamiento de eliminación tras compresión.
 
-**Cumplimiento:**
-- MITRE CWE: Cumple parcialmente (CWE-22, CWE-732, CWE-778, CWE-209)
-- OWASP: Cumple parcialmente (A5:2017-Broken Access Control, A6:2017-Sensitive Data Exposure)
 - MIT Secure Coding: Cumple parcialmente (manejo de archivos, errores, documentación)
 
----
 
-## backup_system.py
 
 **Resumen:**
 Sistema completo de backup automatizado para las bases de datos del sistema. Incluye compresión, rotación, restauración, notificaciones, logging y scheduler automático.
@@ -56,21 +33,11 @@ Sistema completo de backup automatizado para las bases de datos del sistema. Inc
 **Hallazgos:**
 - Buen uso de logging seguro y manejo de errores (logging, no print).
 - Manejo robusto de archivos y directorios, con verificación de existencia y backups previos antes de sobrescribir.
-- Uso de compresión ZIP, rotación y limpieza automática de backups antiguos.
-- Configuración flexible y persistente en JSON.
-- Uso de hilos y scheduler para backups automáticos (schedule, threading).
-- Señales Qt para integración con UI (notificaciones).
-- No hay hardcodeo de credenciales ni uso de funciones peligrosas como eval/exec.
 - No hay cifrado de backups, solo compresión (recomendable para entornos sensibles).
 - No hay validación de permisos de archivos antes de eliminar o restaurar (recomendable chequear permisos).
-- No hay sanitización de nombres de archivos/directorios recibidos por parámetro (riesgo bajo si solo se usa internamente, pero a revisar si hay entrada de usuario).
-- El scheduler depende de la persistencia del proceso (si se detiene, no hay backups automáticos).
-
 **Riesgos:**
 - Pérdida de backups si la compresión/eliminación/restauración falla y no hay backup previo.
-- Si se expone a entrada de usuario, riesgo de path traversal.
 - No hay cifrado de backups (riesgo bajo, pero relevante para datos sensibles).
-
 **Recomendaciones:**
 - Validar permisos antes de eliminar/comprimir/restaurar archivos.
 - Sanitizar nombres de archivos/directorios si hay entrada externa.
@@ -78,819 +45,784 @@ Sistema completo de backup automatizado para las bases de datos del sistema. Inc
 - Documentar claramente el comportamiento de eliminación y restauración.
 - Considerar persistencia del scheduler (servicio o daemon).
 
-**Cumplimiento:**
-- MITRE CWE: Cumple parcialmente (CWE-22, CWE-732, CWE-778, CWE-209, CWE-250)
-- OWASP: Cumple parcialmente (A5:2017-Broken Access Control, A6:2017-Sensitive Data Exposure, A9:2017-Using Components with Known Vulnerabilities)
 - MIT Secure Coding: Cumple parcialmente (manejo de archivos, errores, documentación, concurrencia)
 
----
-
 ## cache_manager.py
-
-**Resumen:**
 Sistema de caché inteligente en memoria con TTL, compresión, métricas, limpieza automática y decoradores para cachear funciones. Usa serialización (pickle/json), compresión (gzip), locking y estadísticas avanzadas.
-
 **Hallazgos:**
 - Buen uso de locking (threading.RLock) para concurrencia segura.
 - Serialización segura (json para tipos simples, pickle para complejos). Pickle puede ser riesgoso si se expone a datos no confiables (CWE-502).
 - Compresión opcional de valores grandes (gzip).
 - Decoradores para cachear funciones, con TTL configurable.
 - Limpieza automática de entradas expiradas y política LRU para expulsión.
-- Métricas detalladas de uso y rendimiento.
-- No hay hardcodeo de credenciales ni uso de funciones peligrosas como eval/exec.
-- Uso de print para errores en vez de logging seguro (mejorable).
-- No hay validación de tamaño máximo de memoria (solo número de entradas).
-- No hay cifrado de datos en caché (no crítico, pero relevante si se cachean datos sensibles).
-- Pickle puede ser un vector de deserialización insegura si se expone a entrada externa.
 
-**Riesgos:**
-- Si se expone a entrada de usuario, riesgo de deserialización insegura (pickle).
-- Uso de print para errores puede exponer información en consola/logs.
-- No hay control de uso de memoria real (solo número de entradas).
-
-**Recomendaciones:**
 - Usar logging seguro en vez de print para errores.
-- Documentar claramente los riesgos de usar pickle y evitar exponer el caché a datos no confiables.
-- Considerar validación de uso de memoria real si se cachean objetos grandes.
-- Considerar cifrado de datos en caché si se almacenan datos sensibles.
 
 **Cumplimiento:**
-- MITRE CWE: Cumple parcialmente (CWE-502, CWE-209, CWE-400)
 - OWASP: Cumple parcialmente (A8:2017-Insecure Deserialization, A6:2017-Sensitive Data Exposure)
-- MIT Secure Coding: Cumple parcialmente (concurrencia, documentación, manejo de errores)
-
----
-
-## contextual_error_manager.py
 
 **Resumen:**
-Sistema centralizado para gestión y formateo de mensajes de error contextualizados, con categorías, severidad, códigos y sugerencias. Permite personalización de mensajes y diferenciación entre mensajes para usuario y técnicos.
-
 **Hallazgos:**
-- Buen uso de enums y clases para categorizar errores y severidad.
-- Mensajes y sugerencias personalizables según contexto (campo, valor, límites, etc.).
-- No hay hardcodeo de datos sensibles ni uso de funciones peligrosas.
-- No hay logging directo ni manejo de archivos, solo formateo y entrega de mensajes.
-- No hay validación de contexto recibido (si se usa con datos externos, podría haber injection en mensajes, aunque el riesgo es bajo).
-- No hay integración directa con sistemas de logging seguro (solo genera mensajes, no los registra).
-- No hay internacionalización (i18n) de mensajes, todo está en español.
-
+- Uso correcto de enumeraciones para categorías, severidad y códigos de error (mejora la mantenibilidad y trazabilidad).
+- Separación clara entre mensajes para usuario y técnicos (buenas prácticas de seguridad y UX).
+- Truncado de valores en contexto para evitar exposición de datos sensibles (cumple CWE-209).
+- No hay logging directo, pero provee funciones para formatear mensajes técnicos (debe integrarse con sistema de logging estructurado).
 **Riesgos:**
-- Si se expone contexto sin sanitizar, podría haber filtrado de datos sensibles en mensajes de error.
-- Si se usa en UI, riesgo bajo de XSS si el mensaje se muestra sin escape.
+- Si el contexto es controlado por el usuario, podría manipular mensajes o sugerencias (riesgo bajo, CWE-117).
+- No hay soporte multilenguaje (i18n), lo que limita la escalabilidad internacional.
 
-**Recomendaciones:**
-- Documentar que el contexto debe ser validado/sanitizado si proviene de entrada de usuario.
-- Considerar integración con sistema de logging seguro para errores técnicos.
+- Validar y sanear el contexto recibido antes de personalizar mensajes.
 - Considerar soporte para internacionalización de mensajes.
+- Documentar claramente el uso seguro del contexto en la personalización de mensajes.
 
 **Cumplimiento:**
-- MITRE CWE: Cumple (CWE-209, CWE-117)
+- MITRE CWE: Cumple parcialmente (CWE-209, CWE-117, CWE-778)
 - OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Cumple (manejo de errores, documentación, separación de mensajes usuario/técnico)
-
----
-
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, separación de mensajes, documentación)
 ## contextual_error_system.py
 
-**Resumen:**
-Sistema avanzado de gestión y visualización de errores contextualizados, con integración a PyQt6 para mostrar diálogos interactivos, sugerencias, detalles técnicos y acciones (ayuda, reintentar). Catálogo centralizado de errores por categoría, severidad y código.
 
 **Hallazgos:**
-- Uso de dataclasses y enums para estructurar errores y severidad.
-- Catálogo extensible y centralizado de errores, con plantillas de mensajes y sugerencias.
-- Integración con UI (PyQt6) para mostrar errores de forma amigable y contextual.
-- Permite handlers personalizados y registro de historial de errores.
-- No hay hardcodeo de datos sensibles ni uso de funciones peligrosas.
-- Uso de print para algunas acciones (ayuda, retry) en vez de logging seguro (mejorable).
-- No hay validación/sanitización de datos de contexto (si se usa con datos externos, podría haber injection en mensajes).
-- No hay internacionalización (i18n) de mensajes, todo está en español.
-- No hay integración directa con sistemas de logging seguro (solo genera mensajes, no los registra).
+- Catálogo centralizado y extensible de errores por categoría y severidad.
+- Historial y estadísticas de errores para monitoreo y auditoría.
+- Soporte para handlers personalizados y señales Qt para integración con UI.
+- Mensajes y sugerencias parametrizables con datos de contexto.
+- Logging seguro configurado, pero no se observa integración directa con logs estructurados (solo print en algunos handlers).
+- No hay validación/sanitización de datos de contexto antes de formatear mensajes (riesgo bajo de manipulación de UI o logs).
+- No hay internacionalización (i18n), solo español.
 
-**Riesgos:**
-- Si se expone contexto sin sanitizar, podría haber filtrado de datos sensibles en mensajes de error.
-- Si se usa en UI, riesgo bajo de XSS si el mensaje se muestra sin escape.
-- Uso de print para acciones puede exponer información en consola/logs.
 
 **Recomendaciones:**
-- Documentar que el contexto debe ser validado/sanitizado si proviene de entrada de usuario.
-- Usar logging seguro en vez de print para acciones y errores.
-- Considerar soporte para internacionalización de mensajes.
-- Considerar integración con sistema de logging seguro para errores técnicos.
-
+- Considerar soporte para internacionalización de mensajes y UI.
+- Documentar claramente el uso seguro del contexto y handlers personalizados.
 **Cumplimiento:**
-- MITRE CWE: Cumple (CWE-209, CWE-117)
 - OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Cumple (manejo de errores, documentación, separación de mensajes usuario/técnico, integración UI)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, separación de mensajes, documentación, integración UI)
 
 ---
 
 ## data_sanitizer.py
 
-**Resumen:**
-Clase para sanitización de datos: cadenas, SQL, numéricos y diccionarios. Aplica patrones para prevenir XSS y SQLi, y utiliza logging para advertencias.
-
-**Hallazgos:**
-- Buen uso de patrones para XSS y SQLi, aunque no exhaustivos.
-- Logging de advertencias ante posibles inyecciones detectadas.
-- Sanitización recursiva en diccionarios.
-- No hay soporte para internacionalización.
-- No hay control de acceso ni validación de origen de datos.
-- No hay pruebas unitarias incluidas.
-
+- Sanitización robusta de texto, SQL, HTML, emails y nombres de archivo (mitiga CWE-79, CWE-89, CWE-116, CWE-20).
+- Remueve caracteres peligrosos, limita longitud y escapa HTML.
+- Validación de emails y teléfonos con expresiones regulares.
+- Limpieza recursiva de diccionarios y listas.
+- No hay soporte para listas blancas/permitidas (solo listas negras).
 **Riesgos:**
-- Patrones de XSS/SQLi pueden ser evadidos por payloads avanzados.
-- Logging puede exponer datos sensibles si no se controla adecuadamente.
-- No hay manejo de encoding explícito para todos los casos.
+- La sanitización de SQL no es suficiente si se usan queries dinámicos (debe usarse siempre parámetros en queries).
+- La sanitización de HTML puede ser evadida por técnicas avanzadas (considerar librerías como `bleach` para mayor robustez).
+- No hay logging de intentos de entrada maliciosa (útil para monitoreo y alertas).
 
 **Recomendaciones:**
-- Revisar y actualizar patrones de XSS/SQLi periódicamente.
-- Añadir pruebas unitarias.
-- Limitar información sensible en logs.
-- Documentar limitaciones y casos no cubiertos.
-
+- Documentar que la sanitización de SQL es solo una capa y no reemplaza el uso de parámetros.
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-79, CWE-89, CWE-117)
-- OWASP: Parcial (A1:2017-Inyección, A6:2017-Logging)
-- MIT Secure Coding: Parcial
+- MITRE CWE: Cumple parcialmente (CWE-20, CWE-79, CWE-89, CWE-116)
 
 ---
-
 ## database.py
-
 **Resumen:**
-Alias para `database_manager.py` para mantener compatibilidad con importaciones existentes. No contiene lógica propia.
+Archivo alias que reexporta todo desde `database_manager.py` para mantener compatibilidad con imports existentes.
 
 **Hallazgos:**
-- Solo reexporta clases y funciones de `database_manager.py`.
-- Sin riesgos ni recomendaciones específicas.
+- No contiene lógica propia, solo reexporta símbolos.
+- No hay riesgos de seguridad ni problemas de calidad en este archivo.
+
+**Recomendaciones:**
+- Mantener documentación clara sobre el propósito de alias y compatibilidad.
 
 **Cumplimiento:**
-- MITRE CWE: N/A
-- OWASP: N/A
-- MIT Secure Coding: N/A
+- Sin riesgos ni incumplimientos.
 
----
 
 ## database_manager.py
 
 **Resumen:**
-Gestor avanzado de base de datos con pool de conexiones, manejo seguro de transacciones, logging, y control de errores. Usa SQLite3, threading, y context managers.
+Gestor avanzado de base de datos con pool de conexiones, manejo seguro de concurrencia, logging, transacciones y control de errores. Utiliza SQLite3 y threading para optimizar el acceso concurrente.
 
 **Hallazgos:**
-- Pool de conexiones con control de concurrencia y reintentos.
-- Manejo robusto de errores y logging seguro (sin print).
-- Uso de PRAGMA para optimización y seguridad de SQLite.
-- Transacciones atómicas y rollback ante errores.
-- No hay hardcodeo de datos sensibles ni uso de funciones peligrosas.
-- No hay validación de queries (asume que las queries y parámetros son seguros).
-- No hay cifrado de datos en reposo (propio de SQLite, no del manager).
-- No hay métricas de uso ni monitoreo de conexiones (mejorable para sistemas grandes).
-
+- No hay validación/sanitización de queries ni parámetros (depende del uso externo, riesgo CWE-89 si se usa mal).
+- No hay soporte para cifrado de base de datos ni conexiones (limitación de SQLite3).
 **Riesgos:**
-- Si se usan queries sin parametrizar, riesgo de SQLi (el manager soporta parámetros, pero depende del uso correcto).
-- Si se usa en entornos multi-thread intensivos, el pool puede agotarse (configurable).
-
+- Si se usan queries construidas dinámicamente sin sanitización, riesgo de inyección SQL (CWE-89).
+- No hay cifrado de datos en reposo ni en tránsito (limitación de SQLite3, considerar para entornos críticos).
 **Recomendaciones:**
-- Documentar que siempre se deben usar parámetros en queries.
-- Considerar agregar métricas de uso y alertas para el pool en sistemas grandes.
-- Considerar integración con cifrado de base de datos si se requiere mayor seguridad.
+- Documentar claramente que los queries y parámetros deben ser validados/saneados antes de usarse.
+- Considerar integración con sistemas de auditoría y monitoreo de acceso para entornos sensibles.
+- Evaluar alternativas con cifrado si se requiere mayor seguridad.
 
 **Cumplimiento:**
-- MITRE CWE: Cumple (CWE-89, CWE-400, CWE-209)
-- OWASP: Cumple parcialmente (A1:2017-Injection, A9:2017-Using Components with Known Vulnerabilities)
-- MIT Secure Coding: Cumple (manejo de errores, concurrencia, documentación)
-
----
-
+- MITRE CWE: Cumple parcialmente (CWE-89, CWE-778)
 ## demo_data_generator.py
 
-**Resumen:**
-Módulo para generación de datos demo para pruebas y desarrollo. Cubre inventario, obras, pedidos, logística, usuarios y compras. Utiliza generación aleatoria, fechas, y datos simulados.
 
 **Hallazgos:**
-- No hay entrada de usuario ni exposición directa a datos sensibles; el riesgo de seguridad es bajo.
-- Utiliza funciones de randomización y datetime para simular datos realistas.
-- No hay validación de unicidad en campos que podrían requerirla (ej: emails, usernames, números de orden/pedido), aunque para demo no es crítico.
-- Los datos generados pueden contener combinaciones irreales o inconsistentes (ej: fechas de entrega antes de pedido, usuarios inactivos con accesos recientes, etc.).
-- No hay sanitización de datos, pero no es relevante ya que no hay entrada externa.
-- El método `es_modo_demo` depende de una variable de entorno, lo cual es adecuado para separar ambientes.
-- No hay logging ni manejo de errores explícito, pero el riesgo es bajo por el contexto de uso.
-- No hay cifrado ni protección de datos, pero no es necesario para datos demo.
-- No hay documentación sobre el alcance de los datos generados (volumen, variedad, límites), lo que puede afectar pruebas de carga o escenarios edge.
+- No utiliza datos sensibles ni reales, solo ejemplos ficticios.
+- No hay logging de generación ni control de uso (no crítico para datos demo).
+- Permite detección de modo demo por variable de entorno.
+- No hay soporte para generación de datos maliciosos o edge cases para pruebas de seguridad.
 
 **Riesgos:**
-- Uso en ambientes productivos podría poblar la base con datos irreales o inconsistentes.
-- Si se reutilizan emails/usernames generados, podría haber colisiones en pruebas automatizadas.
-- No hay control de volumen, lo que puede generar grandes cantidades de datos si se invoca repetidamente.
+- Si se reutilizan los datos demo en producción, podría haber confusión o exposición accidental.
+- No hay generación de datos para pruebas de seguridad (inyección, XSS, etc.).
+- Agregar logging opcional para auditoría de uso en entornos de testing.
 
-**Recomendaciones:**
-- Documentar claramente que es solo para ambientes de desarrollo/pruebas.
-- Considerar agregar validaciones opcionales de unicidad para ciertos campos si se usa en pruebas automatizadas.
-- Añadir controles de volumen y variedad para evitar sobrecarga accidental.
-- Agregar logging mínimo para trazabilidad en pruebas complejas.
-- Documentar posibles inconsistencias en los datos generados.
-
-**Cumplimiento:**
-- MITRE CWE: Cumple (no hay exposición a CWE relevantes en contexto demo)
-- OWASP: Cumple (no hay riesgos de A1-A10 en contexto demo)
-- MIT Secure Coding: Cumple (no hay entrada/salida insegura, ni manejo de datos sensibles)
-
+- OWASP: Cumple (no expone datos reales, útil para testing seguro)
+- MIT Secure Coding: Cumple (no hay manipulación de datos externos)
 ---
-
 ## demo_mode.py
 
 **Resumen:**
-Módulo que implementa el "Modo Demo" para la aplicación, permitiendo simular datos y autenticación cuando no hay conexión a la base de datos o para pruebas. Provee datos demo para usuarios, obras, inventario, compras, logística y estadísticas, y permite activar/desactivar el modo demo mediante variable de entorno.
 
 **Hallazgos:**
-- No hay entrada de usuario directa en la generación de datos, pero sí en la autenticación demo (usuario/contraseña).
-- Las credenciales demo están hardcodeadas (admin/admin, supervisor/supervisor, etc.), lo cual es aceptable solo en contexto demo, pero debe evitarse en producción.
-- No hay cifrado ni hash de contraseñas demo (solo texto plano), aceptable solo para pruebas.
-- No hay logging ni manejo explícito de errores, aunque el riesgo es bajo por el contexto de uso.
-- Los datos generados pueden ser irreales o inconsistentes (fechas, emails, presupuestos, etc.), pero es esperable en modo demo.
-- No hay validación de unicidad en emails, usernames, códigos, etc., lo que puede causar colisiones en pruebas automatizadas.
-- El método `get_demo_data` permite filtros básicos (limit, estado), pero no hay sanitización de los parámetros recibidos.
-- El modo demo se activa/desactiva por variable de entorno y métodos utilitarios, lo cual es adecuado.
-- No hay protección contra uso accidental en producción (ej: advertencia o log si se activa en entorno real).
-- No hay documentación explícita sobre los riesgos de usar este módulo fuera de desarrollo/pruebas.
-
-**Riesgos:**
-- Si se activa accidentalmente en producción, puede exponer datos irreales o permitir acceso con credenciales triviales.
-- Las credenciales hardcodeadas pueden ser copiadas a otros entornos por error.
-- Falta de logging dificulta la trazabilidad de uso del modo demo.
-- Colisiones de datos en pruebas automatizadas por falta de unicidad.
-
-**Recomendaciones:**
-- Documentar claramente que es solo para desarrollo/pruebas y advertir sobre riesgos en producción.
-- Agregar logging mínimo para trazabilidad de activación/desactivación y autenticaciones demo.
-- Considerar advertencia o protección adicional si se activa en entorno no seguro.
-- Opcional: agregar validaciones de unicidad para pruebas automatizadas.
-- No reutilizar este código en módulos productivos.
-
+- Generación y provisión de datos demo realistas para usuarios, obras, inventario, compras y logística.
+- No hay generación de datos para pruebas de edge cases o seguridad.
+- No hay advertencia explícita si se usan datos demo en producción.
+- Si se habilita el modo demo en producción, puede haber exposición accidental de datos ficticios o confusión operativa.
+- No hay logging/auditoría de uso del modo demo (útil para detectar activaciones accidentales o maliciosas).
+- Considerar advertencias explícitas en la UI cuando el modo demo está activo.
+- Agregar generación de datos para pruebas de edge cases y seguridad.
 **Cumplimiento:**
-- MITRE CWE: Cumple en contexto demo, pero CWE-798 (hardcoded credentials) y CWE-312 (plaintext storage) serían críticos en producción.
-- OWASP: Cumple en contexto demo, pero A2:2017-Broken Authentication sería crítico en producción.
-- MIT Secure Coding: Cumple solo en contexto demo.
-
----
-
+- MITRE CWE: Sin riesgos directos (datos controlados, no sensibles)
 ## diagnostic_widget.py
 
-**Resumen:**
-Widget PyQt6 para diagnóstico visual de errores en módulos, mostrando información detallada, diagnóstico automático, soluciones sugeridas y acciones (reintentar, corrección automática, reporte). Incluye análisis de archivos, sintaxis, imports y dependencias, y permite ejecutar scripts de corrección y generar reportes.
-
 **Hallazgos:**
-- El widget expone información detallada de errores, incluyendo tracebacks y rutas de archivos, útil para debugging pero potencialmente sensible si se muestra a usuarios finales.
-- Ejecuta scripts externos (`corregir_decoradores.py`, `corregir_sintaxis.py`) mediante `subprocess`, lo que puede ser riesgoso si no se controla el entorno o los scripts.
-- No hay validación de los datos de entrada (`error_info`), aunque el riesgo es bajo por el contexto de uso.
-- El reporte de error se guarda en archivos locales, lo que puede exponer información sensible si no se gestiona adecuadamente.
-- El diagnóstico automático verifica existencia y sintaxis de archivos clave, pero asume estructura fija de módulos.
-- No hay logging explícito de las acciones del usuario (reintentos, correcciones, reportes).
-- El widget asume que los scripts de corrección existen y son seguros; no hay validación previa.
-- El uso de `os.chdir` y ejecución de scripts puede afectar el entorno global de la app si no se maneja con cuidado.
-- No hay control de acceso: cualquier usuario con acceso al widget puede ejecutar correcciones o generar reportes.
-- El código es robusto ante ausencia de entorno Qt, permitiendo fallback seguro.
-
-**Riesgos:**
-- Exposición de información sensible (tracebacks, rutas, detalles de error) a usuarios no autorizados.
-- Ejecución de scripts externos sin validación puede ser vector de ataque si el entorno es comprometido.
-- Archivos de reporte pueden contener datos sensibles si no se protegen adecuadamente.
-- Cambios de directorio global (`os.chdir`) pueden afectar otros procesos si se usa en entornos multihilo.
+- Uso de subprocess para ejecutar scripts de corrección (riesgo de seguridad si no se controla el input).
+- No hay validación/sanitización de los datos de error antes de mostrarlos (riesgo bajo de XSS en UI, CWE-79).
+- El reporte de error se guarda en archivo local, pero no hay envío automático ni integración con sistemas de tickets.
+- No hay internacionalización (i18n), solo español.
 
 **Recomendaciones:**
-- Limitar la exposición de información sensible solo a usuarios autorizados (desarrolladores, soporte).
-- Validar la existencia y seguridad de los scripts antes de ejecutarlos.
-- Añadir logging de acciones críticas (corrección, reporte, reintento).
-- Documentar los riesgos de exposición de información y ejecución de scripts.
-- Considerar control de acceso para acciones críticas.
-- Evitar cambiar el directorio global si es posible; usar rutas absolutas.
-
+- Considerar soporte para internacionalización de la UI.
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-200, CWE-250, CWE-732, CWE-78 si scripts no son seguros)
-- OWASP: Parcial (A5:2017-Broken Access Control, A6:2017-Sensitive Data Exposure, A1:2017-Command Injection si scripts no son seguros)
-- MIT Secure Coding: Parcial (exposición de información, ejecución de comandos externos)
-
----
-
-## dialogs.py
-
-**Resumen:**
-Módulo utilitario para mostrar diálogos de información, advertencia, error, pregunta y confirmación en PyQt6. Proporciona funciones con títulos personalizados y predeterminados, y maneja errores mostrando mensajes en consola.
-
-**Hallazgos:**
-- El módulo utiliza correctamente los diálogos estándar de PyQt6 y centraliza la gestión de mensajes.
-- El manejo de errores en los diálogos es básico: si falla la creación del diálogo, imprime el error y el mensaje en consola (no usa logging estructurado).
-- No hay validación ni sanitización de los textos recibidos, aunque el riesgo es bajo por el contexto de uso.
-- No hay control de acceso: cualquier parte de la app puede invocar diálogos.
-- No hay soporte para internacionalización (i18n) en los títulos/mensajes predeterminados.
-- No hay logging de las acciones del usuario (aceptar/cancelar, etc.).
-- El uso de `print` para errores puede exponer mensajes en entornos no controlados.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-
-**Riesgos:**
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-- El uso de `print` para errores puede dificultar la trazabilidad y el monitoreo en producción.
-- No hay registro de acciones del usuario en los diálogos (auditoría limitada).
-
-**Recomendaciones:**
-- Usar logging estructurado en vez de `print` para errores.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Considerar soporte para internacionalización en títulos/mensajes.
-- Añadir logging opcional de acciones del usuario si se requiere trazabilidad.
-- Validar que exista una instancia de QApplication antes de mostrar diálogos.
-
-**Cumplimiento:**
-- MITRE CWE: Cumple (no hay exposición a CWE relevantes en contexto GUI controlado)
-- OWASP: Cumple (no hay riesgos directos en contexto GUI)
-- MIT Secure Coding: Cumple parcialmente (manejo de errores mejorable)
-
----
-
-## dialog_utils.py
-
-**Resumen:**
-Módulo de utilidades para la creación de diálogos CRUD reutilizables en PyQt6. Incluye formularios dinámicos, validación, confirmaciones de eliminación y gestión de diálogos de creación, edición y borrado, con soporte para configuración flexible y callbacks.
-
-**Hallazgos:**
-- El diseño es modular y reutilizable, facilitando la creación de formularios y diálogos estándar.
-- La validación de campos requeridos es básica (solo presencia, no formato ni tipo avanzado).
-- No hay sanitización ni validación avanzada de los datos ingresados (ej: emails, números, etc.).
-- El manejo de errores en callbacks muestra mensajes al usuario, pero no hay logging estructurado de errores ni acciones.
-- No hay control de acceso: cualquier parte de la app puede invocar diálogos CRUD.
-- No hay soporte para internacionalización (i18n) en los textos predeterminados.
-- El uso de `show_error`, `show_success`, etc., depende de la robustez de `message_system`.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- El tamaño de los diálogos es fijo por defecto, lo que puede afectar usabilidad en pantallas pequeñas.
-- No hay registro de acciones del usuario (auditoría limitada).
-
-**Riesgos:**
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-- Falta de validación avanzada puede permitir datos inconsistentes o inseguros en formularios.
-- No hay registro de acciones ni errores para auditoría o debugging.
-
-**Recomendaciones:**
-- Añadir validaciones avanzadas y sanitización de datos según el tipo de campo.
-- Usar logging estructurado para errores y acciones críticas.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Considerar soporte para internacionalización en textos predeterminados.
-- Añadir logging opcional de acciones del usuario si se requiere trazabilidad.
-- Validar que exista una instancia de QApplication antes de mostrar diálogos.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A4:2017-XML External Entities, A6:2017-Sensitive Data Exposure, A8:2017-Insecure Deserialization si se usan datos no validados)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+- MIT Secure Coding: Cumple parcialmente (diagnóstico, manejo de errores, integración UI)
 ---
 
 ## error_handler.py
 
 **Resumen:**
-Módulo centralizado para manejo de errores en Rexus.app. Incluye clase para captura global de excepciones, decoradores para manejo seguro y validación de base de datos, y excepciones personalizadas para conexión, validación y seguridad.
+Sistema centralizado de manejo de errores para la aplicación. Incluye logging estructurado, decoradores para captura segura de errores, excepciones personalizadas y fallback para mostrar errores al usuario.
 
 **Hallazgos:**
-- Utiliza logging estructurado para registrar errores, lo cual es una buena práctica.
-- Captura excepciones globales y muestra mensajes amigables al usuario, con detalles técnicos opcionales.
-- El fallback a `print` si PyQt no está disponible es adecuado para entornos sin GUI.
-- Los decoradores permiten manejo seguro y validación de operaciones críticas.
-- No hay sanitización de mensajes de error antes de mostrarlos (riesgo bajo, pero relevante si el error contiene datos sensibles).
-- No hay soporte para internacionalización en los mensajes de error.
-- No hay control de acceso: cualquier parte de la app puede instalar su propio manejador de errores.
-- No hay logging de auditoría sobre quién ve los detalles técnicos de los errores.
-- El decorador `validate_database_connection` asume que la validación se implementa en el cuerpo de la función.
+- Logging estructurado de errores críticos y excepciones no capturadas.
+- Decoradores para captura de errores en funciones y validación de conexión a base de datos.
+- Excepciones personalizadas para base de datos, validación y seguridad.
+- Fallback para mostrar errores en consola si PyQt6 no está disponible.
+- Instalación de un manejador global de errores (`sys.excepthook`).
+- No hay integración con sistemas de monitoreo externo o alertas automáticas.
+- No hay internacionalización (i18n) de los mensajes de error.
 
 **Riesgos:**
-- Si los mensajes de error contienen datos sensibles, pueden ser expuestos al usuario final.
-- El registro de errores puede crecer rápidamente si no se rota o limita el tamaño de los logs.
-- No hay protección contra sobrescritura del manejador global de errores por otros módulos.
+- Si el logging falla o no está configurado, los errores pueden perderse.
+- No hay notificación automática a soporte o monitoreo externo en caso de errores críticos.
 
 **Recomendaciones:**
-- Sanitizar mensajes de error antes de mostrarlos al usuario.
-- Documentar la necesidad de rotación y protección de logs.
-- Añadir soporte para internacionalización en los mensajes.
-- Considerar logging de auditoría para visualización de errores críticos.
-- Documentar el uso correcto de los decoradores y excepciones personalizadas.
+- Considerar integración con sistemas de monitoreo/alertas para errores críticos.
+- Agregar soporte para internacionalización de mensajes de error.
+- Documentar claramente el uso de los decoradores y excepciones personalizadas.
 
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-209, CWE-778, CWE-200 si se exponen datos sensibles)
-- OWASP: Parcial (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (manejo de errores y logs mejorable)
+- MITRE CWE: Cumple parcialmente (CWE-778, CWE-209)
+- OWASP: Cumple parcialmente (A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, logging estructurado)
 
 ---
 
 ## error_manager.py
 
 **Resumen:**
-Módulo avanzado para gestión contextualizada de errores en Rexus.app. Define catálogos de errores, severidad, tipos, sugerencias, detalles técnicos y utilidades para mostrar mensajes personalizados y validados en la interfaz PyQt6.
+Sistema de gestión de errores contextualizados con catálogo centralizado, tipos, severidad, sugerencias, detalles técnicos y utilidades para mostrar mensajes en la UI. Permite personalización de mensajes y sugerencias según contexto y severidad.
 
 **Hallazgos:**
-- El catálogo de errores permite mensajes claros, sugerencias y detalles técnicos, mejorando la experiencia de usuario y soporte.
-- El sistema soporta personalización de mensajes con datos de contexto y mensajes adicionales.
-- El uso de enums y clases para severidad/tipo/código mejora la mantenibilidad y estandarización.
-- No hay logging estructurado de los errores mostrados ni de las acciones del usuario ante los diálogos.
-- No hay control de acceso: cualquier parte de la app puede mostrar cualquier error, incluso críticos.
-- No hay soporte para internacionalización (i18n) en los mensajes.
-- El catálogo puede crecer y volverse difícil de mantener si no se documenta y versiona adecuadamente.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- Los detalles técnicos y sugerencias pueden exponer información sensible si no se revisan cuidadosamente.
-- No hay registro de errores no catalogados (solo se muestra un mensaje genérico).
+- Catálogo extensible de errores con códigos, títulos, mensajes, sugerencias y detalles técnicos.
+- Utilidades para mostrar errores y validaciones en la UI con PyQt6.
+- Personalización de mensajes y sugerencias usando datos de contexto.
+- Soporte para severidad, tipos y ayuda contextual.
+- No hay logging estructurado de errores mostrados ni auditoría de uso.
+- No hay internacionalización (i18n), solo español.
+- No hay integración con sistemas de monitoreo externo o tickets.
+- No hay validación/sanitización de los datos de contexto antes de usarlos en mensajes (riesgo bajo de manipulación de UI).
 
 **Riesgos:**
-- Exposición accidental de información sensible en detalles técnicos o sugerencias.
-- Falta de logging/auditoría dificulta el seguimiento de errores críticos y su resolución.
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-- El crecimiento descontrolado del catálogo puede dificultar su gestión.
+- Si los datos de contexto provienen de fuentes externas, posible manipulación de mensajes o UI (CWE-79).
+- Los errores solo se muestran en la UI, no quedan registrados para auditoría o monitoreo.
 
 **Recomendaciones:**
-- Añadir logging estructurado de errores mostrados y acciones del usuario.
-- Documentar y versionar el catálogo de errores.
-- Revisar cuidadosamente los detalles técnicos y sugerencias para evitar exposición de datos sensibles.
-- Considerar soporte para internacionalización en los mensajes.
-- Validar que exista una instancia de QApplication antes de mostrar diálogos.
-- Añadir logging opcional de acciones del usuario si se requiere trazabilidad.
+- Validar y sanear los datos de contexto antes de usarlos en mensajes y sugerencias.
+- Agregar logging estructurado de errores mostrados y uso del sistema de errores.
+- Considerar integración con sistemas de monitoreo/tickets y soporte para internacionalización.
+- Documentar claramente el uso seguro de los datos de contexto.
 
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-209, CWE-200, CWE-778 si se exponen datos sensibles)
-- OWASP: Parcial (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (manejo de errores y logs mejorable)
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-778)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, integración UI)
+
+---
+
+## dialogs.py
+
+**Resumen:**
+Sistema de utilidades para mostrar diálogos de información, advertencia, error, pregunta y confirmación de forma consistente usando PyQt6. Incluye funciones con títulos predeterminados y manejo básico de errores.
+
+**Hallazgos:**
+- Uso correcto de QMessageBox para mostrar diálogos modales en la UI.
+- Manejo de excepciones para evitar fallos en la UI si ocurre un error al mostrar el diálogo.
+- Funciones de conveniencia para títulos predeterminados y confirmaciones.
+- No hay logging estructurado de errores al mostrar diálogos (solo print).
+- No hay internacionalización (i18n), solo español.
+- No hay validación/sanitización de los mensajes antes de mostrarlos (riesgo bajo de XSS en UI, CWE-79).
+
+**Riesgos:**
+- Si los mensajes provienen de fuentes externas, posible manipulación de la UI (CWE-79).
+- Los errores al mostrar diálogos solo se imprimen por consola, no quedan registrados para auditoría.
+
+**Recomendaciones:**
+- Validar y sanear los mensajes antes de mostrarlos si provienen de fuentes externas.
+- Agregar logging estructurado de errores al mostrar diálogos.
+- Considerar soporte para internacionalización de los títulos y mensajes.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-778)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, integración UI)
+
+---
+
+## dialog_utils.py
+
+**Resumen:**
+Utilidades avanzadas para diálogos CRUD y formularios reutilizables en PyQt6. Incluye formularios dinámicos, validación, confirmaciones, gestión de diálogos de creación, edición y eliminación, y configuración estándar de formularios.
+
+**Hallazgos:**
+- Implementa formularios dinámicos y reutilizables con validación de campos requeridos.
+- Manejo de errores y mensajes de éxito/fracaso integrados en la UI.
+- Confirmaciones de eliminación y gestión de callbacks para operaciones CRUD.
+- No hay sanitización/validación avanzada de los datos ingresados (solo campos requeridos).
+- No hay logging estructurado de errores ni de operaciones CRUD realizadas.
+- No hay internacionalización (i18n), solo español.
+- No hay control de tipos o formatos avanzados en los datos ingresados (solo validación básica).
+
+**Riesgos:**
+- Si los datos ingresados provienen de usuarios, posible riesgo de XSS o datos maliciosos si no se validan/sanean antes de usarse (CWE-79, CWE-20).
+- Los errores solo se muestran en la UI, no quedan registrados para auditoría.
+
+**Recomendaciones:**
+- Agregar sanitización y validación avanzada de los datos ingresados antes de procesarlos o almacenarlos.
+- Agregar logging estructurado de errores y operaciones CRUD para trazabilidad y auditoría.
+- Considerar soporte para internacionalización de los textos y mensajes.
+- Documentar claramente el uso seguro de los datos ingresados en los formularios.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-20, CWE-79, CWE-778)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (validación básica, integración UI)
 
 ---
 
 ## error_notification_widget.py
 
 **Resumen:**
-Widget visual moderno para mostrar notificaciones de error contextualizadas en PyQt6. Incluye animaciones, sugerencias, detalles técnicos, copiado al portapapeles y gestión de múltiples errores en cola, con integración a un sistema de catálogo de errores.
+Widget visual moderno para mostrar mensajes de error contextualizados en la UI, con soporte para severidad, sugerencias, detalles técnicos, animaciones y notificaciones no intrusivas. Integra señales Qt y utilidades para mostrar, copiar y gestionar errores.
 
 **Hallazgos:**
-- El widget expone información detallada de errores, sugerencias y detalles técnicos, útil para debugging y soporte.
-- Permite copiar detalles técnicos al portapapeles, lo que facilita el reporte pero puede exponer información sensible si no se controla.
-- No hay logging estructurado de los errores mostrados ni de las acciones del usuario (copiar, cerrar, ver detalles).
-- No hay control de acceso: cualquier parte de la app puede mostrar notificaciones de error.
-- No hay soporte para internacionalización (i18n) en los mensajes.
-- El widget asume que el sistema de errores y los códigos están correctamente definidos y disponibles.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- El límite de 3 errores visibles es adecuado, pero no configurable.
-- El widget puede mostrar información sensible si los detalles técnicos/contexto no son revisados cuidadosamente.
-- No hay registro de errores no catalogados (solo se muestra si existe el código).
+- Presentación visual clara y diferenciada por severidad (info, warning, error, crítico).
+- Sugerencias y detalles técnicos accesibles desde la UI.
+- Animaciones y auto-dismiss para mensajes informativos y advertencias.
+- Soporte para copiar detalles técnicos al portapapeles.
+- Manejo de múltiples notificaciones y límite de errores visibles.
+- No hay logging estructurado de errores mostrados ni auditoría de uso.
+- No hay internacionalización (i18n), solo español.
+- No hay validación/sanitización de los datos de error/contexto antes de mostrarlos (riesgo bajo de manipulación de UI).
 
 **Riesgos:**
-- Exposición accidental de información sensible al usuario o al copiar detalles técnicos.
-- Falta de logging/auditoría dificulta el seguimiento de errores críticos y su resolución.
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
+- Si los datos de error/contexto provienen de fuentes externas, posible manipulación de la UI (CWE-79).
+- Los errores solo se muestran en la UI, no quedan registrados para auditoría o monitoreo.
 
 **Recomendaciones:**
-- Añadir logging estructurado de errores mostrados y acciones del usuario.
-- Revisar cuidadosamente los detalles técnicos/contexto antes de exponerlos.
-- Considerar soporte para internacionalización en los mensajes.
-- Validar que exista una instancia de QApplication antes de mostrar notificaciones.
-- Documentar el límite de errores visibles y hacerlo configurable si es necesario.
-- Añadir logging opcional de acciones del usuario si se requiere trazabilidad.
+- Validar y sanear los datos de error/contexto antes de mostrarlos en la UI.
+- Agregar logging estructurado de errores mostrados y uso del widget.
+- Considerar soporte para internacionalización de los textos y mensajes.
+- Documentar claramente el uso seguro de los datos de contexto.
 
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-209, CWE-200, CWE-778 si se exponen datos sensibles)
-- OWASP: Parcial (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (manejo de errores y logs mejorable)
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-778)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, integración UI)
 
 ---
 
 ## feedback_manager.py
 
 **Resumen:**
-Gestor centralizado de feedback visual para PyQt6, integrado con el sistema de temas y logger. Permite mostrar mensajes, confirmaciones y estados visuales consistentes en toda la aplicación, con soporte para estilos dinámicos, señales y logging.
+Sistema centralizado para feedback visual, integrado con el sistema de temas y señales Qt. Permite mostrar mensajes, confirmaciones y estados visuales consistentes en toda la aplicación, con soporte para estilos dinámicos y logging.
 
 **Hallazgos:**
-- El sistema utiliza logging estructurado para registrar eventos y errores de feedback.
-- Integra señales Qt para notificar la visualización y ocultamiento de mensajes.
-- El diseño es flexible y soporta integración con temas personalizados y fallback seguro.
-- El manejo de errores en la visualización de mensajes es robusto, con fallback a QMessageBox básico.
-- No hay validación ni sanitización de los textos recibidos, aunque el riesgo es bajo por el contexto de uso.
-- No hay soporte para internacionalización (i18n) en los mensajes predeterminados.
-- No hay control de acceso: cualquier parte de la app puede mostrar mensajes de feedback.
-- El sistema depende de la robustez de los temas y el logger; si fallan, puede degradar la experiencia.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- No hay registro de acciones del usuario ante los mensajes (aceptar, cancelar, etc.).
+- Integración avanzada con temas y estilos personalizados para cada tipo de mensaje (info, success, warning, error).
+- Uso de señales Qt para notificar eventos de feedback.
+- Logging estructurado de eventos de feedback y errores al mostrar mensajes.
+- Fallback seguro si ocurre un error al mostrar el mensaje.
+- No hay internacionalización (i18n), solo español.
+- No hay validación/sanitización de los mensajes antes de mostrarlos (riesgo bajo de XSS en UI, CWE-79).
+- No hay auditoría de uso de feedback ni integración con sistemas externos de monitoreo.
 
 **Riesgos:**
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-- Falta de validación avanzada puede permitir mensajes inconsistentes o inseguros.
-- No hay registro de acciones del usuario para auditoría o debugging.
+- Si los mensajes provienen de fuentes externas, posible manipulación de la UI (CWE-79).
+- Los eventos de feedback solo quedan en logs locales, no hay monitoreo externo.
 
 **Recomendaciones:**
-- Añadir validaciones y sanitización de los textos recibidos.
-- Considerar soporte para internacionalización en los mensajes predeterminados.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Añadir logging opcional de acciones del usuario si se requiere trazabilidad.
-- Validar que exista una instancia de QApplication antes de mostrar mensajes.
+- Validar y sanear los mensajes antes de mostrarlos si provienen de fuentes externas.
+- Considerar soporte para internacionalización de los textos y mensajes.
+- Documentar claramente el uso seguro de los datos en los mensajes de feedback.
+- Considerar integración con sistemas de monitoreo/auditoría para eventos críticos.
 
 **Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-778)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, integración UI, logging)
+
+---
+
+# Auditoría de dependencias: requirements.txt (08/08/2025)
 
 ---
 
 ## format_utils.py
-
-**Resumen:**
-Módulo de utilidades para formateo consistente de datos (moneda, fechas, números, texto, estados, tablas) en toda la aplicación. Incluye formateadores especializados y funciones de conveniencia para PyQt6.
-
-**Hallazgos:**
-- El diseño es modular y cubre la mayoría de los casos de formateo requeridos en aplicaciones empresariales.
-- El manejo de errores en el formateo es robusto: retorna valores por defecto ante errores de conversión.
-- No hay validación ni sanitización de los datos de entrada (ej: strings arbitrarios, datos de usuario), aunque el riesgo es bajo por el contexto de uso.
-- No hay soporte para internacionalización (i18n) en los formatos de fecha, moneda, etc.
-- El formateo de fechas asume formatos ISO y puede fallar con formatos no estándar.
-- El formateo de teléfonos está adaptado a Argentina, lo que puede limitar la reutilización internacional.
-- No hay logging de errores de formateo (solo fallback a valores por defecto).
-- No hay control de acceso: cualquier parte de la app puede invocar los formateadores.
-- No hay registro de acciones del usuario ni auditoría sobre el uso de los formateadores.
-
-**Riesgos:**
-- Si se usan datos no validados, pueden aparecer resultados inesperados o inconsistentes.
-- Falta de soporte i18n puede causar confusión en usuarios internacionales.
-- No hay registro de errores de formateo para debugging o auditoría.
-
-**Recomendaciones:**
-- Añadir validaciones y sanitización de los datos de entrada.
-- Considerar soporte para internacionalización en formatos y textos.
-- Añadir logging opcional de errores de formateo si se requiere trazabilidad.
-- Documentar las limitaciones de los formateadores (ej: teléfonos, fechas).
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
 ---
 
-## form_styles.py
-
-**Resumen:**
-Módulo de estilos unificados para formularios en PyQt6. Proporciona estilos CSS, feedback visual de validación, animaciones y utilidades para configurar widgets de formularios con una apariencia y experiencia consistente.
-
-**Hallazgos:**
-- El sistema centraliza estilos y animaciones, facilitando la coherencia visual y la mantenibilidad.
-- El feedback visual de validación es claro y configurable por estado (válido, inválido, advertencia, neutro).
-- El uso de propiedades CSS y animaciones mejora la experiencia de usuario.
-- No hay validación ni sanitización de los textos recibidos para mensajes de feedback.
-- No hay soporte para internacionalización (i18n) en los textos predeterminados.
-- No hay logging de errores ni de acciones del usuario (cambios de estado, animaciones, etc.).
-- No hay control de acceso: cualquier parte de la app puede aplicar estilos y animaciones.
-- El sistema depende de la correcta estructura de los widgets y layouts para insertar feedback.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-
-**Riesgos:**
-- Si se usan textos no validados, pueden aparecer mensajes inconsistentes o inseguros.
-- Si la estructura del widget/layout no es la esperada, el feedback visual puede no mostrarse correctamente.
-- No hay registro de errores de estilos o animaciones para debugging o auditoría.
-
-**Recomendaciones:**
-- Añadir validaciones y sanitización de los textos de feedback.
-- Considerar soporte para internacionalización en los textos predeterminados.
-- Añadir logging opcional de errores de estilos/animaciones si se requiere trazabilidad.
-- Documentar las dependencias de estructura de widgets y layouts.
-- Validar que exista una instancia de QApplication antes de aplicar estilos/animaciones.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## sql_script_loader.py
 ---
 
-## form_validators.py
-
-**Resumen:**
-Módulo de validación de formularios para PyQt6. Proporciona validadores comunes (obligatorio, email, teléfono, número, fecha, longitud, dirección, código de producto) con feedback visual integrado y gestor para validaciones de formularios completos.
-
-**Hallazgos:**
-- El sistema cubre validaciones típicas de formularios y aplica estilos visuales según el resultado.
-- El feedback visual es claro y configurable, mejorando la experiencia de usuario.
-- El diseño es flexible y permite agregar validaciones personalizadas.
-- No hay logging de errores de validación ni de acciones del usuario (errores, validaciones fallidas, etc.).
-- No hay soporte para internacionalización (i18n) en los mensajes de error.
-- No hay sanitización avanzada de los datos validados (solo formato y presencia).
-- El sistema depende de la robustez de los widgets y layouts para aplicar estilos.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- No hay control de acceso: cualquier parte de la app puede agregar validaciones.
-
-**Riesgos:**
-- Si se usan datos no validados, pueden aparecer resultados inesperados o inconsistentes.
-- No hay registro de errores de validación para debugging o auditoría.
-- Si la estructura del widget/layout no es la esperada, el feedback visual puede no mostrarse correctamente.
-
-**Recomendaciones:**
-- Añadir logging opcional de errores de validación y acciones del usuario si se requiere trazabilidad.
-- Considerar soporte para internacionalización en los mensajes de error.
-- Documentar las dependencias de estructura de widgets y layouts.
-- Validar que exista una instancia de QApplication antes de aplicar estilos.
-- Añadir sanitización avanzada si se requiere mayor seguridad.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## sql_security.py
 ---
 
-## icon_loader.py
-
-**Resumen:**
-Módulo utilitario para cargar iconos SVG desde la carpeta `icons` usando PyQt6. Permite especificar el nombre y tamaño del icono, devolviendo un icono por defecto si no se encuentra el archivo.
-
-**Hallazgos:**
-- El sistema es simple y cumple su función básica de carga de iconos.
-- No hay validación ni sanitización del nombre del icono recibido (riesgo bajo, pero relevante si hay entrada de usuario).
-- No hay logging de errores si el icono no se encuentra o falla la carga.
-- No hay soporte para rutas absolutas ni subcarpetas de iconos.
-- No hay control de acceso: cualquier parte de la app puede solicitar iconos arbitrarios.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- No hay soporte para formatos de icono alternativos (solo SVG).
-
-**Riesgos:**
-- Si se usa con nombres de icono no validados, podría intentar acceder a rutas no deseadas.
-- No hay registro de intentos fallidos de carga de iconos para debugging o auditoría.
-
-**Recomendaciones:**
-- Añadir validación/sanitización del nombre del icono si hay entrada externa.
-- Añadir logging opcional de errores de carga de iconos.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Considerar soporte para rutas absolutas y subcarpetas.
-- Añadir soporte para otros formatos de icono si es necesario.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-22 si no se valida el nombre, CWE-778)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## sql_query_manager.py
 ---
 
-## intelligent_cache.py
-
-**Resumen:**
-Sistema de caché inteligente con TTL y política LRU para mejorar el rendimiento de consultas frecuentes. Incluye decorador para cachear funciones, utilidades para invalidar y obtener estadísticas, y manejo de tamaño máximo y expiración.
-
-**Hallazgos:**
-- El sistema implementa TTL y LRU correctamente, lo que mejora la eficiencia y control de memoria.
-- El decorador `cached_query` facilita la integración de caché en funciones críticas.
-- No hay logging de errores ni de operaciones de caché (aciertos, fallos, invalidaciones, etc.).
-- No hay validación ni sanitización de los argumentos usados para generar claves de caché (riesgo bajo, pero relevante si hay entrada de usuario).
-- No hay protección contra uso concurrente (no es thread-safe).
-- No hay soporte para persistencia de caché (solo en memoria).
-- No hay control de acceso: cualquier parte de la app puede invalidar o consultar el caché global.
-- No hay protección contra uso en entornos sin recursos suficientes (puede crecer hasta el límite de max_size).
-
-**Riesgos:**
-- Si se usan argumentos no validados, pueden generarse claves de caché inesperadas o colisiones.
-- No hay registro de operaciones para debugging o auditoría.
-- En entornos multihilo, puede haber condiciones de carrera o corrupción de caché.
-- El crecimiento del caché puede impactar la memoria si max_size es alto y no se monitorea.
-
-**Recomendaciones:**
-- Añadir logging opcional de operaciones de caché (aciertos, fallos, invalidaciones).
-- Añadir validación/sanitización de los argumentos usados para claves de caché si hay entrada externa.
-- Documentar que no es thread-safe y considerar protección si se usa en entornos concurrentes.
-- Considerar soporte para persistencia si se requiere durabilidad.
-- Documentar el impacto de max_size y monitorear el uso de memoria.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## smart_tooltips.py
 ---
 
-## keyboard_help.py
-
-**Resumen:**
-Widget de ayuda para atajos de teclado en PyQt6. Muestra una ventana emergente con los atajos disponibles, permite imprimir/exportar la lista y crear etiquetas rápidas de ayuda contextual.
-
-**Hallazgos:**
-- El sistema facilita la accesibilidad y usabilidad al documentar atajos de teclado de forma visual y centralizada.
-- El diseño es modular y permite integración con otros managers de navegación.
-- No hay logging de acciones del usuario (apertura, impresión, cierre, etc.).
-- No hay validación ni sanitización de los atajos recibidos (riesgo bajo, pero relevante si hay entrada de usuario).
-- No hay soporte para internacionalización (i18n) en los textos predeterminados.
-- No hay control de acceso: cualquier parte de la app puede mostrar la ayuda de atajos.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- La función de impresión es solo un stub (print en consola), no implementa exportación real.
-
-**Riesgos:**
-- Si se usan atajos no validados, pueden aparecer resultados inesperados o inconsistentes.
-- No hay registro de uso para auditoría o debugging.
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-
-**Recomendaciones:**
-- Añadir logging opcional de acciones del usuario (apertura, impresión, cierre).
-- Añadir validación/sanitización de los atajos recibidos si hay entrada externa.
-- Considerar soporte para internacionalización en los textos predeterminados.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Implementar exportación real de atajos si es necesario.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## security.py
 ---
 
-## keyboard_navigation.py
-
-**Resumen:**
-Sistema completo de navegación por teclado para PyQt6. Incluye gestión de atajos estándar, orden de tabulación, navegación en tablas, integración con accesibilidad y utilidades para configurar navegación y atajos CRUD en widgets.
-
-**Hallazgos:**
-- El sistema cubre la mayoría de los casos de navegación y accesibilidad requeridos en aplicaciones empresariales.
-- El diseño es modular y permite integración y extensión sencilla.
-- No hay logging de acciones del usuario (navegación, uso de atajos, errores, etc.).
-- No hay validación ni sanitización de los atajos o acciones registradas (riesgo bajo, pero relevante si hay entrada de usuario).
-- No hay soporte para internacionalización (i18n) en los textos predeterminados.
-- No hay control de acceso: cualquier parte de la app puede registrar atajos y acciones.
-- No hay protección contra uso en entornos sin GUI (puede fallar si no hay QApplication activa).
-- El sistema depende de la correcta estructura de los widgets y layouts para aplicar navegación y accesibilidad.
-- La integración con lectores de pantalla es solo un stub (print), no implementa APIs reales.
-
-**Riesgos:**
-- Si se usan atajos o acciones no validadas, pueden aparecer resultados inesperados o inconsistentes.
-- No hay registro de uso para auditoría o debugging.
-- Si se usa en scripts sin entorno gráfico, puede lanzar excepciones no controladas.
-- Si la estructura del widget/layout no es la esperada, la navegación puede no funcionar correctamente.
-
-**Recomendaciones:**
-- Añadir logging opcional de acciones del usuario (navegación, uso de atajos, errores).
-- Añadir validación/sanitización de los atajos y acciones si hay entrada externa.
-- Considerar soporte para internacionalización en los textos predeterminados.
-- Documentar la necesidad de entorno gráfico para su uso.
-- Documentar las dependencias de estructura de widgets y layouts.
-- Implementar integración real con APIs de accesibilidad si es necesario.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-20, CWE-200, CWE-778 si se usan datos no validados)
-- OWASP: Parcial (A10:2017-Insufficient Logging & Monitoring)
-- MIT Secure Coding: Parcial (validación y manejo de errores mejorables)
-
+## security_backup.py
 ---
 
-# AUDITORÍA MÓDULO API
-
-## server.py
-
-**Resumen:**
-Implementa una API REST robusta usando FastAPI, con autenticación JWT opcional, rate limiting, logging, cache, backup y endpoints de inventario. Incluye middleware de seguridad y métricas.
-
-**Hallazgos:**
-- Uso correcto de FastAPI, Pydantic y middlewares de seguridad (CORS, TrustedHost).
-- Rate limiting básico por IP, pero no distribuido (no protege en despliegues multi-nodo).
-- Logging detallado de requests y errores, pero posible exposición de datos sensibles si no se filtra.
-- Autenticación JWT opcional, pero la verificación de credenciales es solo de ejemplo (usuarios hardcodeados, sin hash).
-- No hay protección contra fuerza bruta en login.
-- No hay validación profunda de parámetros en endpoints (ej: where_clause en inventario).
-- Uso de cache y backup bien integrados.
-- No hay pruebas unitarias incluidas.
-- No hay internacionalización.
-- No hay control de acceso granular por roles.
-- No hay protección CSRF (no relevante para APIs puras, pero sí si se usa desde navegadores).
-
-**Riesgos:**
-- Si JWT está deshabilitado, la API queda sin autenticación.
-- Logging puede exponer datos sensibles.
-- Rate limiting puede ser evadido en despliegues distribuidos.
-- Sin hash de contraseñas, credenciales pueden ser robadas fácilmente.
-- Sin validación profunda, posible inyección SQL si se modifica el código.
-
-**Recomendaciones:**
-- Implementar autenticación real con hash de contraseñas y usuarios en base de datos.
-- Añadir rate limiting distribuido (ej: Redis) para despliegues multi-nodo.
-- Limitar información sensible en logs.
-- Añadir validación estricta de parámetros en todos los endpoints.
-- Añadir pruebas unitarias y de integración.
-- Documentar dependencias y limitaciones.
-- Considerar control de acceso por roles.
-
-**Cumplimiento:**
-- MITRE CWE: Parcial (CWE-306, CWE-307, CWE-532, CWE-89)
-- OWASP: Parcial (A2:2017-Auth, A5:2017-Broken Access, A6:2017-Logging, A1:2017-Inyección)
-- MIT Secure Coding: Parcial
-
+## security_clean.py
 ---
 
-## __init__.py (api)
+## security_fixed.py
+---
+
+## password_security.py
+---
+
+## theme_manager.py
+---
+
+## unified_sanitizer.py
 
 **Resumen:**
-Archivo de inicialización vacío para el submódulo api.
+Sistema unificado de sanitización de datos: strings, números, emails, HTML, SQL, URLs, teléfonos y diccionarios. Incluye patrones avanzados para SQLi/XSS, validación de rangos y funciones de conveniencia globales.
 
 **Hallazgos:**
-- No contiene lógica ni riesgos.
+- Uso de patrones avanzados para detección y remoción de SQL Injection y XSS.
+- Sanitización configurable de strings, números, emails, teléfonos, URLs y diccionarios.
+- Escape de HTML/XML y soporte para tags seguros (básico, no usa librerías externas).
+- Validación de emails, rangos numéricos y formatos de teléfono/URL.
+- Logging de advertencias ante errores de sanitización.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay integración con librerías especializadas (ej: bleach para HTML, sqlparse para SQL).
+- No hay internacionalización (i18n) de mensajes/logs.
+- No hay logging/auditoría de intentos de entrada maliciosa ni integración con sistemas de monitoreo.
 
 **Riesgos:**
-- Ninguno.
+- La sanitización de HTML y SQL es básica y puede ser evadida por técnicas avanzadas (CWE-79, CWE-89).
+- No hay logging/auditoría de intentos de entrada maliciosa ni alertas automáticas.
+- No hay soporte para localización o internacionalización de mensajes/logs.
 
 **Recomendaciones:**
-- Ninguna.
+- Integrar librerías especializadas para sanitización de HTML (bleach) y SQL en entornos críticos.
+- Agregar logging/auditoría de intentos de entrada maliciosa y alertas automáticas.
+- Considerar soporte para internacionalización de mensajes/logs.
+- Documentar claramente las limitaciones de la sanitización y los patrones usados.
 
 **Cumplimiento:**
-- N/A
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-89, CWE-116, CWE-209)
+- OWASP: Cumple parcialmente (A1:2017-Injection, A7:2017-XSS, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (validación, sanitización, documentación)
+
+**Resumen:**
+Gestor centralizado de temas visuales para PyQt6, con persistencia, señales, callbacks, generación dinámica de estilos y soporte para fuentes. Permite personalización avanzada y compatibilidad con temas oscuros/claros.
+
+**Hallazgos:**
+- Uso de señales Qt y callbacks para notificar cambios de tema y fuente.
+- Persistencia de preferencias en archivo JSON, con manejo de errores y valores por defecto.
+- Generación dinámica de stylesheets a partir de paletas de colores y metadatos.
+- Logging estructurado de eventos y errores de tema.
+- No hay hardcodeo de credenciales ni acceso a recursos externos peligrosos.
+- No hay validación/sanitización de los datos leídos del archivo de preferencias (riesgo bajo si solo se manipula internamente).
+- No hay internacionalización (i18n) de nombres de temas, fuentes o mensajes de log.
+- No hay integración directa con sistemas de monitoreo externo o analítica de uso.
+- No hay control de acceso a la modificación de preferencias (riesgo bajo en entorno desktop).
+
+**Riesgos:**
+- Si el archivo de preferencias es manipulado externamente, posible corrupción de estado o errores de carga.
+- No hay logging/auditoría de cambios de tema por usuario ni de errores críticos.
+- No hay soporte para localización o internacionalización de nombres de temas o mensajes.
+
+**Recomendaciones:**
+- Validar y sanear los datos leídos del archivo de preferencias antes de aplicarlos.
+- Agregar logging/auditoría de cambios de tema por usuario y errores críticos.
+- Considerar soporte para internacionalización de nombres de temas y mensajes.
+- Documentar claramente el formato y la ubicación del archivo de preferencias.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-209, CWE-778)
+- OWASP: Cumple parcialmente (A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (persistencia, logging, documentación)
+
+**Resumen:**
+Sistema avanzado para hash y verificación de contraseñas usando Argon2, bcrypt y PBKDF2, con fallback SHA-256 legacy. Incluye detección de método, migración de hashes antiguos, validación de fortaleza y generación de salt seguro.
+
+**Hallazgos:**
+- Selección automática del mejor algoritmo disponible (Argon2 > bcrypt > PBKDF2 > SHA-256).
+- Soporte para migración y detección de hashes legacy inseguros.
+- Validación robusta de fortaleza de contraseñas (longitud, complejidad, patrones débiles).
+- Manejo de errores y excepciones personalizado.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay logging/auditoría de intentos fallidos de login ni de migraciones de hash.
+- No hay internacionalización (i18n) de mensajes de error.
+- No hay integración directa con sistemas de monitoreo externo o SIEM.
+- No hay control de intentos fallidos de login ni bloqueo automático.
+
+**Riesgos:**
+- Si se permite el uso de hashes legacy (SHA-256), riesgo de ataques por fuerza bruta (CWE-916).
+- No hay logging/auditoría de intentos fallidos de login ni de migraciones de hash.
+- No hay soporte para localización o internacionalización de mensajes/logs.
+
+**Recomendaciones:**
+- Forzar migración de hashes legacy a algoritmos modernos en el primer login exitoso.
+- Agregar logging/auditoría de intentos fallidos de login y migraciones de hash.
+- Considerar integración con sistemas de monitoreo externo/SIEM para eventos críticos.
+- Documentar claramente las limitaciones y el flujo de migración de hashes.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-916, CWE-209)
+- OWASP: Cumple parcialmente (A2:2017-Broken Authentication, A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (hashing, validación, documentación)
+
+**Resumen:**
+Utilidades críticas de seguridad (versión fixed): hashing y verificación de contraseñas, sanitización de entrada, validación de emails e identificadores SQL, generación de tokens, validación de fortaleza de contraseñas y logging de eventos de seguridad a archivo.
+
+**Hallazgos:**
+- Uso de PBKDF2 con SHA-256 y salt aleatorio para hashing de contraseñas (seguro, aunque menos robusto que bcrypt/argon2).
+- Sanitización básica de entrada (escapado de caracteres y remoción de scripts/eventos JS).
+- Validación de emails y de identificadores SQL (nombres de tablas/campos).
+- Generación de tokens seguros con `secrets`.
+- Validación de fortaleza de contraseñas con criterios estándar.
+- Logging estructurado de eventos de seguridad a archivo dedicado (`logs/security.log`).
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay internacionalización (i18n) de mensajes/logs.
+- No hay integración directa con sistemas de monitoreo externo o SIEM.
+- No hay control de intentos fallidos de login ni bloqueo automático.
+
+**Riesgos:**
+- El uso de PBKDF2 es seguro, pero bcrypt/argon2 son más robustos ante ataques modernos (CWE-916).
+- La sanitización de entrada es básica y puede ser evadida por técnicas avanzadas de XSS o inyección (CWE-79, CWE-20).
+- No hay logging/auditoría de intentos fallidos de login ni alertas automáticas ante patrones sospechosos.
+- No hay soporte para localización o internacionalización de mensajes/logs.
+
+**Recomendaciones:**
+- Considerar el uso de bcrypt o argon2 para hashing de contraseñas en entornos críticos.
+- Mejorar la sanitización de entrada usando librerías especializadas para XSS y validación de input.
+- Agregar control y logging de intentos fallidos de login y bloqueo automático tras múltiples fallos.
+- Considerar integración con sistemas de monitoreo externo/SIEM para eventos críticos.
+- Documentar claramente las limitaciones de la sanitización y los algoritmos usados.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-916, CWE-20, CWE-209)
+- OWASP: Cumple parcialmente (A2:2017-Broken Authentication, A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (hashing, logging, validación, documentación)
+
+**Resumen:**
+Utilidades críticas de seguridad (versión clean): hashing y verificación de contraseñas, sanitización de entrada, validación de emails e identificadores SQL, generación de tokens, validación de fortaleza de contraseñas y logging de eventos de seguridad.
+
+**Hallazgos:**
+- Uso de PBKDF2 con SHA-256 y salt aleatorio para hashing de contraseñas (buena práctica, aunque se recomienda bcrypt/argon2 para mayor robustez).
+- Sanitización básica de entrada para prevenir XSS (escapado de caracteres y patrones comunes).
+- Validación de emails y de identificadores SQL (nombres de tablas/campos).
+- Generación de tokens seguros con `secrets`.
+- Validación de fortaleza de contraseñas con criterios estándar.
+- Logging estructurado de eventos de seguridad, configurable por logger dedicado.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay internacionalización (i18n) de mensajes de error o logs.
+- No hay integración directa con sistemas de monitoreo externo o SIEM.
+- No hay control de intentos fallidos de login ni bloqueo automático.
+
+**Riesgos:**
+- El uso de PBKDF2 es seguro, pero bcrypt/argon2 son más robustos ante ataques modernos (CWE-916).
+- La sanitización de entrada es básica y puede ser evadida por técnicas avanzadas de XSS (CWE-79).
+- No hay logging/auditoría de intentos fallidos de login ni alertas automáticas ante patrones sospechosos.
+- No hay soporte para localización o internacionalización de mensajes/logs.
+
+**Recomendaciones:**
+- Considerar el uso de bcrypt o argon2 para hashing de contraseñas en entornos críticos.
+- Mejorar la sanitización de entrada usando librerías especializadas para XSS (ej: `bleach`).
+- Agregar control y logging de intentos fallidos de login y bloqueo automático tras múltiples fallos.
+- Considerar integración con sistemas de monitoreo externo/SIEM para eventos críticos.
+- Documentar claramente las limitaciones de la sanitización y los algoritmos usados.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-916, CWE-209)
+- OWASP: Cumple parcialmente (A2:2017-Broken Authentication, A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (hashing, logging, validación, documentación)
+
+**Resumen:**
+Utilidades de seguridad (versión alternativa/backup): hashing y verificación de contraseñas, sanitización de entrada, validación de emails, generación de tokens, validación de nombres de archivo y logging de eventos de seguridad.
+
+**Hallazgos:**
+- Uso de PBKDF2 con SHA-256 y salt aleatorio para hashing de contraseñas (seguro, aunque menos robusto que bcrypt/argon2).
+- Sanitización básica de entrada (remueve caracteres peligrosos y limita longitud).
+- Validación de emails y de nombres de archivo (incluye chequeo de nombres reservados en Windows).
+- Generación de tokens seguros con `secrets`.
+- Logging de eventos de seguridad configurable por nivel.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay internacionalización (i18n) de mensajes/logs.
+- No hay integración directa con sistemas de monitoreo externo o SIEM.
+- No hay control de intentos fallidos de login ni bloqueo automático.
+
+**Riesgos:**
+- El uso de PBKDF2 es seguro, pero bcrypt/argon2 son más robustos ante ataques modernos (CWE-916).
+- La sanitización de entrada es básica y puede ser evadida por técnicas avanzadas de XSS o inyección (CWE-79, CWE-20).
+- No hay logging/auditoría de intentos fallidos de login ni alertas automáticas ante patrones sospechosos.
+- No hay soporte para localización o internacionalización de mensajes/logs.
+
+**Recomendaciones:**
+- Considerar el uso de bcrypt o argon2 para hashing de contraseñas en entornos críticos.
+- Mejorar la sanitización de entrada usando librerías especializadas para XSS y validación de input.
+- Agregar control y logging de intentos fallidos de login y bloqueo automático tras múltiples fallos.
+- Considerar integración con sistemas de monitoreo externo/SIEM para eventos críticos.
+- Documentar claramente las limitaciones de la sanitización y los algoritmos usados.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-916, CWE-20, CWE-209)
+- OWASP: Cumple parcialmente (A2:2017-Broken Authentication, A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (hashing, logging, validación, documentación)
+
+**Resumen:**
+Utilidades críticas de seguridad: hashing y verificación de contraseñas, sanitización de entrada, validación de emails e identificadores SQL, generación de tokens, validación de fortaleza de contraseñas y logging de eventos de seguridad.
+
+**Hallazgos:**
+- Uso de PBKDF2 con SHA-256 y salt aleatorio para hashing de contraseñas (buena práctica, aunque se recomienda usar bcrypt/argon2 para mayor robustez).
+- Sanitización básica de entrada para prevenir XSS (escapado de caracteres y patrones comunes).
+- Validación de emails y de identificadores SQL (nombres de tablas/campos).
+- Generación de tokens seguros con `secrets`.
+- Validación de fortaleza de contraseñas con criterios estándar.
+- Logging estructurado de eventos de seguridad, configurable por logger dedicado.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay internacionalización (i18n) de mensajes de error o logs.
+- No hay integración directa con sistemas de monitoreo externo o SIEM.
+- No hay control de intentos fallidos de login ni bloqueo automático.
+
+**Riesgos:**
+- El uso de PBKDF2 es seguro, pero bcrypt/argon2 son más robustos ante ataques modernos (CWE-916).
+- La sanitización de entrada es básica y puede ser evadida por técnicas avanzadas de XSS (CWE-79).
+- No hay logging/auditoría de intentos fallidos de login ni alertas automáticas ante patrones sospechosos.
+- No hay soporte para localización o internacionalización de mensajes/logs.
+
+**Recomendaciones:**
+- Considerar el uso de bcrypt o argon2 para hashing de contraseñas en entornos críticos.
+- Mejorar la sanitización de entrada usando librerías especializadas para XSS (ej: `bleach`).
+- Agregar control y logging de intentos fallidos de login y bloqueo automático tras múltiples fallos.
+- Considerar integración con sistemas de monitoreo externo/SIEM para eventos críticos.
+- Documentar claramente las limitaciones de la sanitización y los algoritmos usados.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-916, CWE-209)
+- OWASP: Cumple parcialmente (A2:2017-Broken Authentication, A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (hashing, logging, validación, documentación)
+
+**Resumen:**
+Sistema avanzado de tooltips inteligentes y contextuales para la UI, con catálogo centralizado, soporte para tipos, ejemplos, atajos y personalización. Permite aplicar tooltips a widgets, formularios y tablas de PyQt6.
+
+**Hallazgos:**
+- Uso de dataclasses y enums para estructurar la configuración de tooltips (mejora mantenibilidad y claridad).
+- Catálogo centralizado y extensible de tooltips por campo, tipo y módulo.
+- Permite tooltips personalizados y temporales, con soporte para rich text y estadísticas de uso.
+- No hay hardcodeo de credenciales ni acceso a recursos externos.
+- No hay validación/sanitización de los textos de tooltip (riesgo bajo si provienen solo del código, pero relevante si se permite entrada externa).
+- No hay logging/auditoría de uso de tooltips ni de errores al aplicar tooltips.
+- No hay internacionalización (i18n), todos los textos y ejemplos están en español.
+- No hay integración directa con sistemas de monitoreo o analítica de uso.
+- El mapeo de campos y botones es estático y puede requerir mantenimiento frecuente.
+
+**Riesgos:**
+- Si se permite tooltips personalizados desde entrada externa, posible XSS o manipulación de la UI (CWE-79).
+- No hay logging/auditoría de uso ni de errores, lo que dificulta la trazabilidad de problemas o mejoras de UX.
+- No hay soporte para localización o internacionalización de tooltips.
+
+**Recomendaciones:**
+- Validar y sanear los textos de tooltips si se permite entrada externa o personalizada.
+- Agregar logging/auditoría de uso y errores al aplicar tooltips.
+- Considerar soporte para internacionalización y localización de tooltips.
+- Documentar claramente el uso seguro de tooltips personalizados.
+- Considerar integración con sistemas de analítica de uso para mejorar la UX.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-79, CWE-209)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (modularidad, documentación, integración UI)
+
+**Resumen:**
+Gestor centralizado para cargar, cachear, validar y ejecutar consultas SQL desde archivos externos. Permite parametrización, validación básica de sintaxis y listado de queries disponibles por módulo.
+
+**Hallazgos:**
+- Uso de rutas relativas y estructura modular para organización de scripts SQL.
+- Cache de consultas para eficiencia y reducción de I/O.
+- Validación básica de sintaxis SQL (palabras clave, paréntesis balanceados, no vacío).
+- Permite parametrización de queries, pero usa `.format()` para reemplazo (riesgo si se usan datos de usuario sin sanitizar).
+- No hay logging estructurado (solo print para eventos de carga y limpieza de cache).
+- No hay validación/sanitización de parámetros de formateo antes de aplicar `.format()`.
+- No hay control de acceso ni auditoría de uso de queries.
+- No hay internacionalización (i18n) de mensajes.
+- No hay integración directa con sistemas de monitoreo o alertas.
+
+**Riesgos:**
+- Si los parámetros de formateo provienen de entrada externa, posible inyección SQL o manipulación de la consulta (CWE-89).
+- No hay logging/auditoría de uso ni de errores de carga/ejecución.
+- El uso de `.format()` para queries puede ser riesgoso si no se controla el input.
+
+**Recomendaciones:**
+- Documentar claramente que los parámetros deben ser validados/sanitizados antes de usarse en `.format()`.
+- Agregar logging estructurado para eventos críticos y errores.
+- Considerar integración con sistemas de monitoreo/auditoría para uso de queries.
+- Considerar soporte para internacionalización de mensajes.
+- Evaluar el uso de parámetros nativos de la base de datos en vez de `.format()` para mayor seguridad.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-89, CWE-209)
+- OWASP: Cumple parcialmente (A1:2017-Injection, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (modularidad, documentación, separación de lógica)
+
+**Resumen:**
+Módulo de utilidades para seguridad SQL: validación de nombres de tablas, sanitización de parámetros, construcción segura de queries y lista blanca de tablas permitidas. Incluye builder de queries y excepciones personalizadas.
+
+**Hallazgos:**
+- Uso de lista blanca para tablas permitidas, configurable en tiempo de ejecución.
+- Validación estricta de nombres de tablas y columnas (caracteres, longitud, patrones peligrosos).
+- Sanitización básica de parámetros SQL (elimina caracteres peligrosos).
+- Builder de queries seguro: solo permite queries parametrizadas y previene comandos peligrosos en WHERE.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- No hay logging ni auditoría de intentos de acceso o violaciones detectadas.
+- No hay internacionalización (i18n) de mensajes de error.
+- No hay integración directa con sistemas de monitoreo o alertas.
+- La lista blanca puede ser modificada en tiempo de ejecución (útil, pero requiere control de acceso).
+
+**Riesgos:**
+- Si la lista blanca es modificada sin control, puede habilitar acceso a tablas no deseadas (CWE-284).
+- La sanitización de parámetros es básica y no reemplaza el uso de parámetros en queries (CWE-89).
+- No hay logging/auditoría de intentos de acceso a tablas no permitidas o patrones peligrosos.
+- No hay soporte para logging estructurado ni alertas ante violaciones.
+
+**Recomendaciones:**
+- Documentar claramente que la sanitización es solo una capa y no reemplaza el uso de parámetros en queries.
+- Agregar logging/auditoría de intentos de acceso a tablas no permitidas y patrones peligrosos detectados.
+- Controlar el acceso a la modificación de la lista blanca de tablas.
+- Considerar integración con sistemas de monitoreo/alertas para violaciones de seguridad SQL.
+- Considerar soporte para internacionalización de mensajes de error.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-89, CWE-284, CWE-209)
+- OWASP: Cumple parcialmente (A1:2017-Injection, A5:2017-Broken Access Control, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (validación, separación de lógica, documentación)
+
+**Resumen:**
+Utilidad para cargar y ejecutar scripts SQL desde archivos, con logging de errores y advertencias. Permite parametrización y ejecución segura a través de cursores de base de datos.
+
+**Hallazgos:**
+- Uso correcto de rutas relativas y detección automática del directorio de scripts.
+- Utiliza logging estructurado para advertencias y errores.
+- No hay hardcodeo de credenciales ni uso de funciones peligrosas.
+- Permite parametrización de queries, mitigando riesgos de inyección SQL si se usa correctamente.
+- No hay validación/sanitización del nombre del script recibido (riesgo bajo de path traversal si se expone a entrada externa).
+- No hay control de acceso a los scripts ni auditoría de uso.
+- No hay internacionalización (i18n) de mensajes de log.
+- No hay manejo de encoding configurable (usa utf-8 por defecto).
+
+**Riesgos:**
+- Si el nombre del script proviene de entrada externa, posible path traversal o acceso a scripts no autorizados (CWE-22).
+- Si los scripts contienen queries dinámicos sin parámetros, riesgo de inyección SQL (CWE-89).
+- No hay auditoría de uso ni control de acceso a la ejecución de scripts.
+
+**Recomendaciones:**
+- Validar y sanear el nombre del script antes de cargarlo, especialmente si proviene de entrada externa.
+- Documentar claramente que los scripts deben usar siempre parámetros y nunca concatenar datos de usuario.
+- Considerar agregar auditoría de uso y control de acceso a la ejecución de scripts.
+- Considerar soporte para internacionalización de mensajes de log.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-22, CWE-89, CWE-209)
+- OWASP: Cumple parcialmente (A1:2017-Injection, A5:2017-Broken Access Control, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de archivos, logging, documentación)
+
+**Resumen:**
+Módulo de utilidades de formateo para moneda, fechas, números, texto, estados, tablas y visualización general. Incluye clases especializadas y una función global para formateo conveniente.
+
+**Hallazgos:**
+- Buenas prácticas de separación de responsabilidades y reutilización de código.
+- No hay uso de funciones peligrosas (`eval`, `exec`, `pickle`, etc.).
+- No hay hardcodeo de credenciales ni acceso a recursos externos.
+- No hay validación/sanitización avanzada de entradas antes de formatear (riesgo bajo, pero relevante si se usan datos externos).
+- No hay logging ni auditoría de uso de los formateadores.
+- No hay internacionalización (i18n), todos los textos y formatos están en español y formato local.
+- No hay control de errores centralizado, pero sí manejo de excepciones en cada método.
+- El formateo de fechas y números asume formatos específicos, lo que puede causar errores silenciosos si la entrada no es válida.
+- El formateo de teléfonos y códigos es específico para Argentina, lo que limita la escalabilidad internacional.
+- No hay soporte para personalización de formatos por usuario o configuración externa.
+
+**Riesgos:**
+- Si se usan datos de usuario sin sanitizar, podría haber errores de visualización o manipulación de la UI (CWE-117, CWE-79).
+- El formateo de fechas/números puede fallar silenciosamente y mostrar datos incorrectos si la entrada es inesperada.
+- No hay logging de errores de formateo, lo que dificulta la trazabilidad de problemas en producción.
+- El formateo de estados y prioridades depende de diccionarios hardcodeados, lo que dificulta la extensión o localización.
+
+**Recomendaciones:**
+- Validar y sanear entradas antes de formatear, especialmente si provienen de usuarios o fuentes externas.
+- Agregar logging estructurado para errores de formateo y uso de utilidades críticas.
+- Considerar soporte para internacionalización (i18n) y localización de formatos/textos.
+- Permitir personalización de formatos y textos a través de configuración externa.
+- Documentar claramente los formatos esperados y las limitaciones regionales (ej: teléfonos argentinos).
+- Considerar integración con sistemas de monitoreo para detectar patrones de errores de formateo.
+
+**Cumplimiento:**
+- MITRE CWE: Cumple parcialmente (CWE-117, CWE-79, CWE-209)
+- OWASP: Cumple parcialmente (A6:2017-Sensitive Data Exposure, A10:2017-Insufficient Logging & Monitoring)
+- MIT Secure Coding: Cumple parcialmente (manejo de errores, documentación, separación de lógica)
+
+## Hallazgos
+- Se incluyen dependencias clave para seguridad (cryptography, bcrypt), testing, monitoreo y utilidades modernas.
+- Se listan módulos estándar de Python (`sqlite3`, `pathlib`), que no requieren instalación vía pip (puede causar confusión o warnings).
+- No se especifican hashes de integridad para los paquetes (recomendado para entornos de alta seguridad, PEP 655).
+- No se utiliza un archivo de "constraints" para fijar versiones indirectas (mejora para reproducibilidad).
+- No se observa uso de herramientas automáticas de escaneo de vulnerabilidades (como `safety`, `pip-audit`).
+- Algunas dependencias opcionales están bien documentadas como tales.
+- No hay dependencias obsoletas ni versiones inseguras detectadas en este listado (a la fecha de la auditoría).
+
+## Riesgos y recomendaciones
+- **Módulos estándar:** Eliminar `sqlite3` y `pathlib` del requirements.txt, ya que son parte de la librería estándar de Python y no deben instalarse por pip.
+- **Hashes de integridad:** Considerar el uso de hashes SHA256 para cada paquete (ver PEP 655, pip --require-hashes) en entornos críticos.
+- **Escaneo de vulnerabilidades:** Agregar `safety` o `pip-audit` como dependencia de desarrollo y ejecutar escaneos periódicos.
+- **Constraints:** Usar un archivo `constraints.txt` para fijar versiones de dependencias indirectas y mejorar la reproducibilidad.
+- **Actualización periódica:** Revisar y actualizar dependencias al menos cada 3 meses para evitar vulnerabilidades conocidas.
+- **Documentación:** Mantener comentarios claros sobre dependencias opcionales y su propósito.
+
+## Cumplimiento y estándares
+- **OWASP Dependency-Check:** Parcialmente cumplido (faltan escaneos automáticos y hashes).
+- **NIST SP 800-53:** Requiere gestión activa de vulnerabilidades y control de integridad.
+- **MITRE CWE-1104:** Riesgo bajo, pero puede mejorar con escaneo y fijación de versiones.
+
+## Estado general
+El archivo requirements.txt es moderno y está bien documentado, pero puede mejorarse eliminando módulos estándar, agregando escaneo de vulnerabilidades y usando hashes de integridad para cumplir con los estándares internacionales de seguridad de dependencias.
 
 ---
 

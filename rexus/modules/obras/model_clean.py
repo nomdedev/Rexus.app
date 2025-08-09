@@ -3,13 +3,13 @@ from typing import Any, Dict, List, Optional
 
 from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.utils.sql_script_loader import sql_script_loader
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Constantes
 DB_ERROR_MESSAGE = "Sin conexión a la base de datos"
 
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-    data_sanitizer = DataSanitizer()
+        data_sanitizer = DataSanitizer()
 except ImportError:
     # Fallback robusto para DataSanitizer
     class DataSanitizer:
@@ -175,7 +175,7 @@ class ObrasModel:
             # Sanitizar datos y prevenir SQLi
             codigo_limpio = codigo_obra.strip().upper()
             if self.data_sanitizer:
-                codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
+                codigo_limpio = sanitize_string(codigo_limpio)
                 codigo_limpio = self.data_sanitizer.sanitize_sql_input(codigo_limpio)
 
             cursor = self.db_connection.cursor()
@@ -240,7 +240,7 @@ class ObrasModel:
             for campo in ["codigo", "nombre", "cliente", "descripcion"]:
                 if campo in datos_limpios:
                     val = datos_limpios[campo]
-                    val = self.data_sanitizer.sanitize_string(val, 128)
+                    val = sanitize_string(val, 128)
                     val = self.data_sanitizer.sanitize_sql_input(val)
                     val = self.data_sanitizer.sanitize_html(val)
                     for pattern in ["DROP TABLE", "UNION SELECT", "--", ";", "<script>", "</script>", "<iframe>", "</iframe>"]:

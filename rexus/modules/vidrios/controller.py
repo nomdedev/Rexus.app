@@ -3,6 +3,7 @@
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 class VidriosController(QObject):
     
@@ -154,6 +155,19 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error obteniendo vidrios por obra: {e}")
             return []
+
+    def crear_vidrio(self, datos_vidrio):
+        """Crea un nuevo vidrio usando el modelo."""
+        if not self.model:
+            return False, "Modelo no disponible"
+            
+        try:
+            resultado = self.model.crear_vidrio(datos_vidrio)
+            if resultado[0]:  # Éxito
+                self.vidrio_agregado.emit(datos_vidrio)
+            return resultado
+        except Exception as e:
+            return False, f"Error creando vidrio: {str(e)}"
 
     def actualizar_por_obra(self, obra_data):
         """Actualiza vidrios cuando se crea una obra."""

@@ -2,6 +2,7 @@
 
 from .controller import ObrasController
 from .model import ObrasModel
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar modelo refactorizado principal
 from .model_refactorizado import ModeloObras, ModeloObrasRefactorizado

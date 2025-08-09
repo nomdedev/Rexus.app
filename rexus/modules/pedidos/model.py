@@ -1,5 +1,6 @@
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -17,18 +18,20 @@ import uuid
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Tuple
 
-# Importar DataSanitizer para seguridad
+# DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
-    except ImportError:
-        # Fallback seguro - crear clase básica
-        class DataSanitizer:
-            @staticmethod
-            def sanitize_input(data):
-                return str(data).strip() if data else ""
+    class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
+            return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
             
             @staticmethod
             def sanitize_string(data):
@@ -77,7 +80,7 @@ class PedidosModel:
     def __init__(self, db_connection=None):
         """Inicializa el modelo de pedidos."""
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()  # Para validación y sanitización
+        self.sanitizer = unified_sanitizer  # Para validación y sanitización
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         
         # Validar conexión a BD
@@ -171,7 +174,7 @@ class PedidosModel:
                 return False
 
             # Sanitizar la entrada
-            numero_sanitizado = self.data_sanitizer.sanitize_string(
+            numero_sanitizado = sanitize_string(
                 str(numero_pedido).strip()
             )
 

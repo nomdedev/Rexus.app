@@ -70,8 +70,8 @@ from PyQt6.QtWidgets import (
 )
 
 from rexus.core.database import InventarioDatabaseConnection
-from rexus.utils.data_sanitizer import DataSanitizer
 from rexus.utils.message_system import show_error, show_success, show_warning
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class MaquinariaDialog(QDialog):
@@ -312,35 +312,35 @@ class MaquinariaDialog(QDialog):
         """Obtiene los datos del formulario con sanitización."""
         try:
             # Sanitizar todos los campos de texto
-            codigo_limpio = DataSanitizer.sanitize_text(self.codigo_edit.text().strip())
-            nombre_limpio = DataSanitizer.sanitize_text(self.nombre_edit.text().strip())
-            marca_limpia = DataSanitizer.sanitize_text(self.marca_edit.text().strip())
-            modelo_limpio = DataSanitizer.sanitize_text(self.modelo_edit.text().strip())
-            numero_serie_limpio = DataSanitizer.sanitize_text(
+            codigo_limpio = sanitize_string(self.codigo_edit.text().strip())
+            nombre_limpio = sanitize_string(self.nombre_edit.text().strip())
+            marca_limpia = sanitize_string(self.marca_edit.text().strip())
+            modelo_limpio = sanitize_string(self.modelo_edit.text().strip())
+            numero_serie_limpio = sanitize_string(
                 self.numero_serie_edit.text().strip()
             )
-            potencia_limpia = DataSanitizer.sanitize_text(
+            potencia_limpia = sanitize_string(
                 self.potencia_edit.text().strip()
             )
-            voltaje_limpio = DataSanitizer.sanitize_text(
+            voltaje_limpio = sanitize_string(
                 self.voltaje_edit.text().strip()
             )
-            amperaje_limpio = DataSanitizer.sanitize_text(
+            amperaje_limpio = sanitize_string(
                 self.amperaje_edit.text().strip()
             )
-            dimensiones_limpias = DataSanitizer.sanitize_text(
+            dimensiones_limpias = sanitize_string(
                 self.dimensiones_edit.text().strip()
             )
-            proveedor_limpio = DataSanitizer.sanitize_text(
+            proveedor_limpio = sanitize_string(
                 self.proveedor_edit.text().strip()
             )
-            ubicacion_limpia = DataSanitizer.sanitize_text(
+            ubicacion_limpia = sanitize_string(
                 self.ubicacion_edit.text().strip()
             )
-            responsable_limpio = DataSanitizer.sanitize_text(
+            responsable_limpio = sanitize_string(
                 self.responsable_edit.text().strip()
             )
-            observaciones_limpias = DataSanitizer.sanitize_text(
+            observaciones_limpias = sanitize_string(
                 self.observaciones_text.toPlainText()
             )
 
@@ -930,12 +930,12 @@ class MantenimientoCompletaView(QWidget):
                     nombre_existente = nombre_item.text().strip()
 
                     # Normalizar datos para comparación
-                    codigo_norm = DataSanitizer.sanitize_text(codigo).lower()
-                    codigo_existente_norm = DataSanitizer.sanitize_text(
+                    codigo_norm = sanitize_string(codigo).lower()
+                    codigo_existente_norm = sanitize_string(
                         codigo_existente
                     ).lower()
-                    nombre_norm = DataSanitizer.sanitize_text(nombre).lower()
-                    nombre_existente_norm = DataSanitizer.sanitize_text(
+                    nombre_norm = sanitize_string(nombre).lower()
+                    nombre_existente_norm = sanitize_string(
                         nombre_existente
                     ).lower()
 

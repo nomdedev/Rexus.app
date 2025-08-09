@@ -1,3 +1,4 @@
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 """
 Submódulos de Inventario - Rexus.app
 
@@ -10,17 +11,17 @@ try:
     from .movimientos_manager_refactorizado import MovimientosManager
     from .productos_manager_refactorizado import ProductosManager
 
-    print("[SUBMÓDULOS INVENTARIO] ✅ Submódulos refactorizados cargados")
+    print("[SUBMODULOS INVENTARIO] OK - Submodulos refactorizados cargados")
 except ImportError as e:
-    print(f"[SUBMÓDULOS INVENTARIO] ⚠️ Error importando refactorizados: {e}")
+    print(f"[SUBMODULOS INVENTARIO] WARNING - Error importando refactorizados: {e}")
     try:
         from .consultas_manager import ConsultasManager
         from .movimientos_manager import MovimientosManager
         from .productos_manager import ProductosManager
 
-        print("[SUBMÓDULOS INVENTARIO] ✅ Submódulos originales cargados como fallback")
+        print("[SUBMODULOS INVENTARIO] OK - Submodulos originales cargados como fallback")
     except ImportError as e2:
-        print(f"[SUBMÓDULOS INVENTARIO] ❌ Error importando submódulos: {e2}")
+        print(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e2}")
 
         # Crear clases dummy para evitar errores
         class ConsultasManager:

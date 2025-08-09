@@ -1,4 +1,5 @@
 from rexus.core.auth_decorators import (
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     admin_required,
     auth_required,
     permission_required,
@@ -36,8 +37,7 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
 
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
+        from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
 except ImportError as e:

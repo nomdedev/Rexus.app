@@ -3,6 +3,7 @@
 from PyQt6.QtCore import QObject
 from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
 from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class LogisticaController(QObject):

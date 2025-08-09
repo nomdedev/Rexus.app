@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -34,12 +35,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -55,7 +62,7 @@ class ConsultasManager:
         """Inicializa el gestor de consultas de obras."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/obras/consultas"
 
     @auth_required
@@ -108,7 +115,7 @@ class ConsultasManager:
             cursor = self.db_connection.cursor()
 
             # Sanitizar término de búsqueda
-            termino_sanitizado = self.data_sanitizer.sanitize_string(termino_busqueda)
+            termino_sanitizado = sanitize_string(termino_busqueda)
             termino_like = f"%{termino_sanitizado}%"
 
             query = self.sql_manager.get_query(self.sql_path, "buscar_obras")
@@ -211,9 +218,9 @@ class ConsultasManager:
 
         try:
             # Sanitizar parámetros de paginación
-            page = max(1, self.data_sanitizer.sanitize_integer(page, min_val=1))
+            page = max(1, self.sanitizer.sanitize_integer(page, min_val=1))
             per_page = max(
-                1, min(100, self.data_sanitizer.sanitize_integer(per_page, min_val=1))
+                1, min(100, self.sanitizer.sanitize_integer(per_page, min_val=1))
             )
 
             offset = (page - 1) * per_page
@@ -347,7 +354,7 @@ class ConsultasManager:
         campos_texto = ["estado", "cliente", "nombre"]
         for campo in campos_texto:
             if campo in filtros and filtros[campo]:
-                filtros_sanitizados[campo] = self.data_sanitizer.sanitize_string(
+                filtros_sanitizados[campo] = sanitize_string(
                     filtros[campo]
                 )
 
@@ -355,7 +362,7 @@ class ConsultasManager:
         campos_numericos = ["presupuesto_min", "presupuesto_max"]
         for campo in campos_numericos:
             if campo in filtros and filtros[campo] is not None:
-                filtros_sanitizados[campo] = self.data_sanitizer.sanitize_numeric(
+                filtros_sanitizados[campo] = self.sanitizer.sanitize_numeric(
                     filtros[campo], min_val=0
                 )
 

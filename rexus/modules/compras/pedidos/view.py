@@ -23,6 +23,19 @@
 
 from PyQt6.QtWidgets import QLabel, QVBoxLayout, QWidget
 
+# Importar componentes Rexus
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusFrame,
+    RexusGroupBox,
+    RexusLayoutHelper
+)
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
 
 class PedidosView(QWidget):
     def __init__(self):
@@ -31,6 +44,6 @@ class PedidosView(QWidget):
 
     def init_ui(self):
         layout = QVBoxLayout(self)
-        title_label = QLabel("🛒 Compras / Pedidos")
+        title_label = RexusLabel("🛒 Compras / Pedidos")
         title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #2c3e50;")
         layout.addWidget(title_label)

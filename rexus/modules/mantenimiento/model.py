@@ -20,6 +20,10 @@ from rexus.core.auth_decorators import (
     auth_required,
     permission_required,
 )
+
+# Importar utilidades de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
 from rexus.core.auth_manager import AuthManager
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 

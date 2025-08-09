@@ -37,6 +37,7 @@ from datetime import date, timedelta
 from rexus.utils.dialog_utils import CrudDialogManager, create_standard_form_config, BaseFormDialog
 from rexus.utils.validation_utils import FormValidationManager, AdvancedValidator, BusinessValidator
 from rexus.utils.format_utils import format_for_display
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class PedidoDialogManager:

@@ -19,7 +19,6 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
     from utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
@@ -28,10 +27,12 @@ except ImportError as e:
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
-# Importar nueva utilidad de seguridad SQL
+# Importar utilidades de seguridad SQL y sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.sql_query_manager import SQLQueryManager
+
 try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name
-
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
     print("[WARNING] SQL security utilities not available in auditoria")
@@ -52,15 +53,14 @@ class AuditoriaModel:
         """
         self.db_connection = db_connection
         self.tabla_auditoria = "auditoria_log"
+        
+        # Inicializar SQLQueryManager para consultas seguras
+        self.sql_manager = SQLQueryManager()
 
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
-        if self.security_available and data_sanitizer:
-            self.data_sanitizer = data_sanitizer
-            print("OK [AUDITORIA] Utilidades de seguridad cargadas")
-        else:
-            self.data_sanitizer = None
-            print("WARNING [AUDITORIA] Utilidades de seguridad no disponibles")
+        self.sanitizer = unified_sanitizer
+        print("OK [AUDITORIA] Sistema unificado de sanitización cargado")
 
         self._crear_tabla_si_no_existe()
 
@@ -112,21 +112,16 @@ class AuditoriaModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            # Verificar si la tabla de auditoría existe
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_auditoria,),
-            )
+            # Verificar si la tabla de auditoría existe usando SQL externo
+            query_verificar = self.sql_manager.get_query('auditoria/verificar_tabla_existe')
+            cursor.execute(query_verificar, (self.tabla_auditoria,))
+            
             if cursor.fetchone():
-                print(
-                    f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente."
-                )
+                print(f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente.")
 
-                # Mostrar la estructura de la tabla
-                cursor.execute(
-                    "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?",
-                    (self.tabla_auditoria,),
-                )
+                # Mostrar la estructura de la tabla usando SQL externo
+                query_estructura = self.sql_manager.get_query('auditoria/obtener_estructura_tabla')
+                cursor.execute(query_estructura, (self.tabla_auditoria,))
                 columnas = cursor.fetchall()
                 print(f"[AUDITORÍA] Estructura de tabla '{self.tabla_auditoria}':")
                 for columna in columnas:
@@ -178,19 +173,19 @@ class AuditoriaModel:
         try:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if self.data_sanitizer:
-                usuario_limpio = self.data_sanitizer.sanitize_string(usuario)
-                modulo_limpio = self.data_sanitizer.sanitize_string(modulo)
-                accion_limpia = self.data_sanitizer.sanitize_string(accion)
-                descripcion_limpia = self.data_sanitizer.sanitize_string(descripcion)
-                tabla_afectada_limpia = self.data_sanitizer.sanitize_string(
+                usuario_limpio = sanitize_string(usuario)
+                modulo_limpio = sanitize_string(modulo)
+                accion_limpia = sanitize_string(accion)
+                descripcion_limpia = sanitize_string(descripcion)
+                tabla_afectada_limpia = sanitize_string(
                     tabla_afectada
                 )
-                registro_id_limpio = self.data_sanitizer.sanitize_string(registro_id)
-                nivel_criticidad_limpio = self.data_sanitizer.sanitize_string(
+                registro_id_limpio = sanitize_string(registro_id)
+                nivel_criticidad_limpio = sanitize_string(
                     nivel_criticidad
                 )
-                resultado_limpio = self.data_sanitizer.sanitize_string(resultado)
-                error_mensaje_limpio = self.data_sanitizer.sanitize_string(
+                resultado_limpio = sanitize_string(resultado)
+                error_mensaje_limpio = sanitize_string(
                     error_mensaje
                 )
             else:
@@ -317,13 +312,13 @@ class AuditoriaModel:
             # 🔒 SANITIZACIÓN Y VALIDACIÓN DE PARÁMETROS
             if self.data_sanitizer:
                 usuario_limpio = (
-                    self.data_sanitizer.sanitize_string(usuario) if usuario else ""
+                    sanitize_string(usuario) if usuario else ""
                 )
                 modulo_limpio = (
-                    self.data_sanitizer.sanitize_string(modulo) if modulo else ""
+                    sanitize_string(modulo) if modulo else ""
                 )
                 nivel_criticidad_limpio = (
-                    self.data_sanitizer.sanitize_string(nivel_criticidad)
+                    sanitize_string(nivel_criticidad)
                     if nivel_criticidad
                     else ""
                 )

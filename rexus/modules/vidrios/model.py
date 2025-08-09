@@ -15,6 +15,11 @@ Gestiona la compra por obra y asociación con proveedores.
 Incluye utilidades de seguridad integradas.
 """
 
+# Constantes del módulo
+NO_CONNECTION_MSG = "No hay conexión a la base de datos"
+DB_ERROR_MSG = "Error en la base de datos"
+INVALID_DATA_MSG = "Datos inválidos"
+
 import sys
 from pathlib import Path
 
@@ -28,7 +33,6 @@ try:
     print("OK [VIDRIOS] Sistema unificado de sanitización cargado")
 except ImportError:
     try:
-        from rexus.utils.data_sanitizer import DataSanitizer
         data_sanitizer = DataSanitizer()
         SANITIZER_AVAILABLE = True
         print("OK [VIDRIOS] DataSanitizer legacy cargado")
@@ -123,7 +127,7 @@ class VidriosModel:
         # Usar sanitizador disponible
         try:
             if tipo == 'string':
-                return self.data_sanitizer.sanitize_string(value, kwargs.get('max_length'))
+                return sanitize_string(value, kwargs.get('max_length'))
             elif tipo == 'numeric':
                 return self.data_sanitizer.sanitize_numeric(value, kwargs.get('min_val'), kwargs.get('max_val'))
             elif tipo == 'integer':
@@ -207,7 +211,7 @@ class VidriosModel:
         import re
 
         # Solo permitir nombres alfanuméricos y underscore
-        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
+        if not re.match(r"^[a-zA-Z_]\w*$", table_name):
             raise ValueError(f"Nombre de tabla inválido: {table_name}")
 
         # Lista blanca de tablas permitidas
@@ -586,7 +590,7 @@ class VidriosModel:
             tuple: (bool, str, int) - (éxito, mensaje, ID del vidrio creado)
         """
         if not self.db_connection:
-            return False, "No hay conexión a la base de datos", None
+            return False, NO_CONNECTION_MSG, None
 
         try:
             # Sanitizar y validar todos los datos usando función centralizada
@@ -683,33 +687,33 @@ class VidriosModel:
             # Sanitizar y validar todos los datos igual que en crear_vidrio
             datos_limpios = {}
 
-            datos_limpios["codigo"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["codigo"] = sanitize_string(
                 datos_vidrio.get("codigo", ""), max_length=20
             )
-            datos_limpios["descripcion"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["descripcion"] = sanitize_string(
                 datos_vidrio.get("descripcion", ""), max_length=200
             )
-            datos_limpios["tipo"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["tipo"] = sanitize_string(
                 datos_vidrio.get("tipo", ""), max_length=50
             )
-            datos_limpios["proveedor"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["proveedor"] = sanitize_string(
                 datos_vidrio.get("proveedor", ""), max_length=100
             )
-            datos_limpios["color"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["color"] = sanitize_string(
                 datos_vidrio.get("color", ""), max_length=50
             )
-            datos_limpios["tratamiento"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["tratamiento"] = sanitize_string(
                 datos_vidrio.get("tratamiento", ""), max_length=100
             )
             datos_limpios["dimensiones_disponibles"] = (
-                self.data_sanitizer.sanitize_string(
+                sanitize_string(
                     datos_vidrio.get("dimensiones_disponibles", ""), max_length=200
                 )
             )
-            datos_limpios["estado"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["estado"] = sanitize_string(
                 datos_vidrio.get("estado", "ACTIVO"), max_length=20
             )
-            datos_limpios["observaciones"] = self.data_sanitizer.sanitize_string(
+            datos_limpios["observaciones"] = sanitize_string(
                 datos_vidrio.get("observaciones", ""), max_length=500
             )
 
@@ -803,7 +807,7 @@ class VidriosModel:
             if not vidrio_info:
                 return False, f"Vidrio con ID {vidrio_id_limpio} no encontrado"
 
-            codigo, descripcion = vidrio_info
+            codigo, _ = vidrio_info
 
             # Verificar si el vidrio está asignado a alguna obra usando script SQL externo
             script_content = self.sql_loader.load_script("vidrios/count_vidrio_obras")

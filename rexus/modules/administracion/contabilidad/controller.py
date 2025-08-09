@@ -14,6 +14,7 @@ from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from datetime import datetime, date
 import csv
 import os
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ContabilidadController(QObject):

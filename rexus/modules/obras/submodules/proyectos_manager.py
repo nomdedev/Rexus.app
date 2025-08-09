@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -34,12 +35,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -58,7 +65,7 @@ class ProyectosManager:
         """Inicializa el gestor de proyectos."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/obras/proyectos"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -227,7 +234,7 @@ class ProyectosManager:
             return False
 
         try:
-            estado_sanitizado = self.data_sanitizer.sanitize_string(nuevo_estado)
+            estado_sanitizado = sanitize_string(nuevo_estado)
 
             # Validar estado
             if not self._validar_estado_obra(estado_sanitizado):
@@ -260,21 +267,21 @@ class ProyectosManager:
         datos_sanitizados = {}
 
         # Strings
-        datos_sanitizados["nombre"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["nombre"] = sanitize_string(
             datos.get("nombre", "")
         )
-        datos_sanitizados["descripcion"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["descripcion"] = sanitize_string(
             datos.get("descripcion", "")
         )
-        datos_sanitizados["cliente"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["cliente"] = sanitize_string(
             datos.get("cliente", "")
         )
-        datos_sanitizados["direccion"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["direccion"] = sanitize_string(
             datos.get("direccion", "")
         )
 
         # Números
-        datos_sanitizados["presupuesto"] = self.data_sanitizer.sanitize_numeric(
+        datos_sanitizados["presupuesto"] = self.sanitizer.sanitize_numeric(
             datos.get("presupuesto", 0), min_val=0
         )
 
@@ -283,7 +290,7 @@ class ProyectosManager:
         datos_sanitizados["fecha_fin_estimada"] = datos.get("fecha_fin_estimada")
 
         # Estado inicial
-        datos_sanitizados["estado"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["estado"] = sanitize_string(
             datos.get("estado", "PLANIFICACION")
         )
 

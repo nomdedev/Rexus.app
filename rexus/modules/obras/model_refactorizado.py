@@ -15,6 +15,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from .submodules.consultas_manager import ConsultasManager
 
@@ -24,12 +25,18 @@ from .submodules.recursos_manager import RecursosManager
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -46,7 +53,7 @@ class ModeloObrasRefactorizado:
     def __init__(self, db_connection=None):
         """Inicializa el modelo con los submódulos especializados."""
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
 
         # Inicializar submódulos especializados
         self.proyectos_manager = ProyectosManager(db_connection)

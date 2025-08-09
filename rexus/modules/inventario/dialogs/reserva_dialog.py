@@ -28,6 +28,7 @@ Diálogo para crear reservas de material por obra.
 
 from datetime import datetime
 from typing import Dict, Optional
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from PyQt6.QtCore import QDate, Qt
 from PyQt6.QtGui import QFont

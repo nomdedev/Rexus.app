@@ -23,15 +23,8 @@ from rexus.utils.sql_script_loader import sql_script_loader
 # Nota: Los decoradores admin_required y auth_required no se usan en este archivo.
 
 
-# Importar DataSanitizer para seguridad - usar versión compatible
-try:
-    from utils.data_sanitizer import DataSanitizer
-
-    _SANITIZER_TYPE = "utils"
-except ImportError:
-    from rexus.utils.data_sanitizer import DataSanitizer
-
-    _SANITIZER_TYPE = "rexus"
+# Importar sistema unificado de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ConfiguracionModel:
@@ -122,11 +115,8 @@ class ConfiguracionModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        # Inicializar sanitizador con método compatible
-        if _SANITIZER_TYPE == "utils":
-            self.data_sanitizer = DataSanitizer()
-        else:
-            self.data_sanitizer = DataSanitizer
+        # Usar el sistema unificado de sanitización
+        self.sanitizer = unified_sanitizer
         self.tabla_configuracion = "configuracion_sistema"
         self.config_file = Path("config/rexus_config.json")
         self.config_cache = {}
@@ -152,12 +142,8 @@ class ConfiguracionModel:
         if not isinstance(text, str):
             text = str(text) if text is not None else ""
 
-        if _SANITIZER_TYPE == "utils":
-            # Versión de utils con método de instancia
-            return self.data_sanitizer.sanitize_string(text)
-        else:
-            # Versión de rexus con método estático
-            return self.data_sanitizer.sanitize_text(text)
+        # Usar el sistema unificado
+        return sanitize_string(text)
 
     def _validate_table_name(self, table_name: str) -> str:
         """

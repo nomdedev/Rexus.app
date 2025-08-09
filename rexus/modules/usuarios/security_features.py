@@ -16,7 +16,7 @@ from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
 
 from rexus.utils.security import SecurityUtils
-from rexus.utils.data_sanitizer import DataSanitizer
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from utils.two_factor_auth import TwoFactorAuth
 
 
@@ -104,7 +104,7 @@ class UserSecurityManager:
         Returns:
             Dict con estado del intento y información de lockout
         """
-        username = DataSanitizer.sanitize_text(username)
+        username = sanitize_string(username)
         current_time = datetime.datetime.now()
         
         # Obtener datos del usuario
