@@ -269,7 +269,27 @@ class MainWindow(QMainWindow):
 
         self.content_stack = QStackedWidget()
 
+        # Inicializar StyleManager y aplicar tema automático
+        self._init_styles()
         self._init_ui()
+    
+    def _init_styles(self):
+        """Inicializa y aplica el sistema de estilos."""
+        try:
+            from rexus.ui.style_manager import StyleManager
+            
+            self.style_manager = StyleManager()
+            
+            # Aplicar tema global (auto-detectado en StyleManager)
+            success = self.style_manager.apply_global_theme()
+            if success:
+                print(f"[STYLE] Tema '{self.style_manager._current_theme}' aplicado globalmente")
+            else:
+                print("[STYLE] Fallback a estilos por defecto")
+                
+        except Exception as e:
+            print(f"[WARNING] Error inicializando StyleManager: {e}")
+            self.style_manager = None
 
     def _init_ui(self):
         self.setWindowTitle("Rexus.app v2.0.0 - Sistema de Gestión Integral")

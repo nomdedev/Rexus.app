@@ -248,9 +248,10 @@ class AdministracionViewFuncional(QWidget):
         layout.setSpacing(10)
         
         # Título principal
-        titulo = RexusLabel("🏢 Administración y Gestión", "title")
-        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(titulo)
+        # Quitar título específico - usar el título del BaseModuleView
+        # titulo = RexusLabel("🏢 Administración y Gestión", "title")
+        # titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        # layout.addWidget(titulo)
         
         # Pestañas principales
         self.tabs = QTabWidget()

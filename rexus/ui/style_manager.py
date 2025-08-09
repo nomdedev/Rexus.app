@@ -43,6 +43,7 @@ class StyleManager:
     AVAILABLE_THEMES = {
         'professional': 'professional_theme_clean.qss',
         'light': 'theme_light_clean.qss',
+        'dark': 'theme_dark_clean.qss',
         'minimal': 'theme_light_minimal_clean.qss',
         'optimized': 'theme_optimized_clean.qss',
         'consolidated': 'consolidated_theme_clean.qss'
@@ -66,6 +67,44 @@ class StyleManager:
             self.initialized = True
             self._loaded_themes: Dict[str, str] = {}
             self._load_available_themes()
+            self._detect_system_theme()
+    
+    def _detect_system_theme(self):
+        """
+        Detecta si el sistema está en modo oscuro y ajusta el tema por defecto.
+        Específico para Windows 10/11.
+        """
+        try:
+            import winreg
+            
+            # Intentar leer la configuración de Windows
+            try:
+                reg_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path)
+                
+                # AppsUseLightTheme: 0 = dark mode, 1 = light mode
+                apps_light_theme, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
+                winreg.CloseKey(key)
+                
+                if apps_light_theme == 0:  # Dark mode
+                    self._current_theme = 'dark'
+                    print("[STYLE] Tema oscuro detectado - aplicando 'dark'")
+                else:  # Light mode
+                    self._current_theme = 'light'
+                    print("[STYLE] Tema claro detectado - aplicando 'light'")
+                    
+            except (FileNotFoundError, winreg.error):
+                # Si no se puede leer el registro, usar tema por defecto
+                self._current_theme = 'professional'
+                print("[STYLE] No se pudo detectar tema del sistema - usando 'professional'")
+                
+        except ImportError:
+            # Si no está en Windows, usar tema por defecto
+            self._current_theme = 'professional'
+            print("[STYLE] Sistema no Windows - usando tema 'professional'")
+        except Exception as e:
+            print(f"[WARNING] Error detectando tema del sistema: {e}")
+            self._current_theme = 'professional'
     
     def _load_available_themes(self):
         """Carga todos los temas disponibles en memoria."""
@@ -255,6 +294,35 @@ class StyleManager:
             
         except Exception as e:
             logging.error(f"Error aplicando tema a módulo: {e}")
+            return False
+    
+    def apply_theme(self, widget: QWidget, theme_name: str = None) -> bool:
+        """
+        Aplica un tema específico a un widget.
+        
+        Args:
+            widget: Widget al que aplicar el tema
+            theme_name: Nombre del tema (si es None, usa el tema actual)
+        """
+        try:
+            if theme_name is None:
+                theme_name = self._current_theme
+            
+            # Si el tema no existe, usar el módulo
+            if theme_name not in self._loaded_themes:
+                return self.apply_module_theme(widget, theme_name)
+            
+            # Aplicar el tema específico
+            widget.setStyleSheet(self._loaded_themes[theme_name])
+            
+            # Forzar actualización
+            widget.style().unpolish(widget)
+            widget.style().polish(widget)
+            
+            return True
+            
+        except Exception as e:
+            print(f"[WARNING] Error aplicando tema '{theme_name}': {e}")
             return False
             
     def load_module_stylesheet(self, module_name: str) -> str:

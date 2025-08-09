@@ -258,6 +258,70 @@ class StandardComponents:
         return button
     
     @classmethod
+    def create_info_button(cls, text: str, icon_path: str = None) -> QPushButton:
+        """Crea un botón de información estandarizado."""
+        button = QPushButton(text)
+        
+        if icon_path:
+            button.setIcon(QIcon(icon_path))
+        
+        button.setStyleSheet(f"""
+            QPushButton {{
+                background: {cls.COLORS['secondary']};
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: 500;
+                min-height: 36px;
+            }}
+            QPushButton:hover {{
+                background: {cls.COLORS['primary']};
+            }}
+            QPushButton:pressed {{
+                background: {cls.COLORS['dark']};
+            }}
+            QPushButton:disabled {{
+                background: #94a3b8;
+                color: #cbd5e1;
+            }}
+        """)
+        
+        return button
+    
+    @classmethod
+    def create_warning_button(cls, text: str, icon_path: str = None) -> QPushButton:
+        """Crea un botón de advertencia estandarizado."""
+        button = QPushButton(text)
+        
+        if icon_path:
+            button.setIcon(QIcon(icon_path))
+        
+        button.setStyleSheet(f"""
+            QPushButton {{
+                background: {cls.COLORS['warning']};
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 8px 16px;
+                font-weight: 500;
+                min-height: 36px;
+            }}
+            QPushButton:hover {{
+                background: #e68900;
+            }}
+            QPushButton:pressed {{
+                background: #cc7700;
+            }}
+            QPushButton:disabled {{
+                background: #94a3b8;
+                color: #cbd5e1;
+            }}
+        """)
+        
+        return button
+    
+    @classmethod
     def create_standard_table(cls) -> QTableWidget:
         """Crea una tabla estandarizada."""
         table = QTableWidget()

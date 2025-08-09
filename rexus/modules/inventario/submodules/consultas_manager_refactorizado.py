@@ -42,7 +42,7 @@ class ConsultasManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
-        self.sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer
 
     def obtener_productos_paginados_inicial(
         self,

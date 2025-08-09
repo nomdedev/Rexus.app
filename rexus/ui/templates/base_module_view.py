@@ -12,7 +12,7 @@ from PyQt6.QtWidgets import (
     QSplitter, QStackedWidget, QScrollArea
 )
 
-from rexus.ui.components import (
+from rexus.ui.components.base_components import (
     RexusButton, RexusLabel, RexusLineEdit, RexusComboBox,
     RexusTable, RexusGroupBox, RexusFrame, RexusProgressBar,
     RexusMessageBox, RexusLayoutHelper, RexusColors
@@ -499,3 +499,132 @@ class BaseModuleView(QWidget):
         Debe ser implementado por las clases hijas.
         """
         pass
+    
+    def actualizar_registros(self):
+        """
+        Actualiza los registros mostrados en la vista.
+        Implementación por defecto que puede ser sobrescrita.
+        """
+        try:
+            if hasattr(self, 'cargar_datos'):
+                self.cargar_datos()
+            elif hasattr(self, 'actualizar_tabla'):
+                self.actualizar_tabla()
+            elif hasattr(self, 'refrescar'):
+                self.refrescar()
+            else:
+                print("[INFO] actualizar_registros llamado - sin implementación específica")
+        except Exception as e:
+            print(f"[WARNING] Error en actualizar_registros: {e}")
+
+    def limpiar_formulario(self):
+        """
+        Limpia los campos de formulario.
+        Implementación por defecto que puede ser sobrescrita.
+        """
+        try:
+            # Buscar y limpiar QLineEdit
+            from PyQt6.QtWidgets import QLineEdit, QTextEdit, QComboBox
+            
+            for child in self.findChildren(QLineEdit):
+                child.clear()
+            
+            for child in self.findChildren(QTextEdit):
+                child.clear()
+                
+            for child in self.findChildren(QComboBox):
+                child.setCurrentIndex(0)
+                
+        except Exception as e:
+            print(f"[WARNING] Error en limpiar_formulario: {e}")
+
+    def mostrar_mensaje(self, tipo, titulo, mensaje, detalle=None):
+        """
+        Muestra un mensaje al usuario usando QMessageBox.
+        
+        Args:
+            tipo: 'informacion', 'advertencia', 'error' o 'pregunta'
+            titulo: Título del mensaje
+            mensaje: Mensaje principal
+            detalle: Información adicional (opcional)
+        """
+        from PyQt6.QtWidgets import QMessageBox
+        
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle(titulo)
+        msg_box.setText(mensaje)
+        
+        if detalle:
+            msg_box.setDetailedText(str(detalle))
+        
+        # Configurar iconos según el tipo
+        if tipo.lower() in ['información', 'informacion', 'info']:
+            msg_box.setIcon(QMessageBox.Icon.Information)
+        elif tipo.lower() in ['advertencia', 'warning', 'warn']:
+            msg_box.setIcon(QMessageBox.Icon.Warning)
+        elif tipo.lower() in ['error', 'crítico', 'critico']:
+            msg_box.setIcon(QMessageBox.Icon.Critical)
+        elif tipo.lower() in ['pregunta', 'question']:
+            msg_box.setIcon(QMessageBox.Icon.Question)
+            msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
+        else:
+            msg_box.setIcon(QMessageBox.Icon.Information)
+        
+        return msg_box.exec()
+
+    def mostrar_error(self, mensaje, detalle=None):
+        """
+        Muestra un mensaje de error usando mostrar_mensaje.
+        """
+        return self.mostrar_mensaje('error', 'Error', mensaje, detalle)
+    
+    def mostrar_informacion(self, mensaje, detalle=None):
+        """
+        Muestra un mensaje informativo usando mostrar_mensaje.
+        """
+        return self.mostrar_mensaje('informacion', 'Información', mensaje, detalle)
+    
+    def mostrar_advertencia(self, mensaje, detalle=None):
+        """
+        Muestra un mensaje de advertencia usando mostrar_mensaje.
+        """
+        return self.mostrar_mensaje('advertencia', 'Advertencia', mensaje, detalle)
+
+    def confirmar_accion(self, mensaje, titulo="Confirmar"):
+        """
+        Muestra un diálogo de confirmación.
+        """
+        from PyQt6.QtWidgets import QMessageBox
+        
+        return self.mostrar_mensaje('pregunta', titulo, mensaje) == QMessageBox.StandardButton.Yes
+
+    def set_main_table(self, table_widget):
+        """
+        Establece la tabla principal del módulo.
+        """
+        try:
+            self.tabla_principal = table_widget
+            if hasattr(self, 'main_content_area') and table_widget:
+                self.main_content_area.addWidget(table_widget)
+        except Exception as e:
+            print(f"[WARNING] Error en set_main_table: {e}")
+
+    def add_to_main_content(self, widget_or_layout):
+        """
+        Agrega un widget o layout al contenido principal del módulo.
+        """
+        try:
+            main_layout = self.layout()
+            if main_layout is None:
+                main_layout = QVBoxLayout(self)
+            
+            # Verificar si es un QVBoxLayout para agregar layout
+            if hasattr(widget_or_layout, 'addWidget') and isinstance(main_layout, QVBoxLayout):
+                main_layout.addLayout(widget_or_layout)
+            else:
+                # Es un widget
+                main_layout.addWidget(widget_or_layout)
+        except Exception as e:
+            print(f"[WARNING] Error en add_to_main_content: {e}")
+            # Fallback básico
+            pass

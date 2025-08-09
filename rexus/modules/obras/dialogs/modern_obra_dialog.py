@@ -61,7 +61,7 @@ except ImportError:
                 if max_val is not None and num > max_val:
                     return False
                 return True
-            except:
+            except (ValueError, TypeError):
                 return False
         
         @staticmethod
@@ -378,7 +378,8 @@ class ModernObraDialog(ModernFormDialog):
                                 date_parts = value.split('-')
                                 qdate = QDate(int(date_parts[0]), int(date_parts[1]), int(date_parts[2]))
                                 widget.setDate(qdate)
-                            except:
+                            except (ValueError, IndexError) as e:
+                                print(f"[WARNING OBRA_DIALOG] Invalid date format '{value}': {e}")
                                 widget.setDate(QDate.currentDate())
                         else:
                             widget.setDate(value)

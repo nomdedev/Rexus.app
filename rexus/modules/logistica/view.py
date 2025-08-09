@@ -107,34 +107,34 @@ class LogisticaView(QWidget):
         # Inicializar protección XSS
         self.init_xss_protection()
 
-    # def crear_titulo(self, layout: QVBoxLayout):
-#         """Crea el título moderno de la vista."""
-#         titulo_container = RexusFrame()
-#         titulo_container.setStyleSheet("""
-#             QFrame {
-#                 background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-#                                            stop:0 #17a2b8, stop:1 #6c757d);
-#                 border-radius: 8px;
-#                 padding: 6px;
-#                 margin-bottom: 10px;
-#             }
-#         """)
-# 
-#         titulo_layout = QHBoxLayout(titulo_container)
-# 
-#         # Título principal
-#         title_label = RexusLabel("🚚 Gestión de Logística")
-#         title_label.setStyleSheet("""
-#             QLabel {
-#                 font-size: 16px;
-#                 font-weight: bold;
-#                 color: white;
-#                 background: transparent;
-#                 padding: 0;
-#                 margin: 0;
-#             }
-#         """)
-#         titulo_layout.addWidget(title_label)
+    def crear_titulo(self, layout: QVBoxLayout):
+        """Crea el título moderno de la vista."""
+        titulo_container = RexusFrame()
+        titulo_container.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                           stop:0 #17a2b8, stop:1 #6c757d);
+                border-radius: 8px;
+                padding: 6px;
+                margin-bottom: 10px;
+            }
+        """)
+
+        titulo_layout = QHBoxLayout(titulo_container)
+
+        # Título principal
+        title_label = RexusLabel("🚚 Gestión de Logística")
+        title_label.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: white;
+                background: transparent;
+                padding: 0;
+                margin: 0;
+            }
+        """)
+        titulo_layout.addWidget(title_label)
 
         # Botón de configuración
         self.btn_configuracion = RexusButton("⚙️ Configuración")

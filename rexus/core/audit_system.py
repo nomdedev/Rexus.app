@@ -405,8 +405,9 @@ class AuditSystem:
                 if log_entry.get('detalles'):
                     try:
                         log_entry['detalles'] = json.loads(log_entry['detalles'])
-                    except:
-                        pass
+                    except (json.JSONDecodeError, TypeError) as e:
+                        print(f"[WARNING AUDIT] Error parsing JSON details: {e}")
+                        log_entry['detalles'] = str(log_entry['detalles'])
                 logs.append(log_entry)
             
             return logs

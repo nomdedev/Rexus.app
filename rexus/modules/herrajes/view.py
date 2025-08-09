@@ -3,800 +3,1128 @@ MIT License
 
 Copyright (c) 2024 Rexus.app
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice sh        # Estados de botones principales
-        self.btn_nuevo_herraje.setEnabled(not loading)
-        self.btn_buscar.setEnabled(not loading)
-        self.btn_actualizar.setEnabled(not loading)e included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-
-Vista de Herrajes - Interfaz de gestión de herrajes
+Vista Principal de Herrajes - Interfaz moderna de gestión de herrajes
+Versión simplificada con componentes básicos de PyQt6
 """
 
 import logging
+from typing import Optional, Dict, List
 
-from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtCore import pyqtSignal, Qt
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
-    QTableWidgetItem,
-    QAbstractItemView,
-    QDialog,
-    QFormLayout,
+    QComboBox,
+    QGroupBox,
     QHBoxLayout,
+    QLabel,
+    QLineEdit,
+    QTableWidget,
+    QTableWidgetItem,
     QVBoxLayout,
-    QSpinBox,
-    QDoubleSpinBox,
+    QWidget,
+    QPushButton,
+    QHeaderView
 )
 
-# Importar componentes del framework de estandarización UI
-from rexus.ui.components.base_components import (
-    RexusButton,
-    RexusLabel,
-    RexusLineEdit,
-    RexusComboBox,
-    RexusTable,
-    RexusGroupBox,
-    RexusFrame,
-    RexusTabWidget,
-    RexusColors,
-    RexusFonts,
-    RexusLayoutHelper
-)
-from rexus.ui.templates.base_module_view import BaseModuleView
+# Importar componentes básicos
+from rexus.ui.components.base_components import RexusColors
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+from rexus.utils.loading_manager import LoadingManager
+from rexus.utils.message_system import ask_question, show_error, show_warning
+from rexus.utils.xss_protection import FormProtector
 
-from rexus.utils.message_system import show_error, show_warning, show_success
-from rexus.utils.xss_protection import FormProtector, XSSProtection
 
-
-class HerrajesView(BaseModuleView):
-    """Vista principal del módulo de herrajes."""
+class HerrajesView(QWidget):
+    """Vista principal del módulo de herrajes con UI/UX modernizada."""
 
     # Señales
     datos_actualizados = pyqtSignal()
     error_ocurrido = pyqtSignal(str)
-
-    # Constantes para mensajes de error
-    MSG_SIN_CONTROLADOR = "Sin controlador"
-    MSG_NO_CONTROLADOR_DISPONIBLE = "No hay controlador disponible"
-    MSG_NO_CONTROLADOR_SINCRONIZACION = "No hay controlador disponible para la sincronización"
+    herraje_seleccionado = pyqtSignal(dict)
 
     def __init__(self):
-        super().__init__("🔧 Gestión de Herrajes")
+        super().__init__()
         self.controller = None
-        self.form_protector = None
-        self.setup_herrajes_ui()
-
-    def setup_herrajes_ui(self):
-        """Configura la UI específica del módulo de herrajes."""
-        # Configurar controles específicos
-        self.setup_herrajes_controls()
-        
-        # Crear sistema de pestañas usando RexusTabWidget
-        self.tab_widget = RexusTabWidget()
-
-        # Pestaña de Gestión de Herrajes
-        tab_gestion = self.crear_tab_gestion()
-        self.tab_widget.addTab(tab_gestion, "🔧 Gestión")
-
-        # Pestaña de Estadísticas
-        tab_estadisticas = self.crear_tab_estadisticas()
-        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
-
-        self.add_to_main_content(self.tab_widget)
-
-        # Aplicar tema del módulo
-        self.apply_theme()
+        self.loading_manager = LoadingManager()
 
         # Inicializar protección XSS
-        self.init_xss_protection()
+        self.form_protector = FormProtector(self)
+        self.form_protector.dangerous_content_detected.connect(
+            self._on_dangerous_content
+        )
 
-    def setup_herrajes_controls(self):
-        """Configura los controles específicos del módulo de herrajes."""
-        # Los controles principales se configurarán dentro de las pestañas
-        pass
-    
-    def crear_tab_gestion(self):
-        """Crea la pestaña de gestión de herrajes."""
-        tab = RexusFrame()
-        layout = RexusLayoutHelper.create_vertical_layout()
-        layout.setSpacing(10)
-        layout.setContentsMargins(10, 10, 10, 10)
+        # Referencias a widgets importantes
+        self.tabla_herrajes = None
+        self.input_busqueda = None
+        self.combo_categoria = None
+        self.stats_labels = {}
 
-        # Panel de control
+        self.init_ui()
+        self.aplicar_tema()
+
+    def init_ui(self):
+        """Inicializa la interfaz de usuario con pestañas (QTabWidget)."""
+        main_layout = QVBoxLayout(self)
+        main_layout.setSpacing(10)
+        main_layout.setContentsMargins(10, 10, 10, 10)
+
+        from PyQt6.QtWidgets import QTabWidget
+        self.tabs = QTabWidget()
+        self.tabs.setTabPosition(QTabWidget.TabPosition.North)
+        self.tabs.setMovable(False)
+
+        # --- Pestaña Inventario ---
+        tab_inventario = QWidget()
+        inventario_layout = QVBoxLayout(tab_inventario)
+        inventario_layout.setSpacing(10)
+        inventario_layout.setContentsMargins(10, 10, 10, 10)
         control_panel = self.crear_panel_control()
-        layout.addWidget(control_panel)
+        inventario_layout.addWidget(control_panel)
+        # Remover panel de estadísticas de aquí - solo en pestaña Estadísticas
+        self.crear_tabla_herrajes(inventario_layout)
+        self.tab_inventario = tab_inventario
+        self.tabs.addTab(tab_inventario, "Inventario")
 
-        # Panel de integración con inventario
-        integration_panel = self.crear_panel_integracion()
-        layout.addWidget(integration_panel)
-
-        # Tabla principal
-        self.tabla_principal = RexusTable()
-        self.configurar_tabla()
-        layout.addWidget(self.tabla_principal)
-
-        tab.setLayout(layout)
-        return tab
-
-    def crear_tab_estadisticas(self):
-        """Crea la pestaña de estadísticas de herrajes."""
-        tab = RexusFrame()
-        layout = RexusLayoutHelper.create_vertical_layout()
-        layout.setSpacing(15)
-        layout.setContentsMargins(20, 20, 20, 20)
-
-        # Panel de estadísticas principales
-        stats_panel = self.crear_panel_estadisticas()
-        layout.addWidget(stats_panel)
-
-        # Panel de análisis de stock
-        stock_panel = self.crear_panel_analisis_stock()
-        layout.addWidget(stock_panel)
-
-        # Panel de reportes de herrajes
-        reportes_panel = self.crear_panel_reportes_herrajes()
-        layout.addWidget(reportes_panel)
-
-        layout.addStretch()
-        tab.setLayout(layout)
-        return tab
-
-    def crear_panel_analisis_stock(self):
-        """Crea el panel de análisis de stock."""
-        panel = RexusGroupBox("📈 Análisis de Stock")
-        layout = RexusLayoutHelper.create_vertical_layout()
+        # --- Pestaña Asignación a Obra ---
+        tab_asignacion = QWidget()
+        asignacion_layout = QVBoxLayout(tab_asignacion)
+        asignacion_layout.setSpacing(10)
+        asignacion_layout.setContentsMargins(10, 10, 10, 10)
         
-        # Placeholder para análisis de stock
-        placeholder = RexusLabel("📊 Análisis de stock próximamente", "body")
-        placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(placeholder)
-
-        panel.setLayout(layout)
-        return panel
-
-    def crear_panel_reportes_herrajes(self):
-        """Crea el panel de reportes de herrajes."""
-        panel = RexusGroupBox("📄 Reportes de Herrajes")
-        layout = RexusLayoutHelper.create_horizontal_layout()
+        # Panel de selección de obra
+        obra_panel = QGroupBox("Seleccionar Obra")
+        obra_layout = QHBoxLayout(obra_panel)
         
-        # Botones de reportes con componentes Rexus
-        btn_reporte_stock = RexusButton("📋 Herrajes por Stock", "primary")
-        layout.addWidget(btn_reporte_stock)
+        self.combo_obras = QComboBox()
+        self.combo_obras.setPlaceholderText("Seleccione una obra...")
+        self.combo_obras.setMinimumHeight(35)
+        obra_layout.addWidget(QLabel("Obra:"))
+        obra_layout.addWidget(self.combo_obras, 2)
+        
+        self.btn_cargar_obra = QPushButton("Cargar Herrajes")
+        self.btn_cargar_obra.setMinimumHeight(35)
+        self.btn_cargar_obra.clicked.connect(self.on_cargar_herrajes_obra)
+        obra_layout.addWidget(self.btn_cargar_obra)
+        
+        asignacion_layout.addWidget(obra_panel)
+        
+        # Tabla de herrajes asignados a la obra
+        self.tabla_herrajes_obra = QTableWidget()
+        self.configurar_tabla_obra()
+        asignacion_layout.addWidget(self.tabla_herrajes_obra)
+        
+        self.tabs.addTab(tab_asignacion, "Asignación a Obra")
 
-        btn_reporte_categorias = RexusButton("📊 Por Categorías", "secondary")
-        layout.addWidget(btn_reporte_categorias)
+        # --- Pestaña Proveedores ---
+        tab_proveedores = QWidget()
+        proveedores_layout = QVBoxLayout(tab_proveedores)
+        proveedores_layout.setSpacing(10)
+        proveedores_layout.setContentsMargins(10, 10, 10, 10)
+        
+        # Panel de gestión de proveedores
+        proveedor_panel = QGroupBox("Gestión de Proveedores")
+        proveedor_layout = QVBoxLayout(proveedor_panel)
+        
+        # Lista de proveedores
+        self.lista_proveedores = QTableWidget()
+        self.lista_proveedores.setColumnCount(3)
+        self.lista_proveedores.setHorizontalHeaderLabels(["Proveedor", "Contacto", "Herrajes Suministrados"])
+        
+        # Aplicar estilos mejorados para tabla de proveedores
+        self.lista_proveedores.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #666666;
+                background-color: #f8f9fa;
+                alternate-background-color: #e9ecef;
+                selection-background-color: #007bff;
+                selection-color: white;
+                border: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border-bottom: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item:hover {
+                background-color: #e3f2fd;
+            }
+            QTableWidget::item:selected {
+                background-color: #007bff;
+                color: white;
+            }
+            QHeaderView::section {
+                background-color: #495057;
+                color: white;
+                padding: 8px;
+                border: 1px solid #343a40;
+                font-weight: bold;
+            }
+        """)
+        self.lista_proveedores.setAlternatingRowColors(True)
+        self.lista_proveedores.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        proveedor_layout.addWidget(self.lista_proveedores)
+        
+        proveedores_layout.addWidget(proveedor_panel)
+        self.tabs.addTab(tab_proveedores, "Proveedores")
 
-        btn_reporte_proveedores = RexusButton("🏭 Por Proveedores", "secondary")
-        layout.addWidget(btn_reporte_proveedores)
-        layout.addStretch()
-        panel.setLayout(layout)
-        return panel
+        # --- Pestaña Estadísticas ---
+        tab_estadisticas = QWidget()
+        estadisticas_layout = QVBoxLayout(tab_estadisticas)
+        estadisticas_layout.setSpacing(10)
+        estadisticas_layout.setContentsMargins(10, 10, 10, 10)
+        stats_panel2 = self.crear_panel_estadisticas()
+        estadisticas_layout.addWidget(stats_panel2)
+        self.tabs.addTab(tab_estadisticas, "Estadísticas")
 
+        main_layout.addWidget(self.tabs)
 
-        # Aplicar tema del módulo
-        try:
-            style_manager.apply_module_theme(self)
-        except Exception as e:
-            print(f"[HERRAJES] Error aplicando tema: {e}")
-            # Aplicar estilos de alto contraste como fallback
-            self.apply_high_contrast_style()
+    # Eliminar método crear_titulo (ya no se usa)
 
-    def apply_high_contrast_style(self):
-        """Aplicar estilos de alto contraste para mejor legibilidad."""
-        # Los estilos de alto contraste ahora se manejan a través del sistema unificado de temas
-        style_manager.apply_theme(self, "high_contrast")
+    def crear_panel_control(self) -> QGroupBox:
+        """Crea el panel de control con búsqueda y acciones."""
+        grupo = QGroupBox("Panel de Control")
+        layout = QVBoxLayout(grupo)
+        layout.setSpacing(10)
 
-    def init_xss_protection(self):
-        """Inicializa la protección XSS para los campos del formulario."""
-        try:
-            self.form_protector = FormProtector()
+        # Fila superior: Búsqueda y filtros
+        fila_busqueda = QHBoxLayout()
+        
+        # Campo de búsqueda
+        self.input_busqueda = QLineEdit()
+        self.input_busqueda.setPlaceholderText("🔍 Buscar herrajes por código, nombre o tipo...")
+        self.input_busqueda.setToolTip("Buscar herrajes por código, nombre, tipo o proveedor")
+        self.input_busqueda.setMinimumHeight(35)
+        fila_busqueda.addWidget(self.input_busqueda, 2)
 
-            # Proteger campos si existen
-            if hasattr(self, "input_busqueda"):
-                self.form_protector.protect_field(self.input_busqueda, "busqueda")
-
-        except Exception as e:
-            logging.error(f"Error inicializando protección XSS: {e}")
-
-    def crear_panel_control(self):
-        """Crea el panel de control superior con botones modernos."""
-        panel = RexusGroupBox("🎛️ Panel de Control")
-        layout = RexusLayoutHelper.create_horizontal_layout()
-
-        # Botón Nuevo Herraje con componente Rexus
-        self.btn_nuevo = RexusButton("➕ Nuevo Herraje", "primary")
-        self.btn_nuevo.setToolTip("➕ Crear un nuevo herraje en el sistema")
-        self.btn_nuevo.clicked.connect(self.nuevo_registro)
-        layout.addWidget(self.btn_nuevo)
-
-        # Campo de búsqueda usando componente Rexus
-        self.input_busqueda = RexusLineEdit("🔍 Buscar herraje por nombre o descripción...")
-        self.input_busqueda.setToolTip("🔍 Buscar herrajes por nombre, descripción o tipo")
-        self.input_busqueda.returnPressed.connect(self.buscar)
-        layout.addWidget(self.input_busqueda)
-
-        # Filtro de tipo usando componente Rexus
-        self.combo_tipo = RexusComboBox([
-            "🔩 Todos los tipos",
-            "⚙️ Tornillería",
-            "🔗 Cadenas",
-            "🚪 Bisagras", 
-            "🔐 Cerraduras",
-            "🔧 Herramientas",
-            "📏 Medición"
+        # Filtro por categoría
+        self.combo_categoria = QComboBox()
+        self.combo_categoria.addItems([
+            "📂 Todas las categorías",
+            "🚪 Bisagras",
+            "🔐 Cerraduras", 
+            "🎯 Manijas",
+            "⚙️ Otros herrajes"
         ])
-        self.combo_tipo.setToolTip("🔩 Filtrar herrajes por tipo")
-        layout.addWidget(self.combo_tipo)
+        self.combo_categoria.setMinimumHeight(35)
+        self.combo_categoria.setToolTip("Filtrar herrajes por categoría")
+        fila_busqueda.addWidget(self.combo_categoria, 1)
 
-        # Botón buscar usando componente Rexus
-        self.btn_buscar = RexusButton("🔍 Buscar", "primary")
-        self.btn_buscar.setToolTip("🔍 Ejecutar búsqueda con filtros actuales")
-        self.btn_buscar.clicked.connect(self.buscar)
-        layout.addWidget(self.btn_buscar)
+        layout.addLayout(fila_busqueda)
 
-        # Botón actualizar usando componente Rexus
-        self.btn_actualizar = RexusButton("🔄 Actualizar", "success")
-        self.btn_actualizar.setToolTip("🔄 Actualizar lista completa de herrajes")
-        self.btn_actualizar.clicked.connect(self.actualizar_datos)
-        layout.addWidget(self.btn_actualizar)
-
-        # Separador y botones de acción
-        layout.addStretch()
+        # Fila inferior: Botones de acción
+        botones_layout = QHBoxLayout()
         
-        # Botón editar usando componente Rexus
-        self.btn_editar = RexusButton("✏️ Editar", "warning")
-        self.btn_editar.setToolTip("✏️ Editar herraje seleccionado")
-        self.btn_editar.setEnabled(False)
-        layout.addWidget(self.btn_editar)
+        # Crear botones básicos
+        self.btn_nuevo = self.crear_boton("➕ Nuevo Herraje", "primary")
+        self.btn_editar = self.crear_boton("✏️ Editar", "secondary")
+        self.btn_eliminar = self.crear_boton("🗑️ Eliminar", "danger")
+        self.btn_actualizar = self.crear_boton("🔄 Actualizar", "info")
+        self.btn_exportar = self.crear_boton("📊 Exportar", "success")
 
-        # Botón eliminar usando componente Rexus
-        self.btn_eliminar = RexusButton("🗑️ Eliminar", "danger")
-        self.btn_eliminar.setToolTip("🗑️ Eliminar herraje seleccionado")
-        self.btn_eliminar.setEnabled(False)
-        layout.addWidget(self.btn_eliminar)
+        # Conectar botones
+        self.btn_nuevo.clicked.connect(self.on_nuevo_herraje)
+        self.btn_editar.clicked.connect(self.on_editar_herraje)
+        self.btn_eliminar.clicked.connect(self.on_eliminar_herraje)
+        self.btn_actualizar.clicked.connect(self.on_actualizar_datos)
+        self.btn_exportar.clicked.connect(self.on_exportar_datos)
 
-        return panel
+        botones_layout.addWidget(self.btn_nuevo)
+        botones_layout.addWidget(self.btn_editar)
+        botones_layout.addWidget(self.btn_eliminar)
+        botones_layout.addWidget(self.btn_actualizar)
+        botones_layout.addWidget(self.btn_exportar)
+        botones_layout.addStretch()
+        
+        layout.addLayout(botones_layout)
 
-    def crear_panel_estadisticas(self):
-        """Crea el panel de estadísticas de herrajes."""
-        panel = RexusGroupBox("📊 Estadísticas de Herrajes")
+        # Conectar señales de búsqueda
+        self.input_busqueda.textChanged.connect(self.on_buscar)
+        self.combo_categoria.currentTextChanged.connect(self.on_filtrar_categoria)
 
-        layout = RexusLayoutHelper.create_horizontal_layout()
+        return grupo
 
-        # Total herrajes
-        self.lbl_total_herrajes = self.crear_stat_widget("🔩", "Total Herrajes", "0", "#17a2b8")
-        layout.addWidget(self.lbl_total_herrajes)
+    def crear_boton(self, texto: str, estilo: str) -> QPushButton:
+        """Crea un botón con estilo específico."""
+        boton = QPushButton(texto)
+        boton.setMinimumHeight(30)
+        
+        # Aplicar estilos según el tipo
+        if estilo == "primary":
+            boton.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {RexusColors.PRIMARY};
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 5px 15px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: #0056b3;
+                }}
+            """)
+        elif estilo == "danger":
+            boton.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: #dc3545;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 5px 15px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: #c82333;
+                }}
+            """)
+        elif estilo == "success":
+            boton.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: #28a745;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 5px 15px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: #218838;
+                }}
+            """)
+        elif estilo == "info":
+            boton.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: #17a2b8;
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 5px 15px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: #138496;
+                }}
+            """)
+        else:  # secondary
+            boton.setStyleSheet(f"""
+                QPushButton {{
+                    background-color: {RexusColors.SECONDARY};
+                    color: white;
+                    border: none;
+                    border-radius: 4px;
+                    padding: 5px 15px;
+                    font-weight: bold;
+                }}
+                QPushButton:hover {{
+                    background-color: #5a6268;
+                }}
+            """)
+        
+        return boton
 
-        # Herrajes activos
-        self.lbl_herrajes_activos = self.crear_stat_widget("✅", "Activos", "0", "#28a745")
-        layout.addWidget(self.lbl_herrajes_activos)
+    def crear_panel_estadisticas(self) -> QGroupBox:
+        """Crea panel de estadísticas."""
+        grupo = QGroupBox("Estadísticas")
+        layout = QHBoxLayout(grupo)
+        
+        # Crear estadísticas básicas
+        stats = [
+            ("🔧", "Total Herrajes", "total_herrajes", RexusColors.PRIMARY),
+            ("📦", "En Stock", "en_stock", "#28a745"),
+            ("⚠️", "Stock Bajo", "stock_bajo", "#ffc107"),
+            ("🚫", "Sin Stock", "sin_stock", "#dc3545")
+        ]
+        
+        for icon, title, key, color in stats:
+            stat_widget = self.crear_stat_widget(icon, title, "0", color)
+            self.stats_labels[key] = stat_widget.findChild(QLabel, "value_label")
+            layout.addWidget(stat_widget)
+        
+        return grupo
 
-        # Herrajes inactivos
-        self.lbl_herrajes_inactivos = self.crear_stat_widget("⏸️", "Inactivos", "0", "#ffc107")
-        layout.addWidget(self.lbl_herrajes_inactivos)
-
-        # Tipos disponibles
-        self.lbl_tipos_disponibles = self.crear_stat_widget("📂", "Tipos", "0", "#6c757d")
-        layout.addWidget(self.lbl_tipos_disponibles)
-
-        return panel
-
-    def crear_stat_widget(self, icono, titulo, valor, color):
+    def crear_stat_widget(self, icon: str, title: str, value: str, color: str) -> QWidget:
         """Crea un widget de estadística individual."""
-        widget = RexusFrame()
-        
-        layout = RexusLayoutHelper.create_vertical_layout()
-        layout.setSpacing(5)
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        # Icono y título
-        header_layout = RexusLayoutHelper.create_horizontal_layout()
         
-        icono_lbl = RexusLabel(icono, "subtitle")
-        header_layout.addWidget(icono_lbl)
+        # Icono y valor
+        icon_label = QLabel(f"{icon} {value}")
+        icon_label.setObjectName("value_label")
+        icon_label.setStyleSheet(f"""
+            QLabel {{
+                font-size: 24px;
+                font-weight: bold;
+                color: {color};
+                margin: 5px;
+            }}
+        """)
+        icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        titulo_lbl = RexusLabel(titulo, "caption")
-        header_layout.addWidget(titulo_lbl)
+        # Título
+        title_label = QLabel(title)
+        title_label.setStyleSheet(f"""
+            QLabel {{
+                font-size: 12px;
+                color: {RexusColors.TEXT_SECONDARY};
+                margin: 2px;
+            }}
+        """)
+        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
-        layout.addLayout(header_layout)
-
-        # Valor
-        valor_lbl = RexusLabel(valor, "heading")
-        valor_lbl.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(valor_lbl)
-
-        # Guardar referencia al label del valor para actualizar
-        setattr(widget, 'valor_label', valor_lbl)
+        layout.addWidget(icon_label)
+        layout.addWidget(title_label)
+        
+        widget.setStyleSheet(f"""
+            QWidget {{
+                border: 1px solid {RexusColors.BORDER_LIGHT};
+                border-radius: 6px;
+                background-color: {RexusColors.SURFACE};
+                margin: 2px;
+                padding: 10px;
+            }}
+        """)
         
         return widget
 
+    def crear_tabla_herrajes(self, layout: QVBoxLayout):
+        """Crea y configura la tabla de herrajes."""
+        # Grupo contenedor
+        grupo_tabla = QGroupBox("Lista de Herrajes")
+        tabla_layout = QVBoxLayout(grupo_tabla)
+
+        # Crear tabla
+        self.tabla_herrajes = QTableWidget()
+        self.configurar_tabla()
+        tabla_layout.addWidget(self.tabla_herrajes)
+
+        layout.addWidget(grupo_tabla)
+
     def configurar_tabla(self):
-        """Configura la tabla principal con estilos modernos."""
-        self.tabla_principal.setColumnCount(7)
-        self.tabla_principal.setHorizontalHeaderLabels([
-            "🆔 ID",
-            "🔧 Nombre", 
-            "📝 Descripción",
-            "📂 Tipo",
-            "📊 Estado",
-            "📅 Última Actualización",
-            "⚡ Acciones"
-        ])
+        """Configura la tabla de herrajes con estilo moderno y robusto."""
+        if not self.tabla_herrajes:
+            return
 
-        # Configurar tamaños de columnas
-        header = self.tabla_principal.horizontalHeader()
-        header.resizeSection(0, 60)   # ID
-        header.resizeSection(1, 150)  # Nombre
-        header.resizeSection(2, 200)  # Descripción
-        header.resizeSection(3, 120)  # Tipo
-        header.resizeSection(4, 100)  # Estado
-        header.resizeSection(5, 140)  # Última Actualización
-        header.setStretchLastSection(True)  # Acciones
+        columnas = [
+            "Código",
+            "Nombre", 
+            "Tipo",
+            "Stock",
+            "Precio Unit.",
+            "Proveedor",
+            "Estado"
+        ]
+        self.tabla_herrajes.setColumnCount(len(columnas))
+        self.tabla_herrajes.setHorizontalHeaderLabels(columnas)
 
-        # Configuraciones visuales
-        self.tabla_principal.setAlternatingRowColors(True)
-        self.tabla_principal.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
+        # Configurar ancho de columnas solo si el header existe
+        header = self.tabla_herrajes.horizontalHeader()
+        if header is not None:
+            try:
+                header.setStretchLastSection(True)
+                header.setSectionResizeMode(0, QHeaderView.ResizeMode.Fixed)
+                header.setSectionResizeMode(1, QHeaderView.ResizeMode.Stretch)
+                header.setSectionResizeMode(2, QHeaderView.ResizeMode.Fixed)
+                header.setSectionResizeMode(3, QHeaderView.ResizeMode.Fixed)
+                header.setSectionResizeMode(4, QHeaderView.ResizeMode.Fixed)
+                header.setSectionResizeMode(5, QHeaderView.ResizeMode.Stretch)
+            except Exception as e:
+                logging.warning(f"No se pudo configurar el header de la tabla: {e}")
+
+        # Establecer anchos específicos
+        self.tabla_herrajes.setColumnWidth(0, 100)  # Código
+        self.tabla_herrajes.setColumnWidth(2, 120)  # Tipo
+        self.tabla_herrajes.setColumnWidth(3, 80)   # Stock
+        self.tabla_herrajes.setColumnWidth(4, 100)  # Precio
+
+        # Configurar comportamiento
+        self.tabla_herrajes.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.tabla_herrajes.setAlternatingRowColors(True)
+        self.tabla_herrajes.setSortingEnabled(True)
+
+        # Aplicar estilos mejorados para mejor contraste
+        self.tabla_herrajes.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #666666;
+                background-color: #f8f9fa;
+                alternate-background-color: #e9ecef;
+                selection-background-color: #007bff;
+                selection-color: white;
+                border: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border-bottom: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item:hover {
+                background-color: #e3f2fd;
+            }
+            QTableWidget::item:selected {
+                background-color: #007bff;
+                color: white;
+            }
+            QHeaderView::section {
+                background-color: #495057;
+                color: white;
+                padding: 8px;
+                border: 1px solid #343a40;
+                font-weight: bold;
+            }
+        """)
+
+        # Conectar señales
+        self.tabla_herrajes.itemSelectionChanged.connect(self.on_seleccion_cambiada)
+        self.tabla_herrajes.itemDoubleClicked.connect(self.on_editar_herraje)
+
+    def configurar_tabla_obra(self):
+        """Configura la tabla de herrajes por obra."""
+        if not self.tabla_herrajes_obra:
+            return
+            
+        columnas = ["Código", "Nombre", "Cantidad Requerida", "Cantidad Instalada", "Estado"]
+        self.tabla_herrajes_obra.setColumnCount(len(columnas))
+        self.tabla_herrajes_obra.setHorizontalHeaderLabels(columnas)
         
-        # Conectar señal de selección
-        self.tabla_principal.itemSelectionChanged.connect(self.on_herraje_seleccionado)
-
-    def apply_theme(self):
-        """Aplica el tema usando el sistema unificado de Rexus."""
-        # Usar el sistema de temas de Rexus en lugar de CSS inline
-        style_manager.apply_theme(self, "high_contrast")
+        # Configurar comportamiento
+        self.tabla_herrajes_obra.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.tabla_herrajes_obra.setAlternatingRowColors(True)
+        self.tabla_herrajes_obra.setSortingEnabled(True)
         
-        # Configuraciones específicas para el módulo de herrajes si es necesario
-        self._apply_herrajes_specific_styling()
-    
-    def _apply_herrajes_specific_styling(self):
-        """Aplica estilos específicos del módulo de herrajes."""
-        # Los estilos ahora los maneja el sistema unificado de temas
-        pass
-    
+        # Aplicar estilos mejorados para mejor contraste
+        self.tabla_herrajes_obra.setStyleSheet("""
+            QTableWidget {
+                gridline-color: #666666;
+                background-color: #f8f9fa;
+                alternate-background-color: #e9ecef;
+                selection-background-color: #007bff;
+                selection-color: white;
+                border: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item {
+                padding: 8px;
+                border-bottom: 1px solid #dee2e6;
+                color: #212529;
+            }
+            QTableWidget::item:hover {
+                background-color: #e3f2fd;
+            }
+            QTableWidget::item:selected {
+                background-color: #007bff;
+                color: white;
+            }
+            QHeaderView::section {
+                background-color: #495057;
+                color: white;
+                padding: 8px;
+                border: 1px solid #343a40;
+                font-weight: bold;
+            }
+        """)
 
-    def aplicar_estilo_basico(self):
-        """Aplica estilos básicos como fallback."""
-        # Los estilos básicos ahora se manejan a través del sistema unificado de temas
-        style_manager.apply_theme(self, "default")
+    def showEvent(self, a0):
+        """Carga los datos de herrajes al mostrar la vista."""
+        super().showEvent(a0)
+        if hasattr(self, 'controller') and self.controller:
+            self.controller.cargar_datos_iniciales()
 
-    def set_loading_state(self, loading: bool):
-        """Maneja el estado de carga de la interfaz."""
-        # Estados de botones principales
-        self.btn_nuevo.setEnabled(not loading)
-        self.btn_buscar.setEnabled(not loading)
-        self.btn_actualizar.setEnabled(not loading)
-        
-        # Estados de botones de acción
-        selected = self.tabla_principal.currentRow() >= 0
-        self.btn_editar.setEnabled(not loading and selected)
-        self.btn_eliminar.setEnabled(not loading and selected)
-        
-        # Cambiar textos durante loading
-        if loading:
-            self.btn_actualizar.setText("⏳ Actualizando...")
-            self.btn_buscar.setText("🔍 Buscando...")
-        else:
-            self.btn_actualizar.setText("🔄 Actualizar")
-            self.btn_buscar.setText("🔍 Buscar")
+    # El método on_actualizar_datos ya existe, no duplicar
 
-    def on_herraje_seleccionado(self):
-        """Maneja la selección de herrajes en la tabla."""
-        hay_seleccion = self.tabla_principal.currentRow() >= 0
-        self.btn_editar.setEnabled(hay_seleccion)
-        self.btn_eliminar.setEnabled(hay_seleccion)
-        
-        # Habilitar/deshabilitar botones de integración
-        if hasattr(self, 'btn_transferir_inventario'):
-            self.btn_transferir_inventario.setEnabled(hay_seleccion)
-        if hasattr(self, 'btn_crear_reserva'):
-            self.btn_crear_reserva.setEnabled(hay_seleccion)
-
-    def actualizar_estadisticas(self, stats):
-        """Actualiza las estadísticas mostradas en el panel."""
+    def aplicar_tema(self):
+        """Aplica el tema actual al widget."""
         try:
-            # Buscar los labels de valor dentro de cada widget de estadística
-            if hasattr(self, 'lbl_total_herrajes'):
-                valor_labels = self.lbl_total_herrajes.findChildren(RexusLabel)
-                if len(valor_labels) >= 2:  # Segundo label es el valor
-                    valor_labels[1].setText(str(stats.get("total_herrajes", 0)))
+            # Obtener colores del tema actual
+            bg_color = RexusColors.BACKGROUND
+            text_color = RexusColors.TEXT_PRIMARY
+            border_color = RexusColors.BORDER_LIGHT
 
-            if hasattr(self, 'lbl_herrajes_activos'):
-                valor_labels = self.lbl_herrajes_activos.findChildren(RexusLabel)
-                if len(valor_labels) >= 2:
-                    valor_labels[1].setText(str(stats.get("herrajes_activos", 0)))
+            # Aplicar estilos responsive al tema
+            self.setStyleSheet(f"""
+                QWidget {{
+                    background-color: {bg_color};
+                    color: {text_color};
+                    font-family: 'Segoe UI', Arial, sans-serif;
+                }}
+                
+                QGroupBox {{
+                    font-weight: bold;
+                    border: 2px solid {border_color};
+                    border-radius: 8px;
+                    margin-top: 12px;
+                    padding-top: 15px;
+                    background-color: {bg_color};
+                }}
+                
+                QGroupBox::title {{
+                    subcontrol-origin: margin;
+                    left: 15px;
+                    padding: 0 8px;
+                    color: {RexusColors.PRIMARY};
+                    font-size: 14px;
+                }}
 
-            if hasattr(self, 'lbl_herrajes_inactivos'):
-                valor_labels = self.lbl_herrajes_inactivos.findChildren(RexusLabel)
-                if len(valor_labels) >= 2:
-                    valor_labels[1].setText(str(stats.get("herrajes_inactivos", 0)))
+                QLineEdit {{
+                    border: 1px solid {border_color};
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    font-size: 13px;
+                    background-color: {RexusColors.SURFACE};
+                }}
 
-            if hasattr(self, 'lbl_tipos_disponibles'):
-                valor_labels = self.lbl_tipos_disponibles.findChildren(RexusLabel)
-                if len(valor_labels) >= 2:
-                    valor_labels[1].setText(str(stats.get("tipos_disponibles", 0)))
+                QLineEdit:focus {{
+                    border: 2px solid {RexusColors.PRIMARY};
+                }}
+
+                QComboBox {{
+                    border: 1px solid {border_color};
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    font-size: 13px;
+                    background-color: {RexusColors.SURFACE};
+                }}
+
+                QTableWidget {{
+                    gridline-color: {RexusColors.BORDER_LIGHT};
+                    background-color: {RexusColors.SURFACE};
+                    alternate-background-color: {RexusColors.BACKGROUND};
+                    selection-background-color: {RexusColors.PRIMARY};
+                    selection-color: white;
+                    border: 2px solid {RexusColors.BORDER_LIGHT};
+                    border-radius: 6px;
+                    color: {RexusColors.TEXT_PRIMARY};
+                    font-size: 13px;
+                }}
+                
+                QTableWidget::item {{
+                    padding: 8px;
+                    border-bottom: 1px solid {RexusColors.BORDER_LIGHT};
+                    color: {RexusColors.TEXT_PRIMARY};
+                }}
+                
+                QTableWidget::item:selected {{
+                    background-color: {RexusColors.PRIMARY};
+                    color: white;
+                    font-weight: bold;
+                }}
+                
+                QTableWidget::item:hover {{
+                    background-color: {RexusColors.BACKGROUND};
+                    color: {RexusColors.TEXT_PRIMARY};
+                }}
+
+                QHeaderView::section {{
+                    background-color: {RexusColors.PRIMARY};
+                    color: white;
+                    padding: 10px 8px;
+                    border: 1px solid {RexusColors.BORDER_LIGHT};
+                    font-weight: bold;
+                    font-size: 13px;
+                    text-align: center;
+                }}
+                
+                QHeaderView::section:hover {{
+                    background-color: #0056b3;
+                }}
+
+                QTabWidget::pane {{
+                    border: 2px solid {RexusColors.BORDER_LIGHT};
+                    border-radius: 6px;
+                    background-color: {RexusColors.SURFACE};
+                }}
+                
+                QTabBar::tab {{
+                    background-color: {RexusColors.BACKGROUND};
+                    color: {RexusColors.TEXT_PRIMARY};
+                    padding: 8px 16px;
+                    margin: 2px;
+                    border: 1px solid {RexusColors.BORDER_LIGHT};
+                    border-radius: 4px;
+                }}
+                
+                QTabBar::tab:selected {{
+                    background-color: {RexusColors.PRIMARY};
+                    color: white;
+                    font-weight: bold;
+                }}
+                
+                QTabBar::tab:hover {{
+                    background-color: {RexusColors.SECONDARY};
+                    color: white;
+                }}
+            """)
+
+            logging.info("Tema aplicado correctamente al módulo Herrajes")
 
         except Exception as e:
-            show_error(self, "Error de Estadísticas", f"Error actualizando estadísticas: {e}")
+            logging.error(f"Error aplicando tema en Herrajes: {e}")
 
-    def nuevo_registro(self):
-        """Abre el diálogo para crear un nuevo herraje."""
-        dialog = NuevoHerrajeDialog(self)
-        if dialog.exec() == dialog.Accepted:
-            datos = dialog.obtener_datos()
-            if self.controller:
-                resultado = self.controller.crear_herraje(datos)
-                if resultado[0]:  # Éxito
-                    show_success(self, "Herraje Creado", resultado[1])
-                    self.actualizar_datos()
-                else:  # Error
-                    show_error(self, "Error", resultado[1])
-
-    def buscar(self):
-        """Busca registros según los criterios especificados."""
-        if self.controller:
-            filtros = {"busqueda": self.input_busqueda.text()}
-            self.controller.buscar(filtros)
-
-    def actualizar_datos(self):
-        """Actualiza los datos de la tabla."""
-        if self.controller:
-            self.controller.cargar_datos()
-
-    def cargar_datos_en_tabla(self, datos):
-        """Carga los datos en la tabla."""
-        self.tabla_principal.setRowCount(len(datos))
-
-        for row, registro in enumerate(datos):
-            self.tabla_principal.setItem(
-                row, 0, QTableWidgetItem(str(registro.get("id", "")))
-            )
-            self.tabla_principal.setItem(
-                row, 1, QTableWidgetItem(str(registro.get("nombre", "")))
-            )
-            self.tabla_principal.setItem(
-                row, 2, QTableWidgetItem(str(registro.get("descripcion", "")))
-            )
-            self.tabla_principal.setItem(
-                row, 3, QTableWidgetItem(str(registro.get("estado", "")))
-            )
-
-            # Botón de acciones usando componente Rexus
-            btn_editar = RexusButton("Editar", "warning")
-            self.tabla_principal.setCellWidget(row, 4, btn_editar)
-
-    def crear_panel_integracion(self):
-        """Crea el panel de integración con inventario."""
-        panel = RexusGroupBox("🔗 Integración con Inventario")
-
-        layout = RexusLayoutHelper.create_horizontal_layout()
-
-        # Botón sincronizar con inventario usando componente Rexus
-        self.btn_sincronizar_inventario = RexusButton("🔄 Sincronizar con Inventario", "success")
-        self.btn_sincronizar_inventario.setToolTip("🔄 Sincroniza herrajes con el inventario general")
-        self.btn_sincronizar_inventario.clicked.connect(self.sincronizar_inventario)
-        layout.addWidget(self.btn_sincronizar_inventario)
-
-        # Botón resumen de integración usando componente Rexus
-        self.btn_resumen_integracion = RexusButton("📊 Resumen Integración", "info")
-        self.btn_resumen_integracion.setToolTip("📊 Muestra resumen del estado de integración")
-        self.btn_resumen_integracion.clicked.connect(self.mostrar_resumen_integracion)
-        layout.addWidget(self.btn_resumen_integracion)
-
-        # Botón transferir a inventario usando componente Rexus
-        self.btn_transferir_inventario = RexusButton("📦 Transferir a Inventario", "secondary")
-        self.btn_transferir_inventario.setToolTip("📦 Transfiere herraje seleccionado al inventario general")
-        self.btn_transferir_inventario.setEnabled(False)
-        self.btn_transferir_inventario.clicked.connect(self.transferir_a_inventario)
-        layout.addWidget(self.btn_transferir_inventario)
-
-        # Botón crear reserva usando componente Rexus
-        self.btn_crear_reserva = RexusButton("📝 Crear Reserva", "warning")
-        self.btn_crear_reserva.setToolTip("📝 Crear reserva del herraje para una obra")
-        self.btn_crear_reserva.setEnabled(False)
-        self.btn_crear_reserva.clicked.connect(self.crear_reserva_obra)
-        layout.addWidget(self.btn_crear_reserva)
-
-        return panel
-
-    def sincronizar_inventario(self):
-        """Sincroniza herrajes con el inventario general."""
-        if hasattr(self, "controller") and self.controller:
-            self.controller.sincronizar_con_inventario()
-        else:
-            show_warning(self, self.MSG_SIN_CONTROLADOR, self.MSG_NO_CONTROLADOR_SINCRONIZACION)
-
-    def mostrar_resumen_integracion(self):
-        """Muestra el resumen de integración."""
-        if hasattr(self, "controller") and self.controller:
-            self.controller.mostrar_resumen_integracion()
-        else:
-            show_warning(self, "Sin controlador", "No hay controlador disponible")
-
-    def transferir_a_inventario(self):
-        """Transfiere herraje seleccionado al inventario."""
-        if not hasattr(self, "controller") or not self.controller:
-            show_warning(self, "Sin controlador", "No hay controlador disponible")
-            return
-            
-        # Obtener herraje seleccionado
-        fila_seleccionada = self.tabla_principal.currentRow()
-        if fila_seleccionada < 0:
-            show_warning(self, "Sin selección", "Debe seleccionar un herraje para transferir")
-            return
-            
-        # Obtener ID del herraje (asumiendo que está en la primera columna)
-        id_item = self.tabla_principal.item(fila_seleccionada, 0)
-        if not id_item:
-            show_error(self, "Error", "No se pudo obtener el ID del herraje seleccionado")
-            return
-            
-        try:
-            herraje_id = int(id_item.text())
-            
-            # Solicitar cantidad al usuario usando StandardComponents
-            cantidad, ok = StandardComponents.get_integer_input(
-                self, 
-                "Cantidad a Transferir", 
-                "Ingrese la cantidad a transferir:",
-                value=1, min=1, max=9999
-            )
-            
-            if ok and cantidad > 0:
-                self.controller.transferir_a_inventario(herraje_id, cantidad)
-                
-        except ValueError:
-            show_error(self, "Error", "ID de herraje inválido")
-
-    def crear_reserva_obra(self):
-        """Crea una reserva del herraje para una obra."""
-        if not hasattr(self, "controller") or not self.controller:
-            show_warning(self, "Sin controlador", "No hay controlador disponible")
-            return
-            
-        # Obtener herraje seleccionado
-        fila_seleccionada = self.tabla_principal.currentRow()
-        if fila_seleccionada < 0:
-            show_warning(self, "Sin selección", "Debe seleccionar un herraje para crear reserva")
-            return
-            
-        # Obtener ID del herraje
-        id_item = self.tabla_principal.item(fila_seleccionada, 0)
-        if not id_item:
-            show_error(self, "Error", "No se pudo obtener el ID del herraje seleccionado")
-            return
-            
-        try:
-            herraje_id = int(id_item.text())
-            
-            # Solicitar datos de la reserva usando StandardComponents
-            
-            # Solicitar ID de obra
-            obra_id, ok_obra = StandardComponents.get_integer_input(
-                self,
-                "ID de Obra",
-                "Ingrese el ID de la obra:",
-                value=1, min=1, max=9999
-            )
-            
-            if not ok_obra:
-                return
-                
-            # Solicitar cantidad
-            cantidad, ok_cantidad = StandardComponents.get_integer_input(
-                self,
-                "Cantidad a Reservar",
-                "Ingrese la cantidad a reservar:",
-                value=1, min=1, max=9999
-            )
-            
-            if not ok_cantidad:
-                return
-                
-            # Solicitar observaciones
-            observaciones, ok_obs = StandardComponents.get_text_input(
-                self,
-                "Observaciones",
-                "Observaciones (opcional):"
-            )
-            
-            if ok_cantidad and cantidad > 0:
-                self.controller.crear_reserva_para_obra(
-                    herraje_id, obra_id, cantidad, observaciones if ok_obs else ""
-                )
-                
-        except ValueError:
-            show_error(self, "Error", "ID de herraje inválido")
-
-    def obtener_datos_seguros(self) -> dict:
-        """Obtiene datos del formulario con sanitización XSS."""
-        if hasattr(self, "form_protector") and self.form_protector:
-            return self.form_protector.get_sanitized_data()
-        else:
-            # Fallback manual
-            datos = {}
-            if hasattr(self, "input_busqueda"):
-                datos["busqueda"] = XSSProtection.sanitize_text(
-                    self.input_busqueda.text()
-                )
-            return datos
+    # === MÉTODOS DE CONTROL ===
 
     def set_controller(self, controller):
-        """Establece el controlador para la vista."""
+        """Establece el controlador."""
         self.controller = controller
 
+    def mostrar_loading(self, mensaje: str = "Cargando herrajes..."):
+        """Muestra indicador de carga."""
+        self.loading_manager.show_loading(self, mensaje)
 
-class NuevoHerrajeDialog(QDialog):
-    """Diálogo para crear un nuevo herraje."""
-    
-    def __init__(self, parent=None):
-        super().__init__(parent)
-        self.setWindowTitle("Nuevo Herraje")
-        self.setModal(True)
-        self.setFixedSize(500, 650)
-        self.setupUI()
-        
-    def setupUI(self):
-        """Configura la interfaz del diálogo."""
-        layout = QVBoxLayout(self)
-        
-        # Título
-        titulo = RexusLabel("Crear Nuevo Herraje", "title")
-        layout.addWidget(titulo)
-        
-        # Formulario
-        form_layout = QFormLayout()
-        
-        # Campos obligatorios
-        self.codigo_input = RexusLineEdit()
-        self.codigo_input.setPlaceholderText("Ej: H001, HER-001")
-        self.codigo_input.setMaxLength(20)
-        form_layout.addRow("Código*:", self.codigo_input)
-        
-        self.descripcion_input = RexusLineEdit()
-        self.descripcion_input.setPlaceholderText("Descripción del herraje")
-        self.descripcion_input.setMaxLength(200)
-        form_layout.addRow("Descripción*:", self.descripcion_input)
-        
-        self.proveedor_input = RexusComboBox()
-        self.proveedor_input.addItems([
-            "Kawneer",
-            "Schüco",
-            "Reynaers",
-            "Technal",
-            "Cortizo",
-            "ALUCOIL",
-            "Otro"
-        ])
-        self.proveedor_input.setEditable(True)
-        form_layout.addRow("Proveedor*:", self.proveedor_input)
-        
-        # Categoría y tipo
-        self.categoria_input = RexusLineEdit()
-        self.categoria_input.setPlaceholderText("Ej: Bisagras, Cerraduras, etc.")
-        self.categoria_input.setMaxLength(100)
-        form_layout.addRow("Categoría:", self.categoria_input)
-        
-        self.tipo_input = RexusComboBox()
-        self.tipo_input.addItems([
-            "BISAGRA",
-            "CERRADURA", 
-            "MANILLA",
-            "PESTILLO",
-            "GUÍA",
-            "RODAMIENTO",
-            "TORNILLERÍA",
-            "SELLADO",
-            "OTRO"
-        ])
-        self.tipo_input.setEditable(True)
-        form_layout.addRow("Tipo:", self.tipo_input)
-        
-        # Stock
-        self.stock_actual_input = QSpinBox()
-        self.stock_actual_input.setRange(0, 99999)
-        self.stock_actual_input.setValue(0)
-        form_layout.addRow("Stock Actual:", self.stock_actual_input)
-        
-        self.stock_minimo_input = QSpinBox()
-        self.stock_minimo_input.setRange(0, 99999)
-        self.stock_minimo_input.setValue(1)
-        form_layout.addRow("Stock Mínimo:", self.stock_minimo_input)
-        
-        # Precios
-        self.precio_unitario_input = QDoubleSpinBox()
-        self.precio_unitario_input.setRange(0.0, 99999.99)
-        self.precio_unitario_input.setPrefix("$ ")
-        self.precio_unitario_input.setDecimals(2)
-        form_layout.addRow("Precio Unitario:", self.precio_unitario_input)
-        
-        self.precio_compra_input = QDoubleSpinBox()
-        self.precio_compra_input.setRange(0.0, 99999.99)
-        self.precio_compra_input.setPrefix("$ ")
-        self.precio_compra_input.setDecimals(2)
-        form_layout.addRow("Precio Compra:", self.precio_compra_input)
-        
-        # Ubicación
-        self.ubicacion_input = RexusLineEdit()
-        self.ubicacion_input.setPlaceholderText("Ej: Almacén A-1, Estante 3")
-        self.ubicacion_input.setMaxLength(100)
-        form_layout.addRow("Ubicación:", self.ubicacion_input)
-        
-        # Observaciones
-        self.observaciones_input = RexusLineEdit()
-        self.observaciones_input.setPlaceholderText("Notas adicionales del herraje")
-        self.observaciones_input.setMaxLength(500)
-        form_layout.addRow("Observaciones:", self.observaciones_input)
-        
-        layout.addLayout(form_layout)
-        
-        # Nota de campos obligatorios
-        nota = RexusLabel("* Campos obligatorios", "caption")
-        layout.addWidget(nota)
-        
-        layout.addStretch()
-        
-        # Botones
-        botones_layout = QHBoxLayout()
-        
-        self.btn_cancelar = RexusButton("Cancelar", "secondary")
-        self.btn_cancelar.clicked.connect(self.reject)
-        botones_layout.addWidget(self.btn_cancelar)
-        
-        botones_layout.addStretch()
-        
-        self.btn_crear = RexusButton("Crear Herraje", "primary")
-        self.btn_crear.clicked.connect(self.validar_y_aceptar)
-        botones_layout.addWidget(self.btn_crear)
-        
-        layout.addLayout(botones_layout)
-        
-    def validar_y_aceptar(self):
-        """Valida los datos antes de aceptar."""
-        # Validar campos obligatorios
-        if not self.codigo_input.text().strip():
-            show_error(self, "Error", "El código es obligatorio")
-            self.codigo_input.setFocus()
+    def ocultar_loading(self):
+        """Oculta indicador de carga."""
+        self.loading_manager.hide_loading()
+
+    # === SLOTS DE EVENTOS ===
+
+    def on_nuevo_herraje(self):
+        """Maneja la creación de nuevo herraje."""
+        try:
+            if self.controller and hasattr(self.controller, 'mostrar_dialogo_herraje'):
+                self.controller.mostrar_dialogo_herraje()
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "La creación de herrajes aún no está implementada.")
+        except Exception as e:
+            logging.error(f"Error al abrir diálogo de nuevo herraje: {e}")
+            show_error(self, "Error", f"No se pudo abrir el formulario: {e}")
+
+    def on_editar_herraje(self):
+        """Maneja la edición de herraje seleccionado."""
+        try:
+            if not self.tabla_herrajes:
+                return
+
+            selected_items = self.tabla_herrajes.selectedItems()
+            if not selected_items:
+                show_warning(self, "Selección requerida", 
+                           "Por favor seleccione un herraje para editar.")
+                return
+
+            if self.controller and hasattr(self.controller, 'mostrar_dialogo_herraje'):
+                row = selected_items[0].row()
+                herraje_data = self.obtener_datos_fila(row)
+                if herraje_data:
+                    self.controller.mostrar_dialogo_herraje(herraje_data)
+                else:
+                    show_warning(self, "Error", "No se pudieron obtener los datos del herraje.")
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "La edición de herrajes aún no está implementada.")
+        except Exception as e:
+            logging.error(f"Error al editar herraje: {e}")
+            show_error(self, "Error", f"No se pudo editar el herraje: {e}")
+
+    def on_eliminar_herraje(self):
+        """Maneja la eliminación de herraje seleccionado."""
+        try:
+            if not self.tabla_herrajes:
+                return
+
+            selected_items = self.tabla_herrajes.selectedItems()
+            if not selected_items:
+                show_warning(self, "Selección requerida", 
+                           "Por favor seleccione un herraje para eliminar.")
+                return
+
+            row = selected_items[0].row()
+            codigo_item = self.tabla_herrajes.item(row, 0)
+            nombre_item = self.tabla_herrajes.item(row, 1)
+            
+            if not codigo_item or not nombre_item:
+                show_warning(self, "Error", "No se pueden obtener los datos del herraje.")
+                return
+                
+            codigo = codigo_item.text()
+            nombre = nombre_item.text()
+
+            if ask_question(self, "Confirmar eliminación",
+                          f"¿Está seguro que desea eliminar el herraje '{nombre}' (Código: {codigo})?"):
+                if self.controller and hasattr(self.controller, 'eliminar_herraje'):
+                    success = self.controller.eliminar_herraje(codigo)
+                    if success:
+                        self.on_actualizar_datos()  # Recargar tabla
+                else:
+                    show_warning(self, "Funcionalidad no disponible", 
+                               "La eliminación de herrajes aún no está implementada.")
+        except Exception as e:
+            logging.error(f"Error al eliminar herraje: {e}")
+            show_error(self, "Error", f"No se pudo eliminar el herraje: {e}")
+
+    def on_actualizar_datos(self):
+        """Actualiza los datos de la tabla."""
+        try:
+            if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+                self.mostrar_loading("Actualizando datos...")
+                self.controller.cargar_herrajes()
+                self.ocultar_loading()
+            elif self.controller and hasattr(self.controller, 'cargar_datos_iniciales'):
+                self.mostrar_loading("Actualizando datos...")
+                self.controller.cargar_datos_iniciales()
+                self.ocultar_loading()
+            else:
+                show_warning(self, "Sin controlador", "No se puede actualizar sin controlador.")
+        except Exception as e:
+            logging.error(f"Error al actualizar datos: {e}")
+            show_error(self, "Error", f"No se pudieron actualizar los datos: {e}")
+            self.ocultar_loading()
+
+    def on_exportar_datos(self):
+        """Exporta los datos de herrajes."""
+        try:
+            if self.controller and hasattr(self.controller, 'exportar_herrajes'):
+                self.mostrar_loading("Exportando datos...")
+                self.controller.exportar_herrajes("excel")
+                self.ocultar_loading()
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "La exportación de herrajes aún no está implementada.")
+        except Exception as e:
+            logging.error(f"Error al exportar datos: {e}")
+            show_error(self, "Error", f"No se pudieron exportar los datos: {e}")
+            self.ocultar_loading()
+
+    def on_buscar(self, texto: str):
+        """Maneja la búsqueda de herrajes con debounce."""
+        if len(texto.strip()) == 0:
+            # Si el texto está vacío, mostrar todos los herrajes
+            if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+                self.controller.cargar_herrajes()
             return
             
-        if not self.descripcion_input.text().strip():
-            show_error(self, "Error", "La descripción es obligatoria")
-            self.descripcion_input.setFocus()
+        if len(texto.strip()) >= 2:  # Buscar con mínimo 2 caracteres
+            try:
+                if self.controller and hasattr(self.controller, 'buscar_herrajes'):
+                    categoria = self.combo_categoria.currentText() if self.combo_categoria else ""
+                    # Limpiar categoria si es "Todas las categorías"
+                    if categoria.startswith("📂"):
+                        categoria = ""
+                    self.controller.buscar_herrajes(texto.strip(), categoria)
+                else:
+                    # Búsqueda local en la tabla si no hay controlador
+                    self._filtrar_tabla_local(texto.strip())
+            except Exception as e:
+                logging.error(f"Error en búsqueda: {e}")
+
+    def on_filtrar_categoria(self, categoria: str):
+        """Maneja el filtro por categoría."""
+        try:
+            if self.controller and hasattr(self.controller, 'buscar_herrajes'):
+                termino_busqueda = self.input_busqueda.text().strip() if self.input_busqueda else ""
+                # Limpiar categoria si es "Todas las categorías"
+                if categoria.startswith("📂"):
+                    categoria = ""
+                self.controller.buscar_herrajes(termino_busqueda, categoria)
+            else:
+                # Filtrado local si no hay controlador
+                self._filtrar_tabla_local_por_categoria(categoria)
+        except Exception as e:
+            logging.error(f"Error en filtrado por categoría: {e}")
+
+    def _filtrar_tabla_local(self, termino: str):
+        """Filtra la tabla localmente por término de búsqueda."""
+        if not self.tabla_herrajes:
             return
             
-        if not self.proveedor_input.currentText().strip():
-            show_error(self, "Error", "El proveedor es obligatorio")
-            self.proveedor_input.setFocus()
+        termino_lower = termino.lower()
+        for row in range(self.tabla_herrajes.rowCount()):
+            mostrar_fila = False
+            
+            # Buscar en todas las columnas relevantes
+            for col in range(min(6, self.tabla_herrajes.columnCount())):  # Hasta la columna de proveedor
+                item = self.tabla_herrajes.item(row, col)
+                if item and termino_lower in item.text().lower():
+                    mostrar_fila = True
+                    break
+                    
+            self.tabla_herrajes.setRowHidden(row, not mostrar_fila)
+
+    def _filtrar_tabla_local_por_categoria(self, categoria: str):
+        """Filtra la tabla localmente por categoría."""
+        if not self.tabla_herrajes:
             return
             
-        self.accept()
+        if categoria.startswith("📂"):
+            # Mostrar todas las filas si es "Todas las categorías"
+            for row in range(self.tabla_herrajes.rowCount()):
+                self.tabla_herrajes.setRowHidden(row, False)
+            return
+            
+        # Extraer la categoría real del texto con emoji
+        categoria_real = categoria.split(" ", 1)[1] if " " in categoria else categoria
         
-    def obtener_datos(self):
-        """Retorna los datos del formulario."""
-        return {
-            "codigo": self.codigo_input.text().strip(),
-            "descripcion": self.descripcion_input.text().strip(),
-            "proveedor": self.proveedor_input.currentText().strip(),
-            "categoria": self.categoria_input.text().strip() or "",
-            "tipo": self.tipo_input.currentText().strip() or "OTRO",
-            "stock_actual": self.stock_actual_input.value(),
-            "stock_minimo": self.stock_minimo_input.value(),
-            "precio_unitario": self.precio_unitario_input.value(),
-            "precio_compra": self.precio_compra_input.value(),
-            "ubicacion": self.ubicacion_input.text().strip() or "",
-            "observaciones": self.observaciones_input.text().strip() or "",
-        }
+        for row in range(self.tabla_herrajes.rowCount()):
+            tipo_item = self.tabla_herrajes.item(row, 2)  # Columna "Tipo"
+            if tipo_item:
+                mostrar = categoria_real.lower() in tipo_item.text().lower()
+                self.tabla_herrajes.setRowHidden(row, not mostrar)
+            else:
+                self.tabla_herrajes.setRowHidden(row, True)
+
+    def on_cargar_herrajes_obra(self):
+        """Carga los herrajes asignados a la obra seleccionada."""
+        if not self.combo_obras or not self.controller:
+            show_warning(self, "Error", "No se puede cargar la información de la obra.")
+            return
+            
+        obra_text = self.combo_obras.currentText()
+        if not obra_text or obra_text == "Seleccione una obra...":
+            show_warning(self, "Selección requerida", "Por favor seleccione una obra.")
+            return
+            
+        # Extraer ID de obra del texto (formato: "ID - Nombre")
+        try:
+            obra_id = int(obra_text.split(" - ")[0])
+            if hasattr(self.controller, 'cargar_herrajes_obra'):
+                self.mostrar_loading("Cargando herrajes de obra...")
+                herrajes_obra = self.controller.cargar_herrajes_obra(obra_id)
+                self.cargar_herrajes_en_tabla_obra(herrajes_obra)
+                self.ocultar_loading()
+            else:
+                show_warning(self, "Funcionalidad no disponible", 
+                           "La carga de herrajes por obra aún no está implementada.")
+        except (ValueError, IndexError):
+            show_warning(self, "Error", "Formato de obra no válido.")
+
+    def cargar_herrajes_en_tabla_obra(self, herrajes: List[Dict]):
+        """Carga herrajes en la tabla de obra."""
+        if not self.tabla_herrajes_obra:
+            return
+            
+        try:
+            self.tabla_herrajes_obra.setRowCount(len(herrajes))
+            
+            for fila, herraje in enumerate(herrajes):
+                # Código
+                self.tabla_herrajes_obra.setItem(fila, 0, QTableWidgetItem(str(herraje.get("codigo", ""))))
+                
+                # Nombre
+                self.tabla_herrajes_obra.setItem(fila, 1, QTableWidgetItem(str(herraje.get("nombre", ""))))
+                
+                # Cantidad requerida
+                cant_req = int(herraje.get("cantidad_requerida", 0))
+                self.tabla_herrajes_obra.setItem(fila, 2, QTableWidgetItem(str(cant_req)))
+                
+                # Cantidad instalada
+                cant_inst = int(herraje.get("cantidad_instalada", 0))
+                self.tabla_herrajes_obra.setItem(fila, 3, QTableWidgetItem(str(cant_inst)))
+                
+                # Estado con mejor contraste
+                if cant_inst >= cant_req:
+                    estado = "Completo"
+                    bg_color = QColor(34, 139, 34)  # Verde bosque
+                    text_color = QColor(255, 255, 255)  # Blanco
+                elif cant_inst > 0:
+                    estado = "Parcial"
+                    bg_color = QColor(255, 165, 0)  # Naranja
+                    text_color = QColor(0, 0, 0)  # Negro
+                else:
+                    estado = "Pendiente"
+                    bg_color = QColor(180, 30, 30)  # Rojo oscuro
+                    text_color = QColor(255, 255, 255)  # Blanco
+                    
+                estado_item = QTableWidgetItem(estado)
+                estado_item.setBackground(bg_color)
+                estado_item.setForeground(text_color)
+                self.tabla_herrajes_obra.setItem(fila, 4, estado_item)
+                
+        except Exception as e:
+            logging.error(f"Error cargando herrajes en tabla de obra: {e}")
+            show_error(self, "Error", f"No se pudieron cargar los herrajes de la obra: {e}")
+
+    def cargar_proveedores(self):
+        """Carga la lista de proveedores."""
+        if not self.controller or not hasattr(self.controller, 'obtener_proveedores'):
+            return
+            
+        try:
+            proveedores = self.controller.obtener_proveedores()
+            self.lista_proveedores.setRowCount(len(proveedores))
+            
+            for fila, proveedor in enumerate(proveedores):
+                self.lista_proveedores.setItem(fila, 0, QTableWidgetItem(str(proveedor.get("nombre", ""))))
+                self.lista_proveedores.setItem(fila, 1, QTableWidgetItem(str(proveedor.get("contacto", ""))))
+                self.lista_proveedores.setItem(fila, 2, QTableWidgetItem(str(proveedor.get("herrajes_count", 0))))
+                
+        except Exception as e:
+            logging.error(f"Error cargando proveedores: {e}")
+
+    def on_seleccion_cambiada(self):
+        """Maneja el cambio de selección en la tabla."""
+        if not self.tabla_herrajes:
+            return
+
+        selected_items = self.tabla_herrajes.selectedItems()
+        if selected_items:
+            row = selected_items[0].row()
+            herraje_data = self.obtener_datos_fila(row)
+            self.herraje_seleccionado.emit(herraje_data)
+
+    # === MÉTODOS DE DATOS ===
+
+    def cargar_herrajes(self, herrajes: List[Dict]):
+        """Carga herrajes en la tabla con indicadores visuales."""
+        if not self.tabla_herrajes:
+            return
+
+        try:
+            self.tabla_herrajes.setRowCount(len(herrajes))
+
+            for fila, herraje in enumerate(herrajes):
+                # Código
+                codigo = str(herraje.get("codigo", ""))
+                self.tabla_herrajes.setItem(fila, 0, QTableWidgetItem(codigo))
+
+                # Nombre
+                nombre = str(herraje.get("nombre", ""))
+                self.tabla_herrajes.setItem(fila, 1, QTableWidgetItem(nombre))
+
+                # Tipo
+                tipo = str(herraje.get("tipo", herraje.get("categoria", "")))
+                self.tabla_herrajes.setItem(fila, 2, QTableWidgetItem(tipo))
+
+                # Stock con colores de alto contraste
+                stock = int(herraje.get("stock_actual", herraje.get("stock", 0)))
+                stock_item = QTableWidgetItem(str(stock))
+                
+                # Aplicar colores con mejor contraste
+                if stock == 0:
+                    # Rojo fuerte con texto blanco
+                    stock_item.setBackground(QColor(180, 30, 30))  # Rojo oscuro
+                    stock_item.setForeground(QColor(255, 255, 255))  # Blanco
+                elif stock <= 5:
+                    # Amarillo/naranja con texto negro
+                    stock_item.setBackground(QColor(255, 165, 0))  # Naranja
+                    stock_item.setForeground(QColor(0, 0, 0))  # Negro
+                else:
+                    # Verde con texto blanco
+                    stock_item.setBackground(QColor(34, 139, 34))  # Verde bosque
+                    stock_item.setForeground(QColor(255, 255, 255))  # Blanco
+                    
+                self.tabla_herrajes.setItem(fila, 3, stock_item)
+
+                # Precio
+                precio = float(herraje.get("precio_unitario", 0.0))
+                self.tabla_herrajes.setItem(fila, 4, QTableWidgetItem(f"${precio:,.2f}"))
+
+                # Proveedor
+                proveedor = str(herraje.get("proveedor", ""))
+                self.tabla_herrajes.setItem(fila, 5, QTableWidgetItem(proveedor))
+
+                # Estado con colores de alto contraste
+                activo = herraje.get("activo", 1)
+                estado = "Activo" if activo else "Inactivo"
+                estado_item = QTableWidgetItem(estado)
+                if activo:
+                    # Verde con texto blanco
+                    estado_item.setBackground(QColor(34, 139, 34))  # Verde bosque
+                    estado_item.setForeground(QColor(255, 255, 255))  # Blanco
+                else:
+                    # Gris con texto blanco
+                    estado_item.setBackground(QColor(105, 105, 105))  # Gris oscuro
+                    estado_item.setForeground(QColor(255, 255, 255))  # Blanco
+                self.tabla_herrajes.setItem(fila, 6, estado_item)
+
+            self.ocultar_loading()
+
+        except Exception as e:
+            self.error_ocurrido.emit(f"Error cargando herrajes: {str(e)}")
+            show_error(
+                self, 
+                "Error de datos", 
+                f"No se pudieron cargar los herrajes: {str(e)}"
+            )
+            self.ocultar_loading()
+
+    def actualizar_estadisticas(self, stats: Dict):
+        """Actualiza el panel de estadísticas."""
+        try:
+            # Actualizar cada estadística
+            for key, value in stats.items():
+                if key in self.stats_labels and self.stats_labels[key]:
+                    # Obtener el ícono del texto actual
+                    current_text = self.stats_labels[key].text()
+                    icon = current_text.split()[0] if current_text else "📊"
+                    self.stats_labels[key].setText(f"{icon} {value}")
+                    
+        except Exception as e:
+            logging.error(f"Error actualizando estadísticas: {e}")
+
+    def obtener_datos_fila(self, row: int) -> Dict:
+        """Obtiene los datos de una fila específica de forma robusta."""
+        if not self.tabla_herrajes or row < 0:
+            return {}
+        data = {}
+        try:
+            for col, key in enumerate(["codigo", "nombre", "tipo", "stock", "precio_unitario", "proveedor", "activo"]):
+                item = self.tabla_herrajes.item(row, col)
+                if item is None:
+                    continue
+                text = item.text()
+                if key == "stock":
+                    try:
+                        data[key] = int(text)
+                    except Exception:
+                        data[key] = 0
+                elif key == "precio_unitario":
+                    try:
+                        data[key] = float(text.replace("$", "").replace(",", ""))
+                    except Exception:
+                        data[key] = 0.0
+                elif key == "activo":
+                    data[key] = (text == "Activo")
+                else:
+                    data[key] = text
+            return data
+        except Exception as e:
+            logging.error(f"Error obteniendo datos de fila {row}: {e}")
+            return {}
+
+    # Método on_seleccion_cambiada ya existe más abajo, no duplicar
+
+    def _on_dangerous_content(self, field_name: str, content: str):
+        """Maneja detección de contenido peligroso."""
+        show_warning(
+            self,
+            "Contenido no permitido",
+            f"Se detectó contenido potencialmente peligroso en {field_name}. "
+            "Por favor revise su entrada."
+        )
+
+        # Limpiar el campo
+        if hasattr(self, "input_busqueda") and field_name == "busqueda" and self.input_busqueda:
+            self.input_busqueda.clear()
+
+    # === MÉTODOS PÚBLICOS PARA COMPATIBILIDAD ===
+
+    def exportar_datos(self, formato: str = "excel"):
+        """Exporta los datos de herrajes."""
+        if self.controller:
+            self.mostrar_loading(f"Exportando a {formato.upper()}...")
+            self.controller.exportar_herrajes(formato)
+        else:
+            show_warning(self, "Sin controlador", "El controlador no está disponible.")
+
+    def limpiar_datos(self):
+        """Limpia todos los datos de la vista."""
+        if self.tabla_herrajes:
+            self.tabla_herrajes.setRowCount(0)
+        
+        if self.input_busqueda:
+            self.input_busqueda.clear()
+        
+        if self.combo_categoria:
+            self.combo_categoria.setCurrentIndex(0)
+
+    def obtener_herrajes_seleccionados(self) -> List[Dict]:
+        """Obtiene los herrajes actualmente seleccionados."""
+        if not self.tabla_herrajes:
+            return []
+
+        selected_rows = set()
+        for item in self.tabla_herrajes.selectedItems():
+            selected_rows.add(item.row())
+
+        return [self.obtener_datos_fila(row) for row in selected_rows]

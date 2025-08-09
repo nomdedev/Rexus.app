@@ -7,7 +7,21 @@ from rexus.core.auth_decorators import (
 # Importar utilidades de sanitización
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
+# Definir data_sanitizer para compatibilidad
+try:
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    data_sanitizer = unified_sanitizer
+except ImportError:
+    try:
+        from rexus.utils.data_sanitizer import DataSanitizer
+        data_sanitizer = DataSanitizer()
+    except ImportError:
+        data_sanitizer = None
+
 from rexus.utils.sql_query_manager import SQLQueryManager
+
+# Sistema de cache inteligente para optimizar consultas frecuentes
+from rexus.utils.intelligent_cache import cached_query, invalidate_cache
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -52,6 +66,13 @@ except ImportError:
 
 
 class UsuariosModel:
+    def __init__(self, *args, **kwargs):
+        # ...existing code...
+        self.sessions_manager = kwargs.get('sessions_manager', None)
+        self.permissions_manager = kwargs.get('permissions_manager', None)
+        self.profiles_manager = kwargs.get('profiles_manager', None)
+        self.auth_manager = kwargs.get('auth_manager', None)
+        # ...existing code...
     """Modelo para gestión completa de usuarios y autenticación."""
 
     # Configuración de seguridad avanzada
@@ -193,40 +214,23 @@ class UsuariosModel:
 
             cursor = self.db_connection.cursor()
 
-            # Verificar username duplicado
-            if id_usuario_actual:
-                query_username = """
-                    SELECT COUNT(*) FROM usuarios 
-                    WHERE LOWER(username) = ? AND id != ?
-                """
-                cursor.execute(
-                    query_username, (username_limpio.lower(), id_usuario_actual)
-                )
-            else:
-                query_username = """
-                    SELECT COUNT(*) FROM usuarios 
-                    WHERE LOWER(username) = ?
-                """
-                cursor.execute(query_username, (username_limpio.lower(),))
 
+            # Usar SQL externo para verificar username duplicado
+            if id_usuario_actual:
+                sql_username = self.sql_manager.get_query('usuarios', 'verificar_username_duplicado_edicion')
+                cursor.execute(sql_username, {"username": username_limpio.lower(), "id": id_usuario_actual})
+            else:
+                sql_username = self.sql_manager.get_query('usuarios', 'verificar_username_duplicado')
+                cursor.execute(sql_username, {"username": username_limpio.lower()})
             resultado["username_duplicado"] = cursor.fetchone()[0] > 0
 
-            # Verificar email duplicado
+            # Usar SQL externo para verificar email duplicado
             if id_usuario_actual:
-                query_email = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(email) = ? AND id != ?"
-                )
-                cursor.execute(query_email, (email_limpio.lower(), id_usuario_actual))
+                sql_email = self.sql_manager.get_query('usuarios', 'verificar_email_duplicado_edicion')
+                cursor.execute(sql_email, {"email": email_limpio.lower(), "id": id_usuario_actual})
             else:
-                query_email = (
-                    "SELECT COUNT(*) FROM ["
-                    + tabla_validada
-                    + "] WHERE LOWER(email) = ?"
-                )
-                cursor.execute(query_email, (email_limpio.lower(),))
-
+                sql_email = self.sql_manager.get_query('usuarios', 'verificar_email_duplicado')
+                cursor.execute(sql_email, {"email": email_limpio.lower()})
             resultado["email_duplicado"] = cursor.fetchone()[0] > 0
 
             return resultado
@@ -446,6 +450,7 @@ class UsuariosModel:
         )
         return
 
+    @cached_query(ttl=60)  # Cache por 1 minuto - consulta muy frecuente en autenticación
     def obtener_usuario_por_nombre(self, nombre_usuario):
         """
         Obtiene un usuario por su nombre con sanitización de entrada.
@@ -1163,6 +1168,9 @@ class UsuariosModel:
                 )
 
             self.db_connection.connection.commit()
+            # Invalidar cache después de crear usuario
+            self._invalidar_cache_usuarios()
+            
             print(
                 f"[USUARIOS] Usuario '{datos_usuario['usuario']}' creado exitosamente"
             )
@@ -1174,39 +1182,62 @@ class UsuariosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error creando usuario: {str(e)}"
 
+    @cached_query(ttl=120)  # Cache por 2 minutos - listado completo de usuarios
     def obtener_todos_usuarios(self) -> List[Dict[str, Any]]:
-        """Obtiene todos los usuarios del sistema."""
+        """Obtiene todos los usuarios del sistema con permisos optimizados (sin consultas N+1)."""
         if not self.db_connection:
             return self._get_usuarios_demo()
 
         try:
             cursor = self.db_connection.connection.cursor()
+            
+            # Query optimizada con JOIN para eliminar consultas N+1
             cursor.execute("""
-                SELECT id, usuario, nombre_completo, email, telefono, rol, estado,
-                       fecha_creacion, ultimo_acceso, intentos_fallidos
-                FROM usuarios
-                WHERE activo = 1
-                ORDER BY nombre_completo
+                SELECT u.id, u.usuario, u.nombre_completo, u.email, u.telefono, u.rol, u.estado,
+                       u.fecha_creacion, u.ultimo_acceso, u.intentos_fallidos,
+                       p.modulo as permiso
+                FROM usuarios u
+                LEFT JOIN permisos_usuario p ON u.id = p.usuario_id
+                WHERE u.activo = 1
+                ORDER BY u.nombre_completo, p.modulo
             """)
 
-            columns = [desc[0] for desc in cursor.description]
-            usuarios = []
-
+            # Procesar resultados agrupando permisos por usuario
+            usuarios_dict = {}
+            
             for row in cursor.fetchall():
-                usuario = dict(zip(columns, row))
-                usuario["rol_texto"] = self.ROLES.get(usuario["rol"], usuario["rol"])
-                usuario["estado_texto"] = self.ESTADOS.get(
-                    usuario["estado"], usuario["estado"]
-                )
+                user_id = row[0]
+                
+                if user_id not in usuarios_dict:
+                    # Primera vez que vemos este usuario
+                    usuarios_dict[user_id] = {
+                        "id": row[0],
+                        "usuario": row[1], 
+                        "nombre_completo": row[2],
+                        "email": row[3],
+                        "telefono": row[4],
+                        "rol": row[5],
+                        "estado": row[6],
+                        "fecha_creacion": row[7],
+                        "ultimo_acceso": row[8],
+                        "intentos_fallidos": row[9],
+                        "permisos": []
+                    }
+                    
+                    # Agregar textos descriptivos
+                    usuarios_dict[user_id]["rol_texto"] = self.ROLES.get(row[5], row[5])
+                    usuarios_dict[user_id]["estado_texto"] = self.ESTADOS.get(row[6], row[6])
+                
+                # Agregar permiso si existe
+                if row[10]:  # permiso no es NULL
+                    usuarios_dict[user_id]["permisos"].append(row[10])
 
-                # Obtener permisos
-                usuario["permisos"] = self.obtener_permisos_usuario(usuario["id"])
-                usuarios.append(usuario)
-
+            # Convertir dict a lista manteniendo orden
+            usuarios = list(usuarios_dict.values())
             return usuarios
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error obteniendo usuarios: {e}")
+            print(f"[ERROR USUARIOS] Error obteniendo usuarios optimizado: {e}")
             return self._get_usuarios_demo()
     
     def buscar_usuarios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
@@ -1232,36 +1263,58 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
+            
+            # Query optimizada con JOIN para eliminar consultas N+1 en búsqueda
             cursor.execute("""
-                SELECT id, usuario, nombre_completo, email, telefono, rol, estado,
-                       fecha_creacion, ultimo_acceso, intentos_fallidos
-                FROM usuarios
-                WHERE activo = 1 AND (
-                    LOWER(nombre_completo) LIKE ? OR
-                    LOWER(usuario) LIKE ? OR
-                    LOWER(email) LIKE ?
+                SELECT u.id, u.usuario, u.nombre_completo, u.email, u.telefono, u.rol, u.estado,
+                       u.fecha_creacion, u.ultimo_acceso, u.intentos_fallidos,
+                       p.modulo as permiso
+                FROM usuarios u
+                LEFT JOIN permisos_usuario p ON u.id = p.usuario_id
+                WHERE u.activo = 1 AND (
+                    LOWER(u.nombre_completo) LIKE ? OR
+                    LOWER(u.usuario) LIKE ? OR
+                    LOWER(u.email) LIKE ?
                 )
-                ORDER BY nombre_completo
+                ORDER BY u.nombre_completo, p.modulo
             """, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
 
-            columns = [desc[0] for desc in cursor.description]
-            usuarios = []
-
+            # Procesar resultados agrupando permisos por usuario
+            usuarios_dict = {}
+            
             for row in cursor.fetchall():
-                usuario = dict(zip(columns, row))
-                usuario["rol_texto"] = self.ROLES.get(usuario["rol"], usuario["rol"])
-                usuario["estado_texto"] = self.ESTADOS.get(
-                    usuario["estado"], usuario["estado"]
-                )
+                user_id = row[0]
+                
+                if user_id not in usuarios_dict:
+                    # Primera vez que vemos este usuario
+                    usuarios_dict[user_id] = {
+                        "id": row[0],
+                        "usuario": row[1],
+                        "nombre_completo": row[2], 
+                        "email": row[3],
+                        "telefono": row[4],
+                        "rol": row[5],
+                        "estado": row[6],
+                        "fecha_creacion": row[7],
+                        "ultimo_acceso": row[8],
+                        "intentos_fallidos": row[9],
+                        "permisos": []
+                    }
+                    
+                    # Agregar textos descriptivos
+                    usuarios_dict[user_id]["rol_texto"] = self.ROLES.get(row[5], row[5])
+                    usuarios_dict[user_id]["estado_texto"] = self.ESTADOS.get(row[6], row[6])
+                
+                # Agregar permiso si existe
+                if row[10]:  # permiso no es NULL
+                    usuarios_dict[user_id]["permisos"].append(row[10])
 
-                # Obtener permisos
-                usuario["permisos"] = self.obtener_permisos_usuario(usuario["id"])
-                usuarios.append(usuario)
-
+            # Convertir dict a lista manteniendo orden
+            usuarios = list(usuarios_dict.values())
             return usuarios
 
         except Exception as e:
-            print(f"[ERROR USUARIOS] Error buscando usuarios: {e}")
+            print(f"[ERROR USUARIOS] Error buscando usuarios optimizado: {e}")
             return []
 
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
@@ -1439,6 +1492,7 @@ class UsuariosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error eliminando usuario: {str(e)}"
 
+    @cached_query(ttl=300)  # Cache por 5 minutos - permisos cambian poco frecuentemente
     def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
         """Obtiene los permisos de un usuario."""
         if not self.db_connection:
@@ -1733,7 +1787,7 @@ class UsuariosModel:
 
     # === MÉTODOS DE GESTORES ESPECIALIZADOS ===
     
-    def crear_sesion(self, usuario_id: int, username: str, ip_address: str = None, user_agent: str = None) -> Dict[str, Any]:
+    def crear_sesion(self, usuario_id: int, username: str, ip_address: Optional[str] = None, user_agent: Optional[str] = None) -> Dict[str, Any]:
         """Crea una nueva sesión para un usuario."""
         if self.sessions_manager:
             return self.sessions_manager.crear_sesion(usuario_id, username, ip_address, user_agent)
@@ -1800,3 +1854,16 @@ class UsuariosModel:
             estadisticas['permisos'] = self.permissions_manager.obtener_estadisticas_permisos()
         
         return estadisticas
+    
+    def _invalidar_cache_usuarios(self) -> None:
+        """
+        Invalida el cache de usuarios después de cambios.
+        """
+        try:
+            # Invalidar cache de listados de usuarios
+            invalidate_cache('obtener_todos_usuarios')
+            invalidate_cache('obtener_usuario_por_nombre')
+            invalidate_cache('obtener_permisos_usuario')
+            print("[USUARIOS] Cache invalidado después de cambios")
+        except Exception as e:
+            print(f"[WARNING USUARIOS] Error invalidando cache: {e}")

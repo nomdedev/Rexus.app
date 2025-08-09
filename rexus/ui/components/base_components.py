@@ -1,7 +1,22 @@
 """
 Base Components - Rexus.app v2.0.0
 
-Componentes UI base para consistencia entre módulos.
+Componentes    # Colores neutros
+    BACKGROUND = "#F8F9FA"  # Fondo principal
+    BACKGROUND_LIGHT = "#FFFFFF"  # Fondo claro
+    SURFACE = "#FFFFFF"  # Superficie de widgets
+    BORDER = "#DEE2E6"  # Bordes
+    BORDER_LIGHT = "#E9ECEF"  # Bordes claros
+    BORDER_DARK = "#ADB5BD"  # Bordes oscuros
+    TEXT = "#212529"  # Texto principal
+    TEXT_PRIMARY = "#212529"  # Texto principal (alias)
+    TEXT_SECONDARY = "#6C757D"  # Texto secundario
+    TEXT_ACCENT = "#3F88C5"  # Texto de acento
+    TEXT_LIGHT = "#ADB5BD"  # Texto claro
+    TEXT_DARK = "#1A1A1A"  # Texto oscuro
+    TEXT_WHITE = "#FFFFFF"  # Texto blanco
+    TEXT_DISABLED = "#ADB5BD"  # Texto deshabilitado
+    DISABLED = "#ADB5BD"  # Elementos deshabilitados consistencia entre módulos.
 Proporciona widgets estándar con estilos unificados y funcionalidad común.
 """
 
@@ -54,15 +69,30 @@ class RexusColors:
 
     # Colores neutros
     BACKGROUND = "#F8F9FA"  # Fondo principal
+    BACKGROUND_LIGHT = "#FFFFFF"  # Fondo claro
     SURFACE = "#FFFFFF"  # Superficie de widgets
     BORDER = "#DEE2E6"  # Bordes
+    BORDER_LIGHT = "#E9ECEF"  # Bordes claros
+    BORDER_DARK = "#ADB5BD"  # Bordes oscuros
     TEXT = "#212529"  # Texto principal
+    TEXT_PRIMARY = "#212529"  # Texto principal (alias)
     TEXT_SECONDARY = "#6C757D"  # Texto secundario
+    TEXT_ACCENT = "#3F88C5"  # Texto de acento
+    TEXT_LIGHT = "#ADB5BD"  # Texto claro
+    TEXT_DARK = "#1A1A1A"  # Texto oscuro
+    TEXT_WHITE = "#FFFFFF"  # Texto blanco
+    TEXT_DISABLED = "#ADB5BD"  # Texto deshabilitado (alias de TEXT_LIGHT)
     DISABLED = "#ADB5BD"  # Elementos deshabilitados
 
 
 class RexusFonts:
     """Tipografías estándar para Rexus.app"""
+    
+    # Constantes de fuentes
+    FAMILY = "Segoe UI"
+    BODY_SIZE = 13
+    TITLE_SIZE = 16
+    SUBTITLE_SIZE = 14
 
     @staticmethod
     def get_title_font(size: int = 14) -> QFont:
@@ -552,6 +582,24 @@ class RexusMessageBox:
 
 class RexusLayoutHelper:
     """Utilidades para crear layouts estándar"""
+
+    @staticmethod
+    def create_horizontal_layout(spacing: int = 8, margins: tuple = None) -> QHBoxLayout:
+        """Crea un layout horizontal estándar"""
+        layout = QHBoxLayout()
+        layout.setSpacing(spacing)
+        if margins:
+            layout.setContentsMargins(margins[0], margins[1], margins[2], margins[3])
+        return layout
+
+    @staticmethod
+    def create_vertical_layout(spacing: int = 8, margins: tuple = None) -> QVBoxLayout:
+        """Crea un layout vertical estándar"""
+        layout = QVBoxLayout()
+        layout.setSpacing(spacing)
+        if margins:
+            layout.setContentsMargins(margins[0], margins[1], margins[2], margins[3])
+        return layout
 
     @staticmethod
     def create_form_layout(items: List[tuple]) -> QGridLayout:

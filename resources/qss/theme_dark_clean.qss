@@ -171,12 +171,6 @@ QHeaderView::section {
     font-weight: bold;
     padding: 8px 12px;
     }
-image: url(resources/icons/arrow-up-light.svg);
-    width: 12px;
-    height: 12px;
-    margin-right: 5px;
-    subcontrol-
-}
 QTableWidget {
     background-color: #1e293b;
     border-radius: 8px;
@@ -266,8 +260,7 @@ QDialog QLabel {
 QDialog QPushButton {
     min-height: 32px;
     min-width: 80px;
-    }
-background: #1e293b;
+    background: #1e293b;
     color: #60a5fa;
     border-radius: 8px;
     font-size: 11px;
