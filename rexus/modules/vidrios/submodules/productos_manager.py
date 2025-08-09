@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -32,15 +33,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
-    except ImportError:
-
-        class DataSanitizer:
-            def sanitize_string(self, text, max_length=None):
-                return str(text) if text else ""
+    class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
+            return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
             def sanitize_numeric(self, value, min_val=None, max_val=None):
                 return float(value) if value else 0.0
@@ -56,7 +60,7 @@ class ProductosManager:
         """Inicializa el gestor de productos vidrios."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/vidrios/productos"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -183,38 +187,38 @@ class ProductosManager:
         datos_sanitizados = {}
 
         # Strings
-        datos_sanitizados["tipo"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["tipo"] = sanitize_string(
             datos.get("tipo", "")
         )
-        datos_sanitizados["descripcion"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["descripcion"] = sanitize_string(
             datos.get("descripcion", "")
         )
-        datos_sanitizados["proveedor"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["proveedor"] = sanitize_string(
             datos.get("proveedor", "")
         )
-        datos_sanitizados["codigo"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["codigo"] = sanitize_string(
             datos.get("codigo", "")
         )
 
         # Números
-        datos_sanitizados["espesor"] = self.data_sanitizer.sanitize_numeric(
+        datos_sanitizados["espesor"] = self.sanitizer.sanitize_numeric(
             datos.get("espesor", 0), min_val=0
         )
-        datos_sanitizados["precio"] = self.data_sanitizer.sanitize_numeric(
+        datos_sanitizados["precio"] = self.sanitizer.sanitize_numeric(
             datos.get("precio", 0), min_val=0
         )
-        datos_sanitizados["largo"] = self.data_sanitizer.sanitize_numeric(
+        datos_sanitizados["largo"] = self.sanitizer.sanitize_numeric(
             datos.get("largo", 0), min_val=0
         )
-        datos_sanitizados["ancho"] = self.data_sanitizer.sanitize_numeric(
+        datos_sanitizados["ancho"] = self.sanitizer.sanitize_numeric(
             datos.get("ancho", 0), min_val=0
         )
 
         # Enteros
-        datos_sanitizados["stock"] = self.data_sanitizer.sanitize_integer(
+        datos_sanitizados["stock"] = self.sanitizer.sanitize_integer(
             datos.get("stock", 0), min_val=0
         )
-        datos_sanitizados["stock_minimo"] = self.data_sanitizer.sanitize_integer(
+        datos_sanitizados["stock_minimo"] = self.sanitizer.sanitize_integer(
             datos.get("stock_minimo", 0), min_val=0
         )
 
@@ -264,7 +268,7 @@ class ProductosManager:
             cursor = self.db_connection.cursor()
 
             # Sanitizar código
-            codigo_sanitizado = self.data_sanitizer.sanitize_string(codigo)
+            codigo_sanitizado = sanitize_string(codigo)
 
             # Usar SQL externo para validación
             if vidrio_id:
@@ -289,8 +293,8 @@ class ProductosManager:
     def calcular_area_vidrio(self, largo: float, ancho: float) -> float:
         """Calcula el área del vidrio en metros cuadrados."""
         try:
-            largo_sanitizado = self.data_sanitizer.sanitize_numeric(largo, min_val=0)
-            ancho_sanitizado = self.data_sanitizer.sanitize_numeric(ancho, min_val=0)
+            largo_sanitizado = self.sanitizer.sanitize_numeric(largo, min_val=0)
+            ancho_sanitizado = self.sanitizer.sanitize_numeric(ancho, min_val=0)
 
             if largo_sanitizado <= 0 or ancho_sanitizado <= 0:
                 return 0.0
@@ -306,7 +310,7 @@ class ProductosManager:
         """Calcula el precio total basado en el área."""
         try:
             area = self.calcular_area_vidrio(largo, ancho)
-            precio_sanitizado = self.data_sanitizer.sanitize_numeric(
+            precio_sanitizado = self.sanitizer.sanitize_numeric(
                 precio_metro, min_val=0
             )
 
@@ -323,7 +327,7 @@ class ProductosManager:
             return False
 
         try:
-            stock_sanitizado = self.data_sanitizer.sanitize_integer(
+            stock_sanitizado = self.sanitizer.sanitize_integer(
                 nuevo_stock, min_val=0
             )
 
@@ -356,7 +360,7 @@ class ProductosManager:
             return False
 
         try:
-            precio_sanitizado = self.data_sanitizer.sanitize_numeric(
+            precio_sanitizado = self.sanitizer.sanitize_numeric(
                 nuevo_precio, min_val=0
             )
 
@@ -392,7 +396,7 @@ class ProductosManager:
             return False
 
         try:
-            cantidad_sanitizada = self.data_sanitizer.sanitize_integer(
+            cantidad_sanitizada = self.sanitizer.sanitize_integer(
                 cantidad_requerida, min_val=1
             )
 

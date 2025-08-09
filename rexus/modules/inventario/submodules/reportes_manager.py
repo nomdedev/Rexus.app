@@ -22,6 +22,7 @@ logger = logging.getLogger(__name__)
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -45,11 +46,9 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -114,7 +113,7 @@ class ReportesManager:
         """
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/inventario/reportes"
         self.logger = logging.getLogger(__name__)
         
@@ -209,11 +208,11 @@ class ReportesManager:
             if filtros:
                 if filtros.get('categoria'):
                     query += " AND i.categoria = ?"
-                    params.append(self.data_sanitizer.sanitize_text(filtros['categoria']))
+                    params.append(sanitize_string(filtros['categoria']))
                 
                 if filtros.get('proveedor'):
                     query += " AND i.proveedor LIKE ?"
-                    params.append(f"%{self.data_sanitizer.sanitize_text(filtros['proveedor'])}%")
+                    params.append(f"%{sanitize_string(filtros['proveedor'])}%")
                 
                 if filtros.get('estado_stock'):
                     estado_filtro = filtros['estado_stock']
@@ -228,11 +227,11 @@ class ReportesManager:
                 
                 if filtros.get('codigo_like'):
                     query += " AND i.codigo LIKE ?"
-                    params.append(f"%{self.data_sanitizer.sanitize_text(filtros['codigo_like'])}%")
+                    params.append(f"%{sanitize_string(filtros['codigo_like'])}%")
                 
                 if filtros.get('descripcion_like'):
                     query += " AND i.descripcion LIKE ?"
-                    params.append(f"%{self.data_sanitizer.sanitize_text(filtros['descripcion_like'])}%")
+                    params.append(f"%{sanitize_string(filtros['descripcion_like'])}%")
             
             query += " ORDER BY i.categoria, i.codigo"
             
@@ -355,7 +354,7 @@ class ReportesManager:
             
             if tipo_movimiento:
                 query += " AND m.tipo_movimiento = ?"
-                params.append(self.data_sanitizer.sanitize_text(tipo_movimiento))
+                params.append(sanitize_string(tipo_movimiento))
             
             query += " ORDER BY m.fecha_movimiento DESC"
             

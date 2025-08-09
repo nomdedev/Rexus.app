@@ -31,6 +31,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 from rexus.ui.components.base_components import (
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     RexusButton, RexusLabel, RexusLineEdit, RexusComboBox, RexusGroupBox
 )
 from rexus.ui.standard_components import StandardComponents

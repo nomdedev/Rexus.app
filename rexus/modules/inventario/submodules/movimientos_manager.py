@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -37,11 +38,9 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer as DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -80,7 +79,7 @@ class MovimientosManager:
         """Inicializa el gestor de movimientos."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/inventario/movimientos"
 
     @auth_required
@@ -138,7 +137,7 @@ class MovimientosManager:
                         cantidad_real,
                         stock_actual,
                         nuevo_stock,
-                        self.data_sanitizer.sanitize_text(observaciones),
+                        sanitize_string(observaciones),
                         obra_id,
                         usuario,
                     ))
@@ -155,7 +154,7 @@ class MovimientosManager:
                             cantidad_real,
                             stock_actual,
                             nuevo_stock,
-                            self.data_sanitizer.sanitize_text(observaciones),
+                            sanitize_string(observaciones),
                             obra_id,
                             usuario,
                         ),
@@ -173,7 +172,7 @@ class MovimientosManager:
                         cantidad_real,
                         stock_actual,
                         nuevo_stock,
-                        self.data_sanitizer.sanitize_text(observaciones),
+                        sanitize_string(observaciones),
                         obra_id,
                         usuario,
                     ),

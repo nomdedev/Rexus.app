@@ -12,6 +12,7 @@ from typing import List, Dict, Tuple
 from PyQt6.QtCore import QUrl, pyqtSignal
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class InteractiveMapWidget(QWidget):

@@ -40,10 +40,28 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
     QWidget,
+    QDialog,
+    QFormLayout,
+    QTextEdit,
+    QDateTimeEdit,
+    QDialogButtonBox,
+)
+
+# Importar componentes Rexus
+from rexus.ui.components.base_components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable,
+    RexusFrame,
+    RexusGroupBox,
+    RexusLayoutHelper
 )
 
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
@@ -96,8 +114,8 @@ class AuditoriaView(QWidget):
 
     def crear_panel_control(self):
         """Crea el panel de control superior."""
-        panel = QFrame()
-        panel.setFrameStyle(QFrame.Shape.Box)
+        panel = RexusFrame()
+        panel.setFrameStyle(RexusFrame.Shape.Box)
         panel.setStyleSheet("""
             QFrame {
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
@@ -111,23 +129,23 @@ class AuditoriaView(QWidget):
         layout = QHBoxLayout(panel)
 
         # Botón Nuevo
-        self.btn_nuevo = QPushButton("Nuevo")
+        self.btn_nuevo = RexusButton("Nuevo")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
 
         # Campo de búsqueda
-        self.input_busqueda = QLineEdit()
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar...")
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
 
         # Botón buscar
-        self.btn_buscar = QPushButton("Buscar")
+        self.btn_buscar = RexusButton("Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
 
         # Botón actualizar
-        self.btn_actualizar = QPushButton("Actualizar")
+        self.btn_actualizar = RexusButton("Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
 
@@ -147,7 +165,7 @@ class AuditoriaView(QWidget):
 
         self.tabla_principal.setAlternatingRowColors(True)
         self.tabla_principal.setSelectionBehavior(
-            QTableWidget.SelectionBehavior.SelectRows
+            RexusTable.SelectionBehavior.SelectRows
         )
 
     def aplicar_estilo(self):
@@ -184,7 +202,24 @@ class AuditoriaView(QWidget):
 
     def nuevo_registro(self):
         """Abre el diálogo para crear un nuevo registro."""
-        show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
+        dialogo = DialogoAuditoria(self)
+        
+        if dialogo.exec() == QDialog.DialogCode.Accepted:
+            if dialogo.validar_datos():
+                datos = dialogo.obtener_datos()
+                
+                if self.controller:
+                    try:
+                        exito = self.controller.crear_registro_auditoria(datos)
+                        if exito:
+                            show_success(self, "Éxito", "Registro de auditoría creado exitosamente.")
+                            self.actualizar_datos()
+                        else:
+                            show_error(self, "Error", "No se pudo crear el registro de auditoría.")
+                    except Exception as e:
+                        show_error(self, "Error", f"Error al crear registro: {str(e)}")
+                else:
+                    show_warning(self, "Advertencia", "No hay controlador disponible.")
 
     def buscar(self):
         """Busca registros según los criterios especificados."""
@@ -216,7 +251,7 @@ class AuditoriaView(QWidget):
             )
 
             # Botón de acciones
-            btn_editar = QPushButton("Editar")
+            btn_editar = RexusButton("Editar")
             btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
@@ -232,6 +267,133 @@ class AuditoriaView(QWidget):
                     self.input_busqueda.text()
                 )
             return datos
+
+    def set_controller(self, controller):
+        """Establece el controlador para la vista."""
+        self.controller = controller
+
+
+class DialogoAuditoria(QDialog):
+    """Diálogo para crear registros de auditoría manual."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.init_ui()
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        self.setWindowTitle("Nuevo Registro de Auditoría")
+        self.setModal(True)
+        self.resize(450, 400)
+        
+        layout = QVBoxLayout(self)
+        
+        # Formulario
+        form_layout = QFormLayout()
+        
+        # Campos del formulario
+        self.input_modulo = RexusComboBox()
+        self.input_modulo.addItems([
+            "Sistema", "Usuarios", "Inventario", "Obras", "Herrajes", 
+            "Vidrios", "Mantenimiento", "Configuración", "Auditoría",
+            "Compras", "Pedidos", "Administración"
+        ])
+        form_layout.addRow("Módulo:", self.input_modulo)
+        
+        self.input_accion = RexusComboBox()
+        self.input_accion.addItems([
+            "CREAR", "LEER", "ACTUALIZAR", "ELIMINAR", "LOGIN", 
+            "LOGOUT", "EXPORTAR", "IMPORTAR", "BACKUP", "CONFIGURAR"
+        ])
+        form_layout.addRow("Acción:", self.input_accion)
+        
+        self.input_descripcion = QTextEdit()
+        self.input_descripcion.setPlaceholderText("Descripción detallada de la acción realizada")
+        self.input_descripcion.setMaximumHeight(100)
+        form_layout.addRow("Descripción:", self.input_descripcion)
+        
+        self.input_tabla_afectada = RexusLineEdit()
+        self.input_tabla_afectada.setPlaceholderText("Tabla o entidad afectada")
+        form_layout.addRow("Tabla Afectada:", self.input_tabla_afectada)
+        
+        self.input_criticidad = RexusComboBox()
+        self.input_criticidad.addItems(["BAJA", "MEDIA", "ALTA", "CRÍTICA"])
+        self.input_criticidad.setCurrentText("MEDIA")
+        form_layout.addRow("Criticidad:", self.input_criticidad)
+        
+        self.input_resultado = RexusComboBox()
+        self.input_resultado.addItems(["EXITOSO", "FALLIDO", "PARCIAL"])
+        self.input_resultado.setCurrentText("EXITOSO")
+        form_layout.addRow("Resultado:", self.input_resultado)
+        
+        self.input_ip_origen = RexusLineEdit()
+        self.input_ip_origen.setPlaceholderText("IP de origen (opcional)")
+        form_layout.addRow("IP Origen:", self.input_ip_origen)
+        
+        self.input_detalles = QTextEdit()
+        self.input_detalles.setPlaceholderText("Detalles adicionales o contexto")
+        self.input_detalles.setMaximumHeight(80)
+        form_layout.addRow("Detalles:", self.input_detalles)
+        
+        layout.addLayout(form_layout)
+        
+        # Botones
+        buttons = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+        )
+        buttons.accepted.connect(self.accept)
+        buttons.rejected.connect(self.reject)
+        layout.addWidget(buttons)
+        
+        # Aplicar estilo
+        self.aplicar_estilo()
+    
+    def aplicar_estilo(self):
+        """Aplica estilo al diálogo."""
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #f8f9fa;
+            }
+            QLineEdit, QTextEdit, QComboBox {
+                padding: 8px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                background-color: white;
+            }
+            QPushButton {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+        """)
+    
+    def obtener_datos(self):
+        """Obtiene los datos del formulario."""
+        return {
+            "modulo": self.input_modulo.currentText(),
+            "accion": self.input_accion.currentText(),
+            "descripcion": self.input_descripcion.toPlainText().strip(),
+            "tabla_afectada": self.input_tabla_afectada.text().strip(),
+            "nivel_criticidad": self.input_criticidad.currentText(),
+            "resultado": self.input_resultado.currentText(),
+            "ip_origen": self.input_ip_origen.text().strip(),
+            "detalles": self.input_detalles.toPlainText().strip()
+        }
+    
+    def validar_datos(self):
+        """Valida los datos del formulario."""
+        datos = self.obtener_datos()
+        
+        if not datos["descripcion"]:
+            show_error(self, "Error de Validación", "La descripción es obligatoria.")
+            return False
+        
+        if len(datos["descripcion"]) < 10:
+            show_error(self, "Error de Validación", "La descripción debe tener al menos 10 caracteres.")
+            return False
+        
+        return True
 
     def set_controller(self, controller):
         """Establece el controlador para la vista."""

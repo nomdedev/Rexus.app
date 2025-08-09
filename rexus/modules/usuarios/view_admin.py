@@ -41,6 +41,7 @@ from PyQt6.QtGui import QFont, QIcon, QAction
 
 from rexus.core.auth import get_auth_manager
 from rexus.core.database import DatabaseConnection
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class UserDialog(QDialog):

@@ -14,6 +14,7 @@ from typing import Any, Dict, List
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -34,12 +35,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -55,7 +62,7 @@ class RecursosManager:
         """Inicializa el gestor de recursos."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/obras/recursos"
 
     @auth_required
@@ -73,16 +80,16 @@ class RecursosManager:
 
         try:
             # Sanitizar datos
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
-            material_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            material_id_sanitizado = self.sanitizer.sanitize_integer(
                 material_id, min_val=1
             )
-            cantidad_sanitizada = self.data_sanitizer.sanitize_integer(
+            cantidad_sanitizada = self.sanitizer.sanitize_integer(
                 cantidad, min_val=1
             )
-            tipo_sanitizado = self.data_sanitizer.sanitize_string(tipo_material)
+            tipo_sanitizado = sanitize_string(tipo_material)
 
             # Validar disponibilidad del material
             if not self._validar_disponibilidad_material(
@@ -127,7 +134,7 @@ class RecursosManager:
             return []
 
         try:
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
 
@@ -204,7 +211,7 @@ class RecursosManager:
                 {
                     "obra_id": obra_id,
                     "personal_id": personal_id,
-                    "rol": self.data_sanitizer.sanitize_string(rol),
+                    "rol": sanitize_string(rol),
                     "fecha_asignacion": fecha_inicio or datetime.now(),
                 },
             )

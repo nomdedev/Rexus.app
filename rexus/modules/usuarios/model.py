@@ -3,6 +3,10 @@ from rexus.core.auth_decorators import (
     auth_required,
     permission_required,
 )
+
+# Importar utilidades de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
 from rexus.utils.sql_query_manager import SQLQueryManager
 
 # 🔒 DB Authorization Check - Verify user permissions before DB operations
@@ -28,10 +32,7 @@ try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
-
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
     from utils.sql_security import SQLSecurityValidator
-
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available: {e}")
@@ -181,8 +182,8 @@ class UsuariosModel:
         try:
             # Sanitizar datos
             if self.data_sanitizer:
-                username_limpio = self.data_sanitizer.sanitize_string(username)
-                email_limpio = self.data_sanitizer.sanitize_string(email)
+                username_limpio = sanitize_string(username)
+                email_limpio = sanitize_string(email)
             else:
                 username_limpio = username.strip()
                 email_limpio = email.strip()
@@ -248,7 +249,7 @@ class UsuariosModel:
         try:
             # Sanitizar username
             if self.data_sanitizer:
-                username_limpio = self.data_sanitizer.sanitize_string(username)
+                username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
 
@@ -285,7 +286,7 @@ class UsuariosModel:
         try:
             # Sanitizar username
             if self.data_sanitizer:
-                username_limpio = self.data_sanitizer.sanitize_string(username)
+                username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
 
@@ -331,7 +332,7 @@ class UsuariosModel:
         try:
             # Sanitizar username
             if self.data_sanitizer:
-                username_limpio = self.data_sanitizer.sanitize_string(username)
+                username_limpio = sanitize_string(username)
             else:
                 username_limpio = username.strip()
 
@@ -461,7 +462,7 @@ class UsuariosModel:
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer and nombre_usuario:
             # Sanitizar el nombre de usuario para prevenir inyecciones
-            nombre_limpio = self.data_sanitizer.sanitize_string(nombre_usuario)
+            nombre_limpio = sanitize_string(nombre_usuario)
             if not nombre_limpio:
                 return None
         else:
@@ -550,7 +551,7 @@ class UsuariosModel:
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer and email:
             # Sanitizar el email para prevenir inyecciones
-            email_limpio = self.data_sanitizer.sanitize_string(email)
+            email_limpio = sanitize_string(email)
             if not email_limpio:
                 return None
         else:
@@ -624,7 +625,7 @@ class UsuariosModel:
 
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer:
-            username_limpio = self.data_sanitizer.sanitize_string(username)
+            username_limpio = sanitize_string(username)
             if not username_limpio:
                 return True  # Si no se puede sanitizar, considerarlo como existente por seguridad
         else:
@@ -670,7 +671,7 @@ class UsuariosModel:
 
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer:
-            email_limpio = self.data_sanitizer.sanitize_string(email)
+            email_limpio = sanitize_string(email)
             if not email_limpio:
                 return True  # Si no se puede sanitizar, considerarlo como existente por seguridad
         else:
@@ -711,7 +712,7 @@ class UsuariosModel:
 
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available:
-            username_limpio = self.data_sanitizer.sanitize_string(
+            username_limpio = sanitize_string(
                 username, max_length=50
             )
             if not username_limpio:
@@ -783,7 +784,7 @@ class UsuariosModel:
 
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available:
-            username_limpio = self.data_sanitizer.sanitize_string(
+            username_limpio = sanitize_string(
                 username, max_length=50
             )
             if not username_limpio:
@@ -863,7 +864,7 @@ class UsuariosModel:
 
         # 🔒 SANITIZACIÓN DE ENTRADA
         if self.security_available:
-            username_limpio = self.data_sanitizer.sanitize_string(
+            username_limpio = sanitize_string(
                 username, max_length=50
             )
             if not username_limpio:
@@ -1076,7 +1077,7 @@ class UsuariosModel:
                 # Validar formato de email si se proporciona
                 if datos_limpios.get("email"):
                     try:
-                        email_limpio = self.data_sanitizer.sanitize_string(
+                        email_limpio = sanitize_string(
                             datos_limpios["email"]
                         )
                         if (
@@ -1091,7 +1092,7 @@ class UsuariosModel:
 
                 # Validar teléfono si se proporciona
                 if datos_limpios.get("telefono"):
-                    telefono_limpio = self.data_sanitizer.sanitize_string(
+                    telefono_limpio = sanitize_string(
                         datos_limpios["telefono"]
                     )
                     datos_limpios["telefono"] = telefono_limpio
@@ -1207,6 +1208,61 @@ class UsuariosModel:
         except Exception as e:
             print(f"[ERROR USUARIOS] Error obteniendo usuarios: {e}")
             return self._get_usuarios_demo()
+    
+    def buscar_usuarios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
+        """
+        Busca usuarios por nombre, username o email.
+        
+        Args:
+            termino_busqueda: Término de búsqueda
+            
+        Returns:
+            Lista de usuarios que coinciden con la búsqueda
+        """
+        if not self.db_connection:
+            # Si no hay conexión, buscar en datos demo
+            usuarios_demo = self._get_usuarios_demo()
+            termino_lower = termino_busqueda.lower()
+            return [
+                usuario for usuario in usuarios_demo
+                if (termino_lower in usuario.get("nombre_completo", "").lower() or
+                    termino_lower in usuario.get("usuario", "").lower() or
+                    termino_lower in usuario.get("email", "").lower())
+            ]
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+            cursor.execute("""
+                SELECT id, usuario, nombre_completo, email, telefono, rol, estado,
+                       fecha_creacion, ultimo_acceso, intentos_fallidos
+                FROM usuarios
+                WHERE activo = 1 AND (
+                    LOWER(nombre_completo) LIKE ? OR
+                    LOWER(usuario) LIKE ? OR
+                    LOWER(email) LIKE ?
+                )
+                ORDER BY nombre_completo
+            """, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
+
+            columns = [desc[0] for desc in cursor.description]
+            usuarios = []
+
+            for row in cursor.fetchall():
+                usuario = dict(zip(columns, row))
+                usuario["rol_texto"] = self.ROLES.get(usuario["rol"], usuario["rol"])
+                usuario["estado_texto"] = self.ESTADOS.get(
+                    usuario["estado"], usuario["estado"]
+                )
+
+                # Obtener permisos
+                usuario["permisos"] = self.obtener_permisos_usuario(usuario["id"])
+                usuarios.append(usuario)
+
+            return usuarios
+
+        except Exception as e:
+            print(f"[ERROR USUARIOS] Error buscando usuarios: {e}")
+            return []
 
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario por su ID."""

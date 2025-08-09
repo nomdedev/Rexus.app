@@ -14,6 +14,7 @@ Arquitectura modular v2.0 con compatibilidad hacia atrás.
 # Exportar el modelo principal y vistas
 from .controller import VidriosController
 from .model import ModeloVidrios, VidriosModel
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Exportar modelo refactorizado
 from .model_refactorizado import ModeloVidriosRefactorizado

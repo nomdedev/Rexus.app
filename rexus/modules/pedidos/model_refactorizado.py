@@ -20,14 +20,13 @@ from typing import Any, Dict, List, Optional
 # IMPORTS UNIFICADOS - SIN DUPLICADOS
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # DataSanitizer unificado con fallback robusto
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
     except ImportError:
+    try:
+            except ImportError:
         # Fallback class - seguro sin funcionalidad
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -86,7 +85,7 @@ class PedidosModelRefactorizado:
         """Inicializa el modelo de pedidos con configuración segura."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
 
         # Configurar rutas SQL
         self.sql_path = "scripts/sql/pedidos"
@@ -207,7 +206,7 @@ class PedidosModelRefactorizado:
                 raise ValueError("Los datos del pedido deben ser un diccionario")
 
             # Sanitizar datos críticos
-            datos_sanitizados = self.data_sanitizer.sanitize_dict(datos_pedido)
+            datos_sanitizados = self.sanitizer.sanitize_dict(datos_pedido)
 
             # Validar relaciones críticas
             cliente_id = datos_sanitizados.get("cliente_id")
@@ -253,16 +252,16 @@ class PedidosModelRefactorizado:
                 datos_sanitizados.get("descuento", 0),
                 datos_sanitizados.get("impuestos", 0),
                 datos_sanitizados.get("total", 0),
-                self.data_sanitizer.sanitize_text(
+                sanitize_string(
                     datos_sanitizados.get("observaciones", "")
                 ),
-                self.data_sanitizer.sanitize_text(
+                sanitize_string(
                     datos_sanitizados.get("direccion_entrega", "")
                 ),
-                self.data_sanitizer.sanitize_text(
+                sanitize_string(
                     datos_sanitizados.get("responsable_entrega", "")
                 ),
-                self.data_sanitizer.sanitize_text(
+                sanitize_string(
                     datos_sanitizados.get("telefono_contacto", "")
                 ),
                 datos_sanitizados.get("usuario_creador"),
@@ -304,7 +303,7 @@ class PedidosModelRefactorizado:
                 "obra_id": filtros.get("obra_id") if filtros else None,
                 "fecha_desde": filtros.get("fecha_desde") if filtros else None,
                 "fecha_hasta": filtros.get("fecha_hasta") if filtros else None,
-                "busqueda": self.data_sanitizer.sanitize_text(
+                "busqueda": sanitize_string(
                     filtros.get("busqueda", "")
                 )
                 if filtros
@@ -387,7 +386,7 @@ class PedidosModelRefactorizado:
                 "pedido_id": pedido_id,
                 "nuevo_estado": nuevo_estado,
                 "usuario_id": usuario_id,
-                "motivo": self.data_sanitizer.sanitize_text(motivo) if motivo else None,
+                "motivo": sanitize_string(motivo) if motivo else None,
             }
 
             cursor.execute(query_actualizar, params)
@@ -402,7 +401,7 @@ class PedidosModelRefactorizado:
                 "estado_anterior": estado_anterior,
                 "estado_nuevo": nuevo_estado,
                 "usuario_id": usuario_id,
-                "observaciones": self.data_sanitizer.sanitize_text(observaciones),
+                "observaciones": sanitize_string(observaciones),
             }
 
             cursor.execute(query_historial, params_historial)

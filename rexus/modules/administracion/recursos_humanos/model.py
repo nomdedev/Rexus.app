@@ -12,6 +12,7 @@ Maneja la lógica de negocio para:
 from datetime import datetime, date
 from decimal import Decimal
 import calendar
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class RecursosHumanosModel:

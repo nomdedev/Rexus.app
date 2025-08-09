@@ -36,6 +36,7 @@ from typing import Dict
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtGui import QFont
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # XSS Protection imports
 from rexus.utils.xss_protection import XSSProtection, FormProtector
@@ -44,9 +45,15 @@ from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+from rexus.ui.components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable
+)
 from PyQt6.QtWidgets import (
     QAbstractItemView,
-    QComboBox,
     QDateEdit,
     QDialog,
     QDialogButtonBox,
@@ -57,10 +64,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
-    QLabel,
-    QLineEdit,
     QPlainTextEdit,
-    QPushButton,
     QScrollArea,
     QSpinBox,
     QTableWidgetItem,
@@ -143,7 +147,7 @@ class ComprasView(QWidget):
         layout.addWidget(self.btn_seguimiento)
 
         # Búsqueda
-        self.input_busqueda = QLineEdit()
+        self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("🔍 Buscar por proveedor o número de orden...")
         self.input_busqueda.setToolTip("🔍 Buscar órdenes por proveedor, número o descripción")
         self.input_busqueda.setStyleSheet("""
@@ -161,7 +165,7 @@ class ComprasView(QWidget):
         self.input_busqueda.returnPressed.connect(self.buscar_compras)
 
         # Filtro por estado
-        self.combo_estado = QComboBox()
+        self.combo_estado = RexusComboBox()
         self.combo_estado.addItems([
             "📋 Todos los estados",
             "⏳ PENDIENTE",
@@ -212,9 +216,9 @@ class ComprasView(QWidget):
         
         # Sección de fechas
         fechas_layout = QHBoxLayout()
-        fechas_layout.addWidget(QLabel("📅 Desde:"))
+        fechas_layout.addWidget(RexusLabel("📅 Desde:"))
         fechas_layout.addWidget(self.date_desde)
-        fechas_layout.addWidget(QLabel("📅 Hasta:"))
+        fechas_layout.addWidget(RexusLabel("📅 Hasta:"))
         fechas_layout.addWidget(self.date_hasta)
         
         fechas_widget = QWidget()
@@ -340,10 +344,10 @@ class ComprasView(QWidget):
         stats_layout = QGridLayout(stats_general)
         
         # Labels de estadísticas básicas
-        self.lbl_total_ordenes = QLabel("Total Órdenes: 0")
-        self.lbl_ordenes_pendientes = QLabel("Pendientes: 0")
-        self.lbl_ordenes_aprobadas = QLabel("Aprobadas: 0")
-        self.lbl_monto_total = QLabel("Monto Total: $0.00")
+        self.lbl_total_ordenes = RexusLabel("Total Órdenes: 0")
+        self.lbl_ordenes_pendientes = RexusLabel("Pendientes: 0")
+        self.lbl_ordenes_aprobadas = RexusLabel("Aprobadas: 0")
+        self.lbl_monto_total = RexusLabel("Monto Total: $0.00")
         self.lbl_promedio_orden = QLabel("Promedio por Orden: $0.00")
         self.lbl_ordenes_mes = QLabel("Órdenes este Mes: 0")
         
@@ -847,9 +851,9 @@ class ComprasView(QWidget):
 
         layout = QVBoxLayout(dialog)
 
-        combo_estado = QComboBox()
+        combo_estado = RexusComboBox()
         combo_estado.addItems(estados)
-        layout.addWidget(QLabel("Nuevo Estado:"))
+        layout.addWidget(RexusLabel("Nuevo Estado:"))
         layout.addWidget(combo_estado)
 
         buttons = QDialogButtonBox(
@@ -942,15 +946,25 @@ class ComprasView(QWidget):
                 datos_seguimiento = dialog.obtener_datos_seguimiento()
                 
                 # Actualizar seguimiento a través del controlador
-                if hasattr(self.controller, 'actualizar_seguimiento_pedido'):
+                if self.controller and hasattr(self.controller, 'actualizar_seguimiento_pedido'):
                     self.controller.actualizar_seguimiento_pedido(
                         orden_id,
                         datos_seguimiento["nuevo_estado"],
                         datos_seguimiento.get("motivo", "")
                     )
+                    show_success(self, "Éxito", "Seguimiento actualizado correctamente")
+                    self.actualizar_datos()
                 else:
-                    show_warning(self, "Funcionalidad en desarrollo", 
-                               "El seguimiento de pedidos está en desarrollo")
+                    # Fallback: actualizar solo el estado sin seguimiento detallado
+                    if self.controller:
+                        try:
+                            self.controller.actualizar_estado_orden(orden_id, datos_seguimiento["nuevo_estado"])
+                            show_success(self, "Estado Actualizado", "El estado de la orden ha sido actualizado")
+                            self.actualizar_datos()
+                        except Exception as e:
+                            show_error(self, "Error", f"Error actualizando estado: {str(e)}")
+                    else:
+                        show_warning(self, "Sin Controlador", "No hay controlador disponible")
                 
         except ImportError as e:
             show_error(self, "Error", f"No se pudo cargar el diálogo de seguimiento: {e}")
@@ -1005,8 +1019,8 @@ class ComprasView(QWidget):
         try:
             if self.controller and hasattr(self.controller, 'generar_reporte_completo'):
                 # Obtener fechas del filtro
-                fecha_inicio = self.date_desde.date().toPython()
-                fecha_fin = self.date_hasta.date().toPython()
+                _ = self.date_desde.date().toPython()  # fecha_inicio no usada aún
+                _ = self.date_hasta.date().toPython()  # fecha_fin no usada aún
                 
                 reporte = self.controller.generar_reporte_completo()
                 
@@ -1050,6 +1064,94 @@ class ComprasView(QWidget):
                            
         except Exception as e:
             show_error(self, "Error", f"Error generando reporte: {e}")
+    
+    def ver_productos_stock_bajo(self):
+        """Muestra productos con stock bajo que necesitan compra."""
+        try:
+            if not self.controller:
+                show_warning(self, "Sin controlador", "El controlador no está disponible")
+                return
+            
+            # Obtener productos con stock bajo desde el modelo
+            productos = self.controller.model.obtener_productos_disponibles_compra()
+            
+            if not productos:
+                from rexus.utils.message_system import show_info
+                show_info(self, "Sin productos", "No hay productos con stock bajo en este momento")
+                return
+            
+            # Crear diálogo simple para mostrar información
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Productos con Stock Bajo")
+            dialog.setModal(True)
+            dialog.resize(800, 600)
+            
+            layout = QVBoxLayout(dialog)
+            
+            # Título
+            title_label = QLabel("📦 Productos que Necesitan Compra")
+            title_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #d32f2f; margin: 10px;")
+            layout.addWidget(title_label)
+            
+            # Información
+            info_label = QLabel(f"Se encontraron {len(productos)} productos con stock bajo o crítico.")
+            info_label.setStyleSheet("color: #666; margin: 5px;")
+            layout.addWidget(info_label)
+            
+            # Tabla de productos
+            tabla = StandardComponents.create_standard_table()
+            tabla.setColumnCount(6)
+            tabla.setHorizontalHeaderLabels([
+                "Producto", "Tipo", "Stock Actual", 
+                "Stock Mínimo", "Cantidad Sugerida", "Prioridad"
+            ])
+            
+            tabla.setRowCount(len(productos))
+            
+            for row, producto in enumerate(productos):
+                tabla.setItem(row, 0, QTableWidgetItem(producto.get('descripcion', '')))
+                tabla.setItem(row, 1, QTableWidgetItem(producto.get('tipo', '')))
+                tabla.setItem(row, 2, QTableWidgetItem(str(producto.get('stock_actual', 0))))
+                tabla.setItem(row, 3, QTableWidgetItem(str(producto.get('stock_minimo', 0))))
+                tabla.setItem(row, 4, QTableWidgetItem(str(producto.get('sugerencia_cantidad', 0))))
+                
+                # Prioridad con color
+                prioridad_item = QTableWidgetItem(producto.get('prioridad', 'MEDIA'))
+                if producto.get('prioridad') == 'ALTA':
+                    from PyQt6.QtGui import QColor
+                    prioridad_item.setBackground(QColor('#ffcdd2'))
+                tabla.setItem(row, 5, prioridad_item)
+            
+            tabla.resizeColumnsToContents()
+            layout.addWidget(tabla)
+            
+            # Botones
+            buttons_layout = QHBoxLayout()
+            buttons_layout.addStretch()
+            
+            btn_cerrar = StandardComponents.create_secondary_button("Cerrar")
+            btn_cerrar.clicked.connect(dialog.close)
+            buttons_layout.addWidget(btn_cerrar)
+            
+            btn_nueva_orden = StandardComponents.create_success_button("Nueva Orden de Compra")
+            btn_nueva_orden.clicked.connect(lambda: self.nueva_orden_desde_inventario(dialog))
+            buttons_layout.addWidget(btn_nueva_orden)
+            
+            layout.addLayout(buttons_layout)
+            
+            dialog.exec()
+            
+        except Exception as e:
+            show_error(self, "Error", f"Error obteniendo productos con stock bajo: {str(e)}")
+            print(f"[ERROR COMPRAS] Error en ver_productos_stock_bajo: {e}")
+    
+    def nueva_orden_desde_inventario(self, dialog_parent):
+        """Abre diálogo de nueva orden y cierra el de inventario."""
+        try:
+            dialog_parent.close()
+            self.abrir_dialog_nueva_orden()
+        except Exception as e:
+            print(f"[ERROR] Error abriendo nueva orden desde inventario: {e}")
 
 
 class DialogNuevaOrden(QDialog):
@@ -1075,8 +1177,8 @@ class DialogNuevaOrden(QDialog):
         form_layout = QFormLayout()
 
         # Campos
-        self.input_proveedor = QLineEdit()
-        self.input_numero_orden = QLineEdit()
+        self.input_proveedor = RexusLineEdit()
+        self.input_numero_orden = RexusLineEdit()
         self.date_pedido = QDateEdit()
         self.date_pedido.setDate(QDate.currentDate())
         self.date_pedido.setCalendarPopup(True)
@@ -1085,7 +1187,7 @@ class DialogNuevaOrden(QDialog):
         self.date_entrega.setDate(QDate.currentDate().addDays(30))
         self.date_entrega.setCalendarPopup(True)
 
-        self.combo_estado = QComboBox()
+        self.combo_estado = RexusComboBox()
         self.combo_estado.addItems(["PENDIENTE", "APROBADA"])
 
         self.input_descuento = QDoubleSpinBox()
@@ -1151,8 +1253,20 @@ class DialogNuevaOrden(QDialog):
             "descuento": self.input_descuento.value(),
             "impuestos": self.input_impuestos.value(),
             "observaciones": self.input_observaciones.toPlainText(),
-            "usuario_creacion": "Usuario Actual",  # TODO: Obtener del sistema
+            "usuario_creacion": self._obtener_usuario_actual(),
         }
+
+    def _obtener_usuario_actual(self):
+        """Obtiene el usuario actual del sistema."""
+        try:
+            from rexus.core.auth_manager import AuthManager
+            auth_manager = AuthManager()
+            usuario_actual = auth_manager.get_current_user()
+            return usuario_actual.get('username', 'Sistema') if usuario_actual else 'Sistema'
+        except ImportError:
+            return 'Sistema'
+        except Exception:
+            return 'Sistema'
 
     def configurar_validaciones(self):
         """Configura las validaciones del formulario."""
@@ -1204,94 +1318,6 @@ class DialogNuevaOrden(QDialog):
             FormValidator.validar_numero, 
             0.0, 999999.99
         )
-    
-    def ver_productos_stock_bajo(self):
-        """Muestra productos con stock bajo que necesitan compra."""
-        try:
-            if not self.controller:
-                show_warning("Sin controlador", "El controlador no está disponible")
-                return
-            
-            # Obtener productos con stock bajo desde el modelo
-            productos = self.controller.model.obtener_productos_disponibles_compra()
-            
-            if not productos:
-                show_info("Sin productos", "No hay productos con stock bajo en este momento")
-                return
-            
-            # Crear diálogo simple para mostrar información
-            dialog = QDialog(self)
-            dialog.setWindowTitle("Productos con Stock Bajo")
-            dialog.setModal(True)
-            dialog.resize(800, 600)
-            
-            layout = QVBoxLayout(dialog)
-            
-            # Título
-            title_label = QLabel("📦 Productos que Necesitan Compra")
-            title_label.setStyleSheet("font-size: 16px; font-weight: bold; color: #d32f2f; margin: 10px;")
-            layout.addWidget(title_label)
-            
-            # Información
-            info_label = QLabel(f"Se encontraron {len(productos)} productos con stock bajo o crítico.")
-            info_label.setStyleSheet("color: #666; margin: 5px;")
-            layout.addWidget(info_label)
-            
-            # Tabla de productos
-            tabla = StandardComponents.create_standard_table()
-            tabla.setColumnCount(6)
-            tabla.setHorizontalHeaderLabels([
-                "Producto", "Tipo", "Stock Actual", 
-                "Stock Mínimo", "Cantidad Sugerida", "Prioridad"
-            ])
-            
-            tabla.setRowCount(len(productos))
-            
-            for row, producto in enumerate(productos):
-                tabla.setItem(row, 0, QTableWidgetItem(producto.get('descripcion', '')))
-                tabla.setItem(row, 1, QTableWidgetItem(producto.get('tipo', '')))
-                tabla.setItem(row, 2, QTableWidgetItem(str(producto.get('stock_actual', 0))))
-                tabla.setItem(row, 3, QTableWidgetItem(str(producto.get('stock_minimo', 0))))
-                tabla.setItem(row, 4, QTableWidgetItem(str(producto.get('sugerencia_cantidad', 0))))
-                
-                # Prioridad con color
-                prioridad_item = QTableWidgetItem(producto.get('prioridad', 'MEDIA'))
-                if producto.get('prioridad') == 'ALTA':
-                    prioridad_item.setBackground(QColor('#ffcdd2'))
-                tabla.setItem(row, 5, prioridad_item)
-            
-            tabla.resizeColumnsToContents()
-            layout.addWidget(tabla)
-            
-            # Botones
-            buttons_layout = QHBoxLayout()
-            buttons_layout.addStretch()
-            
-            btn_cerrar = StandardComponents.create_secondary_button("Cerrar")
-            btn_cerrar.clicked.connect(dialog.close)
-            buttons_layout.addWidget(btn_cerrar)
-            
-            btn_nueva_orden = StandardComponents.create_success_button("Nueva Orden de Compra")
-            btn_nueva_orden.clicked.connect(lambda: self.nueva_orden_desde_inventario(dialog))
-            buttons_layout.addWidget(btn_nueva_orden)
-            
-            layout.addLayout(buttons_layout)
-            
-            dialog.exec()
-            
-        except Exception as e:
-            show_error("Error", f"Error obteniendo productos con stock bajo: {str(e)}")
-            print(f"[ERROR COMPRAS] Error en ver_productos_stock_bajo: {e}")
-    
-    def nueva_orden_desde_inventario(self, dialog_parent):
-        """Abre diálogo de nueva orden y cierra el de inventario."""
-        try:
-            dialog_parent.close()
-            self.nueva_orden()
-        except Exception as e:
-            print(f"[ERROR] Error abriendo nueva orden desde inventario: {e}")
-
-
     def crear_controles_paginacion(self):
         """Crea los controles de paginación"""
         paginacion_layout = QHBoxLayout()
@@ -1303,12 +1329,12 @@ class DialogNuevaOrden(QDialog):
         paginacion_layout.addStretch()
         
         # Controles de navegación
-        self.btn_primera = QPushButton("<<")
+        self.btn_primera = RexusButton("<<")
         self.btn_primera.setMaximumWidth(40)
         self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
         paginacion_layout.addWidget(self.btn_primera)
         
-        self.btn_anterior = QPushButton("<")
+        self.btn_anterior = RexusButton("<")
         self.btn_anterior.setMaximumWidth(30)
         self.btn_anterior.clicked.connect(self.pagina_anterior)
         paginacion_layout.addWidget(self.btn_anterior)
@@ -1325,19 +1351,19 @@ class DialogNuevaOrden(QDialog):
         self.total_paginas_label = QLabel("de 1")
         paginacion_layout.addWidget(self.total_paginas_label)
         
-        self.btn_siguiente = QPushButton(">")
+        self.btn_siguiente = RexusButton(">")
         self.btn_siguiente.setMaximumWidth(30)
         self.btn_siguiente.clicked.connect(self.pagina_siguiente)
         paginacion_layout.addWidget(self.btn_siguiente)
         
-        self.btn_ultima = QPushButton(">>")
+        self.btn_ultima = RexusButton(">>")
         self.btn_ultima.setMaximumWidth(40)
         self.btn_ultima.clicked.connect(self.ultima_pagina)
         paginacion_layout.addWidget(self.btn_ultima)
         
         # Selector de registros por página
-        paginacion_layout.addWidget(QLabel("Registros por página:"))
-        self.registros_por_pagina_combo = QComboBox()
+        paginacion_layout.addWidget(RexusLabel("Registros por página:"))
+        self.registros_por_pagina_combo = RexusComboBox()
         self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
         self.registros_por_pagina_combo.setCurrentText("50")
         self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
@@ -1406,7 +1432,7 @@ class DialogNuevaOrden(QDialog):
     def validar_y_aceptar(self):
         """Valida los datos y acepta el diálogo."""
         # Usar el sistema de validación
-        es_valido, errores = self.validator_manager.validar_formulario()
+        es_valido, _ = self.validator_manager.validar_formulario()
         
         if not es_valido:
             # Mostrar errores con el sistema mejorado

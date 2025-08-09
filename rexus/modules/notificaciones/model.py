@@ -13,14 +13,14 @@ from typing import Any, Dict, List, Optional
 from enum import Enum
 
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar utilidades de seguridad
 try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
     
-    from utils.data_sanitizer import DataSanitizer, data_sanitizer
-    from utils.sql_security import SQLSecurityValidator
+        from utils.sql_security import SQLSecurityValidator
     
     SECURITY_AVAILABLE = True
 except ImportError as e:

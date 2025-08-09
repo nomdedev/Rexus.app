@@ -30,7 +30,6 @@ from typing import Any, Dict, Optional, List
 from PyQt6.QtCore import QDate, Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QAbstractItemView,
-    QComboBox,
     QDateEdit,
     QDialog,
     QDialogButtonBox,
@@ -38,9 +37,6 @@ from PyQt6.QtWidgets import (
     QFormLayout,
     QGroupBox,
     QHBoxLayout,
-    QLabel,
-    QLineEdit,
-    QPushButton,
     QSplitter,
     QStackedWidget,
     QTableWidgetItem,
@@ -51,9 +47,24 @@ from PyQt6.QtWidgets import (
 
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+from rexus.ui.components import (
+    RexusButton,
+    RexusLabel,
+    RexusLineEdit,
+    RexusComboBox,
+    RexusTable
+)
+
+# Reemplazar componentes por versiones Rexus
+from PyQt6.QtWidgets import QLabel, QLineEdit, QComboBox, QPushButton
+QLabel = RexusLabel
+QLineEdit = RexusLineEdit
+QComboBox = RexusComboBox
+QPushButton = RexusButton
 from rexus.utils.contextual_error_system import ContextualErrorManager
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.keyboard_navigation import KeyboardNavigationManager
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_error, show_success, show_warning
@@ -74,7 +85,7 @@ except ImportError:
     class StandardComponents:
         @staticmethod
         def create_title(text, layout):
-            title_label = QLabel(text)
+            title_label = RexusLabel(text)
             title_label.setStyleSheet("""
                 QLabel {
                     font-size: 16px;
@@ -92,7 +103,7 @@ except ImportError:
 
         @staticmethod
         def create_primary_button(text):
-            btn = QPushButton(text)
+            btn = RexusButton(text)
             btn.setStyleSheet("""
                 QPushButton {
                     background-color: #3498db;
@@ -146,24 +157,8 @@ except ImportError:
 
         @staticmethod
         def create_standard_table():
-            from PyQt6.QtWidgets import QTableWidget
-            table = QTableWidget()
-            table.setStyleSheet("""
-                QTableWidget {
-                    gridline-color: #ddd;
-                    background-color: white;
-                    selection-background-color: #3498db;
-                }
-                QTableWidget::item {
-                    padding: 8px;
-                }
-                QHeaderView::section {
-                    background-color: #34495e;
-                    color: white;
-                    padding: 8px;
-                    font-weight: bold;
-                }
-            """)
+            table = RexusTable()
+            # RexusTable ya tiene estilos integrados
             return table
 
     style_manager = None
@@ -214,8 +209,8 @@ class ObrasView(QWidget):
         self.cargar_datos_iniciales_seguro()
 
     def apply_high_contrast_style(self):
-        """Aplicar estilos de alto contraste para mejor legibilidad."""
-        high_contrast_style = """
+        """Los componentes Rexus ya tienen estilos integrados."""
+        pass
         /* Estilo general de alto contraste */
         QWidget {
             background-color: #ffffff;
@@ -884,9 +879,38 @@ class ObrasView(QWidget):
             # Obtener datos de la fila
             codigo = self.tabla_obras.item(fila, 0).text() if self.tabla_obras.item(fila, 0) else ""
             print(f"[OBRAS VIEW] Editando obra con código: {codigo}")
-            # TODO: Implementar lógica de edición
+            
+            if not codigo:
+                show_warning(self, "Error", "No se pudo obtener el código de la obra")
+                return
+            
+            # Buscar la obra por código usando el controlador
+            if hasattr(self, "controller") and self.controller:
+                try:
+                    obra = self.controller.model.obtener_obra_por_codigo(codigo)
+                    if obra:
+                        # Convertir tupla/datos a diccionario si es necesario
+                        if isinstance(obra, tuple):
+                            from .data_mapper import ObrasDataMapper
+                            obra_dict = ObrasDataMapper.tupla_a_dict(obra)
+                        elif isinstance(obra, dict):
+                            obra_dict = obra
+                        else:
+                            show_error(self, "Error", f"Formato de datos no reconocido: {type(obra)}")
+                            return
+                        
+                        # Abrir formulario de edición
+                        self.mostrar_formulario_edicion_obra(obra_dict)
+                    else:
+                        show_error(self, "Error", f"No se encontró la obra con código: {codigo}")
+                except Exception as e:
+                    show_error(self, "Error", f"Error obteniendo datos de la obra: {str(e)}")
+            else:
+                show_warning(self, "Sin Controlador", "No hay controlador disponible para editar la obra")
+                
         except Exception as e:
             print(f"[OBRAS VIEW] Error editando obra: {e}")
+            show_error(self, "Error", f"Error editando obra: {str(e)}")
 
     def mostrar_detalles_obra(self, obra_id):
         """Muestra los detalles de una obra."""
@@ -894,10 +918,26 @@ class ObrasView(QWidget):
             if hasattr(self, "controller") and self.controller:
                 obra = self.controller.model.obtener_obra_por_id(obra_id)
                 if obra:
-                    # TODO: Abrir diálogo de detalles
-                    print(f"[OBRAS VIEW] Mostrando detalles de obra ID: {obra_id}")
+                    # Convertir tupla/datos a diccionario si es necesario
+                    if isinstance(obra, tuple):
+                        from .data_mapper import ObrasDataMapper
+                        obra_dict = ObrasDataMapper.tupla_a_dict(obra)
+                    elif isinstance(obra, dict):
+                        obra_dict = obra
+                    else:
+                        show_error(self, "Error", f"Formato de datos no reconocido: {type(obra)}")
+                        return
+                    
+                    # Crear diálogo de detalles (solo lectura)
+                    dialogo = DetallesObraDialog(self, obra_dict)
+                    dialogo.exec()
+                else:
+                    show_error(self, "Error", f"No se encontró la obra con ID: {obra_id}")
+            else:
+                show_warning(self, "Sin Controlador", "No hay controlador disponible")
         except Exception as e:
             print(f"[OBRAS VIEW] Error mostrando detalles: {e}")
+            show_error(self, "Error", f"Error mostrando detalles: {str(e)}")
 
 
 
@@ -1331,3 +1371,237 @@ class DialogoObra(QDialog):
 
         except Exception as e:
             show_error(self, "Error cargando datos", f"Error cargando datos: {e}")
+
+
+class DetallesObraDialog(QDialog):
+    """Diálogo para mostrar los detalles de una obra (solo lectura)."""
+    
+    def __init__(self, parent=None, obra_datos: Dict[str, Any] = None):
+        super().__init__(parent)
+        self.obra_datos = obra_datos or {}
+        
+        self.setWindowTitle(f"🔍 Detalles de Obra - {self.obra_datos.get('nombre', 'Sin nombre')}")
+        self.setModal(True)
+        self.resize(500, 600)
+        
+        self.init_ui()
+        self.cargar_datos()
+        self._setup_readonly_styling()
+    
+    def init_ui(self):
+        """Inicializa la interfaz del diálogo."""
+        layout = QVBoxLayout(self)
+        
+        # Título principal
+        titulo = QLabel(f"📋 {self.obra_datos.get('nombre', 'Obra sin nombre')}")
+        titulo.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
+                                          stop:0 #3498db, stop:1 #2980b9);
+                color: white;
+                padding: 15px;
+                border-radius: 8px;
+                margin-bottom: 15px;
+            }
+        """)
+        layout.addWidget(titulo)
+        
+        # Información principal en formato de solo lectura
+        info_layout = QFormLayout()
+        
+        # Código
+        self.lbl_codigo = QLabel()
+        self.lbl_codigo.setStyleSheet("font-weight: bold; color: #34495e; padding: 5px;")
+        info_layout.addRow("📋 Código:", self.lbl_codigo)
+        
+        # Cliente
+        self.lbl_cliente = QLabel()
+        self.lbl_cliente.setStyleSheet("color: #34495e; padding: 5px;")
+        info_layout.addRow("👤 Cliente:", self.lbl_cliente)
+        
+        # Ubicación
+        self.lbl_ubicacion = QLabel()
+        self.lbl_ubicacion.setStyleSheet("color: #34495e; padding: 5px;")
+        info_layout.addRow("📍 Ubicación:", self.lbl_ubicacion)
+        
+        # Fechas
+        fechas_layout = QHBoxLayout()
+        self.lbl_fecha_inicio = QLabel()
+        self.lbl_fecha_inicio.setStyleSheet("color: #27ae60; font-weight: bold; padding: 5px;")
+        fechas_layout.addWidget(self.lbl_fecha_inicio)
+        
+        fechas_layout.addWidget(QLabel(" → "))
+        
+        self.lbl_fecha_fin = QLabel()
+        self.lbl_fecha_fin.setStyleSheet("color: #e74c3c; font-weight: bold; padding: 5px;")
+        fechas_layout.addWidget(self.lbl_fecha_fin)
+        fechas_layout.addStretch()
+        
+        fechas_widget = QWidget()
+        fechas_widget.setLayout(fechas_layout)
+        info_layout.addRow("📅 Fechas:", fechas_widget)
+        
+        # Presupuesto
+        self.lbl_presupuesto = QLabel()
+        self.lbl_presupuesto.setStyleSheet("""
+            color: #27ae60; 
+            font-weight: bold; 
+            font-size: 14px; 
+            padding: 8px; 
+            background-color: #d5f4e6;
+            border-radius: 4px;
+        """)
+        info_layout.addRow("💰 Presupuesto:", self.lbl_presupuesto)
+        
+        # Tipo de obra
+        self.lbl_tipo = QLabel()
+        self.lbl_tipo.setStyleSheet("color: #34495e; padding: 5px;")
+        info_layout.addRow("🏢 Tipo:", self.lbl_tipo)
+        
+        # Prioridad
+        self.lbl_prioridad = QLabel()
+        info_layout.addRow("⚡ Prioridad:", self.lbl_prioridad)
+        
+        # Estado
+        self.lbl_estado = QLabel()
+        info_layout.addRow("📊 Estado:", self.lbl_estado)
+        
+        layout.addLayout(info_layout)
+        
+        # Observaciones
+        obs_label = QLabel("📝 Observaciones:")
+        obs_label.setStyleSheet("font-weight: bold; margin-top: 15px;")
+        layout.addWidget(obs_label)
+        
+        self.txt_observaciones = QTextEdit()
+        self.txt_observaciones.setReadOnly(True)
+        self.txt_observaciones.setMaximumHeight(100)
+        self.txt_observaciones.setStyleSheet("""
+            QTextEdit {
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+                padding: 10px;
+                color: #495057;
+            }
+        """)
+        layout.addWidget(self.txt_observaciones)
+        
+        # Botones
+        buttons_layout = QHBoxLayout()
+        buttons_layout.addStretch()
+        
+        btn_editar = QPushButton("✏️ Editar Obra")
+        btn_editar.setStyleSheet("""
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 13px;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+        """)
+        btn_editar.clicked.connect(self.editar_obra)
+        buttons_layout.addWidget(btn_editar)
+        
+        btn_cerrar = QPushButton("❌ Cerrar")
+        btn_cerrar.setStyleSheet("""
+            QPushButton {
+                background-color: #95a5a6;
+                color: white;
+                border: none;
+                padding: 10px 20px;
+                border-radius: 5px;
+                font-weight: bold;
+                font-size: 13px;
+            }
+            QPushButton:hover {
+                background-color: #7f8c8d;
+            }
+        """)
+        btn_cerrar.clicked.connect(self.accept)
+        buttons_layout.addWidget(btn_cerrar)
+        
+        layout.addLayout(buttons_layout)
+    
+    def cargar_datos(self):
+        """Carga los datos de la obra en el formulario."""
+        try:
+            self.lbl_codigo.setText(self.obra_datos.get('codigo', 'Sin código'))
+            self.lbl_cliente.setText(self.obra_datos.get('cliente', 'Sin cliente'))
+            self.lbl_ubicacion.setText(self.obra_datos.get('ubicacion', 'Sin ubicación'))
+            
+            # Fechas
+            fecha_inicio = self.obra_datos.get('fecha_inicio', '')
+            fecha_fin = self.obra_datos.get('fecha_fin', '')
+            self.lbl_fecha_inicio.setText(f"Inicio: {fecha_inicio}")
+            self.lbl_fecha_fin.setText(f"Fin: {fecha_fin}")
+            
+            # Presupuesto
+            presupuesto = self.obra_datos.get('presupuesto', 0)
+            self.lbl_presupuesto.setText(f"$ {presupuesto:,.2f}")
+            
+            # Tipo
+            self.lbl_tipo.setText(self.obra_datos.get('tipo_obra', 'Sin especificar'))
+            
+            # Prioridad con colores
+            prioridad = self.obra_datos.get('prioridad', 'MEDIA')
+            if prioridad == 'ALTA':
+                color_style = "color: #e74c3c; font-weight: bold; padding: 5px; background-color: #ffecec; border-radius: 4px;"
+            elif prioridad == 'BAJA':
+                color_style = "color: #95a5a6; padding: 5px;"
+            else:
+                color_style = "color: #f39c12; font-weight: bold; padding: 5px; background-color: #fef9e7; border-radius: 4px;"
+            
+            self.lbl_prioridad.setStyleSheet(color_style)
+            self.lbl_prioridad.setText(prioridad)
+            
+            # Estado con colores
+            estado = self.obra_datos.get('estado', 'PLANIFICACION')
+            if estado == 'ACTIVA':
+                estado_style = "color: #27ae60; font-weight: bold; padding: 5px; background-color: #d5f4e6; border-radius: 4px;"
+            elif estado == 'COMPLETADA':
+                estado_style = "color: #3498db; font-weight: bold; padding: 5px; background-color: #e3f2fd; border-radius: 4px;"
+            elif estado == 'CANCELADA':
+                estado_style = "color: #e74c3c; font-weight: bold; padding: 5px; background-color: #ffecec; border-radius: 4px;"
+            else:
+                estado_style = "color: #f39c12; padding: 5px;"
+                
+            self.lbl_estado.setStyleSheet(estado_style)
+            self.lbl_estado.setText(estado)
+            
+            # Observaciones
+            self.txt_observaciones.setPlainText(self.obra_datos.get('observaciones', 'Sin observaciones'))
+            
+        except Exception as e:
+            show_error(self, "Error", f"Error cargando datos: {str(e)}")
+    
+    def _setup_readonly_styling(self):
+        """Aplica estilos para indicar que es solo lectura."""
+        self.setStyleSheet("""
+            QDialog {
+                background-color: #f8f9fa;
+            }
+            QLabel {
+                font-size: 13px;
+            }
+        """)
+    
+    def editar_obra(self):
+        """Abre el diálogo de edición para esta obra."""
+        try:
+            self.accept()  # Cerrar diálogo actual
+            
+            # Obtener parent que debe ser ObrasView
+            if self.parent():
+                self.parent().mostrar_formulario_edicion_obra(self.obra_datos)
+        except Exception as e:
+            show_error(self, "Error", f"Error abriendo editor: {str(e)}")

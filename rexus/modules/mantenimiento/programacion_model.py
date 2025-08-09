@@ -7,6 +7,7 @@ Maneja la programación automática y calendario de mantenimientos.
 from datetime import datetime, date, timedelta
 from typing import Dict, List, Optional, Any
 from rexus.utils.security import SecurityUtils
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProgramacionMantenimientoModel:

@@ -12,6 +12,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -32,12 +33,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -53,7 +60,7 @@ class ObrasManager:
         """Inicializa el gestor de vidrios por obra."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/vidrios/obras"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -79,7 +86,7 @@ class ObrasManager:
             cursor = self.db_connection.cursor()
 
             # Sanitizar obra_id
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
 
@@ -172,8 +179,8 @@ class ObrasManager:
 
             # Validar datos del pedido
             datos_pedido = {
-                "obra_id": self.data_sanitizer.sanitize_integer(obra_id, min_val=1),
-                "proveedor": self.data_sanitizer.sanitize_string(proveedor),
+                "obra_id": self.sanitizer.sanitize_integer(obra_id, min_val=1),
+                "proveedor": sanitize_string(proveedor),
                 "estado": "PENDIENTE",
                 "fecha_pedido": "GETDATE()",
                 "total": 0.0,
@@ -182,10 +189,10 @@ class ObrasManager:
             # Calcular total del pedido
             total = 0.0
             for vidrio in vidrios_lista:
-                cantidad = self.data_sanitizer.sanitize_integer(
+                cantidad = self.sanitizer.sanitize_integer(
                     vidrio.get("cantidad", 0)
                 )
-                precio = self.data_sanitizer.sanitize_numeric(vidrio.get("precio", 0))
+                precio = self.sanitizer.sanitize_numeric(vidrio.get("precio", 0))
                 total += cantidad * precio
 
             datos_pedido["total"] = total
@@ -205,19 +212,19 @@ class ObrasManager:
             for vidrio in vidrios_lista:
                 detalle = {
                     "pedido_id": pedido_id,
-                    "vidrio_id": self.data_sanitizer.sanitize_integer(
+                    "vidrio_id": self.sanitizer.sanitize_integer(
                         vidrio.get("vidrio_id", 0)
                     ),
-                    "cantidad": self.data_sanitizer.sanitize_integer(
+                    "cantidad": self.sanitizer.sanitize_integer(
                         vidrio.get("cantidad", 0)
                     ),
-                    "precio_unitario": self.data_sanitizer.sanitize_numeric(
+                    "precio_unitario": self.sanitizer.sanitize_numeric(
                         vidrio.get("precio", 0)
                     ),
-                    "subtotal": self.data_sanitizer.sanitize_integer(
+                    "subtotal": self.sanitizer.sanitize_integer(
                         vidrio.get("cantidad", 0)
                     )
-                    * self.data_sanitizer.sanitize_numeric(vidrio.get("precio", 0)),
+                    * self.sanitizer.sanitize_numeric(vidrio.get("precio", 0)),
                 }
 
                 query_detalle = self.sql_manager.get_query(
@@ -244,7 +251,7 @@ class ObrasManager:
         try:
             cursor = self.db_connection.cursor()
 
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
 
@@ -280,7 +287,7 @@ class ObrasManager:
                 "ENTREGADO",
                 "CANCELADO",
             ]
-            estado_sanitizado = self.data_sanitizer.sanitize_string(
+            estado_sanitizado = sanitize_string(
                 nuevo_estado
             ).upper()
 
@@ -295,7 +302,7 @@ class ObrasManager:
             cursor.execute(
                 query,
                 {
-                    "pedido_id": self.data_sanitizer.sanitize_integer(pedido_id),
+                    "pedido_id": self.sanitizer.sanitize_integer(pedido_id),
                     "estado": estado_sanitizado,
                 },
             )
@@ -320,16 +327,16 @@ class ObrasManager:
         # Sanitizar datos
         datos_sanitizados = {}
 
-        datos_sanitizados["obra_id"] = self.data_sanitizer.sanitize_integer(
+        datos_sanitizados["obra_id"] = self.sanitizer.sanitize_integer(
             datos["obra_id"], min_val=1
         )
-        datos_sanitizados["vidrio_id"] = self.data_sanitizer.sanitize_integer(
+        datos_sanitizados["vidrio_id"] = self.sanitizer.sanitize_integer(
             datos["vidrio_id"], min_val=1
         )
-        datos_sanitizados["cantidad"] = self.data_sanitizer.sanitize_integer(
+        datos_sanitizados["cantidad"] = self.sanitizer.sanitize_integer(
             datos["cantidad"], min_val=1
         )
-        datos_sanitizados["observaciones"] = self.data_sanitizer.sanitize_string(
+        datos_sanitizados["observaciones"] = sanitize_string(
             datos.get("observaciones", "")
         )
 
@@ -347,7 +354,7 @@ class ObrasManager:
             return {}
 
         try:
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
 
@@ -396,7 +403,7 @@ class ObrasManager:
             return []
 
         try:
-            obra_id_sanitizado = self.data_sanitizer.sanitize_integer(
+            obra_id_sanitizado = self.sanitizer.sanitize_integer(
                 obra_id, min_val=1
             )
 

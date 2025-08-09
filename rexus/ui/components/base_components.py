@@ -797,3 +797,147 @@ class RexusSpinBox(QSpinBox):
         }
         from PyQt6.QtGui import QColor
         return QColor(colors.get(color_type, colors['primary']))
+
+
+class RexusCheckBox(QCheckBox):
+    """CheckBox estándar de Rexus con estilos unificados."""
+    
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.apply_theme()
+    
+    def apply_theme(self):
+        """Aplica el tema estándar al CheckBox."""
+        self.setStyleSheet(f"""
+            QCheckBox {{
+                color: {RexusColors.TEXT_PRIMARY};
+                font: {RexusFonts.BODY_SIZE}px "{RexusFonts.FAMILY}";
+                spacing: 8px;
+                padding: 4px;
+            }}
+            QCheckBox::indicator {{
+                width: 18px;
+                height: 18px;
+                border: 2px solid {RexusColors.BORDER};
+                border-radius: 3px;
+                background-color: white;
+            }}
+            QCheckBox::indicator:checked {{
+                background-color: {RexusColors.PRIMARY};
+                border-color: {RexusColors.PRIMARY};
+            }}
+            QCheckBox::indicator:hover {{
+                border-color: {RexusColors.PRIMARY_LIGHT};
+            }}
+        """)
+
+
+class RexusRadioButton(QRadioButton):
+    """RadioButton estándar de Rexus con estilos unificados."""
+    
+    def __init__(self, text="", parent=None):
+        super().__init__(text, parent)
+        self.apply_theme()
+    
+    def apply_theme(self):
+        """Aplica el tema estándar al RadioButton."""
+        self.setStyleSheet(f"""
+            QRadioButton {{
+                color: {RexusColors.TEXT_PRIMARY};
+                font: {RexusFonts.BODY_SIZE}px "{RexusFonts.FAMILY}";
+                spacing: 8px;
+                padding: 4px;
+            }}
+            QRadioButton::indicator {{
+                width: 18px;
+                height: 18px;
+                border: 2px solid {RexusColors.BORDER};
+                border-radius: 9px;
+                background-color: white;
+            }}
+            QRadioButton::indicator:checked {{
+                background-color: {RexusColors.PRIMARY};
+                border-color: {RexusColors.PRIMARY};
+            }}
+            QRadioButton::indicator:hover {{
+                border-color: {RexusColors.PRIMARY_LIGHT};
+            }}
+        """)
+
+
+class RexusTabWidget(QTabWidget):
+    """TabWidget estándar de Rexus con estilos unificados."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.apply_theme()
+    
+    def apply_theme(self):
+        """Aplica el tema estándar al TabWidget."""
+        self.setStyleSheet(f"""
+            QTabWidget::pane {{
+                border: 1px solid {RexusColors.BORDER};
+                background-color: white;
+                border-radius: 6px;
+                margin-top: -1px;
+            }}
+            QTabWidget::tab-bar {{
+                alignment: left;
+            }}
+            QTabBar::tab {{
+                background-color: {RexusColors.BACKGROUND_LIGHT};
+                color: {RexusColors.TEXT_SECONDARY};
+                padding: 12px 24px;
+                margin-right: 2px;
+                border: 1px solid {RexusColors.BORDER};
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                font: {RexusFonts.BODY_SIZE}px "{RexusFonts.FAMILY}";
+                min-width: 80px;
+            }}
+            QTabBar::tab:selected {{
+                background-color: {RexusColors.PRIMARY};
+                color: white;
+                border-color: {RexusColors.PRIMARY};
+            }}
+            QTabBar::tab:hover:!selected {{
+                background-color: {RexusColors.PRIMARY_LIGHT};
+                color: {RexusColors.PRIMARY_DARK};
+            }}
+            QTabBar::tab:first {{
+                margin-left: 0px;
+            }}
+        """)
+
+
+class RexusTextEdit(QTextEdit):
+    """TextEdit estándar de Rexus con estilos unificados."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.apply_theme()
+    
+    def apply_theme(self):
+        """Aplica el tema estándar al TextEdit."""
+        self.setStyleSheet(f"""
+            QTextEdit {{
+                border: 2px solid {RexusColors.BORDER};
+                border-radius: 6px;
+                padding: 12px;
+                font: {RexusFonts.BODY_SIZE}px "{RexusFonts.FAMILY}";
+                color: {RexusColors.TEXT_PRIMARY};
+                background-color: white;
+                selection-background-color: {RexusColors.PRIMARY_LIGHT};
+                min-height: 100px;
+            }}
+            QTextEdit:focus {{
+                border-color: {RexusColors.PRIMARY};
+                background-color: {RexusColors.ACCENT};
+            }}
+            QTextEdit:disabled {{
+                background-color: {RexusColors.BACKGROUND_LIGHT};
+                color: {RexusColors.TEXT_DISABLED};
+                border-color: {RexusColors.BORDER_LIGHT};
+            }}
+        """)

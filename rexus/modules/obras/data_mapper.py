@@ -5,6 +5,7 @@ Evita índices hardcodeados y facilita mantenimiento.
 
 from typing import Dict, Any, Tuple, List
 from datetime import datetime
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ObrasDataMapper:

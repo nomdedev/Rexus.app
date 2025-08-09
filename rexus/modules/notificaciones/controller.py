@@ -10,6 +10,7 @@ from datetime import datetime, timedelta
 
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.modules.notificaciones.model import NotificacionesModel, TipoNotificacion, PrioridadNotificacion
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class NotificacionesController:

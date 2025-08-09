@@ -16,6 +16,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from .submodules.consultas_manager import ConsultasManager
 from .submodules.movimientos_manager import MovimientosManager

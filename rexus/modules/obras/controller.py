@@ -8,6 +8,7 @@ from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 from rexus.core.auth_manager import AuthManager, admin_required, auth_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 

@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -34,12 +35,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -61,7 +68,7 @@ class UsuariosManager:
         """Inicializa el gestor de usuarios."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/usuarios/gestion"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -111,9 +118,9 @@ class UsuariosManager:
 
         try:
             # Sanitizar datos de entrada
-            username_safe = self.data_sanitizer.sanitize_string(username, max_length=50)
-            email_safe = self.data_sanitizer.sanitize_email(email)
-            rol_safe = self.data_sanitizer.sanitize_string(rol, max_length=20)
+            username_safe = sanitize_string(username, max_length=50)
+            email_safe = self.sanitizer.sanitize_email(email)
+            rol_safe = sanitize_string(rol, max_length=20)
 
             if not username_safe or not email_safe or not password:
                 return {"success": False, "error": "Datos requeridos incompletos"}
@@ -147,13 +154,13 @@ class UsuariosManager:
             if datos_adicionales:
                 datos_usuario.update(
                     {
-                        "nombre": self.data_sanitizer.sanitize_string(
+                        "nombre": sanitize_string(
                             datos_adicionales.get("nombre", "")
                         ),
-                        "apellido": self.data_sanitizer.sanitize_string(
+                        "apellido": sanitize_string(
                             datos_adicionales.get("apellido", "")
                         ),
-                        "telefono": self.data_sanitizer.sanitize_string(
+                        "telefono": sanitize_string(
                             datos_adicionales.get("telefono", "")
                         ),
                     }
@@ -200,7 +207,7 @@ class UsuariosManager:
             return None
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
             cursor = self.db_connection.cursor()
@@ -238,7 +245,7 @@ class UsuariosManager:
             return None
 
         try:
-            username_safe = self.data_sanitizer.sanitize_string(username)
+            username_safe = sanitize_string(username)
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(
@@ -275,7 +282,7 @@ class UsuariosManager:
             return {"success": False, "error": "Parámetros inválidos"}
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
 
@@ -290,7 +297,7 @@ class UsuariosManager:
             campos_actualizacion = {}
 
             if "email" in datos_actualizacion:
-                email_safe = self.data_sanitizer.sanitize_email(
+                email_safe = self.sanitizer.sanitize_email(
                     datos_actualizacion["email"]
                 )
                 if email_safe and self.verificar_unicidad_email(
@@ -301,7 +308,7 @@ class UsuariosManager:
                     return {"success": False, "error": "Email inválido o ya existe"}
 
             if "rol" in datos_actualizacion:
-                campos_actualizacion["rol"] = self.data_sanitizer.sanitize_string(
+                campos_actualizacion["rol"] = sanitize_string(
                     datos_actualizacion["rol"], max_length=20
                 )
 
@@ -309,17 +316,17 @@ class UsuariosManager:
                 campos_actualizacion["activo"] = bool(datos_actualizacion["activo"])
 
             if "nombre" in datos_actualizacion:
-                campos_actualizacion["nombre"] = self.data_sanitizer.sanitize_string(
+                campos_actualizacion["nombre"] = sanitize_string(
                     datos_actualizacion["nombre"], max_length=100
                 )
 
             if "apellido" in datos_actualizacion:
-                campos_actualizacion["apellido"] = self.data_sanitizer.sanitize_string(
+                campos_actualizacion["apellido"] = sanitize_string(
                     datos_actualizacion["apellido"], max_length=100
                 )
 
             if "telefono" in datos_actualizacion:
-                campos_actualizacion["telefono"] = self.data_sanitizer.sanitize_string(
+                campos_actualizacion["telefono"] = sanitize_string(
                     datos_actualizacion["telefono"], max_length=20
                 )
 
@@ -365,7 +372,7 @@ class UsuariosManager:
             return {"success": False, "error": "Parámetros inválidos"}
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
 
@@ -406,7 +413,7 @@ class UsuariosManager:
             return False
 
         try:
-            username_safe = self.data_sanitizer.sanitize_string(username)
+            username_safe = sanitize_string(username)
             cursor = self.db_connection.cursor()
 
             if excluir_usuario_id:
@@ -435,7 +442,7 @@ class UsuariosManager:
             return False
 
         try:
-            email_safe = self.data_sanitizer.sanitize_email(email)
+            email_safe = self.sanitizer.sanitize_email(email)
             if not email_safe:
                 return False
 
@@ -467,7 +474,7 @@ class UsuariosManager:
             return []
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
             cursor = self.db_connection.cursor()
@@ -495,10 +502,10 @@ class UsuariosManager:
             return False
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
-            permiso_safe = self.data_sanitizer.sanitize_string(permiso, max_length=50)
+            permiso_safe = sanitize_string(permiso, max_length=50)
 
             cursor = self.db_connection.cursor()
 

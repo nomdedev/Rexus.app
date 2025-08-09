@@ -43,6 +43,7 @@ from rexus.ui.style_manager import style_manager
 from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class HerrajesViewModernized(QWidget):

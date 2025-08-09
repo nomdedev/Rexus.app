@@ -34,6 +34,7 @@ from PyQt6.QtWidgets import (
 from rexus.ui.standard_components import StandardComponents
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar diálogo de obras asociadas
 try:

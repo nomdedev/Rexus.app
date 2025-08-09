@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-    from rexus.core.auth_decorators import admin_required, auth_required
+        from rexus.core.auth_decorators import admin_required, auth_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
@@ -32,7 +32,7 @@ class ProfilesManager:
     
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer() if DataSanitizer else None
+        self.sanitizer = DataSanitizer() if DataSanitizer else None
         
         # Configuración de validaciones
         self.username_min_length = 3
@@ -163,8 +163,8 @@ class ProfilesManager:
                 return None
             
             # Sanitizar entrada
-            if self.data_sanitizer:
-                username_clean = self.data_sanitizer.sanitize_string(username, self.username_max_length)
+            if self.sanitizer:
+                username_clean = sanitize_string(username, self.username_max_length)
             else:
                 username_clean = str(username)[:self.username_max_length]
             
@@ -206,8 +206,8 @@ class ProfilesManager:
                 return None
             
             # Sanitizar entrada
-            if self.data_sanitizer:
-                email_clean = self.data_sanitizer.sanitize_string(email, self.email_max_length)
+            if self.sanitizer:
+                email_clean = sanitize_string(email, self.email_max_length)
             else:
                 email_clean = str(email)[:self.email_max_length]
             
@@ -582,7 +582,7 @@ class ProfilesManager:
         Returns:
             Datos sanitizados
         """
-        if not self.data_sanitizer:
+        if not self.sanitizer:
             return datos
         
         datos_limpios = {}
@@ -591,7 +591,7 @@ class ProfilesManager:
         campos_texto = ['username', 'nombre_completo', 'email', 'telefono', 'direccion', 'rol']
         for campo in campos_texto:
             if campo in datos:
-                datos_limpios[campo] = self.data_sanitizer.sanitize_string(datos[campo], 200)
+                datos_limpios[campo] = sanitize_string(datos[campo], 200)
         
         # Campos especiales
         if 'password_hash' in datos:

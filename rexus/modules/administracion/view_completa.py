@@ -42,6 +42,7 @@ from PyQt6.QtCore import Qt, QDate, pyqtSignal, QTimer
 from PyQt6.QtGui import QFont, QIcon, QAction, QPixmap
 
 from rexus.core.database import InventarioDatabaseConnection
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class EmpleadoDialog(QDialog):

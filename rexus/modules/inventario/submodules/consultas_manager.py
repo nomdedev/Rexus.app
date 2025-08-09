@@ -14,15 +14,22 @@ from typing import Any, Dict, List, Optional
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
         def sanitize_dict(self, data):
-            return data
+            return data if data else {}
+            
+        def sanitize_string(self, text):
+            return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_text(self, text):
             return str(text) if text else ""
@@ -34,7 +41,7 @@ class ConsultasManager(PaginatedTableMixin):
     def __init__(self, db_connection=None):
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
 
     @auth_required
     @permission_required("view_inventario")
@@ -53,7 +60,7 @@ class ConsultasManager(PaginatedTableMixin):
             # Sanitizar filtros
             filtros_sanitizados = {}
             if filtros:
-                filtros_sanitizados = self.data_sanitizer.sanitize_dict(filtros)
+                filtros_sanitizados = self.sanitizer.sanitize_dict(filtros)
 
             # Construir query base
             query_base = """
@@ -153,7 +160,7 @@ class ConsultasManager(PaginatedTableMixin):
 
             # Aplicar filtros si existen
             if filtros:
-                filtros_sanitizados = self.data_sanitizer.sanitize_dict(filtros)
+                filtros_sanitizados = self.sanitizer.sanitize_dict(filtros)
 
                 if filtros_sanitizados.get("categoria"):
                     query += " AND categoria = ?"
@@ -277,7 +284,7 @@ class ConsultasManager(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Sanitizar término de búsqueda
-            termino = self.data_sanitizer.sanitize_text(termino_busqueda.strip())
+            termino = sanitize_string(termino_busqueda.strip())
             termino_like = f"%{termino}%"
 
             cursor.execute(

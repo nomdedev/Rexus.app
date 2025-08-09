@@ -42,6 +42,7 @@ from PyQt6.QtGui import QFont, QIcon, QAction, QPixmap
 
 from rexus.core.database import InventarioDatabaseConnection
 from rexus.modules.herrajes.model import HerrajesModel
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ExportDialog(QDialog):

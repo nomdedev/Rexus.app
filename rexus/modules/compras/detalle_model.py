@@ -6,6 +6,7 @@ Maneja los detalles de productos/items en las órdenes de compra.
 
 from typing import Any, Dict, List
 from rexus.utils.security import SecurityUtils
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class DetalleComprasModel:

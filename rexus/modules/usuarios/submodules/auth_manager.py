@@ -21,8 +21,8 @@ logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-    from rexus.utils.sql_security import SQLSecurityValidator
+        from rexus.utils.sql_security import SQLSecurityValidator
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
@@ -34,7 +34,7 @@ class AuthenticationManager:
     
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer() if DataSanitizer else None
+        self.sanitizer = DataSanitizer() if DataSanitizer else None
         
         # Configuración de seguridad
         self.max_intentos_login = 3
@@ -57,9 +57,9 @@ class AuthenticationManager:
         """
         try:
             # Sanitizar entrada
-            if self.data_sanitizer:
-                username_clean = self.data_sanitizer.sanitize_string(username, 50)
-                password_clean = self.data_sanitizer.sanitize_string(password, 128)
+            if self.sanitizer:
+                username_clean = sanitize_string(username, 50)
+                password_clean = sanitize_string(password, 128)
             else:
                 username_clean = str(username)[:50]
                 password_clean = str(password)[:128]

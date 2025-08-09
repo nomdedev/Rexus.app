@@ -7,7 +7,8 @@ Maneja la lógica de control entre el modelo y la vista para pedidos/órdenes de
 from PyQt6.QtCore import QObject
 from typing import Dict, List, Any
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.ui.feedback import show_success, show_error, show_warning
+from rexus.utils.message_system import show_success, show_error, show_warning
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from .model import PedidosModel
 
 

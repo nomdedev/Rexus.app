@@ -11,6 +11,7 @@ Maneja la lógica de negocio y acceso a datos para el sistema de compras.
 import datetime
 from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ComprasModel:

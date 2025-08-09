@@ -15,6 +15,7 @@ try:
     from rexus.core.auth_decorators import auth_required, permission_required
     from rexus.core.auth_manager import AuthManager
     from rexus.utils.security import SecurityUtils
+    from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     # Fallbacks si no están disponibles
     def auth_required(func):

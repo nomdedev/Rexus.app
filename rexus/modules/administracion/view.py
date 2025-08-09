@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
 from rexus.utils.message_system import show_error, show_success, show_warning, ask_question
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar componentes del framework UI
 from rexus.ui.components.base_components import (

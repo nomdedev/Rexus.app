@@ -14,23 +14,26 @@ from typing import Any, Dict, List, Optional
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 
+# Constantes del módulo
+DEFAULT_ORDER = "descripcion ASC"
+NO_CONNECTION_MSG = "No hay conexión a la base de datos"
+QUERY_ERROR_MSG = "Error en la consulta de base de datos"
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    try:
-        from utils.data_sanitizer import DataSanitizer
-    except ImportError:
+    class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
 
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                return data if data else {}
+        def sanitize_text(self, text):
+            return str(text) if text else ""
 
-            def sanitize_text(self, text):
-                return str(text) if text else ""
-
-            def sanitize_integer(self, value, min_val=None, max_val=None):
-                return int(value) if value else 0
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
 
 class ConsultasManager:
@@ -39,14 +42,12 @@ class ConsultasManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
 
     def obtener_productos_paginados_inicial(
         self,
         offset: int = 0,
         limit: int = 50,
-        filtros: Optional[Dict[str, Any]] = None,
-        orden: str = "descripcion ASC",
     ) -> Dict[str, Any]:
         """Obtiene productos con paginación sin autenticación para carga inicial."""
         if not self.db_connection:
@@ -180,7 +181,7 @@ class ConsultasManager:
         try:
             # Sanitizar filtros
             filtros_limpios = (
-                self.data_sanitizer.sanitize_dict(filtros) if filtros else {}
+                self.sanitizer.sanitize_dict(filtros) if filtros else {}
             )
 
             # Construir cláusula WHERE
@@ -258,7 +259,7 @@ class ConsultasManager:
             ]
 
         try:
-            termino_limpio = self.data_sanitizer.sanitize_text(termino_busqueda).strip()
+            termino_limpio = sanitize_string(termino_busqueda).strip()
             if not termino_limpio:
                 return []
 
@@ -423,7 +424,7 @@ class ConsultasManager:
             ]
 
         try:
-            categoria_limpia = self.data_sanitizer.sanitize_text(categoria)
+            categoria_limpia = sanitize_string(categoria)
 
             query = """
                 SELECT id, codigo, descripcion, categoria, stock_actual, 
@@ -529,7 +530,7 @@ class ConsultasManager:
             return []
 
         try:
-            filtros_limpios = self.data_sanitizer.sanitize_dict(filtros)
+            filtros_limpios = self.sanitizer.sanitize_dict(filtros)
 
             where_conditions = ["activo = 1"]
             params = []

@@ -40,6 +40,7 @@ from PyQt6.QtWidgets import (
 )
 
 from rexus.core.database import DatabaseConnection
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 class DatabaseConfigDialog(QDialog):
     """Diálogo para configurar conexiones de base de datos"""

@@ -10,6 +10,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont
 
 from rexus.core.database import get_inventario_connection
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 class ObrasAsociadasDialog(QDialog):
     """Ventana que muestra las obras donde se usa un material específico"""

@@ -34,9 +34,9 @@ from PyQt6.QtWidgets import (
 )
 from PyQt6.QtCore import Qt, QTimer, pyqtSignal
 from PyQt6.QtGui import QPixmap, QFont, QPalette
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from .security_features import UserSecurityManager, create_security_manager
-from rexus.utils.data_sanitizer import DataSanitizer
 
 
 class SecurityConfigDialog(QDialog):

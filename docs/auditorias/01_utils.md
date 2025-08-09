@@ -173,3 +173,32 @@ Archivo de inicialización vacío para el módulo utils.
 - N/A
 
 ---
+
+# Auditoría de dependencias: requirements.txt (08/08/2025)
+
+## Hallazgos
+- Se incluyen dependencias clave para seguridad (cryptography, bcrypt), testing, monitoreo y utilidades modernas.
+- Se listan módulos estándar de Python (`sqlite3`, `pathlib`), que no requieren instalación vía pip (puede causar confusión o warnings).
+- No se especifican hashes de integridad para los paquetes (recomendado para entornos de alta seguridad, PEP 655).
+- No se utiliza un archivo de "constraints" para fijar versiones indirectas (mejora para reproducibilidad).
+- No se observa uso de herramientas automáticas de escaneo de vulnerabilidades (como `safety`, `pip-audit`).
+- Algunas dependencias opcionales están bien documentadas como tales.
+- No hay dependencias obsoletas ni versiones inseguras detectadas en este listado (a la fecha de la auditoría).
+
+## Riesgos y recomendaciones
+- **Módulos estándar:** Eliminar `sqlite3` y `pathlib` del requirements.txt, ya que son parte de la librería estándar de Python y no deben instalarse por pip.
+- **Hashes de integridad:** Considerar el uso de hashes SHA256 para cada paquete (ver PEP 655, pip --require-hashes) en entornos críticos.
+- **Escaneo de vulnerabilidades:** Agregar `safety` o `pip-audit` como dependencia de desarrollo y ejecutar escaneos periódicos.
+- **Constraints:** Usar un archivo `constraints.txt` para fijar versiones de dependencias indirectas y mejorar la reproducibilidad.
+- **Actualización periódica:** Revisar y actualizar dependencias al menos cada 3 meses para evitar vulnerabilidades conocidas.
+- **Documentación:** Mantener comentarios claros sobre dependencias opcionales y su propósito.
+
+## Cumplimiento y estándares
+- **OWASP Dependency-Check:** Parcialmente cumplido (faltan escaneos automáticos y hashes).
+- **NIST SP 800-53:** Requiere gestión activa de vulnerabilidades y control de integridad.
+- **MITRE CWE-1104:** Riesgo bajo, pero puede mejorar con escaneo y fijación de versiones.
+
+## Estado general
+El archivo requirements.txt es moderno y está bien documentado, pero puede mejorarse eliminando módulos estándar, agregando escaneo de vulnerabilidades y usando hashes de integridad para cumplir con los estándares internacionales de seguridad de dependencias.
+
+---

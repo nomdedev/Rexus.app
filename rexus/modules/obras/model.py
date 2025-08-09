@@ -6,6 +6,7 @@ from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # 🔒 MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
 # para prevenir inyección SQL y mejorar mantenibilidad.
@@ -16,12 +17,20 @@ logger = logging.getLogger(__name__)
 # Constantes
 DB_ERROR_MESSAGE = "Sin conexión a la base de datos"
 
+# DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-    data_sanitizer = DataSanitizer()
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-    # Fallback robusto para DataSanitizer
     class DataSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
+            return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
         def sanitize_html(self, html_text):
             if html_text is None:
                 return ""
@@ -203,7 +212,7 @@ class ObrasModel:
             # Sanitizar datos y prevenir SQLi
             codigo_limpio = codigo_obra.strip().upper()
             if self.data_sanitizer:
-                codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
+                codigo_limpio = sanitize_string(codigo_limpio)
                 codigo_limpio = self.data_sanitizer.sanitize_sql_input(codigo_limpio)
 
             cursor = self.db_connection.cursor()
@@ -268,7 +277,7 @@ class ObrasModel:
             for campo in ["codigo", "nombre", "cliente", "descripcion"]:
                 if campo in datos_limpios:
                     val = datos_limpios[campo]
-                    val = self.data_sanitizer.sanitize_string(val, 128)
+                    val = sanitize_string(val, 128)
                     val = self.data_sanitizer.sanitize_sql_input(val)
                     val = self.data_sanitizer.sanitize_html(val)
                     for pattern in ["DROP TABLE", "UNION SELECT", "--", ";", "<script>", "</script>", "<iframe>", "</iframe>"]:
@@ -618,7 +627,7 @@ class ObrasModel:
         try:
             # Sanitizar datos
             obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
-            usuario_limpio = self.data_sanitizer.sanitize_string(usuario_eliminacion, 50)
+            usuario_limpio = sanitize_string(usuario_eliminacion, 50)
             
             if obra_id_limpio <= 0:
                 return False, "ID de obra inválido"
@@ -667,8 +676,8 @@ class ObrasModel:
         try:
             # Sanitizar datos
             obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
-            estado_limpio = self.data_sanitizer.sanitize_string(nuevo_estado, 20)
-            usuario_limpio = self.data_sanitizer.sanitize_string(usuario_cambio, 50)
+            estado_limpio = sanitize_string(nuevo_estado, 20)
+            usuario_limpio = sanitize_string(usuario_cambio, 50)
             
             estados_validos = ['PLANIFICACION', 'EN_PROCESO', 'PAUSADA', 'FINALIZADA', 'CANCELADA']
             if estado_limpio not in estados_validos:

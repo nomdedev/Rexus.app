@@ -14,6 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # SQLQueryManager unificado
 try:
@@ -34,12 +35,18 @@ except ImportError:
 
 # DataSanitizer unificado
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    DataSanitizer = unified_sanitizer
 except ImportError:
-
     class DataSanitizer:
-        def sanitize_string(self, text, max_length=None):
+        def sanitize_dict(self, data):
+            return data if data else {}
+            
+        def sanitize_string(self, text):
             return str(text) if text else ""
+            
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
         def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
@@ -52,7 +59,7 @@ class ConsultasManager:
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.data_sanitizer = DataSanitizer()
+        self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/usuarios/consultas"
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -121,7 +128,7 @@ class ConsultasManager:
             return []
 
         try:
-            termino_safe = self.data_sanitizer.sanitize_string(
+            termino_safe = sanitize_string(
                 termino_busqueda, max_length=100
             )
             termino_like = f"%{termino_safe}%"
@@ -164,9 +171,9 @@ class ConsultasManager:
             return {"usuarios": [], "total": 0, "pages": 0}
 
         try:
-            page_safe = max(1, self.data_sanitizer.sanitize_integer(page, min_val=1))
+            page_safe = max(1, self.sanitizer.sanitize_integer(page, min_val=1))
             per_page_safe = max(
-                1, min(100, self.data_sanitizer.sanitize_integer(per_page, min_val=1))
+                1, min(100, self.sanitizer.sanitize_integer(per_page, min_val=1))
             )
 
             offset = (page_safe - 1) * per_page_safe
@@ -180,7 +187,7 @@ class ConsultasManager:
             if filtros:
                 if filtros.get("rol"):
                     where_conditions.append("rol = %s")
-                    params.append(self.data_sanitizer.sanitize_string(filtros["rol"]))
+                    params.append(sanitize_string(filtros["rol"]))
 
                 if filtros.get("activo") is not None:
                     where_conditions.append("activo = %s")
@@ -332,7 +339,7 @@ class ConsultasManager:
             return []
 
         try:
-            rol_safe = self.data_sanitizer.sanitize_string(rol, max_length=20)
+            rol_safe = sanitize_string(rol, max_length=20)
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query(
@@ -368,11 +375,11 @@ class ConsultasManager:
             return {"intentos_login": [], "estadisticas": {}}
 
         try:
-            usuario_id_safe = self.data_sanitizer.sanitize_integer(
+            usuario_id_safe = self.sanitizer.sanitize_integer(
                 usuario_id, min_val=1
             )
             dias_safe = max(
-                1, min(365, self.data_sanitizer.sanitize_integer(dias, min_val=1))
+                1, min(365, self.sanitizer.sanitize_integer(dias, min_val=1))
             )
 
             cursor = self.db_connection.cursor()

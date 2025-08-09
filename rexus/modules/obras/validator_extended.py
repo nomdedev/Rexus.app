@@ -10,6 +10,7 @@ Incluye validaciones de seguridad, sanitización y reglas de negocio.
 import re
 from datetime import datetime, date
 from typing import Dict, List, Tuple, Any
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ObrasValidatorExtended:

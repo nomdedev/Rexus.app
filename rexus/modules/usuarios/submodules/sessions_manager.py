@@ -20,8 +20,8 @@ logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-    from rexus.core.auth_decorators import admin_required, auth_required
+        from rexus.core.auth_decorators import admin_required, auth_required
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
@@ -47,7 +47,7 @@ class SessionsManager:
     
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
-        self.data_sanitizer = DataSanitizer() if DataSanitizer else None
+        self.sanitizer = DataSanitizer() if DataSanitizer else None
         
         # Configuración de sesiones
         self.session_timeout_minutes = 120  # 2 horas

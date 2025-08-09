@@ -39,6 +39,7 @@ from rexus.ui.templates.base_module_view import BaseModuleView
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 from rexus.utils.message_system import show_error, show_success, show_warning
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.xss_protection import FormProtector
 
 # Importar diálogo de obras asociadas
