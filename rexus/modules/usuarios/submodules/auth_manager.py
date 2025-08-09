@@ -22,11 +22,14 @@ logger = logging.getLogger(__name__)
 # Importar utilidades de seguridad
 try:
         from rexus.utils.sql_security import SQLSecurityValidator
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
     SQLSecurityValidator = None
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class AuthenticationManager:
@@ -184,11 +187,13 @@ class AuthenticationManager:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    pass
+                    logger.error(f"Error en operación de base de datos: {e}")
+                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
             if 'cursor' in locals():
-                cursor.close()
+                if cursor:
+                    cursor.close()
     
     def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
         """
@@ -270,7 +275,8 @@ class AuthenticationManager:
             return False
         finally:
             if 'cursor' in locals():
-                cursor.close()
+                if cursor:
+                    cursor.close()
     
     def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
         """
@@ -310,7 +316,8 @@ class AuthenticationManager:
             logger.error(f"Error registrando intento de login: {e}")
         finally:
             if 'cursor' in locals():
-                cursor.close()
+                if cursor:
+                    cursor.close()
     
     def reset_intentos_login(self, username: str) -> bool:
         """
@@ -343,7 +350,8 @@ class AuthenticationManager:
             return False
         finally:
             if 'cursor' in locals():
-                cursor.close()
+                if cursor:
+                    cursor.close()
     
     def _obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
         """
@@ -389,7 +397,8 @@ class AuthenticationManager:
             return None
         finally:
             if 'cursor' in locals():
-                cursor.close()
+                if cursor:
+                    cursor.close()
     
     def _hashear_password_segura(self, password: str) -> str:
         """

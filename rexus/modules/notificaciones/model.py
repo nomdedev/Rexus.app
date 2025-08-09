@@ -17,6 +17,8 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 
 # Sistema de cache para optimizar consultas de notificaciones
 from rexus.utils.intelligent_cache import cached_query, invalidate_cache
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar utilidades de seguridad
 try:

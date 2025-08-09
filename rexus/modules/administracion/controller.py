@@ -17,6 +17,8 @@ from rexus.core.security import get_security_manager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.core.auth_manager import AuthManager
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar submódulos
 from .contabilidad import ContabilidadModel, ContabilidadController

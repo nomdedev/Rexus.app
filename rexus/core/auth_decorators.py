@@ -8,6 +8,8 @@ en controladores y métodos críticos.
 import functools
 from typing import List, Optional, Callable, Any
 from PyQt6.QtWidgets import QMessageBox
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class AuthenticationError(Exception):

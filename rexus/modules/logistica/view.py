@@ -170,14 +170,16 @@ class LogisticaView(QWidget):
             self.form_protector = FormProtector()
 
             # Proteger campos si existen
-            if hasattr(self, "input_busqueda"):
-                self.form_protector.protect_field(self.input_busqueda, "busqueda")
-            if hasattr(self, "input_destino"):
-                self.form_protector.protect_field(self.input_destino, "destino")
-            if hasattr(self, "input_conductor"):
-                self.form_protector.protect_field(self.input_conductor, "conductor")
+            for field_name, field_label in [
+                ("input_busqueda", "busqueda"),
+                ("input_destino", "destino"),
+                ("input_conductor", "conductor")
+            ]:
+                if hasattr(self, field_name):
+                    self.form_protector.protect_field(getattr(self, field_name), field_label)
 
         except Exception as e:
+            import logging
             logging.error(f"Error inicializando protección XSS: {e}")
 
     def crear_panel_control(self):
@@ -491,26 +493,7 @@ class LogisticaView(QWidget):
             except Exception as e:
                 import logging
                 logging.warning(f"No se pudo configurar el header de la tabla: {e}")
-        try:
-            self.form_protector = FormProtector()
 
-            # Proteger campos si existen
-            if hasattr(self, "input_busqueda"):
-                self.form_protector.protect_field(self.input_busqueda, "busqueda")
-            if hasattr(self, "input_destino"):
-                self.form_protector.protect_field(self.input_destino, "destino")
-            else:
-                import logging
-                logging.warning("input_destino no existe en LogisticaView")
-            if hasattr(self, "input_conductor"):
-                self.form_protector.protect_field(self.input_conductor, "conductor")
-            else:
-                import logging
-                logging.warning("input_conductor no existe en LogisticaView")
-
-        except Exception as e:
-            import logging
-            logging.error(f"Error inicializando protección XSS: {e}")
 
         # Bloque de estilos de la tabla (asegurar delimitador correcto)
         self.tabla_transportes.setStyleSheet("""
@@ -631,28 +614,23 @@ class LogisticaView(QWidget):
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas mostradas en el panel."""
         try:
-            if hasattr(self.lbl_total_transportes, 'valor_label'):
-                self.lbl_total_transportes.valor_label.setText(str(stats.get('total_transportes', 0)))
-            elif hasattr(self.lbl_total_transportes, 'setText'):
-                self.lbl_total_transportes.setText(str(stats.get('total_transportes', 0)))
+            def set_label(label_obj, value):
+                # Intenta setear el texto en el label, sea cual sea su tipo
+                if hasattr(label_obj, 'valor_label') and hasattr(label_obj.valor_label, 'setText'):
+                    label_obj.valor_label.setText(str(value))
+                elif hasattr(label_obj, 'setText'):
+                    label_obj.setText(str(value))
+                elif hasattr(label_obj, 'label') and hasattr(label_obj.label, 'setText'):
+                    label_obj.label.setText(str(value))
+                # Si no tiene método, ignora
 
-            if hasattr(self.lbl_en_transito, 'valor_label'):
-                self.lbl_en_transito.valor_label.setText(str(stats.get('en_transito', 0)))
-            elif hasattr(self.lbl_en_transito, 'setText'):
-                self.lbl_en_transito.setText(str(stats.get('en_transito', 0)))
-
-            if hasattr(self.lbl_entregados, 'valor_label'):
-                self.lbl_entregados.valor_label.setText(str(stats.get('entregados', 0)))
-            elif hasattr(self.lbl_entregados, 'setText'):
-                self.lbl_entregados.setText(str(stats.get('entregados', 0)))
-
-            if hasattr(self.lbl_pendientes, 'valor_label'):
-                self.lbl_pendientes.valor_label.setText(str(stats.get('pendientes', 0)))
-            elif hasattr(self.lbl_pendientes, 'setText'):
-                self.lbl_pendientes.setText(str(stats.get('pendientes', 0)))
+            set_label(self.lbl_total_transportes, stats.get('total_transportes', 0))
+            set_label(self.lbl_en_transito, stats.get('en_transito', 0))
+            set_label(self.lbl_entregados, stats.get('entregados', 0))
+            set_label(self.lbl_pendientes, stats.get('pendientes', 0))
 
         except Exception as e:
-            show_error(self, message=f"Error actualizando estadísticas: {e}")
+            show_error(self, title="Error", message=f"Error actualizando estadísticas: {e}")
 
     def nuevo_transporte(self):
         """Abre el diálogo para crear un nuevo transporte."""

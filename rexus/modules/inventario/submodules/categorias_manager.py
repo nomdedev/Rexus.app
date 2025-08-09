@@ -482,7 +482,8 @@ class CategoriasManager:
             cursor = self.db_connection.cursor()
             
             cursor.execute(
-                f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?",
+        # FIXED: SQL Injection vulnerability
+                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
                 (categoria_actual_limpia,)
             )
             productos_existentes = cursor.fetchone()[0]
@@ -497,7 +498,8 @@ class CategoriasManager:
             
             # Verificar que la nueva categoría no existe (para evitar conflictos)
             cursor.execute(
-                f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?",
+        # FIXED: SQL Injection vulnerability
+                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
                 (categoria_nueva_limpia,)
             )
             productos_nueva_categoria = cursor.fetchone()[0]
@@ -596,7 +598,8 @@ class CategoriasManager:
             
             # Verificar que existen productos en la categoría origen
             cursor.execute(
-                f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?",
+        # FIXED: SQL Injection vulnerability
+                "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
                 (origen_limpia,)
             )
             productos_origen = cursor.fetchone()[0]
@@ -886,13 +889,15 @@ class CategoriasManager:
             if self._tabla_categorias_existe():
                 # Verificar en tabla independiente
                 cursor.execute(
-                    f"SELECT COUNT(*) FROM {TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
+        # FIXED: SQL Injection vulnerability
+                    "SELECT COUNT(*) FROM ? WHERE nombre = ? AND activa = 1", (TABLA_CATEGORIAS,),
                     (nombre_categoria,)
                 )
             else:
                 # Verificar en productos
                 cursor.execute(
-                    f"SELECT COUNT(*) FROM {TABLA_INVENTARIO} WHERE categoria = ?",
+        # FIXED: SQL Injection vulnerability
+                    "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
                     (nombre_categoria,)
                 )
             

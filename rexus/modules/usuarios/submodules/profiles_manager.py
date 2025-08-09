@@ -19,12 +19,15 @@ logger = logging.getLogger(__name__)
 # Importar utilidades de seguridad
 try:
         from rexus.core.auth_decorators import admin_required, auth_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
     admin_required = lambda x: x
     auth_required = lambda x: x
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ProfilesManager:
@@ -61,9 +64,12 @@ class ProfilesManager:
                 return {'success': False, 'message': validacion['message']}
             
             # Verificar unicidad de username y email
-            if not self._verificar_unicidad_usuario(datos_usuario.get('username'), datos_usuario.get('email')):
+            if not self._verificar_unicidad_usuario((datos_usuario.get('username') or ''), (datos_usuario.get('email') or '')):
                 return {'success': False, 'message': 'Username o email ya existe'}
             
+            cursor = None
+            cursor = None
+
             cursor = self.db_connection.cursor()
             
             # Sanitizar datos
@@ -103,12 +109,16 @@ class ProfilesManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as rollback_error:
+                    logger.error(f"Error en rollback: {rollback_error}")
+                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
@@ -124,6 +134,9 @@ class ProfilesManager:
         try:
             if not self.db_connection:
                 return None
+            
+            cursor = None
+
             
             cursor = self.db_connection.cursor()
             
@@ -144,8 +157,11 @@ class ProfilesManager:
             logger.error(f"Error obteniendo usuario por ID: {e}")
             return None
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def obtener_usuario_por_username(self, username: str) -> Optional[Dict[str, Any]]:
@@ -168,6 +184,9 @@ class ProfilesManager:
             else:
                 username_clean = str(username)[:self.username_max_length]
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             cursor.execute("""
@@ -187,8 +206,11 @@ class ProfilesManager:
             logger.error(f"Error obteniendo usuario por username: {e}")
             return None
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def obtener_usuario_por_email(self, email: str) -> Optional[Dict[str, Any]]:
@@ -211,6 +233,9 @@ class ProfilesManager:
             else:
                 email_clean = str(email)[:self.email_max_length]
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             cursor.execute("""
@@ -230,8 +255,11 @@ class ProfilesManager:
             logger.error(f"Error obteniendo usuario por email: {e}")
             return None
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def obtener_todos_usuarios(self, incluir_inactivos: bool = False) -> List[Dict[str, Any]]:
@@ -247,6 +275,9 @@ class ProfilesManager:
         try:
             if not self.db_connection:
                 return []
+            
+            cursor = None
+
             
             cursor = self.db_connection.cursor()
             
@@ -278,8 +309,11 @@ class ProfilesManager:
             logger.error(f"Error obteniendo todos los usuarios: {e}")
             return []
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def actualizar_usuario(self, usuario_id: int, datos_actualizados: Dict[str, Any]) -> Dict[str, Any]:
@@ -306,6 +340,9 @@ class ProfilesManager:
             if not validacion['valid']:
                 return {'success': False, 'message': validacion['message']}
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Sanitizar datos
@@ -316,23 +353,28 @@ class ProfilesManager:
             valores = []
             
             campos_permitidos = ['nombre_completo', 'email', 'telefono', 'direccion', 'rol']
+            updates = {}
             
             for campo in campos_permitidos:
                 if campo in datos_limpios:
-                    campos_update.append(f"{campo} = ?")
-                    valores.append(datos_limpios[campo])
+                    updates[campo] = datos_limpios[campo]
             
-            if not campos_update:
+            if not updates:
                 return {'success': False, 'message': 'No hay campos para actualizar'}
             
-            # Agregar updated_at y usuario_id
-            campos_update.append("updated_at = GETDATE()")
-            valores.append(usuario_id)
+            # Usar SQLQueryManager para actualización segura
+            sql_manager = SQLQueryManager(self.db_connection)
             
-            query = f"UPDATE usuarios SET {', '.join(campos_update)} WHERE id = ?"
-            cursor.execute(query, valores)
+            # Construir placeholders y valores
+            set_clauses = [f"{campo} = ?" for campo in updates.keys()]
+            set_clauses.append("updated_at = GETDATE()")
             
-            if cursor.rowcount == 0:
+            query = f"UPDATE usuarios SET {', '.join(set_clauses)} WHERE id = ?"
+            params = list(updates.values()) + [usuario_id]
+            
+            rows_affected = sql_manager.execute_non_query(query, tuple(params))
+            
+            if rows_affected == 0:
                 return {'success': False, 'message': 'No se pudo actualizar el usuario'}
             
             self.db_connection.commit()
@@ -346,14 +388,18 @@ class ProfilesManager:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    pass
+                    logger.error(f"Error en operación de base de datos: {e}")
+                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @admin_required
-    def eliminar_usuario(self, usuario_id: int) -> Dict[str, Any]:
+    def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """
         Elimina un usuario (soft delete).
         
@@ -372,6 +418,9 @@ class ProfilesManager:
             if not usuario:
                 return {'success': False, 'message': 'Usuario no encontrado'}
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Soft delete
@@ -386,7 +435,7 @@ class ProfilesManager:
             
             self.db_connection.commit()
             
-            logger.info(f"Usuario eliminado: {usuario['username']} (ID: {usuario_id})")
+            logger.info("Usuario eliminado: %s (ID: %s)", usuario.get("username", "N/A"), usuario_id)
             return {'success': True, 'message': 'Usuario eliminado exitosamente'}
             
         except Exception as e:
@@ -395,11 +444,15 @@ class ProfilesManager:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    pass
+                    logger.error(f"Error en operación de base de datos: {e}")
+                    return None
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     @auth_required
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
@@ -412,6 +465,9 @@ class ProfilesManager:
         try:
             if not self.db_connection:
                 return {}
+            
+            cursor = None
+
             
             cursor = self.db_connection.cursor()
             
@@ -457,8 +513,11 @@ class ProfilesManager:
             logger.error(f"Error obteniendo estadísticas: {e}")
             return {}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     def _validar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -550,6 +609,9 @@ class ProfilesManager:
             if not self.db_connection:
                 return True
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Verificar username
@@ -569,8 +631,11 @@ class ProfilesManager:
             logger.error(f"Error verificando unicidad: {e}")
             return False
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                try:
+                    cursor.close()
+                except Exception as e:
+                    logger.error(f"Error cerrando cursor: {e}")
     
     def _sanitizar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """

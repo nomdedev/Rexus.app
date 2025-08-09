@@ -13,6 +13,8 @@ from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class SecurityManager(QObject):

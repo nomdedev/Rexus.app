@@ -21,6 +21,8 @@ from rexus.utils.sql_query_manager import SQLQueryManager
 
 # Sistema de cache inteligente para optimizar consultas frecuentes
 from rexus.utils.intelligent_cache import cached_query, invalidate_cache
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized

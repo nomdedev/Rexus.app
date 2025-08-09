@@ -22,6 +22,8 @@ logger = logging.getLogger(__name__)
 try:
         from rexus.core.auth_decorators import admin_required, auth_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None

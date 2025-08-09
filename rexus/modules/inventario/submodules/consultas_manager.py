@@ -15,6 +15,8 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # DataSanitizer unificado
 try:

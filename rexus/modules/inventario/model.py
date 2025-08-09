@@ -30,6 +30,8 @@ from PIL import Image
 
 # Importar sistema de paginación
 from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar utilidades de seguridad
 try:
@@ -991,6 +993,8 @@ class InventarioModel(PaginatedTableMixin):
 
             params = []
             if producto_id:
+        # TODO: MANUAL FIX REQUIRED - SQL Injection via concatenation
+        # sql_select += " AND detalles LIKE ?"
                 sql_select += " AND detalles LIKE ?"
                 params.append(f"%Producto ID: {producto_id}%")
 
@@ -1488,6 +1492,8 @@ class InventarioModel(PaginatedTableMixin):
 
             # Limitar resultados si no hay filtros específicos
             if len(conditions) <= 1:
+        # TODO: MANUAL FIX REQUIRED - SQL Injection via concatenation
+        # sql_select += " OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY"
                 sql_select += " OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY"
 
             cursor.execute(sql_select, params)

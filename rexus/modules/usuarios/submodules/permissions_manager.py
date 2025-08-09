@@ -19,12 +19,15 @@ logger = logging.getLogger(__name__)
 # Importar utilidades de seguridad
 try:
         from rexus.core.auth_decorators import admin_required, auth_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
     admin_required = lambda x: x
     auth_required = lambda x: x
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class PermissionLevel(Enum):
@@ -104,6 +107,9 @@ class PermissionsManager:
             if not self.db_connection:
                 return []
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Obtener rol del usuario
@@ -140,8 +146,8 @@ class PermissionsManager:
             logger.error(f"Error obteniendo permisos: {e}")
             return []
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                    cursor.close()
     
     @auth_required
     def verificar_permiso_usuario(self, usuario_id: int, modulo: str, accion: str) -> bool:
@@ -202,6 +208,9 @@ class PermissionsManager:
             if not self._validar_modulo_accion(modulo, accion):
                 return {'success': False, 'message': 'Módulo o acción inválida'}
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Verificar que el usuario existe
@@ -237,12 +246,13 @@ class PermissionsManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as rollback_error:
+                    logger.error(f"Error en rollback: {rollback_error}")
+                    return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                    cursor.close()
     
     @admin_required
     def revocar_permiso_usuario(self, usuario_id: int, modulo: str, accion: str) -> Dict[str, Any]:
@@ -260,6 +270,9 @@ class PermissionsManager:
         try:
             if not self.db_connection:
                 return {'success': False, 'message': 'Sin conexión a base de datos'}
+            
+            cursor = None
+
             
             cursor = self.db_connection.cursor()
             
@@ -283,12 +296,13 @@ class PermissionsManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as rollback_error:
+                    logger.error(f"Error en rollback: {rollback_error}")
+                    return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                    cursor.close()
     
     @admin_required
     def cambiar_rol_usuario(self, usuario_id: int, nuevo_rol: str) -> Dict[str, Any]:
@@ -314,6 +328,9 @@ class PermissionsManager:
                     'message': f'Rol inválido. Roles válidos: {", ".join(roles_validos)}'
                 }
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             # Actualizar rol
@@ -329,7 +346,7 @@ class PermissionsManager:
             self.db_connection.commit()
             
             logger.info(f"Rol cambiado a {nuevo_rol} para usuario {usuario_id}")
-            return {'success': True, 'message': f'Rol cambiado a {nuevo_rol}'}
+            return {"success": True, "message": f"Rol cambiado a {nuevo_rol}"}
             
         except Exception as e:
             logger.error(f"Error cambiando rol: {e}")
@@ -337,11 +354,12 @@ class PermissionsManager:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    pass
+                    logger.error(f"Error en operación de base de datos: {e}")
+                    return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                    cursor.close()
     
     def obtener_modulos_permitidos(self, usuario_data: Dict[str, Any]) -> List[str]:
         """
@@ -354,7 +372,7 @@ class PermissionsManager:
             Lista de módulos accesibles
         """
         try:
-            usuario_id = usuario_data.get('id')
+            usuario_id = (usuario_data.get('id') or '')
             if not usuario_id:
                 return []
             
@@ -437,6 +455,9 @@ class PermissionsManager:
             if not self.db_connection:
                 return {}
             
+            cursor = None
+
+            
             cursor = self.db_connection.cursor()
             
             stats = {}
@@ -481,5 +502,5 @@ class PermissionsManager:
             logger.error(f"Error obteniendo estadísticas de permisos: {e}")
             return {}
         finally:
-            if 'cursor' in locals():
-                cursor.close()
+            if cursor is not None:
+                    cursor.close()

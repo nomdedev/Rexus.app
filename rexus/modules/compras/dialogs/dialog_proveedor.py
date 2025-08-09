@@ -31,13 +31,13 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtCore import Qt
 
 from rexus.ui.components.base_components import (
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     RexusButton, RexusLabel, RexusLineEdit, RexusComboBox, RexusGroupBox
 )
 from rexus.ui.standard_components import StandardComponents
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.xss_protection import XSSProtection
 from rexus.utils.message_system import show_error
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class DialogProveedor(QDialog):

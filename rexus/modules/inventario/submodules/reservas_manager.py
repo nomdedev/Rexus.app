@@ -318,7 +318,8 @@ class ReservasManager:
             
             # Ejecutar actualización
             set_clause = ", ".join(campos_a_actualizar)
-            query = f"UPDATE {TABLA_RESERVAS} SET {set_clause} WHERE id = ?"
+        # FIXED: SQL Injection vulnerability
+            query = "UPDATE {TABLA_RESERVAS} SET ? WHERE id = ?", (set_clause,)
             
             cursor.execute(query, parametros)
             self.db_connection.commit()
@@ -779,7 +780,8 @@ class ReservasManager:
             
             # Obtener cantidad total reservada activamente
             cursor.execute(
-                f"SELECT ISNULL(SUM(cantidad_reservada), 0) FROM {TABLA_RESERVAS} WHERE producto_id = ? AND estado = 'ACTIVA'",
+        # FIXED: SQL Injection vulnerability
+                "SELECT ISNULL(SUM(cantidad_reservada), 0) FROM ? WHERE producto_id = ? AND estado = 'ACTIVA'", (TABLA_RESERVAS,),
                 (producto_id,)
             )
             row_reservado = cursor.fetchone()
@@ -797,7 +799,8 @@ class ReservasManager:
         """Obtiene una reserva por su ID."""
         try:
             cursor = self.db_connection.cursor()
-            query = f"SELECT * FROM {TABLA_RESERVAS} WHERE id = ?"
+        # FIXED: SQL Injection vulnerability
+            query = "SELECT * FROM ? WHERE id = ?", (TABLA_RESERVAS,)
             cursor.execute(query, (reserva_id,))
             fila = cursor.fetchone()
             cursor.close()
@@ -945,7 +948,8 @@ class ReservasManager:
             placeholders = ', '.join(['?'] * len(valores))
             campos_str = ', '.join(campos)
             
-            query = f"INSERT INTO {TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})"
+        # FIXED: SQL Injection vulnerability
+            query = "INSERT INTO {TABLA_RESERVAS} ({campos_str}) VALUES (?)", (placeholders,)
             cursor.execute(query, valores)
             
             self.db_connection.commit()

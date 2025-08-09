@@ -9,6 +9,8 @@ Controlador completamente funcional que maneja todos los errores identificados:
 """
 
 from PyQt6.QtCore import QObject, pyqtSignal
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 try:

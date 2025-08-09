@@ -28,18 +28,18 @@ from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QDialogButtonBox,
     QLineEdit, QComboBox, QTextEdit, QLabel, QGroupBox, QDateEdit, 
     QTimeEdit, QCheckBox, QTableWidget, QTableWidgetItem, QHeaderView,
-    QAbstractItemView
+    QAbstractItemView, QWidget
 )
 from PyQt6.QtCore import Qt, QDate, QTime
 
 from rexus.ui.components.base_components import (
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     RexusButton, RexusLabel, RexusLineEdit, RexusComboBox, RexusGroupBox,
     RexusTable
 )
 from rexus.ui.standard_components import StandardComponents
 from rexus.utils.xss_protection import XSSProtection
 from rexus.utils.message_system import show_error
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class DialogSeguimiento(QDialog):
@@ -250,8 +250,8 @@ class DialogSeguimiento(QDialog):
             # Datos de entrega
             "transportista": XSSProtection.sanitize_text(self.input_transportista.text()),
             "numero_guia": XSSProtection.sanitize_text(self.input_numero_guia.text()),
-            "fecha_entrega_real": self.date_entrega_real.date().toPython(),
-            "hora_entrega_real": self.time_entrega_real.time().toPython(),
+            "fecha_entrega_real": self.date_entrega_real.date().toString("yyyy-MM-dd"),
+            "hora_entrega_real": self.time_entrega_real.time().toString("hh:mm:ss"),
             "condicion_entrega": self.combo_condicion_entrega.currentText(),
             "recibido_por": XSSProtection.sanitize_text(self.input_recibido_por.text()),
             "confirmacion_recepcion": self.check_confirmacion.isChecked(),
