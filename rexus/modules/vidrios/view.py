@@ -69,6 +69,13 @@ class VidriosView(BaseModuleView):
     # Señales
     datos_actualizados = pyqtSignal()
     error_ocurrido = pyqtSignal(str)
+    buscar_requested = pyqtSignal(dict)
+    agregar_requested = pyqtSignal(dict)
+    editar_requested = pyqtSignal(int, dict)
+    eliminar_requested = pyqtSignal(int)
+    asignar_obra_requested = pyqtSignal(int, int)
+    crear_pedido_requested = pyqtSignal(dict)
+    filtrar_requested = pyqtSignal(dict)
 
     def __init__(self):
         super().__init__("🪟 Gestión de Vidrios")

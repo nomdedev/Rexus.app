@@ -699,6 +699,22 @@ class ObrasView(QWidget):
 
         return panel
 
+    def set_controller(self, controller):
+        """Configura el controlador y conecta los botones."""
+        self.controller = controller
+        
+        # Conectar botones principales que faltaban conexiones
+        if hasattr(controller, 'editar_obra_seleccionada'):
+            self.btn_editar_obra.clicked.connect(controller.editar_obra_seleccionada)
+        
+        if hasattr(controller, 'eliminar_obra_seleccionada'):
+            self.btn_eliminar_obra.clicked.connect(controller.eliminar_obra_seleccionada)
+        
+        if hasattr(controller, 'cargar_obras'):
+            self.btn_actualizar.clicked.connect(controller.cargar_obras)
+        
+        print("[OBRAS VIEW] Controlador configurado y botones conectados")
+
     def mostrar_tabla(self):
         """Muestra la vista de tabla."""
         try:

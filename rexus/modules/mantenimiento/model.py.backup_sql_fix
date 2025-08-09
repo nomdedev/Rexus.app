@@ -1,3 +1,6 @@
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
+# Ensure all database operations are properly authorized
+# DB Authorization Check
 """
 Modelo de Mantenimiento
 
@@ -12,7 +15,18 @@ Maneja la lógica de negocio para:
 from datetime import date, datetime
 from decimal import Decimal
 
+from rexus.core.auth_decorators import (
+    admin_required,
+    auth_required,
+    permission_required,
+)
+
+# Importar utilidades de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+
+from rexus.core.auth_manager import AuthManager
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
+from rexus.core.sql_query_manager import SQLQueryManager
 
 
 class MantenimientoModel:
@@ -26,6 +40,7 @@ class MantenimientoModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         self.tabla_equipos = "equipos"
         self.tabla_herramientas = "herramientas"
         self.tabla_mantenimientos = "mantenimientos"
@@ -99,6 +114,15 @@ class MantenimientoModel:
 
     # MÉTODOS PARA EQUIPOS
 
+    def obtener_todos_equipos(self):
+        """
+        Obtiene todos los equipos activos del sistema.
+
+        Returns:
+            List[Dict]: Lista de todos los equipos activos
+        """
+        return self.obtener_equipos()
+
     def obtener_equipos(self, filtros=None):
         """
         Obtiene equipos con filtros opcionales.
@@ -113,12 +137,12 @@ class MantenimientoModel:
             return []
 
         try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["e.activo = 1"]
+            # Usar consulta base y agregar filtros dinámicamente
+            query = self.sql_manager.get_query("mantenimiento.obtener_equipos_base")
             params = []
-
+            
             if filtros:
+                conditions = []
                 if filtros.get("estado") and filtros["estado"] != "Todos":
                     conditions.append("e.estado = ?")
                     params.append(filtros["estado"])
@@ -132,28 +156,14 @@ class MantenimientoModel:
                     params.append(filtros["ubicacion"])
 
                 if filtros.get("busqueda"):
-                    conditions.append(
-                        "(e.nombre LIKE ? OR e.codigo LIKE ? OR e.modelo LIKE ?)"
-                    )
+                    conditions.append("(e.nombre LIKE ? OR e.codigo LIKE ? OR e.modelo LIKE ?)")
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
+                
+                if conditions:
+                    query = query.replace("WHERE e.activo = 1", f"WHERE e.activo = 1 AND {' AND '.join(conditions)}")
 
-            query = (
-                f"""
-                SELECT 
-                    e.id, e.codigo, e.nombre, e.tipo, e.modelo, e.marca,
-                    e.numero_serie, e.fecha_adquisicion, e.fecha_instalacion,
-                    e.ubicacion, e.estado, e.valor_adquisicion, e.vida_util_anos,
-                    e.ultima_revision, e.proxima_revision, e.observaciones,
-                    e.fecha_creacion, e.fecha_modificacion
-                FROM {self.tabla_equipos} e
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY e.nombre
-            """
-            )
-
+            cursor = self.db_connection.cursor()
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -162,6 +172,8 @@ class MantenimientoModel:
             for fila in resultados:
                 equipo = dict(zip(columnas, fila))
                 equipos.append(equipo)
+
+            return equipos
 
             return equipos
 
@@ -185,14 +197,10 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_equipos}
-                (codigo, nombre, tipo, modelo, marca, numero_serie,
-                 fecha_adquisicion, fecha_instalacion, ubicacion, estado,
-                 valor_adquisicion, vida_util_anos, observaciones,
-                 activo, fecha_creacion, fecha_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
-            """
+            # Validar y securizar nombre de tabla
+            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+
+            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
 
             cursor.execute(
                 query,
@@ -251,14 +259,8 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                UPDATE {self.tabla_equipos}
-                SET nombre = ?, tipo = ?, modelo = ?, marca = ?, numero_serie = ?,
-                    fecha_adquisicion = ?, fecha_instalacion = ?, ubicacion = ?,
-                    estado = ?, valor_adquisicion = ?, vida_util_anos = ?,
-                    observaciones = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
+            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+            query = self.sql_manager.get_query("mantenimiento.update_equipo")
 
             cursor.execute(
                 query,
@@ -331,148 +333,10 @@ class MantenimientoModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            query = (
-                f"""
-                SELECT 
-                    h.id, h.codigo, h.nombre, h.tipo, h.marca, h.modelo,
-                    h.numero_serie, h.fecha_adquisicion, h.ubicacion,
-                    h.estado, h.valor_adquisicion, h.vida_util_anos,
-                    h.observaciones, h.fecha_creacion
-                FROM {self.tabla_herramientas} h
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY h.nombre
-            """
+            tabla_herramientas_segura = self._validate_table_name(
+                self.tabla_herramientas
             )
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            herramientas = []
-            for fila in resultados:
-                herramienta = dict(zip(columnas, fila))
-                herramientas.append(herramienta)
-
-            return herramientas
-
-        except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error obteniendo herramientas: {e}")
-            return []
-
-    def crear_herramienta(self, datos_herramienta):
-        """
-        Crea una nueva herramienta.
-
-        Args:
-            datos_herramienta (dict): Datos de la herramienta
-
-        Returns:
-            int: ID de la herramienta creada o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = f"""
-                INSERT INTO [{self._validate_table_name(self.tabla_herramientas)}]
-                (codigo, nombre, tipo, marca, modelo, numero_serie,
-                 fecha_adquisicion, ubicacion, estado, valor_adquisicion,
-                 vida_util_anos, observaciones, activo, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE())
-            """
-
-            cursor.execute(
-                query,
-                (
-                    datos_herramienta.get("codigo", ""),
-                    datos_herramienta.get("nombre", ""),
-                    datos_herramienta.get("tipo", ""),
-                    datos_herramienta.get("marca", ""),
-                    datos_herramienta.get("modelo", ""),
-                    datos_herramienta.get("numero_serie", ""),
-                    datos_herramienta.get("fecha_adquisicion"),
-                    datos_herramienta.get("ubicacion", ""),
-                    datos_herramienta.get("estado", "DISPONIBLE"),
-                    datos_herramienta.get("valor_adquisicion", 0),
-                    datos_herramienta.get("vida_util_anos", 0),
-                    datos_herramienta.get("observaciones", ""),
-                ),
-            )
-
-            # Obtener ID de la herramienta creada
-            cursor.execute("SELECT @@IDENTITY")
-            herramienta_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            print(f"[MANTENIMIENTO] Herramienta creada con ID: {herramienta_id}")
-            return herramienta_id
-
-        except Exception as e:
-            print(f"[ERROR MANTENIMIENTO] Error creando herramienta: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return None
-
-    # MÉTODOS PARA MANTENIMIENTOS
-
-    def obtener_mantenimientos(self, filtros=None):
-        """
-        Obtiene mantenimientos con filtros opcionales.
-
-        Args:
-            filtros (dict): Filtros opcionales (estado, tipo, fecha, etc.)
-
-        Returns:
-            List[Dict]: Lista de mantenimientos
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["1=1"]
-            params = []
-
-            if filtros:
-                if filtros.get("estado") and filtros["estado"] != "Todos":
-                    conditions.append("m.estado = ?")
-                    params.append(filtros["estado"])
-
-                if filtros.get("tipo") and filtros["tipo"] != "Todos":
-                    conditions.append("m.tipo = ?")
-                    params.append(filtros["tipo"])
-
-                if filtros.get("equipo_id"):
-                    conditions.append("m.equipo_id = ?")
-                    params.append(filtros["equipo_id"])
-
-                if filtros.get("fecha_desde"):
-                    conditions.append("m.fecha_programada >= ?")
-                    params.append(filtros["fecha_desde"])
-
-                if filtros.get("fecha_hasta"):
-                    conditions.append("m.fecha_programada <= ?")
-                    params.append(filtros["fecha_hasta"])
-
-            query = (
-                """
-                SELECT 
-                    m.id, m.equipo_id, e.nombre as equipo_nombre,
-                    m.tipo, m.descripcion, m.fecha_programada, m.fecha_realizacion,
-                    m.estado, m.observaciones, m.costo_estimado, m.costo_real,
-                    m.responsable, m.fecha_creacion
-                FROM {self.tabla_mantenimientos} m
-                LEFT JOIN {self.tabla_equipos} e ON m.equipo_id = e.id
-                WHERE """
-                + " AND ".join(conditions)
-                + """
-                ORDER BY m.fecha_programada DESC
-            """
+            query = self.sql_manager.get_query("mantenimiento.obtener_mantenimientos_base"),
             )
 
             cursor.execute(query, params)
@@ -506,16 +370,10 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO """
-                + self.tabla_mantenimientos
-                + """
-                (equipo_id, tipo, descripcion, fecha_programada, estado,
-                 observaciones, costo_estimado, responsable, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
+            tabla_mantenimientos_segura = self._validate_table_name(
+                self.tabla_mantenimientos
             )
+            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
 
             cursor.execute(
                 query,
@@ -569,16 +427,10 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                UPDATE """
-                + self.tabla_mantenimientos
-                + """
-                SET estado = 'COMPLETADO', fecha_realizacion = GETDATE(),
-                    observaciones = ?, costo_real = ?, responsable = ?
-                WHERE id = ?
-            """
+            tabla_mantenimientos_segura = self._validate_table_name(
+                self.tabla_mantenimientos
             )
+            query = self.sql_manager.get_query("mantenimiento.update_equipo")
 
             cursor.execute(
                 query,
@@ -629,41 +481,53 @@ class MantenimientoModel:
             estadisticas = {}
 
             # Total equipos
+            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
             cursor.execute(
-                f"SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_equipos)}] WHERE activo = 1"
+                self.sql_manager.get_query("mantenimiento.obtener_estadisticas")
             )
             estadisticas["total_equipos"] = cursor.fetchone()[0]
 
             # Equipos por estado
-            cursor.execute(f"""
+            cursor.execute(
+                """
                 SELECT estado, COUNT(*) as cantidad
-                FROM [{self._validate_table_name(self.tabla_equipos)}]
+                FROM [{}]
                 WHERE activo = 1
                 GROUP BY estado
-            """)
+            """.format(tabla_equipos_segura)
+            )
             estadisticas["equipos_por_estado"] = dict(cursor.fetchall())
 
             # Mantenimientos por estado
-            cursor.execute(f"""
+            tabla_mantenimientos_segura = self._validate_table_name(
+                self.tabla_mantenimientos
+            )
+            cursor.execute(
+                """
                 SELECT estado, COUNT(*) as cantidad
-                FROM [{self._validate_table_name(self.tabla_mantenimientos)}]
+                FROM [{}]
                 GROUP BY estado
-            """)
+            """.format(tabla_mantenimientos_segura)
+            )
             estadisticas["mantenimientos_por_estado"] = dict(cursor.fetchall())
 
             # Mantenimientos vencidos
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_mantenimientos)}]
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM [{}]
                 WHERE estado = 'PROGRAMADO' AND fecha_programada < GETDATE()
-            """)
+            """.format(tabla_mantenimientos_segura)
+            )
             estadisticas["mantenimientos_vencidos"] = cursor.fetchone()[0]
 
             # Próximos mantenimientos (próximos 30 días)
-            cursor.execute(f"""
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_mantenimientos)}]
+            cursor.execute(
+                """
+                SELECT COUNT(*) FROM [{}]
                 WHERE estado = 'PROGRAMADO' AND fecha_programada 
                 BETWEEN GETDATE() AND DATEADD(day, 30, GETDATE())
-            """)
+            """.format(tabla_mantenimientos_segura)
+            )
             estadisticas["proximos_mantenimientos"] = cursor.fetchone()[0]
 
             return estadisticas
@@ -682,11 +546,10 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO [{self._validate_table_name(self.tabla_historial_mantenimiento)}]
-                (equipo_id, tipo, descripcion, fecha, usuario)
-                VALUES (?, ?, ?, GETDATE(), 'SYSTEM')
-            """
+            tabla_historial_segura = self._validate_table_name(
+                self.tabla_historial_mantenimiento
+            )
+            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
 
             cursor.execute(query, (equipo_id, tipo, descripcion))
 
@@ -701,11 +564,10 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO [{self._validate_table_name(self.tabla_historial_mantenimiento)}]
-                (mantenimiento_id, tipo, descripcion, fecha, usuario)
-                VALUES (?, ?, ?, GETDATE(), 'SYSTEM')
-            """
+            tabla_historial_segura = self._validate_table_name(
+                self.tabla_historial_mantenimiento
+            )
+            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
 
             cursor.execute(query, (mantenimiento_id, tipo, descripcion))
 
@@ -723,8 +585,13 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             # Obtener equipo_id del mantenimiento
+            tabla_mantenimientos_segura = self._validate_table_name(
+                self.tabla_mantenimientos
+            )
             cursor.execute(
-                f"SELECT equipo_id FROM [{self._validate_table_name(self.tabla_mantenimientos)}] WHERE id = ?",
+                "SELECT equipo_id FROM [{}] WHERE id = ?".format(
+                    tabla_mantenimientos_segura
+                ),
                 (mantenimiento_id,),
             )
             resultado = cursor.fetchone()
@@ -733,12 +600,8 @@ class MantenimientoModel:
                 equipo_id = resultado[0]
 
                 # Actualizar fechas de revisión
-                query = f"""
-                    UPDATE [{self._validate_table_name(self.tabla_equipos)}]
-                    SET ultima_revision = GETDATE(),
-                        proxima_revision = DATEADD(month, 6, GETDATE())
-                    WHERE id = ?
-                """
+                tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+                query = self.sql_manager.get_query("mantenimiento.update_equipo")
 
                 cursor.execute(query, (equipo_id,))
 
