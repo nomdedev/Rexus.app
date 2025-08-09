@@ -74,6 +74,7 @@ class LogisticaView(QWidget):
     solicitud_crear_transporte = pyqtSignal(dict)
     solicitud_actualizar_transporte = pyqtSignal(dict)
     solicitud_eliminar_transporte = pyqtSignal(str)
+    crear_entrega_solicitada = pyqtSignal(dict)
 
     def __init__(self):
         super().__init__()

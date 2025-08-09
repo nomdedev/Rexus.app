@@ -850,6 +850,16 @@ class InventarioView(BaseModuleView):
         if hasattr(controller, 'registrar_movimiento'):
             self.btn_movimiento.clicked.connect(controller.registrar_movimiento)
             
+        # Conectar botones adicionales del panel lateral
+        if hasattr(controller, 'generar_reporte_stock_bajo'):
+            self.btn_reporte_stock_bajo.clicked.connect(controller.generar_reporte_stock_bajo)
+            
+        if hasattr(controller, 'asociar_a_obra'):
+            self.btn_asociar_obra.clicked.connect(lambda: controller.asociar_a_obra(self.obtener_producto_seleccionado_id()))
+            
+        if hasattr(controller, 'generar_codigo_qr'):
+            self.btn_generar_qr.clicked.connect(lambda: controller.generar_codigo_qr(self.obtener_producto_seleccionado_id()))
+            
     def obtener_producto_seleccionado_id(self):
         """Obtiene el ID del producto seleccionado."""
         fila = self.tabla_inventario.currentRow()
