@@ -26,7 +26,7 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 
 from rexus.core.auth_manager import AuthManager
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
-from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 
 class MantenimientoModel:
@@ -138,7 +138,7 @@ class MantenimientoModel:
 
         try:
             # Usar consulta base y agregar filtros dinámicamente
-            query = self.sql_manager.get_query("mantenimiento.obtener_equipos_base")
+            query = self.sql_manager.get_query("mantenimiento", "obtener_equipos_base")
             params = []
             
             if filtros:
