@@ -25,6 +25,8 @@ from pathlib import Path
 
 # Importar utilidades requeridas
 from rexus.utils.sql_script_loader import sql_script_loader
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar sistema unificado de sanitización
 try:

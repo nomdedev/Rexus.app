@@ -30,6 +30,8 @@ except ImportError as e:
 # Importar utilidades de seguridad SQL y sanitización
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import SQLQueryManager
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name

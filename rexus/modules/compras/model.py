@@ -12,6 +12,8 @@ import datetime
 from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ComprasModel:
@@ -857,12 +859,14 @@ class ComprasModel:
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
         # Esta es una implementación genérica
         tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT * FROM {tabla_principal}"
+        # FIXED: SQL Injection vulnerability
+        return "SELECT * FROM ?", (tabla_principal,)
     
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
         tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        return f"SELECT COUNT(*) FROM {tabla_principal}"
+        # FIXED: SQL Injection vulnerability
+        return "SELECT COUNT(*) FROM ?", (tabla_principal,)
     
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""

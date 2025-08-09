@@ -3,6 +3,8 @@ Splash Screen para la aplicación
 """
 
 from PyQt6.QtCore import Qt, QTimer
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 from PyQt6.QtGui import QFont, QPixmap
 from PyQt6.QtWidgets import QLabel, QSplashScreen, QVBoxLayout, QWidget
 

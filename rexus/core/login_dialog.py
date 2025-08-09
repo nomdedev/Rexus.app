@@ -47,6 +47,8 @@ from PyQt6.QtWidgets import (
 )
 
 from rexus.core.auth_manager import AuthManager
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class LoginDialog(QDialog):

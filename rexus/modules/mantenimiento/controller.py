@@ -12,6 +12,8 @@ from rexus.core.auth_manager import AuthManager
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 logger = logging.getLogger(__name__)
 

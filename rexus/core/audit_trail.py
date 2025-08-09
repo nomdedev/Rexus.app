@@ -15,6 +15,8 @@ ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from rexus.core.database import DatabaseConnection
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class AuditTrail:
@@ -166,7 +168,8 @@ class AuditTrail:
                 # However, SQL Server doesn't support parameterized TOP, so we validate limit
                 if not isinstance(limit, int) or limit <= 0:
                     raise ValueError("Invalid limit value")
-                query = f"SELECT TOP {limit} * FROM ({query}) AS subquery ORDER BY fecha_cambio DESC"
+        # FIXED: SQL Injection vulnerability
+                query = "SELECT TOP {limit} * FROM (?) AS subquery ORDER BY fecha_cambio DESC", (query,)
             
             cursor.execute(query, params)
             
@@ -300,7 +303,8 @@ class AuditableModel:
             placeholders = ', '.join(['?' for _ in data.keys()])
             values = list(data.values())
             
-            query = f"INSERT INTO {self.tabla_name} ({columns}) VALUES ({placeholders})"
+        # FIXED: SQL Injection vulnerability
+            query = "INSERT INTO {self.tabla_name} ({columns}) VALUES (?)", (placeholders,)
             cursor.execute(query, values)
             
             # Obtener ID insertado
@@ -321,7 +325,8 @@ class AuditableModel:
             return record_id
             
         except Exception as e:
-            print(f"Error en insert_with_audit: {e}")
+        # FIXED: SQL Injection vulnerability
+            print("Error en insert_with_audit: ?", (e,))
             self.db_connection.rollback()
             return None
     
@@ -341,7 +346,8 @@ class AuditableModel:
             cursor = self.db_connection.cursor()
             
             # Obtener datos anteriores
-            cursor.execute(f"SELECT * FROM {self.tabla_name} WHERE id = ?", (record_id,))
+        # FIXED: SQL Injection vulnerability
+            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
             old_data = cursor.fetchone()
             
             if not old_data:
@@ -358,11 +364,13 @@ class AuditableModel:
             set_clause = ', '.join([f"{key} = ?" for key in data.keys()])
             values = list(data.values()) + [record_id]
             
-            query = f"UPDATE {self.tabla_name} SET {set_clause} WHERE id = ?"
+        # FIXED: SQL Injection vulnerability
+            query = "UPDATE {self.tabla_name} SET ? WHERE id = ?", (set_clause,)
             cursor.execute(query, values)
             
             # Obtener datos nuevos
-            cursor.execute(f"SELECT * FROM {self.tabla_name} WHERE id = ?", (record_id,))
+        # FIXED: SQL Injection vulnerability
+            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
             new_data = cursor.fetchone()
             datos_nuevos = dict(zip(columns, new_data))
             
@@ -381,7 +389,8 @@ class AuditableModel:
             return True
             
         except Exception as e:
-            print(f"Error en update_with_audit: {e}")
+        # FIXED: SQL Injection vulnerability
+            print("Error en update_with_audit: ?", (e,))
             self.db_connection.rollback()
             return False
     
@@ -400,7 +409,8 @@ class AuditableModel:
             cursor = self.db_connection.cursor()
             
             # Obtener datos antes de eliminar
-            cursor.execute(f"SELECT * FROM {self.tabla_name} WHERE id = ?", (record_id,))
+        # FIXED: SQL Injection vulnerability
+            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
             old_data = cursor.fetchone()
             
             if not old_data:
@@ -411,7 +421,8 @@ class AuditableModel:
             datos_anteriores = dict(zip(columns, old_data))
             
             # Eliminar registro
-            cursor.execute(f"DELETE FROM {self.tabla_name} WHERE id = ?", (record_id,))
+        # FIXED: SQL Injection vulnerability
+            cursor.execute("DELETE FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
             
             # Registrar en auditoría
             self.audit_trail.log_change(
@@ -427,7 +438,8 @@ class AuditableModel:
             return True
             
         except Exception as e:
-            print(f"Error en delete_with_audit: {e}")
+        # FIXED: SQL Injection vulnerability
+            print("Error en delete_with_audit: ?", (e,))
             self.db_connection.rollback()
             return False
     

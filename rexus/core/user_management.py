@@ -17,6 +17,8 @@ sys.path.insert(0, str(root_dir))
 
 from rexus.core.auth_manager import Permission, UserRole
 from rexus.core.database import get_users_connection
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class UserManagementSystem:
@@ -252,7 +254,8 @@ class UserManagementSystem:
 
             # Ejecutar actualización
             params.append(username)
-            query = f"UPDATE usuarios SET {', '.join(updates)} WHERE usuario = ?"
+        # FIXED: SQL Injection vulnerability
+            query = "UPDATE usuarios SET ? WHERE usuario = ?", (', '.join(updates),)
 
             result = db.execute_non_query(query, params)
 

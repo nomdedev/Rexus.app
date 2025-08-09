@@ -56,7 +56,6 @@ from PyQt6.QtWidgets import (
 sys.path.append(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 
 from rexus.utils.contextual_error_system import (
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     contextual_error_manager,
     show_database_error,
     show_validation_error,
@@ -64,6 +63,7 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 from rexus.utils.keyboard_navigation import KeyboardNavigationMode, setup_crud_shortcuts
 from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.smart_tooltips import TooltipManager, add_custom_tooltip
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class HerrajesViewSimple(QWidget):

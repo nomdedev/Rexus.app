@@ -11,6 +11,8 @@ from rexus.core.auth_decorators import auth_required, admin_required, permission
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 class ObrasController(QObject):
     # Señales para comunicación con otros módulos

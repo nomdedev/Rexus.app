@@ -39,11 +39,12 @@ from PyQt6.QtWidgets import (
 # Importar validadores si estÃ¡n disponibles
 try:
     from rexus.utils.form_validators import FormValidator, FormValidatorManager
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     VALIDATORS_AVAILABLE = True
 except ImportError:
     print("[INFO] Form validators not available, using basic validation")
     VALIDATORS_AVAILABLE = False
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class DialogoEditarProducto(QDialog):

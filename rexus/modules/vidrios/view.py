@@ -246,14 +246,19 @@ class VidriosView(BaseModuleView):
 
         # Configurar tamaños de columnas
         header = self.tabla_principal.horizontalHeader()
-        header.resizeSection(0, 60)   # ID
-        header.resizeSection(1, 120)  # Tipo
-        header.resizeSection(2, 140)  # Dimensiones
-        header.resizeSection(3, 130)  # Color/Acabado
-        header.resizeSection(4, 80)   # Stock
-        header.resizeSection(5, 100)  # Precio m²
-        header.resizeSection(6, 100)  # Estado
-        header.setStretchLastSection(True)  # Acciones
+        if header is not None:
+            try:
+                header.resizeSection(0, 60)   # ID
+                header.resizeSection(1, 120)  # Tipo
+                header.resizeSection(2, 140)  # Dimensiones
+                header.resizeSection(3, 130)  # Color/Acabado
+                header.resizeSection(4, 80)   # Stock
+                header.resizeSection(5, 100)  # Precio m²
+                header.resizeSection(6, 100)  # Estado
+                header.setStretchLastSection(True)  # Acciones
+            except Exception as e:
+                import logging
+                logging.warning(f"No se pudo configurar el header de la tabla: {e}")
 
         # Configuraciones visuales
         self.tabla_principal.setAlternatingRowColors(True)
@@ -306,25 +311,25 @@ class VidriosView(BaseModuleView):
     def actualizar_estadisticas(self, stats):
         """Actualiza las estadísticas mostradas en el panel."""
         try:
-            if hasattr(self.lbl_total_vidrios, 'valor_label'):
-                self.lbl_total_vidrios.valor_label.setText(str(stats.get('total_vidrios', 0)))
-            
-            if hasattr(self.lbl_vidrios_disponibles, 'valor_label'):
-                self.lbl_vidrios_disponibles.valor_label.setText(str(stats.get('vidrios_disponibles', 0)))
-            
-            if hasattr(self.lbl_vidrios_proceso, 'valor_label'):
-                self.lbl_vidrios_proceso.valor_label.setText(str(stats.get('vidrios_proceso', 0)))
-            
-            if hasattr(self.lbl_tipos_vidrios, 'valor_label'):
-                self.lbl_tipos_vidrios.valor_label.setText(str(stats.get('tipos_vidrios', 0)))
-                
+            def set_label(label_obj, value):
+                if hasattr(label_obj, 'valor_label') and hasattr(label_obj.valor_label, 'setText'):
+                    label_obj.valor_label.setText(str(value))
+                elif hasattr(label_obj, 'setText'):
+                    label_obj.setText(str(value))
+                elif hasattr(label_obj, 'label') and hasattr(label_obj.label, 'setText'):
+                    label_obj.label.setText(str(value))
+            set_label(self.lbl_total_vidrios, stats.get('total_vidrios', 0))
+            set_label(self.lbl_vidrios_disponibles, stats.get('vidrios_disponibles', 0))
+            set_label(self.lbl_vidrios_proceso, stats.get('vidrios_proceso', 0))
+            set_label(self.lbl_tipos_vidrios, stats.get('tipos_vidrios', 0))
         except Exception as e:
-            show_error(self, f"Error actualizando estadísticas: {e}")
+            show_error(self, title="Error", message=f"Error actualizando estadísticas: {e}")
 
     def nuevo_registro(self):
         """Abre el diálogo para crear un nuevo vidrio."""
         dialog = NuevoVidrioDialog(self)
-        if dialog.exec() == dialog.Accepted:
+        from PyQt6.QtWidgets import QDialog
+        if dialog.exec() == QDialog.DialogCode.Accepted:
             datos = dialog.obtener_datos()
             if self.controller:
                 resultado = self.controller.crear_vidrio(datos)

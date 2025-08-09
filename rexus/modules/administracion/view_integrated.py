@@ -37,7 +37,6 @@ Integrado con el sistema de temas y feedback visual centralizado.
 
 from PyQt6.QtCore import QDate, Qt, QTimer, pyqtSignal
 from PyQt6.QtWidgets import (
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     QComboBox,
     QDateEdit,
     QFormLayout,
@@ -60,6 +59,7 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 from ...ui.feedback_mixin import FeedbackMixin
 from ...utils.theme_manager import ThemeManager
 from ...core.logger import get_logger
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 logger = get_logger("administracion_view")
 

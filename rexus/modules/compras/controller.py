@@ -16,6 +16,8 @@ from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
 from rexus.modules.compras.inventory_integration import InventoryIntegration
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ComprasController(QObject):

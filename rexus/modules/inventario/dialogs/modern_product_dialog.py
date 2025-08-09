@@ -37,7 +37,6 @@ from PyQt6.QtWidgets import (
 # Importar componentes modernos con manejo de errores
 try:
     from rexus.utils.modern_form_components import ModernFormDialog, FormValidators
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     print("[WARNING] Modern form components not available, using basic dialog")
     from PyQt6.QtWidgets import QDialog as ModernFormDialog
@@ -66,6 +65,8 @@ except ImportError:
         @staticmethod
         def email_format(value):
             return '@' in str(value) if value else False
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ModernProductDialog(ModernFormDialog):

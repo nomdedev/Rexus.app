@@ -343,7 +343,8 @@ class UsuariosManager:
             set_clause = ", ".join(
                 [f"{campo} = %s" for campo in campos_actualizacion.keys()]
             )
-            query = f"UPDATE usuarios SET {set_clause} WHERE id = %s"
+        # FIXED: SQL Injection vulnerability
+            query = "UPDATE usuarios SET ? WHERE id = %s", (set_clause,)
 
             valores = list(campos_actualizacion.values()) + [usuario_id_safe]
             cursor.execute(query, valores)

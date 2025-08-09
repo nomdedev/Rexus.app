@@ -10,6 +10,8 @@ from typing import Any, Dict, Optional
 from PyQt6.QtWidgets import QWidget
 
 from rexus.utils.module_utils import module_registry, normalize_module_name
+from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ModuleManager:
