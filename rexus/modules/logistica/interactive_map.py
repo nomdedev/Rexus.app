@@ -236,6 +236,156 @@ class InteractiveMapWidget(QWidget):
         except Exception as e:
             print(f"Error agregando marcadores de servicios: {e}")
     
+    def add_obra_markers(self, obras: List[Dict]):
+        """Agrega marcadores para entregas de obras en el mapa."""
+        try:
+            # Crear nuevo mapa
+            m = folium.Map(
+                location=self.la_plata_coords,
+                zoom_start=self.current_zoom,
+                tiles='OpenStreetMap'
+            )
+            
+            # Agregar marcador principal de La Plata
+            folium.Marker(
+                self.la_plata_coords,
+                popup="La Plata - Ciudad Principal",
+                tooltip="La Plata",
+                icon=folium.Icon(color='red', icon='home')
+            ).add_to(m)
+            
+            # Agregar marcadores de obras
+            for obra in obras:
+                if 'coords' in obra and obra['coords']:
+                    lat, lng = obra['coords']
+                    
+                    popup_text = f"""
+                    <b>Obra: {obra.get('nombre', 'Sin nombre')}</b><br>
+                    Cliente: {obra.get('cliente', 'N/A')}<br>
+                    Dirección: {obra.get('direccion', 'N/A')}<br>
+                    Estado: {obra.get('estado', 'N/A')}<br>
+                    Responsable: {obra.get('responsable', 'N/A')}<br>
+                    Presupuesto: ${obra.get('presupuesto', 0):,.2f}
+                    """
+                    
+                    # Color según estado de obra
+                    color = self._get_obra_color(obra.get('estado', 'PLANIFICACION'))
+                    
+                    folium.Marker(
+                        [lat, lng],
+                        popup=popup_text,
+                        tooltip=obra.get('nombre', 'Obra'),
+                        icon=folium.Icon(
+                            color=color,
+                            icon=self._get_marker_icon('obra')
+                        )
+                    ).add_to(m)
+            
+            # Guardar y cargar mapa actualizado
+            self.save_and_load_map(m)
+            
+        except Exception as e:
+            print(f"Error agregando marcadores de obras: {e}")
+    
+    def add_combined_markers(self, services: List[Dict] = None, obras: List[Dict] = None):
+        """Agrega marcadores combinados de servicios y obras en el mapa."""
+        try:
+            # Crear nuevo mapa
+            m = folium.Map(
+                location=self.la_plata_coords,
+                zoom_start=self.current_zoom,
+                tiles='OpenStreetMap'
+            )
+            
+            # Agregar marcador principal de La Plata
+            folium.Marker(
+                self.la_plata_coords,
+                popup="La Plata - Ciudad Principal",
+                tooltip="La Plata",
+                icon=folium.Icon(color='red', icon='home')
+            ).add_to(m)
+            
+            # Agregar marcadores de servicios
+            if services:
+                for service in services:
+                    if 'coords' in service and service['coords']:
+                        lat, lng = service['coords']
+                        
+                        popup_text = f"""
+                        <b>🚚 SERVICIO</b><br>
+                        Tipo: {service.get('tipo', 'Servicio')}<br>
+                        Cliente: {service.get('cliente', 'N/A')}<br>
+                        Dirección: {service.get('direccion', 'N/A')}<br>
+                        Estado: {service.get('estado', 'N/A')}<br>
+                        Fecha: {service.get('fecha', 'N/A')}
+                        """
+                        
+                        folium.Marker(
+                            [lat, lng],
+                            popup=popup_text,
+                            tooltip=f"🚚 {service.get('cliente', 'Servicio')}",
+                            icon=folium.Icon(
+                                color='orange',
+                                icon='truck'
+                            )
+                        ).add_to(m)
+            
+            # Agregar marcadores de obras
+            if obras:
+                for obra in obras:
+                    if 'coords' in obra and obra['coords']:
+                        lat, lng = obra['coords']
+                        
+                        popup_text = f"""
+                        <b>🏗️ OBRA</b><br>
+                        Nombre: {obra.get('nombre', 'Sin nombre')}<br>
+                        Cliente: {obra.get('cliente', 'N/A')}<br>
+                        Dirección: {obra.get('direccion', 'N/A')}<br>
+                        Estado: {obra.get('estado', 'N/A')}<br>
+                        Responsable: {obra.get('responsable', 'N/A')}<br>
+                        Presupuesto: ${obra.get('presupuesto', 0):,.2f}
+                        """
+                        
+                        color = self._get_obra_color(obra.get('estado', 'PLANIFICACION'))
+                        
+                        folium.Marker(
+                            [lat, lng],
+                            popup=popup_text,
+                            tooltip=f"🏗️ {obra.get('nombre', 'Obra')}",
+                            icon=folium.Icon(
+                                color=color,
+                                icon='wrench'
+                            )
+                        ).add_to(m)
+            
+            # Agregar área de cobertura
+            folium.Circle(
+                location=self.la_plata_coords,
+                radius=15000,
+                popup="Área de Cobertura de Servicios",
+                color="blue",
+                fill=True,
+                fillColor="lightblue",
+                fillOpacity=0.2
+            ).add_to(m)
+            
+            # Guardar y cargar mapa actualizado
+            self.save_and_load_map(m)
+            
+        except Exception as e:
+            print(f"Error agregando marcadores combinados: {e}")
+    
+    def _get_obra_color(self, estado: str) -> str:
+        """Obtiene el color del marcador según el estado de la obra."""
+        colors = {
+            "PLANIFICACION": "blue",
+            "EN_PROCESO": "orange", 
+            "PAUSADA": "gray",
+            "FINALIZADA": "green",
+            "CANCELADA": "red"
+        }
+        return colors.get(estado.upper(), "purple")
+    
     def add_custom_marker(self, lat: float, lng: float, title: str, 
                          description: str, marker_type: str = "servicio"):
         """Agrega un marcador personalizado al mapa."""

@@ -6,8 +6,8 @@ Incluye arquitectura modular con submódulos especializados.
 """
 
 from .controller import InventarioController
-from .model_inventario_refactorizado import (
-    ModeloInventarioRefactorizado as InventarioModel,
+from .model import (
+    InventarioModel,
 )
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
