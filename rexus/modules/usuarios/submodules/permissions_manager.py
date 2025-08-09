@@ -143,7 +143,7 @@ class PermissionsManager:
             return todos_permisos
             
         except Exception as e:
-            logger.error(f"Error obteniendo permisos: {e}")
+            logger.error("Error obteniendo permisos: %s", e)
             return []
         finally:
             if cursor is not None:
@@ -184,7 +184,7 @@ class PermissionsManager:
             return False
             
         except Exception as e:
-            logger.error(f"Error verificando permiso: {e}")
+            logger.error("Error verificando permiso: %s", e)
             return False
     
     @admin_required
@@ -238,16 +238,16 @@ class PermissionsManager:
             
             self.db_connection.commit()
             
-            logger.info(f"Permiso asignado: {modulo}:{accion} a usuario {usuario_id}")
+            logger.info("Permiso asignado: %s:%s a usuario %s", modulo, accion, usuario_id)
             return {'success': True, 'message': 'Permiso asignado correctamente'}
             
         except Exception as e:
-            logger.error(f"Error asignando permiso: {e}")
+            logger.error("Error asignando permiso: %s", e)
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception as rollback_error:
-                    logger.error(f"Error en rollback: {rollback_error}")
+                    logger.error("Error en rollback: %s", rollback_error)
                     return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
@@ -288,16 +288,16 @@ class PermissionsManager:
             
             self.db_connection.commit()
             
-            logger.info(f"Permiso revocado: {modulo}:{accion} de usuario {usuario_id}")
+            logger.info("Permiso revocado: %s:%s de usuario %s", modulo, accion, usuario_id)
             return {'success': True, 'message': 'Permiso revocado correctamente'}
             
         except Exception as e:
-            logger.error(f"Error revocando permiso: {e}")
+            logger.error("Error revocando permiso: %s", e)
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception as rollback_error:
-                    logger.error(f"Error en rollback: {rollback_error}")
+                    logger.error("Error en rollback: %s", rollback_error)
                     return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
@@ -345,16 +345,16 @@ class PermissionsManager:
             
             self.db_connection.commit()
             
-            logger.info(f"Rol cambiado a {nuevo_rol} para usuario {usuario_id}")
-            return {"success": True, "message": f"Rol cambiado a {nuevo_rol}"}
+            logger.info("Rol cambiado a %s para usuario %s", nuevo_rol, usuario_id)
+            return {"success": True, "message": "Rol cambiado a {}".format(nuevo_rol)}
             
         except Exception as e:
-            logger.error(f"Error cambiando rol: {e}")
+            logger.error("Error cambiando rol: %s", e)
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    logger.error(f"Error en operación de base de datos: {e}")
+                    logger.error("Error en operación de base de datos: %s", e)
                     return {'success': False, 'message': 'Error crítico del sistema'}
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
@@ -387,7 +387,7 @@ class PermissionsManager:
             return list(modulos)
             
         except Exception as e:
-            logger.error(f"Error obteniendo módulos permitidos: {e}")
+            logger.error("Error obteniendo módulos permitidos: %s", e)
             return []
     
     def _obtener_permisos_por_rol(self, rol: str) -> List[str]:
@@ -441,7 +441,7 @@ class PermissionsManager:
                 )
             """)
         except Exception as e:
-            logger.error(f"Error creando tabla permisos_usuarios: {e}")
+            logger.error("Error creando tabla permisos_usuarios: %s", e)
     
     @auth_required
     def obtener_estadisticas_permisos(self) -> Dict[str, Any]:
@@ -499,7 +499,7 @@ class PermissionsManager:
             return stats
             
         except Exception as e:
-            logger.error(f"Error obteniendo estadísticas de permisos: {e}")
+            logger.error("Error obteniendo estadísticas de permisos: %s", e)
             return {}
         finally:
             if cursor is not None:

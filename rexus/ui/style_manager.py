@@ -72,39 +72,99 @@ class StyleManager:
     def _detect_system_theme(self):
         """
         Detecta si el sistema está en modo oscuro y ajusta el tema por defecto.
-        Específico para Windows 10/11.
+        Funciona en Windows 10/11, macOS y algunos Linux.
         """
         try:
-            import winreg
+            import platform
+            system = platform.system().lower()
             
-            # Intentar leer la configuración de Windows
-            try:
-                reg_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
-                key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path)
+            if system == "windows":
+                self._detect_windows_theme()
+            elif system == "darwin":  # macOS
+                self._detect_macos_theme()
+            else:  # Linux y otros
+                self._detect_linux_theme()
                 
-                # AppsUseLightTheme: 0 = dark mode, 1 = light mode
-                apps_light_theme, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
-                winreg.CloseKey(key)
-                
-                if apps_light_theme == 0:  # Dark mode
-                    self._current_theme = 'dark'
-                    print("[STYLE] Tema oscuro detectado - aplicando 'dark'")
-                else:  # Light mode
-                    self._current_theme = 'light'
-                    print("[STYLE] Tema claro detectado - aplicando 'light'")
-                    
-            except (FileNotFoundError, winreg.error):
-                # Si no se puede leer el registro, usar tema por defecto
-                self._current_theme = 'professional'
-                print("[STYLE] No se pudo detectar tema del sistema - usando 'professional'")
-                
-        except ImportError:
-            # Si no está en Windows, usar tema por defecto
-            self._current_theme = 'professional'
-            print("[STYLE] Sistema no Windows - usando tema 'professional'")
         except Exception as e:
             print(f"[WARNING] Error detectando tema del sistema: {e}")
             self._current_theme = 'professional'
+            print("[STYLE] Usando tema por defecto 'professional' por error")
+    
+    def _detect_windows_theme(self):
+        """Detecta tema en Windows."""
+        try:
+            import winreg
+            
+            reg_path = r"Software\Microsoft\Windows\CurrentVersion\Themes\Personalize"
+            key = winreg.OpenKey(winreg.HKEY_CURRENT_USER, reg_path)
+            
+            # AppsUseLightTheme: 0 = dark mode, 1 = light mode
+            apps_light_theme, _ = winreg.QueryValueEx(key, "AppsUseLightTheme")
+            winreg.CloseKey(key)
+            
+            if apps_light_theme == 0:  # Dark mode
+                self._current_theme = 'dark'
+                print("[STYLE] ✓ Tema oscuro detectado en Windows - aplicando 'dark'")
+            else:  # Light mode
+                self._current_theme = 'light' 
+                print("[STYLE] ✓ Tema claro detectado en Windows - aplicando 'light'")
+                
+        except (FileNotFoundError, OSError, ImportError):
+            self._current_theme = 'professional'
+            print("[STYLE] ⚠ No se pudo detectar tema de Windows - usando 'professional'")
+    
+    def _detect_macos_theme(self):
+        """Detecta tema en macOS."""
+        try:
+            import subprocess
+            result = subprocess.run(['defaults', 'read', '-g', 'AppleInterfaceStyle'], 
+                                  capture_output=True, text=True)
+            
+            if result.returncode == 0 and 'Dark' in result.stdout:
+                self._current_theme = 'dark'
+                print("[STYLE] ✓ Tema oscuro detectado en macOS - aplicando 'dark'")
+            else:
+                self._current_theme = 'light'
+                print("[STYLE] ✓ Tema claro detectado en macOS - aplicando 'light'")
+                
+        except (subprocess.CalledProcessError, FileNotFoundError):
+            self._current_theme = 'professional'
+            print("[STYLE] ⚠ No se pudo detectar tema de macOS - usando 'professional'")
+    
+    def _detect_linux_theme(self):
+        """Detecta tema en Linux (GNOME/KDE)."""
+        try:
+            import subprocess
+            import os
+            
+            # Intentar GNOME primero
+            if os.environ.get('GNOME_DESKTOP_SESSION_ID') or os.environ.get('XDG_CURRENT_DESKTOP') == 'GNOME':
+                result = subprocess.run(['gsettings', 'get', 'org.gnome.desktop.interface', 'gtk-theme'], 
+                                      capture_output=True, text=True)
+                if result.returncode == 0 and ('dark' in result.stdout.lower() or 'adwaita-dark' in result.stdout.lower()):
+                    self._current_theme = 'dark'
+                    print("[STYLE] ✓ Tema oscuro detectado en GNOME - aplicando 'dark'")
+                    return
+            
+            # Intentar KDE
+            elif os.environ.get('KDE_SESSION_VERSION'):
+                # KDE usa archivos de configuración
+                kde_config = os.path.expanduser('~/.config/kdeglobals')
+                if os.path.exists(kde_config):
+                    with open(kde_config, 'r') as f:
+                        content = f.read()
+                        if 'ColorScheme=Breeze Dark' in content or 'ColorScheme=BreezeDark' in content:
+                            self._current_theme = 'dark'
+                            print("[STYLE] ✓ Tema oscuro detectado en KDE - aplicando 'dark'")
+                            return
+            
+            # Si llegamos aquí, usar tema claro por defecto en Linux
+            self._current_theme = 'light'
+            print("[STYLE] ✓ Usando tema claro por defecto en Linux")
+            
+        except Exception:
+            self._current_theme = 'professional'
+            print("[STYLE] ⚠ No se pudo detectar tema de Linux - usando 'professional'")
     
     def _load_available_themes(self):
         """Carga todos los temas disponibles en memoria."""
@@ -128,14 +188,27 @@ class StyleManager:
             
         if theme_name not in self._loaded_themes:
             logging.error(f"Tema '{theme_name}' no disponible")
-            return False
+            # Si el tema solicitado no existe, intentar con el tema por defecto
+            if 'professional' in self._loaded_themes:
+                theme_name = 'professional'
+                print(f"[STYLE] Usando tema por defecto 'professional' en lugar de '{theme_name}'")
+            else:
+                return False
         
         try:
             app = QApplication.instance()
             if app:
-                app.setStyleSheet(self._loaded_themes[theme_name])
+                # Obtener estilos base más estilos críticos para formularios
+                base_styles = self._loaded_themes[theme_name]
+                critical_form_styles = self._get_critical_form_styles(theme_name)
+                
+                # Combinar estilos
+                combined_styles = f"{base_styles}\n\n/* CRITICAL FORM FIXES */\n{critical_form_styles}"
+                
+                app.setStyleSheet(combined_styles)
                 self._current_theme = theme_name
-                logging.info(f"Tema global '{theme_name}' aplicado exitosamente")
+                logging.info(f"Tema global '{theme_name}' aplicado exitosamente con correcciones críticas")
+                print(f"[STYLE] Tema aplicado: {theme_name} con correcciones de contraste")
                 return True
             else:
                 logging.error("No se pudo obtener instancia de QApplication")
@@ -377,6 +450,220 @@ class StyleManager:
         self._loaded_themes.clear()
         self._load_available_themes()
         logging.info("Temas recargados desde archivos")
+    
+    def _get_critical_form_styles(self, theme_name: str) -> str:
+        """
+        Obtiene estilos críticos para formularios con buen contraste.
+        
+        Args:
+            theme_name: Nombre del tema activo
+            
+        Returns:
+            str: CSS crítico para formularios legibles
+        """
+        if theme_name == 'dark':
+            return """
+            /* CORRECCIONES CRÍTICAS PARA TEMA OSCURO */
+            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, 
+            QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
+                background-color: #2d3748 !important;
+                color: #ffffff !important;
+                border: 2px solid #4a5568 !important;
+                border-radius: 8px !important;
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+                min-height: 20px !important;
+            }
+            
+            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, 
+            QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, 
+            QDateTimeEdit:focus, QPlainTextEdit:focus {
+                background-color: #374151 !important;
+                border: 2px solid #3b82f6 !important;
+                color: #ffffff !important;
+            }
+            
+            QLineEdit:disabled, QTextEdit:disabled, QComboBox:disabled, 
+            QSpinBox:disabled, QDoubleSpinBox:disabled, QDateEdit:disabled {
+                background-color: #1f2937 !important;
+                color: #9ca3af !important;
+                border: 2px solid #374151 !important;
+            }
+            
+            QLabel {
+                color: #f9fafb !important;
+                background: transparent !important;
+            }
+            
+            QComboBox::drop-down {
+                background-color: #4a5568 !important;
+                border: none !important;
+                border-radius: 6px !important;
+            }
+            
+            QComboBox::down-arrow {
+                image: none !important;
+                width: 0px !important;
+                height: 0px !important;
+            }
+            
+            /* Asegurar que el texto en combobox sea visible */
+            QComboBox QAbstractItemView {
+                background-color: #2d3748 !important;
+                color: #ffffff !important;
+                selection-background-color: #3b82f6 !important;
+                selection-color: #ffffff !important;
+                border: 1px solid #4a5568 !important;
+            }
+            """
+        else:
+            # Para temas claros
+            return """
+            /* CORRECCIONES CRÍTICAS PARA TEMA CLARO */
+            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, 
+            QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
+                background-color: #ffffff !important;
+                color: #1f2937 !important;
+                border: 2px solid #d1d5db !important;
+                border-radius: 8px !important;
+                padding: 8px 12px !important;
+                font-size: 14px !important;
+                min-height: 20px !important;
+            }
+            
+            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, 
+            QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, 
+            QDateTimeEdit:focus, QPlainTextEdit:focus {
+                background-color: #f9fafb !important;
+                border: 2px solid #3b82f6 !important;
+                color: #1f2937 !important;
+            }
+            
+            QLineEdit:disabled, QTextEdit:disabled, QComboBox:disabled, 
+            QSpinBox:disabled, QDoubleSpinBox:disabled, QDateEdit:disabled {
+                background-color: #f3f4f6 !important;
+                color: #6b7280 !important;
+                border: 2px solid #e5e7eb !important;
+            }
+            
+            QLabel {
+                color: #1f2937 !important;
+                background: transparent !important;
+            }
+            
+            QComboBox QAbstractItemView {
+                background-color: #ffffff !important;
+                color: #1f2937 !important;
+                selection-background-color: #3b82f6 !important;
+                selection-color: #ffffff !important;
+                border: 1px solid #d1d5db !important;
+            }
+            """
+    
+    def apply_critical_form_fixes(self, widget: QWidget = None) -> bool:
+        """
+        Aplica correcciones críticas de formularios independientemente del tema.
+        
+        Args:
+            widget: Widget específico o None para aplicar globalmente
+            
+        Returns:
+            bool: True si se aplicaron las correcciones
+        """
+        try:
+            critical_styles = self._get_critical_form_styles(self._current_theme)
+            
+            if widget is None:
+                # Aplicar globalmente
+                app = QApplication.instance()
+                if app:
+                    current_styles = app.styleSheet()
+                    new_styles = f"{current_styles}\n\n/* EMERGENCY FORM FIXES */\n{critical_styles}"
+                    app.setStyleSheet(new_styles)
+                    print("[STYLE] ✓ Correcciones críticas de formularios aplicadas globalmente")
+                    return True
+            else:
+                # Aplicar a widget específico
+                current_styles = widget.styleSheet()
+                new_styles = f"{current_styles}\n{critical_styles}"
+                widget.setStyleSheet(new_styles)
+                print(f"[STYLE] ✓ Correcciones críticas aplicadas a {widget.__class__.__name__}")
+                return True
+                
+        except Exception as e:
+            print(f"[ERROR] Error aplicando correcciones críticas: {e}")
+            return False
+        
+        return False
+    
+    def force_light_theme_for_forms(self) -> bool:
+        """
+        Fuerza tema claro específicamente para formularios críticos.
+        Útil cuando el tema oscuro causa problemas de legibilidad.
+        
+        Returns:
+            bool: True si se aplicó correctamente
+        """
+        emergency_light_styles = """
+        /* EMERGENCY LIGHT THEME FOR FORMS */
+        QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, 
+        QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            border: 2px solid #cccccc !important;
+            border-radius: 4px !important;
+            padding: 6px !important;
+            font-size: 14px !important;
+            font-weight: normal !important;
+        }
+        
+        QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, 
+        QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, 
+        QDateTimeEdit:focus, QPlainTextEdit:focus {
+            background-color: #ffffff !important;
+            border: 2px solid #0066cc !important;
+            color: #000000 !important;
+        }
+        
+        QLabel {
+            color: #000000 !important;
+            background: transparent !important;
+            font-weight: normal !important;
+        }
+        
+        QPushButton {
+            background-color: #0066cc !important;
+            color: #ffffff !important;
+            border: 1px solid #0066cc !important;
+            border-radius: 4px !important;
+            padding: 8px 16px !important;
+            font-size: 14px !important;
+        }
+        
+        QPushButton:hover {
+            background-color: #0052a3 !important;
+        }
+        
+        QComboBox QAbstractItemView {
+            background-color: #ffffff !important;
+            color: #000000 !important;
+            selection-background-color: #0066cc !important;
+            selection-color: #ffffff !important;
+        }
+        """
+        
+        try:
+            app = QApplication.instance()
+            if app:
+                current_styles = app.styleSheet()
+                new_styles = f"{current_styles}\n{emergency_light_styles}"
+                app.setStyleSheet(new_styles)
+                print("[STYLE] 🚨 Tema de emergencia claro aplicado para formularios")
+                return True
+        except Exception as e:
+            print(f"[ERROR] Error aplicando tema de emergencia: {e}")
+            
+        return False
     
     @classmethod
     def get_colors(cls) -> Dict[str, str]:
