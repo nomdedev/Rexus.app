@@ -34,7 +34,7 @@ class TestIntegracionBasica:
             try:
                 modulo = __import__(modulo_path, fromlist=[clase_name])
                 getattr(modulo, clase_name)
-                print(f"✅ {clase_name} importado correctamente")
+                print(f"[CHECK] {clase_name} importado correctamente")
             except ImportError as e:
                 pytest.skip(f"Módulo {modulo_path} no disponible: {e}")
             except AttributeError as e:
@@ -119,7 +119,7 @@ class TestValidacionEstructura:
         for modulo in modulos_opcionales:
             modulo_path = ROOT_DIR / 'modules' / modulo
             if modulo_path.exists():
-                print(f"✅ Módulo opcional {modulo} encontrado")
+                print(f"[CHECK] Módulo opcional {modulo} encontrado")
             else:
                 print(f"ℹ️ Módulo opcional {modulo} no encontrado (esto es normal)")
 

@@ -217,7 +217,7 @@ class ModuleSchemaValidator:
                 validation_result["valid"] = False
                 logger.warning(f"Columnas faltantes en {table_name}: {missing_columns}")
             else:
-                logger.info(f"Tabla {table_name}: ✅ Esquema válido")
+                logger.info(f"Tabla {table_name}: [CHECK] Esquema válido")
         
         return validation_result
     
@@ -303,9 +303,9 @@ def main():
                 continue
             
             if result["valid"]:
-                logger.info(f"✅ Módulo {module_name}: Esquema válido")
+                logger.info(f"[CHECK] Módulo {module_name}: Esquema válido")
             else:
-                logger.warning(f"❌ Módulo {module_name}: Problemas encontrados")
+                logger.warning(f"[ERROR] Módulo {module_name}: Problemas encontrados")
                 
                 if args.fix.lower() == 'true':
                     fix_script = validator.generate_fix_script(result)

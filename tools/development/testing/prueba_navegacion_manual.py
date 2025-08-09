@@ -48,7 +48,7 @@ def probar_navegacion_manual():
     print("• Usuarios: Ver listado (si tiene permisos)")
     print("• Auditoría: Consultar logs de actividad")
 
-    print("\n⚠️ ERRORES COMUNES A DETECTAR:")
+    print("\n[WARN] ERRORES COMUNES A DETECTAR:")
     print("-" * 35)
     print("• Errores de importación/módulos no encontrados")
     print("• Errores de conexión a base de datos")
@@ -63,7 +63,7 @@ def probar_navegacion_manual():
 def generar_reporte_manual():
     """Genera un reporte basado en los logs actuales"""
 
-    print("\n📊 GENERANDO REPORTE DE NAVEGACIÓN...")
+    print("\n[CHART] GENERANDO REPORTE DE NAVEGACIÓN...")
 
     # Leer logs recientes
     log_files = ['logs/app.log', 'logs/app_json.log']
@@ -103,15 +103,15 @@ def generar_reporte_manual():
                             })
 
             except Exception as e:
-                print(f"⚠️ Error al leer {log_file}: {e}")
+                print(f"[WARN] Error al leer {log_file}: {e}")
 
     # Mostrar reporte
     print("\n" + "="*60)
     print("📋 REPORTE DE NAVEGACIÓN MANUAL")
     print("="*60)
     print(f"📅 {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-    print(f"❌ Errores detectados: {len(errores_encontrados)}")
-    print(f"⚠️ Warnings detectados: {len(warnings_encontrados)}")
+    print(f"[ERROR] Errores detectados: {len(errores_encontrados)}")
+    print(f"[WARN] Warnings detectados: {len(warnings_encontrados)}")
 
     if errores_encontrados:
         print("\n🚨 ERRORES ENCONTRADOS:")
@@ -120,14 +120,14 @@ def generar_reporte_manual():
             print(f"     {error['linea'][:80]}...")
 
     if warnings_encontrados:
-        print("\n⚠️ WARNINGS ENCONTRADOS:")
+        print("\n[WARN] WARNINGS ENCONTRADOS:")
         for i, warning in enumerate(warnings_encontrados[:5], 1):
             print(f"  {i}. [{warning['archivo']}]")
             print(f"     {warning['linea'][:80]}...")
 
     if not errores_encontrados and not warnings_encontrados:
         print("\n🎉 ¡No se detectaron errores ni warnings en logs recientes!")
-        print("✅ La navegación parece estar funcionando correctamente.")
+        print("[CHECK] La navegación parece estar funcionando correctamente.")
 
     # Guardar reporte
     try:
@@ -152,7 +152,7 @@ import subprocess
 from datetime import datetime
 
     except Exception as e:
-        print(f"⚠️ Error al guardar reporte: {e}")
+        print(f"[WARN] Error al guardar reporte: {e}")
 
     return len(errores_encontrados) == 0
 
@@ -183,14 +183,14 @@ def verificar_aplicacion_corriendo():
 
 def main():
     """Función principal"""
-    print("🚀 PROBADOR DE NAVEGACIÓN POR MÓDULOS")
+    print("[ROCKET] PROBADOR DE NAVEGACIÓN POR MÓDULOS")
     print("="*50)
 
     # Verificar si la aplicación está corriendo
     if verificar_aplicacion_corriendo():
-        print("✅ Aplicación detectada ejecutándose")
+        print("[CHECK] Aplicación detectada ejecutándose")
     else:
-        print("⚠️ No se detectó la aplicación ejecutándose")
+        print("[WARN] No se detectó la aplicación ejecutándose")
         print("💡 Asegúrese de que main.py esté ejecutándose")
 
         respuesta = input("¿Continuar con las pruebas? (s/n): ").lower()
@@ -199,7 +199,7 @@ def main():
 
     # Verificar logs
     if not os.path.exists('logs'):
-        print("❌ Directorio 'logs' no encontrado")
+        print("[ERROR] Directorio 'logs' no encontrado")
         return
 
     print("\n📁 Archivos de log disponibles:")
@@ -207,9 +207,9 @@ def main():
         path = f'logs/{log_file}'
         if os.path.exists(path):
             size = os.path.getsize(path)
-            print(f"  ✅ {log_file} ({size} bytes)")
+            print(f"  [CHECK] {log_file} ({size} bytes)")
         else:
-            print(f"  ❌ {log_file} (no encontrado)")
+            print(f"  [ERROR] {log_file} (no encontrado)")
 
     print("\n" + "="*50)
     resultado = probar_navegacion_manual()
@@ -217,7 +217,7 @@ def main():
     if resultado:
         print("\n🎉 ¡Pruebas completadas exitosamente!")
     else:
-        print("\n⚠️ Se detectaron algunos problemas durante las pruebas")
+        print("\n[WARN] Se detectaron algunos problemas durante las pruebas")
         print("Revise el reporte detallado para más información")
 
 if __name__ == '__main__':

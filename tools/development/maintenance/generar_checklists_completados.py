@@ -689,9 +689,9 @@ from typing import Any, Dict, List, Optional, Tuple
 - **Sugerencias generadas:** {len(analisis['sugerencias'])}
 
 ### Estado General (Estimación Automática)
-- [{'x' if analisis['tests']['cobertura_estimada'] >= 80 and analisis['almacenamiento_bd']['sql_seguro']['detectado'] and len(analisis['sugerencias']) <= 2 else ' '}] ✅ Módulo cumple todos los estándares
-- [{'x' if 60 <= analisis['tests']['cobertura_estimada'] < 80 or (not analisis['almacenamiento_bd']['sql_seguro']['detectado']) or 3 <= len(analisis['sugerencias']) <= 5 else ' '}] ⚠️ Módulo necesita mejoras menores
-- [{'x' if analisis['tests']['cobertura_estimada'] < 60 or len(analisis['sugerencias']) > 5 else ' '}] ❌ Módulo necesita mejoras críticas
+- [{'x' if analisis['tests']['cobertura_estimada'] >= 80 and analisis['almacenamiento_bd']['sql_seguro']['detectado'] and len(analisis['sugerencias']) <= 2 else ' '}] [CHECK] Módulo cumple todos los estándares
+- [{'x' if 60 <= analisis['tests']['cobertura_estimada'] < 80 or (not analisis['almacenamiento_bd']['sql_seguro']['detectado']) or 3 <= len(analisis['sugerencias']) <= 5 else ' '}] [WARN] Módulo necesita mejoras menores
+- [{'x' if analisis['tests']['cobertura_estimada'] < 60 or len(analisis['sugerencias']) > 5 else ' '}] [ERROR] Módulo necesita mejoras críticas
 
 ### Próximos Pasos Sugeridos
 1. **Completar verificación manual** de los elementos marcados como "Verificación manual requerida"
@@ -739,15 +739,15 @@ from typing import Any, Dict, List, Optional, Tuple
                         'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
                     })
 
-                    print(f"✅ Checklist generado: {archivo_checklist}")
+                    print(f"[CHECK] Checklist generado: {archivo_checklist}")
 
                 except Exception as e:
-                    print(f"❌ Error procesando {nombre_modulo}: {e}")
+                    print(f"[ERROR] Error procesando {nombre_modulo}: {e}")
 
         # Generar índice de checklists
         self._generar_indice_checklists(modulos_procesados)
 
-        print(f"\n✅ Procesamiento completo. {len(modulos_procesados)} checklists generados.")
+        print(f"\n[CHECK] Procesamiento completo. {len(modulos_procesados)} checklists generados.")
         print(f"📁 Checklists guardados en: {self.checklists_dir}")
 
     def _generar_indice_checklists(self, modulos_procesados: List[Dict[str, Any]]):
@@ -783,9 +783,9 @@ Checklists de verificación generados automáticamente para todos los módulos d
 ## Leyenda de Estados
 
 - 🔄 **Pendiente revisión** - Checklist generado, falta revisión manual
-- ⚠️ **En progreso** - Revisión iniciada, pendiente completar
-- ✅ **Completado** - Verificación completa terminada
-- ❌ **Requiere mejoras** - Verificación completa, identificadas mejoras críticas
+- [WARN] **En progreso** - Revisión iniciada, pendiente completar
+- [CHECK] **Completado** - Verificación completa terminada
+- [ERROR] **Requiere mejoras** - Verificación completa, identificadas mejoras críticas
 
 ## Notas Importantes
 
@@ -826,7 +826,7 @@ def main():
     generador.procesar_todos_los_modulos()
 
     print("\n" + "=" * 50)
-    print("✅ Generación de checklists completada")
+    print("[CHECK] Generación de checklists completada")
     print(f"📁 Ver resultados en: {generador.checklists_dir}")
     print("🔄 Próximos pasos:")
     print("   1. Revisar cada checklist individual")

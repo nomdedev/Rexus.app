@@ -19,7 +19,7 @@ def add_auth_decorators_to_file(file_path):
         with open(file_path, 'r', encoding='utf-8', errors='ignore') as f:
             content = f.read()
     except Exception as e:
-        print(f"  ❌ Error leyendo archivo: {e}")
+        print(f"  [ERROR] Error leyendo archivo: {e}")
         return False
     
     # Backup
@@ -29,11 +29,11 @@ def add_auth_decorators_to_file(file_path):
     
     # Verificar si ya tiene decoradores
     if "@auth_required" in content:
-        print("  ✅ Ya tiene decoradores aplicados")
+        print("  [CHECK] Ya tiene decoradores aplicados")
         return True
     
     # Buscar métodos que necesitan autorización y tienen comentarios TODO
-    pattern = r'(\s*)(# 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA\s*\n\s*# TODO: Implementar @auth_required.*?\n)(.*?)(def\s+(\w+)\s*\()'
+    pattern = r'(\s*)(# [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA\s*\n\s*# TODO: Implementar @auth_required.*?\n)(.*?)(def\s+(\w+)\s*\()'
     
     def replace_auth_comment(match):
         indent = match.group(1)
@@ -83,10 +83,10 @@ def add_auth_decorators_to_file(file_path):
             f.write(new_content)
         
         decorators_added = new_content.count("@auth_required") + new_content.count("@admin_required") + new_content.count("@manager_required")
-        print(f"  ✅ {decorators_added} decoradores agregados")
+        print(f"  [CHECK] {decorators_added} decoradores agregados")
         return True
     else:
-        print("  ⚠️ No se encontraron métodos para decorar")
+        print("  [WARN] No se encontraron métodos para decorar")
         return True
 
 def main():
@@ -102,13 +102,13 @@ def main():
         try:
             with open(py_file, 'r', encoding='utf-8', errors='ignore') as f:
                 content = f.read()
-                if "🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA" in content:
+                if "[LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA" in content:
                     files_to_process.append(py_file)
         except Exception:
             continue
     
     if not files_to_process:
-        print("❌ No se encontraron archivos con comentarios de autorización")
+        print("[ERROR] No se encontraron archivos con comentarios de autorización")
         return
     
     print(f"📋 Archivos a procesar: {len(files_to_process)}")
@@ -120,8 +120,8 @@ def main():
         print()
     
     print("=" * 55)
-    print("📊 RESUMEN DE IMPLEMENTACIÓN")
-    print(f"✅ Archivos procesados: {success_count}/{len(files_to_process)}")
+    print("[CHART] RESUMEN DE IMPLEMENTACIÓN")
+    print(f"[CHECK] Archivos procesados: {success_count}/{len(files_to_process)}")
     
     if success_count == len(files_to_process):
         print("🎉 DECORADORES IMPLEMENTADOS EXITOSAMENTE")
@@ -130,7 +130,7 @@ def main():
         print("2. Configurar roles de usuario")
         print("3. Validar permisos en la aplicación")
     else:
-        print("⚠️ ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
+        print("[WARN] ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
 
 if __name__ == "__main__":
     main()

@@ -12,9 +12,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 try:
     from rexus.modules.obras.validator_extended import ObrasValidatorExtended
-    print("✅ Validador importado correctamente")
+    print("[CHECK] Validador importado correctamente")
 except Exception as e:
-    print(f"❌ Error al importar validador: {e}")
+    print(f"[ERROR] Error al importar validador: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)
@@ -69,4 +69,4 @@ def test_validador_obra_completa():
 
 if __name__ == "__main__":
     test_validador_obra_completa()
-    print("\n✅ Test del validador extendido completado")
+    print("\n[CHECK] Test del validador extendido completado")

@@ -3,7 +3,7 @@ from rexus.core.auth_decorators import auth_required, admin_required, permission
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import SQLQueryManager
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
@@ -369,10 +369,10 @@ class AdministracionModel(ContabilidadModel):
             """)
 
             self.db_connection.commit()
-            print("✅ Tablas de contabilidad creadas exitosamente")
+            print("[CHECK] Tablas de contabilidad creadas exitosamente")
 
         except Exception as e:
-            print(f"❌ Error creando tablas de contabilidad: {e}")
+            print(f"[ERROR] Error creando tablas de contabilidad: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -416,7 +416,7 @@ class AdministracionModel(ContabilidadModel):
     ):
         """Crea un nuevo departamento con validación de seguridad."""
         try:
-            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            # [LOCK] SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if self.data_sanitizer:
                 codigo_limpio = sanitize_string(codigo)
                 nombre_limpio = sanitize_string(nombre)

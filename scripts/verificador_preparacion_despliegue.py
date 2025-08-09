@@ -22,7 +22,7 @@ class VerificadorDespliegue:
 
     def log_verificacion(self, modulo, estado, detalle=""):
         """Registra una verificación"""
-        estado_emoji = "✅" if estado else "❌"
+        estado_emoji = "[CHECK]" if estado else "[ERROR]"
         mensaje = f"{estado_emoji} {modulo}: {detalle}"
         print(mensaje)
 
@@ -262,7 +262,7 @@ class VerificadorDespliegue:
 
     def verificar_secrets_hardcodeados(self):
         """Verifica que no existan contraseñas, claves, tokens o secretos hardcodeados en el código fuente."""
-        print("\n🔒 VERIFICANDO QUE NO HAYA SECRETS HARDCODEADOS...")
+        print("\n[LOCK] VERIFICANDO QUE NO HAYA SECRETS HARDCODEADOS...")
         patrones = [
             r"password\s*=\s*['\"]",
             r"contraseña\s*=\s*['\"]",
@@ -322,23 +322,23 @@ class VerificadorDespliegue:
             (exitosas / total_verificaciones * 100) if total_verificaciones > 0 else 0
         )
 
-        print(f"\n📊 ESTADÍSTICAS:")
+        print(f"\n[CHART] ESTADÍSTICAS:")
         print(f"   Total verificaciones: {total_verificaciones}")
-        print(f"   ✅ Exitosas: {exitosas}")
-        print(f"   ❌ Fallidas: {fallidas}")
+        print(f"   [CHECK] Exitosas: {exitosas}")
+        print(f"   [ERROR] Fallidas: {fallidas}")
         print(f"   📈 Porcentaje éxito: {porcentaje_exito:.1f}%")
 
         if porcentaje_exito >= 90:
             estado_general = "🎉 SISTEMA LISTO PARA DESPLIEGUE"
         elif porcentaje_exito >= 75:
-            estado_general = "⚠️ SISTEMA REQUIERE CORRECCIONES MENORES"
+            estado_general = "[WARN] SISTEMA REQUIERE CORRECCIONES MENORES"
         else:
-            estado_general = "❌ SISTEMA REQUIERE CORRECCIONES MAYORES"
+            estado_general = "[ERROR] SISTEMA REQUIERE CORRECCIONES MAYORES"
 
         print(f"\n🏆 ESTADO GENERAL: {estado_general}")
 
         if self.errores:
-            print(f"\n❌ ERRORES ENCONTRADOS ({len(self.errores)}):")
+            print(f"\n[ERROR] ERRORES ENCONTRADOS ({len(self.errores)}):")
             for i, error in enumerate(self.errores, 1):
                 print(f"   {i}. {error}")
 
@@ -372,7 +372,7 @@ class VerificadorDespliegue:
 
     def ejecutar_verificacion_completa(self):
         """Ejecuta verificación completa del sistema"""
-        print("🚀 INICIANDO VERIFICACIÓN COMPLETA PARA DESPLIEGUE")
+        print("[ROCKET] INICIANDO VERIFICACIÓN COMPLETA PARA DESPLIEGUE")
         print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
         print(f"📂 Directorio: {self.base_path}")
 
@@ -406,11 +406,11 @@ def main():
             print("\n🎉 ¡SISTEMA LISTO PARA DESPLIEGUE EN PRODUCCIÓN!")
             sys.exit(0)
         else:
-            print("\n⚠️ Sistema requiere correcciones antes del despliegue")
+            print("\n[WARN] Sistema requiere correcciones antes del despliegue")
             sys.exit(1)
 
     except Exception as e:
-        print(f"\n❌ Error durante verificación: {e}")
+        print(f"\n[ERROR] Error durante verificación: {e}")
         sys.exit(1)
 
 

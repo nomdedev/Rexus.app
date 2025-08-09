@@ -103,7 +103,7 @@ class ConfiguracionView(QWidget):
         
         # Pestaña de Reportes
         tab_reportes = self.crear_tab_reportes()
-        self.tab_widget.addTab(tab_reportes, "📊 Reportes")
+        self.tab_widget.addTab(tab_reportes, "[CHART] Reportes")
         
         # Pestaña de Tema
         tab_tema = self.crear_tab_tema()

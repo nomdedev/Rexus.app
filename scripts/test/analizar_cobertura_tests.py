@@ -249,10 +249,10 @@ class TestCoverageAnalyzer:
         # Verificar controller tests
         controller_quality = module_analysis["quality_metrics"].get("controller", {})
         if not controller_quality.get("exists", False):
-            recommendations.append("❌ CRÍTICO: Crear tests básicos para controller")
+            recommendations.append("[ERROR] CRÍTICO: Crear tests básicos para controller")
         elif controller_quality.get("test_functions", 0) < 5:
             recommendations.append(
-                "⚠️ MEJORAR: Aumentar cobertura de tests de controller (actual: {} tests)".format(
+                "[WARN] MEJORAR: Aumentar cobertura de tests de controller (actual: {} tests)".format(
                     controller_quality.get("test_functions", 0)
                 )
             )
@@ -260,17 +260,17 @@ class TestCoverageAnalyzer:
         # Verificar view tests
         view_quality = module_analysis["quality_metrics"].get("view", {})
         if not view_quality.get("exists", False):
-            recommendations.append("❌ CRÍTICO: Crear tests básicos para view")
+            recommendations.append("[ERROR] CRÍTICO: Crear tests básicos para view")
         elif view_quality.get("test_functions", 0) < 5:
             recommendations.append(
-                "⚠️ MEJORAR: Aumentar cobertura de tests de view (actual: {} tests)".format(
+                "[WARN] MEJORAR: Aumentar cobertura de tests de view (actual: {} tests)".format(
                     view_quality.get("test_functions", 0)
                 )
             )
 
         # Verificar edge cases
         if not module_analysis["test_coverage"]["has_edge_cases"]:
-            recommendations.append("❌ CRÍTICO: Implementar tests de edge cases")
+            recommendations.append("[ERROR] CRÍTICO: Implementar tests de edge cases")
 
         # Verificar calidad de tests
         for component in ["controller", "view"]:
@@ -278,7 +278,7 @@ class TestCoverageAnalyzer:
             if quality.get("exists", False):
                 if not quality.get("has_security_tests", False):
                     recommendations.append(
-                        f"🔒 SEGURIDAD: Agregar tests de seguridad para {component}"
+                        f"[LOCK] SEGURIDAD: Agregar tests de seguridad para {component}"
                     )
                 if not quality.get("has_boundary_tests", False):
                     recommendations.append(
@@ -320,7 +320,7 @@ class TestCoverageAnalyzer:
             1 for m in analysis.values() if m["test_coverage"]["has_edge_cases"]
         )
 
-        report.append("📊 RESUMEN GENERAL:")
+        report.append("[CHART] RESUMEN GENERAL:")
         report.append(f"   • Total de módulos: {total_modules}")
         report.append(
             f"   • Módulos con tests de controller: {modules_with_controller_tests}/{total_modules} ({modules_with_controller_tests / total_modules * 100:.1f}%)"
@@ -343,19 +343,19 @@ class TestCoverageAnalyzer:
             # Estado del módulo
             module_info = module_data["module_info"]
             report.append(
-                f"   📁 Componentes: View: {'✅' if module_info['has_view'] else '❌'} | "
-                f"Controller: {'✅' if module_info['has_controller'] else '❌'} | "
-                f"Model: {'✅' if module_info['has_model'] else '❌'}"
+                f"   📁 Componentes: View: {'[CHECK]' if module_info['has_view'] else '[ERROR]'} | "
+                f"Controller: {'[CHECK]' if module_info['has_controller'] else '[ERROR]'} | "
+                f"Model: {'[CHECK]' if module_info['has_model'] else '[ERROR]'}"
             )
 
             # Cobertura de tests
             coverage = module_data["test_coverage"]
             report.append(
-                f"   🧪 Tests: Controller: {'✅' if coverage['has_controller_tests'] else '❌'} "
+                f"   🧪 Tests: Controller: {'[CHECK]' if coverage['has_controller_tests'] else '[ERROR]'} "
                 f"({coverage['controller_tests_count']}) | "
-                f"View: {'✅' if coverage['has_view_tests'] else '❌'} "
+                f"View: {'[CHECK]' if coverage['has_view_tests'] else '[ERROR]'} "
                 f"({coverage['view_tests_count']}) | "
-                f"Edge Cases: {'✅' if coverage['has_edge_cases'] else '❌'} "
+                f"Edge Cases: {'[CHECK]' if coverage['has_edge_cases'] else '[ERROR]'} "
                 f"({coverage['edge_case_tests_count']})"
             )
 
@@ -364,19 +364,19 @@ class TestCoverageAnalyzer:
             if quality.get("controller", {}).get("exists", False):
                 ctrl_metrics = quality["controller"]
                 report.append(
-                    f"   📊 Controller Tests: {ctrl_metrics.get('test_functions', 0)} funciones | "
-                    f"Security: {'✅' if ctrl_metrics.get('has_security_tests') else '❌'} | "
-                    f"Boundaries: {'✅' if ctrl_metrics.get('has_boundary_tests') else '❌'} | "
-                    f"Errors: {'✅' if ctrl_metrics.get('has_error_handling') else '❌'}"
+                    f"   [CHART] Controller Tests: {ctrl_metrics.get('test_functions', 0)} funciones | "
+                    f"Security: {'[CHECK]' if ctrl_metrics.get('has_security_tests') else '[ERROR]'} | "
+                    f"Boundaries: {'[CHECK]' if ctrl_metrics.get('has_boundary_tests') else '[ERROR]'} | "
+                    f"Errors: {'[CHECK]' if ctrl_metrics.get('has_error_handling') else '[ERROR]'}"
                 )
 
             if quality.get("view", {}).get("exists", False):
                 view_metrics = quality["view"]
                 report.append(
-                    f"   📊 View Tests: {view_metrics.get('test_functions', 0)} funciones | "
-                    f"Security: {'✅' if view_metrics.get('has_security_tests') else '❌'} | "
-                    f"Boundaries: {'✅' if view_metrics.get('has_boundary_tests') else '❌'} | "
-                    f"Errors: {'✅' if view_metrics.get('has_error_handling') else '❌'}"
+                    f"   [CHART] View Tests: {view_metrics.get('test_functions', 0)} funciones | "
+                    f"Security: {'[CHECK]' if view_metrics.get('has_security_tests') else '[ERROR]'} | "
+                    f"Boundaries: {'[CHECK]' if view_metrics.get('has_boundary_tests') else '[ERROR]'} | "
+                    f"Errors: {'[CHECK]' if view_metrics.get('has_error_handling') else '[ERROR]'}"
                 )
 
             # Recomendaciones
@@ -386,7 +386,7 @@ class TestCoverageAnalyzer:
                 for rec in recommendations:
                     report.append(f"      {rec}")
             else:
-                report.append("   ✅ COMPLETO: Tests adecuados implementados")
+                report.append("   [CHECK] COMPLETO: Tests adecuados implementados")
 
         # Módulos críticos que necesitan atención
         critical_modules = []
@@ -406,7 +406,7 @@ class TestCoverageAnalyzer:
             report.append("\n🚨 MÓDULOS QUE REQUIEREN ATENCIÓN INMEDIATA:")
             report.append("-" * 50)
             for module in critical_modules:
-                report.append(f"   ❌ {module}")
+                report.append(f"   [ERROR] {module}")
 
         # Prioridades de implementación
         report.append("\n📋 PLAN DE IMPLEMENTACIÓN RECOMENDADO:")

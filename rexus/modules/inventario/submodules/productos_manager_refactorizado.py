@@ -78,7 +78,7 @@ class ProductosManager:
     ) -> Optional[Dict[str, Any]]:
         """Crea un nuevo producto en el inventario."""
         if not self.db_connection:
-            print("⚠️ Sin conexión a BD - Modo simulación")
+            print("[WARN] Sin conexión a BD - Modo simulación")
             return {"id": 1, "mensaje": "Producto creado (simulación)"}
 
         try:
@@ -140,7 +140,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"❌ Error creando producto: {str(e)}")
+            print(f"[ERROR] Error creando producto: {str(e)}")
             return None
 
     @auth_required
@@ -172,7 +172,7 @@ class ProductosManager:
             return resultado
 
         except Exception as e:
-            print(f"❌ Error obteniendo producto: {str(e)}")
+            print(f"[ERROR] Error obteniendo producto: {str(e)}")
             return None
 
     @auth_required
@@ -182,7 +182,7 @@ class ProductosManager:
     ) -> bool:
         """Actualiza la información de un producto."""
         if not self.db_connection:
-            print("⚠️ Sin conexión a BD - Simulando actualización")
+            print("[WARN] Sin conexión a BD - Simulando actualización")
             return True
 
         try:
@@ -207,7 +207,7 @@ class ProductosManager:
                     params[campo] = datos_limpios[campo]
 
             if not campos_set:
-                print("⚠️ No hay campos para actualizar")
+                print("[WARN] No hay campos para actualizar")
                 return False
 
             # Agregar timestamp de modificación
@@ -231,7 +231,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"❌ Error actualizando producto: {str(e)}")
+            print(f"[ERROR] Error actualizando producto: {str(e)}")
             return False
 
     @auth_required
@@ -239,7 +239,7 @@ class ProductosManager:
     def eliminar_producto(self, producto_id: int) -> bool:
         """Elimina un producto (soft delete)."""
         if not self.db_connection:
-            print("⚠️ Sin conexión a BD - Simulando eliminación")
+            print("[WARN] Sin conexión a BD - Simulando eliminación")
             return True
 
         try:
@@ -260,7 +260,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"❌ Error eliminando producto: {str(e)}")
+            print(f"[ERROR] Error eliminando producto: {str(e)}")
             return False
 
     @auth_required
@@ -291,7 +291,7 @@ class ProductosManager:
             return resultado
 
         except Exception as e:
-            print(f"❌ Error obteniendo producto por código: {str(e)}")
+            print(f"[ERROR] Error obteniendo producto por código: {str(e)}")
             return None
 
     @auth_required
@@ -301,7 +301,7 @@ class ProductosManager:
     ) -> bool:
         """Actualiza el stock de un producto."""
         if not self.db_connection:
-            print("⚠️ Sin conexión a BD - Simulando actualización de stock")
+            print("[WARN] Sin conexión a BD - Simulando actualización de stock")
             return True
 
         try:
@@ -323,7 +323,7 @@ class ProductosManager:
 
             if filas_afectadas > 0:
                 print(
-                    f"✅ Stock actualizado para producto {producto_id}: {nuevo_stock}"
+                    f"[CHECK] Stock actualizado para producto {producto_id}: {nuevo_stock}"
                 )
                 return True
 
@@ -332,7 +332,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"❌ Error actualizando stock: {str(e)}")
+            print(f"[ERROR] Error actualizando stock: {str(e)}")
             return False
 
     def _verificar_codigo_existe(self, codigo: str) -> bool:
@@ -350,7 +350,7 @@ class ProductosManager:
             return resultado["count"] > 0
 
         except Exception as e:
-            print(f"❌ Error verificando código: {str(e)}")
+            print(f"[ERROR] Error verificando código: {str(e)}")
             return False
 
     @auth_required
@@ -376,7 +376,7 @@ class ProductosManager:
             return [row[0] for row in resultados if row[0]]
 
         except Exception as e:
-            print(f"❌ Error obteniendo categorías: {str(e)}")
+            print(f"[ERROR] Error obteniendo categorías: {str(e)}")
             return ["General"]
 
     def validar_datos_producto(self, datos: Dict[str, Any]) -> List[str]:

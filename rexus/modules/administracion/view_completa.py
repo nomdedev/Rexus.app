@@ -370,7 +370,7 @@ class AdministracionCompletaView(QWidget):
         
         # Tab 3: Reportes
         reportes_tab = self.create_reportes_tab()
-        tabs.addTab(reportes_tab, "📊 Reportes")
+        tabs.addTab(reportes_tab, "[CHART] Reportes")
         
         layout.addWidget(tabs)
     
@@ -837,11 +837,11 @@ class AdministracionCompletaView(QWidget):
         reports_layout = QGridLayout()
         
         reports = [
-            ("📊 Reporte de Nómina", self.generar_reporte_nomina),
+            ("[CHART] Reporte de Nómina", self.generar_reporte_nomina),
             ("📈 Estado de Resultados", self.generar_estado_resultados),
             ("📋 Listado de Empleados", self.generar_listado_empleados),
             ("💰 Flujo de Efectivo", self.generar_flujo_efectivo),
-            ("📊 Análisis de Cuentas", self.generar_analisis_cuentas),
+            ("[CHART] Análisis de Cuentas", self.generar_analisis_cuentas),
             ("📈 Indicadores Financieros", self.generar_indicadores)
         ]
         

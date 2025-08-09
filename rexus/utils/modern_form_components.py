@@ -182,11 +182,11 @@ class ModernFormField(QWidget):
         """)
         
         # Mostrar mensaje de error
-        self.error_label.setText(f"⚠️ {message}")
+        self.error_label.setText(f"[WARN] {message}")
         self.error_label.show()
         
         # Ícono de error
-        self.status_icon.setText("❌")
+        self.status_icon.setText("[ERROR]")
         self.status_icon.show()
         
         self.validation_changed.emit(False)
@@ -210,7 +210,7 @@ class ModernFormField(QWidget):
         self.error_label.hide()
         
         # Ícono de éxito
-        self.status_icon.setText("✅")
+        self.status_icon.setText("[CHECK]")
         self.status_icon.show()
         
         self.validation_changed.emit(True)
@@ -410,7 +410,7 @@ class ModernFormDialog(QDialog):
         layout.addStretch()
         
         # Botón cancelar
-        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn = QPushButton("[ERROR] Cancelar")
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setStyleSheet("""
             QPushButton {
@@ -428,7 +428,7 @@ class ModernFormDialog(QDialog):
         """)
         
         # Botón guardar
-        self.save_btn = QPushButton("✅ Guardar")
+        self.save_btn = QPushButton("[CHECK] Guardar")
         self.save_btn.clicked.connect(self.validate_and_save)
         self.save_btn.setStyleSheet("""
             QPushButton {

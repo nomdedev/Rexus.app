@@ -102,7 +102,7 @@ class UIUXAuditor:
         print()
         
         if not self.modules_dir.exists():
-            print("❌ Directorio de módulos no encontrado")
+            print("[ERROR] Directorio de módulos no encontrado")
             return []
         
         modules_found = 0

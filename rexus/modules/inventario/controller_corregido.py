@@ -70,79 +70,79 @@ class InventarioControllerCorregido(QObject):
             # Conectar señales de búsqueda y filtros (nombres corregidos)
             if hasattr(self.view, "btn_buscar"):
                 self.view.btn_buscar.clicked.connect(self.buscar_productos)
-                print("✅ Conectado: btn_buscar")
+                print("[CHECK] Conectado: btn_buscar")
             else:
-                print("⚠️ No encontrado: btn_buscar")
+                print("[WARN] No encontrado: btn_buscar")
 
             if hasattr(self.view, "btn_actualizar"):
                 self.view.btn_actualizar.clicked.connect(self.cargar_inventario)
-                print("✅ Conectado: btn_actualizar")
+                print("[CHECK] Conectado: btn_actualizar")
             else:
-                print("⚠️ No encontrado: btn_actualizar")
+                print("[WARN] No encontrado: btn_actualizar")
                 
             if hasattr(self.view, "btn_limpiar"):
                 self.view.btn_limpiar.clicked.connect(self.limpiar_filtros)
-                print("✅ Conectado: btn_limpiar")
+                print("[CHECK] Conectado: btn_limpiar")
             else:
-                print("⚠️ No encontrado: btn_limpiar")
+                print("[WARN] No encontrado: btn_limpiar")
 
             # Conectar señales de acciones (nombres corregidos)
             if hasattr(self.view, "btn_nuevo_producto"):
                 self.view.btn_nuevo_producto.clicked.connect(self.nuevo_producto)
-                print("✅ Conectado: btn_nuevo_producto")
+                print("[CHECK] Conectado: btn_nuevo_producto")
             else:
-                print("⚠️ No encontrado: btn_nuevo_producto")
+                print("[WARN] No encontrado: btn_nuevo_producto")
 
             if hasattr(self.view, "btn_editar"):
                 self.view.btn_editar.clicked.connect(self.editar_producto)
-                print("✅ Conectado: btn_editar")
+                print("[CHECK] Conectado: btn_editar")
             else:
-                print("⚠️ No encontrado: btn_editar")
+                print("[WARN] No encontrado: btn_editar")
 
             if hasattr(self.view, "btn_eliminar"):
                 self.view.btn_eliminar.clicked.connect(self.eliminar_producto)
-                print("✅ Conectado: btn_eliminar")
+                print("[CHECK] Conectado: btn_eliminar")
             else:
-                print("⚠️ No encontrado: btn_eliminar")
+                print("[WARN] No encontrado: btn_eliminar")
                 
             if hasattr(self.view, "btn_movimiento"):
                 self.view.btn_movimiento.clicked.connect(self.registrar_movimiento)
-                print("✅ Conectado: btn_movimiento")
+                print("[CHECK] Conectado: btn_movimiento")
             else:
-                print("⚠️ No encontrado: btn_movimiento")
+                print("[WARN] No encontrado: btn_movimiento")
                 
             if hasattr(self.view, "btn_exportar"):
                 self.view.btn_exportar.clicked.connect(self.exportar_inventario)
-                print("✅ Conectado: btn_exportar")
+                print("[CHECK] Conectado: btn_exportar")
             else:
-                print("⚠️ No encontrado: btn_exportar")
-                print("✅ Conectado: btn_editar")
+                print("[WARN] No encontrado: btn_exportar")
+                print("[CHECK] Conectado: btn_editar")
             else:
-                print("⚠️ No encontrado: btn_editar")
+                print("[WARN] No encontrado: btn_editar")
 
             if hasattr(self.view, "btn_eliminar"):
                 self.view.btn_eliminar.clicked.connect(self.eliminar_producto)
-                print("✅ Conectado: btn_eliminar")
+                print("[CHECK] Conectado: btn_eliminar")
             else:
-                print("⚠️ No encontrado: btn_eliminar")
+                print("[WARN] No encontrado: btn_eliminar")
 
             # Conectar señales de selección de tabla
             if hasattr(self.view, "tabla_inventario"):
                 self.view.tabla_inventario.itemSelectionChanged.connect(
                     self.producto_seleccionado
                 )
-                print("✅ Conectado: tabla_inventario.itemSelectionChanged")
+                print("[CHECK] Conectado: tabla_inventario.itemSelectionChanged")
             else:
-                print("⚠️ No encontrado: tabla_inventario")
+                print("[WARN] No encontrado: tabla_inventario")
 
             # Conectar campo de búsqueda si existe
             if hasattr(self.view, "input_busqueda"):
                 self.view.input_busqueda.textChanged.connect(
                     self.filtrar_en_tiempo_real
                 )
-                print("✅ Conectado: input_busqueda.textChanged")
+                print("[CHECK] Conectado: input_busqueda.textChanged")
             else:
-                print("⚠️ No encontrado: input_busqueda")
+                print("[WARN] No encontrado: input_busqueda")
 
             print("[INVENTARIO CONTROLLER] Señales conectadas correctamente")
 

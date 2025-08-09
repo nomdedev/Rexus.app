@@ -14,13 +14,13 @@ import sys
 import traceback
 from pathlib import Path
     if puntuacion_total >= 80:
-        print("\\n🚀 REFACTORIZACIÓN DE VIDRIOS: ✅ EXITOSA")
+        print("\\n[ROCKET] REFACTORIZACIÓN DE VIDRIOS: [CHECK] EXITOSA")
         print("💡 El módulo está listo para integración")
     elif puntuacion_total >= 60:
-        print("\\n⚠️  REFACTORIZACIÓN DE VIDRIOS: 🔄 REQUIERE AJUSTES")
+        print("\\n[WARN]  REFACTORIZACIÓN DE VIDRIOS: 🔄 REQUIERE AJUSTES")
         print("💡 Revisar elementos fallidos antes de proceder")
     else:
-        print("\\n❌ REFACTORIZACIÓN DE VIDRIOS: 🚫 REQUIERE REVISIÓN COMPLETA")
+        print("\\n[ERROR] REFACTORIZACIÓN DE VIDRIOS: 🚫 REQUIERE REVISIÓN COMPLETA")
         print("💡 Corregir errores críticos antes de continuar")
 
     return puntuacion_totalel directorio raíz al path
@@ -36,7 +36,7 @@ def imprimir_header(titulo):
 
 def imprimir_resultado(descripcion, resultado, detalles=None):
     """Imprime un resultado formateado."""
-    icono = "✅" if resultado else "❌"
+    icono = "[CHECK]" if resultado else "[ERROR]"
     print(f"{icono} {descripcion}")
     if detalles:
         for detalle in detalles:
@@ -156,7 +156,7 @@ def verificar_imports_submodulos():
         imprimir_resultado("ModeloVidriosRefactorizado importado", False, [str(e)])
 
     if errores_imports:
-        print("\n❌ ERRORES DE IMPORT:")
+        print("\n[ERROR] ERRORES DE IMPORT:")
         for error in errores_imports:
             print(f"   🔴 {error}")
 
@@ -208,8 +208,8 @@ def verificar_inicializacion_submodulos():
                 f"{nombre} inicializado",
                 True,
                 [
-                    f"db_connection: {'✓' if tiene_db_connection else '✗'}",
-                    f"data_sanitizer: {'✓' if tiene_data_sanitizer else '✗'}",
+                    f"db_connection: {'[OK]' if tiene_db_connection else '✗'}",
+                    f"data_sanitizer: {'[OK]' if tiene_data_sanitizer else '✗'}",
                 ],
             )
         except Exception as e:
@@ -273,7 +273,7 @@ def verificar_modelo_refactorizado():
                 f"Conectividad módulos: {modulos_conectados}/{total_esperado}",
                 modulos_conectados >= total_esperado,
                 [
-                    f"{k}: {'✓' if v else '✗'}"
+                    f"{k}: {'[OK]' if v else '✗'}"
                     for k, v in conectividad.items()
                     if k != "db_connection"
                 ],
@@ -281,12 +281,12 @@ def verificar_modelo_refactorizado():
         except Exception as e:
             imprimir_resultado("Conectividad módulos", False, [str(e)])
 
-        print(f"\n🎯 MODELO REFACTORIZADO: ✅ FUNCIONAL")
+        print(f"\n🎯 MODELO REFACTORIZADO: [CHECK] FUNCIONAL")
         return True
 
     except Exception as e:
         imprimir_resultado("Modelo refactorizado", False, [str(e)])
-        print(f"\n🎯 MODELO REFACTORIZADO: ❌ ERROR")
+        print(f"\n🎯 MODELO REFACTORIZADO: [ERROR] ERROR")
         return False
 
 
@@ -357,11 +357,11 @@ def generar_reporte_final():
     puntuacion_total = (verificaciones_exitosas / total_verificaciones) * 100
 
     print(f"\n{'=' * 60}")
-    print(f"📊 RESUMEN DE RESULTADOS:")
+    print(f"[CHART] RESUMEN DE RESULTADOS:")
     print(f"{'=' * 60}")
 
     for verificacion, resultado in resultados.items():
-        icono = "✅" if resultado else "❌"
+        icono = "[CHECK]" if resultado else "[ERROR]"
         print(f"{icono} {verificacion}")
 
     print(f"\n🎯 PUNTUACIÓN TOTAL: {puntuacion_total:.1f}%")
@@ -370,13 +370,13 @@ def generar_reporte_final():
     )
 
     if puntuacion_total >= 80:
-        print(f"\n🚀 REFACTORIZACIÓN DE VIDRIOS: ✅ EXITOSA")
+        print(f"\n[ROCKET] REFACTORIZACIÓN DE VIDRIOS: [CHECK] EXITOSA")
         print(f"💡 El módulo está listo para integración")
     elif puntuación_total >= 60:
-        print(f"\n⚠️  REFACTORIZACIÓN DE VIDRIOS: 🔄 REQUIERE AJUSTES")
+        print(f"\n[WARN]  REFACTORIZACIÓN DE VIDRIOS: 🔄 REQUIERE AJUSTES")
         print(f"💡 Revisar elementos fallidos antes de proceder")
     else:
-        print(f"\n❌ REFACTORIZACIÓN DE VIDRIOS: 🚫 REQUIERE REVISIÓN COMPLETA")
+        print(f"\n[ERROR] REFACTORIZACIÓN DE VIDRIOS: 🚫 REQUIERE REVISIÓN COMPLETA")
         print(f"💡 Corregir errores críticos antes de continuar")
 
     return puntuación_total

@@ -66,7 +66,7 @@ def scan_sql_injection_vulnerabilities():
             print(f"Código: {vuln['content']}")
             print("-" * 50)
     else:
-        print("✅ No se encontraron vulnerabilidades SQL injection obvias")
+        print("[CHECK] No se encontraron vulnerabilidades SQL injection obvias")
     
     return vulnerable_files
 
@@ -114,7 +114,7 @@ def scan_hardcoded_credentials():
             print(f"Código: {issue['content']}")
             print("-" * 50)
     else:
-        print("✅ No se encontraron credenciales hardcodeadas obvias")
+        print("[CHECK] No se encontraron credenciales hardcodeadas obvias")
     
     return credential_issues
 
@@ -151,7 +151,7 @@ def scan_user_creation_functions():
             print(f"Error leyendo {py_file}: {e}")
     
     if user_creation_issues:
-        print(f"⚠️  ENCONTRADAS {len(user_creation_issues)} FUNCIONES DE CREACION DE USUARIOS:")
+        print(f"[WARN]  ENCONTRADAS {len(user_creation_issues)} FUNCIONES DE CREACION DE USUARIOS:")
         print()
         
         for issue in user_creation_issues:
@@ -161,7 +161,7 @@ def scan_user_creation_functions():
             print(f"Código: {issue['content']}")
             print("-" * 50)
     else:
-        print("✅ No se encontraron funciones de creación automática de usuarios")
+        print("[CHECK] No se encontraron funciones de creación automática de usuarios")
     
     return user_creation_issues
 
@@ -189,5 +189,5 @@ if __name__ == "__main__":
         print(f"\n🚨 SE REQUIERE ACCION INMEDIATA")
         print("Estos problemas de seguridad deben ser corregidos antes de producción")
     else:
-        print(f"\n✅ AUDITORIA BASICA PASADA")
+        print(f"\n[CHECK] AUDITORIA BASICA PASADA")
         print("No se encontraron problemas de seguridad obvios")

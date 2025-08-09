@@ -211,7 +211,7 @@ class AdministracionViewIntegrated(QWidget, FeedbackMixin):
 
         status_layout = QHBoxLayout(status_frame)
 
-        self.status_label_bar = QLabel("✅ Sistema listo")
+        self.status_label_bar = QLabel("[CHECK] Sistema listo")
         if self.theme_manager:
             colors = self.theme_manager.current_theme
             self.status_label_bar.setStyleSheet(f"color: {colors.on_surface_variant}; font-weight: bold;")
@@ -232,7 +232,7 @@ class AdministracionViewIntegrated(QWidget, FeedbackMixin):
         """Crear las pestañas principales."""
         # Dashboard
         self.dashboard_tab = self.create_dashboard_tab()
-        self.tabs.addTab(self.dashboard_tab, "📊 Dashboard")
+        self.tabs.addTab(self.dashboard_tab, "[CHART] Dashboard")
 
         # Contabilidad
         self.contabilidad_tab = self.create_contabilidad_tab()
@@ -252,7 +252,7 @@ class AdministracionViewIntegrated(QWidget, FeedbackMixin):
         layout = QVBoxLayout(widget)
 
         # Resumen general con estilos del tema
-        resumen_frame = QGroupBox("📊 Resumen General")
+        resumen_frame = QGroupBox("[CHART] Resumen General")
         if self.theme_manager:
             colors = self.theme_manager.current_theme
             resumen_frame.setStyleSheet(f"""
@@ -281,7 +281,7 @@ class AdministracionViewIntegrated(QWidget, FeedbackMixin):
             ("💰 Total Ingresos", "total_ingresos", "success"),
             ("💸 Total Egresos", "total_egresos", "error"),
             ("👥 Total Empleados", "total_empleados", "primary"),
-            ("📊 Nómina Mensual", "nomina_mensual", "info"),
+            ("[CHART] Nómina Mensual", "nomina_mensual", "info"),
         ]
 
         for i, (titulo, key, color_type) in enumerate(cards_data):

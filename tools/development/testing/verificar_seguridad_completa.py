@@ -24,23 +24,23 @@ from datetime import datetime
         )
 
         if result.returncode == 0:
-            print(f"✅ {descripcion} - ÉXITO")
+            print(f"[CHECK] {descripcion} - ÉXITO")
             # Extraer información de tests si está disponible
             if "passed" in result.stdout:
                 lines = result.stdout.split('\n')
                 for line in lines:
                     if "passed" in line and ("failed" in line or "error" in line):
-                        print(f"📊 Resultado: {line.strip()}")
+                        print(f"[CHART] Resultado: {line.strip()}")
                         break
         else:
-            print(f"❌ {descripcion} - FALLO")
+            print(f"[ERROR] {descripcion} - FALLO")
             print(f"Error: {result.stderr}")
             return False
 
         return True
 
     except Exception as e:
-        print(f"❌ Error ejecutando {descripcion}: {e}")
+        print(f"[ERROR] Error ejecutando {descripcion}: {e}")
         return False
 
 def main():
@@ -105,16 +105,16 @@ def main():
 
     # Resumen final
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE VERIFICACIÓN DE SEGURIDAD")
+    print("[CHART] RESUMEN DE VERIFICACIÓN DE SEGURIDAD")
     print("=" * 60)
-    print(f"✅ Tests exitosos: {exitosos}/{total_tests}")
-    print(f"❌ Tests fallidos: {fallidos}/{total_tests}")
+    print(f"[CHECK] Tests exitosos: {exitosos}/{total_tests}")
+    print(f"[ERROR] Tests fallidos: {fallidos}/{total_tests}")
 
     if fallidos == 0:
         print("🎉 ¡TODOS LOS TESTS DE SEGURIDAD PASARON!")
         print("🛡️ El sistema está completamente seguro y validado")
     else:
-        print("⚠️ ALGUNOS TESTS DE SEGURIDAD FALLARON")
+        print("[WARN] ALGUNOS TESTS DE SEGURIDAD FALLARON")
         print("🔧 Revisar y corregir los tests fallidos antes de continuar")
 
     # Guardar reporte
@@ -134,7 +134,7 @@ def main():
             json.dump(reporte, f, indent=2, ensure_ascii=False)
         print(f"📄 Reporte guardado en: {archivo_reporte}")
     except Exception as e:
-        print(f"⚠️ No se pudo guardar el reporte: {e}")
+        print(f"[WARN] No se pudo guardar el reporte: {e}")
 
     # Test específico adicional: verificación de archivos críticos
     print("\n🔍 VERIFICACIÓN DE ARCHIVOS CRÍTICOS DE SEGURIDAD")
@@ -153,9 +153,9 @@ def main():
 
     for archivo in archivos_criticos:
         if os.path.exists(archivo):
-            print(f"✅ {archivo} - Presente")
+            print(f"[CHECK] {archivo} - Presente")
         else:
-            print(f"❌ {archivo} - FALTANTE")
+            print(f"[ERROR] {archivo} - FALTANTE")
             fallidos += 1
 
     # Código de salida

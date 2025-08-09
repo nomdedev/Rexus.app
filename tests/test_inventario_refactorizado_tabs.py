@@ -22,20 +22,20 @@ try:
         try:
             # Crear la vista
             vista = InventarioView()
-            print("✅ Vista de inventario creada exitosamente")
+            print("[CHECK] Vista de inventario creada exitosamente")
             
             # Verificar que tiene pestañas
             if hasattr(vista, 'tab_widget'):
-                print("✅ Sistema de pestañas inicializado")
+                print("[CHECK] Sistema de pestañas inicializado")
                 print(f"   Número de pestañas: {vista.tab_widget.count()}")
             
             # Verificar componentes de estadísticas
             if hasattr(vista, 'lbl_total_productos'):
-                print("✅ Panel de estadísticas inicializado")
+                print("[CHECK] Panel de estadísticas inicializado")
             
             # Verificar tabla
             if hasattr(vista, 'tabla_inventario'):
-                print("✅ Tabla de inventario inicializada")
+                print("[CHECK] Tabla de inventario inicializada")
             
             # Test de actualización de estadísticas
             stats_test = {
@@ -46,13 +46,13 @@ try:
             }
             
             vista.actualizar_estadisticas(stats_test)
-            print("✅ Actualización de estadísticas funcional")
+            print("[CHECK] Actualización de estadísticas funcional")
             
             print("\n🎉 Todos los tests del módulo inventario pasaron exitosamente!")
             return True
             
         except Exception as e:
-            print(f"❌ Error en test de inventario: {e}")
+            print(f"[ERROR] Error en test de inventario: {e}")
             return False
     
     if __name__ == "__main__":
@@ -60,5 +60,5 @@ try:
         sys.exit(0 if success else 1)
         
 except ImportError as e:
-    print(f"❌ Error de importación: {e}")
+    print(f"[ERROR] Error de importación: {e}")
     sys.exit(1)

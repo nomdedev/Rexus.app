@@ -33,12 +33,12 @@ def crear_relacion_inventario_obras():
                     ADD codigo_inventario VARCHAR(50) NULL
                 """)
                 conn.commit()
-                print("   ✅ Columna codigo_inventario agregada")
+                print("   [CHECK] Columna codigo_inventario agregada")
             else:
-                print("   ✅ Columna codigo_inventario ya existe")
+                print("   [CHECK] Columna codigo_inventario ya existe")
                 
         except Exception as e:
-            print(f"   ❌ Error modificando tabla: {e}")
+            print(f"   [ERROR] Error modificando tabla: {e}")
         
         # 2. Crear mapeo entre códigos de inventario y materiales de obras
         print("\n2. Creando mapeo de códigos...")
@@ -95,7 +95,7 @@ def crear_relacion_inventario_obras():
             
             affected = cursor.rowcount
             if affected > 0:
-                print(f"   ✅ {codigo} -> {detalle_buscar} ({affected} registros)")
+                print(f"   [CHECK] {codigo} -> {detalle_buscar} ({affected} registros)")
                 updates_realizados += affected
         
         conn.commit()
@@ -129,7 +129,7 @@ def crear_relacion_inventario_obras():
         print("\n🎉 ¡Relación inventario-obras creada exitosamente!")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

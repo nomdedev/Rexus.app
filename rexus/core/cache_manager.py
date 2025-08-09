@@ -397,6 +397,7 @@ class CacheManager:
     
     def __init__(self):
         self.logger = get_logger("cache_manager")
+        self.config = CACHE_CONFIG  # Agregar referencia a configuración
         self.default_timeout = CACHE_CONFIG.get("default_timeout", 3600)
         
         # Inicializar backend
@@ -433,7 +434,9 @@ class CacheManager:
                 })
         
         # Fallback a memoria
-        self.logger.info("Usando cache en memoria como fallback")
+        fallback_warnings = self.config.get("enable_fallback_warnings", False)
+        if fallback_warnings:
+            self.logger.info("Usando cache en memoria como fallback")
         return MemoryCache()
     
     def get(self, key: str, default: Any = None) -> Any:

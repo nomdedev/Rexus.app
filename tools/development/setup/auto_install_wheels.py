@@ -27,10 +27,10 @@ def instalar_wheel(paquete, wheel_file):
     try:
         urllib.request.urlretrieve(url, local_path)
         subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", local_path])
-        print(f"✅ {paquete} instalado desde wheel.")
+        print(f"[CHECK] {paquete} instalado desde wheel.")
         os.remove(local_path)
     except Exception as e:
-        print(f"❌ Error instalando {paquete} desde wheel: {e}")
+        print(f"[ERROR] Error instalando {paquete} desde wheel: {e}")
         return False
     return True
 
@@ -41,7 +41,7 @@ def instalar_dependencia(paquete, version):
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", f"{paquete}=={version}", "--prefer-binary"])
         else:
             subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", paquete, "--prefer-binary"])
-        print(f"✅ {paquete} instalado normalmente.")
+        print(f"[CHECK] {paquete} instalado normalmente.")
         return True
     except Exception:
         # Intentar con wheel si está en la lista
@@ -60,9 +60,9 @@ for paquete, version in requeridos:
 print("Instalando el resto de dependencias desde requirements.txt...")
 try:
     subprocess.check_call([sys.executable, "-m", "pip", "install", "--user", "--prefer-binary", "-r", "requirements.txt"])
-    print("✅ Todas las dependencias instaladas correctamente.")
+    print("[CHECK] Todas las dependencias instaladas correctamente.")
 except Exception as e:
-    print(f"❌ Error instalando requirements.txt: {e}")
+    print(f"[ERROR] Error instalando requirements.txt: {e}")
     print("Por favor, revisa los logs y ejecuta manualmente si es necesario.")
 
 print("Listo. Puedes iniciar la aplicación normalmente.")

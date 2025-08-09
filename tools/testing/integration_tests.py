@@ -20,7 +20,7 @@ class TestSecurityIntegration(unittest.TestCase):
         try:
             from rexus.utils.security import SecurityUtils
             self.assertIsNotNone(SecurityUtils)
-            print("✅ SecurityUtils importado correctamente")
+            print("[CHECK] SecurityUtils importado correctamente")
         except ImportError as e:
             self.fail(f"No se pudo importar SecurityUtils: {e}")
     
@@ -42,7 +42,7 @@ class TestSecurityIntegration(unittest.TestCase):
             # Verificar contraseña incorrecta
             self.assertFalse(SecurityUtils.verify_password("wrong_password", hashed))
             
-            print("✅ Sistema de hashing de contraseñas funcionando")
+            print("[CHECK] Sistema de hashing de contraseñas funcionando")
         except Exception as e:
             self.fail(f"Error en sistema de hashing: {e}")
     
@@ -59,7 +59,7 @@ class TestSecurityIntegration(unittest.TestCase):
             self.assertNotIn("alert", sanitized)
             self.assertIn("Hello", sanitized)
             
-            print("✅ Sanitización de entrada funcionando")
+            print("[CHECK] Sanitización de entrada funcionando")
         except Exception as e:
             self.fail(f"Error en sanitización: {e}")
 
@@ -77,9 +77,9 @@ class TestLoggingIntegration(unittest.TestCase):
             # Test logging de acción
             log_user_action("test_action", "test_user", "test details")
             
-            print("✅ Sistema de logging configurado correctamente")
+            print("[CHECK] Sistema de logging configurado correctamente")
         except ImportError as e:
-            print(f"⚠️ Sistema de logging no disponible: {e}")
+            print(f"[WARN] Sistema de logging no disponible: {e}")
         except Exception as e:
             self.fail(f"Error en sistema de logging: {e}")
 
@@ -106,9 +106,9 @@ class TestErrorHandlingIntegration(unittest.TestCase):
             result = safe_execute(failing_function, default_return="default")
             self.assertEqual(result, "default")
             
-            print("✅ Sistema de manejo de errores funcionando")
+            print("[CHECK] Sistema de manejo de errores funcionando")
         except ImportError as e:
-            print(f"⚠️ Sistema de manejo de errores no disponible: {e}")
+            print(f"[WARN] Sistema de manejo de errores no disponible: {e}")
         except Exception as e:
             self.fail(f"Error en manejo de errores: {e}")
 
@@ -133,9 +133,9 @@ class TestPerformanceIntegration(unittest.TestCase):
             result = test_function()
             self.assertEqual(result, "completed")
             
-            print("✅ Sistema de monitoreo de rendimiento funcionando")
+            print("[CHECK] Sistema de monitoreo de rendimiento funcionando")
         except ImportError as e:
-            print(f"⚠️ Sistema de monitoreo no disponible: {e}")
+            print(f"[WARN] Sistema de monitoreo no disponible: {e}")
         except Exception as e:
             self.fail(f"Error en monitoreo de rendimiento: {e}")
 
@@ -151,11 +151,11 @@ class TestDatabaseIntegration(unittest.TestCase):
             self.assertIsNotNone(DatabasePool)
             self.assertIsNotNone(DatabaseManager)
             
-            print("✅ Sistema de gestión de BD disponible")
+            print("[CHECK] Sistema de gestión de BD disponible")
         except ImportError as e:
-            print(f"⚠️ Sistema de gestión de BD no disponible: {e}")
+            print(f"[WARN] Sistema de gestión de BD no disponible: {e}")
         except Exception as e:
-            print(f"⚠️ Error menor en BD: {e}")
+            print(f"[WARN] Error menor en BD: {e}")
 
 class TestAuthManagerIntegration(unittest.TestCase):
     """Tests de integración para el sistema de autorización"""
@@ -173,7 +173,7 @@ class TestAuthManagerIntegration(unittest.TestCase):
             AuthManager.set_current_user_role(UserRole.ADMIN)
             self.assertTrue(AuthManager.check_permission(Permission.VIEW_DASHBOARD))
             
-            print("✅ Sistema de autorización funcionando")
+            print("[CHECK] Sistema de autorización funcionando")
         except ImportError as e:
             self.fail(f"No se pudo importar AuthManager: {e}")
         except Exception as e:
@@ -211,28 +211,28 @@ def run_integration_tests():
         passed_tests += class_passed
         
         if class_passed == class_total:
-            print(f"  ✅ {class_passed}/{class_total} tests pasaron")
+            print(f"  [CHECK] {class_passed}/{class_total} tests pasaron")
         else:
-            print(f"  ⚠️ {class_passed}/{class_total} tests pasaron")
+            print(f"  [WARN] {class_passed}/{class_total} tests pasaron")
             for failure in result.failures:
-                print(f"    ❌ {failure[0]}: {failure[1].split('\\n')[0]}")
+                print(f"    [ERROR] {failure[0]}: {failure[1].split('\\n')[0]}")
             for error in result.errors:
-                print(f"    ❌ {error[0]}: {error[1].split('\\n')[0]}")
+                print(f"    [ERROR] {error[0]}: {error[1].split('\\n')[0]}")
     
     print("\n" + "=" * 50)
-    print("📊 RESUMEN DE TESTS DE INTEGRACIÓN")
-    print(f"✅ Tests pasados: {passed_tests}/{total_tests}")
+    print("[CHART] RESUMEN DE TESTS DE INTEGRACIÓN")
+    print(f"[CHECK] Tests pasados: {passed_tests}/{total_tests}")
     
     success_rate = (passed_tests / total_tests * 100) if total_tests > 0 else 0
     
     if success_rate >= 90:
         print(f"🎉 TESTS EXITOSOS ({success_rate:.1f}%)")
-        print("✅ Sistema listo para producción")
+        print("[CHECK] Sistema listo para producción")
     elif success_rate >= 70:
-        print(f"⚠️ TESTS MAYORMENTE EXITOSOS ({success_rate:.1f}%)")
+        print(f"[WARN] TESTS MAYORMENTE EXITOSOS ({success_rate:.1f}%)")
         print("🔧 Algunas mejoras menores necesarias")
     else:
-        print(f"❌ TESTS CON PROBLEMAS ({success_rate:.1f}%)")
+        print(f"[ERROR] TESTS CON PROBLEMAS ({success_rate:.1f}%)")
         print("🚨 Revisar y corregir errores antes de continuar")
     
     return success_rate >= 70

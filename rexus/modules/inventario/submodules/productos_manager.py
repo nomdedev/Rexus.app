@@ -39,35 +39,8 @@ except ImportError:
             return None
 
 
-# DataSanitizer unificado - Usar sistema unificado de sanitización
-try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-except ImportError:
-    try:
-        from rexus.utils.unified_sanitizer import DataSanitizer
-    except ImportError:
-        try:
-            from rexus.core.data_sanitizer import DataSanitizer
-        except ImportError:
-            # Fallback seguro
-            class DataSanitizer:
-                def sanitize_dict(self, data):
-                    """Sanitiza un diccionario de datos de forma segura."""
-                    if not isinstance(data, dict):
-                        return {}
-                    
-                    sanitized = {}
-                    for key, value in data.items():
-                        if isinstance(value, str):
-                            # Sanitización básica de strings
-                            sanitized[key] = str(value).strip()
-                        else:
-                            sanitized[key] = value
-                    return sanitized
-
-                def sanitize_text(self, text):
-                    """Sanitiza texto de forma segura."""
-                    return str(text).strip() if text else ""
+# Importar utilidades de sanitización
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProductosManager:
@@ -77,7 +50,8 @@ class ProductosManager:
         """Inicializa el gestor de productos."""
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.sanitizer = DataSanitizer()
+        # Usar el sistema unificado de sanitización
+        self.sanitizer = unified_sanitizer
         self.sql_path = "scripts/sql/inventario/productos"
 
     def _validate_table_name(self, table_name: str) -> str:

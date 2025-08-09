@@ -14,19 +14,19 @@ def test_simple():
         app = QApplication.instance()
         if app is None:
             app = QApplication(sys.argv)
-        print("   ✓ PyQt6 funcionando")
+        print("   [OK] PyQt6 funcionando")
 
         # Test 2: Conexión a base de datos
         print("2. Verificando conexión a base de datos...")
         db = ObrasDatabaseConnection()
         db.conectar()
-        print(f"   ✓ Conectado a {db.database}")
+        print(f"   [OK] Conectado a {db.database}")
 
         # Test 3: Modelo de obras
         print("3. Verificando modelo de obras...")
         obras_model = ObrasModel(db)
         headers = obras_model.obtener_headers_obras()
-        print(f"   ✓ Headers obtenidos: {len(headers)} columnas")
+        print(f"   [OK] Headers obtenidos: {len(headers)} columnas")
 
         # Verificar columnas de integración
         columnas_integracion = [
@@ -37,7 +37,7 @@ def test_simple():
         ]
         for col in columnas_integracion:
             if col in headers:
-                print(f"   ✓ Columna {col} presente")
+                print(f"   [OK] Columna {col} presente")
             else:
                 print(f"   ✗ Columna {col} faltante")
 
@@ -45,7 +45,7 @@ def test_simple():
         print("4. Verificando datos de obras...")
         obras = obras_model.obtener_datos_obras()
         if obras:
-            print(f"   ✓ {len(obras)} obras encontradas")
+            print(f"   [OK] {len(obras)} obras encontradas")
         else:
             print("   ! No hay obras en el sistema")
 
@@ -55,7 +55,7 @@ def test_simple():
         try:
             inv_model = InventarioModel(db)
             if hasattr(inv_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ InventarioModel listo")
+                print("   [OK] InventarioModel listo")
             else:
                 print("   ✗ InventarioModel sin método de integración")
         except Exception as e:
@@ -64,7 +64,7 @@ def test_simple():
         try:
             vid_model = VidriosModel(db)
             if hasattr(vid_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ VidriosModel listo")
+                print("   [OK] VidriosModel listo")
             else:
                 print("   ✗ VidriosModel sin método de integración")
         except Exception as e:
@@ -73,7 +73,7 @@ def test_simple():
         try:
             her_model = HerrajesModel(db)
             if hasattr(her_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ HerrajesModel listo")
+                print("   [OK] HerrajesModel listo")
             else:
                 print("   ✗ HerrajesModel sin método de integración")
         except Exception as e:
@@ -82,7 +82,7 @@ def test_simple():
         try:
             cont_model = ContabilidadModel(db)
             if hasattr(cont_model, "obtener_estado_pago_pedido_por_obra"):
-                print("   ✓ ContabilidadModel listo")
+                print("   [OK] ContabilidadModel listo")
             else:
                 print("   ✗ ContabilidadModel sin método de integración")
         except Exception as e:
@@ -96,7 +96,7 @@ def test_simple():
             # Probar inventario
             try:
                 estado_inv = inv_model.obtener_estado_pedido_por_obra(id_obra)
-                print(f"   ✓ Estado inventario: {estado_inv}")
+                print(f"   [OK] Estado inventario: {estado_inv}")
             except Exception as e:
                 if "pedidos_material" in str(e):
                     print("   ! Tabla pedidos_material no existe (esperado)")
@@ -106,7 +106,7 @@ def test_simple():
             # Probar vidrios
             try:
                 estado_vid = vid_model.obtener_estado_pedido_por_obra(id_obra)
-                print(f"   ✓ Estado vidrios: {estado_vid}")
+                print(f"   [OK] Estado vidrios: {estado_vid}")
             except Exception as e:
                 if "vidrios_por_obra" in str(e):
                     print("   ! Tabla vidrios_por_obra no existe (esperado)")
@@ -116,7 +116,7 @@ def test_simple():
             # Probar herrajes
             try:
                 estado_her = her_model.obtener_estado_pedido_por_obra(id_obra)
-                print(f"   ✓ Estado herrajes: {estado_her}")
+                print(f"   [OK] Estado herrajes: {estado_her}")
             except Exception as e:
                 if "pedidos_herrajes" in str(e):
                     print("   ! Tabla pedidos_herrajes no existe (esperado)")
@@ -128,7 +128,7 @@ def test_simple():
                 estado_pago = cont_model.obtener_estado_pago_pedido_por_obra(
                     id_obra, "inventario"
                 )
-                print(f"   ✓ Estado pago: {estado_pago}")
+                print(f"   [OK] Estado pago: {estado_pago}")
             except Exception as e:
                 if "pagos_pedidos" in str(e):
                     print("   ! Tabla pagos_pedidos no existe (esperado)")
@@ -136,11 +136,11 @@ def test_simple():
                     print(f"   ? Error pago: {str(e)[:50]}...")
 
         print("\n=== RESULTADO ===")
-        print("✓ INTEGRACIÓN FUNCIONANDO CORRECTAMENTE")
-        print("✓ Todos los modelos están integrados")
-        print("✓ Los métodos de integración están disponibles")
+        print("[OK] INTEGRACIÓN FUNCIONANDO CORRECTAMENTE")
+        print("[OK] Todos los modelos están integrados")
+        print("[OK] Los métodos de integración están disponibles")
         print("! Algunas tablas de datos no existen (normal en instalación nueva)")
-        print("✓ El sistema está listo para usar")
+        print("[OK] El sistema está listo para usar")
         # Cerrar conexión
         if db.connection:
             db.connection.close()

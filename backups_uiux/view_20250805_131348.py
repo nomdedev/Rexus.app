@@ -24,11 +24,11 @@ SOFTWARE.
 Vista de Vidrios - Interfaz de gestión de vidrios y cristales
 """
 
-# 🔒 Form Access Control - Verify user can access this interface
+# [LOCK] Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
 # Form Access Control
 
-# 🔒 XSS Protection Added - Validate all user inputs
+# [LOCK] XSS Protection Added - Validate all user inputs
 # Use SecurityUtils.sanitize_input() for text fields
 # Use SecurityUtils.validate_email() for email fields
 # XSS Protection Added
@@ -170,12 +170,12 @@ class VidriosView(QWidget):
         layout.addWidget(main_splitter)
 
     def crear_panel_izquierdo(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_panel_izquierdo'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -264,12 +264,12 @@ class VidriosView(QWidget):
         return widget
 
     def crear_panel_derecho(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_panel_derecho'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -349,7 +349,7 @@ class VidriosView(QWidget):
         """Realiza la búsqueda."""
         termino = self.search_input.text().strip()
 
-        # 🔒 PROTECCIÓN XSS: Sanitizar entrada de búsqueda
+        # [LOCK] PROTECCIÓN XSS: Sanitizar entrada de búsqueda
         if SANITIZER_AVAILABLE and data_sanitizer and termino:
             termino = data_sanitizer.sanitize_string(termino)
             self.logger.debug(f"Término de búsqueda sanitizado: {termino}")
@@ -370,7 +370,7 @@ class VidriosView(QWidget):
             filtros["proveedor"] = self.combo_proveedor.currentText()
 
         if self.combo_espesor.currentText() != "Todos":
-            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
             # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
             # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -387,7 +387,7 @@ class VidriosView(QWidget):
         self.aplicar_filtros()
 
     def actualizar_tabla(self, vidrios):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_tabla'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
@@ -429,12 +429,12 @@ class VidriosView(QWidget):
             self.crear_botones_accion(row, vidrio.get("id"))
 
     def crear_botones_accion(self, row, vidrio_id):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('crear_botones_accion'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -459,7 +459,7 @@ class VidriosView(QWidget):
         self.tabla_vidrios.setCellWidget(row, 9, widget)
 
     def actualizar_estadisticas(self, estadisticas):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_estadisticas'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
@@ -513,7 +513,7 @@ class VidriosView(QWidget):
     def abrir_dialogo_crear_pedido(self):
         """Abre el diálogo para crear un pedido."""
         if not self.vidrios_data:
-            # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+            # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
             # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
             # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -547,7 +547,7 @@ class VidriosView(QWidget):
         return None
 
     def actualizar_datos(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_datos'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
@@ -650,7 +650,7 @@ class VidrioDialog(QDialog):
 
     def obtener_datos(self):
         """Obtiene los datos del formulario."""
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         codigo = self.input_codigo.text()
         descripcion = self.input_descripcion.text()
         proveedor = self.input_proveedor.text()
@@ -746,7 +746,7 @@ class CrearPedidoDialog(QDialog):
     """Diálogo para crear pedido de vidrios."""
 
     def __init__(self, parent=None, vidrios_data=None):
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 
@@ -793,7 +793,7 @@ class CrearPedidoDialog(QDialog):
         layout.addWidget(button_box)
 
     def actualizar_tabla_vidrios(self):
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('actualizar_tabla_vidrios'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")

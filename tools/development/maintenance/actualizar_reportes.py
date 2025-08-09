@@ -7,7 +7,7 @@ Script para actualizar scripts de testing para que guarden reportes en tests/rep
 def actualizar_scripts_testing():
     """Actualiza scripts de testing para usar la nueva carpeta de reportes"""
 
-    print("📊 ACTUALIZANDO SCRIPTS DE TESTING")
+    print("[CHART] ACTUALIZANDO SCRIPTS DE TESTING")
     print("=" * 50)
 
     # Scripts a actualizar
@@ -74,12 +74,12 @@ def actualizar_scripts_testing():
             if contenido != contenido_original:
                 with open(script_path, "w", encoding="utf-8") as f:
                     f.write(contenido)
-                print(f"   ✅ Actualizado para usar tests/reports/")
+                print(f"   [CHECK] Actualizado para usar tests/reports/")
                 contador_actualizados += 1
             else:
                 print(f"   ℹ️ No necesita cambios")
         else:
-            print(f"   ❌ No encontrado: {script_path}")
+            print(f"   [ERROR] No encontrado: {script_path}")
 
     # Crear script de ejemplo para generar reportes
     script_ejemplo = """#!/usr/bin/env python3
@@ -94,7 +94,7 @@ def generar_reporte_completo():
     # Crear directorio de reportes si no existe
     os.makedirs("tests/reports", exist_ok=True)
 
-    print("📊 GENERANDO REPORTE COMPLETO DE TESTS")
+    print("[CHART] GENERANDO REPORTE COMPLETO DE TESTS")
     print("=" * 50)
 
     # Ejecutar tests con cobertura
@@ -178,7 +178,7 @@ open tests/reports/coverage_html/index.html
     with open("tests/reports/README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
 
-    print("✅ REPORTE COMPLETADO")
+    print("[CHECK] REPORTE COMPLETADO")
     print(f"📁 Archivos guardados en: tests/reports/")
     print(f"🌐 Ver cobertura: tests/reports/coverage_html/index.html")
 
@@ -239,9 +239,9 @@ tests/reports/
 
     # Resumen final
     print("\n" + "=" * 50)
-    print("✅ ACTUALIZACIÓN COMPLETADA")
+    print("[CHECK] ACTUALIZACIÓN COMPLETADA")
     print("=" * 50)
-    print(f"📊 Scripts actualizados: {contador_actualizados}")
+    print(f"[CHART] Scripts actualizados: {contador_actualizados}")
     print("📁 Directorio de reportes: tests/reports/")
     print("📄 Script de ejemplo creado")
     print("\n🎯 PRÓXIMOS PASOS:")

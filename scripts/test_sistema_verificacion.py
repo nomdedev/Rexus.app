@@ -117,12 +117,12 @@ def main():
         valido, error = verificar_sintaxis_archivo(archivo)
         if not valido:
             errores_sintaxis.append((archivo, error))
-            print(f"❌ {archivo}: {error}")
+            print(f"[ERROR] {archivo}: {error}")
         else:
-            print(f"✅ {archivo}")
+            print(f"[CHECK] {archivo}")
 
     print(
-        f"\n📊 Sintaxis: {len(archivos_python) - len(errores_sintaxis)}/{len(archivos_python)} archivos correctos"
+        f"\n[CHART] Sintaxis: {len(archivos_python) - len(errores_sintaxis)}/{len(archivos_python)} archivos correctos"
     )
 
     print("\n2️⃣ Verificando decoradores...")
@@ -133,12 +133,12 @@ def main():
             valido, errores = verificar_decoradores_archivo(archivo)
             if not valido:
                 errores_decoradores.append((archivo, errores))
-                print(f"❌ {archivo}: {', '.join(errores)}")
+                print(f"[ERROR] {archivo}: {', '.join(errores)}")
             else:
-                print(f"✅ {archivo}")
+                print(f"[CHECK] {archivo}")
 
     print(
-        f"\n📊 Decoradores: {len([f for f in archivos_python if 'controller.py' in f or 'view.py' in f]) - len(errores_decoradores)} archivos correctos"
+        f"\n[CHART] Decoradores: {len([f for f in archivos_python if 'controller.py' in f or 'view.py' in f]) - len(errores_decoradores)} archivos correctos"
     )
 
     # Resumen final
@@ -152,24 +152,24 @@ def main():
 
     if total_errores == 0:
         print("🎉 ¡TODOS LOS TESTS PASARON!")
-        print("✅ Sintaxis correcta en todos los archivos")
-        print("✅ Decoradores bien configurados")
-        print("✅ Proyecto listo para funcionar")
+        print("[CHECK] Sintaxis correcta en todos los archivos")
+        print("[CHECK] Decoradores bien configurados")
+        print("[CHECK] Proyecto listo para funcionar")
     else:
-        print(f"⚠️ Se encontraron {total_errores} problemas:")
+        print(f"[WARN] Se encontraron {total_errores} problemas:")
 
         if errores_sintaxis:
-            print(f"\n❌ Errores de sintaxis ({len(errores_sintaxis)}):")
+            print(f"\n[ERROR] Errores de sintaxis ({len(errores_sintaxis)}):")
             for archivo, error in errores_sintaxis:
                 print(f"   • {archivo}: {error}")
 
         if errores_decoradores:
-            print(f"\n❌ Errores de decoradores ({len(errores_decoradores)}):")
+            print(f"\n[ERROR] Errores de decoradores ({len(errores_decoradores)}):")
             for archivo, errores in errores_decoradores:
                 print(f"   • {archivo}: {', '.join(errores)}")
 
         if errores_imports:
-            print(f"\n❌ Errores de imports ({len(errores_imports)}):")
+            print(f"\n[ERROR] Errores de imports ({len(errores_imports)}):")
             for archivo, error in errores_imports:
                 print(f"   • {archivo}: {error}")
 

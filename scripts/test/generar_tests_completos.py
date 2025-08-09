@@ -399,7 +399,7 @@ class Test{class_name}EdgeCases:
             "áéíóúñ",
             "测试中文",
             "Тест русский", 
-            "🚀🎉💻",
+            "[ROCKET]🎉💻",
             "\\u0000\\u0001\\u0002"
         ]
         
@@ -756,7 +756,7 @@ class Test{class_name}EdgeCases:
             "áéíóúñ",  # Acentos
             "测试中文",  # Chino
             "Тест русский",  # Ruso
-            "🚀🎉💻",  # Emojis
+            "[ROCKET]🎉💻",  # Emojis
             "עברית",  # Hebreo
             "العربية"  # Árabe
         ]
@@ -1003,13 +1003,13 @@ if __name__ == "__main__":
             with open(analysis_file, 'r', encoding='utf-8') as f:
                 analysis = json.load(f)
         else:
-            print("❌ No se encontró análisis de cobertura. Ejecuta analizar_cobertura_tests.py primero.")
+            print("[ERROR] No se encontró análisis de cobertura. Ejecuta analizar_cobertura_tests.py primero.")
             return
         
         if modules_to_process is None:
             modules_to_process = list(analysis.keys())
         
-        print(f"🚀 Generando tests para {len(modules_to_process)} módulos...")
+        print(f"[ROCKET] Generando tests para {len(modules_to_process)} módulos...")
         
         for module_name in modules_to_process:
             if module_name.startswith('__'):
@@ -1039,7 +1039,7 @@ if __name__ == "__main__":
                 controller_test_file = test_module_dir / f"test_{module_name}_controller_complete.py"
                 controller_test_file.write_text(controller_test_content, encoding='utf-8')
                 self.created_files.append(str(controller_test_file))
-                print(f"    ✅ Creado: {controller_test_file}")
+                print(f"    [CHECK] Creado: {controller_test_file}")
             
             # Generar test de view si falta
             if (module_info.get('has_view', False) and 
@@ -1052,7 +1052,7 @@ if __name__ == "__main__":
                 view_test_file = test_module_dir / f"test_{module_name}_view_complete.py"
                 view_test_file.write_text(view_test_content, encoding='utf-8')
                 self.created_files.append(str(view_test_file))
-                print(f"    ✅ Creado: {view_test_file}")
+                print(f"    [CHECK] Creado: {view_test_file}")
             
             # Generar test de edge cases si falta
             if not test_coverage.get('has_edge_cases', False):
@@ -1062,7 +1062,7 @@ if __name__ == "__main__":
                 edge_cases_file = test_module_dir / f"test_{module_name}_edge_cases_complete.py"
                 edge_cases_file.write_text(edge_cases_content, encoding='utf-8')
                 self.created_files.append(str(edge_cases_file))
-                print(f"    ✅ Creado: {edge_cases_file}")
+                print(f"    [CHECK] Creado: {edge_cases_file}")
     
     def generate_edge_cases_test(self, module_name: str, files_info: dict) -> str:
         """Genera test específico de edge cases extremos."""
@@ -1317,7 +1317,7 @@ class Test{module_name.capitalize()}EdgeCasesExtremos:
         extreme_env_vars = {{
             'TEST_EMPTY': '',
             'TEST_VERY_LONG': 'x' * 10000,
-            'TEST_UNICODE': '测试环境变量🚀',
+            'TEST_UNICODE': '测试环境变量[ROCKET]',
             'TEST_SPECIAL': ';"&|<>(){{}}[]'
         }}
         
@@ -1410,7 +1410,7 @@ if __name__ == "__main__":
     def generate_summary_report(self) -> str:
         """Genera reporte resumen de archivos creados."""
         if not self.created_files:
-            return "❌ No se crearon archivos de test."
+            return "[ERROR] No se crearon archivos de test."
         
         report = []
         report.append("=" * 80)
@@ -1425,7 +1425,7 @@ if __name__ == "__main__":
         view_tests = [f for f in self.created_files if 'view' in f]
         edge_case_tests = [f for f in self.created_files if 'edge_cases' in f]
         
-        report.append("📊 RESUMEN POR TIPO:")
+        report.append("[CHART] RESUMEN POR TIPO:")
         report.append(f"   • Tests de Controller: {len(controller_tests)}")
         report.append(f"   • Tests de View: {len(view_tests)}")
         report.append(f"   • Tests de Edge Cases: {len(edge_case_tests)}")
@@ -1437,7 +1437,7 @@ if __name__ == "__main__":
             report.append(f"   {i}. {relative_path}")
         
         report.append("")
-        report.append("🚀 PRÓXIMOS PASOS:")
+        report.append("[ROCKET] PRÓXIMOS PASOS:")
         report.append("   1. Ejecutar los tests creados: pytest tests/ -v")
         report.append("   2. Revisar y ajustar tests específicos según necesidades")
         report.append("   3. Integrar en CI/CD pipeline")
@@ -1451,7 +1451,7 @@ if __name__ == "__main__":
 
 def main():
     """Función principal."""
-    print("🚀 Iniciando generación automática de tests...")
+    print("[ROCKET] Iniciando generación automática de tests...")
     
     generator = TestGenerator()
     
@@ -1470,7 +1470,7 @@ def main():
     print(f"\\n📄 Reporte guardado en: {report_file}")
     
     if generator.created_files:
-        print("\\n✅ Generación completada exitosamente!")
+        print("\\n[CHECK] Generación completada exitosamente!")
         print("💡 Ejecuta: pytest tests/ -v --tb=short para probar los nuevos tests")
     else:
         print("\\n❗ No se crearon nuevos archivos. Todos los tests ya existen.")

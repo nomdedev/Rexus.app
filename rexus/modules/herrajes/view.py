@@ -33,6 +33,7 @@ from rexus.ui.style_manager import style_manager
 from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class HerrajesView(QWidget):
@@ -222,7 +223,7 @@ class HerrajesView(QWidget):
         self.btn_editar = self.crear_boton("✏️ Editar", "secondary")
         self.btn_eliminar = self.crear_boton("🗑️ Eliminar", "danger")
         self.btn_actualizar = self.crear_boton("🔄 Actualizar", "info")
-        self.btn_exportar = self.crear_boton("📊 Exportar", "success")
+        self.btn_exportar = self.crear_boton("[CHART] Exportar", "success")
 
         # Conectar botones
         self.btn_nuevo.clicked.connect(self.on_nuevo_herraje)
@@ -334,7 +335,7 @@ class HerrajesView(QWidget):
         stats = [
             ("🔧", "Total Herrajes", "total_herrajes", RexusColors.PRIMARY),
             ("📦", "En Stock", "en_stock", "#28a745"),
-            ("⚠️", "Stock Bajo", "stock_bajo", "#ffc107"),
+            ("[WARN]", "Stock Bajo", "stock_bajo", "#ffc107"),
             ("🚫", "Sin Stock", "sin_stock", "#dc3545")
         ]
         
@@ -1046,7 +1047,7 @@ class HerrajesView(QWidget):
                 if key in self.stats_labels and self.stats_labels[key]:
                     # Obtener el ícono del texto actual
                     current_text = self.stats_labels[key].text()
-                    icon = current_text.split()[0] if current_text else "📊"
+                    icon = current_text.split()[0] if current_text else "[CHART]"
                     self.stats_labels[key].setText(f"{icon} {value}")
                     
         except Exception as e:

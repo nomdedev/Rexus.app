@@ -22,17 +22,17 @@ def ejecutar_comando(comando, descripcion):
     try:
         result = subprocess.run(comando, capture_output=True, text=True, cwd=ROOT_DIR)
         if result.returncode == 0:
-            print(f"  ✅ {descripcion} completado exitosamente")
+            print(f"  [CHECK] {descripcion} completado exitosamente")
             if result.stdout:
                 print(f"  📄 Output: {result.stdout.strip()}")
             return True
         else:
-            print(f"  ❌ Error en {descripcion}")
+            print(f"  [ERROR] Error en {descripcion}")
             if result.stderr:
                 print(f"  🚨 Error: {result.stderr.strip()}")
             return False
     except Exception as e:
-        print(f"  ❌ Excepción en {descripcion}: {e}")
+        print(f"  [ERROR] Excepción en {descripcion}: {e}")
         return False
 
 def crear_directorio_salida(directorio):
@@ -61,7 +61,7 @@ def mostrar_resumen_final(directorio_salida, exitos, total):
     print(" " * 30 + "RESUMEN FINAL")
     print("=" * 80)
 
-    print(f"\n📊 Análisis completado:")
+    print(f"\n[CHART] Análisis completado:")
     print(f"  • Procesos exitosos: {exitos}/{total}")
     print(f"  • Directorio de informes: {directorio_salida}")
 
@@ -172,7 +172,7 @@ from pathlib import Path
 
     # 4. Escaneo de vulnerabilidades (opcional)
     if not args.skip_vulnerabilidades:
-        print("\n🔒 FASE 4: Escaneo de Vulnerabilidades")
+        print("\n[LOCK] FASE 4: Escaneo de Vulnerabilidades")
         print("-" * 50)
 
         comando = [
@@ -198,7 +198,7 @@ from pathlib import Path
     if ejecutar_comando(comando, "Ejecutando tests existentes"):
         procesos_exitosos += 1
     else:
-        print("  ⚠️ No se pudieron ejecutar todos los tests (puede ser normal)")
+        print("  [WARN] No se pudieron ejecutar todos los tests (puede ser normal)")
 
     # Mostrar resumen final
     mostrar_resumen_final(directorio_salida, procesos_exitosos, total_procesos)

@@ -22,12 +22,12 @@ def test_imports():
             RecursosManager,
         )
 
-        print("✅ Submódulos importados correctamente")
+        print("[CHECK] Submódulos importados correctamente")
 
         # Importar modelo refactorizado
         from rexus.modules.obras.model_refactorizado import ModeloObrasRefactorizado
 
-        print("✅ Modelo refactorizado importado correctamente")
+        print("[CHECK] Modelo refactorizado importado correctamente")
 
         # Importar desde __init__.py
         from rexus.modules.obras import ConsultasManager as CM2
@@ -35,12 +35,12 @@ def test_imports():
         from rexus.modules.obras import ProyectosManager as PM2
         from rexus.modules.obras import RecursosManager as RM2
 
-        print("✅ Importaciones desde __init__.py funcionando")
+        print("[CHECK] Importaciones desde __init__.py funcionando")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en importaciones: {str(e)}")
+        print(f"[ERROR] Error en importaciones: {str(e)}")
         return False
 
 
@@ -72,18 +72,18 @@ def test_structure():
         for metodo in metodos_esperados:
             assert hasattr(modelo, metodo), f"Falta método {metodo}"
 
-        print("✅ Estructura del modelo validada")
+        print("[CHECK] Estructura del modelo validada")
 
         # Probar método de información
         info = modelo.obtener_info_modular()
         assert "modelo" in info, "Falta información del modelo"
         assert "submodulos" in info, "Falta información de submódulos"
-        print(f"✅ Información modular: {info['modelo']} v{info['version']}")
+        print(f"[CHECK] Información modular: {info['modelo']} v{info['version']}")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error validando estructura: {str(e)}")
+        print(f"[ERROR] Error validando estructura: {str(e)}")
         return False
 
 
@@ -124,11 +124,11 @@ def test_submodules():
             "ConsultasManager: falta obtener_estadisticas_obras"
         )
 
-        print("✅ Submódulos validados correctamente")
+        print("[CHECK] Submódulos validados correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error validando submódulos: {str(e)}")
+        print(f"[ERROR] Error validando submódulos: {str(e)}")
         return False
 
 
@@ -148,19 +148,19 @@ def test_sql_files():
         if not os.path.exists(sql_file):
             missing_files.append(sql_file)
         else:
-            print(f"✅ Encontrado: {sql_file}")
+            print(f"[CHECK] Encontrado: {sql_file}")
 
     if missing_files:
-        print(f"❌ Archivos SQL faltantes: {missing_files}")
+        print(f"[ERROR] Archivos SQL faltantes: {missing_files}")
         return False
     else:
-        print("✅ Todos los archivos SQL encontrados")
+        print("[CHECK] Todos los archivos SQL encontrados")
         return True
 
 
 def main():
     """Ejecuta todas las validaciones."""
-    print("🚀 Iniciando validación del módulo obras refactorizado")
+    print("[ROCKET] Iniciando validación del módulo obras refactorizado")
     print("=" * 60)
 
     tests = [test_imports, test_structure, test_submodules, test_sql_files]
@@ -173,10 +173,10 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"❌ Error inesperado en {test.__name__}: {str(e)}")
+            print(f"[ERROR] Error inesperado en {test.__name__}: {str(e)}")
 
     print("\n" + "=" * 60)
-    print(f"📊 Resumen de validación: {passed}/{total} pruebas pasaron")
+    print(f"[CHART] Resumen de validación: {passed}/{total} pruebas pasaron")
 
     if passed == total:
         print("🎉 ¡Refactorización de obras completada exitosamente!")
@@ -186,7 +186,7 @@ def main():
         print("   3. Proceder con siguiente módulo (usuarios)")
         return True
     else:
-        print("⚠️  Refactorización incompleta. Revisar errores.")
+        print("[WARN]  Refactorización incompleta. Revisar errores.")
         return False
 
 

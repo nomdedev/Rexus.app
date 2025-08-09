@@ -21,7 +21,7 @@ try:
     load_dotenv()
     print("[OK] Variables de entorno cargadas")
 except ImportError:
-    print("⚠️  python-dotenv no instalado")
+    print("[WARN]  python-dotenv no instalado")
 
 def create_admin_user():
     """Crear usuario admin si no existe."""
@@ -55,9 +55,9 @@ def create_admin_user():
                     ultimo_login DATETIME
                 )
             """)
-            print("✅ Tabla usuarios creada")
+            print("[CHECK] Tabla usuarios creada")
         else:
-            print("✅ Tabla usuarios ya existe")
+            print("[CHECK] Tabla usuarios ya existe")
         
         # Verificar si existe el usuario admin
         admin_user = db.execute_query("""
@@ -67,7 +67,7 @@ def create_admin_user():
         if not admin_user:
             print("👤 Creando usuario administrador...")
             
-            # 🔒 SEGURIDAD: Hash seguro de contraseña
+            # [LOCK] SEGURIDAD: Hash seguro de contraseña
             import getpass
             import sys
             from pathlib import Path
@@ -77,7 +77,7 @@ def create_admin_user():
             admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
             
             if not admin_password or len(admin_password) < 8:
-                print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+                print("[ERROR] Error: La contraseña debe tener al menos 8 caracteres")
                 return False
                 
             password_hash = hash_password_secure(admin_password)
@@ -96,13 +96,13 @@ def create_admin_user():
                 'admin@rexus.app'
             ))
             
-            print("✅ Usuario administrador creado exitosamente")
+            print("[CHECK] Usuario administrador creado exitosamente")
             print("📋 Credenciales:")
             print("   Usuario: admin")
             print("   Contraseña: admin")
             print("   Rol: admin")
         else:
-            print("✅ Usuario admin ya existe")
+            print("[CHECK] Usuario admin ya existe")
             admin_data = admin_user[0]
             print(f"   ID: {admin_data[0]}")
             print(f"   Usuario: {admin_data[1]}")
@@ -122,9 +122,9 @@ def create_admin_user():
                 db.execute_non_query("""
                     UPDATE usuarios SET password_hash = ? WHERE usuario = 'admin'
                 """, (expected_hash,))
-                print("✅ Contraseña actualizada")
+                print("[CHECK] Contraseña actualizada")
             else:
-                print("✅ Contraseña del admin correcta")
+                print("[CHECK] Contraseña del admin correcta")
         
         print("\n🎉 Configuración de usuario administrador completada")
         print("💡 Ahora puedes iniciar sesión con:")
@@ -132,7 +132,7 @@ def create_admin_user():
         print("   Contraseña: admin")
         
     except Exception as e:
-        print(f"❌ Error configurando usuario admin: {e}")
+        print(f"[ERROR] Error configurando usuario admin: {e}")
         import traceback
         traceback.print_exc()
 

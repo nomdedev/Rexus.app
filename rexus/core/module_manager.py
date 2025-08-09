@@ -138,11 +138,11 @@ class ModuleManager:
                 "status": "loaded",
             }
 
-            print(f"✅ [{module_name}] Módulo cargado exitosamente")
+            print(f"[CHECK] [{module_name}] Módulo cargado exitosamente")
             return view
 
         except Exception as e:
-            print(f"❌ [{module_name}] Error cargando módulo: {e}")
+            print(f"[ERROR] [{module_name}] Error cargando módulo: {e}")
 
             # Mostrar traceback completo para debugging
             import traceback
@@ -257,12 +257,12 @@ class ModuleManager:
                 if hasattr(controller, specific_method):
                     getattr(controller, specific_method)()
                     print(
-                        f"✅ [{module_name}] Datos cargados con método específico: {specific_method}"
+                        f"[CHECK] [{module_name}] Datos cargados con método específico: {specific_method}"
                     )
                     return
                 else:
                     print(
-                        f"⚠️  [{module_name}] Método {specific_method} no encontrado en controlador"
+                        f"[WARN]  [{module_name}] Método {specific_method} no encontrado en controlador"
                     )
 
             # 2. Intentar métodos genéricos de fallback
@@ -270,7 +270,7 @@ class ModuleManager:
                 if hasattr(controller, method_name):
                     getattr(controller, method_name)()
                     print(
-                        f"✅ [{module_name}] Datos cargados con método genérico: {method_name}"
+                        f"[CHECK] [{module_name}] Datos cargados con método genérico: {method_name}"
                     )
                     return
 
@@ -279,7 +279,7 @@ class ModuleManager:
 
         except Exception as e:
             # No fallar completamente por error de datos iniciales
-            print(f"❌ [{module_name}] Error cargando datos iniciales: {e}")
+            print(f"[ERROR] [{module_name}] Error cargando datos iniciales: {e}")
             # Log más detallado para debugging
             import traceback
 
@@ -360,7 +360,7 @@ class ModuleManager:
         layout.setContentsMargins(20, 20, 20, 20)
 
         # Título de error
-        title = QLabel(f"❌ Error en módulo {module_name}")
+        title = QLabel(f"[ERROR] Error en módulo {module_name}")
         title.setStyleSheet("""
             font-size: 18px;
             font-weight: bold;

@@ -142,7 +142,7 @@ class AuthManager:
                 remaining_time = locked_until - datetime.datetime.now()
                 minutes_remaining = max(1, int(remaining_time.total_seconds() / 60))
                 error_msg = f"Usuario bloqueado por {minutes_remaining} minutos debido a demasiados intentos fallidos"
-                print(f"❌ Rate limit: {error_msg}")
+                print(f"[ERROR] Rate limit: {error_msg}")
                 
                 # Registrar intento en usuario bloqueado
                 rate_limiter._log_security_event(username, "blocked_attempt", minutes_remaining)
@@ -153,7 +153,7 @@ class AuthManager:
             db = get_users_connection()
 
             if not db.connection:
-                print("❌ Error: No se pudo conectar a la base de datos de usuarios")
+                print("[ERROR] Error: No se pudo conectar a la base de datos de usuarios")
                 return False
 
             # Buscar usuario en la base de datos
@@ -173,7 +173,7 @@ class AuthManager:
                 lockout_info = rate_limiter.get_lockout_info(username)
                 remaining_attempts = lockout_info['remaining_attempts']
                 
-                print(f"❌ Usuario '{username}' no encontrado o inactivo")
+                print(f"[ERROR] Usuario '{username}' no encontrado o inactivo")
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
             user_data = result[0]
@@ -191,7 +191,7 @@ class AuthManager:
 
                 # Log de advertencia para contraseñas legacy
                 print(
-                    f"⚠️  Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
+                    f"[WARN]  Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
                 )
 
             # Verificar contraseña
@@ -213,7 +213,7 @@ class AuthManager:
                 )
 
                 print(
-                    f"✅ Usuario autenticado: {username} (rol: {cls.current_user_role.value})"
+                    f"[CHECK] Usuario autenticado: {username} (rol: {cls.current_user_role.value})"
                 )
 
                 # Actualizar última conexión
@@ -245,15 +245,15 @@ class AuthManager:
                 remaining_attempts = lockout_info['remaining_attempts']
                 
                 if remaining_attempts > 0:
-                    print(f"❌ Contraseña incorrecta para usuario: {username} "
+                    print(f"[ERROR] Contraseña incorrecta para usuario: {username} "
                           f"(quedan {remaining_attempts} intentos)")
                 else:
-                    print(f"❌ Contraseña incorrecta para usuario: {username} - USUARIO BLOQUEADO")
+                    print(f"[ERROR] Contraseña incorrecta para usuario: {username} - USUARIO BLOQUEADO")
                 
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
         except Exception as e:
-            print(f"❌ Error en autenticación: {e}")
+            print(f"[ERROR] Error en autenticación: {e}")
             import traceback
 
             traceback.print_exc()

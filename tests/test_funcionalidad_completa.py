@@ -70,8 +70,8 @@ def test_funcionalidad_completa():
             row_count = dialog.tabla_obras.rowCount()
             col_count = dialog.tabla_obras.columnCount()
             
-            print(f"   ✅ Diálogo creado: {dialog.windowTitle()}")
-            print(f"   📊 Resultados: {row_count} obras encontradas")
+            print(f"   [CHECK] Diálogo creado: {dialog.windowTitle()}")
+            print(f"   [CHART] Resultados: {row_count} obras encontradas")
             
             if row_count > 0:
                 print(f"   🏗️  Obras que usan este material:")
@@ -111,11 +111,11 @@ def test_funcionalidad_completa():
                 print(f"   🏢 Obras diferentes: {len(obras_encontradas)}")
                 
             else:
-                print(f"   ❌ No se encontraron obras para: {caso['descripcion']}")
+                print(f"   [ERROR] No se encontraron obras para: {caso['descripcion']}")
             
             print()
         
-        print("✅ Test completo de funcionalidad completado exitosamente!")
+        print("[CHECK] Test completo de funcionalidad completado exitosamente!")
         print("\n🎯 RESUMEN:")
         print("   - Diálogo de obras asociadas funcional")
         print("   - Query SQL encuentra relaciones correctamente") 
@@ -124,7 +124,7 @@ def test_funcionalidad_completa():
         print("   - Listo para usar en la aplicación")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
     

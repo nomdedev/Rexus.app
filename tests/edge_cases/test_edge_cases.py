@@ -80,7 +80,7 @@ class TestEdgeCasesGenerales:
             "用户名",  # Chino
             "пользователь",  # Ruso
             "العربية",  # Árabe
-            "🚀💻🔐",  # Emojis
+            "[ROCKET]💻🔐",  # Emojis
             "üñíçødé",  # Acentos
             "\x00\x01\x02",  # Caracteres de control
             "\n\r\t",  # Saltos de línea y tabs

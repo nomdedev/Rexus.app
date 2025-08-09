@@ -616,7 +616,7 @@ KEY4=value4
         """Test que verifica manejo de caracteres Unicode"""
         # Arrange
         test_data = {
-            "UNICODE_KEY": "Café con ñ y émojis 🚀",
+            "UNICODE_KEY": "Café con ñ y émojis [ROCKET]",
             "CHINESE_KEY": "中文测试",
             "SPECIAL_CHARS": "áéíóú àèìòù äëïöü",
         }

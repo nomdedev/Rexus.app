@@ -536,7 +536,7 @@ QPushButton:disabled {
         
         Módulos disponibles: {len(self.modulos_permitidos)}
         
-        ✅ Sistema de login funcionando correctamente
+        [CHECK] Sistema de login funcionando correctamente
         📱 Todos los módulos están listos para usar
         🔧 Configuración de base de datos disponible
         """)
@@ -1168,13 +1168,13 @@ def main():
 
         backup_initialized = initialize_backup_system()
         if backup_initialized:
-            print("✅ Sistema de backup automático inicializado")
+            print("[CHECK] Sistema de backup automático inicializado")
         else:
             print(
-                "⚠️ Sistema de backup no se pudo inicializar, continuando sin backup automático"
+                "[WARN] Sistema de backup no se pudo inicializar, continuando sin backup automático"
             )
     except Exception as e:
-        print(f"⚠️ Error inicializando sistema de backup: {e}")
+        print(f"[WARN] Error inicializando sistema de backup: {e}")
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
@@ -1192,12 +1192,12 @@ def main():
             main_window = MainWindow(user_data, modulos_permitidos)
             main_window.actualizar_usuario_label(user_data)
             main_window.show()
-            print(f"✅ [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
+            print(f"[CHECK] [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
         except Exception as e:
             import traceback
 
             error_msg = f"[ERROR SEGURIDAD] {e}\n{traceback.format_exc()}"
-            print(f"❌ [ERROR] {error_msg}", flush=True)
+            print(f"[ERROR] [ERROR] {error_msg}", flush=True)
             os.makedirs("logs", exist_ok=True)
             with open("logs/error_inicio_seguridad.txt", "a", encoding="utf-8") as f:
                 f.write(error_msg + "\n")
@@ -1210,7 +1210,7 @@ def main():
 
     def on_login_success(user_data):
         print(
-            f"✅ [LOGIN] Autenticación exitosa para {user_data.get('username', '???')} ({user_data.get('role', '???')})"
+            f"[CHECK] [LOGIN] Autenticación exitosa para {user_data.get('username', '???')} ({user_data.get('role', '???')})"
         )
         # Acceder al security_manager del contexto exterior
         nonlocal security_manager
@@ -1223,7 +1223,7 @@ def main():
             )
             return
         if not user_data:
-            print("❌ [LOGIN] Error: No se pudo obtener datos del usuario")
+            print("[ERROR] [LOGIN] Error: No se pudo obtener datos del usuario")
             return
 
         # 🔥 SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
@@ -1244,7 +1244,7 @@ def main():
                     and user_data.get("role", "").upper() == "ADMIN"
                 ):
                     print(
-                        "⚠️ [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema..."
+                        "[WARN] [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema..."
                     )
 
             # Ahora obtener módulos permitidos
@@ -1263,10 +1263,10 @@ def main():
                 and len(modulos_permitidos) < 12
             ):
                 print(
-                    f"⚠️ [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12"
+                    f"[WARN] [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12"
                 )
                 print(
-                    f"⚠️ [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
+                    f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
                 )
 
         except AttributeError as e:
@@ -1324,7 +1324,7 @@ def main():
         cargar_main_window_con_seguridad(user_data, modulos_permitidos)
 
     def on_login_failed(error_message):
-        print(f"❌ [LOGIN] Autenticación fallida: {error_message}")
+        print(f"[ERROR] [LOGIN] Autenticación fallida: {error_message}")
 
     login_dialog.login_successful.connect(on_login_success)
     login_dialog.login_failed.connect(on_login_failed)

@@ -30,8 +30,8 @@ def test_herrajes_view():
         vista.resize(1200, 800)
         vista.show()
 
-        print("✅ Vista de herrajes cargada correctamente")
-        print("📊 Funcionalidades disponibles:")
+        print("[CHECK] Vista de herrajes cargada correctamente")
+        print("[CHART] Funcionalidades disponibles:")
         print("   - Búsqueda y filtros")
         print("   - Paginación")
         print("   - Estadísticas en tiempo real")
@@ -43,7 +43,7 @@ def test_herrajes_view():
         sys.exit(app.exec())
 
     except Exception as e:
-        print(f"❌ Error al cargar la vista: {e}")
+        print(f"[ERROR] Error al cargar la vista: {e}")
         return False
 
 

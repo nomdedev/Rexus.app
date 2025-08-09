@@ -62,7 +62,7 @@ class DiagnosticWidget(QWidget):
         header_layout = QHBoxLayout()
 
         # Ícono de error (usando emoji como fallback)
-        icon_label = QLabel("⚠️")
+        icon_label = QLabel("[WARN]")
         icon_label.setStyleSheet("font-size: 48px;")
         header_layout.addWidget(icon_label)
 
@@ -193,11 +193,11 @@ class DiagnosticWidget(QWidget):
 
         for diagnostic in diagnostics:
             status_icon = (
-                "✅"
+                "[CHECK]"
                 if diagnostic["status"] == "ok"
-                else "❌"
+                else "[ERROR]"
                 if diagnostic["status"] == "error"
-                else "⚠️"
+                else "[WARN]"
             )
             diagnostic_label = QLabel(f"{status_icon} {diagnostic['description']}")
 

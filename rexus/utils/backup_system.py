@@ -509,9 +509,9 @@ if __name__ == "__main__":
     
     for result in results:
         if result.success:
-            print(f"✅ Backup exitoso: {result.backup_path} ({result.size_mb:.2f} MB)")
+            print(f"[CHECK] Backup exitoso: {result.backup_path} ({result.size_mb:.2f} MB)")
         else:
-            print(f"❌ Error en backup: {result.message}")
+            print(f"[ERROR] Error en backup: {result.message}")
     
     # Mostrar estadísticas
     stats = backup_manager.get_backup_statistics()

@@ -79,7 +79,7 @@ class SecurityConfigDialog(QDialog):
         tabs.addTab(self.create_account_security_tab(), "🛡️ Seguridad")
         
         # Tab 4: Actividad
-        tabs.addTab(self.create_activity_tab(), "📊 Actividad")
+        tabs.addTab(self.create_activity_tab(), "[CHART] Actividad")
         
         layout.addWidget(tabs)
         
@@ -89,7 +89,7 @@ class SecurityConfigDialog(QDialog):
         self.btn_save = QPushButton("💾 Guardar Cambios")
         self.btn_save.clicked.connect(self.save_changes)
         
-        self.btn_cancel = QPushButton("❌ Cancelar")
+        self.btn_cancel = QPushButton("[ERROR] Cancelar")
         self.btn_cancel.clicked.connect(self.reject)
         
         buttons_layout.addStretch()
@@ -115,7 +115,7 @@ class SecurityConfigDialog(QDialog):
         
         layout = QVBoxLayout(header)
         
-        title = QLabel("🔒 Configuración de Seguridad Avanzada")
+        title = QLabel("[LOCK] Configuración de Seguridad Avanzada")
         title.setStyleSheet("color: white; font-size: 18px; font-weight: bold; padding: 10px;")
         title.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
@@ -217,7 +217,7 @@ class SecurityConfigDialog(QDialog):
         self.btn_generate_2fa = QPushButton("🔄 Generar 2FA")
         self.btn_generate_2fa.clicked.connect(self.generate_2fa)
         
-        self.btn_disable_2fa = QPushButton("❌ Deshabilitar 2FA")
+        self.btn_disable_2fa = QPushButton("[ERROR] Deshabilitar 2FA")
         self.btn_disable_2fa.clicked.connect(self.disable_2fa)
         
         tfa_buttons.addWidget(self.btn_generate_2fa)
@@ -229,7 +229,7 @@ class SecurityConfigDialog(QDialog):
         self.tfa_code_input.setPlaceholderText("Código de 6 dígitos")
         self.tfa_code_input.setMaxLength(6)
         
-        self.btn_verify_2fa = QPushButton("✅ Verificar")
+        self.btn_verify_2fa = QPushButton("[CHECK] Verificar")
         self.btn_verify_2fa.clicked.connect(self.verify_2fa)
         
         verify_layout.addWidget(QLabel("Código de verificación:"))
@@ -364,18 +364,18 @@ class SecurityConfigDialog(QDialog):
             
             # Actualizar estado de 2FA
             if status.get('2fa_enabled', False):
-                self.tfa_status.setText("Estado: ✅ Habilitado")
+                self.tfa_status.setText("Estado: [CHECK] Habilitado")
                 self.tfa_status.setStyleSheet("color: green; font-weight: bold;")
                 self.tfa_config_group.setEnabled(False)
                 self.btn_disable_2fa.setEnabled(True)
             else:
-                self.tfa_status.setText("Estado: ❌ Deshabilitado")
+                self.tfa_status.setText("Estado: [ERROR] Deshabilitado")
                 self.tfa_status.setStyleSheet("color: red; font-weight: bold;")
                 self.btn_disable_2fa.setEnabled(False)
             
             # Actualizar estado de bloqueo
             if status.get('is_locked', False):
-                self.lockout_status.setText("🔒 Bloqueado")
+                self.lockout_status.setText("[LOCK] Bloqueado")
                 self.lockout_status.setStyleSheet("color: red; font-weight: bold;")
                 locked_until = status.get('locked_until')
                 if locked_until:
@@ -442,7 +442,7 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
         if result['issues']:
             requirements_text = "Requisitos faltantes:\n• " + "\n• ".join(result['issues'])
         else:
-            requirements_text = "✅ Todos los requisitos cumplidos"
+            requirements_text = "[CHECK] Todos los requisitos cumplidos"
         
         self.strength_requirements.setPlainText(requirements_text)
     
@@ -492,7 +492,7 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
                 QMessageBox.information(
                     self, 
                     "2FA Habilitado", 
-                    "✅ Two-Factor Authentication habilitado exitosamente"
+                    "[CHECK] Two-Factor Authentication habilitado exitosamente"
                 )
                 self.security_updated.emit(self.current_username, "2FA_ENABLED")
                 self.load_user_security_status()  # Recargar estado

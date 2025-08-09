@@ -294,7 +294,7 @@ class ModeloUsuariosRefactorizado:
         DEPRECADO: Usar obtener_todos_usuarios() o obtener_usuarios_paginados()
         """
         print(
-            "⚠️  Método deprecado. Usar obtener_todos_usuarios() o obtener_usuarios_paginados()"
+            "[WARN]  Método deprecado. Usar obtener_todos_usuarios() o obtener_usuarios_paginados()"
         )
         return self.obtener_todos_usuarios()
 
@@ -302,14 +302,14 @@ class ModeloUsuariosRefactorizado:
         """
         DEPRECADO: Usar buscar_usuarios()
         """
-        print("⚠️  Método deprecado. Usar buscar_usuarios()")
+        print("[WARN]  Método deprecado. Usar buscar_usuarios()")
         return self.buscar_usuarios(criterio)
 
     def obtener_estadisticas(self) -> Dict[str, Any]:
         """
         DEPRECADO: Usar obtener_estadisticas_usuarios()
         """
-        print("⚠️  Método deprecado. Usar obtener_estadisticas_usuarios()")
+        print("[WARN]  Método deprecado. Usar obtener_estadisticas_usuarios()")
         return self.obtener_estadisticas_usuarios()
 
     def validar_usuario_duplicado(self, username: str, email: str) -> Dict[str, bool]:
@@ -317,7 +317,7 @@ class ModeloUsuariosRefactorizado:
         DEPRECADO: Usar verificar_unicidad_username() y verificar_unicidad_email() por separado
         """
         print(
-            "⚠️  Método deprecado. Usar verificar_unicidad_username() y verificar_unicidad_email()"
+            "[WARN]  Método deprecado. Usar verificar_unicidad_username() y verificar_unicidad_email()"
         )
         return {
             "username_disponible": self.verificar_unicidad_username(username),

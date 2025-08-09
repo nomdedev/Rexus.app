@@ -93,7 +93,7 @@ def actualizar_obras_existentes():
                 ),
             )
 
-            print(f"  ✅ Obra '{nombre}' - Código: {codigo}")
+            print(f"  [CHECK] Obra '{nombre}' - Código: {codigo}")
             print(f"     📅 Fecha medición: {fecha_medicion}")
             print(f"     📅 Fecha colocación: {fecha_colocacion}")
 
@@ -111,7 +111,7 @@ def actualizar_obras_existentes():
         """)
 
         todas_obras = cursor.fetchall()
-        print(f"\n📊 Resumen de todas las obras ({len(todas_obras)}):")
+        print(f"\n[CHART] Resumen de todas las obras ({len(todas_obras)}):")
         for obra in todas_obras:
             codigo, nombre, cliente, f_medicion, f_colocacion = obra
             print(f"  • {codigo} - {nombre} ({cliente})")
@@ -121,7 +121,7 @@ def actualizar_obras_existentes():
         return True
 
     except Exception as e:
-        print(f"❌ Error actualizando obras: {e}")
+        print(f"[ERROR] Error actualizando obras: {e}")
         import traceback
 
         traceback.print_exc()
@@ -236,7 +236,7 @@ def generar_cargas_material_obras():
                 )
 
                 print(
-                    f"  ✅ {codigo_carga}: {cantidad} {unidad} de {mat_nombre} - {estado_carga}"
+                    f"  [CHECK] {codigo_carga}: {cantidad} {unidad} de {mat_nombre} - {estado_carga}"
                 )
 
         db.commit()
@@ -253,9 +253,9 @@ def generar_cargas_material_obras():
         resumen = cursor.fetchone()
         total, entregadas, en_proceso, pendientes = resumen
 
-        print(f"\n📊 Resumen de cargas de material:")
+        print(f"\n[CHART] Resumen de cargas de material:")
         print(f"  📦 Total generadas: {total}")
-        print(f"  ✅ Entregadas: {entregadas}")
+        print(f"  [CHECK] Entregadas: {entregadas}")
         print(f"  🔄 En proceso: {en_proceso}")
         print(f"  ⏳ Pendientes: {pendientes}")
 
@@ -263,7 +263,7 @@ def generar_cargas_material_obras():
         return True
 
     except Exception as e:
-        print(f"❌ Error generando cargas de material: {e}")
+        print(f"[ERROR] Error generando cargas de material: {e}")
         import traceback
 
         traceback.print_exc()
@@ -271,7 +271,7 @@ def generar_cargas_material_obras():
 
 
 if __name__ == "__main__":
-    print("🚀 Iniciando actualización completa de obras...")
+    print("[ROCKET] Iniciando actualización completa de obras...")
 
     # Actualizar obras existentes
     if actualizar_obras_existentes():
@@ -285,4 +285,4 @@ if __name__ == "__main__":
         print("  3. Ajustar cargas de material según necesidades")
         print("  4. Probar el flujo completo en la aplicación")
     else:
-        print("❌ Error en la actualización. Revise los logs.")
+        print("[ERROR] Error en la actualización. Revise los logs.")

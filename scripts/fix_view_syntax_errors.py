@@ -39,15 +39,15 @@ class ViewSyntaxFixer:
         """Corrige comentarios XSS mal ubicados dentro de strings."""
         # Buscar patrones donde los comentarios XSS rompen strings
         # Patrón 1: Comentarios dentro de strings de CSS/HTML
-        pattern1 = r'(".*?)\s*#\s*🔒.*?XSS.*?\n\s*#.*?\n\s*#.*?\n\s*([^"]*")'
+        pattern1 = r'(".*?)\s*#\s*[LOCK].*?XSS.*?\n\s*#.*?\n\s*#.*?\n\s*([^"]*")'
         content = re.sub(pattern1, r'\1\2', content, flags=re.DOTALL)
         
         # Patrón 2: Comentarios que interrumpen cadenas de texto
-        pattern2 = r':\s*"\s*#\s*🔒.*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*([^"]*")'
+        pattern2 = r':\s*"\s*#\s*[LOCK].*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*([^"]*")'
         content = re.sub(pattern2, r': "\1', content, flags=re.DOTALL)
         
         # Patrón 3: Comentarios en medio de parámetros de función
-        pattern3 = r':\s*\n\s*#\s*🔒.*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*"'
+        pattern3 = r':\s*\n\s*#\s*[LOCK].*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*"'
         content = re.sub(pattern3, r': "', content, flags=re.DOTALL)
         
         return content
@@ -62,7 +62,7 @@ class ViewSyntaxFixer:
             line = lines[i]
             
             # Buscar líneas que terminan con ": y tienen comentarios después
-            if ('":' in line or '": ' in line) and '🔒' in line:
+            if ('":' in line or '": ' in line) and '[LOCK]' in line:
                 # Extraer la parte antes del comentario
                 parts = line.split('#')
                 if parts:

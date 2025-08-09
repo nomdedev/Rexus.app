@@ -256,13 +256,13 @@ class ReservaDialog(QDialog):
         self.buttons_layout.addStretch()
 
         # Botón cancelar
-        self.cancelar_btn = QPushButton("❌ Cancelar")
+        self.cancelar_btn = QPushButton("[ERROR] Cancelar")
         self.cancelar_btn.setObjectName("cancelar")
         self.cancelar_btn.clicked.connect(self.reject)
         self.buttons_layout.addWidget(self.cancelar_btn)
 
         # Botón aceptar
-        self.aceptar_btn = QPushButton("✅ Crear Reserva")
+        self.aceptar_btn = QPushButton("[CHECK] Crear Reserva")
         self.aceptar_btn.clicked.connect(self.accept_reserva)
         self.buttons_layout.addWidget(self.aceptar_btn)
 

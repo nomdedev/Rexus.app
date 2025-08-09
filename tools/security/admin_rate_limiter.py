@@ -33,7 +33,7 @@ class RateLimiterAdmin:
     
     def __init__(self):
         if not RATE_LIMITER_AVAILABLE:
-            print("❌ [ERROR] Rate limiter no disponible")
+            print("[ERROR] [ERROR] Rate limiter no disponible")
             sys.exit(1)
         
         self.rate_limiter = get_rate_limiter()
@@ -67,7 +67,7 @@ class RateLimiterAdmin:
         
         stats = self.rate_limiter.get_statistics()
         
-        print(f"📊 RESUMEN GENERAL:")
+        print(f"[CHART] RESUMEN GENERAL:")
         print(f"   Usuarios rastreados: {stats['total_tracked_users']}")
         print(f"   Usuarios bloqueados: {stats['currently_blocked']}")
         print(f"   Intentos recientes (1h): {stats['recent_attempts_1h']}")
@@ -79,7 +79,7 @@ class RateLimiterAdmin:
         
         # Mostrar actividad reciente si hay
         if stats['recent_attempts_1h'] > 0:
-            print(f"\n⚠️  ALERTA: {stats['recent_attempts_1h']} intentos en la última hora")
+            print(f"\n[WARN]  ALERTA: {stats['recent_attempts_1h']} intentos en la última hora")
             print(f"           Posible actividad de fuerza bruta")
     
     def list_blocked_users(self):
@@ -105,10 +105,10 @@ class RateLimiterAdmin:
                 })
         
         if not blocked_users:
-            print("✅ No hay usuarios bloqueados actualmente")
+            print("[CHECK] No hay usuarios bloqueados actualmente")
             return
         
-        print(f"🔒 USUARIOS BLOQUEADOS ({len(blocked_users)}):")
+        print(f"[LOCK] USUARIOS BLOQUEADOS ({len(blocked_users)}):")
         print(f"   {'Usuario':<20} {'Fallos':<8} {'Tiempo Restante':<15} {'Bloqueado Hasta'}")
         print(f"   {'-'*20} {'-'*8} {'-'*15} {'-'*20}")
         
@@ -122,7 +122,7 @@ class RateLimiterAdmin:
         try:
             username = input("\nIngrese nombre de usuario: ").strip()
             if not username:
-                print("❌ Nombre de usuario requerido")
+                print("[ERROR] Nombre de usuario requerido")
                 return
             
             print(f"\n" + "="*50)
@@ -132,7 +132,7 @@ class RateLimiterAdmin:
             info = self.rate_limiter.get_lockout_info(username)
             
             print(f"👤 USUARIO: {username}")
-            print(f"   Estado: {'🔒 BLOQUEADO' if info['is_blocked'] else '✅ ACTIVO'}")
+            print(f"   Estado: {'[LOCK] BLOQUEADO' if info['is_blocked'] else '[CHECK] ACTIVO'}")
             print(f"   Fallos consecutivos: {info['consecutive_failures']}")
             print(f"   Intentos restantes: {info['remaining_attempts']}")
             print(f"   Intentos recientes (1h): {info['recent_attempts']}")
@@ -159,7 +159,7 @@ class RateLimiterAdmin:
         try:
             username = input("\nIngrese nombre de usuario a resetear: ").strip()
             if not username:
-                print("❌ Nombre de usuario requerido")
+                print("[ERROR] Nombre de usuario requerido")
                 return
             
             # Verificar si el usuario existe en el sistema
@@ -172,7 +172,7 @@ class RateLimiterAdmin:
             print(f"\n📋 INFORMACIÓN ACTUAL:")
             print(f"   Usuario: {username}")
             print(f"   Fallos consecutivos: {info['consecutive_failures']}")
-            print(f"   Estado: {'🔒 BLOQUEADO' if info['is_blocked'] else '✅ ACTIVO'}")
+            print(f"   Estado: {'[LOCK] BLOQUEADO' if info['is_blocked'] else '[CHECK] ACTIVO'}")
             
             confirm = input(f"\n¿Confirma resetear intentos de '{username}'? [y/N]: ").strip().lower()
             
@@ -183,10 +183,10 @@ class RateLimiterAdmin:
                 # Resetear intentos
                 self.rate_limiter.reset_user_attempts(username, admin_user)
                 
-                print(f"✅ Intentos de '{username}' reseteados exitosamente")
+                print(f"[CHECK] Intentos de '{username}' reseteados exitosamente")
                 print(f"   Acción registrada en auditoría por usuario: {admin_user}")
             else:
-                print("❌ Operación cancelada")
+                print("[ERROR] Operación cancelada")
                 
         except KeyboardInterrupt:
             print("\n[INFO] Operación cancelada")
@@ -206,7 +206,7 @@ class RateLimiterAdmin:
         print(f"   Multiplicador progresivo: {config.progressive_multiplier}x")
         print(f"   Limpieza automática: {config.cleanup_hours} horas")
         
-        print(f"\n📊 ESCALACIÓN DE BLOQUEOS:")
+        print(f"\n[CHART] ESCALACIÓN DE BLOQUEOS:")
         print(f"   1er bloqueo: {config.base_lockout_minutes} min")
         print(f"   2do bloqueo: {config.base_lockout_minutes * config.progressive_multiplier} min")
         print(f"   3er bloqueo: {config.base_lockout_minutes * (config.progressive_multiplier ** 2)} min")
@@ -216,7 +216,7 @@ class RateLimiterAdmin:
         data_file = self.rate_limiter.data_file
         print(f"\n💾 PERSISTENCIA:")
         print(f"   Archivo de datos: {data_file}")
-        print(f"   Existe: {'✅ Sí' if data_file.exists() else '❌ No'}")
+        print(f"   Existe: {'[CHECK] Sí' if data_file.exists() else '[ERROR] No'}")
         if data_file.exists():
             size_kb = data_file.stat().st_size / 1024
             print(f"   Tamaño: {size_kb:.1f} KB")
@@ -228,18 +228,18 @@ class RateLimiterAdmin:
         print("="*50)
         
         before_count = len(self.rate_limiter.attempts)
-        print(f"📊 Registros antes de limpieza: {before_count}")
+        print(f"[CHART] Registros antes de limpieza: {before_count}")
         
         self.rate_limiter._cleanup_old_records()
         
         after_count = len(self.rate_limiter.attempts)
         cleaned = before_count - after_count
         
-        print(f"📊 Registros después de limpieza: {after_count}")
+        print(f"[CHART] Registros después de limpieza: {after_count}")
         print(f"🧹 Registros eliminados: {cleaned}")
         
         if cleaned > 0:
-            print(f"✅ Limpieza completada - {cleaned} registros antiguos eliminados")
+            print(f"[CHECK] Limpieza completada - {cleaned} registros antiguos eliminados")
         else:
             print(f"ℹ️  No hay registros antiguos para limpiar")
     
@@ -269,7 +269,7 @@ class RateLimiterAdmin:
                     print("\n👋 Saliendo del administrador de rate limiter")
                     break
                 else:
-                    print("❌ Opción inválida. Seleccione 0-6")
+                    print("[ERROR] Opción inválida. Seleccione 0-6")
                 
                 # Pausa para leer resultado
                 if choice != "0":

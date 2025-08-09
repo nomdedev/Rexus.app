@@ -62,7 +62,7 @@ def test_codigo_especifico():
             resultados = cursor.fetchall()
             
             if resultados:
-                print(f"   ✅ Encontradas {len(resultados)} coincidencias:")
+                print(f"   [CHECK] Encontradas {len(resultados)} coincidencias:")
                 
                 total_cantidad = 0
                 total_importe = 0
@@ -70,7 +70,7 @@ def test_codigo_especifico():
                 for obra_id, obra_nombre, detalle, cantidad, precio_unit, precio_total in resultados:
                     print(f"      🏗️  Obra {obra_id}: {obra_nombre}")
                     print(f"         📦 {detalle}")
-                    print(f"         📊 Cantidad: {cantidad}, Precio: ${precio_unit}, Total: ${precio_total}")
+                    print(f"         [CHART] Cantidad: {cantidad}, Precio: ${precio_unit}, Total: ${precio_total}")
                     
                     if cantidad:
                         total_cantidad += float(cantidad)
@@ -80,19 +80,19 @@ def test_codigo_especifico():
                 print(f"   💰 TOTAL: {total_cantidad} unidades, ${total_importe:.2f}")
                 
             else:
-                print(f"   ❌ No se encontraron obras para el código {codigo}")
+                print(f"   [ERROR] No se encontraron obras para el código {codigo}")
         
         print("\n3. Verificación de la funcionalidad:")
-        print("   ✅ Query por código específico implementada")
-        print("   ✅ Búsqueda exacta (no aproximada)")
-        print("   ✅ Relación directa inventario-obras creada")
-        print("   ✅ Cada código muestra solo sus obras asociadas")
+        print("   [CHECK] Query por código específico implementada")
+        print("   [CHECK] Búsqueda exacta (no aproximada)")
+        print("   [CHECK] Relación directa inventario-obras creada")
+        print("   [CHECK] Cada código muestra solo sus obras asociadas")
         
         conn.close()
         print("\n🎉 ¡Test de funcionalidad corregida completado!")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

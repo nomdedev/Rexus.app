@@ -34,7 +34,7 @@ def unificar_modulo_logistica():
             for row in resultado_inicial:
                 print(f"   - '{row[0]}': {row[1]} registros")
         else:
-            print("   ❌ No se encontraron registros de Logística")
+            print("   [ERROR] No se encontraron registros de Logística")
             return False
 
         # 2. Actualizar registros de "Logistica" (sin tilde) a "Logística" (con tilde)
@@ -47,7 +47,7 @@ def unificar_modulo_logistica():
 
         # Ejecutar la actualización
         resultado_update = db.ejecutar_query(query_update)
-        print("   ✅ Query de actualización ejecutada")
+        print("   [CHECK] Query de actualización ejecutada")
 
         # 3. Verificar resultado final
         print("\n3. Verificando resultado final...")
@@ -62,19 +62,19 @@ def unificar_modulo_logistica():
                     total_logistica = row[1]
 
             if len(resultado_final) == 1 and resultado_final[0][0] == 'Logística':
-                print(f"\n✅ UNIFICACIÓN EXITOSA")
+                print(f"\n[CHECK] UNIFICACIÓN EXITOSA")
                 print(f"   - Solo queda 'Logística' con {total_logistica} registros")
                 print(f"   - Duplicado 'Logistica' eliminado")
                 return True
             else:
-                print(f"\n⚠️  Aún hay múltiples registros")
+                print(f"\n[WARN]  Aún hay múltiples registros")
                 return False
         else:
-            print("   ❌ No se encontraron registros después de la actualización")
+            print("   [ERROR] No se encontraron registros después de la actualización")
             return False
 
     except Exception as e:
-        print(f"\n❌ Error durante la unificación: {e}")
+        print(f"\n[ERROR] Error durante la unificación: {e}")
         traceback.print_exc()
         return False
 def verificar_otros_duplicados():
@@ -116,21 +116,21 @@ from core.database import DatabaseConnection
             duplicados_encontrados = False
             for normalizado, modulos in grupos.items():
                 if len(modulos) > 1:
-                    print(f"\n⚠️  Posibles duplicados para '{normalizado}':")
+                    print(f"\n[WARN]  Posibles duplicados para '{normalizado}':")
                     for modulo, count in modulos:
                         print(f"   - '{modulo}': {count} registros")
                     duplicados_encontrados = True
 
             if not duplicados_encontrados:
-                print("✅ No se encontraron otros módulos duplicados")
+                print("[CHECK] No se encontraron otros módulos duplicados")
 
             return not duplicados_encontrados
         else:
-            print("❌ No se pudieron obtener los módulos")
+            print("[ERROR] No se pudieron obtener los módulos")
             return False
 
     except Exception as e:
-        print(f"❌ Error verificando duplicados: {e}")
+        print(f"[ERROR] Error verificando duplicados: {e}")
         return False
 
 def main():
@@ -147,15 +147,15 @@ def main():
     print("\n" + "=" * 50)
     print("RESUMEN DE LA UNIFICACIÓN")
     print("=" * 50)
-    print(f"Logística unificada: {'✅' if exito_logistica else '❌'}")
-    print(f"Sin otros duplicados: {'✅' if sin_otros_duplicados else '❌'}")
+    print(f"Logística unificada: {'[CHECK]' if exito_logistica else '[ERROR]'}")
+    print(f"Sin otros duplicados: {'[CHECK]' if sin_otros_duplicados else '[ERROR]'}")
 
     if exito_logistica and sin_otros_duplicados:
         print("\n🎉 UNIFICACIÓN COMPLETADA EXITOSAMENTE")
         print("   - Base de datos limpia de duplicados")
         print("   - El test automático debería pasar al 100% ahora")
     else:
-        print("\n⚠️  REVISAR PROBLEMAS DETECTADOS")
+        print("\n[WARN]  REVISAR PROBLEMAS DETECTADOS")
         if not exito_logistica:
             print("   - Problema con unificación de Logística")
         if not sin_otros_duplicados:

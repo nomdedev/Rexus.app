@@ -54,11 +54,11 @@ class BackupIntegration:
             self.scheduler.start_scheduler()
             
             self.initialized = True
-            print("✅ Sistema de backup inicializado correctamente")
+            print("[CHECK] Sistema de backup inicializado correctamente")
             return True
             
         except Exception as e:
-            print(f"❌ Error inicializando sistema de backup: {e}")
+            print(f"[ERROR] Error inicializando sistema de backup: {e}")
             return False
     
     def _create_default_config(self):
@@ -86,7 +86,7 @@ class BackupIntegration:
             Lista de resultados de backup
         """
         if not self.initialized or not self.backup_manager:
-            print("❌ Sistema de backup no inicializado")
+            print("[ERROR] Sistema de backup no inicializado")
             return []
         
         print("🔄 Iniciando backup manual...")
@@ -97,9 +97,9 @@ class BackupIntegration:
         total_count = len(results)
         
         if success_count == total_count:
-            print(f"✅ Backup completado exitosamente: {success_count}/{total_count} bases de datos")
+            print(f"[CHECK] Backup completado exitosamente: {success_count}/{total_count} bases de datos")
         else:
-            print(f"⚠️ Backup completado con errores: {success_count}/{total_count} bases de datos")
+            print(f"[WARN] Backup completado con errores: {success_count}/{total_count} bases de datos")
         
         return results
     
@@ -114,13 +114,13 @@ class BackupIntegration:
             Resultado del backup o None si hay error
         """
         if not self.initialized or not self.backup_manager:
-            print("❌ Sistema de backup no inicializado")
+            print("[ERROR] Sistema de backup no inicializado")
             return None
         
         db_connections = self.backup_manager.get_database_connections()
         
         if database_name not in db_connections:
-            print(f"❌ Base de datos no encontrada: {database_name}")
+            print(f"[ERROR] Base de datos no encontrada: {database_name}")
             return None
         
         db_path = db_connections[database_name]
@@ -129,9 +129,9 @@ class BackupIntegration:
         result = self.backup_manager.backup_single_database(database_name, db_path)
         
         if result.success:
-            print(f"✅ Backup de {database_name} completado: {result.backup_path}")
+            print(f"[CHECK] Backup de {database_name} completado: {result.backup_path}")
         else:
-            print(f"❌ Error en backup de {database_name}: {result.message}")
+            print(f"[ERROR] Error en backup de {database_name}: {result.message}")
         
         return result
     
@@ -171,13 +171,13 @@ class BackupIntegration:
             True si se restauró correctamente, False si hubo error
         """
         if not self.initialized or not self.backup_manager:
-            print("❌ Sistema de backup no inicializado")
+            print("[ERROR] Sistema de backup no inicializado")
             return False
         
         db_connections = self.backup_manager.get_database_connections()
         
         if database_name not in db_connections:
-            print(f"❌ Base de datos no encontrada: {database_name}")
+            print(f"[ERROR] Base de datos no encontrada: {database_name}")
             return False
         
         target_path = db_connections[database_name]
@@ -186,21 +186,21 @@ class BackupIntegration:
         success = self.backup_manager.restore_database(backup_path, target_path)
         
         if success:
-            print(f"✅ Base de datos {database_name} restaurada correctamente")
+            print(f"[CHECK] Base de datos {database_name} restaurada correctamente")
         else:
-            print(f"❌ Error restaurando base de datos {database_name}")
+            print(f"[ERROR] Error restaurando base de datos {database_name}")
         
         return success
     
     def cleanup_old_backups(self):
         """Limpia backups antiguos según la política de retención."""
         if not self.initialized or not self.backup_manager:
-            print("❌ Sistema de backup no inicializado")
+            print("[ERROR] Sistema de backup no inicializado")
             return
         
         print("🧹 Ejecutando limpieza de backups antiguos...")
         self.backup_manager.cleanup_old_backups()
-        print("✅ Limpieza completada")
+        print("[CHECK] Limpieza completada")
     
     def update_config(self, **kwargs):
         """
@@ -231,7 +231,7 @@ class BackupIntegration:
                 print("🔄 Sistema de backup reinicializado con nueva configuración")
             
         except Exception as e:
-            print(f"❌ Error actualizando configuración: {e}")
+            print(f"[ERROR] Error actualizando configuración: {e}")
     
     def get_config(self) -> Dict:
         """
@@ -247,7 +247,7 @@ class BackupIntegration:
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            print(f"❌ Error leyendo configuración: {e}")
+            print(f"[ERROR] Error leyendo configuración: {e}")
             return {}
     
     def shutdown(self):
@@ -366,17 +366,17 @@ def backup_before_critical_operation(operation_name: str = "operación crítica"
     backup_system = get_backup_system()
     if not backup_system.is_running():
         if not backup_system.initialize():
-            print("❌ No se pudo inicializar el sistema de backup")
+            print("[ERROR] No se pudo inicializar el sistema de backup")
             return False
     
     results = backup_system.backup_now()
     success_count = sum(1 for r in results if r.success)
     
     if success_count == len(results):
-        print(f"✅ Backup de seguridad completado antes de {operation_name}")
+        print(f"[CHECK] Backup de seguridad completado antes de {operation_name}")
         return True
     else:
-        print(f"⚠️ Backup de seguridad completado con errores antes de {operation_name}")
+        print(f"[WARN] Backup de seguridad completado con errores antes de {operation_name}")
         return False
 
 

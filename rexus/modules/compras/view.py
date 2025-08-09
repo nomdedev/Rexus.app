@@ -121,7 +121,7 @@ class ComprasView(QWidget):
         
         # Pestaña de estadísticas
         panel_estadisticas = self.crear_panel_estadisticas()
-        tab_widget.addTab(panel_estadisticas, "📊 Estadísticas")
+        tab_widget.addTab(panel_estadisticas, "[CHART] Estadísticas")
         
         layout.addWidget(tab_widget)
 
@@ -173,11 +173,11 @@ class ComprasView(QWidget):
         self.combo_estado.addItems([
             "📋 Todos los estados",
             "⏳ PENDIENTE",
-            "✅ APROBADA",
+            "[CHECK] APROBADA",
             "🚚 RECIBIDA",
-            "❌ CANCELADA"
+            "[ERROR] CANCELADA"
         ])
-        self.combo_estado.setToolTip("📊 Filtrar órdenes por estado")
+        self.combo_estado.setToolTip("[CHART] Filtrar órdenes por estado")
         self.combo_estado.setStyleSheet("""
             QComboBox {
                 border: 2px solid #ced4da;
@@ -235,8 +235,8 @@ class ComprasView(QWidget):
         layout.addWidget(self.btn_actualizar)
         
         # Botón de reportes
-        self.btn_reporte = StandardComponents.create_info_button("📊 Reporte")
-        self.btn_reporte.setToolTip("📊 Generar reporte de compras")
+        self.btn_reporte = StandardComponents.create_info_button("[CHART] Reporte")
+        self.btn_reporte.setToolTip("[CHART] Generar reporte de compras")
         self.btn_reporte.clicked.connect(self.exportar_reporte_compras)
         layout.addWidget(self.btn_reporte)
         
@@ -328,7 +328,7 @@ class ComprasView(QWidget):
         scroll_layout = QVBoxLayout(scroll_widget)
         
         # === ESTADÍSTICAS GENERALES ===
-        stats_general = QGroupBox("📊 Estadísticas Generales")
+        stats_general = QGroupBox("[CHART] Estadísticas Generales")
         stats_general.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;

@@ -27,12 +27,12 @@ class TestVisualNotificaciones(QMainWindow):
         try:
             self.db = ObrasDatabaseConnection()
             self.db.conectar()
-            print("✅ Conectado a base de datos")
+            print("[CHECK] Conectado a base de datos")
 
             self.integracion_model = IntegracionObrasModel(self.db)
-            print("✅ Modelo de integración inicializado")
+            print("[CHECK] Modelo de integración inicializado")
         except Exception as e:
-            print(f"❌ Error al conectar: {e}")
+            print(f"[ERROR] Error al conectar: {e}")
             QMessageBox.critical(self, "Error de conexión",
                                 f"No se pudo conectar a la base de datos: {str(e)}")
 
@@ -143,10 +143,10 @@ class TestVisualNotificaciones(QMainWindow):
         # Estado de conexión
         estado_conexion = QLabel("Estado de conexión: Conectado a la base de datos")
         if not self.db or not self.integracion_model:
-            estado_conexion.setText("Estado de conexión: ❌ Error de conexión")
+            estado_conexion.setText("Estado de conexión: [ERROR] Error de conexión")
             estado_conexion.setStyleSheet("color: red;")
         else:
-            estado_conexion.setText("Estado de conexión: ✅ Conectado correctamente")
+            estado_conexion.setText("Estado de conexión: [CHECK] Conectado correctamente")
             estado_conexion.setStyleSheet("color: green;")
 
         main_layout.addWidget(estado_conexion)
@@ -180,7 +180,7 @@ class TestVisualNotificaciones(QMainWindow):
                 texto = f"{id_obra} - {nombre} ({cliente})"
                 self.obras_combo.addItem(texto, id_obra)
         except Exception as e:
-            print(f"❌ Error al cargar obras: {e}")
+            print(f"[ERROR] Error al cargar obras: {e}")
             traceback.print_exc()
 
     def verificar_obra_seleccionada(self):
@@ -199,7 +199,7 @@ class TestVisualNotificaciones(QMainWindow):
 
             # Mostrar detalles
             txt = f"🏗️ OBRA ID: {id_obra}\n"
-            txt += f"📊 Estado general: {estado['estado_general']}\n"
+            txt += f"[CHART] Estado general: {estado['estado_general']}\n"
             txt += f"🚦 Puede avanzar: {estado.get('puede_avanzar', False)}\n\n"
 
             # Detalles por módulo
@@ -226,9 +226,9 @@ class TestVisualNotificaciones(QMainWindow):
 
             self.detalles_text.setPlainText(txt)
         except Exception as e:
-            print(f"❌ Error al verificar obra: {e}")
+            print(f"[ERROR] Error al verificar obra: {e}")
             traceback.print_exc()
-            self.detalles_text.setPlainText(f"❌ ERROR: {str(e)}")
+            self.detalles_text.setPlainText(f"[ERROR] ERROR: {str(e)}")
 
     def intentar_avanzar_estado(self):
         """Intentar avanzar el estado de la obra seleccionada"""
@@ -263,7 +263,7 @@ class TestVisualNotificaciones(QMainWindow):
                 QMessageBox.warning(self, "No se pudo actualizar",
                                    f"No se pudo actualizar el estado: {resultado.get('mensaje', 'Error desconocido')}")
         except Exception as e:
-            print(f"❌ Error al intentar avanzar estado: {e}")
+            print(f"[ERROR] Error al intentar avanzar estado: {e}")
             traceback.print_exc()
             QMessageBox.critical(self, "Error", f"Error al intentar actualizar estado: {str(e)}")
 
@@ -316,7 +316,7 @@ from PyQt6.QtWidgets import (
 )
 
         except Exception as e:
-            print(f"❌ Error al insertar notificación: {e}")
+            print(f"[ERROR] Error al insertar notificación: {e}")
 
     def closeEvent(self, event):
         """Evento de cierre de la ventana"""
@@ -324,7 +324,7 @@ from PyQt6.QtWidgets import (
         if self.db:
             try:
                 self.db.cerrar_conexion()
-                print("✅ Conexión a base de datos cerrada")
+                print("[CHECK] Conexión a base de datos cerrada")
             except:
                 pass
 

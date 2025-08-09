@@ -15,33 +15,33 @@ EXAMPLE_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'c
 def cargar_variables_entorno():
     print("\n🔍 Verificando archivo .env en la raíz del proyecto...")
     if os.path.exists(ROOT_DOTENV_PATH):
-        print(f"✅ Archivo .env encontrado en: {ROOT_DOTENV_PATH}")
+        print(f"[CHECK] Archivo .env encontrado en: {ROOT_DOTENV_PATH}")
         load_dotenv(dotenv_path=ROOT_DOTENV_PATH, override=True)
         return ROOT_DOTENV_PATH
     else:
-        print("❌ No se encontró ningún archivo .env en la raíz!")
+        print("[ERROR] No se encontró ningún archivo .env en la raíz!")
         return None
 
 def detectar_driver_odbc():
     print("\n🔌 Detectando controladores ODBC disponibles...")
     drivers = pyodbc.drivers()
     if not drivers:
-        print("❌ No se encontraron controladores ODBC. Instale un controlador ODBC para SQL Server.")
+        print("[ERROR] No se encontraron controladores ODBC. Instale un controlador ODBC para SQL Server.")
         return None
 
     print(f"Controladores disponibles: {drivers}")
 
     if "ODBC Driver 18 for SQL Server" in drivers:
-        print("✅ Usando: ODBC Driver 18 for SQL Server")
+        print("[CHECK] Usando: ODBC Driver 18 for SQL Server")
         return "ODBC Driver 18 for SQL Server"
     elif "ODBC Driver 17 for SQL Server" in drivers:
-        print("✅ Usando: ODBC Driver 17 for SQL Server")
+        print("[CHECK] Usando: ODBC Driver 17 for SQL Server")
         return "ODBC Driver 17 for SQL Server"
     elif "SQL Server" in drivers:
-        print("⚠️ Usando controlador antiguo: SQL Server (no recomendado)")
+        print("[WARN] Usando controlador antiguo: SQL Server (no recomendado)")
         return "SQL Server"
     else:
-        print("❌ No se encontró un controlador ODBC compatible para SQL Server")
+        print("[ERROR] No se encontró un controlador ODBC compatible para SQL Server")
         return drivers[0] if drivers else None
 
 
@@ -56,7 +56,7 @@ def verificar_conexion_bd(database_name):
     DB_PASSWORD = os.getenv("DB_PASSWORD", "")
 
     if not DB_SERVER:
-        print("❌ No se ha configurado la variable DB_SERVER")
+        print("[ERROR] No se ha configurado la variable DB_SERVER")
         return False
 
     print(f"Intentando conectar a: {DB_SERVER}, Base de datos: {database_name}")
@@ -80,21 +80,21 @@ def verificar_conexion_bd(database_name):
         row = cursor.fetchone()
         if row:
             version = row[0]
-            print(f"✅ Conexión exitosa a SQL Server: {version[:60]}...")
+            print(f"[CHECK] Conexión exitosa a SQL Server: {version[:60]}...")
         else:
-            print("✅ Conexión exitosa a SQL Server (versión no disponible)")
+            print("[CHECK] Conexión exitosa a SQL Server (versión no disponible)")
 
         cursor.execute("SELECT name FROM sys.databases WHERE name = ?", (database_name,))
         if cursor.fetchone():
-            print(f"✅ Base de datos '{database_name}' existe")
+            print(f"[CHECK] Base de datos '{database_name}' existe")
         else:
-            print(f"❌ La base de datos '{database_name}' no existe")
+            print(f"[ERROR] La base de datos '{database_name}' no existe")
 
         cursor.close()
         conn.close()
         return True
     except Exception as e:
-        print(f"❌ Error de conexión: {e}")
+        print(f"[ERROR] Error de conexión: {e}")
         print("\nDetalles del error:")
         traceback.print_exc()
         return False
@@ -104,7 +104,7 @@ def reparar_configuracion():
 
     # 1. Verificar que existe config.example.py para usar como base
     if not os.path.exists(EXAMPLE_DOTENV_PATH):
-        print("❌ No se encontró archivo de ejemplo config.example.py")
+        print("[ERROR] No se encontró archivo de ejemplo config.example.py")
         return False
 
     # 2. Crear .env en ubicación adecuada si no existe
@@ -113,9 +113,9 @@ def reparar_configuracion():
     if not os.path.exists(os.path.dirname(dotenv_path)):
         try:
             os.makedirs(os.path.dirname(dotenv_path))
-            print(f"✅ Directorio creado: {os.path.dirname(dotenv_path)}")
+            print(f"[CHECK] Directorio creado: {os.path.dirname(dotenv_path)}")
         except Exception as e:
-            print(f"❌ Error al crear directorio: {e}")
+            print(f"[ERROR] Error al crear directorio: {e}")
             dotenv_path = ROOT_DOTENV_PATH
 
     # 3. Si no existe .env, crear uno con valores predeterminados
@@ -139,15 +139,15 @@ DEFAULT_LANGUAGE=es
 DEFAULT_TIMEZONE=UTC-3
 NOTIFICATIONS_ENABLED=True
 """)
-            print(f"✅ Archivo .env creado en: {dotenv_path}")
-            print("⚠️ IMPORTANTE: Edite el archivo .env con los valores correctos de su servidor de base de datos")
+            print(f"[CHECK] Archivo .env creado en: {dotenv_path}")
+            print("[WARN] IMPORTANTE: Edite el archivo .env con los valores correctos de su servidor de base de datos")
             return True
         except Exception as e:
-            print(f"❌ Error al crear archivo .env: {e}")
+            print(f"[ERROR] Error al crear archivo .env: {e}")
             return False
     else:
         print(f"ℹ️ El archivo .env ya existe en: {dotenv_path}")
-        print("⚠️ Considere revisar y actualizar los valores de conexión manualmente")
+        print("[WARN] Considere revisar y actualizar los valores de conexión manualmente")
         return False
 
 def sugerir_soluciones(problema):

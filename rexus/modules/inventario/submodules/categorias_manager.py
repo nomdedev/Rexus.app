@@ -44,8 +44,7 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    from rexus.utils.data_sanitizer import DataSanitizer
-except ImportError:
+    except ImportError:
     try:
         from rexus.utils.unified_sanitizer import DataSanitizer
     except ImportError:

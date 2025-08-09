@@ -148,7 +148,7 @@ def get_cache_stats() -> Dict:
     with open(cache_file, "w", encoding="utf-8") as f:
         f.write(cache_system_code)
 
-    print(f"✅ Sistema de cache inteligente creado: {cache_file}")
+    print(f"[CHECK] Sistema de cache inteligente creado: {cache_file}")
     return True
 
 
@@ -260,7 +260,7 @@ def get_loader_stats() -> Dict:
     with open(lazy_file, "w", encoding="utf-8") as f:
         f.write(lazy_loader_code)
 
-    print(f"✅ Sistema de carga bajo demanda creado: {lazy_file}")
+    print(f"[CHECK] Sistema de carga bajo demanda creado: {lazy_file}")
     return True
 
 
@@ -408,15 +408,15 @@ def cleanup_backups(max_backups: int = 10) -> List[str]:
     with open(compression_file, "w", encoding="utf-8") as f:
         f.write(compression_code)
 
-    print(f"✅ Sistema de compresión de backups creado: {compression_file}")
+    print(f"[CHECK] Sistema de compresión de backups creado: {compression_file}")
 
     # Comprimir logs existentes como demostración
     try:
         backup_compressor = BackupCompressor()
         compressed_logs = backup_compressor.compress_logs()
-        print(f"✅ Comprimidos {len(compressed_logs)} archivos de log antiguos")
+        print(f"[CHECK] Comprimidos {len(compressed_logs)} archivos de log antiguos")
     except Exception as e:
-        print(f"⚠️ Error comprimiendo logs: {e}")
+        print(f"[WARN] Error comprimiendo logs: {e}")
 
     return True
 
@@ -438,13 +438,13 @@ def update_requirements():
         if "# Optimizations" not in current_content:
             with open("requirements_updated.txt", "a", encoding="utf-8") as f:
                 f.write("\n" + "\n".join(additional_requirements) + "\n")
-            print("✅ Dependencias de optimización añadidas")
+            print("[CHECK] Dependencias de optimización añadidas")
         else:
-            print("✅ Dependencias de optimización ya presentes")
+            print("[CHECK] Dependencias de optimización ya presentes")
 
         return True
     except Exception as e:
-        print(f"❌ Error actualizando requirements: {e}")
+        print(f"[ERROR] Error actualizando requirements: {e}")
         return False
 
 
@@ -480,24 +480,24 @@ class OptimizationManager:
         try:
             from .intelligent_cache import cache_instance
             self.cache_system = cache_instance
-            print("✅ Cache inteligente inicializado")
+            print("[CHECK] Cache inteligente inicializado")
         except ImportError:
-            print("⚠️ Cache inteligente no disponible")
+            print("[WARN] Cache inteligente no disponible")
         
         try:
             from .lazy_loader import lazy_loader, preload_essential_modules
             self.lazy_loader = lazy_loader
             preload_essential_modules()
-            print("✅ Carga bajo demanda inicializada")
+            print("[CHECK] Carga bajo demanda inicializada")
         except ImportError:
-            print("⚠️ Carga bajo demanda no disponible")
+            print("[WARN] Carga bajo demanda no disponible")
         
         try:
             from .backup_compressor import backup_compressor
             self.backup_compressor = backup_compressor
-            print("✅ Compresión de backups inicializada")
+            print("[CHECK] Compresión de backups inicializada")
         except ImportError:
-            print("⚠️ Compresión de backups no disponible")
+            print("[WARN] Compresión de backups no disponible")
     
     def get_performance_report(self) -> Dict[str, Any]:
         """Genera reporte de rendimiento"""
@@ -557,13 +557,13 @@ def get_optimization_report() -> Dict[str, Any]:
     with open(manager_file, "w", encoding="utf-8") as f:
         f.write(manager_code)
 
-    print(f"✅ Gestor de optimizaciones creado: {manager_file}")
+    print(f"[CHECK] Gestor de optimizaciones creado: {manager_file}")
     return True
 
 
 def main():
     """Función principal de implementación de optimizaciones"""
-    print("🚀 IMPLEMENTACIÓN DE OPTIMIZACIONES FINALES - REXUS.APP")
+    print("[ROCKET] IMPLEMENTACIÓN DE OPTIMIZACIONES FINALES - REXUS.APP")
     print("Implementando cache inteligente, carga bajo demanda y compresión...")
 
     # Crear directorio utils si no existe
@@ -584,28 +584,28 @@ def main():
     for name, func in optimizations:
         try:
             if func():
-                print(f"✅ {name} implementado correctamente")
+                print(f"[CHECK] {name} implementado correctamente")
                 implemented += 1
             else:
-                print(f"⚠️ {name} implementado con advertencias")
+                print(f"[WARN] {name} implementado con advertencias")
                 implemented += 1
         except Exception as e:
-            print(f"❌ Error implementando {name}: {e}")
+            print(f"[ERROR] Error implementando {name}: {e}")
 
     success_rate = (implemented / total * 100) if total > 0 else 0
 
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE OPTIMIZACIONES")
+    print("[CHART] RESUMEN DE OPTIMIZACIONES")
     print("=" * 60)
     print(
-        f"✅ Optimizaciones implementadas: {implemented}/{total} ({success_rate:.1f}%)"
+        f"[CHECK] Optimizaciones implementadas: {implemented}/{total} ({success_rate:.1f}%)"
     )
 
     if success_rate >= 80:
         print("🎉 OPTIMIZACIONES COMPLETADAS EXITOSAMENTE")
-        print("🚀 Sistema optimizado para máximo rendimiento")
+        print("[ROCKET] Sistema optimizado para máximo rendimiento")
     else:
-        print("⚠️ OPTIMIZACIONES PARCIALMENTE IMPLEMENTADAS")
+        print("[WARN] OPTIMIZACIONES PARCIALMENTE IMPLEMENTADAS")
         print("🔧 Revisar errores en implementación")
 
     # Guardar reporte de optimizaciones

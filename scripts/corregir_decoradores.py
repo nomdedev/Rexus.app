@@ -69,14 +69,14 @@ def corregir_decoradores_archivo(filepath):
         if contenido != contenido_original:
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(contenido)
-            print(f"✅ Corregido: {filepath}")
+            print(f"[CHECK] Corregido: {filepath}")
             return True
         else:
             print(f"⏭️ Sin cambios: {filepath}")
             return False
 
     except Exception as e:
-        print(f"❌ Error procesando {filepath}: {e}")
+        print(f"[ERROR] Error procesando {filepath}: {e}")
         return False
 
 

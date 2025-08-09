@@ -45,17 +45,17 @@ def test_inventario_interfaz_completa():
         # Importar vista
         from rexus.modules.inventario.view import InventarioView
 
-        print("✅ Componentes importados correctamente")
+        print("[CHECK] Componentes importados correctamente")
 
         # 3. Configurar conexión a base de datos
         print("\n🔌 Configurando conexión a base de datos...")
         db_connection = InventarioDatabaseConnection(auto_connect=True)
 
         if db_connection.connection:
-            print("✅ Conexión a base de datos establecida")
-            print(f"   📊 Base de datos: {db_connection.database}")
+            print("[CHECK] Conexión a base de datos establecida")
+            print(f"   [CHART] Base de datos: {db_connection.database}")
         else:
-            print("❌ Error en conexión a base de datos")
+            print("[ERROR] Error en conexión a base de datos")
             return False
 
         # 4. Test directo de consulta a base de datos
@@ -70,13 +70,13 @@ def test_inventario_interfaz_completa():
             tabla_existe = cursor.fetchone()
 
             if tabla_existe:
-                print("✅ Tabla 'inventario_perfiles' existe")
+                print("[CHECK] Tabla 'inventario_perfiles' existe")
 
                 # Contar registros
                 cursor.execute("SELECT COUNT(*) FROM inventario_perfiles")
                 result = cursor.fetchone()
                 total_registros = result[0] if result else 0
-                print(f"📊 Total de registros en tabla: {total_registros}")
+                print(f"[CHART] Total de registros en tabla: {total_registros}")
 
                 if total_registros > 0:
                     # Obtener algunos registros
@@ -90,7 +90,7 @@ def test_inventario_interfaz_completa():
                             f"   ID: {reg[0]}, Código: {reg[1]}, Descripción: {reg[2]}, Stock: {reg[3]}"
                         )
                 else:
-                    print("⚠️ La tabla existe pero está vacía")
+                    print("[WARN] La tabla existe pero está vacía")
 
                     # Insertar datos de prueba
                     print("📝 Insertando datos de prueba...")
@@ -140,10 +140,10 @@ def test_inventario_interfaz_completa():
                                 data,
                             )
                         except Exception as e:
-                            print(f"   ⚠️ Error insertando registro {data[0]}: {e}")
+                            print(f"   [WARN] Error insertando registro {data[0]}: {e}")
 
                     db_connection.connection.commit()
-                    print("✅ Datos de prueba insertados")
+                    print("[CHECK] Datos de prueba insertados")
 
                     # Verificar inserción
                     cursor.execute(
@@ -152,15 +152,15 @@ def test_inventario_interfaz_completa():
                     result = cursor.fetchone()
                     nuevos_registros = result[0] if result else 0
                     print(
-                        f"📊 Registros activos después de inserción: {nuevos_registros}"
+                        f"[CHART] Registros activos después de inserción: {nuevos_registros}"
                     )
 
             else:
-                print("❌ Tabla 'inventario_perfiles' NO existe")
+                print("[ERROR] Tabla 'inventario_perfiles' NO existe")
                 return False
 
         except Exception as e:
-            print(f"❌ Error en consulta directa: {e}")
+            print(f"[ERROR] Error en consulta directa: {e}")
             traceback.print_exc()
             return False
 
@@ -169,7 +169,7 @@ def test_inventario_interfaz_completa():
 
         # Crear modelo
         model = InventarioModel(db_connection=db_connection.connection)
-        print("✅ Modelo creado")
+        print("[CHECK] Modelo creado")
 
         # Crear vista principal en ventana
         main_window = QMainWindow()
@@ -184,19 +184,19 @@ def test_inventario_interfaz_completa():
         # Crear vista del inventario
         view = InventarioView()
         layout.addWidget(view)
-        print("✅ Vista creada e integrada")
+        print("[CHECK] Vista creada e integrada")
 
         # Crear controlador
         controller = InventarioController(
             model=model, view=view, db_connection=db_connection.connection
         )
-        print("✅ Controlador creado")
+        print("[CHECK] Controlador creado")
 
         # 6. Conectar vista con controlador
         print("\n🔗 Conectando vista con controlador...")
         view.controller = controller
         controller.view = view
-        print("✅ Vista y controlador conectados")
+        print("[CHECK] Vista y controlador conectados")
 
         # 7. Test del controlador - carga de datos
         print("\n🎮 Probando carga de datos desde el controlador...")
@@ -214,10 +214,10 @@ def test_inventario_interfaz_completa():
             filas = tabla.rowCount()
             columnas = tabla.columnCount()
 
-            print(f"📊 Tabla: {filas} filas x {columnas} columnas")
+            print(f"[CHART] Tabla: {filas} filas x {columnas} columnas")
 
             if filas > 0:
-                print("✅ La tabla contiene datos:")
+                print("[CHECK] La tabla contiene datos:")
 
                 # Mostrar encabezados
                 headers = []
@@ -234,14 +234,14 @@ def test_inventario_interfaz_completa():
                         row_data.append(item.text() if item else "")
                     print(f"   📌 Fila {fila + 1}: {row_data}")
 
-                print(f"✅ ÉXITO: La interfaz muestra {filas} productos correctamente")
+                print(f"[CHECK] ÉXITO: La interfaz muestra {filas} productos correctamente")
                 interfaz_exitosa = True
 
             else:
-                print("❌ La tabla está vacía - no se cargaron datos en la interfaz")
+                print("[ERROR] La tabla está vacía - no se cargaron datos en la interfaz")
                 interfaz_exitosa = False
         else:
-            print("❌ No se pudo acceder a la tabla de la interfaz")
+            print("[ERROR] No se pudo acceder a la tabla de la interfaz")
             interfaz_exitosa = False
 
         # 9. Mostrar ventana para inspección visual (opcional)
@@ -264,29 +264,29 @@ def test_inventario_interfaz_completa():
 
         # 10. Generar reporte final
         print("\n" + "=" * 80)
-        print("📊 REPORTE FINAL DEL TEST")
+        print("[CHART] REPORTE FINAL DEL TEST")
         print("=" * 80)
 
         if interfaz_exitosa:
             print(
-                "✅ ÉXITO TOTAL: El módulo inventario carga y muestra datos correctamente"
+                "[CHECK] ÉXITO TOTAL: El módulo inventario carga y muestra datos correctamente"
             )
-            print("   🔹 Conexión a base de datos: ✅ Funcional")
-            print("   🔹 Consulta de datos: ✅ Funcional")
-            print("   🔹 Modelo MVC: ✅ Funcional")
-            print("   🔹 Controlador: ✅ Funcional")
-            print("   🔹 Vista/Interfaz: ✅ Funcional")
-            print("   🔹 Carga en tabla: ✅ Funcional")
+            print("   🔹 Conexión a base de datos: [CHECK] Funcional")
+            print("   🔹 Consulta de datos: [CHECK] Funcional")
+            print("   🔹 Modelo MVC: [CHECK] Funcional")
+            print("   🔹 Controlador: [CHECK] Funcional")
+            print("   🔹 Vista/Interfaz: [CHECK] Funcional")
+            print("   🔹 Carga en tabla: [CHECK] Funcional")
             return True
         else:
-            print("❌ FALLO: El módulo tiene problemas en la carga o visualización")
+            print("[ERROR] FALLO: El módulo tiene problemas en la carga o visualización")
             print("   🔹 Revisar métodos de carga de datos en el controlador")
             print("   🔹 Verificar integración vista-controlador")
             print("   🔹 Comprobar estructura de datos devueltos por el modelo")
             return False
 
     except Exception as e:
-        print(f"\n❌ ERROR CRÍTICO EN EL TEST: {e}")
+        print(f"\n[ERROR] ERROR CRÍTICO EN EL TEST: {e}")
         traceback.print_exc()
         return False
 

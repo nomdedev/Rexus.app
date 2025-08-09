@@ -35,14 +35,14 @@ def test_connection(database):
         conn = pyodbc.connect(conn_str, timeout=5)
         cursor = conn.cursor()
         cursor.execute("SELECT 1")
-        print(f"✅ Conexión exitosa a {database}")
+        print(f"[CHECK] Conexión exitosa a {database}")
         conn.close()
     except Exception as e:
-        print(f"❌ Error conectando a {database}: {e}")
+        print(f"[ERROR] Error conectando a {database}: {e}")
 
 if __name__ == "__main__":
     for nombre, db in bases.items():
         if db:
             test_connection(db)
         else:
-            print(f"⚠️ Variable {nombre} no definida en .env")
+            print(f"[WARN] Variable {nombre} no definida en .env")

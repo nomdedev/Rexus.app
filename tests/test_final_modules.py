@@ -68,7 +68,7 @@ def main():
     print(f"FALLIDOS: {fail_count}")
     
     if fail_count == 0:
-        print("\n✓ TODOS LOS MÓDULOS SE PUEDEN IMPORTAR CORRECTAMENTE")
+        print("\n[OK] TODOS LOS MÓDULOS SE PUEDEN IMPORTAR CORRECTAMENTE")
     else:
         print(f"\n✗ {fail_count} MÓDULOS TIENEN PROBLEMAS")
     

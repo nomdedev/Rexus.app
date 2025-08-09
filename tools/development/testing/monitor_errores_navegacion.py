@@ -71,11 +71,11 @@ def monitor_logs():
 
     except KeyboardInterrupt:
         print("\n" + "="*60)
-        print("📊 RESUMEN DE ERRORES DETECTADOS")
+        print("[CHART] RESUMEN DE ERRORES DETECTADOS")
         print("="*60)
 
         if errores_detectados:
-            print(f"❌ Total de errores/warnings detectados: {len(errores_detectados)}")
+            print(f"[ERROR] Total de errores/warnings detectados: {len(errores_detectados)}")
             print("\nDesglose por archivo:")
 
             file_counts = {}
@@ -105,7 +105,7 @@ def monitor_logs():
                     json.dump(reporte, f, indent=2, ensure_ascii=False)
                 print(f"\n💾 Reporte guardado en: tests/reports/monitor_errores_navegacion.json")
             except Exception as e:
-                print(f"⚠️ Error al guardar reporte: {e}")
+                print(f"[WARN] Error al guardar reporte: {e}")
 
         else:
             print("🎉 ¡No se detectaron errores durante la navegación!")
@@ -141,24 +141,24 @@ def main():
 
     # Verificar si la aplicación está ejecutándose
     if not check_app_running():
-        print("⚠️ No se detectó la aplicación ejecutándose.")
+        print("[WARN] No se detectó la aplicación ejecutándose.")
         print("💡 Asegúrese de que main.py esté ejecutándose antes de usar este monitor.")
         input("Presione Enter cuando haya iniciado la aplicación...")
 
     # Verificar que existen archivos de log
     log_dir = 'logs'
     if not os.path.exists(log_dir):
-        print(f"❌ Directorio de logs no encontrado: {log_dir}")
+        print(f"[ERROR] Directorio de logs no encontrado: {log_dir}")
         return
 
     print("📁 Monitoreando archivos de log:")
     log_files = ['app.log', 'app_json.log', 'error_inicio_ui.txt']
     for log_file in log_files:
         path = os.path.join(log_dir, log_file)
-        status = "✅" if os.path.exists(path) else "❌"
+        status = "[CHECK]" if os.path.exists(path) else "[ERROR]"
         print(f"  {status} {path}")
 
-    print("\n🚀 Iniciando monitoreo...")
+    print("\n[ROCKET] Iniciando monitoreo...")
     monitor_logs()
 
 if __name__ == '__main__':

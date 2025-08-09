@@ -86,10 +86,10 @@ def test_module_manager_error_handling():
     )
 
     if result:
-        print("✅ Error widget creado correctamente")
+        print("[CHECK] Error widget creado correctamente")
         print(f"   Tipo de widget: {type(result).__name__}")
     else:
-        print("❌ No se pudo crear widget de error")
+        print("[ERROR] No se pudo crear widget de error")
 
     # Verificar estado del módulo
     status = manager.get_module_status("test_error_module")
@@ -130,7 +130,7 @@ def test_real_module_errors():
                 controller_module, f"{module_name.title()}Controller"
             )
 
-            print(f"✅ Clases encontradas para {module_name}")
+            print(f"[CHECK] Clases encontradas para {module_name}")
 
             # Intentar crear el módulo
             widget = manager.create_module_safely(
@@ -138,16 +138,16 @@ def test_real_module_errors():
             )
 
             if widget:
-                print(f"✅ Widget creado para {module_name}: {type(widget).__name__}")
+                print(f"[CHECK] Widget creado para {module_name}: {type(widget).__name__}")
             else:
-                print(f"❌ No se pudo crear widget para {module_name}")
+                print(f"[ERROR] No se pudo crear widget para {module_name}")
 
         except Exception as e:
-            print(f"❌ Error con módulo {module_name}: {e}")
+            print(f"[ERROR] Error con módulo {module_name}: {e}")
 
             # Crear widget de diagnóstico para el error
             widget = create_diagnostic_widget(module_name, e)
-            print(f"✅ Widget de diagnóstico creado: {type(widget).__name__}")
+            print(f"[CHECK] Widget de diagnóstico creado: {type(widget).__name__}")
 
 
 def run_comprehensive_test():
@@ -170,7 +170,7 @@ def run_comprehensive_test():
         test_real_module_errors()
 
         print("\n" + "=" * 60)
-        print("✅ TODOS LOS TESTS COMPLETADOS")
+        print("[CHECK] TODOS LOS TESTS COMPLETADOS")
         print("   - Widget de diagnóstico: Funcional")
         print("   - Module manager: Funcional")
         print("   - Manejo de errores reales: Funcional")
@@ -178,7 +178,7 @@ def run_comprehensive_test():
         return True
 
     except Exception as e:
-        print(f"\n❌ ERROR EN TESTS: {e}")
+        print(f"\n[ERROR] ERROR EN TESTS: {e}")
         import traceback
 
         traceback.print_exc()

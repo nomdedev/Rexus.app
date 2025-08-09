@@ -68,14 +68,14 @@ def agregar_materiales_obras():
                         VALUES (?, ?, ?, ?, ?, ?)
                     """, (obra_id, detalle, categoria, cantidad, precio_unit, precio_total))
                     
-                    print(f"  ✅ {detalle} ({categoria})")
+                    print(f"  [CHECK] {detalle} ({categoria})")
                     print(f"     Cantidad: {cantidad}, Precio: ${precio_unit}, Total: ${precio_total}")
                     
                     obra_total += precio_total
                     total_insertados += 1
                     
                 except Exception as e:
-                    print(f"  ❌ Error insertando {detalle}: {e}")
+                    print(f"  [ERROR] Error insertando {detalle}: {e}")
             
             print(f"  💰 TOTAL OBRA: ${obra_total:,.2f}")
             print()
@@ -83,7 +83,7 @@ def agregar_materiales_obras():
         # Confirmar cambios
         conn.commit()
         
-        print(f"✅ RESUMEN FINAL:")
+        print(f"[CHECK] RESUMEN FINAL:")
         print(f"   Total materiales insertados: {total_insertados}")
         
         # Verificar totales por obra
@@ -97,7 +97,7 @@ def agregar_materiales_obras():
         """)
         
         resumen = cursor.fetchall()
-        print("\n📊 RESUMEN POR OBRA:")
+        print("\n[CHART] RESUMEN POR OBRA:")
         print("-" * 60)
         
         total_general = 0
@@ -113,7 +113,7 @@ def agregar_materiales_obras():
         print("\n🎉 ¡Datos agregados exitosamente!")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

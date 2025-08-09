@@ -48,7 +48,7 @@ class AuthTODOCleaner:
             # Patrón para encontrar sección completa de TODO a limpiar
             patterns_to_remove = [
                 # Patrón 1: TODO con comentarios de verificación
-                r'\s*# 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA\s*\n\s*# TODO: Implementar @auth_required o verificación manual\s*\n(\s*# if not AuthManager\.check_permission.*\n\s*# .*raise PermissionError.*\n\s*#?\s*\n?)?',
+                r'\s*# [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA\s*\n\s*# TODO: Implementar @auth_required o verificación manual\s*\n(\s*# if not AuthManager\.check_permission.*\n\s*# .*raise PermissionError.*\n\s*#?\s*\n?)?',
                 # Patrón 2: Solo TODO
                 r'\s*# TODO: Implementar @auth_required o verificación manual\s*\n',
                 # Patrón 3: Comentarios de verificación solos

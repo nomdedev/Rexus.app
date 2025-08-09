@@ -407,7 +407,7 @@ class TestStressConditions:
         
         # Caracteres Unicode extremos
         unicode_strings = [
-            "🏢💰👥📊🔄✅❌⚠️",  # Emojis
+            "🏢💰👥[CHART]🔄[CHECK][ERROR][WARN]",  # Emojis
             "Ñandú Güeñes Çağlar Москва 北京",  # Caracteres internacionales
             "𝕻𝖞𝖙𝖍𝖔𝖓 𝖀𝖚𝖊𝖗𝖞𝖍",  # Mathematical symbols
             "\x00\x01\x02\x03",  # Control characters

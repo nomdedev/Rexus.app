@@ -242,7 +242,7 @@ class ColumnGenerator:
                 
                 result["success"] = True
                 result["message"] = f"Columna {column_name} agregada exitosamente"
-                logger.info(f"✅ Agregada columna {column_name} a {table_name}")
+                logger.info(f"[CHECK] Agregada columna {column_name} a {table_name}")
             else:
                 result["success"] = True
                 result["message"] = f"SQL generado (no ejecutado): {sql}"
@@ -250,7 +250,7 @@ class ColumnGenerator:
             
         except Exception as e:
             result["message"] = f"Error agregando columna: {e}"
-            logger.error(f"❌ Error agregando {column_name} a {table_name}: {e}")
+            logger.error(f"[ERROR] Error agregando {column_name} a {table_name}: {e}")
         
         return result
     

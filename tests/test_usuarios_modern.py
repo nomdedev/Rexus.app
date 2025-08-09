@@ -35,8 +35,8 @@ def test_usuarios_view():
         vista.resize(1400, 900)
         vista.show()
 
-        print("✅ Vista de usuarios modernizada cargada correctamente")
-        print("🔒 Funcionalidades de seguridad implementadas:")
+        print("[CHECK] Vista de usuarios modernizada cargada correctamente")
+        print("[LOCK] Funcionalidades de seguridad implementadas:")
         print("   - Búsqueda y filtros por rol/estado")
         print("   - Gestión de permisos y sesiones")
         print("   - Estados visuales (activo/inactivo/bloqueado)")
@@ -48,7 +48,7 @@ def test_usuarios_view():
         sys.exit(app.exec())
 
     except Exception as e:
-        print(f"❌ Error al cargar la vista: {e}")
+        print(f"[ERROR] Error al cargar la vista: {e}")
         return False
 
 

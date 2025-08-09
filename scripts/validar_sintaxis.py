@@ -98,18 +98,18 @@ def validar_todos_los_modulos():
         
         # Mostrar resultado
         if valido:
-            print(f"{Colors.GREEN}✅{Colors.END} {archivo}")
+            print(f"{Colors.GREEN}[CHECK]{Colors.END} {archivo}")
             archivos_validos += 1
         else:
-            print(f"{Colors.RED}❌{Colors.END} {archivo}")
+            print(f"{Colors.RED}[ERROR]{Colors.END} {archivo}")
             print(f"   {Colors.RED}→ {error}{Colors.END}")
             errores_encontrados.append((archivo, error))
     
     # Resumen
     print("\n" + "=" * 60)
-    print(f"{Colors.BOLD}📊 RESUMEN DE VALIDACIÓN{Colors.END}")
-    print(f"✅ Archivos válidos: {Colors.GREEN}{archivos_validos}{Colors.END}")
-    print(f"❌ Archivos con errores: {Colors.RED}{len(errores_encontrados)}{Colors.END}")
+    print(f"{Colors.BOLD}[CHART] RESUMEN DE VALIDACIÓN{Colors.END}")
+    print(f"[CHECK] Archivos válidos: {Colors.GREEN}{archivos_validos}{Colors.END}")
+    print(f"[ERROR] Archivos con errores: {Colors.RED}{len(errores_encontrados)}{Colors.END}")
     print(f"📁 Total archivos: {len(archivos)}")
     
     # Porcentaje de éxito
@@ -134,7 +134,7 @@ def validar_todos_los_modulos():
     ]
     
     if archivos_criticos_con_errores:
-        print(f"{Colors.BOLD}{Colors.RED}⚠️  CONTROLADORES BLOQUEADOS:{Colors.END}")
+        print(f"{Colors.BOLD}{Colors.RED}[WARN]  CONTROLADORES BLOQUEADOS:{Colors.END}")
         for archivo in archivos_criticos_con_errores:
             modulo = archivo.split("/")[-2] if "/" in archivo else archivo.split("\\")[-2]
             print(f"   • {modulo}")
@@ -148,8 +148,8 @@ def validar_todos_los_modulos():
         print("3. Continuar con el plan de corrección completo")
         return False
     else:
-        print("✅ ¡Todos los archivos tienen sintaxis válida!")
-        print("✅ Continuar con las siguientes fases del plan")
+        print("[CHECK] ¡Todos los archivos tienen sintaxis válida!")
+        print("[CHECK] Continuar con las siguientes fases del plan")
         return True
 
 def generar_script_correccion():
@@ -212,7 +212,7 @@ archivos_a_corregir = [
 
 if __name__ == "__main__":
     print("🔧 CORRECTOR AUTOMÁTICO DE PATRONES")
-    print("⚠️  ESTO MODIFICARÁ LOS ARCHIVOS - Se crearán backups")
+    print("[WARN]  ESTO MODIFICARÁ LOS ARCHIVOS - Se crearán backups")
     
     respuesta = input("¿Continuar? (s/N): ")
     if respuesta.lower() != 's':
@@ -222,11 +222,11 @@ if __name__ == "__main__":
     for archivo in archivos_a_corregir:
         if os.path.exists(archivo):
             if corregir_docstrings_mal_indentados(archivo):
-                print(f"✅ Corregido: {archivo}")
+                print(f"[CHECK] Corregido: {archivo}")
             else:
                 print(f"ℹ️  Sin cambios: {archivo}")
         else:
-            print(f"❌ No encontrado: {archivo}")
+            print(f"[ERROR] No encontrado: {archivo}")
 '''
     
     with open("scripts/corregir_patrones.py", "w", encoding="utf-8") as f:

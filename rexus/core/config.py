@@ -122,11 +122,12 @@ LOGGING_CONFIG = {
 
 # ===== CONFIGURACIÓN DE CACHE =====
 CACHE_CONFIG = {
-    "type": get_env_var("CACHE_TYPE", "memory"),  # memory, redis, disk
+    "type": get_env_var("CACHE_TYPE", "memory"),  # memory, redis, disk - default to memory for development
     "redis_url": get_env_var("CACHE_REDIS_URL", "redis://localhost:6379/0"),
     "default_timeout": get_env_var("CACHE_DEFAULT_TIMEOUT", 3600, var_type=int),
     "query_cache_enabled": get_env_var("QUERY_CACHE_ENABLED", True, var_type=bool),
     "query_cache_timeout": get_env_var("QUERY_CACHE_TIMEOUT", 1800, var_type=int),
+    "enable_fallback_warnings": get_env_var("CACHE_ENABLE_FALLBACK_WARNINGS", False, var_type=bool),  # Reduce log noise
 }
 
 # ===== CONFIGURACIÓN DE ARCHIVOS =====

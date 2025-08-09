@@ -32,9 +32,9 @@ def test_database_obras_integration():
             db_manager = DatabaseManager()
             if db_manager.connect():
                 connection = db_manager.connection
-                print("✅ [CONEXIÓN] Conectado via DatabaseManager")
+                print("[CHECK] [CONEXIÓN] Conectado via DatabaseManager")
         except ImportError:
-            print("⚠️ [CONEXIÓN] DatabaseManager no encontrado, intentando conexión directa...")
+            print("[WARN] [CONEXIÓN] DatabaseManager no encontrado, intentando conexión directa...")
             
         # Si no funciona el DatabaseManager, intentar conexión directa
         if not connection:
@@ -48,13 +48,13 @@ def test_database_obras_integration():
                     "Trusted_Connection=yes;"
                 )
                 connection = pyodbc.connect(connection_string)
-                print("✅ [CONEXIÓN] Conectado via pyodbc directo")
+                print("[CHECK] [CONEXIÓN] Conectado via pyodbc directo")
             except Exception as e:
-                print(f"❌ [CONEXIÓN] Error conectando directamente: {e}")
+                print(f"[ERROR] [CONEXIÓN] Error conectando directamente: {e}")
                 connection = None
         
         if not connection:
-            print("❌ [ERROR] No se pudo establecer conexión a la base de datos")
+            print("[ERROR] [ERROR] No se pudo establecer conexión a la base de datos")
             print("💡 [SUGERENCIA] Verifica que SQL Server esté ejecutándose y la BD 'rexus_db' exista")
             return False
             
@@ -79,7 +79,7 @@ def test_database_obras_integration():
             columnas_db = cursor.fetchall()
             
             if not columnas_db:
-                print("⚠️ [ESTRUCTURA] La tabla 'obras' no existe o no tiene columnas")
+                print("[WARN] [ESTRUCTURA] La tabla 'obras' no existe o no tiene columnas")
                 
                 # Intentar crear tabla básica para testing
                 print("🔧 [ESTRUCTURA] Intentando crear tabla básica para testing...")
@@ -109,7 +109,7 @@ def test_database_obras_integration():
                     )
                 """)
                 connection.commit()
-                print("✅ [ESTRUCTURA] Tabla 'obras' creada")
+                print("[CHECK] [ESTRUCTURA] Tabla 'obras' creada")
                 
                 # Insertar datos de ejemplo
                 print("📝 [DATOS] Insertando datos de ejemplo...")
@@ -125,7 +125,7 @@ def test_database_obras_integration():
                      'Planificación', 180000.00, 'Carlos López', 'Sur Ciudad')
                 """)
                 connection.commit()
-                print("✅ [DATOS] Datos de ejemplo insertados")
+                print("[CHECK] [DATOS] Datos de ejemplo insertados")
                 
                 # Volver a obtener estructura
                 cursor.execute("""
@@ -136,21 +136,21 @@ def test_database_obras_integration():
                 """)
                 columnas_db = cursor.fetchall()
             
-            print(f"✅ [ESTRUCTURA] Encontradas {len(columnas_db)} columnas en tabla 'obras':")
+            print(f"[CHECK] [ESTRUCTURA] Encontradas {len(columnas_db)} columnas en tabla 'obras':")
             print("   📋 COLUMNAS DE LA BASE DE DATOS:")
             for i, (nombre, tipo, nullable, default) in enumerate(columnas_db):
                 print(f"   {i+1:2d}. {nombre:<20} | {tipo:<15} | NULL: {nullable:<3} | DEFAULT: {default}")
             
         except Exception as e:
-            print(f"❌ [ESTRUCTURA] Error verificando estructura: {e}")
+            print(f"[ERROR] [ESTRUCTURA] Error verificando estructura: {e}")
             return False
         
         # Verificar datos en la tabla
-        print(f"\n📊 [DATOS] Verificando cantidad de registros...")
+        print(f"\n[CHART] [DATOS] Verificando cantidad de registros...")
         
         try:
             todas_obras = model.obtener_todas_obras()
-            print(f"✅ [DATOS] Total de obras encontradas: {len(todas_obras)}")
+            print(f"[CHECK] [DATOS] Total de obras encontradas: {len(todas_obras)}")
             
             if len(todas_obras) > 0:
                 print("   📋 MUESTRA DE DATOS (primeras 3 obras):")
@@ -187,7 +187,7 @@ def test_database_obras_integration():
                             valor_display = valor
                         print(f"   [{indice:2d}] {campo:<20} = {valor_display}")
                     else:
-                        print(f"   [{indice:2d}] {campo:<20} = ❌ FALTANTE")
+                        print(f"   [{indice:2d}] {campo:<20} = [ERROR] FALTANTE")
                 
                 # Verificar columnas de la vista
                 print(f"\n🖥️ [VISTA] Verificando mapeo con columnas de tabla UI:")
@@ -219,14 +219,14 @@ def test_database_obras_integration():
                             valor_display = valor
                         print(f"   Col[{col_vista}] {nombre_col_vista:<15} <- BD[{indice_bd:2d}] {campo_bd:<20} = {valor_display}")
                     else:
-                        print(f"   Col[{col_vista}] {nombre_col_vista:<15} <- BD[{indice_bd:2d}] {campo_bd:<20} = ⚠️ {'UI ONLY' if indice_bd == -1 else 'FALTANTE'}")
+                        print(f"   Col[{col_vista}] {nombre_col_vista:<15} <- BD[{indice_bd:2d}] {campo_bd:<20} = [WARN] {'UI ONLY' if indice_bd == -1 else 'FALTANTE'}")
                 
             else:
-                print("⚠️ [DATOS] No hay obras en la base de datos")
+                print("[WARN] [DATOS] No hay obras en la base de datos")
                 print("💡 [SUGERENCIA] Ejecuta algunos INSERT para probar la funcionalidad")
                 
         except Exception as e:
-            print(f"❌ [DATOS] Error obteniendo datos: {e}")
+            print(f"[ERROR] [DATOS] Error obteniendo datos: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -237,17 +237,17 @@ def test_database_obras_integration():
         # Test paginación
         try:
             obras_pag, total = model.obtener_datos_paginados(0, 5)
-            print(f"✅ [PAGINACIÓN] obtener_datos_paginados(0,5): {len(obras_pag)} obras, total: {total}")
+            print(f"[CHECK] [PAGINACIÓN] obtener_datos_paginados(0,5): {len(obras_pag)} obras, total: {total}")
         except Exception as e:
-            print(f"❌ [PAGINACIÓN] Error en paginación: {e}")
+            print(f"[ERROR] [PAGINACIÓN] Error en paginación: {e}")
         
         # Test filtros
         try:
             filtros = {"estado": "Activo"}
             obras_filtradas = model.obtener_obras_filtradas(filtros, "nombre")
-            print(f"✅ [FILTROS] obtener_obras_filtradas(estado='Activo'): {len(obras_filtradas)} obras")
+            print(f"[CHECK] [FILTROS] obtener_obras_filtradas(estado='Activo'): {len(obras_filtradas)} obras")
         except Exception as e:
-            print(f"❌ [FILTROS] Error en filtros: {e}")
+            print(f"[ERROR] [FILTROS] Error en filtros: {e}")
         
         # Test obra por ID
         try:
@@ -255,20 +255,20 @@ def test_database_obras_integration():
                 primera_id = todas_obras[0][0]  # ID está en índice 0
                 obra_por_id = model.obtener_obra_por_id(primera_id)
                 if obra_por_id:
-                    print(f"✅ [ID] obtener_obra_por_id({primera_id}): Obra encontrada")
+                    print(f"[CHECK] [ID] obtener_obra_por_id({primera_id}): Obra encontrada")
                 else:
-                    print(f"⚠️ [ID] obtener_obra_por_id({primera_id}): No encontrada")
+                    print(f"[WARN] [ID] obtener_obra_por_id({primera_id}): No encontrada")
         except Exception as e:
-            print(f"❌ [ID] Error obteniendo por ID: {e}")
+            print(f"[ERROR] [ID] Error obteniendo por ID: {e}")
         
         print(f"\n" + "=" * 70)
         print("🎉 [RESULTADO] Verificación de integración BD-Obras completada exitosamente")
-        print(f"📊 [RESUMEN] {len(todas_obras)} obras encontradas, estructura verificada")
+        print(f"[CHART] [RESUMEN] {len(todas_obras)} obras encontradas, estructura verificada")
         
         return True
         
     except Exception as e:
-        print(f"❌ [ERROR GENERAL] Error en test de integración: {e}")
+        print(f"[ERROR] [ERROR GENERAL] Error en test de integración: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -285,8 +285,8 @@ def test_database_obras_integration():
 if __name__ == "__main__":
     exito = test_database_obras_integration()
     if exito:
-        print("\n✅ Test completado exitosamente")
+        print("\n[CHECK] Test completado exitosamente")
         exit(0)
     else:
-        print("\n❌ Test falló")
+        print("\n[ERROR] Test falló")
         exit(1)

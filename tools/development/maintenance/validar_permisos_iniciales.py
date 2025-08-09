@@ -12,7 +12,7 @@ load_dotenv()
 # Usar solo la configuración centralizada del core (no exponer usuario, password ni IP)
 # Forzar base de datos 'users' para validación de permisos iniciales
 if DB_DEFAULT_DATABASE != "users":
-    Logger().warning(f"⚠️  Advertencia: la base de datos predeterminada en config.py es '{DB_DEFAULT_DATABASE}', pero este script requiere 'users'. Se usará 'users' para la validación.")
+    Logger().warning(f"[WARN]  Advertencia: la base de datos predeterminada en config.py es '{DB_DEFAULT_DATABASE}', pero este script requiere 'users'. Se usará 'users' para la validación.")
     database = "users"
 else:
     database = DB_DEFAULT_DATABASE
@@ -20,7 +20,7 @@ else:
 try:
     driver = BaseDatabaseConnection.detectar_driver_odbc()
 except Exception as e:
-    Logger().error(f"❌ No se pudo detectar un driver ODBC compatible: {e}")
+    Logger().error(f"[ERROR] No se pudo detectar un driver ODBC compatible: {e}")
     exit(1)
 # Construir string de conexión seguro (sin exponer credenciales)
 CONNECTION_STRING = get_connection_string(driver, database)
@@ -51,7 +51,7 @@ def main():
         try:
             conn = pyodbc.connect(CONNECTION_STRING, timeout=5)
         except Exception as e:
-            Logger().error("❌ No se pudo establecer la conexión. Revisa IP, usuario, contraseña, firewall, permisos de SQL Server y que la base 'users' exista.")
+            Logger().error("[ERROR] No se pudo establecer la conexión. Revisa IP, usuario, contraseña, firewall, permisos de SQL Server y que la base 'users' exista.")
 import os
 import time
 import sys
@@ -66,13 +66,13 @@ from dotenv import load_dotenv
             return
         t1 = time.time()
         if t1-t0 > 4.5:
-            Logger().warning(f"⚠️  Advertencia: la conexión demoró {t1-t0:.1f} segundos. Puede haber problemas de red o firewall.")
+            Logger().warning(f"[WARN]  Advertencia: la conexión demoró {t1-t0:.1f} segundos. Puede haber problemas de red o firewall.")
         Logger().info("[2/5] Conexión exitosa. Abriendo cursor...")
         cur = conn.cursor()
         Logger().info("[3/5] Verificando existencia de la tabla 'permisos_modulos'...")
         cur.execute(CHECK_TABLE_QUERY)
         if not cur.fetchone():
-            Logger().warning("⚠️  La tabla 'permisos_modulos' NO existe en la base de datos. Verifica la migración.")
+            Logger().warning("[WARN]  La tabla 'permisos_modulos' NO existe en la base de datos. Verifica la migración.")
             conn.close()
             return
         Logger().info("[4/5] Ejecutando consulta de permisos para 'TEST_USER' y 'prueba'...")
@@ -89,10 +89,10 @@ from dotenv import load_dotenv
         Logger().info("[5/5] Cierre de conexión.")
         conn.close()
     except pyodbc.Error as e:
-        Logger().error("❌ Error de conexión o consulta. Verifica la configuración y los permisos.")
+        Logger().error("[ERROR] Error de conexión o consulta. Verifica la configuración y los permisos.")
         Logger().error(f"Detalle técnico: {e}")
     except Exception as e:
-        Logger().error("❌ Error inesperado.")
+        Logger().error("[ERROR] Error inesperado.")
         Logger().error(f"Detalle técnico: {e}")
 
 if __name__ == "__main__":

@@ -15,22 +15,22 @@ TABLAS QUE FALTAN vs. TABLAS QUE EXISTEN:
 ========================================
 
 1. INVENTARIO (Módulo de Materiales):
-   ❌ BUSCA: pedidos_material
-   ✅ EXISTE: dbo.pedidos_compra
+   [ERROR] BUSCA: pedidos_material
+   [CHECK] EXISTE: dbo.pedidos_compra
    📝 SOLUCIÓN: Cambiar las queries para usar dbo.pedidos_compra
 
 2. HERRAJES:
-   ❌ BUSCA: pedidos_herrajes
-   ✅ EXISTE: dbo.herrajes_por_obra
+   [ERROR] BUSCA: pedidos_herrajes
+   [CHECK] EXISTE: dbo.herrajes_por_obra
    📝 SOLUCIÓN: Cambiar las queries para usar dbo.herrajes_por_obra
 
 3. CONTABILIDAD:
-   ❌ BUSCA: pagos_pedidos
-   ✅ EXISTE: dbo.pago_por_obra
+   [ERROR] BUSCA: pagos_pedidos
+   [CHECK] EXISTE: dbo.pago_por_obra
    📝 SOLUCIÓN: Cambiar las queries para usar dbo.pago_por_obra
 
 4. VIDRIOS:
-   ✅ CORRECTO: dbo.vidrios_por_obra (ya funciona bien)
+   [CHECK] CORRECTO: dbo.vidrios_por_obra (ya funciona bien)
 
 DIAGNÓSTICO FINAL:
 =================

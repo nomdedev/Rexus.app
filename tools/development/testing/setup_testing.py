@@ -17,7 +17,7 @@ from datetime import datetime
     sql_file = os.path.join(os.path.dirname(__file__), '..', 'database', 'crear_modulo_rrhh.sql')
 
     if not os.path.exists(sql_file):
-        print(f"❌ No se encontró el archivo SQL: {sql_file}")
+        print(f"[ERROR] No se encontró el archivo SQL: {sql_file}")
         return False
 
     print(f"📄 Ejecutando: {sql_file}")
@@ -35,41 +35,41 @@ from datetime import datetime
         result = subprocess.run(cmd, capture_output=True, text=True)
 
         if result.returncode == 0:
-            print("✅ Script SQL ejecutado exitosamente")
+            print("[CHECK] Script SQL ejecutado exitosamente")
             print("📋 Salida:")
             if result.stdout:
                 print(result.stdout)
             return True
         else:
-            print("❌ Error al ejecutar script SQL")
+            print("[ERROR] Error al ejecutar script SQL")
             print("📋 Error:")
             if result.stderr:
                 print(result.stderr)
             return False
 
     except FileNotFoundError:
-        print("⚠️ sqlcmd no está disponible")
+        print("[WARN] sqlcmd no está disponible")
         print("💡 Puede ejecutar manualmente el archivo SQL en SQL Server Management Studio")
         print(f"📄 Archivo: {sql_file}")
         return True  # Continuar de todas formas
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         return False
 
 def probar_aplicacion():
     """Inicia la aplicación para pruebas"""
 
-    print("\n🚀 INICIANDO APLICACIÓN PARA PRUEBAS")
+    print("\n[ROCKET] INICIANDO APLICACIÓN PARA PRUEBAS")
     print("="*45)
 
     try:
         main_path = os.path.join(os.path.dirname(__file__), '..', '..', 'main.py')
 
         if not os.path.exists(main_path):
-            print(f"❌ No se encontró main.py en: {main_path}")
+            print(f"[ERROR] No se encontró main.py en: {main_path}")
             return False
 
-        print("✅ Ejecutando: python main.py")
+        print("[CHECK] Ejecutando: python main.py")
         print("💡 La aplicación se iniciará en segundo plano")
         print("🔐 Use las credenciales de un usuario existente para login")
         print("📋 Si no tiene usuario, créelo manualmente en la BD")
@@ -80,7 +80,7 @@ def probar_aplicacion():
         return True
 
     except Exception as e:
-        print(f"❌ Error al iniciar aplicación: {e}")
+        print(f"[ERROR] Error al iniciar aplicación: {e}")
         return False
 
 def mostrar_instrucciones():
@@ -114,12 +114,12 @@ def mostrar_instrucciones():
         print(f"   {i:2d}. {modulo}")
 
     print("\n3. 🔍 QUÉ BUSCAR:")
-    print("   ❌ Errores de importación")
-    print("   ❌ Errores de base de datos")
-    print("   ❌ Problemas con iconos/estilos")
-    print("   ❌ Excepciones no manejadas")
-    print("   ⚠️ Warnings en logs")
-    print("   🔒 Problemas de permisos")
+    print("   [ERROR] Errores de importación")
+    print("   [ERROR] Errores de base de datos")
+    print("   [ERROR] Problemas con iconos/estilos")
+    print("   [ERROR] Excepciones no manejadas")
+    print("   [WARN] Warnings en logs")
+    print("   [LOCK] Problemas de permisos")
 
     print("\n4. 📝 DOCUMENTAR:")
     print("   - Anote cualquier error en logs/app.log")
@@ -152,11 +152,11 @@ BEGIN
         1,
         GETDATE()
     );
-    PRINT '✅ Usuario de prueba creado: test_user / test123';
+    PRINT '[CHECK] Usuario de prueba creado: test_user / test123';
 END
 ELSE
 BEGIN
-    PRINT '⚠️ Usuario test_user ya existe';
+    PRINT '[WARN] Usuario test_user ya existe';
 END
 
 -- Verificar usuarios activos
@@ -169,14 +169,14 @@ SELECT username, nombre, rol, activo FROM usuarios WHERE activo = 1;
         with open(sql_file, 'w', encoding='utf-8') as f:
             f.write(sql_content)
 
-        print(f"✅ Script SQL creado: {sql_file}")
+        print(f"[CHECK] Script SQL creado: {sql_file}")
         print("💡 Ejecute este script manualmente en SQL Server para crear usuario de prueba")
         print("🔐 Credenciales: test_user / test123")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error al crear script SQL: {e}")
+        print(f"[ERROR] Error al crear script SQL: {e}")
         return False
 
 def main():
@@ -190,13 +190,13 @@ def main():
     # Paso 1: Ejecutar SQL del módulo RRHH
     print("🗄️ PASO 1: Configurar módulo RRHH")
     if not ejecutar_sql_rrhh():
-        print("⚠️ El módulo RRHH no se configuró automáticamente")
+        print("[WARN] El módulo RRHH no se configuró automáticamente")
         print("💡 Puede ejecutar el SQL manualmente más tarde")
 
     # Paso 2: Crear script para usuario de prueba
     print("\n👤 PASO 2: Configurar usuario de prueba")
     if not crear_sql_usuario_simple():
-        print("⚠️ No se pudo crear script de usuario")
+        print("[WARN] No se pudo crear script de usuario")
 
     # Paso 3: Mostrar instrucciones
     mostrar_instrucciones()
@@ -210,7 +210,7 @@ def main():
             print("\n🎉 Aplicación iniciada exitosamente")
             print("🔍 Comience a probar los módulos según las instrucciones")
         else:
-            print("\n❌ No se pudo iniciar la aplicación automáticamente")
+            print("\n[ERROR] No se pudo iniciar la aplicación automáticamente")
             print("💡 Inicie manualmente con: python main.py")
     else:
         print("\n💡 Para iniciar la aplicación manualmente:")

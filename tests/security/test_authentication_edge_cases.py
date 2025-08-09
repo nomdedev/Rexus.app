@@ -144,10 +144,10 @@ class TestAuthenticationEdgeCases:
                     cursor = mock_database.cursor.return_value
                     if hasattr(cursor, 'execute') and cursor.execute.called:
                         # La nueva sesión no debería ser la del atacante
-                        print("✓ Session fixation prevenido - nueva sesión generada")
+                        print("[OK] Session fixation prevenido - nueva sesión generada")
                         
             except Exception as e:
-                print(f"✓ Session fixation detectado: {str(e)[:100]}")
+                print(f"[OK] Session fixation detectado: {str(e)[:100]}")
 
     def test_session_hijacking_prevention(self, usuarios_model, mock_database):
         """Test prevención de secuestro de sesión."""
@@ -180,12 +180,12 @@ class TestAuthenticationEdgeCases:
                 # Debería fallar por IP diferente
                 if hijack_attempt:
                     # Si permite, debería al menos registrar como sospechoso
-                    print("⚠️ Session hijacking no detectado automáticamente")
+                    print("[WARN] Session hijacking no detectado automáticamente")
                 else:
-                    print("✓ Session hijacking bloqueado por IP diferente")
+                    print("[OK] Session hijacking bloqueado por IP diferente")
                     
             except Exception as e:
-                print(f"✓ Session hijacking detectado: {str(e)[:100]}")
+                print(f"[OK] Session hijacking detectado: {str(e)[:100]}")
 
     def test_password_timing_attack_resistance(self, usuarios_model, mock_database):
         """Test resistencia a ataques de timing en validación de contraseñas."""
@@ -233,9 +233,9 @@ class TestAuthenticationEdgeCases:
         # La diferencia no debería ser significativa (< 10ms)
         time_diff = abs(avg_valid - avg_invalid)
         if time_diff > 0.01:  # 10ms
-            print("⚠️ Posible timing attack vulnerability")
+            print("[WARN] Posible timing attack vulnerability")
         else:
-            print("✓ Timing attack resistance OK")
+            print("[OK] Timing attack resistance OK")
 
     def test_jwt_token_edge_cases(self, usuarios_model, mock_database):
         """Test edge cases con JWT tokens."""
@@ -262,11 +262,11 @@ class TestAuthenticationEdgeCases:
             try:
                 # Intentar decodificar token inválido
                 decoded = jwt.decode(token, secret_key, algorithms=["HS256"])
-                print(f"⚠️ Token inválido aceptado: {token[:30]}")
+                print(f"[WARN] Token inválido aceptado: {token[:30]}")
             except jwt.InvalidTokenError:
-                print(f"✓ Token inválido rechazado correctamente")
+                print(f"[OK] Token inválido rechazado correctamente")
             except Exception as e:
-                print(f"✓ Token manejado: {str(e)[:50]}")
+                print(f"[OK] Token manejado: {str(e)[:50]}")
 
     def test_token_expiration_edge_cases(self, usuarios_model):
         """Test casos extremos de expiración de tokens."""
@@ -286,9 +286,9 @@ class TestAuthenticationEdgeCases:
         
         try:
             decoded = jwt.decode(expired_token, secret_key, algorithms=["HS256"])
-            print("⚠️ Token expirado aceptado")
+            print("[WARN] Token expirado aceptado")
         except jwt.ExpiredSignatureError:
-            print("✓ Token expirado rechazado correctamente")
+            print("[OK] Token expirado rechazado correctamente")
         
         # Test token con expiración muy lejana
         far_future_payload = {
@@ -306,12 +306,12 @@ class TestAuthenticationEdgeCases:
             max_allowed = datetime.utcnow() + timedelta(days=30)  # Máximo 30 días
             
             if exp_time > max_allowed:
-                print("⚠️ Token con expiración muy lejana aceptado")
+                print("[WARN] Token con expiración muy lejana aceptado")
             else:
-                print("✓ Token con expiración razonable")
+                print("[OK] Token con expiración razonable")
                 
         except Exception as e:
-            print(f"✓ Token far-future manejado: {str(e)[:50]}")
+            print(f"[OK] Token far-future manejado: {str(e)[:50]}")
 
     def test_brute_force_protection(self, usuarios_model, mock_database):
         """Test protección contra ataques de fuerza bruta."""
@@ -342,11 +342,11 @@ class TestAuthenticationEdgeCases:
                                 correct_result = usuarios_model.validar_credenciales(username, "admin123")
                                 if not correct_result:
                                     blocked = True
-                                    print(f"✓ Usuario bloqueado después de {i+1} intentos")
+                                    print(f"[OK] Usuario bloqueado después de {i+1} intentos")
                                     break
                             except Exception:
                                 blocked = True
-                                print(f"✓ Usuario bloqueado (excepción) después de {i+1} intentos")
+                                print(f"[OK] Usuario bloqueado (excepción) después de {i+1} intentos")
                                 break
                                 
                 except Exception as e:
@@ -356,7 +356,7 @@ class TestAuthenticationEdgeCases:
                         break
             
             if not blocked:
-                print("⚠️ No se detectó bloqueo por fuerza bruta")
+                print("[WARN] No se detectó bloqueo por fuerza bruta")
 
     def test_account_lockout_bypass_attempts(self, usuarios_model, mock_database):
         """Test intentos de bypass del bloqueo de cuentas."""
@@ -385,12 +385,12 @@ class TestAuthenticationEdgeCases:
                     
                     # Si el usuario original está bloqueado, ningún bypass debería funcionar
                     if result:
-                        print(f"⚠️ Bypass exitoso: {attempt['description']}")
+                        print(f"[WARN] Bypass exitoso: {attempt['description']}")
                     else:
-                        print(f"✓ Bypass bloqueado: {attempt['description']}")
+                        print(f"[OK] Bypass bloqueado: {attempt['description']}")
                         
                 except Exception as e:
-                    print(f"✓ Bypass detectado como malicioso: {str(e)[:50]}")
+                    print(f"[OK] Bypass detectado como malicioso: {str(e)[:50]}")
 
     def test_session_timeout_edge_cases(self, usuarios_model, mock_database):
         """Test casos extremos de timeout de sesión."""
@@ -424,9 +424,9 @@ class TestAuthenticationEdgeCases:
                     expired_result = usuarios_model.validar_sesion(session_id, '192.168.1.100', 'Test')
                     
                     if expired_result:
-                        print("⚠️ Sesión expirada no detectada")
+                        print("[WARN] Sesión expirada no detectada")
                     else:
-                        print("✓ Sesión expirada correctamente")
+                        print("[OK] Sesión expirada correctamente")
                         
             except Exception as e:
                 print(f"Error en test timeout: {str(e)}")
@@ -462,15 +462,15 @@ class TestAuthenticationEdgeCases:
                     
                     if result:
                         sessions.append(session_id)
-                        print(f"✓ Sesión creada para dispositivo {i+1}")
+                        print(f"[OK] Sesión creada para dispositivo {i+1}")
                 
                 print(f"Total sesiones activas: {len(sessions)}")
                 
                 # Verificar límite de sesiones concurrentes
                 if len(sessions) > 3:  # Ejemplo: máximo 3 sesiones
-                    print("⚠️ Demasiadas sesiones concurrentes permitidas")
+                    print("[WARN] Demasiadas sesiones concurrentes permitidas")
                 else:
-                    print("✓ Límite de sesiones concurrentes OK")
+                    print("[OK] Límite de sesiones concurrentes OK")
                     
             except Exception as e:
                 print(f"Error en multi-device test: {str(e)}")

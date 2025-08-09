@@ -197,7 +197,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ core.database importado")
+        print("[CHECK] core.database importado")
 
 import sys
 import pytest
@@ -219,7 +219,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ core.logger importado")
+        print("[CHECK] core.logger importado")
 
 import sys
 import pytest
@@ -262,7 +262,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ modules.inventario importado")
+        print("[CHECK] modules.inventario importado")
 
 import sys
 import pytest
@@ -305,7 +305,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ modules.usuarios importado")
+        print("[CHECK] modules.usuarios importado")
 
 import sys
 import pytest
@@ -348,7 +348,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ modules.auditoria importado")
+        print("[CHECK] modules.auditoria importado")
 
 import sys
 import pytest
@@ -413,7 +413,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print(f"❌ Error en importaciones: {e}")
+        print(f"[ERROR] Error en importaciones: {e}")
 import sys
 import pytest
 from pathlib import Path
@@ -570,7 +570,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ DatabaseConnection instanciado")
+        print("[CHECK] DatabaseConnection instanciado")
 
 import sys
 import pytest
@@ -634,7 +634,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ UsuariosModel instanciado")
+        print("[CHECK] UsuariosModel instanciado")
 
 import sys
 import pytest
@@ -803,7 +803,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print(f"✅ Usuario invitado configurado: {usuario_invitado['usuario']}")
+        print(f"[CHECK] Usuario invitado configurado: {usuario_invitado['usuario']}")
 
 import sys
 import pytest
@@ -868,7 +868,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print(f"❌ Error en base de datos: {e}")
+        print(f"[ERROR] Error en base de datos: {e}")
 import sys
 import pytest
 from pathlib import Path
@@ -1046,7 +1046,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print("✅ AuditoriaModel instanciado")
+        print("[CHECK] AuditoriaModel instanciado")
 
 import sys
 import pytest
@@ -1431,7 +1431,7 @@ import sys
 import pytest
 from pathlib import Path
 
-            print("✅ Evento de auditoría registrado exitosamente")
+            print("[CHECK] Evento de auditoría registrado exitosamente")
 import sys
 import pytest
 from pathlib import Path
@@ -1473,7 +1473,7 @@ import sys
 import pytest
 from pathlib import Path
 
-            print("⚠️ Registro de auditoría retornó False")
+            print("[WARN] Registro de auditoría retornó False")
 
 import sys
 import pytest
@@ -1538,7 +1538,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print(f"❌ Error en auditoría: {e}")
+        print(f"[ERROR] Error en auditoría: {e}")
 import sys
 import pytest
 from pathlib import Path
@@ -2078,7 +2078,7 @@ import sys
 import pytest
 from pathlib import Path
 
-        print(f"⚠️ {total_tests-tests_passed} TESTS FALLARON")
+        print(f"[WARN] {total_tests-tests_passed} TESTS FALLARON")
 import sys
 import pytest
 from pathlib import Path

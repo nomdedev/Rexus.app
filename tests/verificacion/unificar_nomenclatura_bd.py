@@ -14,7 +14,7 @@ from core.database import ObrasDatabaseConnection
     db = ObrasDatabaseConnection()
     try:
         db.conectar()
-        print("✅ Conectado a la base de datos")
+        print("[CHECK] Conectado a la base de datos")
 
         # Lista de cambios a realizar: (tabla, columna_actual, columna_nueva)
         cambios_nomenclatura = [
@@ -34,7 +34,7 @@ from core.database import ObrasDatabaseConnection
                 table_exists = db.ejecutar_query(check_table)
 
                 if not table_exists:
-                    print(f"  ⚠️ Tabla {tabla} no existe - saltando")
+                    print(f"  [WARN] Tabla {tabla} no existe - saltando")
                     continue
 
                 # Verificar si la columna actual existe
@@ -45,7 +45,7 @@ from core.database import ObrasDatabaseConnection
                 column_exists = db.ejecutar_query(check_column)
 
                 if not column_exists:
-                    print(f"  ⚠️ Columna {columna_actual} no existe en {tabla} - saltando")
+                    print(f"  [WARN] Columna {columna_actual} no existe en {tabla} - saltando")
                     continue
 
                 # Verificar si ya existe la columna nueva
@@ -56,7 +56,7 @@ from core.database import ObrasDatabaseConnection
                 new_column_exists = db.ejecutar_query(check_new_column)
 
                 if new_column_exists:
-                    print(f"  ✅ Columna {columna_nueva} ya existe en {tabla}")
+                    print(f"  [CHECK] Columna {columna_nueva} ya existe en {tabla}")
                     continue
 
                 # Realizar el cambio de nombre
@@ -64,10 +64,10 @@ from core.database import ObrasDatabaseConnection
 
                 print(f"  🔧 Renombrando {tabla}.{columna_actual} → {columna_nueva}")
                 db.ejecutar_query(sql_rename)
-                print(f"  ✅ {tabla}.{columna_nueva} - Cambio completado")
+                print(f"  [CHECK] {tabla}.{columna_nueva} - Cambio completado")
 
             except Exception as e:
-                print(f"  ❌ Error en {tabla}: {e}")
+                print(f"  [ERROR] Error en {tabla}: {e}")
 
         print("\n📋 Verificando resultados...")
 
@@ -84,12 +84,12 @@ from core.database import ObrasDatabaseConnection
                 col_names = [row[0] for row in cols] if cols else []
                 print(f"  📌 {tabla}: columnas obra = {col_names}")
             except Exception as e:
-                print(f"  ❌ Error verificando {tabla}: {e}")
+                print(f"  [ERROR] Error verificando {tabla}: {e}")
 
-        print("\n✅ Proceso de unificación completado")
+        print("\n[CHECK] Proceso de unificación completado")
 
     except Exception as e:
-        print(f"❌ Error crítico: {e}")
+        print(f"[ERROR] Error crítico: {e}")
     finally:
         db.cerrar_conexion()
         print("🔚 Conexión cerrada")
@@ -122,17 +122,17 @@ def verificar_integridad_post_cambio():
             try:
                 result = db.ejecutar_query(query)
                 count = result[0][0] if result else 0
-                print(f"  ✅ {nombre}: {count} relaciones válidas")
+                print(f"  [CHECK] {nombre}: {count} relaciones válidas")
             except Exception as e:
-                print(f"  ❌ {nombre}: Error - {e}")
+                print(f"  [ERROR] {nombre}: Error - {e}")
 
     except Exception as e:
-        print(f"❌ Error en verificación: {e}")
+        print(f"[ERROR] Error en verificación: {e}")
     finally:
         db.cerrar_conexion()
 
 if __name__ == "__main__":
-    print("🚀 UNIFICACIÓN DE NOMENCLATURA DE COLUMNAS")
+    print("[ROCKET] UNIFICACIÓN DE NOMENCLATURA DE COLUMNAS")
     print("=" * 60)
 
     unificar_nomenclatura_columnas()

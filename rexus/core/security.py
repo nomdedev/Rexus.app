@@ -139,10 +139,10 @@ class SecurityManager(QObject):
             """)
 
             self.db_connection.commit()
-            print("✅ Tablas de seguridad creadas exitosamente")
+            print("[CHECK] Tablas de seguridad creadas exitosamente")
 
         except Exception as e:
-            print(f"❌ Error creando tablas de seguridad: {e}")
+            print(f"[ERROR] Error creando tablas de seguridad: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -245,7 +245,7 @@ class SecurityManager(QObject):
             self.assign_default_role_permissions()
 
         except Exception as e:
-            print(f"❌ Error cargando permisos por defecto: {e}")
+            print(f"[ERROR] Error cargando permisos por defecto: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -434,13 +434,13 @@ class SecurityManager(QObject):
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"❌ Error asignando permisos por defecto: {e}")
+            print(f"[ERROR] Error asignando permisos por defecto: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
     def create_default_admin(self):
         """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
-        print("❌ SEGURIDAD: No se crean usuarios por defecto automáticamente")
+        print("[ERROR] SEGURIDAD: No se crean usuarios por defecto automáticamente")
         print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
         pass
 
@@ -508,7 +508,7 @@ class SecurityManager(QObject):
             return True
 
         except Exception as e:
-            print(f"❌ Error en login: {e}")
+            print(f"[ERROR] Error en login: {e}")
             return False
 
     def logout(self) -> bool:
@@ -548,7 +548,7 @@ class SecurityManager(QObject):
                 return True
 
         except Exception as e:
-            print(f"❌ Error en logout: {e}")
+            print(f"[ERROR] Error en logout: {e}")
 
         return False
 
@@ -579,7 +579,7 @@ class SecurityManager(QObject):
                 self.permissions_cache[module].add(perm_name)
 
         except Exception as e:
-            print(f"❌ Error cargando permisos: {e}")
+            print(f"[ERROR] Error cargando permisos: {e}")
             self.permissions_cache = {}
 
     def has_permission(self, permission: str, module: str = None) -> bool:
@@ -643,7 +643,7 @@ class SecurityManager(QObject):
             return cursor.fetchone() is not None
 
         except Exception as e:
-            print(f"❌ Error verificando sesión: {e}")
+            print(f"[ERROR] Error verificando sesión: {e}")
             return False
 
     def log_security_event(
@@ -654,7 +654,7 @@ class SecurityManager(QObject):
             # Solo registrar en consola por ahora (sin BD)
             print(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
         except Exception as e:
-            print(f"❌ Error logging evento de seguridad: {e}")
+            print(f"[ERROR] Error logging evento de seguridad: {e}")
 
     def get_current_user(self) -> Optional[Dict]:
         """Obtiene los datos completos del usuario actual."""
@@ -830,7 +830,7 @@ class SecurityManager(QObject):
             return users
 
         except Exception as e:
-            print(f"❌ Error obteniendo usuarios: {e}")
+            print(f"[ERROR] Error obteniendo usuarios: {e}")
             return []
 
     def create_user(
@@ -856,7 +856,7 @@ class SecurityManager(QObject):
             # SEGURIDAD: Validar que no se permita creación no autorizada
             # Solo permitir crear usuarios si el usuario actual es admin
             if not hasattr(self, 'current_user') or self.current_role != 'ADMIN':
-                print("❌ SEGURIDAD: Solo admins pueden crear usuarios")
+                print("[ERROR] SEGURIDAD: Solo admins pueden crear usuarios")
                 return False
             
             # Crear usuario con validaciones adicionales
@@ -879,7 +879,7 @@ class SecurityManager(QObject):
             return True
 
         except Exception as e:
-            print(f"❌ Error creando usuario: {e}")
+            print(f"[ERROR] Error creando usuario: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -946,7 +946,7 @@ class SecurityManager(QObject):
             return True
 
         except Exception as e:
-            print(f"❌ Error actualizando usuario: {e}")
+            print(f"[ERROR] Error actualizando usuario: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -984,7 +984,7 @@ class SecurityManager(QObject):
             return logs
 
         except Exception as e:
-            print(f"❌ Error obteniendo logs de seguridad: {e}")
+            print(f"[ERROR] Error obteniendo logs de seguridad: {e}")
             return []
 
 

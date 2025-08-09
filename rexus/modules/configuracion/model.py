@@ -1,4 +1,4 @@
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """

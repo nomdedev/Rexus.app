@@ -612,7 +612,7 @@ class MantenimientoCompletaView(QWidget):
 
         # Tab 4: Reportes
         reportes_tab = self.create_reportes_tab()
-        tabs.addTab(reportes_tab, "📊 Reportes")
+        tabs.addTab(reportes_tab, "[CHART] Reportes")
 
         layout.addWidget(tabs)
 
@@ -884,7 +884,7 @@ class MantenimientoCompletaView(QWidget):
         reports_layout = QGridLayout()
 
         reports = [
-            ("📊 Reporte de Máquinas", self.generar_reporte_maquinas),
+            ("[CHART] Reporte de Máquinas", self.generar_reporte_maquinas),
             ("🔧 Historial de Servicios", self.generar_historial_servicios),
             ("💰 Costos de Mantenimiento", self.generar_costos_mantenimiento),
             ("📅 Mantenimientos Programados", self.generar_mantenimientos_programados),

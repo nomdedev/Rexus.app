@@ -240,7 +240,7 @@ class ConsultasManager:
             }
 
         except Exception as e:
-            print(f"❌ Error en consulta paginada: {str(e)}")
+            print(f"[ERROR] Error en consulta paginada: {str(e)}")
             return {"items": [], "total": 0, "offset": offset, "limit": limit}
 
     @auth_required
@@ -299,7 +299,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"❌ Error en búsqueda: {str(e)}")
+            print(f"[ERROR] Error en búsqueda: {str(e)}")
             return []
 
     @auth_required
@@ -335,7 +335,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"❌ Error obteniendo productos con stock bajo: {str(e)}")
+            print(f"[ERROR] Error obteniendo productos con stock bajo: {str(e)}")
             return []
 
     @auth_required
@@ -400,7 +400,7 @@ class ConsultasManager:
             return stats
 
         except Exception as e:
-            print(f"❌ Error obteniendo estadísticas: {str(e)}")
+            print(f"[ERROR] Error obteniendo estadísticas: {str(e)}")
             return {
                 "total_productos": 0,
                 "total_valor": 0.0,
@@ -442,7 +442,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"❌ Error obteniendo productos por categoría: {str(e)}")
+            print(f"[ERROR] Error obteniendo productos por categoría: {str(e)}")
             return []
 
     @auth_required
@@ -483,7 +483,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"❌ Error generando reporte valorizado: {str(e)}")
+            print(f"[ERROR] Error generando reporte valorizado: {str(e)}")
             return []
 
     def _validar_orden(self, orden: str) -> str:
@@ -585,5 +585,5 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"❌ Error en filtro avanzado: {str(e)}")
+            print(f"[ERROR] Error en filtro avanzado: {str(e)}")
             return []

@@ -30,13 +30,13 @@ class TestObrasRealDatabase:
             if db_conn.connection:
                 self.connection = db_conn.connection
                 self.model = ObrasModel(self.connection)
-                print("✅ [DB TEST] Conexión establecida correctamente")
+                print("[CHECK] [DB TEST] Conexión establecida correctamente")
                 return True
             else:
-                print("❌ [DB TEST] No se pudo conectar a la base de datos")
+                print("[ERROR] [DB TEST] No se pudo conectar a la base de datos")
                 return False
         except Exception as e:
-            print(f"❌ [DB TEST] Error configurando conexión: {e}")
+            print(f"[ERROR] [DB TEST] Error configurando conexión: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -56,10 +56,10 @@ class TestObrasRealDatabase:
             exists = cursor.fetchone()[0] > 0
             
             if not exists:
-                print("❌ [DB TEST] La tabla 'obras' no existe")
+                print("[ERROR] [DB TEST] La tabla 'obras' no existe")
                 return False
             
-            print("✅ [DB TEST] La tabla 'obras' existe")
+            print("[CHECK] [DB TEST] La tabla 'obras' existe")
             
             # Obtener estructura de columnas
             query_columns = """
@@ -79,7 +79,7 @@ class TestObrasRealDatabase:
             return True
             
         except Exception as e:
-            print(f"❌ [DB TEST] Error verificando tabla: {e}")
+            print(f"[ERROR] [DB TEST] Error verificando tabla: {e}")
             return False
     
     def contar_obras_totales(self):
@@ -98,7 +98,7 @@ class TestObrasRealDatabase:
             # Obras inactivas
             obras_inactivas = total_obras - obras_activas
             
-            print(f"📊 [DB TEST] Estadísticas de obras:")
+            print(f"[CHART] [DB TEST] Estadísticas de obras:")
             print(f"   - Total de obras: {total_obras}")
             print(f"   - Obras activas: {obras_activas}")
             print(f"   - Obras inactivas: {obras_inactivas}")
@@ -107,7 +107,7 @@ class TestObrasRealDatabase:
             return total_obras, obras_activas
             
         except Exception as e:
-            print(f"❌ [DB TEST] Error contando obras: {e}")
+            print(f"[ERROR] [DB TEST] Error contando obras: {e}")
             return 0, 0
     
     def verificar_metodos_modelo(self):
@@ -137,7 +137,7 @@ class TestObrasRealDatabase:
             return True
             
         except Exception as e:
-            print(f"❌ [DB TEST] Error verificando métodos: {e}")
+            print(f"[ERROR] [DB TEST] Error verificando métodos: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -150,7 +150,7 @@ class TestObrasRealDatabase:
             obras = self.model.obtener_todas_obras()
             
             if not obras:
-                print("⚠️ [DB TEST] No hay obras para verificar")
+                print("[WARN] [DB TEST] No hay obras para verificar")
                 return True
             
             # Verificar estructura esperada por la vista
@@ -168,7 +168,7 @@ class TestObrasRealDatabase:
             print(f"   - Campos obtenidos: {len(primera_obra)}")
             
             if len(primera_obra) >= len(campos_esperados):
-                print("✅ [DB TEST] La estructura tiene suficientes campos")
+                print("[CHECK] [DB TEST] La estructura tiene suficientes campos")
                 
                 # Mapear algunos campos clave para la vista
                 mapeo_vista = {
@@ -187,47 +187,47 @@ class TestObrasRealDatabase:
                     print(f"     {campo}: {valor}")
                 
             else:
-                print(f"⚠️ [DB TEST] Posible problema: se esperan {len(campos_esperados)} campos, se obtuvieron {len(primera_obra)}")
+                print(f"[WARN] [DB TEST] Posible problema: se esperan {len(campos_esperados)} campos, se obtuvieron {len(primera_obra)}")
             
             return True
             
         except Exception as e:
-            print(f"❌ [DB TEST] Error verificando coherencia: {e}")
+            print(f"[ERROR] [DB TEST] Error verificando coherencia: {e}")
             return False
     
     def ejecutar_test_completo(self):
         """Ejecutar test completo de verificación."""
-        print("🚀 [DB TEST] Iniciando test de base de datos real para obras...")
+        print("[ROCKET] [DB TEST] Iniciando test de base de datos real para obras...")
         print("=" * 60)
         
         # 1. Configurar conexión
         if not self.setup_database_connection():
-            print("❌ [DB TEST] Test fallido: No se pudo conectar a la base de datos")
+            print("[ERROR] [DB TEST] Test fallido: No se pudo conectar a la base de datos")
             return False
         
         # 2. Verificar tabla
         if not self.verificar_tabla_obras_existe():
-            print("❌ [DB TEST] Test fallido: Problema con la tabla obras")
+            print("[ERROR] [DB TEST] Test fallido: Problema con la tabla obras")
             return False
         
         # 3. Contar obras
         total, activas = self.contar_obras_totales()
         if total == 0:
-            print("⚠️ [DB TEST] Advertencia: No hay obras en la base de datos")
+            print("[WARN] [DB TEST] Advertencia: No hay obras en la base de datos")
         
         # 4. Verificar métodos del modelo
         if not self.verificar_metodos_modelo():
-            print("❌ [DB TEST] Test fallido: Problemas con métodos del modelo")
+            print("[ERROR] [DB TEST] Test fallido: Problemas con métodos del modelo")
             return False
         
         # 5. Verificar coherencia
         if not self.verificar_coherencia_datos():
-            print("❌ [DB TEST] Test fallido: Problemas de coherencia de datos")
+            print("[ERROR] [DB TEST] Test fallido: Problemas de coherencia de datos")
             return False
         
         print("=" * 60)
-        print("✅ [DB TEST] Test completado exitosamente")
-        print(f"📊 [DB TEST] Resumen: {total} obras totales, {activas} activas")
+        print("[CHECK] [DB TEST] Test completado exitosamente")
+        print(f"[CHART] [DB TEST] Resumen: {total} obras totales, {activas} activas")
         
         return True
 

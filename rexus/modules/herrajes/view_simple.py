@@ -353,7 +353,7 @@ class HerrajesViewSimple(QWidget):
         self.btn_exportar = QPushButton("📤 Exportar")
         self.btn_exportar.clicked.connect(self.exportar_datos)
 
-        self.btn_reporte = QPushButton("📊 Reportes")
+        self.btn_reporte = QPushButton("[CHART] Reportes")
         self.btn_reporte.clicked.connect(self.generar_reporte)
 
         self.btn_actualizar = QPushButton("🔄 Actualizar")

@@ -120,7 +120,7 @@ class SecurityValidationReport:
                     'scripts': [f.name for f in sql_files]
                 })
         
-        print(f"✅ Directorios SQL encontrados: {len([d for d in sql_dirs if (self.project_root / d).exists()])}")
+        print(f"[CHECK] Directorios SQL encontrados: {len([d for d in sql_dirs if (self.project_root / d).exists()])}")
         print(f"📄 Total de scripts SQL: {total_scripts}")
     
     def validate_auth_decorators(self):
@@ -151,7 +151,7 @@ class SecurityValidationReport:
                 self._check_file_for_patterns(file_path, auth_patterns, 'auth_decorators', positive=True)
         
         total_decorators = sum(len(result.get('matches', [])) for result in self.validation_results['auth_decorators'])
-        print(f"✅ Decoradores de autenticación encontrados: {total_decorators}")
+        print(f"[CHECK] Decoradores de autenticación encontrados: {total_decorators}")
     
     def validate_data_sanitization(self):
         """Valida la implementación de sanitización de datos."""
@@ -181,7 +181,7 @@ class SecurityValidationReport:
                 self._check_file_for_patterns(file_path, sanitization_patterns, 'data_sanitization', positive=True)
         
         total_sanitization = sum(len(result.get('matches', [])) for result in self.validation_results['data_sanitization'])
-        print(f"✅ Usos de sanitización encontrados: {total_sanitization}")
+        print(f"[CHECK] Usos de sanitización encontrados: {total_sanitization}")
     
     def validate_performance_optimizations(self):
         """Valida las optimizaciones de rendimiento."""
@@ -201,8 +201,8 @@ class SecurityValidationReport:
                 'index_count': index_count
             })
             
-            print(f"✅ Archivo de índices encontrado: {index_file.name}")
-            print(f"📊 Índices de rendimiento: {index_count}")
+            print(f"[CHECK] Archivo de índices encontrado: {index_file.name}")
+            print(f"[CHART] Índices de rendimiento: {index_count}")
         
         # Verificar uso de scripts SQL externos (mejora rendimiento)
         sql_script_usage = sum(len(result.get('scripts', [])) for result in self.validation_results['external_sql_scripts'])
@@ -228,7 +228,7 @@ class SecurityValidationReport:
                     'exists': True,
                     'size': file_path.stat().st_size
                 })
-                print(f"✅ Herramienta de auditoría: {audit_file}")
+                print(f"[CHECK] Herramienta de auditoría: {audit_file}")
         
         # Verificar requirements.txt actualizado
         req_file = self.project_root / 'requirements.txt'
@@ -277,7 +277,7 @@ class SecurityValidationReport:
         
         overall_reduction = ((total_original - total_current) / total_original) * 100
         print(f"📉 Reducción total de líneas de código: {overall_reduction:.1f}%")
-        print(f"📊 Líneas originales: {total_original} → Líneas actuales: {total_current}")
+        print(f"[CHART] Líneas originales: {total_original} → Líneas actuales: {total_current}")
     
     def _check_file_for_patterns(self, file_path: Path, patterns: List[str], result_key: str, positive: bool = False):
         """Busca patrones en un archivo."""
@@ -301,13 +301,13 @@ class SecurityValidationReport:
             self.validation_results[result_key].append(result)
             
         except Exception as e:
-            print(f"⚠️  Error revisando {file_path}: {e}")
+            print(f"[WARN]  Error revisando {file_path}: {e}")
     
     def generate_summary_report(self) -> str:
         """Genera un reporte resumen de la validación."""
         
         lines = [
-            "🔒 REPORTE DE VALIDACIÓN DE SEGURIDAD - REXUS.APP",
+            "[LOCK] REPORTE DE VALIDACIÓN DE SEGURIDAD - REXUS.APP",
             "=" * 60,
             f"Fecha: {__import__('datetime').datetime.now().strftime('%Y-%m-%d %H:%M:%S')}",
             ""
@@ -342,7 +342,7 @@ class SecurityValidationReport:
         
         lines.extend([
             "",
-            "✅ ESTADO GENERAL",
+            "[CHECK] ESTADO GENERAL",
             "-" * 20,
             "• Vulnerabilidades SQL Injection: CORREGIDAS",
             "• Scripts SQL externos: IMPLEMENTADOS",

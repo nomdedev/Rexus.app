@@ -47,7 +47,7 @@ def create_admin_user():
         cursor.execute("DELETE FROM usuarios WHERE usuario = 'admin'")
         conn.commit()
         
-        # 🔒 SEGURIDAD: 2. Hash seguro de contraseña
+        # [LOCK] SEGURIDAD: 2. Hash seguro de contraseña
         import getpass
         sys.path.insert(0, str(Path(__file__).parent.parent.parent))
         from rexus.utils.password_security import hash_password_secure
@@ -55,11 +55,11 @@ def create_admin_user():
         admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
         
         if not admin_password or len(admin_password) < 8:
-            print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+            print("[ERROR] Error: La contraseña debe tener al menos 8 caracteres")
             return
             
         password_hash = hash_password_secure(admin_password)
-        print("✅ 2. Hash seguro de contraseña generado")
+        print("[CHECK] 2. Hash seguro de contraseña generado")
         
         # 3. Insertar usuario admin
         print("3. Insertando usuario admin...")
@@ -110,7 +110,7 @@ def create_admin_user():
         
         auth_test = cursor.fetchone()
         if auth_test:
-            print(f"   ✓ Autenticación exitosa: ID={auth_test[0]}, Usuario={auth_test[1]}, Rol={auth_test[2]}")
+            print(f"   [OK] Autenticación exitosa: ID={auth_test[0]}, Usuario={auth_test[1]}, Rol={auth_test[2]}")
         else:
             print("   ✗ Error en autenticación")
             
@@ -118,12 +118,12 @@ def create_admin_user():
         cursor.close()
         conn.close()
         
-        print("\n✓ USUARIO ADMIN CREADO EXITOSAMENTE")
+        print("\n[OK] USUARIO ADMIN CREADO EXITOSAMENTE")
         print("Credenciales:")
         print("  Usuario: admin")
         print("  Contraseña: [La que ingresó]")
         print("  Rol: admin")
-        print("\n🔒 SEGURIDAD: Contraseña hasheada de forma segura")
+        print("\n[LOCK] SEGURIDAD: Contraseña hasheada de forma segura")
         
         return True
         
@@ -146,7 +146,7 @@ def test_admin_login():
         user_data = auth_manager.authenticate_user("admin", "admin")
         
         if user_data:
-            print("✓ Login exitoso")
+            print("[OK] Login exitoso")
             print("Datos del usuario:")
             for key, value in user_data.items():
                 print(f"  {key}: {value}")
@@ -171,6 +171,6 @@ if __name__ == "__main__":
             print(f"\n🎉 TODO FUNCIONANDO CORRECTAMENTE")
             print("Puedes usar la aplicación con admin/admin")
         else:
-            print(f"\n❌ PROBLEMA CON EL LOGIN")
+            print(f"\n[ERROR] PROBLEMA CON EL LOGIN")
     else:
-        print(f"\n❌ NO SE PUDO CREAR EL USUARIO ADMIN")
+        print(f"\n[ERROR] NO SE PUDO CREAR EL USUARIO ADMIN")

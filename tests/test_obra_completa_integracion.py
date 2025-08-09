@@ -48,7 +48,7 @@ try:
     from rexus.modules.logistica.model import LogisticaModel
     from rexus.modules.auditoria.model import AuditoriaModel
 except ImportError as e:
-    print(f"❌ Error importando módulos: {e}")
+    print(f"[ERROR] Error importando módulos: {e}")
     sys.exit(1)
 
 class TestObraCompleta:
@@ -67,7 +67,7 @@ class TestObraCompleta:
         """Configura la conexión a la base de datos."""
         try:
             self.db = DatabaseConnection()
-            print("✅ Conexión a base de datos establecida")
+            print("[CHECK] Conexión a base de datos establecida")
             
             # Inicializar todos los modelos
             self.models = {
@@ -82,11 +82,11 @@ class TestObraCompleta:
                 'logistica': LogisticaModel(self.db),
                 'auditoria': AuditoriaModel(self.db)
             }
-            print("✅ Modelos inicializados correctamente")
+            print("[CHECK] Modelos inicializados correctamente")
             
         except Exception as e:
             self.errores.append(f"Error configurando BD: {e}")
-            print(f"❌ Error configurando BD: {e}")
+            print(f"[ERROR] Error configurando BD: {e}")
             
     def test_1_crear_obra(self):
         """Test 1: Crear una nueva obra."""
@@ -113,7 +113,7 @@ class TestObraCompleta:
             self.obra_id = self.models['obras'].crear_obra(self.datos_obra)
             
             if self.obra_id:
-                print(f"   ✅ Obra creada con ID: {self.obra_id}")
+                print(f"   [CHECK] Obra creada con ID: {self.obra_id}")
                 print(f"   📋 Código: {self.datos_obra['codigo']}")
                 print(f"   🏢 Cliente: {self.datos_obra['cliente']}")
                 print(f"   💰 Presupuesto: ${self.datos_obra['presupuesto_total']:,.2f}")
@@ -121,7 +121,7 @@ class TestObraCompleta:
                 # Verificar que la obra existe en la BD
                 obra_verificada = self.models['obras'].obtener_obra_por_id(self.obra_id)
                 if obra_verificada:
-                    print("   ✅ Obra verificada en base de datos")
+                    print("   [CHECK] Obra verificada en base de datos")
                 else:
                     self.errores.append("Obra no encontrada después de crear")
                     
@@ -130,7 +130,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error creando obra: {e}")
-            print(f"   ❌ Error creando obra: {e}")
+            print(f"   [ERROR] Error creando obra: {e}")
             
     def test_2_asignar_empleados(self):
         """Test 2: Asignar empleados a la obra."""
@@ -154,7 +154,7 @@ class TestObraCompleta:
             self.empleado_id = self.models['rrhh'].crear_empleado(empleado_data)
             
             if self.empleado_id:
-                print(f"   ✅ Empleado creado con ID: {self.empleado_id}")
+                print(f"   [CHECK] Empleado creado con ID: {self.empleado_id}")
                 print(f"   👤 Nombre: {empleado_data['nombre']} {empleado_data['apellido']}")
                 print(f"   💼 Cargo: {empleado_data['cargo']}")
                 
@@ -166,7 +166,7 @@ class TestObraCompleta:
                 )
                 
                 if asignacion:
-                    print("   ✅ Empleado asignado a obra correctamente")
+                    print("   [CHECK] Empleado asignado a obra correctamente")
                 else:
                     self.errores.append("No se pudo asignar empleado a obra")
                     
@@ -175,7 +175,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error asignando empleados: {e}")
-            print(f"   ❌ Error asignando empleados: {e}")
+            print(f"   [ERROR] Error asignando empleados: {e}")
             
     def test_3_crear_pedido_materiales(self):
         """Test 3: Crear pedido de materiales para la obra."""
@@ -197,7 +197,7 @@ class TestObraCompleta:
             self.pedido_id = self.models['pedidos'].crear_pedido(pedido_data)
             
             if self.pedido_id:
-                print(f"   ✅ Pedido creado con ID: {self.pedido_id}")
+                print(f"   [CHECK] Pedido creado con ID: {self.pedido_id}")
                 print(f"   📋 Código: {pedido_data['codigo']}")
                 print(f"   📅 Fecha requerida: {pedido_data['fecha_requerida']}")
                 
@@ -217,7 +217,7 @@ class TestObraCompleta:
                         item['unidad']
                     )
                     if resultado:
-                        print(f"   ✅ Item agregado: {item['descripcion']}")
+                        print(f"   [CHECK] Item agregado: {item['descripcion']}")
                     else:
                         self.errores.append(f"No se pudo agregar item: {item['descripcion']}")
                         
@@ -226,7 +226,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error creando pedido: {e}")
-            print(f"   ❌ Error creando pedido: {e}")
+            print(f"   [ERROR] Error creando pedido: {e}")
             
     def test_4_gestionar_herrajes(self):
         """Test 4: Gestionar herrajes para la obra."""
@@ -266,7 +266,7 @@ class TestObraCompleta:
                 herraje_id = self.models['herrajes'].crear_herraje(herraje)
                 if herraje_id:
                     herrajes_ids.append(herraje_id)
-                    print(f"   ✅ Herraje creado: {herraje['descripcion']}")
+                    print(f"   [CHECK] Herraje creado: {herraje['descripcion']}")
                     
                     # Asignar herraje a obra
                     asignacion = self.models['herrajes'].asignar_herraje_obra(
@@ -276,16 +276,16 @@ class TestObraCompleta:
                     )
                     
                     if asignacion:
-                        print(f"   ✅ Herraje asignado a obra")
+                        print(f"   [CHECK] Herraje asignado a obra")
                     else:
                         self.errores.append(f"No se pudo asignar herraje {herraje['descripcion']}")
                         
             if herrajes_ids:
-                print(f"   ✅ {len(herrajes_ids)} herrajes creados y asignados")
+                print(f"   [CHECK] {len(herrajes_ids)} herrajes creados y asignados")
                 
         except Exception as e:
             self.errores.append(f"Error gestionando herrajes: {e}")
-            print(f"   ❌ Error gestionando herrajes: {e}")
+            print(f"   [ERROR] Error gestionando herrajes: {e}")
             
     def test_5_programar_vidrios(self):
         """Test 5: Programar vidrios para la obra."""
@@ -317,7 +317,7 @@ class TestObraCompleta:
                 vidrio_id = self.models['vidrios'].crear_vidrio(vidrio)
                 if vidrio_id:
                     vidrios_ids.append(vidrio_id)
-                    print(f"   ✅ Vidrio creado: {vidrio['tipo']} {vidrio['espesor']}mm")
+                    print(f"   [CHECK] Vidrio creado: {vidrio['tipo']} {vidrio['espesor']}mm")
                     
                     # Crear medidas para la obra
                     medidas = [
@@ -336,13 +336,13 @@ class TestObraCompleta:
                         
                         if resultado:
                             m2 = medida['ancho'] * medida['alto'] * medida['cantidad']
-                            print(f"   ✅ Medida agregada: {medida['ancho']}x{medida['alto']} ({m2:.2f}m²)")
+                            print(f"   [CHECK] Medida agregada: {medida['ancho']}x{medida['alto']} ({m2:.2f}m²)")
                         else:
                             self.errores.append(f"No se pudo agregar medida {medida['ancho']}x{medida['alto']}")
                             
         except Exception as e:
             self.errores.append(f"Error programando vidrios: {e}")
-            print(f"   ❌ Error programando vidrios: {e}")
+            print(f"   [ERROR] Error programando vidrios: {e}")
             
     def test_6_registrar_pagos(self):
         """Test 6: Registrar pagos en contabilidad."""
@@ -365,7 +365,7 @@ class TestObraCompleta:
             asiento_id = self.models['contabilidad'].crear_asiento(asiento_data)
             
             if asiento_id:
-                print(f"   ✅ Asiento contable creado: {asiento_data['numero']}")
+                print(f"   [CHECK] Asiento contable creado: {asiento_data['numero']}")
                 print(f"   💰 Monto: ${asiento_data['haber']:,.2f}")
                 
                 # Crear recibo
@@ -384,7 +384,7 @@ class TestObraCompleta:
                 recibo_id = self.models['contabilidad'].crear_recibo(recibo_data)
                 
                 if recibo_id:
-                    print(f"   ✅ Recibo creado: {recibo_data['numero']}")
+                    print(f"   [CHECK] Recibo creado: {recibo_data['numero']}")
                     
                     # Registrar pago por obra
                     pago_obra = self.models['contabilidad'].registrar_pago_obra(
@@ -398,7 +398,7 @@ class TestObraCompleta:
                     )
                     
                     if pago_obra:
-                        print("   ✅ Pago por obra registrado")
+                        print("   [CHECK] Pago por obra registrado")
                     else:
                         self.errores.append("No se pudo registrar pago por obra")
                         
@@ -407,7 +407,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error registrando pagos: {e}")
-            print(f"   ❌ Error registrando pagos: {e}")
+            print(f"   [ERROR] Error registrando pagos: {e}")
             
     def test_7_programar_mantenimiento(self):
         """Test 7: Programar mantenimiento de equipos."""
@@ -433,7 +433,7 @@ class TestObraCompleta:
             equipo_id = self.models['mantenimiento'].crear_equipo(equipo_data)
             
             if equipo_id:
-                print(f"   ✅ Equipo creado: {equipo_data['nombre']}")
+                print(f"   [CHECK] Equipo creado: {equipo_data['nombre']}")
                 
                 # Programar mantenimiento preventivo
                 mantenimiento_data = {
@@ -450,7 +450,7 @@ class TestObraCompleta:
                 mantenimiento_id = self.models['mantenimiento'].crear_mantenimiento(mantenimiento_data)
                 
                 if mantenimiento_id:
-                    print(f"   ✅ Mantenimiento programado para: {mantenimiento_data['fecha_programada']}")
+                    print(f"   [CHECK] Mantenimiento programado para: {mantenimiento_data['fecha_programada']}")
                 else:
                     self.errores.append("No se pudo programar mantenimiento")
                     
@@ -459,7 +459,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error programando mantenimiento: {e}")
-            print(f"   ❌ Error programando mantenimiento: {e}")
+            print(f"   [ERROR] Error programando mantenimiento: {e}")
             
     def test_8_gestionar_logistica(self):
         """Test 8: Gestionar logística de entregas."""
@@ -481,7 +481,7 @@ class TestObraCompleta:
             transporte_id = self.models['logistica'].crear_transporte(transporte_data)
             
             if transporte_id:
-                print(f"   ✅ Transporte creado: {transporte_data['descripcion']}")
+                print(f"   [CHECK] Transporte creado: {transporte_data['descripcion']}")
                 
                 # Programar entrega
                 entrega_data = {
@@ -500,7 +500,7 @@ class TestObraCompleta:
                 entrega_id = self.models['logistica'].crear_entrega(entrega_data)
                 
                 if entrega_id:
-                    print(f"   ✅ Entrega programada para: {entrega_data['fecha_entrega']}")
+                    print(f"   [CHECK] Entrega programada para: {entrega_data['fecha_entrega']}")
                     
                     # Agregar productos a la entrega
                     productos = [
@@ -518,7 +518,7 @@ class TestObraCompleta:
                         )
                         
                         if resultado:
-                            print(f"   ✅ Producto agregado: {producto['descripcion']}")
+                            print(f"   [CHECK] Producto agregado: {producto['descripcion']}")
                         else:
                             self.errores.append(f"No se pudo agregar producto: {producto['descripcion']}")
                             
@@ -530,7 +530,7 @@ class TestObraCompleta:
                 
         except Exception as e:
             self.errores.append(f"Error gestionando logística: {e}")
-            print(f"   ❌ Error gestionando logística: {e}")
+            print(f"   [ERROR] Error gestionando logística: {e}")
             
     def test_9_registrar_auditoria(self):
         """Test 9: Registrar eventos de auditoría."""
@@ -579,69 +579,69 @@ class TestObraCompleta:
                 )
                 
                 if resultado:
-                    print(f"   ✅ Evento registrado: {evento['descripcion']}")
+                    print(f"   [CHECK] Evento registrado: {evento['descripcion']}")
                 else:
                     self.errores.append(f"No se pudo registrar evento: {evento['descripcion']}")
                     
         except Exception as e:
             self.errores.append(f"Error registrando auditoría: {e}")
-            print(f"   ❌ Error registrando auditoría: {e}")
+            print(f"   [ERROR] Error registrando auditoría: {e}")
             
     def test_10_validar_integridad_datos(self):
         """Test 10: Validar integridad de datos en todos los módulos."""
-        print("\n✅ TEST 10: Validando integridad de datos...")
+        print("\n[CHECK] TEST 10: Validando integridad de datos...")
         
         try:
             # Validar obra
             obra = self.models['obras'].obtener_obra_por_id(self.obra_id)
             if obra:
-                print(f"   ✅ Obra encontrada: {obra.get('nombre', 'N/A')}")
+                print(f"   [CHECK] Obra encontrada: {obra.get('nombre', 'N/A')}")
             else:
                 self.errores.append("Obra no encontrada en validación")
                 
             # Validar empleado
             empleado = self.models['rrhh'].obtener_empleado_por_id(self.empleado_id)
             if empleado:
-                print(f"   ✅ Empleado encontrado: {empleado.get('nombre', 'N/A')}")
+                print(f"   [CHECK] Empleado encontrado: {empleado.get('nombre', 'N/A')}")
             else:
                 self.errores.append("Empleado no encontrado en validación")
                 
             # Validar pedido
             pedido = self.models['pedidos'].obtener_pedido_por_id(self.pedido_id)
             if pedido:
-                print(f"   ✅ Pedido encontrado: {pedido.get('codigo', 'N/A')}")
+                print(f"   [CHECK] Pedido encontrado: {pedido.get('codigo', 'N/A')}")
             else:
                 self.errores.append("Pedido no encontrado en validación")
                 
             # Validar herrajes
             herrajes = self.models['herrajes'].obtener_herrajes_por_obra(self.obra_id)
             if herrajes:
-                print(f"   ✅ Herrajes encontrados: {len(herrajes)} registros")
+                print(f"   [CHECK] Herrajes encontrados: {len(herrajes)} registros")
             else:
-                print("   ⚠️  No se encontraron herrajes asignados")
+                print("   [WARN]  No se encontraron herrajes asignados")
                 
             # Validar vidrios
             vidrios = self.models['vidrios'].obtener_vidrios_por_obra(self.obra_id)
             if vidrios:
-                print(f"   ✅ Vidrios encontrados: {len(vidrios)} registros")
+                print(f"   [CHECK] Vidrios encontrados: {len(vidrios)} registros")
             else:
-                print("   ⚠️  No se encontraron vidrios asignados")
+                print("   [WARN]  No se encontraron vidrios asignados")
                 
             # Validar auditoría
             auditoria = self.models['auditoria'].obtener_eventos_por_modulo('OBRAS')
             if auditoria:
-                print(f"   ✅ Eventos de auditoría: {len(auditoria)} registros")
+                print(f"   [CHECK] Eventos de auditoría: {len(auditoria)} registros")
             else:
-                print("   ⚠️  No se encontraron eventos de auditoría")
+                print("   [WARN]  No se encontraron eventos de auditoría")
                 
         except Exception as e:
             self.errores.append(f"Error validando integridad: {e}")
-            print(f"   ❌ Error validando integridad: {e}")
+            print(f"   [ERROR] Error validando integridad: {e}")
             
     def generar_reporte_final(self):
         """Genera el reporte final del test."""
         print("\n" + "="*60)
-        print("📊 REPORTE FINAL DEL TEST DE INTEGRACIÓN")
+        print("[CHART] REPORTE FINAL DEL TEST DE INTEGRACIÓN")
         print("="*60)
         
         if self.obra_id:
@@ -655,14 +655,14 @@ class TestObraCompleta:
         print(f"   • Tasa de éxito: {((10 - len(self.errores)) / 10) * 100:.1f}%")
         
         if self.errores:
-            print(f"\n❌ ERRORES ENCONTRADOS:")
+            print(f"\n[ERROR] ERRORES ENCONTRADOS:")
             for i, error in enumerate(self.errores, 1):
                 print(f"   {i}. {error}")
         else:
             print(f"\n🎉 ¡TODOS LOS TESTS PASARON EXITOSAMENTE!")
-            print(f"   ✅ Sistema completamente funcional")
-            print(f"   ✅ Todas las interacciones SQL funcionan")
-            print(f"   ✅ Datos se muestran correctamente")
+            print(f"   [CHECK] Sistema completamente funcional")
+            print(f"   [CHECK] Todas las interacciones SQL funcionan")
+            print(f"   [CHECK] Datos se muestran correctamente")
             
         print(f"\n💡 RECOMENDACIONES:")
         if self.errores:
@@ -678,13 +678,13 @@ class TestObraCompleta:
         
     def ejecutar_tests(self):
         """Ejecuta todos los tests en secuencia."""
-        print("🚀 INICIANDO TEST DE INTEGRACIÓN COMPLETA")
+        print("[ROCKET] INICIANDO TEST DE INTEGRACIÓN COMPLETA")
         print("="*60)
         
         # Setup
         self.setup_database()
         if not self.db:
-            print("❌ No se pudo conectar a la base de datos. Abortando tests.")
+            print("[ERROR] No se pudo conectar a la base de datos. Abortando tests.")
             return
             
         # Ejecutar tests
@@ -713,7 +713,7 @@ def main():
         print("\n🎉 TEST DE INTEGRACIÓN COMPLETADO CON ÉXITO")
         return 0
     else:
-        print(f"\n❌ TEST DE INTEGRACIÓN COMPLETADO CON {len(test.errores)} ERRORES")
+        print(f"\n[ERROR] TEST DE INTEGRACIÓN COMPLETADO CON {len(test.errores)} ERRORES")
         return 1
 
 if __name__ == "__main__":

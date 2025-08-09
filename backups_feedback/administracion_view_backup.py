@@ -160,7 +160,7 @@ class AdministracionView(QWidget):
         """Crea las pestañas principales."""
         # Dashboard
         self.dashboard_tab = self.create_dashboard_tab()
-        self.tabs.addTab(self.dashboard_tab, "📊 Dashboard")
+        self.tabs.addTab(self.dashboard_tab, "[CHART] Dashboard")
 
         # Contabilidad
         self.contabilidad_tab = self.create_contabilidad_tab()
@@ -184,7 +184,7 @@ class AdministracionView(QWidget):
         layout = QVBoxLayout(widget)
 
         # Resumen general
-        resumen_frame = QGroupBox("📊 Resumen General")
+        resumen_frame = QGroupBox("[CHART] Resumen General")
         resumen_frame.setStyleSheet("""
             QGroupBox {
                 font-size: 14px;
@@ -209,7 +209,7 @@ class AdministracionView(QWidget):
             ("💰 Total Ingresos", "total_ingresos", "#27ae60"),
             ("💸 Total Egresos", "total_egresos", "#e74c3c"),
             ("👥 Total Empleados", "total_empleados", "#3498db"),
-            ("📊 Nómina Mensual", "nomina_mensual", "#9b59b6"),
+            ("[CHART] Nómina Mensual", "nomina_mensual", "#9b59b6"),
             ("🏗️ Pagos por Obra", "pagos_obra", "#f39c12"),
             ("📦 Compras Materiales", "compras_materiales", "#1abc9c"),
         ]
@@ -412,7 +412,7 @@ class AdministracionView(QWidget):
         self.empleados_departamento_combo.addItems(["Todos los departamentos"])
         filtros_layout.addWidget(self.empleados_departamento_combo)
 
-        filtros_layout.addWidget(QLabel("📊 Estado:"))
+        filtros_layout.addWidget(QLabel("[CHART] Estado:"))
         self.empleados_estado_combo = QComboBox()
         self.empleados_estado_combo.addItems(
             ["Todos", "ACTIVO", "INACTIVO", "VACACIONES", "LICENCIA"]
@@ -627,7 +627,7 @@ class AdministracionView(QWidget):
         registrar_asistencia_btn.clicked.connect(self.registrar_asistencia)
         toolbar.addWidget(registrar_asistencia_btn)
 
-        registrar_falta_btn = QPushButton("❌ Registrar Falta")
+        registrar_falta_btn = QPushButton("[ERROR] Registrar Falta")
         registrar_falta_btn.setStyleSheet("""
             QPushButton {
                 background-color: #e74c3c;
@@ -1250,7 +1250,7 @@ class AdministracionView(QWidget):
         layout = QVBoxLayout(widget)
 
         # Selector de tipo de reporte
-        selector_frame = QGroupBox("📊 Tipo de Reporte")
+        selector_frame = QGroupBox("[CHART] Tipo de Reporte")
         selector_layout = QGridLayout(selector_frame)
 
         # Botones para diferentes tipos de reportes
@@ -1504,7 +1504,7 @@ class AdministracionView(QWidget):
 
         status_layout = QHBoxLayout(status_frame)
 
-        self.status_label = QLabel("✅ Sistema listo")
+        self.status_label = QLabel("[CHECK] Sistema listo")
         self.status_label.setStyleSheet("color: white; font-weight: bold;")
         status_layout.addWidget(self.status_label)
 
@@ -1855,7 +1855,7 @@ class AdministracionView(QWidget):
         self.status_label.setText(mensaje)
 
         # Auto-limpiar después de 5 segundos
-        QTimer.singleShot(5000, lambda: self.status_label.setText("✅ Sistema listo"))
+        QTimer.singleShot(5000, lambda: self.status_label.setText("[CHECK] Sistema listo"))
 
 
 # Alias para mantener compatibilidad

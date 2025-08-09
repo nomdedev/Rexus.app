@@ -243,7 +243,7 @@ class UsuariosViewModern(QWidget):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas."""
-        grupo_stats = QGroupBox("📊 Estadísticas de Usuarios")
+        grupo_stats = QGroupBox("[CHART] Estadísticas de Usuarios")
         layout_stats = QVBoxLayout(grupo_stats)
 
         # Labels de estadísticas

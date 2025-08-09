@@ -46,18 +46,18 @@ def validate_sql_injection_fixes():
                 found_protection = any(indicator in content for indicator in sql_protection_indicators)
                 
                 if found_protection:
-                    print(f"  ✅ {file_path} - Proteccion SQL implementada")
+                    print(f"  [CHECK] {file_path} - Proteccion SQL implementada")
                     fixes_applied += 1
                 else:
-                    print(f"  ⚠️ {file_path} - Revisar proteccion SQL")
+                    print(f"  [WARN] {file_path} - Revisar proteccion SQL")
                     
             except Exception as e:
-                print(f"  ❌ Error leyendo {file_path}: {e}")
+                print(f"  [ERROR] Error leyendo {file_path}: {e}")
         else:
-            print(f"  ❌ {file_path} - Archivo no encontrado")
+            print(f"  [ERROR] {file_path} - Archivo no encontrado")
     
     success_rate = (fixes_applied / total_files * 100) if total_files > 0 else 0
-    print(f"  📊 Tasa de exito: {success_rate:.1f}% ({fixes_applied}/{total_files})")
+    print(f"  [CHART] Tasa de exito: {success_rate:.1f}% ({fixes_applied}/{total_files})")
     return success_rate >= 80
 
 def validate_xss_protection():
@@ -95,16 +95,16 @@ def validate_xss_protection():
             has_protection = any(indicator in content for indicator in xss_indicators)
             
             if has_protection:
-                print(f"  ✅ {file_path} - Proteccion XSS marcada")
+                print(f"  [CHECK] {file_path} - Proteccion XSS marcada")
                 protected_files += 1
             else:
-                print(f"  ⚠️ {file_path} - Proteccion XSS no marcada")
+                print(f"  [WARN] {file_path} - Proteccion XSS no marcada")
                 
         except Exception as e:
-            print(f"  ❌ Error leyendo {file_path}: {e}")
+            print(f"  [ERROR] Error leyendo {file_path}: {e}")
     
     protection_rate = (protected_files / total_files * 100) if total_files > 0 else 0
-    print(f"  📊 Tasa de proteccion: {protection_rate:.1f}% ({protected_files}/{total_files})")
+    print(f"  [CHART] Tasa de proteccion: {protection_rate:.1f}% ({protected_files}/{total_files})")
     return protection_rate >= 90
 
 def validate_authorization_system():
@@ -133,15 +133,15 @@ def validate_authorization_system():
                     missing_components.append(component)
             
             if not missing_components:
-                print("  ✅ AuthManager creado correctamente")
+                print("  [CHECK] AuthManager creado correctamente")
                 auth_working = True
             else:
-                print(f"  ⚠️ Componentes faltantes: {missing_components}")
+                print(f"  [WARN] Componentes faltantes: {missing_components}")
                 
         except Exception as e:
-            print(f"  ❌ Error verificando AuthManager: {e}")
+            print(f"  [ERROR] Error verificando AuthManager: {e}")
     else:
-        print("  ❌ AuthManager no encontrado")
+        print("  [ERROR] AuthManager no encontrado")
     
     # Contar archivos con verificacion de autorizacion
     auth_files = []
@@ -157,7 +157,7 @@ def validate_authorization_system():
                 except:
                     continue
     
-    print(f"  📊 Archivos con verificacion de autorizacion: {len(auth_files)}")
+    print(f"  [CHART] Archivos con verificacion de autorizacion: {len(auth_files)}")
     return auth_working
 
 def validate_secure_configuration():
@@ -168,32 +168,32 @@ def validate_secure_configuration():
     
     # Verificar archivo .env
     if os.path.exists(".env"):
-        print("  ✅ Archivo .env existe")
+        print("  [CHECK] Archivo .env existe")
         config_checks.append(True)
     else:
-        print("  ⚠️ Archivo .env no encontrado")
+        print("  [WARN] Archivo .env no encontrado")
         config_checks.append(False)
     
     # Verificar configuracion segura
     config_file = "config/rexus_config.json"
     if os.path.exists(config_file):
-        print("  ✅ Configuracion segura creada")
+        print("  [CHECK] Configuracion segura creada")
         config_checks.append(True)
         
         try:
             with open(config_file, 'r', encoding='utf-8') as f:
                 config_data = f.read()
             if "security" in config_data.lower():
-                print("  ✅ Configuracion de seguridad presente en rexus_config.json")
+                print("  [CHECK] Configuracion de seguridad presente en rexus_config.json")
                 config_checks.append(True)
             else:
-                print("  ⚠️ Configuracion de seguridad no encontrada")
+                print("  [WARN] Configuracion de seguridad no encontrada")
                 config_checks.append(False)
         except:
-            print("  ⚠️ Error leyendo configuracion")
+            print("  [WARN] Error leyendo configuracion")
             config_checks.append(False)
     else:
-        print("  ⚠️ Archivo de configuracion no encontrado")
+        print("  [WARN] Archivo de configuracion no encontrado")
         config_checks.append(False)
         config_checks.append(False)
     
@@ -203,20 +203,20 @@ def validate_secure_configuration():
             with open(".gitignore", 'r', encoding='utf-8') as f:
                 gitignore_content = f.read()
             if ".env" in gitignore_content and "*.log" in gitignore_content:
-                print("  ✅ .gitignore protege archivos sensibles")
+                print("  [CHECK] .gitignore protege archivos sensibles")
                 config_checks.append(True)
             else:
-                print("  ⚠️ .gitignore necesita actualizacion")
+                print("  [WARN] .gitignore necesita actualizacion")
                 config_checks.append(False)
         except:
-            print("  ⚠️ Error leyendo .gitignore")
+            print("  [WARN] Error leyendo .gitignore")
             config_checks.append(False)
     else:
-        print("  ⚠️ .gitignore no encontrado")
+        print("  [WARN] .gitignore no encontrado")
         config_checks.append(False)
     
     success_rate = (sum(config_checks) / len(config_checks) * 100) if config_checks else 0
-    print(f"  📊 Configuracion segura: {success_rate:.1f}% ({sum(config_checks)}/{len(config_checks)})")
+    print(f"  [CHART] Configuracion segura: {success_rate:.1f}% ({sum(config_checks)}/{len(config_checks)})")
     return success_rate >= 75
 
 def validate_security_utils():
@@ -244,17 +244,17 @@ def validate_security_utils():
                     missing_functions.append(func)
             
             if not missing_functions:
-                print("  ✅ SecurityUtils completo con todas las funciones")
+                print("  [CHECK] SecurityUtils completo con todas las funciones")
                 return True
             else:
-                print(f"  ⚠️ Funciones faltantes en SecurityUtils: {missing_functions}")
+                print(f"  [WARN] Funciones faltantes en SecurityUtils: {missing_functions}")
                 return False
                 
         except Exception as e:
-            print(f"  ❌ Error verificando SecurityUtils: {e}")
+            print(f"  [ERROR] Error verificando SecurityUtils: {e}")
             return False
     else:
-        print("  ❌ SecurityUtils no encontrado")
+        print("  [ERROR] SecurityUtils no encontrado")
         return False
 
 def count_backup_files():
@@ -281,7 +281,7 @@ def count_backup_files():
         print(f"  📋 {pattern}: {len(found_files)} archivos")
         total_backups += len(found_files)
     
-    print(f"  📊 Total de backups: {total_backups}")
+    print(f"  [CHART] Total de backups: {total_backups}")
     return total_backups
 
 def main():
@@ -303,11 +303,11 @@ def main():
     print_header("RESUMEN DE VALIDACION")
     
     # Mostrar resultados
-    print(f"Sql Injection: {'✅ PASS' if results['sql_injection'] else '❌ FAIL'}")
-    print(f"Xss Protection: {'✅ PASS' if results['xss_protection'] else '❌ FAIL'}")
-    print(f"Authorization: {'✅ PASS' if results['authorization'] else '❌ FAIL'}")
-    print(f"Configuration: {'✅ PASS' if results['configuration'] else '❌ FAIL'}")
-    print(f"Security Utils: {'✅ PASS' if results['security_utils'] else '❌ FAIL'}")
+    print(f"Sql Injection: {'[CHECK] PASS' if results['sql_injection'] else '[ERROR] FAIL'}")
+    print(f"Xss Protection: {'[CHECK] PASS' if results['xss_protection'] else '[ERROR] FAIL'}")
+    print(f"Authorization: {'[CHECK] PASS' if results['authorization'] else '[ERROR] FAIL'}")
+    print(f"Configuration: {'[CHECK] PASS' if results['configuration'] else '[ERROR] FAIL'}")
+    print(f"Security Utils: {'[CHECK] PASS' if results['security_utils'] else '[ERROR] FAIL'}")
     print(f"Backups creados: {backup_count} archivos")
     
     # Calcular puntuacion general
@@ -319,12 +319,12 @@ def main():
     
     if success_rate >= 80:
         print("🎉 VALIDACION EXITOSA - Correcciones aplicadas correctamente")
-        print("✅ El sistema esta listo para pruebas finales")
+        print("[CHECK] El sistema esta listo para pruebas finales")
     elif success_rate >= 60:
-        print("⚠️ VALIDACION PARCIAL - Algunas correcciones necesitan atencion")
+        print("[WARN] VALIDACION PARCIAL - Algunas correcciones necesitan atencion")
         print("🔧 Revisar elementos marcados como FAIL")
     else:
-        print("❌ VALIDACION FALLIDA - Correcciones criticas necesarias")
+        print("[ERROR] VALIDACION FALLIDA - Correcciones criticas necesarias")
         print("🚨 Aplicar correcciones antes de continuar")
     
     print("\n📋 PROXIMOS PASOS:")

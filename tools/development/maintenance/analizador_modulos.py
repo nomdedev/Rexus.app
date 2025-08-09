@@ -489,7 +489,7 @@ class AnalizadorModulo:
 """
 
         for archivo, info in estructura['archivos_core'].items():
-            estado = "✅ Existe" if info.get('existe') else "❌ Faltante"
+            estado = "[CHECK] Existe" if info.get('existe') else "[ERROR] Faltante"
             lineas = info.get('lineas', 'N/A')
             tamaño = f"{info.get('tamaño', 0)} bytes" if info.get('existe') else 'N/A'
 
@@ -549,7 +549,7 @@ class AnalizadorModulo:
 
         for key, titulo in categorias:
             items = feedback.get(key, [])
-            estado = "✅" if items else "⚠️"
+            estado = "[CHECK]" if items else "[WARN]"
             html += f"<p>{estado} <strong>{titulo}:</strong> {len(items)} implementaciones encontradas</p>"
 
         html += "</div>"

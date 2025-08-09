@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 
 try:
 except ImportError as e:
-    print(f"❌ Error al importar módulos necesarios: {e}")
+    print(f"[ERROR] Error al importar módulos necesarios: {e}")
     print("💡 Asegúrese de ejecutar desde el directorio raíz del proyecto")
     sys.exit(1)
 
@@ -47,7 +47,7 @@ def crear_usuario_prueba():
         db = DatabaseConnection()
         db.conectar_a_base('users')
 
-        print("✅ Conexión a base de datos establecida")
+        print("[CHECK] Conexión a base de datos establecida")
 
         # Verificar si el usuario ya existe
         result = db.ejecutar_query("""
@@ -56,12 +56,12 @@ def crear_usuario_prueba():
         """, (usuario_data['usuario'], usuario_data['email']))
 
         if result and result[0][0] > 0:
-            print("⚠️ El usuario de prueba ya existe")
+            print("[WARN] El usuario de prueba ya existe")
 
             # Preguntar si quiere actualizar
             respuesta = input("¿Desea actualizar el usuario existente? (s/n): ").lower()
             if respuesta not in ['s', 'si', 'y', 'yes']:
-                print("❌ Operación cancelada")
+                print("[ERROR] Operación cancelada")
                 return False
 
             # Actualizar usuario existente
@@ -82,7 +82,7 @@ def crear_usuario_prueba():
                 usuario_data['usuario']
             ))
 
-            print("✅ Usuario de prueba actualizado")
+            print("[CHECK] Usuario de prueba actualizado")
 
         else:
             # Crear nuevo usuario
@@ -101,12 +101,12 @@ def crear_usuario_prueba():
                 datetime.now()
             ))
 
-            print("✅ Usuario de prueba creado")
+            print("[CHECK] Usuario de prueba creado")
 
         # Obtener el ID del usuario
         result = db.ejecutar_query("SELECT id FROM usuarios WHERE usuario = ?", (usuario_data['usuario'],))
         if not result:
-            print("❌ Error: No se pudo obtener el ID del usuario")
+            print("[ERROR] Error: No se pudo obtener el ID del usuario")
             return False
 
         user_id = result[0][0]
@@ -128,7 +128,7 @@ def crear_usuario_prueba():
                 VALUES (?, ?, 1, 1, 1, 1)
             """, (user_id, modulo))
 
-        print("✅ Permisos completos asignados")
+        print("[CHECK] Permisos completos asignados")
 
         # Mostrar información del usuario creado
         print("\n" + "="*50)
@@ -138,13 +138,13 @@ def crear_usuario_prueba():
         print(f"🔑 Contraseña: {usuario_data['password']}")
         print(f"📧 Email: {usuario_data['email']}")
         print(f"🏷️ Rol: {usuario_data['rol']}")
-        print(f"📊 Módulos con acceso: {len(modulos)}")
+        print(f"[CHART] Módulos con acceso: {len(modulos)}")
 
         print("\n🔐 PERMISOS ASIGNADOS:")
         for modulo in modulos:
-            print(f"  ✅ {modulo}: Lectura, Escritura, Eliminación, Configuración")
+            print(f"  [CHECK] {modulo}: Lectura, Escritura, Eliminación, Configuración")
 
-        print("\n⚠️ IMPORTANTE:")
+        print("\n[WARN] IMPORTANTE:")
         print("• Este usuario es SOLO para testing y desarrollo")
         print("• Cambie la contraseña en producción")
         print("• Elimine este usuario cuando termine las pruebas")
@@ -152,7 +152,7 @@ def crear_usuario_prueba():
         return True
 
     except Exception as e:
-        print(f"❌ Error inesperado: {e}")
+        print(f"[ERROR] Error inesperado: {e}")
         return False
 
 def validar_usuario_prueba():
@@ -172,11 +172,11 @@ def validar_usuario_prueba():
         """)
 
         if not result:
-            print("❌ Usuario de prueba no encontrado")
+            print("[ERROR] Usuario de prueba no encontrado")
             return False
 
         user = result[0]
-        print(f"✅ Usuario encontrado: {user[1]} ({user[2]}) - Rol: {user[3]}")
+        print(f"[CHECK] Usuario encontrado: {user[1]} ({user[2]}) - Rol: {user[3]}")
 
         # Verificar permisos
         result = db.ejecutar_query("""
@@ -186,10 +186,10 @@ def validar_usuario_prueba():
         """, (user[0],))
 
         if not result:
-            print("❌ No se encontraron permisos para el usuario")
+            print("[ERROR] No se encontraron permisos para el usuario")
             return False
 
-        print(f"✅ Permisos encontrados: {len(result)} módulos")
+        print(f"[CHECK] Permisos encontrados: {len(result)} módulos")
 
         # Verificar que tiene permisos completos
         permisos_completos = all(
@@ -198,14 +198,14 @@ def validar_usuario_prueba():
         )
 
         if permisos_completos:
-            print("✅ Todos los permisos están configurados correctamente")
+            print("[CHECK] Todos los permisos están configurados correctamente")
         else:
-            print("⚠️ Algunos permisos pueden estar limitados")
+            print("[WARN] Algunos permisos pueden estar limitados")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en validación: {e}")
+        print(f"[ERROR] Error en validación: {e}")
         return False
 
 def eliminar_usuario_prueba():
@@ -215,7 +215,7 @@ def eliminar_usuario_prueba():
 
     confirmacion = input("¿Está seguro de que desea eliminar el usuario de prueba? (s/n): ").lower()
     if confirmacion not in ['s', 'si', 'y', 'yes']:
-        print("❌ Operación cancelada")
+        print("[ERROR] Operación cancelada")
         return False
 
     try:
@@ -226,7 +226,7 @@ def eliminar_usuario_prueba():
         result = db.ejecutar_query("SELECT id FROM usuarios WHERE usuario = 'test_user'")
 
         if not result:
-            print("⚠️ Usuario de prueba no encontrado")
+            print("[WARN] Usuario de prueba no encontrado")
             return True
 
         user_id = result[0][0]
@@ -237,12 +237,12 @@ def eliminar_usuario_prueba():
         # Eliminar usuario
         db.ejecutar_query("DELETE FROM usuarios WHERE id = ?", (user_id,))
 
-        print("✅ Usuario de prueba eliminado exitosamente")
+        print("[CHECK] Usuario de prueba eliminado exitosamente")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error al eliminar usuario: {e}")
+        print(f"[ERROR] Error al eliminar usuario: {e}")
         return False
 
 def main():
@@ -268,7 +268,7 @@ def main():
         opcion = input("\nSeleccione una opción (1-4): ").strip()
 
         if opcion not in opciones:
-            print("❌ Opción inválida")
+            print("[ERROR] Opción inválida")
             continue
 
         if opcion == '4':
@@ -276,17 +276,17 @@ def main():
             break
 
         desc, func = opciones[opcion]
-        print(f"\n🚀 Ejecutando: {desc}")
+        print(f"\n[ROCKET] Ejecutando: {desc}")
         print("-" * 40)
 
         try:
             resultado = func()
             if resultado:
-                print("✅ Operación completada exitosamente")
+                print("[CHECK] Operación completada exitosamente")
             else:
-                print("❌ La operación no se completó correctamente")
+                print("[ERROR] La operación no se completó correctamente")
         except Exception as e:
-            print(f"❌ Error inesperado: {e}")
+            print(f"[ERROR] Error inesperado: {e}")
 
 if __name__ == '__main__':
     main()

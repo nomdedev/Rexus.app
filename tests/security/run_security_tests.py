@@ -23,7 +23,7 @@ class SecurityTestRunner:
     
     def run_all_security_tests(self):
         """Ejecuta todos los tests de seguridad disponibles."""
-        print("🔒 INICIANDO SUITE DE TESTS DE SEGURIDAD - REXUS.APP")
+        print("[LOCK] INICIANDO SUITE DE TESTS DE SEGURIDAD - REXUS.APP")
         print("=" * 60)
         
         self.start_time = datetime.now()
@@ -73,9 +73,9 @@ class SecurityTestRunner:
                 
                 # Mostrar resultados del módulo
                 if failures == 0 and errors == 0:
-                    print(f"✅ {module_name}: {tests_run} tests PASARON")
+                    print(f"[CHECK] {module_name}: {tests_run} tests PASARON")
                 else:
-                    print(f"❌ {module_name}: {tests_run} tests, {failures} fallos, {errors} errores")
+                    print(f"[ERROR] {module_name}: {tests_run} tests, {failures} fallos, {errors} errores")
                     
                     # Mostrar detalles de fallos
                     if result.failures:
@@ -98,7 +98,7 @@ class SecurityTestRunner:
                 })
                 
             except ImportError as e:
-                print(f"⚠️  No se pudo importar {module_name}: {e}")
+                print(f"[WARN]  No se pudo importar {module_name}: {e}")
                 self.results.append({
                     'module': module_name,
                     'tests_run': 0,
@@ -127,29 +127,29 @@ class SecurityTestRunner:
     def _generate_final_report(self, total_tests, total_failures, total_errors):
         """Genera el reporte final de la suite de seguridad."""
         print("\n" + "=" * 60)
-        print("📊 REPORTE FINAL DE SEGURIDAD")
+        print("[CHART] REPORTE FINAL DE SEGURIDAD")
         print("=" * 60)
         
         duration = (self.end_time - self.start_time).total_seconds()
         
         print(f"⏱️  Duración: {duration:.2f} segundos")
         print(f"🧪 Tests ejecutados: {total_tests}")
-        print(f"✅ Tests exitosos: {total_tests - total_failures - total_errors}")
-        print(f"❌ Fallos: {total_failures}")
+        print(f"[CHECK] Tests exitosos: {total_tests - total_failures - total_errors}")
+        print(f"[ERROR] Fallos: {total_failures}")
         print(f"💥 Errores: {total_errors}")
         
         # Estado general
         if total_failures == 0 and total_errors == 0:
             print("\n🎉 ESTADO: TODOS LOS TESTS DE SEGURIDAD PASARON")
-            print("🔒 Sistema SEGURO según tests implementados")
+            print("[LOCK] Sistema SEGURO según tests implementados")
         else:
-            print(f"\n⚠️  ESTADO: {total_failures + total_errors} PROBLEMAS DETECTADOS")
+            print(f"\n[WARN]  ESTADO: {total_failures + total_errors} PROBLEMAS DETECTADOS")
             print("🔍 Revisar fallos y errores arriba")
         
         # Resumen por módulo
         print("\n📋 RESUMEN POR MÓDULO:")
         for result in self.results:
-            status = "✅" if result['success'] else "❌"
+            status = "[CHECK]" if result['success'] else "[ERROR]"
             print(f"  {status} {result['module']}: "
                   f"{result['tests_run']} tests, "
                   f"{result['failures']} fallos, "
@@ -172,11 +172,11 @@ class SecurityTestRunner:
             print("  • Mantener suite de tests actualizada")
         
         print("\n🔐 ÁREAS DE SEGURIDAD VALIDADAS:")
-        print("  ✓ Protección SQL Injection")
-        print("  ✓ Arquitectura MVC y imports seguros") 
-        print("  ✓ Sanitización de datos de entrada")
-        print("  ✓ Uso de queries parametrizadas")
-        print("  ✓ Eliminación de SQL embebido peligroso")
+        print("  [OK] Protección SQL Injection")
+        print("  [OK] Arquitectura MVC y imports seguros") 
+        print("  [OK] Sanitización de datos de entrada")
+        print("  [OK] Uso de queries parametrizadas")
+        print("  [OK] Eliminación de SQL embebido peligroso")
         
         # Guardar reporte en archivo
         self._save_report_to_file(total_tests, total_failures, total_errors, duration)
@@ -204,14 +204,14 @@ class SecurityTestRunner:
                            f"{result['errors']} errores\n")
                 
                 if total_failures == 0 and total_errors == 0:
-                    f.write("\nESTADO: SEGURO ✓\n")
+                    f.write("\nESTADO: SEGURO [OK]\n")
                 else:
                     f.write(f"\nESTADO: {total_failures + total_errors} PROBLEMAS DETECTADOS\n")
             
             print(f"📄 Reporte guardado en: {report_file}")
             
         except Exception as e:
-            print(f"⚠️  No se pudo guardar el reporte: {e}")
+            print(f"[WARN]  No se pudo guardar el reporte: {e}")
 
 
 def main():

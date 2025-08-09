@@ -252,10 +252,10 @@ class LogisticaView(QWidget):
             "🚚 Todos los estados",
             "⏳ PENDIENTE",
             "🚛 EN_TRANSITO",
-            "✅ ENTREGADO",
-            "❌ CANCELADO"
+            "[CHECK] ENTREGADO",
+            "[ERROR] CANCELADO"
         ])
-        self.combo_estado.setToolTip("📊 Filtrar transportes por estado")
+        self.combo_estado.setToolTip("[CHART] Filtrar transportes por estado")
         self.combo_estado.setStyleSheet("""
             QComboBox {
                 border: 2px solid #ced4da;
@@ -378,7 +378,7 @@ class LogisticaView(QWidget):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de logística."""
-        panel = RexusGroupBox("📊 Estadísticas de Logística")
+        panel = RexusGroupBox("[CHART] Estadísticas de Logística")
         panel.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -408,7 +408,7 @@ class LogisticaView(QWidget):
         layout.addWidget(self.lbl_en_transito)
 
         # Entregados
-        self.lbl_entregados = self.crear_stat_widget("✅", "Entregados", "0", "#28a745")
+        self.lbl_entregados = self.crear_stat_widget("[CHECK]", "Entregados", "0", "#28a745")
         layout.addWidget(self.lbl_entregados)
 
         # Pendientes
@@ -469,7 +469,7 @@ class LogisticaView(QWidget):
             "📍 Destino", 
             "🚗 Conductor",
             "📅 Fecha",
-            "📊 Estado",
+            "[CHART] Estado",
             "📝 Observaciones",
             "🕰️ Última Actualización",
             "⚡ Acciones"
@@ -808,7 +808,7 @@ class DialogoTransporte(QDialog):
         # Estado y prioridad
         self.combo_estado = RexusComboBox()
         self.combo_estado.addItems(["PENDIENTE", "EN_TRANSITO", "ENTREGADO", "CANCELADO"])
-        form_layout.addRow("📊 Estado:", self.combo_estado)
+        form_layout.addRow("[CHART] Estado:", self.combo_estado)
         
         self.combo_prioridad = RexusComboBox()
         self.combo_prioridad.addItems(["BAJA", "NORMAL", "ALTA", "URGENTE"])

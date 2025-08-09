@@ -68,7 +68,7 @@ def run_migrations():
 
                     conn.commit()
                     log_migration(
-                        f"✓ Migración aplicada correctamente: {migration_name}"
+                        f"[OK] Migración aplicada correctamente: {migration_name}"
                     )
                 except pyodbc.Error as e:
                     conn.rollback()

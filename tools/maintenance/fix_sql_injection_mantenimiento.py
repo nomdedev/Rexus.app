@@ -14,7 +14,7 @@ def fix_sql_injections():
     file_path = r"C:\Users\Oficina\Documents\Proyectos\Apps\Rexus.app\rexus\modules\mantenimiento\model.py"
 
     if not os.path.exists(file_path):
-        print(f"❌ Archivo no encontrado: {file_path}")
+        print(f"[ERROR] Archivo no encontrado: {file_path}")
         return
 
     # Leer el archivo
@@ -71,7 +71,7 @@ def fix_sql_injections():
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)
             )
             changes_made += matches
-            print(f"✅ Reemplazado {matches} ocurrencias de: {pattern[:50]}...")
+            print(f"[CHECK] Reemplazado {matches} ocurrencias de: {pattern[:50]}...")
 
     # Guardar si hubo cambios
     if content != original_content:
@@ -104,8 +104,8 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 60)
     if success:
-        print("✅ PROCESO COMPLETADO EXITOSAMENTE")
-        print("⚠️  IMPORTANTE: Revisar manualmente las consultas complejas")
+        print("[CHECK] PROCESO COMPLETADO EXITOSAMENTE")
+        print("[WARN]  IMPORTANTE: Revisar manualmente las consultas complejas")
         print("🧪 RECOMENDADO: Ejecutar tests para validar funcionalidad")
     else:
         print("ℹ️ PROCESO COMPLETADO - Sin cambios necesarios")

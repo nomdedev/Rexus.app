@@ -65,14 +65,14 @@ def corregir_auditoria_controller(ruta_archivo):
         if contenido_corregido != contenido_original:
             with open(ruta_archivo, "w", encoding="utf-8") as f:
                 f.write(contenido_corregido)
-            print(f"✅ Corregido: {ruta_archivo}")
+            print(f"[CHECK] Corregido: {ruta_archivo}")
             return True
         else:
             print(f"⏭️  No necesita corrección: {ruta_archivo}")
             return False
 
     except Exception as e:
-        print(f"❌ Error procesando {ruta_archivo}: {e}")
+        print(f"[ERROR] Error procesando {ruta_archivo}: {e}")
         return False
 
 
@@ -95,9 +95,9 @@ def main():
                 if corregir_auditoria_controller(ruta_completa):
                     archivos_corregidos += 1
 
-    print(f"\n📊 Resumen:")
+    print(f"\n[CHART] Resumen:")
     print(f"   • Archivos corregidos: {archivos_corregidos}")
-    print(f"✅ Corrección completada")
+    print(f"[CHECK] Corrección completada")
 
 
 if __name__ == "__main__":

@@ -32,7 +32,7 @@ class MVCPatternAnalyzer:
         print("=" * 50)
 
         if not self.modules_path.exists():
-            print(f"❌ Directorio de módulos no encontrado: {self.modules_path}")
+            print(f"[ERROR] Directorio de módulos no encontrado: {self.modules_path}")
             return {}
 
         modules = [
@@ -339,12 +339,12 @@ class MVCPatternAnalyzer:
     def generate_report(self):
         """Genera reporte detallado de violaciones MVC"""
         print("\n" + "=" * 60)
-        print("📊 REPORTE DE ANÁLISIS MVC")
+        print("[CHART] REPORTE DE ANÁLISIS MVC")
         print("=" * 60)
 
         # Estadísticas generales
         print(f"📁 Módulos analizados: {self.stats['modules_analyzed']}")
-        print(f"⚠️  Total violaciones MVC: {self.stats['mvc_violations']}")
+        print(f"[WARN]  Total violaciones MVC: {self.stats['mvc_violations']}")
         print(
             f"🔴 Lógica de negocio en vistas: {self.stats['business_logic_in_views']}"
         )
@@ -367,7 +367,7 @@ class MVCPatternAnalyzer:
 
         for violation in critical_violations[:10]:  # Top 10
             print(
-                f"  ❌ {violation['module']}/{violation['file']}: {violation['description']}"
+                f"  [ERROR] {violation['module']}/{violation['file']}: {violation['description']}"
             )
 
         if len(critical_violations) > 10:

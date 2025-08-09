@@ -59,7 +59,7 @@ from datetime import datetime
             # Hacer backup primero
             shutil.copy2(archivo, backup_dir)
             os.remove(archivo)
-            print(f"   ✅ Eliminado: {archivo}")
+            print(f"   [CHECK] Eliminado: {archivo}")
             contador_eliminados += 1
         else:
             print(f"   ℹ️ No existe: {archivo}")
@@ -72,7 +72,7 @@ from datetime import datetime
             if os.listdir(directorio):  # Si no está vacío
                 shutil.copytree(directorio, os.path.join(backup_dir, directorio))
                 shutil.rmtree(directorio)
-                print(f"   ✅ Eliminado directorio: {directorio}")
+                print(f"   [CHECK] Eliminado directorio: {directorio}")
                 contador_eliminados += 1
             else:
                 print(f"   ℹ️ Directorio vacío: {directorio}")
@@ -112,7 +112,7 @@ from datetime import datetime
             if dir_name == "__pycache__":
                 cache_path = os.path.join(root, dir_name)
                 shutil.rmtree(cache_path)
-                print(f"   ✅ Eliminado cache: {cache_path}")
+                print(f"   [CHECK] Eliminado cache: {cache_path}")
                 dirs.remove(dir_name)
 
     # Crear archivo README para el backup
@@ -136,9 +136,9 @@ solo los archivos esenciales en la raíz. Se pueden restaurar si es necesario.
 
     # Resumen final
     print("\n" + "=" * 50)
-    print("✅ LIMPIEZA COMPLETADA")
+    print("[CHECK] LIMPIEZA COMPLETADA")
     print("=" * 50)
-    print(f"📊 Archivos procesados: {contador_eliminados}")
+    print(f"[CHART] Archivos procesados: {contador_eliminados}")
     print(f"📦 Backup creado en: {backup_dir}")
     print(f"📚 Documentación organizada en: {docs_dir}")
     print("\n🎯 ESTRUCTURA LIMPIA LOGRADA:")

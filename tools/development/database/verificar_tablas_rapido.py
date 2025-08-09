@@ -58,7 +58,7 @@ def verificar_tablas(tablas_especificas=None):
     try:
         # Conectar a la base de datos
         db.conectar()
-        print("✅ Conectado a la base de datos")
+        print("[CHECK] Conectado a la base de datos")
 
         # Obtener lista de tablas
         query = """
@@ -75,14 +75,14 @@ def verificar_tablas(tablas_especificas=None):
             for tabla in tablas_encontradas:
                 print(f"  - {tabla}")
         else:
-            print("⚠️ No se encontraron tablas en la base de datos")
+            print("[WARN] No se encontraron tablas en la base de datos")
 
         # Determinar qué tablas verificar
         if tablas_especificas:
             # Validar que las tablas especificadas estén en la lista blanca
             tablas_a_verificar = [t for t in tablas_especificas if validar_lista_blanca(t, TABLAS_CONOCIDAS)]
             if len(tablas_a_verificar) < len(tablas_especificas):
-                print("\n⚠️ Algunas tablas especificadas no están en la lista blanca y serán ignoradas")
+                print("\n[WARN] Algunas tablas especificadas no están en la lista blanca y serán ignoradas")
         else:
             # Por defecto verificar todas las tablas conocidas
             tablas_a_verificar = TABLAS_CONOCIDAS
@@ -121,13 +121,13 @@ def verificar_tablas(tablas_especificas=None):
                     }
 
                     # Mostrar resumen
-                    estado = "✅" if tabla in tablas_encontradas else "❌"
+                    estado = "[CHECK]" if tabla in tablas_encontradas else "[ERROR]"
                     print(f"  {estado} {tabla}: {count} registros, {len(resultados[tabla]['columnas'])} columnas")
                 else:
-                    print(f"  ⚠️ {tabla}: No está en la lista de tablas permitidas")
+                    print(f"  [WARN] {tabla}: No está en la lista de tablas permitidas")
             except Exception as e:
                 logger.error(f"Error al verificar tabla {tabla}: {e}")
-                print(f"  ❌ {tabla}: Error - {e}")
+                print(f"  [ERROR] {tabla}: Error - {e}")
                 resultados[tabla] = {
                     'error': str(e),
                     'existe': False,
@@ -137,15 +137,15 @@ def verificar_tablas(tablas_especificas=None):
 
     except ConnectionError as e:
         logger.error(f"Error de conexión: {e}")
-        print(f"❌ Error de conexión: {e}")
+        print(f"[ERROR] Error de conexión: {e}")
         raise
     except QueryError as e:
         logger.error(f"Error en consulta: {e}")
-        print(f"❌ Error en consulta: {e}")
+        print(f"[ERROR] Error en consulta: {e}")
         raise
     except Exception as e:
         logger.error(f"Error inesperado: {e}")
-        print(f"❌ Error inesperado: {e}")
+        print(f"[ERROR] Error inesperado: {e}")
         raise
     finally:
         db.cerrar_conexion()
@@ -276,9 +276,9 @@ def main():
                 f.write(reporte_html)
             print(f"\n💾 Reporte guardado en: {args.reporte}")
 
-        print("\n✅ Verificación completada")
+        print("\n[CHECK] Verificación completada")
     except Exception as e:
-        print(f"\n❌ Error durante la verificación: {e}")
+        print(f"\n[ERROR] Error durante la verificación: {e}")
         sys.exit(1)
 
 if __name__ == "__main__":

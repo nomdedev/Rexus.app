@@ -11,7 +11,7 @@ tablas_existentes = {
     "obras": "dbo.obras",
     "inventario": "dbo.inventario_perfiles",
     "materiales": "dbo.materiales",
-    "vidrios": "dbo.vidrios_por_obra",  # ✅ Esta SÍ existe
+    "vidrios": "dbo.vidrios_por_obra",  # [CHECK] Esta SÍ existe
     "pedidos": "dbo.pedidos_compra",  # Esta es para pedidos de material
     "proveedores": "dbo.proveedores",
     "movimientos": "dbo.movimientos_inventario",
@@ -58,28 +58,28 @@ tablas_correctas = {
     "vidrios_por_obra": {
         "tabla_bd": "dbo.vidrios_por_obra",
         "modulo": "Vidrios",
-        "estado": "✅ CORRECTO - Ya existe y funciona",
+        "estado": "[CHECK] CORRECTO - Ya existe y funciona",
     },
     "obras": {
         "tabla_bd": "dbo.obras",
         "modulo": "Obras",
-        "estado": "✅ CORRECTO - Ya existe y funciona",
+        "estado": "[CHECK] CORRECTO - Ya existe y funciona",
     },
     "inventario_perfiles": {
         "tabla_bd": "dbo.inventario_perfiles",
         "modulo": "Inventario",
-        "estado": "✅ CORRECTO - Ya existe y funciona",
+        "estado": "[CHECK] CORRECTO - Ya existe y funciona",
     },
 }
 
 print("ANÁLISIS COMPLETO DE TABLAS")
 print("=" * 50)
 
-print("\n✅ TABLAS QUE SÍ EXISTEN Y FUNCIONAN:")
+print("\n[CHECK] TABLAS QUE SÍ EXISTEN Y FUNCIONAN:")
 for nombre, info in tablas_correctas.items():
-    print(f"   ✓ {info['tabla_bd']} → {info['modulo']} ({info['estado']})")
+    print(f"   [OK] {info['tabla_bd']} → {info['modulo']} ({info['estado']})")
 
-print("\n❌ TABLAS BUSCADAS INCORRECTAMENTE:")
+print("\n[ERROR] TABLAS BUSCADAS INCORRECTAMENTE:")
 for tabla_buscada, info in tablas_buscadas_incorrectas.items():
     print(f"   ✗ BUSCA: {tabla_buscada}")
     print(f"     REAL: {info['tabla_real']}")

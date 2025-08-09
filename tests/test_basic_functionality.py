@@ -52,7 +52,7 @@ def test_imports_work():
         import rexus.main
         import rexus.modules
 
-        print("✅ Imports básicos funcionan")
+        print("[CHECK] Imports básicos funcionan")
     except ImportError as e:
         pytest.skip(f"Import error esperado durante reorganización: {e}")
 
@@ -87,9 +87,9 @@ def test_docs_structure():
     for doc_file in expected_docs:
         doc_path = docs_path / doc_file
         if doc_path.exists():
-            print(f"✅ Encontrado: {doc_file}")
+            print(f"[CHECK] Encontrado: {doc_file}")
         else:
-            print(f"⚠️  No encontrado: {doc_file}")
+            print(f"[WARN]  No encontrado: {doc_file}")
 
 
 if __name__ == "__main__":
@@ -98,32 +98,32 @@ if __name__ == "__main__":
     # Ejecutar tests uno por uno para ver el progreso
     try:
         test_project_structure()
-        print("✅ Estructura del proyecto OK")
+        print("[CHECK] Estructura del proyecto OK")
     except Exception as e:
-        print(f"❌ Error en estructura del proyecto: {e}")
+        print(f"[ERROR] Error en estructura del proyecto: {e}")
 
     try:
         test_rexus_structure()
-        print("✅ Estructura de rexus/ OK")
+        print("[CHECK] Estructura de rexus/ OK")
     except Exception as e:
-        print(f"❌ Error en estructura de rexus/: {e}")
+        print(f"[ERROR] Error en estructura de rexus/: {e}")
 
     try:
         test_imports_work()
-        print("✅ Imports OK")
+        print("[CHECK] Imports OK")
     except Exception as e:
-        print(f"⚠️  Imports con problemas: {e}")
+        print(f"[WARN]  Imports con problemas: {e}")
 
     try:
         test_tools_structure()
-        print("✅ Estructura de tools/ OK")
+        print("[CHECK] Estructura de tools/ OK")
     except Exception as e:
-        print(f"⚠️  Tools: {e}")
+        print(f"[WARN]  Tools: {e}")
 
     try:
         test_docs_structure()
-        print("✅ Estructura de docs/ verificada")
+        print("[CHECK] Estructura de docs/ verificada")
     except Exception as e:
-        print(f"⚠️  Docs: {e}")
+        print(f"[WARN]  Docs: {e}")
 
     print("\n🎉 Tests básicos completados")

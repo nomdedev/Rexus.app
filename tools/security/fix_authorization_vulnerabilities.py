@@ -11,7 +11,7 @@ def add_authorization_checks(module_path):
     """Agrega verificaciones de autorización a un módulo"""
     
     if not module_path.exists():
-        print(f"❌ Archivo no encontrado: {module_path}")
+        print(f"[ERROR] Archivo no encontrado: {module_path}")
         return False
     
     print(f"🔧 Procesando: {module_path.name}")
@@ -38,7 +38,7 @@ def add_authorization_checks(module_path):
         if import_line_index >= 0:
             lines.insert(import_line_index + 1, "from rexus.core.auth_manager import AuthManager")
             content = '\n'.join(lines)
-            print("  ✅ Import de AuthManager agregado")
+            print("  [CHECK] Import de AuthManager agregado")
     
     # Buscar métodos críticos que necesitan autorización
     critical_methods = [
@@ -69,14 +69,14 @@ def add_authorization_checks(module_path):
             
             # Agregar decorador de autorización
             auth_check = f'''
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # TODO: Implementar @auth_required o verificación manual
         # if not AuthManager.check_permission('{method_name}'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
 '''
             
             content = content[:method_def_end] + auth_check + content[method_def_end:]
-            print(f"    ✅ Verificación de autorización agregada a {method_name}")
+            print(f"    [CHECK] Verificación de autorización agregada a {method_name}")
     
     # Verificar si hay acceso directo a base de datos sin autorización
     db_patterns = [
@@ -97,12 +97,12 @@ def add_authorization_checks(module_path):
     if unauthorized_db_access and "# DB Authorization Check" not in content:
         # Agregar comentario de verificación de DB
         db_auth_comment = '''
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 '''
         content = db_auth_comment + content
-        print("  ✅ Comentario de autorización de DB agregado")
+        print("  [CHECK] Comentario de autorización de DB agregado")
     
     # Buscar formularios sin validación de permisos
     form_patterns = [
@@ -120,18 +120,18 @@ def add_authorization_checks(module_path):
     
     if has_forms and "# Form Access Control" not in content:
         form_auth_header = '''
-# 🔒 Form Access Control - Verify user can access this interface
+# [LOCK] Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
 # Form Access Control
 '''
         content = form_auth_header + content
-        print("  ✅ Control de acceso para formularios agregado")
+        print("  [CHECK] Control de acceso para formularios agregado")
     
     # Escribir archivo modificado
     with open(module_path, 'w', encoding='utf-8') as f:
         f.write(content)
     
-    print(f"  ✅ {module_path.name} actualizado con verificaciones de autorización")
+    print(f"  [CHECK] {module_path.name} actualizado con verificaciones de autorización")
     return True
 
 def check_auth_manager_exists():
@@ -292,10 +292,10 @@ def auth_required(func):
         with open(auth_manager_path, 'w', encoding='utf-8') as f:
             f.write(auth_manager_content)
         
-        print(f"✅ AuthManager creado en: {auth_manager_path}")
+        print(f"[CHECK] AuthManager creado en: {auth_manager_path}")
         return True
     
-    print(f"✅ AuthManager ya existe en: {auth_manager_path}")
+    print(f"[CHECK] AuthManager ya existe en: {auth_manager_path}")
     return True
 
 def main():
@@ -305,14 +305,14 @@ def main():
     
     # Verificar/crear AuthManager
     if not check_auth_manager_exists():
-        print("❌ No se pudo crear AuthManager")
+        print("[ERROR] No se pudo crear AuthManager")
         return
     
     # Directorio de módulos
     modules_dir = Path("rexus/modules")
     
     if not modules_dir.exists():
-        print(f"❌ Directorio de módulos no encontrado: {modules_dir}")
+        print(f"[ERROR] Directorio de módulos no encontrado: {modules_dir}")
         return
     
     # Buscar archivos Python en módulos
@@ -321,7 +321,7 @@ def main():
         python_files.extend(list(modules_dir.glob(pattern)))
     
     if not python_files:
-        print("❌ No se encontraron archivos de módulos")
+        print("[ERROR] No se encontraron archivos de módulos")
         return
     
     print(f"📋 Archivos encontrados: {len(python_files)}")
@@ -334,8 +334,8 @@ def main():
     
     # Resumen
     print("=" * 70)
-    print("📊 RESUMEN DE AUTORIZACIÓN")
-    print(f"✅ Archivos procesados exitosamente: {success_count}")
+    print("[CHART] RESUMEN DE AUTORIZACIÓN")
+    print(f"[CHECK] Archivos procesados exitosamente: {success_count}")
     print(f"📁 Total archivos: {len(python_files)}")
     
     if success_count == len(python_files):
@@ -347,7 +347,7 @@ def main():
         print("4. Probar control de acceso con diferentes roles")
         print("5. Ejecutar tests de autorización")
     else:
-        print("⚠️ ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
+        print("[WARN] ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
         print("Revisar manualmente los archivos que fallaron")
 
 if __name__ == "__main__":

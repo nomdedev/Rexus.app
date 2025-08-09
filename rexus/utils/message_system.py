@@ -28,19 +28,19 @@ class MessageSystem:
     MESSAGE_CONFIG = {
         MessageType.SUCCESS: {
             'icon': QMessageBox.Icon.Information,
-            'title_prefix': '✅ Éxito',
+            'title_prefix': '[CHECK] Éxito',
             'color': '#27ae60',
             'button_style': 'success'
         },
         MessageType.ERROR: {
             'icon': QMessageBox.Icon.Critical,
-            'title_prefix': '❌ Error',
+            'title_prefix': '[ERROR] Error',
             'color': '#e74c3c',
             'button_style': 'error'
         },
         MessageType.WARNING: {
             'icon': QMessageBox.Icon.Warning,
-            'title_prefix': '⚠️ Advertencia',
+            'title_prefix': '[WARN] Advertencia',
             'color': '#f39c12',
             'button_style': 'warning'
         },

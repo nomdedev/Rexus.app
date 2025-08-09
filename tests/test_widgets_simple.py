@@ -13,9 +13,9 @@ sys.path.insert(0, os.path.dirname(__file__))
 try:
     from PyQt6.QtWidgets import QApplication
     from rexus.modules.obras.widgets_advanced import PaginacionWidget, FiltrosAvanzadosWidget
-    print("✅ Widgets avanzados importados correctamente")
+    print("[CHECK] Widgets avanzados importados correctamente")
 except Exception as e:
-    print(f"❌ Error al importar widgets: {e}")
+    print(f"[ERROR] Error al importar widgets: {e}")
     import traceback
     traceback.print_exc()
     sys.exit(1)
@@ -76,14 +76,14 @@ def test_filtros_widget():
 if __name__ == "__main__":
     try:
         test_paginacion_widget()
-        print("✅ Test paginación completado")
+        print("[CHECK] Test paginación completado")
         
         test_filtros_widget()
-        print("✅ Test filtros completado")
+        print("[CHECK] Test filtros completado")
         
         print("\n🎉 Todos los tests de widgets completados exitosamente")
         
     except Exception as e:
-        print(f"❌ Error en tests: {e}")
+        print(f"[ERROR] Error en tests: {e}")
         import traceback
         traceback.print_exc()

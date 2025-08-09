@@ -1,5 +1,5 @@
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
@@ -71,7 +71,7 @@ class ComprasModel:
     def crear_compra(
         self,
         proveedor:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
         # if not AuthManager.check_permission('crear_compra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")
@@ -190,7 +190,7 @@ class ComprasModel:
 
     def actualizar_estado_compra(
         self, compra_id:
-        # 🔒 VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
+        # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
         # if not AuthManager.check_permission('actualizar_estado_compra'):
         #     raise PermissionError("Acceso denegado - Permisos insuficientes")

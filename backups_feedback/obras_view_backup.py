@@ -178,7 +178,7 @@ class ObrasView(QWidget):
         try:
             self.stacked_widget.setCurrentIndex(0)
             self.btn_alternar_vista.setText("📅 Vista Cronograma")
-            print("📊 Vista de tabla activada")
+            print("[CHART] Vista de tabla activada")
         except Exception as e:
             print(f"Error cambiando a vista tabla: {e}")
 
@@ -186,7 +186,7 @@ class ObrasView(QWidget):
         """Muestra la vista de cronograma."""
         try:
             self.stacked_widget.setCurrentIndex(1)
-            self.btn_alternar_vista.setText("📊 Vista Tabla")
+            self.btn_alternar_vista.setText("[CHART] Vista Tabla")
             # Cargar datos en el cronograma
             self.actualizar_cronograma()
             print("📅 Vista de cronograma activada")
@@ -823,11 +823,11 @@ class FormularioObraDialog(QDialog):
         # Botones modernos
         button_layout = QHBoxLayout()
         
-        self.cancel_btn = QPushButton("❌ Cancelar")
+        self.cancel_btn = QPushButton("[ERROR] Cancelar")
         self.cancel_btn.clicked.connect(self.reject)
         self.cancel_btn.setProperty("buttonType", "secondary")
         
-        texto_boton = "💾 Actualizar Obra" if self.es_edicion else "✅ Crear Obra"
+        texto_boton = "💾 Actualizar Obra" if self.es_edicion else "[CHECK] Crear Obra"
         self.save_btn = QPushButton(texto_boton)
         self.save_btn.clicked.connect(self.validar_y_aceptar)
         self.save_btn.setProperty("buttonType", "success")
@@ -1042,7 +1042,7 @@ class FormularioObraDialog(QDialog):
                     )
                 else:
                     FormStyleManager.apply_validation_state(
-                        self.txt_codigo, 'valid', '✓ Código válido'
+                        self.txt_codigo, 'valid', '[OK] Código válido'
                     )
         
         def validate_nombre():
@@ -1057,7 +1057,7 @@ class FormularioObraDialog(QDialog):
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.txt_nombre, 'valid', '✓ Nombre válido'
+                    self.txt_nombre, 'valid', '[OK] Nombre válido'
                 )
         
         def validate_cliente():
@@ -1068,7 +1068,7 @@ class FormularioObraDialog(QDialog):
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.txt_cliente, 'valid', '✓ Cliente válido'
+                    self.txt_cliente, 'valid', '[OK] Cliente válido'
                 )
         
         def validate_responsable():
@@ -1079,7 +1079,7 @@ class FormularioObraDialog(QDialog):
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.txt_responsable, 'valid', '✓ Responsable válido'
+                    self.txt_responsable, 'valid', '[OK] Responsable válido'
                 )
         
         def validate_presupuesto():
@@ -1094,7 +1094,7 @@ class FormularioObraDialog(QDialog):
                 )
             else:
                 FormStyleManager.apply_validation_state(
-                    self.spin_presupuesto, 'valid', f'✓ ${value:,.2f}'
+                    self.spin_presupuesto, 'valid', f'[OK] ${value:,.2f}'
                 )
         
         def validate_email():
@@ -1105,7 +1105,7 @@ class FormularioObraDialog(QDialog):
                 )
             elif text and '@' in text:
                 FormStyleManager.apply_validation_state(
-                    self.txt_email, 'valid', '✓ Email válido'
+                    self.txt_email, 'valid', '[OK] Email válido'
                 )
             else:
                 FormStyleManager.apply_validation_state(

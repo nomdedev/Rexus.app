@@ -74,7 +74,7 @@ class AuditoriaView(QWidget):
         main_layout.setSpacing(15)
 
         # Título
-        title_label = QLabel("📊 Auditoría del Sistema")
+        title_label = QLabel("[CHART] Auditoría del Sistema")
         title_label.setObjectName("titleLabel")
         title_label.setStyleSheet("""
             QLabel#titleLabel {
@@ -281,7 +281,7 @@ class AuditoriaView(QWidget):
         layout = QVBoxLayout(widget)
 
         # Panel de resumen
-        resumen_group = QGroupBox("📊 Resumen General (últimos 30 días)")
+        resumen_group = QGroupBox("[CHART] Resumen General (últimos 30 días)")
         resumen_layout = QHBoxLayout(resumen_group)
 
         # Tarjetas de estadísticas pequeñas

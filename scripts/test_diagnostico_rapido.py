@@ -25,7 +25,7 @@ def test_diagnostic_creation():
             create_diagnostic_widget,
         )
 
-        print("   ✅ Módulo importado correctamente")
+        print("   [CHECK] Módulo importado correctamente")
 
         # 2. Verificar que se puede crear una instancia de diagnóstico
         print("2. Creando información de error de prueba...")
@@ -42,15 +42,15 @@ def test_diagnostic_creation():
 
         # Crear instancia de la clase sin mostrarla
         diagnostic_widget_class = DiagnosticWidget("test_module", diagnostic_info)
-        print("   ✅ Widget de diagnóstico creado correctamente")
+        print("   [CHECK] Widget de diagnóstico creado correctamente")
 
         # 3. Verificar métodos de diagnóstico
         print("4. Probando métodos de diagnóstico...")
         diagnostics = diagnostic_widget_class.run_diagnostics()
-        print(f"   ✅ Diagnósticos ejecutados: {len(diagnostics)} elementos")
+        print(f"   [CHECK] Diagnósticos ejecutados: {len(diagnostics)} elementos")
 
         solutions = diagnostic_widget_class.generate_solutions()
-        print(f"   ✅ Soluciones generadas: {len(solutions)} elementos")
+        print(f"   [CHECK] Soluciones generadas: {len(solutions)} elementos")
 
         # 4. Verificar integración con module manager
         print("5. Probando integración con module manager...")
@@ -60,17 +60,17 @@ def test_diagnostic_creation():
 
         # Verificar que tiene el método actualizado
         if hasattr(manager, "_create_error_widget"):
-            print("   ✅ Module manager tiene método de error actualizado")
+            print("   [CHECK] Module manager tiene método de error actualizado")
         else:
-            print("   ❌ Module manager no tiene método de error")
+            print("   [ERROR] Module manager no tiene método de error")
 
         if hasattr(manager, "_retry_module_load"):
-            print("   ✅ Module manager tiene método de reintento")
+            print("   [CHECK] Module manager tiene método de reintento")
         else:
-            print("   ❌ Module manager no tiene método de reintento")
+            print("   [ERROR] Module manager no tiene método de reintento")
 
         print("\n" + "=" * 50)
-        print("✅ SISTEMA DE DIAGNÓSTICO VERIFICADO EXITOSAMENTE")
+        print("[CHECK] SISTEMA DE DIAGNÓSTICO VERIFICADO EXITOSAMENTE")
         print("   - Widgets de diagnóstico: Funcionales")
         print("   - Métodos de análisis: Funcionales")
         print("   - Integración con manager: Funcional")
@@ -79,7 +79,7 @@ def test_diagnostic_creation():
         return True
 
     except Exception as e:
-        print(f"\n❌ ERROR EN VERIFICACIÓN: {e}")
+        print(f"\n[ERROR] ERROR EN VERIFICACIÓN: {e}")
         import traceback
 
         traceback.print_exc()
@@ -126,30 +126,30 @@ def test_module_loading_with_diagnostics():
                     if attr.endswith("Controller")
                 ]
 
-                print(f"   ✅ Archivos importados correctamente")
+                print(f"   [CHECK] Archivos importados correctamente")
                 print(f"      - Modelos encontrados: {len(model_classes)}")
                 print(f"      - Vistas encontradas: {len(view_classes)}")
                 print(f"      - Controladores encontrados: {len(controller_classes)}")
 
                 if model_classes and view_classes and controller_classes:
-                    print(f"   ✅ Módulo {module_name} tiene estructura completa")
+                    print(f"   [CHECK] Módulo {module_name} tiene estructura completa")
                 else:
-                    print(f"   ⚠️  Módulo {module_name} tiene estructura incompleta")
+                    print(f"   [WARN]  Módulo {module_name} tiene estructura incompleta")
 
             except ImportError as e:
-                print(f"   ❌ Error de importación en {module_name}: {e}")
+                print(f"   [ERROR] Error de importación en {module_name}: {e}")
             except SyntaxError as e:
-                print(f"   ❌ Error de sintaxis en {module_name}: {e}")
+                print(f"   [ERROR] Error de sintaxis en {module_name}: {e}")
             except Exception as e:
-                print(f"   ❌ Error general en {module_name}: {e}")
+                print(f"   [ERROR] Error general en {module_name}: {e}")
 
         print("\n" + "=" * 50)
-        print("✅ PRUEBA DE CARGA DE MÓDULOS COMPLETADA")
+        print("[CHECK] PRUEBA DE CARGA DE MÓDULOS COMPLETADA")
 
         return True
 
     except Exception as e:
-        print(f"\n❌ ERROR EN PRUEBA DE MÓDULOS: {e}")
+        print(f"\n[ERROR] ERROR EN PRUEBA DE MÓDULOS: {e}")
         import traceback
 
         traceback.print_exc()
@@ -157,7 +157,7 @@ def test_module_loading_with_diagnostics():
 
 
 if __name__ == "__main__":
-    print("🚀 INICIANDO VERIFICACIÓN COMPLETA DEL SISTEMA")
+    print("[ROCKET] INICIANDO VERIFICACIÓN COMPLETA DEL SISTEMA")
     print("=" * 60)
 
     # Test 1: Sistema de diagnóstico
@@ -168,10 +168,10 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 60)
     if success1 and success2:
-        print("✅ TODOS LOS TESTS PASARON - SISTEMA LISTO")
+        print("[CHECK] TODOS LOS TESTS PASARON - SISTEMA LISTO")
         print("   El sistema de diagnóstico está completamente funcional")
         print("   Los usuarios verán información detallada de errores")
         sys.exit(0)
     else:
-        print("❌ ALGUNOS TESTS FALLARON - REVISAR SISTEMA")
+        print("[ERROR] ALGUNOS TESTS FALLARON - REVISAR SISTEMA")
         sys.exit(1)

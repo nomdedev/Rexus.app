@@ -21,7 +21,7 @@ def fix_decorators():
 
     for file_path in files_to_fix:
         if not os.path.exists(file_path):
-            print(f"❌ Archivo no encontrado: {file_path}")
+            print(f"[ERROR] Archivo no encontrado: {file_path}")
             continue
 
         print(f"🔧 Corrigiendo decoradores en: {file_path}")
@@ -52,22 +52,22 @@ def fix_decorators():
                 matches = re.findall(pattern, content)
                 if matches:
                     content = re.sub(pattern, replacement, content)
-                    print(f"  ✅ Reemplazado {len(matches)} ocurrencias de {pattern}")
+                    print(f"  [CHECK] Reemplazado {len(matches)} ocurrencias de {pattern}")
 
             # Solo escribir si hay cambios
             if content != original_content:
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
-                print(f"  ✅ Archivo actualizado")
+                print(f"  [CHECK] Archivo actualizado")
             else:
                 print(f"  ℹ️  Sin cambios necesarios")
 
         except Exception as e:
-            print(f"  ❌ Error procesando {file_path}: {e}")
+            print(f"  [ERROR] Error procesando {file_path}: {e}")
 
 
 if __name__ == "__main__":
     print("🔧 CORRIGIENDO DECORADORES INCORRECTOS")
     print("=" * 50)
     fix_decorators()
-    print("✅ CORRECCIÓN COMPLETADA")
+    print("[CHECK] CORRECCIÓN COMPLETADA")

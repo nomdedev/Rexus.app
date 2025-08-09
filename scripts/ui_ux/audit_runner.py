@@ -45,7 +45,7 @@ class UIUXAuditRunner:
             )
 
             if result.returncode == 0:
-                print("✅ Auditoría de consistencia completada exitosamente")
+                print("[CHECK] Auditoría de consistencia completada exitosamente")
 
                 # Buscar el archivo de reporte generado
                 reporte_files = list(self.logs_path.glob("ui_audit_report_*.json"))
@@ -60,7 +60,7 @@ class UIUXAuditRunner:
                         "output": result.stdout,
                     }
             else:
-                print(f"❌ Error en auditoría de consistencia: {result.stderr}")
+                print(f"[ERROR] Error en auditoría de consistencia: {result.stderr}")
                 return {
                     "status": "error",
                     "error": result.stderr,
@@ -68,7 +68,7 @@ class UIUXAuditRunner:
                 }
 
         except Exception as e:
-            print(f"❌ Excepción en auditoría de consistencia: {e}")
+            print(f"[ERROR] Excepción en auditoría de consistencia: {e}")
             return {"status": "exception", "error": str(e)}
 
     def ejecutar_auditoria_accesibilidad(self) -> Dict[str, Any]:
@@ -84,7 +84,7 @@ class UIUXAuditRunner:
             )
 
             if result.returncode == 0:
-                print("✅ Auditoría de accesibilidad completada exitosamente")
+                print("[CHECK] Auditoría de accesibilidad completada exitosamente")
 
                 # Buscar el archivo de reporte generado
                 reporte_files = list(
@@ -101,7 +101,7 @@ class UIUXAuditRunner:
                         "output": result.stdout,
                     }
             else:
-                print(f"❌ Error en auditoría de accesibilidad: {result.stderr}")
+                print(f"[ERROR] Error en auditoría de accesibilidad: {result.stderr}")
                 return {
                     "status": "error",
                     "error": result.stderr,
@@ -109,7 +109,7 @@ class UIUXAuditRunner:
                 }
 
         except Exception as e:
-            print(f"❌ Excepción en auditoría de accesibilidad: {e}")
+            print(f"[ERROR] Excepción en auditoría de accesibilidad: {e}")
             return {"status": "exception", "error": str(e)}
 
     def analizar_modulo_especifico(self, modulo: str) -> Dict[str, Any]:
@@ -336,7 +336,7 @@ class UIUXAuditRunner:
 
     def ejecutar_todas_las_auditorias(self):
         """Ejecuta todas las auditorías UI/UX disponibles"""
-        print("🚀 Iniciando auditorías completas de UI/UX...")
+        print("[ROCKET] Iniciando auditorías completas de UI/UX...")
         print("=" * 60)
 
         # Ejecutar auditoría de consistencia
@@ -356,7 +356,7 @@ class UIUXAuditRunner:
     def _mostrar_resumen_final(self):
         """Muestra un resumen final de todas las auditorías"""
         print("\n" + "=" * 60)
-        print("📊 RESUMEN FINAL DE AUDITORÍAS UI/UX")
+        print("[CHART] RESUMEN FINAL DE AUDITORÍAS UI/UX")
         print("=" * 60)
 
         # Estadísticas de consistencia

@@ -110,7 +110,7 @@ class DialogSeguimiento(QDialog):
 
     def crear_grupo_estado(self):
         """Crea el grupo de gestión de estado."""
-        grupo = RexusGroupBox("📊 Estado de la Orden")
+        grupo = RexusGroupBox("[CHART] Estado de la Orden")
         layout = QFormLayout(grupo)
         
         self.lbl_estado_actual = RexusLabel("N/A", "body")

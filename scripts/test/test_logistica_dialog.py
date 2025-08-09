@@ -230,9 +230,9 @@ if __name__ == "__main__":
     success = main()
     
     if success:
-        print("\n✅ IMPLEMENTATION COMPLETED SUCCESSFULLY")
+        print("\n[CHECK] IMPLEMENTATION COMPLETED SUCCESSFULLY")
         print("The logística service generation dialog is ready for production use.")
     else:
-        print("\n❌ IMPLEMENTATION NEEDS ATTENTION")
+        print("\n[ERROR] IMPLEMENTATION NEEDS ATTENTION")
         print("Address the failed tests before proceeding.")
         sys.exit(1)

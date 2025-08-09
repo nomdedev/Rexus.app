@@ -371,11 +371,11 @@ def run_edge_cases():
     print(f"Tasa de éxito: {success_rate:.1f}%")
 
     if success_rate >= 90:
-        print("✅ EDGE CASES: EXCELENTE MANEJO")
+        print("[CHECK] EDGE CASES: EXCELENTE MANEJO")
     elif success_rate >= 75:
         print("🟡 EDGE CASES: MANEJO ACEPTABLE")
     else:
-        print("❌ EDGE CASES: REQUIERE MEJORAS")
+        print("[ERROR] EDGE CASES: REQUIERE MEJORAS")
 
     return result.wasSuccessful()
 

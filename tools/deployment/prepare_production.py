@@ -12,7 +12,7 @@ from pathlib import Path
 def print_header(title):
     """Imprime un encabezado formateado"""
     print("\n" + "=" * 60)
-    print(f"🚀 {title}")
+    print(f"[ROCKET] {title}")
     print("=" * 60)
 
 def check_critical_files():
@@ -45,13 +45,13 @@ def check_critical_files():
     for file_path in critical_files:
         if os.path.exists(file_path):
             size = os.path.getsize(file_path)
-            print(f"✅ {file_path} ({size} bytes)")
+            print(f"[CHECK] {file_path} ({size} bytes)")
             passed += 1
         else:
-            print(f"❌ {file_path} - FALTANTE")
+            print(f"[ERROR] {file_path} - FALTANTE")
     
     success_rate = (passed / total * 100) if total > 0 else 0
-    print(f"\n📊 Archivos críticos: {passed}/{total} ({success_rate:.1f}%)")
+    print(f"\n[CHART] Archivos críticos: {passed}/{total} ({success_rate:.1f}%)")
     
     return success_rate >= 95
 
@@ -78,17 +78,17 @@ def test_imports():
         try:
             module = __import__(module_name, fromlist=[class_name])
             getattr(module, class_name)
-            print(f"✅ {module_name}.{class_name}")
+            print(f"[CHECK] {module_name}.{class_name}")
             passed += 1
         except ImportError as e:
-            print(f"❌ {module_name}.{class_name} - Error de importación: {e}")
+            print(f"[ERROR] {module_name}.{class_name} - Error de importación: {e}")
         except AttributeError as e:
-            print(f"❌ {module_name}.{class_name} - Clase no encontrada: {e}")
+            print(f"[ERROR] {module_name}.{class_name} - Clase no encontrada: {e}")
         except Exception as e:
-            print(f"❌ {module_name}.{class_name} - Error: {e}")
+            print(f"[ERROR] {module_name}.{class_name} - Error: {e}")
     
     success_rate = (passed / total * 100) if total > 0 else 0
-    print(f"\n📊 Importaciones: {passed}/{total} ({success_rate:.1f}%)")
+    print(f"\n[CHART] Importaciones: {passed}/{total} ({success_rate:.1f}%)")
     
     return success_rate >= 80
 
@@ -105,23 +105,23 @@ def verify_security():
                 content = f.read()
             
             if "100.0%" in content and "SUCCESS" in content:
-                print("✅ Validación de seguridad: 100% (EXITOSA)")
+                print("[CHECK] Validación de seguridad: 100% (EXITOSA)")
                 security_status = True
             elif "PASS" in content:
-                print("✅ Validación de seguridad: EXITOSA")
+                print("[CHECK] Validación de seguridad: EXITOSA")
                 security_status = True
             else:
-                print("⚠️ Validación de seguridad: Revisar resultados")
+                print("[WARN] Validación de seguridad: Revisar resultados")
                 security_status = False
             
             # Limpiar archivo temporal
             os.remove("temp_security.log")
         else:
-            print("⚠️ No se pudo ejecutar validación de seguridad")
+            print("[WARN] No se pudo ejecutar validación de seguridad")
             security_status = False
             
     except Exception as e:
-        print(f"❌ Error en validación de seguridad: {e}")
+        print(f"[ERROR] Error en validación de seguridad: {e}")
         security_status = False
     
     return security_status
@@ -130,15 +130,15 @@ def create_deployment_checklist():
     """Crea checklist final para despliegue"""
     print_header("CREANDO CHECKLIST DE DESPLIEGUE")
     
-    checklist_content = """# 🚀 CHECKLIST FINAL DE DESPLIEGUE - REXUS.APP
+    checklist_content = """# [ROCKET] CHECKLIST FINAL DE DESPLIEGUE - REXUS.APP
 
-## ✅ Pre-despliegue (COMPLETADO)
-- ✅ Verificación de archivos críticos
-- ✅ Tests de importación
-- ✅ Validación de seguridad
-- ✅ Sistema de logging configurado
-- ✅ Manejo de errores implementado
-- ✅ Monitoreo de rendimiento activo
+## [CHECK] Pre-despliegue (COMPLETADO)
+- [CHECK] Verificación de archivos críticos
+- [CHECK] Tests de importación
+- [CHECK] Validación de seguridad
+- [CHECK] Sistema de logging configurado
+- [CHECK] Manejo de errores implementado
+- [CHECK] Monitoreo de rendimiento activo
 
 ## 🔧 Preparación del entorno
 - [ ] Instalar dependencias: `pip install -r requirements_updated.txt`
@@ -153,7 +153,7 @@ def create_deployment_checklist():
 - [ ] Tests de seguridad (penetration testing)
 - [ ] Tests de usuario (UX/UI)
 
-## 📊 Monitoreo post-despliegue
+## [CHART] Monitoreo post-despliegue
 - [ ] Verificar logs de aplicación
 - [ ] Monitorear métricas de rendimiento
 - [ ] Revisar alertas de seguridad
@@ -174,13 +174,13 @@ def create_deployment_checklist():
 ---
 **Fecha de preparación:** {fecha}
 **Versión:** Rexus.app v2.0 - Production Ready
-**Estado:** ✅ LISTO PARA DESPLIEGUE
+**Estado:** [CHECK] LISTO PARA DESPLIEGUE
 """.format(fecha=time.strftime('%Y-%m-%d %H:%M:%S'))
     
     with open("CHECKLIST_DESPLIEGUE.md", "w", encoding="utf-8") as f:
         f.write(checklist_content)
     
-    print("✅ Checklist de despliegue creado: CHECKLIST_DESPLIEGUE.md")
+    print("[CHECK] Checklist de despliegue creado: CHECKLIST_DESPLIEGUE.md")
     return True
 
 def generate_production_summary():
@@ -200,23 +200,23 @@ def generate_production_summary():
     final_score = (passed_checks / total_checks * 100) if total_checks > 0 else 0
     
     print_header("RESULTADO FINAL")
-    print(f"📁 Archivos críticos: {'✅' if files_ok else '❌'}")
-    print(f"📦 Importaciones: {'✅' if imports_ok else '❌'}")
-    print(f"🛡️ Seguridad: {'✅' if security_ok else '❌'}")
-    print(f"📋 Checklist: {'✅' if checklist_ok else '❌'}")
+    print(f"📁 Archivos críticos: {'[CHECK]' if files_ok else '[ERROR]'}")
+    print(f"📦 Importaciones: {'[CHECK]' if imports_ok else '[ERROR]'}")
+    print(f"🛡️ Seguridad: {'[CHECK]' if security_ok else '[ERROR]'}")
+    print(f"📋 Checklist: {'[CHECK]' if checklist_ok else '[ERROR]'}")
     
     print(f"\n🎯 PUNTUACIÓN FINAL: {passed_checks}/{total_checks} ({final_score:.1f}%)")
     
     if final_score >= 90:
         print("🎉 SISTEMA 100% LISTO PARA PRODUCCIÓN")
-        print("✅ Proceder con despliegue inmediato")
+        print("[CHECK] Proceder con despliegue inmediato")
         status = "READY"
     elif final_score >= 75:
-        print("⚠️ SISTEMA CASI LISTO (revisar elementos marcados)")
+        print("[WARN] SISTEMA CASI LISTO (revisar elementos marcados)")
         print("🔧 Correcciones menores recomendadas")
         status = "MOSTLY_READY"
     else:
-        print("❌ SISTEMA NECESITA ATENCIÓN")
+        print("[ERROR] SISTEMA NECESITA ATENCIÓN")
         print("🚨 Corregir problemas críticos antes del despliegue")
         status = "NOT_READY"
     
@@ -239,7 +239,7 @@ Checklist: {'OK' if checklist_ok else 'FAIL'}
     return final_score >= 75
 
 if __name__ == "__main__":
-    print("🚀 PREPARACIÓN FINAL PARA PRODUCCIÓN - REXUS.APP")
+    print("[ROCKET] PREPARACIÓN FINAL PARA PRODUCCIÓN - REXUS.APP")
     print("Verificando que el sistema esté listo para despliegue...")
     
     # Crear directorio de logs si no existe
@@ -250,10 +250,10 @@ if __name__ == "__main__":
     
     if ready:
         print("\n🎊 ¡FELICITACIONES!")
-        print("🚀 Rexus.app está listo para producción")
+        print("[ROCKET] Rexus.app está listo para producción")
         print("📋 Revisar CHECKLIST_DESPLIEGUE.md para próximos pasos")
     else:
-        print("\n⚠️ ATENCIÓN REQUERIDA")
+        print("\n[WARN] ATENCIÓN REQUERIDA")
         print("🔧 Revisar y corregir elementos marcados")
     
     sys.exit(0 if ready else 1)

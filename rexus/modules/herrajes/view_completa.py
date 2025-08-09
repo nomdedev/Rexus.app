@@ -672,7 +672,7 @@ class HerrajesCompletaView(QWidget):
         export_pdf_btn.clicked.connect(self.exportar_pdf)
         export_layout.addWidget(export_pdf_btn, 0, 0)
         
-        export_excel_btn = QPushButton("📊 Exportar a Excel")
+        export_excel_btn = QPushButton("[CHART] Exportar a Excel")
         export_excel_btn.clicked.connect(self.exportar_excel)
         export_layout.addWidget(export_excel_btn, 0, 1)
         

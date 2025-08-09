@@ -405,7 +405,7 @@ class DatabaseBackupSystem:
                     original_checksum = db_backup["checksum"]
                     
                     if current_checksum == original_checksum:
-                        integrity_results.append(f"✓ {db_name}: Integridad verificada")
+                        integrity_results.append(f"[OK] {db_name}: Integridad verificada")
                     else:
                         integrity_results.append(f"✗ {db_name}: Checksum no coincide")
                 else:
@@ -688,7 +688,7 @@ def main():
     # Menú interactivo
     while True:
         print("\n🔧 Opciones disponibles:")
-        print("1. 🚀 Crear backup completo ahora")
+        print("1. [ROCKET] Crear backup completo ahora")
         print("2. 📅 Configurar backup automático") 
         print("3. 📋 Listar backups disponibles")
         print("4. 🔄 Restaurar desde backup")
@@ -698,14 +698,14 @@ def main():
         choice = input("\n👉 Seleccione una opción (1-6): ").strip()
         
         if choice == "1":
-            print("\n🚀 Creando backup completo...")
+            print("\n[ROCKET] Creando backup completo...")
             result = backup_system.create_full_backup()
             
             if result["status"] == "completed":
-                print("✅ Backup completado exitosamente!")
+                print("[CHECK] Backup completado exitosamente!")
                 print(f"📁 Timestamp: {result['timestamp']}")
             else:
-                print("❌ Backup falló!")
+                print("[ERROR] Backup falló!")
                 if result.get("errors"):
                     print("🔍 Errores:")
                     for error in result["errors"]:
@@ -713,7 +713,7 @@ def main():
         
         elif choice == "2":
             backup_system.setup_scheduled_backup()
-            print("✅ Backup automático configurado")
+            print("[CHECK] Backup automático configurado")
             print(f"⏰ Se ejecutará diariamente a las {config.schedule_time}")
         
         elif choice == "3":
@@ -722,7 +722,7 @@ def main():
             
             if backups:
                 for i, backup in enumerate(backups, 1):
-                    status_icon = "✅" if backup["status"] == "completed" else "❌"
+                    status_icon = "[CHECK]" if backup["status"] == "completed" else "[ERROR]"
                     print(f"{i:2d}. {status_icon} {backup['timestamp']} - {backup['databases_count']} bases de datos")
             else:
                 print("📪 No hay backups disponibles")
@@ -746,22 +746,22 @@ def main():
                     selected_backup = backups[selection]
                     
                     if selected_backup["status"] == "completed":
-                        confirm = input(f"⚠️  ¿Confirma restaurar desde {selected_backup['timestamp']}? (s/N): ")
+                        confirm = input(f"[WARN]  ¿Confirma restaurar desde {selected_backup['timestamp']}? (s/N): ")
                         if confirm.lower() in ['s', 'sí', 'si', 'yes', 'y']:
                             result = backup_system.restore_from_backup(selected_backup["timestamp"])
                             
                             if result["status"] == "completed":
-                                print("✅ Restauración completada exitosamente!")
+                                print("[CHECK] Restauración completada exitosamente!")
                             else:
-                                print("❌ Restauración falló!")
+                                print("[ERROR] Restauración falló!")
                         else:
                             print("🚫 Restauración cancelada")
                     else:
-                        print("❌ Backup seleccionado no está completo")
+                        print("[ERROR] Backup seleccionado no está completo")
                 else:
-                    print("❌ Selección inválida")
+                    print("[ERROR] Selección inválida")
             except (ValueError, IndexError):
-                print("❌ Entrada inválida")
+                print("[ERROR] Entrada inválida")
         
         elif choice == "5":
             print("\n🏃 Iniciando programador de backups...")
@@ -776,7 +776,7 @@ def main():
             break
         
         else:
-            print("❌ Opción inválida. Por favor seleccione 1-6.")
+            print("[ERROR] Opción inválida. Por favor seleccione 1-6.")
 
 if __name__ == "__main__":
     main()

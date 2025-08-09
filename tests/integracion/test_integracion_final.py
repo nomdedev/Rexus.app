@@ -19,7 +19,7 @@ def test_integracion_modulos():
         # Inicializar conexión a BD
         db = ObrasDatabaseConnection()
         db.conectar()
-        print(f"✅ Conectado a base de datos: {db.database}")
+        print(f"[CHECK] Conectado a base de datos: {db.database}")
 
         # Inicializar modelos
         inventario_model = InventarioModel(db)
@@ -36,13 +36,13 @@ def test_integracion_modulos():
         print("-" * 60)
 
         obras = obras_model.obtener_obras()
-        print(f"✓ Obras recuperadas: {len(obras)}")
+        print(f"[OK] Obras recuperadas: {len(obras)}")
 
         items = inventario_model.obtener_items()
-        print(f"✓ Ítems de inventario recuperados: {len(items) if items else 0}")
+        print(f"[OK] Ítems de inventario recuperados: {len(items) if items else 0}")
 
         vidrios = vidrios_model.obtener_vidrios()
-        print(f"✓ Registros de vidrios recuperados: {len(vidrios) if vidrios else 0}")
+        print(f"[OK] Registros de vidrios recuperados: {len(vidrios) if vidrios else 0}")
 
         # Test 2: Verificar integración cruzada
         print("\n📋 Test 2: Integración cruzada")
@@ -58,7 +58,7 @@ def test_integracion_modulos():
             try:
                 pedidos = inventario_model.obtener_pedidos_por_obra(id_obra)
                 print(
-                    f"✓ Pedidos de material para la obra: {len(pedidos) if pedidos else 0}"
+                    f"[OK] Pedidos de material para la obra: {len(pedidos) if pedidos else 0}"
                 )
             except Exception as e:
                 print(f"✗ Error en pedidos de material: {e}")
@@ -71,7 +71,7 @@ def test_integracion_modulos():
                 )
                 vidrios_obra = db.ejecutar_query(vidrios_query, (id_obra, id_obra))
                 print(
-                    f"✓ Vidrios para la obra: {len(vidrios_obra) if vidrios_obra else 0}"
+                    f"[OK] Vidrios para la obra: {len(vidrios_obra) if vidrios_obra else 0}"
                 )
             except Exception as e:
                 print(f"✗ Error en vidrios por obra: {e}")
@@ -82,7 +82,7 @@ def test_integracion_modulos():
                 herrajes_query = "SELECT * FROM herrajes_por_obra WHERE id_obra = ?"
                 herrajes_obra = db.ejecutar_query(herrajes_query, (id_obra,))
                 print(
-                    f"✓ Herrajes para la obra: {len(herrajes_obra) if herrajes_obra else 0}"
+                    f"[OK] Herrajes para la obra: {len(herrajes_obra) if herrajes_obra else 0}"
                 )
             except Exception as e:
                 print(f"✗ Error en herrajes por obra: {e}")
@@ -91,9 +91,9 @@ def test_integracion_modulos():
             try:
                 if hasattr(contabilidad_model, "obtener_pagos_por_obra"):
                     pagos = contabilidad_model.obtener_pagos_por_obra(id_obra)
-                    print(f"✓ Pagos para la obra: {len(pagos) if pagos else 0}")
+                    print(f"[OK] Pagos para la obra: {len(pagos) if pagos else 0}")
                 else:
-                    print("✓ Método obtener_pagos_por_obra no disponible - OK")
+                    print("[OK] Método obtener_pagos_por_obra no disponible - OK")
             except Exception as e:
                 print(f"✗ Error en pagos por obra: {e}")
         else:
@@ -137,19 +137,19 @@ def test_integracion_modulos():
                 resultado = db.ejecutar_query(query)
                 if resultado:
                     # Verificar que el resultado tiene datos o existe la tabla
-                    print(f"✓ Tabla {nombre}: existe y es accesible")
+                    print(f"[OK] Tabla {nombre}: existe y es accesible")
                 else:
-                    print(f"✓ Tabla {nombre}: sin datos pero estructura válida")
+                    print(f"[OK] Tabla {nombre}: sin datos pero estructura válida")
             except Exception as e:
                 print(f"✗ Error verificando tabla {nombre}: {e}")
 
         print("\n🎯 RESULTADO DEL TEST DE INTEGRACIÓN")
         print("=" * 60)
-        print("✅ Las pruebas de integración se han completado.")
+        print("[CHECK] Las pruebas de integración se han completado.")
         print("📝 Revisa los resultados para identificar posibles problemas.")
 
     except Exception as e:
-        print(f"❌ Error durante las pruebas: {e}")
+        print(f"[ERROR] Error durante las pruebas: {e}")
         traceback.print_exc()
         pytest.fail("Test falló")
     finally:

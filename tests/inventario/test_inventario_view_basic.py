@@ -331,7 +331,7 @@ class TestInventarioViewEdgeCases:
                     "<script>alert('test')</script>",
                     "'; DROP TABLE items; --",
                     "\x00\x01\x02\x03",  # Caracteres de control
-                    "🚀🌟✨💎🎯",  # Emojis
+                    "[ROCKET]🌟✨💎🎯",  # Emojis
                 ]
 
                 if hasattr(view, "buscar"):

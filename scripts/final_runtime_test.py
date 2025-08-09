@@ -117,12 +117,12 @@ def main():
     if results['success']:
         print(f"\nMódulos exitosos:")
         for module in results['success']:
-            print(f"  ✅ {module}")
+            print(f"  [CHECK] {module}")
     
     if results['errors']:
         print(f"\nMódulos con errores:")
         for module in results['errors']:
-            print(f"  ❌ {module}")
+            print(f"  [ERROR] {module}")
     
     if error_count == 0:
         print(f"\n🎉 ¡ÉXITO TOTAL!")
@@ -130,7 +130,7 @@ def main():
         print("La aplicación debería funcionar correctamente ahora")
         return 0
     else:
-        print(f"\n⚠️ Quedan {error_count} módulos con errores por corregir")
+        print(f"\n[WARN] Quedan {error_count} módulos con errores por corregir")
         return 1
 
 if __name__ == "__main__":

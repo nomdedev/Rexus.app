@@ -66,7 +66,7 @@ def test_sql_server_variations():
                 cursor.execute("SELECT @@SERVERNAME, @@VERSION")
                 result = cursor.fetchone()
                 
-                print(f"✓ EXITO - Servidor: {result[0]}")
+                print(f"[OK] EXITO - Servidor: {result[0]}")
                 
                 # Listar bases de datos
                 cursor.execute("SELECT name FROM sys.databases")
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     working_server, working_driver = test_sql_server_variations()
     
     if working_server and working_driver:
-        print(f"\n✓ SOLUCION ENCONTRADA:")
+        print(f"\n[OK] SOLUCION ENCONTRADA:")
         print(f"Actualiza tu .env con:")
         print(f"DB_SERVER={working_server}")
         print(f"DB_DRIVER={working_driver}")

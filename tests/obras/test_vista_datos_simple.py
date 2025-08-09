@@ -77,7 +77,7 @@ def test_cargar_datos_obras_simple():
         print(f"[TEST] Filas cargadas en tabla: {filas_cargadas}")
         
         if filas_cargadas == len(datos_prueba):
-            print("✅ [TEST] Los datos se cargaron correctamente en la tabla")
+            print("[CHECK] [TEST] Los datos se cargaron correctamente en la tabla")
             
             # Verificar contenido de la primera fila
             codigo_celda = vista.tabla_obras.item(0, 0)
@@ -87,20 +87,20 @@ def test_cargar_datos_obras_simple():
                 print(f"[TEST] Primera fila - Código: {codigo_celda.text()}, Nombre: {nombre_celda.text()}")
                 
                 if codigo_celda.text() == "OBR-001" and nombre_celda.text() == "Edificio Central":
-                    print("✅ [TEST] El contenido de las celdas es correcto")
+                    print("[CHECK] [TEST] El contenido de las celdas es correcto")
                     return True
                 else:
-                    print("❌ [TEST] El contenido de las celdas no coincide")
+                    print("[ERROR] [TEST] El contenido de las celdas no coincide")
                     return False
             else:
-                print("❌ [TEST] Las celdas están vacías")
+                print("[ERROR] [TEST] Las celdas están vacías")
                 return False
         else:
-            print(f"❌ [TEST] Se esperaban {len(datos_prueba)} filas, pero se cargaron {filas_cargadas}")
+            print(f"[ERROR] [TEST] Se esperaban {len(datos_prueba)} filas, pero se cargaron {filas_cargadas}")
             return False
             
     except Exception as e:
-        print(f"❌ [TEST] Error durante el test: {e}")
+        print(f"[ERROR] [TEST] Error durante el test: {e}")
         import traceback
         traceback.print_exc()
         return False

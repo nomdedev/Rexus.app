@@ -13,7 +13,7 @@ def analyze_herrajes_migration():
     file_path = "rexus/modules/herrajes/view.py"
     
     if not os.path.exists(file_path):
-        print("❌ ERROR: Herrajes view.py file not found!")
+        print("[ERROR] ERROR: Herrajes view.py file not found!")
         return False
     
     with open(file_path, 'r', encoding='utf-8') as f:

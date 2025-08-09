@@ -4,8 +4,8 @@ Script de Migración Completa - Módulo Pedidos
 Migra de SQL embebido a SQL externo con mejoras de seguridad
 
 ACCIONES REALIZADAS:
-✅ Crear estructura SQL externa completa
-✅ Crear modelo refactorizado con:
+[CHECK] Crear estructura SQL externa completa
+[CHECK] Crear modelo refactorizado con:
    - SQL 100% externo
    - Imports unificados sin duplicados
    - DataSanitizer con fallback robusto
@@ -41,7 +41,7 @@ def migrar_modelo_pedidos():
     os.makedirs("backups", exist_ok=True)
     if os.path.exists(modelo_original):
         shutil.copy2(modelo_original, backup_path)
-        print(f"✅ Backup creado: {backup_path}")
+        print(f"[CHECK] Backup creado: {backup_path}")
 
     # 2. Verificar archivos SQL externos creados
     print("\n📂 Verificando archivos SQL externos...")
@@ -63,20 +63,20 @@ def migrar_modelo_pedidos():
 
     for sql_file in sql_files:
         if os.path.exists(sql_file):
-            print(f"✅ {sql_file}")
+            print(f"[CHECK] {sql_file}")
         else:
-            print(f"❌ FALTANTE: {sql_file}")
+            print(f"[ERROR] FALTANTE: {sql_file}")
 
     # 3. Verificar modelo refactorizado
     print("\n🏗️  Verificando modelo refactorizado...")
     modelo_refactorizado = "rexus/modules/pedidos/model_refactorizado.py"
     if os.path.exists(modelo_refactorizado):
-        print(f"✅ {modelo_refactorizado}")
+        print(f"[CHECK] {modelo_refactorizado}")
 
         # Mostrar métricas del archivo
         with open(modelo_refactorizado, "r", encoding="utf-8") as f:
             lines = f.readlines()
-            print(f"   📊 Líneas totales: {len(lines)}")
+            print(f"   [CHART] Líneas totales: {len(lines)}")
 
             # Contar imports y SQL embebido
             imports_auth = sum(
@@ -91,14 +91,14 @@ def migrar_modelo_pedidos():
                 )
             )
 
-            print(f"   📊 Imports auth: {imports_auth}")
-            print(f"   📊 SQL embebido restante: {sql_embebido}")
+            print(f"   [CHART] Imports auth: {imports_auth}")
+            print(f"   [CHART] SQL embebido restante: {sql_embebido}")
 
     else:
-        print(f"❌ FALTANTE: {modelo_refactorizado}")
+        print(f"[ERROR] FALTANTE: {modelo_refactorizado}")
 
     # 4. Mostrar comparación
-    print("\n📊 COMPARACIÓN MODELOS")
+    print("\n[CHART] COMPARACIÓN MODELOS")
     print("-" * 30)
 
     if os.path.exists(modelo_original):
@@ -115,7 +115,7 @@ def migrar_modelo_pedidos():
             reduccion = ((original_lines - refactored_lines) / original_lines) * 100
             print(f"📉 Reducción código: {reduccion:.1f}%")
 
-    print("\n✅ MIGRACIÓN COMPLETADA")
+    print("\n[CHECK] MIGRACIÓN COMPLETADA")
     print("=" * 50)
 
     print("\n🎯 PRÓXIMOS PASOS RECOMENDADOS:")

@@ -119,7 +119,7 @@ def main():
     problemas = buscar_problemas_estilos()
 
     if problemas:
-        print(f"❌ ENCONTRADOS {len(problemas)} PROBLEMAS DE ESTILOS:")
+        print(f"[ERROR] ENCONTRADOS {len(problemas)} PROBLEMAS DE ESTILOS:")
         print()
 
         for problema in problemas:
@@ -128,14 +128,14 @@ def main():
             print(f"📝 Código: {problema['texto']}")
             print()
     else:
-        print("✅ NO SE ENCONTRARON PROBLEMAS DE ESTILOS")
+        print("[CHECK] NO SE ENCONTRARON PROBLEMAS DE ESTILOS")
         print()
 
     # Validar recursos faltantes
     recursos_faltantes = validar_recursos_iconos()
 
     if recursos_faltantes:
-        print(f"❌ ENCONTRADOS {len(recursos_faltantes)} RECURSOS FALTANTES:")
+        print(f"[ERROR] ENCONTRADOS {len(recursos_faltantes)} RECURSOS FALTANTES:")
         print()
 
         for recurso in recursos_faltantes:
@@ -144,7 +144,7 @@ def main():
             print(f"📝 Ruta esperada: {recurso['ruta_completa']}")
             print()
     else:
-        print("✅ TODOS LOS RECURSOS DE ICONOS EXISTEN")
+        print("[CHECK] TODOS LOS RECURSOS DE ICONOS EXISTEN")
         print()
 
     # Resumen final
@@ -155,7 +155,7 @@ def main():
         print("La aplicación no debería mostrar warnings de QSS o QPixmap.")
         return 0
     else:
-        print(f"⚠️  VALIDACIÓN COMPLETADA CON {total_problemas} PROBLEMAS")
+        print(f"[WARN]  VALIDACIÓN COMPLETADA CON {total_problemas} PROBLEMAS")
         print("Revisa y corrige los problemas reportados para eliminar warnings.")
         return 1
 

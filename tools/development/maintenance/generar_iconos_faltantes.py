@@ -17,10 +17,10 @@ def crear_icono_svg(nombre, svg_content, ruta_destino):
         os.makedirs(os.path.dirname(ruta_destino), exist_ok=True)
         with open(ruta_destino, "w", encoding="utf-8") as f:
             f.write(svg_content)
-        print(f"✅ Creado: {ruta_destino}")
+        print(f"[CHECK] Creado: {ruta_destino}")
         return True
     except Exception as e:
-        print(f"❌ Error creando {ruta_destino}: {e}")
+        print(f"[ERROR] Error creando {ruta_destino}: {e}")
         return False
 
 
@@ -119,9 +119,9 @@ def generar_iconos_faltantes():
         ):
             iconos_creados += 1
 
-    print(f"\n📊 Resumen:")
+    print(f"\n[CHART] Resumen:")
     print(f"   • Iconos creados: {iconos_creados}/{len(iconos)}")
-    print(f"✅ Generación de iconos completada")
+    print(f"[CHECK] Generación de iconos completada")
 
 
 def main():

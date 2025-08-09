@@ -44,14 +44,14 @@ def corregir_f_strings_archivo(filepath):
         if contenido != contenido_original:
             with open(filepath, "w", encoding="utf-8") as f:
                 f.write(contenido)
-            print(f"✅ Corregido: {filepath}")
+            print(f"[CHECK] Corregido: {filepath}")
             return True
         else:
             print(f"⏭️ Sin cambios: {filepath}")
             return False
 
     except Exception as e:
-        print(f"❌ Error procesando {filepath}: {e}")
+        print(f"[ERROR] Error procesando {filepath}: {e}")
         return False
 
 
@@ -62,7 +62,7 @@ def corregir_imports_mal_estructurados(contenido):
     patron_import_roto = r"from PyQt6\.QtWidgets import \(\nfrom rexus\."
     if re.search(patron_import_roto, contenido):
         # Necesita corrección manual específica
-        print("⚠️ Encontrado import mal estructurado - requiere corrección manual")
+        print("[WARN] Encontrado import mal estructurado - requiere corrección manual")
 
     return contenido
 
@@ -128,7 +128,7 @@ def main():
     for archivo in todos_los_archivos:
         valido, errores = verificar_sintaxis_basica(archivo)
         if not valido:
-            print(f"⚠️ {archivo} aún tiene problemas: {', '.join(errores)}")
+            print(f"[WARN] {archivo} aún tiene problemas: {', '.join(errores)}")
 
 
 if __name__ == "__main__":

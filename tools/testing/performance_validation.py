@@ -22,11 +22,11 @@ def test_performance_monitoring():
             performance_timer,
         )
 
-        print("✅ Monitor de rendimiento importado correctamente")
+        print("[CHECK] Monitor de rendimiento importado correctamente")
 
         # Crear instancia del monitor
         monitor = PerformanceMonitor()
-        print("✅ Monitor instanciado")
+        print("[CHECK] Monitor instanciado")
 
         # Test 1: Función rápida
         @performance_timer
@@ -62,14 +62,14 @@ def test_performance_monitoring():
         result = cpu_intensive_function()
         print(f"   Resultado: {result}")
 
-        print("\n✅ Todas las pruebas de rendimiento completadas")
+        print("\n[CHECK] Todas las pruebas de rendimiento completadas")
         return True
 
     except ImportError as e:
-        print(f"⚠️ No se pudo importar el monitor: {e}")
+        print(f"[WARN] No se pudo importar el monitor: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error en tests de rendimiento: {e}")
+        print(f"[ERROR] Error en tests de rendimiento: {e}")
         return False
 
 
@@ -86,7 +86,7 @@ def test_logging_system():
         security_logger = get_logger("security")
         error_logger = get_logger("error")
 
-        print("✅ Loggers creados correctamente")
+        print("[CHECK] Loggers creados correctamente")
 
         # Test logging de diferentes niveles
         main_logger.info("Test de información desde main")
@@ -98,14 +98,14 @@ def test_logging_system():
         # Test logging de acciones de usuario
         log_user_action("test_action", "test_user", "Testing user action logging")
 
-        print("✅ Sistema de logging funcionando correctamente")
+        print("[CHECK] Sistema de logging funcionando correctamente")
         return True
 
     except ImportError as e:
-        print(f"⚠️ Sistema de logging no disponible: {e}")
+        print(f"[WARN] Sistema de logging no disponible: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error en sistema de logging: {e}")
+        print(f"[ERROR] Error en sistema de logging: {e}")
         return False
 
 
@@ -123,7 +123,7 @@ def test_error_handling():
             return "success"
 
         result = working_function()
-        print(f"✅ Función exitosa: {result}")
+        print(f"[CHECK] Función exitosa: {result}")
 
         # Test 2: Función que falla controladamente
         @error_boundary
@@ -131,22 +131,22 @@ def test_error_handling():
             raise ValueError("Test error")
 
         result = failing_function()
-        print(f"✅ Error manejado correctamente: {result}")
+        print(f"[CHECK] Error manejado correctamente: {result}")
 
         # Test 3: Safe execute
         def another_failing_function():
             raise RuntimeError("Another test error")
 
         result = safe_execute(another_failing_function, default_return="default_value")
-        print(f"✅ Safe execute funcionando: {result}")
+        print(f"[CHECK] Safe execute funcionando: {result}")
 
         return True
 
     except ImportError as e:
-        print(f"⚠️ Sistema de manejo de errores no disponible: {e}")
+        print(f"[WARN] Sistema de manejo de errores no disponible: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error en manejo de errores: {e}")
+        print(f"[ERROR] Error en manejo de errores: {e}")
         return False
 
 
@@ -161,27 +161,27 @@ def test_security_system():
         # Test hashing de contraseñas
         test_password = "MySecurePassword123!"
         hashed = SecurityUtils.hash_password(test_password)
-        print(f"✅ Password hasheada: {len(hashed)} caracteres")
+        print(f"[CHECK] Password hasheada: {len(hashed)} caracteres")
 
         # Test verificación
         is_valid = SecurityUtils.verify_password(test_password, hashed)
-        print(f"✅ Verificación correcta: {is_valid}")
+        print(f"[CHECK] Verificación correcta: {is_valid}")
 
         is_invalid = SecurityUtils.verify_password("wrong_password", hashed)
-        print(f"✅ Verificación incorrecta rechazada: {not is_invalid}")
+        print(f"[CHECK] Verificación incorrecta rechazada: {not is_invalid}")
 
         # Test sanitización
         malicious_input = "<script>alert('xss')</script>Test content"
         sanitized = SecurityUtils.sanitize_input(malicious_input)
-        print(f"✅ Input sanitizado: {sanitized}")
+        print(f"[CHECK] Input sanitizado: {sanitized}")
 
         return True
 
     except ImportError as e:
-        print(f"❌ No se pudo importar SecurityUtils: {e}")
+        print(f"[ERROR] No se pudo importar SecurityUtils: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error en sistema de seguridad: {e}")
+        print(f"[ERROR] Error en sistema de seguridad: {e}")
         return False
 
 
@@ -193,24 +193,24 @@ def test_database_system():
     try:
         from rexus.utils.database_manager import DatabaseManager
 
-        print("✅ DatabaseManager importado correctamente")
+        print("[CHECK] DatabaseManager importado correctamente")
 
         # Test configuración básica
-        print("✅ Sistema de BD disponible para uso")
+        print("[CHECK] Sistema de BD disponible para uso")
 
         return True
 
     except ImportError as e:
-        print(f"⚠️ Sistema de BD no disponible: {e}")
+        print(f"[WARN] Sistema de BD no disponible: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error en sistema de BD: {e}")
+        print(f"[ERROR] Error en sistema de BD: {e}")
         return False
 
 
 def run_performance_validation():
     """Ejecuta validación completa de rendimiento"""
-    print("🚀 VALIDACIÓN DE RENDIMIENTO REXUS")
+    print("[ROCKET] VALIDACIÓN DE RENDIMIENTO REXUS")
     print("Probando sistemas con datos reales...")
     print("=" * 60)
 
@@ -231,22 +231,22 @@ def run_performance_validation():
             if result:
                 passed += 1
         except Exception as e:
-            print(f"❌ Error crítico en {test_name}: {e}")
+            print(f"[ERROR] Error crítico en {test_name}: {e}")
 
     success_rate = (passed / total * 100) if total > 0 else 0
 
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE VALIDACIÓN DE RENDIMIENTO")
-    print(f"✅ Tests exitosos: {passed}/{total} ({success_rate:.1f}%)")
+    print("[CHART] RESUMEN DE VALIDACIÓN DE RENDIMIENTO")
+    print(f"[CHECK] Tests exitosos: {passed}/{total} ({success_rate:.1f}%)")
 
     if success_rate >= 80:
         print("🎉 SISTEMA PREPARADO PARA PRODUCCIÓN")
-        print("✅ Todas las mejoras funcionando correctamente")
+        print("[CHECK] Todas las mejoras funcionando correctamente")
     elif success_rate >= 60:
-        print("⚠️ SISTEMA MAYORMENTE PREPARADO")
+        print("[WARN] SISTEMA MAYORMENTE PREPARADO")
         print("🔧 Algunas mejoras menores recomendadas")
     else:
-        print("❌ SISTEMA NECESITA ATENCIÓN")
+        print("[ERROR] SISTEMA NECESITA ATENCIÓN")
         print("🚨 Corregir problemas antes de despliegue")
 
     # Guardar reporte de rendimiento
@@ -265,10 +265,10 @@ if __name__ == "__main__":
     success = run_performance_validation()
 
     if success:
-        print("\n🚀 READY FOR NEXT PHASE!")
+        print("\n[ROCKET] READY FOR NEXT PHASE!")
         print("🎯 Sistemas validados y listos para usuario final")
     else:
-        print("\n⚠️ REVIEW NEEDED")
+        print("\n[WARN] REVIEW NEEDED")
         print("🔧 Corregir problemas antes de continuar")
 
     sys.exit(0 if success else 1)

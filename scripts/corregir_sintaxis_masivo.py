@@ -118,16 +118,16 @@ def fix_syntax_errors():
                 if content != original_content:
                     with open(file_path, "w", encoding="utf-8") as f:
                         f.write(content)
-                    print(f"   ✅ Archivo corregido")
+                    print(f"   [CHECK] Archivo corregido")
                     fixed_count += 1
                 else:
                     print(f"   ℹ️  Sin cambios necesarios")
 
             except Exception as e:
-                print(f"   ❌ Error corrigiendo {file_path}: {e}")
+                print(f"   [ERROR] Error corrigiendo {file_path}: {e}")
 
     print(f"\n" + "=" * 60)
-    print(f"✅ CORRECCIÓN MASIVA COMPLETADA: {fixed_count} archivos corregidos")
+    print(f"[CHECK] CORRECCIÓN MASIVA COMPLETADA: {fixed_count} archivos corregidos")
 
     return fixed_count > 0
 
@@ -136,7 +136,7 @@ def fix_common_syntax_issues(content):
     """Corrige problemas comunes de sintaxis."""
 
     # Eliminar líneas de protección XSS mal colocadas
-    content = re.sub(r"\s*# 🔒 PROTECCIÓN XSS:.*?\n", "\n", content)
+    content = re.sub(r"\s*# [LOCK] PROTECCIÓN XSS:.*?\n", "\n", content)
     content = re.sub(r"\s*# TODO: Implementar sanitización.*?\n", "\n", content)
     content = re.sub(r"\s*# Ejemplo: texto_limpio =.*?\n", "\n", content)
 
@@ -214,20 +214,20 @@ def add_missing_imports():
                         with open(file_path, "w", encoding="utf-8") as f:
                             f.write(new_content)
 
-                        print(f"   ✅ Imports agregados a {file_path}")
+                        print(f"   [CHECK] Imports agregados a {file_path}")
                     else:
                         print(
-                            f"   ⚠️  No se encontró lugar para agregar imports en {file_path}"
+                            f"   [WARN]  No se encontró lugar para agregar imports en {file_path}"
                         )
                 else:
                     print(f"   ℹ️  {file_path} ya tiene los imports")
 
             except Exception as e:
-                print(f"   ❌ Error agregando imports a {file_path}: {e}")
+                print(f"   [ERROR] Error agregando imports a {file_path}: {e}")
 
 
 if __name__ == "__main__":
-    print("🚀 INICIANDO CORRECCIÓN COMPLETA DE ERRORES")
+    print("[ROCKET] INICIANDO CORRECCIÓN COMPLETA DE ERRORES")
     print("=" * 60)
 
     # Cambiar al directorio del proyecto
@@ -241,7 +241,7 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 60)
     if syntax_fixed:
-        print("✅ CORRECCIÓN COMPLETA EXITOSA")
+        print("[CHECK] CORRECCIÓN COMPLETA EXITOSA")
         print("   - Errores de sintaxis corregidos")
         print("   - Imports faltantes agregados")
         print("   - Módulos listos para uso")

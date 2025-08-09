@@ -84,7 +84,7 @@ def test_login_fallido_password_incorrecta(login_controller, login_view):
 
 def test_feedback_visual_error(login_controller, login_view):
     login_view.mostrar_error("Error de prueba")
-    assert "❌" in login_view.label_error.text()
+    assert "[ERROR]" in login_view.label_error.text()
     assert "#ef4444" in login_view.label_error.styleSheet()
 
 
@@ -145,11 +145,11 @@ def test_login_usuario_sin_permisos(login_controller, login_view, usuarios_model
 def test_feedback_visual_todos_estados(login_view):
     """Debe mostrar feedback visual correcto para éxito, error, advertencia e info."""
     login_view.mostrar_feedback("Éxito", tipo="exito")
-    assert "✅" in login_view.label_feedback.text()
+    assert "[CHECK]" in login_view.label_feedback.text()
     login_view.mostrar_feedback("Error", tipo="error")
-    assert "❌" in login_view.label_feedback.text()
+    assert "[ERROR]" in login_view.label_feedback.text()
     login_view.mostrar_feedback("Advertencia", tipo="advertencia")
-    assert "⚠️" in login_view.label_feedback.text()
+    assert "[WARN]" in login_view.label_feedback.text()
     login_view.mostrar_feedback("Info", tipo="info")
     assert "ℹ️" in login_view.label_feedback.text()
 

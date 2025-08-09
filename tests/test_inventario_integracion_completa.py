@@ -29,9 +29,9 @@ def test_real_application_flow():
             from PyQt6.QtCore import QObject, pyqtSignal
             from PyQt6.QtWidgets import QApplication, QWidget
 
-            print("✅ PyQt6 disponible")
+            print("[CHECK] PyQt6 disponible")
         except ImportError as e:
-            print(f"❌ Error PyQt6: {e}")
+            print(f"[ERROR] Error PyQt6: {e}")
             errors_found.append(f"PyQt6 Import Error: {e}")
 
         # Importar el módulo como lo hace module_manager
@@ -42,9 +42,9 @@ def test_real_application_flow():
                 InventarioView,
             )
 
-            print("✅ Módulo inventario importado desde __init__.py")
+            print("[CHECK] Módulo inventario importado desde __init__.py")
         except Exception as e:
-            print(f"❌ Error importando módulo inventario: {e}")
+            print(f"[ERROR] Error importando módulo inventario: {e}")
             errors_found.append(f"Module Import Error: {e}")
             traceback.print_exc()
 
@@ -59,9 +59,9 @@ def test_real_application_flow():
             # Crear modelo
             print("   🔧 Creando modelo...")
             model = InventarioModel(mock_db)
-            print("   ✅ Modelo creado exitosamente")
+            print("   [CHECK] Modelo creado exitosamente")
         except Exception as e:
-            print(f"   ❌ Error creando modelo: {e}")
+            print(f"   [ERROR] Error creando modelo: {e}")
             errors_found.append(f"Model Creation Error: {e}")
             traceback.print_exc()
 
@@ -78,9 +78,9 @@ def test_real_application_flow():
                 pass
 
             view = InventarioView()
-            print("   ✅ Vista creada exitosamente")
+            print("   [CHECK] Vista creada exitosamente")
         except Exception as e:
-            print(f"   ❌ Error creando vista: {e}")
+            print(f"   [ERROR] Error creando vista: {e}")
             errors_found.append(f"View Creation Error: {e}")
             traceback.print_exc()
 
@@ -88,9 +88,9 @@ def test_real_application_flow():
             # Crear controlador
             print("   🔧 Creando controlador...")
             controller = InventarioController(model, view)
-            print("   ✅ Controlador creado exitosamente")
+            print("   [CHECK] Controlador creado exitosamente")
         except Exception as e:
-            print(f"   ❌ Error creando controlador: {e}")
+            print(f"   [ERROR] Error creando controlador: {e}")
             errors_found.append(f"Controller Creation Error: {e}")
             traceback.print_exc()
 
@@ -102,12 +102,12 @@ def test_real_application_flow():
             if hasattr(controller, "cargar_inventario_inicial"):
                 print("   🔧 Llamando cargar_inventario_inicial...")
                 controller.cargar_inventario_inicial()
-                print("   ✅ Carga inicial exitosa")
+                print("   [CHECK] Carga inicial exitosa")
             else:
-                print("   ❌ Método cargar_inventario_inicial no encontrado")
+                print("   [ERROR] Método cargar_inventario_inicial no encontrado")
                 errors_found.append("Method cargar_inventario_inicial not found")
         except Exception as e:
-            print(f"   ❌ Error en carga inicial: {e}")
+            print(f"   [ERROR] Error en carga inicial: {e}")
             errors_found.append(f"Initial Load Error: {e}")
             traceback.print_exc()
 
@@ -117,19 +117,19 @@ def test_real_application_flow():
         try:
             # Verificar que las señales se conectaron correctamente
             if hasattr(view, "btn_buscar") and hasattr(controller, "buscar_productos"):
-                print("   ✅ btn_buscar y buscar_productos disponibles")
+                print("   [CHECK] btn_buscar y buscar_productos disponibles")
             else:
-                print("   ❌ Falta btn_buscar o buscar_productos")
+                print("   [ERROR] Falta btn_buscar o buscar_productos")
                 errors_found.append("Signal connection: btn_buscar missing")
 
             if hasattr(view, "tabla_inventario"):
-                print("   ✅ tabla_inventario disponible en vista")
+                print("   [CHECK] tabla_inventario disponible en vista")
             else:
-                print("   ❌ tabla_inventario no disponible")
+                print("   [ERROR] tabla_inventario no disponible")
                 errors_found.append("UI component: tabla_inventario missing")
 
         except Exception as e:
-            print(f"   ❌ Error verificando señales: {e}")
+            print(f"   [ERROR] Error verificando señales: {e}")
             errors_found.append(f"Signal Check Error: {e}")
 
         # 5. PRUEBA DE MÉTODOS REALES DEL MODELO
@@ -141,7 +141,7 @@ def test_real_application_flow():
                 print("   🔧 Probando obtener_productos_paginados_inicial(0, 100)...")
                 resultado = model.obtener_productos_paginados_inicial(0, 100)
                 print(
-                    f"   ✅ Resultado inicial: {type(resultado)} - {len(str(resultado)[:100])}..."
+                    f"   [CHECK] Resultado inicial: {type(resultado)} - {len(str(resultado)[:100])}..."
                 )
 
                 # VERIFICAR SI LOS DATOS SON REALES O SIMULADOS
@@ -156,27 +156,27 @@ def test_real_application_flow():
                             in primer_producto.get("descripcion", "").lower()
                         ):
                             print(
-                                "   ⚠️ ADVERTENCIA: Se están cargando datos SIMULADOS, no reales de BD"
+                                "   [WARN] ADVERTENCIA: Se están cargando datos SIMULADOS, no reales de BD"
                             )
                             errors_found.append(
                                 "Model returns simulated data instead of real database data"
                             )
                         elif primer_producto.get("descripcion") == "Producto 1":
                             print(
-                                "   ⚠️ ADVERTENCIA: Se están cargando datos SIMULADOS hardcodeados"
+                                "   [WARN] ADVERTENCIA: Se están cargando datos SIMULADOS hardcodeados"
                             )
                             errors_found.append(
                                 "Model returns hardcoded simulated data"
                             )
                         else:
                             print(
-                                f"   ✅ Datos parecen ser reales de BD: {primer_producto.get('descripcion', 'N/A')}"
+                                f"   [CHECK] Datos parecen ser reales de BD: {primer_producto.get('descripcion', 'N/A')}"
                             )
                     else:
-                        print("   ⚠️ ADVERTENCIA: No se encontraron productos")
+                        print("   [WARN] ADVERTENCIA: No se encontraron productos")
                         errors_found.append("No products found in database")
             else:
-                print("   ❌ Método obtener_productos_paginados_inicial no disponible")
+                print("   [ERROR] Método obtener_productos_paginados_inicial no disponible")
                 errors_found.append(
                     "Model method: obtener_productos_paginados_inicial missing"
                 )
@@ -188,13 +188,13 @@ def test_real_application_flow():
                 )
                 resultado = model.obtener_productos_paginados(0, 100)
                 print(
-                    f"   ⚠️ Resultado con auth: {type(resultado)} - {len(str(resultado)[:100])}..."
+                    f"   [WARN] Resultado con auth: {type(resultado)} - {len(str(resultado)[:100])}..."
                 )
             else:
-                print("   ❌ Método obtener_productos_paginados no disponible")
+                print("   [ERROR] Método obtener_productos_paginados no disponible")
                 errors_found.append("Model method: obtener_productos_paginados missing")
         except Exception as e:
-            print(f"   ❌ Error ejecutando obtener_productos_paginados (esperado): {e}")
+            print(f"   [ERROR] Error ejecutando obtener_productos_paginados (esperado): {e}")
             # No agregar a errores porque es esperado que falle sin autenticación
             traceback.print_exc()
 
@@ -206,25 +206,25 @@ def test_real_application_flow():
             from rexus.core import auth_manager
 
             if hasattr(auth_manager, "current_user"):
-                print("   ✅ Sistema de autenticación disponible")
+                print("   [CHECK] Sistema de autenticación disponible")
             else:
-                print("   ⚠️ Sistema de autenticación no disponible")
+                print("   [WARN] Sistema de autenticación no disponible")
 
             # Probar método con decorador auth_required
             if hasattr(controller, "cargar_inventario"):
                 print("   🔧 Probando método con @auth_required...")
                 try:
                     controller.cargar_inventario()
-                    print("   ✅ Método auth_required ejecutado")
+                    print("   [CHECK] Método auth_required ejecutado")
                 except Exception as auth_e:
-                    print(f"   ❌ Error de autenticación: {auth_e}")
+                    print(f"   [ERROR] Error de autenticación: {auth_e}")
                     errors_found.append(f"Auth Error: {auth_e}")
         except Exception as e:
-            print(f"   ❌ Error verificando autenticación: {e}")
+            print(f"   [ERROR] Error verificando autenticación: {e}")
             errors_found.append(f"Auth System Error: {e}")
 
     except Exception as e:
-        print(f"❌ Error general en test: {e}")
+        print(f"[ERROR] Error general en test: {e}")
         errors_found.append(f"General Test Error: {e}")
         traceback.print_exc()
 
@@ -245,8 +245,8 @@ def test_database_integration():
         # Crear conexión como lo hace la aplicación real
         try:
             db_connection = InventarioDatabaseConnection(auto_connect=False)
-            print("   ✅ InventarioDatabaseConnection creada exitosamente")
-            print("✅ Conexión a BD exitosa (como en app real)")
+            print("   [CHECK] InventarioDatabaseConnection creada exitosamente")
+            print("[CHECK] Conexión a BD exitosa (como en app real)")
 
             # Probar modelo con BD real (como en la aplicación)
             from rexus.modules.inventario import InventarioModel
@@ -258,20 +258,20 @@ def test_database_integration():
             try:
                 resultado = model.obtener_productos_paginados_inicial(0, 10)
                 print(
-                    f"✅ obtener_productos_paginados_inicial funcionó: {type(resultado)}"
+                    f"[CHECK] obtener_productos_paginados_inicial funcionó: {type(resultado)}"
                 )
             except Exception as e:
-                print(f"❌ Error en obtener_productos_paginados_inicial: {e}")
+                print(f"[ERROR] Error en obtener_productos_paginados_inicial: {e}")
                 errors_found.append(f"DB Method Error: {e}")
 
         except Exception as db_error:
-            print(f"❌ Error creando InventarioDatabaseConnection: {db_error}")
+            print(f"[ERROR] Error creando InventarioDatabaseConnection: {db_error}")
             errors_found.append(f"Database connection error: {db_error}")
             # Pero esto es normal si no hay variables de entorno de BD configuradas
-            print("   ⚠️ Esto es normal en entorno de pruebas sin BD configurada")
+            print("   [WARN] Esto es normal en entorno de pruebas sin BD configurada")
 
     except Exception as e:
-        print(f"❌ Error en test de BD: {e}")
+        print(f"[ERROR] Error en test de BD: {e}")
         errors_found.append(f"DB Test Error: {e}")
         traceback.print_exc()
 
@@ -315,12 +315,12 @@ def test_ui_integration():
             if hasattr(view, component):
                 widget = getattr(view, component)
                 if widget is not None:
-                    print(f"   ✅ {component}: {type(widget).__name__}")
+                    print(f"   [CHECK] {component}: {type(widget).__name__}")
                 else:
-                    print(f"   ❌ {component}: existe pero es None")
+                    print(f"   [ERROR] {component}: existe pero es None")
                     errors_found.append(f"UI Component is None: {component}")
             else:
-                print(f"   ❌ {component}: no existe")
+                print(f"   [ERROR] {component}: no existe")
                 errors_found.append(f"UI Component missing: {component}")
 
         # Probar actualización de vista
@@ -334,20 +334,20 @@ def test_ui_integration():
                 # Intentar diferentes métodos de actualización
                 if hasattr(view, "actualizar_tabla"):
                     view.actualizar_tabla(test_data)
-                    print("   ✅ actualizar_tabla funcionó")
+                    print("   [CHECK] actualizar_tabla funcionó")
                 elif hasattr(view, "mostrar_productos"):
                     view.mostrar_productos(test_data)
-                    print("   ✅ mostrar_productos funcionó")
+                    print("   [CHECK] mostrar_productos funcionó")
                 else:
-                    print("   ❌ No hay método para actualizar vista")
+                    print("   [ERROR] No hay método para actualizar vista")
                     errors_found.append("No method to update view found")
 
         except Exception as e:
-            print(f"   ❌ Error actualizando vista: {e}")
+            print(f"   [ERROR] Error actualizando vista: {e}")
             errors_found.append(f"View Update Error: {e}")
 
     except Exception as e:
-        print(f"❌ Error en test UI: {e}")
+        print(f"[ERROR] Error en test UI: {e}")
         errors_found.append(f"UI Test Error: {e}")
         traceback.print_exc()
 
@@ -388,22 +388,22 @@ def test_controller_methods():
 
         for method in required_methods:
             if hasattr(controller, method):
-                print(f"   ✅ {method}: disponible")
+                print(f"   [CHECK] {method}: disponible")
 
                 # Probar ejecución si es seguro
                 if method in ["conectar_senales"]:
                     try:
                         getattr(controller, method)()
-                        print(f"   ✅ {method}: ejecutado exitosamente")
+                        print(f"   [CHECK] {method}: ejecutado exitosamente")
                     except Exception as e:
-                        print(f"   ❌ {method}: error al ejecutar - {e}")
+                        print(f"   [ERROR] {method}: error al ejecutar - {e}")
                         errors_found.append(f"Controller method error {method}: {e}")
             else:
-                print(f"   ❌ {method}: no disponible")
+                print(f"   [ERROR] {method}: no disponible")
                 errors_found.append(f"Controller method missing: {method}")
 
     except Exception as e:
-        print(f"❌ Error en test controller: {e}")
+        print(f"[ERROR] Error en test controller: {e}")
         errors_found.append(f"Controller Test Error: {e}")
         traceback.print_exc()
 
@@ -412,7 +412,7 @@ def test_controller_methods():
 
 def main():
     """Ejecuta auditoría completa del módulo inventario."""
-    print("🚀 AUDITORÍA COMPLETA DEL MÓDULO INVENTARIO")
+    print("[ROCKET] AUDITORÍA COMPLETA DEL MÓDULO INVENTARIO")
     print("🔍 Detectando errores reales que ocurren en la aplicación")
     print("=" * 80)
 
@@ -434,18 +434,18 @@ def main():
             if errors:
                 all_errors.extend([(test_name, error) for error in errors])
             else:
-                print(f"✅ {test_name}: Sin errores detectados")
+                print(f"[CHECK] {test_name}: Sin errores detectados")
         except Exception as e:
-            print(f"❌ {test_name}: Error en test - {e}")
+            print(f"[ERROR] {test_name}: Error en test - {e}")
             all_errors.append((test_name, f"Test execution error: {e}"))
 
     # Reporte final
     print("\n" + "=" * 80)
-    print("📊 REPORTE FINAL DE AUDITORÍA")
+    print("[CHART] REPORTE FINAL DE AUDITORÍA")
     print("=" * 80)
 
     if all_errors:
-        print(f"❌ SE ENCONTRARON {len(all_errors)} ERRORES:")
+        print(f"[ERROR] SE ENCONTRARON {len(all_errors)} ERRORES:")
         print()
 
         error_categories = {}
@@ -470,7 +470,7 @@ def main():
         return False
     else:
         print("🎉 ¡NO SE ENCONTRARON ERRORES!")
-        print("✅ El módulo inventario está funcionando correctamente")
+        print("[CHECK] El módulo inventario está funcionando correctamente")
         return True
 
 

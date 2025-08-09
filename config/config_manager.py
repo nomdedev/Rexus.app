@@ -555,14 +555,14 @@ if __name__ == "__main__":
         # Validar configuración
         validation = manager.validate_config()
         if validation["valid"]:
-            print("✅ Configuración válida")
+            print("[CHECK] Configuración válida")
         else:
-            print("❌ Errores en configuración:")
+            print("[ERROR] Errores en configuración:")
             for error in validation["errors"]:
                 print(f"   - {error}")
 
         if validation["warnings"]:
-            print("⚠️  Advertencias:")
+            print("[WARN]  Advertencias:")
             for warning in validation["warnings"]:
                 print(f"   - {warning}")
 
@@ -572,4 +572,4 @@ if __name__ == "__main__":
 
         # Mostrar configuración de app
         app_config = manager.get_app_config()
-        print(f"🚀 App: {app_config.host}:{app_config.port} (debug={app_config.debug})")
+        print(f"[ROCKET] App: {app_config.host}:{app_config.port} (debug={app_config.debug})")

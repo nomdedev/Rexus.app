@@ -16,17 +16,17 @@ def corregir_emojis_en_archivo(ruta_archivo):
 
         # Reemplazos de emojis comunes
         reemplazos = {
-            "✅": "[OK]",
-            "❌": "[ERROR]",
-            "⚠️": "[WARN]",
+            "[CHECK]": "[OK]",
+            "[ERROR]": "[ERROR]",
+            "[WARN]": "[WARN]",
             "🔧": "[TOOL]",
-            "✓": "[OK]",
+            "[OK]": "[OK]",
             "✗": "[ERROR]",
             "⭐": "[STAR]",
             "🎯": "[TARGET]",
-            "📊": "[CHART]",
+            "[CHART]": "[CHART]",
             "📝": "[NOTE]",
-            "🚀": "[ROCKET]",
+            "[ROCKET]": "[ROCKET]",
             "💡": "[IDEA]",
         }
 

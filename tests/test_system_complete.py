@@ -149,20 +149,20 @@ class TestMainWindow(QMainWindow):
                 final_layout = self.module_container.layout()
                 if final_layout:
                     final_layout.addWidget(module_widget)
-                self.log_area.append(f"✓ Módulo {module_name} cargado exitosamente")
+                self.log_area.append(f"[OK] Módulo {module_name} cargado exitosamente")
 
                 # Mostrar información del módulo
                 module_info = self.system_manager.get_module_info(module_name)
                 if module_info:
                     self.log_area.append(f"  - {module_info.description}")
                     self.log_area.append(
-                        f"  - Navegación: {'✓' if module_info.keyboard_enabled else '✗'}"
+                        f"  - Navegación: {'[OK]' if module_info.keyboard_enabled else '✗'}"
                     )
                     self.log_area.append(
-                        f"  - Errores: {'✓' if module_info.error_enabled else '✗'}"
+                        f"  - Errores: {'[OK]' if module_info.error_enabled else '✗'}"
                     )
                     self.log_area.append(
-                        f"  - Loading: {'✓' if module_info.loading_enabled else '✗'}"
+                        f"  - Loading: {'[OK]' if module_info.loading_enabled else '✗'}"
                     )
             else:
                 self.log_area.append(
@@ -199,13 +199,13 @@ class TestMainWindow(QMainWindow):
         self.log_area.append(f"Módulos activos: {status['modules_active']}")
         self.log_area.append(f"Lista activos: {', '.join(status['active_modules'])}")
         self.log_area.append(
-            f"Navegación por teclado: {'✓' if status['keyboard_enabled'] else '✗'}"
+            f"Navegación por teclado: {'[OK]' if status['keyboard_enabled'] else '✗'}"
         )
         self.log_area.append(
-            f"Gestión de errores: {'✓' if status['error_management_enabled'] else '✗'}"
+            f"Gestión de errores: {'[OK]' if status['error_management_enabled'] else '✗'}"
         )
         self.log_area.append(
-            f"Indicadores de carga: {'✓' if status['loading_enabled'] else '✗'}"
+            f"Indicadores de carga: {'[OK]' if status['loading_enabled'] else '✗'}"
         )
         self.log_area.append("========================")
 
@@ -215,7 +215,7 @@ class TestMainWindow(QMainWindow):
 
     def on_error_occurred(self, module: str, error_code: str, message: str):
         """Callback cuando ocurre un error."""
-        self.log_area.append(f"⚠️ Error en {module} [{error_code}]: {message}")
+        self.log_area.append(f"[WARN] Error en {module} [{error_code}]: {message}")
 
     def mostrar_ayuda_atajos(self):
         """Implementa la interfaz esperada por el sistema de navegación."""
@@ -239,7 +239,7 @@ def test_keyboard_navigation():
         shortcuts = StandardShortcuts.get_shortcuts(action)
         print(f"  {action}: {', '.join(shortcuts)}")
 
-    print("✓ Sistema de navegación por teclado funcional")
+    print("[OK] Sistema de navegación por teclado funcional")
 
 
 def test_system_integration():
@@ -258,7 +258,7 @@ def test_system_integration():
     status = manager.get_system_status()
     print(f"Estado del sistema: {status['modules_registered']} módulos disponibles")
 
-    print("✓ Sistema de integración funcional")
+    print("[OK] Sistema de integración funcional")
 
 
 def main():

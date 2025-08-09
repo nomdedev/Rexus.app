@@ -370,9 +370,9 @@ if __name__ == "__main__":
     success = main()
     
     if success:
-        print("\n✅ MODULE VALIDATIONS IMPLEMENTATION SUCCESSFUL")
+        print("\n[CHECK] MODULE VALIDATIONS IMPLEMENTATION SUCCESSFUL")
         print("The module validation system is ready for production use.")
     else:
-        print("\n❌ MODULE VALIDATIONS NEED ATTENTION")
+        print("\n[ERROR] MODULE VALIDATIONS NEED ATTENTION")
         print("Address the failed tests before proceeding.")
         sys.exit(1)

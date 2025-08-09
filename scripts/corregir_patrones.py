@@ -56,7 +56,7 @@ archivos_a_corregir = [
 
 if __name__ == "__main__":
     print("🔧 CORRECTOR AUTOMÁTICO DE PATRONES")
-    print("⚠️  ESTO MODIFICARÁ LOS ARCHIVOS - Se crearán backups")
+    print("[WARN]  ESTO MODIFICARÁ LOS ARCHIVOS - Se crearán backups")
     
     respuesta = input("¿Continuar? (s/N): ")
     if respuesta.lower() != 's':
@@ -66,8 +66,8 @@ if __name__ == "__main__":
     for archivo in archivos_a_corregir:
         if os.path.exists(archivo):
             if corregir_docstrings_mal_indentados(archivo):
-                print(f"✅ Corregido: {archivo}")
+                print(f"[CHECK] Corregido: {archivo}")
             else:
                 print(f"ℹ️  Sin cambios: {archivo}")
         else:
-            print(f"❌ No encontrado: {archivo}")
+            print(f"[ERROR] No encontrado: {archivo}")

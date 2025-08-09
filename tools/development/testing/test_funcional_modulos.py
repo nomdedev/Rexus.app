@@ -11,30 +11,30 @@ def test_modulo_import(modulo_name):
     """Prueba la importación de un módulo específico."""
     try:
         if modulo_name == "inventario":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         elif modulo_name == "obras":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         elif modulo_name == "herrajes":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         elif modulo_name == "vidrios":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         elif modulo_name == "usuarios":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         elif modulo_name == "auditoria":
-            print(f"✅ {modulo_name}: Importaciones exitosas")
+            print(f"[CHECK] {modulo_name}: Importaciones exitosas")
 
         return True
 
     except ImportError as e:
-        print(f"❌ {modulo_name}: Error de importación - {e}")
+        print(f"[ERROR] {modulo_name}: Error de importación - {e}")
         return False
     except Exception as e:
-        print(f"❌ {modulo_name}: Error inesperado - {e}")
+        print(f"[ERROR] {modulo_name}: Error inesperado - {e}")
         return False
 
 def test_database_connection():
@@ -43,23 +43,23 @@ def test_database_connection():
         db = DatabaseConnection()
         connection = db.get_connection()
         if connection:
-            print("✅ Base de datos: Conexión exitosa")
+            print("[CHECK] Base de datos: Conexión exitosa")
             connection.close()
             return True
         else:
-            print("❌ Base de datos: No se pudo establecer conexión")
+            print("[ERROR] Base de datos: No se pudo establecer conexión")
             return False
     except Exception as e:
-        print(f"❌ Base de datos: Error - {e}")
+        print(f"[ERROR] Base de datos: Error - {e}")
         return False
 
 def test_core_components():
     """Prueba los componentes core."""
     try:
-        print("✅ Core: Componentes importados correctamente")
+        print("[CHECK] Core: Componentes importados correctamente")
         return True
     except Exception as e:
-        print(f"❌ Core: Error - {e}")
+        print(f"[ERROR] Core: Error - {e}")
         return False
 
 def test_model_instantiation():
@@ -69,19 +69,19 @@ def test_model_instantiation():
 
         # Probar modelo de inventario
         inventario_model = InventarioModel(db)
-        print("✅ Inventario Model: Instanciado correctamente")
+        print("[CHECK] Inventario Model: Instanciado correctamente")
 
         # Probar modelo de usuarios
         usuarios_model = UsuariosModel(db)
-        print("✅ Usuarios Model: Instanciado correctamente")
+        print("[CHECK] Usuarios Model: Instanciado correctamente")
 
         # Probar modelo de auditoría
         auditoria_model = AuditoriaModel(db)
-        print("✅ Auditoría Model: Instanciado correctamente")
+        print("[CHECK] Auditoría Model: Instanciado correctamente")
 
         return True
     except Exception as e:
-        print(f"❌ Models: Error de instanciación - {e}")
+        print(f"[ERROR] Models: Error de instanciación - {e}")
         return False
 
 def test_sql_queries():
@@ -92,15 +92,15 @@ def test_sql_queries():
 
         # Probar consulta básica
         items = inventario_model.obtener_todos()
-        print(f"✅ SQL Query: Inventario retornó {len(items) if items else 0} items")
+        print(f"[CHECK] SQL Query: Inventario retornó {len(items) if items else 0} items")
 
         # Probar consulta con filtros
         items_filtrados = inventario_model.buscar_por_codigo("TEST")
-        print(f"✅ SQL Query: Búsqueda por código completada")
+        print(f"[CHECK] SQL Query: Búsqueda por código completada")
 
         return True
     except Exception as e:
-        print(f"❌ SQL Queries: Error - {e}")
+        print(f"[ERROR] SQL Queries: Error - {e}")
         return False
 
 def test_audit_functionality():
@@ -118,9 +118,9 @@ def test_audit_functionality():
         )
 
         if resultado:
-            print("✅ Auditoría: Registro de evento exitoso con usuario invitado")
+            print("[CHECK] Auditoría: Registro de evento exitoso con usuario invitado")
         else:
-            print("⚠️ Auditoría: Registro retornó False (puede ser normal)")
+            print("[WARN] Auditoría: Registro retornó False (puede ser normal)")
 import sys
 from pathlib import Path
 
@@ -131,7 +131,7 @@ from modules.usuarios.model import UsuariosModel
 
         return True
     except Exception as e:
-        print(f"❌ Auditoría: Error - {e}")
+        print(f"[ERROR] Auditoría: Error - {e}")
         return False
 
 def run_all_tests():
@@ -179,7 +179,7 @@ def run_all_tests():
         print("🎉 TODOS LOS TESTS PASARON - La aplicación está funcionando correctamente")
         return 0
     else:
-        print(f"⚠️ {total-exitosos} TESTS FALLARON - Revisar errores reportados")
+        print(f"[WARN] {total-exitosos} TESTS FALLARON - Revisar errores reportados")
         return 1
 
 if __name__ == "__main__":
@@ -187,8 +187,8 @@ if __name__ == "__main__":
         exit_code = run_all_tests()
         sys.exit(exit_code)
     except KeyboardInterrupt:
-        print("\n⚠️ Testing interrumpido por el usuario")
+        print("\n[WARN] Testing interrumpido por el usuario")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Error inesperado durante testing: {e}")
+        print(f"\n[ERROR] Error inesperado durante testing: {e}")
         sys.exit(1)

@@ -326,7 +326,7 @@ class InventarioViewMejorada(QWidget):
         layout = QVBoxLayout(panel)
         
         # Panel de estadísticas rápidas
-        stats_group = QGroupBox("📊 Estadísticas")
+        stats_group = QGroupBox("[CHART] Estadísticas")
         stats_layout = QVBoxLayout(stats_group)
         
         self.lbl_total_productos = QLabel("Total: 0")
@@ -418,7 +418,7 @@ class InventarioViewMejorada(QWidget):
         # Configurar columnas con más información
         columnas = [
             "📋 Código", "📝 Descripción", "📂 Categoría", "📦 Stock", 
-            "💰 Precio", "📊 Estado", "📍 Ubicación", "📅 Actualización", "⚡ Acciones"
+            "💰 Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización", "⚡ Acciones"
         ]
         
         self.tabla_inventario.setColumnCount(len(columnas))
@@ -613,7 +613,7 @@ class InventarioViewMejorada(QWidget):
 📂 <b>Categoría:</b> {producto.get('categoria', 'N/A')}
 📦 <b>Stock actual:</b> {producto.get('stock_actual', 0)}
 💰 <b>Precio:</b> ${producto.get('precio_unitario', 0):,.2f}
-📊 <b>Estado:</b> {producto.get('estado', 'N/A')}
+[CHART] <b>Estado:</b> {producto.get('estado', 'N/A')}
 📍 <b>Ubicación:</b> {producto.get('ubicacion', 'No especificada')}
 📅 <b>Última actualización:</b> {producto.get('fecha_actualizacion', 'N/A')}
         """
@@ -795,7 +795,7 @@ class InventarioViewMejorada(QWidget):
 📂 Categoría: {producto.get('categoria', 'N/A')}
 📦 Stock actual: {producto.get('stock_actual', 0)} unidades
 💰 Precio unitario: ${producto.get('precio_unitario', 0):,.2f}
-📊 Estado: {producto.get('estado', 'N/A')}
+[CHART] Estado: {producto.get('estado', 'N/A')}
 📍 Ubicación: {producto.get('ubicacion', 'Sin especificar')}
 📅 Última actualización: {producto.get('fecha_actualizacion', 'N/A')}
             """
@@ -822,7 +822,7 @@ class InventarioViewMejorada(QWidget):
     def _on_dangerous_content(self, campo, contenido):
         """Maneja detección de contenido peligroso XSS."""
         show_warning(self, "Contenido Peligroso", 
-                    f"⚠️ Contenido potencialmente peligroso detectado en {campo}")
+                    f"[WARN] Contenido potencialmente peligroso detectado en {campo}")
                     
     def set_controller(self, controller):
         """Establece el controlador."""

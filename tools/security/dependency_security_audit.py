@@ -42,7 +42,7 @@ class DependencySecurityAuditor:
         Returns:
             Diccionario con resultados de la auditoría
         """
-        print("🔒 INICIANDO AUDITORÍA DE SEGURIDAD DE DEPENDENCIAS")
+        print("[LOCK] INICIANDO AUDITORÍA DE SEGURIDAD DE DEPENDENCIAS")
         print("=" * 60)
         
         # 1. Analizar archivo requirements.txt
@@ -82,7 +82,7 @@ class DependencySecurityAuditor:
         dependencies = []
         
         if not self.requirements_file.exists():
-            print(f"⚠️  Archivo {self.requirements_file} no encontrado")
+            print(f"[WARN]  Archivo {self.requirements_file} no encontrado")
             return dependencies
         
         with open(self.requirements_file, 'r', encoding='utf-8') as f:
@@ -145,7 +145,7 @@ class DependencySecurityAuditor:
                     "raw_line": line
                 }
         
-        print(f"⚠️  No se pudo parsear línea {line_num}: {line}")
+        print(f"[WARN]  No se pudo parsear línea {line_num}: {line}")
         return None
     
     def _check_known_vulnerabilities(self, dependencies: List[Dict]) -> List[Dict]:
@@ -170,7 +170,7 @@ class DependencySecurityAuditor:
             )
             
             if result.returncode != 0:
-                print("⚠️  pip-audit no está instalado")
+                print("[WARN]  pip-audit no está instalado")
                 print("   Instalar con: pip install pip-audit")
                 
                 # Verificaciones manuales para paquetes críticos
@@ -198,12 +198,12 @@ class DependencySecurityAuditor:
                             "severity": "unknown"
                         })
                 except json.JSONDecodeError:
-                    print("⚠️  Error parsing pip-audit output")
+                    print("[WARN]  Error parsing pip-audit output")
             
             print(f"   Vulnerabilidades encontradas: {len(vulnerabilities)}")
             
         except (subprocess.TimeoutExpired, subprocess.SubprocessError) as e:
-            print(f"⚠️  Error ejecutando pip-audit: {e}")
+            print(f"[WARN]  Error ejecutando pip-audit: {e}")
             vulnerabilities.extend(self._manual_vulnerability_checks(dependencies))
         
         return vulnerabilities
@@ -370,7 +370,7 @@ class DependencySecurityAuditor:
             Reporte en formato texto
         """
         lines = [
-            "🔒 REPORTE DE AUDITORÍA DE DEPENDENCIAS - REXUS.APP",
+            "[LOCK] REPORTE DE AUDITORÍA DE DEPENDENCIAS - REXUS.APP",
             "=" * 60,
             f"Fecha: {self.report['timestamp'][:19]}",
             f"Dependencias analizadas: {self.report['dependencies_analyzed']}",
@@ -403,7 +403,7 @@ class DependencySecurityAuditor:
                     lines.append(f"  Solución: Actualizar a {', '.join(vuln['fix_versions'])}")
                 lines.append("")
         else:
-            lines.append("✅ No se encontraron vulnerabilidades críticas")
+            lines.append("[CHECK] No se encontraron vulnerabilidades críticas")
         
         lines.append("")
         
@@ -465,12 +465,12 @@ class DependencySecurityAuditor:
 
 def main():
     """Función principal para ejecutar la auditoría."""
-    print("🔒 AUDITORÍA DE SEGURIDAD DE DEPENDENCIAS - REXUS.APP")
+    print("[LOCK] AUDITORÍA DE SEGURIDAD DE DEPENDENCIAS - REXUS.APP")
     
     # Buscar archivo requirements.txt
     req_file = "requirements.txt"
     if not Path(req_file).exists():
-        print(f"❌ Archivo {req_file} no encontrado")
+        print(f"[ERROR] Archivo {req_file} no encontrado")
         print("   Ejecutar desde el directorio raíz del proyecto")
         return 1
     

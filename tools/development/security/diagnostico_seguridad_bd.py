@@ -42,11 +42,11 @@ from utils.analizador_db import AnalizadorDB
 
         # 1. Verificar conexión
         db.conectar()
-        print("✅ Conectado exitosamente a la base de datos\n")
+        print("[CHECK] Conectado exitosamente a la base de datos\n")
 
         # 2. Listar tablas y estructura
         tablas = analizador.listar_tablas()
-        print(f"📊 Encontradas {len(tablas)} tablas en la base de datos\n")
+        print(f"[CHART] Encontradas {len(tablas)} tablas en la base de datos\n")
 
         # 3. Verificar permisos de usuario actual
         permisos = verificar_permisos_usuario(db)
@@ -62,7 +62,7 @@ from utils.analizador_db import AnalizadorDB
 
     except (ConnectionError, QueryError, SecurityError) as e:
         logger.error(f"Error durante el análisis de seguridad: {e}")
-        print(f"\n❌ Error: {e}")
+        print(f"\n[ERROR] Error: {e}")
     finally:
         db.cerrar_conexion()
 
@@ -111,9 +111,9 @@ def verificar_permisos_usuario(db):
 
         if 'sysadmin' in roles_lista:
             permisos["TEST_USER"] = True
-            print("  ⚠️ El usuario tiene permisos de sysadmin - Riesgo alto")
+            print("  [WARN] El usuario tiene permisos de sysadmin - Riesgo alto")
         else:
-            print("  ✅ El usuario no tiene permisos de sysadmin")
+            print("  [CHECK] El usuario no tiene permisos de sysadmin")
 
         # Consultar permisos específicos
         query_permisos = """
@@ -155,11 +155,11 @@ def verificar_permisos_usuario(db):
         # Resumen de permisos
         print("  Resumen de permisos:")
         for tipo in ["create", "alter", "drop", "execute"]:
-            estado = "⚠️" if permisos[tipo] else "✅"
+            estado = "[WARN]" if permisos[tipo] else "[CHECK]"
             print(f"  {estado} Permiso {tipo.upper()}: {permisos[tipo]}")
 
     except Exception as e:
-        print(f"  ⚠️ Error al verificar permisos: {e}")
+        print(f"  [WARN] Error al verificar permisos: {e}")
 
     return permisos
 
@@ -193,9 +193,9 @@ def detectar_vulnerabilidades(db):
                 "tipo": "Contraseñas en texto plano",
                 "descripcion": f"Se detectaron {result_pass[0][0]} columnas que podrían almacenar contraseñas en texto plano"
             })
-            print("  ⚠️ Se detectaron posibles contraseñas en texto plano")
+            print("  [WARN] Se detectaron posibles contraseñas en texto plano")
         else:
-            print("  ✅ No se detectaron columnas de contraseñas en texto plano")
+            print("  [CHECK] No se detectaron columnas de contraseñas en texto plano")
 
         # 2. Verificar si hay triggers para auditoría
         query_triggers = """
@@ -209,9 +209,9 @@ def detectar_vulnerabilidades(db):
                 "tipo": "Falta de auditoría",
                 "descripcion": "No se detectaron triggers de auditoría. Se recomienda implementar auditoría de cambios."
             })
-            print("  ⚠️ No se detectaron triggers de auditoría")
+            print("  [WARN] No se detectaron triggers de auditoría")
         else:
-            print(f"  ✅ Se detectaron {result_triggers[0][0]} triggers de auditoría")
+            print(f"  [CHECK] Se detectaron {result_triggers[0][0]} triggers de auditoría")
 
         # 3. Verificar tablas sin clave primaria
         query_sin_pk = """
@@ -228,12 +228,12 @@ def detectar_vulnerabilidades(db):
                 "tipo": "Tablas sin clave primaria",
                 "descripcion": f"Se detectaron {len(tablas_sin_pk)} tablas sin clave primaria: {', '.join(tablas_sin_pk)}"
             })
-            print(f"  ⚠️ Se detectaron {len(tablas_sin_pk)} tablas sin clave primaria")
+            print(f"  [WARN] Se detectaron {len(tablas_sin_pk)} tablas sin clave primaria")
         else:
-            print("  ✅ Todas las tablas tienen clave primaria")
+            print("  [CHECK] Todas las tablas tienen clave primaria")
 
     except Exception as e:
-        print(f"  ⚠️ Error al detectar vulnerabilidades: {e}")
+        print(f"  [WARN] Error al detectar vulnerabilidades: {e}")
 
     return vulnerabilidades
 
@@ -336,7 +336,7 @@ def mostrar_resumen_seguridad(tablas, permisos, vulnerabilidades, recomendacione
     print("=" * 80)
 
     # Estadísticas generales
-    print(f"\n📊 Estructura: {len(tablas)} tablas analizadas")
+    print(f"\n[CHART] Estructura: {len(tablas)} tablas analizadas")
 
     # Vulnerabilidades por nivel
     vulnerabilidades_por_nivel = {}
@@ -344,7 +344,7 @@ def mostrar_resumen_seguridad(tablas, permisos, vulnerabilidades, recomendacione
         nivel = v["nivel"]
         vulnerabilidades_por_nivel[nivel] = vulnerabilidades_por_nivel.get(nivel, 0) + 1
 
-    print("\n⚠️ Vulnerabilidades detectadas:")
+    print("\n[WARN] Vulnerabilidades detectadas:")
     for nivel, cantidad in vulnerabilidades_por_nivel.items():
         print(f"  - Nivel {nivel}: {cantidad} vulnerabilidades")
 
@@ -659,7 +659,7 @@ def main():
             print(f"\n📄 Informe HTML guardado en: {ruta_informe}")
 
     except Exception as e:
-        print(f"\n❌ Error durante el diagnóstico: {e}")
+        print(f"\n[ERROR] Error durante el diagnóstico: {e}")
         sys.exit(1)
 
 

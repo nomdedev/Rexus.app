@@ -105,7 +105,7 @@ class MockMainWindow(QMainWindow):
             ("Pedidos", "📋"),
             ("Usuarios", "👥"),
             ("Configuración", "⚙️"),
-            ("Reportes", "📊")
+            ("Reportes", "[CHART]")
         ]
 
         for module_name, icon in modules:
@@ -298,11 +298,11 @@ class MockMainWindow(QMainWindow):
         btn_nuevo_pedido.clicked.connect(lambda: self.open_pedido_wizard())
         toolbar.addWidget(btn_nuevo_pedido)
 
-        btn_aprobar = QPushButton("✅ Aprobar")
+        btn_aprobar = QPushButton("[CHECK] Aprobar")
         btn_aprobar.clicked.connect(self.aprobar_pedido)
         toolbar.addWidget(btn_aprobar)
 
-        btn_rechazar = QPushButton("❌ Rechazar")
+        btn_rechazar = QPushButton("[ERROR] Rechazar")
         btn_rechazar.clicked.connect(self.rechazar_pedido)
         toolbar.addWidget(btn_rechazar)
 
@@ -343,11 +343,11 @@ class MockMainWindow(QMainWindow):
         btn_nuevo_usuario.clicked.connect(lambda: self.open_user_form())
         toolbar.addWidget(btn_nuevo_usuario)
 
-        btn_permisos = QPushButton("🔒 Gestionar Permisos")
+        btn_permisos = QPushButton("[LOCK] Gestionar Permisos")
         btn_permisos.clicked.connect(self.open_permissions_dialog)
         toolbar.addWidget(btn_permisos)
 
-        btn_activar = QPushButton("✅ Activar")
+        btn_activar = QPushButton("[CHECK] Activar")
         btn_activar.clicked.connect(self.toggle_user_status)
         toolbar.addWidget(btn_activar)
 
@@ -994,7 +994,7 @@ class TestUIInteractions:
 
         # Verificar que no hubo crashes
         assert self.main_window.crash_count == 0
-        print(f"✓ Navegación completa: {self.main_window.operation_count} operaciones sin crashes")
+        print(f"[OK] Navegación completa: {self.main_window.operation_count} operaciones sin crashes")
 
     def test_cambio_pestañas_rapido(self):
         """Test: cambio rápido entre pestañas."""
@@ -1009,7 +1009,7 @@ class TestUIInteractions:
 
         # Verificar estabilidad
         assert self.main_window.crash_count == 0
-        print(f"✓ Cambio rápido de pestañas: {self.main_window.operation_count} operaciones")
+        print(f"[OK] Cambio rápido de pestañas: {self.main_window.operation_count} operaciones")
 
     def test_apertura_formularios_multiple(self):
         """Test: apertura múltiple de formularios."""
@@ -1038,7 +1038,7 @@ class TestUIInteractions:
         # Verificar que se abrieron formularios
         assert len(self.main_window.dialogs_opened) > 0
         assert self.main_window.crash_count == 0
-        print(f"✓ Apertura de formularios: {len(self.main_window.dialogs_opened)} diálogos abiertos")
+        print(f"[OK] Apertura de formularios: {len(self.main_window.dialogs_opened)} diálogos abiertos")
 
     def test_interacciones_tabla_completas(self):
         """Test: interacciones completas con tablas."""
@@ -1064,7 +1064,7 @@ class TestUIInteractions:
                             self._safe_process_events(self.app)
 
         assert self.main_window.crash_count == 0
-        print(f"✓ Interacciones con tablas completadas")
+        print(f"[OK] Interacciones con tablas completadas")
 
     def test_menu_completo_navegacion(self):
         """Test: navegación completa por menús."""
@@ -1092,7 +1092,7 @@ class TestUIInteractions:
                 self._safe_process_events(self.app)
 
         assert self.main_window.crash_count == 0
-        print(f"✓ Navegación de menús completada")
+        print(f"[OK] Navegación de menús completada")
 
     def test_filtros_y_busquedas(self):
         """Test: funcionalidad de filtros y búsquedas."""
@@ -1123,7 +1123,7 @@ class TestUIInteractions:
                 time.sleep(0.01)
 
         assert self.main_window.crash_count == 0
-        print(f"✓ Filtros y búsquedas probados")
+        print(f"[OK] Filtros y búsquedas probados")
 
     def test_estres_operaciones_rapidas(self):
         """Test: estrés con operaciones rápidas."""
@@ -1147,7 +1147,7 @@ class TestUIInteractions:
 
         # Verificar estabilidad
         assert self.main_window.crash_count < 5  # Permitir algunos errores menores
-        print(f"✓ Test de estrés: {self.main_window.operation_count} operaciones, {self.main_window.crash_count} errores")
+        print(f"[OK] Test de estrés: {self.main_window.operation_count} operaciones, {self.main_window.crash_count} errores")
 
     def test_simulacion_usuario_real(self):
         """Test: simulación de flujo de trabajo de usuario real."""
@@ -1210,7 +1210,7 @@ class TestUIInteractions:
         # Verificar que el flujo se completó sin crashes críticos
         assert self.main_window.crash_count < 3
         assert self.main_window.operation_count >= 10
-        print(f"✓ Simulación usuario real: {self.main_window.operation_count} ops, {self.main_window.crash_count} errores")
+        print(f"[OK] Simulación usuario real: {self.main_window.operation_count} ops, {self.main_window.crash_count} errores")
 
     def test_multiples_ventanas_dialogs(self):
         """Test: apertura de múltiples ventanas y diálogos simultáneos."""
@@ -1241,7 +1241,7 @@ class TestUIInteractions:
                 pass
 
         assert self.main_window.crash_count == 0
-        print(f"✓ Múltiples diálogos manejados correctamente")
+        print(f"[OK] Múltiples diálogos manejados correctamente")
 
     def test_redimensionado_y_layout(self):
         """Test: redimensionado de ventana y cambios de layout."""
@@ -1272,7 +1272,7 @@ class TestUIInteractions:
         self._safe_process_events(self.app)
 
         assert self.main_window.crash_count == 0
-        print(f"✓ Redimensionado y layout probados")
+        print(f"[OK] Redimensionado y layout probados")
 
     def test_memoria_y_recursos(self):
         """Test: monitoreo básico de memoria y recursos."""
@@ -1297,7 +1297,7 @@ class TestUIInteractions:
         assert operations_performed >= 100
         assert self.main_window.crash_count < 10  # Permitir algunos errores menores
 
-        print(f"✓ Test de memoria: {operations_performed} operaciones, {self.main_window.crash_count} errores")
+        print(f"[OK] Test de memoria: {operations_performed} operaciones, {self.main_window.crash_count} errores")
 
 
 class TestUIStressExtreme:
@@ -1355,7 +1355,7 @@ class TestUIStressExtreme:
 
         # La aplicación debe seguir funcionando
         assert self.main_window.isVisible()
-        print(f"✓ Estrés extremo: {self.main_window.operation_count} operaciones totales")
+        print(f"[OK] Estrés extremo: {self.main_window.operation_count} operaciones totales")
 
     def test_estres_formularios_masivos(self):
         """Test: apertura masiva de formularios."""
@@ -1392,7 +1392,7 @@ class TestUIStressExtreme:
                 pass
 
         assert self.main_window.crash_count < 5
-        print(f"✓ Formularios masivos: crashes controlados")
+        print(f"[OK] Formularios masivos: crashes controlados")
 
 
 # Función auxiliar global para funciones independientes
@@ -1473,13 +1473,13 @@ def test_integracion_ui_completa():
         assert main_window.operation_count > 0
         assert main_window.crash_count < 3  # Permitir errores menores
 
-        print(f"✓ Sesión completa: {main_window.operation_count} operaciones, {main_window.crash_count} errores")
+        print(f"[OK] Sesión completa: {main_window.operation_count} operaciones, {main_window.crash_count} errores")
 
         # Cerrar aplicación
         main_window.close()
         _safe_process_events_global(app)
 
-        print("✓ Aplicación cerrada correctamente")
+        print("[OK] Aplicación cerrada correctamente")
 
     except Exception as e:
         print(f"Error en integración completa: {e}")

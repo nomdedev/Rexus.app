@@ -42,8 +42,8 @@ class DashboardWidget(QWidget):
         # Tarjetas de métricas
         self.crear_tarjeta_metrica("👥 Empleados Activos", "0", 0, 0, layout)
         self.crear_tarjeta_metrica("💰 Balance General", "$0.00", 0, 1, layout)
-        self.crear_tarjeta_metrica("📊 Transacciones Mes", "0", 1, 0, layout)
-        self.crear_tarjeta_metrica("⚠️ Alertas Pendientes", "0", 1, 1, layout)
+        self.crear_tarjeta_metrica("[CHART] Transacciones Mes", "0", 1, 0, layout)
+        self.crear_tarjeta_metrica("[WARN] Alertas Pendientes", "0", 1, 1, layout)
         
         # Gráfico de resumen (placeholder)
         grafico_frame = RexusGroupBox("Resumen Financiero")
@@ -117,7 +117,7 @@ class ContabilidadWidget(QWidget):
         self.btn_nuevo_asiento.clicked.connect(self.nuevo_asiento_contable)
         controles_layout.addWidget(self.btn_nuevo_asiento)
         
-        self.btn_balance = RexusButton("📊 Balance General", "secondary")
+        self.btn_balance = RexusButton("[CHART] Balance General", "secondary")
         self.btn_balance.clicked.connect(self.generar_balance)
         controles_layout.addWidget(self.btn_balance)
         
@@ -274,7 +274,7 @@ class AdministracionViewFuncional(QWidget):
         
         # Pestaña Dashboard
         self.dashboard_widget = DashboardWidget()
-        self.tabs.addTab(self.dashboard_widget, "📊 Dashboard")
+        self.tabs.addTab(self.dashboard_widget, "[CHART] Dashboard")
         
         # Pestaña Contabilidad  
         self.contabilidad_widget = ContabilidadWidget()
@@ -343,18 +343,18 @@ class AdministracionViewFuncional(QWidget):
                 }
                 self.dashboard_widget.actualizar_metricas(metricas)
                 
-            self.status_label.setText("✅ Datos actualizados correctamente")
+            self.status_label.setText("[CHECK] Datos actualizados correctamente")
             
         except Exception as e:
             logging.error(f"Error actualizando dashboard: {e}")
-            self.status_label.setText(f"❌ Error actualizando datos: {str(e)}")
+            self.status_label.setText(f"[ERROR] Error actualizando datos: {str(e)}")
             
     def cargar_datos_en_tabla(self, datos):
         """Carga datos en las tablas correspondientes."""
         try:
             # Método de compatibilidad con vista genérica
             # Los datos se manejan específicamente en cada widget
-            self.status_label.setText("📊 Datos cargados en tablas específicas")
+            self.status_label.setText("[CHART] Datos cargados en tablas específicas")
             
         except Exception as e:
             logging.error(f"Error cargando datos en tabla: {e}")

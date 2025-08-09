@@ -4,15 +4,15 @@ Script de Refactorización Completa - Módulo Inventario
 Divide el modelo monolítico en submódulos especializados
 
 ACCIONES REALIZADAS:
-✅ Dividir modelo de 3093 líneas en 3 submódulos especializados
-✅ Crear arquitectura modular y mantenible:
+[CHECK] Dividir modelo de 3093 líneas en 3 submódulos especializados
+[CHECK] Crear arquitectura modular y mantenible:
    - ProductosManager: CRUD de productos, validaciones, QR
    - MovimientosManager: Movimientos de stock, auditoría
    - ConsultasManager: Búsquedas, paginación, estadísticas
-✅ Modelo principal orquestador con delegación
-✅ SQL externo para operaciones críticas
-✅ Imports unificados sin duplicados
-✅ Compatibilidad hacia atrás mantenida
+[CHECK] Modelo principal orquestador con delegación
+[CHECK] SQL externo para operaciones críticas
+[CHECK] Imports unificados sin duplicados
+[CHECK] Compatibilidad hacia atrás mantenida
 
 RESULTADOS ESPERADOS:
 - Reducción drástica de complejidad por archivo
@@ -42,12 +42,12 @@ def refactorizar_inventario():
     os.makedirs("backups", exist_ok=True)
     if os.path.exists(modelo_original):
         shutil.copy2(modelo_original, backup_path)
-        print(f"✅ Backup creado: {backup_path}")
+        print(f"[CHECK] Backup creado: {backup_path}")
 
         # Mostrar tamaño original
         with open(modelo_original, "r", encoding="utf-8") as f:
             original_lines = len(f.readlines())
-        print(f"📊 Modelo original: {original_lines} líneas")
+        print(f"[CHART] Modelo original: {original_lines} líneas")
 
     # 2. Verificar submódulos creados
     print("\n🏗️  Verificando submódulos especializados...")
@@ -64,9 +64,9 @@ def refactorizar_inventario():
             with open(submodulo, "r", encoding="utf-8") as f:
                 lines = len(f.readlines())
                 total_lines += lines
-            print(f"✅ {submodulo} ({lines} líneas)")
+            print(f"[CHECK] {submodulo} ({lines} líneas)")
         else:
-            print(f"❌ FALTANTE: {submodulo}")
+            print(f"[ERROR] FALTANTE: {submodulo}")
 
     # 3. Verificar modelo refactorizado principal
     print("\n🎯 Verificando modelo refactorizado principal...")
@@ -75,9 +75,9 @@ def refactorizar_inventario():
         with open(modelo_refactorizado, "r", encoding="utf-8") as f:
             refact_lines = len(f.readlines())
             total_lines += refact_lines
-        print(f"✅ {modelo_refactorizado} ({refact_lines} líneas)")
+        print(f"[CHECK] {modelo_refactorizado} ({refact_lines} líneas)")
     else:
-        print(f"❌ FALTANTE: {modelo_refactorizado}")
+        print(f"[ERROR] FALTANTE: {modelo_refactorizado}")
 
     # 4. Verificar archivos SQL externos
     print("\n📂 Verificando archivos SQL externos...")
@@ -91,12 +91,12 @@ def refactorizar_inventario():
 
     for sql_file in sql_files:
         if os.path.exists(sql_file):
-            print(f"✅ {sql_file}")
+            print(f"[CHECK] {sql_file}")
         else:
-            print(f"❌ FALTANTE: {sql_file}")
+            print(f"[ERROR] FALTANTE: {sql_file}")
 
     # 5. Análisis de complejidad
-    print("\n📊 ANÁLISIS DE REFACTORIZACIÓN")
+    print("\n[CHART] ANÁLISIS DE REFACTORIZACIÓN")
     print("-" * 40)
 
     if os.path.exists(modelo_original):
@@ -114,18 +114,18 @@ def refactorizar_inventario():
 
         # Beneficios obtenidos
         print(f"\n🎯 BENEFICIOS OBTENIDOS:")
-        print(f"   ✅ Separación clara de responsabilidades")
-        print(f"   ✅ Archivos < 300 líneas cada uno")
-        print(f"   ✅ Testing independiente por submódulo")
-        print(f"   ✅ Mantenimiento simplificado")
-        print(f"   ✅ Escalabilidad mejorada")
+        print(f"   [CHECK] Separación clara de responsabilidades")
+        print(f"   [CHECK] Archivos < 300 líneas cada uno")
+        print(f"   [CHECK] Testing independiente por submódulo")
+        print(f"   [CHECK] Mantenimiento simplificado")
+        print(f"   [CHECK] Escalabilidad mejorada")
 
         # Complejidad reducida
         max_file_size = max([200, 250, 300, 200])  # Aproximado
         complexity_reduction = ((original_lines - max_file_size) / original_lines) * 100
-        print(f"   ✅ Reducción complejidad individual: {complexity_reduction:.1f}%")
+        print(f"   [CHECK] Reducción complejidad individual: {complexity_reduction:.1f}%")
 
-    print("\n✅ REFACTORIZACIÓN COMPLETADA")
+    print("\n[CHECK] REFACTORIZACIÓN COMPLETADA")
     print("=" * 50)
 
     print("\n🎯 PRÓXIMOS PASOS RECOMENDADOS:")
@@ -134,7 +134,7 @@ def refactorizar_inventario():
     print("3. Aplicar refactorización similar a otros módulos grandes")
     print("4. Crear documentación de arquitectura modular")
 
-    print("\n⚠️  NOTAS DE MIGRACIÓN:")
+    print("\n[WARN]  NOTAS DE MIGRACIÓN:")
     print("- El controlador puede seguir usando 'InventarioModel'")
     print("- Compatibilidad hacia atrás mantenida")
     print("- Migración gradual recomendada para producción")

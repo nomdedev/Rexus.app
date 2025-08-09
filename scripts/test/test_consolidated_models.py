@@ -20,9 +20,9 @@ try:
     from src.modules.vidrios.model_consolidado import VidriosModel
     from src.modules.pedidos.model_consolidado import PedidosModel
     from src.modules.obras.model_consolidado import ObrasModel
-    print("✅ All consolidated models imported successfully")
+    print("[CHECK] All consolidated models imported successfully")
 except ImportError as e:
-    print(f"❌ Error importing consolidated models: {e}")
+    print(f"[ERROR] Error importing consolidated models: {e}")
     sys.exit(1)
 
 
@@ -80,11 +80,11 @@ class ModelTester:
             assert len(productos) > 0, "Demo data should not be empty"
             assert all('codigo' in p for p in productos), "All products should have 'codigo'"
             assert all('categoria' in p for p in productos), "All products should have 'categoria'"
-            self.results["inventario"]["demo_mode"] = "✅ PASS"
-            print("  ✅ InventarioModel demo mode: PASS")
+            self.results["inventario"]["demo_mode"] = "[CHECK] PASS"
+            print("  [CHECK] InventarioModel demo mode: PASS")
         except Exception as e:
-            self.results["inventario"]["demo_mode"] = f"❌ FAIL: {e}"
-            print(f"  ❌ InventarioModel demo mode: FAIL - {e}")
+            self.results["inventario"]["demo_mode"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] InventarioModel demo mode: FAIL - {e}")
             
         print("🔄 Probando HerrajesModel en modo demo...")
         try:
@@ -92,11 +92,11 @@ class ModelTester:
             herrajes_list = herrajes.obtener_todos_herrajes()
             assert len(herrajes_list) > 0, "Demo data should not be empty"
             assert all(h.get('categoria') == 'HERRAJE' for h in herrajes_list), "All items should be herrajes"
-            self.results["herrajes"]["demo_mode"] = "✅ PASS"
-            print("  ✅ HerrajesModel demo mode: PASS")
+            self.results["herrajes"]["demo_mode"] = "[CHECK] PASS"
+            print("  [CHECK] HerrajesModel demo mode: PASS")
         except Exception as e:
-            self.results["herrajes"]["demo_mode"] = f"❌ FAIL: {e}"
-            print(f"  ❌ HerrajesModel demo mode: FAIL - {e}")
+            self.results["herrajes"]["demo_mode"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] HerrajesModel demo mode: FAIL - {e}")
             
         print("🔄 Probando VidriosModel en modo demo...")
         try:
@@ -105,11 +105,11 @@ class ModelTester:
             assert len(vidrios_list) > 0, "Demo data should not be empty"
             assert all(v.get('categoria') == 'VIDRIO' for v in vidrios_list), "All items should be vidrios"
             assert all('espesor' in v for v in vidrios_list), "All vidrios should have espesor"
-            self.results["vidrios"]["demo_mode"] = "✅ PASS"
-            print("  ✅ VidriosModel demo mode: PASS")
+            self.results["vidrios"]["demo_mode"] = "[CHECK] PASS"
+            print("  [CHECK] VidriosModel demo mode: PASS")
         except Exception as e:
-            self.results["vidrios"]["demo_mode"] = f"❌ FAIL: {e}"
-            print(f"  ❌ VidriosModel demo mode: FAIL - {e}")
+            self.results["vidrios"]["demo_mode"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] VidriosModel demo mode: FAIL - {e}")
             
         print("🔄 Probando PedidosModel en modo demo...")
         try:
@@ -118,11 +118,11 @@ class ModelTester:
             assert len(pedidos_list) > 0, "Demo data should not be empty"
             assert all('numero_pedido' in p for p in pedidos_list), "All orders should have numero_pedido"
             assert all('tipo_pedido' in p for p in pedidos_list), "All orders should have tipo_pedido"
-            self.results["pedidos"]["demo_mode"] = "✅ PASS"
-            print("  ✅ PedidosModel demo mode: PASS")
+            self.results["pedidos"]["demo_mode"] = "[CHECK] PASS"
+            print("  [CHECK] PedidosModel demo mode: PASS")
         except Exception as e:
-            self.results["pedidos"]["demo_mode"] = f"❌ FAIL: {e}"
-            print(f"  ❌ PedidosModel demo mode: FAIL - {e}")
+            self.results["pedidos"]["demo_mode"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] PedidosModel demo mode: FAIL - {e}")
             
         print("🔄 Probando ObrasModel en modo demo...")
         try:
@@ -131,11 +131,11 @@ class ModelTester:
             assert len(obras_list) > 0, "Demo data should not be empty"
             assert all('codigo' in o for o in obras_list), "All obras should have codigo"
             assert all('estado' in o for o in obras_list), "All obras should have estado"
-            self.results["obras"]["demo_mode"] = "✅ PASS"
-            print("  ✅ ObrasModel demo mode: PASS")
+            self.results["obras"]["demo_mode"] = "[CHECK] PASS"
+            print("  [CHECK] ObrasModel demo mode: PASS")
         except Exception as e:
-            self.results["obras"]["demo_mode"] = f"❌ FAIL: {e}"
-            print(f"  ❌ ObrasModel demo mode: FAIL - {e}")
+            self.results["obras"]["demo_mode"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] ObrasModel demo mode: FAIL - {e}")
     
     def test_model_initialization(self):
         """Test model initialization and table verification."""
@@ -148,11 +148,11 @@ class ModelTester:
             assert hasattr(inventario, 'tabla_movimientos'), "Should have tabla_movimientos attribute"
             assert hasattr(inventario, '_allowed_tables'), "Should have _allowed_tables attribute"
             assert len(inventario._allowed_tables) > 0, "Should have allowed tables defined"
-            self.results["inventario"]["initialization"] = "✅ PASS"
-            print("  ✅ InventarioModel initialization: PASS")
+            self.results["inventario"]["initialization"] = "[CHECK] PASS"
+            print("  [CHECK] InventarioModel initialization: PASS")
         except Exception as e:
-            self.results["inventario"]["initialization"] = f"❌ FAIL: {e}"
-            print(f"  ❌ InventarioModel initialization: FAIL - {e}")
+            self.results["inventario"]["initialization"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] InventarioModel initialization: FAIL - {e}")
             
         # Test HerrajesModel initialization
         try:
@@ -161,11 +161,11 @@ class ModelTester:
             assert hasattr(herrajes, 'ESTADOS'), "Should have ESTADOS constants"
             assert hasattr(herrajes, 'UNIDADES'), "Should have UNIDADES constants"
             assert len(herrajes.TIPOS_HERRAJES) > 0, "Should have herraje types defined"
-            self.results["herrajes"]["initialization"] = "✅ PASS"
-            print("  ✅ HerrajesModel initialization: PASS")
+            self.results["herrajes"]["initialization"] = "[CHECK] PASS"
+            print("  [CHECK] HerrajesModel initialization: PASS")
         except Exception as e:
-            self.results["herrajes"]["initialization"] = f"❌ FAIL: {e}"
-            print(f"  ❌ HerrajesModel initialization: FAIL - {e}")
+            self.results["herrajes"]["initialization"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] HerrajesModel initialization: FAIL - {e}")
             
         # Test VidriosModel initialization
         try:
@@ -174,11 +174,11 @@ class ModelTester:
             assert hasattr(vidrios, 'ESPESORES'), "Should have ESPESORES constants"
             assert len(vidrios.TIPOS_VIDRIOS) > 0, "Should have vidrio types defined"
             assert len(vidrios.ESPESORES) > 0, "Should have espesores defined"
-            self.results["vidrios"]["initialization"] = "✅ PASS"
-            print("  ✅ VidriosModel initialization: PASS")
+            self.results["vidrios"]["initialization"] = "[CHECK] PASS"
+            print("  [CHECK] VidriosModel initialization: PASS")
         except Exception as e:
-            self.results["vidrios"]["initialization"] = f"❌ FAIL: {e}"
-            print(f"  ❌ VidriosModel initialization: FAIL - {e}")
+            self.results["vidrios"]["initialization"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] VidriosModel initialization: FAIL - {e}")
             
         # Test PedidosModel initialization
         try:
@@ -187,11 +187,11 @@ class ModelTester:
             assert hasattr(pedidos, 'TIPOS_PEDIDO'), "Should have TIPOS_PEDIDO constants"
             assert hasattr(pedidos, 'PRIORIDADES'), "Should have PRIORIDADES constants"
             assert len(pedidos.TIPOS_PEDIDO) > 0, "Should have pedido types defined"
-            self.results["pedidos"]["initialization"] = "✅ PASS"
-            print("  ✅ PedidosModel initialization: PASS")
+            self.results["pedidos"]["initialization"] = "[CHECK] PASS"
+            print("  [CHECK] PedidosModel initialization: PASS")
         except Exception as e:
-            self.results["pedidos"]["initialization"] = f"❌ FAIL: {e}"
-            print(f"  ❌ PedidosModel initialization: FAIL - {e}")
+            self.results["pedidos"]["initialization"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] PedidosModel initialization: FAIL - {e}")
             
         # Test ObrasModel initialization
         try:
@@ -200,11 +200,11 @@ class ModelTester:
             assert hasattr(obras, 'TIPOS_OBRA'), "Should have TIPOS_OBRA constants"
             assert hasattr(obras, 'ETAPAS'), "Should have ETAPAS constants"
             assert len(obras.ESTADOS) > 0, "Should have estados defined"
-            self.results["obras"]["initialization"] = "✅ PASS"
-            print("  ✅ ObrasModel initialization: PASS")
+            self.results["obras"]["initialization"] = "[CHECK] PASS"
+            print("  [CHECK] ObrasModel initialization: PASS")
         except Exception as e:
-            self.results["obras"]["initialization"] = f"❌ FAIL: {e}"
-            print(f"  ❌ ObrasModel initialization: FAIL - {e}")
+            self.results["obras"]["initialization"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] ObrasModel initialization: FAIL - {e}")
     
     def test_business_logic(self):
         """Test business logic methods."""
@@ -234,11 +234,11 @@ class ModelTester:
             assert isinstance(stats, dict), "Statistics should return dict"
             assert "total_productos" in stats, "Should have total_productos"
             
-            self.results["inventario"]["business_logic"] = "✅ PASS"
-            print("  ✅ InventarioModel business logic: PASS")
+            self.results["inventario"]["business_logic"] = "[CHECK] PASS"
+            print("  [CHECK] InventarioModel business logic: PASS")
         except Exception as e:
-            self.results["inventario"]["business_logic"] = f"❌ FAIL: {e}"
-            print(f"  ❌ InventarioModel business logic: FAIL - {e}")
+            self.results["inventario"]["business_logic"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] InventarioModel business logic: FAIL - {e}")
             
         # Test HerrajesModel methods
         try:
@@ -257,11 +257,11 @@ class ModelTester:
             proveedores = herrajes.obtener_proveedores()
             assert isinstance(proveedores, list), "Providers should return list"
             
-            self.results["herrajes"]["business_logic"] = "✅ PASS"
-            print("  ✅ HerrajesModel business logic: PASS")
+            self.results["herrajes"]["business_logic"] = "[CHECK] PASS"
+            print("  [CHECK] HerrajesModel business logic: PASS")
         except Exception as e:
-            self.results["herrajes"]["business_logic"] = f"❌ FAIL: {e}"
-            print(f"  ❌ HerrajesModel business logic: FAIL - {e}")
+            self.results["herrajes"]["business_logic"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] HerrajesModel business logic: FAIL - {e}")
             
         # Test VidriosModel methods
         try:
@@ -280,11 +280,11 @@ class ModelTester:
             proveedores = vidrios.obtener_proveedores()
             assert isinstance(proveedores, list), "Providers should return list"
             
-            self.results["vidrios"]["business_logic"] = "✅ PASS"
-            print("  ✅ VidriosModel business logic: PASS")
+            self.results["vidrios"]["business_logic"] = "[CHECK] PASS"
+            print("  [CHECK] VidriosModel business logic: PASS")
         except Exception as e:
-            self.results["vidrios"]["business_logic"] = f"❌ FAIL: {e}"
-            print(f"  ❌ VidriosModel business logic: FAIL - {e}")
+            self.results["vidrios"]["business_logic"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] VidriosModel business logic: FAIL - {e}")
             
         # Test PedidosModel methods
         try:
@@ -307,11 +307,11 @@ class ModelTester:
             invalida = pedidos._validar_transicion_estado("ENTREGADO", "BORRADOR")
             assert invalida == False, "Invalid state transition should return False"
             
-            self.results["pedidos"]["business_logic"] = "✅ PASS"
-            print("  ✅ PedidosModel business logic: PASS")
+            self.results["pedidos"]["business_logic"] = "[CHECK] PASS"
+            print("  [CHECK] PedidosModel business logic: PASS")
         except Exception as e:
-            self.results["pedidos"]["business_logic"] = f"❌ FAIL: {e}"
-            print(f"  ❌ PedidosModel business logic: FAIL - {e}")
+            self.results["pedidos"]["business_logic"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] PedidosModel business logic: FAIL - {e}")
             
         # Test ObrasModel methods
         try:
@@ -322,11 +322,11 @@ class ModelTester:
             assert isinstance(stats, dict), "Statistics should return dict"
             assert "total_obras" in stats, "Should have total_obras"
             
-            self.results["obras"]["business_logic"] = "✅ PASS"
-            print("  ✅ ObrasModel business logic: PASS")
+            self.results["obras"]["business_logic"] = "[CHECK] PASS"
+            print("  [CHECK] ObrasModel business logic: PASS")
         except Exception as e:
-            self.results["obras"]["business_logic"] = f"❌ FAIL: {e}"
-            print(f"  ❌ ObrasModel business logic: FAIL - {e}")
+            self.results["obras"]["business_logic"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] ObrasModel business logic: FAIL - {e}")
     
     def test_data_validation(self):
         """Test data validation and security features."""
@@ -344,16 +344,16 @@ class ModelTester:
             try:
                 invalid_table = inventario._validate_table_name("malicious_table")
                 # If we get here, validation failed
-                self.results["inventario"]["security"] = "❌ FAIL: Table validation not working"
-                print("  ❌ InventarioModel security: FAIL - Table validation not working")
+                self.results["inventario"]["security"] = "[ERROR] FAIL: Table validation not working"
+                print("  [ERROR] InventarioModel security: FAIL - Table validation not working")
             except (ValueError, Exception):
                 # This is expected - validation should reject invalid table names
-                self.results["inventario"]["security"] = "✅ PASS"
-                print("  ✅ InventarioModel security: PASS")
+                self.results["inventario"]["security"] = "[CHECK] PASS"
+                print("  [CHECK] InventarioModel security: PASS")
                 
         except Exception as e:
-            self.results["inventario"]["security"] = f"❌ FAIL: {e}"
-            print(f"  ❌ InventarioModel security: FAIL - {e}")
+            self.results["inventario"]["security"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] InventarioModel security: FAIL - {e}")
             
         # Test HerrajesModel validation
         try:
@@ -372,11 +372,11 @@ class ModelTester:
             estado = herrajes._determinar_estado_stock(producto_agotado)
             assert estado == "AGOTADO", "Should detect depleted stock"
             
-            self.results["herrajes"]["validation"] = "✅ PASS"
-            print("  ✅ HerrajesModel validation: PASS")
+            self.results["herrajes"]["validation"] = "[CHECK] PASS"
+            print("  [CHECK] HerrajesModel validation: PASS")
         except Exception as e:
-            self.results["herrajes"]["validation"] = f"❌ FAIL: {e}"
-            print(f"  ❌ HerrajesModel validation: FAIL - {e}")
+            self.results["herrajes"]["validation"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] HerrajesModel validation: FAIL - {e}")
             
         # Test VidriosModel property extraction
         try:
@@ -391,21 +391,21 @@ class ModelTester:
             assert vidrio_extracted.get("templado") == True, "Should extract templado"
             assert vidrio_extracted.get("laminado") == False, "Should extract laminado"
             
-            self.results["vidrios"]["validation"] = "✅ PASS"
-            print("  ✅ VidriosModel validation: PASS")
+            self.results["vidrios"]["validation"] = "[CHECK] PASS"
+            print("  [CHECK] VidriosModel validation: PASS")
         except Exception as e:
-            self.results["vidrios"]["validation"] = f"❌ FAIL: {e}"
-            print(f"  ❌ VidriosModel validation: FAIL - {e}")
+            self.results["vidrios"]["validation"] = f"[ERROR] FAIL: {e}"
+            print(f"  [ERROR] VidriosModel validation: FAIL - {e}")
             
         # Test overall security
-        print("  ✅ Security validation: All models implement table name validation")
+        print("  [CHECK] Security validation: All models implement table name validation")
         
     def generate_report(self):
         """Generate comprehensive test report."""
         total_tests = 0
         passed_tests = 0
         
-        print(f"📊 Reporte detallado por módulo:")
+        print(f"[CHART] Reporte detallado por módulo:")
         print()
         
         for module, tests in self.results.items():
@@ -413,7 +413,7 @@ class ModelTester:
             for test_name, result in tests.items():
                 print(f"  📋 {test_name}: {result}")
                 total_tests += 1
-                if result.startswith("✅"):
+                if result.startswith("[CHECK]"):
                     passed_tests += 1
             print()
             
@@ -430,9 +430,9 @@ class ModelTester:
         if success_rate >= 90:
             print("🎉 ¡EXCELENTE! Los modelos consolidados están funcionando correctamente.")
         elif success_rate >= 70:
-            print("⚠️  ACEPTABLE: La mayoría de funcionalidades están trabajando, pero hay algunos problemas.")
+            print("[WARN]  ACEPTABLE: La mayoría de funcionalidades están trabajando, pero hay algunos problemas.")
         else:
-            print("❌ CRÍTICO: Múltiples problemas detectados que requieren atención inmediata.")
+            print("[ERROR] CRÍTICO: Múltiples problemas detectados que requieren atención inmediata.")
             
         # Save detailed report
         report_file = os.path.join(os.path.dirname(__file__), "consolidated_models_test_report.json")
@@ -449,12 +449,12 @@ class ModelTester:
                 json.dump(report_data, f, indent=2, ensure_ascii=False)
             print(f"\n📁 Reporte detallado guardado en: {report_file}")
         except Exception as e:
-            print(f"\n⚠️  No se pudo guardar el reporte: {e}")
+            print(f"\n[WARN]  No se pudo guardar el reporte: {e}")
 
 
 def main():
     """Main test execution."""
-    print("🚀 Iniciando pruebas de modelos consolidados...")
+    print("[ROCKET] Iniciando pruebas de modelos consolidados...")
     print(f"🕒 Timestamp: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
     print()
     

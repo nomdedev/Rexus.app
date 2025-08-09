@@ -402,40 +402,40 @@ if __name__ == "__main__":
         
         try:
             test_suite.test_sanitize_string_with_sql_injection()
-            print("✅ Test SQL injection - PASADO")
+            print("[CHECK] Test SQL injection - PASADO")
         except Exception as e:
-            print(f"❌ Test SQL injection - FALLIDO: {e}")
+            print(f"[ERROR] Test SQL injection - FALLIDO: {e}")
         
         try:
             test_suite.test_sanitize_string_with_html()
-            print("✅ Test XSS prevention - PASADO")
+            print("[CHECK] Test XSS prevention - PASADO")
         except Exception as e:
-            print(f"❌ Test XSS prevention - FALLIDO: {e}")
+            print(f"[ERROR] Test XSS prevention - FALLIDO: {e}")
         
         try:
             test_suite.test_sanitize_email_valid()
-            print("✅ Test email válido - PASADO")
+            print("[CHECK] Test email válido - PASADO")
         except Exception as e:
-            print(f"❌ Test email válido - FALLIDO: {e}")
+            print(f"[ERROR] Test email válido - FALLIDO: {e}")
         
         try:
             test_suite.test_sanitize_numeric_integer()
-            print("✅ Test número entero - PASADO")
+            print("[CHECK] Test número entero - PASADO")
         except Exception as e:
-            print(f"❌ Test número entero - FALLIDO: {e}")
+            print(f"[ERROR] Test número entero - FALLIDO: {e}")
         
         try:
             test_suite.test_xss_patterns_removal()
-            print("✅ Test patrones XSS - PASADO")
+            print("[CHECK] Test patrones XSS - PASADO")
         except Exception as e:
-            print(f"❌ Test patrones XSS - FALLIDO: {e}")
+            print(f"[ERROR] Test patrones XSS - FALLIDO: {e}")
         
         try:
             test_suite.test_convenience_functions()
-            print("✅ Test funciones de conveniencia - PASADO")
+            print("[CHECK] Test funciones de conveniencia - PASADO")
         except Exception as e:
-            print(f"❌ Test funciones de conveniencia - FALLIDO: {e}")
+            print(f"[ERROR] Test funciones de conveniencia - FALLIDO: {e}")
         
         print("=== TESTS DE UNIFIED DATA SANITIZER COMPLETADOS ===")
     else:
-        print("❌ UnifiedDataSanitizer no disponible para testing")
+        print("[ERROR] UnifiedDataSanitizer no disponible para testing")

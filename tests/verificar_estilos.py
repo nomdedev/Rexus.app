@@ -184,20 +184,20 @@ def print_results(results):
         module_name = module.split('/')[-2].upper()
         
         if not data['exists']:
-            print(f"❌ {module_name}: Archivo no encontrado")
+            print(f"[ERROR] {module_name}: Archivo no encontrado")
             continue
             
         print(f"\n📁 {module_name}:")
-        print(f"   ✅ Método de estilo: {'Sí' if data['has_style_method'] else 'No'}")
+        print(f"   [CHECK] Método de estilo: {'Sí' if data['has_style_method'] else 'No'}")
         print(f"   🎨 Style Manager: {'Sí' if data['has_style_manager'] else 'No'}")
         print(f"   🖌️ setStyleSheet: {'Sí' if data['has_setStyleSheet'] else 'No'}")
         
         if data['has_style_method'] and data['has_setStyleSheet']:
-            print(f"   ✅ Estado: BIEN - Tiene estilos aplicados")
+            print(f"   [CHECK] Estado: BIEN - Tiene estilos aplicados")
         elif data['has_style_manager']:
-            print(f"   ⚠️ Estado: PARCIAL - Usa style_manager pero puede necesitar fallback")
+            print(f"   [WARN] Estado: PARCIAL - Usa style_manager pero puede necesitar fallback")
         else:
-            print(f"   ❌ Estado: PROBLEMA - Sin estilos aplicados")
+            print(f"   [ERROR] Estado: PROBLEMA - Sin estilos aplicados")
 
 if __name__ == "__main__":
     print("🔍 Verificando estado de estilos en módulos...")
@@ -213,14 +213,14 @@ if __name__ == "__main__":
             problematic_modules.append(module)
     
     if problematic_modules:
-        print("❌ Módulos que necesitan estilos:")
+        print("[ERROR] Módulos que necesitan estilos:")
         for module in problematic_modules:
             print(f"   - {module}")
     else:
-        print("✅ Todos los módulos principales tienen algún sistema de estilos")
+        print("[CHECK] Todos los módulos principales tienen algún sistema de estilos")
     
     print("\n🎯 MÓDULOS YA ACTUALIZADOS:")
-    print("   ✅ Obras - Alto contraste aplicado")
-    print("   ✅ Inventario - Alto contraste aplicado") 
-    print("   ✅ Pedidos - Alto contraste aplicado")
-    print("   ✅ Usuarios - Alto contraste aplicado")
+    print("   [CHECK] Obras - Alto contraste aplicado")
+    print("   [CHECK] Inventario - Alto contraste aplicado") 
+    print("   [CHECK] Pedidos - Alto contraste aplicado")
+    print("   [CHECK] Usuarios - Alto contraste aplicado")

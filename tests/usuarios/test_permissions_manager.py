@@ -330,23 +330,23 @@ if __name__ == "__main__":
         
         try:
             test_suite.test_verificar_permiso_jerarquico()
-            print("✅ Test permisos jerárquicos - PASADO")
+            print("[CHECK] Test permisos jerárquicos - PASADO")
         except Exception as e:
-            print(f"❌ Test permisos jerárquicos - FALLIDO: {e}")
+            print(f"[ERROR] Test permisos jerárquicos - FALLIDO: {e}")
         
         try:
             test_suite.test_cambiar_rol_invalido()
-            print("✅ Test rol inválido - PASADO")
+            print("[CHECK] Test rol inválido - PASADO")
         except Exception as e:
-            print(f"❌ Test rol inválido - FALLIDO: {e}")
+            print(f"[ERROR] Test rol inválido - FALLIDO: {e}")
         
         if SystemModule:
             try:
                 test_suite.test_system_module_enum()
-                print("✅ Test enum módulos - PASADO")
+                print("[CHECK] Test enum módulos - PASADO")
             except Exception as e:
-                print(f"❌ Test enum módulos - FALLIDO: {e}")
+                print(f"[ERROR] Test enum módulos - FALLIDO: {e}")
         
         print("=== TESTS DE PERMISSIONS MANAGER COMPLETADOS ===")
     else:
-        print("❌ PermissionsManager no disponible para testing")
+        print("[ERROR] PermissionsManager no disponible para testing")

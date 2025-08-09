@@ -132,7 +132,7 @@ from datetime import datetime
                 # Mover a nueva ubicación
                 destino = f"{destino_dir}/{script}"
                 shutil.move(origen, destino)
-                print(f"   ✅ {script} → {categoria}/")
+                print(f"   [CHECK] {script} → {categoria}/")
                 contador_movidos += 1
 
     # Mover scripts de verificación
@@ -147,7 +147,7 @@ from datetime import datetime
                 # Mover a nueva ubicación
                 destino = f"{destino_dir}/{script}"
                 shutil.move(origen, destino)
-                print(f"   ✅ verificacion/{script} → {categoria}/")
+                print(f"   [CHECK] verificacion/{script} → {categoria}/")
                 contador_movidos += 1
 
     # Eliminar scripts obsoletos de la raíz
@@ -157,7 +157,7 @@ from datetime import datetime
         if os.path.exists(origen):
             shutil.copy2(origen, backup_dir)
             os.remove(origen)
-            print(f"   ❌ Eliminado: {script}")
+            print(f"   [ERROR] Eliminado: {script}")
             contador_eliminados += 1
 
     # Eliminar scripts obsoletos de verificación
@@ -166,7 +166,7 @@ from datetime import datetime
         if os.path.exists(origen):
             shutil.copy2(origen, backup_dir)
             os.remove(origen)
-            print(f"   ❌ Eliminado: verificacion/{script}")
+            print(f"   [ERROR] Eliminado: verificacion/{script}")
             contador_eliminados += 1
 
     # Limpiar directorios vacíos
@@ -191,7 +191,7 @@ from datetime import datetime
                     shutil.rmtree(directorio)
                     print(f"   📦 Movido a backup: {directorio}")
             except OSError:
-                print(f"   ⚠️ No se pudo eliminar: {directorio}")
+                print(f"   [WARN] No se pudo eliminar: {directorio}")
 
     # Crear README para cada categoría
     print("\n📝 CREANDO DOCUMENTACIÓN:")
@@ -260,9 +260,9 @@ python scripts/{categoria}/[script_name].py
 
     # Resumen final
     print("\n" + "=" * 50)
-    print("✅ ORGANIZACIÓN COMPLETADA")
+    print("[CHECK] ORGANIZACIÓN COMPLETADA")
     print("=" * 50)
-    print(f"📊 Scripts movidos: {contador_movidos}")
+    print(f"[CHART] Scripts movidos: {contador_movidos}")
     print(f"🗑️ Scripts eliminados: {contador_eliminados}")
     print(f"📦 Backup creado en: {backup_dir}")
     print("\n🎯 NUEVA ESTRUCTURA:")
