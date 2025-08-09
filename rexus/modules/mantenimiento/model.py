@@ -200,7 +200,7 @@ class MantenimientoModel:
             # Validar y securizar nombre de tabla
             tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
 
-            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "crear_equipo")
 
             cursor.execute(
                 query,
@@ -260,7 +260,7 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
-            query = self.sql_manager.get_query("mantenimiento.update_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "update_equipo")
 
             cursor.execute(
                 query,
@@ -336,7 +336,7 @@ class MantenimientoModel:
             tabla_herramientas_segura = self._validate_table_name(
                 self.tabla_herramientas
             )
-            query = self.sql_manager.get_query("mantenimiento.obtener_mantenimientos_base")
+            query = self.sql_manager.get_query("mantenimiento", "obtener_mantenimientos_base")
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -372,7 +372,7 @@ class MantenimientoModel:
             tabla_mantenimientos_segura = self._validate_table_name(
                 self.tabla_mantenimientos
             )
-            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "crear_equipo")
 
             cursor.execute(
                 query,
@@ -429,7 +429,7 @@ class MantenimientoModel:
             tabla_mantenimientos_segura = self._validate_table_name(
                 self.tabla_mantenimientos
             )
-            query = self.sql_manager.get_query("mantenimiento.update_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "update_equipo")
 
             cursor.execute(
                 query,
@@ -482,50 +482,31 @@ class MantenimientoModel:
             # Total equipos
             tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
             cursor.execute(
-                self.sql_manager.get_query("mantenimiento.obtener_estadisticas")
+                self.sql_manager.get_query("mantenimiento", "obtener_estadisticas")
             )
             estadisticas["total_equipos"] = cursor.fetchone()[0]
 
             # Equipos por estado
             cursor.execute(
-                """
-                SELECT estado, COUNT(*) as cantidad
-                FROM [{}]
-                WHERE activo = 1
-                GROUP BY estado
-            """.format(tabla_equipos_segura)
+                self.sql_manager.get_query("mantenimiento", "estadisticas_equipos_por_estado")
             )
             estadisticas["equipos_por_estado"] = dict(cursor.fetchall())
 
             # Mantenimientos por estado
-            tabla_mantenimientos_segura = self._validate_table_name(
-                self.tabla_mantenimientos
-            )
             cursor.execute(
-                """
-                SELECT estado, COUNT(*) as cantidad
-                FROM [{}]
-                GROUP BY estado
-            """.format(tabla_mantenimientos_segura)
+                self.sql_manager.get_query("mantenimiento", "estadisticas_mantenimientos_por_estado")
             )
             estadisticas["mantenimientos_por_estado"] = dict(cursor.fetchall())
 
             # Mantenimientos vencidos
             cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{}]
-                WHERE estado = 'PROGRAMADO' AND fecha_programada < GETDATE()
-            """.format(tabla_mantenimientos_segura)
+                self.sql_manager.get_query("mantenimiento", "estadisticas_mantenimientos_vencidos")
             )
             estadisticas["mantenimientos_vencidos"] = cursor.fetchone()[0]
 
             # Próximos mantenimientos (próximos 30 días)
             cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{}]
-                WHERE estado = 'PROGRAMADO' AND fecha_programada 
-                BETWEEN GETDATE() AND DATEADD(day, 30, GETDATE())
-            """.format(tabla_mantenimientos_segura)
+                self.sql_manager.get_query("mantenimiento", "estadisticas_proximos_mantenimientos")
             )
             estadisticas["proximos_mantenimientos"] = cursor.fetchone()[0]
 
@@ -548,7 +529,7 @@ class MantenimientoModel:
             tabla_historial_segura = self._validate_table_name(
                 self.tabla_historial_mantenimiento
             )
-            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "crear_equipo")
 
             cursor.execute(query, (equipo_id, tipo, descripcion))
 
@@ -566,7 +547,7 @@ class MantenimientoModel:
             tabla_historial_segura = self._validate_table_name(
                 self.tabla_historial_mantenimiento
             )
-            query = self.sql_manager.get_query("mantenimiento.crear_equipo")
+            query = self.sql_manager.get_query("mantenimiento", "crear_equipo")
 
             cursor.execute(query, (mantenimiento_id, tipo, descripcion))
 
@@ -584,13 +565,8 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             # Obtener equipo_id del mantenimiento
-            tabla_mantenimientos_segura = self._validate_table_name(
-                self.tabla_mantenimientos
-            )
             cursor.execute(
-                "SELECT equipo_id FROM [{}] WHERE id = ?".format(
-                    tabla_mantenimientos_segura
-                ),
+                self.sql_manager.get_query("mantenimiento", "obtener_equipo_id_mantenimiento"),
                 (mantenimiento_id,),
             )
             resultado = cursor.fetchone()
@@ -600,7 +576,7 @@ class MantenimientoModel:
 
                 # Actualizar fechas de revisión
                 tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
-                query = self.sql_manager.get_query("mantenimiento.update_equipo")
+                query = self.sql_manager.get_query("mantenimiento", "update_equipo")
 
                 cursor.execute(query, (equipo_id,))
 

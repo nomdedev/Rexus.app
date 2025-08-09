@@ -478,28 +478,42 @@ class LogisticaView(QWidget):
 
         # Configurar tamaños de columnas
         header = self.tabla_transportes.horizontalHeader()
-        header.resizeSection(0, 60)   # ID
-        header.resizeSection(1, 150)  # Destino
-        header.resizeSection(2, 120)  # Conductor
-        header.resizeSection(3, 100)  # Fecha
-        header.resizeSection(4, 100)  # Estado
-        header.resizeSection(5, 150)  # Observaciones
-        header.resizeSection(6, 140)  # Última Actualización
-        header.setStretchLastSection(True)  # Acciones
+        if header is not None:
+            try:
+                header.resizeSection(0, 60)   # ID
+                header.resizeSection(1, 150)  # Destino
+                header.resizeSection(2, 120)  # Conductor
+                header.resizeSection(3, 100)  # Fecha
+                header.resizeSection(4, 100)  # Estado
+                header.resizeSection(5, 150)  # Observaciones
+                header.resizeSection(6, 140)  # Última Actualización
+                header.setStretchLastSection(True)  # Acciones
+            except Exception as e:
+                import logging
+                logging.warning(f"No se pudo configurar el header de la tabla: {e}")
+        try:
+            self.form_protector = FormProtector()
 
-        # Configuraciones visuales
-        self.tabla_transportes.setAlternatingRowColors(True)
-        self.tabla_transportes.setSelectionBehavior(RexusTable.SelectionBehavior.SelectRows)
-        
-        # Estilos de tabla modernos
+            # Proteger campos si existen
+            if hasattr(self, "input_busqueda"):
+                self.form_protector.protect_field(self.input_busqueda, "busqueda")
+            if hasattr(self, "input_destino"):
+                self.form_protector.protect_field(self.input_destino, "destino")
+            else:
+                import logging
+                logging.warning("input_destino no existe en LogisticaView")
+            if hasattr(self, "input_conductor"):
+                self.form_protector.protect_field(self.input_conductor, "conductor")
+            else:
+                import logging
+                logging.warning("input_conductor no existe en LogisticaView")
+
+        except Exception as e:
+            import logging
+            logging.error(f"Error inicializando protección XSS: {e}")
+
+        # Bloque de estilos de la tabla (asegurar delimitador correcto)
         self.tabla_transportes.setStyleSheet("""
-            QTableWidget {
-                gridline-color: #dee2e6;
-                background-color: white;
-                border: 1px solid #dee2e6;
-                border-radius: 8px;
-                font-size: 13px;
-            }
             QTableWidget::item {
                 padding: 8px;
                 border-bottom: 1px solid #f1f3f4;
@@ -619,18 +633,26 @@ class LogisticaView(QWidget):
         try:
             if hasattr(self.lbl_total_transportes, 'valor_label'):
                 self.lbl_total_transportes.valor_label.setText(str(stats.get('total_transportes', 0)))
-            
+            elif hasattr(self.lbl_total_transportes, 'setText'):
+                self.lbl_total_transportes.setText(str(stats.get('total_transportes', 0)))
+
             if hasattr(self.lbl_en_transito, 'valor_label'):
                 self.lbl_en_transito.valor_label.setText(str(stats.get('en_transito', 0)))
-            
+            elif hasattr(self.lbl_en_transito, 'setText'):
+                self.lbl_en_transito.setText(str(stats.get('en_transito', 0)))
+
             if hasattr(self.lbl_entregados, 'valor_label'):
                 self.lbl_entregados.valor_label.setText(str(stats.get('entregados', 0)))
-            
+            elif hasattr(self.lbl_entregados, 'setText'):
+                self.lbl_entregados.setText(str(stats.get('entregados', 0)))
+
             if hasattr(self.lbl_pendientes, 'valor_label'):
                 self.lbl_pendientes.valor_label.setText(str(stats.get('pendientes', 0)))
-                
+            elif hasattr(self.lbl_pendientes, 'setText'):
+                self.lbl_pendientes.setText(str(stats.get('pendientes', 0)))
+
         except Exception as e:
-            show_error(self, f"Error actualizando estadísticas: {e}")
+            show_error(self, message=f"Error actualizando estadísticas: {e}")
 
     def nuevo_transporte(self):
         """Abre el diálogo para crear un nuevo transporte."""
