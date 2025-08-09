@@ -13,6 +13,7 @@ from datetime import datetime, date
 from decimal import Decimal
 import calendar
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.sql_query_manager import get_sql_manager
 
 
 class RecursosHumanosModel:
@@ -32,6 +33,7 @@ class RecursosHumanosModel:
         self.tabla_nomina = "nomina"
         self.tabla_bonos = "bonos_descuentos"
         self.tabla_historial = "historial_laboral"
+        self.sql_manager = get_sql_manager()
         self._verificar_tablas()
 
     def _verificar_tablas(self):
@@ -98,17 +100,24 @@ class RecursosHumanosModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
-            query = f"""
-                SELECT 
-                    e.id, e.codigo, e.nombre, e.apellido, e.dni, e.telefono,
-                    e.email, e.direccion, e.fecha_nacimiento, e.fecha_ingreso,
-                    e.salario_base, e.cargo, e.estado, d.nombre as departamento,
-                    e.fecha_creacion, e.fecha_modificacion
-                FROM {self.tabla_empleados} e
-                LEFT JOIN {self.tabla_departamentos} d ON e.departamento_id = d.id
-                WHERE """ + " AND ".join(conditions) + f"""
-                ORDER BY e.apellido, e.nombre
-            """
+            # Obtener query base desde archivo SQL
+            base_query = self.sql_manager.get_query('recursos_humanos', 'obtener_todos_empleados')
+            
+            # Agregar condiciones dinámicas
+            if conditions[1:]:  # Si hay condiciones adicionales además de e.activo = 1
+                # Modificar query para incluir condiciones dinámicas
+                where_clause = "WHERE e.activo = 1"
+                if filtros:
+                    if filtros.get("departamento") and filtros["departamento"] != "Todos":
+                        where_clause += " AND d.nombre = ?"
+                    if filtros.get("estado") and filtros["estado"] != "Todos":
+                        where_clause += " AND e.estado = ?"
+                    if filtros.get("busqueda"):
+                        where_clause += " AND (e.nombre LIKE ? OR e.apellido LIKE ? OR e.dni LIKE ?)"
+                
+                query = base_query.replace("WHERE e.activo = 1", where_clause)
+            else:
+                query = base_query
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -141,14 +150,7 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = f"""
-                INSERT INTO {self.tabla_empleados}
-                (codigo, nombre, apellido, dni, telefono, email, direccion,
-                 fecha_nacimiento, fecha_ingreso, salario_base, cargo, 
-                 departamento_id, estado, activo, fecha_creacion, fecha_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
-            """
-
+            query = self.sql_manager.get_query('recursos_humanos', 'crear_empleado')
             cursor.execute(query, (
                 datos_empleado.get('codigo', ''),
                 datos_empleado.get('nombre', ''),
@@ -201,17 +203,11 @@ class RecursosHumanosModel:
             cursor = self.db_connection.cursor()
 
             # Obtener datos actuales para historial
-            cursor.execute("SELECT salario_base, cargo, departamento_id FROM " + self.tabla_empleados + " WHERE id = ?", (empleado_id,))
+            query_datos = self.sql_manager.get_query('recursos_humanos', 'obtener_datos_actuales_empleado')
+            cursor.execute(query_datos, (empleado_id,))
             datos_actuales = cursor.fetchone()
 
-            query = """
-                UPDATE """ + self.tabla_empleados + """
-                SET nombre = ?, apellido = ?, dni = ?, telefono = ?, email = ?, 
-                    direccion = ?, fecha_nacimiento = ?, salario_base = ?, 
-                    cargo = ?, departamento_id = ?, estado = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
-
+            query = self.sql_manager.get_query('recursos_humanos', 'actualizar_empleado')
             cursor.execute(query, (
                 datos_empleado.get('nombre', ''),
                 datos_empleado.get('apellido', ''),
@@ -263,12 +259,7 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                UPDATE """ + self.tabla_empleados + """
-                SET activo = 0, estado = 'INACTIVO', fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
-
+            query = self.sql_manager.get_query('recursos_humanos', 'eliminar_empleado')
             cursor.execute(query, (empleado_id,))
             
             # Registrar en historial
@@ -305,13 +296,7 @@ class RecursosHumanosModel:
             cursor = self.db_connection.cursor()
 
             # Obtener empleados activos
-            empleados_query = """
-                SELECT e.id, e.nombre, e.apellido, e.salario_base, e.cargo,
-                       d.nombre as departamento
-                FROM {self.tabla_empleados} e
-                LEFT JOIN """ + self.tabla_departamentos + """ d ON e.departamento_id = d.id
-                WHERE e.activo = 1 AND e.estado = 'ACTIVO'
-            """
+            empleados_query = self.sql_manager.get_query('recursos_humanos', 'calcular_nomina_empleados')
             
             if empleado_id:
                 empleados_query += " AND e.id = ?"
@@ -723,35 +708,25 @@ class RecursosHumanosModel:
             estadisticas = {}
 
             # Total empleados activos
-            cursor.execute("SELECT COUNT(*) FROM empleados WHERE activo = 1")
+            query_total = self.sql_manager.get_query('recursos_humanos', 'obtener_estadisticas_empleados_total')
+            cursor.execute(query_total)
             estadisticas['total_empleados'] = cursor.fetchone()[0]
 
             # Empleados por estado
-            cursor.execute("""
-                SELECT estado, COUNT(*) as cantidad
-                FROM empleados
-                WHERE activo = 1
-                GROUP BY estado
-            """)
+            query_estado = self.sql_manager.get_query('recursos_humanos', 'obtener_estadisticas_por_estado')
+            cursor.execute(query_estado)
             estadisticas['por_estado'] = dict(cursor.fetchall())
 
             # Empleados por departamento
-            cursor.execute("""
-                SELECT d.nombre, COUNT(e.id) as cantidad
-                FROM empleados e
-                LEFT JOIN departamentos d ON e.departamento_id = d.id
-                WHERE e.activo = 1
-                GROUP BY d.nombre
-            """)
+            query_departamento = self.sql_manager.get_query('recursos_humanos', 'obtener_estadisticas_por_departamento')
+            cursor.execute(query_departamento)
             estadisticas['por_departamento'] = dict(cursor.fetchall())
 
             # Nómina total del mes actual
             mes_actual = datetime.now().month
             anio_actual = datetime.now().year
-            cursor.execute("""
-                SELECT SUM(neto) FROM nomina
-                WHERE mes = ? AND anio = ?
-            """, (mes_actual, anio_actual))
+            query_nomina = self.sql_manager.get_query('recursos_humanos', 'obtener_nomina_mensual')
+            cursor.execute(query_nomina, (mes_actual, anio_actual))
             resultado = cursor.fetchone()[0]
             estadisticas['nomina_mensual'] = float(resultado) if resultado else 0.0
 
@@ -780,12 +755,7 @@ class RecursosHumanosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                INSERT INTO """ + self.tabla_historial + """
-                (empleado_id, tipo, descripcion, fecha, valor_anterior, valor_nuevo, usuario_creacion)
-                VALUES (?, ?, ?, GETDATE(), ?, ?, 'SYSTEM')
-            """
-
+            query = self.sql_manager.get_query('recursos_humanos', 'registrar_historial')
             cursor.execute(query, (empleado_id, tipo, descripcion, valor_anterior, valor_nuevo))
 
         except Exception as e:
