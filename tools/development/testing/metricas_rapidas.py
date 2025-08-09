@@ -87,7 +87,7 @@ def contar_funciones_test():
                     contadores["tests_integracion"] += 1
 
         except Exception as e:
-            print(f"⚠️  Error leyendo {test_file}: {e}")
+            print(f"[WARN]  Error leyendo {test_file}: {e}")
 
     return contadores
 
@@ -116,7 +116,7 @@ def analizar_modulos_coverage():
 def generar_reporte_metricas():
     """Genera reporte completo de métricas"""
 
-    print("📊 GENERANDO MÉTRICAS RÁPIDAS DEL PROYECTO")
+    print("[CHART] GENERANDO MÉTRICAS RÁPIDAS DEL PROYECTO")
     print("=" * 60)
 
     # Contar archivos
@@ -141,7 +141,7 @@ def generar_reporte_metricas():
     total_modules = len(module_coverage)
 
     for module, stats in module_coverage.items():
-        status = "✅" if stats["has_tests"] else "❌"
+        status = "[CHECK]" if stats["has_tests"] else "[ERROR]"
         print(f"   {status} {module}: {stats['test_files']} archivos de test")
         if stats["has_tests"]:
             modules_with_tests += 1
@@ -157,12 +157,12 @@ def generar_reporte_metricas():
     print(f"   📄 Total archivos: {total_files}")
     print(f"   🧪 Ratio test/código: {test_to_code_ratio:.2f}")
     print(f"   🎯 Funciones de test: {test_stats['funciones_test']}")
-    print(f"   📊 Calidad de tests: {'EXCELENTE' if test_stats['funciones_test'] > 400 else 'BUENA' if test_stats['funciones_test'] > 200 else 'REGULAR'}")
+    print(f"   [CHART] Calidad de tests: {'EXCELENTE' if test_stats['funciones_test'] > 400 else 'BUENA' if test_stats['funciones_test'] > 200 else 'REGULAR'}")
 
     # Generar reporte en archivo
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    reporte = f"""# 📊 REPORTE DE MÉTRICAS - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    reporte = f"""# [CHART] REPORTE DE MÉTRICAS - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
 ## 🎯 Resumen Ejecutivo
 - **Total de funciones test**: {test_stats['funciones_test']}
@@ -189,7 +189,7 @@ def generar_reporte_metricas():
 """
 
     for module, stats in module_coverage.items():
-        status = "✅" if stats["has_tests"] else "❌"
+        status = "[CHECK]" if stats["has_tests"] else "[ERROR]"
         reporte += f"- {status} **{module}**: {stats['test_files']} archivos de test\n"
 
     reporte += f"""

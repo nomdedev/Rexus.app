@@ -377,11 +377,11 @@ PRINT 'Sistema de Compras: Tablas e índices completados exitosamente';
         if self.fixes_applied > 0:
             print(f"[EXITO] Módulo Compras completado con {self.fixes_applied} mejoras")
             print("[FUNCIONALIDADES COMPLETADAS]:")
-            print("✓ TODOs de seguridad corregidos")
-            print("✓ Métodos de usuario actual agregados")
-            print("✓ Gestión de proveedores validada")
-            print("✓ Órdenes de compra completadas")
-            print("✓ Scripts de BD generados")
+            print("[OK] TODOs de seguridad corregidos")
+            print("[OK] Métodos de usuario actual agregados")
+            print("[OK] Gestión de proveedores validada")
+            print("[OK] Órdenes de compra completadas")
+            print("[OK] Scripts de BD generados")
         else:
             print("[INFO] Módulo Compras ya está completo")
         print("=" * 60)

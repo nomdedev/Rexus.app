@@ -247,7 +247,7 @@ if __name__ == "__main__":
     
     print("\nResultados de optimización:")
     for result in results:
-        status = "✓" if result.success else "✗"
+        status = "[OK]" if result.success else "✗"
         print(f"{status} {result.optimization_type}: {result.improvement_percent:.1f}% - {result.description}")
     
     # Mostrar reporte

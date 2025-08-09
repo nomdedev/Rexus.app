@@ -72,7 +72,7 @@ class InventarioControllerCompleto(QObject):
             print("[INVENTARIO CONTROLLER] Inicializando controlador completo...")
             self.conectar_senales()
             self.cargar_inventario()
-            print("[INVENTARIO CONTROLLER] ✅ Controlador inicializado exitosamente")
+            print("[INVENTARIO CONTROLLER] [CHECK] Controlador inicializado exitosamente")
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error en inicialización: {e}")
             self._mostrar_error("inicializar inventario", e)
@@ -80,7 +80,7 @@ class InventarioControllerCompleto(QObject):
     def conectar_senales(self):
         """Conecta todas las señales de la vista con los métodos del controlador."""
         if not self.view:
-            print("[INVENTARIO CONTROLLER] ⚠️ No hay vista disponible")
+            print("[INVENTARIO CONTROLLER] [WARN] No hay vista disponible")
             return
 
         try:
@@ -103,21 +103,21 @@ class InventarioControllerCompleto(QObject):
                 self.view.tabla_inventario.itemSelectionChanged.connect(
                     self.producto_seleccionado
                 )
-                print("✅ Conectado: tabla_inventario.itemSelectionChanged")
+                print("[CHECK] Conectado: tabla_inventario.itemSelectionChanged")
             else:
-                print("⚠️ No encontrado: tabla_inventario")
+                print("[WARN] No encontrado: tabla_inventario")
 
             # Conectar campo de búsqueda si existe
             if hasattr(self.view, "input_busqueda"):
                 self.view.input_busqueda.textChanged.connect(
                     self.filtrar_en_tiempo_real
                 )
-                print("✅ Conectado: input_busqueda.textChanged")
+                print("[CHECK] Conectado: input_busqueda.textChanged")
             else:
-                print("⚠️ No encontrado: input_busqueda")
+                print("[WARN] No encontrado: input_busqueda")
 
             print(
-                "[INVENTARIO CONTROLLER] ✅ Todas las señales conectadas correctamente"
+                "[INVENTARIO CONTROLLER] [CHECK] Todas las señales conectadas correctamente"
             )
 
         except Exception as e:
@@ -128,9 +128,9 @@ class InventarioControllerCompleto(QObject):
         if hasattr(self.view, nombre_boton):
             boton = getattr(self.view, nombre_boton)
             boton.clicked.connect(metodo)
-            print(f"✅ Conectado: {nombre_boton}")
+            print(f"[CHECK] Conectado: {nombre_boton}")
         else:
-            print(f"⚠️ No encontrado: {nombre_boton}")
+            print(f"[WARN] No encontrado: {nombre_boton}")
 
     @auth_required
     def cargar_inventario(self):
@@ -192,15 +192,15 @@ class InventarioControllerCompleto(QObject):
         # Intentar diferentes métodos de actualización
         if hasattr(self.view, "actualizar_tabla"):
             self.view.actualizar_tabla(productos)
-            print("✅ Vista actualizada con actualizar_tabla")
+            print("[CHECK] Vista actualizada con actualizar_tabla")
         elif hasattr(self.view, "mostrar_productos"):
             self.view.mostrar_productos(productos)
-            print("✅ Vista actualizada con mostrar_productos")
+            print("[CHECK] Vista actualizada con mostrar_productos")
         elif hasattr(self.view, "cargar_datos"):
             self.view.cargar_datos(productos)
-            print("✅ Vista actualizada con cargar_datos")
+            print("[CHECK] Vista actualizada con cargar_datos")
         else:
-            print("⚠️ No se encontró método para actualizar la vista")
+            print("[WARN] No se encontró método para actualizar la vista")
 
     @auth_required
     def buscar_productos(self):
@@ -258,7 +258,7 @@ class InventarioControllerCompleto(QObject):
             # Recargar inventario completo
             self.cargar_inventario()
 
-            print("[INVENTARIO CONTROLLER] ✅ Filtros limpiados")
+            print("[INVENTARIO CONTROLLER] [CHECK] Filtros limpiados")
 
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error limpiando filtros: {e}")
@@ -316,7 +316,7 @@ class InventarioControllerCompleto(QObject):
             QMessageBox.information(
                 self.view,
                 "Nuevo Producto",
-                "✅ Funcionalidad de nuevo producto disponible.\n\n"
+                "[CHECK] Funcionalidad de nuevo producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de creación.",
             )
         except Exception as e:
@@ -332,7 +332,7 @@ class InventarioControllerCompleto(QObject):
             QMessageBox.information(
                 self.view,
                 "Editar Producto",
-                "✅ Funcionalidad de editar producto disponible.\n\n"
+                "[CHECK] Funcionalidad de editar producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de edición.",
             )
         except Exception as e:
@@ -358,7 +358,7 @@ class InventarioControllerCompleto(QObject):
                 QMessageBox.information(
                     self.view,
                     "Producto Eliminado",
-                    "✅ El producto ha sido eliminado exitosamente.\n\n"
+                    "[CHECK] El producto ha sido eliminado exitosamente.\n\n"
                     "(Funcionalidad completa se implementará próximamente)",
                 )
         except Exception as e:
@@ -374,7 +374,7 @@ class InventarioControllerCompleto(QObject):
             QMessageBox.information(
                 self.view,
                 "Registrar Movimiento",
-                "✅ Funcionalidad de movimientos disponible.\n\n"
+                "[CHECK] Funcionalidad de movimientos disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de movimientos.",
             )
         except Exception as e:
@@ -389,7 +389,7 @@ class InventarioControllerCompleto(QObject):
             QMessageBox.information(
                 self.view,
                 "Exportar Inventario",
-                "✅ Funcionalidad de exportación disponible.\n\n"
+                "[CHECK] Funcionalidad de exportación disponible.\n\n"
                 "Próximamente se implementarán múltiples formatos:\n"
                 "• Excel (.xlsx)\n"
                 "• CSV (.csv)\n"

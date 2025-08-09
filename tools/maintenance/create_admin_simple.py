@@ -39,7 +39,7 @@ def create_admin():
         conn = pyodbc.connect(connection_string, timeout=10)
         cursor = conn.cursor()
         
-        # 🔒 SEGURIDAD: Usar sistema de hashing seguro en lugar de SHA256 simple
+        # [LOCK] SEGURIDAD: Usar sistema de hashing seguro en lugar de SHA256 simple
         # Importar sistema seguro de contraseñas
         import sys
         from pathlib import Path
@@ -52,12 +52,12 @@ def create_admin():
         admin_password = getpass.getpass("Ingrese contraseña para usuario admin: ")
         
         if not admin_password or len(admin_password) < 8:
-            print("❌ Error: La contraseña debe tener al menos 8 caracteres")
+            print("[ERROR] Error: La contraseña debe tener al menos 8 caracteres")
             return
             
         # Hash seguro de contraseña
         password_hash = hash_password_secure(admin_password)
-        print("✅ Hash seguro generado")
+        print("[CHECK] Hash seguro generado")
         
         # Insertar usuario
         print("Insertando usuario admin...")

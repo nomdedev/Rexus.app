@@ -386,9 +386,9 @@ if __name__ == "__main__":
     success = main()
     
     if success:
-        print("\n✅ PHASE 5 VALIDATION: DATABASE MIGRATION SUCCESSFUL")
+        print("\n[CHECK] PHASE 5 VALIDATION: DATABASE MIGRATION SUCCESSFUL")
         print("The consolidated database structure is operational.")
     else:
-        print("\n❌ PHASE 5 VALIDATION: ISSUES DETECTED")
+        print("\n[ERROR] PHASE 5 VALIDATION: ISSUES DETECTED")
         print("Manual review and fixes may be required.")
         sys.exit(1)

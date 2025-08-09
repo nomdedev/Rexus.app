@@ -169,7 +169,7 @@ class ModernObraDialog(ModernFormDialog):
         )
         
         # SECCIÓN: ESTADO Y PROGRESO
-        estado_section = self.add_section("📊 Estado y Progreso")
+        estado_section = self.add_section("[CHART] Estado y Progreso")
         estado_layout = QVBoxLayout(estado_section)
         
         # Etapa actual

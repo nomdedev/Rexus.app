@@ -119,7 +119,7 @@ def test_table_columns_exist(table, expected_cols):
         print(f"📋 Columnas esperadas ({len(expected_cols)}): {expected_cols}")
         print(f"📋 Columnas reales ({len(actual_cols)}): {actual_cols}")
         if missing:
-            print(f"❌ Faltan: {sorted(missing)}")
+            print(f"[ERROR] Faltan: {sorted(missing)}")
         if extra:
             print(f"➕ Extras: {sorted(extra)}")
 

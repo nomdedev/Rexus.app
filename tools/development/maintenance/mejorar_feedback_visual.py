@@ -61,9 +61,9 @@ class MejoradorFeedbackVisual:
 
         iconos = {
             "info": "ℹ️ ",
-            "exito": "✅ ",
-            "advertencia": "⚠️ ",
-            "error": "❌ ",
+            "exito": "[CHECK] ",
+            "advertencia": "[WARN] ",
+            "error": "[ERROR] ",
             "cargando": "🔄 "
         }
         icono = iconos.get(tipo, "ℹ️ ")
@@ -235,10 +235,10 @@ class MejoradorFeedbackVisual:
             with open(backup_file, "w", encoding="utf-8") as f:
                 f.write(contenido_original)
 
-            print(f"✅ Backup creado: {backup_file}")
+            print(f"[CHECK] Backup creado: {backup_file}")
 
         except Exception as e:
-            print(f"❌ Error creando backup: {e}")
+            print(f"[ERROR] Error creando backup: {e}")
             return False
 
         # Aplicar mejoras
@@ -332,12 +332,12 @@ class MejoradorFeedbackVisual:
                 f.write(contenido_mejorado)
 
             print(
-                f"✅ Mejoras aplicadas a {modulo_path.name}: {', '.join(mejoras_aplicadas)}"
+                f"[CHECK] Mejoras aplicadas a {modulo_path.name}: {', '.join(mejoras_aplicadas)}"
             )
             return True
 
         except Exception as e:
-            print(f"❌ Error aplicando mejoras a {modulo_path.name}: {e}")
+            print(f"[ERROR] Error aplicando mejoras a {modulo_path.name}: {e}")
             # Restaurar backup en caso de error
             try:
                 with open(backup_file, "r", encoding="utf-8") as f:
@@ -417,7 +417,7 @@ class MejoradorFeedbackVisual:
     def procesar_todos_los_modulos(self):
         """Procesa todos los módulos y aplica mejoras de feedback."""
         if not self.modulos_dir.exists():
-            print(f"❌ Error: Directorio de módulos no encontrado: {self.modulos_dir}")
+            print(f"[ERROR] Error: Directorio de módulos no encontrado: {self.modulos_dir}")
             return
 
         modulos_procesados = []
@@ -432,7 +432,7 @@ class MejoradorFeedbackVisual:
                     modulos_procesados.append(analisis)
 
                     if analisis["mejoras_necesarias"]:
-                        print(f"⚠️ Mejoras necesarias en {modulo_dir.name}:")
+                        print(f"[WARN] Mejoras necesarias en {modulo_dir.name}:")
                         for mejora in analisis["mejoras_necesarias"]:
                             print(f"   - {mejora}")
 
@@ -440,17 +440,17 @@ class MejoradorFeedbackVisual:
                         if self.aplicar_mejoras_feedback(modulo_dir, analisis):
                             modulos_mejorados.append(modulo_dir.name)
                     else:
-                        print(f"✅ {modulo_dir.name} ya tiene feedback visual adecuado")
+                        print(f"[CHECK] {modulo_dir.name} ya tiene feedback visual adecuado")
 
                 except Exception as e:
-                    print(f"❌ Error procesando {modulo_dir.name}: {e}")
+                    print(f"[ERROR] Error procesando {modulo_dir.name}: {e}")
 
         # Generar reporte
         self._generar_reporte_mejoras(modulos_procesados, modulos_mejorados)
 
-        print(f"\\n📊 Resumen:")
+        print(f"\\n[CHART] Resumen:")
         print(f"   📁 Módulos analizados: {len(modulos_procesados)}")
-        print(f"   ✅ Módulos mejorados: {len(modulos_mejorados)}")
+        print(f"   [CHECK] Módulos mejorados: {len(modulos_mejorados)}")
         print(f"   📋 Reporte generado en: mejoras_feedback_visual.md")
 
     def _generar_reporte_mejoras(
@@ -469,21 +469,21 @@ class MejoradorFeedbackVisual:
 """
 
         for modulo in modulos_mejorados:
-            reporte += f"- ✅ **{modulo}** - Mejoras aplicadas\\n"
+            reporte += f"- [CHECK] **{modulo}** - Mejoras aplicadas\\n"
 
         reporte += "\\n### Análisis Detallado\\n\\n"
 
         for analisis in modulos_procesados:
             estado = (
-                "✅ Completo"
+                "[CHECK] Completo"
                 if not analisis["mejoras_necesarias"]
-                else "⚠️ Necesita mejoras"
+                else "[WARN] Necesita mejoras"
             )
             reporte += f"#### {analisis['nombre']} - {estado}\\n\\n"
 
-            reporte += f"- **Feedback básico:** {'✅ Sí' if analisis['tiene_feedback_basico'] else '❌ No'}\\n"
-            reporte += f"- **Indicadores de carga:** {'✅ Sí' if analisis['tiene_indicadores_carga'] else '❌ No'}\\n"
-            reporte += f"- **Manejo de errores:** {'✅ Sí' if analisis['tiene_manejo_errores'] else '❌ No'}\\n"
+            reporte += f"- **Feedback básico:** {'[CHECK] Sí' if analisis['tiene_feedback_basico'] else '[ERROR] No'}\\n"
+            reporte += f"- **Indicadores de carga:** {'[CHECK] Sí' if analisis['tiene_indicadores_carga'] else '[ERROR] No'}\\n"
+            reporte += f"- **Manejo de errores:** {'[CHECK] Sí' if analisis['tiene_manejo_errores'] else '[ERROR] No'}\\n"
 
             if analisis["mejoras_necesarias"]:
                 reporte += "\\n**Mejoras necesarias:**\\n"
@@ -555,7 +555,7 @@ def main():
     mejorador.procesar_todos_los_modulos()
 
     print("\\n" + "=" * 50)
-    print("✅ Mejoras de feedback visual completadas")
+    print("[CHECK] Mejoras de feedback visual completadas")
     print("🔄 Próximos pasos:")
     print("   1. Probar la aplicación para verificar las mejoras")
     print("   2. Ajustar estilos si es necesario")

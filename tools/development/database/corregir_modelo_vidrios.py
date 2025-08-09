@@ -65,17 +65,17 @@ def corregir_modelo_vidrios():
         for buscar, reemplazar in correcciones:
             if buscar in contenido_corregido:
                 contenido_corregido = contenido_corregido.replace(buscar, reemplazar)
-                print(f"   ✅ Corregido: {buscar[:50]}...")
+                print(f"   [CHECK] Corregido: {buscar[:50]}...")
 
         # Guardar el archivo corregido
         with open(ruta_modelo, "w", encoding="utf-8") as f:
             f.write(contenido_corregido)
 
-        print(f"✅ Modelo de vidrios corregido exitosamente")
+        print(f"[CHECK] Modelo de vidrios corregido exitosamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error corrigiendo modelo de vidrios: {e}")
+        print(f"[ERROR] Error corrigiendo modelo de vidrios: {e}")
         return False
 
 

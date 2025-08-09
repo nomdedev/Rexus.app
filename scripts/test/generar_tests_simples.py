@@ -28,7 +28,7 @@ class SimpleTestGenerator:
         """Obtiene módulos que necesitan tests."""
         analysis_file = self.root_dir / "test_coverage_analysis.json"
         if not analysis_file.exists():
-            print("❌ Ejecuta primero: python scripts/test/analizar_cobertura_tests.py")
+            print("[ERROR] Ejecuta primero: python scripts/test/analizar_cobertura_tests.py")
             return []
 
         with open(analysis_file, "r", encoding="utf-8") as f:
@@ -415,7 +415,7 @@ class Test{module_name.capitalize()}EdgeCases:
         unicode_strings = [
             "áéíóúñ",
             "测试中文", 
-            "🚀🎉💻",
+            "[ROCKET]🎉💻",
             "Тест русский"
         ]
         
@@ -549,10 +549,10 @@ if __name__ == "__main__":
         missing_modules = self.get_missing_modules()
 
         if not missing_modules:
-            print("✅ Todos los módulos ya tienen tests!")
+            print("[CHECK] Todos los módulos ya tienen tests!")
             return
 
-        print(f"🚀 Generando tests para {len(missing_modules)} módulos...")
+        print(f"[ROCKET] Generando tests para {len(missing_modules)} módulos...")
 
         # Cargar análisis
         analysis_file = self.root_dir / "test_coverage_analysis.json"
@@ -579,7 +579,7 @@ if __name__ == "__main__":
                 file_path = test_dir / f"test_{module_name}_controller_generated.py"
                 file_path.write_text(content, encoding="utf-8")
                 self.created_files.append(str(file_path))
-                print(f"    ✅ {file_path}")
+                print(f"    [CHECK] {file_path}")
 
             # View test
             if module_info.get("has_view", False) and not test_coverage.get(
@@ -590,7 +590,7 @@ if __name__ == "__main__":
                 file_path = test_dir / f"test_{module_name}_view_generated.py"
                 file_path.write_text(content, encoding="utf-8")
                 self.created_files.append(str(file_path))
-                print(f"    ✅ {file_path}")
+                print(f"    [CHECK] {file_path}")
 
             # Edge cases test
             if not test_coverage.get("has_edge_cases", False):
@@ -599,10 +599,10 @@ if __name__ == "__main__":
                 file_path = test_dir / f"test_{module_name}_edge_cases_generated.py"
                 file_path.write_text(content, encoding="utf-8")
                 self.created_files.append(str(file_path))
-                print(f"    ✅ {file_path}")
+                print(f"    [CHECK] {file_path}")
 
         print("\n🎉 Generación completada!")
-        print(f"📊 Archivos creados: {len(self.created_files)}")
+        print(f"[CHART] Archivos creados: {len(self.created_files)}")
 
         if self.created_files:
             print("\n📋 Archivos generados:")
@@ -610,7 +610,7 @@ if __name__ == "__main__":
                 relative_path = Path(file_path).relative_to(self.root_dir)
                 print(f"   • {relative_path}")
 
-            print("\n🚀 Próximos pasos:")
+            print("\n[ROCKET] Próximos pasos:")
             print("   1. Revisar los tests generados")
             print("   2. Ejecutar: pytest tests/ -v --tb=short")
             print("   3. Ajustar tests según necesidades específicas")
@@ -618,7 +618,7 @@ if __name__ == "__main__":
 
 def main():
     """Función principal."""
-    print("🚀 Generador Simple de Tests - Rexus.app")
+    print("[ROCKET] Generador Simple de Tests - Rexus.app")
     print("=" * 50)
 
     generator = SimpleTestGenerator()

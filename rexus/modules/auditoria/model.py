@@ -1,4 +1,4 @@
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
@@ -171,7 +171,7 @@ class AuditoriaModel:
             return self._guardar_log_local(usuario, modulo, accion, descripcion)
 
         try:
-            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            # [LOCK] SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if self.data_sanitizer:
                 usuario_limpio = sanitize_string(usuario)
                 modulo_limpio = sanitize_string(modulo)
@@ -309,7 +309,7 @@ class AuditoriaModel:
             return []
 
         try:
-            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE PARÁMETROS
+            # [LOCK] SANITIZACIÓN Y VALIDACIÓN DE PARÁMETROS
             if self.data_sanitizer:
                 usuario_limpio = (
                     sanitize_string(usuario) if usuario else ""

@@ -52,7 +52,7 @@ class FunctionalityVerifier:
                 return False
             
             user_count = result[0][0]
-            print(f"  ✓ Encontrados {user_count} usuarios activos")
+            print(f"  [OK] Encontrados {user_count} usuarios activos")
             
             # Verificar roles
             result = self.db_users.execute_query("SELECT DISTINCT rol FROM usuarios")
@@ -64,7 +64,7 @@ class FunctionalityVerifier:
             if missing_roles:
                 self.warnings.append(f"Roles faltantes: {missing_roles}")
             
-            print(f"  ✓ Roles encontrados: {roles}")
+            print(f"  [OK] Roles encontrados: {roles}")
             
             self.success_count += 1
             return True
@@ -86,18 +86,18 @@ class FunctionalityVerifier:
                 return False
             
             obra_count = result[0][0]
-            print(f"  ✓ Encontradas {obra_count} obras")
+            print(f"  [OK] Encontradas {obra_count} obras")
             
             # Verificar estados de obras
             result = self.db_inventario.execute_query("SELECT estado, COUNT(*) FROM obras GROUP BY estado")
             estados = {row[0]: row[1] for row in result} if result else {}
             
-            print(f"  ✓ Estados de obras: {estados}")
+            print(f"  [OK] Estados de obras: {estados}")
             
             # Verificar obras con cliente
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM obras WHERE cliente IS NOT NULL AND cliente != ''")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} obras tienen cliente asignado")
+                print(f"  [OK] {result[0][0]} obras tienen cliente asignado")
             else:
                 self.warnings.append("Algunas obras no tienen cliente asignado")
             
@@ -121,17 +121,17 @@ class FunctionalityVerifier:
                 return False
             
             herraje_count = result[0][0]
-            print(f"  ✓ Encontrados {herraje_count} herrajes activos")
+            print(f"  [OK] Encontrados {herraje_count} herrajes activos")
             
             # Verificar categorías
             result = self.db_inventario.execute_query("SELECT DISTINCT categoria FROM herrajes")
             categorias = [row[0] for row in result] if result else []
-            print(f"  ✓ Categorías de herrajes: {categorias}")
+            print(f"  [OK] Categorías de herrajes: {categorias}")
             
             # Verificar stock
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM herrajes WHERE stock_actual > 0")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} herrajes tienen stock disponible")
+                print(f"  [OK] {result[0][0]} herrajes tienen stock disponible")
             else:
                 self.warnings.append("Ningún herraje tiene stock disponible")
             
@@ -160,22 +160,22 @@ class FunctionalityVerifier:
                 return False
             
             vidrio_count = result[0][0]
-            print(f"  ✓ Encontrados {vidrio_count} vidrios activos")
+            print(f"  [OK] Encontrados {vidrio_count} vidrios activos")
             
             # Verificar tipos
             result = self.db_inventario.execute_query("SELECT DISTINCT tipo FROM vidrios")
             tipos = [row[0] for row in result] if result else []
-            print(f"  ✓ Tipos de vidrios: {tipos}")
+            print(f"  [OK] Tipos de vidrios: {tipos}")
             
             # Verificar colores
             result = self.db_inventario.execute_query("SELECT DISTINCT color FROM vidrios")
             colores = [row[0] for row in result] if result else []
-            print(f"  ✓ Colores disponibles: {colores}")
+            print(f"  [OK] Colores disponibles: {colores}")
             
             # Verificar precios
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM vidrios WHERE precio_m2 > 0")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} vidrios tienen precio asignado")
+                print(f"  [OK] {result[0][0]} vidrios tienen precio asignado")
             else:
                 self.warnings.append("Algunos vidrios no tienen precio asignado")
             
@@ -199,24 +199,24 @@ class FunctionalityVerifier:
                 return False
             
             empleado_count = result[0][0]
-            print(f"  ✓ Encontrados {empleado_count} empleados activos")
+            print(f"  [OK] Encontrados {empleado_count} empleados activos")
             
             # Verificar cargos
             result = self.db_inventario.execute_query("SELECT DISTINCT cargo FROM empleados")
             cargos = [row[0] for row in result] if result else []
-            print(f"  ✓ Cargos disponibles: {cargos}")
+            print(f"  [OK] Cargos disponibles: {cargos}")
             
             # Verificar información completa
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM empleados WHERE dni IS NOT NULL AND telefono IS NOT NULL")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} empleados tienen información completa")
+                print(f"  [OK] {result[0][0]} empleados tienen información completa")
             else:
                 self.warnings.append("Algunos empleados no tienen información completa")
             
             # Verificar salarios
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM empleados WHERE salario_base > 0")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} empleados tienen salario asignado")
+                print(f"  [OK] {result[0][0]} empleados tienen salario asignado")
             else:
                 self.warnings.append("Algunos empleados no tienen salario asignado")
             
@@ -240,17 +240,17 @@ class FunctionalityVerifier:
                 return False
             
             equipo_count = result[0][0]
-            print(f"  ✓ Encontrados {equipo_count} equipos activos")
+            print(f"  [OK] Encontrados {equipo_count} equipos activos")
             
             # Verificar estados
             result = self.db_inventario.execute_query("SELECT estado, COUNT(*) FROM equipos GROUP BY estado")
             estados = {row[0]: row[1] for row in result} if result else {}
-            print(f"  ✓ Estados de equipos: {estados}")
+            print(f"  [OK] Estados de equipos: {estados}")
             
             # Verificar mantenimientos
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM equipos WHERE proxima_revision IS NOT NULL")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} equipos tienen mantenimiento programado")
+                print(f"  [OK] {result[0][0]} equipos tienen mantenimiento programado")
             else:
                 self.warnings.append("Algunos equipos no tienen mantenimiento programado")
             
@@ -274,19 +274,19 @@ class FunctionalityVerifier:
                 return False
             
             proveedor_count = result[0][0]
-            print(f"  ✓ Encontrados {proveedor_count} proveedores")
+            print(f"  [OK] Encontrados {proveedor_count} proveedores")
             
             # Verificar información de contacto
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM proveedores WHERE telefono IS NOT NULL")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} proveedores tienen teléfono")
+                print(f"  [OK] {result[0][0]} proveedores tienen teléfono")
             else:
                 self.warnings.append("Algunos proveedores no tienen teléfono")
             
             # Verificar email
             result = self.db_inventario.execute_query("SELECT COUNT(*) FROM proveedores WHERE email IS NOT NULL")
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} proveedores tienen email")
+                print(f"  [OK] {result[0][0]} proveedores tienen email")
             else:
                 self.warnings.append("Algunos proveedores no tienen email")
             
@@ -312,7 +312,7 @@ class FunctionalityVerifier:
                 )
             """)
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} obras tienen usuario creador válido")
+                print(f"  [OK] {result[0][0]} obras tienen usuario creador válido")
             else:
                 self.warnings.append("Algunas obras no tienen usuario creador válido")
             
@@ -325,7 +325,7 @@ class FunctionalityVerifier:
                 )
             """)
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} herrajes tienen proveedor válido")
+                print(f"  [OK] {result[0][0]} herrajes tienen proveedor válido")
             else:
                 self.warnings.append("Algunos herrajes no tienen proveedor válido")
             
@@ -338,7 +338,7 @@ class FunctionalityVerifier:
                 )
             """)
             if result and result[0][0] > 0:
-                print(f"  ✓ {result[0][0]} vidrios tienen proveedor válido")
+                print(f"  [OK] {result[0][0]} vidrios tienen proveedor válido")
             else:
                 self.warnings.append("Algunos vidrios no tienen proveedor válido")
             
@@ -365,7 +365,7 @@ class FunctionalityVerifier:
             if result and len(result) > 0:
                 self.warnings.append(f"Códigos duplicados en herrajes: {[row[0] for row in result]}")
             else:
-                print("  ✓ Códigos únicos en herrajes")
+                print("  [OK] Códigos únicos en herrajes")
             
             # Verificar códigos únicos en empleados
             result = self.db_inventario.execute_query("""
@@ -377,7 +377,7 @@ class FunctionalityVerifier:
             if result and len(result) > 0:
                 self.warnings.append(f"Códigos duplicados en empleados: {[row[0] for row in result]}")
             else:
-                print("  ✓ Códigos únicos en empleados")
+                print("  [OK] Códigos únicos en empleados")
             
             # Verificar códigos únicos en equipos
             result = self.db_inventario.execute_query("""
@@ -389,7 +389,7 @@ class FunctionalityVerifier:
             if result and len(result) > 0:
                 self.warnings.append(f"Códigos duplicados en equipos: {[row[0] for row in result]}")
             else:
-                print("  ✓ Códigos únicos en equipos")
+                print("  [OK] Códigos únicos en equipos")
             
             # Verificar DNIs únicos
             result = self.db_inventario.execute_query("""
@@ -402,7 +402,7 @@ class FunctionalityVerifier:
             if result and len(result) > 0:
                 self.warnings.append(f"DNIs duplicados en empleados: {[row[0] for row in result]}")
             else:
-                print("  ✓ DNIs únicos en empleados")
+                print("  [OK] DNIs únicos en empleados")
             
             self.success_count += 1
             return True
@@ -423,7 +423,7 @@ class FunctionalityVerifier:
                 WHERE estado IN ('En Proceso', 'Activa')
             """)
             if result:
-                print(f"  ✓ Consulta de obras activas: {result[0][0]} obras")
+                print(f"  [OK] Consulta de obras activas: {result[0][0]} obras")
             
             # Consulta de stock bajo
             result = self.db_inventario.execute_query("""
@@ -431,7 +431,7 @@ class FunctionalityVerifier:
                 WHERE stock_actual <= stock_minimo AND activo = 1
             """)
             if result:
-                print(f"  ✓ Consulta de stock bajo: {result[0][0]} herrajes")
+                print(f"  [OK] Consulta de stock bajo: {result[0][0]} herrajes")
             
             # Consulta de empleados por cargo
             result = self.db_inventario.execute_query("""
@@ -442,7 +442,7 @@ class FunctionalityVerifier:
                 ORDER BY cantidad DESC
             """)
             if result:
-                print(f"  ✓ Consulta de empleados por cargo: {len(result)} categorías")
+                print(f"  [OK] Consulta de empleados por cargo: {len(result)} categorías")
             
             # Consulta de equipos por estado
             result = self.db_inventario.execute_query("""
@@ -452,7 +452,7 @@ class FunctionalityVerifier:
                 GROUP BY estado
             """)
             if result:
-                print(f"  ✓ Consulta de equipos por estado: {len(result)} estados")
+                print(f"  [OK] Consulta de equipos por estado: {len(result)} estados")
             
             self.success_count += 1
             return True
@@ -488,7 +488,7 @@ class FunctionalityVerifier:
         
         print(f"\nESTADO GENERAL:")
         if success_rate == 100 and not self.errors:
-            print("  ✓ SISTEMA COMPLETAMENTE FUNCIONAL")
+            print("  [OK] SISTEMA COMPLETAMENTE FUNCIONAL")
         elif success_rate >= 80:
             print("  ⚠ SISTEMA FUNCIONANDO CON ADVERTENCIAS")
         else:

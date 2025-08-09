@@ -96,7 +96,7 @@ def test_complete_flow():
             import traceback
             traceback.print_exc()
         
-        print(f"\n✓ PRUEBA COMPLETA EXITOSA")
+        print(f"\n[OK] PRUEBA COMPLETA EXITOSA")
         print("La aplicación está lista para usar")
         return True
         
@@ -113,5 +113,5 @@ if __name__ == "__main__":
         print(f"\n🎉 APLICACION FUNCIONANDO CORRECTAMENTE")
         print("Puedes ejecutar: python run.py")
     else:
-        print(f"\n❌ HAY PROBLEMAS EN LA APLICACION")
+        print(f"\n[ERROR] HAY PROBLEMAS EN LA APLICACION")
         print("Revisa los errores mostrados arriba")

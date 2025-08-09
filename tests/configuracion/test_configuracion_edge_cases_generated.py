@@ -39,7 +39,7 @@ class TestConfiguracionEdgeCases:
         unicode_strings = [
             "áéíóúñ",
             "测试中文", 
-            "🚀🎉💻",
+            "[ROCKET]🎉💻",
             "Тест русский"
         ]
         

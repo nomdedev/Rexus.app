@@ -3,7 +3,7 @@
 RESUMEN DE ERRORES REALES ENCONTRADOS EN EL MÓDULO INVENTARIO
 ============================================================
 
-❌ ERRORES CRÍTICOS DETECTADOS:
+[ERROR] ERRORES CRÍTICOS DETECTADOS:
 
 1. PROBLEMA DE AUTENTICACIÓN:
    - Error: "Usuario no autenticado" al llamar obtener_productos_paginados
@@ -96,7 +96,7 @@ class InventarioModelCorregido(ModeloInventarioRefactorizado):
         return self.consultas_manager.obtener_estadisticas_inventario()
 '''
 
-    print("   ✅ Código de modelo corregido generado")
+    print("   [CHECK] Código de modelo corregido generado")
     return corrected_code
 
 
@@ -112,7 +112,7 @@ Métodos adicionales para InventarioView - Actualización de datos
 def actualizar_tabla(self, productos):
     """Actualiza la tabla con lista de productos."""
     if not hasattr(self, 'tabla_inventario') or not self.tabla_inventario:
-        print("❌ tabla_inventario no disponible")
+        print("[ERROR] tabla_inventario no disponible")
         return
         
     self.tabla_inventario.setRowCount(len(productos))
@@ -142,7 +142,7 @@ def cargar_datos(self, datos):
     self.actualizar_tabla(datos)
 '''
 
-    print("   ✅ Métodos de vista corregidos generados")
+    print("   [CHECK] Métodos de vista corregidos generados")
     return corrected_code
 
 
@@ -199,7 +199,7 @@ def cargar_inventario_inicial_corregido(self):
         # Actualizar vista con método robusto
         self._actualizar_vista_productos_corregido(productos)
         
-        print(f"[INVENTARIO CONTROLLER] ✅ Carga inicial completada: {len(productos)} productos")
+        print(f"[INVENTARIO CONTROLLER] [CHECK] Carga inicial completada: {len(productos)} productos")
         
     except Exception as e:
         print(f"[ERROR INVENTARIO CONTROLLER] Error en carga inicial: {e}")
@@ -207,7 +207,7 @@ def cargar_inventario_inicial_corregido(self):
 def _actualizar_vista_productos_corregido(self, productos):
     """Actualización de vista corregida."""
     if not self.view:
-        print("⚠️ No hay vista disponible")
+        print("[WARN] No hay vista disponible")
         return
         
     print(f"[INVENTARIO CONTROLLER] Actualizando vista con {len(productos)} productos")
@@ -216,10 +216,10 @@ def _actualizar_vista_productos_corregido(self, productos):
     try:
         if hasattr(self.view, "actualizar_tabla"):
             self.view.actualizar_tabla(productos)
-            print("✅ Vista actualizada con actualizar_tabla")
+            print("[CHECK] Vista actualizada con actualizar_tabla")
         elif hasattr(self.view, "mostrar_productos"):
             self.view.mostrar_productos(productos)
-            print("✅ Vista actualizada con mostrar_productos")
+            print("[CHECK] Vista actualizada con mostrar_productos")
         elif hasattr(self.view, "tabla_inventario"):
             # Actualización directa si no hay métodos específicos
             tabla = self.view.tabla_inventario
@@ -239,28 +239,28 @@ def _actualizar_vista_productos_corregido(self, productos):
                         tabla.setItem(row, 2, QTableWidgetItem(categoria))
                         tabla.setItem(row, 3, QTableWidgetItem(stock))
                         tabla.setItem(row, 4, QTableWidgetItem(precio))
-                print("✅ Vista actualizada directamente")
+                print("[CHECK] Vista actualizada directamente")
             else:
-                print("❌ tabla_inventario es None")
+                print("[ERROR] tabla_inventario es None")
         else:
-            print("❌ No se encontró forma de actualizar vista")
+            print("[ERROR] No se encontró forma de actualizar vista")
             
     except Exception as e:
-        print(f"❌ Error actualizando vista: {e}")
+        print(f"[ERROR] Error actualizando vista: {e}")
         import traceback
         traceback.print_exc()
 '''
 
-    print("   ✅ Métodos de controlador corregidos generados")
+    print("   [CHECK] Métodos de controlador corregidos generados")
     return corrected_code
 
 
 def main():
     """Genera reporte de errores y soluciones."""
-    print("🚀 ANÁLISIS COMPLETO DE ERRORES DEL MÓDULO INVENTARIO")
+    print("[ROCKET] ANÁLISIS COMPLETO DE ERRORES DEL MÓDULO INVENTARIO")
     print("=" * 80)
 
-    print("\n❌ ERRORES ENCONTRADOS:")
+    print("\n[ERROR] ERRORES ENCONTRADOS:")
     print("-" * 40)
 
     # 1. Problemas de autenticación
@@ -279,12 +279,12 @@ def main():
 
     print("\n📋 RESUMEN DE CORRECCIONES NECESARIAS:")
     print("-" * 40)
-    print("1. ✅ Crear métodos sin @auth_required para consultas básicas")
-    print("2. ✅ Agregar métodos actualizar_tabla, mostrar_productos a la vista")
+    print("1. [CHECK] Crear métodos sin @auth_required para consultas básicas")
+    print("2. [CHECK] Agregar métodos actualizar_tabla, mostrar_productos a la vista")
     print(
-        "3. ✅ Modificar controlador para usar métodos sin autenticación en carga inicial"
+        "3. [CHECK] Modificar controlador para usar métodos sin autenticación en carga inicial"
     )
-    print("4. ✅ Mejorar manejo de errores en actualización de vista")
+    print("4. [CHECK] Mejorar manejo de errores en actualización de vista")
 
     print("\n🎯 PRÓXIMOS PASOS:")
     print("-" * 40)

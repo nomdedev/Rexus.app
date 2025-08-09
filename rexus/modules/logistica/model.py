@@ -1,5 +1,5 @@
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
@@ -43,7 +43,7 @@ class LogisticaModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        # [LOCK] Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_transportes = "transportes"
         self.tabla_entregas = "entregas"
@@ -138,7 +138,7 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # 🔒 MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
+            # [LOCK] MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
             base_query = self.sql_manager.get_query('logistica', 'obtener_transportes_base')
             conditions = []
             params = []
@@ -304,7 +304,7 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # 🔒 MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
+            # [LOCK] MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
             base_query = self.sql_manager.get_query('logistica', 'obtener_entregas_base')
             conditions = []
             params = []
@@ -566,7 +566,7 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # 🔒 MIGRADO: Usar SQL externo para prevenir inyección SQL
+            # [LOCK] MIGRADO: Usar SQL externo para prevenir inyección SQL
             query = self.sql_manager.get_query('logistica', 'eliminar_producto_entrega')
             cursor.execute(query, (detalle_id,))
 
@@ -596,12 +596,12 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
             estadisticas = {}
 
-            # 🔒 MIGRADO: Total transportes - SQL externo
+            # [LOCK] MIGRADO: Total transportes - SQL externo
             query_total = self.sql_manager.get_query('logistica', 'contar_transportes_activos')
             cursor.execute(query_total)
             estadisticas["total_transportes"] = cursor.fetchone()[0]
 
-            # 🔒 MIGRADO: Transportes disponibles - SQL externo
+            # [LOCK] MIGRADO: Transportes disponibles - SQL externo
             query_disponibles = self.sql_manager.get_query('logistica', 'contar_transportes_disponibles')
             cursor.execute(query_disponibles)
             estadisticas["transportes_disponibles"] = cursor.fetchone()[0]

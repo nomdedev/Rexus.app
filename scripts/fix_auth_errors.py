@@ -57,7 +57,7 @@ def fix_auth_imports_and_decorators():
                 auth_import = "from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required"
                 lines.insert(insert_index, auth_import)
                 content = "\n".join(lines)
-                print(f"  ✅ Import de auth agregado")
+                print(f"  [CHECK] Import de auth agregado")
 
             # 2. Corregir decoradores con argumentos incorrectos
             # @auth_required(permission='X') -> usar decorador específico
@@ -72,7 +72,7 @@ def fix_auth_imports_and_decorators():
             for pattern, replacement in patterns_to_fix:
                 if re.search(pattern, content):
                     content = re.sub(pattern, replacement, content)
-                    print(f"  ✅ Decorador corregido: {pattern} -> {replacement}")
+                    print(f"  [CHECK] Decorador corregido: {pattern} -> {replacement}")
 
             # 3. Corregir errores de sintaxis comunes
             # Función sin def completo
@@ -92,7 +92,7 @@ def fix_auth_imports_and_decorators():
                         # Intentar corregir
                         if line.endswith('f"') or line.endswith("f'"):
                             lines[i] = line + 'ERROR_STRING"'
-                            print(f"  ⚠️  F-string corregido en línea {i + 1}")
+                            print(f"  [WARN]  F-string corregido en línea {i + 1}")
 
             content = "\n".join(lines)
 
@@ -100,12 +100,12 @@ def fix_auth_imports_and_decorators():
             if content != original_content:
                 with open(file_path, "w", encoding="utf-8") as f:
                     f.write(content)
-                print(f"  ✅ Archivo actualizado: {file_path}")
+                print(f"  [CHECK] Archivo actualizado: {file_path}")
             else:
                 print(f"  ℹ️  Sin cambios necesarios: {file_path}")
 
         except Exception as e:
-            print(f"  ❌ Error procesando {file_path}: {e}")
+            print(f"  [ERROR] Error procesando {file_path}: {e}")
 
 
 def check_syntax_errors():
@@ -122,12 +122,12 @@ def check_syntax_errors():
 
                     # Intentar compilar
                     compile(content, str(py_file), "exec")
-                    print(f"✅ Sintaxis OK: {py_file}")
+                    print(f"[CHECK] Sintaxis OK: {py_file}")
 
                 except SyntaxError as e:
-                    print(f"❌ Error de sintaxis en {py_file}:{e.lineno}: {e.msg}")
+                    print(f"[ERROR] Error de sintaxis en {py_file}:{e.lineno}: {e.msg}")
                 except Exception as e:
-                    print(f"⚠️  Error verificando {py_file}: {e}")
+                    print(f"[WARN]  Error verificando {py_file}: {e}")
 
 
 if __name__ == "__main__":
@@ -143,4 +143,4 @@ if __name__ == "__main__":
     print("\n📋 Paso 2: Verificando sintaxis...")
     check_syntax_errors()
 
-    print("\n✅ CORRECCIÓN COMPLETADA")
+    print("\n[CHECK] CORRECCIÓN COMPLETADA")

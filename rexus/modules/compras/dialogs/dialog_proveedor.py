@@ -75,7 +75,7 @@ class DialogProveedor(QDialog):
         
         # Pestaña de detalles adicionales
         tab_detalles = self.crear_tab_detalles()
-        tab_widget.addTab(tab_detalles, "📊 Detalles")
+        tab_widget.addTab(tab_detalles, "[CHART] Detalles")
         
         layout.addWidget(tab_widget)
         

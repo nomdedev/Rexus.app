@@ -139,7 +139,7 @@ class TestRendimientoUsuarios:
         end_time = time.time()
         tiempo_total = end_time - start_time
 
-        print(f"\n📊 Creación de {usuarios_creados} usuarios:")
+        print(f"\n[CHART] Creación de {usuarios_creados} usuarios:")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
         print(f"   Usuarios por segundo: {usuarios_creados / tiempo_total:.2f}")
 
@@ -197,7 +197,7 @@ class TestRendimientoUsuarios:
         tiempo_promedio = statistics.mean(tiempos_respuesta)
         tiempo_max = max(tiempos_respuesta)
 
-        print(f"\n📊 Autenticación concurrente:")
+        print(f"\n[CHART] Autenticación concurrente:")
         print(f"   Total de usuarios: {num_usuarios}")
         print(f"   Autenticaciones exitosas: {autenticaciones_exitosas}")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
@@ -253,7 +253,7 @@ class TestRendimientoUsuarios:
         end_time = time.time()
         tiempo_todos = end_time - start_time
 
-        print(f"\n📊 Consultas masivas de usuarios:")
+        print(f"\n[CHART] Consultas masivas de usuarios:")
         print(
             f"   Consultas individuales: {usuarios_encontrados} en {tiempo_consultas:.2f}s"
         )
@@ -301,7 +301,7 @@ class TestRendimientoInventario:
         end_time = time.time()
         tiempo_total = end_time - start_time
 
-        print(f"\n📊 Inserción masiva de inventario:")
+        print(f"\n[CHART] Inserción masiva de inventario:")
         print(f"   Productos creados: {productos_creados}")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
         print(f"   Productos por segundo: {productos_creados / tiempo_total:.2f}")
@@ -364,7 +364,7 @@ class TestRendimientoInventario:
         tiempos_busqueda = [r["time"] for r in resultados]
         tiempo_promedio = statistics.mean(tiempos_busqueda)
 
-        print(f"\n📊 Búsqueda concurrente en inventario:")
+        print(f"\n[CHART] Búsqueda concurrente en inventario:")
         print(f"   Búsquedas realizadas: {len(resultados)}")
         print(f"   Productos encontrados: {productos_encontrados}")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
@@ -410,7 +410,7 @@ class TestRendimientoObras:
         end_time = time.time()
         tiempo_total = end_time - start_time
 
-        print(f"\n📊 Creación masiva de obras:")
+        print(f"\n[CHART] Creación masiva de obras:")
         print(f"   Obras creadas: {obras_creadas}")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
         print(f"   Obras por segundo: {obras_creadas / tiempo_total:.2f}")
@@ -503,7 +503,7 @@ class TestRendimientoGeneral:
         end_time = time.time()
         tiempo_total = end_time - start_time
 
-        print(f"\n📊 Operaciones mixtas concurrentes:")
+        print(f"\n[CHART] Operaciones mixtas concurrentes:")
         print(f"   Total operaciones: {len(futures)}")
         print(f"   Tiempo total: {tiempo_total:.2f} segundos")
         print(f"   Operaciones por segundo: {len(futures) / tiempo_total:.2f}")
@@ -585,7 +585,7 @@ class TestRendimientoGeneral:
         success_rate = (successful_ops / total_ops) * 100 if total_ops > 0 else 0
         actual_ops_per_second = total_ops / test_duration
 
-        print(f"\n📊 Test de estrés - Carga sostenida:")
+        print(f"\n[CHART] Test de estrés - Carga sostenida:")
         print(f"   Duración: {test_duration:.1f} segundos")
         print(f"   Total operaciones: {total_ops}")
         print(f"   Operaciones exitosas: {successful_ops}")

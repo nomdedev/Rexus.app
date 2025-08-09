@@ -63,7 +63,7 @@ import subprocess
     analizador.guardar_reporte(os.path.join(directorio_salida, 'informe_seguridad_sql.json'), 'json')
 
     # Mostrar resumen
-    print(f"  ✅ Escaneo SQL completado:")
+    print(f"  [CHECK] Escaneo SQL completado:")
     print(f"    - Archivos analizados: {analizador.archivos_analizados}")
     print(f"    - Líneas revisadas: {analizador.lineas_analizadas}")
     print(f"    - Vulnerabilidades encontradas: {len(problemas)}")
@@ -319,7 +319,7 @@ def verificar_archivos_sensibles(directorio_base, directorio_salida):
     with open(ruta_html, 'w', encoding='utf-8') as f:
         f.write(html)
 
-    print(f"  ✅ Verificación de archivos sensibles completada:")
+    print(f"  [CHECK] Verificación de archivos sensibles completada:")
     print(f"    - Total archivos revisados: {resultados['estadisticas']['total_archivos_revisados']}")
     print(f"    - Archivos con nombres sensibles: {resultados['estadisticas']['archivos_sensibles']}")
     print(f"    - Archivos con contenido sospechoso: {resultados['estadisticas']['archivos_con_contenido_sospechoso']}")
@@ -348,7 +348,7 @@ def verificar_dependencias_seguridad(directorio_base, directorio_salida):
             requirements_paths.append(os.path.join(root, 'requirements.txt'))
 
     if not requirements_paths:
-        print("  ⚠️ No se encontraron archivos requirements.txt")
+        print("  [WARN] No se encontraron archivos requirements.txt")
         return None
 
     # Crear archivo para informe
@@ -379,7 +379,7 @@ def verificar_dependencias_seguridad(directorio_base, directorio_salida):
                     if result.stderr:
                         f.write(f"\nErrores:\n{result.stderr}")
             except Exception as e:
-                print(f"  ❌ Error al ejecutar safety: {e}")
+                print(f"  [ERROR] Error al ejecutar safety: {e}")
                 with open(ruta_informe, 'a', encoding='utf-8') as f:
                     f.write(f"\n\n=== Análisis de seguridad para {requirements_path} ===\n\n")
                     f.write(f"Error al ejecutar safety: {e}\n")
@@ -389,7 +389,7 @@ def verificar_dependencias_seguridad(directorio_base, directorio_salida):
                 if os.path.exists(temp_requirements):
                     os.remove(temp_requirements)
     except Exception as e:
-        print(f"  ⚠️ No se pudo analizar dependencias con safety: {e}")
+        print(f"  [WARN] No se pudo analizar dependencias con safety: {e}")
         # Simplemente listar las dependencias
         with open(ruta_informe, 'w', encoding='utf-8') as f:
             f.write("# ANÁLISIS DE DEPENDENCIAS\n\n")
@@ -405,7 +405,7 @@ def verificar_dependencias_seguridad(directorio_base, directorio_salida):
                 except Exception as e:
                     f.write(f"Error al leer {requirements_path}: {e}\n")
 
-    print(f"  ✅ Análisis de dependencias completado")
+    print(f"  [CHECK] Análisis de dependencias completado")
     print(f"    - Informe guardado en: {ruta_informe}")
 
     return ruta_informe
@@ -541,7 +541,7 @@ def main():
             ruta_sql = escanear_vulnerabilidades_sql(args.dir, directorio_salida)
             informes["Vulnerabilidades SQL"]["ruta"] = ruta_sql
         except Exception as e:
-            print(f"  ❌ Error durante el escaneo SQL: {e}")
+            print(f"  [ERROR] Error durante el escaneo SQL: {e}")
     else:
         print("\n[*] Escaneo de vulnerabilidades SQL omitido por el usuario")
 
@@ -551,7 +551,7 @@ def main():
             ruta_archivos = verificar_archivos_sensibles(args.dir, directorio_salida)
             informes["Archivos Sensibles"]["ruta"] = ruta_archivos
         except Exception as e:
-            print(f"  ❌ Error durante la verificación de archivos sensibles: {e}")
+            print(f"  [ERROR] Error durante la verificación de archivos sensibles: {e}")
     else:
         print("\n[*] Verificación de archivos sensibles omitida por el usuario")
 
@@ -561,7 +561,7 @@ def main():
             ruta_deps = verificar_dependencias_seguridad(args.dir, directorio_salida)
             informes["Análisis de Dependencias"]["ruta"] = ruta_deps
         except Exception as e:
-            print(f"  ❌ Error durante la verificación de dependencias: {e}")
+            print(f"  [ERROR] Error durante la verificación de dependencias: {e}")
     else:
         print("\n[*] Verificación de dependencias omitida por el usuario")
 
@@ -570,7 +570,7 @@ def main():
         ruta_indice = generar_indice(informes, directorio_salida)
         print(f"\n[*] Índice de informes generado en {ruta_indice}")
     except Exception as e:
-        print(f"  ❌ Error al generar índice de informes: {e}")
+        print(f"  [ERROR] Error al generar índice de informes: {e}")
 
     print("\n[*] Escaneo de vulnerabilidades completado")
     print("=" * 80)

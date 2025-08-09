@@ -148,7 +148,7 @@ class TestEdgeCasesGeneral(unittest.TestCase):
             "العربية",
             "русский",
             "español ñáéíóú",
-            "🚀💻",
+            "[ROCKET]💻",
         ]
 
         for caracter in caracteres_unicode:
@@ -317,7 +317,7 @@ class TestEdgeCasesUserInterface(unittest.TestCase):
     def test_texto_extremo_en_widgets_mock(self):
         """Test: texto extremo en widgets usando mocks."""
         texto_largo = "A" * 1000
-        texto_unicode = "🚀ñáéíóú" * 100
+        texto_unicode = "[ROCKET]ñáéíóú" * 100
         texto_saltos_linea = "\n".join([f"Línea {i}" for i in range(100)])
 
         mock_label = Mock()
@@ -605,7 +605,7 @@ if __name__ == "__main__":
         caracteres_extremos = [
             "\u0000",           # Caracter nulo
             "\uffff",           # Caracter Unicode máximo BMP
-            "🚀🌟💻🔥⚡",       # Emojis
+            "[ROCKET]🌟💻🔥⚡",       # Emojis
             "中文测试",           # Caracteres chinos
             "العربية",          # Caracteres árabes
             "русский",          # Caracteres cirílicos
@@ -856,7 +856,7 @@ class TestEdgeCasesUI(unittest.TestCase):
 
             # Textos extremos
             texto_muy_largo = "A" * 100000
-            texto_unicode = "🚀" * 1000 + "ñáéíóú" * 1000
+            texto_unicode = "[ROCKET]" * 1000 + "ñáéíóú" * 1000
             texto_saltos_linea = "\n".join([f"Línea {i}" for i in range(1000)])
 
             widgets_texto = [

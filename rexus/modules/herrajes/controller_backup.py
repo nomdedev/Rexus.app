@@ -270,7 +270,7 @@ class HerrajesController(QObject):
                 mensaje = f"""
 ESTADÍSTICAS DETALLADAS DE HERRAJES
 
-📊 Resumen General:
+[CHART] Resumen General:
 • Total de herrajes: {estadisticas["total_herrajes"]}
 • Proveedores activos: {estadisticas["proveedores_activos"]}
 • Valor total inventario: ${estadisticas["valor_total_inventario"]:.2f}
@@ -561,7 +561,7 @@ Estadísticas de sincronización:
             mensaje = f"""
 RESUMEN INTEGRACIÓN HERRAJES-INVENTARIO
 
-📊 Estado General:
+[CHART] Estado General:
 • Herrajes totales: {resumen.get('herrajes_total', 0)}
 • En inventario general: {resumen.get('herrajes_en_inventario', 0)}
 • Reservas activas: {resumen.get('reservas_activas', 0)}
@@ -572,13 +572,13 @@ RESUMEN INTEGRACIÓN HERRAJES-INVENTARIO
             # Añadir discrepancias si existen
             discrepancias = resumen.get('discrepancias', [])
             if discrepancias:
-                mensaje += f"\n⚠️ Discrepancias encontradas ({len(discrepancias)}):\n"
+                mensaje += f"\n[WARN] Discrepancias encontradas ({len(discrepancias)}):\n"
                 for disc in discrepancias[:5]:  # Mostrar máximo 5
                     mensaje += f"• {disc['codigo']}: Stock Herrajes={disc['stock_herrajes']}, Stock Inventario={disc['stock_inventario']}\n"
                 if len(discrepancias) > 5:
                     mensaje += f"... y {len(discrepancias) - 5} más\n"
             else:
-                mensaje += "\n✅ Sin discrepancias de stock\n"
+                mensaje += "\n[CHECK] Sin discrepancias de stock\n"
             
             # Mostrar resumen
             msg_box = QMessageBox()

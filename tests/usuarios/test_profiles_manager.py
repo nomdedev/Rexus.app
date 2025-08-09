@@ -463,28 +463,28 @@ if __name__ == "__main__":
         
         try:
             test_suite.test_validar_datos_usuario_validos()
-            print("✅ Test validar datos válidos - PASADO")
+            print("[CHECK] Test validar datos válidos - PASADO")
         except Exception as e:
-            print(f"❌ Test validar datos válidos - FALLIDO: {e}")
+            print(f"[ERROR] Test validar datos válidos - FALLIDO: {e}")
         
         try:
             test_suite.test_validar_datos_usuario_username_vacio()
-            print("✅ Test username vacío - PASADO")
+            print("[CHECK] Test username vacío - PASADO")
         except Exception as e:
-            print(f"❌ Test username vacío - FALLIDO: {e}")
+            print(f"[ERROR] Test username vacío - FALLIDO: {e}")
         
         try:
             test_suite.test_validar_datos_usuario_email_invalido()
-            print("✅ Test email inválido - PASADO")
+            print("[CHECK] Test email inválido - PASADO")
         except Exception as e:
-            print(f"❌ Test email inválido - FALLIDO: {e}")
+            print(f"[ERROR] Test email inválido - FALLIDO: {e}")
         
         try:
             test_suite.test_validar_datos_usuario_rol_invalido()
-            print("✅ Test rol inválido - PASADO")
+            print("[CHECK] Test rol inválido - PASADO")
         except Exception as e:
-            print(f"❌ Test rol inválido - FALLIDO: {e}")
+            print(f"[ERROR] Test rol inválido - FALLIDO: {e}")
         
         print("=== TESTS DE PROFILES MANAGER COMPLETADOS ===")
     else:
-        print("❌ ProfilesManager no disponible para testing")
+        print("[ERROR] ProfilesManager no disponible para testing")

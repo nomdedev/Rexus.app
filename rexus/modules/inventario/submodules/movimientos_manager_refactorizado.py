@@ -56,7 +56,7 @@ class MovimientosManager:
     ) -> Optional[Dict[str, Any]]:
         """Registra un movimiento de inventario."""
         if not self.db_connection:
-            print("⚠️ Sin conexión a BD - Modo simulación")
+            print("[WARN] Sin conexión a BD - Modo simulación")
             return {"id": 1, "mensaje": "Movimiento registrado (simulación)"}
 
         try:
@@ -132,7 +132,7 @@ class MovimientosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"❌ Error registrando movimiento: {str(e)}")
+            print(f"[ERROR] Error registrando movimiento: {str(e)}")
             return None
 
     @auth_required
@@ -172,7 +172,7 @@ class MovimientosManager:
             return resultados or []
 
         except Exception as e:
-            print(f"❌ Error obteniendo movimientos: {str(e)}")
+            print(f"[ERROR] Error obteniendo movimientos: {str(e)}")
             return []
 
     @auth_required
@@ -200,7 +200,7 @@ class MovimientosManager:
             return resultados or []
 
         except Exception as e:
-            print(f"❌ Error obteniendo movimientos de obra: {str(e)}")
+            print(f"[ERROR] Error obteniendo movimientos de obra: {str(e)}")
             return []
 
     @auth_required
@@ -270,7 +270,7 @@ class MovimientosManager:
             }
 
         except Exception as e:
-            print(f"❌ Error obteniendo estadísticas: {str(e)}")
+            print(f"[ERROR] Error obteniendo estadísticas: {str(e)}")
             return {"total_movimientos": 0, "por_tipo": {}, "productos_mas_activos": []}
 
     def _obtener_stock_actual(self, producto_id: int) -> Optional[int]:
@@ -285,7 +285,7 @@ class MovimientosManager:
             return resultado[0] if resultado else None
 
         except Exception as e:
-            print(f"❌ Error obteniendo stock: {str(e)}")
+            print(f"[ERROR] Error obteniendo stock: {str(e)}")
             return None
 
     def _calcular_nuevo_stock(

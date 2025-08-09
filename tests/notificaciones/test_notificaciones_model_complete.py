@@ -149,7 +149,7 @@ from rexus.modules.notificaciones.model import NotificacionesModel
         """Test que verifica agregado con caracteres Unicode"""
         # Arrange
         datos = (
-            "Mensaje con acentos: café, niño, señoría. Emojis: 🎉 🚀 ✅ ❌",
+            "Mensaje con acentos: café, niño, señoría. Emojis: 🎉 [ROCKET] [CHECK] [ERROR]",
             "2024-01-01 10:00:00",
             "info"
         )

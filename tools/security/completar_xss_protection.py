@@ -74,7 +74,7 @@ class XSSProtectionCompleter:
             # Marcadores de protección XSS
             markers = [
                 "# XSS Protection Added",
-                "🔒 XSS Protection Added",
+                "[LOCK] XSS Protection Added",
                 "XSS_PROTECTION_ADDED",
                 "XSSProtection",
                 "FormProtector"
@@ -509,7 +509,7 @@ def main():
     
     # Verificar directorio
     if not (root_dir / "rexus").exists():
-        print("❌ Error: No se encuentra el directorio 'rexus'. Ejecutar desde la raíz del proyecto.")
+        print("[ERROR] Error: No se encuentra el directorio 'rexus'. Ejecutar desde la raíz del proyecto.")
         sys.exit(1)
     
     # Crear y ejecutar completador

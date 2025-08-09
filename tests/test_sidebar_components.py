@@ -135,7 +135,7 @@ class TestSidebarComponentes:
         for btn in sidebar._sidebar_buttons[:len(self.sections)]:
             # En el modo sin nombres, el texto debe estar vacío o ser muy corto
             texto = btn.text()
-            assert texto == "" or len(texto) <= 2  # Permitir iconos tipo "📊"
+            assert texto == "" or len(texto) <= 2  # Permitir iconos tipo "[CHART]"
 
     def test_sidebar_manejo_errores_iconos(self):
         """Test: manejo de errores con iconos inexistentes."""

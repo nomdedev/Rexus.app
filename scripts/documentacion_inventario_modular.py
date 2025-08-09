@@ -22,10 +22,10 @@ def verificar_estructura_archivos():
     archivos_encontrados = 0
     for archivo in archivos_requeridos:
         if os.path.exists(archivo):
-            print(f"✅ {archivo}")
+            print(f"[CHECK] {archivo}")
             archivos_encontrados += 1
         else:
-            print(f"❌ {archivo}")
+            print(f"[ERROR] {archivo}")
 
     return archivos_encontrados, len(archivos_requeridos)
 
@@ -45,10 +45,10 @@ def verificar_sql_externo():
     sql_encontrados = 0
     for archivo in archivos_sql:
         if os.path.exists(archivo):
-            print(f"✅ {archivo}")
+            print(f"[CHECK] {archivo}")
             sql_encontrados += 1
         else:
-            print(f"❌ {archivo}")
+            print(f"[ERROR] {archivo}")
 
     return sql_encontrados, len(archivos_sql)
 
@@ -63,7 +63,7 @@ def crear_documentacion_arquitectura():
 
 La refactorización del módulo de inventario ha sido exitosa, dividiendo un monolito de 3092 líneas en una arquitectura modular especializada:
 
-### 📊 Métricas de Refactorización
+### [CHART] Métricas de Refactorización
 
 - **Antes**: 3092 líneas en un solo archivo
 - **Después**: 1227 líneas distribuidas en 4 archivos especializados
@@ -106,14 +106,14 @@ La refactorización del módulo de inventario ha sido exitosa, dividiendo un mon
   - Mantenimiento de compatibilidad hacia atrás
   - Interfaz unificada para el controlador
 
-### 🔒 Seguridad Implementada
+### [LOCK] Seguridad Implementada
 
 - **SQL Externo**: 5+ archivos .sql seguros
 - **Sanitización**: DataSanitizer unificado
 - **Autenticación**: Decoradores @auth_required
 - **Validación**: Controles estrictos de entrada
 
-### 🚀 Beneficios Logrados
+### [ROCKET] Beneficios Logrados
 
 1. **Mantenibilidad**: Código especializado y focalizado
 2. **Testing**: Cada manager es independientemente testeable
@@ -124,9 +124,9 @@ La refactorización del módulo de inventario ha sido exitosa, dividiendo un mon
 ### 📋 Próximos Pasos
 
 #### Inmediatos (Completado)
-- ✅ Refactorización del inventario completada
-- ✅ Tests de validación creados
-- ✅ Documentación de arquitectura
+- [CHECK] Refactorización del inventario completada
+- [CHECK] Tests de validación creados
+- [CHECK] Documentación de arquitectura
 
 #### Siguientes Pasos Recomendados
 1. **Tests Unitarios Completos**
@@ -167,10 +167,10 @@ La arquitectura modular del inventario es un caso de éxito que demuestra la via
             "docs/ARQUITECTURA_MODULAR_INVENTARIO.md", "w", encoding="utf-8"
         ) as f:
             f.write(documentacion)
-        print("✅ Documentación creada: docs/ARQUITECTURA_MODULAR_INVENTARIO.md")
+        print("[CHECK] Documentación creada: docs/ARQUITECTURA_MODULAR_INVENTARIO.md")
         return True
     except Exception as e:
-        print(f"❌ Error creando documentación: {e}")
+        print(f"[ERROR] Error creando documentación: {e}")
         return False
 
 
@@ -184,7 +184,7 @@ def crear_guia_aplicacion_otros_modulos():
 
 Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas, 90.3% reducción), esta guía establece el proceso para aplicar la misma metodología a otros módulos.
 
-## 📊 Módulos Candidatos para Refactorización
+## [CHART] Módulos Candidatos para Refactorización
 
 ### Prioridad 1: Vidrios (1170 líneas)
 **Situación actual**: Arquitectura mixta con SQL embebido
@@ -305,7 +305,7 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
    python scripts/validacion_[modulo]_modular.py
    ```
 
-## 📊 Métricas de Éxito
+## [CHART] Métricas de Éxito
 
 ### Objetivos por Módulo:
 - **Reducción líneas**: > 60%
@@ -320,7 +320,7 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
 3. **Testing**: Cada manager independiente
 4. **Documentación**: Arquitectura clara
 
-## 🚀 Plan de Implementación Sugerido
+## [ROCKET] Plan de Implementación Sugerido
 
 ### Semana 1-2: Vidrios
 - Análisis detallado de responsabilidades
@@ -376,10 +376,10 @@ Esta guía asegura que el éxito logrado con el inventario se replique consisten
     try:
         with open("docs/GUIA_REFACTORIZACION_MODULAR.md", "w", encoding="utf-8") as f:
             f.write(guia)
-        print("✅ Guía creada: docs/GUIA_REFACTORIZACION_MODULAR.md")
+        print("[CHECK] Guía creada: docs/GUIA_REFACTORIZACION_MODULAR.md")
         return True
     except Exception as e:
-        print(f"❌ Error creando guía: {e}")
+        print(f"[ERROR] Error creando guía: {e}")
         return False
 
 
@@ -396,12 +396,12 @@ def main():
     doc_creada = crear_documentacion_arquitectura()
     guia_creada = crear_guia_aplicacion_otros_modulos()
 
-    print(f"\n📊 RESUMEN DE VALIDACIÓN")
+    print(f"\n[CHART] RESUMEN DE VALIDACIÓN")
     print("=" * 40)
     print(f"Archivos de código: {archivos_ok}/{total_archivos}")
     print(f"Archivos SQL: {sql_ok}/{total_sql}")
-    print(f"Documentación creada: {'✅' if doc_creada else '❌'}")
-    print(f"Guía metodológica: {'✅' if guia_creada else '❌'}")
+    print(f"Documentación creada: {'[CHECK]' if doc_creada else '[ERROR]'}")
+    print(f"Guía metodológica: {'[CHECK]' if guia_creada else '[ERROR]'}")
 
     porcentaje_completitud = (
         archivos_ok + sql_ok + int(doc_creada) + int(guia_creada)
@@ -410,13 +410,13 @@ def main():
     print(f"\n🎯 COMPLETITUD GENERAL: {porcentaje_completitud:.1%}")
 
     if porcentaje_completitud >= 0.8:
-        print("🚀 REFACTORIZACIÓN EXITOSA - LISTA PARA SIGUIENTE FASE")
+        print("[ROCKET] REFACTORIZACIÓN EXITOSA - LISTA PARA SIGUIENTE FASE")
         print("\n💡 PRÓXIMOS PASOS RECOMENDADOS:")
-        print("1. ✅ Aplicar metodología a módulo 'vidrios'")
-        print("2. ✅ Crear tests unitarios completos")
-        print("3. ✅ Documentar casos de uso")
+        print("1. [CHECK] Aplicar metodología a módulo 'vidrios'")
+        print("2. [CHECK] Crear tests unitarios completos")
+        print("3. [CHECK] Documentar casos de uso")
     else:
-        print("⚠️ REFACTORIZACIÓN PARCIAL - REVISAR ELEMENTOS FALTANTES")
+        print("[WARN] REFACTORIZACIÓN PARCIAL - REVISAR ELEMENTOS FALTANTES")
 
     return porcentaje_completitud >= 0.8
 

@@ -16,10 +16,10 @@ def test_visual_actual():
     # Obtener la aplicación existente
     app = QApplication.instance()
     if not app:
-        print("❌ No hay aplicación PyQt6 ejecutándose")
+        print("[ERROR] No hay aplicación PyQt6 ejecutándose")
         return
 
-    print("✅ Aplicación PyQt6 encontrada")
+    print("[CHECK] Aplicación PyQt6 encontrada")
 
     # Buscar LoginView
     login_view = None
@@ -28,10 +28,10 @@ def test_visual_actual():
     for widget in QApplication.allWidgets():
         if widget.__class__.__name__ == "LoginView":
             login_view = widget
-            print("✅ LoginView encontrado")
+            print("[CHECK] LoginView encontrado")
         elif widget.__class__.__name__ == "MainWindow":
             main_window = widget
-            print("✅ MainWindow encontrado")
+            print("[CHECK] MainWindow encontrado")
 
     if login_view and login_view.isVisible():
         print("📱 LOGIN VIEW ACTIVO")
@@ -43,12 +43,12 @@ def test_visual_actual():
         ):
             login_view.usuario_input.setText("TEST_USER")
             login_view.password_input.setText("TEST_PASS")
-            print("   ✅ Campos completados con credenciales de prueba")
+            print("   [CHECK] Campos completados con credenciales de prueba")
 
         # Buscar botón de login
         if hasattr(login_view, "boton_login"):
             boton = login_view.boton_login
-            print(f"   ✅ Botón encontrado: '{boton.text()}'")
+            print(f"   [CHECK] Botón encontrado: '{boton.text()}'")
             print(
                 f"   📐 Tamaño del botón: {boton.size().width()}x{boton.size().height()}"
             )
@@ -67,7 +67,7 @@ def test_visual_actual():
                         print("🎉 ¡MainWindow mostrado exitosamente!")
                         analizar_mainwindow_visual(widget)
                         return
-                print("⚠️ MainWindow no aparece aún...")
+                print("[WARN] MainWindow no aparece aún...")
 
             QTimer.singleShot(3000, verificar_mainwindow)
 
@@ -100,7 +100,7 @@ def analizar_mainwindow_visual(main_window):
     # Sidebar
     if hasattr(main_window, "sidebar") and main_window.sidebar:
         sidebar = main_window.sidebar
-        componentes_encontrados.append(f"✅ Sidebar ({sidebar.__class__.__name__})")
+        componentes_encontrados.append(f"[CHECK] Sidebar ({sidebar.__class__.__name__})")
         print(
             f"   📐 Tamaño sidebar: {sidebar.size().width()}x{sidebar.size().height()}"
         )
@@ -108,13 +108,13 @@ def analizar_mainwindow_visual(main_window):
     # Header
     if hasattr(main_window, "header") and main_window.header:
         header = main_window.header
-        componentes_encontrados.append(f"✅ Header ({header.__class__.__name__})")
+        componentes_encontrados.append(f"[CHECK] Header ({header.__class__.__name__})")
         print(f"   📐 Tamaño header: {header.size().width()}x{header.size().height()}")
 
     # Stack de módulos
     if hasattr(main_window, "module_stack") and main_window.module_stack:
         stack = main_window.module_stack
-        componentes_encontrados.append(f"✅ Module Stack ({stack.count()} páginas)")
+        componentes_encontrados.append(f"[CHECK] Module Stack ({stack.count()} páginas)")
         print(f"   📐 Tamaño stack: {stack.size().width()}x{stack.size().height()}")
         print(f"   📄 Página actual: {stack.currentIndex()}")
 
@@ -127,7 +127,7 @@ def analizar_mainwindow_visual(main_window):
     if stylesheet:
         print(f"\n🎨 Stylesheet aplicado: {len(stylesheet)} caracteres")
     else:
-        print("\n⚠️ Sin stylesheet aplicado")
+        print("\n[WARN] Sin stylesheet aplicado")
 
     # Buscar problemas visuales comunes
     print("\n🔍 VERIFICACIÓN DE PROBLEMAS VISUALES:")
@@ -140,17 +140,17 @@ def analizar_mainwindow_visual(main_window):
                 size = child.size()
                 if size.width() < 10 or size.height() < 10:
                     widgets_problema.append(
-                        f"   ⚠️ Widget muy pequeño: {child.__class__.__name__} ({size.width()}x{size.height()})"
+                        f"   [WARN] Widget muy pequeño: {child.__class__.__name__} ({size.width()}x{size.height()})"
                     )
     except Exception as e:
-        widgets_problema.append(f"   ❌ Error verificando widgets: {e}")
+        widgets_problema.append(f"   [ERROR] Error verificando widgets: {e}")
 
     if widgets_problema:
-        print("⚠️ Widgets con tamaños problemáticos encontrados:")
+        print("[WARN] Widgets con tamaños problemáticos encontrados:")
         for problema in widgets_problema[:5]:  # Mostrar solo los primeros 5
             print(problema)
     else:
-        print("✅ No se detectaron widgets con tamaños problemáticos")
+        print("[CHECK] No se detectaron widgets con tamaños problemáticos")
 
     print("\n" + "=" * 60)
 
@@ -160,7 +160,7 @@ def main():
     try:
         test_visual_actual()
     except Exception as e:
-        print(f"❌ Error durante el test visual: {e}")
+        print(f"[ERROR] Error durante el test visual: {e}")
         traceback.print_exc()
 
 

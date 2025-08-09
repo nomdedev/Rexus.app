@@ -674,12 +674,12 @@ def main():
     print("=" * 60)
     print(f"📋 Módulos analizados: {reporte.estadisticas['modulos_analizados']}")
     print(f"🔍 Total de issues: {reporte.estadisticas['total_issues']}")
-    print(f"📊 Score de accesibilidad: {reporte.score_accesibilidad}/100")
+    print(f"[CHART] Score de accesibilidad: {reporte.score_accesibilidad}/100")
 
     if reporte.nivel_conformidad:
         print(f"🏆 Nivel WCAG alcanzado: {reporte.nivel_conformidad.value}")
     else:
-        print("❌ No cumple nivel WCAG mínimo (A)")
+        print("[ERROR] No cumple nivel WCAG mínimo (A)")
 
     if reporte.estadisticas["por_nivel_wcag"]:
         print("\n📈 Issues por nivel WCAG:")

@@ -45,7 +45,7 @@ def test_query_obras_asociadas():
         cursor.execute(query, (like_codigo, like_categoria, like_descripcion))
         obras = cursor.fetchall()
         
-        print(f"\n✅ Encontradas {len(obras)} relaciones:")
+        print(f"\n[CHECK] Encontradas {len(obras)} relaciones:")
         
         if obras:
             total_cantidad = 0
@@ -61,13 +61,13 @@ def test_query_obras_asociadas():
                 if precio_total:
                     total_importe += float(precio_total)
             
-            print(f"\n📊 RESUMEN:")
+            print(f"\n[CHART] RESUMEN:")
             print(f"   Total cantidad usada: {total_cantidad}")
             print(f"   Total importe: ${total_importe:.2f}")
             print(f"   Obras que lo usan: {len(obras)}")
             
         else:
-            print("❌ No se encontraron obras que usen este material")
+            print("[ERROR] No se encontraron obras que usen este material")
             
             # Verificar qué hay en detalles_obra
             cursor.execute("SELECT detalle, categoria FROM detalles_obra")
@@ -77,10 +77,10 @@ def test_query_obras_asociadas():
                 print(f"   - {detalle[0]} ({detalle[1]})")
         
         conn.close()
-        print("\n✅ Test de query completado exitosamente")
+        print("\n[CHECK] Test de query completado exitosamente")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

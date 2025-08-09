@@ -456,7 +456,7 @@ class ObrasView(QWidget):
             ]
         )
         self.combo_filtro_estado.setToolTip(
-            "📊 Filtrar obras por estado actual\n\nEstados disponibles:\n• PLANIFICACION: Obra en fase de diseño\n• EN_PROCESO: Obra en construcción\n• PAUSADA: Obra temporalmente detenida\n• FINALIZADA: Obra completada\n• CANCELADA: Obra cancelada"
+            "[CHART] Filtrar obras por estado actual\n\nEstados disponibles:\n• PLANIFICACION: Obra en fase de diseño\n• EN_PROCESO: Obra en construcción\n• PAUSADA: Obra temporalmente detenida\n• FINALIZADA: Obra completada\n• CANCELADA: Obra cancelada"
         )
         layout.addRow("Estado:", self.combo_filtro_estado)
 
@@ -491,7 +491,7 @@ class ObrasView(QWidget):
 
     def crear_grupo_estadisticas(self) -> QGroupBox:
         """Crea el grupo de estadísticas."""
-        grupo = QGroupBox("📊 Estadísticas")
+        grupo = QGroupBox("[CHART] Estadísticas")
         layout = QFormLayout(grupo)
 
         # Labels para estadísticas
@@ -511,7 +511,7 @@ class ObrasView(QWidget):
 
         self.lbl_obras_finalizadas = QLabel("0")
         self.lbl_obras_finalizadas.setStyleSheet("font-weight: bold; color: #2ecc71;")
-        self.lbl_obras_finalizadas.setToolTip("✅ Obras completadas exitosamente")
+        self.lbl_obras_finalizadas.setToolTip("[CHECK] Obras completadas exitosamente")
         layout.addRow("Finalizadas:", self.lbl_obras_finalizadas)
 
         self.lbl_presupuesto_total = QLabel("$0")
@@ -550,7 +550,7 @@ class ObrasView(QWidget):
         # Botón eliminar obra estandarizado
         self.btn_eliminar_obra = StandardComponents.create_danger_button("🗑️ Eliminar")
         self.btn_eliminar_obra.setToolTip(
-            "🗑️ Eliminar obra seleccionada\n\n⚠️ PRECAUCIÓN: Esta acción no se puede deshacer"
+            "🗑️ Eliminar obra seleccionada\n\n[WARN] PRECAUCIÓN: Esta acción no se puede deshacer"
         )
         self.btn_eliminar_obra.setEnabled(False)
         toolbar_layout.addWidget(self.btn_eliminar_obra)
@@ -626,7 +626,7 @@ class ObrasView(QWidget):
             self.stacked_widget.setCurrentIndex(0)
             self.btn_alternar_vista.setText("📅 Vista Cronograma")
             self.vista_actual = "tabla"
-            show_success(self, "Vista de tabla", "📊 Vista de tabla activada")
+            show_success(self, "Vista de tabla", "[CHART] Vista de tabla activada")
         except Exception as e:
             show_error(self, "Error de vista", f"Error cambiando a vista tabla: {e}")
 
@@ -634,7 +634,7 @@ class ObrasView(QWidget):
         """Muestra la vista de cronograma."""
         try:
             self.stacked_widget.setCurrentIndex(1)
-            self.btn_alternar_vista.setText("📊 Vista Tabla")
+            self.btn_alternar_vista.setText("[CHART] Vista Tabla")
             self.vista_actual = "cronograma"
             # Cargar datos en el cronograma
             self.actualizar_cronograma()
@@ -702,7 +702,7 @@ class ObrasView(QWidget):
                 # Aplicar filtros a través del controller
                 self.controller.aplicar_filtros(filtros)
                 show_success(
-                    self, "Filtros aplicados", "✅ Filtros aplicados correctamente"
+                    self, "Filtros aplicados", "[CHECK] Filtros aplicados correctamente"
                 )
 
         except Exception as e:
@@ -750,7 +750,7 @@ class ObrasView(QWidget):
         """Maneja detección de contenido peligroso XSS."""
         show_warning(
             self,
-            "⚠️ Contenido peligroso",
+            "[WARN] Contenido peligroso",
             f"Contenido potencialmente peligroso detectado en {campo}: {contenido[:50]}...",
         )
 
@@ -1078,12 +1078,12 @@ class DialogoObra(QDialog):
             show_warning(
                 self,
                 "Error en fechas",
-                "⚠️ La fecha de finalización debe ser posterior a la fecha de inicio.",
+                "[WARN] La fecha de finalización debe ser posterior a la fecha de inicio.",
             )
             return
 
         # Si todo es válido, aceptar el diálogo
-        show_success(self, "Datos validados", "✅ Datos validados correctamente")
+        show_success(self, "Datos validados", "[CHECK] Datos validados correctamente")
         self.accept()
 
     def _setup_modern_styling(self):

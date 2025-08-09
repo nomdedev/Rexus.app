@@ -304,7 +304,7 @@ class ObrasValidator:
     with open(mapeo_path, 'w', encoding='utf-8') as f:
         f.write(mapeo_content)
     
-    print(f"✅ Mapeo de datos creado: {mapeo_path}")
+    print(f"[CHECK] Mapeo de datos creado: {mapeo_path}")
     return True
 
 def refactorizar_metodo_cargar_obras():
@@ -383,7 +383,7 @@ def refactorizar_metodo_cargar_obras():
     # Buscar y reemplazar el método original
     inicio_metodo = contenido.find("def cargar_obras_en_tabla(self, obras):")
     if inicio_metodo == -1:
-        print("❌ No se encontró el método cargar_obras_en_tabla")
+        print("[ERROR] No se encontró el método cargar_obras_en_tabla")
         return False
     
     # Buscar el final del método
@@ -419,7 +419,7 @@ def refactorizar_metodo_cargar_obras():
     with open(view_path, 'w', encoding='utf-8') as f:
         f.write(contenido_nuevo)
     
-    print("✅ Método cargar_obras_en_tabla refactorizado")
+    print("[CHECK] Método cargar_obras_en_tabla refactorizado")
     return True
 
 def agregar_validaciones_robustas():
@@ -450,7 +450,7 @@ def agregar_validaciones_robustas():
         try:
             from rexus.utils.message_system import show_error
             mensaje = "Errores encontrados:\\n\\n" + "\\n".join(f"• {error}" for error in errores)
-            show_error(self, "⚠️ Datos inválidos", mensaje)
+            show_error(self, "[WARN] Datos inválidos", mensaje)
         except Exception as e:
             print(f"[OBRAS VIEW] Error mostrando errores: {e}")
     
@@ -494,7 +494,7 @@ def agregar_validaciones_robustas():
     # Buscar el final de la clase ObrasView
     fin_clase = contenido.rfind("class DialogoObra(QDialog):")
     if fin_clase == -1:
-        print("❌ No se encontró el final de la clase ObrasView")
+        print("[ERROR] No se encontró el final de la clase ObrasView")
         return False
     
     # Insertar métodos antes del DialogoObra
@@ -515,7 +515,7 @@ def agregar_validaciones_robustas():
     with open(view_path, 'w', encoding='utf-8') as f:
         f.write(contenido_nuevo)
     
-    print("✅ Validaciones robustas agregadas")
+    print("[CHECK] Validaciones robustas agregadas")
     return True
 
 def crear_tests_unitarios():
@@ -746,42 +746,42 @@ if __name__ == "__main__":
     with open(test_path, 'w', encoding='utf-8') as f:
         f.write(test_content)
     
-    print(f"✅ Tests unitarios creados: {test_path}")
+    print(f"[CHECK] Tests unitarios creados: {test_path}")
     return True
 
 def main():
     """Función principal de la Fase 2."""
     
-    print("🚀 INICIANDO FASE 2: REFACTORIZACIÓN DE VISTA")
+    print("[ROCKET] INICIANDO FASE 2: REFACTORIZACIÓN DE VISTA")
     print("=" * 60)
     
     try:
         # 1. Crear mapeo centralizado
         if not crear_mapeo_datos_centralizado():
-            print("❌ Error creando mapeo centralizado")
+            print("[ERROR] Error creando mapeo centralizado")
             return False
         
         # 2. Refactorizar método complejo
         if not refactorizar_metodo_cargar_obras():
-            print("❌ Error refactorizando método")
+            print("[ERROR] Error refactorizando método")
             return False
         
         # 3. Agregar validaciones
         if not agregar_validaciones_robustas():
-            print("❌ Error agregando validaciones")
+            print("[ERROR] Error agregando validaciones")
             return False
         
         # 4. Crear tests unitarios
         if not crear_tests_unitarios():
-            print("❌ Error creando tests unitarios")
+            print("[ERROR] Error creando tests unitarios")
             return False
         
         print("\n🎉 FASE 2 COMPLETADA EXITOSAMENTE")
         print("=" * 60)
-        print("✅ Mapeo de datos centralizado creado")
-        print("✅ Método cargar_obras_en_tabla simplificado")
-        print("✅ Validaciones robustas agregadas")
-        print("✅ Tests unitarios creados")
+        print("[CHECK] Mapeo de datos centralizado creado")
+        print("[CHECK] Método cargar_obras_en_tabla simplificado")
+        print("[CHECK] Validaciones robustas agregadas")
+        print("[CHECK] Tests unitarios creados")
         print("\n📋 PRÓXIMOS PASOS:")
         print("   1. Ejecutar tests unitarios")
         print("   2. Proceder con FASE 3: Mejoras de Seguridad")
@@ -789,7 +789,7 @@ def main():
         return True
         
     except Exception as e:
-        print(f"❌ Error durante Fase 2: {e}")
+        print(f"[ERROR] Error durante Fase 2: {e}")
         import traceback
         traceback.print_exc()
         return False

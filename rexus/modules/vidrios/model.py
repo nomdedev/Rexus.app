@@ -4,7 +4,7 @@ from rexus.core.auth_decorators import (
     permission_required,
 )
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """

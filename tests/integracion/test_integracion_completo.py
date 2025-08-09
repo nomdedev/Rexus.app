@@ -32,7 +32,7 @@ from rexus.modules.vidrios.model import VidriosModel
 
         db = ObrasDatabaseConnection()
         db.conectar()
-        print(f"✅ Conectado a base de datos: {db.database}")
+        print(f"[CHECK] Conectado a base de datos: {db.database}")
 
         # Test 2: Inicialización de Modelos
         print("\n📦 Test 2: Inicialización de Modelos")
@@ -43,7 +43,7 @@ from rexus.modules.vidrios.model import VidriosModel
         herrajes_model = HerrajesModel(db)
         contabilidad_model = ContabilidadModel(db)
         obras_model = ObrasModel(db)
-        print("✅ Todos los modelos inicializados correctamente")
+        print("[CHECK] Todos los modelos inicializados correctamente")
 
         # Test 3: Verificación de Tablas Críticas
         print("\n📋 Test 3: Verificación de Tablas Críticas")
@@ -66,39 +66,39 @@ from rexus.modules.vidrios.model import VidriosModel
             try:
                 resultado = db.ejecutar_query(query)
                 count = resultado[0][0] if resultado else 0
-                print(f"✅ {nombre_tabla}: {count} registros")
+                print(f"[CHECK] {nombre_tabla}: {count} registros")
             except Exception as e:
-                print(f"❌ Error en tabla {nombre_tabla}: {e}")
+                print(f"[ERROR] Error en tabla {nombre_tabla}: {e}")
 
         # Test 4: Integración de Obras
         print("\n🏗️ Test 4: Integración de Obras")
         print("-" * 60)
 
         integracion_model = IntegracionObrasModel(db)
-        print("✅ Modelo de integración inicializado")
+        print("[CHECK] Modelo de integración inicializado")
 
         # Obtener primera obra para test
         obras = obras_model.obtener_datos_obras()
         if obras:
             primera_obra_id = obras[0][0]  # Asumiendo que ID es el primer campo
-            print(f"✅ Obra de prueba encontrada: ID {primera_obra_id}")
+            print(f"[CHECK] Obra de prueba encontrada: ID {primera_obra_id}")
 
             # Verificar estado completo
             estado_completo = integracion_model.verificar_estado_completo_obra(primera_obra_id)
-            print(f"✅ Estado completo verificado: {estado_completo.get('estado_general', 'N/A')}")
+            print(f"[CHECK] Estado completo verificado: {estado_completo.get('estado_general', 'N/A')}")
 
             # Verificar notificaciones
             notificaciones = integracion_model._generar_notificaciones(estado_completo)
-            print(f"✅ Notificaciones procesadas correctamente")
+            print(f"[CHECK] Notificaciones procesadas correctamente")
         else:
-            print("⚠️ No hay obras para probar integración")
+            print("[WARN] No hay obras para probar integración")
 
         # Test 5: Sistema de Notificaciones
         print("\n🔔 Test 5: Sistema de Notificaciones")
         print("-" * 60)
 
         sistema_notificaciones = SistemaNotificaciones()
-        print("✅ Sistema de notificaciones inicializado")
+        print("[CHECK] Sistema de notificaciones inicializado")
 
         # Test 6: Verificación de Dependencias Entre Módulos
         print("\n🔗 Test 6: Verificación de Dependencias Entre Módulos")
@@ -109,30 +109,30 @@ from rexus.modules.vidrios.model import VidriosModel
             # Test inventario <-> obras
             try:
                 items_inventario = inventario_model.obtener_items() or []
-                print(f"✅ Inventario accesible: {len(items_inventario)} items")
+                print(f"[CHECK] Inventario accesible: {len(items_inventario)} items")
             except Exception as e:
-                print(f"⚠️ Error accediendo inventario: {e}")
+                print(f"[WARN] Error accediendo inventario: {e}")
 
             # Test vidrios <-> obras
             try:
-                print("✅ Modelo vidrios inicializado correctamente")
+                print("[CHECK] Modelo vidrios inicializado correctamente")
             except Exception as e:
-                print(f"⚠️ Error con modelo vidrios: {e}")
+                print(f"[WARN] Error con modelo vidrios: {e}")
 
             # Test herrajes <-> obras
             try:
-                print("✅ Modelo herrajes inicializado correctamente")
+                print("[CHECK] Modelo herrajes inicializado correctamente")
             except Exception as e:
-                print(f"⚠️ Error con modelo herrajes: {e}")
+                print(f"[WARN] Error con modelo herrajes: {e}")
 
             # Test contabilidad <-> obras
             try:
-                print("✅ Modelo contabilidad inicializado correctamente")
+                print("[CHECK] Modelo contabilidad inicializado correctamente")
             except Exception as e:
-                print(f"⚠️ Error con modelo contabilidad: {e}")
+                print(f"[WARN] Error con modelo contabilidad: {e}")
 
         except Exception as e:
-            print(f"❌ Error en dependencias: {e}")
+            print(f"[ERROR] Error en dependencias: {e}")
 
         # Test 7: Verificación de Integridad de Datos
         print("\n🔍 Test 7: Verificación de Integridad de Datos")
@@ -150,30 +150,30 @@ from rexus.modules.vidrios.model import VidriosModel
             resultado_integridad = db.ejecutar_query(query_integridad)
             if resultado_integridad:
                 stats = resultado_integridad[0]
-                print(f"✅ Total obras: {stats[0]}")
-                print(f"✅ Obras con vidrios: {stats[1]}")
-                print(f"✅ Obras con herrajes: {stats[2]}")
-                print(f"✅ Obras con pedidos material: {stats[3]}")
+                print(f"[CHECK] Total obras: {stats[0]}")
+                print(f"[CHECK] Obras con vidrios: {stats[1]}")
+                print(f"[CHECK] Obras con herrajes: {stats[2]}")
+                print(f"[CHECK] Obras con pedidos material: {stats[3]}")
 
         except Exception as e:
-            print(f"❌ Error verificando integridad: {e}")
+            print(f"[ERROR] Error verificando integridad: {e}")
 
         # Resumen Final
         print("\n" + "=" * 60)
         print("🎉 RESUMEN DE TEST DE INTEGRACIÓN")
         print("=" * 60)
-        print("✅ Base de datos conectada y accesible")
-        print("✅ Todos los modelos funcionan correctamente")
-        print("✅ Tablas críticas verificadas")
-        print("✅ Sistema de integración operativo")
-        print("✅ Sistema de notificaciones funcional")
-        print("✅ Dependencias entre módulos verificadas")
-        print("✅ Integridad de datos confirmada")
+        print("[CHECK] Base de datos conectada y accesible")
+        print("[CHECK] Todos los modelos funcionan correctamente")
+        print("[CHECK] Tablas críticas verificadas")
+        print("[CHECK] Sistema de integración operativo")
+        print("[CHECK] Sistema de notificaciones funcional")
+        print("[CHECK] Dependencias entre módulos verificadas")
+        print("[CHECK] Integridad de datos confirmada")
         print("\n🔧 Sistema listo para uso en producción")
 
         assert True
     except Exception as e:
-        print(f"\n❌ Error crítico en test de integración: {e}")
+        print(f"\n[ERROR] Error crítico en test de integración: {e}")
         pytest.fail("Test falló")
     finally:
         if 'db' in locals():
@@ -217,12 +217,12 @@ def test_flujo_completo_obra():
 
         print("📝 Creando obra de prueba...")
         id_obra_test = obras_model.agregar_obra(datos_obra_prueba)
-        print(f"✅ Obra creada con ID: {id_obra_test}")
+        print(f"[CHECK] Obra creada con ID: {id_obra_test}")
 
         # Verificar estado completo
         print("🔍 Verificando estado completo...")
         estado_completo = integracion_model.verificar_estado_completo_obra(id_obra_test)
-        print(f"✅ Estado general: {estado_completo.get('estado_general')}")
+        print(f"[CHECK] Estado general: {estado_completo.get('estado_general')}")
 
         # Verificar cada módulo
         modulos = estado_completo.get('modulos', {})
@@ -236,7 +236,7 @@ def test_flujo_completo_obra():
         estado_completo['notificaciones'] = []
         integracion_model._generar_notificaciones(estado_completo)
         notificaciones = estado_completo.get('notificaciones', [])
-        print(f"✅ {len(notificaciones)} notificaciones generadas")
+        print(f"[CHECK] {len(notificaciones)} notificaciones generadas")
 
         for notif in notificaciones[:3]:  # Mostrar las primeras 3
             tipo = notif.get('tipo', 'info')
@@ -246,27 +246,27 @@ def test_flujo_completo_obra():
         # Verificar si puede avanzar de estado
         print("⏭️ Verificando posibilidad de avance...")
         puede_avanzar = estado_completo.get('puede_avanzar', False)
-        print(f"✅ Puede avanzar: {'Sí' if puede_avanzar else 'No'}")
+        print(f"[CHECK] Puede avanzar: {'Sí' if puede_avanzar else 'No'}")
 
         if not puede_avanzar:
             print(f"🚫 Motivos que impiden avance detectados en estado")
             for modulo, info in estado_completo.get('modulos', {}).items():
                 if info.get('pendientes', 0) > 0:
-                    print(f"  ❌ {modulo}: {info['pendientes']} elementos pendientes")
+                    print(f"  [ERROR] {modulo}: {info['pendientes']} elementos pendientes")
 
-        print(f"\n✅ Test de flujo completo finalizado exitosamente")
-        print(f"📊 Obra ID: {id_obra_test} verificada correctamente")
+        print(f"\n[CHECK] Test de flujo completo finalizado exitosamente")
+        print(f"[CHART] Obra ID: {id_obra_test} verificada correctamente")
 
         assert True
     except Exception as e:
-        print(f"\n❌ Error en test de flujo completo: {e}")
+        print(f"\n[ERROR] Error en test de flujo completo: {e}")
         pytest.fail("Test falló")
     finally:
         if 'db' in locals():
             db.cerrar_conexion()
 
 if __name__ == "__main__":
-    print("🚀 INICIANDO TESTS DE INTEGRACIÓN COMPLETA")
+    print("[ROCKET] INICIANDO TESTS DE INTEGRACIÓN COMPLETA")
     print("=" * 80)
 
     # Ejecutar tests
@@ -276,14 +276,14 @@ if __name__ == "__main__":
     print("\n" + "=" * 80)
     print("📋 RESUMEN FINAL DE TESTS")
     print("=" * 80)
-    print(f"🧪 Test Integración Módulos: {'✅ PASS' if test1_ok else '❌ FAIL'}")
-    print(f"🔄 Test Flujo Completo: {'✅ PASS' if test2_ok else '❌ FAIL'}")
+    print(f"🧪 Test Integración Módulos: {'[CHECK] PASS' if test1_ok else '[ERROR] FAIL'}")
+    print(f"🔄 Test Flujo Completo: {'[CHECK] PASS' if test2_ok else '[ERROR] FAIL'}")
 
     if test1_ok and test2_ok:
         print("\n🎉 TODOS LOS TESTS PASARON - SISTEMA INTEGRADO CORRECTAMENTE")
         exit_code = 0
     else:
-        print("\n⚠️ ALGUNOS TESTS FALLARON - REVISAR ERRORES")
+        print("\n[WARN] ALGUNOS TESTS FALLARON - REVISAR ERRORES")
         exit_code = 1
 
     print("=" * 80)

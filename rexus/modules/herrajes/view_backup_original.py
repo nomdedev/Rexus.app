@@ -95,7 +95,7 @@ class HerrajesView(BaseModuleView):
 
         # Pestaña de Estadísticas
         tab_estadisticas = self.crear_tab_estadisticas()
-        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
+        self.tab_widget.addTab(tab_estadisticas, "[CHART] Estadísticas")
 
         self.add_to_main_content(self.tab_widget)
 
@@ -162,7 +162,7 @@ class HerrajesView(BaseModuleView):
         layout = RexusLayoutHelper.create_vertical_layout()
         
         # Placeholder para análisis de stock
-        placeholder = RexusLabel("📊 Análisis de stock próximamente", "body")
+        placeholder = RexusLabel("[CHART] Análisis de stock próximamente", "body")
         placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(placeholder)
 
@@ -178,7 +178,7 @@ class HerrajesView(BaseModuleView):
         btn_reporte_stock = RexusButton("📋 Herrajes por Stock", "primary")
         layout.addWidget(btn_reporte_stock)
 
-        btn_reporte_categorias = RexusButton("📊 Por Categorías", "secondary")
+        btn_reporte_categorias = RexusButton("[CHART] Por Categorías", "secondary")
         layout.addWidget(btn_reporte_categorias)
 
         btn_reporte_proveedores = RexusButton("🏭 Por Proveedores", "secondary")
@@ -274,7 +274,7 @@ class HerrajesView(BaseModuleView):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de herrajes."""
-        panel = RexusGroupBox("📊 Estadísticas de Herrajes")
+        panel = RexusGroupBox("[CHART] Estadísticas de Herrajes")
 
         layout = RexusLayoutHelper.create_horizontal_layout()
 
@@ -283,7 +283,7 @@ class HerrajesView(BaseModuleView):
         layout.addWidget(self.lbl_total_herrajes)
 
         # Herrajes activos
-        self.lbl_herrajes_activos = self.crear_stat_widget("✅", "Activos", "0", "#28a745")
+        self.lbl_herrajes_activos = self.crear_stat_widget("[CHECK]", "Activos", "0", "#28a745")
         layout.addWidget(self.lbl_herrajes_activos)
 
         # Herrajes inactivos
@@ -333,7 +333,7 @@ class HerrajesView(BaseModuleView):
             "🔧 Nombre", 
             "📝 Descripción",
             "📂 Tipo",
-            "📊 Estado",
+            "[CHART] Estado",
             "📅 Última Actualización",
             "⚡ Acciones"
         ])
@@ -492,8 +492,8 @@ class HerrajesView(BaseModuleView):
         layout.addWidget(self.btn_sincronizar_inventario)
 
         # Botón resumen de integración usando componente Rexus
-        self.btn_resumen_integracion = RexusButton("📊 Resumen Integración", "info")
-        self.btn_resumen_integracion.setToolTip("📊 Muestra resumen del estado de integración")
+        self.btn_resumen_integracion = RexusButton("[CHART] Resumen Integración", "info")
+        self.btn_resumen_integracion.setToolTip("[CHART] Muestra resumen del estado de integración")
         self.btn_resumen_integracion.clicked.connect(self.mostrar_resumen_integracion)
         layout.addWidget(self.btn_resumen_integracion)
 

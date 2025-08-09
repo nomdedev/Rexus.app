@@ -115,12 +115,12 @@ class UIConsistencyValidator:
                 
                 if inconsistencies:
                     inconsistent_files.extend(inconsistencies)
-                    print(f"  ⚠️  {view_file.name}: {len(inconsistencies)} inconsistencias")
+                    print(f"  [WARN]  {view_file.name}: {len(inconsistencies)} inconsistencias")
                 else:
-                    print(f"  ✅ {view_file.name}: Consistente")
+                    print(f"  [CHECK] {view_file.name}: Consistente")
                     
             except Exception as e:
-                print(f"  ❌ Error leyendo {view_file.name}: {e}")
+                print(f"  [ERROR] Error leyendo {view_file.name}: {e}")
         
         self.validation_results['component_consistency'] = inconsistent_files
         print(f"\nTotal inconsistencias de componentes: {len(inconsistent_files)}")
@@ -155,12 +155,12 @@ class UIConsistencyValidator:
                         'file': str(view_file.relative_to(self.project_root)),
                         'inline_styles': violations
                     })
-                    print(f"  ⚠️  {view_file.name}: {violations} estilos inline")
+                    print(f"  [WARN]  {view_file.name}: {violations} estilos inline")
                 else:
-                    print(f"  ✅ {view_file.name}: Sin estilos inline")
+                    print(f"  [CHECK] {view_file.name}: Sin estilos inline")
                     
             except Exception as e:
-                print(f"  ❌ Error leyendo {view_file.name}: {e}")
+                print(f"  [ERROR] Error leyendo {view_file.name}: {e}")
         
         self.validation_results['style_consistency'] = style_violations
         print(f"\nTotal violaciones de estilo: {len(style_violations)}")
@@ -201,11 +201,11 @@ class UIConsistencyValidator:
                         'total_layouts': sum(file_layouts.values())
                     })
                     
-                    status = "✅" if uses_helper else "⚠️ "
+                    status = "[CHECK]" if uses_helper else "[WARN] "
                     print(f"  {status} {view_file.name}: {sum(file_layouts.values())} layouts")
                 
             except Exception as e:
-                print(f"  ❌ Error leyendo {view_file.name}: {e}")
+                print(f"  [ERROR] Error leyendo {view_file.name}: {e}")
         
         self.validation_results['layout_consistency'] = layout_usage
         print(f"\nArchivos con layouts: {len(layout_usage)}")
@@ -245,13 +245,13 @@ class UIConsistencyValidator:
                         'colors': list(set(hardcoded_colors))  # Unique colors
                     })
                     
-                    status = "⚠️ " if not uses_rexus_colors else "🔶"
+                    status = "[WARN] " if not uses_rexus_colors else "🔶"
                     print(f"  {status} {view_file.name}: {len(hardcoded_colors)} colores hardcodeados")
                 else:
-                    print(f"  ✅ {view_file.name}: Sin colores hardcodeados")
+                    print(f"  [CHECK] {view_file.name}: Sin colores hardcodeados")
                     
             except Exception as e:
-                print(f"  ❌ Error leyendo {view_file.name}: {e}")
+                print(f"  [ERROR] Error leyendo {view_file.name}: {e}")
         
         self.validation_results['color_consistency'] = color_violations
         print(f"\nTotal violaciones de color: {len(color_violations)}")
@@ -281,14 +281,14 @@ class UIConsistencyValidator:
                             'setfont_usage': setfont_usage,
                             'uses_rexus_fonts': uses_rexus_fonts
                         })
-                        print(f"  ⚠️  {view_file.name}: Tipografía inconsistente")
+                        print(f"  [WARN]  {view_file.name}: Tipografía inconsistente")
                     else:
-                        print(f"  ✅ {view_file.name}: Usa RexusFonts")
+                        print(f"  [CHECK] {view_file.name}: Usa RexusFonts")
                 else:
-                    print(f"  ✅ {view_file.name}: Sin tipografía custom")
+                    print(f"  [CHECK] {view_file.name}: Sin tipografía custom")
                     
             except Exception as e:
-                print(f"  ❌ Error leyendo {view_file.name}: {e}")
+                print(f"  [ERROR] Error leyendo {view_file.name}: {e}")
         
         self.validation_results['typography_consistency'] = typography_violations
         print(f"\nTotal violaciones tipográficas: {len(typography_violations)}")
@@ -369,7 +369,7 @@ class UIConsistencyValidator:
         
         # Resumen de resultados
         lines.extend([
-            "📊 RESUMEN DE RESULTADOS",
+            "[CHART] RESUMEN DE RESULTADOS",
             "-" * 25,
             f"• Componentes inconsistentes: {len(self.validation_results['component_consistency'])}",
             f"• Archivos con estilos inline: {len(self.validation_results['style_consistency'])}",
@@ -417,7 +417,7 @@ class UIConsistencyValidator:
         ])
         
         if total_issues == 0:
-            status = "✅ EXCELENTE - UI Completamente Consistente"
+            status = "[CHECK] EXCELENTE - UI Completamente Consistente"
         elif total_issues <= 5:
             status = "🟡 BUENO - Pocas Inconsistencias"
         elif total_issues <= 15:

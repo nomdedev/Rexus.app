@@ -11,17 +11,17 @@ print("=== SIMPLE TEST RUNNER ===")
 # Test 1: Imports básicos
 print("\n1. Testing basic imports...")
 try:
-    print("  ✓ pytest")
+    print("  [OK] pytest")
 except ImportError:
     print("  ✗ pytest not available")
 
 try:
-    print("  ✓ unittest.mock")
+    print("  [OK] unittest.mock")
 except ImportError:
     print("  ✗ unittest.mock not available")
 
 try:
-    print("  ✓ PyQt6.QtWidgets")
+    print("  [OK] PyQt6.QtWidgets")
 except ImportError:
     print("  ✗ PyQt6.QtWidgets not available")
 
@@ -30,7 +30,7 @@ print("\n2. Testing pedidos controller...")
 try:
     model = DummyModel()
     pedido_id = model.generar_pedido(1)
-    print(f"  ✓ Pedido generated: {pedido_id}")
+    print(f"  [OK] Pedido generated: {pedido_id}")
 except Exception as e:
     print(f"  ✗ Error: {e}")
 
@@ -39,7 +39,7 @@ print("\n3. Testing edge cases...")
 try:
     test = TestEdgeCasesGeneral()
     test.test_strings_extremadamente_largos()
-    print("  ✓ String test passed")
+    print("  [OK] String test passed")
 except Exception as e:
 import os
 from tests.test_edge_cases import TestEdgeCasesGeneral

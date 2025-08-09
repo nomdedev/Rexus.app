@@ -34,7 +34,7 @@ def test_funcionalidad_doble_click():
         # Crear diálogo
         dialog = ObrasAsociadasDialog(item_data)
         
-        print("✅ Diálogo de obras asociadas creado exitosamente")
+        print("[CHECK] Diálogo de obras asociadas creado exitosamente")
         print(f"   Material: {item_data['codigo']} - {item_data['descripcion']}")
         print(f"   Ventana: {dialog.windowTitle()}")
         
@@ -54,14 +54,14 @@ def test_funcionalidad_doble_click():
                     else:
                         print(f"     Col {col}: [vacío]")
         
-        print("✅ Test de funcionalidad completado exitosamente")
+        print("[CHECK] Test de funcionalidad completado exitosamente")
         
         # No mostrar el diálogo para no bloquear
         # dialog.show()
         # return app.exec()
         
     except Exception as e:
-        print(f"❌ Error en test: {e}")
+        print(f"[ERROR] Error en test: {e}")
         import traceback
         traceback.print_exc()
     

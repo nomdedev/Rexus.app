@@ -46,12 +46,12 @@ def cleanup_old_tests():
         if path.exists():
             if path.is_dir():
                 shutil.rmtree(path)
-                print(f"   ✅ Eliminado directorio: {item}")
+                print(f"   [CHECK] Eliminado directorio: {item}")
             else:
                 path.unlink()
-                print(f"   ✅ Eliminado archivo: {item}")
+                print(f"   [CHECK] Eliminado archivo: {item}")
     
-    print("✅ Limpieza completada")
+    print("[CHECK] Limpieza completada")
 
 if __name__ == "__main__":
     cleanup_old_tests()

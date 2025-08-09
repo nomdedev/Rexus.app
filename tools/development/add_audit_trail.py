@@ -45,7 +45,7 @@ def add_audit_trail_to_tables():
         # Crear tabla de auditoría
         print("📋 Creando tabla de auditoría...")
         audit_trail._create_audit_table_if_not_exists()
-        print("✅ Tabla de auditoría creada")
+        print("[CHECK] Tabla de auditoría creada")
         
         # Procesar cada tabla
         success_count = 0
@@ -63,7 +63,7 @@ def add_audit_trail_to_tables():
                 """, (table_name,))
                 
                 if cursor.fetchone()[0] == 0:
-                    print(f"⚠️ Tabla {table_name} no existe, saltando...")
+                    print(f"[WARN] Tabla {table_name} no existe, saltando...")
                     continue
                 
                 # Crear modelo auditable
@@ -81,22 +81,22 @@ def add_audit_trail_to_tables():
                 timestamp_columns = cursor.fetchone()[0]
                 
                 if timestamp_columns >= 2:
-                    print(f"✅ Audit trail agregado a {table_name}")
+                    print(f"[CHECK] Audit trail agregado a {table_name}")
                     success_count += 1
                 else:
-                    print(f"⚠️ Audit trail parcialmente agregado a {table_name}")
+                    print(f"[WARN] Audit trail parcialmente agregado a {table_name}")
                     error_count += 1
                 
             except Exception as e:
-                print(f"❌ Error procesando {table_name}: {e}")
+                print(f"[ERROR] Error procesando {table_name}: {e}")
                 error_count += 1
         
         # Resumen final
         print("\n" + "=" * 50)
-        print("📊 RESUMEN DE AUDIT TRAIL:")
-        print(f"✅ Tablas procesadas exitosamente: {success_count}")
-        print(f"❌ Tablas con errores: {error_count}")
-        print(f"📊 Total: {success_count + error_count}")
+        print("[CHART] RESUMEN DE AUDIT TRAIL:")
+        print(f"[CHECK] Tablas procesadas exitosamente: {success_count}")
+        print(f"[ERROR] Tablas con errores: {error_count}")
+        print(f"[CHART] Total: {success_count + error_count}")
         
         if success_count > 0:
             print("\n🎉 Audit trail configurado exitosamente!")
@@ -137,20 +137,20 @@ def test_audit_trail():
         )
         
         if success:
-            print("✅ Logging manual exitoso")
+            print("[CHECK] Logging manual exitoso")
         else:
-            print("❌ Error en logging manual")
+            print("[ERROR] Error en logging manual")
         
         # Probar consulta de logs
         print("\n🔍 Probando consulta de logs...")
         logs = audit_trail.get_audit_log(limit=5)
         
         if logs:
-            print(f"✅ Consulta exitosa: {len(logs)} registros encontrados")
+            print(f"[CHECK] Consulta exitosa: {len(logs)} registros encontrados")
             for log in logs[:3]:  # Mostrar solo los primeros 3
                 print(f"  • {log['fecha_cambio']} - {log['accion']} en {log['tabla']}")
         else:
-            print("⚠️ No se encontraron logs")
+            print("[WARN] No se encontraron logs")
         
         # Probar modelo auditable
         print("\n🔧 Probando modelo auditable...")
@@ -165,15 +165,15 @@ def test_audit_trail():
         
         if cursor.fetchone()[0] > 0:
             auditable_model = AuditableModel('usuarios', audit_trail)
-            print("✅ Modelo auditable creado exitosamente")
+            print("[CHECK] Modelo auditable creado exitosamente")
         else:
-            print("⚠️ Tabla 'usuarios' no encontrada para prueba")
+            print("[WARN] Tabla 'usuarios' no encontrada para prueba")
         
-        print("\n✅ Todas las pruebas de audit trail completadas")
+        print("\n[CHECK] Todas las pruebas de audit trail completadas")
         return True
         
     except Exception as e:
-        print(f"❌ Error en pruebas de audit trail: {e}")
+        print(f"[ERROR] Error en pruebas de audit trail: {e}")
         return False
 
 
@@ -248,7 +248,7 @@ logs_inventario = audit_trail.get_audit_log(
     print("• Consultas filtradas por fecha, usuario, tabla")
     print("• Limpieza automática de logs antiguos")
     
-    print("\n📊 COLUMNAS DE AUDIT TRAIL:")
+    print("\n[CHART] COLUMNAS DE AUDIT TRAIL:")
     print("• id: ID único del registro de auditoría")
     print("• tabla: Nombre de la tabla afectada")
     print("• accion: Tipo de acción (INSERT, UPDATE, DELETE)")
@@ -266,7 +266,7 @@ logs_inventario = audit_trail.get_audit_log(
 def main():
     """Función principal"""
     
-    print("🚀 CONFIGURACIÓN DE AUDIT TRAIL - Rexus.app")
+    print("[ROCKET] CONFIGURACIÓN DE AUDIT TRAIL - Rexus.app")
     print("=" * 60)
     
     # Agregar audit trail a tablas
@@ -288,10 +288,10 @@ def main():
             
             return 0
         else:
-            print("\n⚠️ Configuración completada pero las pruebas fallaron.")
+            print("\n[WARN] Configuración completada pero las pruebas fallaron.")
             return 1
     else:
-        print("\n❌ Error en la configuración del audit trail.")
+        print("\n[ERROR] Error en la configuración del audit trail.")
         return 1
 
 

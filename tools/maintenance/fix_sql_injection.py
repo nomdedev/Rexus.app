@@ -77,19 +77,19 @@ def fix_sql_injection_in_file(file_path):
         if content != original_content:
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
-            print(f"  ✅ {changes_made} correcciones aplicadas")
+            print(f"  [CHECK] {changes_made} correcciones aplicadas")
             return True
         else:
             print("  ℹ️  No se necesitaron cambios")
             return False
             
     except Exception as e:
-        print(f"  ❌ Error procesando archivo: {e}")
+        print(f"  [ERROR] Error procesando archivo: {e}")
         return False
 
 def main():
     """Función principal"""
-    print("🔒 CORRECTOR DE VULNERABILIDADES SQL INJECTION")
+    print("[LOCK] CORRECTOR DE VULNERABILIDADES SQL INJECTION")
     print("=" * 50)
     
     # Archivos específicos del security audit
@@ -117,10 +117,10 @@ def main():
             if fix_sql_injection_in_file(file_path):
                 files_fixed += 1
         else:
-            print(f"⚠️  Archivo no encontrado: {file_path}")
+            print(f"[WARN]  Archivo no encontrado: {file_path}")
     
     print("\n" + "=" * 50)
-    print("📊 RESUMEN")
+    print("[CHART] RESUMEN")
     print(f"Archivos procesados: {total_files}")
     print(f"Archivos corregidos: {files_fixed}")
     

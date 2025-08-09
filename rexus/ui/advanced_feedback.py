@@ -312,9 +312,9 @@ class ToastNotification(QFrame):
         # Iconos por tipo
         icons = {
             "info": "ℹ️",
-            "success": "✅", 
-            "warning": "⚠️",
-            "error": "❌"
+            "success": "[CHECK]", 
+            "warning": "[WARN]",
+            "error": "[ERROR]"
         }
         
         # Configurar contenido

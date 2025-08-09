@@ -48,6 +48,7 @@ from rexus.ui.style_manager import style_manager
 from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class HerrajesView(QWidget):
@@ -147,7 +148,7 @@ class HerrajesView(QWidget):
             ("✏️ Editar", "secondary", self.on_editar_herraje),
             ("🗑️ Eliminar", "danger", self.on_eliminar_herraje),
             ("🔄 Actualizar", "info", self.on_actualizar_datos),
-            ("📊 Exportar", "success", self.on_exportar_datos)
+            ("[CHART] Exportar", "success", self.on_exportar_datos)
         ]
 
         for texto, estilo, funcion in botones:
@@ -182,7 +183,7 @@ class HerrajesView(QWidget):
                 "id": "en_stock"
             },
             {
-                "icon": "⚠️",
+                "icon": "[WARN]",
                 "title": "Stock Bajo", 
                 "value": "0",
                 "color": RexusColors.WARNING,

@@ -35,12 +35,12 @@ def verificar_estructura_tablas():
             for col in columnas:
                 print(f"   • {col[0]} ({col[1]}) - Nullable: {col[2]}")
         else:
-            print("   ❌ Tabla no encontrada o sin columnas")
+            print("   [ERROR] Tabla no encontrada o sin columnas")
 
         # Aquí puedes agregar más verificaciones de tablas si lo necesitas
 
     except Exception as e:
-        print(f"❌ Error verificando estructura: {e}")
+        print(f"[ERROR] Error verificando estructura: {e}")
 
 
 def main():

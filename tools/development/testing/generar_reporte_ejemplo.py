@@ -15,7 +15,7 @@ from datetime import datetime
     # Crear directorio de reportes si no existe
     os.makedirs("tests/reports", exist_ok=True)
 
-    print("📊 GENERANDO REPORTE COMPLETO DE TESTS")
+    print("[CHART] GENERANDO REPORTE COMPLETO DE TESTS")
     print("=" * 50)
 
     # Ejecutar tests con cobertura
@@ -92,7 +92,7 @@ open tests/reports/coverage_html/index.html
     with open("tests/reports/README.md", "w", encoding="utf-8") as f:
         f.write(readme_content)
 
-    print("✅ REPORTE COMPLETADO")
+    print("[CHECK] REPORTE COMPLETADO")
     print(f"📁 Archivos guardados en: tests/reports/")
     print(f"🌐 Ver cobertura: tests/reports/coverage_html/index.html")
 

@@ -109,10 +109,10 @@ class TestXSSProtectionComplete:
                                 assert 'onerror=' not in param_str
                                 assert 'onload=' not in param_str
                                 
-                    print(f"✓ Stored XSS prevenido")
+                    print(f"[OK] Stored XSS prevenido")
                     
             except Exception as e:
-                print(f"✓ Stored XSS detectado: {str(e)[:100]}")
+                print(f"[OK] Stored XSS detectado: {str(e)[:100]}")
 
     def test_reflected_xss_in_search(self, mock_database, usuario_mock):
         """Test prevención de Reflected XSS en búsquedas."""
@@ -149,10 +149,10 @@ class TestXSSProtectionComplete:
                         assert 'onerror=' not in result_str
                         assert 'onload=' not in result_str
                         
-                    print(f"✓ Reflected XSS prevenido")
+                    print(f"[OK] Reflected XSS prevenido")
                     
             except Exception as e:
-                print(f"✓ Reflected XSS detectado: {str(e)[:100]}")
+                print(f"[OK] Reflected XSS detectado: {str(e)[:100]}")
 
     def test_dom_xss_in_ui_components(self, usuario_mock):
         """Test prevención de DOM XSS en componentes UI."""
@@ -201,10 +201,10 @@ class TestXSSProtectionComplete:
                 plain_text = text_edit.toPlainText()
                 assert '<script>' not in plain_text.lower()
                 
-                print(f"✓ DOM XSS prevenido en UI")
+                print(f"[OK] DOM XSS prevenido en UI")
                 
             except Exception as e:
-                print(f"✓ DOM XSS detectado en UI: {str(e)[:100]}")
+                print(f"[OK] DOM XSS detectado en UI: {str(e)[:100]}")
 
     def test_xss_in_csv_export(self, mock_database, usuario_mock):
         """Test XSS en exportación CSV."""
@@ -253,10 +253,10 @@ class TestXSSProtectionComplete:
                         assert 'cmd|' not in line
                         assert 'powershell' not in line.lower()
                         
-                    print(f"✓ CSV XSS prevenido")
+                    print(f"[OK] CSV XSS prevenido")
                     
             except Exception as e:
-                print(f"✓ CSV XSS detectado: {str(e)[:100]}")
+                print(f"[OK] CSV XSS detectado: {str(e)[:100]}")
 
     def _simulate_csv_export(self, data):
         """Simula exportación CSV con sanitización."""
@@ -325,10 +325,10 @@ class TestXSSProtectionComplete:
                 parsed_back = json.loads(json_output)
                 assert isinstance(parsed_back, dict)
                 
-                print(f"✓ JSON XSS prevenido")
+                print(f"[OK] JSON XSS prevenido")
                 
             except Exception as e:
-                print(f"✓ JSON XSS detectado: {str(e)[:100]}")
+                print(f"[OK] JSON XSS detectado: {str(e)[:100]}")
 
     def test_context_aware_xss_filtering(self, mock_database, usuario_mock):
         """Test filtrado XSS consciente del contexto."""
@@ -364,10 +364,10 @@ class TestXSSProtectionComplete:
                 elif context == 'url_parameter':
                     assert 'javascript:' not in sanitized.lower()
                 
-                print(f"✓ Context-aware filtering para {context}")
+                print(f"[OK] Context-aware filtering para {context}")
                 
             except Exception as e:
-                print(f"✓ Context filtering error: {str(e)[:100]}")
+                print(f"[OK] Context filtering error: {str(e)[:100]}")
 
     def _sanitize_by_context(self, value, context):
         """Sanitiza valor según el contexto."""
@@ -421,10 +421,10 @@ class TestXSSProtectionComplete:
                 assert 'onerror=' not in second_pass.lower()
                 assert 'alert(' not in second_pass
                 
-                print(f"✓ Mutation XSS prevenido")
+                print(f"[OK] Mutation XSS prevenido")
                 
             except Exception as e:
-                print(f"✓ Mutation XSS detectado: {str(e)[:100]}")
+                print(f"[OK] Mutation XSS detectado: {str(e)[:100]}")
 
     def test_polyglot_xss_prevention(self, mock_database, usuario_mock):
         """Test prevención de Polyglot XSS (funciona en múltiples contextos)."""
@@ -461,10 +461,10 @@ class TestXSSProtectionComplete:
                     assert 'onload=' not in sanitized_lower
                     assert 'alert(' not in sanitized_lower
                     
-                print(f"✓ Polyglot XSS prevenido en todos los contextos")
+                print(f"[OK] Polyglot XSS prevenido en todos los contextos")
                 
             except Exception as e:
-                print(f"✓ Polyglot XSS detectado: {str(e)[:100]}")
+                print(f"[OK] Polyglot XSS detectado: {str(e)[:100]}")
 
 
 if __name__ == "__main__":

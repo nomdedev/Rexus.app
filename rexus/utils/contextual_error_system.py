@@ -387,8 +387,8 @@ class ContextualErrorDialog(QDialog):
         """Obtiene el icono según la severidad."""
         icons = {
             ErrorSeverity.INFO: "ℹ️",
-            ErrorSeverity.WARNING: "⚠️",
-            ErrorSeverity.ERROR: "❌",
+            ErrorSeverity.WARNING: "[WARN]",
+            ErrorSeverity.ERROR: "[ERROR]",
             ErrorSeverity.CRITICAL: "🚨",
         }
         return icons.get(self.error.severity, "❓")

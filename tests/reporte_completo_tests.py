@@ -112,9 +112,9 @@ def generate_report():
 
         # Mostrar resumen de este test
         if success:
-            print(f"✅ ÉXITO: {tests_count} tests ejecutados, todos pasaron")
+            print(f"[CHECK] ÉXITO: {tests_count} tests ejecutados, todos pasaron")
         else:
-            print(f"❌ FALLOS: {tests_count} tests ejecutados, {failed_count} fallaron")
+            print(f"[ERROR] FALLOS: {tests_count} tests ejecutados, {failed_count} fallaron")
 
         print(f"⏱️  Tiempo: {execution_time:.2f}s")
         print()
@@ -154,7 +154,7 @@ def generate_report():
         print("=" * 80)
         for result in detailed_results:
             if not result["success"]:
-                print(f"❌ {result['description']}")
+                print(f"[ERROR] {result['description']}")
                 print(f"   Archivo: {result['file']}")
                 print(f"   Fallos: {result['failed']}/{result['tests']}")
                 if result["stderr"]:
@@ -167,16 +167,16 @@ def generate_report():
     print("=" * 80)
 
     functionalities = [
-        ("Validación de contraseñas", "✅ Completamente validado"),
-        ("Validación de nombres de usuario", "✅ Completamente validado"),
-        ("Validación de emails", "✅ Completamente validado"),
-        ("Autenticación de usuarios", "✅ Completamente validado"),
-        ("Protección del usuario admin", "✅ Completamente validado"),
-        ("Prevención de inyección SQL", "✅ Completamente validado"),
-        ("Prevención de XSS", "✅ Completamente validado"),
-        ("Manejo de edge cases", "✅ Completamente validado"),
-        ("Concurrencia", "✅ Completamente validado"),
-        ("Performance bajo carga", "✅ Completamente validado"),
+        ("Validación de contraseñas", "[CHECK] Completamente validado"),
+        ("Validación de nombres de usuario", "[CHECK] Completamente validado"),
+        ("Validación de emails", "[CHECK] Completamente validado"),
+        ("Autenticación de usuarios", "[CHECK] Completamente validado"),
+        ("Protección del usuario admin", "[CHECK] Completamente validado"),
+        ("Prevención de inyección SQL", "[CHECK] Completamente validado"),
+        ("Prevención de XSS", "[CHECK] Completamente validado"),
+        ("Manejo de edge cases", "[CHECK] Completamente validado"),
+        ("Concurrencia", "[CHECK] Completamente validado"),
+        ("Performance bajo carga", "[CHECK] Completamente validado"),
     ]
 
     for func, status in functionalities:
@@ -188,15 +188,15 @@ def generate_report():
     print("=" * 80)
 
     if all_success:
-        print("✅ El sistema de gestión de usuarios está listo para producción")
-        print("✅ Todas las validaciones de seguridad están funcionando")
-        print("✅ Todos los edge cases están manejados apropiadamente")
-        print("✅ La protección del usuario admin está garantizada")
-        print("✅ El sistema es resistente a ataques de inyección")
+        print("[CHECK] El sistema de gestión de usuarios está listo para producción")
+        print("[CHECK] Todas las validaciones de seguridad están funcionando")
+        print("[CHECK] Todos los edge cases están manejados apropiadamente")
+        print("[CHECK] La protección del usuario admin está garantizada")
+        print("[CHECK] El sistema es resistente a ataques de inyección")
     else:
-        print("⚠️  Revisar y corregir los tests fallidos antes del despliegue")
-        print("⚠️  Verificar que todas las validaciones de seguridad funcionen")
-        print("⚠️  Asegurar que los edge cases estén correctamente manejados")
+        print("[WARN]  Revisar y corregir los tests fallidos antes del despliegue")
+        print("[WARN]  Verificar que todas las validaciones de seguridad funcionen")
+        print("[WARN]  Asegurar que los edge cases estén correctamente manejados")
 
     print()
     print("=" * 80)

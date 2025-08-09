@@ -31,9 +31,9 @@ def test_integracion_visual():
         try:
             db_connection.conectar()
             print(
-                f"   ✓ Conexión establecida correctamente a base de datos: {db_connection.database}"
+                f"   [OK] Conexión establecida correctamente a base de datos: {db_connection.database}"
             )
-            print(f"   ✓ Servidor: {db_connection.server}")
+            print(f"   [OK] Servidor: {db_connection.server}")
         except Exception as e:
             print(f"   ✗ Error de conexión: {e}")
             print(
@@ -58,7 +58,7 @@ def test_integracion_visual():
         ]
         for columna in columnas_integracion:
             if columna in headers:
-                print(f"   ✓ Columna '{columna}' incluida correctamente")
+                print(f"   [OK] Columna '{columna}' incluida correctamente")
             else:
                 print(f"   ✗ Columna '{columna}' NO encontrada")
 
@@ -87,38 +87,38 @@ def test_integracion_visual():
         # Importar y verificar modelos
         try:
             inventario_model = InventarioModel(db_connection)
-            print("   ✓ InventarioModel importado correctamente")
+            print("   [OK] InventarioModel importado correctamente")
 
             vidrios_model = VidriosModel(db_connection)
-            print("   ✓ VidriosModel importado correctamente")
+            print("   [OK] VidriosModel importado correctamente")
 
             herrajes_model = HerrajesModel(db_connection)
-            print("   ✓ HerrajesModel importado correctamente")
+            print("   [OK] HerrajesModel importado correctamente")
 
             contabilidad_model = ContabilidadModel(db_connection)
-            print("   ✓ ContabilidadModel importado correctamente")
+            print("   [OK] ContabilidadModel importado correctamente")
 
             # Verificar métodos de estado
             if hasattr(inventario_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ InventarioModel.obtener_estado_pedido_por_obra disponible")
+                print("   [OK] InventarioModel.obtener_estado_pedido_por_obra disponible")
             else:
                 print(
                     "   ✗ InventarioModel.obtener_estado_pedido_por_obra NO disponible"
                 )
 
             if hasattr(vidrios_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ VidriosModel.obtener_estado_pedido_por_obra disponible")
+                print("   [OK] VidriosModel.obtener_estado_pedido_por_obra disponible")
             else:
                 print("   ✗ VidriosModel.obtener_estado_pedido_por_obra NO disponible")
 
             if hasattr(herrajes_model, "obtener_estado_pedido_por_obra"):
-                print("   ✓ HerrajesModel.obtener_estado_pedido_por_obra disponible")
+                print("   [OK] HerrajesModel.obtener_estado_pedido_por_obra disponible")
             else:
                 print("   ✗ HerrajesModel.obtener_estado_pedido_por_obra NO disponible")
 
             if hasattr(contabilidad_model, "obtener_estado_pago_pedido_por_obra"):
                 print(
-                    "   ✓ ContabilidadModel.obtener_estado_pago_pedido_por_obra disponible"
+                    "   [OK] ContabilidadModel.obtener_estado_pago_pedido_por_obra disponible"
                 )
             else:
                 print(
@@ -196,7 +196,7 @@ def test_integracion_visual():
                     print(f"   Estado Pago: error ({str(e)[:50]}...)")
 
                 print(
-                    "   ✓ Métodos de consulta de estado funcionando (errores esperados si faltan tablas)"
+                    "   [OK] Métodos de consulta de estado funcionando (errores esperados si faltan tablas)"
                 )
                 print(
                     f"   ℹ️  Nota: Para funcionalidad completa, verificar que existan las tablas:"
@@ -209,11 +209,11 @@ def test_integracion_visual():
             print(f"   ✗ Error importando modelos: {e}")
             assert False is not None
         print("\n=== RESULTADO ===")
-        print("✓ La integración cruzada entre módulos está funcionando correctamente")
-        print("✓ La tabla de obras incluye columnas para mostrar estados de pedidos")
-        print("✓ Los modelos tienen los métodos necesarios para la integración")
-        print("✓ El sistema está listo para mostrar estados de pedidos en tiempo real")
-        print("✓ La conexión a la base de datos funciona correctamente")
+        print("[OK] La integración cruzada entre módulos está funcionando correctamente")
+        print("[OK] La tabla de obras incluye columnas para mostrar estados de pedidos")
+        print("[OK] Los modelos tienen los métodos necesarios para la integración")
+        print("[OK] El sistema está listo para mostrar estados de pedidos en tiempo real")
+        print("[OK] La conexión a la base de datos funciona correctamente")
 
         return True
 

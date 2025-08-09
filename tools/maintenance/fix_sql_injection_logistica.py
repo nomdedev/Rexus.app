@@ -14,7 +14,7 @@ def fix_sql_injections_logistica():
     file_path = r"C:\Users\Oficina\Documents\Proyectos\Apps\Rexus.app\rexus\modules\logistica\model.py"
 
     if not os.path.exists(file_path):
-        print(f"❌ Archivo no encontrado: {file_path}")
+        print(f"[ERROR] Archivo no encontrado: {file_path}")
         return
 
     # Leer el archivo
@@ -76,7 +76,7 @@ def fix_sql_injections_logistica():
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)
             )
             changes_made += matches
-            print(f"✅ Reemplazado {matches} ocurrencias de: {pattern[:50]}...")
+            print(f"[CHECK] Reemplazado {matches} ocurrencias de: {pattern[:50]}...")
 
     # Aplicar reparaciones adicionales para f-strings
     additional_fixes = [
@@ -103,7 +103,7 @@ def fix_sql_injections_logistica():
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)
             )
             changes_made += matches
-            print(f"✅ Reparación adicional: {matches} ocurrencias")
+            print(f"[CHECK] Reparación adicional: {matches} ocurrencias")
 
     # Guardar si hubo cambios
     if content != original_content:
@@ -136,8 +136,8 @@ if __name__ == "__main__":
 
     print("\n" + "=" * 70)
     if success:
-        print("✅ PROCESO COMPLETADO EXITOSAMENTE")
-        print("📊 PROGRESO TOTAL: MantenimientoModel + LogisticaModel REPARADOS")
+        print("[CHECK] PROCESO COMPLETADO EXITOSAMENTE")
+        print("[CHART] PROGRESO TOTAL: MantenimientoModel + LogisticaModel REPARADOS")
         print("🧪 RECOMENDADO: Ejecutar tests para validar funcionalidad")
     else:
         print("ℹ️ PROCESO COMPLETADO - Sin cambios necesarios")

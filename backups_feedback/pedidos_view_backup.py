@@ -122,7 +122,7 @@ class PedidosView(QWidget):
 
         # Pestaña de estadísticas
         tab_estadisticas = self.crear_tab_estadisticas()
-        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
+        self.tab_widget.addTab(tab_estadisticas, "[CHART] Estadísticas")
 
         layout.addWidget(self.tab_widget)
 
@@ -222,7 +222,7 @@ class PedidosView(QWidget):
         self.btn_actualizar = QPushButton("🔄 Actualizar")
         self.btn_actualizar.clicked.connect(self.cargar_pedidos)
 
-        self.btn_exportar = QPushButton("📊 Exportar")
+        self.btn_exportar = QPushButton("[CHART] Exportar")
         self.btn_exportar.clicked.connect(self.exportar_pedidos)
 
         toolbar_layout.addWidget(self.search_input)
@@ -370,7 +370,7 @@ class PedidosView(QWidget):
         self.btn_guardar_pedido = QPushButton("💾 Guardar Pedido")
         self.btn_guardar_pedido.clicked.connect(self.guardar_pedido)
 
-        self.btn_cancelar_edicion = QPushButton("❌ Cancelar")
+        self.btn_cancelar_edicion = QPushButton("[ERROR] Cancelar")
         self.btn_cancelar_edicion.clicked.connect(self.cancelar_edicion)
 
         self.btn_imprimir = QPushButton("🖨️ Imprimir")
@@ -446,7 +446,7 @@ class PedidosView(QWidget):
         graficos_group = QGroupBox("Análisis de Tendencias")
         graficos_layout = QVBoxLayout(graficos_group)
 
-        placeholder_label = QLabel("📊 Gráficos de análisis (próximamente)")
+        placeholder_label = QLabel("[CHART] Gráficos de análisis (próximamente)")
         placeholder_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         placeholder_label.setStyleSheet(
             "color: #7f8c8d; font-size: 18px; padding: 50px;"

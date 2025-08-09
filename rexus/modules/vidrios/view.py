@@ -171,7 +171,7 @@ class VidriosView(BaseModuleView):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas de vidrios."""
-        panel = RexusGroupBox("📊 Estadísticas de Vidrios")
+        panel = RexusGroupBox("[CHART] Estadísticas de Vidrios")
         layout = RexusLayoutHelper.create_horizontal_layout()
 
         # Total vidrios
@@ -179,7 +179,7 @@ class VidriosView(BaseModuleView):
         layout.addWidget(self.lbl_total_vidrios)
 
         # Vidrios disponibles
-        self.lbl_vidrios_disponibles = self.crear_stat_widget("✅", "Disponibles", "0", "#28a745")
+        self.lbl_vidrios_disponibles = self.crear_stat_widget("[CHECK]", "Disponibles", "0", "#28a745")
         layout.addWidget(self.lbl_vidrios_disponibles)
 
         # En proceso
@@ -233,7 +233,7 @@ class VidriosView(BaseModuleView):
             "🎨 Color/Acabado",
             "📦 Stock",
             "💰 Precio m²",
-            "📊 Estado",
+            "[CHART] Estado",
             "⚡ Acciones"
         ])
 

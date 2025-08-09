@@ -307,22 +307,22 @@ if __name__ == "__main__":
         
         try:
             test_suite.test_validar_fortaleza_password_valida()
-            print("✅ Test contraseña válida - PASADO")
+            print("[CHECK] Test contraseña válida - PASADO")
         except Exception as e:
-            print(f"❌ Test contraseña válida - FALLIDO: {e}")
+            print(f"[ERROR] Test contraseña válida - FALLIDO: {e}")
         
         try:
             test_suite.test_validar_fortaleza_password_debil()
-            print("✅ Test contraseña débil - PASADO")
+            print("[CHECK] Test contraseña débil - PASADO")
         except Exception as e:
-            print(f"❌ Test contraseña débil - FALLIDO: {e}")
+            print(f"[ERROR] Test contraseña débil - FALLIDO: {e}")
         
         try:
             test_suite.test_validar_fortaleza_password_comun()
-            print("✅ Test contraseña común - PASADO")
+            print("[CHECK] Test contraseña común - PASADO")
         except Exception as e:
-            print(f"❌ Test contraseña común - FALLIDO: {e}")
+            print(f"[ERROR] Test contraseña común - FALLIDO: {e}")
         
         print("=== TESTS DE AUTHENTICATION MANAGER COMPLETADOS ===")
     else:
-        print("❌ AuthenticationManager no disponible para testing")
+        print("[ERROR] AuthenticationManager no disponible para testing")

@@ -14,17 +14,17 @@ def fix_broken_strings_by_xss_comments(content: str) -> str:
     """Corrige strings rotos por comentarios XSS mal ubicados."""
     
     # Patrón 1: String que se rompe por comentarios XSS
-    # Ejemplo: "Hasta:\n        # 🔒 PROTECCIÓN XSS...\n"))
-    pattern1 = r'("[^"]*?)\n\s*#\s*🔒.*?XSS.*?\n.*?#.*?\n.*?#.*?\n([^"]*")'
+    # Ejemplo: "Hasta:\n        # [LOCK] PROTECCIÓN XSS...\n"))
+    pattern1 = r'("[^"]*?)\n\s*#\s*[LOCK].*?XSS.*?\n.*?#.*?\n.*?#.*?\n([^"]*")'
     content = re.sub(pattern1, r'\1\2', content, flags=re.DOTALL)
     
     # Patrón 2: String interrumpido por comentarios en la misma línea
-    # Ejemplo: "background-color:\n        # 🔒...\n #f39c12;"
-    pattern2 = r'("[^"]*?:)\n\s*#\s*🔒.*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*([^"]*")'
+    # Ejemplo: "background-color:\n        # [LOCK]...\n #f39c12;"
+    pattern2 = r'("[^"]*?:)\n\s*#\s*[LOCK].*?XSS.*?\n.*?#.*?\n.*?#.*?\n\s*([^"]*")'
     content = re.sub(pattern2, r'\1 \2', content, flags=re.DOTALL)
     
     # Patrón 3: Comentarios XSS dentro de parámetros de función
-    pattern3 = r'(\([^)]*?"[^"]*?)\n\s*#\s*🔒.*?XSS.*?\n.*?#.*?\n.*?#.*?\n([^"]*"[^)]*\))'
+    pattern3 = r'(\([^)]*?"[^"]*?)\n\s*#\s*[LOCK].*?XSS.*?\n.*?#.*?\n.*?#.*?\n([^"]*"[^)]*\))'
     content = re.sub(pattern3, r'\1\2', content, flags=re.DOTALL)
     
     # Limpiar comentarios XSS que quedaron colgando
@@ -34,7 +34,7 @@ def fix_broken_strings_by_xss_comments(content: str) -> str:
     
     for line in lines:
         # Detectar inicio de bloque XSS mal ubicado
-        if '🔒' in line and 'XSS' in line and line.strip().startswith('#'):
+        if '[LOCK]' in line and 'XSS' in line and line.strip().startswith('#'):
             skip_xss_block = True
             continue
         

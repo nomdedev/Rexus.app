@@ -328,9 +328,9 @@ class FeedbackManager(QObject):
             # Iconos para cada tipo
             icons = {
                 "info": "ℹ️",
-                "success": "✅",
-                "warning": "⚠️",
-                "error": "❌"
+                "success": "[CHECK]",
+                "warning": "[WARN]",
+                "error": "[ERROR]"
             }
             
             icon = icons.get(tipo, "ℹ️")

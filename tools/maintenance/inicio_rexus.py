@@ -101,7 +101,7 @@ def start_application():
 def main():
     """Función principal."""
     print("=" * 50)
-    print("🚀 INICIANDO REXUS.APP v2.0.0")
+    print("[ROCKET] INICIANDO REXUS.APP v2.0.0")
     print("=" * 50)
     
     # Configurar entorno

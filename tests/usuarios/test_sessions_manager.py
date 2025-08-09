@@ -334,22 +334,22 @@ if __name__ == "__main__":
         
         try:
             test_suite.test_generar_session_id_unico()
-            print("✅ Test generar session ID - PASADO")
+            print("[CHECK] Test generar session ID - PASADO")
         except Exception as e:
-            print(f"❌ Test generar session ID - FALLIDO: {e}")
+            print(f"[ERROR] Test generar session ID - FALLIDO: {e}")
         
         try:
             test_suite.test_verificar_limite_sesiones_no_excedido()
-            print("✅ Test límite sesiones (no excedido) - PASADO")
+            print("[CHECK] Test límite sesiones (no excedido) - PASADO")
         except Exception as e:
-            print(f"❌ Test límite sesiones (no excedido) - FALLIDO: {e}")
+            print(f"[ERROR] Test límite sesiones (no excedido) - FALLIDO: {e}")
         
         try:
             test_suite.test_verificar_limite_sesiones_excedido()
-            print("✅ Test límite sesiones (excedido) - PASADO")
+            print("[CHECK] Test límite sesiones (excedido) - PASADO")
         except Exception as e:
-            print(f"❌ Test límite sesiones (excedido) - FALLIDO: {e}")
+            print(f"[ERROR] Test límite sesiones (excedido) - FALLIDO: {e}")
         
         print("=== TESTS DE SESSIONS MANAGER COMPLETADOS ===")
     else:
-        print("❌ SessionsManager no disponible para testing")
+        print("[ERROR] SessionsManager no disponible para testing")

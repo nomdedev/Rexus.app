@@ -509,16 +509,16 @@ def run_extreme_edge_cases_tests():
     # Evaluación de resistencia
     if success_rate >= 95:
         print("🛡️ SISTEMA: EXTREMADAMENTE RESISTENTE")
-        print("✅ Maneja casos edge críticos exitosamente")
+        print("[CHECK] Maneja casos edge críticos exitosamente")
     elif success_rate >= 85:
-        print("🔒 SISTEMA: ALTAMENTE RESISTENTE")
-        print("⚠️ Algunos casos edge requieren atención")
+        print("[LOCK] SISTEMA: ALTAMENTE RESISTENTE")
+        print("[WARN] Algunos casos edge requieren atención")
     elif success_rate >= 70:
         print("⚡ SISTEMA: MODERADAMENTE RESISTENTE")
         print("🔧 Varios casos edge necesitan mejoras")
     else:
         print("🚨 SISTEMA: BAJA RESISTENCIA")
-        print("❌ Casos edge críticos fallan - requiere atención inmediata")
+        print("[ERROR] Casos edge críticos fallan - requiere atención inmediata")
     
     return result.wasSuccessful()
 

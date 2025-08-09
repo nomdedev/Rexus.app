@@ -26,24 +26,24 @@ class OptimizationManager:
         try:
             from .intelligent_cache import cache_instance
             self.cache_system = cache_instance
-            print("✅ Cache inteligente inicializado")
+            print("[CHECK] Cache inteligente inicializado")
         except ImportError:
-            print("⚠️ Cache inteligente no disponible")
+            print("[WARN] Cache inteligente no disponible")
         
         try:
             from .lazy_loader import lazy_loader, preload_essential_modules
             self.lazy_loader = lazy_loader
             preload_essential_modules()
-            print("✅ Carga bajo demanda inicializada")
+            print("[CHECK] Carga bajo demanda inicializada")
         except ImportError:
-            print("⚠️ Carga bajo demanda no disponible")
+            print("[WARN] Carga bajo demanda no disponible")
         
         try:
             from .backup_compressor import backup_compressor
             self.backup_compressor = backup_compressor
-            print("✅ Compresión de backups inicializada")
+            print("[CHECK] Compresión de backups inicializada")
         except ImportError:
-            print("⚠️ Compresión de backups no disponible")
+            print("[WARN] Compresión de backups no disponible")
     
     def get_performance_report(self) -> Dict[str, Any]:
         """Genera reporte de rendimiento"""

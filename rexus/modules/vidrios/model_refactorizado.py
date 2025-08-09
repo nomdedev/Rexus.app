@@ -250,7 +250,7 @@ class ModeloVidriosRefactorizado:
         DEPRECADO: Usar obtener_todos_vidrios() o obtener_vidrios_paginados()
         """
         print(
-            "⚠️  Método deprecado. Usar obtener_todos_vidrios() o obtener_vidrios_paginados()"
+            "[WARN]  Método deprecado. Usar obtener_todos_vidrios() o obtener_vidrios_paginados()"
         )
         return self.obtener_todos_vidrios()
 
@@ -258,14 +258,14 @@ class ModeloVidriosRefactorizado:
         """
         DEPRECADO: Usar buscar_vidrios()
         """
-        print("⚠️  Método deprecado. Usar buscar_vidrios()")
+        print("[WARN]  Método deprecado. Usar buscar_vidrios()")
         return self.buscar_vidrios(criterio)
 
     def obtener_estadisticas(self) -> Dict[str, Any]:
         """
         DEPRECADO: Usar obtener_estadisticas_vidrios()
         """
-        print("⚠️  Método deprecado. Usar obtener_estadisticas_vidrios()")
+        print("[WARN]  Método deprecado. Usar obtener_estadisticas_vidrios()")
         return self.obtener_estadisticas_vidrios()
 
 

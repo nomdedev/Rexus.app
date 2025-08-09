@@ -534,8 +534,8 @@ def test_basic_integration():
         summary = widget.get_interaction_summary()
         assert summary['total_interactions'] >= 5
 
-        print(f"✓ Integración básica: {operations_completed} operaciones completadas")
-        print(f"✓ Resumen: {summary}")
+        print(f"[OK] Integración básica: {operations_completed} operaciones completadas")
+        print(f"[OK] Resumen: {summary}")
 
         # Test completado exitosamente
         assert True
@@ -578,7 +578,7 @@ def test_stress_integration():
         assert widget.error_count < 3
 
         summary = widget.get_interaction_summary()
-        print(f"✓ Estrés básico: {summary}")
+        print(f"[OK] Estrés básico: {summary}")
 
         # Test completado exitosamente
         assert True
@@ -599,13 +599,13 @@ if __name__ == "__main__":
     try:
         # Test de integración básica
         if test_basic_integration():
-            print("✓ Test de integración básica: PASSED")
+            print("[OK] Test de integración básica: PASSED")
         else:
             print("✗ Test de integración básica: FAILED")
 
         # Test de estrés
         if test_stress_integration():
-            print("✓ Test de estrés básico: PASSED")
+            print("[OK] Test de estrés básico: PASSED")
         else:
             print("✗ Test de estrés básico: FAILED")
 

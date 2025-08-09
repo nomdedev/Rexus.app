@@ -68,7 +68,7 @@ def validate_config_file(config_path):
     """Valida un archivo de configuración existente"""
     
     if not config_path.exists():
-        print(f"❌ Archivo de configuración no encontrado: {config_path}")
+        print(f"[ERROR] Archivo de configuración no encontrado: {config_path}")
         return False
     
     print(f"🔧 Validando: {config_path.name}")
@@ -78,10 +78,10 @@ def validate_config_file(config_path):
             config_content = f.read()
             config_data = json.loads(config_content)
     except json.JSONDecodeError as e:
-        print(f"  ❌ Error de JSON: {e}")
+        print(f"  [ERROR] Error de JSON: {e}")
         return False
     except Exception as e:
-        print(f"  ❌ Error al leer archivo: {e}")
+        print(f"  [ERROR] Error al leer archivo: {e}")
         return False
     
     # Backup del archivo original
@@ -135,11 +135,11 @@ def validate_config_file(config_path):
     
     # Mostrar resultados
     if security_issues:
-        print(f"  ⚠️ PROBLEMAS DE SEGURIDAD ENCONTRADOS ({len(security_issues)}):")
+        print(f"  [WARN] PROBLEMAS DE SEGURIDAD ENCONTRADOS ({len(security_issues)}):")
         for issue in security_issues:
             print(f"    • {issue}")
     else:
-        print("  ✅ No se encontraron problemas de seguridad")
+        print("  [CHECK] No se encontraron problemas de seguridad")
     
     return len(security_issues) == 0
 
@@ -147,16 +147,16 @@ def secure_config_file(config_path):
     """Aplica configuración segura a un archivo"""
     
     if not config_path.exists():
-        print(f"❌ Archivo no encontrado: {config_path}")
+        print(f"[ERROR] Archivo no encontrado: {config_path}")
         return False
     
-    print(f"🔒 Asegurando: {config_path.name}")
+    print(f"[LOCK] Asegurando: {config_path.name}")
     
     try:
         with open(config_path, 'r', encoding='utf-8') as f:
             config_data = json.loads(f.read())
     except Exception as e:
-        print(f"  ❌ Error al leer archivo JSON: {e}")
+        print(f"  [ERROR] Error al leer archivo JSON: {e}")
         return False
     
     # Aplicar configuraciones seguras
@@ -186,7 +186,7 @@ def secure_config_file(config_path):
     with open(config_path, 'w', encoding='utf-8') as f:
         json.dump(config_data, f, indent=4, ensure_ascii=False)
     
-    print("  ✅ Configuración segura aplicada")
+    print("  [CHECK] Configuración segura aplicada")
     return True
 
 def check_environment_variables():
@@ -231,10 +231,10 @@ SMTP_PASSWORD=your_email_password
         with open(env_file_path, 'w', encoding='utf-8') as f:
             f.write(env_content)
         
-        print(f"  ✅ Template .env creado en: {env_file_path}")
-        print("  ⚠️ IMPORTANTE: Configurar todas las variables antes de usar en producción")
+        print(f"  [CHECK] Template .env creado en: {env_file_path}")
+        print("  [WARN] IMPORTANTE: Configurar todas las variables antes de usar en producción")
     else:
-        print(f"  ✅ Archivo .env existe en: {env_file_path}")
+        print(f"  [CHECK] Archivo .env existe en: {env_file_path}")
     
     return True
 
@@ -278,7 +278,7 @@ def main():
         with open(secure_config_path, 'w', encoding='utf-8') as f:
             json.dump(secure_config, f, indent=4, ensure_ascii=False)
         
-        print(f"  ✅ Configuración segura creada: {secure_config_path}")
+        print(f"  [CHECK] Configuración segura creada: {secure_config_path}")
         relevant_configs = [secure_config_path]
     
     print(f"\n2. VALIDANDO ARCHIVOS DE CONFIGURACIÓN ({len(relevant_configs)} encontrados)")
@@ -292,7 +292,7 @@ def main():
     print("3. APLICANDO CONFIGURACIONES SEGURAS")
     for config_file in relevant_configs:
         if secure_config_file(config_file):
-            print(f"  ✅ {config_file.name} actualizado")
+            print(f"  [CHECK] {config_file.name} actualizado")
         print()
     
     # Crear .gitignore para archivos sensibles
@@ -320,14 +320,14 @@ Thumbs.db
     if not gitignore_path.exists():
         with open(gitignore_path, 'w', encoding='utf-8') as f:
             f.write(gitignore_content)
-        print("  ✅ .gitignore creado para proteger archivos sensibles")
+        print("  [CHECK] .gitignore creado para proteger archivos sensibles")
     
     # Resumen
     print("=" * 75)
-    print("📊 RESUMEN DE CONFIGURACIÓN SEGURA")
-    print(f"✅ Archivos de configuración procesados: {len(relevant_configs)}")
-    print(f"✅ Configuraciones seguras aplicadas: {len(relevant_configs)}")
-    print("✅ Variables de entorno configuradas: .env template")
+    print("[CHART] RESUMEN DE CONFIGURACIÓN SEGURA")
+    print(f"[CHECK] Archivos de configuración procesados: {len(relevant_configs)}")
+    print(f"[CHECK] Configuraciones seguras aplicadas: {len(relevant_configs)}")
+    print("[CHECK] Variables de entorno configuradas: .env template")
     
     print("\n🎉 CONFIGURACIÓN SEGURA IMPLEMENTADA EXITOSAMENTE")
     print("\n📋 PRÓXIMOS PASOS:")

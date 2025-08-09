@@ -23,10 +23,10 @@ def verificar_usuarios():
         db = get_users_connection()
 
         if not db.connection:
-            print("❌ No se pudo conectar a la base de datos 'users'")
+            print("[ERROR] No se pudo conectar a la base de datos 'users'")
             return False
 
-        print("✅ Conexión exitosa a base de datos 'users'")
+        print("[CHECK] Conexión exitosa a base de datos 'users'")
 
         # Verificar tabla usuarios
         try:
@@ -37,13 +37,13 @@ def verificar_usuarios():
             """)
 
             if result and result[0][0] > 0:
-                print("✅ Tabla 'usuarios' existe")
+                print("[CHECK] Tabla 'usuarios' existe")
             else:
-                print("❌ Tabla 'usuarios' NO existe")
+                print("[ERROR] Tabla 'usuarios' NO existe")
                 return False
 
         except Exception as e:
-            print(f"❌ Error verificando tabla usuarios: {e}")
+            print(f"[ERROR] Error verificando tabla usuarios: {e}")
             return False
 
         # Listar usuarios activos
@@ -60,11 +60,11 @@ def verificar_usuarios():
                 for user in users:
                     print(f"  - Usuario: {user[0]} | Rol: {user[4]} | Email: {user[3]}")
             else:
-                print("❌ NO hay usuarios activos")
+                print("[ERROR] NO hay usuarios activos")
                 return False
 
         except Exception as e:
-            print(f"❌ Error consultando usuarios: {e}")
+            print(f"[ERROR] Error consultando usuarios: {e}")
             return False
 
         # Verificar passwords
@@ -76,18 +76,18 @@ def verificar_usuarios():
             """)
 
             if pass_count and pass_count[0][0] > 0:
-                print(f"✅ {pass_count[0][0]} usuarios con password configurada")
+                print(f"[CHECK] {pass_count[0][0]} usuarios con password configurada")
                 return True
             else:
-                print("❌ NO hay usuarios con password configurada")
+                print("[ERROR] NO hay usuarios con password configurada")
                 return False
 
         except Exception as e:
-            print(f"❌ Error verificando passwords: {e}")
+            print(f"[ERROR] Error verificando passwords: {e}")
             return False
 
     except Exception as e:
-        print(f"❌ Error general: {e}")
+        print(f"[ERROR] Error general: {e}")
         return False
 
 

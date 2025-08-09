@@ -237,12 +237,12 @@ def generar_tarjeta_modulo(modulo):
 
     # Estados de archivos
     if tiene_model:
-        html += '<span class="status-item status-ok">✓ Model</span>'
+        html += '<span class="status-item status-ok">[OK] Model</span>'
     else:
         html += '<span class="status-item status-error">✗ Model</span>'
 
     if tiene_controller:
-        html += '<span class="status-item status-ok">✓ Controller</span>'
+        html += '<span class="status-item status-ok">[OK] Controller</span>'
     else:
         html += '<span class="status-item status-error">✗ Controller</span>'
 
@@ -274,7 +274,7 @@ def generar_tarjeta_modulo(modulo):
             prioridad = sugerencia.get('prioridad', 'baja')
             html += f'<div class="suggestion priority-{prioridad}">{sugerencia.get("descripcion", "")}</div>'
     else:
-        html += '<div class="suggestion status-ok">✓ Sin sugerencias críticas</div>'
+        html += '<div class="suggestion status-ok">[OK] Sin sugerencias críticas</div>'
 
     html += f"""
             </div>

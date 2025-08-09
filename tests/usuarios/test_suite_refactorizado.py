@@ -21,7 +21,7 @@ try:
     
     ALL_TESTS_AVAILABLE = True
 except ImportError as e:
-    print(f"❌ Error importando tests: {e}")
+    print(f"[ERROR] Error importando tests: {e}")
     ALL_TESTS_AVAILABLE = False
 
 
@@ -48,13 +48,13 @@ class TestSuiteRefactorizado:
             self.total_tests += 1
             test_method()
             self.passed_tests += 1
-            self.results[category].append(f"✅ {test_name} - PASADO")
-            print(f"✅ {test_name} - PASADO")
+            self.results[category].append(f"[CHECK] {test_name} - PASADO")
+            print(f"[CHECK] {test_name} - PASADO")
             return True
         except Exception as e:
             self.failed_tests += 1
-            self.results[category].append(f"❌ {test_name} - FALLIDO: {str(e)}")
-            print(f"❌ {test_name} - FALLIDO: {str(e)}")
+            self.results[category].append(f"[ERROR] {test_name} - FALLIDO: {str(e)}")
+            print(f"[ERROR] {test_name} - FALLIDO: {str(e)}")
             return False
     
     def run_auth_manager_tests(self):
@@ -103,7 +103,7 @@ class TestSuiteRefactorizado:
             )
             
         except Exception as e:
-            print(f"❌ Error configurando tests de AuthenticationManager: {e}")
+            print(f"[ERROR] Error configurando tests de AuthenticationManager: {e}")
             self.skipped_tests += 6
     
     def run_permissions_manager_tests(self):
@@ -148,10 +148,10 @@ class TestSuiteRefactorizado:
                 )
             except AttributeError:
                 self.skipped_tests += 2
-                print("⚠️  Enums no disponibles - tests saltados")
+                print("[WARN]  Enums no disponibles - tests saltados")
             
         except Exception as e:
-            print(f"❌ Error configurando tests de PermissionsManager: {e}")
+            print(f"[ERROR] Error configurando tests de PermissionsManager: {e}")
             self.skipped_tests += 5
     
     def run_sessions_manager_tests(self):
@@ -194,7 +194,7 @@ class TestSuiteRefactorizado:
             )
             
         except Exception as e:
-            print(f"❌ Error configurando tests de SessionsManager: {e}")
+            print(f"[ERROR] Error configurando tests de SessionsManager: {e}")
             self.skipped_tests += 5
     
     def run_profiles_manager_tests(self):
@@ -249,7 +249,7 @@ class TestSuiteRefactorizado:
             )
             
         except Exception as e:
-            print(f"❌ Error configurando tests de ProfilesManager: {e}")
+            print(f"[ERROR] Error configurando tests de ProfilesManager: {e}")
             self.skipped_tests += 7
     
     def run_unified_sanitizer_tests(self):
@@ -322,7 +322,7 @@ class TestSuiteRefactorizado:
             )
             
         except Exception as e:
-            print(f"❌ Error configurando tests de UnifiedDataSanitizer: {e}")
+            print(f"[ERROR] Error configurando tests de UnifiedDataSanitizer: {e}")
             self.skipped_tests += 10
     
     def run_integration_tests(self):
@@ -352,7 +352,7 @@ class TestSuiteRefactorizado:
             )
             
         except Exception as e:
-            print(f"❌ Error ejecutando tests de integración: {e}")
+            print(f"[ERROR] Error ejecutando tests de integración: {e}")
             self.skipped_tests += 3
     
     def test_crear_usuario_con_sanitizacion_completa(self):
@@ -426,11 +426,11 @@ class TestSuiteRefactorizado:
         print("REPORTE FINAL - TESTS DE MÓDULOS REFACTORIZADOS")
         print("="*60)
         
-        print(f"\n📊 RESUMEN GENERAL:")
+        print(f"\n[CHART] RESUMEN GENERAL:")
         print(f"   Total de tests ejecutados: {self.total_tests}")
-        print(f"   Tests pasados: {self.passed_tests} ✅")
-        print(f"   Tests fallidos: {self.failed_tests} ❌")
-        print(f"   Tests saltados: {self.skipped_tests} ⚠️")
+        print(f"   Tests pasados: {self.passed_tests} [CHECK]")
+        print(f"   Tests fallidos: {self.failed_tests} [ERROR]")
+        print(f"   Tests saltados: {self.skipped_tests} [WARN]")
         
         if self.total_tests > 0:
             success_rate = (self.passed_tests / self.total_tests) * 100
@@ -446,13 +446,13 @@ class TestSuiteRefactorizado:
         # Estado general
         print(f"\n🎯 ESTADO GENERAL:")
         if self.failed_tests == 0:
-            print("   ✅ TODOS LOS TESTS PASARON EXITOSAMENTE")
-            print("   🚀 Los módulos refactorizados están listos para producción")
+            print("   [CHECK] TODOS LOS TESTS PASARON EXITOSAMENTE")
+            print("   [ROCKET] Los módulos refactorizados están listos para producción")
         elif self.failed_tests < self.passed_tests:
-            print(f"   ⚠️  ALGUNOS TESTS FALLARON ({self.failed_tests}/{self.total_tests})")
+            print(f"   [WARN]  ALGUNOS TESTS FALLARON ({self.failed_tests}/{self.total_tests})")
             print("   🔧 Se requiere revisión de los módulos con fallas")
         else:
-            print(f"   ❌ MUCHOS TESTS FALLARON ({self.failed_tests}/{self.total_tests})")
+            print(f"   [ERROR] MUCHOS TESTS FALLARON ({self.failed_tests}/{self.total_tests})")
             print("   🛠️  Se requiere revisión completa de los módulos")
         
         print("="*60)
@@ -465,7 +465,7 @@ def main():
     print("="*60)
     
     if not ALL_TESTS_AVAILABLE:
-        print("❌ No se pudieron importar todos los módulos de test")
+        print("[ERROR] No se pudieron importar todos los módulos de test")
         print("   Verificar que los submódulos estén correctamente instalados")
         return False
     

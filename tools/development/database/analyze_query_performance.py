@@ -83,7 +83,7 @@ class QueryPerformanceAnalyzer:
         }
         
         for query_id, query_info in critical_queries.items():
-            print(f"\n📊 Analizando: {query_info['name']}")
+            print(f"\n[CHART] Analizando: {query_info['name']}")
             
             try:
                 # Medir tiempo de ejecución
@@ -123,7 +123,7 @@ class QueryPerformanceAnalyzer:
                 print(f"   Mejora esperada: {query_info['expected_improvement']}")
                 
             except Exception as e:
-                print(f"   ❌ Error: {e}")
+                print(f"   [ERROR] Error: {e}")
                 analysis_results["results"].append({
                     "query_id": query_id,
                     "name": query_info['name'],
@@ -177,15 +177,15 @@ class QueryPerformanceAnalyzer:
         slow_queries = [r for r in results if r.get('execution_time_ms', 0) > 100]
         
         if slow_queries:
-            recommendations.append("🚀 CREAR ÍNDICES CRÍTICOS para mejorar consultas lentas")
-            recommendations.append("📊 Ejecutar script create_performance_indexes.sql")
+            recommendations.append("[ROCKET] CREAR ÍNDICES CRÍTICOS para mejorar consultas lentas")
+            recommendations.append("[CHART] Ejecutar script create_performance_indexes.sql")
             
             for query in slow_queries:
                 if query.get('execution_time_ms', 0) > 1000:
                     recommendations.append(f"⚡ URGENTE: Optimizar '{query['name']}' ({query['execution_time_ms']}ms)")
         
         if not slow_queries:
-            recommendations.append("✅ Performance actual es BUENA")
+            recommendations.append("[CHECK] Performance actual es BUENA")
             recommendations.append("📈 Considerar índices preventivos para escalabilidad")
         
         # Recomendaciones específicas por tipo de consulta
@@ -258,12 +258,12 @@ class QueryPerformanceAnalyzer:
         report.append("")
         
         # Resumen por query
-        report.append("📊 RESULTADOS POR CONSULTA:")
+        report.append("[CHART] RESULTADOS POR CONSULTA:")
         report.append("-" * 30)
         
         for result in analysis_results['results']:
             if 'error' in result:
-                report.append(f"❌ {result['name']}: ERROR - {result['error']}")
+                report.append(f"[ERROR] {result['name']}: ERROR - {result['error']}")
             else:
                 time_ms = result['execution_time_ms']
                 rows = result['rows_returned']
@@ -293,7 +293,7 @@ def main():
     print("Este script requiere conexión a la base de datos")
     
     # En un entorno real, aquí se conectaría a la BD
-    print("⚠️  Para usar este analizador:")
+    print("[WARN]  Para usar este analizador:")
     print("1. Conectar a la base de datos de Rexus")
     print("2. analyzer = QueryPerformanceAnalyzer(db_connection)")
     print("3. results = analyzer.analyze_critical_queries()")

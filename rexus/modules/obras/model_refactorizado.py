@@ -277,7 +277,7 @@ class ModeloObrasRefactorizado:
         DEPRECADO: Usar obtener_todas_obras() o obtener_obras_paginadas()
         """
         print(
-            "⚠️  Método deprecado. Usar obtener_todas_obras() o obtener_obras_paginadas()"
+            "[WARN]  Método deprecado. Usar obtener_todas_obras() o obtener_obras_paginadas()"
         )
         return self.obtener_todas_obras()
 
@@ -285,14 +285,14 @@ class ModeloObrasRefactorizado:
         """
         DEPRECADO: Usar buscar_obras()
         """
-        print("⚠️  Método deprecado. Usar buscar_obras()")
+        print("[WARN]  Método deprecado. Usar buscar_obras()")
         return self.buscar_obras(criterio)
 
     def obtener_estadisticas(self) -> Dict[str, Any]:
         """
         DEPRECADO: Usar obtener_estadisticas_obras()
         """
-        print("⚠️  Método deprecado. Usar obtener_estadisticas_obras()")
+        print("[WARN]  Método deprecado. Usar obtener_estadisticas_obras()")
         return self.obtener_estadisticas_obras()
 
 

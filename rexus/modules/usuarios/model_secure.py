@@ -5,12 +5,12 @@ VERSION CORREGIDA: Sin vulnerabilidades SQL injection, con validación de contra
 y control de intentos fallidos de login.
 
 CORRECCIONES DE SEGURIDAD:
-- ❌ ELIMINADO: Creación automática de usuarios (RIESGO CRÍTICO)
-- ✅ CORREGIDO: SQL injection - Usar solo queries parametrizadas 
-- ✅ AÑADIDO: Control de intentos fallidos de login
-- ✅ AÑADIDO: Validación de contraseñas fuertes
-- ✅ AÑADIDO: Bloqueo temporal de cuentas tras múltiples intentos
-- ✅ CORREGIDO: Nombres de tabla hardcodeados (no usar f-strings)
+- [ERROR] ELIMINADO: Creación automática de usuarios (RIESGO CRÍTICO)
+- [CHECK] CORREGIDO: SQL injection - Usar solo queries parametrizadas 
+- [CHECK] AÑADIDO: Control de intentos fallidos de login
+- [CHECK] AÑADIDO: Validación de contraseñas fuertes
+- [CHECK] AÑADIDO: Bloqueo temporal de cuentas tras múltiples intentos
+- [CHECK] CORREGIDO: Nombres de tabla hardcodeados (no usar f-strings)
 """
 
 import datetime
@@ -133,10 +133,10 @@ class UsuariosModelSecure:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_sesiones_usuario ON sesiones_usuario(usuario_id)")
 
             self.db_connection.connection.commit()
-            print("✅ [USUARIOS SEGURO] Tablas del sistema de usuarios creadas/verificadas")
+            print("[CHECK] [USUARIOS SEGURO] Tablas del sistema de usuarios creadas/verificadas")
 
         except Exception as e:
-            print(f"❌ [ERROR USUARIOS SEGURO] Error creando tablas: {e}")
+            print(f"[ERROR] [ERROR USUARIOS SEGURO] Error creando tablas: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
 
@@ -218,7 +218,7 @@ class UsuariosModelSecure:
             return False, ""
             
         except Exception as e:
-            print(f"❌ Error verificando bloqueo: {e}")
+            print(f"[ERROR] Error verificando bloqueo: {e}")
             return False, ""
 
     def registrar_intento_fallido(self, nombre_usuario: str):
@@ -254,12 +254,12 @@ class UsuariosModelSecure:
                     WHERE usuario = ?
                 """, (bloqueo_hasta, nombre_usuario))
                 
-                print(f"⚠️ Usuario {nombre_usuario} bloqueado por {self.BLOQUEO_TEMPORAL_MINUTOS} minutos")
+                print(f"[WARN] Usuario {nombre_usuario} bloqueado por {self.BLOQUEO_TEMPORAL_MINUTOS} minutos")
             
             self.db_connection.connection.commit()
             
         except Exception as e:
-            print(f"❌ Error registrando intento fallido: {e}")
+            print(f"[ERROR] Error registrando intento fallido: {e}")
 
     def resetear_intentos_fallidos(self, nombre_usuario: str):
         """Resetea los intentos fallidos tras login exitoso."""
@@ -277,7 +277,7 @@ class UsuariosModelSecure:
             self.db_connection.connection.commit()
             
         except Exception as e:
-            print(f"❌ Error reseteando intentos fallidos: {e}")
+            print(f"[ERROR] Error reseteando intentos fallidos: {e}")
 
     def obtener_usuario_por_nombre(self, nombre_usuario: str) -> Optional[Dict]:
         """Obtiene un usuario por su nombre (SEGURO - query parametrizada)."""
@@ -305,7 +305,7 @@ class UsuariosModelSecure:
             return None
 
         except Exception as e:
-            print(f"❌ [ERROR USUARIOS SEGURO] Error obteniendo usuario: {e}")
+            print(f"[ERROR] [ERROR USUARIOS SEGURO] Error obteniendo usuario: {e}")
             return None
 
     def crear_usuario(self, datos_usuario: Dict[str, Any]) -> Tuple[bool, str]:
@@ -370,11 +370,11 @@ class UsuariosModelSecure:
                 """, (usuario_id, modulo, "leer"))
 
             self.db_connection.connection.commit()
-            print(f"✅ [USUARIOS SEGURO] Usuario '{datos_usuario['usuario']}' creado exitosamente")
+            print(f"[CHECK] [USUARIOS SEGURO] Usuario '{datos_usuario['usuario']}' creado exitosamente")
             return True, f"Usuario '{datos_usuario['usuario']}' creado exitosamente"
 
         except Exception as e:
-            print(f"❌ [ERROR USUARIOS SEGURO] Error creando usuario: {e}")
+            print(f"[ERROR] [ERROR USUARIOS SEGURO] Error creando usuario: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error creando usuario: {str(e)}"
@@ -399,29 +399,29 @@ class UsuariosModelSecure:
         # Verificar bloqueo
         bloqueado, mensaje_bloqueo = self.verificar_bloqueo_usuario(nombre_usuario)
         if bloqueado:
-            print(f"🔒 Intento de login en cuenta bloqueada: {nombre_usuario}")
+            print(f"[LOCK] Intento de login en cuenta bloqueada: {nombre_usuario}")
             return None
 
         # Obtener usuario
         usuario = self.obtener_usuario_por_nombre(nombre_usuario)
         if not usuario:
-            print(f"❌ Usuario no encontrado: {nombre_usuario}")
+            print(f"[ERROR] Usuario no encontrado: {nombre_usuario}")
             return None
 
         # Verificar contraseña
         if not self._verificar_password(password, usuario["password_hash"]):
-            print(f"❌ Contraseña incorrecta para usuario: {nombre_usuario}")
+            print(f"[ERROR] Contraseña incorrecta para usuario: {nombre_usuario}")
             self.registrar_intento_fallido(nombre_usuario)
             return None
 
         # Verificar estado del usuario
         if usuario["estado"] != "ACTIVO":
-            print(f"❌ Usuario inactivo: {nombre_usuario}")
+            print(f"[ERROR] Usuario inactivo: {nombre_usuario}")
             return None
 
         # Login exitoso
         self.resetear_intentos_fallidos(nombre_usuario)
-        print(f"✅ Login exitoso: {nombre_usuario}")
+        print(f"[CHECK] Login exitoso: {nombre_usuario}")
         
         return usuario
 
@@ -452,7 +452,7 @@ class UsuariosModelSecure:
             return usuarios
 
         except Exception as e:
-            print(f"❌ [ERROR USUARIOS SEGURO] Error obteniendo usuarios: {e}")
+            print(f"[ERROR] [ERROR USUARIOS SEGURO] Error obteniendo usuarios: {e}")
             return []
 
     def __del__(self):

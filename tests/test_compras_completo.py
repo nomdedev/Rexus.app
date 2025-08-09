@@ -61,7 +61,7 @@ def test_compras_model():
     )
     print(f"Búsqueda: {len(resultados)} resultados")
     
-    print("✅ ComprasModel: FUNCIONAL")
+    print("[CHECK] ComprasModel: FUNCIONAL")
     return True
 
 
@@ -105,7 +105,7 @@ def test_detalle_model():
     similares = model.buscar_productos_similares("Perfil", 5)
     print(f"Productos similares: {len(similares)} encontrados")
     
-    print("✅ DetalleComprasModel: FUNCIONAL")
+    print("[CHECK] DetalleComprasModel: FUNCIONAL")
     return True
 
 
@@ -151,7 +151,7 @@ def test_proveedores_model():
     print(f"  Monto total: ${stats.get('monto_total', 0):,.2f}")
     print(f"  Productos top: {len(stats.get('productos_top', []))}")
     
-    print("✅ ProveedoresModel: FUNCIONAL")
+    print("[CHECK] ProveedoresModel: FUNCIONAL")
     return True
 
 
@@ -207,7 +207,7 @@ def test_compras_controller():
     print(f"  Total proveedores: {reporte.get('total_proveedores', 0)}")
     print(f"  Total categorías: {reporte.get('total_categorias', 0)}")
     
-    print("✅ ComprasController: FUNCIONAL")
+    print("[CHECK] ComprasController: FUNCIONAL")
     return True
 
 
@@ -258,16 +258,16 @@ def test_integracion_completa():
         ])
         
         if flujo_exitoso:
-            print("✅ INTEGRACIÓN COMPLETA: EXITOSA")
+            print("[CHECK] INTEGRACIÓN COMPLETA: EXITOSA")
             print(f"   • Resumen total: ${resumen.get('total_final', 0):,.2f}")
             print(f"   • Stats generales: {stats.get('total_ordenes', 0)} órdenes")
         else:
-            print("❌ INTEGRACIÓN COMPLETA: FALLO")
+            print("[ERROR] INTEGRACIÓN COMPLETA: FALLO")
         
         return flujo_exitoso
         
     except Exception as e:
-        print(f"❌ ERROR EN INTEGRACIÓN: {e}")
+        print(f"[ERROR] ERROR EN INTEGRACIÓN: {e}")
         return False
 
 
@@ -294,10 +294,10 @@ def test_validaciones_seguridad():
             email="test@test.com",
             observaciones=datos_maliciosos["xss_script"]
         )
-        print(f"✅ Proveedor con datos maliciosos: Manejado correctamente")
+        print(f"[CHECK] Proveedor con datos maliciosos: Manejado correctamente")
         tests_passed += 1
     except Exception as e:
-        print(f"❌ Error con proveedor malicioso: {e}")
+        print(f"[ERROR] Error con proveedor malicioso: {e}")
     total_tests += 1
     
     # Test 2: Item con datos especiales
@@ -308,10 +308,10 @@ def test_validaciones_seguridad():
             descripcion=datos_maliciosos["special_chars"],
             observaciones=datos_maliciosos["long_string"][:100]  # Truncar
         )
-        print(f"✅ Item con caracteres especiales: Manejado correctamente")
+        print(f"[CHECK] Item con caracteres especiales: Manejado correctamente")
         tests_passed += 1
     except Exception as e:
-        print(f"❌ Error con item especial: {e}")
+        print(f"[ERROR] Error con item especial: {e}")
     total_tests += 1
     
     # Test 3: Búsqueda con datos maliciosos
@@ -321,19 +321,19 @@ def test_validaciones_seguridad():
             proveedor=datos_maliciosos["sql_injection"],
             numero_orden=datos_maliciosos["xss_script"]
         )
-        print(f"✅ Búsqueda con datos maliciosos: Manejado correctamente")
+        print(f"[CHECK] Búsqueda con datos maliciosos: Manejado correctamente")
         tests_passed += 1
     except Exception as e:
-        print(f"❌ Error en búsqueda maliciosa: {e}")
+        print(f"[ERROR] Error en búsqueda maliciosa: {e}")
     total_tests += 1
     
     seguridad_ok = tests_passed == total_tests
     print(f"Validaciones de seguridad: {tests_passed}/{total_tests} pasaron")
     
     if seguridad_ok:
-        print("✅ VALIDACIONES SEGURIDAD: EXITOSAS")
+        print("[CHECK] VALIDACIONES SEGURIDAD: EXITOSAS")
     else:
-        print("⚠️ VALIDACIONES SEGURIDAD: ALGUNAS FALLARON")
+        print("[WARN] VALIDACIONES SEGURIDAD: ALGUNAS FALLARON")
     
     return seguridad_ok
 
@@ -361,7 +361,7 @@ def main():
         total_tests = len(tests_results)
         
         for test_name, result in tests_results:
-            status = "✅ PASS" if result else "❌ FAIL"
+            status = "[CHECK] PASS" if result else "[ERROR] FAIL"
             print(f"{status} {test_name}")
             if result:
                 tests_passed += 1
@@ -371,20 +371,20 @@ def main():
         if tests_passed == total_tests:
             print("🎉 TODOS LOS TESTS PASARON - MÓDULO COMPRAS COMPLETAMENTE FUNCIONAL")
             print("\nFuncionalidades verificadas:")
-            print("• ✅ Gestión completa de órdenes de compra")
-            print("• ✅ Sistema completo de proveedores")
-            print("• ✅ Gestión detallada de items y productos")
-            print("• ✅ Controlador integrado con todas las funcionalidades")
-            print("• ✅ Validaciones de seguridad implementadas")
-            print("• ✅ Estadísticas y reportes funcionando")
-            print("• ✅ Búsquedas y filtros operativos")
+            print("• [CHECK] Gestión completa de órdenes de compra")
+            print("• [CHECK] Sistema completo de proveedores")
+            print("• [CHECK] Gestión detallada de items y productos")
+            print("• [CHECK] Controlador integrado con todas las funcionalidades")
+            print("• [CHECK] Validaciones de seguridad implementadas")
+            print("• [CHECK] Estadísticas y reportes funcionando")
+            print("• [CHECK] Búsquedas y filtros operativos")
             return True
         else:
-            print("⚠️ ALGUNOS TESTS FALLARON - REVISAR IMPLEMENTACIÓN")
+            print("[WARN] ALGUNOS TESTS FALLARON - REVISAR IMPLEMENTACIÓN")
             return False
     
     except Exception as e:
-        print(f"\n❌ ERROR GENERAL EN TESTS: {e}")
+        print(f"\n[ERROR] ERROR GENERAL EN TESTS: {e}")
         import traceback
         traceback.print_exc()
         return False

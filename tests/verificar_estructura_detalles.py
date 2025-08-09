@@ -22,7 +22,7 @@ def verificar_estructura():
         columns = cursor.fetchall()
         
         if not columns:
-            print("❌ La tabla detalles_obra no existe o no tiene columnas")
+            print("[ERROR] La tabla detalles_obra no existe o no tiene columnas")
             
             # Verificar si existe la tabla
             cursor.execute("""
@@ -49,7 +49,7 @@ def verificar_estructura():
             for row in rows:
                 print(row)
         else:
-            print("❌ No hay datos en la tabla detalles_obra")
+            print("[ERROR] No hay datos en la tabla detalles_obra")
             
         # Verificar estructura de inventario_perfiles
         print("\n=== ESTRUCTURA TABLA inventario_perfiles ===")
@@ -77,12 +77,12 @@ def verificar_estructura():
         if campos_comunes:
             print(f"Campos comunes: {campos_comunes}")
         else:
-            print("❌ No hay campos comunes evidentes")
+            print("[ERROR] No hay campos comunes evidentes")
             
         conn.close()
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
 
 if __name__ == "__main__":
     verificar_estructura()

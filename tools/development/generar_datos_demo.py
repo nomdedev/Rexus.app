@@ -47,7 +47,7 @@ class GeneradorDatosDemo:
     
     def generar_todos_los_datos(self):
         """Genera datos para todos los módulos."""
-        print("🚀 Iniciando generación de datos demo...")
+        print("[ROCKET] Iniciando generación de datos demo...")
         
         try:
             # Conectar a la base de datos
@@ -67,13 +67,13 @@ class GeneradorDatosDemo:
             self.generar_logistica_demo(db)
             
             print("\n🎉 Generación de datos demo completada exitosamente!")
-            print(f"📊 Resumen:")
+            print(f"[CHART] Resumen:")
             print(f"   - {len(self.usuarios_creados)} usuarios creados")
             print(f"   - {len(self.obras_creadas)} obras creadas")
             print(f"   - {len(self.productos_creados)} productos de inventario")
             
         except Exception as e:
-            print(f"❌ Error generando datos demo: {e}")
+            print(f"[ERROR] Error generando datos demo: {e}")
             import traceback
             traceback.print_exc()
     
@@ -323,7 +323,7 @@ def main():
     generador.generar_todos_los_datos()
     
     print("\n" + "=" * 60)
-    print("✅ Proceso completado. Los datos demo están listos para usar.")
+    print("[CHECK] Proceso completado. Los datos demo están listos para usar.")
     print("💡 Ahora puede probar todos los módulos con datos realistas.")
     print("=" * 60)
 

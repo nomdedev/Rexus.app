@@ -80,7 +80,7 @@ class SimpleLoginTest(QWidget):
             result = auth.authenticate_user(username, password)
             
             if result:
-                self.result_label.setText(f"✅ Login exitoso: {result['username']} ({result['role']})")
+                self.result_label.setText(f"[CHECK] Login exitoso: {result['username']} ({result['role']})")
                 self.result_label.setStyleSheet("color: green; font-weight: bold;")
                 
                 # Mostrar datos completos en un mensaje
@@ -94,13 +94,13 @@ ID: {result['id']}
                 QMessageBox.information(self, "Login Exitoso", details)
                 
             else:
-                self.result_label.setText("❌ Login fallido: Credenciales incorrectas")
+                self.result_label.setText("[ERROR] Login fallido: Credenciales incorrectas")
                 self.result_label.setStyleSheet("color: red; font-weight: bold;")
                 QMessageBox.warning(self, "Login Fallido", "Usuario o contraseña incorrectos")
                 
         except Exception as e:
             error_msg = f"Error de autenticación: {str(e)}"
-            self.result_label.setText(f"❌ {error_msg}")
+            self.result_label.setText(f"[ERROR] {error_msg}")
             self.result_label.setStyleSheet("color: red; font-weight: bold;")
             QMessageBox.critical(self, "Error", error_msg)
 

@@ -27,9 +27,9 @@ def diagnosticar_carga_datos():
 
         db_connection = InventarioDatabaseConnection(auto_connect=True)
         if not db_connection.connection:
-            print("❌ Error en conexión a base de datos")
+            print("[ERROR] Error en conexión a base de datos")
             return False
-        print("✅ Conexión directa OK")
+        print("[CHECK] Conexión directa OK")
 
         # 2. Test de consulta directa
         print("\n2️⃣ Probando consulta SQL directa...")
@@ -45,50 +45,50 @@ def diagnosticar_carga_datos():
         registros_directos = cursor.fetchall()
 
         if registros_directos:
-            print(f"✅ Consulta directa OK - {len(registros_directos)} registros")
+            print(f"[CHECK] Consulta directa OK - {len(registros_directos)} registros")
             for reg in registros_directos:
                 print(f"   📋 ID: {reg[0]}, Código: {reg[1]}, Activo: {reg[6]}")
         else:
-            print("⚠️ Consulta directa no devuelve registros")
+            print("[WARN] Consulta directa no devuelve registros")
 
             # Verificar si hay registros sin columna activo
             cursor.execute("SELECT COUNT(*) FROM inventario_perfiles")
             total = cursor.fetchone()[0]
-            print(f"📊 Total registros en tabla: {total}")
+            print(f"[CHART] Total registros en tabla: {total}")
 
             # Verificar cuántos tienen activo = 1
             cursor.execute("SELECT COUNT(*) FROM inventario_perfiles WHERE activo = 1")
             activos = cursor.fetchone()[0]
-            print(f"📊 Registros activos: {activos}")
+            print(f"[CHART] Registros activos: {activos}")
 
             if activos == 0:
-                print("⚠️ Ningún registro tiene activo = 1, actualizando...")
+                print("[WARN] Ningún registro tiene activo = 1, actualizando...")
                 cursor.execute(
                     "UPDATE inventario_perfiles SET activo = 1 WHERE activo IS NULL OR activo = 0"
                 )
                 db_connection.connection.commit()
-                print("✅ Registros actualizados a activo = 1")
+                print("[CHECK] Registros actualizados a activo = 1")
 
         # 3. Test del modelo
         print("\n3️⃣ Probando modelo de inventario...")
         from rexus.modules.inventario.model import InventarioModel
 
         model = InventarioModel(db_connection=db_connection.connection)
-        print("✅ Modelo creado")
+        print("[CHECK] Modelo creado")
 
         # 4. Test del consultas_manager
         print("\n4️⃣ Probando consultas_manager...")
         if hasattr(model, "consultas_manager"):
-            print("✅ ConsultasManager disponible")
+            print("[CHECK] ConsultasManager disponible")
 
             try:
                 resultado = model.consultas_manager.obtener_productos_paginados_inicial(
                     0, 5
                 )
 
-                print(f"📊 Tipo resultado: {type(resultado)}")
+                print(f"[CHART] Tipo resultado: {type(resultado)}")
                 print(
-                    f"📊 Keys disponibles: {list(resultado.keys()) if isinstance(resultado, dict) else 'No es dict'}"
+                    f"[CHART] Keys disponibles: {list(resultado.keys()) if isinstance(resultado, dict) else 'No es dict'}"
                 )
 
                 items = (
@@ -96,25 +96,25 @@ def diagnosticar_carga_datos():
                 )
                 total = resultado.get("total", 0) if isinstance(resultado, dict) else 0
 
-                print(f"📊 Items encontrados: {len(items)}")
-                print(f"📊 Total reportado: {total}")
+                print(f"[CHART] Items encontrados: {len(items)}")
+                print(f"[CHART] Total reportado: {total}")
 
                 if items:
-                    print("✅ ConsultasManager devuelve datos:")
+                    print("[CHECK] ConsultasManager devuelve datos:")
                     for i, item in enumerate(items[:3]):
                         print(f"   {i + 1}. {item}")
                 else:
-                    print("❌ ConsultasManager no devuelve items")
+                    print("[ERROR] ConsultasManager no devuelve items")
 
                     # Revisar si hay error en el resultado
                     if "error" in resultado:
                         print(f"🚨 Error en consultas_manager: {resultado['error']}")
 
             except Exception as e:
-                print(f"❌ Error en consultas_manager: {e}")
+                print(f"[ERROR] Error en consultas_manager: {e}")
                 traceback.print_exc()
         else:
-            print("❌ ConsultasManager no disponible")
+            print("[ERROR] ConsultasManager no disponible")
 
         # 5. Test del método directo del modelo
         print("\n5️⃣ Probando métodos directos del modelo...")
@@ -124,10 +124,10 @@ def diagnosticar_carga_datos():
             try:
                 resultado_directo = model.obtener_productos_paginados_inicial(0, 5)
                 print(
-                    f"✅ obtener_productos_paginados_inicial OK: {len(resultado_directo.get('items', []))} items"
+                    f"[CHECK] obtener_productos_paginados_inicial OK: {len(resultado_directo.get('items', []))} items"
                 )
             except Exception as e:
-                print(f"❌ Error en obtener_productos_paginados_inicial: {e}")
+                print(f"[ERROR] Error en obtener_productos_paginados_inicial: {e}")
                 traceback.print_exc()
 
         # 6. Test del controlador
@@ -143,12 +143,12 @@ def diagnosticar_carga_datos():
         controller._cargar_datos_inventario()
 
         print("\n" + "=" * 60)
-        print("📊 DIAGNÓSTICO COMPLETADO")
+        print("[CHART] DIAGNÓSTICO COMPLETADO")
 
         return True
 
     except Exception as e:
-        print(f"\n❌ ERROR EN DIAGNÓSTICO: {e}")
+        print(f"\n[ERROR] ERROR EN DIAGNÓSTICO: {e}")
         traceback.print_exc()
         return False
 

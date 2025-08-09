@@ -112,7 +112,7 @@ class CronogramaObrasView(QWidget):
         titulo_layout.addWidget(titulo_label)
 
         # Botón para alternar vista
-        self.btn_alternar_vista = QPushButton("📊 Vista Tabla")
+        self.btn_alternar_vista = QPushButton("[CHART] Vista Tabla")
         self.btn_alternar_vista.setStyleSheet("""
             QPushButton {
                 background-color: rgba(255, 255, 255, 0.2);

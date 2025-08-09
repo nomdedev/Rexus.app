@@ -294,16 +294,16 @@ def main():
     print("="*70)
     
     if success_rate >= 75:
-        print("✅ System is ready for production migration")
+        print("[CHECK] System is ready for production migration")
         print("- Consolidated models are working correctly")
         print("- Database structure is properly set up")
         print("- Performance is acceptable")
     elif success_rate >= 50:
-        print("⚠️  System has some issues but is partially functional")
+        print("[WARN]  System has some issues but is partially functional")
         print("- Review failed tests and address issues")
         print("- Consider gradual migration approach")
     else:
-        print("❌ System has significant issues")
+        print("[ERROR] System has significant issues")
         print("- Address critical failures before proceeding")
         print("- Review database structure and model implementations")
     

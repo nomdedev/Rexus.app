@@ -5,12 +5,12 @@ Gestión completa de pedidos con integración a inventario y obras.
 Maneja el ciclo completo: creación, aprobación, entrega y facturación.
 
 MEJORAS IMPLEMENTADAS:
-- ✅ SQL externo para todas las operaciones
-- ✅ Imports unificados sin duplicados
-- ✅ DataSanitizer unificado con fallback
-- ✅ Validación robusta de datos
-- ✅ Decoradores de autorización
-- ✅ Gestión de errores mejorada
+- [CHECK] SQL externo para todas las operaciones
+- [CHECK] Imports unificados sin duplicados
+- [CHECK] DataSanitizer unificado con fallback
+- [CHECK] Validación robusta de datos
+- [CHECK] Decoradores de autorización
+- [CHECK] Gestión de errores mejorada
 """
 
 import uuid

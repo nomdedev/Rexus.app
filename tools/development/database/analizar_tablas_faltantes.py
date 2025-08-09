@@ -145,7 +145,7 @@ def verificar_tablas_existentes():
         # Conectar a la base de datos
         db = ObrasDatabaseConnection()
         db.conectar()
-        print(f"✅ Conectado a base de datos: {db.database}")
+        print(f"[CHECK] Conectado a base de datos: {db.database}")
         print(f"📍 Servidor: {db.server}\n")
 
         # Obtener lista de todas las tablas existentes
@@ -160,15 +160,15 @@ def verificar_tablas_existentes():
             resultado = db.ejecutar_query(query_tablas)
             if resultado:
                 tablas_existentes = [row[0] for row in resultado]
-                print(f"📊 TABLAS ENCONTRADAS EN LA BASE DE DATOS ({len(tablas_existentes)}):")
+                print(f"[CHART] TABLAS ENCONTRADAS EN LA BASE DE DATOS ({len(tablas_existentes)}):")
                 for tabla in tablas_existentes:
-                    print(f"   ✅ {tabla}")
+                    print(f"   [CHECK] {tabla}")
             else:
-                print("❌ No se pudieron obtener las tablas de la base de datos")
+                print("[ERROR] No se pudieron obtener las tablas de la base de datos")
                 return []
 
         except Exception as e:
-            print(f"❌ Error consultando tablas: {e}")
+            print(f"[ERROR] Error consultando tablas: {e}")
             return []
 
         print(f"\n🔍 ANÁLISIS DE TABLAS REQUERIDAS:")
@@ -180,7 +180,7 @@ def verificar_tablas_existentes():
         for nombre_tabla, info in TABLAS_REQUERIDAS.items():
             if nombre_tabla in tablas_existentes:
                 tablas_existentes_requeridas.append(nombre_tabla)
-                status = "✅ EXISTE"
+                status = "[CHECK] EXISTE"
                 if info['obligatoria']:
                     status += " (OBLIGATORIA)"
                 print(f"\n📋 {nombre_tabla}: {status}")
@@ -188,9 +188,9 @@ def verificar_tablas_existentes():
                 print(f"   Propósito: {info['proposito']}")
             else:
                 tablas_faltantes.append(nombre_tabla)
-                status = "❌ FALTANTE"
+                status = "[ERROR] FALTANTE"
                 if info['obligatoria']:
-                    status += " (⚠️ CRÍTICA)"
+                    status += " ([WARN] CRÍTICA)"
                 else:
                     status += " (🔧 OPCIONAL)"
 
@@ -207,11 +207,11 @@ def verificar_tablas_existentes():
 
         # Resumen final
         print(f"\n" + "=" * 60)
-        print(f"📊 RESUMEN DE ANÁLISIS")
+        print(f"[CHART] RESUMEN DE ANÁLISIS")
         print("=" * 60)
         print(f"🗄️  Total de tablas en BD: {len(tablas_existentes)}")
-        print(f"✅ Tablas requeridas existentes: {len(tablas_existentes_requeridas)}")
-        print(f"❌ Tablas faltantes: {len(tablas_faltantes)}")
+        print(f"[CHECK] Tablas requeridas existentes: {len(tablas_existentes_requeridas)}")
+        print(f"[ERROR] Tablas faltantes: {len(tablas_faltantes)}")
 
         # Clasificar faltantes por criticidad
         faltantes_criticas = [t for t in tablas_faltantes if TABLAS_REQUERIDAS[t]['obligatoria']]
@@ -220,7 +220,7 @@ def verificar_tablas_existentes():
         if faltantes_criticas:
             print(f"\n🚨 TABLAS CRÍTICAS FALTANTES ({len(faltantes_criticas)}):")
             for tabla in faltantes_criticas:
-                print(f"   ⚠️  {tabla} - {TABLAS_REQUERIDAS[tabla]['proposito']}")
+                print(f"   [WARN]  {tabla} - {TABLAS_REQUERIDAS[tabla]['proposito']}")
 
         if faltantes_opcionales:
             print(f"\n🔧 TABLAS OPCIONALES FALTANTES ({len(faltantes_opcionales)}):")
@@ -231,16 +231,16 @@ def verificar_tablas_existentes():
         print(f"\n🎯 EVALUACIÓN DEL SISTEMA:")
         if len(faltantes_criticas) == 0:
             if len(faltantes_opcionales) == 0:
-                print("🎉 ESTADO: ✅ PERFECTO - Todas las tablas están presentes")
+                print("🎉 ESTADO: [CHECK] PERFECTO - Todas las tablas están presentes")
             elif len(faltantes_opcionales) <= 2:
-                print("✅ ESTADO: EXCELENTE - Sistema completamente funcional")
+                print("[CHECK] ESTADO: EXCELENTE - Sistema completamente funcional")
                 print("💡 Las tablas faltantes son opcionales y no afectan la funcionalidad básica")
             else:
                 print("🔧 ESTADO: BUENO - Sistema funcional con limitaciones")
                 print("💡 Considera crear las tablas opcionales para funcionalidad completa")
         else:
             print("🚨 ESTADO: REQUIERE ATENCIÓN - Faltan tablas críticas")
-            print("⚠️  El sistema puede tener problemas sin las tablas obligatorias")
+            print("[WARN]  El sistema puede tener problemas sin las tablas obligatorias")
 
         # Explicación de los errores SQL
         print(f"\n" + "=" * 60)
@@ -248,7 +248,7 @@ def verificar_tablas_existentes():
         print("=" * 60)
 
         if 'pedidos_material' in tablas_faltantes:
-            print("❌ Error 'pedidos_material no es válido':")
+            print("[ERROR] Error 'pedidos_material no es válido':")
             print("   • El módulo Inventario intenta consultar esta tabla")
             print("   • La tabla no existe, por eso SQL devuelve error 42S02")
             print("   • El sistema está diseñado para manejar este error gracefully")
@@ -256,7 +256,7 @@ def verificar_tablas_existentes():
             print("   • Con la tabla: podría rastrear pedidos reales por obra")
 
         if 'vidrios_por_obra' in tablas_faltantes:
-            print("\n❌ Error 'vidrios_por_obra no es válido':")
+            print("\n[ERROR] Error 'vidrios_por_obra no es válido':")
             print("   • El módulo Vidrios (unificado) busca esta tabla")
             print("   • Esta es la tabla PRINCIPAL para gestión de vidrios")
             print("   • Reemplaza la antigua tabla 'vidrios' que no existía")
@@ -264,13 +264,13 @@ def verificar_tablas_existentes():
             print("   • Con la tabla: gestión completa de vidrios por obra")
 
         if 'pedidos_herrajes' in tablas_faltantes:
-            print("\n❌ Error 'pedidos_herrajes no es válido':")
+            print("\n[ERROR] Error 'pedidos_herrajes no es válido':")
             print("   • El módulo Herrajes intenta consultar esta tabla")
             print("   • Para rastrear herrajes pedidos por obra")
             print("   • Sin la tabla: funcionalidad limitada")
 
         if 'pagos_pedidos' in tablas_faltantes:
-            print("\n❌ Error 'pagos_pedidos no es válido':")
+            print("\n[ERROR] Error 'pagos_pedidos no es válido':")
             print("   • El módulo Contabilidad busca esta tabla")
             print("   • Para rastrear pagos por módulo y obra")
             print("   • Sin la tabla: no hay tracking de pagos")
@@ -303,7 +303,7 @@ def verificar_tablas_existentes():
         }
 
     except Exception as e:
-        print(f"❌ Error durante la verificación: {e}")
+        print(f"[ERROR] Error durante la verificación: {e}")
         traceback.print_exc()
         return None
 
@@ -416,14 +416,14 @@ CREATE TABLE auditoria (
             print(scripts[tabla])
 
 if __name__ == "__main__":
-    print("🚀 Iniciando análisis de tablas faltantes...")
+    print("[ROCKET] Iniciando análisis de tablas faltantes...")
     resultado = verificar_tablas_existentes()
 
     if resultado:
-        print(f"\n✅ Análisis completado exitosamente")
+        print(f"\n[CHECK] Análisis completado exitosamente")
         if isinstance(resultado, dict) and len(resultado.get('criticas_faltantes', [])) == 0:
             print(f"🎉 Tu sistema está listo para usar!")
         else:
-            print(f"⚠️  Considera crear las tablas críticas para funcionalidad completa")
+            print(f"[WARN]  Considera crear las tablas críticas para funcionalidad completa")
     else:
-        print(f"\n❌ Error durante el análisis")
+        print(f"\n[ERROR] Error durante el análisis")

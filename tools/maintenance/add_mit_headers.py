@@ -101,7 +101,7 @@ def add_mit_header(file_path):
     """Agrega header MIT al archivo especificado"""
 
     if not os.path.exists(file_path):
-        print(f"⚠️  Archivo no encontrado: {file_path}")
+        print(f"[WARN]  Archivo no encontrado: {file_path}")
         return False
 
     # Leer contenido actual
@@ -169,7 +169,7 @@ def add_mit_header(file_path):
     with open(file_path, "w", encoding="utf-8") as f:
         f.write(new_content)
 
-    print(f"✅ Header MIT agregado: {file_path}")
+    print(f"[CHECK] Header MIT agregado: {file_path}")
     print(f"📁 Backup creado: {backup_path}")
 
     return True
@@ -194,9 +194,9 @@ def main():
             skipped_count += 1
 
     print("\n" + "=" * 60)
-    print(f"✅ HEADERS MIT AGREGADOS: {success_count}")
+    print(f"[CHECK] HEADERS MIT AGREGADOS: {success_count}")
     print(f"ℹ️  ARCHIVOS OMITIDOS: {skipped_count}")
-    print(f"📊 TOTAL PROCESADOS: {success_count + skipped_count}")
+    print(f"[CHART] TOTAL PROCESADOS: {success_count + skipped_count}")
 
     if success_count > 0:
         print("\n🎉 CUMPLIMIENTO LEGAL MIT LICENSE MEJORADO")

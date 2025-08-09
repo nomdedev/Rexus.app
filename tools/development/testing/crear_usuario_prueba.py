@@ -39,7 +39,7 @@ def crear_usuario_prueba():
         result = db.ejecutar_query(check_query, (usuario_prueba['username'],))
 
         if result and len(result) > 0 and result[0][0] > 0:
-            print("⚠️ El usuario de prueba ya existe. Actualizando...")
+            print("[WARN] El usuario de prueba ya existe. Actualizando...")
 
             update_query = """
                 UPDATE usuarios
@@ -57,9 +57,9 @@ def crear_usuario_prueba():
             ))
 
             if cursor is not None:
-                print("✅ Usuario de prueba actualizado exitosamente")
+                print("[CHECK] Usuario de prueba actualizado exitosamente")
             else:
-                print("❌ Error al actualizar usuario de prueba")
+                print("[ERROR] Error al actualizar usuario de prueba")
                 return False
         else:
             print("➕ Creando nuevo usuario de prueba...")
@@ -79,9 +79,9 @@ def crear_usuario_prueba():
             ))
 
             if cursor is not None:
-                print("✅ Usuario de prueba creado exitosamente")
+                print("[CHECK] Usuario de prueba creado exitosamente")
             else:
-                print("❌ Error al crear usuario de prueba")
+                print("[ERROR] Error al crear usuario de prueba")
                 return False
 
         # Verificar que se creó correctamente
@@ -102,13 +102,13 @@ def crear_usuario_prueba():
         return True
 
     except Exception as e:
-        print(f"❌ Error al crear usuario de prueba: {e}")
+        print(f"[ERROR] Error al crear usuario de prueba: {e}")
         return False
 
 def eliminar_modo_invitado():
     """Elimina o desactiva el modo invitado por seguridad"""
 
-    print("\n🔒 ELIMINANDO MODO INVITADO POR SEGURIDAD")
+    print("\n[LOCK] ELIMINANDO MODO INVITADO POR SEGURIDAD")
     print("="*45)
 
     try:
@@ -123,7 +123,7 @@ def eliminar_modo_invitado():
 
         # Comentar el botón de modo invitado si existe
         if 'modo invitado' in content.lower() or 'guest mode' in content.lower():
-            print("⚠️ Se detectó código de modo invitado en main.py")
+            print("[WARN] Se detectó código de modo invitado en main.py")
             print("💡 Se recomienda revisar y eliminar manualmente por seguridad")
             changes_made = True
 
@@ -135,17 +135,17 @@ def eliminar_modo_invitado():
                 login_content = f.read()
 
             if 'modo invitado' in login_content.lower() or 'guest' in login_content.lower():
-                print("⚠️ Se detectó código de modo invitado en login_view.py")
+                print("[WARN] Se detectó código de modo invitado en login_view.py")
                 print("💡 Se recomienda revisar y eliminar manualmente por seguridad")
                 changes_made = True
 
         if not changes_made:
-            print("✅ No se detectó modo invitado activo")
+            print("[CHECK] No se detectó modo invitado activo")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error al verificar modo invitado: {e}")
+        print(f"[ERROR] Error al verificar modo invitado: {e}")
         return False
 
 def verificar_aplicacion():
@@ -159,9 +159,9 @@ def verificar_aplicacion():
         db = DatabaseConnection()
         try:
             db.conectar()
-            print("✅ Conexión a base de datos: OK")
+            print("[CHECK] Conexión a base de datos: OK")
         except:
-            print("❌ Conexión a base de datos: FALLO")
+            print("[ERROR] Conexión a base de datos: FALLO")
 import hashlib
 import os
 import sys
@@ -176,9 +176,9 @@ from core.database import DatabaseConnection
         result = db.ejecutar_query(check_table)
 
         if result and len(result) > 0 and result[0][0] > 0:
-            print("✅ Tabla usuarios: OK")
+            print("[CHECK] Tabla usuarios: OK")
         else:
-            print("❌ Tabla usuarios: NO EXISTE")
+            print("[ERROR] Tabla usuarios: NO EXISTE")
             return False
 
         # Verificar que hay al menos un usuario de prueba
@@ -186,15 +186,15 @@ from core.database import DatabaseConnection
         result = db.ejecutar_query(admin_check)
 
         if result and len(result) > 0 and result[0][0] > 0:
-            print("✅ Usuario de pruebaistrador: OK")
+            print("[CHECK] Usuario de pruebaistrador: OK")
         else:
-            print("⚠️ No hay usuarios administradores activos")
+            print("[WARN] No hay usuarios administradores activos")
 
         print("\n🎯 La aplicación está lista para testing")
         return True
 
     except Exception as e:
-        print(f"❌ Error en verificación: {e}")
+        print(f"[ERROR] Error en verificación: {e}")
         return False
 
 def main():
@@ -207,22 +207,22 @@ def main():
 
     # Paso 1: Eliminar modo invitado
     if not eliminar_modo_invitado():
-        print("⚠️ Advertencia: No se pudo verificar/eliminar modo invitado")
+        print("[WARN] Advertencia: No se pudo verificar/eliminar modo invitado")
 
     # Paso 2: Crear usuario de prueba
     if not crear_usuario_prueba():
-        print("❌ Error crítico: No se pudo crear usuario de prueba")
+        print("[ERROR] Error crítico: No se pudo crear usuario de prueba")
         return False
 
     # Paso 3: Verificar configuración
     if not verificar_aplicacion():
-        print("⚠️ Advertencia: Verificación incompleta")
+        print("[WARN] Advertencia: Verificación incompleta")
 
     print("\n" + "="*60)
     print("🎉 CONFIGURACIÓN COMPLETADA")
     print("="*60)
-    print("✅ Usuario de prueba creado con permisos completos")
-    print("🔒 Modo invitado verificado/eliminado")
+    print("[CHECK] Usuario de prueba creado con permisos completos")
+    print("[LOCK] Modo invitado verificado/eliminado")
     print("🧪 La aplicación está lista para testing seguro")
     print()
     print("📝 PRÓXIMOS PASOS:")

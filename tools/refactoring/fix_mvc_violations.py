@@ -215,11 +215,11 @@ def create_mvc_guidelines():
 
 ## Buenas Prácticas
 
-1. **Vista usa Modelo**: `self.model.obtener_datos()` ✅
-2. **No SQL en Vista**: `cursor.execute()` en view.py ❌
-3. **No UI en Modelo**: `QMessageBox` en model.py ❌
-4. **Controlador Liviano**: Métodos cortos y específicos ✅
-5. **Documentación**: Docstrings en todos los métodos ✅
+1. **Vista usa Modelo**: `self.model.obtener_datos()` [CHECK]
+2. **No SQL en Vista**: `cursor.execute()` en view.py [ERROR]
+3. **No UI en Modelo**: `QMessageBox` en model.py [ERROR]
+4. **Controlador Liviano**: Métodos cortos y específicos [CHECK]
+5. **Documentación**: Docstrings en todos los métodos [CHECK]
 
 ## Ejemplo Correcto
 
@@ -228,38 +228,38 @@ def create_mvc_guidelines():
 class InventarioView(QWidget):
     def __init__(self, db_connection=None):
         super().__init__()
-        self.model = InventarioModel(db_connection)  # ✅ Usa modelo
+        self.model = InventarioModel(db_connection)  # [CHECK] Usa modelo
         self.init_ui()
     
     def cargar_productos(self):
-        productos = self.model.obtener_productos()  # ✅ Delega al modelo
+        productos = self.model.obtener_productos()  # [CHECK] Delega al modelo
         self.actualizar_tabla(productos)
 
 # En model.py  
 class InventarioModel:
     def obtener_productos(self):
-        cursor = self.db_connection.cursor()  # ✅ SQL en modelo
+        cursor = self.db_connection.cursor()  # [CHECK] SQL en modelo
         cursor.execute("SELECT * FROM productos")
         return cursor.fetchall()
 ```
 
 ## Violaciones Comunes a Evitar
 
-❌ Vista con SQL directo:
+[ERROR] Vista con SQL directo:
 ```python
 # En view.py - MAL
 cursor = self.db_connection.cursor()
 cursor.execute("SELECT * FROM productos")
 ```
 
-❌ Modelo con UI:
+[ERROR] Modelo con UI:
 ```python
 # En model.py - MAL  
 from PyQt6.QtWidgets import QMessageBox
 QMessageBox.warning(None, "Error", "Mensaje")
 ```
 
-❌ Controlador pesado:
+[ERROR] Controlador pesado:
 ```python
 # En controller.py - MAL
 def metodo_muy_largo_con_muchas_responsabilidades(self):

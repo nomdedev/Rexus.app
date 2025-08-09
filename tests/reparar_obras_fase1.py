@@ -23,7 +23,7 @@ def reparar_view_para_testing():
     view_path = Path("rexus/modules/obras/view.py")
     
     if not view_path.exists():
-        print("❌ Error: view.py no encontrado")
+        print("[ERROR] Error: view.py no encontrado")
         return False
     
     with open(view_path, 'r', encoding='utf-8') as f:
@@ -34,7 +34,7 @@ def reparar_view_para_testing():
     
     # Buscar la línea donde se importa ObrasModel dinámicamente
     if "from .model import ObrasModel" not in contenido:
-        print("❌ Import dinámico no encontrado")
+        print("[ERROR] Import dinámico no encontrado")
         return False
     
     # Agregar import global después de los imports existentes
@@ -50,7 +50,7 @@ except ImportError:
     # Insertar después de los imports de PyQt6
     linea_insercion = contenido.find("from .cronograma_view import CronogramaObrasView")
     if linea_insercion == -1:
-        print("❌ No se encontró punto de inserción")
+        print("[ERROR] No se encontró punto de inserción")
         return False
     
     contenido_nuevo = (
@@ -126,7 +126,7 @@ except ImportError:
     with open(view_path, 'w', encoding='utf-8') as f:
         f.write(contenido_nuevo)
     
-    print("✅ view.py reparado para testing")
+    print("[CHECK] view.py reparado para testing")
     
     return True
 
@@ -306,7 +306,7 @@ class MockObrasModel(ObrasModelInterface):
     with open(adapter_path, 'w', encoding='utf-8') as f:
         f.write(adapter_content)
     
-    print(f"✅ Adapter creado: {adapter_path}")
+    print(f"[CHECK] Adapter creado: {adapter_path}")
     
     return True
 
@@ -544,37 +544,37 @@ if __name__ == "__main__":
     with open(test_path, 'w', encoding='utf-8') as f:
         f.write(test_content)
     
-    print(f"✅ Tests reparados creados: {test_path}")
+    print(f"[CHECK] Tests reparados creados: {test_path}")
     
     return True
 
 def main():
     """Función principal de reparación."""
     
-    print("🚀 INICIANDO REPARACIÓN MÓDULO OBRAS - FASE 1")
+    print("[ROCKET] INICIANDO REPARACIÓN MÓDULO OBRAS - FASE 1")
     print("=" * 60)
     
     try:
         # 1. Reparar view.py para testing
         if not reparar_view_para_testing():
-            print("❌ Error reparando view.py")
+            print("[ERROR] Error reparando view.py")
             return False
         
         # 2. Crear adapter de modelo
         if not crear_adapter_modelo():
-            print("❌ Error creando adapter")
+            print("[ERROR] Error creando adapter")
             return False
         
         # 3. Reparar tests de integración
         if not reparar_tests_integracion():
-            print("❌ Error reparando tests")
+            print("[ERROR] Error reparando tests")
             return False
         
         print("\n🎉 FASE 1 COMPLETADA EXITOSAMENTE")
         print("=" * 60)
-        print("✅ view.py reparado para testing")
-        print("✅ Adapter de modelo creado")
-        print("✅ Tests de integración reparados")
+        print("[CHECK] view.py reparado para testing")
+        print("[CHECK] Adapter de modelo creado")
+        print("[CHECK] Tests de integración reparados")
         print("\n📋 PRÓXIMOS PASOS:")
         print("   1. Ejecutar tests reparados")
         print("   2. Proceder con FASE 2: Refactorización de Vista")
@@ -582,7 +582,7 @@ def main():
         return True
         
     except Exception as e:
-        print(f"❌ Error durante reparación: {e}")
+        print(f"[ERROR] Error durante reparación: {e}")
         import traceback
         traceback.print_exc()
         return False

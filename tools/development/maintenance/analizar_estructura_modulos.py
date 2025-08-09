@@ -730,9 +730,9 @@ def crear_informe_resumen(modulos_analizados):
             f.write(
                 f"| [{nombre}]({nombre}_analisis.md) | {len(info['archivos'])} | {len(info['tests'])} | "
             )
-            f.write(f"{'✓' if info['estructura_mvc'] else '✗'} | ")
-            f.write(f"{'✓' if info['tiene_db_conexion'] else '✗'} | ")
-            f.write(f"{'✓' if info['tiene_validaciones'] else '✗'} | ")
+            f.write(f"{'[OK]' if info['estructura_mvc'] else '✗'} | ")
+            f.write(f"{'[OK]' if info['tiene_db_conexion'] else '✗'} | ")
+            f.write(f"{'[OK]' if info['tiene_validaciones'] else '✗'} | ")
             f.write(f"{prioridad} |\n")
 
         f.write("\n## Recomendaciones Generales\n\n")

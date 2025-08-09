@@ -12,16 +12,16 @@ try:
 
     # Intentar importar módulos necesarios
     print("1. Importando pytest...")
-    print("   ✅ pytest importado correctamente")
+    print("   [CHECK] pytest importado correctamente")
 
     print("2. Importando MagicMock...")
-    print("   ✅ MagicMock importado correctamente")
+    print("   [CHECK] MagicMock importado correctamente")
 
     print("3. Importando AuditoriaModel...")
-    print("   ✅ AuditoriaModel importado correctamente")
+    print("   [CHECK] AuditoriaModel importado correctamente")
 
     print("4. Validando sintaxis del archivo de test...")
-    print("   ✅ test_auditoria.py importado correctamente")
+    print("   [CHECK] test_auditoria.py importado correctamente")
 import sys
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -35,24 +35,24 @@ from modules.auditoria.model import AuditoriaModel
     mock.last_query = None
     mock.last_params = None
     mock.query_result = []
-    print("   ✅ mock_db creado correctamente")
+    print("   [CHECK] mock_db creado correctamente")
 
     print("6. Creando AuditoriaModel con mock...")
     model = AuditoriaModel(mock)
-    print("   ✅ AuditoriaModel instanciado correctamente")
+    print("   [CHECK] AuditoriaModel instanciado correctamente")
 
     print("7. Probando método registrar_evento...")
     result = model.registrar_evento(1, "test", "accion", "detalle", "127.0.0.1")
-    print(f"   ✅ registrar_evento ejecutado. Resultado: {result}")
+    print(f"   [CHECK] registrar_evento ejecutado. Resultado: {result}")
 
     print("\n🎉 VALIDACIÓN EXITOSA: test_auditoria.py está funcionalmente correcto")
 
 except ImportError as e:
-    print(f"❌ Error de importación: {e}")
+    print(f"[ERROR] Error de importación: {e}")
     sys.exit(1)
 except SyntaxError as e:
-    print(f"❌ Error de sintaxis: {e}")
+    print(f"[ERROR] Error de sintaxis: {e}")
     sys.exit(1)
 except Exception as e:
-    print(f"❌ Error inesperado: {e}")
+    print(f"[ERROR] Error inesperado: {e}")
     sys.exit(1)

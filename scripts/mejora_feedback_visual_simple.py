@@ -16,7 +16,7 @@ def mejorar_feedback_modulos():
 
     modulos_dir = Path("rexus/modules")
     if not modulos_dir.exists():
-        print("❌ Error: Directorio rexus/modules no encontrado")
+        print("[ERROR] Error: Directorio rexus/modules no encontrado")
         return
 
     modulos_mejorados = []
@@ -34,20 +34,20 @@ def mejorar_feedback_modulos():
             if view_file.exists():
                 needs_improvement = analizar_view_file(view_file)
                 if needs_improvement:
-                    print(f"⚠️ {modulo_name} necesita mejoras de feedback visual")
+                    print(f"[WARN] {modulo_name} necesita mejoras de feedback visual")
                     if aplicar_mejoras_basicas(view_file, modulo_name):
                         modulos_mejorados.append(modulo_name)
-                        print(f"✅ {modulo_name} mejorado")
+                        print(f"[CHECK] {modulo_name} mejorado")
                 else:
-                    print(f"✅ {modulo_name} ya tiene buen feedback visual")
+                    print(f"[CHECK] {modulo_name} ya tiene buen feedback visual")
             else:
-                print(f"⚠️ {modulo_name}: view.py no encontrado")
+                print(f"[WARN] {modulo_name}: view.py no encontrado")
 
     # Reporte final
     print("\n" + "=" * 55)
-    print(f"📊 REPORTE FINAL:")
+    print(f"[CHART] REPORTE FINAL:")
     print(f"   📋 Módulos analizados: {len(modulos_analizados)}")
-    print(f"   ✅ Módulos mejorados: {len(modulos_mejorados)}")
+    print(f"   [CHECK] Módulos mejorados: {len(modulos_mejorados)}")
     print(
         f"   📝 Módulos que ya tenían buen feedback: {len(modulos_analizados) - len(modulos_mejorados)}"
     )
@@ -93,7 +93,7 @@ def analizar_view_file(view_file: Path) -> bool:
         return feedback_encontrado < 2
 
     except Exception as e:
-        print(f"   ❌ Error leyendo {view_file}: {e}")
+        print(f"   [ERROR] Error leyendo {view_file}: {e}")
         return False
 
 
@@ -168,7 +168,7 @@ def aplicar_mejoras_basicas(view_file: Path, modulo_name: str) -> bool:
         return False
 
     except Exception as e:
-        print(f"   ❌ Error aplicando mejoras a {modulo_name}: {e}")
+        print(f"   [ERROR] Error aplicando mejoras a {modulo_name}: {e}")
         return False
 
 
@@ -184,7 +184,7 @@ def crear_reporte_mejoras(analizados: list, mejorados: list):
 {chr(10).join(f"- {modulo}" for modulo in analizados)}
 
 ## Módulos Mejorados
-{chr(10).join(f"- ✅ {modulo}" for modulo in mejorados)}
+{chr(10).join(f"- [CHECK] {modulo}" for modulo in mejorados)}
 
 ## Mejoras Aplicadas
 

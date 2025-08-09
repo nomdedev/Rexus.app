@@ -309,7 +309,7 @@ class DatabaseConfigDialog(QDialog):
         layout.addWidget(desc)
         
         # Configuración de BD
-        config_group = QGroupBox("📊 Configuración de Base de Datos")
+        config_group = QGroupBox("[CHART] Configuración de Base de Datos")
         config_group.setStyleSheet(self.get_group_style())
         config_layout = QFormLayout(config_group)
         config_layout.setSpacing(15)
@@ -388,7 +388,7 @@ class DatabaseConfigDialog(QDialog):
         self.test_users_btn = QPushButton("🧪 Probar BD Users")
         self.test_inventario_btn = QPushButton("🧪 Probar BD Inventario")
         self.test_auditoria_btn = QPushButton("🧪 Probar BD Auditoría")
-        self.test_all_btn = QPushButton("🚀 Probar Todas las Conexiones")
+        self.test_all_btn = QPushButton("[ROCKET] Probar Todas las Conexiones")
         
         for btn in [self.test_users_btn, self.test_inventario_btn, 
                    self.test_auditoria_btn, self.test_all_btn]:
@@ -420,7 +420,7 @@ class DatabaseConfigDialog(QDialog):
         layout.addWidget(test_group)
         
         # Área de resultados
-        results_group = QGroupBox("📊 Resultados de Pruebas")
+        results_group = QGroupBox("[CHART] Resultados de Pruebas")
         results_group.setStyleSheet(self.get_group_style())
         results_layout = QVBoxLayout(results_group)
         
@@ -470,7 +470,7 @@ class DatabaseConfigDialog(QDialog):
         save_btn.clicked.connect(self.save_config)
         
         # Botón cancelar
-        cancel_btn = QPushButton("❌ Cancelar")
+        cancel_btn = QPushButton("[ERROR] Cancelar")
         cancel_btn.setStyleSheet("""
             QPushButton {
                 background-color: transparent;
@@ -617,11 +617,11 @@ class DatabaseConfigDialog(QDialog):
                 db_name = self.auditoria_db_input.text().strip()
             
             if not server:
-                self.results_text.append("❌ Error: Servidor no especificado")
+                self.results_text.append("[ERROR] Error: Servidor no especificado")
                 return
             
             if not db_name:
-                self.results_text.append(f"❌ Error: Nombre de BD {db_type} no especificado")
+                self.results_text.append(f"[ERROR] Error: Nombre de BD {db_type} no especificado")
                 return
             
             # Intentar conexión
@@ -634,13 +634,13 @@ class DatabaseConfigDialog(QDialog):
             )
             
             if test_conn.connect():
-                self.results_text.append(f"✅ Conexión exitosa a BD {db_type}")
+                self.results_text.append(f"[CHECK] Conexión exitosa a BD {db_type}")
                 test_conn.disconnect()
             else:
-                self.results_text.append(f"❌ Error conectando a BD {db_type}")
+                self.results_text.append(f"[ERROR] Error conectando a BD {db_type}")
                 
         except Exception as e:
-            self.results_text.append(f"❌ Error: {str(e)}")
+            self.results_text.append(f"[ERROR] Error: {str(e)}")
         
         # Scroll al final
         self.results_text.verticalScrollBar().setValue(
@@ -650,9 +650,9 @@ class DatabaseConfigDialog(QDialog):
     def test_all_connections(self):
         """Prueba todas las conexiones"""
         self.results_text.clear()
-        self.results_text.append("🚀 Iniciando prueba de todas las conexiones...")
+        self.results_text.append("[ROCKET] Iniciando prueba de todas las conexiones...")
         
         for db_type in ["users", "inventario", "auditoria"]:
             self.test_connection(db_type)
         
-        self.results_text.append("\\n✅ Pruebas completadas")
+        self.results_text.append("\\n[CHECK] Pruebas completadas")

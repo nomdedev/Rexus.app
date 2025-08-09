@@ -28,7 +28,7 @@ def test_inventario_styles():
         
         # Verificar que la tabla existe
         if hasattr(vista_inventario, 'tabla_inventario'):
-            print("✅ [TEST] Tabla de inventario encontrada")
+            print("[CHECK] [TEST] Tabla de inventario encontrada")
             
             # Obtener el estilo aplicado
             style = vista_inventario.tabla_inventario.styleSheet()
@@ -46,28 +46,28 @@ def test_inventario_styles():
             
             for check, description in checks:
                 if check in style:
-                    print(f"✅ [TEST] {description}: OK")
+                    print(f"[CHECK] [TEST] {description}: OK")
                 else:
-                    print(f"❌ [TEST] {description}: FALTA")
+                    print(f"[ERROR] [TEST] {description}: FALTA")
             
             # Verificar que se llamó el método de forzar estilos
             print("\n🔧 [TEST] Verificando método forzar_estilos_tabla...")
             if hasattr(vista_inventario, 'forzar_estilos_tabla'):
-                print("✅ [TEST] Método forzar_estilos_tabla existe")
+                print("[CHECK] [TEST] Método forzar_estilos_tabla existe")
                 # Llamar el método
                 vista_inventario.forzar_estilos_tabla()
-                print("✅ [TEST] Método ejecutado correctamente")
+                print("[CHECK] [TEST] Método ejecutado correctamente")
             else:
-                print("❌ [TEST] Método forzar_estilos_tabla no encontrado")
+                print("[ERROR] [TEST] Método forzar_estilos_tabla no encontrado")
                 
         else:
-            print("❌ [TEST] Tabla de inventario no encontrada")
+            print("[ERROR] [TEST] Tabla de inventario no encontrada")
             
         print("\n🎯 [TEST] Test de estilos completado")
         return True
         
     except Exception as e:
-        print(f"❌ [TEST] Error: {e}")
+        print(f"[ERROR] [TEST] Error: {e}")
         import traceback
         traceback.print_exc()
         return False

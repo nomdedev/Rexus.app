@@ -1,8 +1,8 @@
-# 🔒 Form Access Control - Verify user can access this interface
+# [LOCK] Form Access Control - Verify user can access this interface
 # Check user role and permissions before showing sensitive forms
 # Form Access Control
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 
@@ -130,7 +130,7 @@ class InventarioView(QWidget):
 
         # Pestaña de Estadísticas
         tab_estadisticas = self.crear_tab_estadisticas()
-        self.tab_widget.addTab(tab_estadisticas, "📊 Estadísticas")
+        self.tab_widget.addTab(tab_estadisticas, "[CHART] Estadísticas")
 
         layout.addWidget(self.tab_widget)
 
@@ -382,7 +382,7 @@ class InventarioView(QWidget):
         layout = QVBoxLayout(panel)
         
         # Placeholder para gráficos
-        placeholder = QLabel("📊 Gráficos de inventario próximamente")
+        placeholder = QLabel("[CHART] Gráficos de inventario próximamente")
         placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
         placeholder.setStyleSheet("color: #6c757d; font-size: 14px; padding: 20px;")
         layout.addWidget(placeholder)
@@ -578,7 +578,7 @@ class InventarioView(QWidget):
 
     def crear_panel_estadisticas(self):
         """Crea el panel de estadísticas del inventario."""
-        panel = QGroupBox("📊 Estadísticas de Inventario")
+        panel = QGroupBox("[CHART] Estadísticas de Inventario")
         panel.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -606,11 +606,11 @@ class InventarioView(QWidget):
         layout.addWidget(self.lbl_total_productos)
 
         # Stock bajo
-        self.lbl_stock_bajo = self.crear_stat_widget("⚠️", "Stock Bajo", "0", "#ffc107")
+        self.lbl_stock_bajo = self.crear_stat_widget("[WARN]", "Stock Bajo", "0", "#ffc107")
         layout.addWidget(self.lbl_stock_bajo)
 
         # Sin stock
-        self.lbl_sin_stock = self.crear_stat_widget("❌", "Sin Stock", "0", "#dc3545")
+        self.lbl_sin_stock = self.crear_stat_widget("[ERROR]", "Sin Stock", "0", "#dc3545")
         layout.addWidget(self.lbl_sin_stock)
 
         # Valor total
@@ -672,7 +672,7 @@ class InventarioView(QWidget):
                 "📂 Categoría",
                 "📦 Stock",
                 "💰 Precio",
-                "📊 Estado",
+                "[CHART] Estado",
                 "📅 Última Actualización",
                 "⚡ Acciones",
             ]
@@ -961,7 +961,7 @@ class InventarioView(QWidget):
                     📂 Categoría: {producto.get("categoria", "N/A")}
                     📦 Stock Actual: {producto.get("stock", 0)} unidades
                     💰 Precio Unitario: ${producto.get("precio_unitario", 0):,.2f}
-                    📊 Estado: {producto.get("estado", "N/A")}
+                    [CHART] Estado: {producto.get("estado", "N/A")}
                     🏪 Ubicación: {producto.get("ubicacion", "Sin especificar")}
                     📅 Última Actualización: {producto.get("fecha_actualizacion", "N/A")}
                     """
@@ -978,7 +978,7 @@ class InventarioView(QWidget):
         show_warning(
             self,
             "Contenido Peligroso",
-            f"⚠️ Contenido potencialmente peligroso detectado en {campo}: {contenido[:50]}...",
+            f"[WARN] Contenido potencialmente peligroso detectado en {campo}: {contenido[:50]}...",
         )
 
     def obtener_producto_seleccionado(self):
@@ -1129,7 +1129,7 @@ class InventarioView(QWidget):
     def actualizar_tabla(self, productos):
         """Actualiza la tabla con lista de productos."""
         if not hasattr(self, "tabla_inventario") or not self.tabla_inventario:
-            print("❌ tabla_inventario no disponible")
+            print("[ERROR] tabla_inventario no disponible")
             return
 
         try:
@@ -1154,10 +1154,10 @@ class InventarioView(QWidget):
                     self.tabla_inventario.setItem(row, 3, QTableWidgetItem(stock))
                     self.tabla_inventario.setItem(row, 4, QTableWidgetItem(precio))
 
-            print(f"✅ Tabla actualizada con {len(productos)} productos")
+            print(f"[CHECK] Tabla actualizada con {len(productos)} productos")
 
         except Exception as e:
-            print(f"❌ Error actualizando tabla: {e}")
+            print(f"[ERROR] Error actualizando tabla: {e}")
             import traceback
 
             traceback.print_exc()

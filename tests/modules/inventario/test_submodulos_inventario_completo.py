@@ -555,18 +555,18 @@ if __name__ == "__main__":
     print(f"Éxito: {result.wasSuccessful()}")
 
     if result.errors:
-        print(f"\n❌ ERRORES ENCONTRADOS:")
+        print(f"\n[ERROR] ERRORES ENCONTRADOS:")
         for test, error in result.errors:
             print(f"  - {test}: {error.split(chr(10))[0]}")
 
     if result.failures:
-        print(f"\n❌ FALLOS ENCONTRADOS:")
+        print(f"\n[ERROR] FALLOS ENCONTRADOS:")
         for test, failure in result.failures:
             print(f"  - {test}: {failure.split(chr(10))[0]}")
 
     if result.wasSuccessful():
-        print(f"\n✅ TODOS LOS TESTS PASARON EXITOSAMENTE")
+        print(f"\n[CHECK] TODOS LOS TESTS PASARON EXITOSAMENTE")
         print(f"🎯 Arquitectura modular validada correctamente")
     else:
-        print(f"\n⚠️ Se encontraron problemas en los tests")
+        print(f"\n[WARN] Se encontraron problemas en los tests")
         print(f"📝 Revisar implementación de submódulos")

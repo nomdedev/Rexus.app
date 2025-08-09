@@ -50,7 +50,7 @@ class ValidadorConectividad:
         print("-" * 50)
 
         for bd in self.bases_datos:
-            print(f"   📊 Probando conexión a: {bd}")
+            print(f"   [CHART] Probando conexión a: {bd}")
 
             try:
                 # Construir string de conexión
@@ -69,7 +69,7 @@ class ValidadorConectividad:
                 cursor.execute("SELECT @@VERSION")
                 version = cursor.fetchone()[0]
 
-                print(f"      ✅ CONECTADA - {version.split('-')[0].strip()}")
+                print(f"      [CHECK] CONECTADA - {version.split('-')[0].strip()}")
 
                 self.conexiones[bd] = conn
                 self.resultados["conectividad"][bd] = {
@@ -82,13 +82,13 @@ class ValidadorConectividad:
                 self.obtener_tablas_reales(bd, cursor)
 
             except pyodbc.Error as e:
-                print(f"      ❌ ERROR: {e}")
+                print(f"      [ERROR] ERROR: {e}")
                 self.resultados["conectividad"][bd] = {
                     "estado": "ERROR",
                     "error": str(e),
                 }
             except Exception as e:
-                print(f"      ⚠️ No disponible: {e}")
+                print(f"      [WARN] No disponible: {e}")
                 self.resultados["conectividad"][bd] = {
                     "estado": "NO_DISPONIBLE",
                     "razon": str(e),
@@ -119,7 +119,7 @@ class ValidadorConectividad:
             }
 
         except Exception as e:
-            print(f"         ❌ Error obteniendo tablas: {e}")
+            print(f"         [ERROR] Error obteniendo tablas: {e}")
 
     def generar_scripts_creacion(self):
         """Genera scripts de creación para reproducibilidad."""
@@ -140,7 +140,7 @@ class ValidadorConectividad:
                 # Generar script de creación
                 self.crear_script_bd(bd_nombre, estructura["tablas"], script_file)
 
-                print(f"   ✅ Script generado: {script_file}")
+                print(f"   [CHECK] Script generado: {script_file}")
                 self.resultados["scripts_generados"].append(script_file)
 
     def crear_script_bd(self, bd_nombre: str, tablas: list, archivo_script: str):
@@ -239,9 +239,9 @@ GO
 
         for i, script in enumerate(scripts_necesarios, 1):
             if os.path.exists(script):
-                contenido_maestro += f"-- {i}. {script} ✅ DISPONIBLE\n"
+                contenido_maestro += f"-- {i}. {script} [CHECK] DISPONIBLE\n"
             else:
-                contenido_maestro += f"-- {i}. {script} ❌ FALTANTE\n"
+                contenido_maestro += f"-- {i}. {script} [ERROR] FALTANTE\n"
 
         contenido_maestro += f"""
 -- PASO 3: Verificar instalación
@@ -255,7 +255,7 @@ GO
         with open(script_maestro, "w", encoding="utf-8") as f:
             f.write(contenido_maestro)
 
-        print(f"   ✅ Script maestro creado: {script_maestro}")
+        print(f"   [CHECK] Script maestro creado: {script_maestro}")
         self.resultados["scripts_generados"].append(script_maestro)
 
     def cerrar_conexiones(self):
@@ -263,7 +263,7 @@ GO
         for bd, conn in self.conexiones.items():
             try:
                 conn.close()
-                print(f"   🔒 Conexión cerrada: {bd}")
+                print(f"   [LOCK] Conexión cerrada: {bd}")
             except:
                 pass
 
@@ -281,7 +281,7 @@ GO
             if bd.get("estado") == "CONECTADA"
         )
 
-        print(f"\n📊 RESUMEN DE CONECTIVIDAD:")
+        print(f"\n[CHART] RESUMEN DE CONECTIVIDAD:")
         print(f"   • Bases de datos probadas: {total_bd}")
         print(f"   • Conexiones exitosas: {conectadas}")
         print(f"   • Scripts generados: {len(self.resultados['scripts_generados'])}")
@@ -295,9 +295,9 @@ GO
                     .get(bd_nombre, {})
                     .get("total_tablas", 0)
                 )
-                print(f"   ✅ {bd_nombre}: {estado} ({tablas} tablas)")
+                print(f"   [CHECK] {bd_nombre}: {estado} ({tablas} tablas)")
             else:
-                print(f"   ❌ {bd_nombre}: {estado}")
+                print(f"   [ERROR] {bd_nombre}: {estado}")
 
         # Scripts generados
         if self.resultados["scripts_generados"]:
@@ -308,12 +308,12 @@ GO
         # Recomendaciones
         print(f"\n💡 RECOMENDACIONES:")
         if conectadas == total_bd:
-            print("   ✅ Todas las BD están conectadas - Sistema listo")
+            print("   [CHECK] Todas las BD están conectadas - Sistema listo")
             print("   🔧 Ejecute los scripts generados para verificar reproducibilidad")
         elif conectadas > 0:
-            print("   ⚠️ Conectividad parcial - Verifique configuración de BD faltantes")
+            print("   [WARN] Conectividad parcial - Verifique configuración de BD faltantes")
         else:
-            print("   ❌ Sin conectividad - Verifique configuración del servidor de BD")
+            print("   [ERROR] Sin conectividad - Verifique configuración del servidor de BD")
             print("   🔧 Asegúrese de que SQL Server esté ejecutándose")
             print("   🔧 Verifique los strings de conexión")
 

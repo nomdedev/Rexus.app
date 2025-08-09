@@ -182,7 +182,7 @@ class CollapsibleSidebar(QFrame):
             ("🛒", "Compras", "Gestión de compras y proveedores"),
             ("💼", "Administración", "Gestión administrativa y financiera"),
             ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
-            ("📊", "Auditoría", "Auditoría y trazabilidad"),
+            ("[CHART]", "Auditoría", "Auditoría y trazabilidad"),
             ("👥", "Usuarios", "Gestión de personal y roles"),
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
@@ -496,9 +496,9 @@ class MainWindow(QMainWindow):
         🔑 Rol: {self.user_data.get("rol", "N/A")}
         📱 Módulos disponibles: {len(self.modulos_permitidos)}
         
-        ✅ Sistema funcionando correctamente
+        [CHECK] Sistema funcionando correctamente
         🔧 Sidebar colapsible implementado
-        📊 Dashboard optimizado
+        [CHART] Dashboard optimizado
         """)
 
         user_info.setStyleSheet("""
@@ -569,7 +569,7 @@ class MainWindow(QMainWindow):
             "Compras": "🛒",
             "Administración": "💼",
             "Mantenimiento": "🛠️",
-            "Auditoría": "📊",
+            "Auditoría": "[CHART]",
             "Usuarios": "👥",
             "Configuración": "⚙️",
         }

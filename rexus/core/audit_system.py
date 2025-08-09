@@ -2,11 +2,11 @@
 Sistema de Auditoría y Logging de Seguridad - Rexus.app v2.0.0
 
 FUNCIONALIDADES DE SEGURIDAD:
-✅ Auditoría completa de accesos al sistema
-✅ Logging de cambios críticos de usuarios
-✅ Registro de acciones sensibles con detalles
-✅ Detección de actividades sospechosas
-✅ Reportes de seguridad y compliance
+[CHECK] Auditoría completa de accesos al sistema
+[CHECK] Logging de cambios críticos de usuarios
+[CHECK] Registro de acciones sensibles con detalles
+[CHECK] Detección de actividades sospechosas
+[CHECK] Reportes de seguridad y compliance
 """
 
 import datetime
@@ -133,10 +133,10 @@ class AuditSystem:
             """)
             
             self.db_connection.connection.commit()
-            print("✅ [AUDIT] Tabla de auditoría creada/verificada")
+            print("[CHECK] [AUDIT] Tabla de auditoría creada/verificada")
             
         except Exception as e:
-            print(f"❌ [AUDIT] Error creando tabla de auditoría: {e}")
+            print(f"[ERROR] [AUDIT] Error creando tabla de auditoría: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
 
@@ -178,7 +178,7 @@ class AuditSystem:
                   f"Acción: {accion} | Resultado: {resultado}")
             
             if level in [AuditLevel.CRITICAL, AuditLevel.SECURITY]:
-                print(f"⚠️ [AUDIT CRÍTICO] Detalles: {detalles_json}")
+                print(f"[WARN] [AUDIT CRÍTICO] Detalles: {detalles_json}")
             
             # Guardar en base de datos si está disponible
             if self.db_connection:
@@ -209,7 +209,7 @@ class AuditSystem:
             return True
             
         except Exception as e:
-            print(f"❌ [AUDIT] Error registrando evento de auditoría: {e}")
+            print(f"[ERROR] [AUDIT] Error registrando evento de auditoría: {e}")
             return False
 
     def log_login_success(self, usuario_id: int, usuario_nombre: str, 
@@ -413,7 +413,7 @@ class AuditSystem:
             return logs
             
         except Exception as e:
-            print(f"❌ [AUDIT] Error obteniendo logs de auditoría: {e}")
+            print(f"[ERROR] [AUDIT] Error obteniendo logs de auditoría: {e}")
             return []
 
     def get_security_summary(self, dias: int = 30) -> Dict[str, Any]:
@@ -479,7 +479,7 @@ class AuditSystem:
             }
             
         except Exception as e:
-            print(f"❌ [AUDIT] Error obteniendo resumen de seguridad: {e}")
+            print(f"[ERROR] [AUDIT] Error obteniendo resumen de seguridad: {e}")
             return {}
 
 

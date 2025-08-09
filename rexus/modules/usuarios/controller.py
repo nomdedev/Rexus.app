@@ -67,11 +67,11 @@ class UsuariosController(QObject):
                 
                 # Verificar si el input es seguro
                 if not SecurityUtils.is_safe_input(valor):
-                    print(f"⚠️ [SECURITY] Input malicioso detectado en campo '{campo}': {valor}")
+                    print(f"[WARN] [SECURITY] Input malicioso detectado en campo '{campo}': {valor}")
                     # Sanitizar tanto SQL como XSS
                     valor = SecurityUtils.sanitize_sql_input(valor)
                     valor = SecurityUtils.sanitize_html_input(valor)
-                    print(f"✅ [SECURITY] Valor sanitizado para '{campo}': {valor}")
+                    print(f"[CHECK] [SECURITY] Valor sanitizado para '{campo}': {valor}")
                 
                 datos_sanitizados[campo] = valor
             else:
@@ -93,10 +93,10 @@ class UsuariosController(QObject):
             if '@' in email and '.' in email:
                 datos_sanitizados['email'] = email
             else:
-                print(f"⚠️ [SECURITY] Email con formato inválido: {email}")
+                print(f"[WARN] [SECURITY] Email con formato inválido: {email}")
         
         # Log de sanitización exitosa
-        print(f"✅ [SECURITY] Datos de usuario sanitizados correctamente")
+        print(f"[CHECK] [SECURITY] Datos de usuario sanitizados correctamente")
         
         return datos_sanitizados
     
@@ -130,7 +130,7 @@ class UsuariosController(QObject):
             termino_sanitizado = SecurityUtils.sanitize_html_input(termino_sanitizado)
             
             if not SecurityUtils.is_safe_input(termino_sanitizado):
-                print(f"⚠️ [SECURITY] Término de búsqueda malicioso: {termino_busqueda}")
+                print(f"[WARN] [SECURITY] Término de búsqueda malicioso: {termino_busqueda}")
                 return None
             
             # Buscar usuarios usando el modelo
@@ -377,10 +377,10 @@ class UsuariosController(QObject):
             
             # Verificar que el input sanitizado sea seguro
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                print(f"⚠️ [SECURITY] Intento de login con username malicioso: {username}")
+                print(f"[WARN] [SECURITY] Intento de login con username malicioso: {username}")
                 return None
             
-            # 🔒 VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
+            # [LOCK] VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
             bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
             if bloqueado:
                 mensaje_bloqueo = f"Usuario bloqueado por exceso de intentos fallidos. "
@@ -405,7 +405,7 @@ class UsuariosController(QObject):
             
             if not usuario:
                 # Usuario no existe - también incrementar contador para prevenir ataques de enumeración
-                print(f"⚠️ [SECURITY] Intento de login con usuario inexistente: {username}")
+                print(f"[WARN] [SECURITY] Intento de login con usuario inexistente: {username}")
                 
                 # Registrar intento malicioso
                 self.registrar_auditoria(
@@ -418,7 +418,7 @@ class UsuariosController(QObject):
                 
             # Verificar contraseña
             if not self.model._verificar_password(password, usuario["password_hash"]):
-                # 🔒 CONTRASEÑA INCORRECTA - INCREMENTAR INTENTOS FALLIDOS
+                # [LOCK] CONTRASEÑA INCORRECTA - INCREMENTAR INTENTOS FALLIDOS
                 bloqueado, intentos, tiempo_bloqueo = self.model.incrementar_intentos_fallidos(username_sanitizado)
                 
                 if bloqueado:
@@ -460,7 +460,7 @@ class UsuariosController(QObject):
                 {"usuario_id": usuario["id"], "username": username_sanitizado}
             )
             
-            print(f"✅ [SECURITY] Login exitoso para usuario '{username_sanitizado}'")
+            print(f"[CHECK] [SECURITY] Login exitoso para usuario '{username_sanitizado}'")
             
             return usuario
             
@@ -495,7 +495,7 @@ class UsuariosController(QObject):
             username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
             
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                print(f"⚠️ [SECURITY] Intento de desbloqueo con username malicioso: {username}")
+                print(f"[WARN] [SECURITY] Intento de desbloqueo con username malicioso: {username}")
                 return False
             
             # Desbloquear usuario
@@ -509,7 +509,7 @@ class UsuariosController(QObject):
             )
             
             self.mostrar_exito(f"Usuario '{username}' desbloqueado exitosamente")
-            print(f"✅ [ADMIN] Usuario '{username}' desbloqueado manualmente")
+            print(f"[CHECK] [ADMIN] Usuario '{username}' desbloqueado manualmente")
             
             return True
             

@@ -139,7 +139,7 @@ def main():
     
     print(f"\\nImportaciones exitosas: {len(import_results['success'])}")
     for success in import_results['success']:
-        print(f"  ✓ {success}")
+        print(f"  [OK] {success}")
     
     print(f"\\nErrores de importación: {len(import_results['errors'])}")
     for error in import_results['errors']:
@@ -147,7 +147,7 @@ def main():
     
     print(f"\\nVistas instanciadas exitosamente: {len(instantiation_results['success'])}")
     for success in instantiation_results['success']:
-        print(f"  ✓ {success}")
+        print(f"  [OK] {success}")
     
     print(f"\\nErrores de instanciación: {len(instantiation_results['errors'])}")
     for error in instantiation_results['errors']:
@@ -158,7 +158,7 @@ def main():
         print("\\n🎉 ¡Todos los módulos funcionan correctamente!")
         return 0
     else:
-        print(f"\\n⚠️ Se encontraron {total_errors} errores que requieren corrección")
+        print(f"\\n[WARN] Se encontraron {total_errors} errores que requieren corrección")
         return 1
 
 if __name__ == "__main__":

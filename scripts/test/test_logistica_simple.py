@@ -15,7 +15,7 @@ def main():
     # Test 1: Import Dialog Classes
     try:
         from src.modules.logistica.view import DialogoGenerarServicio, DialogoPreviewServicios
-        print("✓ Dialog classes imported successfully")
+        print("[OK] Dialog classes imported successfully")
     except Exception as e:
         print(f"✗ Dialog import failed: {e}")
         return False
@@ -24,7 +24,7 @@ def main():
     try:
         from src.modules.logistica.controller import LogisticaController
         controller = LogisticaController()
-        print("✓ Controller imported and created successfully")
+        print("[OK] Controller imported and created successfully")
     except Exception as e:
         print(f"✗ Controller import failed: {e}")
         return False
@@ -32,7 +32,7 @@ def main():
     # Test 3: Check Controller Methods
     try:
         if hasattr(controller, 'generar_servicios_automaticos'):
-            print("✓ generar_servicios_automaticos method exists")
+            print("[OK] generar_servicios_automaticos method exists")
         else:
             print("✗ generar_servicios_automaticos method missing")
             return False
@@ -53,7 +53,7 @@ def main():
         }
         
         servicios = controller._simular_servicios_generados(configuracion)
-        print(f"✓ Generated {len(servicios)} test services")
+        print(f"[OK] Generated {len(servicios)} test services")
     except Exception as e:
         print(f"✗ Service generation failed: {e}")
         return False
@@ -63,7 +63,7 @@ def main():
         from src.modules.logistica.view import LogisticaView
         view = LogisticaView()
         if hasattr(view, 'abrir_generador_automatico'):
-            print("✓ View button method exists")
+            print("[OK] View button method exists")
         else:
             print("✗ View button method missing")
             return False

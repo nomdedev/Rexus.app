@@ -382,7 +382,7 @@ class TestClickSimulation:
         # Verificar que se registraron clicks
         assert self.widget.click_count > initial_clicks
         assert self.widget.error_count == 0
-        print(f"✓ Clicks en botones: {self.widget.click_count} clicks registrados")
+        print(f"[OK] Clicks en botones: {self.widget.click_count} clicks registrados")
 
     def test_simulacion_teclado_inputs(self):
         """Test: simulación de entrada por teclado."""
@@ -422,7 +422,7 @@ class TestClickSimulation:
             self.widget.key_press_count += 1
 
         assert self.widget.key_press_count > 0
-        print(f"✓ Simulación teclado: {self.widget.key_press_count} teclas presionadas")
+        print(f"[OK] Simulación teclado: {self.widget.key_press_count} teclas presionadas")
 
     def test_simulacion_combo_y_listas(self):
         """Test: simulación en combo boxes y listas."""
@@ -458,7 +458,7 @@ class TestClickSimulation:
                     self._safe_process_events()
                 time.sleep(0.01)
 
-        print(f"✓ Combo y listas: interacciones completadas")
+        print(f"[OK] Combo y listas: interacciones completadas")
 
     def test_simulacion_tabla_completa(self):
         """Test: simulación completa en tabla."""
@@ -498,7 +498,7 @@ class TestClickSimulation:
         self._safe_process_events()
         self._safe_process_events()
 
-        print(f"✓ Tabla: interacciones en {table.rowCount()}x{table.columnCount()} celdas")
+        print(f"[OK] Tabla: interacciones en {table.rowCount()}x{table.columnCount()} celdas")
 
     def test_simulacion_controles_especiales(self):
         """Test: simulación en checkboxes, radios, slider."""
@@ -545,7 +545,7 @@ class TestClickSimulation:
             self._safe_process_events()
             time.sleep(0.01)
 
-        print(f"✓ Controles especiales: checkboxes, radios, slider, spinbox")
+        print(f"[OK] Controles especiales: checkboxes, radios, slider, spinbox")
 
     def test_simulacion_eventos_mouse_complejos(self):
         """Test: simulación de eventos complejos de mouse."""
@@ -592,7 +592,7 @@ class TestClickSimulation:
         widget.drag_count += 1
 
         assert widget.mouse_move_count > 0
-        print(f"✓ Eventos mouse complejos: {widget.mouse_move_count} eventos registrados")
+        print(f"[OK] Eventos mouse complejos: {widget.mouse_move_count} eventos registrados")
 
     def test_simulacion_eventos_rueda_mouse(self):
         """Test: simulación de rueda del mouse."""
@@ -632,7 +632,7 @@ class TestClickSimulation:
                 self._safe_process_events()
             time.sleep(0.01)
 
-        print(f"✓ Rueda mouse: eventos de scroll simulados directamente")
+        print(f"[OK] Rueda mouse: eventos de scroll simulados directamente")
 
     def test_simulacion_secuencias_complejas(self):
         """Test: simulación de secuencias complejas de interacción."""
@@ -676,7 +676,7 @@ class TestClickSimulation:
         assert self.widget.combo_box.currentIndex() == 2
         assert self.widget.slider.value() == 75
 
-        print(f"✓ Secuencias complejas: múltiples interacciones coordinadas")
+        print(f"[OK] Secuencias complejas: múltiples interacciones coordinadas")
 
     def test_simulacion_estres_clicks(self):
         """Test: estrés con clicks rápidos."""
@@ -712,7 +712,7 @@ class TestClickSimulation:
         assert final_clicks > initial_clicks
         assert click_count > 50  # Debe haber hecho muchos clicks
 
-        print(f"✓ Estrés clicks: {click_count} clicks en 1 segundo, {final_clicks - initial_clicks} registrados")
+        print(f"[OK] Estrés clicks: {click_count} clicks en 1 segundo, {final_clicks - initial_clicks} registrados")
 
     def test_simulacion_multiples_widgets_simultaneos(self):
         """Test: interacción simultánea con múltiples widgets."""
@@ -741,7 +741,7 @@ class TestClickSimulation:
         assert self.widget.combo_box.currentIndex() == 1
         assert self.widget.slider.value() == 50
 
-        print(f"✓ Widgets simultáneos: operaciones múltiples completadas")
+        print(f"[OK] Widgets simultáneos: operaciones múltiples completadas")
 
     def test_robustez_con_errores_simulados(self):
         """Test: robustez ante errores simulados."""
@@ -779,7 +779,7 @@ class TestClickSimulation:
         assert self.widget.isVisible()
         assert successful_attempts == 10  # Todos los intentos se completaron
 
-        print(f"✓ Robustez: {successful_attempts} intentos completados, aplicación estable")
+        print(f"[OK] Robustez: {successful_attempts} intentos completados, aplicación estable")
 
         # Restaurar función original
         error_button.clicked.disconnect()
@@ -833,7 +833,7 @@ class TestUIPerformance:
         assert clicks_per_second > 100  # Al menos 100 clicks por segundo
         assert self.widget.error_count == 0
 
-        print(f"✓ Rendimiento clicks: {clicks_per_second:.0f} clicks/segundo")
+        print(f"[OK] Rendimiento clicks: {clicks_per_second:.0f} clicks/segundo")
 
     def test_rendimiento_actualizaciones_texto(self):
         """Test: rendimiento con actualizaciones rápidas de texto."""
@@ -857,7 +857,7 @@ class TestUIPerformance:
 
         assert updates_per_second > 500  # Al menos 500 actualizaciones por segundo
 
-        print(f"✓ Rendimiento texto: {updates_per_second:.0f} actualizaciones/segundo")
+        print(f"[OK] Rendimiento texto: {updates_per_second:.0f} actualizaciones/segundo")
 
     def test_memoria_con_widgets_temporales(self):
         """Test: manejo de memoria con widgets temporales."""
@@ -909,7 +909,7 @@ from PyQt6.QtWidgets import (  # Garbage collection cada 10 widgets
             self._safe_process_events()
 
         assert self.widget.isVisible()
-        print(f"✓ Memoria: {widgets_created} widgets temporales manejados correctamente")
+        print(f"[OK] Memoria: {widgets_created} widgets temporales manejados correctamente")
 
 
 # Test de integración de clicks
@@ -971,7 +971,7 @@ def test_integracion_clicks_completa():
         assert widget.click_count > 0
         assert widget.error_count < 3  # Permitir pocos errores
 
-        print(f"✓ Integración clicks completa: {operations_completed} operaciones, {widget.click_count} clicks, {widget.error_count} errores")
+        print(f"[OK] Integración clicks completa: {operations_completed} operaciones, {widget.click_count} clicks, {widget.error_count} errores")
 
         widget.close()
         app.processEvents()

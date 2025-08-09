@@ -63,7 +63,7 @@ def probar_obras_asociadas():
                     
                     print(f"   🏗️  {obra_nombre} (ID: {obra_id})")
                     print(f"      📦 {detalle} ({categoria})")
-                    print(f"      📊 Cantidad: {cantidad}, Precio: ${precio_unit}, Total: ${precio_total}")
+                    print(f"      [CHART] Cantidad: {cantidad}, Precio: ${precio_unit}, Total: ${precio_total}")
                     print()
                     
                     if cantidad:
@@ -71,11 +71,11 @@ def probar_obras_asociadas():
                     if precio_total:
                         total_importe += float(precio_total)
                 
-                print(f"   ✅ RESUMEN: {len(resultados)} materiales en {len(obras_encontradas)} obras")
-                print(f"   📊 Total cantidad: {total_cantidad}, Total importe: ${total_importe:,.2f}")
+                print(f"   [CHECK] RESUMEN: {len(resultados)} materiales en {len(obras_encontradas)} obras")
+                print(f"   [CHART] Total cantidad: {total_cantidad}, Total importe: ${total_importe:,.2f}")
                 
             else:
-                print("   ❌ No se encontraron materiales con ese término")
+                print("   [ERROR] No se encontraron materiales con ese término")
             
             print("\n" + "="*70 + "\n")
         
@@ -100,10 +100,10 @@ def probar_obras_asociadas():
             print(f"   {categoria}: {tipos} tipos, {cant_total} unidades, ${importe_total:,.2f}")
         
         conn.close()
-        print("\n✅ Pruebas completadas exitosamente!")
+        print("\n[CHECK] Pruebas completadas exitosamente!")
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

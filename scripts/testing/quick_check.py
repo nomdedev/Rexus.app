@@ -29,7 +29,7 @@ def verificar_estructura_proyecto():
     print("\n1. ESTRUCTURA DE DIRECTORIOS:")
     for directorio in directorios_principales:
         path = root_path / directorio
-        status = "✅" if path.exists() else "❌"
+        status = "[CHECK]" if path.exists() else "[ERROR]"
         print(f"  {status} {directorio}/")
 
     # Verificar módulos
@@ -45,11 +45,11 @@ def verificar_estructura_proyecto():
         for modulo in sorted(modulos):
             view_file = modulo / "view.py"
             model_file = modulo / "model.py"
-            status_view = "✅" if view_file.exists() else "❌"
-            status_model = "✅" if model_file.exists() else "❌"
+            status_view = "[CHECK]" if view_file.exists() else "[ERROR]"
+            status_model = "[CHECK]" if model_file.exists() else "[ERROR]"
             print(f"    {modulo.name}: View {status_view} Model {status_model}")
     else:
-        print("  ❌ Directorio rexus/modules no encontrado")
+        print("  [ERROR] Directorio rexus/modules no encontrado")
 
     # Verificar archivos críticos
     print("\n3. ARCHIVOS CRÍTICOS:")
@@ -68,9 +68,9 @@ def verificar_estructura_proyecto():
         path = root_path / archivo
         if path.exists():
             size_kb = path.stat().st_size / 1024
-            print(f"  ✅ {archivo} ({size_kb:.1f} KB)")
+            print(f"  [CHECK] {archivo} ({size_kb:.1f} KB)")
         else:
-            print(f"  ❌ {archivo}")
+            print(f"  [ERROR] {archivo}")
 
     # Verificar tests
     print("\n4. INFRAESTRUCTURA DE TESTING:")
@@ -79,9 +79,9 @@ def verificar_estructura_proyecto():
         path = root_path / test_dir
         if path.exists():
             test_files = list(path.glob("test_*.py"))
-            print(f"  ✅ {test_dir}: {len(test_files)} archivos de test")
+            print(f"  [CHECK] {test_dir}: {len(test_files)} archivos de test")
         else:
-            print(f"  ❌ {test_dir}")
+            print(f"  [ERROR] {test_dir}")
 
     # Verificar scripts UI/UX
     print("\n5. SCRIPTS UI/UX:")
@@ -93,7 +93,7 @@ def verificar_estructura_proyecto():
 
     for script in uiux_scripts:
         path = root_path / script
-        status = "✅" if path.exists() else "❌"
+        status = "[CHECK]" if path.exists() else "[ERROR]"
         print(f"  {status} {script}")
 
     print("\n6. ESTADO GENERAL:")
@@ -103,30 +103,30 @@ def verificar_estructura_proyecto():
         sys.path.insert(0, str(root_path))
         from utils.data_sanitizer import DataSanitizer
 
-        print("  ✅ DataSanitizer: Importación exitosa")
+        print("  [CHECK] DataSanitizer: Importación exitosa")
     except Exception as e:
-        print(f"  ❌ DataSanitizer: Error - {e}")
+        print(f"  [ERROR] DataSanitizer: Error - {e}")
 
     try:
         from utils.rexus_styles import RexusStyles
 
-        print("  ✅ RexusStyles: Importación exitosa")
+        print("  [CHECK] RexusStyles: Importación exitosa")
     except Exception as e:
-        print(f"  ❌ RexusStyles: Error - {e}")
+        print(f"  [ERROR] RexusStyles: Error - {e}")
 
     try:
         from utils.two_factor_auth import TwoFactorAuth
 
-        print("  ✅ TwoFactorAuth: Importación exitosa")
+        print("  [CHECK] TwoFactorAuth: Importación exitosa")
     except Exception as e:
-        print(f"  ❌ TwoFactorAuth: Error - {e}")
+        print(f"  [ERROR] TwoFactorAuth: Error - {e}")
 
     # Verificar archivos de configuración
     print("\n7. CONFIGURACIÓN:")
     config_files = [".env", "config/rexus_config.json"]
     for config_file in config_files:
         path = root_path / config_file
-        status = "✅" if path.exists() else "❌"
+        status = "[CHECK]" if path.exists() else "[ERROR]"
         print(f"  {status} {config_file}")
 
     print("\n" + "=" * 50)
@@ -177,10 +177,10 @@ def verificar_estructura_proyecto():
     print(f"Componentes OK: {passed_checks}/{total_checks}")
 
     if score >= 75:
-        print("\n✅ El proyecto está en buen estado para continuar")
+        print("\n[CHECK] El proyecto está en buen estado para continuar")
         return True
     else:
-        print(f"\n❌ Se requieren correcciones antes de continuar")
+        print(f"\n[ERROR] Se requieren correcciones antes de continuar")
         return False
 
 

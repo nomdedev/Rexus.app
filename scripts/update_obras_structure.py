@@ -66,11 +66,11 @@ def verificar_y_agregar_columnas():
                     print(f"   ➕ Agregando columna: {nombre_col} ({descripcion})")
                     cursor.execute(sql_alter)
                     connection.commit()
-                    print(f"   ✅ Columna '{nombre_col}' agregada correctamente")
+                    print(f"   [CHECK] Columna '{nombre_col}' agregada correctamente")
                 except Exception as e:
-                    print(f"   ❌ Error agregando '{nombre_col}': {e}")
+                    print(f"   [ERROR] Error agregando '{nombre_col}': {e}")
             else:
-                print(f"   ⚠️ Columna '{nombre_col}' ya existe")
+                print(f"   [WARN] Columna '{nombre_col}' ya existe")
         
         # Verificar que las obras existentes tengan valores por defecto
         print("\n🔄 [DB UPDATE] Actualizando valores por defecto en obras existentes...")
@@ -78,7 +78,7 @@ def verificar_y_agregar_columnas():
         # Contar obras antes de actualizar
         cursor.execute("SELECT COUNT(*) FROM obras")
         total_obras = cursor.fetchone()[0]
-        print(f"   📊 Total de obras a actualizar: {total_obras}")
+        print(f"   [CHART] Total de obras a actualizar: {total_obras}")
         
         if total_obras > 0:
             # Actualizar obras existentes con valores por defecto
@@ -96,9 +96,9 @@ def verificar_y_agregar_columnas():
                         cursor.execute(sql_update)
                         filas_afectadas = cursor.rowcount
                         connection.commit()
-                        print(f"   ✅ {desc}: {filas_afectadas} filas actualizadas")
+                        print(f"   [CHECK] {desc}: {filas_afectadas} filas actualizadas")
                 except Exception as e:
-                    print(f"   ❌ Error actualizando {campo}: {e}")
+                    print(f"   [ERROR] Error actualizando {campo}: {e}")
         
         # Verificar estructura final
         print("\n📋 [DB UPDATE] Verificando estructura final...")
@@ -109,7 +109,7 @@ def verificar_y_agregar_columnas():
             ORDER BY ORDINAL_POSITION
         """)
         columnas_finales = cursor.fetchall()
-        print(f"   📊 Total de columnas después: {len(columnas_finales)}")
+        print(f"   [CHART] Total de columnas después: {len(columnas_finales)}")
         
         # Mostrar mapeo final
         print(f"\n🗺️ [DB UPDATE] Mapeo de columnas modelo -> base de datos:")
@@ -140,11 +140,11 @@ def verificar_y_agregar_columnas():
             print(f"   {modelo} -> {bd}")
         
         cursor.close()
-        print(f"\n✅ [DB UPDATE] Actualización de estructura completada")
+        print(f"\n[CHECK] [DB UPDATE] Actualización de estructura completada")
         return True
         
     except Exception as e:
-        print(f"❌ [DB UPDATE] Error actualizando estructura: {e}")
+        print(f"[ERROR] [DB UPDATE] Error actualizando estructura: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -152,17 +152,17 @@ def verificar_y_agregar_columnas():
 
 def main():
     """Función principal."""
-    print("🚀 [DB UPDATE] Iniciando actualización de estructura de tabla obras...")
+    print("[ROCKET] [DB UPDATE] Iniciando actualización de estructura de tabla obras...")
     print("=" * 70)
     
     success = verificar_y_agregar_columnas()
     
     print("=" * 70)
     if success:
-        print("✅ [DB UPDATE] Actualización completada exitosamente")
+        print("[CHECK] [DB UPDATE] Actualización completada exitosamente")
         return 0
     else:
-        print("❌ [DB UPDATE] Actualización falló")
+        print("[ERROR] [DB UPDATE] Actualización falló")
         return 1
 
 

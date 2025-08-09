@@ -19,52 +19,52 @@ def test_inventario_instantiation():
         print("1. Testing PyQt6...")
         from PyQt6.QtWidgets import QApplication
         app = QApplication([])
-        print("   ✅ PyQt6 imported successfully")
+        print("   [CHECK] PyQt6 imported successfully")
         
         # Test inventario imports
         print("2. Testing inventario imports...")
         from src.modules.inventario.model import InventarioModel
         from src.modules.inventario.view import InventarioView
         from src.modules.inventario.controller import InventarioController
-        print("   ✅ Inventario modules imported successfully")
+        print("   [CHECK] Inventario modules imported successfully")
         
         # Test model creation
         print("3. Testing model creation...")
         model = InventarioModel()
-        print("   ✅ InventarioModel created successfully")
+        print("   [CHECK] InventarioModel created successfully")
         
         # Test view creation
         print("4. Testing view creation...")
         view = InventarioView()
-        print("   ✅ InventarioView created successfully")
+        print("   [CHECK] InventarioView created successfully")
         
         # Test controller creation
         print("5. Testing controller creation...")
         controller = InventarioController(model, view)
-        print("   ✅ InventarioController created successfully")
+        print("   [CHECK] InventarioController created successfully")
         
         # Test signal connections
         print("6. Testing signal connections...")
         if hasattr(view, 'set_controller'):
             view.set_controller(controller)
-            print("   ✅ Controller set on view successfully")
+            print("   [CHECK] Controller set on view successfully")
         else:
-            print("   ⚠️  View has no set_controller method")
+            print("   [WARN]  View has no set_controller method")
         
         # Check for specific methods
         print("7. Checking for specific methods...")
         methods_to_check = ['filtrar_inventario_tiempo_real', 'filtrar_disponibilidad', 'buscar_productos']
         for method in methods_to_check:
             if hasattr(view, method):
-                print(f"   ✅ View has method: {method}")
+                print(f"   [CHECK] View has method: {method}")
             else:
-                print(f"   ❌ View missing method: {method}")
+                print(f"   [ERROR] View missing method: {method}")
         
         print("\n=== INVENTARIO MODULE DEBUG COMPLETE ===")
         return True
         
     except Exception as e:
-        print(f"❌ ERROR: {e}")
+        print(f"[ERROR] ERROR: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -84,15 +84,15 @@ def test_pedidos_debug():
         
         # Check for rollback method
         if hasattr(view, 'rollback'):
-            print("   ✅ PedidosView has rollback method")
+            print("   [CHECK] PedidosView has rollback method")
         else:
-            print("   ❌ PedidosView missing rollback method")
+            print("   [ERROR] PedidosView missing rollback method")
             
         print("=== PEDIDOS MODULE DEBUG COMPLETE ===")
         return True
         
     except Exception as e:
-        print(f"❌ PEDIDOS ERROR: {e}")
+        print(f"[ERROR] PEDIDOS ERROR: {e}")
         import traceback
         traceback.print_exc()
         return False
@@ -104,4 +104,4 @@ if __name__ == "__main__":
     if success1 and success2:
         print("\n🎉 All tests passed!")
     else:
-        print("\n❌ Some tests failed. Check errors above.")
+        print("\n[ERROR] Some tests failed. Check errors above.")

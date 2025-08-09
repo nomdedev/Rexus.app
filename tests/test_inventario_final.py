@@ -26,19 +26,19 @@ def test_imports_refactorizado():
             ProductosManager,
         )
 
-        print("✅ Submódulos refactorizados importados correctamente")
+        print("[CHECK] Submódulos refactorizados importados correctamente")
 
         # Importar modelo refactorizado
         from rexus.modules.inventario.model_inventario_refactorizado import (
             ModeloInventarioRefactorizado,
         )
 
-        print("✅ Modelo refactorizado importado correctamente")
+        print("[CHECK] Modelo refactorizado importado correctamente")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en importaciones: {str(e)}")
+        print(f"[ERROR] Error en importaciones: {str(e)}")
         return False
 
 
@@ -77,7 +77,7 @@ def test_structure_refactorizado():
             if not hasattr(modelo, metodo):
                 raise AssertionError(f"Falta método {metodo}")
 
-        print("✅ Estructura del modelo validada")
+        print("[CHECK] Estructura del modelo validada")
 
         # Probar método de información
         info = modelo.obtener_info_modular()
@@ -86,12 +86,12 @@ def test_structure_refactorizado():
         if "submodulos" not in info:
             raise AssertionError("Falta información de submódulos")
 
-        print(f"✅ Información modular: {info['modelo']} v{info['version']}")
+        print(f"[CHECK] Información modular: {info['modelo']} v{info['version']}")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error validando estructura: {str(e)}")
+        print(f"[ERROR] Error validando estructura: {str(e)}")
         return False
 
 
@@ -135,11 +135,11 @@ def test_submodules_refactorizado():
                 "ConsultasManager: falta obtener_estadisticas_inventario"
             )
 
-        print("✅ Submódulos refactorizados validados correctamente")
+        print("[CHECK] Submódulos refactorizados validados correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error validando submódulos: {str(e)}")
+        print(f"[ERROR] Error validando submódulos: {str(e)}")
         return False
 
 
@@ -190,7 +190,7 @@ def test_architecture():
             if not hasattr(cm, method):
                 raise AssertionError(f"ConsultasManager: falta {method}")
 
-        print("✅ Arquitectura modular validada")
+        print("[CHECK] Arquitectura modular validada")
         print("   📌 ProductosManager: CRUD y validaciones")
         print("   📌 MovimientosManager: Movimientos y auditoría")
         print("   📌 ConsultasManager: Búsquedas y estadísticas")
@@ -198,7 +198,7 @@ def test_architecture():
         return True
 
     except Exception as e:
-        print(f"❌ Error validando arquitectura: {str(e)}")
+        print(f"[ERROR] Error validando arquitectura: {str(e)}")
         return False
 
 
@@ -230,19 +230,19 @@ def test_compatibility():
             if not hasattr(modelo, method):
                 raise AssertionError(f"Falta método de compatibilidad: {method}")
 
-        print("✅ Métodos de compatibilidad disponibles")
+        print("[CHECK] Métodos de compatibilidad disponibles")
         print("   📌 Aliases para código legacy implementados")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error validando compatibilidad: {str(e)}")
+        print(f"[ERROR] Error validando compatibilidad: {str(e)}")
         return False
 
 
 def main():
     """Ejecuta todas las validaciones."""
-    print("🚀 Validación final completa del módulo inventario refactorizado")
+    print("[ROCKET] Validación final completa del módulo inventario refactorizado")
     print("=" * 70)
 
     tests = [
@@ -261,10 +261,10 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"❌ Error inesperado en {test.__name__}: {str(e)}")
+            print(f"[ERROR] Error inesperado en {test.__name__}: {str(e)}")
 
     print("\n" + "=" * 70)
-    print(f"📊 Resumen final: {passed}/{total} validaciones pasaron")
+    print(f"[CHART] Resumen final: {passed}/{total} validaciones pasaron")
 
     if passed == total:
         print("🎉 ¡MÓDULO INVENTARIO REFACTORIZADO COMPLETAMENTE!")
@@ -275,14 +275,14 @@ def main():
         print("   🔹 Mantenibilidad mejorada")
         print("   🔹 Reducción de complejidad por submódulo")
         print("\n📋 Estado del proyecto:")
-        print("   ✅ vidrios: 100% refactorizado")
-        print("   ✅ obras: 100% refactorizado")
-        print("   ✅ usuarios: 100% refactorizado")
-        print("   ✅ inventario: 100% refactorizado")
-        print("\n🚀 Listo para continuar con el siguiente módulo")
+        print("   [CHECK] vidrios: 100% refactorizado")
+        print("   [CHECK] obras: 100% refactorizado")
+        print("   [CHECK] usuarios: 100% refactorizado")
+        print("   [CHECK] inventario: 100% refactorizado")
+        print("\n[ROCKET] Listo para continuar con el siguiente módulo")
         return True
     else:
-        print("⚠️  Refactorización incompleta. Revisar errores.")
+        print("[WARN]  Refactorización incompleta. Revisar errores.")
         print("\n📋 Pasos faltantes:")
         print("   🔸 Corregir imports problemáticos")
         print("   🔸 Completar implementación de submódulos")

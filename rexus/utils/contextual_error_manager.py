@@ -282,12 +282,12 @@ class ContextualErrorManager:
 
         severity_icons = {
             ErrorSeverity.INFO: "ℹ️",
-            ErrorSeverity.WARNING: "⚠️",
-            ErrorSeverity.ERROR: "❌",
+            ErrorSeverity.WARNING: "[WARN]",
+            ErrorSeverity.ERROR: "[ERROR]",
             ErrorSeverity.CRITICAL: "🚨",
         }
 
-        icon = severity_icons.get(error_info["severity"], "❌")
+        icon = severity_icons.get(error_info["severity"], "[ERROR]")
 
         return f"{icon} {error_info['title']}\n\n{error_info['message']}\n\n💡 {error_info['suggestion']}"
 

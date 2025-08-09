@@ -22,10 +22,10 @@ def test_model_direct():
         db_conn = get_inventario_connection(auto_connect=True)
         
         if not db_conn.connection:
-            print("❌ [TEST] No se pudo conectar a la base de datos")
+            print("[ERROR] [TEST] No se pudo conectar a la base de datos")
             return False
             
-        print("✅ [TEST] Conexión a base de datos exitosa")
+        print("[CHECK] [TEST] Conexión a base de datos exitosa")
         
         # Crear modelo
         print("[TEST] Creando modelo de obras...")
@@ -35,7 +35,7 @@ def test_model_direct():
         print("[TEST] Obteniendo obras...")
         obras = model.obtener_todas_obras()
         
-        print(f"📊 [TEST] Obras obtenidas: {len(obras) if obras else 0}")
+        print(f"[CHART] [TEST] Obras obtenidas: {len(obras) if obras else 0}")
         
         if obras:
             print(f"📋 [TEST] Primera obra: {obras[0][:5]}...")  # Solo primeros 5 campos
@@ -53,7 +53,7 @@ def test_model_direct():
         return True
         
     except Exception as e:
-        print(f"❌ [TEST] Error: {e}")
+        print(f"[ERROR] [TEST] Error: {e}")
         import traceback
         traceback.print_exc()
         return False

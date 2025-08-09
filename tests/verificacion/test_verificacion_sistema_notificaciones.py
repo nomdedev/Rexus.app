@@ -31,19 +31,19 @@ from core.integracion_obras import IntegracionObrasModel
             # Conexión a BD
             self.db = ObrasDatabaseConnection()
             self.db.conectar()
-            print("✅ Conectado a base de datos")
+            print("[CHECK] Conectado a base de datos")
 
             # Modelo de integración
             self.integracion_model = IntegracionObrasModel(self.db)
-            print("✅ Modelo de integración inicializado")
+            print("[CHECK] Modelo de integración inicializado")
 
             # Sistema de notificaciones
             self.sistema_notificaciones = SistemaNotificaciones()
-            print("✅ Sistema de notificaciones creado")
+            print("[CHECK] Sistema de notificaciones creado")
 
             return True
         except Exception as e:
-            print(f"❌ Error en setup: {e}")
+            print(f"[ERROR] Error en setup: {e}")
             traceback.print_exc()
             return False
 
@@ -53,17 +53,17 @@ from core.integracion_obras import IntegracionObrasModel
             print("\n📋 Verificando obras en sistema...")
             # Obtener todas las obras
             if not self.integracion_model or not hasattr(self.integracion_model, 'obras_model') or self.integracion_model.obras_model is None:
-                print("❌ El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
+                print("[ERROR] El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
                 return False
             if not self.integracion_model or not hasattr(self.integracion_model, 'obras_model') or self.integracion_model.obras_model is None:
-                print("❌ El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
+                print("[ERROR] El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
                 return False
             obras = self.integracion_model.obras_model.obtener_obras()
             if not obras:
-                print("⚠️ No hay obras registradas para probar")
+                print("[WARN] No hay obras registradas para probar")
                 return False
 
-            print(f"✅ Se encontraron {len(obras)} obras")
+            print(f"[CHECK] Se encontraron {len(obras)} obras")
 
             # Verificar estado de cada obra
             for obra in obras[:3]:  # Limitar a 3 obras para eficiencia
@@ -75,7 +75,7 @@ from core.integracion_obras import IntegracionObrasModel
                 estado = self.integracion_model.verificar_estado_completo_obra(id_obra)
 
                 # Verificar estado
-                print(f"  📊 Estado general: {estado['estado_general']}")
+                print(f"  [CHART] Estado general: {estado['estado_general']}")
                 print(f"  🛠️ Puede avanzar: {estado.get('puede_avanzar', False)}")
 
                 # Verificar módulos
@@ -90,7 +90,7 @@ from core.integracion_obras import IntegracionObrasModel
 
             return True
         except Exception as e:
-            print(f"❌ Error al verificar obras: {e}")
+            print(f"[ERROR] Error al verificar obras: {e}")
             traceback.print_exc()
             return False
 
@@ -104,18 +104,18 @@ from core.integracion_obras import IntegracionObrasModel
                 if self.integracion_model is not None:
                     self.sistema_notificaciones.integracion_model = self.integracion_model
                 else:
-                    print("❌ 'integracion_model' es None y no se puede asignar")
+                    print("[ERROR] 'integracion_model' es None y no se puede asignar")
                     return False
                 self.sistema_notificaciones.show()
-                print("✅ Sistema de notificaciones mostrado")
+                print("[CHECK] Sistema de notificaciones mostrado")
 
                 # Actualizar notificaciones
                 self.sistema_notificaciones.actualizar_notificaciones()
-                print("✅ Notificaciones actualizadas")
+                print("[CHECK] Notificaciones actualizadas")
 
                 # Verificar notificaciones mostradas
                 notif_count = self.sistema_notificaciones.notificaciones_layout.count() if hasattr(self.sistema_notificaciones, 'notificaciones_layout') else 0
-                print(f"✅ Se muestran {notif_count} notificaciones en la interfaz")
+                print(f"[CHECK] Se muestran {notif_count} notificaciones en la interfaz")
 
                 # Simular interacción con timeout para no bloquear la interfaz
                 QTimer.singleShot(3000, self.app.quit)
@@ -124,10 +124,10 @@ from core.integracion_obras import IntegracionObrasModel
 
                 return True
             else:
-                print("❌ Sistema de notificaciones no inicializado")
+                print("[ERROR] Sistema de notificaciones no inicializado")
                 return False
         except Exception as e:
-            print(f"❌ Error en prueba de interfaz: {e}")
+            print(f"[ERROR] Error en prueba de interfaz: {e}")
             traceback.print_exc()
             return False
 
@@ -138,11 +138,11 @@ from core.integracion_obras import IntegracionObrasModel
 
             # Obtener obras
             if not self.integracion_model or not hasattr(self.integracion_model, 'obras_model') or self.integracion_model.obras_model is None:
-                print("❌ El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
+                print("[ERROR] El modelo de integración o su atributo 'obras_model' no está inicializado correctamente")
                 return False
             obras = self.integracion_model.obras_model.obtener_obras()
             if not obras:
-                print("⚠️ No hay obras registradas para probar")
+                print("[WARN] No hay obras registradas para probar")
                 return False
 
             # Encontrar una obra para probar
@@ -153,7 +153,7 @@ from core.integracion_obras import IntegracionObrasModel
                     break
 
             if not id_obra:
-                print("❌ No se pudo identificar una obra para pruebas")
+                print("[ERROR] No se pudo identificar una obra para pruebas")
                 return False
 
             print(f"🔍 Verificando avance de obra ID {id_obra}...")
@@ -162,13 +162,13 @@ from core.integracion_obras import IntegracionObrasModel
             estado_inicial = self.integracion_model.verificar_estado_completo_obra(id_obra)
             puede_avanzar = estado_inicial.get('puede_avanzar', False)
 
-            print(f"  📊 Estado actual: {estado_inicial['estado_general']}")
+            print(f"  [CHART] Estado actual: {estado_inicial['estado_general']}")
             print(f"  🚦 Puede avanzar: {puede_avanzar}")
 
             if puede_avanzar:
-                print("  ✅ La obra puede avanzar - Validación correcta")
+                print("  [CHECK] La obra puede avanzar - Validación correcta")
             else:
-                print("  ⚠️ La obra no puede avanzar - Verificando motivos...")
+                print("  [WARN] La obra no puede avanzar - Verificando motivos...")
 
                 # Verificar pendientes por módulo
                 pendientes = []
@@ -177,14 +177,14 @@ from core.integracion_obras import IntegracionObrasModel
                         pendientes.append(f"{modulo} ({info['pendientes']} pendientes)")
 
                 if pendientes:
-                    print(f"  ❌ Motivos que impiden avance: {', '.join(pendientes)}")
-                    print("  ✅ Verificación de bloqueo correcta")
+                    print(f"  [ERROR] Motivos que impiden avance: {', '.join(pendientes)}")
+                    print("  [CHECK] Verificación de bloqueo correcta")
                 else:
-                    print("  ⚠️ No se identificaron pendientes claros que impidan el avance")
+                    print("  [WARN] No se identificaron pendientes claros que impidan el avance")
 
             return True
         except Exception as e:
-            print(f"❌ Error al verificar avance: {e}")
+            print(f"[ERROR] Error al verificar avance: {e}")
             traceback.print_exc()
             return False
 
@@ -196,19 +196,19 @@ from core.integracion_obras import IntegracionObrasModel
 
             if self.db:
                 self.db.cerrar_conexion()
-                print("✅ Conexión cerrada")
+                print("[CHECK] Conexión cerrada")
         except Exception as e:
-            print(f"⚠️ Error en teardown: {e}")
+            print(f"[WARN] Error en teardown: {e}")
 
     def ejecutar_tests(self):
         """Ejecutar todas las pruebas"""
-        print("🚀 INICIANDO VERIFICACIÓN DEL SISTEMA DE NOTIFICACIONES")
+        print("[ROCKET] INICIANDO VERIFICACIÓN DEL SISTEMA DE NOTIFICACIONES")
         print("=" * 70)
 
         try:
             # Setup
             if not self.setup():
-                print("❌ Falló la configuración inicial")
+                print("[ERROR] Falló la configuración inicial")
                 return False
 
             # Test 1: Verificar obras y notificaciones
@@ -223,17 +223,17 @@ from core.integracion_obras import IntegracionObrasModel
             # Resumen
             print("\n📋 RESUMEN DE VERIFICACIÓN")
             print("=" * 70)
-            print(f"🔍 Verificación de obras y notificaciones: {'✅ PASS' if test1_ok else '❌ FAIL'}")
-            print(f"🖼️ Interfaz del sistema de notificaciones: {'✅ PASS' if test2_ok else '❌ FAIL'}")
-            print(f"🚦 Lógica de avance de obras: {'✅ PASS' if test3_ok else '❌ FAIL'}")
+            print(f"🔍 Verificación de obras y notificaciones: {'[CHECK] PASS' if test1_ok else '[ERROR] FAIL'}")
+            print(f"🖼️ Interfaz del sistema de notificaciones: {'[CHECK] PASS' if test2_ok else '[ERROR] FAIL'}")
+            print(f"🚦 Lógica de avance de obras: {'[CHECK] PASS' if test3_ok else '[ERROR] FAIL'}")
 
             overall_status = all([test1_ok, test2_ok, test3_ok])
             print("\n🏁 RESULTADO FINAL")
             print("=" * 70)
             if overall_status:
-                print("✅ SISTEMA DE NOTIFICACIONES FUNCIONANDO CORRECTAMENTE")
+                print("[CHECK] SISTEMA DE NOTIFICACIONES FUNCIONANDO CORRECTAMENTE")
             else:
-                print("❌ SE DETECTARON PROBLEMAS EN EL SISTEMA DE NOTIFICACIONES")
+                print("[ERROR] SE DETECTARON PROBLEMAS EN EL SISTEMA DE NOTIFICACIONES")
 
             return overall_status
         finally:

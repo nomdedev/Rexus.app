@@ -79,7 +79,7 @@ def test_complete_login_flow():
                     modulos_permitidos = security_manager.get_user_modules(user_data["id"])
                     print(f"   Módulos: {modulos_permitidos}")
                     
-                    print(f"\n✅ FLUJO COMPLETO EXITOSO")
+                    print(f"\n[CHECK] FLUJO COMPLETO EXITOSO")
                     print(f"Usuario: {user_data['username']}")
                     print(f"Rol: {user_data.get('role', user_data.get('rol', 'N/A'))}")
                     print(f"Módulos: {len(modulos_permitidos)}")
@@ -101,5 +101,5 @@ if __name__ == "__main__":
         print(f"\n🎉 LOGIN FUNCIONANDO CORRECTAMENTE")
         print("La aplicación debería abrir sin problemas con admin/admin")
     else:
-        print(f"\n❌ HAY PROBLEMAS EN EL LOGIN")
+        print(f"\n[ERROR] HAY PROBLEMAS EN EL LOGIN")
         print("Revisar los errores mostrados arriba")

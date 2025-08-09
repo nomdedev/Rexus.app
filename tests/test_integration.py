@@ -29,24 +29,24 @@ from rexus.modules.usuarios.secure_model import SecureUsuariosModel
     print("=== PRUEBA DE IMPORTACIONES ===")
 
     try:
-        print("✅ SecurityManager importado correctamente")
+        print("[CHECK] SecurityManager importado correctamente")
     except ImportError as e:
-        print(f"❌ Error importando SecurityManager: {e}")
+        print(f"[ERROR] Error importando SecurityManager: {e}")
 
     try:
-        print("✅ AdvancedThemeManager importado correctamente")
+        print("[CHECK] AdvancedThemeManager importado correctamente")
     except ImportError as e:
-        print(f"❌ Error importando AdvancedThemeManager: {e}")
+        print(f"[ERROR] Error importando AdvancedThemeManager: {e}")
 
     try:
-        print("✅ AdvancedConfigManager importado correctamente")
+        print("[CHECK] AdvancedConfigManager importado correctamente")
     except ImportError as e:
-        print(f"❌ Error importando AdvancedConfigManager: {e}")
+        print(f"[ERROR] Error importando AdvancedConfigManager: {e}")
 
     try:
-        print("✅ SecureUsuariosModel importado correctamente")
+        print("[CHECK] SecureUsuariosModel importado correctamente")
     except ImportError as e:
-        print(f"❌ Error importando SecureUsuariosModel: {e}")
+        print(f"[ERROR] Error importando SecureUsuariosModel: {e}")
 
 def test_integration_logic():
     """Prueba la lógica de integración sin UI."""
@@ -61,7 +61,7 @@ from rexus.modules.usuarios.secure_model import SecureUsuariosModel
     try:
         # Test fallback logic
         if SecurityManager and AdvancedThemeManager and SecureUsuariosModel:
-            print("✅ Todos los módulos avanzados disponibles")
+            print("[CHECK] Todos los módulos avanzados disponibles")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
@@ -69,7 +69,7 @@ from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
             print("   → Se usaría SecureUsuariosModel con Security y ThemeManager")
         else:
-            print("⚠️  Algunos módulos avanzados no disponibles")
+            print("[WARN]  Algunos módulos avanzados no disponibles")
             print("   → Se usaría UsuariosModel básico con fallbacks")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
@@ -95,23 +95,23 @@ from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
         if hasattr(SecureUsuariosModel, 'aplicar_tema_usuario'):
-            print("✅ Método aplicar_tema_usuario disponible en SecureUsuariosModel")
+            print("[CHECK] Método aplicar_tema_usuario disponible en SecureUsuariosModel")
         else:
-            print("⚠️  Método aplicar_tema_usuario no disponible en SecureUsuariosModel")
+            print("[WARN]  Método aplicar_tema_usuario no disponible en SecureUsuariosModel")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
         if hasattr(UsuariosModel, 'aplicar_tema_usuario'):
-            print("⚠️  Método aplicar_tema_usuario disponible en UsuariosModel básico (inesperado)")
+            print("[WARN]  Método aplicar_tema_usuario disponible en UsuariosModel básico (inesperado)")
         else:
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
-            print("✅ Método aplicar_tema_usuario NO disponible en UsuariosModel básico (esperado)")
+            print("[CHECK] Método aplicar_tema_usuario NO disponible en UsuariosModel básico (esperado)")
 
         # Test theme managers
         if hasattr(AdvancedThemeManager, 'apply_theme'):
@@ -120,9 +120,9 @@ from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
-            print("✅ Método apply_theme disponible en AdvancedThemeManager")
+            print("[CHECK] Método apply_theme disponible en AdvancedThemeManager")
         else:
-            print("❌ Método apply_theme NO disponible en AdvancedThemeManager")
+            print("[ERROR] Método apply_theme NO disponible en AdvancedThemeManager")
 
         # Test basic theme fallback
 from core.advanced_theme_manager import AdvancedThemeManager
@@ -131,26 +131,26 @@ from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
         try:
-            print("✅ Función set_theme disponible en utils.theme_manager")
+            print("[CHECK] Función set_theme disponible en utils.theme_manager")
         except ImportError:
-            print("❌ Función set_theme NO disponible en utils.theme_manager")
+            print("[ERROR] Función set_theme NO disponible en utils.theme_manager")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
         try:
-            print("✅ GLOBAL_STYLE disponible en core.theme")
+            print("[CHECK] GLOBAL_STYLE disponible en core.theme")
         except ImportError:
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
-            print("❌ GLOBAL_STYLE NO disponible en core.theme")
+            print("[ERROR] GLOBAL_STYLE NO disponible en core.theme")
 
     except Exception as e:
-        print(f"❌ Error en prueba de integración: {e}")
+        print(f"[ERROR] Error en prueba de integración: {e}")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
@@ -168,11 +168,11 @@ from rexus.modules.usuarios.secure_model import SecureUsuariosModel
     test_integration_logic()
 
     print("\n=== RESUMEN ===")
-    print("Si todas las pruebas pasaron con ✅, la integración está lista.")
-    print("Si hay errores ❌, revisa los módulos correspondientes.")
+    print("Si todas las pruebas pasaron con [CHECK], la integración está lista.")
+    print("Si hay errores [ERROR], revisa los módulos correspondientes.")
 from core.advanced_theme_manager import AdvancedThemeManager
 from core.security_manager import SecurityManager
 from rexus.modules.usuarios.model import UsuariosModel
 from rexus.modules.usuarios.secure_model import SecureUsuariosModel
 
-    print("Si hay advertencias ⚠️, verifica que el comportamiento sea el esperado.")
+    print("Si hay advertencias [WARN], verifica que el comportamiento sea el esperado.")

@@ -32,7 +32,7 @@ class ManualTestRunner:
         }
         self.test_results.append(result)
 
-        status_icon = "✅" if status == "PASS" else "❌" if status == "FAIL" else "⏭️"
+        status_icon = "[CHECK]" if status == "PASS" else "[ERROR]" if status == "FAIL" else "⏭️"
         print(f"{status_icon} {test_name}: {status}")
         if details:
             print(f"   → {details}")
@@ -443,10 +443,10 @@ def main():
 
     if exito:
         print("\n🎉 TESTS MANUALES COMPLETADOS EXITOSAMENTE")
-        print("✅ El proyecto está listo para las siguientes fases")
+        print("[CHECK] El proyecto está listo para las siguientes fases")
     else:
-        print("\n⚠️ TESTS MANUALES COMPLETADOS CON PROBLEMAS")
-        print("❌ Se requieren correcciones antes de continuar")
+        print("\n[WARN] TESTS MANUALES COMPLETADOS CON PROBLEMAS")
+        print("[ERROR] Se requieren correcciones antes de continuar")
 
     return 0 if exito else 1
 

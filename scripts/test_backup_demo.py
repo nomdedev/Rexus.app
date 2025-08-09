@@ -152,10 +152,10 @@ def create_demo_databases():
             conn.close()
             
             created_dbs[db_name] = str(db_path)
-            print(f"✅ Base de datos {db_name} creada: {db_path}")
+            print(f"[CHECK] Base de datos {db_name} creada: {db_path}")
             
         except Exception as e:
-            print(f"❌ Error creando base de datos {db_name}: {e}")
+            print(f"[ERROR] Error creando base de datos {db_name}: {e}")
     
     return created_dbs
 
@@ -205,18 +205,18 @@ def demo_backup_operations(demo_dbs):
         results.append(result)
         
         if result.success:
-            print(f"✅ Backup exitoso: {result.backup_path}")
-            print(f"📊 Tamaño: {result.size_mb:.2f} MB")
+            print(f"[CHECK] Backup exitoso: {result.backup_path}")
+            print(f"[CHART] Tamaño: {result.size_mb:.2f} MB")
             print(f"⏱️ Duración: {result.duration_seconds:.2f} segundos")
         else:
-            print(f"❌ Error en backup: {result.message}")
+            print(f"[ERROR] Error en backup: {result.message}")
     
     return results
 
 
 def demo_backup_statistics(manager):
     """Demuestra estadísticas del sistema de backup."""
-    print("\n📊 === ESTADÍSTICAS DE BACKUP ===")
+    print("\n[CHART] === ESTADÍSTICAS DE BACKUP ===")
     
     try:
         stats = manager.get_backup_statistics()
@@ -240,7 +240,7 @@ def demo_backup_statistics(manager):
                 print(f"  • {backup['database']} - {backup['timestamp']} ({backup['size_mb']:.2f} MB)")
     
     except Exception as e:
-        print(f"❌ Error obteniendo estadísticas: {e}")
+        print(f"[ERROR] Error obteniendo estadísticas: {e}")
 
 
 def demo_backup_integration():
@@ -251,21 +251,21 @@ def demo_backup_integration():
         # Obtener información del sistema global
         info = get_backup_info()
         
-        print(f"🚀 Sistema en funcionamiento: {'Sí' if info['running'] else 'No'}")
+        print(f"[ROCKET] Sistema en funcionamiento: {'Sí' if info['running'] else 'No'}")
         
         if info['next_backup']:
             print(f"⏰ Próximo backup: {info['next_backup']}")
         
         if info['statistics']:
             stats = info['statistics']
-            print(f"📊 Estadísticas: {stats.get('total_backups', 0)} backups, {stats.get('total_size_mb', 0):.1f} MB")
+            print(f"[CHART] Estadísticas: {stats.get('total_backups', 0)} backups, {stats.get('total_size_mb', 0):.1f} MB")
         
         if info['config']:
             config = info['config']
             print(f"⚙️ Configuración: {config.get('backup_schedule', 'N/A')} a las {config.get('backup_time', 'N/A')}")
     
     except Exception as e:
-        print(f"❌ Error en integración: {e}")
+        print(f"[ERROR] Error en integración: {e}")
 
 
 def cleanup_demo_files():
@@ -289,10 +289,10 @@ def cleanup_demo_files():
                 print(f"🗑️ Eliminado: {file}")
             demo_backups_dir.rmdir()
         
-        print("✅ Limpieza completada")
+        print("[CHECK] Limpieza completada")
         
     except Exception as e:
-        print(f"⚠️ Error en limpieza: {e}")
+        print(f"[WARN] Error en limpieza: {e}")
 
 
 def main():
@@ -306,7 +306,7 @@ def main():
         demo_dbs = create_demo_databases()
         
         if not demo_dbs:
-            print("❌ No se pudieron crear las bases de datos demo")
+            print("[ERROR] No se pudieron crear las bases de datos demo")
             return
         
         # 2. Mostrar configuración
@@ -331,12 +331,12 @@ def main():
         success_count = sum(1 for r in results if r.success)
         total_count = len(results)
         
-        print(f"✅ Backups exitosos: {success_count}/{total_count}")
+        print(f"[CHECK] Backups exitosos: {success_count}/{total_count}")
         
         if success_count == total_count:
             print("🎉 ¡Sistema de backup funcionando perfectamente!")
         else:
-            print("⚠️ Algunos backups tuvieron problemas")
+            print("[WARN] Algunos backups tuvieron problemas")
         
         # Preguntuar si limpiar archivos
         print(f"\n🤔 ¿Limpiar archivos de demostración? (y/N): ", end="")
@@ -350,9 +350,9 @@ def main():
             print("\n📁 Archivos de demo mantenidos")
     
     except KeyboardInterrupt:
-        print("\n\n⚠️ Demo interrumpida por el usuario")
+        print("\n\n[WARN] Demo interrumpida por el usuario")
     except Exception as e:
-        print(f"\n❌ Error en demo: {e}")
+        print(f"\n[ERROR] Error en demo: {e}")
         import traceback
         traceback.print_exc()
     

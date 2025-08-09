@@ -13,8 +13,7 @@ try:
     data_sanitizer = unified_sanitizer
 except ImportError:
     try:
-        from rexus.utils.data_sanitizer import DataSanitizer
-        data_sanitizer = DataSanitizer()
+                data_sanitizer = DataSanitizer()
     except ImportError:
         data_sanitizer = None
 
@@ -23,7 +22,7 @@ from rexus.utils.sql_query_manager import SQLQueryManager
 # Sistema de cache inteligente para optimizar consultas frecuentes
 from rexus.utils.intelligent_cache import cached_query, invalidate_cache
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 """
 Modelo de Usuarios - Rexus.app v2.0.0
@@ -441,7 +440,7 @@ class UsuariosModel:
 
     def crear_usuarios_iniciales(self):
         """ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
-        print("❌ SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
+        print("[ERROR] SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
         print(
             "   Los usuarios deben ser creados manualmente por el administrador del sistema"
         )
@@ -464,7 +463,7 @@ class UsuariosModel:
         if not self.db_connection:
             return None
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer and nombre_usuario:
             # Sanitizar el nombre de usuario para prevenir inyecciones
             nombre_limpio = sanitize_string(nombre_usuario)
@@ -553,7 +552,7 @@ class UsuariosModel:
         if not self.db_connection:
             return None
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer and email:
             # Sanitizar el email para prevenir inyecciones
             email_limpio = sanitize_string(email)
@@ -628,7 +627,7 @@ class UsuariosModel:
         if not self.db_connection or not username:
             return False
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer:
             username_limpio = sanitize_string(username)
             if not username_limpio:
@@ -674,7 +673,7 @@ class UsuariosModel:
         if not self.db_connection or not email:
             return False
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available and self.data_sanitizer:
             email_limpio = sanitize_string(email)
             if not email_limpio:
@@ -715,7 +714,7 @@ class UsuariosModel:
         if not self.db_connection or not username:
             return False, 0
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
@@ -787,7 +786,7 @@ class UsuariosModel:
         if not self.db_connection or not username:
             return False, 0, 0
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
@@ -834,9 +833,9 @@ class UsuariosModel:
                 self.db_connection.connection.commit()
 
                 print(
-                    f"🔒 [SECURITY] Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos"
+                    f"[LOCK] [SECURITY] Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos"
                 )
-                print(f"🔒 [SECURITY] Bloqueo hasta: {bloqueado_hasta}")
+                print(f"[LOCK] [SECURITY] Bloqueo hasta: {bloqueado_hasta}")
 
                 return True, intentos_nuevos, TIEMPO_BLOQUEO_MINUTOS
             else:
@@ -848,7 +847,7 @@ class UsuariosModel:
                 self.db_connection.connection.commit()
 
                 print(
-                    f"⚠️ [SECURITY] Intento fallido #{intentos_nuevos} para usuario '{username}'"
+                    f"[WARN] [SECURITY] Intento fallido #{intentos_nuevos} para usuario '{username}'"
                 )
 
                 return False, intentos_nuevos, 0
@@ -867,7 +866,7 @@ class UsuariosModel:
         if not self.db_connection or not username:
             return
 
-        # 🔒 SANITIZACIÓN DE ENTRADA
+        # [LOCK] SANITIZACIÓN DE ENTRADA
         if self.security_available:
             username_limpio = sanitize_string(
                 username, max_length=50
@@ -888,7 +887,7 @@ class UsuariosModel:
             self.db_connection.connection.commit()
 
             print(
-                f"✅ [SECURITY] Intentos fallidos limpiados para usuario '{username}'"
+                f"[CHECK] [SECURITY] Intentos fallidos limpiados para usuario '{username}'"
             )
 
         except Exception as e:
@@ -914,7 +913,7 @@ class UsuariosModel:
             cursor.execute(sql_update, (username,))
             self.db_connection.connection.commit()
 
-            print(f"✅ [SECURITY] Bloqueo expirado limpiado para usuario '{username}'")
+            print(f"[CHECK] [SECURITY] Bloqueo expirado limpiado para usuario '{username}'")
 
         except Exception as e:
             print(f"[ERROR USUARIOS] Error limpiando bloqueo expirado: {e}")
@@ -1063,7 +1062,7 @@ class UsuariosModel:
             return False, "Sin conexión a la base de datos"
 
         try:
-            # 🔒 SANITIZACIÓN Y VALIDACIÓN DE DATOS
+            # [LOCK] SANITIZACIÓN Y VALIDACIÓN DE DATOS
             if unified_sanitizer:
                 # Usar sanitizador unificado refactorizado
                 datos_limpios = unified_sanitizer.sanitize_dict(datos_usuario)

@@ -395,11 +395,11 @@ def run_all_tests():
     print(f"\nTasa de éxito: {success_rate:.1f}%")
 
     if success_rate >= 90:
-        print("✅ SISTEMA DE USUARIOS: EXCELENTE")
+        print("[CHECK] SISTEMA DE USUARIOS: EXCELENTE")
     elif success_rate >= 75:
         print("🟡 SISTEMA DE USUARIOS: BUENO")
     else:
-        print("❌ SISTEMA DE USUARIOS: REQUIERE ATENCIÓN")
+        print("[ERROR] SISTEMA DE USUARIOS: REQUIERE ATENCIÓN")
 
     return result.wasSuccessful()
 

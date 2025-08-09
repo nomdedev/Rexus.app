@@ -141,7 +141,7 @@ rexus_logger = RexusLogger()
     with open(logging_path, 'w', encoding='utf-8') as f:
         f.write(logging_config)
     
-    print(f"  ✅ Configuración de logging mejorada creada: {logging_path}")
+    print(f"  [CHECK] Configuración de logging mejorada creada: {logging_path}")
     return True
 
 def implement_error_handling_improvements():
@@ -251,7 +251,7 @@ sys.excepthook = error_handler.handle_exception
     with open(error_handler_path, 'w', encoding='utf-8') as f:
         f.write(error_handler_code)
     
-    print(f"  ✅ Sistema de manejo de errores mejorado: {error_handler_path}")
+    print(f"  [CHECK] Sistema de manejo de errores mejorado: {error_handler_path}")
     return True
 
 def implement_performance_monitoring():
@@ -394,7 +394,7 @@ performance_monitor = PerformanceMonitor()
     with open(performance_path, 'w', encoding='utf-8') as f:
         f.write(performance_code)
     
-    print(f"  ✅ Sistema de monitoreo de rendimiento: {performance_path}")
+    print(f"  [CHECK] Sistema de monitoreo de rendimiento: {performance_path}")
     return True
 
 def implement_database_improvements():
@@ -592,7 +592,7 @@ def get_database_manager() -> DatabaseManager:
     with open(db_improvements_path, 'w', encoding='utf-8') as f:
         f.write(db_improvements)
     
-    print(f"  ✅ Mejoras de base de datos implementadas: {db_improvements_path}")
+    print(f"  [CHECK] Mejoras de base de datos implementadas: {db_improvements_path}")
     return True
 
 def create_requirements_update():
@@ -643,7 +643,7 @@ typing-extensions>=4.7.0
     with open("requirements_updated.txt", 'w', encoding='utf-8') as f:
         f.write(new_requirements)
     
-    print("  ✅ requirements_updated.txt creado con nuevas dependencias")
+    print("  [CHECK] requirements_updated.txt creado con nuevas dependencias")
     return True
 
 def update_checklist_status():
@@ -658,20 +658,20 @@ def update_checklist_status():
 
 ---
 
-## ✅ COMPLETADO
+## [CHECK] COMPLETADO
 
 ### 1. Seguridad (100% COMPLETADO)
-- ✅ **Vulnerabilidades SQL injection corregidas** - Validación implementada
-- ✅ **Protección XSS implementada** - Sistema de sanitización activo
-- ✅ **Sistema de autorización completo** - Roles y permisos funcionando
-- ✅ **Configuración segura** - Variables de entorno y configuración robusta
-- ✅ **Utilidades de seguridad** - SecurityUtils completo
+- [CHECK] **Vulnerabilidades SQL injection corregidas** - Validación implementada
+- [CHECK] **Protección XSS implementada** - Sistema de sanitización activo
+- [CHECK] **Sistema de autorización completo** - Roles y permisos funcionando
+- [CHECK] **Configuración segura** - Variables de entorno y configuración robusta
+- [CHECK] **Utilidades de seguridad** - SecurityUtils completo
 
 ### 2. Mejoras Técnicas (EN PROGRESO)
-- ✅ **Sistema de logging mejorado** - Configuración completa con logs separados
-- ✅ **Manejo de errores mejorado** - Sistema centralizado con decoradores
-- ✅ **Monitoreo de rendimiento** - Sistema automático de métricas
-- ✅ **Mejoras de base de datos** - Pool de conexiones y transacciones seguras
+- [CHECK] **Sistema de logging mejorado** - Configuración completa con logs separados
+- [CHECK] **Manejo de errores mejorado** - Sistema centralizado con decoradores
+- [CHECK] **Monitoreo de rendimiento** - Sistema automático de métricas
+- [CHECK] **Mejoras de base de datos** - Pool de conexiones y transacciones seguras
 
 ## 🔄 EN PROGRESO
 
@@ -713,12 +713,12 @@ def update_checklist_status():
     with open("CHECKLIST_IMPLEMENTACION_ACTUALIZADO.md", 'w', encoding='utf-8') as f:
         f.write(checklist_update)
     
-    print("  ✅ Checklist actualizado con progreso actual")
+    print("  [CHECK] Checklist actualizado con progreso actual")
     return True
 
 def main():
     """Función principal"""
-    print("🚀 IMPLEMENTANDO MEJORAS TÉCNICAS POST-SEGURIDAD")
+    print("[ROCKET] IMPLEMENTANDO MEJORAS TÉCNICAS POST-SEGURIDAD")
     print("=" * 60)
     print("Implementando mejoras basadas en CHECKLIST_IMPLEMENTACION_TOTAL.md")
     print()
@@ -738,11 +738,11 @@ def main():
             if improvement():
                 completed += 1
         except Exception as e:
-            print(f"  ❌ Error en {improvement.__name__}: {e}")
+            print(f"  [ERROR] Error en {improvement.__name__}: {e}")
     
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE MEJORAS IMPLEMENTADAS")
-    print(f"✅ Mejoras completadas: {completed}/{len(improvements)}")
+    print("[CHART] RESUMEN DE MEJORAS IMPLEMENTADAS")
+    print(f"[CHECK] Mejoras completadas: {completed}/{len(improvements)}")
     
     if completed == len(improvements):
         print("🎉 TODAS LAS MEJORAS TÉCNICAS IMPLEMENTADAS EXITOSAMENTE")
@@ -752,7 +752,7 @@ def main():
         print("3. Realizar pruebas de usuario")
         print("4. Preparar documentación final")
     else:
-        print("⚠️ ALGUNAS MEJORAS NECESITAN REVISIÓN")
+        print("[WARN] ALGUNAS MEJORAS NECESITAN REVISIÓN")
         print("Verificar logs de error y corregir problemas")
 
 if __name__ == "__main__":

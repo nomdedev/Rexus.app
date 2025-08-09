@@ -143,7 +143,7 @@ class MockConfiguracionController:
             "info": "#3b82f6",
         }
 
-        emojis = {"exito": "✅", "error": "❌", "advertencia": "⚠️", "info": "ℹ️"}
+        emojis = {"exito": "[CHECK]", "error": "[ERROR]", "advertencia": "[WARN]", "info": "ℹ️"}
 
         color = colores.get(tipo, colores["info"])
         emoji = emojis.get(tipo, emojis["info"])
@@ -285,7 +285,7 @@ class TestConfiguracionController(unittest.TestCase):
                 "advertencia": "#f59e42",
                 "info": "#2563eb",
             }
-            iconos = {"exito": "✅", "error": "❌", "advertencia": "⚠️", "info": "ℹ️"}
+            iconos = {"exito": "[CHECK]", "error": "[ERROR]", "advertencia": "[WARN]", "info": "ℹ️"}
             color = colores.get(tipo, "#2563eb")
             icono = iconos.get(tipo, "ℹ️")
             html = f"<span style='color:{color};'>{icono} {mensaje}</span>"
@@ -385,7 +385,7 @@ class TestConfiguracionController(unittest.TestCase):
         )
         self.assertIn("Prueba exitosa", args)
         self.assertIn("#22c55e", args)
-        self.assertIn("✅", args)
+        self.assertIn("[CHECK]", args)
 
     def test_feedback_visual_error(self):
         """El feedback visual de error usa color y emoji correctos."""
@@ -399,7 +399,7 @@ class TestConfiguracionController(unittest.TestCase):
         )
         self.assertIn("Error crítico", args)
         self.assertIn("#ef4444", args)
-        self.assertIn("❌", args)
+        self.assertIn("[ERROR]", args)
 
     def test_feedback_visual_advertencia(self):
         """El feedback visual de advertencia usa color y emoji correctos."""
@@ -413,7 +413,7 @@ class TestConfiguracionController(unittest.TestCase):
         )
         self.assertIn("Advertencia de prueba", args)
         self.assertIn("#f59e42", args)
-        self.assertIn("⚠️", args)
+        self.assertIn("[WARN]", args)
 
     def test_guardar_configuracion_conexion_tipo_invalido(self):
         """Debe mostrar error si el puerto o timeout no son numéricos."""

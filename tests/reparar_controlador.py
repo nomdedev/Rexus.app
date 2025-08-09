@@ -50,7 +50,7 @@ def reparar_controlador():
     with open(archivo_controller, 'w', encoding='utf-8') as f:
         f.write('\n'.join(nuevas_lineas))
     
-    print("✅ Controlador reparado exitosamente")
+    print("[CHECK] Controlador reparado exitosamente")
 
 if __name__ == "__main__":
     reparar_controlador()

@@ -32,13 +32,13 @@ from main import app, continuar_inicio
         def on_login_success(self, user):
             nonlocal login_exitoso, mainwindow_visible
             login_exitoso = True
-            print(f"✅ LOGIN EXITOSO: {user.get('usuario', 'usuario_desconocido')}")
+            print(f"[CHECK] LOGIN EXITOSO: {user.get('usuario', 'usuario_desconocido')}")
 
             # Buscar MainWindow
             for widget in QApplication.allWidgets():
                 if widget.__class__.__name__ == "MainWindow" and widget.isVisible():
                     mainwindow_visible = True
-                    print("✅ MAINWINDOW VISIBLE")
+                    print("[CHECK] MAINWINDOW VISIBLE")
                     analizar_mainwindow_detallado(widget)
                     break
 
@@ -55,18 +55,18 @@ from main import app, continuar_inicio
                 break
 
         if not login_view:
-            print("❌ LoginView no encontrado")
+            print("[ERROR] LoginView no encontrado")
             # Buscar MainWindow directamente por si ya está abierto
             for widget in QApplication.allWidgets():
                 if widget.__class__.__name__ == "MainWindow" and widget.isVisible():
-                    print("✅ MainWindow ya está visible, analizando...")
+                    print("[CHECK] MainWindow ya está visible, analizando...")
                     analizar_mainwindow_detallado(widget)
                     QTimer.singleShot(5000, app.quit)
                     return
             app.quit()
             return
 
-        print("✅ LoginView encontrado")
+        print("[CHECK] LoginView encontrado")
 
         # Buscar controlador de login
         login_controller = None
@@ -76,7 +76,7 @@ from main import app, continuar_inicio
                 break
 
         if login_controller:
-            print("✅ LoginController encontrado")
+            print("[CHECK] LoginController encontrado")
             login_controller.login_exitoso.connect(monitor.on_login_success)
 
         # Precompletar campos con credenciales reales para test local
@@ -84,12 +84,12 @@ from main import app, continuar_inicio
             # SOLO PARA TEST LOCAL - usar credenciales reales
             login_view.usuario_input.setText("admin")  # Usuario real para test local
             login_view.password_input.setText("admin")  # Password real para test local
-            print("✅ Campos completados con credenciales reales (solo para test local)")
+            print("[CHECK] Campos completados con credenciales reales (solo para test local)")
 
         # Simular click en botón
         if hasattr(login_view, 'boton_login'):
             boton = login_view.boton_login
-            print(f"✅ Botón: '{boton.text()}' - {boton.size().width()}x{boton.size().height()}")
+            print(f"[CHECK] Botón: '{boton.text()}' - {boton.size().width()}x{boton.size().height()}")
 
             def hacer_click():
                 print("🔥 HACIENDO CLICK EN LOGIN...")
@@ -99,13 +99,13 @@ from main import app, continuar_inicio
                 QTimer.singleShot(3000, verificar_resultado)
 
             def verificar_resultado():
-                print(f"📊 RESULTADO: Login: {login_exitoso}, MainWindow: {mainwindow_visible}")
+                print(f"[CHART] RESULTADO: Login: {login_exitoso}, MainWindow: {mainwindow_visible}")
 
                 if not mainwindow_visible:
                     # Buscar MainWindow manualmente
                     for widget in QApplication.allWidgets():
                         if widget.__class__.__name__ == "MainWindow":
-                            print(f"✅ MainWindow encontrado: visible={widget.isVisible()}")
+                            print(f"[CHECK] MainWindow encontrado: visible={widget.isVisible()}")
                             if widget.isVisible():
                                 analizar_mainwindow_detallado(widget)
                             break
@@ -114,7 +114,7 @@ from main import app, continuar_inicio
 
             QTimer.singleShot(1000, hacer_click)
         else:
-            print("❌ Botón de login no encontrado")
+            print("[ERROR] Botón de login no encontrado")
             app.quit()
 
     # Iniciar después del splash
@@ -123,7 +123,7 @@ from main import app, continuar_inicio
     # Timeout de seguridad
     QTimer.singleShot(20000, lambda: (print("⏰ TIMEOUT"), app.quit()))
 
-    print("🚀 Iniciando test...")
+    print("[ROCKET] Iniciando test...")
     return app.exec()
 
 def analizar_mainwindow_detallado(main_window):
@@ -172,7 +172,7 @@ def analizar_mainwindow_detallado(main_window):
     # Mostrar componentes
     print("\n🧩 COMPONENTES PRINCIPALES:")
     for nombre, info in componentes.items():
-        print(f"  ✅ {nombre.upper()}:")
+        print(f"  [CHECK] {nombre.upper()}:")
         for clave, valor in info.items():
             print(f"     {clave}: {valor}")
 
@@ -181,7 +181,7 @@ def analizar_mainwindow_detallado(main_window):
     print(f"\n🎨 STYLESHEET: {len(stylesheet)} caracteres")
 
     # Detectar problemas visuales
-    print("\n⚠️ VERIFICACIÓN DE PROBLEMAS:")
+    print("\n[WARN] VERIFICACIÓN DE PROBLEMAS:")
 
     problemas = []
 
@@ -201,11 +201,11 @@ def analizar_mainwindow_detallado(main_window):
         problemas.append("🔸 Module Stack no visible")
 
     if problemas:
-        print("❌ PROBLEMAS DETECTADOS:")
+        print("[ERROR] PROBLEMAS DETECTADOS:")
         for problema in problemas:
             print(f"  {problema}")
     else:
-        print("✅ No se detectaron problemas obvios")
+        print("[CHECK] No se detectaron problemas obvios")
 
     print("\n" + "=" * 60)
 

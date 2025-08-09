@@ -11,7 +11,7 @@ def add_xss_protection_to_module(module_path):
     """Agrega protección XSS a un módulo específico"""
     
     if not module_path.exists():
-        print(f"❌ Archivo no encontrado: {module_path}")
+        print(f"[ERROR] Archivo no encontrado: {module_path}")
         return False
     
     print(f"🔧 Procesando: {module_path.name}")
@@ -39,7 +39,7 @@ def add_xss_protection_to_module(module_path):
         if import_line_index >= 0:
             lines.insert(import_line_index + 1, "from rexus.utils.security import SecurityUtils")
             content = '\n'.join(lines)
-            print("  ✅ Import de SecurityUtils agregado")
+            print("  [CHECK] Import de SecurityUtils agregado")
     
     # Buscar métodos que manejan entrada de texto
     input_methods = [
@@ -63,7 +63,7 @@ def add_xss_protection_to_module(module_path):
             if "SecurityUtils.sanitize_input" not in method_content:
                 # Agregar comentario de sanitización
                 sanitization_comment = '''
-        # 🔒 PROTECCIÓN XSS: Sanitizar todas las entradas de texto
+        # [LOCK] PROTECCIÓN XSS: Sanitizar todas las entradas de texto
         # TODO: Implementar sanitización con SecurityUtils.sanitize_input()
         # Ejemplo: texto_limpio = SecurityUtils.sanitize_input(texto_usuario)
 '''
@@ -71,7 +71,7 @@ def add_xss_protection_to_module(module_path):
                 # Insertar después de la definición del método
                 method_def_end = content.find(':', method_start) + 1
                 content = content[:method_def_end] + sanitization_comment + content[method_def_end:]
-                print(f"    ✅ Comentario de sanitización agregado a {method_name}")
+                print(f"    [CHECK] Comentario de sanitización agregado a {method_name}")
     
     # Buscar campos de texto sin validación
     text_patterns = [
@@ -89,19 +89,19 @@ def add_xss_protection_to_module(module_path):
     if validation_needed and "# XSS Protection Added" not in content:
         # Agregar header de protección XSS
         xss_header = '''
-# 🔒 XSS Protection Added - Validate all user inputs
+# [LOCK] XSS Protection Added - Validate all user inputs
 # Use SecurityUtils.sanitize_input() for text fields
 # Use SecurityUtils.validate_email() for email fields
 # XSS Protection Added
 '''
         content = xss_header + content
-        print("  ✅ Header de protección XSS agregado")
+        print("  [CHECK] Header de protección XSS agregado")
     
     # Escribir archivo modificado
     with open(module_path, 'w', encoding='utf-8') as f:
         f.write(content)
     
-    print(f"  ✅ {module_path.name} actualizado con protección XSS")
+    print(f"  [CHECK] {module_path.name} actualizado con protección XSS")
     return True
 
 def find_method_end(content, method_start):
@@ -131,14 +131,14 @@ def main():
     modules_dir = Path("rexus/modules")
     
     if not modules_dir.exists():
-        print(f"❌ Directorio de módulos no encontrado: {modules_dir}")
+        print(f"[ERROR] Directorio de módulos no encontrado: {modules_dir}")
         return
     
     # Buscar todos los archivos view.py
     view_files = list(modules_dir.glob("*/view.py"))
     
     if not view_files:
-        print("❌ No se encontraron archivos view.py")
+        print("[ERROR] No se encontraron archivos view.py")
         return
     
     print(f"📋 Archivos encontrados: {len(view_files)}")
@@ -151,8 +151,8 @@ def main():
     
     # Resumen
     print("=" * 60)
-    print("📊 RESUMEN DE PROTECCIÓN XSS")
-    print(f"✅ Archivos procesados exitosamente: {success_count}")
+    print("[CHART] RESUMEN DE PROTECCIÓN XSS")
+    print(f"[CHECK] Archivos procesados exitosamente: {success_count}")
     print(f"📁 Total archivos: {len(view_files)}")
     
     if success_count == len(view_files):
@@ -163,7 +163,7 @@ def main():
         print("3. Probar formularios con payloads XSS")
         print("4. Ejecutar tests de seguridad")
     else:
-        print("⚠️ ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
+        print("[WARN] ALGUNOS ARCHIVOS NO PUDIERON SER PROCESADOS")
         print("Revisar manualmente los archivos que fallaron")
 
 if __name__ == "__main__":

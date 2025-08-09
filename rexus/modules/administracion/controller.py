@@ -166,11 +166,11 @@ class AdministracionController(QObject):
         try:
             self.actualizar_datos()
             if self.view:
-                self.view.actualizar_status("✅ Datos cargados exitosamente")
+                self.view.actualizar_status("[CHECK] Datos cargados exitosamente")
         except Exception as e:
             print(f"Error cargando datos iniciales: {e}")
             if self.view:
-                self.view.actualizar_status(f"❌ Error cargando datos: {str(e)}")
+                self.view.actualizar_status(f"[ERROR] Error cargando datos: {str(e)}")
 
     @pyqtSlot()
     def actualizar_datos(self):
@@ -197,7 +197,7 @@ class AdministracionController(QObject):
         except Exception as e:
             print(f"Error actualizando datos: {e}")
             if self.view:
-                self.view.actualizar_status(f"❌ Error actualizando: {str(e)}")
+                self.view.actualizar_status(f"[ERROR] Error actualizando: {str(e)}")
 
     def actualizar_dashboard(self):
         """Actualiza el dashboard con resumen de datos."""

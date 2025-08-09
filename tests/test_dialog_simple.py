@@ -14,11 +14,11 @@ def test_dialog_simple():
         # Solo importar y verificar que el módulo se puede cargar
         import rexus.modules.inventario.obras_asociadas_dialog as dialog_module
         
-        print("✅ Módulo obras_asociadas_dialog importado exitosamente")
+        print("[CHECK] Módulo obras_asociadas_dialog importado exitosamente")
         
         # Verificar que la clase existe
         if hasattr(dialog_module, 'ObrasAsociadasDialog'):
-            print("✅ Clase ObrasAsociadasDialog encontrada")
+            print("[CHECK] Clase ObrasAsociadasDialog encontrada")
             
             # Datos de prueba
             item_data = {
@@ -32,14 +32,14 @@ def test_dialog_simple():
                 'precio_unitario': 25.50
             }
             
-            print(f"✅ Datos de prueba preparados para: {item_data['descripcion']}")
-            print("✅ El diálogo está listo para usar en la aplicación")
+            print(f"[CHECK] Datos de prueba preparados para: {item_data['descripcion']}")
+            print("[CHECK] El diálogo está listo para usar en la aplicación")
             
         else:
-            print("❌ Clase ObrasAsociadasDialog no encontrada")
+            print("[ERROR] Clase ObrasAsociadasDialog no encontrada")
             
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

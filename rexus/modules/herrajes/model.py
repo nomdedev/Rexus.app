@@ -7,6 +7,7 @@ Maneja la lógica de negocio y acceso a datos para herrajes.
 
 import logging
 from typing import Dict, List, Optional
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +126,7 @@ class HerrajesModel:
             return herrajes_dict
             
         except Exception as e:
-            print(f"❌ [HERRAJES] Error obteniendo herrajes: {e}")
+            print(f"[ERROR] [HERRAJES] Error obteniendo herrajes: {e}")
             return self._get_herrajes_demo()
 
     def obtener_herrajes_por_obra(self, obra_id: int) -> List[Dict]:
@@ -161,7 +162,7 @@ class HerrajesModel:
             return herrajes_obra
             
         except Exception as e:
-            print(f"❌ [HERRAJES] Error obteniendo herrajes por obra: {e}")
+            print(f"[ERROR] [HERRAJES] Error obteniendo herrajes por obra: {e}")
             return []
 
     def buscar_herrajes(self, termino: str) -> List[Dict]:
@@ -203,7 +204,7 @@ class HerrajesModel:
             return herrajes_dict
             
         except Exception as e:
-            print(f"❌ [HERRAJES] Error en búsqueda: {e}")
+            print(f"[ERROR] [HERRAJES] Error en búsqueda: {e}")
             return []
 
     def obtener_estadisticas(self) -> Dict:
@@ -251,7 +252,7 @@ class HerrajesModel:
             return stats
             
         except Exception as e:
-            print(f"❌ [HERRAJES] Error obteniendo estadísticas: {e}")
+            print(f"[ERROR] [HERRAJES] Error obteniendo estadísticas: {e}")
             return {
                 "total_herrajes": 0,
                 "total_stock": 0,

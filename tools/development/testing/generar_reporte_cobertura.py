@@ -38,7 +38,7 @@ from pathlib import Path
         "--tb=short"
     ]
 
-    print(f"🚀 Ejecutando: {' '.join(cmd)}")
+    print(f"[ROCKET] Ejecutando: {' '.join(cmd)}")
     print("-" * 60)
 
     start_time = time.time()
@@ -49,7 +49,7 @@ from pathlib import Path
 
         execution_time = time.time() - start_time
 
-        print("📊 RESULTADO DE EJECUCIÓN:")
+        print("[CHART] RESULTADO DE EJECUCIÓN:")
         print(f"⏱️  Tiempo de ejecución: {execution_time:.2f} segundos")
         print(f"🔄 Código de salida: {result.returncode}")
         print()
@@ -62,7 +62,7 @@ from pathlib import Path
 
         # Mostrar errores si los hay
         if result.stderr:
-            print("⚠️  ERRORES/ADVERTENCIAS:")
+            print("[WARN]  ERRORES/ADVERTENCIAS:")
             print(result.stderr)
             print()
 
@@ -73,7 +73,7 @@ from pathlib import Path
         leer_reporte_json()
 
     except Exception as e:
-        print(f"❌ Error al ejecutar pytest: {e}")
+        print(f"[ERROR] Error al ejecutar pytest: {e}")
         return False
 
     return result.returncode == 0
@@ -83,10 +83,10 @@ def generar_reporte_adicional(success, execution_time):
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
 
-    reporte = f"""# 📊 REPORTE DE COBERTURA - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
+    reporte = f"""# [CHART] REPORTE DE COBERTURA - {datetime.now().strftime("%Y-%m-%d %H:%M:%S")}
 
-## ✅ Estado de Ejecución
-- **Exitoso**: {'✅ SÍ' if success else '❌ NO'}
+## [CHECK] Estado de Ejecución
+- **Exitoso**: {'[CHECK] SÍ' if success else '[ERROR] NO'}
 - **Tiempo de ejecución**: {execution_time:.2f} segundos
 - **Timestamp**: {timestamp}
 
@@ -135,14 +135,14 @@ def leer_reporte_json():
                     low_coverage.append((file_path, coverage))
 
             if low_coverage:
-                print("⚠️  MÓDULOS CON COBERTURA < 90%:")
+                print("[WARN]  MÓDULOS CON COBERTURA < 90%:")
                 for file_path, coverage in sorted(low_coverage, key=lambda x: x[1]):
                     print(f"   📄 {file_path}: {coverage:.1f}%")
             else:
                 print("🎉 ¡Todos los módulos tienen cobertura >= 90%!")
 
     except Exception as e:
-        print(f"⚠️  No se pudo leer coverage.json: {e}")
+        print(f"[WARN]  No se pudo leer coverage.json: {e}")
 
 def contar_tests_ejecutados():
     """Cuenta el número total de tests en el proyecto"""
@@ -161,7 +161,7 @@ def contar_tests_ejecutados():
                 if test_count > 0:
                     print(f"   📄 {test_file.relative_to(Path('tests'))}: {test_count} tests")
         except Exception as e:
-            print(f"   ⚠️  Error leyendo {test_file}: {e}")
+            print(f"   [WARN]  Error leyendo {test_file}: {e}")
 
     print(f"\n🎯 TOTAL DE TESTS: {total_tests}")
     return total_tests
@@ -176,8 +176,8 @@ if __name__ == "__main__":
     success = main()
 
     if success:
-        print("\n✅ ANÁLISIS DE COBERTURA COMPLETADO CON ÉXITO")
+        print("\n[CHECK] ANÁLISIS DE COBERTURA COMPLETADO CON ÉXITO")
     else:
-        print("\n❌ ANÁLISIS FALLÓ - REVISAR ERRORES ARRIBA")
+        print("\n[ERROR] ANÁLISIS FALLÓ - REVISAR ERRORES ARRIBA")
 
     print("=" * 60)

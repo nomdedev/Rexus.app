@@ -31,23 +31,23 @@ def test_obras_asociadas_dialog():
         # Crear y mostrar diálogo
         dialog = ObrasAsociadasDialog(item_data)
         
-        print("✅ Diálogo creado exitosamente")
+        print("[CHECK] Diálogo creado exitosamente")
         print(f"   Título: {dialog.windowTitle()}")
         print(f"   Material: {item_data['codigo']} - {item_data['descripcion']}")
         
         # Verificar componentes
-        assert hasattr(dialog, 'tabla_obras'), "❌ Tabla de obras no encontrada"
-        assert hasattr(dialog, 'item_inventario'), "❌ Datos del item no encontrados"
+        assert hasattr(dialog, 'tabla_obras'), "[ERROR] Tabla de obras no encontrada"
+        assert hasattr(dialog, 'item_inventario'), "[ERROR] Datos del item no encontrados"
         
-        print("✅ Componentes del diálogo verificados")
+        print("[CHECK] Componentes del diálogo verificados")
         
         # No mostrar el diálogo para no bloquear la ejecución
         # dialog.show()
         
-        print("✅ Test completado exitosamente")
+        print("[CHECK] Test completado exitosamente")
         
     except Exception as e:
-        print(f"❌ Error en test: {e}")
+        print(f"[ERROR] Error en test: {e}")
         import traceback
         traceback.print_exc()
     

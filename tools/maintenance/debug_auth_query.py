@@ -62,7 +62,7 @@ def debug_auth_query():
         print(f"   Número de registros encontrados: {len(user_data)}")
         
         if not user_data:
-            print("   ❌ NO SE ENCONTRO NINGUN USUARIO")
+            print("   [ERROR] NO SE ENCONTRO NINGUN USUARIO")
             
             # Verificar qué usuarios existen
             print("\n4. Verificando usuarios existentes:")
@@ -85,7 +85,7 @@ def debug_auth_query():
         print(f"   Apellido: {user_record[6]}")
         print(f"   Email: {user_record[7]}")
         
-        # 🔒 SEGURIDAD: Verificar password con sistema seguro
+        # [LOCK] SEGURIDAD: Verificar password con sistema seguro
         import sys
         from pathlib import Path
         sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -98,7 +98,7 @@ def debug_auth_query():
         print(f"   Hash en BD: {user_record[2][:20]}...")
         
         try:
-            # ✅ Verificación segura
+            # [CHECK] Verificación segura
             password_matches = verify_password_secure(test_password, user_record[2])
             print(f"   Verificación segura: {'SI' if password_matches else 'NO'}")
         except Exception:
@@ -108,7 +108,7 @@ def debug_auth_query():
             print(f"   Hash calculado (legacy): {computed_hash}")
             print(f"   Coinciden (legacy): {'SI' if password_matches else 'NO'}")
             if password_matches:
-                print(f"   ⚠️  HASH LEGACY DETECTADO - Recomiende migración a sistema seguro")
+                print(f"   [WARN]  HASH LEGACY DETECTADO - Recomiende migración a sistema seguro")
         
         if password_matches:
             print(f"\n6. Creando diccionario de usuario:")
@@ -123,11 +123,11 @@ def debug_auth_query():
             }
             
             print(f"   Diccionario creado: {user_info}")
-            print(f"   ✅ AUTENTICACION EXITOSA")
+            print(f"   [CHECK] AUTENTICACION EXITOSA")
             
             return user_info
         else:
-            print(f"   ❌ CONTRASEÑA INCORRECTA")
+            print(f"   [ERROR] CONTRASEÑA INCORRECTA")
             return None
         
         cursor.close()
@@ -154,7 +154,7 @@ def test_auth_manager():
         result = auth_manager.authenticate_user("admin", "admin")
         
         if result:
-            print(f"   ✅ EXITO")
+            print(f"   [CHECK] EXITO")
             print(f"   Datos retornados: {result}")
             
             # Verificar si tiene las claves necesarias
@@ -162,12 +162,12 @@ def test_auth_manager():
             missing_keys = [key for key in required_keys if key not in result]
             
             if missing_keys:
-                print(f"   ⚠️  FALTAN CLAVES: {missing_keys}")
+                print(f"   [WARN]  FALTAN CLAVES: {missing_keys}")
             else:
-                print(f"   ✅ TODAS LAS CLAVES NECESARIAS PRESENTES")
+                print(f"   [CHECK] TODAS LAS CLAVES NECESARIAS PRESENTES")
                 
         else:
-            print(f"   ❌ FALLO - No se retornaron datos")
+            print(f"   [ERROR] FALLO - No se retornaron datos")
             
     except Exception as e:
         print(f"ERROR: {e}")
@@ -185,5 +185,5 @@ if __name__ == "__main__":
         print(f"\n🎉 EL PROBLEMA ESTA RESUELTO")
         print(f"El usuario se autentica correctamente")
     else:
-        print(f"\n❌ AUN HAY PROBLEMAS")
+        print(f"\n[ERROR] AUN HAY PROBLEMAS")
         print(f"Revisar los errores mostrados arriba")

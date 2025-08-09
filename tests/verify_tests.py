@@ -35,11 +35,11 @@ def test_pedidos():
         assert result is True, f"Expected True, got {result}"
         assert controller.test_data.pedidos[0]["estado"] == "recibido"
 
-        print("✅ Tests de pedidos pasaron correctamente")
+        print("[CHECK] Tests de pedidos pasaron correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error en tests de pedidos: {e}")
+        print(f"[ERROR] Error en tests de pedidos: {e}")
         traceback.print_exc()
         return False
 
@@ -87,11 +87,11 @@ def test_sidebar():
         sidebar._on_sidebar_button_clicked(1)
         assert sidebar._current_selected_index == 1
 
-        print("✅ Tests de sidebar pasaron correctamente")
+        print("[CHECK] Tests de sidebar pasaron correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error en tests de sidebar: {e}")
+        print(f"[ERROR] Error en tests de sidebar: {e}")
         traceback.print_exc()
         return False
 
@@ -124,17 +124,17 @@ def test_login_integration():
         assert "TEST_USER" in main_window.usuario_label_text
         assert "administrador" in main_window.usuario_label_text
 
-        print("✅ Tests de integración login pasaron correctamente")
+        print("[CHECK] Tests de integración login pasaron correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error en tests de login: {e}")
+        print(f"[ERROR] Error en tests de login: {e}")
         traceback.print_exc()
         return False
 
 def main():
     """Ejecutar todos los tests."""
-    print("🚀 Iniciando verificación de tests corregidos...\n")
+    print("[ROCKET] Iniciando verificación de tests corregidos...\n")
 
     tests_passed = 0
     tests_total = 3
@@ -163,13 +163,13 @@ from tests.test_pedidos_controller import DummyModel, DummyView, MockPedidosCont
         tests_passed += 1
 
     # Resumen
-    print(f"\n📊 Resumen: {tests_passed}/{tests_total} tests pasaron")
+    print(f"\n[CHART] Resumen: {tests_passed}/{tests_total} tests pasaron")
 
     if tests_passed == tests_total:
         print("🎉 ¡Todos los tests están funcionando correctamente!")
         return 0
     else:
-        print("⚠️  Algunos tests necesitan corrección adicional")
+        print("[WARN]  Algunos tests necesitan corrección adicional")
         return 1
 
 if __name__ == "__main__":

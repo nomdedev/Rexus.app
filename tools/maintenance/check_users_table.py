@@ -52,7 +52,7 @@ def check_users_table():
         table_exists = cursor.fetchone()[0]
         
         if table_exists == 0:
-            print("   ❌ La tabla 'usuarios' NO existe")
+            print("   [ERROR] La tabla 'usuarios' NO existe")
             
             # Listar todas las tablas
             print("\n2. Listando todas las tablas en la base de datos 'users':")
@@ -68,7 +68,7 @@ def check_users_table():
             
             return False
         
-        print("   ✅ La tabla 'usuarios' existe")
+        print("   [CHECK] La tabla 'usuarios' existe")
         
         # Verificar estructura de la tabla
         print("\n2. Estructura de la tabla 'usuarios':")

@@ -1,4 +1,4 @@
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 # DB Authorization Check
 """
@@ -111,6 +111,15 @@ class MantenimientoModel:
                 raise SQLSecurityError(f"Nombre de tabla no válido: {table_name}")
 
     # MÉTODOS PARA EQUIPOS
+
+    def obtener_todos_equipos(self):
+        """
+        Obtiene todos los equipos activos del sistema.
+
+        Returns:
+            List[Dict]: Lista de todos los equipos activos
+        """
+        return self.obtener_equipos()
 
     def obtener_equipos(self, filtros=None):
         """

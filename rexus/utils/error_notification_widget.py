@@ -60,12 +60,12 @@ class ErrorMessageWidget(QFrame):
         # Icono según severidad
         severity_icons = {
             ErrorSeverity.INFO: "ℹ️",
-            ErrorSeverity.WARNING: "⚠️",
-            ErrorSeverity.ERROR: "❌",
+            ErrorSeverity.WARNING: "[WARN]",
+            ErrorSeverity.ERROR: "[ERROR]",
             ErrorSeverity.CRITICAL: "🚨",
         }
 
-        icon_label = QLabel(severity_icons.get(self.error_info["severity"], "❌"))
+        icon_label = QLabel(severity_icons.get(self.error_info["severity"], "[ERROR]"))
         icon_label.setFont(QFont("Segoe UI", 16))
         header_layout.addWidget(icon_label)
 
@@ -406,7 +406,7 @@ if __name__ == "__main__":
     )
     layout.addWidget(btn_db_error)
 
-    btn_validation_error = QPushButton("⚠️ Error de Validación")
+    btn_validation_error = QPushButton("[WARN] Error de Validación")
     btn_validation_error.clicked.connect(
         lambda: show_error_notification(
             window, ErrorCode.VAL_REQUIRED_FIELD, {"field_name": "Nombre de Usuario"}
@@ -414,7 +414,7 @@ if __name__ == "__main__":
     )
     layout.addWidget(btn_validation_error)
 
-    btn_auth_error = QPushButton("🔒 Error de Autenticación")
+    btn_auth_error = QPushButton("[LOCK] Error de Autenticación")
     btn_auth_error.clicked.connect(
         lambda: show_error_notification(window, ErrorCode.AUTH_INVALID_CREDENTIALS)
     )

@@ -29,25 +29,25 @@ def verificar_imports():
             ProductosManager,
         )
 
-        print("✅ Imports directos exitosos")
+        print("[CHECK] Imports directos exitosos")
 
         # Importar desde __init__
         from rexus.modules.inventario import ConsultasManager as CM
         from rexus.modules.inventario import MovimientosManager as MM
         from rexus.modules.inventario import ProductosManager as PM
 
-        print("✅ Imports desde __init__ exitosos")
+        print("[CHECK] Imports desde __init__ exitosos")
 
         # Verificar que son las mismas clases
         assert ProductosManager == PM
         assert MovimientosManager == MM
         assert ConsultasManager == CM
-        print("✅ Clases consistentes entre imports")
+        print("[CHECK] Clases consistentes entre imports")
 
         return True, (ProductosManager, MovimientosManager, ConsultasManager)
 
     except Exception as e:
-        print(f"❌ Error en imports: {e}")
+        print(f"[ERROR] Error en imports: {e}")
         return False, None
 
 
@@ -63,7 +63,7 @@ def verificar_inicializacion(managers):
         movimientos_mgr = MovimientosManager()
         consultas_mgr = ConsultasManager()
 
-        print("✅ Inicialización sin conexión exitosa")
+        print("[CHECK] Inicialización sin conexión exitosa")
 
         # Verificar atributos básicos
         assert hasattr(productos_mgr, "sql_manager")
@@ -71,7 +71,7 @@ def verificar_inicializacion(managers):
         assert hasattr(movimientos_mgr, "sql_manager")
         assert hasattr(consultas_mgr, "sql_manager")
 
-        print("✅ Atributos básicos presentes")
+        print("[CHECK] Atributos básicos presentes")
 
         # Inicializar con conexión mock
         from unittest.mock import Mock
@@ -86,12 +86,12 @@ def verificar_inicializacion(managers):
         assert movimientos_mgr_conn.db_connection == mock_connection
         assert consultas_mgr_conn.db_connection == mock_connection
 
-        print("✅ Inicialización con conexión exitosa")
+        print("[CHECK] Inicialización con conexión exitosa")
 
         return True, (productos_mgr_conn, movimientos_mgr_conn, consultas_mgr_conn)
 
     except Exception as e:
-        print(f"❌ Error en inicialización: {e}")
+        print(f"[ERROR] Error en inicialización: {e}")
         return False, None
 
 
@@ -103,27 +103,27 @@ def verificar_modelo_refactorizado():
         # Importar modelo refactorizado
         from rexus.modules.inventario.model_refactorizado import InventarioModel
 
-        print("✅ Import del modelo refactorizado exitoso")
+        print("[CHECK] Import del modelo refactorizado exitoso")
 
         # Inicializar modelo
         modelo = InventarioModel()
-        print("✅ Inicialización del modelo exitosa")
+        print("[CHECK] Inicialización del modelo exitosa")
 
         # Verificar que tiene los managers
         assert hasattr(modelo, "productos_manager")
         assert hasattr(modelo, "movimientos_manager")
         assert hasattr(modelo, "consultas_manager")
-        print("✅ Managers presentes en modelo")
+        print("[CHECK] Managers presentes en modelo")
 
         # Verificar algunos métodos delegados
         assert hasattr(modelo, "obtener_producto_por_id")
         assert hasattr(modelo, "obtener_productos_paginados")
-        print("✅ Métodos delegados presentes")
+        print("[CHECK] Métodos delegados presentes")
 
         return True, modelo
 
     except Exception as e:
-        print(f"❌ Error en modelo refactorizado: {e}")
+        print(f"[ERROR] Error en modelo refactorizado: {e}")
         return False, None
 
 
@@ -144,17 +144,17 @@ def verificar_sql_externo():
     for archivo in archivos_sql_esperados:
         ruta_completa = os.path.join(os.path.dirname(__file__), "..", "..", archivo)
         if os.path.exists(ruta_completa):
-            print(f"✅ {archivo}")
+            print(f"[CHECK] {archivo}")
             archivos_encontrados += 1
         else:
-            print(f"❌ {archivo} - NO ENCONTRADO")
+            print(f"[ERROR] {archivo} - NO ENCONTRADO")
 
     if archivos_encontrados == len(archivos_sql_esperados):
-        print("✅ Todos los archivos SQL encontrados")
+        print("[CHECK] Todos los archivos SQL encontrados")
         return True
     else:
         print(
-            f"⚠️ {archivos_encontrados}/{len(archivos_sql_esperados)} archivos SQL encontrados"
+            f"[WARN] {archivos_encontrados}/{len(archivos_sql_esperados)} archivos SQL encontrados"
         )
         return archivos_encontrados > 0
 
@@ -166,20 +166,20 @@ def verificar_controlador_original():
     try:
         from rexus.modules.inventario.controller import InventarioController
 
-        print("✅ Import del controlador exitoso")
+        print("[CHECK] Import del controlador exitoso")
 
         # Crear instancia del controlador
         controlador = InventarioController()
-        print("✅ Inicialización del controlador exitosa")
+        print("[CHECK] Inicialización del controlador exitosa")
 
         # Verificar métodos básicos
         assert hasattr(controlador, "model")
-        print("✅ Controlador tiene modelo")
+        print("[CHECK] Controlador tiene modelo")
 
         return True, controlador
 
     except Exception as e:
-        print(f"❌ Error en controlador: {e}")
+        print(f"[ERROR] Error en controlador: {e}")
         return False, None
 
 
@@ -194,13 +194,13 @@ def verificar_compatibilidad_hacia_atras():
             InventarioModel as ModeloRefactorizado,
         )
 
-        print("✅ Ambos modelos importados")
+        print("[CHECK] Ambos modelos importados")
 
         # Inicializar ambos
         modelo_original = ModeloOriginal()
         modelo_refactorizado = ModeloRefactorizado()
 
-        print("✅ Ambos modelos inicializados")
+        print("[CHECK] Ambos modelos inicializados")
 
         # Verificar que el refactorizado tenga métodos del original
         metodos_comunes = [
@@ -214,12 +214,12 @@ def verificar_compatibilidad_hacia_atras():
                 assert hasattr(modelo_refactorizado, metodo), (
                     f"Método {metodo} faltante en refactorizado"
                 )
-                print(f"✅ Método {metodo} presente en ambos")
+                print(f"[CHECK] Método {metodo} presente en ambos")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en compatibilidad: {e}")
+        print(f"[ERROR] Error en compatibilidad: {e}")
         return False
 
 
@@ -246,23 +246,23 @@ def generar_reporte_completo():
 
     # Generar resumen
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE VALIDACIÓN")
+    print("[CHART] RESUMEN DE VALIDACIÓN")
     print("=" * 60)
 
     total_tests = len(resultados)
     tests_pasados = sum(1 for r in resultados.values() if r)
 
     for test, resultado in resultados.items():
-        estado = "✅ PASÓ" if resultado else "❌ FALLÓ"
+        estado = "[CHECK] PASÓ" if resultado else "[ERROR] FALLÓ"
         print(f"{test.upper().replace('_', ' ')}: {estado}")
 
     print(f"\n📈 RESULTADO GENERAL: {tests_pasados}/{total_tests} tests pasados")
 
     if tests_pasados == total_tests:
         print("🎉 ¡VALIDACIÓN COMPLETAMENTE EXITOSA!")
-        print("🚀 La arquitectura modular está lista para producción")
+        print("[ROCKET] La arquitectura modular está lista para producción")
     elif tests_pasados >= total_tests * 0.8:
-        print("⚠️ Validación mayormente exitosa con algunos problemas menores")
+        print("[WARN] Validación mayormente exitosa con algunos problemas menores")
         print("🔧 Revisar elementos fallidos antes de continuar")
     else:
         print("🚨 Validación con problemas significativos")
@@ -273,7 +273,7 @@ def generar_reporte_completo():
 
 def main():
     """Función principal del script de validación."""
-    print("🚀 Iniciando validación de integración del inventario modular...")
+    print("[ROCKET] Iniciando validación de integración del inventario modular...")
     print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
 
     try:
@@ -285,12 +285,12 @@ def main():
         # Recomendaciones
         print(f"\n💡 PRÓXIMOS PASOS RECOMENDADOS:")
         if porcentaje_exito >= 0.9:
-            print("1. ✅ Proceder con tests de integración completos")
-            print("2. ✅ Documentar nueva arquitectura")
-            print("3. ✅ Aplicar patrón a otros módulos")
+            print("1. [CHECK] Proceder con tests de integración completos")
+            print("2. [CHECK] Documentar nueva arquitectura")
+            print("3. [CHECK] Aplicar patrón a otros módulos")
         elif porcentaje_exito >= 0.7:
             print("1. 🔧 Corregir problemas identificados")
-            print("2. ⚠️ Re-ejecutar validación")
+            print("2. [WARN] Re-ejecutar validación")
             print("3. 📝 Documentar limitaciones actuales")
         else:
             print("1. 🚨 Revisar implementación de submódulos")

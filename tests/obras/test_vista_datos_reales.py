@@ -22,8 +22,8 @@ def test_vista_con_datos_reales():
         print("🔧 [TEST] Creando vista de obras...")
         vista = ObrasView()
         
-        print("✅ [TEST] Vista creada correctamente")
-        print(f"📊 [TEST] Filas en tabla: {vista.tabla_obras.rowCount()}")
+        print("[CHECK] [TEST] Vista creada correctamente")
+        print(f"[CHART] [TEST] Filas en tabla: {vista.tabla_obras.rowCount()}")
         print(f"📋 [TEST] Columnas en tabla: {vista.tabla_obras.columnCount()}")
         
         # Verificar headers de columnas
@@ -46,11 +46,11 @@ def test_vista_con_datos_reales():
             print(f"\n📈 [TEST] Total de obras mostradas: {vista.tabla_obras.rowCount()}")
             return True
         else:
-            print("⚠️ [TEST] No hay datos en la tabla")
+            print("[WARN] [TEST] No hay datos en la tabla")
             return False
             
     except Exception as e:
-        print(f"❌ [TEST] Error: {e}")
+        print(f"[ERROR] [TEST] Error: {e}")
         import traceback
         traceback.print_exc()
         return False

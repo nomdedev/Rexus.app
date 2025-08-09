@@ -501,7 +501,7 @@ def main():
 
     # Mostrar resumen
     print("\n" + "=" * 60)
-    print("📊 RESUMEN DE AUDITORÍA UI/UX")
+    print("[CHART] RESUMEN DE AUDITORÍA UI/UX")
     print("=" * 60)
     print(f"📋 Módulos analizados: {reporte.estadisticas['modulos_analizados']}")
     print(f"🔍 Total de issues: {reporte.estadisticas['total_issues']}")
@@ -524,7 +524,7 @@ def main():
     # Guardar reporte
     archivo_reporte = auditor.guardar_reporte()
 
-    print("\n✅ Auditoría UI/UX completada exitosamente")
+    print("\n[CHECK] Auditoría UI/UX completada exitosamente")
     print(f"📄 Reporte detallado: {archivo_reporte}")
 
 

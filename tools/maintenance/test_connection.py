@@ -28,14 +28,14 @@ def test_database_connection():
         print("2. Probando consulta simple...")
         result = db.execute_query("SELECT 1 as test")
         if result:
-            print(f"   ✓ Consulta exitosa: {result}")
+            print(f"   [OK] Consulta exitosa: {result}")
         else:
             print("   ✗ Consulta falló")
             return False
             
         print("3. Cerrando conexión...")
         db.disconnect()
-        print("   ✓ Conexión cerrada correctamente")
+        print("   [OK] Conexión cerrada correctamente")
         
         return True
         
@@ -63,7 +63,7 @@ def test_auth_system():
         user = auth_manager.authenticate_user(test_user, test_password)
         
         if user:
-            print(f"   ✓ Autenticación exitosa: {user}")
+            print(f"   [OK] Autenticación exitosa: {user}")
             return True
         else:
             print("   ✗ Autenticación falló")
@@ -92,12 +92,12 @@ if __name__ == "__main__":
     auth_ok = test_auth_system()
     
     print("\n=== RESUMEN ===")
-    print(f"Conexión DB: {'✓' if db_ok else '✗'}")
-    print(f"Autenticación: {'✓' if auth_ok else '✗'}")
+    print(f"Conexión DB: {'[OK]' if db_ok else '✗'}")
+    print(f"Autenticación: {'[OK]' if auth_ok else '✗'}")
     
     if db_ok and auth_ok:
         print("\n🎉 Todas las pruebas pasaron. El sistema está listo.")
         sys.exit(0)
     else:
-        print("\n❌ Algunas pruebas fallaron. Revisa la configuración.")
+        print("\n[ERROR] Algunas pruebas fallaron. Revisa la configuración.")
         sys.exit(1)

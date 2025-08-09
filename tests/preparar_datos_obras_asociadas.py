@@ -29,7 +29,7 @@ def verificar_y_preparar_datos():
         obras = cursor.fetchall()
         
         if not obras:
-            print("❌ No hay obras en la base de datos")
+            print("[ERROR] No hay obras en la base de datos")
             return
             
         for obra in obras:
@@ -61,10 +61,10 @@ def verificar_y_preparar_datos():
                     INSERT INTO detalles_obra (obra_id, detalle, categoria, cantidad, precio_unitario, precio_total)
                     VALUES (?, ?, ?, ?, ?, ?)
                 ''', (obra_id, detalle, categoria, cantidad, precio_unit, precio_total))
-                print(f"✅ Insertado: {detalle} para obra ID {obra_id}")
+                print(f"[CHECK] Insertado: {detalle} para obra ID {obra_id}")
             
             conn.commit()
-            print("✅ Datos de prueba insertados exitosamente")
+            print("[CHECK] Datos de prueba insertados exitosamente")
         
         # Verificar los datos finales
         print("\n=== VERIFICACIÓN FINAL ===")
@@ -83,7 +83,7 @@ def verificar_y_preparar_datos():
         conn.close()
         
     except Exception as e:
-        print(f"❌ Error: {e}")
+        print(f"[ERROR] Error: {e}")
         import traceback
         traceback.print_exc()
 

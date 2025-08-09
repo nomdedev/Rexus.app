@@ -22,19 +22,19 @@ def test_imports():
             UsuariosManager,
         )
 
-        print("✅ Submódulos importados correctamente")
+        print("[CHECK] Submódulos importados correctamente")
 
         # Importar modelo refactorizado
         from rexus.modules.usuarios.model_refactorizado import (
             ModeloUsuariosRefactorizado,
         )
 
-        print("✅ Modelo refactorizado importado correctamente")
+        print("[CHECK] Modelo refactorizado importado correctamente")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en importaciones: {str(e)}")
+        print(f"[ERROR] Error en importaciones: {str(e)}")
         return False
 
 
@@ -73,7 +73,7 @@ def test_structure():
             if not hasattr(modelo, metodo):
                 raise AssertionError(f"Falta método {metodo}")
 
-        print("✅ Estructura del modelo validada")
+        print("[CHECK] Estructura del modelo validada")
 
         # Probar método de información
         info = modelo.obtener_info_modular()
@@ -82,12 +82,12 @@ def test_structure():
         if "submodulos" not in info:
             raise AssertionError("Falta información de submódulos")
 
-        print(f"✅ Información modular: {info['modelo']} v{info['version']}")
+        print(f"[CHECK] Información modular: {info['modelo']} v{info['version']}")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error validando estructura: {str(e)}")
+        print(f"[ERROR] Error validando estructura: {str(e)}")
         return False
 
 
@@ -129,17 +129,17 @@ def test_submodules():
                 "ConsultasManager: falta obtener_estadisticas_usuarios"
             )
 
-        print("✅ Submódulos validados correctamente")
+        print("[CHECK] Submódulos validados correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error validando submódulos: {str(e)}")
+        print(f"[ERROR] Error validando submódulos: {str(e)}")
         return False
 
 
 def main():
     """Ejecuta todas las validaciones."""
-    print("🚀 Iniciando validación del módulo usuarios refactorizado")
+    print("[ROCKET] Iniciando validación del módulo usuarios refactorizado")
     print("=" * 60)
 
     tests = [test_imports, test_structure, test_submodules]
@@ -152,10 +152,10 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"❌ Error inesperado en {test.__name__}: {str(e)}")
+            print(f"[ERROR] Error inesperado en {test.__name__}: {str(e)}")
 
     print("\n" + "=" * 60)
-    print(f"📊 Resumen de validación: {passed}/{total} pruebas pasaron")
+    print(f"[CHART] Resumen de validación: {passed}/{total} pruebas pasaron")
 
     if passed == total:
         print("🎉 ¡Refactorización de usuarios completada exitosamente!")
@@ -165,7 +165,7 @@ def main():
         print("   3. Ejecutar tests de funcionalidad")
         return True
     else:
-        print("⚠️  Refactorización incompleta. Revisar errores.")
+        print("[WARN]  Refactorización incompleta. Revisar errores.")
         return False
 
 

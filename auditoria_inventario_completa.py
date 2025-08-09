@@ -33,9 +33,9 @@ def auditoria_estructura():
     for archivo, descripcion in archivos_core.items():
         archivo_path = inventario_path / archivo
         if archivo_path.exists():
-            print(f"   ✅ {archivo} - {descripcion}")
+            print(f"   [CHECK] {archivo} - {descripcion}")
         else:
-            print(f"   ❌ {archivo} - {descripcion} (FALTA)")
+            print(f"   [ERROR] {archivo} - {descripcion} (FALTA)")
             problemas_estructura.append(f"Falta {archivo}")
     
     # Verificar subdirectorios
@@ -43,18 +43,18 @@ def auditoria_estructura():
     for subdir in subdirs:
         subdir_path = inventario_path / subdir
         if subdir_path.exists():
-            print(f"   ✅ {subdir}/ - Submódulos")
+            print(f"   [CHECK] {subdir}/ - Submódulos")
             # Listar archivos en submódulos
             for archivo in subdir_path.glob("*.py"):
                 print(f"      📄 {archivo.name}")
         else:
-            print(f"   ❌ {subdir}/ - Submódulos (FALTA)")
+            print(f"   [ERROR] {subdir}/ - Submódulos (FALTA)")
             problemas_estructura.append(f"Falta directorio {subdir}")
     
     # Verificar archivos backup
     backups = list(inventario_path.glob("*.backup*"))
     if backups:
-        print(f"   ⚠️  {len(backups)} archivos backup encontrados:")
+        print(f"   [WARN]  {len(backups)} archivos backup encontrados:")
         for backup in backups:
             print(f"      📄 {backup.name}")
     
@@ -72,39 +72,39 @@ def auditoria_imports():
         # Test imports críticos
         print("Probando imports del modelo...")
         from rexus.modules.inventario.model import InventarioModel
-        print("   ✅ InventarioModel importado correctamente")
+        print("   [CHECK] InventarioModel importado correctamente")
         
         print("Probando imports de la vista...")
         from rexus.modules.inventario.view import InventarioView
-        print("   ✅ InventarioView importado correctamente")
+        print("   [CHECK] InventarioView importado correctamente")
         
         print("Probando imports del controlador...")
         from rexus.modules.inventario.controller import InventarioController
-        print("   ✅ InventarioController importado correctamente")
+        print("   [CHECK] InventarioController importado correctamente")
         
         # Test diálogo de obras asociadas
         try:
             from rexus.modules.inventario.obras_asociadas_dialog import ObrasAsociadasDialog
-            print("   ✅ ObrasAsociadasDialog importado correctamente")
+            print("   [CHECK] ObrasAsociadasDialog importado correctamente")
         except ImportError as e:
-            print(f"   ❌ ObrasAsociadasDialog no disponible: {e}")
+            print(f"   [ERROR] ObrasAsociadasDialog no disponible: {e}")
             problemas_imports.append("Falta ObrasAsociadasDialog")
         
         # Test dependencias de seguridad
         try:
             from rexus.utils.data_sanitizer import DataSanitizer
-            print("   ✅ DataSanitizer disponible")
+            print("   [CHECK] DataSanitizer disponible")
         except ImportError:
-            print("   ⚠️  DataSanitizer no disponible")
+            print("   [WARN]  DataSanitizer no disponible")
         
         try:
             from rexus.core.auth_decorators import auth_required
-            print("   ✅ Auth decorators disponibles")
+            print("   [CHECK] Auth decorators disponibles")
         except ImportError:
-            print("   ⚠️  Auth decorators no disponibles")
+            print("   [WARN]  Auth decorators no disponibles")
             
     except Exception as e:
-        print(f"   ❌ Error crítico en imports: {e}")
+        print(f"   [ERROR] Error crítico en imports: {e}")
         problemas_imports.append(f"Error crítico: {e}")
         traceback.print_exc()
     
@@ -139,9 +139,9 @@ def auditoria_base_datos():
             try:
                 cursor.execute(f"SELECT COUNT(*) FROM {tabla}")
                 count = cursor.fetchone()[0]
-                print(f"   ✅ {tabla}: {count} registros")
+                print(f"   [CHECK] {tabla}: {count} registros")
             except Exception as e:
-                print(f"   ❌ {tabla}: ERROR - {e}")
+                print(f"   [ERROR] {tabla}: ERROR - {e}")
                 problemas_bd.append(f"Tabla {tabla} no accesible")
         
         # Verificar columnas críticas en inventario_perfiles
@@ -159,9 +159,9 @@ def auditoria_base_datos():
         columnas_existentes = [col[0] for col in columnas]
         for col_req in columnas_requeridas:
             if col_req in columnas_existentes:
-                print(f"   ✅ Columna {col_req} existe")
+                print(f"   [CHECK] Columna {col_req} existe")
             else:
-                print(f"   ❌ Columna {col_req} FALTA")
+                print(f"   [ERROR] Columna {col_req} FALTA")
                 problemas_bd.append(f"Falta columna {col_req}")
         
         print(f"\nTotal columnas en inventario_perfiles: {len(columnas)}")
@@ -174,12 +174,12 @@ def auditoria_base_datos():
         """)
         
         relaciones = cursor.fetchone()[0]
-        print(f"   ✅ {relaciones} relaciones inventario-obras encontradas")
+        print(f"   [CHECK] {relaciones} relaciones inventario-obras encontradas")
         
         conn.close()
         
     except Exception as e:
-        print(f"   ❌ Error conectando a BD: {e}")
+        print(f"   [ERROR] Error conectando a BD: {e}")
         problemas_bd.append(f"Error de conexión: {e}")
         traceback.print_exc()
     
@@ -219,51 +219,51 @@ def auditoria_interfaz():
         print("Verificando componentes de la interfaz:")
         for componente in componentes_requeridos:
             if hasattr(vista, componente):
-                print(f"   ✅ {componente} existe")
+                print(f"   [CHECK] {componente} existe")
             else:
-                print(f"   ❌ {componente} FALTA")
+                print(f"   [ERROR] {componente} FALTA")
                 problemas_ui.append(f"Falta componente {componente}")
         
         # Verificar estilos
         print("\nVerificando estilos aplicados:")
         if vista.styleSheet():
-            print("   ✅ Estilos CSS aplicados")
+            print("   [CHECK] Estilos CSS aplicados")
             # Verificar estilos de alto contraste
             styles = vista.styleSheet()
             if "background-color: #ffffff" in styles and "color: #000000" in styles:
-                print("   ✅ Estilos de alto contraste aplicados")
+                print("   [CHECK] Estilos de alto contraste aplicados")
             else:
-                print("   ⚠️  Estilos de alto contraste incompletos")
+                print("   [WARN]  Estilos de alto contraste incompletos")
                 problemas_ui.append("Estilos de alto contraste incompletos")
         else:
-            print("   ❌ No hay estilos aplicados")
+            print("   [ERROR] No hay estilos aplicados")
             problemas_ui.append("Faltan estilos CSS")
         
         # Verificar señales conectadas
         print("\nVerificando señales de la vista:")
         if hasattr(vista, 'datos_actualizados'):
-            print("   ✅ Señal datos_actualizados existe")
+            print("   [CHECK] Señal datos_actualizados existe")
         
         if hasattr(vista, 'solicitar_busqueda'):
-            print("   ✅ Señal solicitar_busqueda existe")
+            print("   [CHECK] Señal solicitar_busqueda existe")
         
         # Test doble click en tabla
         if hasattr(vista, 'tabla_inventario') and vista.tabla_inventario:
-            print("   ✅ Tabla de inventario inicializada")
+            print("   [CHECK] Tabla de inventario inicializada")
             # Verificar si hay conexión de doble click
             try:
                 # Esto es un hack para verificar si hay conexiones
                 receivers = vista.tabla_inventario.receivers(vista.tabla_inventario.itemDoubleClicked)
                 if receivers > 0:
-                    print("   ✅ Doble click conectado")
+                    print("   [CHECK] Doble click conectado")
                 else:
-                    print("   ⚠️  Doble click no conectado")
+                    print("   [WARN]  Doble click no conectado")
                     problemas_ui.append("Doble click no conectado")
             except:
-                print("   ⚠️  No se pudo verificar doble click")
+                print("   [WARN]  No se pudo verificar doble click")
         
     except Exception as e:
-        print(f"   ❌ Error en auditoría de interfaz: {e}")
+        print(f"   [ERROR] Error en auditoría de interfaz: {e}")
         problemas_ui.append(f"Error de interfaz: {e}")
         traceback.print_exc()
     
@@ -283,7 +283,7 @@ def auditoria_funcionalidad():
         
         print("Probando instanciación del modelo...")
         modelo = InventarioModel()
-        print("   ✅ Modelo instanciado correctamente")
+        print("   [CHECK] Modelo instanciado correctamente")
         
         # Verificar métodos críticos del modelo
         metodos_modelo = [
@@ -298,14 +298,14 @@ def auditoria_funcionalidad():
         print("\nVerificando métodos del modelo:")
         for metodo in metodos_modelo:
             if hasattr(modelo, metodo):
-                print(f"   ✅ {metodo} existe")
+                print(f"   [CHECK] {metodo} existe")
             else:
-                print(f"   ❌ {metodo} FALTA")
+                print(f"   [ERROR] {metodo} FALTA")
                 problemas_func.append(f"Falta método {metodo}")
         
         print("\nProbando instanciación del controlador...")
         controlador = InventarioController(model=modelo)
-        print("   ✅ Controlador instanciado correctamente")
+        print("   [CHECK] Controlador instanciado correctamente")
         
         # Verificar métodos críticos del controlador
         metodos_controlador = [
@@ -319,9 +319,9 @@ def auditoria_funcionalidad():
         print("\nVerificando métodos del controlador:")
         for metodo in metodos_controlador:
             if hasattr(controlador, metodo):
-                print(f"   ✅ {metodo} existe")
+                print(f"   [CHECK] {metodo} existe")
             else:
-                print(f"   ❌ {metodo} FALTA")
+                print(f"   [ERROR] {metodo} FALTA")
                 problemas_func.append(f"Falta método controlador {metodo}")
         
         # Test funcionalidad de obras asociadas
@@ -338,20 +338,20 @@ def auditoria_funcionalidad():
             }
             
             dialogo = ObrasAsociadasDialog(datos_test)
-            print("   ✅ Diálogo de obras asociadas funcional")
+            print("   [CHECK] Diálogo de obras asociadas funcional")
             
             if hasattr(dialogo, 'cargar_obras_asociadas'):
-                print("   ✅ Método cargar_obras_asociadas existe")
+                print("   [CHECK] Método cargar_obras_asociadas existe")
             else:
-                print("   ❌ Método cargar_obras_asociadas FALTA")
+                print("   [ERROR] Método cargar_obras_asociadas FALTA")
                 problemas_func.append("Falta método cargar_obras_asociadas")
             
         except Exception as e:
-            print(f"   ❌ Error en obras asociadas: {e}")
+            print(f"   [ERROR] Error en obras asociadas: {e}")
             problemas_func.append(f"Error en obras asociadas: {e}")
         
     except Exception as e:
-        print(f"   ❌ Error en auditoría de funcionalidades: {e}")
+        print(f"   [ERROR] Error en auditoría de funcionalidades: {e}")
         problemas_func.append(f"Error funcional: {e}")
         traceback.print_exc()
     
@@ -360,7 +360,7 @@ def auditoria_funcionalidad():
 def auditoria_seguridad():
     """Auditar aspectos de seguridad"""
     print("=" * 60)
-    print("🔒 AUDITORÍA DE SEGURIDAD")
+    print("[LOCK] AUDITORÍA DE SEGURIDAD")
     print("=" * 60)
     
     problemas_seg = []
@@ -373,37 +373,37 @@ def auditoria_seguridad():
         # Verificar sanitización de datos
         print("Verificando utilidades de seguridad:")
         if hasattr(modelo, 'data_sanitizer') and modelo.data_sanitizer:
-            print("   ✅ DataSanitizer disponible")
+            print("   [CHECK] DataSanitizer disponible")
         else:
-            print("   ⚠️  DataSanitizer no disponible")
+            print("   [WARN]  DataSanitizer no disponible")
             problemas_seg.append("DataSanitizer no disponible")
         
         if hasattr(modelo, 'sql_validator') and modelo.sql_validator:
-            print("   ✅ SQL Validator disponible")
+            print("   [CHECK] SQL Validator disponible")
         else:
-            print("   ⚠️  SQL Validator no disponible") 
+            print("   [WARN]  SQL Validator no disponible") 
             problemas_seg.append("SQL Validator no disponible")
         
         # Verificar decoradores de autenticación
         print("\nVerificando decoradores de seguridad:")
         try:
             from rexus.core.auth_decorators import auth_required, admin_required
-            print("   ✅ Decoradores de autenticación disponibles")
+            print("   [CHECK] Decoradores de autenticación disponibles")
         except ImportError:
-            print("   ⚠️  Decoradores de autenticación no disponibles")
+            print("   [WARN]  Decoradores de autenticación no disponibles")
             problemas_seg.append("Decoradores de auth no disponibles")
         
         # Verificar protección XSS
         print("\nVerificando protección XSS:")
         try:
             from rexus.utils.xss_protection import FormProtector
-            print("   ✅ FormProtector disponible")
+            print("   [CHECK] FormProtector disponible")
         except ImportError:
-            print("   ⚠️  FormProtector no disponible")
+            print("   [WARN]  FormProtector no disponible")
             problemas_seg.append("FormProtector no disponible")
         
     except Exception as e:
-        print(f"   ❌ Error en auditoría de seguridad: {e}")
+        print(f"   [ERROR] Error en auditoría de seguridad: {e}")
         problemas_seg.append(f"Error de seguridad: {e}")
     
     return problemas_seg
@@ -435,7 +435,7 @@ def auditoria_tests():
         for test_file in test_files:
             print(f"   📄 {test_file}")
     else:
-        print("   ⚠️  No se encontraron tests específicos de inventario")
+        print("   [WARN]  No se encontraron tests específicos de inventario")
         problemas_tests.append("Faltan tests específicos")
     
     # Verificar tests críticos
@@ -450,9 +450,9 @@ def auditoria_tests():
     for test in tests_requeridos:
         encontrado = any(test in str(tf) for tf in test_files)
         if encontrado:
-            print(f"   ✅ {test}")
+            print(f"   [CHECK] {test}")
         else:
-            print(f"   ❌ {test} FALTA")
+            print(f"   [ERROR] {test} FALTA")
             problemas_tests.append(f"Falta test {test}")
     
     return problemas_tests
@@ -473,27 +473,27 @@ def auditoria_performance():
         # Verificar paginación
         print("Verificando utilidades de performance:")
         if hasattr(modelo, 'paginate_query'):
-            print("   ✅ Paginación disponible")
+            print("   [CHECK] Paginación disponible")
         else:
-            print("   ⚠️  Paginación no implementada")
+            print("   [WARN]  Paginación no implementada")
             problemas_perf.append("Falta paginación")
         
         # Verificar cache
         if hasattr(modelo, 'cache_manager'):
-            print("   ✅ Cache manager disponible")
+            print("   [CHECK] Cache manager disponible")
         else:
-            print("   ⚠️  Cache manager no disponible")
+            print("   [WARN]  Cache manager no disponible")
             problemas_perf.append("Falta cache manager")
         
         # Verificar conexión a BD
         if hasattr(modelo, 'db_connection'):
-            print("   ✅ Conexión BD configurada")
+            print("   [CHECK] Conexión BD configurada")
         else:
-            print("   ⚠️  Conexión BD no configurada")
+            print("   [WARN]  Conexión BD no configurada")
             problemas_perf.append("Conexión BD no configurada")
         
     except Exception as e:
-        print(f"   ❌ Error en auditoría de performance: {e}")
+        print(f"   [ERROR] Error en auditoría de performance: {e}")
         problemas_perf.append(f"Error de performance: {e}")
     
     return problemas_perf
@@ -510,7 +510,7 @@ def generar_reporte_final(todos_problemas):
         print("🎉 ¡EXCELENTE! No se encontraron problemas críticos.")
         print("   El módulo inventario está en buen estado.")
     else:
-        print(f"⚠️  Se encontraron {total_problemas} problemas que requieren atención:")
+        print(f"[WARN]  Se encontraron {total_problemas} problemas que requieren atención:")
         
         for categoria, problemas in todos_problemas.items():
             if problemas:
@@ -542,7 +542,7 @@ def generar_reporte_final(todos_problemas):
             print(f"   • {p}")
     
     if problemas_importantes:
-        print("\n⚠️  IMPORTANTES (Corregir pronto):")
+        print("\n[WARN]  IMPORTANTES (Corregir pronto):")
         for p in problemas_importantes:
             print(f"   • {p}")
     
@@ -594,6 +594,6 @@ if __name__ == "__main__":
         print("\n🛑 Auditoría interrumpida por el usuario")
         sys.exit(1)
     except Exception as e:
-        print(f"\n❌ Error inesperado en auditoría: {e}")
+        print(f"\n[ERROR] Error inesperado en auditoría: {e}")
         traceback.print_exc()
         sys.exit(1)

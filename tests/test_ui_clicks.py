@@ -90,7 +90,7 @@ class TestUIClicks:
                 self.errors_found.append("Sidebar toggle no volvió al estado original")
                 return False
             
-            print("✅ Sidebar toggle funciona correctamente")
+            print("[CHECK] Sidebar toggle funciona correctamente")
             return True
             
         except Exception as e:
@@ -125,7 +125,7 @@ class TestUIClicks:
                     content_stack = self.main_window.content_stack
                     if content_stack.count() > 1:  # Más de dashboard
                         success_count += 1
-                        print(f"✅ Módulo {module_name} se abrió correctamente")
+                        print(f"[CHECK] Módulo {module_name} se abrió correctamente")
                     else:
                         self.errors_found.append(f"Módulo {module_name} no abrió pestaña")
                         
@@ -133,10 +133,10 @@ class TestUIClicks:
                     self.errors_found.append(f"Error al clickear módulo {i}: {e}")
             
             if success_count == total_modules:
-                print(f"✅ Todos los {total_modules} módulos respondieron correctamente")
+                print(f"[CHECK] Todos los {total_modules} módulos respondieron correctamente")
                 return True
             else:
-                print(f"⚠️ {success_count}/{total_modules} módulos funcionaron")
+                print(f"[WARN] {success_count}/{total_modules} módulos funcionaron")
                 return False
                 
         except Exception as e:
@@ -180,10 +180,10 @@ class TestUIClicks:
                     self.errors_found.append(f"Error al cambiar pestaña {i}: {e}")
             
             if success_count == content_stack.count():
-                print(f"✅ Cambio de pestañas funciona correctamente ({success_count} pestañas)")
+                print(f"[CHECK] Cambio de pestañas funciona correctamente ({success_count} pestañas)")
                 return True
             else:
-                print(f"⚠️ {success_count}/{content_stack.count()} pestañas funcionaron")
+                print(f"[WARN] {success_count}/{content_stack.count()} pestañas funcionaron")
                 return False
                 
         except Exception as e:
@@ -215,7 +215,7 @@ class TestUIClicks:
             self.main_window.resize(initial_size)
             QTest.qWait(100)
             
-            print("✅ Window resize funciona correctamente")
+            print("[CHECK] Window resize funciona correctamente")
             return True
             
         except Exception as e:
@@ -235,7 +235,7 @@ class TestUIClicks:
             QTest.keyClick(self.main_window, Qt.Key.Key_Tab)
             QTest.qWait(50)
             
-            print("✅ Keyboard shortcuts procesados sin errores")
+            print("[CHECK] Keyboard shortcuts procesados sin errores")
             return True
             
         except Exception as e:
@@ -259,7 +259,7 @@ class TestUIClicks:
                 content_stack.removeTab(content_stack.count() - 1)
                 QTest.qWait(10)
             
-            print("✅ Memory leak test completado")
+            print("[CHECK] Memory leak test completado")
             return True
             
         except Exception as e:
@@ -285,7 +285,7 @@ class TestUIClicks:
             QTest.mouseDClick(self.main_window, Qt.MouseButton.LeftButton)
             QTest.qWait(50)
             
-            print("✅ Error handling test completado")
+            print("[CHECK] Error handling test completado")
             return True
             
         except Exception as e:
@@ -299,7 +299,7 @@ class TestUIClicks:
         
         # Setup
         if not self.setup_main_window():
-            print("❌ Error en setup, abortando tests")
+            print("[ERROR] Error en setup, abortando tests")
             return False
         
         # Lista de tests
@@ -324,10 +324,10 @@ class TestUIClicks:
                     passed += 1
                 else:
                     failed += 1
-                    print(f"❌ {test_name} falló")
+                    print(f"[ERROR] {test_name} falló")
             except Exception as e:
                 failed += 1
-                print(f"❌ {test_name} falló con excepción: {e}")
+                print(f"[ERROR] {test_name} falló con excepción: {e}")
         
         # Cleanup
         if self.main_window:
@@ -365,7 +365,7 @@ def main():
             print("\n🎉 ¡Todos los tests pasaron!")
             return 0
         else:
-            print("\n⚠️ Algunos tests fallaron. Revisar errores.")
+            print("\n[WARN] Algunos tests fallaron. Revisar errores.")
             return 1
             
     except Exception as e:

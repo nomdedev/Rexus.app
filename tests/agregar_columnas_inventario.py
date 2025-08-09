@@ -30,7 +30,7 @@ def agregar_columnas_inventario_perfiles():
         )
         cursor = conn.cursor()
 
-        print("✅ Conexión a base de datos establecida")
+        print("[CHECK] Conexión a base de datos establecida")
 
         # 1. Verificar columnas existentes
         print("\n🔍 Verificando columnas existentes...")
@@ -50,9 +50,9 @@ def agregar_columnas_inventario_perfiles():
                 ALTER TABLE inventario_perfiles 
                 ADD categoria NVARCHAR(100) NULL
             """)
-            print("✅ Columna 'categoria' agregada")
+            print("[CHECK] Columna 'categoria' agregada")
         else:
-            print("✅ Columna 'categoria' ya existe")
+            print("[CHECK] Columna 'categoria' ya existe")
 
         # 3. Agregar columna 'precio_unitario' si no existe
         if "precio_unitario" not in columnas_existentes:
@@ -61,9 +61,9 @@ def agregar_columnas_inventario_perfiles():
                 ALTER TABLE inventario_perfiles 
                 ADD precio_unitario DECIMAL(10,2) NULL DEFAULT 0.00
             """)
-            print("✅ Columna 'precio_unitario' agregada")
+            print("[CHECK] Columna 'precio_unitario' agregada")
         else:
-            print("✅ Columna 'precio_unitario' ya existe")
+            print("[CHECK] Columna 'precio_unitario' ya existe")
 
         # 4. Agregar columna 'activo' si no existe
         if "activo" not in columnas_existentes:
@@ -72,9 +72,9 @@ def agregar_columnas_inventario_perfiles():
                 ALTER TABLE inventario_perfiles 
                 ADD activo BIT NOT NULL DEFAULT 1
             """)
-            print("✅ Columna 'activo' agregada")
+            print("[CHECK] Columna 'activo' agregada")
         else:
-            print("✅ Columna 'activo' ya existe")
+            print("[CHECK] Columna 'activo' ya existe")
 
         # 5. Confirmar cambios
         conn.commit()
@@ -123,7 +123,7 @@ def agregar_columnas_inventario_perfiles():
             )
 
         conn.commit()
-        print(f"✅ Actualizados {len(ids)} registros con datos de ejemplo")
+        print(f"[CHECK] Actualizados {len(ids)} registros con datos de ejemplo")
 
         # 8. Verificar datos actualizados
         print("\n🔍 Verificando datos actualizados...")
@@ -134,7 +134,7 @@ def agregar_columnas_inventario_perfiles():
         """)
         registros = cursor.fetchall()
 
-        print("📊 Primeros registros con datos actualizados:")
+        print("[CHART] Primeros registros con datos actualizados:")
         for reg in registros:
             print(
                 f"   ID: {reg[0]}, Código: {reg[1]}, Categoría: {reg[3]}, Precio: ${reg[4]}"
@@ -143,14 +143,14 @@ def agregar_columnas_inventario_perfiles():
         conn.close()
 
         print("\n" + "=" * 60)
-        print("✅ PROCESO COMPLETADO EXITOSAMENTE")
+        print("[CHECK] PROCESO COMPLETADO EXITOSAMENTE")
         print("🔸 Columnas agregadas: categoria, precio_unitario, activo")
         print("🔸 Datos de ejemplo actualizados")
         print("🔸 La tabla inventario_perfiles está lista para usar")
         return True
 
     except Exception as e:
-        print(f"\n❌ ERROR: {e}")
+        print(f"\n[ERROR] ERROR: {e}")
         traceback.print_exc()
         return False
 

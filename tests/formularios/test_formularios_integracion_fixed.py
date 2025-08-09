@@ -403,10 +403,10 @@ from PyQt6.QtWidgets import QApplication, QLabel
                 ], capture_output=True, text=True, timeout=300)
 
                 if result.returncode == 0:
-                    print(f"✅ {test_file}: PASSED")
+                    print(f"[CHECK] {test_file}: PASSED")
                     total_passed += 1
                 else:
-                    print(f"❌ {test_file}: FAILED")
+                    print(f"[ERROR] {test_file}: FAILED")
                     print(result.stdout)
                     print(result.stderr)
                     total_failed += 1
@@ -418,12 +418,12 @@ from PyQt6.QtWidgets import QApplication, QLabel
                 print(f"💥 {test_file}: ERROR - {e}")
                 total_failed += 1
         else:
-            print(f"⚠️ {test_file}: FILE NOT FOUND")
+            print(f"[WARN] {test_file}: FILE NOT FOUND")
 
     print("\n" + "=" * 60)
-    print(f"📊 RESUMEN FINAL:")
-    print(f"✅ Tests exitosos: {total_passed}")
-    print(f"❌ Tests fallidos: {total_failed}")
+    print(f"[CHART] RESUMEN FINAL:")
+    print(f"[CHECK] Tests exitosos: {total_passed}")
+    print(f"[ERROR] Tests fallidos: {total_failed}")
     print(f"📈 Tasa de éxito: {total_passed/(total_passed+total_failed)*100:.1f}%" if (total_passed+total_failed) > 0 else "N/A")
 
 

@@ -103,7 +103,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
         layout.addStretch()
         
         # Info
-        info_label = QLabel("🚀 Demo completa de componentes de feedback integrados con temas")
+        info_label = QLabel("[ROCKET] Demo completa de componentes de feedback integrados con temas")
         info_label.setStyleSheet("font-weight: bold; color: #666;")
         layout.addWidget(info_label)
         
@@ -152,7 +152,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
     
     def create_progress_demo_group(self):
         """Crear grupo de demos de progress bars."""
-        group = QGroupBox("📊 Progress Bars")
+        group = QGroupBox("[CHART] Progress Bars")
         layout = QVBoxLayout(group)
         
         # Crear progress bars
@@ -169,7 +169,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
         # Controles
         controls_layout = QHBoxLayout()
         
-        start_progress_btn = QPushButton("🚀 Simular Progreso")
+        start_progress_btn = QPushButton("[ROCKET] Simular Progreso")
         start_progress_btn.clicked.connect(self.start_progress_demo)
         controls_layout.addWidget(start_progress_btn)
         
@@ -195,9 +195,9 @@ class AdvancedFeedbackDemo(FeedbackWidget):
         # Botones para diferentes tipos de toast
         toast_types = [
             ("ℹ️ Info", "info", "Información del sistema"),
-            ("✅ Success", "success", "Operación completada exitosamente"),
-            ("⚠️ Warning", "warning", "Advertencia importante"),
-            ("❌ Error", "error", "Error crítico del sistema")
+            ("[CHECK] Success", "success", "Operación completada exitosamente"),
+            ("[WARN] Warning", "warning", "Advertencia importante"),
+            ("[ERROR] Error", "error", "Error crítico del sistema")
         ]
         
         for i, (btn_text, toast_type, message) in enumerate(toast_types):
@@ -244,7 +244,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
     
     def create_overlay_demo_group(self):
         """Crear grupo de demos de loading overlays."""
-        group = QGroupBox("🔒 Loading Overlays")
+        group = QGroupBox("[LOCK] Loading Overlays")
         layout = QVBoxLayout(group)
         
         # Crear overlay
@@ -271,7 +271,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
         # Controles
         controls_layout = QHBoxLayout()
         
-        show_overlay_btn = QPushButton("🔒 Mostrar Overlay")
+        show_overlay_btn = QPushButton("[LOCK] Mostrar Overlay")
         show_overlay_btn.clicked.connect(lambda: self.mostrar_loading_overlay("Procesando datos..."))
         controls_layout.addWidget(show_overlay_btn)
         
@@ -289,7 +289,7 @@ class AdvancedFeedbackDemo(FeedbackWidget):
     
     def create_status_bar(self):
         """Crear barra de estado con múltiples indicadores."""
-        status_bar = QGroupBox("📊 Barra de Estado del Sistema")
+        status_bar = QGroupBox("[CHART] Barra de Estado del Sistema")
         layout = QHBoxLayout(status_bar)
         
         # Crear múltiples indicadores

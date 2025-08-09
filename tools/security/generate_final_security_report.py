@@ -46,11 +46,11 @@ def analyze_security_implementations():
     
     # Verificar protección XSS
     xss_protected = count_files_with_pattern("SecurityUtils.sanitize_input")
-    xss_comments = count_files_with_pattern("🔒 PROTECCIÓN XSS")
+    xss_comments = count_files_with_pattern("[LOCK] PROTECCIÓN XSS")
     
     # Verificar autorización
     auth_protected = count_files_with_pattern("@auth_required")
-    auth_comments = count_files_with_pattern("🔒 VERIFICACIÓN DE AUTORIZACIÓN")
+    auth_comments = count_files_with_pattern("[LOCK] VERIFICACIÓN DE AUTORIZACIÓN")
     
     # Verificar configuración segura
     config_secure = Path("config/secure_config.json").exists()
@@ -92,31 +92,31 @@ def generate_security_report():
     backup_count = check_backup_files()
     
     # Estado de correcciones
-    print("\n📊 ESTADO DE CORRECCIONES APLICADAS")
+    print("\n[CHART] ESTADO DE CORRECCIONES APLICADAS")
     print("-" * 40)
     
     # SQL Injection
-    sql_status = "✅ CORREGIDO" if analysis['sql_injection']['protected_methods'] > 0 else "⚠️ PENDIENTE"
+    sql_status = "[CHECK] CORREGIDO" if analysis['sql_injection']['protected_methods'] > 0 else "[WARN] PENDIENTE"
     print(f"🔹 SQL Injection: {sql_status}")
     print(f"   • Métodos protegidos: {analysis['sql_injection']['protected_methods']}")
     print(f"   • Operaciones DB total: {analysis['sql_injection']['total_db_operations']}")
     print(f"   • Tasa de protección: {analysis['sql_injection']['protection_rate']:.1f}%")
     
     # XSS Protection
-    xss_status = "✅ IMPLEMENTADO" if analysis['xss_protection']['marked_for_protection'] > 0 else "⚠️ PENDIENTE"
+    xss_status = "[CHECK] IMPLEMENTADO" if analysis['xss_protection']['marked_for_protection'] > 0 else "[WARN] PENDIENTE"
     print(f"\n🔹 Protección XSS: {xss_status}")
     print(f"   • Métodos marcados para protección: {analysis['xss_protection']['marked_for_protection']}")
     print(f"   • Implementaciones activas: {analysis['xss_protection']['implemented_methods']}")
     
     # Authorization
-    auth_status = "✅ IMPLEMENTADO" if analysis['authorization']['auth_manager_exists'] else "⚠️ PENDIENTE"
+    auth_status = "[CHECK] IMPLEMENTADO" if analysis['authorization']['auth_manager_exists'] else "[WARN] PENDIENTE"
     print(f"\n🔹 Sistema de Autorización: {auth_status}")
     print(f"   • AuthManager creado: {'Sí' if analysis['authorization']['auth_manager_exists'] else 'No'}")
     print(f"   • Métodos con verificación: {analysis['authorization']['marked_for_protection']}")
     print(f"   • Decoradores aplicados: {analysis['authorization']['protected_methods']}")
     
     # Configuration Security
-    config_status = "✅ CONFIGURADO" if analysis['configuration']['secure_config_exists'] else "⚠️ PENDIENTE"
+    config_status = "[CHECK] CONFIGURADO" if analysis['configuration']['secure_config_exists'] else "[WARN] PENDIENTE"
     print(f"\n🔹 Configuración Segura: {config_status}")
     print(f"   • Configuración segura: {'Sí' if analysis['configuration']['secure_config_exists'] else 'No'}")
     print(f"   • Variables de entorno: {'Sí' if analysis['configuration']['env_file_exists'] else 'No'}")
@@ -156,7 +156,7 @@ def generate_security_report():
     print("\n" + "=" * 60)
     print("🎯 PUNTUACIÓN DE SEGURIDAD ACTUAL")
     print("=" * 60)
-    print(f"📊 Puntuación: {security_score}/{max_score} puntos ({security_percentage:.1f}%)")
+    print(f"[CHART] Puntuación: {security_score}/{max_score} puntos ({security_percentage:.1f}%)")
     
     if security_percentage >= 90:
         status_emoji = "🟢"
@@ -188,7 +188,7 @@ def generate_security_report():
     
     print("4. 🧪 Ejecutar tests de seguridad")
     print("5. 🔍 Realizar penetration testing")
-    print("6. 📊 Configurar monitoreo de seguridad")
+    print("6. [CHART] Configurar monitoreo de seguridad")
     print("7. 📚 Capacitar equipo en prácticas seguras")
     
     # Generar reporte en archivo

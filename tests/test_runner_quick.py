@@ -25,7 +25,7 @@ def test_basic_imports():
     for name, import_str in tests:
         try:
             exec(import_str)
-            results[name] = "✓ OK"
+            results[name] = "[OK] OK"
         except Exception as e:
             results[name] = f"✗ ERROR: {e}"
 
@@ -44,17 +44,17 @@ def test_pedidos_controller():
         dummy_view = DummyView()
 
         # Simular creación de controller
-        print("  ✓ Imports OK")
-        print("  ✓ DummyModel creation OK")
-        print("  ✓ DummyView creation OK")
+        print("  [OK] Imports OK")
+        print("  [OK] DummyModel creation OK")
+        print("  [OK] DummyView creation OK")
 
         # Test básico de generación de pedido
         pedido_id = dummy_model.generar_pedido(1)
-        print(f"  ✓ Pedido generated: {pedido_id}")
+        print(f"  [OK] Pedido generated: {pedido_id}")
 
         # Test básico de recepción
         dummy_model.recibir_pedido(pedido_id)
-        print("  ✓ Pedido received OK")
+        print("  [OK] Pedido received OK")
 
         return True
 
@@ -72,15 +72,15 @@ def test_edge_cases_basic():
 
         # Test de strings largos
         test_instance.test_strings_extremadamente_largos()
-        print("  ✓ String extremos OK")
+        print("  [OK] String extremos OK")
 
         # Test de números extremos
         test_instance.test_numeros_extremos()
-        print("  ✓ Números extremos OK")
+        print("  [OK] Números extremos OK")
 
         # Test de caracteres Unicode
         test_instance.test_caracteres_unicode_extremos()
-        print("  ✓ Caracteres Unicode OK")
+        print("  [OK] Caracteres Unicode OK")
 
         return True
 
@@ -97,12 +97,12 @@ def test_sidebar_components():
         test_instance = TestSidebarComponentes()
         test_instance.setup_method()
 
-        print("  ✓ TestSidebarComponentes setup OK")
+        print("  [OK] TestSidebarComponentes setup OK")
 
         # Intentar test de inicialización (puede fallar por PyQt6)
         try:
             test_instance.test_sidebar_inicializacion()
-            print("  ✓ Sidebar initialization OK")
+            print("  [OK] Sidebar initialization OK")
         except Exception as e:
             if "PyQt6" in str(e) or "QApplication" in str(e):
                 print("  ⚠ Sidebar test skipped (PyQt6 issue)")
@@ -126,7 +126,7 @@ def test_login_integration():
 
         # Test de autenticación
         result = dummy_model.autenticar("TEST_USER", "correct_password")
-        print(f"  ✓ Authentication test: {result is not None}")
+        print(f"  [OK] Authentication test: {result is not None}")
 
         # Test de módulos por rol
         usuario_test = {"rol": "administrador"}
@@ -140,7 +140,7 @@ from tests.test_login_mainwindow_integration import DummyUsuariosModel
 from tests.test_pedidos_controller import DummyModel, DummyView, controller
 from tests.test_sidebar_components import TestSidebarComponentes
 
-        print(f"  ✓ Modules for admin: {len(modulos) if modulos else 0}")
+        print(f"  [OK] Modules for admin: {len(modulos) if modulos else 0}")
 
         return True
 
@@ -176,7 +176,7 @@ def main():
 
     # Resumen final
     print("\n" + "=" * 50)
-    print("📊 SUMMARY")
+    print("[CHART] SUMMARY")
     print("=" * 50)
 
     passed = 0
@@ -184,16 +184,16 @@ def main():
 
     for test_name, result in all_results:
         if isinstance(result, dict):  # Para test_basic_imports
-            success_count = sum(1 for v in result.values() if v.startswith("✓"))
+            success_count = sum(1 for v in result.values() if v.startswith("[OK]"))
             total_count = len(result)
             if success_count == total_count:
-                print(f"✓ {test_name}: {success_count}/{total_count} OK")
+                print(f"[OK] {test_name}: {success_count}/{total_count} OK")
                 passed += 1
             else:
                 print(f"✗ {test_name}: {success_count}/{total_count} OK")
                 failed += 1
         elif result:
-            print(f"✓ {test_name}: PASSED")
+            print(f"[OK] {test_name}: PASSED")
             passed += 1
         else:
             print(f"✗ {test_name}: FAILED")
@@ -205,7 +205,7 @@ def main():
         print("🎉 All tests passed!")
         return 0
     else:
-        print("⚠️  Some tests failed. Check details above.")
+        print("[WARN]  Some tests failed. Check details above.")
         return 1
 
 if __name__ == "__main__":

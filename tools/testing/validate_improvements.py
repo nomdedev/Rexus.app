@@ -11,10 +11,10 @@ from pathlib import Path
 def check_file_exists(file_path, description):
     """Verifica si un archivo existe"""
     if os.path.exists(file_path):
-        print(f"✅ {description}: {file_path}")
+        print(f"[CHECK] {description}: {file_path}")
         return True
     else:
-        print(f"❌ {description}: {file_path} - NO ENCONTRADO")
+        print(f"[ERROR] {description}: {file_path} - NO ENCONTRADO")
         return False
 
 
@@ -42,7 +42,7 @@ def check_directory_structure():
         if check_file_exists(file_path, description):
             passed += 1
 
-    print(f"\n📊 Estructura: {passed}/{total} elementos encontrados")
+    print(f"\n[CHART] Estructura: {passed}/{total} elementos encontrados")
     return passed, total
 
 
@@ -65,12 +65,12 @@ def check_imports():
     for module_name, description in import_tests:
         try:
             __import__(module_name)
-            print(f"✅ {description}: {module_name}")
+            print(f"[CHECK] {description}: {module_name}")
             passed += 1
         except ImportError as e:
-            print(f"❌ {description}: {module_name} - {e}")
+            print(f"[ERROR] {description}: {module_name} - {e}")
 
-    print(f"\n📊 Importaciones: {passed}/{total} módulos disponibles")
+    print(f"\n[CHART] Importaciones: {passed}/{total} módulos disponibles")
     return passed, total
 
 
@@ -88,17 +88,17 @@ def check_requirements():
         found_packages = []
         for package in expected_packages:
             if package.lower() in content.lower():
-                print(f"✅ Dependencia encontrada: {package}")
+                print(f"[CHECK] Dependencia encontrada: {package}")
                 found_packages.append(package)
             else:
-                print(f"⚠️ Dependencia no encontrada: {package}")
+                print(f"[WARN] Dependencia no encontrada: {package}")
 
         print(
-            f"\n📊 Dependencias: {len(found_packages)}/{len(expected_packages)} encontradas"
+            f"\n[CHART] Dependencias: {len(found_packages)}/{len(expected_packages)} encontradas"
         )
         return len(found_packages), len(expected_packages)
     else:
-        print("❌ Archivo requirements_updated.txt no encontrado")
+        print("[ERROR] Archivo requirements_updated.txt no encontrado")
         return 0, 5
 
 
@@ -118,14 +118,14 @@ def validate_security_files():
                 content = f.read()
 
             if "SecurityUtils" in content or "AuthManager" in content:
-                print(f"✅ Archivo de seguridad válido: {file_path}")
+                print(f"[CHECK] Archivo de seguridad válido: {file_path}")
                 passed += 1
             else:
-                print(f"⚠️ Archivo existe pero contenido incompleto: {file_path}")
+                print(f"[WARN] Archivo existe pero contenido incompleto: {file_path}")
         else:
-            print(f"❌ Archivo no encontrado: {file_path}")
+            print(f"[ERROR] Archivo no encontrado: {file_path}")
 
-    print(f"\n📊 Seguridad: {passed}/{total} archivos válidos")
+    print(f"\n[CHART] Seguridad: {passed}/{total} archivos válidos")
     return passed, total
 
 
@@ -149,16 +149,16 @@ def check_recent_improvements():
         if os.path.exists(file_path):
             file_size = os.path.getsize(file_path)
             if file_size > 100:  # Archivo debe tener contenido
-                print(f"✅ {description}: {file_path} ({file_size} bytes)")
+                print(f"[CHECK] {description}: {file_path} ({file_size} bytes)")
                 passed += 1
             else:
                 print(
-                    f"⚠️ {description}: {file_path} (archivo muy pequeño: {file_size} bytes)"
+                    f"[WARN] {description}: {file_path} (archivo muy pequeño: {file_size} bytes)"
                 )
         else:
-            print(f"❌ {description}: {file_path} - NO ENCONTRADO")
+            print(f"[ERROR] {description}: {file_path} - NO ENCONTRADO")
 
-    print(f"\n📊 Mejoras: {passed}/{total} implementadas correctamente")
+    print(f"\n[CHART] Mejoras: {passed}/{total} implementadas correctamente")
     return passed, total
 
 
@@ -193,7 +193,7 @@ def generate_summary_report():
 
     success_rate = (total_passed / total_checks * 100) if total_checks > 0 else 0
 
-    print(f"\n📊 RESULTADOS FINALES:")
+    print(f"\n[CHART] RESULTADOS FINALES:")
     print(f"   • Estructura: {structure_passed}/{structure_total}")
     print(f"   • Importaciones: {imports_passed}/{imports_total}")
     print(f"   • Dependencias: {deps_passed}/{deps_total}")
@@ -203,18 +203,18 @@ def generate_summary_report():
 
     if success_rate >= 90:
         print(f"\n🎉 VALIDACIÓN EXITOSA ({success_rate:.1f}%)")
-        print("✅ Sistema completamente preparado")
+        print("[CHECK] Sistema completamente preparado")
         status = "EXCELLENT"
     elif success_rate >= 75:
-        print(f"\n✅ VALIDACIÓN BUENA ({success_rate:.1f}%)")
+        print(f"\n[CHECK] VALIDACIÓN BUENA ({success_rate:.1f}%)")
         print("🔧 Mejoras menores recomendadas")
         status = "GOOD"
     elif success_rate >= 60:
-        print(f"\n⚠️ VALIDACIÓN PARCIAL ({success_rate:.1f}%)")
+        print(f"\n[WARN] VALIDACIÓN PARCIAL ({success_rate:.1f}%)")
         print("🔧 Algunas correcciones necesarias")
         status = "PARTIAL"
     else:
-        print(f"\n❌ VALIDACIÓN CON PROBLEMAS ({success_rate:.1f}%)")
+        print(f"\n[ERROR] VALIDACIÓN CON PROBLEMAS ({success_rate:.1f}%)")
         print("🚨 Revisar y corregir errores críticos")
         status = "FAILED"
 
@@ -240,8 +240,8 @@ if __name__ == "__main__":
     success = generate_summary_report()
 
     if success:
-        print("\n🚀 LISTO PARA SIGUIENTE FASE")
+        print("\n[ROCKET] LISTO PARA SIGUIENTE FASE")
     else:
-        print("\n⚠️ CORREGIR PROBLEMAS ANTES DE CONTINUAR")
+        print("\n[WARN] CORREGIR PROBLEMAS ANTES DE CONTINUAR")
 
     sys.exit(0 if success else 1)

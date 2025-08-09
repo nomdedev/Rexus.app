@@ -7,7 +7,7 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 """
 Modelo de Inventario
@@ -108,7 +108,7 @@ class InventarioModel(PaginatedTableMixin):
         super().__init__()
 
         self.db_connection = db_connection
-        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        # [LOCK] Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
         self.tabla_movimientos = "historial"  # Usar tabla historial existente
@@ -399,7 +399,7 @@ class InventarioModel(PaginatedTableMixin):
                     productos_paginados = productos[offset : offset + limit]
                     return productos_paginados, total_items
 
-            # 🔒 Usar consulta SQL externa segura
+            # [LOCK] Usar consulta SQL externa segura
             params = {
                 "categoria": filters.get("categoria") if filters else None,
                 "codigo": filters.get("codigo") if filters else None, 
@@ -574,7 +574,7 @@ class InventarioModel(PaginatedTableMixin):
             else:
                 tabla_validada = tabla_segura
 
-            # 🔒 Usar consulta SQL externa segura
+            # [LOCK] Usar consulta SQL externa segura
             params_query = {
                 "search": search_term if search_term else None,
                 "categoria": None,  # Agregar filtros según necesidad
@@ -777,7 +777,7 @@ class InventarioModel(PaginatedTableMixin):
                 ),
             )
 
-            # 🔒 Obtener ID del producto creado de forma segura
+            # [LOCK] Obtener ID del producto creado de forma segura
             sql = self.sql_manager.get_query('inventario', 'get_last_identity')
             cursor.execute(sql)
             producto_id = cursor.fetchone()[0]
@@ -2398,7 +2398,7 @@ class InventarioModel(PaginatedTableMixin):
                 where_clause = "WHERE i.id = ?"
                 params.append(producto_id)
 
-            # 🔒 Usar consulta SQL externa segura para análisis de stock
+            # [LOCK] Usar consulta SQL externa segura para análisis de stock
             params_query = {
                 "producto_id": producto_id
             }
@@ -2449,7 +2449,7 @@ class InventarioModel(PaginatedTableMixin):
                 r["cantidad_reservada"] * r["precio_unitario"] for r in reservas_activas
             )
 
-            # 🔒 Usar consulta SQL externa segura para estadísticas de categorías
+            # [LOCK] Usar consulta SQL externa segura para estadísticas de categorías
             categorias = self.sql_manager.execute_query(
                 "estadisticas_reservas_categoria",
                 params={"obra_id": obra_id}
@@ -2487,24 +2487,24 @@ class InventarioModel(PaginatedTableMixin):
 
             estadisticas = {}
 
-            # 🔒 Total de reservas activas usando SQL externo
+            # [LOCK] Total de reservas activas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_reservas_activas')
             cursor = self.db_connection.cursor()
             cursor.execute(sql)
             estadisticas["total_reservas_activas"] = cursor.fetchone()[0]
 
-            # 🔒 Valor total reservado usando SQL externo
+            # [LOCK] Valor total reservado usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'valor_total_reservas_activas')
             cursor.execute(sql)
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_reservado"] = resultado if resultado else 0
 
-            # 🔒 Obras con reservas usando SQL externo
+            # [LOCK] Obras con reservas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_obras_con_reservas')
             cursor.execute(sql)
             estadisticas["obras_con_reservas"] = cursor.fetchone()[0]
 
-            # 🔒 Productos con reservas usando SQL externo
+            # [LOCK] Productos con reservas usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'count_productos_con_reservas')
             cursor.execute(sql)
             estadisticas["productos_con_reservas"] = cursor.fetchone()[0]
@@ -2616,7 +2616,7 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            # 🔒 Usar consulta SQL externa segura para búsqueda de productos
+            # [LOCK] Usar consulta SQL externa segura para búsqueda de productos
             sql = self.sql_manager.get_query('inventario', 'buscar_productos_con_stock')
             params = {
                 "busqueda": filtros.get("busqueda"),
@@ -2892,7 +2892,7 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            # 🔒 Información del producto usando SQL externo
+            # [LOCK] Información del producto usando SQL externo
             sql = self.sql_manager.get_query('inventario', 'detalle_disponibilidad_producto')
             cursor.execute(sql, {"producto_id": producto_id})
 

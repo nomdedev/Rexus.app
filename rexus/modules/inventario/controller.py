@@ -334,7 +334,7 @@ class InventarioController(QObject):
                 print(f"📋 Métodos disponibles en vista: {metodos[:10]}...")
 
         except Exception as e:
-            print(f"❌ Error actualizando vista: {e}")
+            print(f"[ERROR] Error actualizando vista: {e}")
             import traceback
 
             traceback.print_exc()

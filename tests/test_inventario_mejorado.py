@@ -28,13 +28,13 @@ def test_inventario_mejorado():
         from rexus.modules.inventario.view import InventarioView
         from rexus.modules.inventario.model import InventarioModel
         from rexus.modules.inventario.controller import InventarioController
-        print("   ✅ Imports exitosos")
+        print("   [CHECK] Imports exitosos")
         
         print("\n2. Creando componentes...")
         modelo = InventarioModel()
         vista = InventarioView()
         controlador = InventarioController(model=modelo, view=vista)
-        print("   ✅ Componentes creados")
+        print("   [CHECK] Componentes creados")
         
         print("\n3. Verificando nueva funcionalidad de paginación...")
         
@@ -56,9 +56,9 @@ def test_inventario_mejorado():
         
         for elemento in elementos_requeridos:
             if hasattr(vista, elemento):
-                print(f"   ✅ {elemento} disponible")
+                print(f"   [CHECK] {elemento} disponible")
             else:
-                print(f"   ❌ {elemento} FALTA")
+                print(f"   [ERROR] {elemento} FALTA")
         
         print("\n4. Verificando funcionalidad del controlador...")
         
@@ -71,19 +71,19 @@ def test_inventario_mejorado():
         
         for metodo in metodos_requeridos:
             if hasattr(controlador, metodo):
-                print(f"   ✅ {metodo} disponible")
+                print(f"   [CHECK] {metodo} disponible")
             else:
-                print(f"   ❌ {metodo} FALTA")
+                print(f"   [ERROR] {metodo} FALTA")
         
         print("\n5. Probando carga de datos con paginación...")
         
         # Test de paginación
         try:
             productos, total = controlador.cargar_inventario_paginado(1, 50)
-            print(f"   ✅ Paginación funcional: {len(productos)} productos de {total} total")
+            print(f"   [CHECK] Paginación funcional: {len(productos)} productos de {total} total")
             
             if len(productos) > 0:
-                print("   ✅ Datos cargados correctamente")
+                print("   [CHECK] Datos cargados correctamente")
                 
                 # Verificar estructura de datos
                 primer_producto = productos[0]
@@ -91,14 +91,14 @@ def test_inventario_mejorado():
                 
                 for campo in campos_requeridos:
                     if campo in primer_producto:
-                        print(f"      ✅ Campo '{campo}' presente")
+                        print(f"      [CHECK] Campo '{campo}' presente")
                     else:
-                        print(f"      ❌ Campo '{campo}' FALTA")
+                        print(f"      [ERROR] Campo '{campo}' FALTA")
             else:
-                print("   ⚠️  No se cargaron productos")
+                print("   [WARN]  No se cargaron productos")
                 
         except Exception as e:
-            print(f"   ❌ Error en paginación: {e}")
+            print(f"   [ERROR] Error en paginación: {e}")
         
         print("\n6. Probando diferentes tamaños de página...")
         
@@ -109,12 +109,12 @@ def test_inventario_mejorado():
                 esperados = min(tamaño, total)
                 
                 if productos_obtenidos == esperados:
-                    print(f"   ✅ Tamaño {tamaño}: {productos_obtenidos} productos (correcto)")
+                    print(f"   [CHECK] Tamaño {tamaño}: {productos_obtenidos} productos (correcto)")
                 else:
-                    print(f"   ⚠️  Tamaño {tamaño}: {productos_obtenidos} productos (esperaba {esperados})")
+                    print(f"   [WARN]  Tamaño {tamaño}: {productos_obtenidos} productos (esperaba {esperados})")
                     
             except Exception as e:
-                print(f"   ❌ Error con tamaño {tamaño}: {e}")
+                print(f"   [ERROR] Error con tamaño {tamaño}: {e}")
         
         print("\n7. Probando navegación de páginas...")
         
@@ -129,55 +129,55 @@ def test_inventario_mejorado():
                 codigos_p2 = [p.get('codigo') for p in productos_p2]
                 
                 if set(codigos_p1).isdisjoint(set(codigos_p2)):
-                    print("   ✅ Páginas diferentes contienen productos únicos")
+                    print("   [CHECK] Páginas diferentes contienen productos únicos")
                 else:
-                    print("   ⚠️  Posible duplicación entre páginas")
+                    print("   [WARN]  Posible duplicación entre páginas")
             else:
-                print("   ⚠️  No hay suficientes datos para probar navegación")
+                print("   [WARN]  No hay suficientes datos para probar navegación")
                 
         except Exception as e:
-            print(f"   ❌ Error en navegación: {e}")
+            print(f"   [ERROR] Error en navegación: {e}")
         
         print("\n8. Probando interfaz mejorada...")
         
         # Verificar que la tabla se puede mostrar
         try:
             vista.mostrar_datos_ejemplo()
-            print("   ✅ Datos de ejemplo mostrados en tabla")
+            print("   [CHECK] Datos de ejemplo mostrados en tabla")
             
             # Verificar estadísticas
             vista.actualizar_estadisticas()
-            print("   ✅ Estadísticas actualizadas")
+            print("   [CHECK] Estadísticas actualizadas")
             
             # Verificar controles de paginación
             vista.actualizar_controles_paginacion()
-            print("   ✅ Controles de paginación actualizados")
+            print("   [CHECK] Controles de paginación actualizados")
             
         except Exception as e:
-            print(f"   ❌ Error en interfaz: {e}")
+            print(f"   [ERROR] Error en interfaz: {e}")
         
         print("\n" + "=" * 60)
         print("🎉 TEST COMPLETADO")
         
         # Resumen
         print("\n📋 RESUMEN DE MEJORAS IMPLEMENTADAS:")
-        print("   ✅ Paginación mejorada (25-1000 registros por página)")
-        print("   ✅ Búsqueda en tiempo real")
-        print("   ✅ Filtros avanzados (categoría, stock, estado)")
-        print("   ✅ Interfaz dividida con panel lateral")
-        print("   ✅ Estadísticas en tiempo real")
-        print("   ✅ Navegación de páginas completa")
-        print("   ✅ Visualización mejorada de datos")
-        print("   ✅ Doble clic para obras asociadas")
-        print("   ✅ Compatibilidad con controlador existente")
+        print("   [CHECK] Paginación mejorada (25-1000 registros por página)")
+        print("   [CHECK] Búsqueda en tiempo real")
+        print("   [CHECK] Filtros avanzados (categoría, stock, estado)")
+        print("   [CHECK] Interfaz dividida con panel lateral")
+        print("   [CHECK] Estadísticas en tiempo real")
+        print("   [CHECK] Navegación de páginas completa")
+        print("   [CHECK] Visualización mejorada de datos")
+        print("   [CHECK] Doble clic para obras asociadas")
+        print("   [CHECK] Compatibilidad con controlador existente")
         
         return True
         
     except ImportError as e:
-        print(f"❌ Error de importación: {e}")
+        print(f"[ERROR] Error de importación: {e}")
         return False
     except Exception as e:
-        print(f"❌ Error inesperado: {e}")
+        print(f"[ERROR] Error inesperado: {e}")
         import traceback
         traceback.print_exc()
         return False

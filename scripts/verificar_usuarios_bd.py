@@ -25,7 +25,7 @@ def verificar_usuarios_bd():
         conn = get_connection("users")
         cursor = conn.cursor()
 
-        print("✅ Conexión exitosa a base de datos 'users'")
+        print("[CHECK] Conexión exitosa a base de datos 'users'")
 
         # Verificar si existe la tabla usuarios
         print("\n📋 Verificando existencia de tabla 'usuarios'...")
@@ -36,14 +36,14 @@ def verificar_usuarios_bd():
         """)
 
         if cursor.fetchone()[0] == 0:
-            print("❌ Tabla 'usuarios' NO EXISTE")
+            print("[ERROR] Tabla 'usuarios' NO EXISTE")
             print("   Necesitas ejecutar las migraciones de base de datos")
             return False
         else:
-            print("✅ Tabla 'usuarios' existe")
+            print("[CHECK] Tabla 'usuarios' existe")
 
         # Mostrar estructura de la tabla
-        print("\n📊 Estructura de la tabla 'usuarios':")
+        print("\n[CHART] Estructura de la tabla 'usuarios':")
         cursor.execute("""
             SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE, COLUMN_DEFAULT
             FROM INFORMATION_SCHEMA.COLUMNS
@@ -67,7 +67,7 @@ def verificar_usuarios_bd():
 
         users = cursor.fetchall()
         if not users:
-            print("❌ NO HAY USUARIOS ACTIVOS en la base de datos")
+            print("[ERROR] NO HAY USUARIOS ACTIVOS en la base de datos")
             print("   Necesitas crear usuarios antes de hacer login")
             return False
 
@@ -92,35 +92,35 @@ def verificar_usuarios_bd():
         print(f"   Usuarios con password configurada: {users_with_pass}/{len(users)}")
 
         if users_with_pass == 0:
-            print("❌ NINGÚN USUARIO tiene password configurada")
+            print("[ERROR] NINGÚN USUARIO tiene password configurada")
             print("   Necesitas configurar passwords antes de hacer login")
             return False
         elif users_with_pass < len(users):
-            print("⚠️  Algunos usuarios NO tienen password configurada")
+            print("[WARN]  Algunos usuarios NO tienen password configurada")
         else:
-            print("✅ Todos los usuarios tienen password configurada")
+            print("[CHECK] Todos los usuarios tienen password configurada")
 
         conn.close()
 
         print("\n" + "=" * 60)
         print("📝 RESUMEN:")
-        print(f"   - Tabla usuarios: ✅ Existe")
+        print(f"   - Tabla usuarios: [CHECK] Existe")
         print(f"   - Usuarios activos: {len(users)}")
         print(f"   - Usuarios con password: {users_with_pass}")
 
         if users_with_pass > 0:
-            print("✅ La base de datos está lista para autenticación")
+            print("[CHECK] La base de datos está lista para autenticación")
             return True
         else:
-            print("❌ La base de datos NO está lista para autenticación")
+            print("[ERROR] La base de datos NO está lista para autenticación")
             return False
 
     except ImportError as e:
-        print(f"❌ Error importando módulos: {e}")
+        print(f"[ERROR] Error importando módulos: {e}")
         print("   Verifica que los módulos de base de datos estén disponibles")
         return False
     except Exception as e:
-        print(f"❌ Error conectando a base de datos: {e}")
+        print(f"[ERROR] Error conectando a base de datos: {e}")
         print("   Verifica la configuración de conexión en .env")
         return False
 
@@ -128,7 +128,7 @@ def verificar_usuarios_bd():
 if __name__ == "__main__":
     exito = verificar_usuarios_bd()
     if not exito:
-        print("\n⚠️  Para solucionar esto, necesitas:")
+        print("\n[WARN]  Para solucionar esto, necesitas:")
         print("   1. Ejecutar las migraciones de base de datos")
         print("   2. Crear usuarios con passwords")
         print("   3. Configurar roles y permisos correctamente")

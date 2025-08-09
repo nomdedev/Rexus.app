@@ -2,7 +2,7 @@ from rexus.core.auth_decorators import auth_required, admin_required, permission
 from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
-# 🔒 DB Authorization Check - Verify user permissions before DB operations
+# [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
 """
 Modelo de Pedidos - Rexus.app v2.0.0

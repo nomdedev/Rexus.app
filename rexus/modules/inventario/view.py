@@ -287,7 +287,7 @@ class InventarioView(BaseModuleView):
         layout = RexusLayoutHelper.create_vertical_layout()
         
         # Panel de estadísticas rápidas
-        stats_group = RexusGroupBox("📊 Estadísticas")
+        stats_group = RexusGroupBox("[CHART] Estadísticas")
         stats_layout = RexusLayoutHelper.create_vertical_layout()
         
         self.lbl_total_productos = RexusLabel("Total: 0", "body")
@@ -386,7 +386,7 @@ class InventarioView(BaseModuleView):
         # Configurar columnas con más información
         columnas = [
             "📋 Código", "📝 Descripción", "📂 Categoría", "📦 Stock", 
-            "💰 Precio", "📊 Estado", "📍 Ubicación", "📅 Actualización"
+            "💰 Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización"
         ]
         
         self.tabla_inventario.setColumnCount(len(columnas))
@@ -610,7 +610,7 @@ class InventarioView(BaseModuleView):
 📂 <b>Categoría:</b> {producto.get('categoria', 'N/A')}
 📦 <b>Stock actual:</b> {producto.get('stock_actual', 0)}
 💰 <b>Precio:</b> ${producto.get('precio_unitario', 0):,.2f}
-📊 <b>Estado:</b> {producto.get('estado', 'N/A')}
+[CHART] <b>Estado:</b> {producto.get('estado', 'N/A')}
 📍 <b>Ubicación:</b> {producto.get('ubicacion', 'No especificada')}
 📅 <b>Última actualización:</b> {producto.get('fecha_actualizacion', 'N/A')}
         """
@@ -818,7 +818,7 @@ class InventarioView(BaseModuleView):
     def _on_dangerous_content(self, campo, contenido):
         """Maneja detección de contenido peligroso XSS."""
         show_warning(self, "Contenido Peligroso", 
-                    f"⚠️ Contenido potencialmente peligroso detectado en {campo}")
+                    f"[WARN] Contenido potencialmente peligroso detectado en {campo}")
                     
     def set_controller(self, controller):
         """Establece el controlador."""

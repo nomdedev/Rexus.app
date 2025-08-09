@@ -52,17 +52,17 @@ from utils.analizador_db import AnalizadorDB
         )
 
         logger.info(f"Reporte de diagnóstico generado exitosamente: {ruta_completa}")
-        print(f"\n✅ Reporte generado en: {ruta_completa}")
+        print(f"\n[CHECK] Reporte generado en: {ruta_completa}")
 
         return ruta_completa
 
     except ConnectionError as e:
         logger.error(f"Error de conexión durante el diagnóstico: {e}")
-        print(f"\n❌ Error de conexión: {e}")
+        print(f"\n[ERROR] Error de conexión: {e}")
         raise
     except Exception as e:
         logger.error(f"Error durante el diagnóstico: {e}")
-        print(f"\n❌ Error durante el diagnóstico: {e}")
+        print(f"\n[ERROR] Error durante el diagnóstico: {e}")
         raise
 
 def main():
@@ -83,7 +83,7 @@ def main():
             ruta_salida=args.salida
         )
     except Exception as e:
-        print(f"\n❌ Error: {e}")
+        print(f"\n[ERROR] Error: {e}")
         sys.exit(1)
 
 if __name__ == '__main__':

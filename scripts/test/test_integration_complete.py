@@ -458,20 +458,20 @@ def main():
     # Overall assessment
     if success_rate >= 95:
         print("\n[SUCCESS] All systems integrated successfully!")
-        print("✅ Database consolidation complete")
-        print("✅ Security system operational")
-        print("✅ Form validation system ready")
-        print("✅ SQL externalization complete")
-        print("✅ Module integration verified")
-        print("✅ Error handling robust")
+        print("[CHECK] Database consolidation complete")
+        print("[CHECK] Security system operational")
+        print("[CHECK] Form validation system ready")
+        print("[CHECK] SQL externalization complete")
+        print("[CHECK] Module integration verified")
+        print("[CHECK] Error handling robust")
         return True
     elif success_rate >= 80:
         print("\n[ACCEPTABLE] Most integrations working")
-        print("⚠️  Minor issues detected but system is operational")
+        print("[WARN]  Minor issues detected but system is operational")
         return True
     else:
         print("\n[CRITICAL] Integration issues detected")
-        print("❌ System not ready for production")
+        print("[ERROR] System not ready for production")
         return False
 
 if __name__ == "__main__":

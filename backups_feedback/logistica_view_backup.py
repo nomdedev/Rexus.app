@@ -481,7 +481,7 @@ class LogisticaView(QWidget):
         layout.addWidget(stats_group)
         layout.addStretch()
         
-        self.tabs.addTab(stats_widget, "📊 Estadísticas")
+        self.tabs.addTab(stats_widget, "[CHART] Estadísticas")
     
     def set_controller(self, controller):
         """Establece el controlador para esta vista."""
@@ -1060,7 +1060,7 @@ class LogisticaView(QWidget):
         except Exception as e:
             print(f"Error creando mapa fallback: {e}")
             # Crear widget mínimo en caso de error
-            error_widget = QLabel("❌ Error cargando vista de mapa")
+            error_widget = QLabel("[ERROR] Error cargando vista de mapa")
             error_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
             error_widget.setStyleSheet("""
                 QLabel {
@@ -1151,7 +1151,7 @@ class DialogoNuevaEntrega(QDialog):
         form_layout.addRow("👤 Contacto:", self.input_contacto)
         form_layout.addRow("📞 Teléfono:", self.input_telefono)
         form_layout.addRow("📅 Fecha:", self.date_programada)
-        form_layout.addRow("📊 Estado:", self.combo_estado)
+        form_layout.addRow("[CHART] Estado:", self.combo_estado)
         form_layout.addRow("📝 Observaciones:", self.text_observaciones)
         
         layout.addLayout(form_layout)
@@ -1159,7 +1159,7 @@ class DialogoNuevaEntrega(QDialog):
         # Botones
         botones_layout = QHBoxLayout()
         
-        btn_cancelar = QPushButton("❌ Cancelar")
+        btn_cancelar = QPushButton("[ERROR] Cancelar")
         btn_cancelar.clicked.connect(self.reject)
         
         btn_guardar = QPushButton("💾 Guardar")

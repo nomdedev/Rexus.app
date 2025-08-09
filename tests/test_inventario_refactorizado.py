@@ -22,19 +22,19 @@ def test_imports():
             ProductosManager,
         )
 
-        print("✅ Submódulos importados correctamente")
+        print("[CHECK] Submódulos importados correctamente")
 
         # Importar modelo refactorizado
         from rexus.modules.inventario.model_refactorizado import (
             InventarioModelRefactorizado,
         )
 
-        print("✅ Modelo refactorizado importado correctamente")
+        print("[CHECK] Modelo refactorizado importado correctamente")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error en importaciones: {str(e)}")
+        print(f"[ERROR] Error en importaciones: {str(e)}")
         return False
 
 
@@ -73,21 +73,21 @@ def test_structure():
             if not hasattr(modelo, metodo):
                 raise AssertionError(f"Falta método {metodo}")
 
-        print("✅ Estructura del modelo validada")
+        print("[CHECK] Estructura del modelo validada")
 
         # Probar método de información (si existe)
         if hasattr(modelo, "obtener_info_modular"):
             info = modelo.obtener_info_modular()
             if "modelo" not in info:
                 raise AssertionError("Falta información del modelo")
-            print(f"✅ Información modular: {info['modelo']}")
+            print(f"[CHECK] Información modular: {info['modelo']}")
         else:
-            print("⚠️  Sin método obtener_info_modular")
+            print("[WARN]  Sin método obtener_info_modular")
 
         return True
 
     except Exception as e:
-        print(f"❌ Error validando estructura: {str(e)}")
+        print(f"[ERROR] Error validando estructura: {str(e)}")
         return False
 
 
@@ -127,11 +127,11 @@ def test_submodules():
                 "ConsultasManager: falta obtener_estadisticas_inventario"
             )
 
-        print("✅ Submódulos validados correctamente")
+        print("[CHECK] Submódulos validados correctamente")
         return True
 
     except Exception as e:
-        print(f"❌ Error validando submódulos: {str(e)}")
+        print(f"[ERROR] Error validando submódulos: {str(e)}")
         return False
 
 
@@ -157,18 +157,18 @@ def test_sql_files():
     for file_path in expected_files:
         full_path = os.path.join(base_path, file_path)
         if os.path.exists(full_path):
-            print(f"✅ Encontrado: {file_path}")
+            print(f"[CHECK] Encontrado: {file_path}")
             found += 1
         else:
-            print(f"⚠️  Faltante: {file_path}")
+            print(f"[WARN]  Faltante: {file_path}")
 
-    print(f"📊 Archivos SQL: {found}/{total} encontrados")
+    print(f"[CHART] Archivos SQL: {found}/{total} encontrados")
     return found >= total * 0.8  # 80% de archivos requeridos
 
 
 def main():
     """Ejecuta todas las validaciones."""
-    print("🚀 Validando estado del módulo inventario refactorizado")
+    print("[ROCKET] Validando estado del módulo inventario refactorizado")
     print("=" * 60)
 
     tests = [test_imports, test_structure, test_submodules, test_sql_files]
@@ -181,18 +181,18 @@ def main():
             if test():
                 passed += 1
         except Exception as e:
-            print(f"❌ Error inesperado en {test.__name__}: {str(e)}")
+            print(f"[ERROR] Error inesperado en {test.__name__}: {str(e)}")
 
     print("\n" + "=" * 60)
-    print(f"📊 Resumen de validación: {passed}/{total} pruebas pasaron")
+    print(f"[CHART] Resumen de validación: {passed}/{total} pruebas pasaron")
 
     if passed == total:
         print("🎉 ¡Módulo inventario ya está refactorizado!")
         print("\n📋 Estado encontrado:")
-        print("   ✅ Arquitectura modular implementada")
-        print("   ✅ Submódulos especializados")
-        print("   ✅ Archivos SQL organizados")
-        print("   ✅ Imports unificados")
+        print("   [CHECK] Arquitectura modular implementada")
+        print("   [CHECK] Submódulos especializados")
+        print("   [CHECK] Archivos SQL organizados")
+        print("   [CHECK] Imports unificados")
         return True
     else:
         print("🔧 Refactorización parcial detectada")

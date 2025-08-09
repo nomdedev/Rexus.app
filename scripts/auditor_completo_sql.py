@@ -31,7 +31,7 @@ try:
     from rexus.core.config import RexusConfig
     from rexus.core.database import BaseDatabaseConnection
 except ImportError as e:
-    print(f"⚠️ Error importando módulos core: {e}")
+    print(f"[WARN] Error importando módulos core: {e}")
 
 
 class AuditorCompletoBD:
@@ -172,7 +172,7 @@ class AuditorCompletoBD:
                 conexion = BaseDatabaseConnection()
 
                 # Simular conexión específica
-                print(f"   📊 Base de datos '{bd}': ", end="")
+                print(f"   [CHART] Base de datos '{bd}': ", end="")
 
                 # Aquí iría la lógica real de conexión
                 # Por ahora, simulamos el resultado
@@ -181,10 +181,10 @@ class AuditorCompletoBD:
                     "version": "SQL Server 2019",
                     "estado": "ACTIVA",
                 }
-                print("✅ CONECTADA")
+                print("[CHECK] CONECTADA")
 
             except Exception as e:
-                print(f"❌ ERROR: {e}")
+                print(f"[ERROR] ERROR: {e}")
                 self.resultados["errores"].append(f"Error conectando a BD '{bd}': {e}")
 
     def auditar_estructura_bd(self):
@@ -214,10 +214,10 @@ class AuditorCompletoBD:
             existe = True  # En implementación real: consulta a INFORMATION_SCHEMA
 
             if existe:
-                print(f"      ✅ Tabla '{tabla}': EXISTE")
+                print(f"      [CHECK] Tabla '{tabla}': EXISTE")
                 tablas_encontradas.add(tabla)
             else:
-                print(f"      ❌ Tabla '{tabla}': FALTANTE")
+                print(f"      [ERROR] Tabla '{tabla}': FALTANTE")
                 self.resultados["errores"].append(
                     f"Tabla faltante: {bd_nombre}.{tabla}"
                 )
@@ -235,9 +235,9 @@ class AuditorCompletoBD:
             existe = True  # En implementación real: consulta a INFORMATION_SCHEMA
 
             if existe:
-                print(f"            ✅ '{columna}': OK")
+                print(f"            [CHECK] '{columna}': OK")
             else:
-                print(f"            ❌ '{columna}': FALTANTE")
+                print(f"            [ERROR] '{columna}': FALTANTE")
                 self.resultados["errores"].append(
                     f"Columna faltante: {bd_nombre}.{tabla}.{columna}"
                 )
@@ -260,10 +260,10 @@ class AuditorCompletoBD:
                     self.analizar_script_sql(script)
                     total_scripts += 1
             else:
-                print(f"   ⚠️ Directorio no encontrado: {directorio}")
+                print(f"   [WARN] Directorio no encontrado: {directorio}")
                 self.resultados["warnings"].append(f"Directorio faltante: {directorio}")
 
-        print(f"\n   📊 Total de scripts SQL analizados: {total_scripts}")
+        print(f"\n   [CHART] Total de scripts SQL analizados: {total_scripts}")
 
     def analizar_script_sql(self, ruta_script: str):
         """Analiza un script SQL individual."""
@@ -289,7 +289,7 @@ class AuditorCompletoBD:
             print(f"         📄 {nombre_archivo}: {operaciones}")
 
         except Exception as e:
-            print(f"         ❌ Error analizando {ruta_script}: {e}")
+            print(f"         [ERROR] Error analizando {ruta_script}: {e}")
             self.resultados["errores"].append(f"Error en script {ruta_script}: {e}")
 
     def detectar_operaciones_sql(self, contenido: str) -> List[str]:
@@ -346,7 +346,7 @@ class AuditorCompletoBD:
             try:
                 self.analizar_modelo_python(modelo, modulo)
             except Exception as e:
-                print(f"      ❌ Error analizando modelo {modulo}: {e}")
+                print(f"      [ERROR] Error analizando modelo {modulo}: {e}")
                 self.resultados["errores"].append(f"Error en modelo {modulo}: {e}")
 
     def analizar_modelo_python(self, ruta_modelo: str, modulo: str):
@@ -361,10 +361,10 @@ class AuditorCompletoBD:
 
             if tablas_sql:
                 print(
-                    f"      📊 Tablas SQL referenciadas: {', '.join(set(tablas_sql))}"
+                    f"      [CHART] Tablas SQL referenciadas: {', '.join(set(tablas_sql))}"
                 )
             else:
-                print(f"      ⚠️ No se encontraron referencias SQL directas")
+                print(f"      [WARN] No se encontraron referencias SQL directas")
                 self.resultados["warnings"].append(
                     f"Modelo {modulo} sin referencias SQL"
                 )
@@ -394,9 +394,9 @@ class AuditorCompletoBD:
         for script in scripts_creacion:
             if os.path.exists(script):
                 scripts_encontrados.append(script)
-                print(f"   ✅ Script de creación: {os.path.basename(script)}")
+                print(f"   [CHECK] Script de creación: {os.path.basename(script)}")
             else:
-                print(f"   ❌ Script faltante: {os.path.basename(script)}")
+                print(f"   [ERROR] Script faltante: {os.path.basename(script)}")
                 self.resultados["errores"].append(
                     f"Script de creación faltante: {script}"
                 )
@@ -411,7 +411,7 @@ class AuditorCompletoBD:
                 "puede_reproducir": len(scripts_encontrados) > 0,
             }
         else:
-            print("   ⚠️ No se encontraron scripts de creación completos")
+            print("   [WARN] No se encontraron scripts de creación completos")
             self.resultados["recomendaciones"].append(
                 "Crear scripts maestros de creación de BD"
             )
@@ -427,7 +427,7 @@ class AuditorCompletoBD:
         total_warnings = len(self.resultados["warnings"])
         total_scripts = len(self.resultados["scripts_sql"])
 
-        print(f"\n📊 ESTADÍSTICAS GENERALES:")
+        print(f"\n[CHART] ESTADÍSTICAS GENERALES:")
         print(f"   • Scripts SQL analizados: {total_scripts}")
         print(f"   • Bases de datos verificadas: {len(self.resultados['bases_datos'])}")
         print(f"   • Errores encontrados: {total_errores}")
@@ -435,13 +435,13 @@ class AuditorCompletoBD:
 
         # Errores críticos
         if total_errores > 0:
-            print(f"\n❌ ERRORES CRÍTICOS ({total_errores}):")
+            print(f"\n[ERROR] ERRORES CRÍTICOS ({total_errores}):")
             for i, error in enumerate(self.resultados["errores"], 1):
                 print(f"   {i}. {error}")
 
         # Advertencias
         if total_warnings > 0:
-            print(f"\n⚠️ ADVERTENCIAS ({total_warnings}):")
+            print(f"\n[WARN] ADVERTENCIAS ({total_warnings}):")
             for i, warning in enumerate(self.resultados["warnings"], 1):
                 print(f"   {i}. {warning}")
 
@@ -453,12 +453,12 @@ class AuditorCompletoBD:
 
         # Estado general
         if total_errores == 0:
-            print(f"\n✅ ESTADO GENERAL: SISTEMA LISTO PARA PRODUCCIÓN")
+            print(f"\n[CHECK] ESTADO GENERAL: SISTEMA LISTO PARA PRODUCCIÓN")
         elif total_errores <= 3:
-            print(f"\n⚠️ ESTADO GENERAL: ERRORES MENORES - REQUIERE ATENCIÓN")
+            print(f"\n[WARN] ESTADO GENERAL: ERRORES MENORES - REQUIERE ATENCIÓN")
         else:
             print(
-                f"\n❌ ESTADO GENERAL: ERRORES CRÍTICOS - REQUIERE CORRECCIÓN INMEDIATA"
+                f"\n[ERROR] ESTADO GENERAL: ERRORES CRÍTICOS - REQUIERE CORRECCIÓN INMEDIATA"
             )
 
         # Guardar reporte en archivo
@@ -476,12 +476,12 @@ class AuditorCompletoBD:
             print(f"\n💾 Reporte guardado en: {archivo_reporte}")
 
         except Exception as e:
-            print(f"\n❌ Error guardando reporte: {e}")
+            print(f"\n[ERROR] Error guardando reporte: {e}")
 
 
 def main():
     """Función principal."""
-    print("🚀 AUDITOR COMPLETO DE BASES DE DATOS - REXUS.APP v2.0.0")
+    print("[ROCKET] AUDITOR COMPLETO DE BASES DE DATOS - REXUS.APP v2.0.0")
     print("Garantizando repetibilidad y consistencia del sistema")
     print()
 

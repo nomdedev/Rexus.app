@@ -321,7 +321,7 @@ class TestVidriosViewFeedback:
         vidrios_view.mostrar_feedback(mensaje, tipo="exito")
 
         assert vidrios_view.label_feedback.isVisible()
-        assert "✅ Operación exitosa" in vidrios_view.label_feedback.text()
+        assert "[CHECK] Operación exitosa" in vidrios_view.label_feedback.text()
 
     def test_mostrar_feedback_advertencia(self, vidrios_view):
         """Test mostrar feedback de advertencia."""
@@ -330,7 +330,7 @@ class TestVidriosViewFeedback:
         vidrios_view.mostrar_feedback(mensaje, tipo="advertencia")
 
         assert vidrios_view.label_feedback.isVisible()
-        assert "⚠️ Advertencia importante" in vidrios_view.label_feedback.text()
+        assert "[WARN] Advertencia importante" in vidrios_view.label_feedback.text()
 
     def test_mostrar_feedback_error(self, vidrios_view):
         """Test mostrar feedback de error."""
@@ -339,7 +339,7 @@ class TestVidriosViewFeedback:
         vidrios_view.mostrar_feedback(mensaje, tipo="error")
 
         assert vidrios_view.label_feedback.isVisible()
-        assert "❌ Error crítico" in vidrios_view.label_feedback.text()
+        assert "[ERROR] Error crítico" in vidrios_view.label_feedback.text()
 
     def test_mostrar_feedback_timer_configurado(self, vidrios_view):
         """Test configuración de timer de feedback."""

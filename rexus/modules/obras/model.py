@@ -8,7 +8,7 @@ from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
-# 🔒 MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
+# [LOCK] MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
 # para prevenir inyección SQL y mejorar mantenibilidad.
 
 # Configurar logger para el módulo
@@ -23,8 +23,7 @@ try:
     data_sanitizer = unified_sanitizer
 except ImportError:
     try:
-        from rexus.utils.data_sanitizer import DataSanitizer
-        data_sanitizer = DataSanitizer()
+                data_sanitizer = DataSanitizer()
     except ImportError:
         # Fallback básico
         class FallbackSanitizer:
@@ -58,7 +57,7 @@ class ObrasModel:
     
     def __init__(self, db_connection=None, data_sanitizer_instance=None):
         self.db_connection = db_connection
-        # 🔒 Inicializar SQLQueryManager para consultas seguras
+        # [LOCK] Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_obras = "obras"
         self.tabla_detalles_obra = "detalles_obra"
@@ -155,7 +154,7 @@ class ObrasModel:
             # Sanitizar datos y prevenir SQLi
             codigo_limpio = codigo_obra.strip().upper()
             if self.data_sanitizer:
-                codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
+                codigo_limpio = sanitize_string(codigo_limpio)
                 codigo_limpio = self.data_sanitizer.sanitize_sql_input(codigo_limpio)
 
             cursor = self.db_connection.cursor()
@@ -394,7 +393,7 @@ class ObrasModel:
             cursor.execute(query, (offset, limit))
             obras = cursor.fetchall()
             
-            # 🔒 Query para total count usando SQL externo
+            # [LOCK] Query para total count usando SQL externo
             sql = self.sql_manager.get_query('obras', 'count_obras_activas')
             cursor.execute(sql)
             total = cursor.fetchone()[0]
@@ -534,7 +533,7 @@ class ObrasModel:
             if not cursor.fetchone():
                 return False, "La obra no existe o está inactiva"
 
-            # 🔒 Usar consulta SQL externa segura para actualización
+            # [LOCK] Usar consulta SQL externa segura para actualización
             params = {
                 "obra_id": obra_id_limpio,
                 "nombre": datos_limpios.get('nombre'),
@@ -592,7 +591,7 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # 🔒 Verificar que la obra existe usando SQL externo
+            # [LOCK] Verificar que la obra existe usando SQL externo
             sql = self.sql_manager.get_query('obras', 'verificar_obra_codigo')
             cursor.execute(sql, {"obra_id": obra_id_limpio})
             result = cursor.fetchone()
@@ -601,7 +600,7 @@ class ObrasModel:
             
             codigo_obra = result[0]
 
-            # 🔒 Soft delete usando SQL externo
+            # [LOCK] Soft delete usando SQL externo
             sql = self.sql_manager.get_query('obras', 'eliminar_obra_logica')
             cursor.execute(sql, {"obra_id": obra_id_limpio, "usuario": usuario_limpio})
             
@@ -706,7 +705,7 @@ class ObrasModel:
                     'presupuesto_total_acumulado': round(row[5] or 0, 2)
                 }
             
-            # 🔒 Presupuesto total usando SQL externo
+            # [LOCK] Presupuesto total usando SQL externo
             sql = self.sql_manager.get_query('obras', 'suma_presupuesto_total')
             cursor.execute(sql)
             result = cursor.fetchone()[0]

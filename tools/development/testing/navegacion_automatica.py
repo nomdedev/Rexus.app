@@ -13,7 +13,7 @@ os.environ['QT_QPA_PLATFORM'] = 'windows'
 try:
     # Importar componentes de la aplicación
 except ImportError as e:
-    print(f"❌ Error al importar módulos necesarios: {e}")
+    print(f"[ERROR] Error al importar módulos necesarios: {e}")
     sys.exit(1)
 
 class NavegadorAutomatico(QObject):
@@ -49,7 +49,7 @@ class NavegadorAutomatico(QObject):
 
     def iniciar_navegacion(self):
         """Inicia la navegación automática"""
-        print("🚀 Iniciando navegación automática por módulos...")
+        print("[ROCKET] Iniciando navegación automática por módulos...")
         self.indice_actual = 0
         self.timer.start(3000)  # 3 segundos entre pruebas
 
@@ -65,7 +65,7 @@ class NavegadorAutomatico(QObject):
             prueba()
             self.modulos_probados.append(prueba.__name__)
         except Exception as e:
-            error_msg = f"❌ Error en {prueba.__name__}: {str(e)}"
+            error_msg = f"[ERROR] Error en {prueba.__name__}: {str(e)}"
             print(error_msg)
             self.errores.append(error_msg)
 
@@ -79,7 +79,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('inventario')
             elif hasattr(self.main_window, 'show_inventario'):
                 self.main_window.show_inventario()
-            print("✅ Módulo inventario accesible")
+            print("[CHECK] Módulo inventario accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a inventario: {str(e)}")
 
@@ -90,7 +90,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('obras')
             elif hasattr(self.main_window, 'show_obras'):
                 self.main_window.show_obras()
-            print("✅ Módulo obras accesible")
+            print("[CHECK] Módulo obras accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a obras: {str(e)}")
 
@@ -101,7 +101,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('pedidos')
             elif hasattr(self.main_window, 'show_pedidos'):
                 self.main_window.show_pedidos()
-            print("✅ Módulo pedidos accesible")
+            print("[CHECK] Módulo pedidos accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a pedidos: {str(e)}")
 
@@ -112,7 +112,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('compras')
             elif hasattr(self.main_window, 'show_compras'):
                 self.main_window.show_compras()
-            print("✅ Módulo compras accesible")
+            print("[CHECK] Módulo compras accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a compras: {str(e)}")
 
@@ -123,7 +123,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('vidrios')
             elif hasattr(self.main_window, 'show_vidrios'):
                 self.main_window.show_vidrios()
-            print("✅ Módulo vidrios accesible")
+            print("[CHECK] Módulo vidrios accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a vidrios: {str(e)}")
 
@@ -134,7 +134,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('herrajes')
             elif hasattr(self.main_window, 'show_herrajes'):
                 self.main_window.show_herrajes()
-            print("✅ Módulo herrajes accesible")
+            print("[CHECK] Módulo herrajes accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a herrajes: {str(e)}")
 
@@ -145,7 +145,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('contabilidad')
             elif hasattr(self.main_window, 'show_contabilidad'):
                 self.main_window.show_contabilidad()
-            print("✅ Módulo contabilidad accesible")
+            print("[CHECK] Módulo contabilidad accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a contabilidad: {str(e)}")
 
@@ -156,7 +156,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('mantenimiento')
             elif hasattr(self.main_window, 'show_mantenimiento'):
                 self.main_window.show_mantenimiento()
-            print("✅ Módulo mantenimiento accesible")
+            print("[CHECK] Módulo mantenimiento accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a mantenimiento: {str(e)}")
 
@@ -167,7 +167,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('configuracion')
             elif hasattr(self.main_window, 'show_configuracion'):
                 self.main_window.show_configuracion()
-            print("✅ Módulo configuración accesible")
+            print("[CHECK] Módulo configuración accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a configuración: {str(e)}")
 
@@ -178,7 +178,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('auditoria')
             elif hasattr(self.main_window, 'show_auditoria'):
                 self.main_window.show_auditoria()
-            print("✅ Módulo auditoría accesible")
+            print("[CHECK] Módulo auditoría accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a auditoría: {str(e)}")
 
@@ -189,7 +189,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('usuarios')
             elif hasattr(self.main_window, 'show_usuarios'):
                 self.main_window.show_usuarios()
-            print("✅ Módulo usuarios accesible")
+            print("[CHECK] Módulo usuarios accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a usuarios: {str(e)}")
 
@@ -200,7 +200,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('logistica')
             elif hasattr(self.main_window, 'show_logistica'):
                 self.main_window.show_logistica()
-            print("✅ Módulo logística accesible")
+            print("[CHECK] Módulo logística accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a logística: {str(e)}")
 
@@ -211,7 +211,7 @@ class NavegadorAutomatico(QObject):
                 self.main_window.navigate_to_module('notificaciones')
             elif hasattr(self.main_window, 'show_notificaciones'):
                 self.main_window.show_notificaciones()
-            print("✅ Módulo notificaciones accesible")
+            print("[CHECK] Módulo notificaciones accesible")
         except Exception as e:
             raise Exception(f"Error al acceder a notificaciones: {str(e)}")
 
@@ -220,16 +220,16 @@ class NavegadorAutomatico(QObject):
         self.timer.stop()
 
         print("\n" + "="*60)
-        print("📊 REPORTE DE NAVEGACIÓN AUTOMÁTICA")
+        print("[CHART] REPORTE DE NAVEGACIÓN AUTOMÁTICA")
         print("="*60)
         print(f"📅 Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
-        print(f"✅ Módulos probados exitosamente: {len(self.modulos_probados)}")
-        print(f"❌ Errores detectados: {len(self.errores)}")
+        print(f"[CHECK] Módulos probados exitosamente: {len(self.modulos_probados)}")
+        print(f"[ERROR] Errores detectados: {len(self.errores)}")
 
         if self.modulos_probados:
             print("\n📝 Módulos probados:")
             for modulo in self.modulos_probados:
-                print(f"  ✅ {modulo}")
+                print(f"  [CHECK] {modulo}")
 
         if self.errores:
             print("\n🚨 Errores encontrados:")
@@ -253,7 +253,7 @@ class NavegadorAutomatico(QObject):
                 json.dump(reporte, f, indent=2, ensure_ascii=False)
             print(f"\n💾 Reporte guardado en: tests/reports/navegacion_automatica.json")
         except Exception as e:
-            print(f"⚠️ No se pudo guardar el reporte: {e}")
+            print(f"[WARN] No se pudo guardar el reporte: {e}")
 
         print("\n✨ Navegación automática completada")
 
@@ -270,7 +270,7 @@ def main():
         # Simular el flujo de inicio de la aplicación
         db = DatabaseConnection()
         if not db.test_connection():
-            print("❌ No se puede conectar a la base de datos")
+            print("[ERROR] No se puede conectar a la base de datos")
             return False
 
         # Crear ventana principal con usuario invitado para testing
@@ -308,7 +308,7 @@ from main import MainWindow
             app.exec_()
 
     except Exception as e:
-        print(f"❌ Error durante la ejecución: {e}")
+        print(f"[ERROR] Error durante la ejecución: {e}")
         return False
 
     return True

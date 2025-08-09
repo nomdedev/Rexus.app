@@ -174,7 +174,7 @@ class HerrajesViewModernized(QWidget):
                     "id": "en_stock",
                 },
                 {
-                    "icon": "⚠️",
+                    "icon": "[WARN]",
                     "title": "Stock Bajo",
                     "value": "0",
                     "color": "#ffc107",

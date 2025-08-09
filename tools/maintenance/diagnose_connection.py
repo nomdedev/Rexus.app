@@ -145,7 +145,7 @@ if __name__ == "__main__":
     # Probar bases específicas
     if working_driver:
         test_specific_database_connection(working_driver)
-        print(f"\n✓ DIAGNÓSTICO COMPLETO")
+        print(f"\n[OK] DIAGNÓSTICO COMPLETO")
         print(f"Driver recomendado: {working_driver}")
         print("Actualiza tu .env con este driver si es necesario")
     else:

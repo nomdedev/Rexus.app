@@ -21,7 +21,7 @@ def fix_administracion_sql_injection():
     )
 
     if not model_file.exists():
-        print(f"❌ Archivo no encontrado: {model_file}")
+        print(f"[ERROR] Archivo no encontrado: {model_file}")
         return False
 
     # Leer contenido actual
@@ -98,7 +98,7 @@ def fix_administracion_sql_injection():
     with open(model_file, "w", encoding="utf-8") as f:
         f.write(content)
 
-    print("✅ AdministracionModel SQL injection reparado")
+    print("[CHECK] AdministracionModel SQL injection reparado")
     print(f"🔧 Vulnerabilidades reparadas: {reparaciones}")
     print(f"📁 Backup disponible: {backup_path}")
 
@@ -111,12 +111,12 @@ def main():
     print("=" * 60)
 
     if fix_administracion_sql_injection():
-        print("\n✅ ADMINISTRACION MODEL - SQL INJECTION COMPLETADO")
+        print("\n[CHECK] ADMINISTRACION MODEL - SQL INJECTION COMPLETADO")
         print("📋 CHECKLIST: SQL Injection Total - COMPLETADO")
         print("\n🎉 TODAS LAS VULNERABILIDADES SQL INJECTION REPARADAS")
-        print("🔒 SISTEMA COMPLETAMENTE SEGURO")
+        print("[LOCK] SISTEMA COMPLETAMENTE SEGURO")
     else:
-        print("\n❌ No se pudieron completar las reparaciones")
+        print("\n[ERROR] No se pudieron completar las reparaciones")
 
     return True
 

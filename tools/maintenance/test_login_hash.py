@@ -54,7 +54,7 @@ def test_password_hash():
             print(f"Rol: {db_rol}")
             print(f"Estado: {db_estado}")
             
-            # 🔒 SEGURIDAD: Usar sistema de verificación seguro
+            # [LOCK] SEGURIDAD: Usar sistema de verificación seguro
             import sys
             from pathlib import Path
             sys.path.insert(0, str(Path(__file__).parent.parent.parent))
@@ -66,7 +66,7 @@ def test_password_hash():
             print(f"\nProbando diferentes contraseñas (verificación segura):")
             for test_pwd in test_passwords:
                 try:
-                    # ✅ Verificación segura en lugar de SHA256 simple
+                    # [CHECK] Verificación segura en lugar de SHA256 simple
                     matches = verify_password_secure(test_pwd, db_hash)
                     print(f"  '{test_pwd}' -> {'COINCIDE' if matches else 'NO COINCIDE'}")
                     
@@ -80,7 +80,7 @@ def test_password_hash():
                     
                     if matches:
                         print(f"  *** CONTRASEÑA CORRECTA (HASH LEGACY): '{test_pwd}' ***")
-                        print(f"  ⚠️  RECOMENDACIÓN: Migrar hash a sistema seguro")
+                        print(f"  [WARN]  RECOMENDACIÓN: Migrar hash a sistema seguro")
         
         else:
             print("No se encontro usuario 'admin'")

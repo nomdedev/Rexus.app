@@ -238,7 +238,7 @@ class TestExportFunctionality:
                 # Verificar contenido
                 df = pd.read_excel(filepath)
                 if len(df) == len(rows) and len(df.columns) == len(headers):
-                    print("✅ Excel export (full table) exitoso")
+                    print("[CHECK] Excel export (full table) exitoso")
                     return True
                 else:
                     self.errors_found.append("Excel export: datos incompletos")
@@ -278,7 +278,7 @@ class TestExportFunctionality:
                 herraje_count = sum(1 for row in rows if 'Herraje' in row[2])
                 
                 if len(df) == herraje_count:
-                    print("✅ Excel export (filtered) exitoso")
+                    print("[CHECK] Excel export (filtered) exitoso")
                     return True
                 else:
                     self.errors_found.append("Excel export: filtros no aplicados correctamente")
@@ -311,7 +311,7 @@ class TestExportFunctionality:
                 with open(filepath, 'r') as f:
                     content = f.read()
                     if "Headers:" in content and "Rows:" in content:
-                        print("✅ PDF export (full table) exitoso")
+                        print("[CHECK] PDF export (full table) exitoso")
                         return True
                     else:
                         self.errors_found.append("PDF export: contenido incompleto")
@@ -352,7 +352,7 @@ class TestExportFunctionality:
                     proveedor1_count = sum(1 for row in rows if 'Proveedor 1' in row[5])
                     
                     if f"Rows: {proveedor1_count}" in content:
-                        print("✅ PDF export (filtered) exitoso")
+                        print("[CHECK] PDF export (filtered) exitoso")
                         return True
                     else:
                         self.errors_found.append("PDF export: filtros no aplicados correctamente")
@@ -400,7 +400,7 @@ class TestExportFunctionality:
             if filepath and os.path.exists(filepath):
                 # Verificar que no tardó demasiado (menos de 5 segundos)
                 if export_time < 5.0:
-                    print(f"✅ Large dataset export exitoso ({export_time:.2f}s)")
+                    print(f"[CHECK] Large dataset export exitoso ({export_time:.2f}s)")
                     return True
                 else:
                     self.errors_found.append(f"Large dataset export muy lento: {export_time:.2f}s")
@@ -433,7 +433,7 @@ class TestExportFunctionality:
                 # Verificar que el archivo tiene solo headers
                 df = pd.read_excel(filepath)
                 if len(df) == 0 and len(df.columns) == len(headers):
-                    print("✅ Empty table export exitoso")
+                    print("[CHECK] Empty table export exitoso")
                     return True
                 else:
                     self.errors_found.append("Empty table export: estructura incorrecta")
@@ -448,7 +448,7 @@ class TestExportFunctionality:
     
     def run_all_tests(self):
         """Ejecuta todos los tests de exportación"""
-        print("🚀 Iniciando tests de exportación...")
+        print("[ROCKET] Iniciando tests de exportación...")
         print("=" * 50)
         
         # Lista de tests
@@ -472,20 +472,20 @@ class TestExportFunctionality:
                     passed += 1
                 else:
                     failed += 1
-                    print(f"❌ {test_name} falló")
+                    print(f"[ERROR] {test_name} falló")
             except Exception as e:
                 failed += 1
-                print(f"❌ {test_name} falló con excepción: {e}")
+                print(f"[ERROR] {test_name} falló con excepción: {e}")
         
         # Cleanup
         self.export_handler.cleanup()
         
         # Resumen
         print("\n" + "=" * 50)
-        print("📊 RESUMEN DE TESTS DE EXPORTACIÓN:")
-        print(f"✅ Pasados: {passed}")
-        print(f"❌ Fallidos: {failed}")
-        print(f"📊 Total: {passed + failed}")
+        print("[CHART] RESUMEN DE TESTS DE EXPORTACIÓN:")
+        print(f"[CHECK] Pasados: {passed}")
+        print(f"[ERROR] Fallidos: {failed}")
+        print(f"[CHART] Total: {passed + failed}")
         
         if self.errors_found:
             print("\n🐛 ERRORES ENCONTRADOS:")
@@ -493,7 +493,7 @@ class TestExportFunctionality:
                 print(f"{i}. {error}")
         
         if self.export_handler.errors:
-            print("\n⚠️ ERRORES DE EXPORTACIÓN:")
+            print("\n[WARN] ERRORES DE EXPORTACIÓN:")
             for i, error in enumerate(self.export_handler.errors, 1):
                 print(f"{i}. {error}")
         
@@ -511,7 +511,7 @@ def main():
             print("\n🎉 ¡Todos los tests de exportación pasaron!")
             return 0
         else:
-            print("\n⚠️ Algunos tests de exportación fallaron. Revisar errores.")
+            print("\n[WARN] Algunos tests de exportación fallaron. Revisar errores.")
             return 1
             
     except Exception as e:

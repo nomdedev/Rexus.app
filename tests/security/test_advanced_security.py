@@ -490,11 +490,11 @@ def run_security_tests():
     print(f"\nTasa de éxito: {success_rate:.1f}%")
     
     if success_rate >= 90:
-        print("✅ SISTEMA DE SEGURIDAD: COMPLETAMENTE FUNCIONAL")
+        print("[CHECK] SISTEMA DE SEGURIDAD: COMPLETAMENTE FUNCIONAL")
     elif success_rate >= 70:
-        print("⚠️ SISTEMA DE SEGURIDAD: FUNCIONAL CON ADVERTENCIAS")
+        print("[WARN] SISTEMA DE SEGURIDAD: FUNCIONAL CON ADVERTENCIAS")
     else:
-        print("❌ SISTEMA DE SEGURIDAD: REQUIERE ATENCIÓN")
+        print("[ERROR] SISTEMA DE SEGURIDAD: REQUIERE ATENCIÓN")
     
     return result.wasSuccessful()
 

@@ -13,15 +13,14 @@ from decimal import Decimal
 import sys
 from pathlib import Path
 
-# Importar cargador de scripts SQL
+# Importar sistema SQL seguro
 try:
-    from rexus.utils.sql_script_loader import sql_script_loader
+    from rexus.utils.sql_query_manager import SQLQueryManager
     from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-    SQL_SCRIPTS_AVAILABLE = True
+    SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] SQL Script Loader not available in contabilidad: {e}")
-    SQL_SCRIPTS_AVAILABLE = False
-    sql_script_loader = None
+    print(f"[WARNING] SQL System not available in contabilidad: {e}")
+    SQL_SYSTEM_AVAILABLE = False
 
 
 class ContabilidadModel:
@@ -41,10 +40,13 @@ class ContabilidadModel:
         self.tabla_pagos_materiales = "pagos_materiales"
         self.tabla_departamentos = "departamentos"
         
-        # Configurar cargador de scripts SQL
-        self.sql_loader = sql_script_loader if SQL_SCRIPTS_AVAILABLE else None
-        if not self.sql_loader:
-            print("[WARNING CONTABILIDAD] SQL Script Loader no disponible - usando queries embebidas")
+        # Configurar sistema SQL seguro
+        if SQL_SYSTEM_AVAILABLE:
+            self.sql_manager = SQLQueryManager()
+            print("[CONTABILIDAD] SQLQueryManager inicializado correctamente")
+        else:
+            self.sql_manager = None
+            print("[WARNING CONTABILIDAD] SQL System no disponible - usando queries embebidas")
             
         self._verificar_tablas()
 
@@ -140,22 +142,22 @@ class ContabilidadModel:
                 conditions.append("tipo_asiento = ?")
                 params.append(tipo)
 
-            # Usar script SQL externo si está disponible
-            if self.sql_loader:
+            # Usar SQLQueryManager si está disponible
+            if self.sql_manager:
                 try:
-                    script_content = self.sql_loader.load_script('contabilidad/select_asientos_contables')
-                    if script_content:
+                    query = self.sql_manager.get_query('contabilidad', 'select_asientos_contables')
+                    if query:
                         # Preparar parámetros para el script SQL: fecha_desde, fecha_desde, fecha_hasta, fecha_hasta, tipo, tipo, tipo
                         script_params = [
                             fecha_desde, fecha_desde,  # Para el primer filtro
                             fecha_hasta, fecha_hasta,  # Para el segundo filtro
                             tipo, tipo, tipo  # Para el tercer filtro (tipo != "Todos")
                         ]
-                        cursor.execute(script_content, script_params)
+                        cursor.execute(query, script_params)
                     else:
-                        raise Exception("No se pudo cargar el script SQL")
+                        raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
@@ -217,16 +219,16 @@ class ContabilidadModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Generar número de asiento usando script SQL seguro
-            if self.sql_loader:
+            # Generar número de asiento usando SQLQueryManager
+            if self.sql_manager:
                 try:
-                    script_content = self.sql_loader.load_script('contabilidad/select_max_numero_asiento')
-                    if script_content:
-                        cursor.execute(script_content)
+                    query = self.sql_manager.get_query('contabilidad', 'select_max_numero_asiento')
+                    if query:
+                        cursor.execute(query)
                     else:
-                        raise Exception("No se pudo cargar script SQL")
+                        raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Usar query parametrizada segura
                     query = "SELECT MAX(numero_asiento) FROM libro_contable"
                     cursor.execute(query)
@@ -243,12 +245,12 @@ class ContabilidadModel:
             haber = float(datos_asiento.get('haber', 0))
             saldo = debe - haber
 
-            # Insertar asiento usando script SQL seguro
-            if self.sql_loader:
+            # Insertar asiento usando SQLQueryManager
+            if self.sql_manager:
                 try:
-                    script_content = self.sql_loader.load_script('contabilidad/insert_asiento_contable')
-                    if script_content:
-                        cursor.execute(script_content, (
+                    query = self.sql_manager.get_query('contabilidad', 'insert_asiento_contable')
+                    if query:
+                        cursor.execute(query, (
                             numero_asiento,
                             datos_asiento.get('fecha_asiento'),
                             datos_asiento.get('tipo_asiento'),
@@ -261,9 +263,9 @@ class ContabilidadModel:
                             datos_asiento.get('usuario_creacion', 'SYSTEM')
                         ))
                     else:
-                        raise Exception("No se pudo cargar script SQL")
+                        raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         INSERT INTO [{tabla_validada}]

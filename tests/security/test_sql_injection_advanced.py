@@ -97,11 +97,11 @@ class TestSQLInjectionAdvanced:
                         
                         # Debe usar parámetros
                         assert last_query.get('params') is not None
-                        print(f"✓ Query parametrizada correctamente")
+                        print(f"[OK] Query parametrizada correctamente")
                         
             except Exception as e:
                 # Está bien que falle si detecta el intento malicioso
-                print(f"✓ Excepción de seguridad (correcto): {str(e)[:100]}")
+                print(f"[OK] Excepción de seguridad (correcto): {str(e)[:100]}")
 
     def test_blind_sql_injection_time_based(self, mock_database, usuario_mock):
         """Test blind SQL injection basado en tiempo."""
@@ -131,11 +131,11 @@ class TestSQLInjectionAdvanced:
                 
                 # No debería demorar más de lo normal (< 1 segundo)
                 assert execution_time < 1.0, f"Query demoró {execution_time:.2f}s - posible time-based injection"
-                print(f"✓ Query ejecutó en {execution_time:.3f}s")
+                print(f"[OK] Query ejecutó en {execution_time:.3f}s")
                 
             except Exception as e:
                 execution_time = time.time() - start_time
-                print(f"✓ Excepción en {execution_time:.3f}s: {str(e)[:100]}")
+                print(f"[OK] Excepción en {execution_time:.3f}s: {str(e)[:100]}")
 
     def test_union_based_injection(self, mock_database, usuario_mock):
         """Test UNION-based SQL injection."""
@@ -165,10 +165,10 @@ class TestSQLInjectionAdvanced:
                         assert 'password' not in str(result).lower()
                         assert '@@version' not in str(result)
                         assert 'information_schema' not in str(result)
-                        print(f"✓ Resultado filtrado correctamente")
+                        print(f"[OK] Resultado filtrado correctamente")
                         
             except Exception as e:
-                print(f"✓ UNION injection bloqueado: {str(e)[:100]}")
+                print(f"[OK] UNION injection bloqueado: {str(e)[:100]}")
 
     def test_second_order_injection(self, mock_database, usuario_mock):
         """Test second-order SQL injection."""
@@ -199,10 +199,10 @@ class TestSQLInjectionAdvanced:
                     query = str(query_info.get('query', ''))
                     # No debe contener el payload directamente en la query
                     assert 'DROP TABLE' not in query
-                    print(f"✓ Second-order injection prevenido")
+                    print(f"[OK] Second-order injection prevenido")
                     
         except Exception as e:
-            print(f"✓ Second-order injection detectado: {str(e)[:100]}")
+            print(f"[OK] Second-order injection detectado: {str(e)[:100]}")
 
     def test_injection_in_order_by_clauses(self, mock_database, usuario_mock):
         """Test SQL injection en cláusulas ORDER BY."""
@@ -239,10 +239,10 @@ class TestSQLInjectionAdvanced:
                         # No debe contener payload directamente
                         assert 'DROP TABLE' not in str(last_query)
                         assert 'SELECT password' not in str(last_query)
-                        print(f"✓ ORDER BY injection prevenido")
+                        print(f"[OK] ORDER BY injection prevenido")
                         
             except Exception as e:
-                print(f"✓ ORDER BY injection detectado: {str(e)[:100]}")
+                print(f"[OK] ORDER BY injection detectado: {str(e)[:100]}")
 
     def test_injection_with_encoded_payloads(self, mock_database, usuario_mock):
         """Test SQL injection con payloads codificados."""
@@ -274,10 +274,10 @@ class TestSQLInjectionAdvanced:
                         # Los parámetros deberían mantener la codificación
                         if query_params and len(query_params) > 0:
                             param_value = str(query_params[0])
-                            print(f"✓ Parámetro mantenido como: {param_value[:50]}")
+                            print(f"[OK] Parámetro mantenido como: {param_value[:50]}")
                         
             except Exception as e:
-                print(f"✓ Encoded injection manejado: {str(e)[:100]}")
+                print(f"[OK] Encoded injection manejado: {str(e)[:100]}")
 
     def test_concurrent_injection_attempts(self, mock_database, usuario_mock):
         """Test intentos concurrentes de SQL injection."""
@@ -318,7 +318,7 @@ class TestSQLInjectionAdvanced:
             print(f"Concurrent test - {status}: {payload[:30]}...")
             assert status in ['success', 'error']  # Ambos están bien
         
-        print(f"✓ {len(results)} intentos concurrentes manejados")
+        print(f"[OK] {len(results)} intentos concurrentes manejados")
 
     def test_injection_in_stored_procedures(self, mock_database, usuario_mock):
         """Test SQL injection en llamadas a stored procedures."""
@@ -347,10 +347,10 @@ class TestSQLInjectionAdvanced:
                     
                     # Verificar que se usó como parámetro, no concatenado
                     mock_cursor.execute.assert_called_with(query, (payload,))
-                    print(f"✓ SP call parametrizada correctamente")
+                    print(f"[OK] SP call parametrizada correctamente")
                     
                 except Exception as e:
-                    print(f"✓ SP injection detectado: {str(e)[:100]}")
+                    print(f"[OK] SP injection detectado: {str(e)[:100]}")
 
 
 if __name__ == "__main__":

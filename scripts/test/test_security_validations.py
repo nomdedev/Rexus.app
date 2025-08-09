@@ -236,9 +236,9 @@ if __name__ == "__main__":
     success = main()
     
     if success:
-        print("\n✅ SECURITY IMPLEMENTATION SUCCESSFUL")
+        print("\n[CHECK] SECURITY IMPLEMENTATION SUCCESSFUL")
         print("The security validation system is ready for production use.")
     else:
-        print("\n❌ SECURITY IMPLEMENTATION NEEDS ATTENTION")
+        print("\n[ERROR] SECURITY IMPLEMENTATION NEEDS ATTENTION")
         print("Address the failed tests before proceeding.")
         sys.exit(1)

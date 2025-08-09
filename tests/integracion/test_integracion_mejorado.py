@@ -42,15 +42,15 @@ class TestResultados:
 
         # Reportar conexiones exitosas
         if self.conexiones_exitosas:
-            print("\n✅ CONEXIONES EXITOSAS:")
+            print("\n[CHECK] CONEXIONES EXITOSAS:")
             for conn in self.conexiones_exitosas:
-                print(f"   ✓ {conn}")
+                print(f"   [OK] {conn}")
 
         # Reportar métodos validados
         if self.metodos_validados:
-            print(f"\n✅ MÉTODOS VALIDADOS ({len(self.metodos_validados)}):")
+            print(f"\n[CHECK] MÉTODOS VALIDADOS ({len(self.metodos_validados)}):")
             for metodo in self.metodos_validados:
-                print(f"   ✓ {metodo}")
+                print(f"   [OK] {metodo}")
 
         # Reportar edge cases
         if self.edge_cases_encontrados:
@@ -60,13 +60,13 @@ class TestResultados:
 
         # Reportar warnings
         if self.warnings:
-            print(f"\n⚠️  ADVERTENCIAS ({len(self.warnings)}):")
+            print(f"\n[WARN]  ADVERTENCIAS ({len(self.warnings)}):")
             for warning in self.warnings:
                 print(f"   ⚠ {warning}")
 
         # Reportar tablas faltantes
         if self.tablas_faltantes:
-            print(f"\n❌ TABLAS FALTANTES ({len(self.tablas_faltantes)}):")
+            print(f"\n[ERROR] TABLAS FALTANTES ({len(self.tablas_faltantes)}):")
             for tabla in self.tablas_faltantes:
                 print(f"   ✗ {tabla['tabla']} (módulo: {tabla['modulo']})")
 
@@ -124,7 +124,7 @@ class TestResultados:
 
         # Reportar errores SQL
         if self.errores_sql:
-            print(f"\n❌ ERRORES SQL DETECTADOS ({len(self.errores_sql)}):")
+            print(f"\n[ERROR] ERRORES SQL DETECTADOS ({len(self.errores_sql)}):")
             for error in self.errores_sql:
                 print(f"   ✗ {error['operacion']}")
                 print(f"     Error: {error['error']}")
@@ -133,7 +133,7 @@ class TestResultados:
                 print()
 
         # Resumen final
-        print(f"\n📊 RESUMEN:")
+        print(f"\n[CHART] RESUMEN:")
         print(f"   • Conexiones exitosas: {len(self.conexiones_exitosas)}")
         print(f"   • Métodos validados: {len(self.metodos_validados)}")
         print(f"   • Edge cases probados: {len(self.edge_cases_encontrados)}")
@@ -143,13 +143,13 @@ class TestResultados:
 
         # Evaluación general
         if len(self.errores_sql) == 0 and len(self.tablas_faltantes) <= 2:
-            print(f"\n🎉 ESTADO GENERAL: ✅ EXCELENTE")
+            print(f"\n🎉 ESTADO GENERAL: [CHECK] EXCELENTE")
             print("   El sistema de integración está funcionando correctamente.")
         elif len(self.tablas_faltantes) > 0:
-            print(f"\n🔧 ESTADO GENERAL: ⚠️  NECESITA CONFIGURACIÓN")
+            print(f"\n🔧 ESTADO GENERAL: [WARN]  NECESITA CONFIGURACIÓN")
             print("   El sistema funciona pero faltan algunas tablas para funcionalidad completa.")
         else:
-            print(f"\n🚨 ESTADO GENERAL: ❌ REQUIERE ATENCIÓN")
+            print(f"\n🚨 ESTADO GENERAL: [ERROR] REQUIERE ATENCIÓN")
             print("   Se detectaron errores que requieren investigación.")
 
 
@@ -160,7 +160,7 @@ def test_integracion_mejorado():
     print("        TEST MEJORADO DE INTEGRACIÓN CRUZADA v2.0")
     print("="*70)
     print("🔍 Verificando integración completa entre módulos...")
-    print("📊 Incluyendo edge cases y manejo robusto de errores...")
+    print("[CHART] Incluyendo edge cases y manejo robusto de errores...")
     print("🗄️  Usando base de datos: inventario (configuración estándar)\n")
 
     resultados = TestResultados()
@@ -182,12 +182,12 @@ def test_integracion_mejorado():
         try:
             db_connection.conectar()
             resultados.conexiones_exitosas.append(f"Base de datos '{db_connection.database}' en servidor '{db_connection.server}'")
-            print(f"   ✅ Conexión establecida correctamente")
+            print(f"   [CHECK] Conexión establecida correctamente")
             print(f"   📍 Servidor: {db_connection.server}")
             print(f"   🗄️  Base de datos: {db_connection.database}")
         except Exception as e:
             resultados.agregar_error_sql("Conexión inicial", e, "Verificar SQL Server, credenciales y configuración de red")
-            print(f"   ❌ Error de conexión: {e}")
+            print(f"   [ERROR] Error de conexión: {e}")
             pytest.fail("Test falló")
         # FASE 2: VERIFICACIÓN DE MODELOS Y MÉTODOS
         print(f"\n🏗️  FASE 2: VERIFICACIÓN DE MODELOS Y MÉTODOS")
@@ -215,11 +215,11 @@ def test_integracion_mejorado():
 
                 modelos_instanciados[nombre.lower()] = modelo
                 resultados.metodos_validados.append(f"{nombre} instanciado correctamente")
-                print(f"   ✅ {nombre} importado e instanciado")
+                print(f"   [CHECK] {nombre} importado e instanciado")
 
             except Exception as e:
                 resultados.agregar_error_sql(f"Instanciación de {nombre}", e)
-                print(f"   ❌ Error con {nombre}: {e}")
+                print(f"   [ERROR] Error con {nombre}: {e}")
 
         # Verificar métodos de integración específicos
         metodos_requeridos = [
@@ -234,10 +234,10 @@ def test_integracion_mejorado():
                 modelo = modelos_instanciados[modelo_key]
                 if hasattr(modelo, metodo):
                     resultados.metodos_validados.append(f"{modelo_key}.{metodo}")
-                    print(f"   ✅ {modelo_key}.{metodo} disponible")
+                    print(f"   [CHECK] {modelo_key}.{metodo} disponible")
                 else:
                     resultados.warnings.append(f"Método {metodo} no encontrado en {modelo_key}")
-                    print(f"   ⚠️  {modelo_key}.{metodo} NO disponible")
+                    print(f"   [WARN]  {modelo_key}.{metodo} NO disponible")
 
         # FASE 3: VERIFICACIÓN DE ESTRUCTURA DE DATOS
         print(f"\n📋 FASE 3: VERIFICACIÓN DE ESTRUCTURA DE DATOS")
@@ -249,20 +249,20 @@ def test_integracion_mejorado():
             # Verificar headers
             try:
                 headers = obras_model.obtener_headers_obras()
-                print(f"   📊 Headers de tabla obras: {len(headers)} columnas")
+                print(f"   [CHART] Headers de tabla obras: {len(headers)} columnas")
 
                 columnas_integracion = ['estado_material', 'estado_vidrios', 'estado_herrajes', 'estado_pago']
                 for columna in columnas_integracion:
                     if columna in headers:
                         resultados.metodos_validados.append(f"Columna {columna} en headers")
-                        print(f"   ✅ Columna '{columna}' incluida")
+                        print(f"   [CHECK] Columna '{columna}' incluida")
                     else:
                         resultados.warnings.append(f"Columna '{columna}' no encontrada en headers")
-                        print(f"   ⚠️  Columna '{columna}' no encontrada")
+                        print(f"   [WARN]  Columna '{columna}' no encontrada")
 
             except Exception as e:
                 resultados.agregar_error_sql("Obtención de headers", e)
-                print(f"   ❌ Error obteniendo headers: {e}")
+                print(f"   [ERROR] Error obteniendo headers: {e}")
 
             # Verificar datos de obras
             try:
@@ -272,12 +272,12 @@ def test_integracion_mejorado():
                     resultados.conexiones_exitosas.append(f"Datos de {len(obras_data)} obras obtenidos correctamente")
                 else:
                     resultados.warnings.append("No se encontraron obras en el sistema")
-                    print(f"   ⚠️  No se encontraron obras en el sistema")
+                    print(f"   [WARN]  No se encontraron obras en el sistema")
                     obras_data = None
 
             except Exception as e:
                 resultados.agregar_error_sql("Obtención de datos de obras", e)
-                print(f"   ❌ Error obteniendo datos de obras: {e}")
+                print(f"   [ERROR] Error obteniendo datos de obras: {e}")
                 obras_data = None
 
         # FASE 4: EDGE CASES Y PRUEBAS DE ROBUSTEZ
@@ -303,7 +303,7 @@ def test_integracion_mejorado():
                         try:
                             resultado = modelo.obtener_estado_pedido_por_obra(id_obra)
                             resultados.agregar_edge_case(f"{caso} en {modelo_key}", f"Resultado: {resultado}")
-                            print(f"     ✅ {modelo_key}: {resultado}")
+                            print(f"     [CHECK] {modelo_key}: {resultado}")
                         except Exception as e:
                             if "Invalid object name" in str(e) or "does not exist" in str(e):
                                 tabla_inferida = extraer_tabla_de_error(str(e))
@@ -311,7 +311,7 @@ def test_integracion_mejorado():
                                     resultados.agregar_tabla_faltante(tabla_inferida, modelo_key)
 
                             resultados.agregar_edge_case(f"{caso} en {modelo_key}", f"Error: {str(e)[:50]}...")
-                            print(f"     ⚠️  {modelo_key}: Error - {str(e)[:50]}...")
+                            print(f"     [WARN]  {modelo_key}: Error - {str(e)[:50]}...")
 
             # Probar también contabilidad
             if 'contabilidadmodel' in modelos_instanciados:
@@ -320,7 +320,7 @@ def test_integracion_mejorado():
                     try:
                         resultado = modelo.obtener_estado_pago_pedido_por_obra(id_obra, 'inventario')
                         resultados.agregar_edge_case(f"{caso} en contabilidad", f"Resultado: {resultado}")
-                        print(f"     ✅ contabilidad: {resultado}")
+                        print(f"     [CHECK] contabilidad: {resultado}")
                     except Exception as e:
                         if "Invalid object name" in str(e) or "does not exist" in str(e):
                             tabla_inferida = extraer_tabla_de_error(str(e))
@@ -328,10 +328,10 @@ def test_integracion_mejorado():
                                 resultados.agregar_tabla_faltante(tabla_inferida, 'contabilidad')
 
                         resultados.agregar_edge_case(f"{caso} en contabilidad", f"Error: {str(e)[:50]}...")
-                        print(f"     ⚠️  contabilidad: Error - {str(e)[:50]}...")
+                        print(f"     [WARN]  contabilidad: Error - {str(e)[:50]}...")
 
         # FASE 5: PRUEBA CON DATOS REALES (SI EXISTEN)
-        print(f"\n📊 FASE 5: PRUEBA CON DATOS REALES")
+        print(f"\n[CHART] FASE 5: PRUEBA CON DATOS REALES")
         print("-" * 40)
 
         if obras_data and len(obras_data) > 0:
@@ -350,18 +350,18 @@ def test_integracion_mejorado():
                             try:
                                 resultado = modelo.obtener_estado_pago_pedido_por_obra(id_obra_real, 'inventario')
                                 resultados.conexiones_exitosas.append(f"Estado pago real para obra {id_obra_real}: {resultado}")
-                                print(f"     ✅ Estado pago: {resultado}")
+                                print(f"     [CHECK] Estado pago: {resultado}")
                             except Exception as e:
-                                print(f"     ⚠️  Estado pago: Error - {str(e)[:50]}...")
+                                print(f"     [WARN]  Estado pago: Error - {str(e)[:50]}...")
                     else:
                         metodo = 'obtener_estado_pedido_por_obra'
                         if hasattr(modelo, metodo):
                             try:
                                 resultado = modelo.obtener_estado_pedido_por_obra(id_obra_real)
                                 resultados.conexiones_exitosas.append(f"Estado {modelo_key} real para obra {id_obra_real}: {resultado}")
-                                print(f"     ✅ Estado {modelo_key}: {resultado}")
+                                print(f"     [CHECK] Estado {modelo_key}: {resultado}")
                             except Exception as e:
-                                print(f"     ⚠️  Estado {modelo_key}: Error - {str(e)[:50]}...")
+                                print(f"     [WARN]  Estado {modelo_key}: Error - {str(e)[:50]}...")
         else:
             print("   ℹ️  No hay obras reales para probar")
 
@@ -390,19 +390,19 @@ def test_integracion_mejorado():
             # Verificar que el controlador tiene los métodos necesarios
             if hasattr(controller, 'cargar_datos_obras_tabla'):
                 resultados.metodos_validados.append("ObrasController.cargar_datos_obras_tabla")
-                print("   ✅ Controlador de obras configurado correctamente")
-                print("   ✅ Método cargar_datos_obras_tabla disponible")
+                print("   [CHECK] Controlador de obras configurado correctamente")
+                print("   [CHECK] Método cargar_datos_obras_tabla disponible")
             else:
                 resultados.warnings.append("Método cargar_datos_obras_tabla no encontrado en ObrasController")
-                print("   ⚠️  Método cargar_datos_obras_tabla no disponible")
+                print("   [WARN]  Método cargar_datos_obras_tabla no disponible")
 
         except Exception as e:
             resultados.agregar_error_sql("Configuración del controlador", e)
-            print(f"   ❌ Error configurando controlador: {e}")
+            print(f"   [ERROR] Error configurando controlador: {e}")
 
         assert True
     except Exception as e:
-        print(f"\n❌ ERROR CRÍTICO: {e}")
+        print(f"\n[ERROR] ERROR CRÍTICO: {e}")
         traceback.print_exc()
         resultados.agregar_error_sql("Error crítico del sistema", e)
         assert False is not None
@@ -411,7 +411,7 @@ def test_integracion_mejorado():
         try:
             if db_connection and hasattr(db_connection, 'connection') and db_connection.connection:
                 db_connection.connection.close()
-                print(f"\n🔒 Conexión cerrada correctamente")
+                print(f"\n[LOCK] Conexión cerrada correctamente")
         except:
             pass
 
