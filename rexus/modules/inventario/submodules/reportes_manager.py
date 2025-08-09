@@ -24,6 +24,12 @@ logger = logging.getLogger(__name__)
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
+# Sistema de cache inteligente para optimizar rendimiento
+from rexus.utils.intelligent_cache import IntelligentCache, cached_query
+
+# Instancia global de cache para reportes
+reportes_cache = IntelligentCache(max_size=500, default_ttl=600)  # 10 minutos TTL para reportes
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -46,9 +52,11 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    except ImportError:
+    from rexus.utils.data_sanitizer import DataSanitizer
+except ImportError:
     try:
-            except ImportError:
+        from rexus.utils.unified_sanitizer import DataSanitizer
+    except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -146,6 +154,7 @@ class ReportesManager:
             if 'cursor' in locals():
                 cursor.close()
     
+    @cached_query(ttl=300)  # Cache por 5 minutos - reporte de stock cambia frecuentemente
     @auth_required
     @permission_required("view_reportes")
     def generar_reporte_stock_actual(self, filtros: Optional[Dict[str, Any]] = None, 
@@ -170,7 +179,7 @@ class ReportesManager:
         try:
             cursor = self.db_connection.cursor()
             
-            # Query base para stock actual
+            # Query optimizada para stock actual - elimina consultas N+1 con JOIN
             query = f"""
                 SELECT 
                     i.id, i.codigo, i.descripcion, i.categoria,
@@ -186,19 +195,19 @@ class ReportesManager:
                     END as estado_stock,
                     -- Calcular valor total
                     (i.stock_actual * i.precio_unitario) as valor_total,
-                    -- Obtener stock reservado
-                    ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0) as stock_reservado,
-                    -- Calcular stock disponible
-                    (i.stock_actual - ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0)) as stock_disponible
+                    -- Stock reservado optimizado con JOIN
+                    ISNULL(r.stock_reservado, 0) as stock_reservado,
+                    -- Stock disponible optimizado
+                    (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible
                 FROM {TABLA_INVENTARIO} i
+                LEFT JOIN (
+                    SELECT 
+                        producto_id,
+                        SUM(cantidad_reservada) as stock_reservado
+                    FROM {TABLA_RESERVAS} 
+                    WHERE estado = 'ACTIVA'
+                    GROUP BY producto_id
+                ) r ON i.id = r.producto_id
                 WHERE i.activo = 1
             """
             
@@ -445,6 +454,7 @@ class ReportesManager:
                 'data': None
             }
     
+    @cached_query(ttl=600)  # Cache por 10 minutos - Dashboard KPIs son más estables
     @auth_required
     @permission_required("view_reportes")
     def generar_dashboard_kpis(self, formato: str = 'DICT') -> Dict[str, Any]:
@@ -626,6 +636,7 @@ class ReportesManager:
                 'data': None
             }
     
+    @cached_query(ttl=1200)  # Cache por 20 minutos - Análisis ABC es más estático
     @auth_required
     @permission_required("view_reportes")
     def generar_analisis_abc(self, criterio: str = 'valor', formato: str = 'DICT') -> Dict[str, Any]:
@@ -801,6 +812,7 @@ class ReportesManager:
                 'data': None
             }
     
+    @cached_query(ttl=900)  # Cache por 15 minutos - Valoración se actualiza moderadamente
     @auth_required
     @permission_required("view_reportes")
     def generar_reporte_valoracion_inventario(self, fecha_corte: Optional[str] = None, 
@@ -828,38 +840,30 @@ class ReportesManager:
             
             cursor = self.db_connection.cursor()
             
-            # Valoración detallada por producto
+            # Valoración detallada por producto - Optimizada para evitar consultas N+1
             query = f"""
                 SELECT 
                     i.id, i.codigo, i.descripcion, i.categoria, i.proveedor,
                     i.stock_actual, i.precio_unitario, i.unidad_medida,
                     i.fecha_creacion, i.fecha_modificacion,
                     (i.stock_actual * i.precio_unitario) as valor_total,
-                    -- Stock reservado
-                    ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0) as stock_reservado,
-                    -- Valor de stock reservado
-                    (ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0) * i.precio_unitario) as valor_reservado,
-                    -- Stock disponible
-                    (i.stock_actual - ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0)) as stock_disponible,
-                    -- Valor disponible
-                    ((i.stock_actual - ISNULL((
-                        SELECT SUM(r.cantidad_reservada) 
-                        FROM {TABLA_RESERVAS} r 
-                        WHERE r.producto_id = i.id AND r.estado = 'ACTIVA'
-                    ), 0)) * i.precio_unitario) as valor_disponible
+                    -- Stock reservado optimizado
+                    ISNULL(r.stock_reservado, 0) as stock_reservado,
+                    -- Valor de stock reservado optimizado
+                    (ISNULL(r.stock_reservado, 0) * i.precio_unitario) as valor_reservado,
+                    -- Stock disponible optimizado
+                    (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible,
+                    -- Valor disponible optimizado
+                    ((i.stock_actual - ISNULL(r.stock_reservado, 0)) * i.precio_unitario) as valor_disponible
                 FROM {TABLA_INVENTARIO} i
+                LEFT JOIN (
+                    SELECT 
+                        producto_id,
+                        SUM(cantidad_reservada) as stock_reservado
+                    FROM {TABLA_RESERVAS} 
+                    WHERE estado = 'ACTIVA'
+                    GROUP BY producto_id
+                ) r ON i.id = r.producto_id
                 WHERE i.activo = 1
                 ORDER BY (i.stock_actual * i.precio_unitario) DESC
             """
@@ -1036,3 +1040,55 @@ class ReportesManager:
         except Exception as e:
             self.logger.error(f"Error convirtiendo a CSV: {e}")
             return f"Error generando CSV: {str(e)}"
+    
+    # Métodos de invalidación de cache para optimización
+    
+    @classmethod
+    def invalidar_cache_reportes(cls) -> None:
+        """
+        Invalida el cache de reportes cuando hay cambios en inventario.
+        Debe ser llamado después de operaciones CRUD en inventario.
+        """
+        try:
+            from rexus.utils.intelligent_cache import invalidate_cache
+            
+            # Invalidar cache de reportes específicos
+            patrones_invalidacion = [
+                'generar_reporte_stock_actual',
+                'generar_dashboard_kpis',
+                'generar_reporte_valoracion',
+                'generar_analisis_abc'
+            ]
+            
+            for patron in patrones_invalidacion:
+                invalidate_cache(patron)
+                logger.info(f"Cache invalidado para patrón: {patron}")
+                
+        except ImportError:
+            logger.warning("Sistema de cache no disponible para invalidación")
+        except Exception as e:
+            logger.error(f"Error invalidando cache de reportes: {e}")
+    
+    @classmethod
+    def invalidar_cache_movimientos(cls) -> None:
+        """
+        Invalida cache relacionado con movimientos.
+        Llamar después de crear/modificar movimientos de inventario.
+        """
+        try:
+            from rexus.utils.intelligent_cache import invalidate_cache
+            invalidate_cache('generar_reporte_movimientos')
+            logger.info("Cache de movimientos invalidado")
+        except Exception as e:
+            logger.error(f"Error invalidando cache de movimientos: {e}")
+
+
+# Funciones utilitarias para uso externo
+
+def invalidar_cache_inventario():
+    """Función utilitaria para invalidar cache desde otros módulos."""
+    ReportesManager.invalidar_cache_reportes()
+
+def invalidar_cache_movimientos_inventario():
+    """Función utilitaria para invalidar cache de movimientos."""
+    ReportesManager.invalidar_cache_movimientos()
