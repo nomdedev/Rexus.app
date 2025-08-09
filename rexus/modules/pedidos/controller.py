@@ -24,14 +24,12 @@ class PedidosController(QObject):
     pedido_eliminado = pyqtSignal(int)
     estado_cambiado = pyqtSignal(int, str)
 
-    def __init__(self, view=None, db_connection=None, usuario_actual=None):
+    def __init__(self, model, view, usuario_actual=None):
         super().__init__()
+        self.model = model
         self.view = view
-        self.db_connection = db_connection
+        self.db_connection = model.db_connection if model else None
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
-
-        # Inicializar modelo
-        self.model = PedidosModel(db_connection)
 
         # Conectar señales si hay vista
         if self.view:

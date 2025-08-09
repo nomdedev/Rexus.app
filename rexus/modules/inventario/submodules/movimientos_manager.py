@@ -38,9 +38,11 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    except ImportError:
+    from rexus.utils.data_sanitizer import DataSanitizer
+except ImportError:
     try:
-            except ImportError:
+        from rexus.utils.unified_sanitizer import DataSanitizer
+    except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):

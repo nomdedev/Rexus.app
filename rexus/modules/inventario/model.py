@@ -1,9 +1,9 @@
 from rexus.core.auth_decorators import (
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     admin_required,
     auth_required,
     permission_required,
 )
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 
@@ -36,9 +36,9 @@ try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
-
-        from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
-
+    
+    from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
+    
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in inventario: {e}")
@@ -117,11 +117,11 @@ class InventarioModel(PaginatedTableMixin):
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         if self.security_available:
-            self.data_sanitizer = data_sanitizer
+            self.data_sanitizer = unified_sanitizer
             self.sql_validator = SQLSecurityValidator()
             print("OK [INVENTARIO] Utilidades de seguridad cargadas")
         else:
-            self.data_sanitizer = None
+            self.data_sanitizer = unified_sanitizer  # Usar sanitizer por defecto
             self.sql_validator = None
             print("WARNING [INVENTARIO] Utilidades de seguridad no disponibles")
 

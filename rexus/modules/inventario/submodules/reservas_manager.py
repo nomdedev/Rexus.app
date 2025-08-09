@@ -45,9 +45,11 @@ except ImportError:
 
 # DataSanitizer unificado - Usar sistema unificado de sanitización
 try:
-    except ImportError:
+    from rexus.utils.data_sanitizer import DataSanitizer
+except ImportError:
     try:
-            except ImportError:
+        from rexus.utils.unified_sanitizer import DataSanitizer
+    except ImportError:
         # Fallback seguro
         class DataSanitizer:
             def sanitize_dict(self, data):
@@ -818,7 +820,7 @@ class ReservasManager:
         
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(f"SELECT TOP 1 * FROM {TABLA_RESERVAS}")
+            cursor.execute("SELECT TOP 1 * FROM reservas_inventario")
             columnas = [desc[0] for desc in cursor.description]
             cursor.close()
             return columnas

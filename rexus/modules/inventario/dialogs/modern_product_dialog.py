@@ -60,7 +60,7 @@ except ImportError:
                 if max_val is not None and num > max_val:
                     return False
                 return True
-            except:
+            except (ValueError, TypeError):
                 return False
         
         @staticmethod

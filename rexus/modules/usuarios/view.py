@@ -158,6 +158,23 @@ class UsuariosView(BaseModuleView):
         
         # Configuraciones específicas para el módulo de usuarios si es necesario
         self._apply_usuarios_specific_styling()
+
+    def _apply_usuarios_specific_styling(self):
+        """Aplica estilos específicos para el módulo de usuarios."""
+        # Configuraciones específicas de estilos para usuarios
+        # Por ejemplo, colores especiales para diferentes roles de usuario
+        try:
+            if hasattr(self, 'tabla_usuarios'):
+                # Aplicar estilos específicos a la tabla de usuarios
+                self.tabla_usuarios.setAlternatingRowColors(True)
+                self.tabla_usuarios.setStyleSheet("""
+                    QTableWidget::item:selected {
+                        background-color: #4CAF50;
+                        color: white;
+                    }
+                """)
+        except Exception as e:
+            print(f"[WARNING] Error aplicando estilos específicos de usuarios: {e}")
     
     def nuevo_usuario(self):
         """Abre el diálogo para crear un nuevo usuario."""

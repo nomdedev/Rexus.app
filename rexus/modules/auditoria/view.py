@@ -66,9 +66,10 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
+from rexus.ui.templates.base_module_view import BaseModuleView
 
 
-class AuditoriaView(QWidget):
+class AuditoriaView(BaseModuleView):
     """Vista principal del módulo de auditoria."""
 
     # Señales
@@ -76,7 +77,7 @@ class AuditoriaView(QWidget):
     error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        super().__init__()
+        super().__init__(module_name="Auditoría")
         self.controller = None
         self.form_protector = None
         self.init_ui()
@@ -271,6 +272,63 @@ class AuditoriaView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+    
+    def actualizar_registros(self):
+        """
+        Actualiza los registros mostrados en la vista.
+        Sobrescribe el método base para cargar datos específicos de auditoría.
+        """
+        try:
+            if hasattr(self, 'controller') and self.controller:
+                # Si tenemos controlador, delegar la carga de datos
+                if hasattr(self.controller, '_cargar_datos_iniciales'):
+                    self.controller._cargar_datos_iniciales()
+                else:
+                    print("[AUDITORÍA] Controlador sin método _cargar_datos_iniciales")
+            else:
+                # Sin controlador, cargar datos dummy o desde modelo directo
+                print("[AUDITORÍA] Actualizando registros sin controlador")
+                self.cargar_datos_en_tabla([])  # Datos vacíos por ahora
+        except Exception as e:
+            print(f"[ERROR AUDITORÍA] Error actualizando registros: {e}")
+            self.mostrar_error(f"Error cargando registros: {e}")
+    
+    def cargar_registros_auditoría(self, registros):
+        """
+        Carga registros específicos de auditoría en la tabla.
+        Método adicional para uso del controlador.
+        
+        Args:
+            registros (list): Lista de registros de auditoría
+        """
+        try:
+            self.cargar_datos_en_tabla(registros)
+            print(f"[AUDITORÍA] {len(registros)} registros cargados en la tabla")
+        except Exception as e:
+            print(f"[ERROR AUDITORÍA] Error cargando registros de auditoría: {e}")
+            self.mostrar_error(f"Error cargando registros: {e}")
+    
+    def actualizar_estadisticas(self, estadisticas):
+        """
+        Actualiza las estadísticas mostradas en la vista.
+        
+        Args:
+            estadisticas (dict): Diccionario con estadísticas de auditoría
+        """
+        try:
+            # Si hay un panel de estadísticas, actualizarlo
+            if hasattr(self, 'label_estadisticas'):
+                total = estadisticas.get('total', 0)
+                criticos = estadisticas.get('criticos', 0)
+                advertencias = estadisticas.get('advertencias', 0)
+                
+                texto = f"Total: {total} | Críticos: {criticos} | Advertencias: {advertencias}"
+                self.label_estadisticas.setText(texto)
+                print(f"[AUDITORÍA] Estadísticas actualizadas: {texto}")
+            else:
+                print(f"[AUDITORÍA] Estadísticas recibidas: {estadisticas}")
+        except Exception as e:
+            print(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
 
 
 class DialogoAuditoria(QDialog):

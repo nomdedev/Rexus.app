@@ -10,7 +10,6 @@ from datetime import datetime
 
 from PyQt6.QtCore import QObject, QThread, pyqtSignal
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
-from rexus.core.auth_manager import auth_required, admin_required, manager_required
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
@@ -42,9 +41,9 @@ class AuditoriaController(QObject):
             return
 
         # Conectar señales de la vista
-        self.view.filtrar_solicitud.connect(self.filtrar_registros)
-        self.view.exportar_solicitud.connect(self.exportar_datos)
-        self.view.limpiar_solicitud.connect(self.limpiar_registros_antiguos)
+        # self.view.filtrar_solicitud.connect(self.filtrar_registros)  # TODO: Implementar en view
+        # self.view.exportar_solicitud.connect(self.exportar_datos)   # TODO: Implementar en view
+        # self.view.limpiar_solicitud.connect(self.limpiar_registros_antiguos)  # TODO: Implementar en view
 
     def _cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
@@ -54,7 +53,7 @@ class AuditoriaController(QObject):
         try:
             # Cargar registros recientes
             registros = self.model.obtener_registros(limite=100)
-            self.view.actualizar_registros(registros)
+            self.view.cargar_registros_auditoría(registros)
 
             # Cargar estadísticas
             estadisticas = self.model.obtener_estadisticas()
@@ -63,8 +62,8 @@ class AuditoriaController(QObject):
         except Exception as e:
             print(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
             if self.view:
-                self.view.mostrar_mensaje(
-                    f"Error cargando datos de auditoría: {e}", tipo="error"
+                self.view.mostrar_error(
+                    f"Error cargando datos de auditoría: {e}"
                 )
 
     def filtrar_registros(self, filtros):
@@ -96,7 +95,7 @@ class AuditoriaController(QObject):
             )
 
             # Actualizar vista
-            self.view.actualizar_registros(registros)
+            self.view.cargar_registros_auditoría(registros)
 
             # Registrar la búsqueda
             self.registrar_accion(
@@ -106,7 +105,7 @@ class AuditoriaController(QObject):
 
         except Exception as e:
             print(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
-            self.view.mostrar_mensaje(f"Error aplicando filtros: {e}", tipo="error")
+            self.view.mostrar_error(f"Error aplicando filtros: {e}")
 
     def exportar_datos(self, formato="csv"):
         """
@@ -154,12 +153,13 @@ class AuditoriaController(QObject):
             )
 
             self.view.mostrar_mensaje(
-                f"Datos exportados exitosamente a:\n{archivo}", tipo="success"
+                "informacion", "Exportación Exitosa", 
+                f"Datos exportados exitosamente a:\n{archivo}"
             )
 
         except Exception as e:
             print(f"[ERROR AUDITORÍA] Error exportando: {e}")
-            self.view.mostrar_mensaje(f"Error exportando datos: {e}", tipo="error")
+            self.view.mostrar_error(f"Error exportando datos: {e}")
 
     def _exportar_csv(self, registros, archivo):
         """Exporta registros a formato CSV."""
@@ -259,21 +259,21 @@ class AuditoriaController(QObject):
 
             if success:
                 self.view.mostrar_mensaje(
-                    f"Limpieza completada. Registros anteriores a {dias} días eliminados.",
-                    tipo="success",
+                    "informacion", "Limpieza Completada",
+                    f"Limpieza completada. Registros anteriores a {dias} días eliminados."
                 )
 
                 # Recargar datos
                 self._cargar_datos_iniciales()
 
             else:
-                self.view.mostrar_mensaje(
-                    "Error realizando la limpieza de registros.", tipo="error"
+                self.view.mostrar_error(
+                    "Error realizando la limpieza de registros."
                 )
 
         except Exception as e:
             print(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
-            self.view.mostrar_mensaje(f"Error limpiando registros: {e}", tipo="error")
+            self.view.mostrar_error(f"Error limpiando registros: {e}")
 
     def registrar_accion(
         self,

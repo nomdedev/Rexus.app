@@ -71,17 +71,17 @@ class InventarioController(QObject):
         try:
             print("[INVENTARIO CONTROLLER] Inicializando controlador completo...")
             self.conectar_senales()
-            # No cargar datos en inicialización para evitar problemas de autenticación
+            # No cargar datos en inicializacion para evitar problemas de autenticacion
             # Los datos se cargarán posteriormente con cargar_inventario_inicial
-            print("[INVENTARIO CONTROLLER] ✅ Controlador inicializado exitosamente")
+            print("[INVENTARIO CONTROLLER] OK Controlador inicializado exitosamente")
         except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en inicialización: {e}")
+            print(f"[ERROR INVENTARIO CONTROLLER] Error en inicializacion: {e}")
             self._mostrar_error("inicializar inventario", e)
 
     def conectar_senales(self):
         """Conecta todas las señales de la vista con los métodos del controlador."""
         if not self.view:
-            print("[INVENTARIO CONTROLLER] ⚠️ No hay vista disponible")
+            print("[INVENTARIO CONTROLLER] WARNING No hay vista disponible")
             return
 
         try:
@@ -104,21 +104,21 @@ class InventarioController(QObject):
                 self.view.tabla_inventario.itemSelectionChanged.connect(
                     self.producto_seleccionado
                 )
-                print("✅ Conectado: tabla_inventario.itemSelectionChanged")
+                print("OK Conectado: tabla_inventario.itemSelectionChanged")
             else:
-                print("⚠️ No encontrado: tabla_inventario")
+                print("WARNING No encontrado: tabla_inventario")
 
             # Conectar campo de búsqueda si existe
             if hasattr(self.view, "input_busqueda"):
                 self.view.input_busqueda.textChanged.connect(
                     self.filtrar_en_tiempo_real
                 )
-                print("✅ Conectado: input_busqueda.textChanged")
+                print("OK Conectado: input_busqueda.textChanged")
             else:
-                print("⚠️ No encontrado: input_busqueda")
+                print("WARNING No encontrado: input_busqueda")
 
             print(
-                "[INVENTARIO CONTROLLER] ✅ Todas las señales conectadas correctamente"
+                "[INVENTARIO CONTROLLER] OK Todas las senales conectadas correctamente"
             )
 
         except Exception as e:
@@ -129,9 +129,9 @@ class InventarioController(QObject):
         if hasattr(self.view, nombre_boton):
             boton = getattr(self.view, nombre_boton)
             boton.clicked.connect(metodo)
-            print(f"✅ Conectado: {nombre_boton}")
+            print(f"OK Conectado: {nombre_boton}")
         else:
-            print(f"⚠️ No encontrado: {nombre_boton}")
+            print(f"WARNING No encontrado: {nombre_boton}")
 
     def cargar_inventario_paginado(self, pagina=1, registros_por_pagina=100):
         """Carga inventario con paginación mejorada."""
@@ -281,7 +281,7 @@ class InventarioController(QObject):
     def _actualizar_vista_productos(self, productos):
         """Actualiza la vista con la lista de productos."""
         if not self.view:
-            print("⚠️ No hay vista disponible")
+            print("WARNING No hay vista disponible")
             return
 
         print(
@@ -292,13 +292,13 @@ class InventarioController(QObject):
         try:
             if hasattr(self.view, "actualizar_tabla"):
                 self.view.actualizar_tabla(productos)
-                print("✅ Vista actualizada con actualizar_tabla")
+                print("OK Vista actualizada con actualizar_tabla")
             elif hasattr(self.view, "mostrar_productos"):
                 self.view.mostrar_productos(productos)
-                print("✅ Vista actualizada con mostrar_productos")
+                print("OK Vista actualizada con mostrar_productos")
             elif hasattr(self.view, "cargar_datos"):
                 self.view.cargar_datos(productos)
-                print("✅ Vista actualizada con cargar_datos")
+                print("OK Vista actualizada con cargar_datos")
             elif hasattr(self.view, "tabla_inventario"):
                 # Actualizar tabla directamente si existe
                 tabla = self.view.tabla_inventario
@@ -322,11 +322,11 @@ class InventarioController(QObject):
                             tabla.setItem(row, 3, QTableWidgetItem(stock))
                             tabla.setItem(row, 4, QTableWidgetItem(precio))
 
-                    print("✅ Vista actualizada directamente en tabla_inventario")
+                    print("OK Vista actualizada directamente en tabla_inventario")
                 else:
-                    print("⚠️ tabla_inventario existe pero es None")
+                    print("WARNING tabla_inventario existe pero es None")
             else:
-                print("⚠️ No se encontró método para actualizar la vista")
+                print("WARNING No se encontro metodo para actualizar la vista")
                 # Listar métodos disponibles para debug
                 metodos = [
                     method for method in dir(self.view) if not method.startswith("_")
@@ -395,7 +395,7 @@ class InventarioController(QObject):
             # Recargar inventario completo
             self.cargar_inventario()
 
-            print("[INVENTARIO CONTROLLER] ✅ Filtros limpiados")
+            print("[INVENTARIO CONTROLLER] OK Filtros limpiados")
 
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error limpiando filtros: {e}")
@@ -453,7 +453,7 @@ class InventarioController(QObject):
             QMessageBox.information(
                 self.view,
                 "Nuevo Producto",
-                "✅ Funcionalidad de nuevo producto disponible.\n\n"
+                "OK Funcionalidad de nuevo producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de creación.",
             )
         except Exception as e:
@@ -469,7 +469,7 @@ class InventarioController(QObject):
             QMessageBox.information(
                 self.view,
                 "Editar Producto",
-                "✅ Funcionalidad de editar producto disponible.\n\n"
+                "OK Funcionalidad de editar producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de edición.",
             )
         except Exception as e:
@@ -495,7 +495,7 @@ class InventarioController(QObject):
                 QMessageBox.information(
                     self.view,
                     "Producto Eliminado",
-                    "✅ El producto ha sido eliminado exitosamente.\n\n"
+                    "OK El producto ha sido eliminado exitosamente.\n\n"
                     "(Funcionalidad completa se implementará próximamente)",
                 )
         except Exception as e:
@@ -511,7 +511,7 @@ class InventarioController(QObject):
             QMessageBox.information(
                 self.view,
                 "Registrar Movimiento",
-                "✅ Funcionalidad de movimientos disponible.\n\n"
+                "OK Funcionalidad de movimientos disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de movimientos.",
             )
         except Exception as e:
@@ -526,7 +526,7 @@ class InventarioController(QObject):
             QMessageBox.information(
                 self.view,
                 "Exportar Inventario",
-                "✅ Funcionalidad de exportación disponible.\n\n"
+                "OK Funcionalidad de exportacion disponible.\n\n"
                 "Próximamente se implementarán múltiples formatos:\n"
                 "• Excel (.xlsx)\n"
                 "• CSV (.csv)\n"
@@ -568,6 +568,6 @@ class InventarioController(QObject):
             if self.view:
                 QMessageBox.critical(self.view, f"Error - {operacion.title()}", mensaje)
             else:
-                print(f"[ERROR CRÍTICO] {mensaje}")
+                print(f"[ERROR CRITICO] {mensaje}")
         except Exception:
-            print(f"[ERROR CRÍTICO] Error mostrando error de {operacion}: {error}")
+            print(f"[ERROR CRITICO] Error mostrando error de {operacion}: {error}")

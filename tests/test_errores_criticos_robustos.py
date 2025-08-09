@@ -5,6 +5,14 @@ Tests críticos robustos para errores no cubiertos.
 Enfoque simplificado sin dependencias complejas de PyQt6.
 """
 
+import os
+import sqlite3
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
 # Agregar directorio raíz para imports
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT_DIR))
@@ -144,14 +152,6 @@ class TestManejadorArchivos(unittest.TestCase):
                 return logs_dir
             except PermissionError:
                 # Fallback: usar directorio temporal
-import os
-import sqlite3
-import sys
-import tempfile
-import unittest
-from pathlib import Path
-from unittest.mock import MagicMock, Mock, patch
-
                 fallback_dir = os.path.join(tempfile.gettempdir(), 'app_logs')
                 os.makedirs(fallback_dir, exist_ok=True)
                 return fallback_dir

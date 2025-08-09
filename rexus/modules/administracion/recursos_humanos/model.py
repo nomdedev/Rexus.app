@@ -723,13 +723,13 @@ class RecursosHumanosModel:
             estadisticas = {}
 
             # Total empleados activos
-            cursor.execute("SELECT COUNT(*) FROM " + self.tabla_empleados + " WHERE activo = 1")
+            cursor.execute("SELECT COUNT(*) FROM empleados WHERE activo = 1")
             estadisticas['total_empleados'] = cursor.fetchone()[0]
 
             # Empleados por estado
             cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM """ + self.tabla_empleados + """
+                FROM empleados
                 WHERE activo = 1
                 GROUP BY estado
             """)
@@ -738,8 +738,8 @@ class RecursosHumanosModel:
             # Empleados por departamento
             cursor.execute("""
                 SELECT d.nombre, COUNT(e.id) as cantidad
-                FROM """ + self.tabla_empleados + """ e
-                LEFT JOIN """ + self.tabla_departamentos + """ d ON e.departamento_id = d.id
+                FROM empleados e
+                LEFT JOIN departamentos d ON e.departamento_id = d.id
                 WHERE e.activo = 1
                 GROUP BY d.nombre
             """)
@@ -749,7 +749,7 @@ class RecursosHumanosModel:
             mes_actual = datetime.now().month
             anio_actual = datetime.now().year
             cursor.execute("""
-                SELECT SUM(neto) FROM """ + self.tabla_nomina + """
+                SELECT SUM(neto) FROM nomina
                 WHERE mes = ? AND anio = ?
             """, (mes_actual, anio_actual))
             resultado = cursor.fetchone()[0]

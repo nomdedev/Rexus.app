@@ -180,6 +180,12 @@ class ObrasView(QWidget):
 
     def __init__(self):
         super().__init__()
+        
+        # VERIFICACIÓN DE PERMISOS ANTES DE INICIALIZAR EL MÓDULO
+        if not self._verificar_acceso_obras():
+            self._crear_vista_acceso_denegado()
+            return  # No inicializar funcionalidad si no tiene permisos
+            
         self.controller = None
         self.model = None  # Agregar referencia directa al modelo
         self.vista_actual = "tabla"  # "tabla" o "cronograma"
@@ -207,6 +213,78 @@ class ObrasView(QWidget):
         # Inicializar modelo y cargar datos después de crear la UI
         self.init_model()
         self.cargar_datos_iniciales_seguro()
+
+    def _verificar_acceso_obras(self) -> bool:
+        """
+        Verifica si el usuario actual tiene permisos para acceder al módulo de obras.
+        
+        Returns:
+            bool: True si tiene acceso, False si no tiene permisos
+        """
+        try:
+            from rexus.core.auth_manager import AuthManager, Permission
+            from rexus.utils.message_system import show_error
+            
+            # Verificar si el usuario tiene permiso para ver obras
+            if not AuthManager.check_permission(Permission.VIEW_OBRAS):
+                show_error(
+                    None, 
+                    "Acceso Denegado", 
+                    "No tiene permisos para acceder al módulo de Obras.\n\n"
+                    "Contacte al administrador del sistema para solicitar acceso."
+                )
+                return False
+                
+            return True
+            
+        except Exception as e:
+            # En caso de error en verificación, denegar por seguridad
+            from rexus.utils.message_system import show_error
+            show_error(
+                None, 
+                "Error de Verificación", 
+                "Error verificando permisos de acceso al módulo de Obras.\n\n"
+                f"Error: {str(e)}\n\n"
+                "Contacte al administrador del sistema."
+            )
+            return False
+
+    def _crear_vista_acceso_denegado(self):
+        """Crea una vista informativa cuando el usuario no tiene permisos"""
+        from PyQt6.QtWidgets import QVBoxLayout, QLabel
+        from PyQt6.QtCore import Qt
+        
+        layout = QVBoxLayout(self)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        # Mensaje principal
+        mensaje = QLabel("🔒 Acceso Restringido")
+        mensaje.setStyleSheet("""
+            QLabel {
+                font-size: 24px;
+                font-weight: bold;
+                color: #dc3545;
+                margin-bottom: 20px;
+            }
+        """)
+        mensaje.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        # Descripción
+        descripcion = QLabel(
+            "No tiene permisos para acceder al módulo de Obras.\n\n"
+            "Contacte al administrador del sistema para solicitar acceso."
+        )
+        descripcion.setStyleSheet("""
+            QLabel {
+                font-size: 14px;
+                color: #6c757d;
+                text-align: center;
+            }
+        """)
+        descripcion.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        layout.addWidget(mensaje)
+        layout.addWidget(descripcion)
 
     def apply_high_contrast_style(self):
         """Los componentes Rexus ya tienen estilos integrados."""

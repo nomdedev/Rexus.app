@@ -290,7 +290,8 @@ class CronogramaObrasView(QWidget):
                         fecha_inicio = datetime.strptime(
                             fecha_inicio, "%Y-%m-%d"
                         ).date()
-                    except:
+                    except ValueError as e:
+                        print(f"[WARNING CRONOGRAMA] Invalid date format for obra {obra.get('nombre_obra', 'Unknown')}: {e}")
                         continue  # Skip si no se puede parsear la fecha
 
                 # Verificar si la obra está en el rango visible
@@ -298,7 +299,8 @@ class CronogramaObrasView(QWidget):
                     if isinstance(fecha_fin, str):
                         try:
                             fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
-                        except:
+                        except ValueError as e:
+                            print(f"[WARNING CRONOGRAMA] Invalid end date format for obra {obra.get('nombre_obra', 'Unknown')}: {e}")
                             fecha_fin = None
 
                 if fecha_inicio <= self.fecha_fin_cronograma and (

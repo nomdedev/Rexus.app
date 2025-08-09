@@ -20,107 +20,33 @@ DB_ERROR_MESSAGE = "Sin conexión a la base de datos"
 # DataSanitizer unificado
 try:
     from rexus.utils.unified_sanitizer import unified_sanitizer
-    DataSanitizer = unified_sanitizer
+    data_sanitizer = unified_sanitizer
 except ImportError:
-    class DataSanitizer:
-        def sanitize_dict(self, data):
-            return data if data else {}
-            
-        def sanitize_string(self, text):
-            return str(text) if text else ""
-            
-        def sanitize_integer(self, value):
-            return int(value) if value else 0
-        def sanitize_html(self, html_text):
-            if html_text is None:
-                return ""
-            import re
-            s = str(html_text)
-            for tag in ["script", "iframe", "object", "embed", "form", "input", "button", "meta", "link", "style"]:
-                s = re.sub(f'<{tag}[^>]*>', '', s, flags=re.IGNORECASE)
-                s = re.sub(f'</{tag}>', '', s, flags=re.IGNORECASE)
-            for attr in ["onclick", "onload", "onerror", "onmouseover", "javascript:"]:
-                s = re.sub(f'{attr}[^>]*', '', s, flags=re.IGNORECASE)
-            return s.strip()
-        def sanitize_text(self, text):
-            if text is None:
-                return ""
-            s = str(text)
-            # Elimina caracteres de control y limita longitud
-            import re
-            s = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]', '', s)
-            if len(s) > 1000:
-                s = s[:1000] + "..."
-            return s.strip()
-
-        def sanitize_sql_input(self, text):
-            if text is None:
-                return ""
-            s = str(text)
-            for char in ["'", '"', ";", "--", "/*", "*/", "xp_", "sp_"]:
-                s = s.replace(char, "")
-            return s.strip()
-
-        def clean_dict(self, data):
-            if not isinstance(data, dict):
-                return dict(data) if data else {}
-            cleaned = {}
-            for k, v in data.items():
-                if isinstance(v, str):
-                    cleaned[k] = self.sanitize_text(v)
-                elif isinstance(v, dict):
-                    cleaned[k] = self.clean_dict(v)
-                elif isinstance(v, list):
-                    cleaned[k] = [self.sanitize_text(i) if isinstance(i, str) else i for i in v]
-                else:
-                    cleaned[k] = v
-            return cleaned
-
-        def sanitize_string(self, value, max_length=None):
-            s = self.sanitize_text(value)
-            if max_length is not None:
-                return s[:max_length]
-            return s
-
-        def sanitize_numeric(self, value, min_val=None, max_val=None):
-            try:
-                val = float(value)
-                if min_val is not None:
-                    val = max(val, min_val)
-                if max_val is not None:
-                    val = min(val, max_val)
-                return val
-            except Exception:
-                return 0.0
-        def sanitize_integer(self, value, min_val=None, max_val=None):
-            try:
-                val = int(value)
-                if min_val is not None:
-                    val = max(val, min_val)
-                if max_val is not None:
-                    val = min(val, max_val)
-                return val
-            except Exception:
-                return 0
-        def sanitize_dict(self, data_dict):
-            return self.clean_dict(data_dict)
-        def sanitize_list(self, data_list):
-            return list(data_list) if data_list is not None else []
-        def sanitize_bool(self, value):
-            return bool(value)
-        def sanitize(self, value):
-            return value
-        def sanitize_integer(self, value, min_val=None, max_val=None):
-            try:
-                val = int(value)
-                if min_val is not None:
-                    val = max(val, min_val)
-                if max_val is not None:
-                    val = min(val, max_val)
-                return val
-            except Exception:
-                return 0
-    data_sanitizer = DataSanitizer()
+    try:
+        from rexus.utils.data_sanitizer import DataSanitizer
+        data_sanitizer = DataSanitizer()
+    except ImportError:
+        # Fallback básico
+        class FallbackSanitizer:
+            def sanitize_dict(self, data):
+                return data if data else {}
+            def sanitize_string(self, text):
+                return str(text) if text else ""
+            def sanitize_integer(self, value, min_val=None, max_val=None):
+                try:
+                    val = int(value)
+                    if min_val is not None:
+                        val = max(val, min_val)
+                    if max_val is not None:
+                        val = min(val, max_val)
+                    return val
+                except:
+                    return 0
+            def sanitize_sql_input(self, text):
+                return str(text).replace("'", "").replace('"', '') if text else ""
+            def sanitize_html(self, text):
+                return str(text) if text else ""
+        data_sanitizer = FallbackSanitizer()
 
 class ObrasModel:
     """
@@ -160,37 +86,54 @@ class ObrasModel:
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos."""
         if not self.db_connection:
+            print("[OBRAS] Sin conexión a BD - omitiendo verificación de tablas")
             return
 
         cursor = None
         try:
             cursor = self.db_connection.cursor()
 
-            # Verificar tabla de obras
-            script_content = self.sql_loader.load_script('obras/verificar_tabla_obras')
-            cursor.execute(script_content, (self.tabla_obras,))
-            if cursor.fetchone():
-                print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
-            else:
-                print(f"[ADVERTENCIA] La tabla '{self.tabla_obras}' no existe en la base de datos.")
-
-            # Verificar tabla de detalles de obra
+            # Verificar tabla de obras con query más compatible
             try:
-                script_content = self.sql_loader.load_script('obras/verificar_tabla_detalles')
-                cursor.execute(script_content, (self.tabla_detalles_obra,))
+                # Usar query más compatible que funcione con diferentes motores de BD
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.tabla_obras,))
+                if cursor.fetchone():
+                    print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
+                else:
+                    print(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
+            except Exception:
+                # Si SQLite no funciona, intentar con SQL Server/otros
+                try:
+                    cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?", (self.tabla_obras,))
+                    if cursor.fetchone():
+                        print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
+                    else:
+                        print(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
+                except Exception as e:
+                    print(f"[INFO] No se pudo verificar tabla '{self.tabla_obras}' - continuando sin verificación: {e}")
+
+            # Verificar tabla de detalles de obra (opcional)
+            try:
+                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.tabla_detalles_obra,))
                 if cursor.fetchone():
                     print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
-                else:
-                    print(f"[ADVERTENCIA] La tabla '{self.tabla_detalles_obra}' no existe en la base de datos.")
-            except Exception:
-                # Script de verificación de detalles no existe, no es crítico
-                pass
+            except Exception as e:
+                try:
+                    cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?", (self.tabla_detalles_obra,))
+                    if cursor.fetchone():
+                        print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
+                except Exception as e2:
+                    print(f"[ERROR OBRAS] Error en rollback: {e2}")
 
         except Exception as e:
-            print(f"[ERROR OBRAS] Error verificando tablas: {e}")
+            # Error en verificación no debe bloquear el módulo
+            print(f"[INFO OBRAS] Verificación de tablas omitida: {e}")
         finally:
             if cursor:
-                cursor.close()
+                try:
+                    cursor.close()
+                except Exception as e2:
+                    print(f"[ERROR OBRAS] Error en rollback: {e2}")
 
     def validar_obra_duplicada(
         self, codigo_obra: str, id_obra_actual: Optional[int] = None
@@ -212,7 +155,7 @@ class ObrasModel:
             # Sanitizar datos y prevenir SQLi
             codigo_limpio = codigo_obra.strip().upper()
             if self.data_sanitizer:
-                codigo_limpio = sanitize_string(codigo_limpio)
+                codigo_limpio = self.data_sanitizer.sanitize_string(codigo_limpio)
                 codigo_limpio = self.data_sanitizer.sanitize_sql_input(codigo_limpio)
 
             cursor = self.db_connection.cursor()
@@ -401,9 +344,14 @@ class ObrasModel:
                     where_conditions.append(f"{campo} LIKE ?")
                     params.append(f"%{valor_limpio}%")
 
+
             if where_conditions:
                 where_clause = " AND " + " AND ".join(where_conditions)
-                query = base_query.replace("WHERE activo = 1", f"WHERE activo = 1 {where_clause}")
+                if base_query and hasattr(base_query, 'replace'):
+                    query = base_query.replace("WHERE activo = 1", f"WHERE activo = 1 {where_clause}")
+                else:
+                    print("[ERROR OBRAS] base_query es None o no es un string")
+                    return []
             else:
                 query = base_query
 
@@ -481,17 +429,17 @@ class ObrasModel:
         try:
             cursor = self.db_connection.cursor()
             
-            # Query optimizada con paginación
+            # Query optimizada con paginación para SQL Server
             query = """
             SELECT id, codigo_obra, nombre_obra, cliente, estado, 
                    fecha_creacion, fecha_actualizacion, presupuesto_total 
             FROM obras 
             WHERE activo = 1 
             ORDER BY fecha_creacion DESC
-            LIMIT ? OFFSET ?
+            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
             """
             
-            cursor.execute(query, (limit or 50, offset))
+            cursor.execute(query, (offset, limit or 50))
             obras = cursor.fetchall()
             
             return obras
@@ -571,15 +519,19 @@ class ObrasModel:
             datos_limpios = self.data_sanitizer.sanitize_dict(datos_actualizados)
             
             # Validar ID
-            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
-            if obra_id_limpio <= 0:
+            try:
+                obra_id_limpio = int(obra_id)
+                if obra_id_limpio <= 0:
+                    return False, "ID de obra inválido"
+            except (ValueError, TypeError):
                 return False, "ID de obra inválido"
 
             cursor = self.db_connection.cursor()
 
-            # Verificar que la obra existe
-            cursor.execute("SELECT COUNT(*) FROM obras WHERE id = ? AND activo = 1", (obra_id_limpio,))
-            if cursor.fetchone()[0] == 0:
+            # Verificar que la obra existe usando SQL externo
+            sql_verificacion = self.sql_manager.get_query('obras', 'verificar_obra_codigo')
+            cursor.execute(sql_verificacion, {"obra_id": obra_id_limpio})
+            if not cursor.fetchone():
                 return False, "La obra no existe o está inactiva"
 
             # 🔒 Usar consulta SQL externa segura para actualización
@@ -611,8 +563,8 @@ class ObrasModel:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as e2:
+                    print(f"[ERROR OBRAS] Error en rollback: {e2}")
             return False, f"Error actualizando obra: {str(e)}"
         finally:
             if cursor:
@@ -626,11 +578,15 @@ class ObrasModel:
         cursor = None
         try:
             # Sanitizar datos
-            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
-            usuario_limpio = sanitize_string(usuario_eliminacion, 50)
-            
-            if obra_id_limpio <= 0:
+            try:
+                obra_id_limpio = int(obra_id)
+                if obra_id_limpio <= 0:
+                    return False, "ID de obra inválido"
+            except (ValueError, TypeError):
                 return False, "ID de obra inválido"
+            
+            usuario_limpio = str(usuario_eliminacion)[:50] if usuario_eliminacion else ""
+            
             if not usuario_limpio:
                 return False, "Usuario de eliminación es requerido"
 
@@ -660,8 +616,8 @@ class ObrasModel:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as e2:
+                    print(f"[ERROR OBRAS] Error en rollback: {e2}")
             return False, f"Error eliminando obra: {str(e)}"
         finally:
             if cursor:
@@ -675,9 +631,15 @@ class ObrasModel:
         cursor = None
         try:
             # Sanitizar datos
-            obra_id_limpio = self.data_sanitizer.sanitize_integer(obra_id, min_val=1)
-            estado_limpio = sanitize_string(nuevo_estado, 20)
-            usuario_limpio = sanitize_string(usuario_cambio, 50)
+            try:
+                obra_id_limpio = int(obra_id)
+                if obra_id_limpio <= 0:
+                    return False, "ID de obra inválido"
+            except (ValueError, TypeError):
+                return False, "ID de obra inválido"
+                
+            estado_limpio = str(nuevo_estado)[:20] if nuevo_estado else ""
+            usuario_limpio = str(usuario_cambio)[:50] if usuario_cambio else ""
             
             estados_validos = ['PLANIFICACION', 'EN_PROCESO', 'PAUSADA', 'FINALIZADA', 'CANCELADA']
             if estado_limpio not in estados_validos:
@@ -685,12 +647,9 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # Actualizar estado
-            cursor.execute("""
-                UPDATE obras 
-                SET estado = ?, updated_at = GETDATE(), usuario_modificacion = ?
-                WHERE id = ? AND activo = 1
-            """, (estado_limpio, usuario_limpio, obra_id_limpio))
+            # Actualizar estado usando SQL externo
+            sql = self.sql_manager.get_query('obras', 'update_estado_obra')
+            cursor.execute(sql, (estado_limpio, usuario_limpio, obra_id_limpio))
             
             if cursor.rowcount == 0:
                 return False, "No se pudo cambiar el estado de la obra"
@@ -703,8 +662,8 @@ class ObrasModel:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except Exception as e2:
+                    print(f"[ERROR OBRAS] Error al hacer rollback: {e2}")
             return False, f"Error cambiando estado: {str(e)}"
         finally:
             if cursor:

@@ -367,7 +367,7 @@ class ObrasController(QObject):
 
     def mostrar_mensaje_error(self, mensaje: str):
         """Muestra un mensaje de error con sistema moderno."""
-        show_error(self.view, mensaje)
+        show_error(self.view, "Error en Obras", mensaje)
 
     def mostrar_mensaje_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia con sistema moderno."""

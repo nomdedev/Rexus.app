@@ -5,6 +5,14 @@ Tests críticos para errores no cubiertos detectados en el análisis.
 Cubre edge cases, fallbacks y manejo de errores que faltaban.
 """
 
+import os
+import sqlite3
+import sys
+import tempfile
+import unittest
+from pathlib import Path
+from unittest.mock import MagicMock, Mock, patch
+
 # Agregar directorio raíz para imports
 ROOT_DIR = Path(__file__).resolve().parents[1]
 sys.path.append(str(ROOT_DIR))

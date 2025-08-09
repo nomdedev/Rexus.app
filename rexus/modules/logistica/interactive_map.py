@@ -366,8 +366,8 @@ class InteractiveMapWidget(QWidget):
         if self.map_html_path and os.path.exists(self.map_html_path):
             try:
                 os.remove(self.map_html_path)
-            except:
-                pass
+            except (OSError, PermissionError) as e:
+                print(f"[WARNING INTERACTIVE_MAP] Could not remove temp file: {e}")
     
     def __del__(self):
         """Destructor del widget."""

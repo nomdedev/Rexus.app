@@ -116,7 +116,8 @@ class AuditTrail:
             hostname = socket.gethostname()
             ip_address = socket.gethostbyname(hostname)
             return ip_address
-        except:
+        except (socket.error, OSError) as e:
+            print(f"[WARNING AUDIT_TRAIL] Could not get IP address: {e}")
             return "127.0.0.1"
     
     def get_audit_log(self, tabla: str = None, usuario_id: int = None, 

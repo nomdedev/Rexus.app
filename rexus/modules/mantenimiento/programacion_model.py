@@ -434,7 +434,8 @@ class ProgramacionMantenimientoModel:
                 try:
                     import json
                     plantilla['tareas'] = json.loads(plantilla['tareas_json'])
-                except:
+                except (json.JSONDecodeError, TypeError) as e:
+                    print(f"[WARNING PROGRAMACION] Error parsing tasks JSON: {e}")
                     plantilla['tareas'] = []
                 
                 del plantilla['tareas_json']
