@@ -210,15 +210,7 @@ class ObrasView(QWidget):
 
     def apply_high_contrast_style(self):
         """Los componentes Rexus ya tienen estilos integrados."""
-        pass
-        /* Estilo general de alto contraste */
-        QWidget {
-            background-color: #ffffff;
-            color: #000000;
-            font-family: "Segoe UI", Arial, sans-serif;
-            font-size: 13px;
-        }
-        
+        high_contrast_style = """
         /* Tabla de obras */
         QTableWidget {
             background-color: #ffffff;

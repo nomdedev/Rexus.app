@@ -64,6 +64,7 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QHeaderView,
+    QLabel,
     QPlainTextEdit,
     QScrollArea,
     QSpinBox,
@@ -73,6 +74,9 @@ from PyQt6.QtWidgets import (
     QVBoxLayout,
     QWidget,
 )
+
+# Mapear componentes Qt a Rexus
+QLabel = RexusLabel
 
 
 class ComprasView(QWidget):

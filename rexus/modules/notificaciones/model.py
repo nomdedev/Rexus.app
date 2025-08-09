@@ -15,13 +15,16 @@ from enum import Enum
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
+# Sistema de cache para optimizar consultas de notificaciones
+from rexus.utils.intelligent_cache import cached_query, invalidate_cache
+
 # Importar utilidades de seguridad
 try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
     
-        from utils.sql_security import SQLSecurityValidator
-    
+    from utils.sql_security import SQLSecurityValidator
+    data_sanitizer = unified_sanitizer  # Definir variable correctamente
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in notificaciones: {e}")
@@ -159,12 +162,11 @@ class NotificacionesModel:
             return True
             
         try:
-            # Validar y sanitizar datos
-            if self.data_sanitizer:
-                titulo = self.data_sanitizer.sanitize_input(titulo)
-                mensaje = self.data_sanitizer.sanitize_input(mensaje)
-                if modulo_origen:
-                    modulo_origen = self.data_sanitizer.sanitize_input(modulo_origen)
+            # Validar y sanitizar datos usando funciones importadas
+            titulo = sanitize_string(titulo, max_length=200)
+            mensaje = sanitize_string(mensaje, max_length=1000)
+            if modulo_origen:
+                modulo_origen = sanitize_string(modulo_origen, max_length=50)
             
             cursor = self.db_connection.cursor()
             
@@ -191,6 +193,10 @@ class NotificacionesModel:
                 cursor.execute(query_usuario, (notificacion_id, usuario_destino))
             
             self.db_connection.commit()
+            
+            # Invalidar cache de notificaciones después de crear una nueva
+            self._invalidar_cache_notificaciones()
+            
             print(f"OK [NOTIFICACIONES] Notificación creada: ID {notificacion_id}")
             return True
             
@@ -200,6 +206,7 @@ class NotificacionesModel:
                 self.db_connection.rollback()
             return False
 
+    @cached_query(ttl=60)  # Cache por 1 minuto - notificaciones deben ser relativamente frescas
     @auth_required
     def obtener_notificaciones_usuario(self, usuario_id: int, solo_no_leidas: bool = False,
                                      limite: int = 50, offset: int = 0) -> List[Dict]:
@@ -318,6 +325,10 @@ class NotificacionesModel:
                   notificacion_id, usuario_id))
             
             self.db_connection.commit()
+            
+            # Invalidar cache después de marcar como leída
+            self._invalidar_cache_notificaciones()
+            
             return True
             
         except Exception as e:
@@ -326,6 +337,7 @@ class NotificacionesModel:
                 self.db_connection.rollback()
             return False
 
+    @cached_query(ttl=30)  # Cache por 30 segundos - contador debe actualizarse frecuentemente
     @auth_required
     def contar_no_leidas(self, usuario_id: int) -> int:
         """
@@ -386,6 +398,10 @@ class NotificacionesModel:
             """, (notificacion_id,))
             
             self.db_connection.commit()
+            
+            # Invalidar cache después de eliminar
+            self._invalidar_cache_notificaciones()
+            
             return True
             
         except Exception as e:
@@ -454,3 +470,52 @@ class NotificacionesModel:
             modulo_origen=modulo,
             metadata=detalles
         )
+    
+    def _invalidar_cache_notificaciones(self) -> None:
+        """
+        Invalida el cache de notificaciones después de cambios.
+        """
+        try:
+            # Invalidar cache de obtención de notificaciones
+            invalidate_cache('obtener_notificaciones_usuario')
+            # Invalidar cache de conteo de no leídas
+            invalidate_cache('contar_no_leidas')
+            print("[NOTIFICACIONES] Cache invalidado después de cambios")
+        except Exception as e:
+            print(f"[WARNING NOTIFICACIONES] Error invalidando cache: {e}")
+    
+    @classmethod
+    def limpiar_notificaciones_expiradas(cls, db_connection) -> int:
+        """
+        Limpia notificaciones expiradas del sistema.
+        
+        Args:
+            db_connection: Conexión a la base de datos
+            
+        Returns:
+            int: Número de notificaciones limpiadas
+        """
+        if not db_connection:
+            return 0
+        
+        try:
+            cursor = db_connection.cursor()
+            
+            # Marcar como inactivas las notificaciones expiradas
+            cursor.execute("""
+                UPDATE notificaciones 
+                SET activa = 0 
+                WHERE fecha_expiracion < GETDATE() AND activa = 1
+            """)
+            
+            affected_rows = cursor.rowcount
+            db_connection.commit()
+            
+            if affected_rows > 0:
+                print(f"[NOTIFICACIONES] {affected_rows} notificaciones expiradas limpiadas")
+                
+            return affected_rows
+            
+        except Exception as e:
+            print(f"[ERROR NOTIFICACIONES] Error limpiando expiradas: {e}")
+            return 0
