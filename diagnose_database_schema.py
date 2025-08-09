@@ -5,27 +5,44 @@ Identifica columnas faltantes y genera los ALTER TABLE necesarios
 """
 
 import pyodbc
+import os
 from pathlib import Path
 
-# Configuración de conexión (ajustar según tu configuración)
-DB_CONFIG = {
-    'driver': 'ODBC Driver 17 for SQL Server',
-    'server': 'ITACHI\\SQLEXPRESS',
-    'database': 'inventario',
-    'uid': 'sa',
-    'pwd': '123456',
-    'TrustServerCertificate': 'yes'
-}
+# Usar configuración del sistema
+from rexus.core.config import DATABASE_CONFIG
 
 def get_db_connection():
-    """Establece conexión con la base de datos."""
+    """Establece conexión con la base de datos usando la configuración del sistema."""
     try:
-        conn_str = f"DRIVER={{{DB_CONFIG['driver']}}};SERVER={DB_CONFIG['server']};DATABASE={DB_CONFIG['database']};UID={DB_CONFIG['uid']};PWD={DB_CONFIG['pwd']};TrustServerCertificate={DB_CONFIG['TrustServerCertificate']};"
+        # Usar configuración existente del sistema
+        conn_str = (
+            f"DRIVER={{{DATABASE_CONFIG['driver']}}};"
+            f"SERVER={DATABASE_CONFIG['server']};"
+            f"DATABASE={DATABASE_CONFIG['databases']['inventario']};"
+            f"UID={DATABASE_CONFIG['username']};"
+            f"PWD={DATABASE_CONFIG['password']};"
+            f"TrustServerCertificate=yes;"
+        )
         connection = pyodbc.connect(conn_str)
         return connection
     except Exception as e:
         print(f"Error conectando a la base de datos: {e}")
-        return None
+        print(f"Intentando con configuración alternativa...")
+        
+        # Intentar configuración alternativa
+        try:
+            conn_str_alt = (
+                f"DRIVER={{{DATABASE_CONFIG['driver']}}};"
+                f"SERVER={DATABASE_CONFIG['server_alternate']};"
+                f"DATABASE={DATABASE_CONFIG['databases']['inventario']};"
+                f"Integrated Security=true;"
+                f"TrustServerCertificate=yes;"
+            )
+            connection = pyodbc.connect(conn_str_alt)
+            return connection
+        except Exception as e2:
+            print(f"Error con configuración alternativa: {e2}")
+            return None
 
 def check_table_columns(connection, table_name):
     """Verifica las columnas existentes en una tabla."""
