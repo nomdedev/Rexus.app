@@ -62,7 +62,7 @@ class HerrajesView(QWidget):
         self.stats_labels = {}
 
         self.init_ui()
-        self.aplicar_tema()
+        self.aplicar_estilos()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario con pestañas (QTabWidget)."""
@@ -181,6 +181,160 @@ class HerrajesView(QWidget):
         self.tabs.addTab(tab_estadisticas, "Estadísticas")
 
         main_layout.addWidget(self.tabs)
+
+        # Aplicar estilos después de crear la interfaz
+        self.aplicar_estilos()
+
+    def aplicar_estilos(self):
+        """Aplica estilos minimalistas y modernos a toda la interfaz."""
+        self.setStyleSheet("""
+            /* Estilo general del widget */
+            QWidget {
+                background-color: #fafbfc;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 12px;
+            }
+            
+            /* Pestañas minimalistas */
+            QTabWidget::pane {
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                background-color: white;
+                margin-top: 2px;
+            }
+            
+            QTabBar::tab {
+                background-color: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                border-bottom: none;
+                padding: 8px 16px;
+                margin-right: 2px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                font-size: 11px;
+                color: #586069;
+                min-width: 80px;
+            }
+            
+            QTabBar::tab:selected {
+                background-color: white;
+                color: #24292e;
+                font-weight: 500;
+                border-bottom: 2px solid #0366d6;
+            }
+            
+            QTabBar::tab:hover:!selected {
+                background-color: #e1e4e8;
+                color: #24292e;
+            }
+            
+            /* Tablas compactas */
+            QTableWidget {
+                gridline-color: #e1e4e8;
+                selection-background-color: #f1f8ff;
+                selection-color: #24292e;
+                alternate-background-color: #f6f8fa;
+                font-size: 11px;
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+            }
+            
+            QTableWidget::item {
+                padding: 4px 8px;
+                border: none;
+            }
+            
+            QHeaderView::section {
+                background-color: #f6f8fa;
+                color: #586069;
+                font-weight: 600;
+                font-size: 10px;
+                border: none;
+                border-right: 1px solid #e1e4e8;
+                border-bottom: 1px solid #e1e4e8;
+                padding: 6px 8px;
+            }
+            
+            /* GroupBox minimalista */
+            QGroupBox {
+                font-weight: 600;
+                font-size: 11px;
+                color: #24292e;
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: white;
+            }
+            
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 8px 0 8px;
+                background-color: white;
+                color: #24292e;
+            }
+            
+            /* Botones minimalistas */
+            QPushButton {
+                background-color: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                color: #24292e;
+                font-size: 11px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border-radius: 4px;
+                min-height: 20px;
+            }
+            
+            QPushButton:hover {
+                background-color: #e1e4e8;
+                border-color: #d0d7de;
+            }
+            
+            QPushButton:pressed {
+                background-color: #d0d7de;
+            }
+            
+            /* Campos de entrada compactos */
+            QLineEdit, QComboBox {
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-size: 11px;
+                background-color: white;
+                min-height: 18px;
+            }
+            
+            QLineEdit:focus, QComboBox:focus {
+                border-color: #0366d6;
+                outline: none;
+            }
+            
+            /* Labels compactos */
+            QLabel {
+                color: #24292e;
+                font-size: 11px;
+            }
+            
+            /* Scroll bars minimalistas */
+            QScrollBar:vertical {
+                width: 12px;
+                background-color: #f6f8fa;
+                border-radius: 6px;
+            }
+            
+            QScrollBar::handle:vertical {
+                background-color: #d0d7de;
+                border-radius: 6px;
+                min-height: 20px;
+                margin: 2px;
+            }
+            
+            QScrollBar::handle:vertical:hover {
+                background-color: #bbb;
+            }
+        """)
 
     # Eliminar método crear_titulo (ya no se usa)
 
@@ -536,133 +690,156 @@ class HerrajesView(QWidget):
 
     # El método on_actualizar_datos ya existe, no duplicar
 
-    def aplicar_tema(self):
-        """Aplica el tema actual al widget."""
-        try:
-            # Obtener colores del tema actual
-            bg_color = RexusColors.BACKGROUND
-            text_color = RexusColors.TEXT_PRIMARY
-            border_color = RexusColors.BORDER_LIGHT
-
-            # Aplicar estilos responsive al tema
-            self.setStyleSheet(f"""
-                QWidget {{
-                    background-color: {bg_color};
-                    color: {text_color};
-                    font-family: 'Segoe UI', Arial, sans-serif;
-                }}
-                
-                QGroupBox {{
-                    font-weight: bold;
-                    border: 2px solid {border_color};
-                    border-radius: 8px;
-                    margin-top: 12px;
-                    padding-top: 15px;
-                    background-color: {bg_color};
-                }}
-                
-                QGroupBox::title {{
-                    subcontrol-origin: margin;
-                    left: 15px;
-                    padding: 0 8px;
-                    color: {RexusColors.PRIMARY};
-                    font-size: 14px;
-                }}
-
-                QLineEdit {{
-                    border: 1px solid {border_color};
-                    border-radius: 6px;
-                    padding: 8px 12px;
-                    font-size: 13px;
-                    background-color: {RexusColors.SURFACE};
-                }}
-
-                QLineEdit:focus {{
-                    border: 2px solid {RexusColors.PRIMARY};
-                }}
-
-                QComboBox {{
-                    border: 1px solid {border_color};
-                    border-radius: 6px;
-                    padding: 8px 12px;
-                    font-size: 13px;
-                    background-color: {RexusColors.SURFACE};
-                }}
-
-                QTableWidget {{
-                    gridline-color: {RexusColors.BORDER_LIGHT};
-                    background-color: {RexusColors.SURFACE};
-                    alternate-background-color: {RexusColors.BACKGROUND};
-                    selection-background-color: {RexusColors.PRIMARY};
-                    selection-color: white;
-                    border: 2px solid {RexusColors.BORDER_LIGHT};
-                    border-radius: 6px;
-                    color: {RexusColors.TEXT_PRIMARY};
-                    font-size: 13px;
-                }}
-                
-                QTableWidget::item {{
-                    padding: 8px;
-                    border-bottom: 1px solid {RexusColors.BORDER_LIGHT};
-                    color: {RexusColors.TEXT_PRIMARY};
-                }}
-                
-                QTableWidget::item:selected {{
-                    background-color: {RexusColors.PRIMARY};
-                    color: white;
-                    font-weight: bold;
-                }}
-                
-                QTableWidget::item:hover {{
-                    background-color: {RexusColors.BACKGROUND};
-                    color: {RexusColors.TEXT_PRIMARY};
-                }}
-
-                QHeaderView::section {{
-                    background-color: {RexusColors.PRIMARY};
-                    color: white;
-                    padding: 10px 8px;
-                    border: 1px solid {RexusColors.BORDER_LIGHT};
-                    font-weight: bold;
-                    font-size: 13px;
-                    text-align: center;
-                }}
-                
-                QHeaderView::section:hover {{
-                    background-color: #0056b3;
-                }}
-
-                QTabWidget::pane {{
-                    border: 2px solid {RexusColors.BORDER_LIGHT};
-                    border-radius: 6px;
-                    background-color: {RexusColors.SURFACE};
-                }}
-                
-                QTabBar::tab {{
-                    background-color: {RexusColors.BACKGROUND};
-                    color: {RexusColors.TEXT_PRIMARY};
-                    padding: 8px 16px;
-                    margin: 2px;
-                    border: 1px solid {RexusColors.BORDER_LIGHT};
-                    border-radius: 4px;
-                }}
-                
-                QTabBar::tab:selected {{
-                    background-color: {RexusColors.PRIMARY};
-                    color: white;
-                    font-weight: bold;
-                }}
-                
-                QTabBar::tab:hover {{
-                    background-color: {RexusColors.SECONDARY};
-                    color: white;
-                }}
-            """)
-
-            logging.info("Tema aplicado correctamente al módulo Herrajes")
-
-        except Exception as e:
-            logging.error(f"Error aplicando tema en Herrajes: {e}")
+    def aplicar_estilos(self):
+        """Aplica estilos minimalistas y modernos a toda la interfaz (estilo Logística)."""
+        self.setStyleSheet("""
+            /* Estilo general del widget */
+            QWidget {
+                background-color: #fafbfc;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 12px;
+            }
+            
+            /* Pestañas minimalistas */
+            QTabWidget::pane {
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                background-color: white;
+                margin-top: 2px;
+            }
+            
+            QTabBar::tab {
+                background-color: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                border-bottom: none;
+                padding: 8px 16px;
+                margin-right: 2px;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                font-size: 11px;
+                color: #586069;
+                min-width: 80px;
+            }
+            
+            QTabBar::tab:selected {
+                background-color: white;
+                color: #24292e;
+                font-weight: 500;
+                border-bottom: 2px solid #0366d6;
+            }
+            
+            QTabBar::tab:hover:!selected {
+                background-color: #e1e4e8;
+                color: #24292e;
+            }
+            
+            /* Tablas compactas */
+            QTableWidget {
+                gridline-color: #e1e4e8;
+                selection-background-color: #f1f8ff;
+                selection-color: #24292e;
+                alternate-background-color: #f6f8fa;
+                font-size: 11px;
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+            }
+            
+            QTableWidget::item {
+                padding: 4px 8px;
+                border: none;
+            }
+            
+            QHeaderView::section {
+                background-color: #f6f8fa;
+                color: #586069;
+                font-weight: 600;
+                font-size: 10px;
+                border: none;
+                border-right: 1px solid #e1e4e8;
+                border-bottom: 1px solid #e1e4e8;
+                padding: 6px 8px;
+            }
+            
+            /* GroupBox minimalista */
+            QGroupBox {
+                font-weight: 600;
+                font-size: 11px;
+                color: #24292e;
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: white;
+            }
+            
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 8px 0 8px;
+                background-color: white;
+                color: #24292e;
+            }
+            
+            /* Botones minimalistas */
+            QPushButton {
+                background-color: #f6f8fa;
+                border: 1px solid #e1e4e8;
+                color: #24292e;
+                font-size: 11px;
+                font-weight: 500;
+                padding: 6px 12px;
+                border-radius: 4px;
+                min-height: 20px;
+            }
+            
+            QPushButton:hover {
+                background-color: #e1e4e8;
+                border-color: #d0d7de;
+            }
+            
+            QPushButton:pressed {
+                background-color: #d0d7de;
+            }
+            
+            /* Campos de entrada compactos */
+            QLineEdit, QComboBox {
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                padding: 4px 8px;
+                font-size: 11px;
+                background-color: white;
+                min-height: 18px;
+            }
+            
+            QLineEdit:focus, QComboBox:focus {
+                border-color: #0366d6;
+                outline: none;
+            }
+            
+            /* Labels compactos */
+            QLabel {
+                color: #24292e;
+                font-size: 11px;
+            }
+            
+            /* Scroll bars minimalistas */
+            QScrollBar:vertical {
+                width: 12px;
+                background-color: #f6f8fa;
+                border-radius: 6px;
+            }
+            
+            QScrollBar::handle:vertical {
+                background-color: #d0d7de;
+                border-radius: 6px;
+                min-height: 20px;
+                margin: 2px;
+            }
+            
+            QScrollBar::handle:vertical:hover {
+                background-color: #bbb;
+            }
+        """)
 
     # === MÉTODOS DE CONTROL ===
 

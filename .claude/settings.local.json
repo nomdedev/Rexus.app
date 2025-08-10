@@ -28,7 +28,8 @@
       "Bash(sqlcmd:*)",
       "Bash(PYTHONPATH=. python scripts/test/test_logistica_ascii.py)",
       "Bash(copy \"rexus\\modules\\compras\\view.py.backup_auth\" \"rexus\\modules\\compras\\view.py\")",
-      "Bash(move view.py view_generica_backup.py)"
+      "Bash(move view.py view_generica_backup.py)",
+      "Bash(copy view.py view_original_backup.py)"
     ],
     "deny": []
   }

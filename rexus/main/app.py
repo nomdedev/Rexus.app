@@ -284,6 +284,18 @@ class MainWindow(QMainWindow):
             success = self.style_manager.apply_global_theme()
             if success:
                 print(f"[STYLE] Tema '{self.style_manager._current_theme}' aplicado globalmente")
+                
+                # CRÍTICO: Aplicar correcciones de formularios inmediatamente
+                if self.style_manager._current_theme == 'dark':
+                    print("[STYLE] Tema oscuro detectado - aplicando correcciones críticas")
+                    fix_success = self.style_manager.apply_critical_form_fixes()
+                    if not fix_success:
+                        # Si falla, forzar tema claro para formularios
+                        emergency_success = self.style_manager.force_light_theme_for_forms()
+                        if emergency_success:
+                            print("[STYLE] Tema de emergencia aplicado - formularios legibles")
+                        else:
+                            print("[STYLE] ERROR: No se pudieron aplicar correcciones críticas")
             else:
                 print("[STYLE] Fallback a estilos por defecto")
                 
@@ -346,7 +358,7 @@ class MainWindow(QMainWindow):
 
         # Usuario actual
         user_info = QLabel(
-            f"👤 {self.user_data['username']}\n🔑 {self.user_data.get('rol', self.user_data.get('role', 'Usuario'))}"
+            f"Usuario: {self.user_data['username']}\nRol: {self.user_data.get('rol', self.user_data.get('role', 'Usuario'))}"
         )
         user_info.setStyleSheet("""
             QLabel {
@@ -372,15 +384,15 @@ class MainWindow(QMainWindow):
         modulos = [
             ("🏗️", "Obras", "Gestión de proyectos y construcción"),
             ("📦", "Inventario", "Gestión de inventario y stock"),
-            ("🔩", "Herrajes", "Gestión de herrajes"),
+            ("🛠️", "Herrajes", "Gestión de herrajes"),
             ("🪟", "Vidrios", "Gestión de vidrios"),
-            ("🚛", "Logística", "Gestión de logística y transporte"),
-            ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
+            ("🚚", "Logística", "Gestión de logística y transporte"),
+            ("📝", "Pedidos", "Solicitudes y órdenes de trabajo"),
             ("🛒", "Compras", "Gestión de compras y proveedores"),
-            ("🏢", "Administración", "Gestión administrativa y financiera"),
-            ("🛠️", "Mantenimiento", "Gestión de mantenimiento"),
-            ("🕵️", "Auditoría", "Auditoría y trazabilidad"),
-            ("👥", "Usuarios", "Gestión de personal y roles"),
+            ("💼", "Administración", "Gestión administrativa y financiera"),
+            ("🧰", "Mantenimiento", "Gestión de mantenimiento"),
+            ("🔎", "Auditoría", "Auditoría y trazabilidad"),
+            ("👤", "Usuarios", "Gestión de personal y roles"),
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
 
@@ -505,10 +517,10 @@ QPushButton:disabled {
 
         # Cards de estadísticas
         stats = [
-            ("📦", "Productos en Stock", "1,234", "#3498db"),
-            ("💰", "Facturación Mensual", "$45,678", "#2ecc71"),
-            ("🏗️", "Obras Activas", "23", "#e74c3c"),
-            ("📋", "Pedidos Pendientes", "56", "#f39c12"),
+            ("PROD", "Productos en Stock", "1,234", "#3498db"),
+            ("FACT", "Facturación Mensual", "$45,678", "#2ecc71"),
+            ("OBRA", "Obras Activas", "23", "#e74c3c"),
+            ("PED", "Pedidos Pendientes", "56", "#f39c12"),
         ]
 
         for i, (emoji, titulo, valor, color) in enumerate(stats):
@@ -519,7 +531,7 @@ QPushButton:disabled {
         welcome_widget = QWidget()
         welcome_layout = QVBoxLayout(welcome_widget)
 
-        welcome_title = QLabel("🎉 ¡Bienvenido a Rexus.app!")
+        welcome_title = QLabel("Bienvenido a Rexus.app!")
         welcome_title.setStyleSheet("""
             QLabel {
                 font-size: 24px;
@@ -537,8 +549,8 @@ QPushButton:disabled {
         Módulos disponibles: {len(self.modulos_permitidos)}
         
         [CHECK] Sistema de login funcionando correctamente
-        📱 Todos los módulos están listos para usar
-        🔧 Configuración de base de datos disponible
+        [APP] Todos los módulos están listos para usar
+        [CFG] Configuración de base de datos disponible
         """)
 
         welcome_info.setStyleSheet("""
@@ -1061,17 +1073,17 @@ QPushButton:disabled {
         layout.setContentsMargins(40, 40, 40, 40)
 
         icon_map = {
-            "Vidrios": "🪟",
-            "Herrajes": "🔧",
-            "Pedidos": "📋",
-            "Logística": "🚛",
-            "Usuarios": "👥",
-            "Auditoría": "🔍",
-            "Compras": "💳",
-            "Mantenimiento": "🛠️",
+            "Vidrios": "V",
+            "Herrajes": "H",
+            "Pedidos": "P",
+            "Logística": "L",
+            "Usuarios": "U",
+            "Auditoría": "Au",
+            "Compras": "C",
+            "Mantenimiento": "M",
         }
 
-        icon = icon_map.get(module_name, "📱")
+        icon = icon_map.get(module_name, "M")
 
         # Contenido centrado
         content_layout = QVBoxLayout()
@@ -1187,7 +1199,7 @@ def main():
         global main_window
         try:
             print(
-                f"🏗️ [SEGURIDAD] Creando MainWindow para usuario: {user_data['username']}"
+                f"[SEGURIDAD] Creando MainWindow para usuario: {user_data['username']}"
             )
             main_window = MainWindow(user_data, modulos_permitidos)
             main_window.actualizar_usuario_label(user_data)

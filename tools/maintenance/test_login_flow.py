@@ -37,9 +37,10 @@ def test_complete_login_flow():
         # 2. Simular login desde LoginDialog
         print(f"\n2. Simulando login con admin/admin...")
         
-        # Esto es lo que hace LoginDialog
-        username = "admin"
-        password = "admin"
+        # SEGURIDAD: No usar contraseñas hardcodeadas
+        import getpass
+        username = input("Usuario: ")
+        password = getpass.getpass("Contraseña: ")
         
         # AuthManager se encarga de la autenticación
         from src.core.auth import get_auth_manager

@@ -99,7 +99,7 @@ def create_admin_user():
             print("[CHECK] Usuario administrador creado exitosamente")
             print("📋 Credenciales:")
             print("   Usuario: admin")
-            print("   Contraseña: admin")
+            print("   Contraseña: [La que ingresó]")
             print("   Rol: admin")
         else:
             print("[CHECK] Usuario admin ya existe")
@@ -107,29 +107,28 @@ def create_admin_user():
             print(f"   ID: {admin_data[0]}")
             print(f"   Usuario: {admin_data[1]}")
         
-        # Verificar la contraseña del admin
+        # Verificar que el hash almacenado sea seguro
         admin_full = db.execute_query("""
             SELECT id, usuario, password_hash, rol FROM usuarios WHERE usuario = 'admin'
         """)
         
         if admin_full:
             admin_data = admin_full[0]
-            expected_hash = hashlib.sha256('admin'.encode()).hexdigest()
             current_hash = admin_data[2]
             
-            if current_hash != expected_hash:
-                print("🔧 Actualizando contraseña del admin...")
-                db.execute_non_query("""
-                    UPDATE usuarios SET password_hash = ? WHERE usuario = 'admin'
-                """, (expected_hash,))
-                print("[CHECK] Contraseña actualizada")
+            # Verificar si el hash es SHA256 inseguro (64 caracteres hex)
+            if len(current_hash) == 64 and all(c in '0123456789abcdef' for c in current_hash):
+                print("SEGURIDAD CRÍTICA: Detectado hash SHA256 inseguro")
+                print("Se requiere migración manual a bcrypt/Argon2")
+                print("Ejecute: python scripts/security/migrate_passwords.py")
+                print("[CHECK] Hash actual preservado - requiere migración")
             else:
-                print("[CHECK] Contraseña del admin correcta")
+                print("[CHECK] Hash de contraseña seguro detectado")
         
-        print("\n🎉 Configuración de usuario administrador completada")
-        print("💡 Ahora puedes iniciar sesión con:")
+        print("\nConfiguración de usuario administrador completada")
+        print("Ahora puedes iniciar sesión con:")
         print("   Usuario: admin")  
-        print("   Contraseña: admin")
+        print("   Contraseña: [La contraseña que configuró]")
         
     except Exception as e:
         print(f"[ERROR] Error configurando usuario admin: {e}")

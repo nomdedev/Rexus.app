@@ -36,7 +36,7 @@ class StyleManager:
     """Gestor centralizado de estilos y temas para la aplicación."""
     
     _instance = None
-    _current_theme = 'professional'
+    _current_theme = 'unified'
     _themes_path = Path('resources/qss')
     
     # Mapa de temas disponibles a archivos QSS  
@@ -46,7 +46,8 @@ class StyleManager:
         'dark': 'theme_dark_clean.qss',
         'minimal': 'theme_light_minimal_clean.qss',
         'optimized': 'theme_optimized_clean.qss',
-        'consolidated': 'consolidated_theme_clean.qss'
+        'consolidated': 'consolidated_theme_clean.qss',
+        'unified': 'unified_module_styles.qss'  # Nuevo estilo unificado
     }
     
     # Mapa de estilos específicos por módulo
@@ -104,10 +105,10 @@ class StyleManager:
             
             if apps_light_theme == 0:  # Dark mode
                 self._current_theme = 'dark'
-                print("[STYLE] ✓ Tema oscuro detectado en Windows - aplicando 'dark'")
+                print("[STYLE] Tema oscuro detectado en Windows - aplicando 'dark'")
             else:  # Light mode
                 self._current_theme = 'light' 
-                print("[STYLE] ✓ Tema claro detectado en Windows - aplicando 'light'")
+                print("[STYLE] Tema claro detectado en Windows - aplicando 'light'")
                 
         except (FileNotFoundError, OSError, ImportError):
             self._current_theme = 'professional'
@@ -122,10 +123,10 @@ class StyleManager:
             
             if result.returncode == 0 and 'Dark' in result.stdout:
                 self._current_theme = 'dark'
-                print("[STYLE] ✓ Tema oscuro detectado en macOS - aplicando 'dark'")
+                print("[STYLE] Tema oscuro detectado en macOS - aplicando 'dark'")
             else:
                 self._current_theme = 'light'
-                print("[STYLE] ✓ Tema claro detectado en macOS - aplicando 'light'")
+                print("[STYLE] Tema claro detectado en macOS - aplicando 'light'")
                 
         except (subprocess.CalledProcessError, FileNotFoundError):
             self._current_theme = 'professional'
@@ -143,7 +144,7 @@ class StyleManager:
                                       capture_output=True, text=True)
                 if result.returncode == 0 and ('dark' in result.stdout.lower() or 'adwaita-dark' in result.stdout.lower()):
                     self._current_theme = 'dark'
-                    print("[STYLE] ✓ Tema oscuro detectado en GNOME - aplicando 'dark'")
+                    print("[STYLE] Tema oscuro detectado en GNOME - aplicando 'dark'")
                     return
             
             # Intentar KDE
@@ -155,12 +156,12 @@ class StyleManager:
                         content = f.read()
                         if 'ColorScheme=Breeze Dark' in content or 'ColorScheme=BreezeDark' in content:
                             self._current_theme = 'dark'
-                            print("[STYLE] ✓ Tema oscuro detectado en KDE - aplicando 'dark'")
+                            print("[STYLE] Tema oscuro detectado en KDE - aplicando 'dark'")
                             return
             
             # Si llegamos aquí, usar tema claro por defecto en Linux
             self._current_theme = 'light'
-            print("[STYLE] ✓ Usando tema claro por defecto en Linux")
+            print("[STYLE] Usando tema claro por defecto en Linux")
             
         except Exception:
             self._current_theme = 'professional'
@@ -218,18 +219,43 @@ class StyleManager:
             logging.error(f"Error aplicando tema global '{theme_name}': {e}")
             return False
     
+    def apply_unified_module_style(self, widget: QWidget):
+        """Aplica el estilo unificado basado en Logística a cualquier widget/módulo."""
+        try:
+            if not widget:
+                return
+            
+            # Leer el archivo de estilos unificados
+            unified_style_path = self._themes_path / 'unified_module_styles.qss'
+            if unified_style_path.exists():
+                with open(unified_style_path, 'r', encoding='utf-8') as file:
+                    unified_styles = file.read()
+                
+                # Aplicar estilos al widget
+                widget.setStyleSheet(unified_styles)
+                logging.info(f"Estilos unificados aplicados a {widget.__class__.__name__}")
+                return True
+            else:
+                logging.warning("Archivo de estilos unificados no encontrado")
+                return False
+                
+        except Exception as e:
+            logging.error(f"Error aplicando estilos unificados: {e}")
+            return False
+    
     def get_module_styles(self) -> str:
         """Retorna estilos específicos para módulos."""
         return """
             /* Estilos específicos para módulos de Rexus */
             QWidget[moduleView="true"] {
-                background: #f8fafc;
+                background: #fafbfc;
                 border: none;
+                font-size: 11px;
             }
             
             /* Títulos de módulo estándar */
             QLabel[moduleTitle="true"] {
-                font-size: 16px;
+                font-size: 11px;
                 font-weight: bold;
                 color: white;
                 background: transparent;
@@ -239,11 +265,11 @@ class StyleManager:
             
             /* Paneles de control estándar */
             QFrame[controlPanel="true"] {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 8px;
-                margin: 5px;
-                padding: 10px;
+                background: #fafbfc;
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                margin: 4px;
+                padding: 6px;
             }
             
             /* Botones de acción principales */
@@ -580,14 +606,14 @@ class StyleManager:
                     current_styles = app.styleSheet()
                     new_styles = f"{current_styles}\n\n/* EMERGENCY FORM FIXES */\n{critical_styles}"
                     app.setStyleSheet(new_styles)
-                    print("[STYLE] ✓ Correcciones críticas de formularios aplicadas globalmente")
+                    print("[STYLE] Correcciones criticas de formularios aplicadas globalmente")
                     return True
             else:
                 # Aplicar a widget específico
                 current_styles = widget.styleSheet()
                 new_styles = f"{current_styles}\n{critical_styles}"
                 widget.setStyleSheet(new_styles)
-                print(f"[STYLE] ✓ Correcciones críticas aplicadas a {widget.__class__.__name__}")
+                print(f"[STYLE] Correcciones criticas aplicadas a {widget.__class__.__name__}")
                 return True
                 
         except Exception as e:
@@ -658,7 +684,7 @@ class StyleManager:
                 current_styles = app.styleSheet()
                 new_styles = f"{current_styles}\n{emergency_light_styles}"
                 app.setStyleSheet(new_styles)
-                print("[STYLE] 🚨 Tema de emergencia claro aplicado para formularios")
+                print("[STYLE] Tema de emergencia claro aplicado para formularios")
                 return True
         except Exception as e:
             print(f"[ERROR] Error aplicando tema de emergencia: {e}")
