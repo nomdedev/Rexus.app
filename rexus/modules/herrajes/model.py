@@ -305,3 +305,163 @@ class HerrajesModel:
                 "activo": True
             }
         ]
+
+    def crear_herraje(self, data: Dict) -> bool:
+        """Crea un nuevo herraje en la base de datos."""
+        try:
+            if not self.db_connection:
+                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                return False
+
+            cursor = self.db_connection.cursor()
+            
+            # Query de inserción
+            query = """
+                INSERT INTO herrajes (
+                    codigo, nombre, descripcion, categoria, proveedor,
+                    precio_unitario, stock_actual, stock_minimo, unidad_medida, activo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """
+            
+            params = (
+                data.get('codigo', ''),
+                data.get('nombre', ''),
+                data.get('descripcion', ''),
+                data.get('categoria', ''),
+                data.get('proveedor', ''),
+                float(data.get('precio_unitario', 0)),
+                int(data.get('stock_actual', 0)),
+                int(data.get('stock_minimo', 0)),
+                data.get('unidad_medida', 'unidad'),
+                bool(data.get('activo', True))
+            )
+            
+            cursor.execute(query, params)
+            self.db_connection.commit()
+            
+            print(f"[HERRAJES] Herraje creado: {data.get('codigo')}")
+            return True
+            
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error creando herraje: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+
+    def actualizar_herraje(self, codigo: str, data: Dict) -> bool:
+        """Actualiza un herraje existente."""
+        try:
+            if not self.db_connection:
+                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                return False
+
+            cursor = self.db_connection.cursor()
+            
+            # Query de actualización
+            query = """
+                UPDATE herrajes SET
+                    nombre = ?, descripcion = ?, categoria = ?, proveedor = ?,
+                    precio_unitario = ?, stock_actual = ?, stock_minimo = ?,
+                    unidad_medida = ?, activo = ?, fecha_actualizacion = GETDATE()
+                WHERE codigo = ?
+            """
+            
+            params = (
+                data.get('nombre', ''),
+                data.get('descripcion', ''),
+                data.get('categoria', ''),
+                data.get('proveedor', ''),
+                float(data.get('precio_unitario', 0)),
+                int(data.get('stock_actual', 0)),
+                int(data.get('stock_minimo', 0)),
+                data.get('unidad_medida', 'unidad'),
+                bool(data.get('activo', True)),
+                codigo
+            )
+            
+            cursor.execute(query, params)
+            rows_affected = cursor.rowcount
+            self.db_connection.commit()
+            
+            if rows_affected > 0:
+                print(f"[HERRAJES] Herraje actualizado: {codigo}")
+                return True
+            else:
+                print(f"[ERROR HERRAJES] No se encontró herraje con código: {codigo}")
+                return False
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error actualizando herraje: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+
+    def eliminar_herraje(self, codigo: str) -> bool:
+        """Elimina un herraje de la base de datos."""
+        try:
+            if not self.db_connection:
+                print("[ERROR HERRAJES] No hay conexión a la base de datos")
+                return False
+
+            cursor = self.db_connection.cursor()
+            
+            # Verificar si el herraje existe
+            cursor.execute("SELECT id FROM herrajes WHERE codigo = ?", (codigo,))
+            if not cursor.fetchone():
+                print(f"[ERROR HERRAJES] No se encontró herraje con código: {codigo}")
+                return False
+            
+            # Eliminar registros relacionados primero (si existen)
+            cursor.execute("DELETE FROM herrajes_obra WHERE herraje_id = (SELECT id FROM herrajes WHERE codigo = ?)", (codigo,))
+            
+            # Eliminar el herraje
+            cursor.execute("DELETE FROM herrajes WHERE codigo = ?", (codigo,))
+            rows_affected = cursor.rowcount
+            self.db_connection.commit()
+            
+            if rows_affected > 0:
+                print(f"[HERRAJES] Herraje eliminado: {codigo}")
+                return True
+            else:
+                print(f"[ERROR HERRAJES] No se pudo eliminar herraje: {codigo}")
+                return False
+                
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+
+    def obtener_herraje_por_codigo(self, codigo: str) -> Optional[Dict]:
+        """Obtiene un herraje específico por su código."""
+        try:
+            if not self.db_connection:
+                return None
+
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT codigo, nombre, descripcion, categoria, proveedor,
+                       precio_unitario, stock_actual, stock_minimo, unidad_medida, activo
+                FROM herrajes
+                WHERE codigo = ? AND activo = 1
+            """, (codigo,))
+            
+            row = cursor.fetchone()
+            if row:
+                return {
+                    "codigo": row[0],
+                    "nombre": row[1], 
+                    "descripcion": row[2],
+                    "categoria": row[3],
+                    "proveedor": row[4],
+                    "precio_unitario": float(row[5]) if row[5] else 0.0,
+                    "stock_actual": int(row[6]) if row[6] else 0,
+                    "stock_minimo": int(row[7]) if row[7] else 0,
+                    "unidad_medida": row[8] or "unidad",
+                    "activo": bool(row[9])
+                }
+            return None
+            
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error obteniendo herraje por código: {e}")
+            return None

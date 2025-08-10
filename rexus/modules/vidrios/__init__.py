@@ -1,41 +1,39 @@
 """
-Módulo de Gestión de Vidrios - Rexus.app (Refactorizado)
+Módulo de Gestión de Vidrios - Rexus.app
 
 Este módulo maneja todo lo relacionado con el inventario de vidrios:
-- Gestión de productos de vidrio (ProductosManager)
+- Gestión de productos de vidrio
 - Control de stock y validaciones
 - Precios y proveedores
-- Asignación a obras (ObrasManager)
-- Búsquedas y estadísticas (ConsultasManager)
-
-Arquitectura modular v2.0 con compatibilidad hacia atrás.
+- Asignación a obras
+- Búsquedas y estadísticas
 """
 
 # Exportar el modelo principal y vistas
 from .controller import VidriosController
 from .model import ModeloVidrios, VidriosModel
+from .view import VidriosView
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
-# Exportar modelo refactorizado
-from .model_refactorizado import ModeloVidriosRefactorizado
-from .submodules.consultas_manager import ConsultasManager
-from .submodules.obras_manager import ObrasManager
-
-# Exportar submódulos especializados
-from .submodules.productos_manager import ProductosManager
-from .view import VidriosView
+# Exportar submódulos especializados si existen
+try:
+    from .submodules.productos_manager import ProductosManager
+    from .submodules.obras_manager import ObrasManager
+    from .submodules.consultas_manager import ConsultasManager
+    _submodules_available = True
+except ImportError:
+    _submodules_available = False
 
 __all__ = [
-    # Compatibilidad hacia atrás
     "ModeloVidrios",
-    "VidriosModel",
+    "VidriosModel", 
     "VidriosView",
     "VidriosController",
-    # Nueva arquitectura modular
-    "ModeloVidriosRefactorizado",
-    "ProductosManager",
-    "ObrasManager",
-    "ConsultasManager",
 ]
 
-__all__ = ["VidriosModel", "VidriosView", "VidriosController"]
+if _submodules_available:
+    __all__.extend([
+        "ProductosManager",
+        "ObrasManager", 
+        "ConsultasManager",
+    ])

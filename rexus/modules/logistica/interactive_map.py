@@ -8,7 +8,7 @@ centrado en La Plata y alrededores.
 import folium
 import tempfile
 import os
-from typing import List, Dict, Tuple
+from typing import List, Dict, Tuple, Optional
 from PyQt6.QtCore import QUrl, pyqtSignal
 from PyQt6.QtWebEngineWidgets import QWebEngineView
 from PyQt6.QtWidgets import QWidget, QVBoxLayout, QHBoxLayout, QPushButton, QLabel, QComboBox
@@ -287,7 +287,7 @@ class InteractiveMapWidget(QWidget):
         except Exception as e:
             print(f"Error agregando marcadores de obras: {e}")
     
-    def add_combined_markers(self, services: List[Dict] = None, obras: List[Dict] = None):
+    def add_combined_markers(self, services: Optional[List[Dict]] = None, obras: Optional[List[Dict]] = None):
         """Agrega marcadores combinados de servicios y obras en el mapa."""
         try:
             # Crear nuevo mapa
@@ -404,6 +404,83 @@ class InteractiveMapWidget(QWidget):
         except Exception as e:
             print(f"Error agregando marcador personalizado: {e}")
     
+    def add_address_markers(self, direcciones: List[Dict]):
+        """Agrega marcadores para direcciones en el mapa."""
+        try:
+            # Crear nuevo mapa
+            m = folium.Map(
+                location=self.la_plata_coords,
+                zoom_start=self.current_zoom,
+                tiles='OpenStreetMap'
+            )
+            
+            # Agregar marcador principal de La Plata
+            folium.Marker(
+                self.la_plata_coords,
+                popup="<b>La Plata - Ciudad Principal</b><br>Centro de operaciones",
+                tooltip="La Plata",
+                icon=folium.Icon(color='red', icon='home')
+            ).add_to(m)
+            
+            # Agregar marcadores de direcciones
+            for direccion in direcciones:
+                if 'coords' in direccion and direccion['coords']:
+                    lat, lng = direccion['coords']
+                    
+                    # Crear popup con información de la dirección
+                    popup_text = f"""
+                    <b>📍 {direccion.get('tipo', 'Ubicación')}</b><br>
+                    <b>Dirección:</b> {direccion.get('direccion', 'N/A')}<br>
+                    <b>Ciudad:</b> {direccion.get('ciudad', 'N/A')}<br>
+                    <b>Descripción:</b> {direccion.get('descripcion', 'Sin descripción')}
+                    """
+                    
+                    # Color según tipo de ubicación
+                    tipo = direccion.get('tipo', '').lower()
+                    if 'almacén' in tipo or 'almacen' in tipo:
+                        color = 'blue'
+                        icon = 'warehouse'
+                    elif 'sucursal' in tipo:
+                        color = 'green'
+                        icon = 'building'
+                    elif 'depósito' in tipo or 'deposito' in tipo:
+                        color = 'orange'
+                        icon = 'archive'
+                    else:
+                        color = 'purple'
+                        icon = 'map-marker'
+                    
+                    folium.Marker(
+                        [lat, lng],
+                        popup=popup_text,
+                        tooltip=f"{direccion.get('tipo', 'Ubicación')}: {direccion.get('direccion', 'N/A')}",
+                        icon=folium.Icon(
+                            color=color,
+                            icon=icon if icon != 'warehouse' and icon != 'archive' else 'home'
+                        )
+                    ).add_to(m)
+            
+            # Agregar área de cobertura
+            folium.Circle(
+                location=self.la_plata_coords,
+                radius=20000,
+                popup="Área de Cobertura - Logística",
+                color="blue",
+                fill=True,
+                fillColor="lightblue",
+                fillOpacity=0.15,
+                weight=2
+            ).add_to(m)
+            
+            # Guardar y cargar mapa actualizado
+            self.save_and_load_map(m)
+            
+            # Actualizar información
+            self.info_label.setText(f"Mapa con {len(direcciones)} direcciones cargadas")
+            
+        except Exception as e:
+            print(f"Error agregando marcadores de direcciones: {e}")
+
     def save_and_load_map(self, folium_map):
         """Guarda el mapa de Folium como HTML y lo carga en WebView."""
         try:

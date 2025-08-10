@@ -24,30 +24,27 @@ try:
     from rexus.utils.unified_sanitizer import unified_sanitizer
     data_sanitizer = unified_sanitizer
 except ImportError:
-    try:
-                data_sanitizer = DataSanitizer()
-    except ImportError:
-        # Fallback básico
-        class FallbackSanitizer:
-            def sanitize_dict(self, data):
-                return data if data else {}
-            def sanitize_string(self, text):
-                return str(text) if text else ""
-            def sanitize_integer(self, value, min_val=None, max_val=None):
-                try:
-                    val = int(value)
-                    if min_val is not None:
-                        val = max(val, min_val)
-                    if max_val is not None:
-                        val = min(val, max_val)
-                    return val
-                except:
-                    return 0
-            def sanitize_sql_input(self, text):
-                return str(text).replace("'", "").replace('"', '') if text else ""
-            def sanitize_html(self, text):
-                return str(text) if text else ""
-        data_sanitizer = FallbackSanitizer()
+    # Fallback básico
+    class FallbackSanitizer:
+        def sanitize_dict(self, data):
+            return data if data else {}
+        def sanitize_string(self, text):
+            return str(text) if text else ""
+        def sanitize_integer(self, value, min_val=None, max_val=None):
+            try:
+                val = int(value)
+                if min_val is not None:
+                    val = max(val, min_val)
+                if max_val is not None:
+                    val = min(val, max_val)
+                return val
+            except:
+                return 0
+        def sanitize_sql_input(self, text):
+            return str(text).replace("'", "").replace('"', '') if text else ""
+        def sanitize_html(self, text):
+            return str(text) if text else ""
+    data_sanitizer = FallbackSanitizer()
 
 class ObrasModel:
     """
@@ -395,8 +392,8 @@ class ObrasModel:
             cursor.execute(query, (offset, limit))
             obras = cursor.fetchall()
             
-            # [LOCK] Query para total count usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'count_obras_activas')
+            # Query para total count 
+            sql = "SELECT COUNT(*) FROM obras WHERE activo = 1"
             cursor.execute(sql)
             total = cursor.fetchone()[0]
             
@@ -529,28 +526,33 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # Verificar que la obra existe usando SQL externo
-            sql_verificacion = self.sql_manager.get_query('obras', 'verificar_obra_codigo')
-            cursor.execute(sql_verificacion, {"obra_id": obra_id_limpio})
+            # Verificar que la obra existe
+            sql_verificacion = "SELECT id FROM obras WHERE id = ? AND activo = 1"
+            cursor.execute(sql_verificacion, (obra_id_limpio,))
             if not cursor.fetchone():
                 return False, "La obra no existe o está inactiva"
 
-            # [LOCK] Usar consulta SQL externa segura para actualización
-            params = {
-                "obra_id": obra_id_limpio,
-                "nombre": datos_limpios.get('nombre'),
-                "descripcion": datos_limpios.get('descripcion'),
-                "direccion": datos_limpios.get('direccion'),
-                "cliente": datos_limpios.get('cliente'),
-                "estado": datos_limpios.get('estado'),
-                "fecha_inicio": datos_limpios.get('fecha_inicio'),
-                "fecha_fin_estimada": datos_limpios.get('fecha_fin_estimada'),
-                "presupuesto_total": datos_limpios.get('presupuesto_total'),
-                "presupuesto_utilizado": datos_limpios.get('presupuesto_utilizado'),
-                "observaciones": datos_limpios.get('observaciones')
-            }
-            
-            sql = self.sql_manager.get_query('obras', 'actualizar_obra_completa')
+            # Actualizar obra completa
+            sql = """
+                UPDATE obras SET 
+                    nombre = ?, descripcion = ?, direccion = ?, cliente = ?,
+                    estado = ?, fecha_inicio = ?, fecha_fin_estimada = ?,
+                    presupuesto_total = ?, presupuesto_utilizado = ?, observaciones = ?
+                WHERE id = ?
+            """
+            params = (
+                datos_limpios.get('nombre'),
+                datos_limpios.get('descripcion'),
+                datos_limpios.get('direccion'),
+                datos_limpios.get('cliente'),
+                datos_limpios.get('estado'),
+                datos_limpios.get('fecha_inicio'),
+                datos_limpios.get('fecha_fin_estimada'),
+                datos_limpios.get('presupuesto_total'),
+                datos_limpios.get('presupuesto_utilizado'),
+                datos_limpios.get('observaciones'),
+                obra_id_limpio
+            )
             cursor.execute(sql, params)
             
             if cursor.rowcount == 0:
@@ -593,18 +595,18 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # [LOCK] Verificar que la obra existe usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'verificar_obra_codigo')
-            cursor.execute(sql, {"obra_id": obra_id_limpio})
+            # Verificar que la obra existe
+            sql = "SELECT codigo FROM obras WHERE id = ? AND activo = 1"
+            cursor.execute(sql, (obra_id_limpio,))
             result = cursor.fetchone()
             if not result:
                 return False, "La obra no existe o ya está eliminada"
             
             codigo_obra = result[0]
 
-            # [LOCK] Soft delete usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'eliminar_obra_logica')
-            cursor.execute(sql, {"obra_id": obra_id_limpio, "usuario": usuario_limpio})
+            # Soft delete
+            sql = "UPDATE obras SET activo = 0, fecha_eliminacion = GETDATE() WHERE id = ?"
+            cursor.execute(sql, (obra_id_limpio,))
             
             if cursor.rowcount == 0:
                 return False, "No se pudo eliminar la obra"
@@ -648,9 +650,9 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # Actualizar estado usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'update_estado_obra')
-            cursor.execute(sql, (estado_limpio, usuario_limpio, obra_id_limpio))
+            # Actualizar estado
+            sql = "UPDATE obras SET estado = ? WHERE id = ? AND activo = 1"
+            cursor.execute(sql, (estado_limpio, obra_id_limpio))
             
             if cursor.rowcount == 0:
                 return False, "No se pudo cambiar el estado de la obra"
@@ -707,8 +709,8 @@ class ObrasModel:
                     'presupuesto_total_acumulado': round(row[5] or 0, 2)
                 }
             
-            # [LOCK] Presupuesto total usando SQL externo
-            sql = self.sql_manager.get_query('obras', 'suma_presupuesto_total')
+            # Presupuesto total
+            sql = "SELECT SUM(presupuesto_total) FROM obras WHERE activo = 1"
             cursor.execute(sql)
             result = cursor.fetchone()[0]
             estadisticas['presupuesto_total'] = float(result) if result else 0.0

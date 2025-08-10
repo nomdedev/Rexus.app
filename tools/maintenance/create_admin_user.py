@@ -100,19 +100,26 @@ def create_admin_user():
             print(f"     Estado: {admin_data[5]}")
             print(f"     Email: {admin_data[6]}")
         
-        # 5. Probar autenticación
+        # 5. Probar autenticación con hash seguro
         print("5. Probando autenticación...")
-        test_hash = hashlib.sha256('admin'.encode()).hexdigest()
-        cursor.execute("""
-            SELECT id, usuario, rol FROM usuarios 
-            WHERE usuario = 'admin' AND password_hash = ?
-        """, (test_hash,))
+        from rexus.utils.password_security import verify_password_secure
         
-        auth_test = cursor.fetchone()
-        if auth_test:
-            print(f"   [OK] Autenticación exitosa: ID={auth_test[0]}, Usuario={auth_test[1]}, Rol={auth_test[2]}")
+        # Obtener hash almacenado
+        cursor.execute("""
+            SELECT id, usuario, rol, password_hash FROM usuarios 
+            WHERE usuario = 'admin'
+        """)
+        
+        admin_record = cursor.fetchone()
+        if admin_record:
+            stored_hash = admin_record[3]
+            # Verificar password usando función segura
+            if verify_password_secure(admin_password, stored_hash):
+                print(f"   [OK] Autenticación segura exitosa: ID={admin_record[0]}, Usuario={admin_record[1]}, Rol={admin_record[2]}")
+            else:
+                print("   ✗ Error en autenticación segura")
         else:
-            print("   ✗ Error en autenticación")
+            print("   ✗ Usuario admin no encontrado para prueba")
             
         conn.commit()
         cursor.close()

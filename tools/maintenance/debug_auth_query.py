@@ -91,10 +91,12 @@ def debug_auth_query():
         sys.path.insert(0, str(Path(__file__).parent.parent.parent))
         from rexus.utils.password_security import verify_password_secure
         
-        test_password = "admin"
+        # SEGURIDAD: No usar contraseñas hardcodeadas
+        import getpass
+        test_password = getpass.getpass("Ingrese contraseña para verificar: ")
         
         print(f"\n5. Verificación de contraseña (sistema seguro):")
-        print(f"   Password ingresado: '{test_password}'")
+        print(f"   Password ingresado: [OCULTO]")
         print(f"   Hash en BD: {user_record[2][:20]}...")
         
         try:

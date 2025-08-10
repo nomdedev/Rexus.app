@@ -33,13 +33,20 @@ class PasswordMigrator:
     def connect_database(self):
         """Conecta a la base de datos."""
         try:
+            # Usar variables de entorno para configuración segura
+            server = os.getenv('DB_SERVER', 'ITACHI\\SQLEXPRESS')
+            database = os.getenv('DB_USERS_DATABASE', 'users')
+            username = os.getenv('DB_USERNAME', 'sa')
+            password = os.getenv('DB_PASSWORD', '')
+            driver = os.getenv('DB_DRIVER', 'ODBC Driver 17 for SQL Server')
+            
             connection_string = (
-                "DRIVER={ODBC Driver 17 for SQL Server};"
-                "SERVER=localhost;"
-                "DATABASE=rexus_development;"
-                "UID=rexus_dev;"
-                "PWD=dev_password_123;"
-                "Trusted_Connection=no;"
+                f"DRIVER={{{driver}}};"
+                f"SERVER={server};"
+                f"DATABASE={database};"
+                f"UID={username};"
+                f"PWD={password};"
+                f"TrustServerCertificate=yes;"
             )
             
             self.connection = pyodbc.connect(connection_string)
