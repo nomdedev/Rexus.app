@@ -21,7 +21,7 @@ QLabel#label_feedback {
     color: #2563eb;
     font-size: 13px;
     font-weight: bold;
-    padding: 8px;
+    padding: 6px;
     }
 QPushButton {
     background: #e3f6fd;
@@ -75,7 +75,7 @@ QTableWidget QHeaderView::section {
     color: #1e40af;
     font-size: 10px;
     font-weight: 500;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }
 image: url(resources/icons/arrow-up-dark.svg);
     width: 12px;
@@ -87,7 +87,7 @@ QTableWidget::item {
     background-color: transparent;
     border-bottom: 1px solid #e2e8f0;
     color: #1a202c;
-    padding: 8px;
+    padding: 6px;
     }
 QTableWidget::item:selected {
     background-color: #bfdbfe;
@@ -108,7 +108,7 @@ QHeaderView#header_comparacion, QHeaderView#header_pedidos {
     color: #1e40af;
     font-size: 10px;
     font-weight: 500;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }
 QHeaderView#header_vidrios, QHeaderView#header_produccion {
     background-color: #e3f6fd;
@@ -117,7 +117,7 @@ QHeaderView#header_vidrios, QHeaderView#header_produccion {
     color: #1e40af;
     font-size: 10px;
     font-weight: 400;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }
 QHeaderView#header_logistica, QHeaderView#header_tareas, QHeaderView#header_notificaciones, QHeaderView#header_vidrios {
     background-color: #e3f6fd;
@@ -126,7 +126,7 @@ QHeaderView#header_logistica, QHeaderView#header_tareas, QHeaderView#header_noti
     color: #2563eb;
     font-size: 10px;
     font-weight: 400;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }
 QLineEdit#input_logistica, QLineEdit#input_logistica_prop {
     font-size: 12px;
@@ -201,7 +201,7 @@ QPushButton#boton_agregar {
     background: #e3f6fd;
     border-radius: 12px;
     color: #2563eb;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     margin-left: 16px;
     min-height: 48px;
@@ -219,7 +219,7 @@ QPushButton#boton_produccion {
     background: #e3f6fd;
     border-radius: 12px;
     color: #2563eb;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 600;
     min-height: 48px;
     min-width: 48px;
@@ -359,7 +359,7 @@ QTableWidget QHeaderView::section, QHeaderView::section {
     color: #2563eb;
     font-size: 11px;
     font-weight: 500;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }
 QTableWidget::item {
     border-radius: 6px;
@@ -373,5 +373,5 @@ QDialog {
     background: #ffffff;
     border-radius: 10px;
     border: 1.5px solid #e3e3e3;
-    padding: 8px 12px;
+    padding: 4px 8px;
     }

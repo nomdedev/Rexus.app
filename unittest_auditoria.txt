@@ -1,0 +1,8 @@
+INFO:root:Tema 'professional' cargado exitosamente
+INFO:root:Tema 'light' cargado exitosamente
+INFO:root:Tema 'dark' cargado exitosamente
+INFO:root:Tema 'minimal' cargado exitosamente
+INFO:root:Tema 'optimized' cargado exitosamente
+INFO:root:Tema 'consolidated' cargado exitosamente
+INFO:root:Tema 'unified' cargado exitosamente
+QWidget: Must construct a QApplication before a QWidget

@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM empleados WHERE activo = 1

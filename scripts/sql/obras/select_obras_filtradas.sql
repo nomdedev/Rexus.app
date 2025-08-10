@@ -1,0 +1,1 @@
+SELECT * FROM obras WHERE 1=1 ORDER BY fecha_inicio DESC

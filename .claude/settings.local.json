@@ -14,7 +14,22 @@
       "Bash(python:*)",
       "Bash(git add:*)",
       "mcp__ide__getDiagnostics",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(del:*)",
+      "Bash(move DOCUMENTACION_BASE_DATOS.md docs/database/)",
+      "Bash(pip install:*)",
+      "Bash(sed:*)",
+      "Bash(cp:*)",
+      "Bash(timeout:*)",
+      "Bash(set PYTHONPATH=.)",
+      "Bash(touch:*)",
+      "Bash(grep:*)",
+      "Bash(rg:*)",
+      "Bash(sqlcmd:*)",
+      "Bash(PYTHONPATH=. python scripts/test/test_logistica_ascii.py)",
+      "Bash(copy \"rexus\\modules\\compras\\view.py.backup_auth\" \"rexus\\modules\\compras\\view.py\")",
+      "Bash(move view.py view_generica_backup.py)",
+      "Bash(copy view.py view_original_backup.py)"
     ],
     "deny": []
   }

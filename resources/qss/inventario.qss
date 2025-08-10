@@ -1,0 +1,238 @@
+/* Estilos para el Módulo de Inventario - Rexus.app */
+/* Migración de estilos inline a archivo centralizado */
+
+/* === TABLA DE INVENTARIO === */
+QTableWidget#tabla_inventario {
+    gridline-color: #dee2e6;
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    font-size: 13px;
+}
+
+QTableWidget#tabla_inventario::item {
+    padding: 8px;
+    border-bottom: 1px solid #f1f3f4;
+}
+
+QTableWidget#tabla_inventario::item:selected {
+    background-color: #e7f3ff;
+    color: #0066cc;
+}
+
+QTableWidget#tabla_inventario::item:hover {
+    background-color: #f8f9fa;
+}
+
+QTableWidget#tabla_inventario QHeaderView::section {
+    background-color: #f8f9fa;
+    padding: 10px;
+    border: none;
+    border-bottom: 2px solid #dee2e6;
+    font-weight: bold;
+    color: #495057;
+}
+
+/* === CAMPOS DE ENTRADA === */
+QLineEdit#input_busqueda {
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-width: 200px;
+    background-color: white;
+}
+
+QLineEdit#input_busqueda:focus {
+    border-color: #28a745;
+}
+
+QLineEdit#input_busqueda::placeholder {
+    color: #6c757d;
+}
+
+/* === COMBO BOXES === */
+QComboBox#combo_categoria {
+    border: 2px solid #ced4da;
+    border-radius: 6px;
+    padding: 10px 12px;
+    font-size: 14px;
+    min-width: 180px;
+    background-color: white;
+}
+
+QComboBox#combo_categoria:focus {
+    border-color: #28a745;
+}
+
+QComboBox#combo_categoria::drop-down {
+    border: none;
+    width: 30px;
+}
+
+QComboBox#combo_categoria::down-arrow {
+    image: none;
+    border: none;
+    width: 12px;
+    height: 12px;
+}
+
+QComboBox#combo_categoria QAbstractItemView {
+    border: 1px solid #dee2e6;
+    background-color: white;
+    selection-background-color: #e7f3ff;
+}
+
+/* === PANEL DE ESTADÍSTICAS === */
+QGroupBox#panel_estadisticas {
+    font-weight: bold;
+    font-size: 14px;
+    border: 2px solid #17a2b8;
+    border-radius: 8px;
+    margin-top: 1ex;
+    padding-top: 10px;
+    background-color: white;
+}
+
+QGroupBox#panel_estadisticas::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px 0 5px;
+    color: #17a2b8;
+}
+
+/* === WIDGETS DE ESTADÍSTICAS === */
+QFrame.stat-widget {
+    background-color: white;
+    border: 1px solid #dee2e6;
+    border-radius: 8px;
+    padding: 10px;
+}
+
+QFrame.stat-widget:hover {
+    background-color: #f8f9fa;
+}
+
+QFrame.stat-widget-primary:hover {
+    border-color: #17a2b8;
+}
+
+QFrame.stat-widget-warning:hover {
+    border-color: #ffc107;
+}
+
+QFrame.stat-widget-danger:hover {
+    border-color: #dc3545;
+}
+
+QFrame.stat-widget-success:hover {
+    border-color: #28a745;
+}
+
+/* === BOTONES DE TABLA === */
+QPushButton.btn-tabla-accion {
+    background-color: #17a2b8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 6px 12px;
+    font-size: 11px;
+    font-weight: bold;
+}
+
+QPushButton.btn-tabla-accion:hover {
+    background-color: #138496;
+}
+
+QPushButton.btn-tabla-accion:pressed {
+    background-color: #117a8b;
+}
+
+/* === CONTROLES DE PAGINACIÓN === */
+QSpinBox#pagina_actual_spin {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    max-width: 60px;
+}
+
+QSpinBox#pagina_actual_spin:focus {
+    border-color: #28a745;
+}
+
+QPushButton.btn-paginacion {
+    border: 1px solid #ced4da;
+    border-radius: 4px;
+    padding: 4px 8px;
+    font-size: 12px;
+    background-color: white;
+}
+
+QPushButton.btn-paginacion:hover {
+    background-color: #e9ecef;
+}
+
+QPushButton.btn-paginacion:pressed {
+    background-color: #dee2e6;
+}
+
+QPushButton.btn-paginacion:disabled {
+    color: #6c757d;
+    background-color: #f8f9fa;
+    border-color: #dee2e6;
+}
+
+/* === LABELS INFORMATIVOS === */
+QLabel.info-label {
+    color: #6c757d;
+    font-size: 12px;
+    font-style: italic;
+}
+
+QLabel.stat-icon {
+    font-size: 18px;
+}
+
+QLabel.stat-title {
+    font-weight: bold;
+    font-size: 12px;
+}
+
+QLabel.stat-value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+/* === COLORES POR TIPO DE ESTADO === */
+.color-primary {
+    color: #17a2b8;
+}
+
+.color-warning {
+    color: #ffc107;
+}
+
+.color-danger {
+    color: #dc3545;
+}
+
+.color-success {
+    color: #28a745;
+}
+
+.background-primary {
+    background-color: #d1ecf1;
+}
+
+.background-warning {
+    background-color: #fff3cd;
+}
+
+.background-danger {
+    background-color: #f8d7da;
+}
+
+.background-success {
+    background-color: #d4edda;
+}
