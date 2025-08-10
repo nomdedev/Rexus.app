@@ -35,8 +35,8 @@ class DialogoNuevoTransporte(QDialog):
         self.init_ui()
         self.configurar_validaciones()
         
-        if self.es_edicion:
-            self.cargar_datos_transporte(transporte_id)
+        if self.es_edicion and self.transporte_id is not None:
+            self.cargar_datos_transporte(self.transporte_id)
 
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
