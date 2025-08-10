@@ -61,6 +61,9 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.init_ui()
+        
+        # Verificar si debe hacer auto-login en modo desarrollo
+        self.check_dev_auto_login()
 
     def init_ui(self):
         """Inicializa la interfaz de usuario minimalista."""
@@ -446,3 +449,45 @@ class LoginDialog(QDialog):
             self.reject()
         else:
             super().keyPressEvent(event)
+    
+    def check_dev_auto_login(self):
+        """
+        Verifica si debe hacer auto-login en modo desarrollo.
+        Se ejecuta automáticamente después de inicializar la UI.
+        """
+        try:
+            # Verificar si está habilitado el auto-login de desarrollo
+            auto_login_enabled = os.getenv('REXUS_DEV_AUTO_LOGIN', 'false').lower() == 'true'
+            dev_user = os.getenv('REXUS_DEV_USER', '')
+            dev_password = os.getenv('REXUS_DEV_PASSWORD', '')
+            
+            # Verificar modo desarrollo
+            is_dev_mode = (
+                '--dev' in sys.argv or
+                os.getenv('REXUS_ENV') == 'development' or
+                os.getenv('HOTRELOAD_ENABLED', '').lower() == 'true'
+            )
+            
+            if is_dev_mode and auto_login_enabled and dev_user and dev_password:
+                print(f"[DEV] Auto-login habilitado - Usuario: {dev_user}")
+                
+                # Pre-llenar campos
+                if hasattr(self, 'username_edit'):
+                    self.username_edit.setText(dev_user)
+                if hasattr(self, 'password_edit'):
+                    self.password_edit.setText(dev_password)
+                
+                # Ejecutar login automáticamente después de mostrar el diálogo
+                from PyQt6.QtCore import QTimer
+                QTimer.singleShot(500, self.auto_login_dev)
+                
+        except Exception as e:
+            print(f"[DEV] Error en auto-login: {e}")
+    
+    def auto_login_dev(self):
+        """Ejecuta el login automático para desarrollo."""
+        try:
+            print("[DEV] Ejecutando auto-login...")
+            self.handle_login()
+        except Exception as e:
+            print(f"[DEV] Error en auto-login: {e}")

@@ -4,7 +4,6 @@ Archivo generado automáticamente
 """
 
 from PyQt6.QtGui import QFont, QColor
-from PyQt6.QtCore import Qt
 
 class RexusStyles:
     """Estilos estandarizados para toda la aplicación"""
@@ -135,8 +134,8 @@ class RexusStyles:
             border: none;
         }}
         QHeaderView::section {{
-            background-color: {RexusStyles.COLOR_PRIMARIO};
-            color: white;
+            background-color: transparent;
+            color: #222;
             padding: 8px;
             border: none;
             font-weight: bold;

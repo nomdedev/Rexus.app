@@ -29,7 +29,7 @@ from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
     QFrame, QGroupBox, QHBoxLayout, QLabel, QPushButton, 
-    QTableWidget, QVBoxLayout, QWidget, QHeaderView
+    QTableWidget, QVBoxLayout, QHeaderView
 )
 
 
@@ -129,10 +129,11 @@ class StandardComponents:
                 color: white;
                 border: none;
                 border-radius: 6px;
-                padding: 10px 20px;
+                padding: 6px 12px;
                 font-weight: 500;
-                font-size: 13px;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 background: {cls.COLORS['secondary']};
@@ -164,10 +165,11 @@ class StandardComponents:
                 color: {cls.COLORS['dark']};
                 border: 2px solid {cls.COLORS['border']};
                 border-radius: 6px;
-                padding: 10px 20px;
+                padding: 6px 12px;
                 font-weight: 500;
-                font-size: 13px;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 border-color: {cls.COLORS['primary']};
@@ -201,10 +203,11 @@ class StandardComponents:
                 color: white;
                 border: none;
                 border-radius: 6px;
-                padding: 10px 20px;
+                padding: 6px 12px;
                 font-weight: 500;
-                font-size: 13px;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 background: #b91c1c;
@@ -236,10 +239,11 @@ class StandardComponents:
                 color: white;
                 border: none;
                 border-radius: 6px;
-                padding: 10px 20px;
+                padding: 6px 12px;
                 font-weight: 500;
-                font-size: 13px;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 background: #047857;
@@ -271,9 +275,11 @@ class StandardComponents:
                 color: white;
                 border: none;
                 border-radius: 6px;
-                padding: 8px 16px;
+                padding: 6px 12px;
                 font-weight: 500;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 background: {cls.COLORS['primary']};
@@ -303,9 +309,11 @@ class StandardComponents:
                 color: white;
                 border: none;
                 border-radius: 6px;
-                padding: 8px 16px;
+                padding: 6px 12px;
                 font-weight: 500;
-                min-height: 36px;
+                font-size: 12px;
+                min-height: 28px;
+                max-height: 32px;
             }}
             QPushButton:hover {{
                 background: #e68900;
@@ -323,62 +331,65 @@ class StandardComponents:
     
     @classmethod
     def create_standard_table(cls) -> QTableWidget:
-        """Crea una tabla estandarizada."""
+        """Crea una tabla ultra compacta y sin color de fondo."""
         table = QTableWidget()
-        
         table.setStyleSheet(f"""
             QTableWidget {{
-                background-color: white;
-                alternate-background-color: {cls.COLORS['light']};
+                background: transparent;
+                alternate-background-color: transparent;
                 border: 1px solid {cls.COLORS['border']};
-                border-radius: 8px;
+                border-radius: 4px;
                 gridline-color: {cls.COLORS['border']};
-                selection-background-color: {cls.COLORS['secondary']};
+                selection-background-color: #3b82f6;
                 selection-color: white;
-                font-size: 13px;
+                font-size: 11px;
+                font-weight: normal;
             }}
             QTableWidget::item {{
-                padding: 8px;
+                padding: 2px 4px;
                 border-bottom: 1px solid {cls.COLORS['border']};
+                font-size: 11px;
+                font-weight: normal;
+                background: transparent;
+                color: #1e293b;
             }}
             QTableWidget::item:selected {{
-                background: {cls.COLORS['secondary']};
+                background: #3b82f6;
                 color: white;
             }}
             QHeaderView::section {{
-                background: {cls.COLORS['primary']};
-                color: white;
-                padding: 12px 8px;
-                border: 1px solid {cls.COLORS['border']};
-                font-weight: bold;
-                font-size: 13px;
+                background: transparent;
+                color: #374151;
+                padding: 2px 4px;
+                border: none;
+                border-right: 1px solid #eee;
+                border-bottom: 1px solid #eee;
+                font-weight: normal;
+                font-size: 10px;
             }}
             QHeaderView::section:hover {{
-                background: {cls.COLORS['secondary']};
+                background: transparent;
             }}
             QScrollBar:vertical {{
-                background: {cls.COLORS['light']};
-                width: 12px;
-                border-radius: 6px;
+                background: transparent;
+                width: 8px;
+                border-radius: 4px;
             }}
             QScrollBar::handle:vertical {{
                 background: {cls.COLORS['border']};
-                border-radius: 6px;
-                min-height: 20px;
+                border-radius: 4px;
+                min-height: 10px;
             }}
             QScrollBar::handle:vertical:hover {{
-                background: {cls.COLORS['primary']};
+                background: #bdbdbd;
             }}
         """)
-        
-        # Configuraciones estándar de tabla
-        table.setAlternatingRowColors(True)
+        table.setAlternatingRowColors(False)
         table.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         table.setShowGrid(True)
         table.horizontalHeader().setStretchLastSection(True)
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         table.verticalHeader().setVisible(False)
-        
         return table
     
     @classmethod

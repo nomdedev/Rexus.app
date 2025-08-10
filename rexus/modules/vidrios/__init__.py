@@ -12,7 +12,7 @@ Este módulo maneja todo lo relacionado con el inventario de vidrios:
 # Exportar el modelo principal y vistas
 from .controller import VidriosController
 from .model import ModeloVidrios, VidriosModel
-from .view import VidriosView
+from .view import VidriosModernView as VidriosView
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Exportar submódulos especializados si existen

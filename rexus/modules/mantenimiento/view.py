@@ -157,14 +157,15 @@ class MantenimientoView(QWidget):
             }
             
             QHeaderView::section {
-                background-color: #f6f8fa;
-                color: #586069;
-                font-weight: 600;
-                font-size: 10px;
+                background: transparent;
+                color: #1e293b;
+                font-weight: bold;
+                font-size: 12px;
                 border: none;
-                border-right: 1px solid #e1e4e8;
-                border-bottom: 1px solid #e1e4e8;
-                padding: 6px 8px;
+                border-right: 1px solid #e2e8f0;
+                border-bottom: 2px solid #e2e8f0;
+                padding: 8px 6px;
+                text-align: left;
             }
             
             /* GroupBox minimalista */
@@ -297,10 +298,65 @@ class MantenimientoView(QWidget):
         if header:
             header.setStretchLastSection(True)
 
-        self.tabla_principal.setAlternatingRowColors(True)
+        # Desactivar filas alternadas para evitar problemas
+        self.tabla_principal.setAlternatingRowColors(False)
         self.tabla_principal.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
+        
+        # Cargar datos de ejemplo para verificar funcionalidad
+        self.cargar_datos_ejemplo()
+
+    def cargar_datos_ejemplo(self):
+        """Carga datos de ejemplo para mostrar funcionalidad."""
+        datos_ejemplo = [
+            ["1", "Mantenimiento Equipos", "Revisión general de equipos", "Pendiente", "Ver"],
+            ["2", "Backup Database", "Respaldo semanal de base de datos", "Completado", "Ver"],
+            ["3", "Limpieza Sistema", "Limpieza de archivos temporales", "En Progreso", "Ver"],
+            ["4", "Update Software", "Actualización de sistema", "Programado", "Ver"],
+        ]
+        
+        self.tabla_principal.setRowCount(len(datos_ejemplo))
+        for row, data in enumerate(datos_ejemplo):
+            for col, value in enumerate(data):
+                if col == 4:  # Columna de acciones
+                    btn = QPushButton(value)
+                    btn.setStyleSheet("""
+                        QPushButton {
+                            background: #3b82f6;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            padding: 4px 8px;
+                            font-size: 10px;
+                        }
+                        QPushButton:hover {
+                            background: #2563eb;
+                        }
+                    """)
+                    btn.clicked.connect(lambda checked, r=row: self.ver_detalle(r))
+                    self.tabla_principal.setCellWidget(row, col, btn)
+                else:
+                    item = QTableWidgetItem(str(value))
+                    if col == 3:  # Columna Estado
+                        if value == "Completado":
+                            item.setBackground(RexusColors.SUCCESS_LIGHT)
+                        elif value == "En Progreso":
+                            item.setBackground(RexusColors.WARNING_LIGHT)
+                        elif value == "Pendiente":
+                            item.setBackground(RexusColors.DANGER_LIGHT)
+                    self.tabla_principal.setItem(row, col, item)
+
+    def ver_detalle(self, row):
+        """Muestra detalle del elemento seleccionado."""
+        from PyQt6.QtWidgets import QMessageBox
+        item = self.tabla_principal.item(row, 1)
+        if item:
+            QMessageBox.information(
+                self, 
+                "Detalle de Mantenimiento",
+                f"Mostrando detalles de: {item.text()}"
+            )
 
     def aplicar_estilo(self):
         """Aplica el estilo general."""

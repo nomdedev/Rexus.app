@@ -29,7 +29,12 @@
       "Bash(PYTHONPATH=. python scripts/test/test_logistica_ascii.py)",
       "Bash(copy \"rexus\\modules\\compras\\view.py.backup_auth\" \"rexus\\modules\\compras\\view.py\")",
       "Bash(move view.py view_generica_backup.py)",
-      "Bash(copy view.py view_original_backup.py)"
+      "Bash(copy view.py view_original_backup.py)",
+      "Bash(set REXUS_ENV=development)",
+      "Bash(set REXUS_DEV_AUTO_LOGIN=true)",
+      "Bash(set REXUS_DEV_USER=admin)",
+      "Bash(set REXUS_DEV_PASSWORD=admin)",
+      "Bash(copy:*)"
     ],
     "deny": []
   }

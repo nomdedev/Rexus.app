@@ -69,13 +69,17 @@ QHeaderView {
     border: none;
     }
 QTableWidget QHeaderView::section {
-    background: #f1f5f9;
-    border-radius: 4px;
-    border: 1px solid #cbd5e1;
+    background: transparent;
+    border-radius: 0px;
+    border: none;
+    border-right: 1px solid #cbd5e1;
+    border-bottom: 1px solid #cbd5e1;
     color: #1e40af;
-    font-size: 10px;
+    font-size: 8px;
     font-weight: 500;
-    padding: 4px 8px;
+    padding: 2px 4px;
+    max-height: 18px;
+    min-height: 16px;
     }
 image: url(resources/icons/arrow-up-dark.svg);
     width: 12px;
