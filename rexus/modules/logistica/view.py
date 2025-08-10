@@ -574,43 +574,6 @@ class LogisticaView(QWidget):
 
         return panel
 
-    def actualizar_estado_botones(self):
-        """Actualiza el estado de los botones según la selección."""
-        try:
-            hay_seleccion = bool(self.tabla_transportes.currentRow() >= 0)
-            
-            # Habilitar/deshabilitar botones según selección
-            if hasattr(self, 'btn_editar_transporte'):
-                self.btn_editar_transporte.setEnabled(hay_seleccion)
-            if hasattr(self, 'btn_eliminar_transporte'):
-                self.btn_eliminar_transporte.setEnabled(hay_seleccion)
-                
-            # Cambiar tooltips dinámicamente
-            if hay_seleccion:
-                if hasattr(self, 'btn_editar_transporte'):
-                    self.btn_editar_transporte.setToolTip("Editar el transporte seleccionado")
-                if hasattr(self, 'btn_eliminar_transporte'):
-                    self.btn_eliminar_transporte.setToolTip("Eliminar el transporte seleccionado")
-            else:
-                if hasattr(self, 'btn_editar_transporte'):
-                    self.btn_editar_transporte.setToolTip("Seleccione un transporte para editar")
-                if hasattr(self, 'btn_eliminar_transporte'):
-                    self.btn_eliminar_transporte.setToolTip("Seleccione un transporte para eliminar")
-        except Exception as e:
-            print(f"Error actualizando estado de botones: {e}")
-
-    # Panel de estadísticas optimizado
-    def crear_panel_resumen_optimizado(self) -> QWidget:
-        """Crea el panel de resumen de estadísticas optimizado y compacto."""
-        panel = RexusGroupBox("📊 Resumen General")
-        layout = QGridLayout(panel)
-        layout.setContentsMargins(8, 8, 8, 8)  # Márgenes reducidos
-        layout.setHorizontalSpacing(6)  # Espaciado horizontal compacto
-        layout.setVerticalSpacing(6)   # Espaciado vertical compacto
-
-        # Métricas principales (más compactas y visual)
-        metricas = [
-            ("📦 Total Transportes", "156", "#3498db", "Todos los transportes registrados"),
             ("🚛 En Tránsito", "23", "#f39c12", "Transportes en curso"),
             ("✅ Entregados Hoy", "8", "#27ae60", "Entregas completadas hoy"),
             ("⏳ Pendientes", "12", "#e74c3c", "Transportes por asignar")
