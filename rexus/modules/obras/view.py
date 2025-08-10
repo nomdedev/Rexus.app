@@ -238,7 +238,7 @@ class ObrasView(QWidget):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Mensaje principal
-        mensaje = QLabel("[LOCK] Acceso Restringido")
+        mensaje = RexusLabel("[LOCK] Acceso Restringido")
         mensaje.setStyleSheet("""
             QLabel {
                 font-size: 24px;
@@ -250,7 +250,7 @@ class ObrasView(QWidget):
         mensaje.setAlignment(Qt.AlignmentFlag.AlignCenter)
         
         # Descripción
-        descripcion = QLabel(
+        descripcion = RexusLabel(
             "No tiene permisos para acceder al módulo de Obras.\n\n"
             "Contacte al administrador del sistema para solicitar acceso."
         )
@@ -708,26 +708,26 @@ class ObrasView(QWidget):
         layout = QFormLayout(grupo)
 
         # Labels para estadísticas
-        self.lbl_total_obras = QLabel("0")
+        self.lbl_total_obras = RexusLabel("0")
         self.lbl_total_obras.setStyleSheet("font-weight: bold; color: #3498db;")
         self.lbl_total_obras.setToolTip(
             "📈 Número total de obras registradas en el sistema"
         )
         layout.addRow("Total Obras:", self.lbl_total_obras)
 
-        self.lbl_obras_activas = QLabel("0")
+        self.lbl_obras_activas = RexusLabel("0")
         self.lbl_obras_activas.setStyleSheet("font-weight: bold; color: #27ae60;")
         self.lbl_obras_activas.setToolTip(
             "🚧 Obras actualmente en proceso de construcción"
         )
         layout.addRow("En Proceso:", self.lbl_obras_activas)
 
-        self.lbl_obras_finalizadas = QLabel("0")
+        self.lbl_obras_finalizadas = RexusLabel("0")
         self.lbl_obras_finalizadas.setStyleSheet("font-weight: bold; color: #2ecc71;")
         self.lbl_obras_finalizadas.setToolTip("[CHECK] Obras completadas exitosamente")
         layout.addRow("Finalizadas:", self.lbl_obras_finalizadas)
 
-        self.lbl_presupuesto_total = QLabel("$0")
+        self.lbl_presupuesto_total = RexusLabel("$0")
         self.lbl_presupuesto_total.setStyleSheet("font-weight: bold; color: #f39c12;")
         self.lbl_presupuesto_total.setToolTip(
             "💰 Suma total de presupuestos de todas las obras"
@@ -1324,7 +1324,7 @@ class DialogoObra(QDialog):
         )
         fecha_layout.addWidget(self.date_inicio)
 
-        fecha_layout.addWidget(QLabel("hasta"))
+        fecha_layout.addWidget(RexusLabel("hasta"))
 
         self.date_fin = QDateEdit()
         self.date_fin.setDate(QDate.currentDate().addDays(30))
@@ -1614,7 +1614,7 @@ class DetallesObraDialog(QDialog):
         layout = QVBoxLayout(self)
         
         # Título principal
-        titulo = QLabel(f"📋 {self.obra_datos.get('nombre', 'Obra sin nombre')}")
+        titulo = RexusLabel(f"📋 {self.obra_datos.get('nombre', 'Obra sin nombre')}")
         titulo.setStyleSheet("""
             QLabel {
                 font-size: 18px;
@@ -1634,29 +1634,29 @@ class DetallesObraDialog(QDialog):
         info_layout = QFormLayout()
         
         # Código
-        self.lbl_codigo = QLabel()
+        self.lbl_codigo = RexusLabel()
         self.lbl_codigo.setStyleSheet("font-weight: bold; color: #34495e; padding: 5px;")
         info_layout.addRow("📋 Código:", self.lbl_codigo)
         
         # Cliente
-        self.lbl_cliente = QLabel()
+        self.lbl_cliente = RexusLabel()
         self.lbl_cliente.setStyleSheet("color: #34495e; padding: 5px;")
         info_layout.addRow("👤 Cliente:", self.lbl_cliente)
         
         # Ubicación
-        self.lbl_ubicacion = QLabel()
+        self.lbl_ubicacion = RexusLabel()
         self.lbl_ubicacion.setStyleSheet("color: #34495e; padding: 5px;")
         info_layout.addRow("📍 Ubicación:", self.lbl_ubicacion)
         
         # Fechas
         fechas_layout = QHBoxLayout()
-        self.lbl_fecha_inicio = QLabel()
+        self.lbl_fecha_inicio = RexusLabel()
         self.lbl_fecha_inicio.setStyleSheet("color: #27ae60; font-weight: bold; padding: 5px;")
         fechas_layout.addWidget(self.lbl_fecha_inicio)
         
-        fechas_layout.addWidget(QLabel(" → "))
+        fechas_layout.addWidget(RexusLabel(" → "))
         
-        self.lbl_fecha_fin = QLabel()
+        self.lbl_fecha_fin = RexusLabel()
         self.lbl_fecha_fin.setStyleSheet("color: #e74c3c; font-weight: bold; padding: 5px;")
         fechas_layout.addWidget(self.lbl_fecha_fin)
         fechas_layout.addStretch()
@@ -1666,7 +1666,7 @@ class DetallesObraDialog(QDialog):
         info_layout.addRow("📅 Fechas:", fechas_widget)
         
         # Presupuesto
-        self.lbl_presupuesto = QLabel()
+        self.lbl_presupuesto = RexusLabel()
         self.lbl_presupuesto.setStyleSheet("""
             color: #27ae60; 
             font-weight: bold; 
@@ -1678,22 +1678,22 @@ class DetallesObraDialog(QDialog):
         info_layout.addRow("💰 Presupuesto:", self.lbl_presupuesto)
         
         # Tipo de obra
-        self.lbl_tipo = QLabel()
+        self.lbl_tipo = RexusLabel()
         self.lbl_tipo.setStyleSheet("color: #34495e; padding: 5px;")
         info_layout.addRow("🏢 Tipo:", self.lbl_tipo)
         
         # Prioridad
-        self.lbl_prioridad = QLabel()
+        self.lbl_prioridad = RexusLabel()
         info_layout.addRow("⚡ Prioridad:", self.lbl_prioridad)
         
         # Estado
-        self.lbl_estado = QLabel()
+        self.lbl_estado = RexusLabel()
         info_layout.addRow("[CHART] Estado:", self.lbl_estado)
         
         layout.addLayout(info_layout)
         
         # Observaciones
-        obs_label = QLabel("📝 Observaciones:")
+        obs_label = RexusLabel("📝 Observaciones:")
         obs_label.setStyleSheet("font-weight: bold; margin-top: 15px;")
         layout.addWidget(obs_label)
         

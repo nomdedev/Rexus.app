@@ -320,12 +320,18 @@ class MainWindow(QMainWindow):
         self._create_sidebar(main_layout)
         self._create_main_content(main_layout)
 
-        # Aplicar estilos
-        self.setStyleSheet("""
-            QMainWindow {
-                background-color: #f8f9fa;
-            }
-        """)
+        # Aplicar estilos respetando el theme manager
+        if self.style_manager:
+            # No aplicar estilos inline que sobrescriban el theme manager
+            # El StyleManager ya maneja los colores de fondo apropiados
+            pass
+        else:
+            # Solo si no hay StyleManager disponible
+            self.setStyleSheet("""
+                QMainWindow {
+                    background-color: #f8f9fa;
+                }
+            """)
 
     def _create_sidebar(self, main_layout):
         """Crea la barra lateral con módulos"""
