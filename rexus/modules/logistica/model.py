@@ -22,12 +22,10 @@ from decimal import Decimal
 
 from rexus.utils.demo_data_generator import DemoDataGenerator
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
-from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.auth_manager import AuthManager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 class LogisticaModel:
     """
@@ -73,11 +71,10 @@ class LogisticaModel:
                 self.tabla_obras,
             ]
 
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'verificar_tabla_existe')
             for tabla in tablas:
-                cursor.execute(
-                    "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                    (tabla,),
-                )
+                cursor.execute(query, (tabla,))
                 if cursor.fetchone():
                     print(f"[LOGÍSTICA] Tabla '{tabla}' verificada correctamente.")
                 else:
@@ -198,14 +195,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_transportes)}]
-                (codigo, tipo, proveedor, capacidad_kg, capacidad_m3, costo_km,
-                 disponible, observaciones, activo, fecha_creacion, fecha_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'crear_transporte')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[transportes]', f'[{self._validate_table_name(self.tabla_transportes)}]')
 
             cursor.execute(
                 query,
@@ -221,8 +214,9 @@ class LogisticaModel:
                 ),
             )
 
-            # Obtener ID del transporte creado
-            cursor.execute("SELECT @@IDENTITY")
+            # [LOCK] MIGRADO: Obtener ID del transporte creado usando consulta externa
+            id_query = self.sql_manager.get_query('logistica', 'obtener_ultimo_id')
+            cursor.execute(id_query)
             transporte_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
@@ -252,14 +246,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                UPDATE [{self._validate_table_name(self.tabla_transportes)}]
-                SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
-                    costo_km = ?, disponible = ?, observaciones = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'actualizar_transporte')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[transportes]', f'[{self._validate_table_name(self.tabla_transportes)}]')
 
             cursor.execute(
                 query,
@@ -367,15 +357,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_entregas)}]
-                (obra_id, transporte_id, fecha_programada, direccion_entrega,
-                 contacto, telefono, estado, observaciones, costo_envio,
-                 usuario_creacion, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'crear_entrega')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
 
             cursor.execute(
                 query,
@@ -393,8 +378,9 @@ class LogisticaModel:
                 ),
             )
 
-            # Obtener ID de la entrega creada
-            cursor.execute("SELECT @@IDENTITY")
+            # [LOCK] MIGRADO: Obtener ID de la entrega creada usando consulta externa
+            id_query = self.sql_manager.get_query('logistica', 'obtener_ultimo_id')
+            cursor.execute(id_query)
             entrega_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
@@ -425,23 +411,14 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Si se marca como entregada, agregar fecha de entrega
+            # [LOCK] MIGRADO: Si se marca como entregada, agregar fecha de entrega
             if nuevo_estado == "ENTREGADA":
-                query = (
-                    """
-                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
-                    SET estado = ?, fecha_entrega = GETDATE(), observaciones = ?
-                    WHERE id = ?
-                """
-                )
+                query = self.sql_manager.get_query('logistica', 'actualizar_estado_entrega_con_fecha')
             else:
-                query = (
-                    """
-                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
-                    SET estado = ?, observaciones = ?
-                    WHERE id = ?
-                """
-                )
+                query = self.sql_manager.get_query('logistica', 'actualizar_estado_entrega_sin_fecha')
+            
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
 
             cursor.execute(query, (nuevo_estado, observaciones, entrega_id))
 
@@ -475,16 +452,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                SELECT 
-                    d.id, d.entrega_id, d.producto, d.cantidad, d.peso_kg,
-                    d.volumen_m3, d.observaciones
-                FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] d
-                WHERE d.entrega_id = ?
-                ORDER BY d.producto
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'obtener_detalle_entrega')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[detalle_entregas]', f'[{self._validate_table_name(self.tabla_detalle_entregas)}]')
 
             cursor.execute(query, (entrega_id,))
             columnas = [column[0] for column in cursor.description]
@@ -518,13 +489,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_detalle_entregas)}]
-                (entrega_id, producto, cantidad, peso_kg, volumen_m3, observaciones)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'agregar_producto_entrega')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[detalle_entregas]', f'[{self._validate_table_name(self.tabla_detalle_entregas)}]')
 
             cursor.execute(
                 query,
@@ -538,8 +506,9 @@ class LogisticaModel:
                 ),
             )
 
-            # Obtener ID del detalle creado
-            cursor.execute("SELECT @@IDENTITY")
+            # [LOCK] MIGRADO: Obtener ID del detalle creado usando consulta externa
+            id_query = self.sql_manager.get_query('logistica', 'obtener_ultimo_id')
+            cursor.execute(id_query)
             detalle_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
@@ -608,43 +577,28 @@ class LogisticaModel:
             cursor.execute(query_disponibles)
             estadisticas["transportes_disponibles"] = cursor.fetchone()[0]
 
-            # Entregas por estado
-            cursor.execute(
-                """
-                SELECT estado, COUNT(*) as cantidad
-                FROM [{self._validate_table_name(self.tabla_entregas)}]
-                GROUP BY estado
-            """
-            )
+            # [LOCK] MIGRADO: Entregas por estado - SQL externo
+            query_estado = self.sql_manager.get_query('logistica', 'estadisticas_entregas_por_estado')
+            query_estado = query_estado.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
+            cursor.execute(query_estado)
             estadisticas["entregas_por_estado"] = dict(cursor.fetchall())
 
-            # Entregas del mes actual
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
-                WHERE MONTH(fecha_programada) = MONTH(GETDATE())
-                AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """
-            )
+            # [LOCK] MIGRADO: Entregas del mes actual - SQL externo
+            query_mes = self.sql_manager.get_query('logistica', 'contar_entregas_mes_actual')
+            query_mes = query_mes.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
+            cursor.execute(query_mes)
             estadisticas["entregas_mes_actual"] = cursor.fetchone()[0]
 
-            # Entregas pendientes
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
-                WHERE estado IN ('PROGRAMADA', 'EN_TRANSITO')
-            """
-            )
+            # [LOCK] MIGRADO: Entregas pendientes - SQL externo
+            query_pendientes = self.sql_manager.get_query('logistica', 'contar_entregas_pendientes')
+            query_pendientes = query_pendientes.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
+            cursor.execute(query_pendientes)
             estadisticas["entregas_pendientes"] = cursor.fetchone()[0]
 
-            # Costo total de envíos del mes
-            cursor.execute(
-                """
-                SELECT SUM(costo_envio) FROM [{self._validate_table_name(self.tabla_entregas)}]
-                WHERE MONTH(fecha_programada) = MONTH(GETDATE())
-                AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """
-            )
+            # [LOCK] MIGRADO: Costo total de envíos del mes - SQL externo
+            query_costo = self.sql_manager.get_query('logistica', 'costo_envios_mes_actual')
+            query_costo = query_costo.replace('[entregas]', f'[{self._validate_table_name(self.tabla_entregas)}]')
+            cursor.execute(query_costo)
             resultado = cursor.fetchone()[0]
             estadisticas["costo_envios_mes"] = float(resultado) if resultado else 0.0
 
@@ -667,14 +621,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                SELECT id, nombre, direccion, estado
-                FROM [{self._validate_table_name(self.tabla_obras)}]
-                WHERE activo = 1 AND estado != 'TERMINADA'
-                ORDER BY nombre
-            """
-            )
+            # [LOCK] MIGRADO: Usar consulta SQL externa
+            query = self.sql_manager.get_query('logistica', 'obtener_obras_disponibles')
+            # Reemplazar placeholder de tabla con validación
+            query = query.replace('[obras]', f'[{self._validate_table_name(self.tabla_obras)}]')
 
             cursor.execute(query)
             columnas = [column[0] for column in cursor.description]
@@ -710,15 +660,10 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Obtener información del transporte
-            cursor.execute(
-                """
-                SELECT costo_km, capacidad_kg, capacidad_m3
-                FROM [{self._validate_table_name(self.tabla_transportes)}]
-                WHERE id = ?
-            """,
-                (transporte_id,),
-            )
+            # [LOCK] MIGRADO: Obtener información del transporte usando consulta externa
+            query_transporte = self.sql_manager.get_query('logistica', 'obtener_info_transporte')
+            query_transporte = query_transporte.replace('[transportes]', f'[{self._validate_table_name(self.tabla_transportes)}]')
+            cursor.execute(query_transporte, (transporte_id,))
 
             resultado = cursor.fetchone()
             if not resultado:

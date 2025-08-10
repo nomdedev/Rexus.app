@@ -797,6 +797,21 @@ La unificación de estilos visuales ha sido registrada como tarea crítica con:
 
 ---
 
+
+## 🔲 Revisión de botones y controles en vistas (UI/UX)
+
+### Hallazgos y recomendaciones (10 agosto 2025)
+
+- Se detectaron botones implementados solo como variables locales en algunos módulos (por ejemplo, logística: `btn_nuevo_servicio`, `btn_editar_servicio`, `btn_detalle`, `btn_cerrar`, `btn_buscar`).
+- Si un botón debe ser accedido fuera del método donde se crea (por ejemplo, desde el controlador o para cambiar su estado), debe ser declarado como atributo de clase (`self.btn_xxx`).
+- Los botones locales solo son válidos si se usan exclusivamente en el contexto donde se crean (por ejemplo, en diálogos o layouts temporales).
+- Se recomienda revisar todos los módulos principales y:
+  - Convertir en atributos los botones que deban ser accedidos globalmente.
+  - Eliminar botones y controles que no se usan en ningún método ni controlador.
+  - Documentar buenas prácticas para la creación y uso de botones en la UI.
+- Caso concreto detectado en logística: revisar y mejorar la declaración de los botones mencionados.
+
+---
 ## ❗ PROBLEMAS MENORES RESTANTES (10 agosto 2025)
 
 ### 1. Archivos de respaldo no eliminados (MENOR - LIMPIEZA)
@@ -819,43 +834,7 @@ La unificación de estilos visuales ha sido registrada como tarea crítica con:
 
 ---
 
-## 📊 RESUMEN ACTUALIZADO DEL SISTEMA
+## 🚩 Problemas detectados en módulo Logística (10/08/2025)
 
-### Estado General: 🟢 SISTEMA COMPLETAMENTE FUNCIONAL Y 100% UNIFICADO
-- **Puntuación actual**: **98/100** - Excelente funcionalidad con uniformidad visual COMPLETA
-- **Módulos funcionales**: 12/12 (100%) 
-- **Errores críticos**: 0
-- **Problemas críticos**: 0 (todos resueltos)
-- **Uniformidad visual**: 100% (todos los módulos con mismo estilo - VERIFICADO)
-- **Errores de importación**: 0 (usuarios, vidrios, inventario corregidos)
-- **Problemas menores**: 3 (solo limpieza/organización - no afectan funcionalidad)
-
-### Prioridades Actualizadas:
-1. **🟡 OPCIONAL**: Limpieza de archivos backup
-2. **🟡 OPCIONAL**: Completar migración SQL en archivos backup  
-3. **🟡 OPCIONAL**: Limpieza de warnings informativos
-4. **🟢 COMPLETADO**: Todos los problemas críticos de UX resueltos
-
-### ✅ Lo que YA está completamente funcionando:
-- ✅ Todos los módulos cargan sin errores
-- ✅ Sistema de autenticación consistente y funcional
-- ✅ Formularios con labels claros y visibles
-- ✅ Tamaños visuales optimizados (40-50% más densidad)
-- ✅ Base de datos completamente funcional
-- ✅ Interfaz con soporte automático de tema oscuro/claro
-- ✅ Migración SQL en archivos principales (265 archivos .sql)
-- ✅ Sistema de auditoría completo
-- ✅ Separación MVC implementada
-- ✅ Sanitización de datos unificada
-
-### 🎯 LOGROS PRINCIPALES DE ESTA SESIÓN:
-1. **Problemas de autenticación eliminados**: Sin más mensajes contradictorios ✅
-2. **Labels de formularios legibles**: Emojis eliminados, contraste mejorado ✅
-3. **Interfaz completamente optimizada**: Botones 69% más pequeños, densidad aumentada 40-50% ✅
-4. **Uniformidad visual TOTAL**: Todos los 12 módulos usan el mismo estilo basado en Logística ✅
-5. **Métodos de estilo universales**: Cada módulo tiene su método de aplicación de estilos ✅
-6. **Correcciones de importación**: Todos los errores de imports en usuarios, vidrios, inventario solucionados ✅
-7. **Verificación automatizada**: Script de validación implementado con 100% de éxito ✅
-8. **Aplicación ejecutable**: Sistema completo funcionando sin errores críticos ✅
-
-**Este checklist debe ser revisado y actualizado tras cada ciclo de auditoría, cambio mayor en la arquitectura o revisión de experiencia de usuario.**
+- Problemas de contraste visual: varios elementos (botones, textos, headers, fondos) no cumplen con estándares de accesibilidad y dificultan la lectura en modo oscuro y claro. Requiere revisión y ajuste de colores para mejorar la legibilidad y accesibilidad.
+- Error SQL en consulta de entregas: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near the keyword 'ORDER'. (156) (SQLExecDirectW)"). Revisar y corregir la consulta SQL utilizada en `logistica.obtener_entregas_base.sql`.
