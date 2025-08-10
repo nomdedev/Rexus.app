@@ -157,7 +157,7 @@ class TestExampleComponent:
         # Placeholder assertion para template
         assert True, "Template - implementar test real"
     
-    @patch('rexus.utils.logger')
+    @patch('logging.getLogger')
     def test_logging_se_ejecuta_en_operaciones_criticas(self, mock_logger, mock_db):
         """
         Test que verifica el logging en operaciones críticas.
