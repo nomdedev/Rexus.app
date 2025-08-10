@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="6" skipped="0" tests="6" time="0.249" timestamp="2025-08-10T10:20:49.187932" hostname="Itachi"><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_lista_obras_rendering_con_mocks" time="0.002"><failure message="TypeError: TestObrasVisualHybrid.test_lista_obras_rendering_con_mocks() missing 3 required positional arguments: 'self', 'qapp', and 'obras_mock_data'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestObrasVisualHybrid.test_lista_obras_rendering_con_mocks() missing 3 required positional arguments: 'self', 'qapp', and 'obras_mock_data'</failure></testcase><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_formulario_creacion_obra_con_mocks" time="0.001"><failure message="TypeError: TestObrasVisualHybrid.test_formulario_creacion_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestObrasVisualHybrid.test_formulario_creacion_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_asignacion_materiales_obra_con_mocks" time="0.001"><failure message="TypeError: TestObrasVisualHybrid.test_asignacion_materiales_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestObrasVisualHybrid.test_asignacion_materiales_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_seguimiento_progreso_obra_con_mocks" time="0.002"><failure message="TypeError: TestObrasVisualHybrid.test_seguimiento_progreso_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestObrasVisualHybrid.test_seguimiento_progreso_obra_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_flujo_obras_datos_reales" time="0.002"><failure message="TypeError: TestObrasVisualHybrid.test_flujo_obras_datos_reales() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestObrasVisualHybrid.test_flujo_obras_datos_reales() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_obras_visual_hybrid.TestObrasVisualHybrid" name="test_responsive_obras_interface_mock" time="0.034"><failure message="AttributeError: &lt;module 'rexus.modules.obras.view' from 'C:\\Users\\itachi\\Desktop\\martin\\Rexus.app\\rexus\\modules\\obras\\view.py'&gt; does not have the attribute 'get_auth_manager'">tests\visual\test_obras_visual_hybrid.py:528: in test_responsive_obras_interface_mock
+    with patch('rexus.modules.obras.view.get_auth_manager') as mock_auth:
+C:\Python310\lib\unittest\mock.py:1437: in __enter__
+    original, local = self.get_original()
+C:\Python310\lib\unittest\mock.py:1410: in get_original
+    raise AttributeError(
+E   AttributeError: &lt;module 'rexus.modules.obras.view' from 'C:\\Users\\itachi\\Desktop\\martin\\Rexus.app\\rexus\\modules\\obras\\view.py'&gt; does not have the attribute 'get_auth_manager'</failure></testcase></testsuite></testsuites>

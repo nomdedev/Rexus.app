@@ -1,0 +1,110 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reporte Tests Visuales Híbridos - Rexus.app</title>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .header { background: #2c3e50; color: white; padding: 20px; border-radius: 5px; }
+        .summary { display: flex; gap: 20px; margin: 20px 0; }
+        .metric { background: #ecf0f1; padding: 15px; border-radius: 5px; flex: 1; text-align: center; }
+        .metric h3 { margin: 0; color: #2c3e50; }
+        .metric .value { font-size: 24px; font-weight: bold; color: #27ae60; }
+        .module { margin: 20px 0; padding: 15px; border: 1px solid #bdc3c7; border-radius: 5px; }
+        .module h3 { color: #2c3e50; margin-top: 0; }
+        .progress-bar { background: #ecf0f1; height: 20px; border-radius: 10px; overflow: hidden; }
+        .progress-fill { background: #27ae60; height: 100%; }
+        .failed { color: #e74c3c; }
+        .passed { color: #27ae60; }
+        .skipped { color: #f39c12; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🎨 Reporte Tests Visuales Híbridos</h1>
+        <p>Estrategia 80% Mocks / 20% Datos Reales - Rexus.app</p>
+        <p>Ejecutado: 2025-08-10 10:20:49</p>
+    </div>
+    
+    <div class="summary">
+        <div class="metric">
+            <h3>Total Tests</h3>
+            <div class="value">3</div>
+        </div>
+        <div class="metric">
+            <h3>Pasaron</h3>
+            <div class="value passed">0</div>
+        </div>
+        <div class="metric">
+            <h3>Fallaron</h3>
+            <div class="value failed">3</div>
+        </div>
+        <div class="metric">
+            <h3>Omitidos</h3>
+            <div class="value skipped">0</div>
+        </div>
+        <div class="metric">
+            <h3>Tiempo Total</h3>
+            <div class="value">1.9s</div>
+        </div>
+    </div>
+    
+    <h2>📊 Resultados por Módulo</h2>
+
+    <div class="module">
+        <h3>🔧 USUARIOS</h3>
+        <p><strong>Tests Mock:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">1 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tests Datos Reales:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">0 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tiempo:</strong> 1.08s</p>
+        <p><strong>Cobertura Visual:</strong> 5 componentes, 
+           8 interacciones</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 0.0%"></div>
+        </div>
+        <p>Éxito: 0.0%</p>
+    </div>
+
+    <div class="module">
+        <h3>🔧 INVENTARIO</h3>
+        <p><strong>Tests Mock:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">1 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tests Datos Reales:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">0 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tiempo:</strong> 0.49s</p>
+        <p><strong>Cobertura Visual:</strong> 5 componentes, 
+           8 interacciones</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 0.0%"></div>
+        </div>
+        <p>Éxito: 0.0%</p>
+    </div>
+
+    <div class="module">
+        <h3>🔧 OBRAS</h3>
+        <p><strong>Tests Mock:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">1 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tests Datos Reales:</strong> <span class="passed">0 ✅</span> 
+           <span class="failed">0 ❌</span> 
+           <span class="skipped">0 ⏭️</span></p>
+        <p><strong>Tiempo:</strong> 0.37s</p>
+        <p><strong>Cobertura Visual:</strong> 5 componentes, 
+           8 interacciones</p>
+        
+        <div class="progress-bar">
+            <div class="progress-fill" style="width: 0.0%"></div>
+        </div>
+        <p>Éxito: 0.0%</p>
+    </div>
+
+</body>
+</html>

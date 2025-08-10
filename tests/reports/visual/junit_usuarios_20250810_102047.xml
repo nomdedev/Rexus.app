@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites><testsuite name="pytest" errors="0" failures="5" skipped="0" tests="6" time="0.717" timestamp="2025-08-10T10:20:47.867834" hostname="Itachi"><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_tabla_usuarios_rendering_con_mocks" time="0.140"><failure message="TypeError: TestUsuariosVisualHybrid.test_tabla_usuarios_rendering_con_mocks() missing 3 required positional arguments: 'self', 'qapp', and 'usuarios_mock_data'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestUsuariosVisualHybrid.test_tabla_usuarios_rendering_con_mocks() missing 3 required positional arguments: 'self', 'qapp', and 'usuarios_mock_data'</failure></testcase><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_dialogo_usuario_validacion_con_mocks" time="0.002"><failure message="TypeError: TestUsuariosVisualHybrid.test_dialogo_usuario_validacion_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestUsuariosVisualHybrid.test_dialogo_usuario_validacion_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_interfaz_permisos_con_mocks" time="0.002"><failure message="TypeError: TestUsuariosVisualHybrid.test_interfaz_permisos_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:238: in run_visual_test
+    return self._run_with_mock_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:249: in _run_with_mock_data
+    result = test_func(**kwargs)
+E   TypeError: TestUsuariosVisualHybrid.test_interfaz_permisos_con_mocks() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_flujo_completo_usuario_datos_reales" time="0.001"><failure message="TypeError: TestUsuariosVisualHybrid.test_flujo_completo_usuario_datos_reales() missing 2 required positional arguments: 'self' and 'qapp'">tests\strategies\hybrid_visual_testing.py:307: in wrapper
+    return runner.run_visual_test(test_func, actual_test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:236: in run_visual_test
+    return self._run_with_real_data(test_func, test_name, **kwargs)
+tests\strategies\hybrid_visual_testing.py:265: in _run_with_real_data
+    result = test_func(**kwargs)
+E   TypeError: TestUsuariosVisualHybrid.test_flujo_completo_usuario_datos_reales() missing 2 required positional arguments: 'self' and 'qapp'</failure></testcase><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_performance_tabla_usuarios_grandes_cantidades" time="0.265" /><testcase classname="visual.test_usuarios_visual_hybrid.TestUsuariosVisualHybrid" name="test_responsive_design_diferentes_resoluciones" time="0.009"><failure message="assert False&#10; +  where False = &lt;built-in method isVisible of QTableWidget object at 0x000001A28F7B9D80&gt;()&#10; +    where &lt;built-in method isVisible of QTableWidget object at 0x000001A28F7B9D80&gt; = &lt;PyQt6.QtWidgets.QTableWidget object at 0x000001A28F7B9D80&gt;.isVisible">tests\visual\test_usuarios_visual_hybrid.py:371: in test_responsive_design_diferentes_resoluciones
+    assert tabla.isVisible()
+E   assert False
+E    +  where False = &lt;built-in method isVisible of QTableWidget object at 0x000001A28F7B9D80&gt;()
+E    +    where &lt;built-in method isVisible of QTableWidget object at 0x000001A28F7B9D80&gt; = &lt;PyQt6.QtWidgets.QTableWidget object at 0x000001A28F7B9D80&gt;.isVisible</failure></testcase></testsuite></testsuites>

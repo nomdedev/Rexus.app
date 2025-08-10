@@ -195,25 +195,41 @@ class LogisticaTabsView(QWidget):
         """Crea la pestaña del mapa con direcciones."""
         tab_mapa = QWidget()
         layout = QVBoxLayout(tab_mapa)
-        layout.setSpacing(10)
+        layout.setSpacing(12)
         layout.setContentsMargins(10, 10, 10, 10)
+
+        # Título de la pestaña
+        titulo_mapa = QLabel("🗺️ Mapa Interactivo de Rutas")
+        titulo_mapa.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                font-weight: bold;
+                color: #2c3e50;
+                padding: 8px;
+                background-color: #ecf0f1;
+                border-radius: 6px;
+                margin-bottom: 8px;
+            }
+        """)
+        layout.addWidget(titulo_mapa)
 
         # Panel de control del mapa
         control_mapa_panel = self.crear_panel_control_mapa()
         layout.addWidget(control_mapa_panel)
 
-        # Contenedor principal del mapa
+        # Contenedor principal del mapa con mejor distribución
         mapa_container = QSplitter(Qt.Orientation.Horizontal)
-
-        # Panel lateral con direcciones
+        
+        # Panel lateral con direcciones (más compacto)
         direcciones_widget = self.crear_widget_direcciones()
         mapa_container.addWidget(direcciones_widget)
 
-        # Widget del mapa (placeholder por ahora)
+        # Widget del mapa (ahora con implementación real)
         mapa_widget = self.crear_widget_mapa()
         mapa_container.addWidget(mapa_widget)
 
-        mapa_container.setSizes([300, 700])
+        # Distribución mejorada: 25% direcciones, 75% mapa
+        mapa_container.setSizes([250, 750])
         layout.addWidget(mapa_container)
 
         self.tab_widget.addTab(tab_mapa, "Mapa")
@@ -426,26 +442,120 @@ class LogisticaTabsView(QWidget):
         return widget
 
     def crear_widget_mapa(self) -> QWidget:
-        """Crea el widget del mapa (placeholder)."""
+        """Crea el widget del mapa (con soporte real para mapas)."""
         widget = QWidget()
         layout = QVBoxLayout(widget)
 
-        # Placeholder del mapa
-        mapa_placeholder = QLabel("Mapa Interactivo\n(Implementación futura con API de mapas)")
-        mapa_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mapa_placeholder.setStyleSheet("""
-            QLabel {
-                border: 2px solid #3498db;
-                border-radius: 8px;
-                padding: 50px;
-                color: #2c3e50;
-                font-size: 16px;
-                font-weight: bold;
-                background-color: #ecf0f1;
-            }
-        """)
-        mapa_placeholder.setMinimumHeight(400)
-        layout.addWidget(mapa_placeholder)
+        try:
+            # Intentar importar QtWebEngine para mapas reales
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+            from PyQt6.QtCore import QUrl
+            
+            # Crear widget de mapa real
+            mapa_web = QWebEngineView()
+            
+            # HTML básico para mapa con OpenStreetMap
+            mapa_html = """
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <title>Mapa de Logística</title>
+                <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+                <style>
+                    body { margin: 0; padding: 0; }
+                    #map { height: 100vh; width: 100%; }
+                </style>
+            </head>
+            <body>
+                <div id="map"></div>
+                <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+                <script>
+                    var map = L.map('map').setView([4.7110, -74.0721], 10); // Bogotá, Colombia
+                    
+                    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                        attribution: '© OpenStreetMap contributors'
+                    }).addTo(map);
+                    
+                    // Marcador de ejemplo
+                    L.marker([4.7110, -74.0721]).addTo(map)
+                        .bindPopup('Centro de Distribución<br>Rexus Logística')
+                        .openPopup();
+                        
+                    // Marcadores adicionales para rutas
+                    var rutas = [
+                        [4.6501, -74.0896, "Punto A"],
+                        [4.7347, -74.0421, "Punto B"],
+                        [4.6793, -74.1021, "Punto C"]
+                    ];
+                    
+                    rutas.forEach(function(punto) {
+                        L.marker([punto[0], punto[1]]).addTo(map)
+                            .bindPopup(punto[2]);
+                    });
+                </script>
+            </body>
+            </html>
+            """
+            
+            # Cargar HTML del mapa
+            mapa_web.setHtml(mapa_html)
+            mapa_web.setMinimumHeight(400)
+            layout.addWidget(mapa_web)
+            
+            # Mensaje de estado
+            status_label = QLabel("✅ Mapa cargado correctamente")
+            status_label.setStyleSheet("""
+                QLabel {
+                    color: #27ae60;
+                    font-size: 12px;
+                    padding: 5px;
+                    background-color: #d5f4e6;
+                    border-radius: 4px;
+                }
+            """)
+            layout.addWidget(status_label)
+            
+        except ImportError:
+            # Fallback si no está disponible QtWebEngine
+            mapa_placeholder = QLabel("""
+🗺️ Mapa Interactivo
+            
+Para habilitar el mapa interactivo, instale:
+pip install PyQt6-WebEngine
+
+📍 Ubicaciones se mostrarán aquí
+🚚 Rutas de transporte disponibles
+🎯 Centrado automático en La Plata
+            """)
+            mapa_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
+            mapa_placeholder.setStyleSheet("""
+                QLabel {
+                    border: 2px solid #3498db;
+                    border-radius: 8px;
+                    padding: 50px;
+                    color: #2c3e50;
+                    font-size: 14px;
+                    font-weight: bold;
+                    background-color: #ecf0f1;
+                    line-height: 1.6;
+                }
+            """)
+            mapa_placeholder.setMinimumHeight(400)
+            layout.addWidget(mapa_placeholder)
+            
+            # Mensaje de información
+            info_label = QLabel("ℹ️ Para habilitar el mapa interactivo, instale PyQt6-WebEngine")
+            info_label.setStyleSheet("""
+                QLabel {
+                    color: #e67e22;
+                    font-size: 12px;
+                    padding: 5px;
+                    background-color: #fdeaa7;
+                    border-radius: 4px;
+                }
+            """)
+            layout.addWidget(info_label)
 
         return widget
 

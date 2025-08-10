@@ -1,0 +1,99 @@
+{
+  "summary": {
+    "total_modules": 3,
+    "total_mock_tests": 3,
+    "total_real_tests": 0,
+    "total_passed": 0,
+    "total_failed": 3,
+    "total_skipped": 0,
+    "total_components_tested": 15,
+    "total_interactions_tested": 24,
+    "avg_execution_time": 0.6453550656636556
+  },
+  "module_results": {
+    "usuarios": {
+      "module": "usuarios",
+      "test_files": [
+        "C:\\Users\\itachi\\Desktop\\martin\\Rexus.app\\tests\\visual\\test_usuarios_visual_hybrid.py"
+      ],
+      "mock_tests": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "tests": []
+      },
+      "real_data_tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "tests": []
+      },
+      "performance": {
+        "avg_mock_time": 0,
+        "avg_real_time": 0,
+        "total_time": 1.076695203781128
+      },
+      "visual_coverage": {
+        "components_tested": 5,
+        "interactions_tested": 8
+      }
+    },
+    "inventario": {
+      "module": "inventario",
+      "test_files": [
+        "C:\\Users\\itachi\\Desktop\\martin\\Rexus.app\\tests\\visual\\test_inventario_visual_hybrid.py"
+      ],
+      "mock_tests": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "tests": []
+      },
+      "real_data_tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "tests": []
+      },
+      "performance": {
+        "avg_mock_time": 0,
+        "avg_real_time": 0,
+        "total_time": 0.487811803817749
+      },
+      "visual_coverage": {
+        "components_tested": 5,
+        "interactions_tested": 8
+      }
+    },
+    "obras": {
+      "module": "obras",
+      "test_files": [
+        "C:\\Users\\itachi\\Desktop\\martin\\Rexus.app\\tests\\visual\\test_obras_visual_hybrid.py"
+      ],
+      "mock_tests": {
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "tests": []
+      },
+      "real_data_tests": {
+        "passed": 0,
+        "failed": 0,
+        "skipped": 0,
+        "tests": []
+      },
+      "performance": {
+        "avg_mock_time": 0,
+        "avg_real_time": 0,
+        "total_time": 0.369110107421875
+      },
+      "visual_coverage": {
+        "components_tested": 5,
+        "interactions_tested": 8
+      }
+    }
+  },
+  "performance_metrics": {},
+  "visual_coverage": {},
+  "execution_time": 1.9360651969909668
+}
