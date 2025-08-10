@@ -9,7 +9,7 @@ try:
     from .submodules import ConsultasManager, ProyectosManager, RecursosManager
 except ImportError:
     print("[OBRAS] Warning: Some submodules not available")
-from .view import ObrasView
+from .view import ObrasModernView as ObrasView
 
 __all__ = [
     "ObrasModel",

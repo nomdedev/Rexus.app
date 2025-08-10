@@ -48,57 +48,406 @@ from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
 
 
 class LogisticaView(QWidget):
+    # Señales para comunicación con el controlador
+    solicitud_actualizar_estadisticas = pyqtSignal()
+    solicitud_actualizar_transporte = pyqtSignal(dict)
+    solicitud_eliminar_transporte = pyqtSignal(str)
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.controller = None
+        self.setupUI()
+        self.cargar_datos_ejemplo()
+
+    def setupUI(self):
+        """Configura la interfaz principal con pestañas."""
+        layout = QVBoxLayout(self)
+        layout.setContentsMargins(10, 10, 10, 10)
+        
+        # Widget de pestañas
+        self.tab_widget = QTabWidget()
+        self.configurar_tabs()
+        
+        # Crear pestañas
+        self.crear_pestana_tabla()
+        self.crear_pestana_estadisticas()
+        self.crear_pestana_servicios()
+        self.crear_pestana_mapa()
+        
+        layout.addWidget(self.tab_widget)
+
+    # --- STUBS Y MÉTODOS FALTANTES PARA EVITAR ERRORES ---
+    def cargar_entregas_en_tabla(self, entregas=None):
+        """Carga entregas en la tabla principal."""
+        if not hasattr(self, 'tabla_transportes'):
+            return
+        
+        if entregas is None:
+            entregas = []
+        
+        self.tabla_transportes.setRowCount(len(entregas))
+        for row, entrega in enumerate(entregas):
+            self.tabla_transportes.setItem(row, 0, QTableWidgetItem(str(entrega.get('id', ''))))
+            self.tabla_transportes.setItem(row, 1, QTableWidgetItem(str(entrega.get('origen', ''))))
+            self.tabla_transportes.setItem(row, 2, QTableWidgetItem(str(entrega.get('destino', ''))))
+            self.tabla_transportes.setItem(row, 3, QTableWidgetItem(str(entrega.get('estado', ''))))
+            self.tabla_transportes.setItem(row, 4, QTableWidgetItem(str(entrega.get('conductor', ''))))
+            self.tabla_transportes.setItem(row, 5, QTableWidgetItem(str(entrega.get('fecha', ''))))
+
+    def configurar_tabla_transportes(self):
+        """Configura la tabla de transportes."""
+        headers = ["ID", "Origen", "Destino", "Estado", "Conductor", "Fecha"]
+        self.tabla_transportes.setColumnCount(len(headers))
+        self.tabla_transportes.setHorizontalHeaderLabels(headers)
+        
+        # Ajustar anchos compactos
+        self.tabla_transportes.setColumnWidth(0, 50)
+        self.tabla_transportes.setColumnWidth(1, 90)
+        self.tabla_transportes.setColumnWidth(2, 90)
+        self.tabla_transportes.setColumnWidth(3, 70)
+        self.tabla_transportes.setColumnWidth(4, 80)
+        self.tabla_transportes.setColumnWidth(5, 70)
+        
+        # Desactivar filas alternadas y mejorar estilo
+        self.tabla_transportes.setAlternatingRowColors(False)
+        self.tabla_transportes.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        
+        # Estilo mejorado con headers visibles
+        self.tabla_transportes.setStyleSheet("""
+            QTableWidget {
+                color: #1e293b;
+                background: transparent;
+                alternate-background-color: transparent;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                font-size: 11px;
+                font-weight: normal;
+                gridline-color: #e2e8f0;
+            }
+            QTableWidget::item {
+                color: #1e293b;
+                background: transparent;
+                padding: 4px 6px;
+                font-size: 11px;
+                font-weight: normal;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            QTableWidget::item:selected {
+                background: #3b82f6;
+                color: white;
+            }
+            QHeaderView::section {
+                color: #1e293b;
+                font-weight: bold;
+                font-size: 12px;
+                border: none;
+                border-right: 1px solid #e2e8f0;
+                border-bottom: 2px solid #e2e8f0;
+                padding: 8px 6px;
+                background: transparent;
+                text-align: left;
+            }
+            QHeaderView::section:hover {
+                background: #f8fafc;
+            }
+        """)
+
+    def crear_panel_graficos_mejorado(self) -> QWidget:
+        w = QWidget()
+        l = QVBoxLayout(w)
+        l.addWidget(QLabel("Gráficos (stub)"))
+        return w
+
+    def crear_panel_metricas_compacto(self) -> QWidget:
+        w = QWidget()
+        l = QVBoxLayout(w)
+        l.addWidget(QLabel("Métricas (stub)"))
+        return w
+
+    def crear_panel_resumen_optimizado(self) -> QWidget:
+        w = QWidget()
+        l = QVBoxLayout(w)
+        l.addWidget(QLabel("Resumen (stub)"))
+        return w
+
+    def crear_panel_filtros_servicios_optimizado(self) -> QWidget:
+        w = QWidget()
+        l = QHBoxLayout(w)
+        l.addWidget(QLabel("Filtros servicios (stub)"))
+        return w
+
+    def crear_panel_control_mapa_optimizado(self) -> QWidget:
+        w = QWidget()
+        l = QHBoxLayout(w)
+        l.addWidget(QLabel("Control mapa (stub)"))
+        return w
+
+    def buscar_transportes(self):
+        """Realiza búsqueda de transportes con filtros."""
+        try:
+            # Obtener criterios de búsqueda
+            termino = ""
+            estado = "Todos"
+            
+            # Buscar elementos de búsqueda en la interfaz
+            if hasattr(self, 'campo_busqueda'):
+                termino = self.campo_busqueda.text().strip()
+            if hasattr(self, 'combo_estado'):
+                estado = self.combo_estado.currentText()
+            
+            # Solicitar búsqueda al controlador
+            if self.controller:
+                self.controller.buscar_transportes(termino, estado)
+            print(f"🔍 Buscando transportes: '{termino}' - Estado: {estado}")
+        except Exception as e:
+            print(f"❌ Error en búsqueda: {e}")
+
+    def editar_transporte_seleccionado(self):
+        """Edita el transporte seleccionado en la tabla."""
+        try:
+            if not hasattr(self, 'tabla_transportes'):
+                print("⚠️ Tabla de transportes no disponible")
+                return
+                
+            current_row = self.tabla_transportes.currentRow()
+            if current_row < 0:
+                self.mostrar_mensaje("advertencia", "Selección requerida", "Selecciona un transporte para editar")
+                return
+            
+            # Obtener ID del transporte seleccionado
+            transporte_id = self.tabla_transportes.item(current_row, 0).text()
+            
+            # Abrir diálogo de edición
+            dialog = DialogoNuevoTransporte(self, transporte_id)
+            if dialog.exec() == dialog.DialogCode.Accepted:
+                # Actualizar datos
+                datos = dialog.obtener_datos()
+                if self.controller:
+                    self.controller.actualizar_transporte(datos)
+                    
+        except Exception as e:
+            self.mostrar_error(f"Error al editar transporte: {str(e)}")
+
+    def eliminar_transporte_seleccionado(self):
+        """Elimina el transporte seleccionado."""
+        try:
+            if not hasattr(self, 'tabla_transportes'):
+                print("⚠️ Tabla de transportes no disponible")
+                return
+                
+            current_row = self.tabla_transportes.currentRow()
+            if current_row < 0:
+                self.mostrar_mensaje("advertencia", "Selección requerida", "Selecciona un transporte para eliminar")
+                return
+            
+            # Obtener datos del transporte
+            transporte_id = self.tabla_transportes.item(current_row, 0).text()
+            origen = self.tabla_transportes.item(current_row, 1).text()
+            destino = self.tabla_transportes.item(current_row, 2).text()
+            
+            # Confirmar eliminación
+            if self.confirmar_accion(f"¿Eliminar transporte de {origen} a {destino}?", "Confirmar Eliminación"):
+                if self.controller:
+                    self.controller.eliminar_transporte(transporte_id)
+                    
+        except Exception as e:
+            self.mostrar_error(f"Error al eliminar transporte: {str(e)}")
+
+    def exportar_a_excel(self):
+        """Exporta los datos de transportes a Excel."""
+        try:
+            if not hasattr(self, 'tabla_transportes'):
+                print("⚠️ Tabla de transportes no disponible")
+                return
+                
+            from PyQt6.QtWidgets import QFileDialog
+            import csv
+            from datetime import datetime
+            
+            # Seleccionar archivo de destino
+            filename, _ = QFileDialog.getSaveFileName(
+                self,
+                "Exportar Transportes",
+                f"transportes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
+                "CSV files (*.csv);;All files (*.*)"
+            )
+            
+            if not filename:
+                return
+                
+            # Exportar datos
+            with open(filename, 'w', newline='', encoding='utf-8') as file:
+                writer = csv.writer(file)
+                
+                # Escribir encabezados
+                headers = []
+                for col in range(self.tabla_transportes.columnCount()):
+                    headers.append(self.tabla_transportes.horizontalHeaderItem(col).text())
+                writer.writerow(headers)
+                
+                # Escribir datos
+                for row in range(self.tabla_transportes.rowCount()):
+                    row_data = []
+                    for col in range(self.tabla_transportes.columnCount()):
+                        item = self.tabla_transportes.item(row, col)
+                        row_data.append(item.text() if item else "")
+                    writer.writerow(row_data)
+            
+            self.mostrar_informacion(f"Datos exportados exitosamente a:\n{filename}")
+            print(f"✅ Exportación completada: {filename}")
+            
+        except Exception as e:
+            self.mostrar_error(f"Error al exportar: {str(e)}")
+
+    def mostrar_dialogo_nuevo_transporte(self):
+        """Muestra el diálogo para crear un nuevo transporte."""
+        try:
+            dialog = DialogoNuevoTransporte(self)
+            if dialog.exec() == dialog.DialogCode.Accepted:
+                # Obtener datos del diálogo
+                datos = dialog.obtener_datos()
+                
+                # Enviar al controlador
+                if self.controller:
+                    self.controller.crear_transporte(datos)
+                else:
+                    print("✅ Nuevo transporte creado (simulado):", datos)
+                    
+        except Exception as e:
+            self.mostrar_error(f"Error al crear transporte: {str(e)}")
+
+    def actualizar_estado_botones(self):
+        pass
+
+    @property
+    def combo_tipo_servicio(self):
+        return QComboBox()
+
+    @property
+    def combo_estado_servicio(self):
+        return QComboBox()
     def crear_widget_direcciones_mejorado(self) -> QWidget:
         widget = QWidget()
         layout = QVBoxLayout(widget)
-        label = QLabel("Direcciones (placeholder)")
+        label = QLabel("Sin direcciones disponibles.")
+        label.setStyleSheet("color: #888; font-size: 10px; padding: 4px;")
         layout.addWidget(label)
         return widget
 
     def crear_widget_mapa_mejorado(self) -> QWidget:
-        # Si no existe, crea el mapa_placeholder
-        if not hasattr(self, 'mapa_placeholder') or self.mapa_placeholder is None:
-            self.mapa_placeholder = QWidget()
-            layout = QVBoxLayout(self.mapa_placeholder)
-            label = QLabel("Mapa (placeholder)")
+        # Si ya existe, reutilizar
+        if hasattr(self, 'mapa_widget') and self.mapa_widget is not None:
+            return self.mapa_widget
+
+        try:
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+        except ImportError:
+            QWebEngineView = None
+
+        if folium is not None and QWebEngineView is not None:
+            # Crear mapa folium
+            m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
+            data = m._repr_html_()  # HTML del mapa
+            # Guardar HTML temporal
+            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
+            m.save(temp_file.name)
+            temp_file.close()
+            # Crear widget de mapa
+            self.mapa_widget = QWidget()
+            layout = QVBoxLayout(self.mapa_widget)
+            webview = QWebEngineView()
+            webview.setUrl(QUrl.fromLocalFile(temp_file.name))
+            layout.addWidget(webview)
+        else:
+            # Fallback: placeholder
+            self.mapa_widget = QWidget()
+            layout = QVBoxLayout(self.mapa_widget)
+            label = QLabel("Mapa (no disponible: falta folium o QWebEngineView)")
             layout.addWidget(label)
-        return self.mapa_placeholder
-    """Vista principal del módulo de logística con sistema de pestañas."""
+        return self.mapa_widget
 
-    # Señales
-    solicitud_crear_transporte = pyqtSignal(dict)
-    solicitud_actualizar_transporte = pyqtSignal(dict)
-    solicitud_eliminar_transporte = pyqtSignal(str)
-    crear_entrega_solicitada = pyqtSignal(dict)
-    solicitud_actualizar_estadisticas = pyqtSignal()
+    def cargar_datos_ejemplo(self):
+        """Carga datos de ejemplo para desarrollo."""
+        try:
+            from PyQt6.QtWebEngineWidgets import QWebEngineView
+        except ImportError:
+            QWebEngineView = None
 
-
-    def __init__(self):
-        super().__init__()
-        self.controller = None
-        self.tab_widget = QTabWidget(self)
-        self.tab_widget.setObjectName("tab_widget_logistica")
-        main_layout = QVBoxLayout(self)
-        main_layout.addWidget(self.tab_widget)
-        self.configurar_tabs()
-        self.crear_pestana_tabla()
-        self.crear_pestana_estadisticas()
-        self.crear_pestana_servicios()
-        # Puedes agregar aquí más pestañas si es necesario
+        if folium is not None and QWebEngineView is not None:
+            try:
+                m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
+                temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
+                m.save(temp_file.name)
+                temp_file.close()
+                self.mapa_widget = QWidget()
+                layout = QVBoxLayout(self.mapa_widget)
+                webview = QWebEngineView()
+                webview.setUrl(QUrl.fromLocalFile(temp_file.name))
+                layout.addWidget(webview)
+                return self.mapa_widget
+            except Exception as e:
+                motivo = f"Error creando el mapa: {str(e)[:50]}..."
+        elif folium is None:
+            motivo = "folium no está instalado. Instala 'folium' para ver el mapa."
+        elif QWebEngineView is None:
+            motivo = "QWebEngineView no está disponible. Instala 'PyQt6-WebEngine'."
+        else:
+            motivo = "Motivo desconocido."
+        # Fallback robusto
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        label = QLabel(f"🗺️ Mapa no disponible\n{motivo}")
+        label.setStyleSheet("color: #e67e22; font-size: 11px; padding: 6px;")
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(label)
+        return widget
+        mapa_widget = self.crear_widget_mapa_mejorado()
+        layout.addWidget(mapa_widget)
+        self.tab_widget.addTab(tab_mapa, "🗺️ Mapa")
 
     def configurar_tabs(self):
-        """Configura el widget de pestañas."""
+        """Configura el widget de pestañas y mejora contraste visual."""
         self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
         self.tab_widget.setTabShape(QTabWidget.TabShape.Rounded)
         self.tab_widget.setUsesScrollButtons(True)
         self.tab_widget.setElideMode(Qt.TextElideMode.ElideRight)
+        # Mejorar contraste de las pestañas
+        self.tab_widget.setStyleSheet('''
+            QTabBar::tab {
+                background: #f8fafc;
+                color: #374151;
+                border: 1px solid #e2e8f0;
+                border-bottom: none;
+                min-width: 80px;
+                min-height: 18px;
+                padding: 2px 10px;
+                font-size: 10px;
+                font-weight: 500;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                margin-right: 2px;
+            }
+            QTabBar::tab:selected {
+                background: #fff;
+                color: #1e293b;
+                border-bottom: 2px solid #3b82f6;
+            }
+            QTabBar::tab:!selected {
+                background: #f1f5f9;
+                color: #374151;
+            }
+            QTabWidget::pane {
+                border-top: 2px solid #3b82f6;
+                top: -1px;
+            }
+        ''')
 
     def crear_pestana_tabla(self):
         """Crea la pestaña de tabla principal con layout optimizado."""
         tab_tabla = QWidget()
         layout = QVBoxLayout(tab_tabla)
-        layout.setSpacing(8)  # Reducido de 10 a 8
-        layout.setContentsMargins(10, 10, 10, 10)
+    # ...
+    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
 
         # Panel unificado de control y acciones (optimizado)
         panel_unificado = self.crear_panel_unificado_tabla()
@@ -122,8 +471,8 @@ class LogisticaView(QWidget):
         """Crea la pestaña de estadísticas con layout optimizado y compacto."""
         tab_stats = QWidget()
         layout = QVBoxLayout(tab_stats)
-        layout.setSpacing(8)  # Reducido de 15 a 8
-        layout.setContentsMargins(10, 10, 10, 10)
+    # ...
+    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
 
         # Scroll area optimizada para estadísticas
         scroll = QScrollArea()
@@ -167,12 +516,13 @@ class LogisticaView(QWidget):
         """Crea la pestaña de servicios optimizada y compacta."""
         tab_servicios = QWidget()
         layout = QVBoxLayout(tab_servicios)
-        layout.setSpacing(8)
-        layout.setContentsMargins(8, 8, 8, 8)
+    # ...
+    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
 
         # Panel de filtros compacto con altura fija
         filtros_panel = self.crear_panel_filtros_servicios_optimizado()
-        filtros_panel.setFixedHeight(56)  # Altura máxima 56px
+    # ...
+    # (Asegurarse que esta línea esté dentro de un método)
         layout.addWidget(filtros_panel)
 
         # Tabla de servicios activos ocupa la mayor parte del espacio
@@ -184,12 +534,13 @@ class LogisticaView(QWidget):
         """Crea el widget de servicios activos con botón Detalle por fila."""
         widget = RexusGroupBox("📋 Servicios Activos")
         layout = QVBoxLayout(widget)
-        layout.setSpacing(6)
-        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(4)  # Espaciado más compacto
+        layout.setContentsMargins(5, 5, 5, 5)  # Márgenes reducidos
 
         # Panel de acciones compacto
         acciones_layout = QHBoxLayout()
-        acciones_layout.setSpacing(6)
+    # ...
+    # (Asegurarse que esta línea esté dentro de un método)
 
         btn_nuevo_servicio = RexusButton("➕ Nuevo")
         btn_nuevo_servicio.setToolTip("Crear nuevo servicio")
@@ -210,34 +561,55 @@ class LogisticaView(QWidget):
         ])
         self.tabla_servicios.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.tabla_servicios.setEditTriggers(QTableWidget.EditTrigger.NoEditTriggers)
-        self.tabla_servicios.setAlternatingRowColors(True)
-        if self.tabla_servicios.verticalHeader() is not None:
-            self.tabla_servicios.verticalHeader().setVisible(False)
-        if self.tabla_servicios.horizontalHeader() is not None:
-            self.tabla_servicios.horizontalHeader().setStretchLastSection(True)
-        # Mejorar contraste de texto y fondo
+        self.tabla_servicios.setAlternatingRowColors(False)
+        try:
+            vh = self.tabla_servicios.verticalHeader()
+            if vh and hasattr(vh, 'setVisible'):
+                vh.setVisible(False)
+        except Exception:
+            pass
+        try:
+            hh = self.tabla_servicios.horizontalHeader()
+            if hh and hasattr(hh, 'setStretchLastSection'):
+                hh.setStretchLastSection(True)
+        except Exception:
+            pass
+        # Mejorar contraste de texto y fondo - estilo minimalista
         self.tabla_servicios.setStyleSheet("""
             QTableWidget {
-                color: #222;
-                background-color: #fff;
-                alternate-background-color: #f6f8fa;
-                selection-background-color: #e1e4e8;
-                selection-color: #222;
-                font-size: 12px;
+                color: #1e293b;
+                background: transparent;
+                alternate-background-color: transparent;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                font-size: 11px;
+                font-weight: normal;
             }
             QTableWidget::item {
-                color: #222;
+                color: #1e293b;
                 background: transparent;
+                padding: 3px 6px;
+                font-size: 11px;
+                font-weight: normal;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            QTableWidget::item:selected {
+                background: #3b82f6;
+                color: white;
             }
             QHeaderView::section {
-                background-color: #f6f8fa;
-                color: #222;
-                font-weight: 600;
-                font-size: 11px;
+                color: #1e293b;
+                font-weight: bold;
+                font-size: 12px;
                 border: none;
-                border-right: 1px solid #e1e4e8;
-                border-bottom: 1px solid #e1e4e8;
-                padding: 6px 8px;
+                border-right: 1px solid #e2e8f0;
+                border-bottom: 2px solid #e2e8f0;
+                padding: 8px 6px;
+                background: transparent;
+                text-align: left;
+            }
+            QHeaderView::section:hover {
+                background: transparent;
             }
         """)
         layout.addWidget(self.tabla_servicios)
@@ -567,23 +939,12 @@ class LogisticaView(QWidget):
             }
         """)
         layout.addWidget(self.btn_exportar)
+        
+        return panel
 
         # Conectar eventos de selección para habilitar/deshabilitar botones
         if hasattr(self, 'tabla_transportes'):
             self.tabla_transportes.itemSelectionChanged.connect(self.actualizar_estado_botones)
-
-        return panel
-
-            ("🚛 En Tránsito", "23", "#f39c12", "Transportes en curso"),
-            ("✅ Entregados Hoy", "8", "#27ae60", "Entregas completadas hoy"),
-            ("⏳ Pendientes", "12", "#e74c3c", "Transportes por asignar")
-        ]
-
-        for i, (titulo, valor, color, tooltip) in enumerate(metricas):
-            card = self.crear_tarjeta_metrica_compacta(titulo, valor, color, tooltip)
-            layout.addWidget(card, 0, i)
-
-        return panel
 
     def crear_panel_graficos_mejorado(self) -> QWidget:
         """Crea el panel de gráficos con mejor presentación visual."""
@@ -665,7 +1026,7 @@ class LogisticaView(QWidget):
             }}
             QWidget:hover {{
                 border-color: {color};
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                background-color: #f8f9fa;
             }}
         """)
         
@@ -792,49 +1153,63 @@ class LogisticaView(QWidget):
         # Opciones del mapa con iconografía
         self.combo_vista_mapa = RexusComboBox()
         # Icono del mapa grande y ejemplo de mapa solo si folium está disponible
+        fallback_reason = None
         try:
             import tempfile
             import os
             if folium is not None:
-                mapa = folium.Map(
-                    location=[-34.9214, -57.9544],  # La Plata, Argentina
-                    zoom_start=12,
-                    tiles='OpenStreetMap'
-                )
-                # Agregar marcadores de ejemplo para direcciones
-                direcciones_ejemplo = [
-                    {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
-                    {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
-                    {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
-                    {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
-                ]
-                for direccion in direcciones_ejemplo:
-                    folium.Marker(
-                        [direccion["lat"], direccion["lng"]],
-                        popup=f"<b>{direccion['nombre']}</b><br>{direccion['direccion']}" ,
-                        tooltip=direccion["nombre"],
-                        icon=folium.Icon(color='blue', icon='truck', prefix='fa')
-                    ).add_to(mapa)
-                # Guardar el mapa en un archivo temporal
-                with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html', encoding='utf-8') as f:
-                    mapa.save(f.name)
-                    self.mapa_temp_file = f.name
-                # Crear el widget web solo si QWebEngineView está disponible
                 try:
-                    from PyQt6.QtWebEngineWidgets import QWebEngineView
-                    from PyQt6.QtCore import QUrl
-                    self.mapa_web_view = QWebEngineView()
-                    self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
-                    self.mapa_web_view.setMinimumHeight(400)
-                    return self.mapa_web_view
-                except ImportError:
-                    pass
+                    mapa = folium.Map(
+                        location=[-34.9214, -57.9544],  # La Plata, Argentina
+                        zoom_start=12,
+                        tiles='OpenStreetMap'
+                    )
+                    direcciones_ejemplo = [
+                        {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
+                        {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
+                        {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
+                        {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
+                    ]
+                    for direccion in direcciones_ejemplo:
+                        folium.Marker(
+                            [direccion["lat"], direccion["lng"]],
+                            popup=f"<b>{direccion['nombre']}</b><br>{direccion['direccion']}",
+                            tooltip=direccion["nombre"],
+                            icon=folium.Icon(color='blue', icon='truck', prefix='fa')
+                        ).add_to(mapa)
+                    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html', encoding='utf-8') as f:
+                        mapa.save(f.name)
+                        self.mapa_temp_file = f.name
+                except Exception as e:
+                    fallback_reason = f"Error creando el mapa con folium: {e}"
+                else:
+                    try:
+                        from PyQt6.QtWebEngineWidgets import QWebEngineView
+                        from PyQt6.QtCore import QUrl
+                        self.mapa_web_view = QWebEngineView()
+                        self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
+                        self.mapa_web_view.setMinimumHeight(400)
+                        return self.mapa_web_view
+                    except ImportError as e:
+                        fallback_reason = f"QWebEngineView no disponible: {e}"
+                    except Exception as e:
+                        fallback_reason = f"Error creando QWebEngineView: {e}"
+            else:
+                fallback_reason = "folium no está instalado o no se pudo importar."
         except Exception as e:
-            print(f"Error creando el mapa de ejemplo: {e}")
-        # Fallback mejorado con vista previa del mapa
+            fallback_reason = f"Error inesperado: {e}"
+        # Fallback mejorado con vista previa del mapa y motivo
         self.mapa_placeholder = QWidget()
         layout = QVBoxLayout(self.mapa_placeholder)
-        # Título del mapa
+        titulo = QLabel("🗺️ Vista de Mapa - La Plata")
+        titulo.setStyleSheet("font-size: 16px; font-weight: bold; color: #2c3e50; padding: 10px; background-color: #ecf0f1; border-radius: 6px; margin-bottom: 10px;")
+        titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(titulo)
+        motivo = QLabel(f"⚠️ Mapa interactivo no disponible\nMotivo: {fallback_reason if fallback_reason else 'Desconocido'}")
+        motivo.setStyleSheet("font-size: 12px; color: #e67e22; padding: 8px; background-color: #fef5e7; border-radius: 4px; margin-top: 10px;")
+        motivo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(motivo)
+        return self.mapa_placeholder
     def crear_widget_servicios_activos_mejorado(self) -> QWidget:
         """Crea el widget de servicios activos con mejor layout."""
         widget = RexusGroupBox("📋 Servicios Activos")
@@ -1035,9 +1410,11 @@ class LogisticaView(QWidget):
             # Buscar el label de información
             layout = self.mapa_placeholder.layout()
             if layout and layout.count() > 1:
-                info_label = layout.itemAt(1).widget()
-                if isinstance(info_label, QLabel):
-                    info_label.setText("""📍 Ruta 1: Buenos Aires → La Plata (67 km)
+                item = layout.itemAt(1)
+                if item:
+                    info_label = item.widget()
+                    if isinstance(info_label, QLabel):
+                        info_label.setText("""📍 Ruta 1: Buenos Aires → La Plata (67 km)
 📍 Ruta 2: La Plata → Berisso (15 km) 
 📍 Ruta 3: Berisso → Ensenada (8 km)
 📍 Ruta 4: Buenos Aires → San Isidro (32 km)
@@ -1045,7 +1422,7 @@ class LogisticaView(QWidget):
 🚛 Vehículos desplegados: 23
 ⏱️ Tiempo total estimado: 6.2 hrs
 📦 Entregas programadas: 45""")
-                    info_label.setStyleSheet("""
+                        info_label.setStyleSheet("""
                         QLabel {
                             border: 3px solid #e67e22;
                             border-radius: 12px;
@@ -1141,27 +1518,13 @@ class LogisticaView(QWidget):
 
         return widget
 
-    # Configuración de tablas
-    def configurar_tabla_transportes(self):
-        """Configura la tabla de transportes."""
-        headers = ["ID", "Origen", "Destino", "Estado", "Conductor", "Fecha", "Acciones"]
-        self.tabla_transportes.setColumnCount(len(headers))
-        self.tabla_transportes.setHorizontalHeaderLabels(headers)
-        # Ajustar anchos compactos
-        self.tabla_transportes.setColumnWidth(0, 50)
-        self.tabla_transportes.setColumnWidth(1, 90)
-        self.tabla_transportes.setColumnWidth(2, 90)
-        self.tabla_transportes.setColumnWidth(3, 70)
-        self.tabla_transportes.setColumnWidth(4, 80)
-        self.tabla_transportes.setColumnWidth(5, 70)
-        self.tabla_transportes.setStyleSheet("font-size: 11px; row-height: 18px;")
 
     def configurar_tabla_servicios(self):
         """Configura la tabla de servicios."""
         headers = ["ID", "Tipo", "Estado", "Cliente", "Prioridad"]
         self.tabla_servicios.setColumnCount(len(headers))
         self.tabla_servicios.setHorizontalHeaderLabels(headers)
-        self.tabla_servicios.setStyleSheet("font-size: 11px; row-height: 18px;")
+        self.tabla_servicios.setStyleSheet("font-size: 11px;")
 
     def configurar_tabla_direcciones(self):
         """Stub: tabla de direcciones no implementada."""
@@ -1213,53 +1576,17 @@ class LogisticaView(QWidget):
                             zoom_start=12,
                             tiles='OpenStreetMap'
                         )
-                        # Agregar marcadores de ejemplo para direcciones
-                        direcciones_ejemplo = [
-                            {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
-                            {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
-                            {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
-                            {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
-                        ]
-                        for direccion in direcciones_ejemplo:
-                            folium.Marker(
-                                [direccion["lat"], direccion["lng"]],
-                                popup=f"<b>{direccion['nombre']}</b><br>{direccion['direccion']}" ,
-                                tooltip=direccion["nombre"],
-                                icon=folium.Icon(color='blue', icon='truck', prefix='fa')
-                            ).add_to(mapa)
-                        # Guardar el mapa en un archivo temporal
-                        with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html', encoding='utf-8') as f:
-                            mapa.save(f.name)
-                            self.mapa_temp_file = f.name
-                        # Crear el widget web solo si QWebEngineView está disponible
-                        try:
-                            from PyQt6.QtWebEngineWidgets import QWebEngineView
-                            from PyQt6.QtCore import QUrl
-                            self.mapa_web_view = QWebEngineView()
-                            self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
-                            self.mapa_web_view.setMinimumHeight(400)
-                            return self.mapa_web_view
-                        except ImportError:
-                            pass
-                except Exception as e:
-                    print(f"Error creando el mapa de ejemplo: {e}")
-                # Fallback mejorado con vista previa del mapa
-                self.mapa_placeholder = QWidget()
-                layout = QVBoxLayout(self.mapa_placeholder)
-                # Título del mapa
-                titulo = QLabel("🗺️ Vista de Mapa - La Plata")
-                titulo.setStyleSheet("""
-                    QLabel {
-                        font-size: 16px;
-                        font-weight: bold;
-                        color: #2c3e50;
-                        padding: 10px;
-                        background-color: #ecf0f1;
-                        border-radius: 6px;
-                        margin-bottom: 10px;
-                    }
-                """)
-                titulo.setAlignment(Qt.AlignmentFlag.AlignCenter)
+                        # Agregar marcador
+                        folium.Marker([-34.9214, -57.9544], popup="La Plata").add_to(mapa)
+                        # Guardar y cargar
+                        temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
+                        mapa.save(temp_file.name)
+                        temp_file.close()
+                        self.mapa_web_view.setUrl(QUrl.fromLocalFile(temp_file.name))
+                except Exception:
+                    pass
+        except Exception:
+            pass
 
 
     def editar_transporte_seleccionado(self):
@@ -1543,6 +1870,7 @@ class DialogoNuevoTransporte(QDialog):
         super().__init__(parent)
         self.transporte_id = transporte_id
         self.validator_manager = None
+        self.mapa_web_view = None  # Inicializar atributo
         self.init_ui()
         self.setup_validation()
         
@@ -1758,7 +2086,8 @@ class DialogoNuevoTransporte(QDialog):
                     mapa.save(f.name)
                     self.mapa_temp_file = f.name
                 
-                self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
+                if hasattr(self, 'mapa_web_view') and self.mapa_web_view:
+                    self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
                 
         except Exception as e:
             print(f"Error actualizando marcadores: {e}")

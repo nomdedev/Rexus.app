@@ -160,7 +160,7 @@ QStackedWidget {
     border-radius: 12px;
 }
 QTableWidget {
-    background: white;
+    background: transparent;
     gridline-color: #e2e8f0;
     border: 1px solid #e2e8f0;
     border-radius: 8px;
@@ -175,14 +175,16 @@ QTableWidget::item:selected {
     color: #1e40af;
 }
 QHeaderView::section {
-    background: #f8fafc;
+    background: transparent;
     color: #374151;
-    font-weight: 600;
-    font-size: 13px;
-    padding: 12px 8px;
+    font-weight: normal;
+    font-size: 9px;
+    padding: 3px 4px;
     border: none;
     border-right: 1px solid #e2e8f0;
     border-bottom: 1px solid #e2e8f0;
+    max-height: 20px;
+    min-height: 18px;
 }
 QHeaderView::section:first {
     border-top-left-radius: 8px;

@@ -118,15 +118,16 @@ QTableWidget::item {
 }
 
 QHeaderView::section {
-    background-color: #f6f8fa;
+    background-color: transparent;
     color: #586069;
-    font-weight: 600;
-    font-size: 10px;
+    font-weight: 500;
+    font-size: 8px;
     border: none;
     border-right: 1px solid #e1e4e8;
     border-bottom: 1px solid #e1e4e8;
-    padding: 4px 6px;
-    min-height: 18px;
+    padding: 2px 4px;
+    max-height: 18px;
+    min-height: 16px;
 }
 
 /* GroupBox minimalista */

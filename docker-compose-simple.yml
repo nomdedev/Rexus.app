@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  rexus-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.simple
+    container_name: rexus-simple
+    volumes:
+      - .:/app
+    ports:
+      - "5900:5900"
+    environment:
+      - DISPLAY=:99
+      - QT_QPA_PLATFORM=xcb
+      - PYTHONPATH=/app
+      # Variables para auto-login en desarrollo
+      - REXUS_ENV=development
+      - REXUS_DEV_USER=admin
+      - REXUS_DEV_PASSWORD=admin
+      - REXUS_DEV_AUTO_LOGIN=true
+      - HOTRELOAD_ENABLED=true
+    restart: "no"  # Sin reinicio automático para evitar loops
+    stdin_open: true
+    tty: true
+    command: >
+      bash -c "
+        Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+        x11vnc -display :99 -nopw -listen 0.0.0.0 > /dev/null 2>&1 &
+        echo '🚀 [DEV] Container iniciado con auto-login habilitado'
+        echo '🔐 [DEV] Credenciales: admin/admin'
+        python main.py --dev
+      "
+
+  # Base de datos (opcional)
+  db:
+    image: mcr.microsoft.com/mssql/server:2019-latest
+    container_name: rexus-db-simple
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=DevPassword123!
+    ports:
+      - "1433:1433"
+    volumes:
+      - db_data:/var/opt/mssql
+
+volumes:
+  db_data:

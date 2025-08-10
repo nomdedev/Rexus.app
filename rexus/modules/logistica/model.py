@@ -749,3 +749,203 @@ class LogisticaModel:
         except Exception as e:
             print(f"[ERROR LOGÍSTICA] Error calculando costo de envío: {e}")
             return 0.0
+
+    @auth_required
+    def eliminar_transporte(self, transporte_id):
+        """
+        Elimina un transporte de la base de datos.
+
+        Args:
+            transporte_id (int): ID del transporte a eliminar
+
+        Returns:
+            bool: True si se eliminó exitosamente
+        """
+        if not self.db_connection:
+            return False
+
+        try:
+            transporte_id = sanitize_numeric(transporte_id)
+            if transporte_id is None:
+                raise ValueError("ID de transporte inválido")
+
+            cursor = self.db_connection.cursor()
+
+            # Verificar que el transporte existe
+            verify_sql = "SELECT COUNT(*) FROM transportes WHERE id = ?"
+            cursor.execute(verify_sql, (transporte_id,))
+            if cursor.fetchone()[0] == 0:
+                print(f"❌ Transporte {transporte_id} no encontrado")
+                return False
+
+            # Eliminar el transporte
+            delete_sql = "DELETE FROM transportes WHERE id = ?"
+            cursor.execute(delete_sql, (transporte_id,))
+            self.db_connection.commit()
+
+            print(f"✅ Transporte {transporte_id} eliminado exitosamente")
+            return True
+
+        except Exception as e:
+            print(f"❌ Error eliminando transporte: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+
+    def buscar_transportes(self, termino_busqueda="", estado="Todos"):
+        """
+        Busca transportes según criterios específicos.
+
+        Args:
+            termino_busqueda (str): Término para buscar en origen, destino o conductor
+            estado (str): Estado del transporte a filtrar
+
+        Returns:
+            list: Lista de transportes que coinciden con los criterios
+        """
+        if not self.db_connection:
+            # Datos de demostración para pruebas
+            return [
+                {
+                    'id': 1,
+                    'origen': 'Madrid',
+                    'destino': 'Barcelona', 
+                    'estado': 'En tránsito',
+                    'conductor': 'Juan Pérez',
+                    'fecha': '2025-01-15'
+                },
+                {
+                    'id': 2,
+                    'origen': 'Valencia',
+                    'destino': 'Sevilla',
+                    'estado': 'Entregado',
+                    'conductor': 'María González',
+                    'fecha': '2025-01-14'
+                }
+            ]
+
+        try:
+            cursor = self.db_connection.cursor()
+            
+            # Construir query con filtros
+            base_sql = """
+                SELECT id, origen, destino, estado, conductor, fecha_entrega,
+                       observaciones, costo_estimado, fecha_creacion
+                FROM transportes 
+                WHERE 1=1
+            """
+            
+            params = []
+            
+            # Filtro por término de búsqueda
+            if termino_busqueda and termino_busqueda.strip():
+                termino = sanitize_string(termino_busqueda.strip())
+                base_sql += " AND (origen LIKE ? OR destino LIKE ? OR conductor LIKE ?)"
+                like_term = f"%{termino}%"
+                params.extend([like_term, like_term, like_term])
+            
+            # Filtro por estado
+            if estado and estado != "Todos":
+                estado_clean = sanitize_string(estado)
+                base_sql += " AND estado = ?"
+                params.append(estado_clean)
+            
+            # Ordenar por fecha más reciente
+            base_sql += " ORDER BY fecha_creacion DESC"
+            
+            cursor.execute(base_sql, params)
+            results = cursor.fetchall()
+            
+            transportes = []
+            for row in results:
+                transporte = {
+                    'id': row[0],
+                    'origen': row[1] or '',
+                    'destino': row[2] or '',
+                    'estado': row[3] or '',
+                    'conductor': row[4] or '',
+                    'fecha': row[5].strftime('%Y-%m-%d') if row[5] else '',
+                    'observaciones': row[6] or '',
+                    'costo_estimado': float(row[7]) if row[7] else 0.0,
+                    'fecha_creacion': row[8]
+                }
+                transportes.append(transporte)
+            
+            print(f"🔍 Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
+            return transportes
+
+        except Exception as e:
+            print(f"❌ Error buscando transportes: {e}")
+            return []
+
+    def obtener_estadisticas(self):
+        """
+        Obtiene estadísticas generales de logística.
+        
+        Returns:
+            dict: Diccionario con estadísticas clave
+        """
+        if not self.db_connection:
+            # Estadísticas simuladas para pruebas
+            return {
+                'total_transportes': 156,
+                'en_transito': 23,
+                'entregados_hoy': 8,
+                'pendientes': 12,
+                'costo_total_mes': 15750.50,
+                'entregas_programadas': 45
+            }
+
+        try:
+            cursor = self.db_connection.cursor()
+            stats = {}
+            
+            # Total de transportes
+            cursor.execute("SELECT COUNT(*) FROM transportes")
+            stats['total_transportes'] = cursor.fetchone()[0]
+            
+            # Transportes en tránsito
+            cursor.execute("SELECT COUNT(*) FROM transportes WHERE estado = 'En tránsito'")
+            stats['en_transito'] = cursor.fetchone()[0]
+            
+            # Entregados hoy
+            cursor.execute("""
+                SELECT COUNT(*) FROM transportes 
+                WHERE estado = 'Entregado' 
+                AND CAST(fecha_entrega AS DATE) = CAST(GETDATE() AS DATE)
+            """)
+            stats['entregados_hoy'] = cursor.fetchone()[0]
+            
+            # Pendientes
+            cursor.execute("SELECT COUNT(*) FROM transportes WHERE estado = 'Pendiente'")
+            stats['pendientes'] = cursor.fetchone()[0]
+            
+            # Costo total del mes actual
+            cursor.execute("""
+                SELECT COALESCE(SUM(costo_estimado), 0) 
+                FROM transportes 
+                WHERE MONTH(fecha_creacion) = MONTH(GETDATE()) 
+                AND YEAR(fecha_creacion) = YEAR(GETDATE())
+            """)
+            stats['costo_total_mes'] = float(cursor.fetchone()[0])
+            
+            # Entregas programadas para los próximos 7 días
+            cursor.execute("""
+                SELECT COUNT(*) FROM entregas 
+                WHERE fecha_programada BETWEEN GETDATE() AND DATEADD(day, 7, GETDATE())
+                AND estado != 'Entregado'
+            """)
+            stats['entregas_programadas'] = cursor.fetchone()[0]
+            
+            return stats
+
+        except Exception as e:
+            print(f"❌ Error obteniendo estadísticas: {e}")
+            return {
+                'total_transportes': 0,
+                'en_transito': 0, 
+                'entregados_hoy': 0,
+                'pendientes': 0,
+                'costo_total_mes': 0.0,
+                'entregas_programadas': 0
+            }

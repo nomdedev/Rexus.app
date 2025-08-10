@@ -13,12 +13,38 @@ def setup_environment():
 	root_dir = Path(__file__).parent
 	os.chdir(root_dir)
 	sys.path.insert(0, str(root_dir))
+	
+	# Detectar modo desarrollo
+	is_dev_mode = (
+		'--dev' in sys.argv or
+		os.getenv('REXUS_ENV') == 'development' or
+		os.getenv('HOTRELOAD_ENABLED', '').lower() == 'true'
+	)
+	
 	# Cargar variables de entorno
 	try:
 		from dotenv import load_dotenv
-		load_dotenv()
+		
+		if is_dev_mode:
+			# Cargar configuración de desarrollo
+			dev_env_file = root_dir / '.env.development'
+			if dev_env_file.exists():
+				load_dotenv(dev_env_file)
+				print(f"[DEV] Configuracion de desarrollo cargada desde {dev_env_file}")
+			else:
+				# Configurar credenciales por defecto para desarrollo
+				os.environ.setdefault('REXUS_DEV_USER', 'admin')
+				os.environ.setdefault('REXUS_DEV_PASSWORD', 'admin')
+				os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'true')
+				print("[DEV] Usando credenciales por defecto: admin/admin")
+		else:
+			# Cargar configuración normal
+			load_dotenv()
+			
 	except ImportError:
-		pass
+		if is_dev_mode:
+			print("[DEV] python-dotenv no disponible, usando variables del sistema")
+	
 	return True
 
 def main():
