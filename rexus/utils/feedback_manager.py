@@ -122,11 +122,9 @@ class FeedbackManager(QObject):
             }}
             QMessageBox QPushButton:hover {{
                 background-color: {color_set['hover']};
-                transform: translateY(-1px);
             }}
             QMessageBox QPushButton:pressed {{
                 background-color: {self._darken_color(color_set['hover'])};
-                transform: translateY(0px);
             }}
             QMessageBox QIcon {{
                 padding: 8px;

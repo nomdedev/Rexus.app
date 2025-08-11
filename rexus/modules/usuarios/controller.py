@@ -37,10 +37,10 @@ class UsuariosController(QObject):
         
         # Conectar señales si hay vista
         if self.view:
-            self.conectar_señales()
+            self.conectar_senales()
             self.cargar_usuarios()
     
-    def conectar_señales(self):
+    def conectar_senales(self):
         """Conecta las señales entre vista y controlador."""
         if not self.view:
             return

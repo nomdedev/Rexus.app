@@ -79,9 +79,10 @@ from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import XSSProtection, FormProtector
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
+from rexus.utils.export_manager import ModuleExportMixin
 
 
-class UsuariosView(BaseModuleView):
+class UsuariosView(BaseModuleView, ModuleExportMixin):
     """Vista principal del módulo de usuarios."""
     
     # Señales
@@ -90,7 +91,8 @@ class UsuariosView(BaseModuleView):
     solicitud_eliminar_usuario = pyqtSignal(str)
     
     def __init__(self):
-        super().__init__("👥 Gestión de Usuarios")
+        BaseModuleView.__init__(self, "👥 Gestión de Usuarios")
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.setup_usuarios_ui()
     
@@ -131,6 +133,9 @@ class UsuariosView(BaseModuleView):
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         controls_layout.addWidget(self.btn_actualizar)
         
+        # Agregar botón de exportación
+        self.add_export_button(controls_layout, "📄 Exportar Usuarios")
+        
         # Añadir controles al área principal
         self.add_to_main_content(controls_layout)
     
@@ -150,6 +155,9 @@ class UsuariosView(BaseModuleView):
         
         # Añadir tabla al contenido principal
         self.set_main_table(self.tabla_usuarios)
+        
+        # Asignar referencia para exportación
+        self.tabla_principal = self.tabla_usuarios
     
     def apply_theme(self):
         """Aplica estilos minimalistas y modernos a toda la interfaz."""

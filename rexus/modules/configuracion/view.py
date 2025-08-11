@@ -57,9 +57,10 @@ from rexus.utils.xss_protection import XSSProtection, FormProtector
 from rexus.ui.standard_components import StandardComponents
 from rexus.ui.style_manager import style_manager
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.export_manager import ModuleExportMixin
 
 
-class ConfiguracionView(QWidget):
+class ConfiguracionView(QWidget, ModuleExportMixin):
     """Vista principal del módulo de configuracion."""
     
     # Señales
@@ -67,7 +68,8 @@ class ConfiguracionView(QWidget):
     error_ocurrido = pyqtSignal(str)
     
     def __init__(self):
-        super().__init__()
+        QWidget.__init__(self)
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.form_protector = None
         self.init_ui()
@@ -80,6 +82,7 @@ class ConfiguracionView(QWidget):
         
         # Panel de control estandarizado
         control_panel = StandardComponents.create_control_panel()
+        self.setup_control_panel(control_panel)
         layout.addWidget(control_panel)
         
         # Tabla principal
@@ -104,6 +107,34 @@ class ConfiguracionView(QWidget):
                 
         except Exception as e:
             logging.error(f"Error inicializando protección XSS: {e}")
+    
+    def setup_control_panel(self, panel):
+        """Configura el panel de control con componentes estandarizados."""
+        layout = QHBoxLayout(panel)
+        
+        # Botón Nuevo estandarizado
+        self.btn_nuevo = StandardComponents.create_primary_button("⚙️ Nueva Configuración")
+        self.btn_nuevo.clicked.connect(self.nuevo_registro)
+        layout.addWidget(self.btn_nuevo)
+        
+        # Campo de búsqueda
+        self.input_busqueda = RexusLineEdit()
+        self.input_busqueda.setPlaceholderText("Buscar configuración...")
+        self.input_busqueda.returnPressed.connect(self.buscar)
+        layout.addWidget(self.input_busqueda)
+        
+        # Botón buscar estandarizado
+        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        self.btn_buscar.clicked.connect(self.buscar)
+        layout.addWidget(self.btn_buscar)
+        
+        # Botón actualizar estandarizado
+        self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
+        self.btn_actualizar.clicked.connect(self.actualizar_datos)
+        layout.addWidget(self.btn_actualizar)
+        
+        # Agregar botón de exportación
+        self.add_export_button(layout, "📄 Exportar Config")
     
     def crear_panel_control(self):
         """Crea el panel de control superior."""

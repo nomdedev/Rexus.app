@@ -34,7 +34,9 @@
       "Bash(set REXUS_DEV_AUTO_LOGIN=true)",
       "Bash(set REXUS_DEV_USER=admin)",
       "Bash(set REXUS_DEV_PASSWORD=admin)",
-      "Bash(copy:*)"
+      "Bash(copy:*)",
+      "Bash(move \"rexus\\modules\\vidrios\\view_backup.py\" \"archive\\obsolete_files\"\")",
+      "Bash(move:*)"
     ],
     "deny": []
   }

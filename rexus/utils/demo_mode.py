@@ -252,11 +252,15 @@ class DemoDataProvider:
             return None
         
         # Credenciales demo válidas
+        # Obtener credenciales desde variables de entorno
+        from rexus.utils.env_manager import get_demo_credentials
+        env_credentials = get_demo_credentials()
+        
         demo_credentials = {
-            "admin": {"password": "admin", "role": "ADMIN"},
-            "supervisor": {"password": "supervisor", "role": "SUPERVISOR"},
-            "operador": {"password": "operador", "role": "OPERADOR"},
-            "contador": {"password": "contador", "role": "CONTABILIDAD"}
+            "admin": {"password": env_credentials.get("admin", "demo_admin_2025"), "role": "ADMIN"},
+            "supervisor": {"password": env_credentials.get("supervisor", "demo_supervisor_2025"), "role": "SUPERVISOR"},
+            "operador": {"password": env_credentials.get("operador", "demo_operador_2025"), "role": "OPERADOR"},
+            "contador": {"password": env_credentials.get("contador", "demo_contador_2025"), "role": "CONTABILIDAD"}
         }
         
         if username in demo_credentials and demo_credentials[username]["password"] == password:

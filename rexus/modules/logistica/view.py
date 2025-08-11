@@ -42,24 +42,26 @@ from rexus.ui.standard_components import StandardComponents
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.message_system import show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.export_manager import ModuleExportMixin
 
 # Importar el diálogo de transporte
 from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
 
 
-class LogisticaView(QWidget):
+class LogisticaView(QWidget, ModuleExportMixin):
     # Señales para comunicación con el controlador
     solicitud_actualizar_estadisticas = pyqtSignal()
     solicitud_actualizar_transporte = pyqtSignal(dict)
     solicitud_eliminar_transporte = pyqtSignal(str)
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        QWidget.__init__(self, parent)
+        ModuleExportMixin.__init__(self)
         self.controller = None
-        self.setupUI()
+        self.setup_ui()
         self.cargar_datos_ejemplo()
 
-    def setupUI(self):
+    def setup_ui(self):
         """Configura la interfaz principal con pestañas."""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
@@ -198,15 +200,15 @@ class LogisticaView(QWidget):
             # Solicitar búsqueda al controlador
             if self.controller:
                 self.controller.buscar_transportes(termino, estado)
-            print(f"🔍 Buscando transportes: '{termino}' - Estado: {estado}")
+            logging.info(f"Buscando transportes: '{termino}' - Estado: {estado}")
         except Exception as e:
-            print(f"❌ Error en búsqueda: {e}")
+            logging.error(f"Error en búsqueda de transportes: {e}")
 
     def editar_transporte_seleccionado(self):
         """Edita el transporte seleccionado en la tabla."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                print("⚠️ Tabla de transportes no disponible")
+                logging.warning("Tabla de transportes no disponible")
                 return
                 
             current_row = self.tabla_transportes.currentRow()
@@ -232,7 +234,7 @@ class LogisticaView(QWidget):
         """Elimina el transporte seleccionado."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                print("⚠️ Tabla de transportes no disponible")
+                logging.warning("Tabla de transportes no disponible")
                 return
                 
             current_row = self.tabla_transportes.currentRow()
@@ -257,7 +259,7 @@ class LogisticaView(QWidget):
         """Exporta los datos de transportes a Excel."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                print("⚠️ Tabla de transportes no disponible")
+                logging.warning("Tabla de transportes no disponible")
                 return
                 
             from PyQt6.QtWidgets import QFileDialog
@@ -334,44 +336,87 @@ class LogisticaView(QWidget):
         layout.addWidget(label)
         return widget
 
+    def _get_webengine_view(self):
+        """
+        Obtiene QWebEngineView usando el gestor robusto.
+        
+        Returns:
+            QWebEngineView class o None si no está disponible
+        """
+        from rexus.utils.webengine_manager import webengine_manager
+        
+        if webengine_manager.is_webengine_available():
+            try:
+                from PyQt6.QtWebEngineWidgets import QWebEngineView
+                return QWebEngineView
+            except Exception as e:
+                print(f"[ERROR] Error obteniendo QWebEngineView: {e}")
+                return None
+        else:
+            status = webengine_manager.get_status_info()
+            print(f"[WARNING] QtWebEngine no disponible: {status['fallback_reasons']}")
+            return None
+
     def crear_widget_mapa_mejorado(self) -> QWidget:
         # Si ya existe, reutilizar
         if hasattr(self, 'mapa_widget') and self.mapa_widget is not None:
             return self.mapa_widget
 
-        try:
-            from PyQt6.QtWebEngineWidgets import QWebEngineView
-        except ImportError:
-            QWebEngineView = None
+        from rexus.utils.webengine_manager import webengine_manager
 
-        if folium is not None and QWebEngineView is not None:
-            # Crear mapa folium
-            m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
-            data = m._repr_html_()  # HTML del mapa
-            # Guardar HTML temporal
-            temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
-            m.save(temp_file.name)
-            temp_file.close()
-            # Crear widget de mapa
-            self.mapa_widget = QWidget()
-            layout = QVBoxLayout(self.mapa_widget)
-            webview = QWebEngineView()
-            webview.setUrl(QUrl.fromLocalFile(temp_file.name))
-            layout.addWidget(webview)
-        else:
-            # Fallback: placeholder
-            self.mapa_widget = QWidget()
-            layout = QVBoxLayout(self.mapa_widget)
-            label = QLabel("Mapa (no disponible: falta folium o QWebEngineView)")
-            layout.addWidget(label)
+        try:
+            if folium is not None and webengine_manager.is_webengine_available():
+                # Crear mapa folium
+                m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
+                
+                # Guardar HTML temporal con nombre único
+                temp_file = tempfile.NamedTemporaryFile(
+                    delete=False, 
+                    suffix='.html',
+                    prefix='rexus_map_'
+                )
+                m.save(temp_file.name)
+                temp_file.close()
+                
+                # Crear widget de mapa usando el gestor robusto
+                self.mapa_widget = QWidget()
+                layout = QVBoxLayout(self.mapa_widget)
+                
+                webview = webengine_manager.create_web_view("Vista de mapa logístico")
+                if webengine_manager.load_file(webview, temp_file.name):
+                    webview.setMinimumHeight(400)
+                    layout.addWidget(webview)
+                    return self.mapa_widget
+                else:
+                    # Si falla la carga, usar fallback
+                    raise Exception("No se pudo cargar el mapa en el WebView")
+            else:
+                # Folium no disponible o WebEngine no disponible
+                missing_deps = []
+                if folium is None:
+                    missing_deps.append("folium")
+                if not webengine_manager.is_webengine_available():
+                    missing_deps.append("QtWebEngine")
+                raise Exception(f"Dependencias faltantes: {', '.join(missing_deps)}")
+                
+        except Exception as e:
+            # Crear fallback usando el gestor
+            fallback_message = f"""
+🗺️ Mapa Logístico No Disponible
+
+Motivo: {str(e)}
+
+Para habilitar mapas interactivos:
+• Instale folium: pip install folium
+• Instale PyQt6-WebEngine: pip install PyQt6-WebEngine
+            """
+            self.mapa_widget = webengine_manager.create_map_widget(fallback_message)
+            
         return self.mapa_widget
 
     def cargar_datos_ejemplo(self):
         """Carga datos de ejemplo para desarrollo."""
-        try:
-            from PyQt6.QtWebEngineWidgets import QWebEngineView
-        except ImportError:
-            QWebEngineView = None
+        QWebEngineView = self._get_webengine_view()
 
         if folium is not None and QWebEngineView is not None:
             try:
@@ -464,6 +509,19 @@ class LogisticaView(QWidget):
         self.tabla_transportes = StandardComponents.create_standard_table()
         self.configurar_tabla_transportes()
         layout.addWidget(self.tabla_transportes)
+        
+        # Asignar referencia para exportación
+        self.tabla_principal = self.tabla_transportes
+        
+        # Panel de acciones con botón de exportación
+        panel_acciones = QFrame()
+        acciones_layout = QHBoxLayout(panel_acciones)
+        
+        # Agregar botón de exportación
+        self.add_export_button(acciones_layout, "📄 Exportar Logística")
+        
+        acciones_layout.addStretch()
+        layout.addWidget(panel_acciones)
 
         self.tab_widget.addTab(tab_tabla, "Transportes")
 
@@ -865,7 +923,7 @@ class LogisticaView(QWidget):
             }
             QPushButton:hover {
                 background-color: #218838;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
             QPushButton:pressed {
                 background-color: #1e7e34;
@@ -887,7 +945,7 @@ class LogisticaView(QWidget):
             }
             QPushButton:hover {
                 background-color: #e0a800;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
             QPushButton:disabled {
                 background-color: #f8f9fa;
@@ -910,7 +968,7 @@ class LogisticaView(QWidget):
             }
             QPushButton:hover {
                 background-color: #c82333;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
             QPushButton:disabled {
                 background-color: #f8f9fa;
@@ -935,7 +993,7 @@ class LogisticaView(QWidget):
             }
             QPushButton:hover {
                 background-color: #138496;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
         """)
         layout.addWidget(self.btn_exportar)
@@ -1184,7 +1242,9 @@ class LogisticaView(QWidget):
                     fallback_reason = f"Error creando el mapa con folium: {e}"
                 else:
                     try:
-                        from PyQt6.QtWebEngineWidgets import QWebEngineView
+                        QWebEngineView = self._get_webengine_view()
+                        if QWebEngineView is None:
+                            return self.crear_placeholder_mapa()
                         from PyQt6.QtCore import QUrl
                         self.mapa_web_view = QWebEngineView()
                         self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))

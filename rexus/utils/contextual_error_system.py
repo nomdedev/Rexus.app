@@ -460,17 +460,28 @@ class ContextualErrorManager(QObject):
         # Crear y mostrar diálogo
         dialog = ContextualErrorDialog(error, context_data, parent)
 
-        # Conectar manejadores
-        if error.auto_retry:
-            dialog.retry_requested.connect(
-                lambda: self.handle_retry(error_code, module)
-            )
+        try:
+            # Conectar manejadores
+            if error.auto_retry:
+                dialog.retry_requested.connect(
+                    lambda: self.handle_retry(error_code, module)
+                )
 
-        if error.help_url:
-            dialog.help_requested.connect(self.show_help)
+            if error.help_url:
+                dialog.help_requested.connect(self.show_help)
 
-        dialog.exec()
-        return dialog
+            dialog.exec()
+            return dialog
+            
+        finally:
+            # Desconectar señales para evitar memory leaks
+            try:
+                if error.auto_retry:
+                    dialog.retry_requested.disconnect()
+                if error.help_url:
+                    dialog.help_requested.disconnect()
+            except Exception:
+                pass  # Ignorar errores de desconexión
 
     def show_generic_error(self, message: str, parent: Optional[QWidget] = None):
         """Muestra un error genérico cuando no hay error contextualizado."""

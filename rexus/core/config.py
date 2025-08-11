@@ -103,11 +103,36 @@ DATABASE_CONFIG = {
 }
 
 # ===== CONFIGURACIÓN DE SEGURIDAD =====
+def _get_secure_key(env_var: str, min_length: int = 32) -> str:
+    """
+    Obtiene una clave segura desde variables de entorno.
+    Si no existe o es insegura, genera una advertencia y falla.
+    """
+    import secrets
+    import os
+    
+    key = os.getenv(env_var)
+    
+    if not key:
+        # En desarrollo, generar clave temporal con advertencia
+        if os.getenv('APP_ENV', 'development') == 'development':
+            print(f"[SEGURIDAD] Variable {env_var} no configurada. Generando clave temporal para desarrollo.")
+            print(f"[SEGURIDAD] CONFIGURE {env_var} en .env para producción!")
+            return secrets.token_hex(min_length)
+        else:
+            # En producción, fallar completamente
+            raise ValueError(f"Variable de entorno {env_var} requerida para producción")
+    
+    if len(key) < min_length:
+        raise ValueError(f"Variable {env_var} debe tener al menos {min_length} caracteres")
+    
+    return key
+
 SECURITY_CONFIG = {
-    "secret_key": get_env_var("SECRET_KEY", "default_secret_key"),
-    "jwt_secret": get_env_var("JWT_SECRET_KEY", "default_jwt_secret"),
+    "secret_key": _get_secure_key("SECRET_KEY", 32),
+    "jwt_secret": _get_secure_key("JWT_SECRET_KEY", 32),
     "jwt_expiration_hours": get_env_var("JWT_EXPIRATION_HOURS", 24, var_type=int),
-    "encryption_key": get_env_var("ENCRYPTION_KEY", "default_encryption_key"),
+    "encryption_key": _get_secure_key("ENCRYPTION_KEY", 32),
     "password_salt_rounds": get_env_var("PASSWORD_SALT_ROUNDS", 12, var_type=int),
 }
 

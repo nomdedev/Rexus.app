@@ -24,6 +24,7 @@ from rexus.ui.standard_components import StandardComponents
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 from rexus.utils.message_system import show_error, show_warning, show_success
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.export_manager import ModuleExportMixin
 
 # Importar la vista cronograma existente para integrarla
 try:
@@ -32,7 +33,7 @@ except ImportError:
     CronogramaObrasView = None
 
 
-class ObrasModernView(QWidget):
+class ObrasModernView(QWidget, ModuleExportMixin):
     """Vista modernizada del módulo de obras con pestañas integradas."""
     
     # Señales para comunicación con controlador
@@ -44,7 +45,8 @@ class ObrasModernView(QWidget):
     solicitud_exportar = pyqtSignal(str)
     
     def __init__(self, parent=None):
-        super().__init__(parent)
+        QWidget.__init__(self, parent)
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.form_protector = FormProtector()
         self.setup_ui()
@@ -189,6 +191,9 @@ class ObrasModernView(QWidget):
         self.configurar_tabla_obras()
         layout.addWidget(self.tabla_obras)
         
+        # Asignar referencia para exportación
+        self.tabla_principal = self.tabla_obras
+        
         # Panel de acciones
         acciones_panel = self.crear_panel_acciones_obras()
         layout.addWidget(acciones_panel)
@@ -323,6 +328,10 @@ class ObrasModernView(QWidget):
         layout.addWidget(self.btn_editar_obra)
         layout.addWidget(self.btn_eliminar_obra)
         layout.addWidget(self.btn_duplicar_obra)
+        
+        # Agregar botón de exportación
+        self.add_export_button(layout, "📄 Exportar Obras")
+        
         layout.addStretch()
         
         # Botones de exportación

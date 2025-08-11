@@ -463,9 +463,9 @@ class NuevoMantenimientoDialog(QDialog):
         self.setWindowTitle("Nuevo Mantenimiento")
         self.setModal(True)
         self.setFixedSize(500, 600)
-        self.setupUI()
+        self.setup_ui()
         
-    def setupUI(self):
+    def setup_ui(self):
         """Configura la interfaz del diálogo."""
         from PyQt6.QtCore import QDate
         

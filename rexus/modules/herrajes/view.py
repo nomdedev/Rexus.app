@@ -34,9 +34,10 @@ from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.export_manager import ModuleExportMixin
 
 
-class HerrajesView(QWidget):
+class HerrajesView(QWidget, ModuleExportMixin):
     """Vista principal del módulo de herrajes con UI/UX modernizada."""
 
     # Señales
@@ -45,7 +46,8 @@ class HerrajesView(QWidget):
     herraje_seleccionado = pyqtSignal(dict)
 
     def __init__(self):
-        super().__init__()
+        QWidget.__init__(self)
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.loading_manager = LoadingManager()
 
@@ -377,20 +379,19 @@ class HerrajesView(QWidget):
         self.btn_editar = self.crear_boton("✏️ Editar", "secondary")
         self.btn_eliminar = self.crear_boton("🗑️ Eliminar", "danger")
         self.btn_actualizar = self.crear_boton("🔄 Actualizar", "info")
-        self.btn_exportar = self.crear_boton("[CHART] Exportar", "success")
-
         # Conectar botones
         self.btn_nuevo.clicked.connect(self.on_nuevo_herraje)
         self.btn_editar.clicked.connect(self.on_editar_herraje)
         self.btn_eliminar.clicked.connect(self.on_eliminar_herraje)
         self.btn_actualizar.clicked.connect(self.on_actualizar_datos)
-        self.btn_exportar.clicked.connect(self.on_exportar_datos)
 
         botones_layout.addWidget(self.btn_nuevo)
         botones_layout.addWidget(self.btn_editar)
         botones_layout.addWidget(self.btn_eliminar)
         botones_layout.addWidget(self.btn_actualizar)
-        botones_layout.addWidget(self.btn_exportar)
+        
+        # Agregar botón de exportación estándar
+        self.add_export_button(botones_layout, "📄 Exportar Herrajes")
         botones_layout.addStretch()
         
         layout.addLayout(botones_layout)
@@ -555,6 +556,9 @@ class HerrajesView(QWidget):
         self.tabla_herrajes = QTableWidget()
         self.configurar_tabla()
         tabla_layout.addWidget(self.tabla_herrajes)
+        
+        # Asignar referencia para exportación
+        self.tabla_principal = self.tabla_herrajes
 
         layout.addWidget(grupo_tabla)
 

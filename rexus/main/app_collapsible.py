@@ -585,8 +585,13 @@ class SimpleSecurityManager:
 
     def login(self, username: str, password: str) -> bool:
         """Autenticación simple"""
+        import os
         user = self.users.get(username)
-        if user and password == "admin":
+        # Usar variable de entorno para credenciales de desarrollo
+        dev_password = os.getenv('REXUS_DEV_PASSWORD')
+        fallback_password = os.getenv('FALLBACK_ADMIN_PASSWORD')
+        
+        if user and (password == dev_password or password == fallback_password):
             self.current_user_data = user.copy()
             return True
         return False

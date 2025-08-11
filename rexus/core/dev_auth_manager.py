@@ -28,9 +28,13 @@ class DevAuthManager:
     """
     
     def __init__(self):
-        self.dev_user = os.getenv('REXUS_DEV_USER', 'admin')
-        self.dev_password = os.getenv('REXUS_DEV_PASSWORD', 'admin')
-        self.auto_login_enabled = os.getenv('REXUS_DEV_AUTO_LOGIN', 'true').lower() == 'true'
+        from rexus.utils.env_manager import get_dev_credentials, get_secure_credential
+        
+        # Usar el gestor de entorno seguro
+        dev_creds = get_dev_credentials()
+        self.dev_user = dev_creds.get('user', 'admin')
+        self.dev_password = get_secure_credential('REXUS_DEV_PASSWORD', 'dev_secure_2025')
+        self.auto_login_enabled = dev_creds.get('auto_login', False)
         
         # No mostrar credenciales en logs por seguridad
         print(f"[DEV_AUTH] Auto-login: {'✅ Habilitado' if self.auto_login_enabled else '❌ Deshabilitado'}")
