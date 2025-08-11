@@ -137,11 +137,9 @@ class StandardComponents:
             }}
             QPushButton:hover {{
                 background: {cls.COLORS['secondary']};
-                transform: translateY(-1px);
             }}
             QPushButton:pressed {{
                 background: #1e3a8a;
-                transform: translateY(0px);
             }}
             QPushButton:disabled {{
                 background: #94a3b8;
@@ -211,11 +209,9 @@ class StandardComponents:
             }}
             QPushButton:hover {{
                 background: #b91c1c;
-                transform: translateY(-1px);
             }}
             QPushButton:pressed {{
                 background: #991b1b;
-                transform: translateY(0px);
             }}
             QPushButton:disabled {{
                 background: #94a3b8;
@@ -247,11 +243,9 @@ class StandardComponents:
             }}
             QPushButton:hover {{
                 background: #047857;
-                transform: translateY(-1px);
             }}
             QPushButton:pressed {{
                 background: #065f46;
-                transform: translateY(0px);
             }}
             QPushButton:disabled {{
                 background: #94a3b8;

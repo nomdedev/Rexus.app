@@ -67,9 +67,10 @@ from rexus.utils.message_system import show_error, show_success, show_warning
 from rexus.utils.security import SecurityUtils
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 from rexus.ui.templates.base_module_view import BaseModuleView
+from rexus.utils.export_manager import ModuleExportMixin
 
 
-class AuditoriaView(BaseModuleView):
+class AuditoriaView(BaseModuleView, ModuleExportMixin):
     """Vista principal del módulo de auditoria."""
 
     # Señales
@@ -77,7 +78,8 @@ class AuditoriaView(BaseModuleView):
     error_ocurrido = pyqtSignal(str)
 
     def __init__(self):
-        super().__init__(module_name="Auditoría")
+        BaseModuleView.__init__(self, module_name="Auditoría")
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.form_protector = None
         self.init_ui()
@@ -149,6 +151,9 @@ class AuditoriaView(BaseModuleView):
         self.btn_actualizar = RexusButton("Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
+        
+        # Agregar botón de exportación
+        self.add_export_button(layout, "📄 Exportar Auditoría")
 
         return panel
 
@@ -412,7 +417,7 @@ class AuditoriaView(BaseModuleView):
             print(f"[ERROR AUDITORÍA] Error actualizando registros: {e}")
             self.mostrar_error(f"Error cargando registros: {e}")
     
-    def cargar_registros_auditoría(self, registros):
+    def cargar_registros_auditoria(self, registros):
         """
         Carga registros específicos de auditoría en la tabla.
         Método adicional para uso del controlador.

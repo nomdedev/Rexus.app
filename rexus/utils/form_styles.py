@@ -217,13 +217,13 @@ class FormStyleManager:
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 {FormStyleManager.COLORS["primary_light"]}, 
                     stop:1 {FormStyleManager.COLORS["primary"]});
-                transform: translateY(-2px);
+                /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
             
             QPushButton[buttonType="primary"]:pressed {{
                 background: {FormStyleManager.COLORS["primary_dark"]};
-                transform: translateY(0px);
+                /* transform no soportado en Qt - removido */
             }}
             
             /* Botón de éxito */
@@ -238,7 +238,7 @@ class FormStyleManager:
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 {FormStyleManager.COLORS["success_light"]}, 
                     stop:1 {FormStyleManager.COLORS["success"]});
-                transform: translateY(-2px);
+                /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
             
@@ -254,7 +254,7 @@ class FormStyleManager:
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
                     stop:0 {FormStyleManager.COLORS["error_light"]}, 
                     stop:1 {FormStyleManager.COLORS["error"]});
-                transform: translateY(-2px);
+                /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
             
@@ -268,7 +268,7 @@ class FormStyleManager:
             QPushButton[buttonType="secondary"]:hover, QPushButton:hover {{
                 background-color: {FormStyleManager.COLORS["border"]};
                 border-color: {FormStyleManager.COLORS["secondary"]};
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }}
             
             QPushButton:disabled {{

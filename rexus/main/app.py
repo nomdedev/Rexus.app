@@ -1146,24 +1146,25 @@ QPushButton:disabled {
 
 
 def main():
-    print("[LOG 4.1] Inicializando QtWebEngine y configurando OpenGL...")
-    qtwebengine_failed = False
-    try:
-        from PyQt6.QtWebEngine import QtWebEngine
-
-        QtWebEngine.initialize()
+    print("[LOG 4.1] Inicializando QtWebEngine de forma robusta...")
+    
+    # Usar el gestor robusto de WebEngine
+    from rexus.utils.webengine_manager import webengine_manager
+    
+    qtwebengine_available = webengine_manager.is_webengine_available()
+    
+    if qtwebengine_available:
+        print("[LOG 4.1] QtWebEngine disponible y inicializado")
         import os
-
-        os.environ["QT_OPENGL"] = (
-            "angle"  # Forzar OpenGL ANGLE para compatibilidad en Windows
-        )
+        os.environ["QT_OPENGL"] = "angle"  # Forzar OpenGL ANGLE para compatibilidad
+        
         from PyQt6.QtCore import Qt
         from PyQt6.QtWidgets import QApplication
-
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseOpenGLES)
-    except Exception as e:
-        print(f"[LOG 4.1] Error inicializando QtWebEngine/OpenGL: {e}")
-        qtwebengine_failed = True
+    else:
+        print("[LOG 4.1] QtWebEngine no disponible, usando fallbacks")
+        webengine_status = webengine_manager.get_status_info()
+        print(f"[LOG 4.1] Razones: {webengine_status['fallback_reasons']}")
         from PyQt6.QtWidgets import QApplication
     print("[LOG 4.1] Iniciando QApplication...")
     app = QApplication(sys.argv)

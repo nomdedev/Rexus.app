@@ -286,12 +286,12 @@ class StyleManager:
             
             QPushButton[actionButton="primary"]:hover {
                 background: #3b82f6;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
             
             QPushButton[actionButton="primary"]:pressed {
                 background: #1e3a8a;
-                transform: translateY(0px);
+                /* transform no soportado en Qt - removido */
             }
             
             /* Botones secundarios */
@@ -326,7 +326,7 @@ class StyleManager:
             
             QPushButton[actionButton="danger"]:hover {
                 background: #b91c1c;
-                transform: translateY(-1px);
+                /* transform no soportado en Qt - removido */
             }
             
             /* Tablas estándard */

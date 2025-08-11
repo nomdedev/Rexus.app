@@ -346,6 +346,39 @@ class BaseModuleView(QWidget):
         self.delete_btn.clicked.connect(self.delete_item)
         self.cancel_btn.clicked.connect(self.cancel_edit)
         self.save_btn.clicked.connect(self.save_item)
+    
+    def cleanup_connections(self):
+        """Limpia las conexiones de señales para evitar memory leaks."""
+        try:
+            # Desconectar señales principales
+            if hasattr(self, 'search_btn'):
+                self.search_btn.clicked.disconnect()
+            if hasattr(self, 'search_input'):
+                self.search_input.returnPressed.disconnect()
+            if hasattr(self, 'new_btn'):
+                self.new_btn.clicked.disconnect()
+            if hasattr(self, 'refresh_btn'):
+                self.refresh_btn.clicked.disconnect()
+            if hasattr(self, 'main_table'):
+                self.main_table.itemSelectionChanged.disconnect()
+            if hasattr(self, 'edit_btn'):
+                self.edit_btn.clicked.disconnect()
+            if hasattr(self, 'delete_btn'):
+                self.delete_btn.clicked.disconnect()
+            if hasattr(self, 'cancel_btn'):
+                self.cancel_btn.clicked.disconnect()
+            if hasattr(self, 'save_btn'):
+                self.save_btn.clicked.disconnect()
+        except Exception as e:
+            print(f"Error limpiando conexiones en BaseModuleView: {e}")
+    
+    def closeEvent(self, event):
+        """Maneja el cierre del widget."""
+        self.cleanup_connections()
+        if hasattr(super(), 'closeEvent'):
+            super().closeEvent(event)
+        else:
+            event.accept()
         
         # Paginación
         self.prev_btn.clicked.connect(self.previous_page)

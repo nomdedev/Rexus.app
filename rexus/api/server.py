@@ -4,15 +4,16 @@ Versión: 2.0.0 - Enterprise Ready
 """
 
 import json
+import re
 import time
 from datetime import datetime, timedelta
-from typing import Dict, Any, Optional, List
+from typing import Dict, Any, Optional, List, Tuple
 from dataclasses import dataclass, asdict
 import asyncio
 import threading
 
 try:
-    from fastapi import FastAPI, HTTPException, Depends, status, Request, Response
+    from fastapi import FastAPI, HTTPException, Depends, status, Request, Response, Body
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.trustedhost import TrustedHostMiddleware
     from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -34,6 +35,26 @@ from ..core.logger import get_logger
 from ..core.database_pool import get_database_pool, database_transaction
 from ..core.cache_manager import cache_manager
 from ..core.backup_manager import backup_manager
+from ..security.csrf_protection import init_csrf_protection, get_csrf_protection
+from ..security.user_enumeration_protection import (
+    init_user_enumeration_protection, 
+    get_user_enumeration_protection,
+    record_login_attempt,
+    get_response_delay,
+    simulate_password_check
+)
+from ..security.password_manager import (
+    init_password_manager,
+    get_password_manager,
+    hash_password,
+    verify_password,
+    validate_password_strength
+)
+from .validators import (
+    InputSanitizer, ValidationError, InputValidationMiddleware,
+    PaginationModel, FilterModel, InventoryCreateModel, UserCreateModel,
+    validate_pagination_params, input_validator
+)
 
 logger = get_logger("api_server")
 
@@ -135,10 +156,71 @@ class RexusAPI:
         # Security
         self.security = HTTPBearer() if JWT_AVAILABLE else None
         
+        # Inicializar protección CSRF
+        try:
+            init_csrf_protection(SECURITY_CONFIG.get("secret_key", "fallback_key"))
+            logger.info("Protección CSRF inicializada")
+        except Exception as e:
+            logger.error(f"Error inicializando protección CSRF: {e}")
+        
+        # Inicializar protección contra enumeración de usuarios
+        try:
+            init_user_enumeration_protection()
+            logger.info("Protección contra enumeración de usuarios inicializada")
+        except Exception as e:
+            logger.error(f"Error inicializando protección de enumeración: {e}")
+        
+        # Inicializar gestor de contraseñas
+        try:
+            init_password_manager()
+            logger.info("Gestor de contraseñas inicializado")
+        except Exception as e:
+            logger.error(f"Error inicializando gestor de contraseñas: {e}")
+        
         logger.info("RexusAPI inicializada")
     
     def _setup_middleware(self):
         """Configurar middleware de la API"""
+        
+        # Middleware de validación de entrada (primero)
+        @self.app.middleware("http")
+        async def input_validation_middleware(request: Request, call_next):
+            """Middleware de validación y seguridad global."""
+            from ..utils.secure_logger import log_security_event, log_info
+            
+            try:
+                # Validar tamaño del request
+                content_length = request.headers.get("content-length")
+                if content_length:
+                    input_validator.validate_request_size(int(content_length))
+                
+                # Leer y validar contenido si es POST/PUT/PATCH
+                if request.method in ["POST", "PUT", "PATCH"]:
+                    body = await request.body()
+                    if body:
+                        body_str = body.decode('utf-8', errors='ignore')
+                        input_validator.scan_for_attacks(body_str)
+                
+                # Log de request
+                log_info(f"API {request.method} {request.url.path} from {request.client.host if request.client else 'unknown'}")
+                
+                # Procesar request
+                response = await call_next(request)
+                return response
+                
+            except ValidationError as e:
+                log_security_event("INPUT_VALIDATION_FAILED", "MEDIUM", str(e.detail))
+                return JSONResponse(
+                    status_code=422,
+                    content=e.detail
+                )
+            except Exception as e:
+                log_security_event("MIDDLEWARE_ERROR", "HIGH", str(e))
+                return JSONResponse(
+                    status_code=500,
+                    content={"error": "internal_server_error", "message": "Error de validación interno"}
+                )
+        
         # CORS
         cors_origins = get_env_var("API_CORS_ORIGINS", "http://localhost:3000").split(",")
         self.app.add_middleware(
@@ -154,6 +236,63 @@ class RexusAPI:
             TrustedHostMiddleware,
             allowed_hosts=["localhost", "127.0.0.1", "*"]  # Configurar según necesidades
         )
+        
+        # Middleware CSRF para métodos que modifican datos
+        @self.app.middleware("http")
+        async def csrf_protection_middleware(request: Request, call_next):
+            """Middleware de protección CSRF para métodos POST/PUT/DELETE."""
+            from ..utils.secure_logger import log_security_event
+            
+            # Solo verificar CSRF en métodos que modifican datos
+            if request.method in ["POST", "PUT", "DELETE", "PATCH"]:
+                try:
+                    # Obtener token CSRF del header
+                    csrf_token = request.headers.get("X-CSRF-Token")
+                    
+                    if not csrf_token:
+                        log_security_event("CSRF_TOKEN_MISSING", "MEDIUM", f"Method: {request.method}, Path: {request.url.path}")
+                        return JSONResponse(
+                            status_code=403,
+                            content={"error": "csrf_token_required", "message": "Token CSRF requerido"}
+                        )
+                    
+                    # Obtener información del usuario (si está autenticado)
+                    user_id = "anonymous"
+                    auth_header = request.headers.get("Authorization")
+                    
+                    if auth_header and JWT_AVAILABLE:
+                        try:
+                            token = auth_header.split(" ")[1] if " " in auth_header else auth_header
+                            payload = jwt.decode(
+                                token,
+                                SECURITY_CONFIG["jwt_secret"],
+                                algorithms=["HS256"]
+                            )
+                            user_id = payload.get("sub", "anonymous")
+                        except Exception:
+                            pass  # Mantener user_id como anonymous si falla
+                    
+                    # Validar token CSRF
+                    csrf_protection = get_csrf_protection()
+                    is_valid, error_message = csrf_protection.validate_token_for_user(
+                        csrf_token, user_id, consume=True
+                    )
+                    
+                    if not is_valid:
+                        log_security_event("CSRF_TOKEN_INVALID", "HIGH", f"User: {user_id}, Error: {error_message}")
+                        return JSONResponse(
+                            status_code=403,
+                            content={"error": "csrf_token_invalid", "message": error_message}
+                        )
+                    
+                except Exception as e:
+                    log_security_event("CSRF_MIDDLEWARE_ERROR", "HIGH", str(e))
+                    return JSONResponse(
+                        status_code=500,
+                        content={"error": "csrf_validation_error", "message": "Error validando CSRF"}
+                    )
+            
+            return await call_next(request)
         
         # Middleware personalizado para logging y métricas
         @self.app.middleware("http")
@@ -198,6 +337,27 @@ class RexusAPI:
     def _setup_routes(self):
         """Configurar todas las rutas de la API"""
         
+        # CSRF Token endpoint
+        @self.app.get("/csrf-token", tags=["Security"])
+        async def get_csrf_token(current_user: dict = Depends(self._get_current_user) if JWT_AVAILABLE else None):
+            """Generar token CSRF para el usuario actual"""
+            try:
+                user_id = current_user.get('sub', 'anonymous') if current_user else 'anonymous'
+                session_id = current_user.get('session_id') if current_user else None
+                
+                csrf_protection = get_csrf_protection()
+                token = csrf_protection.generate_token_for_user(user_id, session_id)
+                
+                return {
+                    "csrf_token": token,
+                    "expires_in": 3600,  # 1 hora
+                    "user_id": user_id
+                }
+            except Exception as e:
+                from ..utils.secure_logger import log_error
+                log_error(f"Error generando token CSRF: {str(e)}")
+                raise HTTPException(status_code=500, detail="Error generando token CSRF")
+        
         # Health check
         @self.app.get("/health", response_model=HealthResponse, tags=["System"])
         async def health_check():
@@ -211,48 +371,109 @@ class RexusAPI:
                 uptime_seconds=uptime
             )
         
-        # Autenticación
+        # Autenticación con validación exhaustiva
         if JWT_AVAILABLE:
             @self.app.post("/auth/token", response_model=TokenResponse, tags=["Authentication"])
-            async def login(username: str, password: str):
-                """Obtener token de acceso"""
-                # Verificar credenciales (implementar según necesidades)
-                if not self._verify_credentials(username, password):
-                    raise HTTPException(
-                        status_code=status.HTTP_401_UNAUTHORIZED,
-                        detail="Credenciales inválidas"
+            async def login(username: str = Body(..., min_length=3, max_length=50), 
+                          password: str = Body(..., min_length=6, max_length=100)):
+                """Obtener token de acceso con validación de seguridad"""
+                from ..utils.secure_logger import log_security_event, log_user_action
+                
+                try:
+                    # Rate limiting específico para login
+                    client_ip = "unknown"
+                    
+                    # Sanitizar entrada
+                    safe_username = InputSanitizer.sanitize_string(username, max_length=50)
+                    
+                    # Validar formato de username
+                    if not re.match(r'^[a-zA-Z0-9._-]+$', safe_username):
+                        log_security_event("INVALID_USERNAME_FORMAT", "MEDIUM", f"Username: {safe_username[:10]}...")
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Formato de usuario inválido"
+                        )
+                    
+                    # Validar longitud de password
+                    if len(password) < 6 or len(password) > 100:
+                        log_security_event("INVALID_PASSWORD_LENGTH", "LOW", f"Username: {safe_username}")
+                        raise HTTPException(
+                            status_code=status.HTTP_400_BAD_REQUEST,
+                            detail="Longitud de contraseña inválida"
+                        )
+                    
+                    # Obtener IP del cliente
+                    client_ip = request.client.host if hasattr(request, 'client') and request.client else "unknown"
+                    
+                    # Verificar credenciales con protección contra enumeración
+                    credentials_valid, user_exists = self._verify_credentials(safe_username, password, client_ip)
+                    
+                    if not credentials_valid:
+                        # Usar mensaje genérico para evitar revelación de información
+                        error_message = get_user_enumeration_protection().get_generic_error_message()
+                        raise HTTPException(
+                            status_code=status.HTTP_401_UNAUTHORIZED,
+                            detail=error_message
+                        )
+                    
+                    # Log de login exitoso
+                    log_user_action(safe_username, "LOGIN_SUCCESS", {"method": "API_TOKEN"})
+                    
+                    # Generar token con información adicional
+                    token_data = {
+                        "sub": safe_username,
+                        "exp": datetime.utcnow() + timedelta(hours=SECURITY_CONFIG.get("jwt_expiration_hours", 24)),
+                        "iat": datetime.utcnow(),
+                        "type": "access_token",
+                        "version": "1.0"
+                    }
+                    
+                    token = jwt.encode(
+                        token_data,
+                        SECURITY_CONFIG["jwt_secret"],
+                        algorithm="HS256"
                     )
-                
-                # Generar token
-                token_data = {
-                    "sub": username,
-                    "exp": datetime.utcnow() + timedelta(hours=24),
-                    "iat": datetime.utcnow()
-                }
-                
-                token = jwt.encode(
-                    token_data,
-                    SECURITY_CONFIG["jwt_secret"],
-                    algorithm="HS256"
-                )
-                
-                return TokenResponse(
-                    access_token=token,
-                    expires_in=86400  # 24 horas
-                )
+                    
+                    return TokenResponse(
+                        access_token=token,
+                        expires_in=SECURITY_CONFIG.get("jwt_expiration_hours", 24) * 3600
+                    )
+                    
+                except HTTPException:
+                    raise  # Re-raise HTTP exceptions as-is
+                except Exception as e:
+                    log_security_event("LOGIN_ERROR", "HIGH", str(e))
+                    raise HTTPException(
+                        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                        detail="Error interno de autenticación"
+                    )
         
         # Inventario endpoints
         @self.app.get("/api/v1/inventory", response_model=InventoryResponse, tags=["Inventory"])
         async def get_inventory(
-            page: int = 1,
-            page_size: int = 50,
-            categoria: Optional[str] = None,
+            pagination: PaginationModel = Depends(),
+            filters: FilterModel = Depends(),
             current_user: dict = Depends(self._get_current_user) if JWT_AVAILABLE else None
         ):
-            """Obtener lista de inventario con paginación"""
+            """Obtener lista de inventario con paginación y filtros validados"""
             try:
-                # Cache key
-                cache_key = f"inventory:page:{page}:size:{page_size}:cat:{categoria}"
+                # Log de acceso seguro
+                from ..utils.secure_logger import log_data_access
+                username = current_user.get('sub', 'anonymous') if current_user else 'anonymous'
+                log_data_access(username, 'inventario', 'READ')
+                
+                # Validar y sanitizar parámetros
+                page, page_size = InputSanitizer.validate_pagination(pagination.page, pagination.page_size)
+                
+                # Sanitizar filtros
+                safe_filters = {}
+                if filters.categoria:
+                    safe_filters['categoria'] = InputSanitizer.sanitize_string(filters.categoria, max_length=100)
+                if filters.search:
+                    safe_filters['search'] = InputSanitizer.sanitize_string(filters.search, max_length=255)
+                
+                # Cache key seguro (sin datos sensibles)
+                cache_key = f"inventory:p:{page}:s:{page_size}:f:{hash(str(safe_filters))}"
                 cached_result = cache_manager.get(cache_key)
                 
                 if cached_result:
@@ -262,20 +483,31 @@ class RexusAPI:
                 offset = (page - 1) * page_size
                 
                 with database_transaction("inventario") as conn:
-                    # Query principal
-                    where_clause = "WHERE categoria = ?" if categoria else ""
-                    params = (categoria,) if categoria else ()
+                    # Construir query con filtros seguros
+                    where_conditions = []
+                    params = []
                     
-                    query = """
+                    if safe_filters.get('categoria'):
+                        where_conditions.append("categoria = ?")
+                        params.append(safe_filters['categoria'])
+                    
+                    if safe_filters.get('search'):
+                        where_conditions.append("(codigo LIKE ? OR descripcion LIKE ?)")
+                        search_pattern = f"%{safe_filters['search']}%"
+                        params.extend([search_pattern, search_pattern])
+                    
+                    where_clause = "WHERE " + " AND ".join(where_conditions) if where_conditions else ""
+                    
+                    query = f"""
                         SELECT id, codigo, descripcion, cantidad, precio, categoria
                         FROM inventario
-                        """ + where_clause + """
+                        {where_clause}
                         ORDER BY codigo
                         OFFSET ? ROWS
                         FETCH NEXT ? ROWS ONLY
                     """
                     
-                    cursor = conn.execute(query, params + (offset, page_size))
+                    cursor = conn.execute(query, params + [offset, page_size])
                     items = []
                     
                     for row in cursor.fetchall():
@@ -288,10 +520,10 @@ class RexusAPI:
                             categoria=row[5]
                         ))
                     
-                    # Count total
-                    # Use secure string concatenation instead of f-string
-                    count_query = "SELECT COUNT(*) FROM inventario " + where_clause
-                    cursor = conn.execute(count_query, params)
+                    # Count total con mismos filtros
+                    count_query = f"SELECT COUNT(*) FROM inventario {where_clause}"
+                    count_params = params[:-2] if where_conditions else []  # Excluir offset y page_size
+                    cursor = conn.execute(count_query, count_params)
                     total = cursor.fetchone()[0]
                 
                 result = InventoryResponse(
@@ -312,12 +544,37 @@ class RexusAPI:
         
         @self.app.post("/api/v1/inventory", response_model=InventoryItem, tags=["Inventory"])
         async def create_inventory_item(
-            item: InventoryItem,
+            item: InventoryCreateModel,
             current_user: dict = Depends(self._get_current_user) if JWT_AVAILABLE else None
         ):
-            """Crear nuevo item de inventario"""
+            """Crear nuevo item de inventario con validación exhaustiva"""
             try:
+                # Log de acceso seguro
+                from ..utils.secure_logger import log_data_access, log_user_action
+                username = current_user.get('sub', 'anonymous') if current_user else 'anonymous'
+                log_data_access(username, 'inventario', 'CREATE')
+                
+                # Sanitizar todos los campos
+                safe_codigo = InputSanitizer.sanitize_string(item.codigo, max_length=50)
+                safe_nombre = InputSanitizer.sanitize_string(item.nombre, max_length=255)
+                safe_descripcion = InputSanitizer.sanitize_string(item.descripcion, max_length=1000) if item.descripcion else None
+                safe_categoria = InputSanitizer.sanitize_string(item.categoria, max_length=100)
+                
+                # Validaciones adicionales de negocio
+                if float(item.precio) < 0 or float(item.precio) > 999999999.99:
+                    raise ValidationError("Precio fuera del rango permitido", "precio")
+                
+                if item.stock < 0 or item.stock > 999999:
+                    raise ValidationError("Stock fuera del rango permitido", "stock")
+                
                 with database_transaction("inventario") as conn:
+                    # Verificar si el código ya existe
+                    check_query = "SELECT COUNT(*) FROM inventario WHERE codigo = ?"
+                    cursor = conn.execute(check_query, (safe_codigo,))
+                    if cursor.fetchone()[0] > 0:
+                        raise ValidationError("El código ya existe", "codigo")
+                    
+                    # Insertar nuevo item
                     query = """
                         INSERT INTO inventario (codigo, descripcion, cantidad, precio, categoria)
                         OUTPUT INSERTED.id
@@ -325,32 +582,119 @@ class RexusAPI:
                     """
                     
                     cursor = conn.execute(query, (
-                        item.codigo,
-                        item.descripcion,
-                        item.cantidad,
-                        item.precio,
-                        item.categoria
+                        safe_codigo,
+                        safe_nombre,  # Usar nombre como descripción
+                        item.stock,   # Usar stock como cantidad
+                        float(item.precio),
+                        safe_categoria
                     ))
                     
                     new_id = cursor.fetchone()[0]
-                    item.id = new_id
+                    
+                    # Crear respuesta compatible
+                    created_item = InventoryItem(
+                        id=new_id,
+                        codigo=safe_codigo,
+                        descripcion=safe_nombre,
+                        cantidad=item.stock,
+                        precio=float(item.precio),
+                        categoria=safe_categoria
+                    )
                 
                 # Invalidar cache
                 cache_manager.delete("inventory:*")
                 
-                # Log de auditoría
-                logger.audit(
-                    action="inventory_create",
-                    user=current_user.get("sub") if current_user else "api_user",
-                    resource=f"inventory:{new_id}",
-                    result="success",
-                    extra={"item_code": item.codigo}
+                # Log de auditoría seguro
+                log_user_action(
+                    username,
+                    "inventory_create",
+                    {"item_id": new_id, "item_code": safe_codigo, "category": safe_categoria}
                 )
                 
-                return item
+                return created_item
                 
+            except ValidationError:
+                raise  # Re-raise validation errors as-is
             except Exception as e:
-                logger.error("Error creando item", extra={"error": str(e)})
+                from ..utils.secure_logger import log_error
+                log_error(f"Error creando item de inventario: {str(e)}")
+                raise HTTPException(status_code=500, detail="Error interno del servidor")
+        
+        # Usuarios endpoints con validación exhaustiva
+        @self.app.post("/api/v1/users", response_model=dict, tags=["Users"])
+        async def create_user(
+            user: UserCreateModel,
+            current_user: dict = Depends(self._get_current_user) if JWT_AVAILABLE else None
+        ):
+            """Crear nuevo usuario con validación exhaustiva"""
+            try:
+                from ..utils.secure_logger import log_data_access, log_user_action, log_security_event
+                username = current_user.get('sub', 'anonymous') if current_user else 'anonymous'
+                
+                # Validar permisos de administrador (en producción)
+                if current_user and current_user.get('sub') != 'admin':
+                    log_security_event("UNAUTHORIZED_USER_CREATE", "HIGH", f"User: {username}")
+                    raise HTTPException(status_code=403, detail="Permisos insuficientes")
+                
+                # Log de acceso
+                log_data_access(username, 'usuarios', 'CREATE')
+                
+                # Sanitizar todos los campos de entrada
+                safe_username = InputSanitizer.sanitize_string(user.username, max_length=50)
+                safe_email = InputSanitizer.sanitize_string(user.email, max_length=255)
+                safe_nombre = InputSanitizer.sanitize_string(user.nombre, max_length=100)
+                safe_apellido = InputSanitizer.sanitize_string(user.apellido, max_length=100)
+                safe_departamento = InputSanitizer.sanitize_string(user.departamento, max_length=100) if user.departamento else None
+                
+                # Validaciones adicionales de negocio
+                if len(safe_username) < 3:
+                    raise ValidationError("Username debe tener al menos 3 caracteres", "username")
+                
+                # Verificar que el email no exista
+                with database_transaction("users") as conn:
+                    check_query = "SELECT COUNT(*) FROM usuarios WHERE email = ? OR username = ?"
+                    cursor = conn.execute(check_query, (safe_email, safe_username))
+                    if cursor.fetchone()[0] > 0:
+                        raise ValidationError("Usuario o email ya existe", "duplicate")
+                    
+                    # Crear usuario (password será generada/enviada por separado)
+                    insert_query = """
+                        INSERT INTO usuarios (username, email, nombre, apellido, rol, departamento, activo, fecha_creacion)
+                        OUTPUT INSERTED.id
+                        VALUES (?, ?, ?, ?, ?, ?, 1, GETDATE())
+                    """
+                    
+                    cursor = conn.execute(insert_query, (
+                        safe_username,
+                        safe_email,
+                        safe_nombre,
+                        safe_apellido,
+                        user.rol,
+                        safe_departamento
+                    ))
+                    
+                    new_user_id = cursor.fetchone()[0]
+                
+                # Log de auditoría
+                log_user_action(
+                    username,
+                    "user_create",
+                    {"new_user_id": new_user_id, "new_username": safe_username, "role": user.rol}
+                )
+                
+                return {
+                    "message": "Usuario creado exitosamente",
+                    "user_id": new_user_id,
+                    "username": safe_username
+                }
+                
+            except ValidationError:
+                raise  # Re-raise validation errors as-is
+            except HTTPException:
+                raise  # Re-raise HTTP exceptions as-is
+            except Exception as e:
+                from ..utils.secure_logger import log_error
+                log_error(f"Error creando usuario: {str(e)}")
                 raise HTTPException(status_code=500, detail="Error interno del servidor")
         
         # Estadísticas
@@ -408,15 +752,113 @@ class RexusAPI:
                 logger.error("Error obteniendo estado de backup", extra={"error": str(e)})
                 raise HTTPException(status_code=500, detail="Error obteniendo estado")
     
-    def _verify_credentials(self, username: str, password: str) -> bool:
-        """Verificar credenciales de usuario (implementar según necesidades)"""
-        # Implementación básica - en producción usar hash real
-        test_users = {
-            "admin": "admin123",
-            "api_user": "api123"
-        }
+    def _verify_credentials(self, username: str, password: str, ip_address: str = "unknown") -> Tuple[bool, bool]:
+        """
+        Verificar credenciales con protección contra enumeración y timing attacks.
         
-        return test_users.get(username) == password
+        Args:
+            username: Nombre de usuario sanitizado
+            password: Contraseña
+            ip_address: Dirección IP del cliente
+            
+        Returns:
+            Tuple[bool, bool]: (credenciales_válidas, usuario_existe)
+        """
+        try:
+            from ..utils.secure_logger import log_security_event
+            import hashlib
+            import time
+            import asyncio
+            
+            start_time = time.time()
+            user_exists = False
+            credentials_valid = False
+            
+            # Verificar si IP puede hacer intentos
+            enum_protection = get_user_enumeration_protection()
+            ip_allowed, error_msg = enum_protection.is_ip_allowed(ip_address)
+            
+            if not ip_allowed:
+                log_security_event("IP_BLOCKED_LOGIN_ATTEMPT", "HIGH", f"IP: {ip_address}, User: {username}")
+                # Simular verificación para timing consistency
+                simulate_password_check(username)
+                return False, False
+            
+            # Verificar credenciales usando el gestor de contraseñas
+            import os
+            if os.getenv('APP_ENV', 'development') == 'development':
+                # Credenciales de desarrollo con hashes seguros
+                password_mgr = get_password_manager()
+                
+                # Crear hashes seguros para desarrollo
+                dev_users = {
+                    "admin": password_mgr.hash_password("admin123"),
+                    "api_user": password_mgr.hash_password("api123")
+                }
+                
+                user_exists = username in dev_users
+                
+                if user_exists:
+                    credentials_valid = password_mgr.verify_password(password, dev_users[username])
+                else:
+                    # Simular verificación para usuarios inexistentes
+                    simulate_password_check(username)
+                
+            else:
+                # En producción, consultar base de datos
+                try:
+                    password_mgr = get_password_manager()
+                    
+                    with database_transaction("users") as conn:
+                        query = "SELECT password_hash, activo FROM usuarios WHERE username = ?"
+                        cursor = conn.execute(query, (username,))
+                        result = cursor.fetchone()
+                        
+                        user_exists = result is not None
+                        
+                        if user_exists:
+                            stored_hash, activo = result
+                            if activo:
+                                # Verificar contraseña usando el gestor seguro
+                                credentials_valid = password_mgr.verify_password(password, stored_hash)
+                            else:
+                                credentials_valid = False
+                                log_security_event("LOGIN_USER_DISABLED", "MEDIUM", f"Username: {username}")
+                        else:
+                            # Simular verificación para usuarios inexistentes
+                            simulate_password_check(username)
+                            
+                except Exception as e:
+                    log_security_event("LOGIN_DB_ERROR", "HIGH", str(e))
+                    # Simular verificación en caso de error
+                    simulate_password_check(username)
+            
+            # Registrar intento en sistema de protección
+            should_block = record_login_attempt(ip_address, username, credentials_valid, user_exists)
+            
+            # Aplicar delay consistente para prevenir timing attacks
+            required_delay = get_response_delay(username, user_exists)
+            elapsed_time = time.time() - start_time
+            remaining_delay = max(0, required_delay - elapsed_time)
+            
+            if remaining_delay > 0:
+                time.sleep(remaining_delay)
+            
+            # Log del resultado
+            if credentials_valid:
+                log_security_event("LOGIN_SUCCESS", "INFO", f"Username: {username}, IP: {ip_address}")
+            else:
+                result_type = "USER_NOT_EXISTS" if not user_exists else "INVALID_PASSWORD"
+                log_security_event(f"LOGIN_FAILED_{result_type}", "MEDIUM", f"Username: {username}, IP: {ip_address}")
+            
+            return credentials_valid, user_exists
+                    
+        except Exception as e:
+            from ..utils.secure_logger import log_error
+            log_error(f"Error verificando credenciales: {str(e)}")
+            # Simular verificación en caso de error crítico
+            simulate_password_check(username)
+            return False, False
     
     async def _get_current_user(self, credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
         """Obtener usuario actual desde token JWT"""

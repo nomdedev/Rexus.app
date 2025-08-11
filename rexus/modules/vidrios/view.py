@@ -24,9 +24,10 @@ from rexus.ui.standard_components import StandardComponents
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 from rexus.utils.message_system import show_error, show_warning, show_success
 from rexus.utils.xss_protection import FormProtector
+from rexus.utils.export_manager import ModuleExportMixin
 
 
-class VidriosModernView(QWidget):
+class VidriosModernView(QWidget, ModuleExportMixin):
     """Vista modernizada del módulo de vidrios con pestañas."""
     
     # Señales para comunicación con controlador
@@ -38,7 +39,8 @@ class VidriosModernView(QWidget):
     solicitud_exportar = pyqtSignal(str)  # formato: 'excel' o 'pdf'
     
     def __init__(self, parent=None):
-        super().__init__(parent)
+        QWidget.__init__(self, parent)
+        ModuleExportMixin.__init__(self)
         self.controller = None
         self.form_protector = FormProtector()
         self.setup_ui()
@@ -180,6 +182,9 @@ class VidriosModernView(QWidget):
         self.configurar_tabla_vidrios()
         layout.addWidget(self.tabla_vidrios)
         
+        # Asignar referencia para exportación
+        self.tabla_principal = self.tabla_vidrios
+        
         # Panel de acciones
         acciones_panel = self.crear_panel_acciones_inventario()
         layout.addWidget(acciones_panel)
@@ -314,6 +319,10 @@ class VidriosModernView(QWidget):
         layout.addWidget(self.btn_editar_vidrio)
         layout.addWidget(self.btn_eliminar_vidrio)
         layout.addWidget(self.btn_duplicar_vidrio)
+        
+        # Agregar botón de exportación
+        self.add_export_button(layout, "📄 Exportar Vidrios")
+        
         layout.addStretch()
         
         # Botones de exportación
