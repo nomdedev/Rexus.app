@@ -1,0 +1,1 @@
+SELECT SUM(neto) FROM nomina WHERE mes = ? AND anio = ?

@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM transportes WHERE estado = 'Pendiente'

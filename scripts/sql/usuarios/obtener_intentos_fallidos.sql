@@ -1,0 +1,1 @@
+SELECT intentos_fallidos FROM usuarios WHERE usuario = :username

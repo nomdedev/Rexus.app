@@ -37,7 +37,7 @@ class StyleManager:
     
     _instance = None
     _current_theme = 'unified'
-    _themes_path = Path('resources/qss')
+    _themes_path = Path('legacy_root/resources/qss')
     
     # Mapa de temas disponibles a archivos QSS  
     AVAILABLE_THEMES = {

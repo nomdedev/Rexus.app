@@ -47,6 +47,36 @@ from rexus.utils.export_manager import ModuleExportMixin
 # Importar el diálogo de transporte
 from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
 
+# Constantes para literales duplicados
+class LogisticaConstants:
+    # Mensajes de estado
+    TABLA_NO_DISPONIBLE = "Tabla de transportes no disponible"
+    ESTADO_TRANSITO = "En tránsito"
+    ETIQUETA_ESTADO = "Estado:"
+    VALIDACION = "Validación"
+    
+    # Ubicaciones
+    ALMACEN_CENTRAL = "Almacén Central"
+    SUCURSAL_NORTE = "Sucursal Norte" 
+    DEPOSITO_SUR = "Depósito Sur"
+    CENTRO_DISTRIBUCION = "Centro Distribución"
+    
+    # Direcciones
+    DIRECCION_ALMACEN_CENTRAL = "Calle 7 entre 47 y 48, La Plata"
+    DIRECCION_SUCURSAL_NORTE = "Av. 13 y 44, La Plata"
+    DIRECCION_DEPOSITO_SUR = "Calle 120 y 610, La Plata"
+    DIRECCION_CENTRO = "Av. 1 y 60, La Plata"
+    
+    # Ciudades
+    CIUDAD_BUENOS_AIRES = "Buenos Aires"
+    CIUDAD_LA_PLATA = "La Plata"
+    
+    # Archivos
+    EXTENSION_HTML = ".html"
+    
+    # Botones
+    BOTON_EDITAR = "✏️ Editar"
+
 
 class LogisticaView(QWidget, ModuleExportMixin):
     # Señales para comunicación con el controlador
@@ -232,12 +262,12 @@ class LogisticaView(QWidget, ModuleExportMixin):
         """Edita el transporte seleccionado en la tabla."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                logging.warning("Tabla de transportes no disponible")
+                logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
                 
             current_row = self.tabla_transportes.currentRow()
             if current_row < 0:
-                self.mostrar_mensaje("advertencia", "Selección requerida", "Selecciona un transporte para editar")
+                self.mostrar_mensaje("Selecciona un transporte para editar", "advertencia")
                 return
             
             # Obtener ID del transporte seleccionado
@@ -258,12 +288,12 @@ class LogisticaView(QWidget, ModuleExportMixin):
         """Elimina el transporte seleccionado."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                logging.warning("Tabla de transportes no disponible")
+                logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
                 
             current_row = self.tabla_transportes.currentRow()
             if current_row < 0:
-                self.mostrar_mensaje("advertencia", "Selección requerida", "Selecciona un transporte para eliminar")
+                self.mostrar_mensaje("Selecciona un transporte para eliminar", "advertencia")
                 return
             
             # Obtener datos del transporte
@@ -283,7 +313,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
         """Exporta los datos de transportes a Excel."""
         try:
             if not hasattr(self, 'tabla_transportes'):
-                logging.warning("Tabla de transportes no disponible")
+                logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
                 
             from PyQt6.QtWidgets import QFileDialog
@@ -343,6 +373,11 @@ class LogisticaView(QWidget, ModuleExportMixin):
             self.mostrar_error(f"Error al crear transporte: {str(e)}")
 
     def actualizar_estado_botones(self):
+        """
+        Actualiza el estado de habilitación de los botones según el contexto.
+        TODO: Implementar lógica de habilitación/deshabilitación de botones
+        basada en selecciones de tabla y permisos de usuario.
+        """
         pass
 
     @property
@@ -373,8 +408,8 @@ class LogisticaView(QWidget, ModuleExportMixin):
             try:
                 from PyQt6.QtWebEngineWidgets import QWebEngineView
                 return QWebEngineView
-            except Exception as e:
-                print(f"[ERROR] Error obteniendo QWebEngineView: {e}")
+            except ImportError as e:
+                print(f"[ERROR] Error importando QWebEngineView: {e}")
                 return None
         else:
             status = webengine_manager.get_status_info()
@@ -440,9 +475,9 @@ Para habilitar mapas interactivos:
 
     def cargar_datos_ejemplo(self):
         """Carga datos de ejemplo para desarrollo."""
-        QWebEngineView = self._get_webengine_view()
+        webengine_view_class = self._get_webengine_view()
 
-        if folium is not None and QWebEngineView is not None:
+        if folium is not None and webengine_view_class is not None:
             try:
                 m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
                 temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
@@ -450,7 +485,7 @@ Para habilitar mapas interactivos:
                 temp_file.close()
                 self.mapa_widget = QWidget()
                 layout = QVBoxLayout(self.mapa_widget)
-                webview = QWebEngineView()
+                webview = webengine_view_class()
                 webview.setUrl(QUrl.fromLocalFile(temp_file.name))
                 layout.addWidget(webview)
                 return self.mapa_widget
@@ -458,7 +493,7 @@ Para habilitar mapas interactivos:
                 motivo = f"Error creando el mapa: {str(e)[:50]}..."
         elif folium is None:
             motivo = "folium no está instalado. Instala 'folium' para ver el mapa."
-        elif QWebEngineView is None:
+        elif webengine_view_class is None:
             motivo = "QWebEngineView no está disponible. Instala 'PyQt6-WebEngine'."
         else:
             motivo = "Motivo desconocido."
@@ -640,7 +675,7 @@ Para habilitar mapas interactivos:
         btn_nuevo_servicio.setToolTip("Crear nuevo servicio")
         acciones_layout.addWidget(btn_nuevo_servicio)
 
-        btn_editar_servicio = RexusButton("✏️ Editar")
+        btn_editar_servicio = RexusButton(LogisticaConstants.BOTON_EDITAR)
         btn_editar_servicio.setToolTip("Editar servicio seleccionado")
         acciones_layout.addWidget(btn_editar_servicio)
 
@@ -791,8 +826,8 @@ Para habilitar mapas interactivos:
 
         # Filtro de estado
         self.combo_estado = RexusComboBox()
-        self.combo_estado.addItems(["Todos", "Pendiente", "En tránsito", "Entregado", "Cancelado"])
-        fila_filtros.addWidget(QLabel("Estado:"))
+        self.combo_estado.addItems(["Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, "Entregado", "Cancelado"])
+        fila_filtros.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
         fila_filtros.addWidget(self.combo_estado)
 
         # Botón de búsqueda compacto
@@ -836,7 +871,7 @@ Para habilitar mapas interactivos:
         """)
         fila_acciones.addWidget(self.btn_nuevo_transporte)
 
-        self.btn_editar_transporte = RexusButton("✏️ Editar")
+        self.btn_editar_transporte = RexusButton(LogisticaConstants.BOTON_EDITAR)
         self.btn_editar_transporte.clicked.connect(self.editar_transporte_seleccionado)
         self.btn_editar_transporte.setToolTip("Editar el transporte seleccionado")
         self.btn_editar_transporte.setStyleSheet("""
@@ -928,8 +963,8 @@ Para habilitar mapas interactivos:
 
         # Filtro de estado
         self.combo_estado = RexusComboBox()
-        self.combo_estado.addItems(["Todos", "Pendiente", "En tránsito", "Entregado", "Cancelado"])
-        layout.addWidget(QLabel("Estado:"))
+        self.combo_estado.addItems(["Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, "Entregado", "Cancelado"])
+        layout.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
         layout.addWidget(self.combo_estado)
 
         # Botón de búsqueda
@@ -969,7 +1004,7 @@ Para habilitar mapas interactivos:
         """)
         layout.addWidget(self.btn_nuevo_transporte)
 
-        self.btn_editar_transporte = RexusButton("✏️ Editar")
+        self.btn_editar_transporte = RexusButton(LogisticaConstants.BOTON_EDITAR)
         self.btn_editar_transporte.clicked.connect(self.editar_transporte_seleccionado)
         self.btn_editar_transporte.setToolTip("Editar el transporte seleccionado")
         self.btn_editar_transporte.setStyleSheet("""
@@ -1261,8 +1296,8 @@ Para habilitar mapas interactivos:
                         tiles='OpenStreetMap'
                     )
                     direcciones_ejemplo = [
-                        {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
-                        {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
+                        {"lat": -34.9214, "lng": -57.9544, "nombre": LogisticaConstants.ALMACEN_CENTRAL, "direccion": LogisticaConstants.DIRECCION_ALMACEN_CENTRAL},
+                        {"lat": -34.9050, "lng": -57.9756, "nombre": LogisticaConstants.SUCURSAL_NORTE, "direccion": "Av. 13 y 44, La Plata"},
                         {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
                         {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
                     ]
@@ -1280,11 +1315,11 @@ Para habilitar mapas interactivos:
                     fallback_reason = f"Error creando el mapa con folium: {e}"
                 else:
                     try:
-                        QWebEngineView = self._get_webengine_view()
-                        if QWebEngineView is None:
+                        webengine_view_class = self._get_webengine_view()
+                        if webengine_view_class is None:
                             return self.crear_placeholder_mapa()
                         from PyQt6.QtCore import QUrl
-                        self.mapa_web_view = QWebEngineView()
+                        self.mapa_web_view = webengine_view_class()
                         self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
                         self.mapa_web_view.setMinimumHeight(400)
                         return self.mapa_web_view
@@ -1338,7 +1373,7 @@ Para habilitar mapas interactivos:
         """)
         acciones_layout.addWidget(btn_nuevo_servicio)
 
-        btn_editar_servicio = RexusButton("✏️ Editar")
+        btn_editar_servicio = RexusButton(LogisticaConstants.BOTON_EDITAR)
         btn_editar_servicio.setToolTip("Editar servicio seleccionado")
         btn_editar_servicio.setStyleSheet("""
             QPushButton {
@@ -1422,8 +1457,8 @@ Para habilitar mapas interactivos:
                     tiles='OpenStreetMap'
                 )
                 direcciones_ejemplo = [
-                    {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
-                    {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
+                    {"lat": -34.9214, "lng": -57.9544, "nombre": LogisticaConstants.ALMACEN_CENTRAL, "direccion": LogisticaConstants.DIRECCION_ALMACEN_CENTRAL},
+                    {"lat": -34.9050, "lng": -57.9756, "nombre": LogisticaConstants.SUCURSAL_NORTE, "direccion": "Av. 13 y 44, La Plata"},
                     {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
                     {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
                 ]
@@ -1440,7 +1475,7 @@ Para habilitar mapas interactivos:
                 try:
                     from PyQt6.QtWebEngineWidgets import QWebEngineView
                     from PyQt6.QtCore import QUrl
-                    self.mapa_web_view = QWebEngineView()
+                    self.mapa_web_view = webengine_view_class()
                     self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
                     self.mapa_web_view.setMinimumHeight(400)
                     layout.addWidget(self.mapa_web_view)
@@ -1675,7 +1710,7 @@ Para habilitar mapas interactivos:
                             tiles='OpenStreetMap'
                         )
                         # Agregar marcador
-                        folium.Marker([-34.9214, -57.9544], popup="La Plata").add_to(mapa)
+                        folium.Marker([-34.9214, -57.9544], popup=LogisticaConstants.CIUDAD_LA_PLATA).add_to(mapa)
                         # Guardar y cargar
                         temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
                         mapa.save(temp_file.name)
@@ -1712,52 +1747,56 @@ Para habilitar mapas interactivos:
             from rexus.utils.message_system import show_warning
             show_warning(self, "Advertencia", "Seleccione un transporte para editar")
 
+    def _crear_dialogo_confirmacion_eliminar(self, transporte_id: str) -> bool:
+        """Crea y muestra diálogo de confirmación para eliminar transporte."""
+        from PyQt6.QtWidgets import QMessageBox
+        
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("Confirmar eliminación")
+        msg_box.setText(f"¿Está seguro de eliminar el transporte #{transporte_id}?")
+        msg_box.setDetailedText("Esta acción no se puede deshacer.")
+        msg_box.setIcon(QMessageBox.Icon.Question)
+        msg_box.setStandardButtons(
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+        )
+        msg_box.setDefaultButton(QMessageBox.StandardButton.No)
+        
+        # Personalizar botones
+        yes_button = msg_box.button(QMessageBox.StandardButton.Yes)
+        if yes_button:
+            yes_button.setText("Sí, eliminar")
+        no_button = msg_box.button(QMessageBox.StandardButton.No)
+        if no_button:
+            no_button.setText("Cancelar")
+        
+        return msg_box.exec() == QMessageBox.StandardButton.Yes
+
     def eliminar_transporte_seleccionado(self):
         """Elimina el transporte seleccionado con confirmación mejorada."""
         fila_actual = self.tabla_transportes.currentRow()
-        if fila_actual >= 0:
-            try:
-                # Obtener ID de manera segura
-                item_id = self.tabla_transportes.item(fila_actual, 0)
-                if item_id:
-                    transporte_id = item_id.text()
-                    
-                    # Confirmar eliminación con diálogo personalizado
-                    from PyQt6.QtWidgets import QMessageBox
-                    msg_box = QMessageBox(self)
-                    msg_box.setWindowTitle("Confirmar eliminación")
-                    msg_box.setText(f"¿Está seguro de eliminar el transporte #{transporte_id}?")
-                    msg_box.setDetailedText("Esta acción no se puede deshacer.")
-                    msg_box.setIcon(QMessageBox.Icon.Question)
-                    msg_box.setStandardButtons(
-                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                    )
-                    msg_box.setDefaultButton(QMessageBox.StandardButton.No)
-                    
-                    # Personalizar botones
-                    yes_button = msg_box.button(QMessageBox.StandardButton.Yes)
-                    if yes_button:
-                        yes_button.setText("Sí, eliminar")
-                    no_button = msg_box.button(QMessageBox.StandardButton.No)
-                    if no_button:
-                        no_button.setText("Cancelar")
-                    
-                    if msg_box.exec() == QMessageBox.StandardButton.Yes:
-                        self.solicitud_eliminar_transporte.emit(transporte_id)
-                        self.actualizar_tabla_transportes()
+        if fila_actual < 0:
+            return
+            
+        try:
+            # Obtener ID de manera segura
+            item_id = self.tabla_transportes.item(fila_actual, 0)
+            if not item_id:
+                return
+                
+            transporte_id = item_id.text()
+            
+            # Confirmar eliminación
+            if self._crear_dialogo_confirmacion_eliminar(transporte_id):
+                self.solicitud_eliminar_transporte.emit(transporte_id)
+                self.actualizar_tabla_transportes()
+                
+                # Feedback de éxito
+                from rexus.utils.message_system import show_success
+                show_success(self, "Éxito", f"Transporte #{transporte_id} eliminado correctamente")
                         
-                        # Feedback de éxito
-                        from rexus.utils.message_system import show_success
-                        show_success(self, "Éxito", f"Transporte #{transporte_id} eliminado correctamente")
-                else:
-                    from rexus.utils.message_system import show_warning
-                    show_warning(self, "Advertencia", "No se pudo obtener el ID del transporte")
-            except Exception as e:
-                from rexus.utils.message_system import show_error
-                show_error(self, "Error", f"Error al eliminar transporte: {str(e)}")
-        else:
-            from rexus.utils.message_system import show_warning
-            show_warning(self, "Advertencia", "Seleccione un transporte para eliminar")
+        except Exception as e:
+            from rexus.utils.message_system import show_error
+            show_error(self, "Error", f"Error al eliminar transporte: {str(e)}")
 
     def exportar_a_excel(self):
         """Exporta los datos a Excel."""
@@ -1840,12 +1879,13 @@ Para habilitar mapas interactivos:
         # Actualizar métricas con datos reales o de ejemplo
         try:
             # Usar datos estáticos para evitar warnings de seguridad
-            stats_actualizadas = {
+            # Datos directos sin asignación de variable intermedia
+            self.actualizar_estadisticas_display({
                 'total_transportes': 156,
                 'en_transito': 23,
                 'entregados_hoy': 8,
                 'pendientes': 12
-            }
+            })
             
             # Si existe el panel de métricas, actualizarlo
             if hasattr(self, 'tab_widget'):
@@ -2057,14 +2097,14 @@ class DialogoNuevoTransporte(QDialog):
         self.combo_estado = RexusComboBox()
         estados = [
             ("Pendiente", "🟡 Pendiente"),
-            ("En tránsito", "🔵 En tránsito"),
+            (LogisticaConstants.ESTADO_TRANSITO, "🔵 En tránsito"),
             ("Entregado", "🟢 Entregado"),
             ("Cancelado", "🔴 Cancelado")
         ]
         for valor, texto in estados:
             self.combo_estado.addItem(texto, valor)
         self.combo_estado.setToolTip("Estado actual del transporte")
-        form_layout.addRow("Estado:", self.combo_estado)
+        form_layout.addRow(LogisticaConstants.ETIQUETA_ESTADO, self.combo_estado)
         
         # Conductor con validación
         self.input_conductor = RexusLineEdit()
@@ -2119,19 +2159,19 @@ class DialogoNuevoTransporte(QDialog):
         # Validación básica
         if not self.input_origen.text().strip():
             from rexus.utils.message_system import show_warning
-            show_warning(self, "Validación", "El origen es obligatorio")
+            show_warning(self, LogisticaConstants.VALIDACION, "El origen es obligatorio")
             self.input_origen.setFocus()
             return
             
         if not self.input_destino.text().strip():
             from rexus.utils.message_system import show_warning
-            show_warning(self, "Validación", "El destino es obligatorio")
+            show_warning(self, LogisticaConstants.VALIDACION, "El destino es obligatorio")
             self.input_destino.setFocus()
             return
             
         if not self.input_conductor.text().strip():
             from rexus.utils.message_system import show_warning
-            show_warning(self, "Validación", "El conductor es obligatorio")
+            show_warning(self, LogisticaConstants.VALIDACION, "El conductor es obligatorio")
             self.input_conductor.setFocus()
             return
         
@@ -2166,8 +2206,8 @@ class DialogoNuevoTransporte(QDialog):
                 
                 # Datos de ejemplo (en producción vendrían de la tabla/base de datos)
                 direcciones = [
-                    {"lat": -34.9214, "lng": -57.9544, "nombre": "Almacén Central", "direccion": "Calle 7 entre 47 y 48, La Plata"},
-                    {"lat": -34.9050, "lng": -57.9756, "nombre": "Sucursal Norte", "direccion": "Av. 13 y 44, La Plata"},
+                    {"lat": -34.9214, "lng": -57.9544, "nombre": LogisticaConstants.ALMACEN_CENTRAL, "direccion": LogisticaConstants.DIRECCION_ALMACEN_CENTRAL},
+                    {"lat": -34.9050, "lng": -57.9756, "nombre": LogisticaConstants.SUCURSAL_NORTE, "direccion": "Av. 13 y 44, La Plata"},
                     {"lat": -34.9380, "lng": -57.9468, "nombre": "Depósito Sur", "direccion": "Calle 120 y 610, La Plata"},
                     {"lat": -34.9100, "lng": -57.9300, "nombre": "Centro Distribución", "direccion": "Av. 1 y 60, La Plata"}
                 ]

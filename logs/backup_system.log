@@ -1,0 +1,11 @@
+2025-08-12 15:16:35,724 - root - INFO - Programador de backups iniciado
+2025-08-12 15:17:02,983 - root - WARNING - Archivo de tema no encontrado: resources\qss\professional_theme_clean.qss
+2025-08-12 15:17:02,983 - root - WARNING - Archivo de tema no encontrado: resources\qss\theme_light_clean.qss
+2025-08-12 15:17:02,985 - root - WARNING - Archivo de tema no encontrado: resources\qss\theme_dark_clean.qss
+2025-08-12 15:17:02,985 - root - WARNING - Archivo de tema no encontrado: resources\qss\theme_light_minimal_clean.qss
+2025-08-12 15:17:02,986 - root - WARNING - Archivo de tema no encontrado: resources\qss\theme_optimized_clean.qss
+2025-08-12 15:17:02,986 - root - WARNING - Archivo de tema no encontrado: resources\qss\consolidated_theme_clean.qss
+2025-08-12 15:17:02,987 - root - WARNING - Archivo de tema no encontrado: resources\qss\unified_module_styles.qss
+2025-08-12 15:17:02,990 - root - ERROR - Tema 'dark' no disponible
+2025-08-12 15:17:23,979 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-12 15:17:27,993 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
