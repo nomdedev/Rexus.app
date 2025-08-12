@@ -1,0 +1,186 @@
+
+[rexus.modules.administracion.contabilidad.controller.ContabilidadController.crear_pago_obral
+`C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\contabilidad\controller.pyæ æ("2*°
+2
+ç ç(*”
+‘
+
+è è(
+%14"__id*v
+
+__unknown_file (Z*XM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+model*
+11
+12*5
+3
+controller.py"
+ (
+implicit return*²
+4
+ı ı(Cd
+b
+
+ı ı(B
+%1"__concat*/
+
+ı! ı(>!
+Error creando pago por obra: *
+
+ı? ı(@
+
+eµ²
+
+ı ı(C
+%2*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*"
+
+__unknown_file (
+
+%12mostrar_error*
+3*¼
+7
+õ õ(IÖÓ
+
+õ õ(I
+%3*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*A
+
+__unknown_file (%#
+!Pago por obra creado exitosamente2mostrar_mensaje•’
+
+ö ö((
+%4*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController2cargar_pagos_obraŸ
+œ
+
+÷ ÷(%
+%5"__id*
+
+__unknown_file (e*cM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+pago_obra_creadojh
+
+÷ ÷(6
+%6*"
+
+__unknown_file (
+
+%5**
+
+__unknown_file (
+
+
+datos_pago2emit£ 
+
+ø ø(6
+%7*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController2cargar_estadisticas_financieras*
+3
+4*é
+8
+ú ú(BÏÌ
+
+ú ú(B
+%8*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*<
+
+__unknown_file ( 
+Error al crear pago por obra2mostrar_error*
+3
+4*Æ
+9
+ñ ñ(@œ
+™
+
+ñ- ñ(@
+%9"__id*
+
+__unknown_file (c*aM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+usuario_actual·´
+
+ñ ñ(@
+%10"dict.__setitem__**
+
+__unknown_file (
+
+
+datos_pago*0
+
+__unknown_file (
+usuario_creacion*"
+
+__unknown_file (
+
+%92__setitem__”
+‘
+
+ó ó( 
+%11"__id*v
+
+__unknown_file (Z*XM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+modelwu
+
+ó ó(<
+%12*#
+
+__unknown_file (
+
+%11**
+
+__unknown_file (
+
+
+datos_pago2crear_pago_obraD
+B
+
+ó ó(<	
+pago_id"__id*#
+
+__unknown_file (
+
+%12*
+7
+8*(
+10
+î î("
+
+î î(
+void*å
+11
+í í(<ÉÆ
+
+í í(<
+%13*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
+
+__unknown_file (
+
+
+datos_pago2_validar_datos_pago_obra*
+9
+10*(
+12
+é é("
+
+é é(
+void:
+
+æ æ((
+
+datos_pagoBOM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadControllerH

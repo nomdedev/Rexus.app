@@ -1,0 +1,52 @@
+
+"sesiones_usuario"str
++""Tabla no permitida: {table_name}"str
+2)"Nombre de tabla inv√°lido: {table_name}"str
+"auditoria_usuarios"str
+6-"Valida nombre de tabla contra lista blanca."str
+"intentos_login"str
+
+"usuarios"str
+#"^[a-zA-Z_][a-zA-Z0-9_]*$"strselfA A(!
+table_nameA# A(2"ï
+
+E E(@"
+rematch:)
+'
+E E(@"
+__bool__*:BboolH)
+'
+E E(@"#unaryop !#2!:Bbool"
+E E(@ *E E(
+"B.
+,
+F F(G	"
+ValueError*:B
+ValueError2
+F F(G	"¨6
+4
+H M(	
+tablas_permitidas"#new-object#Bset&
+$
+H M(	"#array-add-last#:
+&
+$
+H M(	"#array-add-last#:
+&
+$
+H M(	"#array-add-last#:
+&
+$
+H M(	"#array-add-last#:
+2
+0
+N N(."#binop not in#2not in:
+Bbool"
+N N(. *N N(
+"B.
+,
+O O(A"
+ValueError*:B
+ValueError2
+O O(A"
+P P(*_C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\submodules\consultas_manager.py

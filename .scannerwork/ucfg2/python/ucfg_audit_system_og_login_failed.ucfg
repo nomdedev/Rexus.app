@@ -1,0 +1,89 @@
+
+4rexus.core.audit_system.AuditSystem.log_login_failedO
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_system.pyè è("2*¼
+2
+ê ê(3p
+n
+
+ì ì(.
+%1"__id*T
+
+__unknown_file (8*6$
+"rexus.core.audit_system.AuditEvent"
+LOGIN_FAILEDk
+i
+
+í í($
+%2"__id*O
+
+__unknown_file (3*1$
+"rexus.core.audit_system.AuditLevel"	
+WARNINGz
+x
+
+ï ï(L
+%3"__concat*8
+
+ï ï(;*(
+&Intento de login fallido para usuario * 
+
+ï< ï(J
+
+usuario_nombreÊÇ
+
+ë õ(	
+%4*C
+
+__unknown_file ('%
+#rexus.core.audit_system.AuditSystem2	log_event:
+
+event_type
+
+%1:
+level
+
+%2:
+modulo
+AUTENTICACION:
+accion
+
+%3:
+	resultado
+
+FAILED:$
+usuario_nombre
+
+usuario_nombre:
+
+ip_address
+
+
+ip_address:
+
+user_agent
+
+
+user_agent:
+razon	
+
+razon*
+3*7
+3
+audit_system.py"
+÷ ÷(
+implicit return:
+
+è è(2
+usuario_nombre:
+
+è4 è(J
+
+ip_address:
+
+é é(/
+
+user_agent:
+
+é1 é(X
+razonB'%
+#rexus.core.audit_system.AuditSystemH

@@ -1,0 +1,198 @@
+
+=rexus.ui.components.base_components.RexusTextEdit.apply_theme[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\components\base_components.pyﬁ ﬁ("2*œ
+2
+ﬂ ﬂ(2w
+u
+
+‚# ‚(5
+%1"__id*[
+
+__unknown_file (?*=1
+/rexus.ui.components.base_components.RexusColors"
+BORDERy
+w
+
+Â Â(+
+%2"__id*]
+
+__unknown_file (A*?0
+.rexus.ui.components.base_components.RexusFonts"
+	BODY_SIZEv
+t
+
+Â1 Â(B
+%3"__id*Z
+
+__unknown_file (>*<0
+.rexus.ui.components.base_components.RexusFonts"
+FAMILY}
+{
+
+Ê Ê(0
+%4"__id*a
+
+__unknown_file (E*C1
+/rexus.ui.components.base_components.RexusColors"
+TEXT_PRIMARY~
+|
+
+Ë- Ë(F
+%5"__id*b
+
+__unknown_file (F*D1
+/rexus.ui.components.base_components.RexusColors"
+PRIMARY_LIGHTx
+v
+
+Ï Ï(2
+%6"__id*\
+
+__unknown_file (@*>1
+/rexus.ui.components.base_components.RexusColors"	
+PRIMARYw
+u
+
+Ì# Ì(5
+%7"__id*[
+
+__unknown_file (?*=1
+/rexus.ui.components.base_components.RexusColors"
+ACCENTÅ
+
+
+# (?
+%8"__id*e
+
+__unknown_file (I*G1
+/rexus.ui.components.base_components.RexusColors"
+BACKGROUND_LIGHT~
+|
+
+Ò Ò(1
+%9"__id*b
+
+__unknown_file (F*D1
+/rexus.ui.components.base_components.RexusColors"
+TEXT_DISABLED~
+|
+
+Ú Ú(7
+%10"__id*a
+
+__unknown_file (E*C1
+/rexus.ui.components.base_components.RexusColors"
+BORDER_LIGHT∂
+≥
+
+‡ Ù(
+%11"__concat*P
+
+‡ ‚("B@
+>
+            QTextEdit {{
+                border: 2px solid *
+
+‚# ‚(5
+
+%1*p
+
+‚6 Â(b`
+^;
+                border-radius: 6px;
+                padding: 12px;
+                font: *
+
+Â Â(+
+
+%2*
+
+Â, Â(0
+px "*
+
+Â1 Â(B
+
+%3*-
+
+ÂC Ê(
+";
+                color: *
+
+Ê Ê(0
+
+%4*k
+
+Ê1 Ë(,][
+Y;
+                background-color: white;
+                selection-background-color: *
+
+Ë- Ë(F
+
+%5*á
+
+ËG Ï(yw
+u;
+                min-height: 100px;
+            }}
+            QTextEdit:focus {{
+                border-color: *
+
+Ï Ï(2
+
+%6*7
+
+Ï3 Ì(")'
+%;
+                background-color: *
+
+Ì# Ì(5
+
+%7*j
+
+Ì6 ("\Z
+X;
+            }}
+            QTextEdit:disabled {{
+                background-color: *
+
+# (?
+
+%8*,
+
+@ Ò(
+;
+                color: *
+
+Ò Ò(1
+
+%9*3
+
+Ò2 Ú(%#
+!;
+                border-color: *
+
+Ú Ú(7
+
+%10*-
+
+Ú8 Ù(
+;
+            }}
+        ùö
+
+‡ Ù(
+%12*Q
+
+__unknown_file (53
+1rexus.ui.components.base_components.RexusTextEdit*#
+
+__unknown_file (
+
+%112setStyleSheet*
+3*8
+3
+base_components.py"
+ı ı
+implicit returnB53
+1rexus.ui.components.base_components.RexusTextEditH

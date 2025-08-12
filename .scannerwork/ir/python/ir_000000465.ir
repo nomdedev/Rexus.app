@@ -1,0 +1,13 @@
+
+0'"Verifica si un mÃ³dulo estÃ¡ cargado."strself
+ð ð(module_name
+ð ð(/"s1
+/
+
+ò ò(1"#get-field# active_modules:,
+*
+
+ò ò(1"
+#binop in#2in:Bbool
+
+ò ò(1*JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\system_integration.py

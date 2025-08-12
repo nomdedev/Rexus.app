@@ -1,0 +1,205 @@
+
+Erexus.modules.administracion.view.AsientoContableDialog.obtener_datosY
+MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\view.pyæ æ("2*Á
+2
+ç ç(/
+
+è ï(	
+%1"dict„
+
+
+é é($
+%2"__id*g
+
+__unknown_file (K*I9
+7rexus.modules.administracion.view.AsientoContableDialog"
+
+fecha_edit><
+
+é é(+
+%3*"
+
+__unknown_file (
+
+%22dateB@
+
+é é(6
+%4*"
+
+__unknown_file (
+
+%32toPythonŽ
+‹
+
+é é(6
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+fecha*"
+
+__unknown_file (
+
+%4‡
+„
+
+ê ê(*
+%6"__id*j
+
+__unknown_file (N*L9
+7rexus.modules.administracion.view.AsientoContableDialog"
+concepto_edit><
+
+ê ê(1
+%7*"
+
+__unknown_file (
+
+%62text‘
+Ž
+
+ê ê(1
+%8"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+concepto*"
+
+__unknown_file (
+
+%7†
+ƒ
+
+ë ë('
+%9"__id*i
+
+__unknown_file (M*K9
+7rexus.modules.administracion.view.AsientoContableDialog"
+cuenta_comboFD
+
+ë ë(5
+%10*"
+
+__unknown_file (
+
+%92currentText‘
+Ž
+
+ë ë(5
+%11"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+cuenta*#
+
+__unknown_file (
+
+%10„
+
+
+ì ì("
+%12"__id*f
+
+__unknown_file (J*H9
+7rexus.modules.administracion.view.AsientoContableDialog"
+	debe_spinA?
+
+ì ì(*
+%13*#
+
+__unknown_file (
+
+%122value
+Œ
+
+ì ì(*
+%14"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+debe*#
+
+__unknown_file (
+
+%13…
+‚
+
+í í($
+%15"__id*g
+
+__unknown_file (K*I9
+7rexus.modules.administracion.view.AsientoContableDialog"
+
+haber_spinA?
+
+í í(,
+%16*#
+
+__unknown_file (
+
+%152value
+
+
+í í(,
+%17"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+haber*#
+
+__unknown_file (
+
+%16Š
+‡
+
+î î(.
+%18"__id*l
+
+__unknown_file (P*N9
+7rexus.modules.administracion.view.AsientoContableDialog"
+referencia_edit@>
+
+î î(5
+%19*#
+
+__unknown_file (
+
+%182text•
+’
+
+î î(5
+%20"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+referencia*#
+
+__unknown_file (
+
+%19"
+
+è ï(	
+
+%1B;9
+7rexus.modules.administracion.view.AsientoContableDialogH

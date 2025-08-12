@@ -1,0 +1,56 @@
+
+_rexus.modules.administracion.view_completa.AdministracionCompletaView.generar_estado_resultadosb
+VC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\view_completa.py¿	 ¿	(!"2*…
+2
+À	 À	()æ
+ã
+
+Á	 Ô	(	
+reporte"__id*Ã
+
+__unknown_file (¦£
+ 
+ESTADO DE RESULTADOS - ENERO 2024
+=================================
+
+INGRESOS:
+- Ventas de productos: $1,500,000
+- Servicios: $300,000
+- Otros ingresos: $50,000
+TOTAL INGRESOS: $1,850,000
+
+EGRESOS:
+- Costo de ventas: $600,000
+- Gastos de personal: $500,000
+- Gastos operativos: $200,000
+- Otros gastos: $100,000
+TOTAL EGRESOS: $1,400,000
+
+UTILIDAD BRUTA: $450,000
+UTILIDAD NETA: $450,000
+        ”
+‘
+
+Õ	 Õ	(
+%1"__id*w
+
+__unknown_file ([*YG
+Erexus.modules.administracion.view_completa.AdministracionCompletaView"
+preview_textom
+
+Õ	 Õ	(/
+%2*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (
+	
+reporte2setPlainText*
+3*8
+3
+view_completa.py"
+×	 ×	(
+implicit returnBIG
+Erexus.modules.administracion.view_completa.AdministracionCompletaViewH

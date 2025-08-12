@@ -132,6 +132,19 @@ class UsuariosModel:
             self.data_sanitizer = None
             print("WARNING [USUARIOS] Utilidades de seguridad no disponibles")
 
+        # Inicializar gestores de submódulos (opcional)
+        try:
+            from rexus.modules.usuarios.submodules.profiles_manager import ProfilesManager
+            self.profiles_manager = ProfilesManager(self)
+        except ImportError:
+            self.profiles_manager = None
+            
+        try:
+            from rexus.modules.usuarios.submodules.permissions_manager import PermissionsManager
+            self.permissions_manager = PermissionsManager(self)
+        except ImportError:
+            self.permissions_manager = None
+
         # Las tablas deben existir previamente - no crear desde la aplicación
 
     def _validate_table_name(self, table_name: str) -> str:

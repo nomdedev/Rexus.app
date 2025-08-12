@@ -1,0 +1,28 @@
+
+≥©"
+    Decorador que requiere uno de los roles especificados.
+    
+    Args:
+        *roles: Lista de roles permitidos
+        
+    Returns:
+        Decorador que verifica roles
+        
+    Raises:
+        AuthorizationError: Si el usuario no tiene ninguno de los roles requeridos
+    "strroles
+Ä Ä("Ω#
+!
+
+¨ ¨("#unknown-value#*
+(
+
+ç ¨(%closure"#new-object#)
+'
+
+ç ¨("#set-field# roles:-
++
+
+ç ¨("?python-partial-apply?:
+
+¨ ¨(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

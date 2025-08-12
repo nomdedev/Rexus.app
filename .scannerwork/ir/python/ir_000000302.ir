@@ -1,0 +1,33 @@
+
+„Ÿ"
+    Funci√≥n de conveniencia para ejecutar consultas SQL.
+
+    Args:
+        cursor: Cursor de base de datos
+        module: M√≥dulo de la consulta
+        query_name: Nombre de la consulta
+        params: Par√°metros para la consulta
+        **kwargs: Par√°metros de formateo
+
+    Returns:
+        Resultado de la ejecuci√≥n
+    "strcursor
+Ä Ä(
+module
+Ä Ä(
+query_name
+Ä Ä((params
+Ä* Ä(>kwargs
+Ä@ Ä(H"dict"∂K
+I
+
+è è(manager"0
+rexus.utils.sql_query_managerget_sql_manager'
+%
+
+êE ê(M"#unaryop **#2**:,
+*
+
+ê ê(N	"?python-unknown?:
+
+ê ê(N	*IC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\sql_query_manager.py

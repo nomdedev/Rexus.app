@@ -1,0 +1,65 @@
+
+_rexus.modules.administracion.view_completa.AdministracionCompletaView.generar_listado_empleadosb
+VC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\view_completa.py×	 ×	(!"2*½
+2
+Ø	 Ø	()ž
+›
+
+Ù	 õ	(	
+reporte"__id*û
+
+__unknown_file (ÞÛ
+Ø
+LISTADO DE EMPLEADOS - ENERO 2024
+=================================
+
+EMPLEADOS ACTIVOS:
+
+1. Juan PÃ©rez
+   - CÃ©dula: 12345678
+   - Cargo: Supervisor
+   - Departamento: ProducciÃ³n
+   - Salario: $2,500,000
+   - Fecha ingreso: 2023-01-15
+
+2. MarÃ­a GarcÃ­a
+   - CÃ©dula: 87654321
+   - Cargo: Contador
+   - Departamento: Contabilidad
+   - Salario: $2,200,000
+   - Fecha ingreso: 2023-03-01
+
+3. Carlos RodrÃ­guez
+   - CÃ©dula: 11223344
+   - Cargo: TÃ©cnico
+   - Departamento: Mantenimiento
+   - Salario: $1,800,000
+   - Fecha ingreso: 2023-06-01
+
+TOTAL EMPLEADOS: 3
+        ”
+‘
+
+ö	 ö	(
+%1"__id*w
+
+__unknown_file ([*YG
+Erexus.modules.administracion.view_completa.AdministracionCompletaView"
+preview_textom
+
+ö	 ö	(/
+%2*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (
+	
+reporte2setPlainText*
+3*8
+3
+view_completa.py"
+ø	 ø	(
+implicit returnBIG
+Erexus.modules.administracion.view_completa.AdministracionCompletaViewH

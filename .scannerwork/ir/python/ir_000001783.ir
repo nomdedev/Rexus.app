@@ -1,0 +1,11 @@
+
+-$"Verifica si hay p√°gina siguiente."strself+ +("Ω%
+#
+- -("#get-field# page:,
+*
+- -(+"#get-field# total_pages:,
+*
+- -(+"?python-partial-apply?:(
+&
+- -(+"	#binop <#2<:Bbool
+- -(+*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

@@ -1,0 +1,66 @@
+
+"page_size"str
+"offset"str
+"start_item"str
+
+"has_next"str
+3*"Convierte la informaci√≥n a diccionario."str
+"page"str
+"total_pages"str
+
+"total_items"str
+!
+"end_item"str
+"has_previous"strself< <("Ü$
+"
+> H(	"#new-object#Bdict%
+#
+? ?("#get-field# page: 
+
+? ?("	#map-set#:*
+(
+@ @('"#get-field# page_size: 
+
+@ @('	"	#map-set#:,
+*
+A A(+"#get-field# total_items: 
+
+A A(+"	#map-set#:
+,
+*
+B B(+"#get-field# total_pages:,
+*
+B B(+"?python-partial-apply?: 
+
+B B(+"	#map-set#:'
+%
+C C(!"#get-field# offset:,
+*
+C C(!"?python-partial-apply?: 
+
+C C(!"	#map-set#:-
++
+D D(-"#get-field# has_previous:,
+*
+D D(-"?python-partial-apply?: 
+
+D D(-"	#map-set#:)
+'
+E E(%"#get-field# has_next:,
+*
+E E(%"?python-partial-apply?: 
+
+E E(%"	#map-set#:+
+)
+F F()"#get-field# start_item:,
+*
+F F()"?python-partial-apply?: 
+
+F F() "	#map-set#:)
+'
+G G(%""#get-field# end_item:,
+*
+G G(%#"?python-partial-apply?:" 
+
+G G(%$"	#map-set#:!#
+> H(	*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

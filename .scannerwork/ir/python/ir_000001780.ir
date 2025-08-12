@@ -1,0 +1,35 @@
+
+0'"Calcula el número total de páginas."str
+"division by zero"bool
+
+"S3518"bool
+
+0int
+
+1int
+"a"boolself ("x,
+*
+ ("#get-field# total_items:*
+(
+ ( "
+#binop ==#2==:Bbool"
+ (  * (
+"
+ ("�,
+*
+ ()"#get-field# total_items:*
+(
+, (:"#get-field# page_size:*
+(
+ (:	"
+#binop !=#2!=:Bbool 
+
+ (:"
+#assert#:	
+*
+(
+ (:"#dependent-value#*:
+
+ (;"
+mathceil:
+ (;*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

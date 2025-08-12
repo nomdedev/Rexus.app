@@ -1,0 +1,26 @@
+
++""Database manager not initialized"str
+-$"Obtiene el gestor de base de datos"str"¡#
+!
+
+¶ ¶("#unknown-value#+
+)
+
+¶ ¶("
+__bool__*:BboolH+
+)
+
+¶ ¶("#unaryop !#2!:Bbool "
+
+¶ ¶( *
+¶ ¶("J4
+2
+
+· ·(>"RuntimeError*:BRuntimeError2
+
+· ·(>"9#
+!
+
+¸ ¸("#unknown-value#
+
+¸ ¸(*HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\database_manager.py

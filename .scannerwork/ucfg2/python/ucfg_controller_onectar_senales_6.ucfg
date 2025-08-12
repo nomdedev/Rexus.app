@@ -1,0 +1,244 @@
+
+Crexus.modules.vidrios.controller.VidriosController.conectar_senalesV
+LC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\controller.py ("2*Ž
+2 (Nw
+u
+ (
+%29"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+view*
+3
+4*3
+3
+controller.py"
+$ $(
+implicit return*µ
+4 (Cv
+t
+ (
+%1"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewR
+P
+ (&
+%2"__id*8
+
+__unknown_file (*
+
+%1"
+buscar_requested€
+~
+/ (B
+%3"__id*f
+
+__unknown_file (J*H4
+2rexus.modules.vidrios.controller.VidriosController"
+buscar_vidriosca
+ (C
+%4*"
+
+__unknown_file (
+
+%2*"
+
+__unknown_file (
+
+%32connectv
+t
+ (
+%5"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewS
+Q
+ ('
+%6"__id*9
+
+__unknown_file (*
+
+%5"
+agregar_requested€
+~
+0 (C
+%7"__id*f
+
+__unknown_file (J*H4
+2rexus.modules.vidrios.controller.VidriosController"
+agregar_vidrioca
+ (D
+%8*"
+
+__unknown_file (
+
+%6*"
+
+__unknown_file (
+
+%72connectv
+t
+ (
+%9"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewS
+Q
+ (&
+%10"__id*8
+
+__unknown_file (*
+
+%9"
+editar_requested€
+~
+/ (A
+%11"__id*e
+
+__unknown_file (I*G4
+2rexus.modules.vidrios.controller.VidriosController"
+editar_vidriofd
+ (B
+%12*#
+
+__unknown_file (
+
+%10*#
+
+__unknown_file (
+
+%112connectw
+u
+ (
+%13"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewV
+T
+ ((
+%14"__id*;
+
+__unknown_file (*
+
+%13"
+eliminar_requestedƒ
+€
+1 (E
+%15"__id*g
+
+__unknown_file (K*I4
+2rexus.modules.vidrios.controller.VidriosController"
+eliminar_vidriofd
+ (F
+%16*#
+
+__unknown_file (
+
+%14*#
+
+__unknown_file (
+
+%152connectw
+u
+   (
+%17"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewZ
+X
+   (,
+%18"__id*?
+
+__unknown_file (#*!
+
+%17"
+asignar_obra_requested‡
+„
+ 5  (M
+%19"__id*k
+
+__unknown_file (O*M4
+2rexus.modules.vidrios.controller.VidriosController"
+asignar_vidrio_obrafd
+   (N
+%20*#
+
+__unknown_file (
+
+%18*#
+
+__unknown_file (
+
+%192connectw
+u
+! !(
+%21"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewZ
+X
+! !(,
+%22"__id*?
+
+__unknown_file (#*!
+
+%21"
+crear_pedido_requested
+}
+!5 !(F
+%23"__id*d
+
+__unknown_file (H*F4
+2rexus.modules.vidrios.controller.VidriosController"
+crear_pedidofd
+! !(G
+%24*#
+
+__unknown_file (
+
+%22*#
+
+__unknown_file (
+
+%232connectw
+u
+" "(
+%25"__id*\
+
+__unknown_file (@*>4
+2rexus.modules.vidrios.controller.VidriosController"
+viewU
+S
+" "('
+%26"__id*:
+
+__unknown_file (*
+
+%25"
+filtrar_requestedƒ
+€
+"0 "(D
+%27"__id*g
+
+__unknown_file (K*I4
+2rexus.modules.vidrios.controller.VidriosController"
+filtrar_vidriosfd
+" "(E
+%28*#
+
+__unknown_file (
+
+%26*#
+
+__unknown_file (
+
+%272connect*
+3B64
+2rexus.modules.vidrios.controller.VidriosControllerH

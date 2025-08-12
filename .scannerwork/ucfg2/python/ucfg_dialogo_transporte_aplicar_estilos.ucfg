@@ -1,0 +1,78 @@
+
+Qrexus.modules.logistica.dialogo_transporte.DialogoNuevoTransporte.aplicar_estilosb
+VC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\logistica\dialogo_transporte.pyÕ Õ("2*‘
+2
+Œ Œ(5Ω∫
+
+œ â(
+%1*a
+
+__unknown_file (EC
+Arexus.modules.logistica.dialogo_transporte.DialogoNuevoTransporte*≥
+
+__unknown_file (ñì
+ê
+            QDialog {
+                background-color: #fafbfc;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 12px;
+            }
+            
+            QLineEdit, QComboBox, QSpinBox, QDateEdit {
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                padding: 6px 8px;
+                font-size: 11px;
+                background-color: white;
+                min-height: 20px;
+            }
+            
+            QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDateEdit:focus {
+                border-color: #0366d6;
+                outline: none;
+            }
+            
+            QTextEdit {
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                padding: 6px 8px;
+                font-size: 11px;
+                background-color: white;
+            }
+            
+            QTextEdit:focus {
+                border-color: #0366d6;
+                outline: none;
+            }
+            
+            QGroupBox {
+                font-weight: 600;
+                font-size: 11px;
+                color: #24292e;
+                border: 1px solid #e1e4e8;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 8px;
+                background-color: white;
+            }
+            
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 0 8px 0 8px;
+                background-color: white;
+                color: #24292e;
+            }
+            
+            QLabel {
+                color: #24292e;
+                font-size: 11px;
+                font-weight: 500;
+            }
+        2setStyleSheet*
+3*=
+3
+dialogo_transporte.py"
+ã ã(
+implicit returnBEC
+Arexus.modules.logistica.dialogo_transporte.DialogoNuevoTransporteH

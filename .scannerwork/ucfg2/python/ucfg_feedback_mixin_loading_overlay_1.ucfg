@@ -1,0 +1,99 @@
+
+=rexus.ui.feedback_mixin.FeedbackMixin.mostrar_loading_overlayO
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\feedback_mixin.pyÎ Î("2*Æ
+2
+Ï Õ(x
+v
+
+Ö Ö(5
+%5"__id*\
+
+__unknown_file (@*>'
+%rexus.ui.feedback_mixin.FeedbackMixin"
+_loading_overlaystr
+
+Ö Ö(5
+%6*"
+
+__unknown_file (
+
+%5*,
+
+__unknown_file (
+
+overlay_name2__contains__=
+;
+
+Ö Ö(5
+%7"not*"
+
+__unknown_file (
+
+%6*
+4
+5*9
+3
+feedback_mixin.py"
+Ü Ü(
+implicit return*È
+4
+Ù Ù(6x
+v
+
+Ù Ù((
+%1"__id*\
+
+__unknown_file (@*>'
+%rexus.ui.feedback_mixin.FeedbackMixin"
+_loading_overlays}{
+
+Ù Ù(6
+%2"__mapGet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+
+overlay_name2__getitem__C
+A
+
+Ù Ù(6	
+overlay"__id*"
+
+__unknown_file (
+
+%2tr
+
+Ú Ú(%
+%3*'
+
+__unknown_file (
+	
+overlay*'
+
+__unknown_file (
+	
+mensaje2show_loading*
+3*¸
+5
+× ×(4¡ž
+
+× ×(4
+%4*E
+
+__unknown_file ()'
+%rexus.ui.feedback_mixin.FeedbackMixin*,
+
+__unknown_file (
+
+overlay_name2crear_loading_overlay*
+4:
+
+Î& Î(B	
+mensaje:
+
+ÎD Î(a
+overlay_nameB)'
+%rexus.ui.feedback_mixin.FeedbackMixinH

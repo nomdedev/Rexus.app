@@ -1,0 +1,123 @@
+
+6-"Retorna estilos espec√≠ficos para m√≥dulos."str
+Ì„"
+            /* Estilos espec√≠ficos para m√≥dulos de Rexus */
+            QWidget[moduleView="true"] {
+                background: #fafbfc;
+                border: none;
+                font-size: 11px;
+            }
+            
+            /* T√≠tulos de m√≥dulo est√°ndar */
+            QLabel[moduleTitle="true"] {
+                font-size: 11px;
+                font-weight: bold;
+                color: white;
+                background: transparent;
+                border: none;
+                padding: 0px;
+            }
+            
+            /* Paneles de control est√°ndar */
+            QFrame[controlPanel="true"] {
+                background: #fafbfc;
+                border: 1px solid #e1e4e8;
+                border-radius: 4px;
+                margin: 4px;
+                padding: 6px;
+            }
+            
+            /* Botones de acci√≥n principales */
+            QPushButton[actionButton="primary"] {
+                background: #1e40af;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-weight: 500;
+                font-size: 13px;
+                min-height: 36px;
+            }
+            
+            QPushButton[actionButton="primary"]:hover {
+                background: #3b82f6;
+                /* transform no soportado en Qt - removido */
+            }
+            
+            QPushButton[actionButton="primary"]:pressed {
+                background: #1e3a8a;
+                /* transform no soportado en Qt - removido */
+            }
+            
+            /* Botones secundarios */
+            QPushButton[actionButton="secondary"] {
+                background: white;
+                color: #1e293b;
+                border: 2px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-weight: 500;
+                font-size: 13px;
+                min-height: 36px;
+            }
+            
+            QPushButton[actionButton="secondary"]:hover {
+                border-color: #1e40af;
+                color: #1e40af;
+                background: #f8fafc;
+            }
+            
+            /* Botones de peligro */
+            QPushButton[actionButton="danger"] {
+                background: #dc2626;
+                color: white;
+                border: none;
+                border-radius: 6px;
+                padding: 10px 20px;
+                font-weight: 500;
+                font-size: 13px;
+                min-height: 36px;
+            }
+            
+            QPushButton[actionButton="danger"]:hover {
+                background: #b91c1c;
+                /* transform no soportado en Qt - removido */
+            }
+            
+            /* Tablas est√°ndard */
+            QTableWidget[standardTable="true"] {
+                background-color: white;
+                alternate-background-color: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 8px;
+                gridline-color: #e2e8f0;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                font-size: 13px;
+            }
+            
+            QTableWidget[standardTable="true"]::item {
+                padding: 8px;
+                border-bottom: 1px solid #e2e8f0;
+            }
+            
+            QTableWidget[standardTable="true"]::item:selected {
+                background: #3b82f6;
+                color: white;
+            }
+            
+            QHeaderView::section[standardTable="true"] {
+                background: #1e40af;
+                color: white;
+                padding: 12px 8px;
+                border: 1px solid #e2e8f0;
+                font-weight: bold;
+                font-size: 13px;
+            }
+            
+            QHeaderView::section[standardTable="true"]:hover {
+                background: #3b82f6;
+            }
+        "strself
+ˆ ˆ("
+¯ ¯(Ó*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\style_manager.py

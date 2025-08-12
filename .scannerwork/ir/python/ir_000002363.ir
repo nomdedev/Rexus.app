@@ -1,0 +1,16 @@
+
+Â¸"
+    Decorador que requiere rol de administrador.
+    
+    Args:
+        func: FunciÃ³n a proteger
+        
+    Returns:
+        FunciÃ³n decorada que verifica rol admin
+    "strfunc
+¯ ¯(!";'
+%
+
+¹ ¹('"?python-unknown?:
+
+¹ ¹('*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

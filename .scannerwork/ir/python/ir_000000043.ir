@@ -1,0 +1,7 @@
+
+JA"
+        Verifica si el auto-login está habilitado.
+        "strself: :(""E3
+1
+> >(&" #get-field# auto_login_enabled:
+> >(&*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\dev_auth_manager.py

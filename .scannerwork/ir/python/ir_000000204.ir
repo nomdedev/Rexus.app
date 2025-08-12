@@ -1,0 +1,45 @@
+
++""Obtiene datos del usuario actual"str
+"id"str
+	"USUARIO"str
+"rol"str
+
+0int
+"guest"str
+
+
+"username"strself
+½ ½("‘4
+2
+
+Á Á(%"#get-field# current_user_data:+
+)
+
+Á Á(%"
+__bool__*:BboolH,"*
+
+Á Á(% *
+Á Á(2
+Â Â("J4
+2
+
+À À(""#get-field# current_user_data:
+
+À Â(A"¨&
+$
+
+Â Â(A"#new-object#Bdict"
+ 
+
+Â Â(	"	#map-set#:"
+ 
+
+Â Â(."	#map-set#:
+"
+ 
+
+Â0 Â(@"	#map-set#:
+
+À Â(A"&*
+
+¿ Ã(	*:C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py

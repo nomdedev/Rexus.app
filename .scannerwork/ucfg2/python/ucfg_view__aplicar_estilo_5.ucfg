@@ -1,0 +1,36 @@
+
+<rexus.modules.auditoria.view.DialogoAuditoria.aplicar_estiloT
+HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\auditoria\view.pyš š("2*š
+2
+› ›('ƒ€
+
+œ ¬(
+%1*M
+
+__unknown_file (1/
+-rexus.modules.auditoria.view.DialogoAuditoria*
+
+__unknown_file (ðí
+ê
+            QDialog {
+                background-color: #f8f9fa;
+            }
+            QLineEdit, QTextEdit, QComboBox {
+                padding: 8px;
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                background-color: white;
+            }
+            QPushButton {
+                padding: 8px 16px;
+                border: none;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+        2setStyleSheet*
+3*/
+3	
+view.py"
+® ®(
+implicit returnB1/
+-rexus.modules.auditoria.view.DialogoAuditoriaH

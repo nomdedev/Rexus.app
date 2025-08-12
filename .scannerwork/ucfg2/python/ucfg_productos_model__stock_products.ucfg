@@ -1,0 +1,204 @@
+
+5productos_model.ProductosModel.get_low_stock_productsT
+HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\models\productos_model.py∆ ∆("12*+
+7
+Á Á("
+
+Á Á(
+
+
+products*ﬁ
+9
+‰ ‰(DS
+Q
+
+‰1 ‰(C
+%4"__id*7
+
+__unknown_file (*
+
+cursor"
+description¨©
+
+‰ ‰(D
+%5*>
+
+__unknown_file (" 
+productos_model.ProductosModel*#
+
+__unknown_file (
+
+row*"
+
+__unknown_file (
+
+%42_row_to_dictC
+A
+
+‰ ‰(D	
+product"__id*"
+
+__unknown_file (
+
+%5|z
+
+Â Â((
+%6"list.append*(
+
+__unknown_file (
+
+
+products*'
+
+__unknown_file (
+	
+product2append*
+7
+9*ò
+10
+ﬁ ﬁ(Dx
+v
+
+ﬁ ﬁ(D
+%7"__concat*
+
+ﬁ ﬁ(	
+
+query*?
+
+ﬁ ﬁ(D1/
+- ORDER BY (stock_minimo - stock) DESC, nombreA
+?
+
+ﬁ ﬁ(D
+query"__id*"
+
+__unknown_file (
+
+%7ïí
+
+‡ ‡()
+%8*&
+
+__unknown_file (
+
+
+cursor*%
+
+__unknown_file (	
+
+query*&
+
+__unknown_file (
+
+
+params2execute
+
+‚ ‚(
+%9"listD
+B
+
+‚ ‚(
+
+products"__id*"
+
+__unknown_file (
+
+%9GE
+
+„ „((
+%10*&
+
+__unknown_file (
+
+
+cursor2fetchall*
+7
+9*¬
+11
+€ €(1b
+`
+
+€ €(1
+%11"__concat*
+
+€ €(	
+
+query*(
+
+€ €(1
+ AND tipo_producto = ?B
+@
+
+€ €(1
+query"__id*#
+
+__unknown_file (
+
+%11Å
+
+‹ ‹(,
+%12"list.append*&
+
+__unknown_file (
+
+
+params*-
+
+__unknown_file (
+
+tipo_producto2append*
+10*˙
+12
+— —(0n
+l
+
+— —('
+%13"__id*Q
+
+__unknown_file (5*3 
+productos_model.ProductosModel"
+db_connectionB@
+
+— —(0
+%14*#
+
+__unknown_file (
+
+%132cursorC
+A
+
+— —(0
+cursor"__id*#
+
+__unknown_file (
+
+%14Ç
+ˇ
+
+” ◊(
+query"__id*·
+
+__unknown_file (ƒ¡
+æ
+                SELECT *, (stock_minimo - stock) as deficit
+                FROM productos 
+                WHERE stock <= stock_minimo AND activo = 1 AND estado = 'ACTIVO'
+            
+
+ÿ ÿ(
+%15"listC
+A
+
+ÿ ÿ(
+params"__id*#
+
+__unknown_file (
+
+%15*
+10
+11:
+
+∆% ∆(>
+tipo_productoB" 
+productos_model.ProductosModelH

@@ -1,0 +1,41 @@
+
+YP"Obtiene la query base para paginaciÃ³n (debe ser implementado por cada modelo)"str
+"SELECT * FROM ?"str
+"tabla_principal"str
+
+0intself
+Ú Ú(		tuple"¯>
+<
+
+Ý Ý(Mtabla_principal"
+builtinsgetattr*:*
+(
+
+ß ß(4"#unknown-value#Btuple(
+&
+
+ß ß(4"#array-add-last#:*
+(
+
+ß" ß(4"#unknown-value#Btuple(
+&
+
+ß" ß(4
+"
+#is-exact#:	Bbool
+
+
+ß" ß(4"
+#assume#:
+:
+8
+
+ß" ß(4"#set-field# __collection_size:Bint(
+&
+
+ß" ß(4"#array-add-last#:(
+&
+
+ß ß(4"#array-add-last#:
+
+ß ß(4*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\model.py

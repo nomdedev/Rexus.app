@@ -1,0 +1,162 @@
+
+'"div"str
+<"&lt;/({tag})&gt;"str
+""str
+6"&lt;({tag})&gt;"str
+"strong"str
+"h1"str
+/"code"str
+ØÎ"
+        Sanitiza contenido HTML manteniendo tags seguros.
+        
+        Args:
+            html_content: HTML a sanitizar
+            
+        Returns:
+            str: HTML sanitizado
+        "str
+#"ol"str
++"blockquote"str
+	"br"str
+"u"str
+="</\1>"str
+)"span"str
+7"<\1>"str
+"p"str
+"h6"str
+"h5"str
+"i"str
+"h4"str
+-"pre"str
+"h3"str
+!"ul"str
+"h2"str
+%"li"str
+"em"str
+"b"strhtml_content| |('"|+
+)
+
+† †("
+__bool__*:BboolH+
+)
+
+† †("#unaryop !#2!:Bbool "
+
+† †( *
+† †(
+"
+
+‡ ‡("Õ3
+1
+
+Š (	allowed_tags"#new-object#Bset(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	
+"#array-add-last#:	(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	"#array-add-last#:(
+&
+
+Š (	 "#array-add-last#:(
+&
+
+Š (	""#array-add-last#:!(
+&
+
+Š (	$"#array-add-last#:#(
+&
+
+Š (	&"#array-add-last#:%(
+&
+
+Š (	("#array-add-last#:'(
+&
+
+Š (	*"#array-add-last#:)(
+&
+
+Š (	,"#array-add-last#:+(
+&
+
+Š (	."#array-add-last#:-(
+&
+
+Š (	0"#array-add-last#:/#
+!
+
+ (1"#unknown-value#8
+6
+
+ (-2	sanitized"?python-unknown?:1Bstr9
+7
+
+“ “(3"
+builtinsiter*:Btyping.Iterator
+
+“ “("y*8	sanitized2@4
+2
+
+“ “(4"
+builtins
+__has_next*:3Bbool"" 
+
+“ “(4 *
+“ “(H"»-
++
+
+” •(]5tag"
+builtinsnext*:3#
+!
+
+”M ”(O9"#unknown-value#-
++
+
+”M ”(Z:"#get-field# IGNORECASE:9,
+*
+
+” ”([;	sanitized"	
+resub:678:#
+!
+
+•O •(Q>"#unknown-value#-
++
+
+•O •(\?"#get-field# IGNORECASE:>,
+*
+
+• •(]@	sanitized"	
+resub:<=;?"
+
+— —(8*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py

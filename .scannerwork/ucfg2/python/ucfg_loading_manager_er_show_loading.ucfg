@@ -1,0 +1,84 @@
+
+7rexus.utils.loading_manager.LoadingManager.show_loadingQ
+GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\loading_manager.py ("2*…
+2 (Cy
+w
+ (0
+%5"__id*_
+
+__unknown_file (C*A,
+*rexus.utils.loading_manager.LoadingManager"
+loading_widgetssq
+ (0
+%6*"
+
+__unknown_file (
+
+%5*-
+
+__unknown_file (
+
+parent_widget2__contains__*
+4
+5*8
+3
+loading_manager.py"
+ (
+implicit return*¯
+4 (NÐÍ
+ (N
+%1*J
+
+__unknown_file (.,
+*rexus.utils.loading_manager.LoadingManager*-
+
+__unknown_file (
+
+parent_widget*'
+
+__unknown_file (
+	
+mensaje2_create_loading_overlayI
+G
+ (N
+loading_overlay"__id*"
+
+__unknown_file (
+
+%1y
+w
+ (
+%3"__id*_
+
+__unknown_file (C*A,
+*rexus.utils.loading_manager.LoadingManager"
+loading_widgets¶³
+ (=
+%2"dict.__setitem__*"
+
+__unknown_file (
+
+%3*-
+
+__unknown_file (
+
+parent_widget*/
+
+__unknown_file (
+
+loading_overlay2__setitem__IG
+ (
+%4*/
+
+__unknown_file (
+
+loading_overlay2show*
+3*#
+5 ("
+ (
+void:
+ (1
+parent_widget:
+3 (O	
+mensajeB.,
+*rexus.utils.loading_manager.LoadingManagerH

@@ -57,7 +57,12 @@ class PermissionsManager:
     
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
-        self.sanitizer = DataSanitizer() if DataSanitizer else None
+        # Usar unified_sanitizer en lugar de DataSanitizer
+        try:
+            from rexus.utils.unified_sanitizer import unified_sanitizer
+            self.sanitizer = unified_sanitizer
+        except ImportError:
+            self.sanitizer = None
         
         # Configuración de permisos por defecto
         self.default_permissions = {

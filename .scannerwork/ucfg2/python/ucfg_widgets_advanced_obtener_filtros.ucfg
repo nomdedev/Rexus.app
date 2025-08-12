@@ -1,0 +1,266 @@
+
+Krexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget.obtener_filtros\
+PC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\widgets_advanced.py› ›("2*­
+2
+œ ¡(
+
+¢ ¢(
+%18"dictD
+B
+
+¢ ¢(	
+filtros"__id*#
+
+__unknown_file (
+
+%18‹
+ˆ
+
+¥ ¥("
+%19"__id*m
+
+__unknown_file (Q*O=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget"
+combo_estadoGE
+
+¥ ¥(0
+%20*#
+
+__unknown_file (
+
+%192currentTextC
+A
+
+¥ ¥(0
+estado"__id*#
+
+__unknown_file (
+
+%20”
+‘
+
+¦ ¦(
+%21"	__compare*"
+
+__unknown_file (
+!=*&
+
+__unknown_file (
+
+
+estado*%
+
+__unknown_file (	
+Todos*
+8
+9*‚
+4
+´ ´(Nˆ
+…
+
+´! ´(0
+%1"__id*k
+
+__unknown_file (O*M=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget"
+
+date_desde><
+
+´! ´(7
+%2*"
+
+__unknown_file (
+
+%12datenl
+
+´! ´(N
+%3*"
+
+__unknown_file (
+
+%2**
+
+__unknown_file (
+
+yyyy-MM-dd2toString®«
+
+´ ´(N
+%4"dict.__setitem__*'
+
+__unknown_file (
+	
+filtros*+
+
+__unknown_file (
+fecha_desde*"
+
+__unknown_file (
+
+%32__setitem__ˆ
+…
+
+µ! µ(0
+%5"__id*k
+
+__unknown_file (O*M=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget"
+
+date_hasta><
+
+µ! µ(7
+%6*"
+
+__unknown_file (
+
+%52datenl
+
+µ! µ(N
+%7*"
+
+__unknown_file (
+
+%6**
+
+__unknown_file (
+
+yyyy-MM-dd2toString®«
+
+µ µ(N
+%8"dict.__setitem__*'
+
+__unknown_file (
+	
+filtros*+
+
+__unknown_file (
+fecha_hasta*"
+
+__unknown_file (
+
+%72__setitem__"
+
+· ·(
+	
+filtros*Æ
+5
+± ±((¯¬
+
+± ±((
+%9"dict.__setitem__*'
+
+__unknown_file (
+	
+filtros*'
+
+__unknown_file (	
+cliente*'
+
+__unknown_file (
+	
+cliente2__setitem__*
+4*ï
+6
+¯ ¯(1Š
+‡
+
+¯ ¯("
+%10"__id*l
+
+__unknown_file (P*N=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget"
+txt_cliente@>
+
+¯ ¯()
+%11*#
+
+__unknown_file (
+
+%102textA?
+
+¯ ¯(1
+%12*#
+
+__unknown_file (
+
+%112stripD
+B
+
+¯ ¯(1	
+cliente"__id*#
+
+__unknown_file (
+
+%12*
+4
+5*Ï
+7
+¬ ¬(0¸µ
+
+¬ ¬(0
+%13"dict.__setitem__*'
+
+__unknown_file (
+	
+filtros*+
+
+__unknown_file (
+responsable*+
+
+__unknown_file (
+
+responsable2__setitem__*
+6*÷
+8
+ª ª(9Ž
+‹
+
+ª ª(*
+%14"__id*p
+
+__unknown_file (T*R=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidget"
+txt_responsable@>
+
+ª ª(1
+%15*#
+
+__unknown_file (
+
+%142textA?
+
+ª ª(9
+%16*#
+
+__unknown_file (
+
+%152stripH
+F
+
+ª ª(9
+responsable"__id*#
+
+__unknown_file (
+
+%16*
+6
+7*Å
+9
+§ §(&®«
+
+§ §(&
+%17"dict.__setitem__*'
+
+__unknown_file (
+	
+filtros*&
+
+__unknown_file (
+
+estado*&
+
+__unknown_file (
+
+
+estado2__setitem__*
+8B?=
+;rexus.modules.obras.widgets_advanced.FiltrosAvanzadosWidgetH

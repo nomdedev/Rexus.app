@@ -1,0 +1,177 @@
+
+:rexus.utils.form_styles.FormStyleManager.get_spinbox_styleO
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.pyù ù("1*Ó
+1
+û û(4p
+n
+
+°# °(:
+%1"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSwu
+
+°# °(D
+%2"__mapGet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+border2__getitem__p
+n
+
+• •(/
+%3"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSus
+
+• •(7
+%4"__mapGet*"
+
+__unknown_file (
+
+%3*$
+
+__unknown_file (
+text2__getitem__p
+n
+
+¶# ¶(:
+%5"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS{y
+
+¶# ¶(H
+%6"__mapGet*"
+
+__unknown_file (
+
+%5**
+
+__unknown_file (
+
+background2__getitem__p
+n
+
+´ ´(6
+%7"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS}{
+
+´ ´(F
+%8"__mapGet*"
+
+__unknown_file (
+
+%7*,
+
+__unknown_file (
+border_focus2__getitem__p
+n
+
+∞ ∞(6
+%9"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS}
+
+∞ ∞(G
+%10"__mapGet*"
+
+__unknown_file (
+
+%9*-
+
+__unknown_file (
+primary_light2__getitem__û
+
+õ
+
+
+ü æ(
+%11"__concat*_
+
+ü °("QO
+M
+            QSpinBox, QDoubleSpinBox {{
+                border: 2px solid *
+
+°# °(D
+
+%2*õ
+
+°E •(åâ
+Ü;
+                border-radius: 8px;
+                padding: 12px 16px;
+                font-size: 14px;
+                color: *
+
+• •(7
+
+%4*7
+
+•8 ¶(")'
+%;
+                background-color: *
+
+¶# ¶(H
+
+%6*¨
+
+¶I ´(ùö
+ó;
+                min-width: 100px;
+            }}
+            
+            QSpinBox:focus, QDoubleSpinBox:focus {{
+                border-color: *
+
+´ ´(F
+
+%8*Ú
+
+´G ∞(„‡
+›;
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QSpinBox:hover, QDoubleSpinBox:hover {{
+                border-color: *
+
+∞ ∞(G
+
+%10*∞
+
+∞H æ(°û
+õ;
+            }}
+            
+            QSpinBox::up-button, QDoubleSpinBox::up-button {{
+                border: none;
+                width: 20px;
+                margin-right: 2px;
+            }}
+            
+            QSpinBox::down-button, QDoubleSpinBox::down-button {{
+                border: none;
+                width: 20px;
+                margin-right: 2px;
+            }}
+        "
+
+ü æ(
+
+%11B,*
+(rexus.utils.form_styles.FormStyleManagerH

@@ -1,0 +1,232 @@
+
+:rexus.core.rbac_database.RBACDatabase._initialize_databaseP
+DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\rbac_database.pyç ç("2*Ã
+2
+é é(9pn
+
+è è(&
+%13*E
+
+__unknown_file ()'
+%rexus.core.rbac_database.RBACDatabase2_get_db_connectionA
+?
+
+è è(.
+conn"__id*#
+
+__unknown_file (
+
+%13*
+3
+4*8
+3
+rbac_database.py"
+Û Û(
+implicit return*Ê'
+4
+ê ê("B@
+
+ê ê("
+%1*$
+
+__unknown_file (
+
+conn2cursorB
+@
+
+ê ê("
+cursor"__id*"
+
+__unknown_file (
+
+%1˘ˆ
+
+ì û(
+%2*&
+
+__unknown_file (
+
+
+cursor*∞
+
+__unknown_file (ìê
+ç
+                CREATE TABLE IF NOT EXISTS rbac_roles (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL,
+                    description TEXT,
+                    parent_id INTEGER,
+                    is_active BOOLEAN DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (parent_id) REFERENCES rbac_roles (id)
+                )
+            2execute°û
+
+° ´(
+%3*&
+
+__unknown_file (
+
+
+cursor*ÿ
+
+__unknown_file (ª∏
+µ
+                CREATE TABLE IF NOT EXISTS rbac_permissions (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    resource TEXT NOT NULL,
+                    action TEXT NOT NULL,
+                    description TEXT,
+                    is_active BOOLEAN DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    UNIQUE(resource, action)
+                )
+            2execute´®
+
+Æ ∫(
+%4*&
+
+__unknown_file (
+
+
+cursor*‚
+
+__unknown_file (≈¬
+ø
+                CREATE TABLE IF NOT EXISTS rbac_user_roles (
+                    user_id INTEGER NOT NULL,
+                    role_id INTEGER NOT NULL,
+                    granted_by INTEGER,
+                    granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    expires_at TIMESTAMP,
+                    is_active BOOLEAN DEFAULT 1,
+                    PRIMARY KEY (user_id, role_id),
+                    FOREIGN KEY (role_id) REFERENCES rbac_roles (id),
+                    FOREIGN KEY (granted_by) REFERENCES usuarios (id)
+                )
+            2executeÂ‚
+
+Ω …(
+%5*&
+
+__unknown_file (
+
+
+cursor*ú
+
+__unknown_file (ˇ¸
+˘
+                CREATE TABLE IF NOT EXISTS rbac_role_permissions (
+                    role_id INTEGER NOT NULL,
+                    permission_id INTEGER NOT NULL,
+                    granted_by INTEGER,
+                    granted_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    is_active BOOLEAN DEFAULT 1,
+                    PRIMARY KEY (role_id, permission_id),
+                    FOREIGN KEY (role_id) REFERENCES rbac_roles (id),
+                    FOREIGN KEY (permission_id) REFERENCES rbac_permissions (id),
+                    FOREIGN KEY (granted_by) REFERENCES usuarios (id)
+                )
+            2executeÒÓ
+
+Ã Ÿ(
+%6*&
+
+__unknown_file (
+
+
+cursor*®
+
+__unknown_file (ãà
+Ö
+                CREATE TABLE IF NOT EXISTS rbac_policies (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    name TEXT UNIQUE NOT NULL,
+                    resource_pattern TEXT NOT NULL,
+                    conditions TEXT, -- JSON
+                    effect TEXT NOT NULL CHECK (effect IN ('ALLOW', 'DENY')),
+                    priority INTEGER DEFAULT 0,
+                    is_active BOOLEAN DEFAULT 1,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    created_by INTEGER,
+                    FOREIGN KEY (created_by) REFERENCES usuarios (id)
+                )
+            2execute·ﬁ
+
+‹ È(
+%7*&
+
+__unknown_file (
+
+
+cursor*ò
+
+__unknown_file (˚¯
+ı
+                CREATE TABLE IF NOT EXISTS rbac_access_log (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_id INTEGER NOT NULL,
+                    resource TEXT NOT NULL,
+                    action TEXT NOT NULL,
+                    result TEXT NOT NULL CHECK (result IN ('GRANTED', 'DENIED', 'CONDITIONAL')),
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    details TEXT, -- JSON
+                    timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    FOREIGN KEY (user_id) REFERENCES usuarios (id)
+                )
+            2executeÆ´
+
+Ï Ï(d
+%8*&
+
+__unknown_file (
+
+
+cursor*f
+
+__unknown_file (JH
+FCREATE INDEX IF NOT EXISTS idx_user_roles ON rbac_user_roles (user_id)2execute∫∑
+
+Ì Ì(p
+%9*&
+
+__unknown_file (
+
+
+cursor*r
+
+__unknown_file (VT
+RCREATE INDEX IF NOT EXISTS idx_role_permissions ON rbac_role_permissions (role_id)2executeøº
+
+Ó Ó(t
+%10*&
+
+__unknown_file (
+
+
+cursor*v
+
+__unknown_file (ZX
+VCREATE INDEX IF NOT EXISTS idx_access_log_user ON rbac_access_log (user_id, timestamp)2executeƒ¡
+
+Ô Ô(y
+%11*&
+
+__unknown_file (
+
+
+cursor*{
+
+__unknown_file (_]
+[CREATE INDEX IF NOT EXISTS idx_access_log_resource ON rbac_access_log (resource, timestamp)2executeCA
+
+Ò Ò(
+%12*$
+
+__unknown_file (
+
+conn2commit*
+3B)'
+%rexus.core.rbac_database.RBACDatabaseH

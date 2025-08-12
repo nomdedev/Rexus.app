@@ -1,0 +1,15 @@
+
+Æ§"
+    Retorna el m√©todo de autenticaci√≥n para desarrollo.
+    
+    Returns:
+        funci√≥n que acepta (username, password) y retorna user_data o None
+    "str"h#
+!
+
+à à("#unknown-value#/
+-
+
+à à(#"#get-field# authenticate:
+
+à à(#*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\dev_db_mock.py

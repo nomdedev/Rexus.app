@@ -1,0 +1,15 @@
+
+≤®"
+    Decorador para rate limiting b√°sico.
+    
+    Args:
+        max_requests: M√°ximo n√∫mero de requests
+        window_seconds: Ventana de tiempo en segundos
+    "strmax_requests
+“ “(,window_seconds
+“. “(H"7#
+!
+
+‚ ‚("#unknown-value#
+
+‚ ‚(*@C:\Users\itachi\Desktop\martin\Rexus.app\rexus\api\validators.py

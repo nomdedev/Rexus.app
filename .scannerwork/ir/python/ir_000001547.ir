@@ -1,0 +1,214 @@
+
+"20123456789"str
+%J"Herrajes Industriales LTDA"str
+"id"str
+<"Vidrios y Cristales"str
+"nombre"str
+"estado"str
+"+54 11 4000-1000"str
+]45678.25float
+,#"Av. Industrial 1234, Buenos Aires"str
+4"+54 11 4000-2000"str
+
+"telefono"str
+) "Proveedores demo para testing."str
+C89234.75float
+L"20456789123"str
+#Y"Herrajes de alta calidad"str
+"Juan PÃ©rez"str
+N"+54 11 4000-3000"str
+*#!"Proveedor principal de perfiles"str
+"email"str
+""Materiales del Sur S.A."str
+&"ventas@materialesdelsur.com"str
+2"20987654321"str
+
+c0int
+!."Vidrios y Cristales SA"str
+
+,2int
+("monto_total_compras"str
+&25int
+%"total_ordenes"str
+T"Carlos Rodriguez"str
+"ruc"str
+%8"Calle del Vidrio 567, CABA"str
+""observaciones"str
++?""Especialistas en vidrio templado"str
+#0"Vidrios y Cristales S.A."str
+ V"Herrajes y Accesorios"str
+"direccion"str
+[12int
+:"MarÃ­a GonzÃ¡lez"str
+)	156789.50float
++R""Parque Industrial Norte, Lote 45"str
+(6"pedidos@vidriosycristales.com"str
+P"info@herrajes.com"str
+ H"Herrajes Industriales"str
+"categoria"str
+
+F3int
+
+1int
+ "ACTIVO"str
+A18int
+"contacto_principal"str
+&"Materiales de ConstrucciÃ³n"str
+"Materiales del Sur"str
+
+"razon_social"strself
+˜ ˜("`list"¶&
+$
+
+› ©("#new-object#Bdict"
+ 
+
+œ œ("	#map-set#:"
+ 
+
+ (.	"	#map-set#:"
+ 
+
+ž ž(9"	#map-set#:
+"
+ 
+
+Ÿ Ÿ($"	#map-set#:"
+ 
+
+   (."	#map-set#:"
+ 
+
+¡ ¡(6"	#map-set#:"
+ 
+
+¢ ¢(@"	#map-set#:"
+ 
+
+£ £(2"	#map-set#:"
+ 
+
+¤ ¤(9"	#map-set#:"
+ 
+
+¥ ¥("!"	#map-set#: "
+ 
+
+¦ ¦(B$"	#map-set#:"#"
+ 
+
+§ §(#'"	#map-set#:%&"
+ 
+
+¨ ¨(0*"	#map-set#:()&
+$
+
+ª ¸(+"#new-object#Bdict"
+ 
+
+« «(-"	#map-set#:+,"
+ 
+
+¬ ¬(2/"	#map-set#:+."
+ 
+
+­ ­(:1"	#map-set#:+
+0"
+ 
+
+® ®($3"	#map-set#:+2"
+ 
+
+¯ ¯(.5"	#map-set#:+4"
+ 
+
+° °(87"	#map-set#:+6"
+ 
+
+± ±(99"	#map-set#:+8"
+ 
+
+² ²(6;"	#map-set#:+:"
+ 
+
+³ ³(2="	#map-set#:+<"
+ 
+
+´ ´(">"	#map-set#:+ "
+ 
+
+µ µ(C@"	#map-set#:+"?"
+ 
+
+¶ ¶(#B"	#map-set#:+%A"
+ 
+
+· ·(/D"	#map-set#:+(C&
+$
+
+¹ Ç(E"#new-object#Bdict"
+ 
+
+º º(G"	#map-set#:EF"
+ 
+
+» »(1I"	#map-set#:EH"
+ 
+
+¼ ¼(<K"	#map-set#:E
+J"
+ 
+
+½ ½($M"	#map-set#:EL"
+ 
+
+¾ ¾(.O"	#map-set#:EN"
+ 
+
+¿ ¿(,Q"	#map-set#:EP"
+ 
+
+À À(?S"	#map-set#:ER"
+ 
+
+Á Á(8U"	#map-set#:ET"
+ 
+
+Â Â(4W"	#map-set#:EV"
+ 
+
+Ã Ã("X"	#map-set#:E "
+ 
+
+Ä Ä(;Z"	#map-set#:E"Y"
+ 
+
+Å Å(#\"	#map-set#:E%["
+ 
+
+Æ Æ(/^"	#map-set#:E(])
+'
+
+š È(	_"#unknown-value#Blist(
+&
+
+š È(	a"
+#is-exact#:_`Bbool
+
+
+š È(	b"
+#assume#:a:
+8
+
+š È(	d"#set-field# __collection_size:_cBint(
+&
+
+š È(	e"#array-add-last#:_(
+&
+
+š È(	f"#array-add-last#:_+(
+&
+
+š È(	g"#array-add-last#:_E
+
+š È(	_*SC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\proveedores_model.py

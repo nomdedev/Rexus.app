@@ -1,0 +1,157 @@
+
+Qrexus.modules.configuracion.model.ConfiguracionModel._obtener_categoria_por_claveY
+MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\configuracion\model.py¡ ¡($"2*†
+13
+… …(*ÉÄ
+
+… …(*
+%4"str.startswith*%
+
+__unknown_file (	
+
+clave*)
+
+__unknown_file (
+	reportes_2
+startswith*
+11
+12*,
+14
+» »("
+
+» »(
+
+USUARIOS*†
+15
+« «(*ÉÄ
+
+« «(*
+%5"str.startswith*%
+
+__unknown_file (	
+
+clave*)
+
+__unknown_file (
+	usuarios_2
+startswith*
+13
+14*+
+16
+∆ ∆("
+
+∆ ∆(	
+EMPRESA*û
+17
+≈ ≈()Å
+
+≈ ≈()
+%6"str.startswith*%
+
+__unknown_file (	
+
+clave*(
+
+__unknown_file (
+
+empresa_2
+startswith*
+15
+16*ñ
+2
+¬ ¬(6|z
+
+√ √("
+%7"str.startswith*%
+
+__unknown_file (	
+
+clave*#
+
+__unknown_file (
+db_2
+startswith*
+4
+17*+
+4
+ƒ ƒ("
+
+ƒ ƒ(
+
+DATABASE**
+5
+“ “("
+
+“ “(	
+SISTEMA*0
+6
+– –(""
+
+– –("
+INTEGRACIONES*¢
+7
+œ œ(/àÖ
+
+œ œ(/
+%1"str.startswith*%
+
+__unknown_file (	
+
+clave*.
+
+__unknown_file (
+integraciones_2
+startswith*
+5
+6*)
+8
+Œ Œ("
+
+Œ Œ(
+
+BACKUP*ö
+9
+Õ Õ((Ä~
+
+Õ Õ((
+%2"str.startswith*%
+
+__unknown_file (	
+
+clave*'
+
+__unknown_file (	
+backup_2
+startswith*
+7
+8*(
+10
+Ã Ã("
+
+Ã Ã(
+TEMA*ô
+11
+À À(&~|
+
+À À(&
+%3"str.startswith*%
+
+__unknown_file (	
+
+clave*%
+
+__unknown_file (	
+tema_2
+startswith*
+9
+10*,
+12
+   ("
+
+   (
+
+REPORTES:
+
+¡+ ¡(5
+claveB86
+4rexus.modules.configuracion.model.ConfiguracionModelH

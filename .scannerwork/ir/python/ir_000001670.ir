@@ -1,0 +1,31 @@
+
+"font_family"str
+
+"font_size"str
+"theme"str
+("Obtener preferencias actuales"strself
+ä ä("À&
+$
+
+å ê(	"#new-object#Bdict5
+3
+
+ç ç(," #get-field# current_theme_name:"
+ 
+
+ç ç(,"	#map-set#:6
+4
+
+é é(3"!#get-field# current_font_family:"
+ 
+
+é é(3	"	#map-set#:4
+2
+
+è è(/"#get-field# current_font_size:"
+ 
+
+è è(/"	#map-set#:
+
+
+å ê(	*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\theme_manager.py

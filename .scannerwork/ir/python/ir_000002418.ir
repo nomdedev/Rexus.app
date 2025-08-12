@@ -1,0 +1,33 @@
+
+È¾"
+        Decorador para cachear resultados de consultas.
+        
+        Args:
+            cache_key: Clave de cache personalizada
+            ttl: Time to live en segundos
+        "strself
+² ²(	cache_key
+² ²(0ttl
+²2 ²(@"”#
+!
+
+Û Û(
+"#unknown-value#*
+(
+
+º Û(%closure"#new-object#-
++
+
+º Û("#set-field# cache_key:(
+&
+
+º Û("#set-field# self:'
+%
+
+º Û("#set-field# ttl:-
++
+
+º Û(	"?python-partial-apply?:
+
+Û Û(
+*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\query_optimizer.py

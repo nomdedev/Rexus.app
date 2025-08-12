@@ -1,0 +1,244 @@
+
+crexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController.conectar_senalesn
+dC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\controller.py0 0("2*°
+21 1(N˜
+•
+2 2(
+%29"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+view*
+3
+4*3
+3
+controller.py"
+D D(
+implicit return*Ç
+44 4(M—
+”
+4 4(
+%1"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+view\
+Z
+4 4(0
+%2"__id*B
+
+__unknown_file (&*$
+
+%1"
+crear_empleado_rrhh_signal¢
+Ÿ
+49 4(L
+%3"__id*†
+
+__unknown_file (j*hT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+crear_empleadoca
+4 4(M
+%4*"
+
+__unknown_file (
+
+%2*"
+
+__unknown_file (
+
+%32connect—
+”
+5 5(
+%5"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+view\
+Z
+5 5(0
+%6"__id*B
+
+__unknown_file (&*$
+
+%5"
+actualizar_empleado_signal§
+¤
+59 5(Q
+%7"__id*‹
+
+__unknown_file (o*mT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+actualizar_empleadoca
+5 5(R
+%8*"
+
+__unknown_file (
+
+%6*"
+
+__unknown_file (
+
+%72connect—
+”
+6 6(
+%9"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+view[
+Y
+6 6(.
+%10"__id*@
+
+__unknown_file ($*"
+
+%9"
+eliminar_empleado_signal¦
+£
+67 6(M
+%11"__id*‰
+
+__unknown_file (m*kT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+eliminar_empleadofd
+6 6(N
+%12*#
+
+__unknown_file (
+
+%10*#
+
+__unknown_file (
+
+%112connect˜
+•
+9 9(
+%13"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+viewZ
+X
+9 9(,
+%14"__id*?
+
+__unknown_file (#*!
+
+%13"
+calcular_nomina_signal¤
+¡
+95 9(I
+%15"__id*‡
+
+__unknown_file (k*iT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+calcular_nominafd
+9 9(J
+%16*#
+
+__unknown_file (
+
+%14*#
+
+__unknown_file (
+
+%152connect˜
+•
+< <(
+%17"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+view_
+]
+< <(1
+%18"__id*D
+
+__unknown_file ((*&
+
+%17"
+registrar_asistencia_signal©
+¦
+<: <(S
+%19"__id*Œ
+
+__unknown_file (p*nT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+registrar_asistenciafd
+< <(T
+%20*#
+
+__unknown_file (
+
+%18*#
+
+__unknown_file (
+
+%192connect˜
+•
+= =(
+%21"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+viewZ
+X
+= =(,
+%22"__id*?
+
+__unknown_file (#*!
+
+%21"
+registrar_falta_signal¤
+¡
+=5 =(I
+%23"__id*‡
+
+__unknown_file (k*iT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+registrar_faltafd
+= =(J
+%24*#
+
+__unknown_file (
+
+%22*#
+
+__unknown_file (
+
+%232connect˜
+•
+@ @(
+%25"__id*|
+
+__unknown_file (`*^T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+viewW
+U
+@ @()
+%26"__id*<
+
+__unknown_file ( *
+
+%25"
+generar_bono_signal©
+¦
+@2 @(K
+%27"__id*Œ
+
+__unknown_file (p*nT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+crear_bono_descuentofd
+@ @(L
+%28*#
+
+__unknown_file (
+
+%26*#
+
+__unknown_file (
+
+%272connect*
+3BVT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosControllerH

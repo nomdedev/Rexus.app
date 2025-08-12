@@ -1,0 +1,32 @@
+
+≠£"
+    Decorador combinado que aplica autenticaci√≥n, autorizaci√≥n, 
+    manejo de errores y auditor√≠a.
+    
+    Args:
+        permission: Permiso requerido (opcional)
+        audit_action: Acci√≥n para auditor√≠a (opcional)
+        
+    Returns:
+        Decorador combinado
+    "str
+permission
+ò ò(+audit_action
+ò- ò(E"Ù#
+!
+
+∏ ∏("#unknown-value#*
+(
+
+§ ∏(%closure"#new-object#0
+.
+
+§ ∏("#set-field# audit_action:.
+,
+
+§ ∏("#set-field# permission:-
++
+
+§ ∏("?python-partial-apply?:
+
+∏ ∏(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

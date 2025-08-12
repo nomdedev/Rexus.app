@@ -1,0 +1,67 @@
+
+\rexus.modules.administracion.view_completa.AdministracionCompletaView.generar_flujo_efectivob
+VC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\view_completa.pyø	 ø	("2*˜
+2
+ù	 ù	(&ù
+ö
+
+ú	 ‘
+(	
+reporte"__id*Ö
+
+__unknown_file (¹¶
+³
+FLUJO DE EFECTIVO - ENERO 2024
+==============================
+
+ACTIVIDADES OPERATIVAS:
++ Ingresos por ventas: $1,500,000
+- Pago a proveedores: $600,000
+- Pago nÃ³mina: $500,000
+- Gastos operativos: $200,000
+Flujo neto operativo: $200,000
+
+ACTIVIDADES DE INVERSIÃ“N:
+- Compra de equipos: $100,000
+Flujo neto inversiÃ³n: ($100,000)
+
+ACTIVIDADES DE FINANCIACIÃ“N:
++ PrÃ©stamos recibidos: $0
+- Pago de prÃ©stamos: $50,000
+Flujo neto financiaciÃ³n: ($50,000)
+
+FLUJO NETO TOTAL: $50,000
+Saldo inicial: $2,000,000
+Saldo final: $2,050,000
+        ”
+‘
+
+’
+ ’
+(
+%1"__id*w
+
+__unknown_file ([*YG
+Erexus.modules.administracion.view_completa.AdministracionCompletaView"
+preview_textom
+
+’
+ ’
+(/
+%2*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (
+	
+reporte2setPlainText*
+3*8
+3
+view_completa.py"
+”
+ ”
+(
+implicit returnBIG
+Erexus.modules.administracion.view_completa.AdministracionCompletaViewH

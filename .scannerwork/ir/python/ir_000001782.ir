@@ -1,0 +1,9 @@
+
+
+1int
+,#"Verifica si hay página anterior."strself& &("a%
+#
+( (("#get-field# page:(
+&
+( (("	#binop >#2>:Bbool
+( ((*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

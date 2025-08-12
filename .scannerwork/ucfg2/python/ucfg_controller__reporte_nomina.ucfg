@@ -1,0 +1,258 @@
+
+irexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController.generar_reporte_nominap
+dC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\controller.pyฅ ฅ("2*ท
+2
+ฆ ฆ('
+
+
+ง ง(
+%15"__id*}
+
+__unknown_file (a*_T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+model*
+11
+12*5
+3
+controller.py"
+ป ป(
+implicit return*ภ
+4
+ท ท(Ik
+i
+
+ท ท(H
+%1"__concat*6
+
+ท! ท(D(&
+$Error generando reporte de nรณmina: *
+
+ทE ท(F
+
+eผน
+
+ท ท(I
+%2*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*"
+
+__unknown_file (
+
+%12mostrar_error*
+3*ฮ
+6
+ด ด(Tt
+r
+
+ด! ด(S
+%3"__concat*9
+
+ด# ด(I+)
+'Reporte de nรณmina generado en formato *
+
+ดJ ด(Q
+	
+formatoพป
+
+ด ด(T
+%4*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*"
+
+__unknown_file (
+
+%32mostrar_mensaje*
+3
+4*
+7
+ฎ ฎ(I}
+{
+
+ฎ2 ฎ(H
+%5"__concat*
+
+ฎ4 ฎ(;	
+nomina_*
+
+ฎ< ฎ(?
+
+mes*
+
+ฎ@ ฎ(A
+_*
+
+ฎB ฎ(F
+
+anio๋่
+
+ฎ ฎ(I
+%6*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*&
+
+__unknown_file (
+
+
+nomina*"
+
+__unknown_file (
+
+%52_generar_reporte_csv*
+6*
+8
+ฒ ฒ(I}
+{
+
+ฒ2 ฒ(H
+%7"__concat*
+
+ฒ4 ฒ(;	
+nomina_*
+
+ฒ< ฒ(?
+
+mes*
+
+ฒ@ ฒ(A
+_*
+
+ฒB ฒ(F
+
+anio๋่
+
+ฒ ฒ(I
+%8*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*&
+
+__unknown_file (
+
+
+nomina*"
+
+__unknown_file (
+
+%72_generar_reporte_pdf*
+6*
+9
+ฐ ฐ(K}
+{
+
+ฐ4 ฐ(J
+%9"__concat*
+
+ฐ6 ฐ(=	
+nomina_*
+
+ฐ> ฐ(A
+
+mes*
+
+ฐB ฐ(C
+_*
+
+ฐD ฐ(H
+
+anio๎๋
+
+ฐ ฐ(K
+%10*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*&
+
+__unknown_file (
+
+
+nomina*"
+
+__unknown_file (
+
+%92_generar_reporte_excel*
+6*ฐ
+10
+ฏ ฏ(#•
+’
+
+ฏ ฏ(#
+%11"	__compare*"
+
+__unknown_file (
+==*'
+
+__unknown_file (
+	
+formato*%
+
+__unknown_file (	
+Excel*
+8
+9*ฌ
+11
+ซ ซ(:
+
+
+ซ ซ(
+%12"__id*}
+
+__unknown_file (a*_T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+model—”
+
+ซ ซ(:
+%13*#
+
+__unknown_file (
+
+%12*#
+
+__unknown_file (
+
+mes*$
+
+__unknown_file (
+
+anio2calcular_nominaC
+A
+
+ซ ซ(:
+nomina"__id*#
+
+__unknown_file (
+
+%13“
+
+
+ญ ญ(
+%14"	__compare*"
+
+__unknown_file (
+==*'
+
+__unknown_file (
+	
+formato*#
+
+__unknown_file (
+CSV*
+7
+10*(
+12
+จ จ("
+
+จ จ(
+void:
+
+ฅ% ฅ((
+mes:
+
+ฅ* ฅ(.
+anio:
+
+ฅ0 ฅ(=	
+formatoBVT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosControllerH

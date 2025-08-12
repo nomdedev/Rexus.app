@@ -1,0 +1,23 @@
+
+≈ª"
+    Decorador que requiere un permiso espec√≠fico para ejecutar el m√©todo.
+    
+    Args:
+        permission: Nombre del permiso requerido
+        
+    Returns:
+        Decorador que verifica el permiso
+        
+    Raises:
+        AuthorizationError: Si el usuario no tiene el permiso requerido
+    "str
+permissionI I('"∏!
+
+} }("#unknown-value#(
+&
+V }(%closure"#new-object#,
+*
+V }("#set-field# permission:+
+)
+V }("?python-partial-apply?:
+} }(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

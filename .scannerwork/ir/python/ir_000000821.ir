@@ -1,0 +1,40 @@
+
+
+1int
+
+"username"str
+"admin"str
+
+0int
+"id"strself
+õ# õ('
+list"Þ&
+$
+
+ö ö(2"#new-object#Bdict"
+ 
+
+ö ö("	#map-set#:"
+ 
+
+ö ö(1"	#map-set#:)
+'
+
+ö ö(3	"#unknown-value#Blist(
+&
+
+ö ö(3"
+#is-exact#:	
+Bbool
+
+
+ö ö(3"
+#assume#::
+8
+
+ö ö(3"#set-field# __collection_size:	Bint(
+&
+
+ö ö(3"#array-add-last#:	
+
+ö ö(3	*RC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\security_dialog.py

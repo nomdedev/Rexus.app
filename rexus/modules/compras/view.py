@@ -1316,6 +1316,99 @@ class ComprasView(QWidget):
         except Exception as e:
             print(f"[ERROR] Error abriendo nueva orden desde inventario: {e}")
 
+    def _setup_xss_protection(self):
+        """Configura la protección XSS para todos los campos del formulario."""
+        if not self.xss_protector:
+            print('[XSS] Protector no disponible, saltando configuración')
+            return
+            
+        try:
+            # Configurar filtros para campos de texto
+            text_fields = []
+            
+            # Buscar todos los campos de entrada en el formulario
+            for child in self.findChildren((QLineEdit, QTextEdit, QPlainTextEdit)):
+                if hasattr(child, 'objectName') and child.objectName():
+                    field_name = child.objectName()
+                    text_fields.append(field_name)
+                    
+                    # Configurar validación en tiempo real
+                    if isinstance(child, QLineEdit):
+                        child.textChanged.connect(lambda text, field=field_name: self._validate_field_input(field, text))
+                    elif isinstance(child, (QTextEdit, QPlainTextEdit)):
+                        child.textChanged.connect(lambda field=field_name: self._validate_text_area(field))
+            
+            # Configurar protector con campos encontrados
+            for field in text_fields:
+                self.xss_protector.add_field_filter(field, max_length=1000)
+            
+            print(f'[XSS] Protección configurada para {len(text_fields)} campos')
+            
+        except Exception as e:
+            print(f'[XSS ERROR] Error configurando protección: {e}')
+
+    def _validate_field_input(self, field_name: str, text: str):
+        """Valida entrada de campo en tiempo real."""
+        try:
+            if not SecurityUtils.is_safe_input(text):
+                print(f'[XSS WARNING] Contenido potencialmente peligroso en {field_name}: {text[:50]}...')
+                # Aquí podrías mostrar advertencia al usuario
+        except Exception as e:
+            print(f'[XSS ERROR] Error validando {field_name}: {e}')
+
+    def _validate_text_area(self, field_name: str):
+        """Valida contenido de área de texto."""
+        try:
+            widget = self.findChild((QTextEdit, QPlainTextEdit), field_name)
+            if widget:
+                text = widget.toPlainText()
+                if not SecurityUtils.is_safe_input(text):
+                    print(f'[XSS WARNING] Contenido potencialmente peligroso en {field_name}')
+        except Exception as e:
+            print(f'[XSS ERROR] Error validando área de texto {field_name}: {e}')
+
+    def obtener_datos_formulario_seguro(self) -> Dict[str, any]:
+        """Obtiene datos del formulario con sanitización XSS completa."""
+        try:
+            datos = {}
+            
+            # Obtener datos de campos de línea
+            for line_edit in self.findChildren(QLineEdit):
+                if hasattr(line_edit, 'objectName') and line_edit.objectName():
+                    field_name = line_edit.objectName()
+                    raw_text = line_edit.text()
+                    # [XSS] Protection: Sanitizar entrada de usuario
+                    safe_text = XSSProtection.sanitize_text(raw_text)
+                    datos[field_name] = safe_text
+            
+            # Obtener datos de áreas de texto
+            for text_edit in self.findChildren((QTextEdit, QPlainTextEdit)):
+                if hasattr(text_edit, 'objectName') and text_edit.objectName():
+                    field_name = text_edit.objectName()
+                    raw_text = text_edit.toPlainText()
+                    # [XSS] Protection: Sanitizar entrada de usuario
+                    safe_text = XSSProtection.sanitize_text(raw_text)
+                    datos[field_name] = safe_text
+            
+            # Obtener datos de combos
+            for combo in self.findChildren(QComboBox):
+                if hasattr(combo, 'objectName') and combo.objectName():
+                    field_name = combo.objectName()
+                    current_text = combo.currentText()
+                    # [XSS] Protection: Sanitizar texto del combo
+                    safe_text = XSSProtection.sanitize_text(current_text)
+                    datos[field_name] = safe_text
+            
+            # Usar protector para validación final
+            if hasattr(self, 'xss_protector') and self.xss_protector:
+                datos = self.xss_protector.sanitize_form_data(datos)
+            
+            return datos
+            
+        except Exception as e:
+            print(f'[XSS ERROR] Error obteniendo datos seguros: {e}')
+            return {}
+
 
 class DialogNuevaOrden(QDialog):
     """Diálogo para crear una nueva orden de compra."""

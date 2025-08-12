@@ -1,0 +1,111 @@
+
+Drexus.ui.components.base_components.RexusProgressBar._setup_progress[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\components\base_components.py’ ’("2*¢
+2
+÷ ÷(-°û
+
+◊ ◊(!
+%1*T
+
+__unknown_file (86
+4rexus.ui.components.base_components.RexusProgressBar*$
+
+__unknown_file (
+
+True2setTextVisiblew
+u
+
+⁄# ⁄(5
+%2"__id*[
+
+__unknown_file (?*=1
+/rexus.ui.components.base_components.RexusColors"
+ACCENTw
+u
+
+€# €(5
+%3"__id*[
+
+__unknown_file (?*=1
+/rexus.ui.components.base_components.RexusColors"
+BORDERu
+s
+
+ﬁ ﬁ((
+%4"__id*Y
+
+__unknown_file (=*;1
+/rexus.ui.components.base_components.RexusColors"
+TEXTx
+v
+
+‚# ‚(6
+%5"__id*\
+
+__unknown_file (@*>1
+/rexus.ui.components.base_components.RexusColors"	
+PRIMARY„
+‡
+
+ÿ Â(
+%6"__concat*S
+
+ÿ ⁄("EC
+A
+            QProgressBar {{
+                background-color: *
+
+⁄# ⁄(5
+
+%2*7
+
+⁄6 €(")'
+%;
+                border: 1px solid *
+
+€# €(5
+
+%3*v
+
+€6 ﬁ(hf
+d;
+                border-radius: 6px;
+                text-align: center;
+                color: *
+
+ﬁ ﬁ((
+
+%4*è
+
+ﬁ) ‚("Ä~
+|;
+                font-weight: 500;
+            }}
+            QProgressBar::chunk {{
+                background-color: *
+
+‚# ‚(6
+
+%5*R
+
+‚7 Â(DB
+@;
+                border-radius: 5px;
+            }}
+        ûõ
+
+ÿ Â(
+%7*T
+
+__unknown_file (86
+4rexus.ui.components.base_components.RexusProgressBar*"
+
+__unknown_file (
+
+%62setStyleSheet*
+3*8
+3
+base_components.py"
+Ë Ë
+implicit returnB86
+4rexus.ui.components.base_components.RexusProgressBarH
