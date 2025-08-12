@@ -432,6 +432,11 @@ class AuditoriaView(BaseModuleView, ModuleExportMixin):
             print(f"[ERROR AUDITORÍA] Error cargando registros de auditoría: {e}")
             self.mostrar_error(f"Error cargando registros: {e}")
     
+    # Alias method for compatibility with accented Spanish name
+    def cargar_registros_auditoría(self, registros):
+        """Alias with accent for compatibility."""
+        return self.cargar_registros_auditoria(registros)
+    
     def actualizar_estadisticas(self, estadisticas):
         """
         Actualiza las estadísticas mostradas en la vista.

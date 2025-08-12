@@ -1,23 +1,8 @@
 """
 Base Components - Rexus.app v2.0.0
 
-Componentes    # Colores neutros
-    BACKGROUND = "#F8F9FA"  # Fondo principal
-    BACKGROUND_LIGHT = "#FFFFFF"  # Fondo claro
-    SURFACE = "#FFFFFF"  # Superficie de widgets
-    BORDER = "#DEE2E6"  # Bordes
-    BORDER_LIGHT = "#E9ECEF"  # Bordes claros
-    BORDER_DARK = "#ADB5BD"  # Bordes oscuros
-    TEXT = "#212529"  # Texto principal
-    TEXT_PRIMARY = "#212529"  # Texto principal (alias)
-    TEXT_SECONDARY = "#6C757D"  # Texto secundario
-    TEXT_ACCENT = "#3F88C5"  # Texto de acento
-    TEXT_LIGHT = "#ADB5BD"  # Texto claro
-    TEXT_DARK = "#1A1A1A"  # Texto oscuro
-    TEXT_WHITE = "#FFFFFF"  # Texto blanco
-    TEXT_DISABLED = "#ADB5BD"  # Texto deshabilitado
-    DISABLED = "#ADB5BD"  # Elementos deshabilitados consistencia entre módulos.
-Proporciona widgets estándar con estilos unificados y funcionalidad común.
+Componentes base para la UI de Rexus con estilos unificados y funcionalidad común.
+Proporciona widgets estándar con estilos consistentes entre módulos.
 """
 
 from typing import Any, Dict, List, Optional
@@ -83,6 +68,19 @@ class RexusColors:
     TEXT_WHITE = "#FFFFFF"  # Texto blanco
     TEXT_DISABLED = "#ADB5BD"  # Texto deshabilitado (alias de TEXT_LIGHT)
     DISABLED = "#ADB5BD"  # Elementos deshabilitados
+    
+    # Colores de estado extendidos para compatibilidad
+    SUCCESS_LIGHT = "#d4edda"  # Verde claro
+    SUCCESS_DARK = "#1e3a0e"  # Verde oscuro
+    WARNING_LIGHT = "#fff3cd"  # Amarillo claro
+    WARNING_DARK = "#856404"  # Amarillo oscuro
+    ERROR_LIGHT = "#f8d7da"  # Rojo claro
+    ERROR_DARK = "#a02914"  # Rojo oscuro
+    DANGER = "#C73E1D"  # Alias para ERROR
+    DANGER_LIGHT = "#f8d7da"  # Rojo claro (alias)
+    DANGER_DARK = "#a02914"  # Rojo oscuro (alias)
+    INFO_LIGHT = "#d1ecf1"  # Azul claro
+    INFO_DARK = "#0c5460"  # Azul oscuro
 
 
 class RexusFonts:
@@ -219,6 +217,29 @@ class RexusButton(QPushButton):
         }
 
         self.setStyleSheet(styles.get(self.button_type, styles["primary"]))
+    
+    def cleanup(self):
+        """Limpia las conexiones y referencias de manera segura"""
+        try:
+            # Desconectar todas las señales
+            self.clicked.disconnect()
+        except:
+            pass  # Ignorar si no hay conexiones
+            
+        # NOTA: setParent(None) puede causar errores "wrapped C/C++ object deleted"
+        # Solo limpiar parent si realmente es necesario para evitar memory leaks
+        # try:
+        #     if self.parent():
+        #         self.setParent(None)
+        # except:
+        #     pass
+    
+    def __del__(self):
+        """Destructor seguro"""
+        try:
+            self.cleanup()
+        except:
+            pass
 
 
 class RexusLabel(QLabel):

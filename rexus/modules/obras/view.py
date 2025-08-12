@@ -1036,3 +1036,7 @@ class DialogoObraModerna(QDialog):
             'presupuesto': self.presupuesto_spin.value(),
             'descripcion': sanitize_string(self.descripcion_edit.toPlainText())
         }
+
+
+# Alias para compatibilidad con importaciones existentes
+ObrasView = ObrasModernView

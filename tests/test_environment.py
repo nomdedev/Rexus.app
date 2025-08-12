@@ -45,7 +45,7 @@ class TestEnvironmentSetup:
         assert hasattr(pytest, 'fixture')
         assert hasattr(pytest, 'mark')
     
-    def test_fixtures_basicas_estan_disponibles(self, mock_db_connection, sample_usuario_data):
+    def test_fixtures_basicas_estan_disponibles(self, mock_db_connection, sample_user_data):
         """
         Verifica que las fixtures básicas están disponibles y funcionan.
         
@@ -61,8 +61,8 @@ class TestEnvironmentSetup:
         # ASSERT: Confirmar que están disponibles y configuradas
         assert mock_db_connection is not None
         assert hasattr(mock_db_connection, 'cursor')
-        assert sample_usuario_data is not None
-        assert 'username' in sample_usuario_data
+        assert sample_user_data is not None
+        assert 'username' in sample_user_data
     
     def test_estructura_directorios_tests_es_correcta(self):
         """

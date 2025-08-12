@@ -30,6 +30,7 @@ from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QVBoxLayout,
+    QHBoxLayout,
     QWidget,
     QDialog,
     QFormLayout,

@@ -33,7 +33,10 @@ class DevAuthManager:
         # Usar el gestor de entorno seguro
         dev_creds = get_dev_credentials()
         self.dev_user = dev_creds.get('user', 'admin')
-        self.dev_password = get_secure_credential('REXUS_DEV_PASSWORD', 'dev_secure_2025')
+        self.dev_password = get_secure_credential('REXUS_DEV_PASSWORD', None)
+        if not self.dev_password:
+            print("[SECURITY ERROR] REXUS_DEV_PASSWORD debe definirse en variables de entorno")
+            raise ValueError("REXUS_DEV_PASSWORD requerida para modo desarrollo")
         self.auto_login_enabled = dev_creds.get('auto_login', False)
         
         # No mostrar credenciales en logs por seguridad

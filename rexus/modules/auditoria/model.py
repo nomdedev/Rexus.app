@@ -30,7 +30,6 @@ except ImportError as e:
 # Importar utilidades de seguridad SQL y sanitización
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 try:
@@ -62,6 +61,7 @@ class AuditoriaModel:
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         self.sanitizer = unified_sanitizer
+        self.data_sanitizer = unified_sanitizer  # Alias for compatibility
         print("OK [AUDITORIA] Sistema unificado de sanitización cargado")
 
         self._crear_tabla_si_no_existe()
@@ -108,7 +108,8 @@ class AuditoriaModel:
 
     def _crear_tabla_si_no_existe(self):
         """Verifica que la tabla de auditoría exista en la base de datos."""
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            print("[ERROR AUDITORÍA] Conexión a base de datos no disponible")
             return
 
         try:
@@ -168,7 +169,7 @@ class AuditoriaModel:
         Returns:
             bool: True si se registró exitosamente
         """
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
             print("[WARN AUDITORÍA] Sin conexión BD - guardando en log local")
             return self._guardar_log_local(usuario, modulo, accion, descripcion)
 
@@ -307,7 +308,8 @@ class AuditoriaModel:
         Returns:
             List[Dict]: Lista de registros de auditoría
         """
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            print("[ERROR AUDITORÍA] Sin conexión a BD para obtener registros")
             return []
 
         try:
@@ -404,7 +406,8 @@ class AuditoriaModel:
         Returns:
             Dict: Estadísticas de auditoría
         """
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            print("[ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas")
             return {}
 
         try:
@@ -471,7 +474,8 @@ class AuditoriaModel:
         Returns:
             bool: True si se realizó la limpieza exitosamente
         """
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            print("[ERROR AUDITORÍA] Sin conexión a BD para limpiar registros")
             return False
 
         try:

@@ -257,11 +257,17 @@ class DemoDataProvider:
         env_credentials = get_demo_credentials()
         
         demo_credentials = {
-            "admin": {"password": env_credentials.get("admin", "demo_admin_2025"), "role": "ADMIN"},
-            "supervisor": {"password": env_credentials.get("supervisor", "demo_supervisor_2025"), "role": "SUPERVISOR"},
-            "operador": {"password": env_credentials.get("operador", "demo_operador_2025"), "role": "OPERADOR"},
-            "contador": {"password": env_credentials.get("contador", "demo_contador_2025"), "role": "CONTABILIDAD"}
+            "admin": {"password": env_credentials.get("admin"), "role": "ADMIN"},
+            "supervisor": {"password": env_credentials.get("supervisor"), "role": "SUPERVISOR"},
+            "operador": {"password": env_credentials.get("operador"), "role": "OPERADOR"},
+            "contador": {"password": env_credentials.get("contador"), "role": "CONTABILIDAD"}
         }
+        
+        # Validar que todas las credenciales estén disponibles
+        for user, creds in demo_credentials.items():
+            if not creds["password"]:
+                print(f"[SECURITY WARNING] Credenciales demo para '{user}' no definidas en variables de entorno")
+                return False
         
         if username in demo_credentials and demo_credentials[username]["password"] == password:
             usuarios_demo = self.get_demo_usuarios()

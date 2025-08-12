@@ -60,23 +60,47 @@ class LogisticaView(QWidget, ModuleExportMixin):
         self.controller = None
         self.setup_ui()
         self.cargar_datos_ejemplo()
+        self.aplicar_estilo_botones_compactos()
 
     def setup_ui(self):
-        """Configura la interfaz principal con pestañas."""
+        """Configura la interfaz principal con pestañas mejoradas."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 10, 10, 10)
+        layout.setContentsMargins(8, 8, 8, 8)
+        layout.setSpacing(5)
         
-        # Widget de pestañas
+        # Widget de pestañas con mejor organización
         self.tab_widget = QTabWidget()
         self.configurar_tabs()
         
-        # Crear pestañas
+        # Crear pestañas con orden optimizado
         self.crear_pestana_tabla()
         self.crear_pestana_estadisticas()
         self.crear_pestana_servicios()
         self.crear_pestana_mapa()
         
         layout.addWidget(self.tab_widget)
+
+    def aplicar_estilo_botones_compactos(self):
+        """Aplica estilo ultra compacto a todos los botones del módulo."""
+        estilo_compacto = """
+            QPushButton {
+                padding: 2px 8px;
+                font-size: 10px;
+                font-weight: normal;
+                min-height: 18px;
+                max-height: 22px;
+                border-radius: 3px;
+            }
+            QPushButton:hover {
+                transform: none;
+            }
+        """
+        
+        # Aplicar a todos los botones RexusButton del widget
+        for button in self.findChildren(QPushButton):
+            if isinstance(button, (RexusButton, QPushButton)):
+                current_style = button.styleSheet()
+                button.setStyleSheet(f"{current_style}\n{estilo_compacto}")
 
     # --- STUBS Y MÉTODOS FALTANTES PARA EVITAR ERRORES ---
     def cargar_entregas_en_tabla(self, entregas=None):
@@ -451,39 +475,48 @@ Para habilitar mapas interactivos:
         self.tab_widget.addTab(tab_mapa, "🗺️ Mapa")
 
     def configurar_tabs(self):
-        """Configura el widget de pestañas y mejora contraste visual."""
+        """Configura el widget de pestañas con diseño moderno y compacto."""
         self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
         self.tab_widget.setTabShape(QTabWidget.TabShape.Rounded)
         self.tab_widget.setUsesScrollButtons(True)
         self.tab_widget.setElideMode(Qt.TextElideMode.ElideRight)
-        # Mejorar contraste de las pestañas
+        
+        # Estilos modernos con mejor jerarquía visual
         self.tab_widget.setStyleSheet('''
+            QTabWidget {
+                border: none;
+                background: transparent;
+            }
             QTabBar::tab {
                 background: #f8fafc;
-                color: #374151;
-                border: 1px solid #e2e8f0;
+                color: #6b7280;
+                border: 1px solid #e5e7eb;
                 border-bottom: none;
-                min-width: 80px;
-                min-height: 18px;
-                padding: 2px 10px;
-                font-size: 10px;
+                min-width: 100px;
+                min-height: 32px;
+                padding: 8px 16px;
+                font-size: 12px;
                 font-weight: 500;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
                 margin-right: 2px;
             }
             QTabBar::tab:selected {
-                background: #fff;
-                color: #1e293b;
-                border-bottom: 2px solid #3b82f6;
+                background: #ffffff;
+                color: #1f2937;
+                border-color: #e5e7eb;
+                border-bottom: 3px solid #3b82f6;
+                font-weight: 600;
             }
-            QTabBar::tab:!selected {
-                background: #f1f5f9;
+            QTabBar::tab:hover:!selected {
+                background: #f3f4f6;
                 color: #374151;
             }
             QTabWidget::pane {
-                border-top: 2px solid #3b82f6;
-                top: -1px;
+                border: 1px solid #e5e7eb;
+                border-top: none;
+                background: #ffffff;
+                border-radius: 0 0 8px 8px;
             }
         ''')
 
@@ -491,8 +524,8 @@ Para habilitar mapas interactivos:
         """Crea la pestaña de tabla principal con layout optimizado."""
         tab_tabla = QWidget()
         layout = QVBoxLayout(tab_tabla)
-    # ...
-    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
 
         # Panel unificado de control y acciones (optimizado)
         panel_unificado = self.crear_panel_unificado_tabla()
@@ -529,18 +562,20 @@ Para habilitar mapas interactivos:
         """Crea la pestaña de estadísticas con layout optimizado y compacto."""
         tab_stats = QWidget()
         layout = QVBoxLayout(tab_stats)
-    # ...
-    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
 
         # Scroll area optimizada para estadísticas
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
         scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
         scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll.setFrameShape(QScrollArea.Shape.NoFrame)
 
         stats_widget = QWidget()
         stats_layout = QVBoxLayout(stats_widget)
-        stats_layout.setSpacing(6)  # Espaciado compacto
+        stats_layout.setSpacing(4)  # Espaciado ultra compacto
+        stats_layout.setContentsMargins(4, 4, 4, 4)  # Márgenes mínimos
 
         # Panel de resumen compacto (métricas principales)
         resumen_panel = self.crear_panel_resumen_optimizado()
@@ -548,6 +583,7 @@ Para habilitar mapas interactivos:
 
         # Splitter horizontal para mejor uso del espacio
         splitter_stats = QSplitter(Qt.Orientation.Horizontal)
+        splitter_stats.setHandleWidth(2)  # Handle más delgado
         
         # Panel izquierdo: Gráficos mejorados
         graficos_panel = self.crear_panel_graficos_mejorado()
@@ -557,10 +593,12 @@ Para habilitar mapas interactivos:
         metricas_panel = self.crear_panel_metricas_compacto()
         splitter_stats.addWidget(metricas_panel)
         
-        # Configurar tamaños del splitter
-        splitter_stats.setSizes([500, 400])
+        # Configurar tamaños del splitter más responsivos
+        splitter_stats.setSizes([60, 40])  # Porcentajes en lugar de píxeles fijos
         splitter_stats.setCollapsible(0, False)
-        splitter_stats.setCollapsible(1, False)
+        splitter_stats.setCollapsible(1, True)  # Permitir colapsar métricas
+        splitter_stats.setStretchFactor(0, 3)
+        splitter_stats.setStretchFactor(1, 2)
         
         stats_layout.addWidget(splitter_stats)
         stats_layout.addStretch()
@@ -574,13 +612,11 @@ Para habilitar mapas interactivos:
         """Crea la pestaña de servicios optimizada y compacta."""
         tab_servicios = QWidget()
         layout = QVBoxLayout(tab_servicios)
-    # ...
-    # (Asegurarse que estas líneas estén dentro de métodos, no sueltas)
+        layout.setContentsMargins(6, 6, 6, 6)
+        layout.setSpacing(4)
 
         # Panel de filtros compacto con altura fija
         filtros_panel = self.crear_panel_filtros_servicios_optimizado()
-    # ...
-    # (Asegurarse que esta línea esté dentro de un método)
         layout.addWidget(filtros_panel)
 
         # Tabla de servicios activos ocupa la mayor parte del espacio
@@ -764,9 +800,11 @@ Para habilitar mapas interactivos:
         btn_buscar.clicked.connect(self.buscar_transportes)
         btn_buscar.setStyleSheet("""
             QPushButton {
-                padding: 6px 8px;
+                padding: 4px 12px;
                 font-size: 11px;
-                min-height: 18px;
+                min-height: 24px;
+                max-height: 28px;
+                font-weight: 500;
             }
         """)
         fila_filtros.addWidget(btn_buscar)
