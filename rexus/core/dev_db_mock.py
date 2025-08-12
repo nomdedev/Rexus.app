@@ -28,31 +28,36 @@ class DevDatabaseMock:
             except (json.JSONDecodeError, FileNotFoundError):
                 pass
         
-        # Crear usuarios por defecto
+        # Crear usuarios por defecto solo si existen variables de entorno
+        admin_pwd = os.environ.get('DEV_ADMIN_PASSWORD')
+        user_pwd = os.environ.get('DEV_USER_PASSWORD')
+        test_pwd = os.environ.get('DEV_TEST_PASSWORD')
+        if not (admin_pwd and user_pwd and test_pwd):
+            print("[SEGURIDAD] Debe definir DEV_ADMIN_PASSWORD, DEV_USER_PASSWORD y DEV_TEST_PASSWORD en el entorno para usuarios de desarrollo. No se crearán usuarios por defecto inseguros.")
+            return {}
         default_users = {
             'admin': {
-                'password': 'admin',  # En producción sería hasheado
+                'password': admin_pwd,
                 'nombre_completo': 'Administrador de Desarrollo',
                 'rol': 'admin',
                 'permisos': ['all'],
                 'activo': True
             },
             'usuario': {
-                'password': 'usuario',
+                'password': user_pwd,
                 'nombre_completo': 'Usuario de Desarrollo',
                 'rol': 'user',
                 'permisos': ['read', 'write'],
                 'activo': True
             },
             'test': {
-                'password': 'test',
+                'password': test_pwd,
                 'nombre_completo': 'Usuario de Pruebas',
                 'rol': 'test',
                 'permisos': ['read'],
                 'activo': True
             }
         }
-        
         self._save_users_db(default_users)
         return default_users
     
@@ -144,9 +149,8 @@ def is_dev_mode() -> bool:
 def setup_dev_authentication():
     """Configura autenticación para desarrollo."""
     if is_dev_mode():
-        print(f"[DEV_DB] Sistema de autenticación local iniciado")
-        print(f"[DEV_DB] Usuarios disponibles: {len(dev_db_mock.users_db)}")
-        
+        print("[DEV_DB] Sistema de autenticación local iniciado")
+        print("[DEV_DB] Usuarios disponibles:", len(dev_db_mock.users_db))
         # Mostrar usuarios disponibles
         for user, data in dev_db_mock.users_db.items():
             if data.get('activo', False):

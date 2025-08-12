@@ -1,12 +1,11 @@
+from pathlib import Path
 """
 Configuración principal de la aplicación Rexus
 Versión: 2.0.0 - Producción Ready con variables de entorno
 """
 
 import os
-import sys
-from pathlib import Path
-from typing import Dict, Any, Optional
+from typing import Any
 import logging
 
 # Intentar cargar python-dotenv si está disponible
@@ -90,8 +89,8 @@ DATABASE_CONFIG = {
     "server": get_env_var("DB_SERVER", "localhost\\SQLEXPRESS"),
     "server_alternate": get_env_var("DB_SERVER_ALTERNATE", "localhost"),
     "port": get_env_var("DB_PORT", 1433, var_type=int),
-    "username": get_env_var("DB_USERNAME", "sa"),
-    "password": get_env_var("DB_PASSWORD", "default_password"),
+    "username": get_env_var("DB_USERNAME"),
+    "password": get_env_var("DB_PASSWORD"),
     "timeout": get_env_var("DB_TIMEOUT", 30, var_type=int),
     "pool_size": get_env_var("DB_CONNECTION_POOL_SIZE", 10, var_type=int),
     "max_overflow": get_env_var("DB_CONNECTION_POOL_MAX_OVERFLOW", 20, var_type=int),

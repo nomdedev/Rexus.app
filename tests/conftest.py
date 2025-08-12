@@ -68,9 +68,19 @@ def mock_db_connection():
 
 
 @pytest.fixture(scope="session")
-def test_database_path():
+def test_database_path(tmp_path_factory):
     """Path a la base de datos de testing."""
-    return "tests/test_database.db"
+    # Crear base de datos temporal para tests
+    temp_db = tmp_path_factory.mktemp("test_db") / "test_database.db"
+    
+    # Crear base de datos básica para tests
+    import sqlite3
+    conn = sqlite3.connect(str(temp_db))
+    conn.execute("CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT)")
+    conn.commit()
+    conn.close()
+    
+    return str(temp_db)
 
 
 @pytest.fixture(scope="function")

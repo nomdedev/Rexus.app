@@ -9,7 +9,7 @@ Password Manager - Sistema seguro de gestión de contraseñas con bcrypt
 import os
 import secrets
 import hashlib
-from typing import Tuple, Optional
+from typing import Tuple, Optional, Dict, Any
 from datetime import datetime, timedelta
 
 

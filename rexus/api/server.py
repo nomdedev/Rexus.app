@@ -787,13 +787,21 @@ class RexusAPI:
             # Verificar credenciales usando el gestor de contraseñas
             import os
             if os.getenv('APP_ENV', 'development') == 'development':
-                # Credenciales de desarrollo con hashes seguros
+                # Credenciales de desarrollo desde variables de entorno
                 password_mgr = get_password_manager()
                 
-                # Crear hashes seguros para desarrollo
+                # Obtener credenciales de desarrollo desde el entorno (NO hardcodeadas)
+                admin_password = os.getenv("API_ADMIN_PASSWORD")
+                api_password = os.getenv("API_USER_PASSWORD") 
+                
+                if not admin_password or not api_password:
+                    log_security_event("MISSING_CREDENTIALS", "HIGH", 
+                                     "Variables de entorno API_ADMIN_PASSWORD y API_USER_PASSWORD no definidas")
+                    return False, False
+                
                 dev_users = {
-                    "admin": password_mgr.hash_password("admin123"),
-                    "api_user": password_mgr.hash_password("api123")
+                    "admin": password_mgr.hash_password(admin_password),
+                    "api_user": password_mgr.hash_password(api_password)
                 }
                 
                 user_exists = username in dev_users

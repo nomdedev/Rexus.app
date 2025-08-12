@@ -366,24 +366,3 @@ def agregar_metodo_configuracion_personal(usuarios_model):
 two_factor_auth = TwoFactorAuth()
 
 
-if __name__ == "__main__":
-    # Test básico del sistema 2FA
-    tfa = TwoFactorAuth()
-
-    # Generar clave secreta
-    secret = tfa.generar_secret_key()
-    print(f"Secret Key: {secret}")
-
-    # Generar código actual
-    codigo = tfa.generar_codigo_totp(secret)
-    print(f"Código actual: {codigo}")
-
-    # Validar código
-    valido = tfa.validar_codigo_totp(secret, codigo)
-    print(f"Código válido: {valido}")
-
-    # Generar QR code
-    qr_bytes = tfa.generar_qr_code("admin", secret)
-    with open("test_qr.png", "wb") as f:
-        f.write(qr_bytes)
-    print("QR code guardado como test_qr.png")

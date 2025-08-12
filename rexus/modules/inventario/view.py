@@ -426,32 +426,32 @@ class InventarioView(BaseModuleView):
     def apply_theme(self):
         """Aplica estilos minimalistas y modernos a toda la interfaz."""
         self.setStyleSheet("""
-            /* Estilo general del widget */
+            /* Estilo general ultra compacto */
             QWidget {
-                background-color: #fafbfc;
+                background-color: #ffffff;
                 font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 12px;
+                font-size: 11px;
             }
             
-            /* Pestañas minimalistas */
+            /* Pestañas ultra minimalistas */
             QTabWidget::pane {
-                border: 1px solid #e1e4e8;
-                border-radius: 6px;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
                 background-color: white;
-                margin-top: 2px;
+                margin-top: 1px;
             }
             
             QTabBar::tab {
-                background-color: #f6f8fa;
-                border: 1px solid #e1e4e8;
+                background-color: #f8fafc;
+                border: 1px solid #e5e7eb;
                 border-bottom: none;
-                padding: 8px 16px;
+                padding: 4px 12px;
                 margin-right: 2px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-                font-size: 11px;
-                color: #586069;
-                min-width: 80px;
+                border-top-left-radius: 4px;
+                border-top-right-radius: 4px;
+                font-size: 10px;
+                color: #6b7280;
+                min-width: 70px;
             }
             
             QTabBar::tab:selected {
@@ -466,31 +466,33 @@ class InventarioView(BaseModuleView):
                 color: #24292e;
             }
             
-            /* Tablas compactas */
+            /* Tablas ultra compactas */
             QTableWidget {
-                gridline-color: #e1e4e8;
-                selection-background-color: #f1f8ff;
-                selection-color: #24292e;
-                alternate-background-color: #f6f8fa;
-                font-size: 11px;
-                border: 1px solid #e1e4e8;
-                border-radius: 4px;
+                gridline-color: #e5e7eb;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                alternate-background-color: transparent;
+                font-size: 10px;
+                border: 1px solid #e5e7eb;
+                border-radius: 3px;
+                background: transparent;
             }
             
             QTableWidget::item {
-                padding: 4px 8px;
+                padding: 2px 6px;
                 border: none;
+                font-size: 10px;
             }
             
             QHeaderView::section {
-                background-color: #f6f8fa;
-                color: #586069;
-                font-weight: 600;
-                font-size: 10px;
+                background-color: transparent;
+                color: #374151;
+                font-weight: 500;
+                font-size: 9px;
                 border: none;
-                border-right: 1px solid #e1e4e8;
-                border-bottom: 1px solid #e1e4e8;
-                padding: 6px 8px;
+                border-right: 1px solid #e5e7eb;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 4px 6px;
             }
             
             /* GroupBox minimalista */

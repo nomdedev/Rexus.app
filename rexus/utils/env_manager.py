@@ -95,10 +95,10 @@ class EnvironmentManager:
     def get_demo_credentials(self) -> Dict[str, str]:
         """Obtiene credenciales de modo demo."""
         return {
-            'admin': self.get_secure_credential('DEMO_ADMIN_PASSWORD', 'demo_admin_2025'),
-            'supervisor': self.get_secure_credential('DEMO_SUPERVISOR_PASSWORD', 'demo_supervisor_2025'),
-            'operador': self.get_secure_credential('DEMO_OPERADOR_PASSWORD', 'demo_operador_2025'),
-            'contador': self.get_secure_credential('DEMO_CONTADOR_PASSWORD', 'demo_contador_2025')
+            'admin': self.get_secure_credential('DEMO_ADMIN_PASSWORD', None),
+            'supervisor': self.get_secure_credential('DEMO_SUPERVISOR_PASSWORD', None),
+            'operador': self.get_secure_credential('DEMO_OPERADOR_PASSWORD', None),
+            'contador': self.get_secure_credential('DEMO_CONTADOR_PASSWORD', None)
         }
     
     def get_database_credentials(self) -> Dict[str, str]:

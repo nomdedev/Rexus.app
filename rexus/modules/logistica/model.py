@@ -899,11 +899,13 @@ class LogisticaModel:
             stats = {}
             
             # Total de transportes
-            cursor.execute("SELECT COUNT(*) FROM transportes")
+            sql_count_total = self.sql_manager.get_query('logistica', 'count_transportes_total')
+            cursor.execute(sql_count_total)
             stats['total_transportes'] = cursor.fetchone()[0]
             
             # Transportes en tránsito
-            cursor.execute("SELECT COUNT(*) FROM transportes WHERE estado = 'En tránsito'")
+            sql_count_transito = self.sql_manager.get_query('logistica', 'count_transportes_en_transito')
+            cursor.execute(sql_count_transito)
             stats['en_transito'] = cursor.fetchone()[0]
             
             # Entregados hoy
@@ -915,7 +917,8 @@ class LogisticaModel:
             stats['entregados_hoy'] = cursor.fetchone()[0]
             
             # Pendientes
-            cursor.execute("SELECT COUNT(*) FROM transportes WHERE estado = 'Pendiente'")
+            sql_count_pendientes = self.sql_manager.get_query('logistica', 'count_transportes_pendientes')
+            cursor.execute(sql_count_pendientes)
             stats['pendientes'] = cursor.fetchone()[0]
             
             # Costo total del mes actual

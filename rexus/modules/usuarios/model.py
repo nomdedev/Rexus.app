@@ -21,7 +21,6 @@ from rexus.utils.sql_query_manager import SQLQueryManager
 
 # Sistema de cache inteligente para optimizar consultas frecuentes
 from rexus.utils.intelligent_cache import cached_query, invalidate_cache
-from rexus.core.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
@@ -67,13 +66,6 @@ except ImportError:
 
 
 class UsuariosModel:
-    def __init__(self, *args, **kwargs):
-        # ...existing code...
-        self.sessions_manager = kwargs.get('sessions_manager', None)
-        self.permissions_manager = kwargs.get('permissions_manager', None)
-        self.profiles_manager = kwargs.get('profiles_manager', None)
-        self.auth_manager = kwargs.get('auth_manager', None)
-        # ...existing code...
     """Modelo para gestión completa de usuarios y autenticación."""
 
     # Configuración de seguridad avanzada
@@ -213,7 +205,7 @@ class UsuariosModel:
             # Validar tabla
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
-            cursor = self.db_connection.cursor()
+            cursor = self.db_connection.connection.cursor()
 
 
             # Usar SQL externo para verificar username duplicado
@@ -258,7 +250,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.cursor()
+            cursor = self.db_connection.connection.cursor()
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
             if exitoso:
@@ -295,7 +287,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.cursor()
+            cursor = self.db_connection.connection.cursor()
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
             # Verificar intentos fallidos y tiempo transcurrido
@@ -341,7 +333,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.cursor()
+            cursor = self.db_connection.connection.cursor()
             tabla_validada = self._validate_table_name(self.tabla_usuarios)
 
             query = self.sql_manager.get_query('usuarios', 'resetear_intentos_fallidos')
@@ -641,12 +633,10 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             if excluir_usuario_id:
-                sql_select = (
-                    "SELECT COUNT(*) FROM usuarios WHERE usuario = ? AND id != ?"
-                )
+                sql_select = self.sql_manager.get_query('usuarios', 'count_username_duplicate_exclude')
                 cursor.execute(sql_select, (username_limpio, excluir_usuario_id))
             else:
-                sql_select = "SELECT COUNT(*) FROM usuarios WHERE usuario = ?"
+                sql_select = self.sql_manager.get_query('usuarios', 'count_username_duplicate')
                 cursor.execute(sql_select, (username_limpio,))
 
             count = cursor.fetchone()[0]
@@ -687,10 +677,10 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             if excluir_usuario_id:
-                sql_select = "SELECT COUNT(*) FROM usuarios WHERE email = ? AND id != ?"
+                sql_select = self.sql_manager.get_query('usuarios', 'count_email_duplicate_exclude')
                 cursor.execute(sql_select, (email_limpio, excluir_usuario_id))
             else:
-                sql_select = "SELECT COUNT(*) FROM usuarios WHERE email = ?"
+                sql_select = self.sql_manager.get_query('usuarios', 'count_email_duplicate')
                 cursor.execute(sql_select, (email_limpio,))
 
             count = cursor.fetchone()[0]
@@ -806,7 +796,7 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Obtener intentos actuales
-            sql_select = "SELECT intentos_fallidos FROM usuarios WHERE usuario = ?"
+            sql_select = self.sql_manager.get_query('usuarios', 'obtener_intentos_fallidos')
             cursor.execute(sql_select, (username_limpio,))
             row = cursor.fetchone()
 
@@ -842,9 +832,7 @@ class UsuariosModel:
                 return True, intentos_nuevos, TIEMPO_BLOQUEO_MINUTOS
             else:
                 # Solo incrementar contador
-                sql_update = (
-                    "UPDATE usuarios SET intentos_fallidos = ? WHERE usuario = ?"
-                )
+                sql_update = self.sql_manager.get_query('usuarios', 'actualizar_intentos_fallidos')
                 cursor.execute(sql_update, (intentos_nuevos, username_limpio))
                 self.db_connection.connection.commit()
 
@@ -1113,19 +1101,15 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar que el usuario no exista
-            cursor.execute(
-                "SELECT COUNT(*) FROM usuarios WHERE usuario = ?",
-                (datos_limpios["usuario"],),
-            )
+            sql_count_usuario = self.sql_manager.get_query('usuarios', 'count_usuario_by_name')
+            cursor.execute(sql_count_usuario, (datos_limpios["usuario"],))
             if cursor.fetchone()[0] > 0:
                 return False, f"El usuario '{datos_limpios['usuario']}' ya existe"
 
             # Verificar que el email no exista
             if datos_limpios.get("email"):
-                cursor.execute(
-                    "SELECT COUNT(*) FROM usuarios WHERE email = ?",
-                    (datos_limpios["email"],),
-                )
+                sql_count_email = self.sql_manager.get_query('usuarios', 'count_email_duplicate')
+                cursor.execute(sql_count_email, (datos_limpios["email"],))
                 if cursor.fetchone()[0] > 0:
                     return (
                         False,
@@ -1371,10 +1355,8 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar que el usuario exista
-            cursor.execute(
-                "SELECT COUNT(*) FROM usuarios WHERE id = ?",
-                (usuario_id,),
-            )
+            sql_count_id = self.sql_manager.get_query('usuarios', 'count_usuario_by_id')
+            cursor.execute(sql_count_id, (usuario_id,))
             if cursor.fetchone()[0] == 0:
                 return False, "Usuario no encontrado"
 
@@ -1453,7 +1435,8 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar que el usuario exista
-            cursor.execute("SELECT usuario FROM usuarios WHERE id = ?", (usuario_id,))
+            sql_get_usuario = self.sql_manager.get_query('usuarios', 'obtener_usuario_by_id')
+            cursor.execute(sql_get_usuario, (usuario_id,))
             row = cursor.fetchone()
             if not row:
                 return False, "Usuario no encontrado"
@@ -1539,10 +1522,8 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar contraseña actual
-            cursor.execute(
-                "SELECT password_hash FROM usuarios WHERE id = ?",
-                (usuario_id,),
-            )
+            sql_get_password = self.sql_manager.get_query('usuarios', 'obtener_password_hash')
+            cursor.execute(sql_get_password, (usuario_id,))
             row = cursor.fetchone()
             if not row:
                 return False, "Usuario no encontrado"
@@ -1582,7 +1563,8 @@ class UsuariosModel:
             stats = {}
 
             # Total de usuarios
-            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE activo = 1")
+            sql_count_activos = self.sql_manager.get_query('usuarios', 'count_usuarios_activos')
+            cursor.execute(sql_count_activos)
             stats["total_usuarios"] = cursor.fetchone()[0]
 
             # Usuarios por estado
@@ -1702,7 +1684,7 @@ class UsuariosModel:
             if not self.db_connection:
                 return [], 0
 
-            cursor = self.db_connection.cursor()
+            cursor = self.db_connection.connection.cursor()
 
             # Query base
             base_query = self._get_base_query()

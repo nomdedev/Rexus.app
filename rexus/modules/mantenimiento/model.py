@@ -27,7 +27,6 @@ from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sa
 from rexus.core.auth_manager import AuthManager
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 

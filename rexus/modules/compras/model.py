@@ -12,7 +12,7 @@ import datetime
 from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
+from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 

@@ -95,8 +95,13 @@ class ComprasView(QWidget):
         try:
             self.xss_protector = FormProtector()
             self._setup_xss_protection()
+            print('[XSS] Protección inicializada correctamente')
+        except ImportError as e:
+            print(f'[XSS] Dependencia no disponible: {e}')
+            self.xss_protector = None
         except Exception as e:
             print(f'[XSS] Error inicializando protección: {e}')
+            self.xss_protector = None
         
         self.init_ui()
 
@@ -1616,6 +1621,10 @@ class DialogNuevaOrden(QDialog):
 
     def _setup_xss_protection(self):
         """Configura la protección XSS para todos los campos del formulario."""
+        if not self.xss_protector:
+            print('[XSS] Protector no disponible, saltando configuración')
+            return
+            
         try:
             # Configurar filtros para campos de texto
             text_fields = []
@@ -1694,7 +1703,7 @@ class DialogNuevaOrden(QDialog):
                     datos[field_name] = safe_text
             
             # Usar protector para validación final
-            if hasattr(self, 'xss_protector'):
+            if hasattr(self, 'xss_protector') and self.xss_protector:
                 datos = self.xss_protector.sanitize_form_data(datos)
             
             return datos

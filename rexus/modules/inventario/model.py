@@ -30,7 +30,6 @@ from PIL import Image
 
 # Importar sistema de paginación
 from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
-from rexus.core.sql_query_manager import SQLQueryManager
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar utilidades de seguridad
@@ -80,7 +79,7 @@ except ImportError as e:
 
 # Importar ConsultasManager (mantener compatibilidad)
 try:
-    from rexus.modules.inventario.submodules.consultas_manager_refactorizado import (
+    from rexus.modules.inventario.submodules.consultas_manager import (
         ConsultasManager,
     )
 
