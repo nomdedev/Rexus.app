@@ -1,0 +1,908 @@
+2025-08-10 12:09:53 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 12:20:44 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:20:44 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:20:44 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:20:44 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 12:25:09 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:09 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:09 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:09 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 12:25:49 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:49 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:49 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:25:49 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 12:27:56 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:27:56 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:27:56 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:27:56 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 13:47:15 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 13:47:24 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 13:47:24 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 13:47:24 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 13:47:24 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:37:02 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 18:45:07 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 18:47:16 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:47:16 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:47:16 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:47:16 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:54:39 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 23:55:33 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 23:55:33 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 23:55:33 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-10 23:55:33 - api_server - [32mINFO[0m - Sistema de logging inicializado
+***-***-****:26:53,229 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,276 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,307 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,309 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_34441b8690a1b872', 'event_type': 'USER_LOGIN', 'resource': 'authentication', 'action': 'login', 'user_id': 1, 'content_hash': 'f154984ce5393b0e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,355 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,355 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_77e546115831c0f8', 'event_type': 'TEST_EVENT', 'resource': 'test_resource', 'action': 'test_action', 'user_id': 1, 'content_hash': '4005b8bb2d741aae...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,405 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,405 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_68650e98697b66ed', 'event_type': 'FIRST_EVENT', 'resource': 'test', 'action': 'create', 'user_id': 1, 'content_hash': '9d9a806726f97215...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,405 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_eee1e550e464e6db', 'event_type': 'SECOND_EVENT', 'resource': 'test', 'action': 'update', 'user_id': 1, 'content_hash': 'd45f16dd84e9dc33...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,478 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,478 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_54ad5776391a7f62', 'event_type': 'SIGNED_EVENT', 'resource': 'sensitive', 'action': 'access', 'user_id': 1, 'content_hash': '2255d5df80a2664c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,574 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,574 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_173e4953f233bdc8', 'event_type': 'VALID_EVENT', 'resource': 'test', 'action': 'validate', 'user_id': 1, 'content_hash': 'bcf5c24733cd11b6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,674 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,674 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c5814526f6cc0b47', 'event_type': 'ORIGINAL_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'bc014f3724c69b72...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,744 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,744 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e3fbafb0b2315b51', 'event_type': 'SIGNED_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '0f71c2b549d0e463...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,788 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fc6e8d515ff3d9ed', 'event_type': 'EVENT_0', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '5c12aff6f7cbf172...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,790 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_76a31992df9ba928', 'event_type': 'EVENT_1', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '7a1a373280fc889d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,791 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f715674cc27abcd9', 'event_type': 'EVENT_2', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '58b2566d17bb884d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,792 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9e525d3b9e745f62', 'event_type': 'EVENT_3', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': 'f0ec7ee1b501baa5...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,793 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_062bb36c0d33b466', 'event_type': 'EVENT_4', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '64ca99711fdee743...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,794 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 5, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 5}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:53,827 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,827 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_906a16d40abd170c', 'event_type': 'EVENT_1', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '30be04d5e681bbe3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,827 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_cbfd6b5168b0431a', 'event_type': 'EVENT_2', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'fd650fa6ef8dac07...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,827 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d73f908d1f766a37', 'event_type': 'EVENT_3', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'e83a0f00a127ca9e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,827 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 4}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:53,888 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,890 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5249b6344a93eaaf', 'event_type': 'EVENT_1', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'fdfb99143961bccd...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,891 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_42124e548dcda764', 'event_type': 'EVENT_2', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '45b3148bc41cd540...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,892 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_eb8260bb1da37600', 'event_type': 'EVENT_3', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '3a5118ee1882405e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,893 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 2, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:53,906 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:53,922 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5064c984a683b587', 'event_type': 'EXPORT_EVENT_0', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': '5bbe2d1f4abf5a68...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,923 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ccef6a54912c6938', 'event_type': 'EXPORT_EVENT_1', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': '9ab9740d6a63b08f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,923 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_db0cf6a4637d60d8', 'event_type': 'EXPORT_EVENT_2', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': 'db26c1292df6f65b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:53,923 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:53,923 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:26:54,035 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,035 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ef4c82c59ff9dfe7', 'event_type': 'CORRUPTED_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '5a83095fe0cb7684...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,035 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 1, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 1}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:54,035 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:26:54,082 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,084 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7c9c0dc47c09d5c8', 'event_type': 'IMPORT_EVENT_0', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': 'e085beab4f3777b6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,086 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b50a9767fdade0b2', 'event_type': 'IMPORT_EVENT_1', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': '3801dd61dfa16dee...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,086 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5cf4aebf3b67c08d', 'event_type': 'IMPORT_EVENT_2', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': '979f***-***-****fe...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,086 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:54,088 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:26:54,138 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,140 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_03dd28c779b777cb', 'event_type': 'EXPORT_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '916687bbc3c03199...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,140 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 1, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 1}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:54,142 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:26:54,221 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,221 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_98696860beb28335', 'event_type': 'FIRST', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'f41dabf1deb8cbe9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,221 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5f82e6d2fa25446f', 'event_type': 'SECOND', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'fa48f27a9245ab0b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,252 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,290 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,292 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3d86306843c91980', 'event_type': 'CONCURRENT_0', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 0, 'content_hash': '1deb69deea546343...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,294 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d8b50720d0b1694c', 'event_type': 'CONCURRENT_1', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 1, 'content_hash': '4094f96ba42fc12b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,295 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_13ccfbf0a8e5435f', 'event_type': 'CONCURRENT_2', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 2, 'content_hash': '7caba8a6bda90c22...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,297 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_6db2d6544cd2b6dd', 'event_type': 'CONCURRENT_3', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 3, 'content_hash': '4e60a167886da0e9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,298 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5ebe5b305c5653c6', 'event_type': 'CONCURRENT_4', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 4, 'content_hash': '442f20a88e7c4a0a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,384 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,440 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,442 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8a8e9b90b48bfb37', 'event_type': 'GLOBAL_EVENT', 'resource': 'global_resource', 'action': 'global_action', 'user_id': 1, 'content_hash': 'ac901cf9e3d9fed3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,489 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,491 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_83843559e9e7ec8d', 'event_type': 'VERIFY_EVENT', 'resource': 'verify_test', 'action': 'verify', 'user_id': 1, 'content_hash': 'b9b33c1ef3697c9c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d19edf85bca41295', 'event_type': 'USER_LOGIN', 'resource': 'auth', 'action': 'login', 'user_id': 1, 'content_hash': '233a4a45a438ef39...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_1d08d2cd7a7c053e', 'event_type': 'RESOURCE_ACCESS', 'resource': 'documents', 'action': 'read', 'user_id': 1, 'content_hash': '9f407c339c27e1ca...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0bcc441a6ebd4e21', 'event_type': 'DATA_MODIFICATION', 'resource': 'documents', 'action': 'update', 'user_id': 1, 'content_hash': '8c481e18bce79b43...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_77853399cc8de3d0', 'event_type': 'PERMISSION_CHANGE', 'resource': 'users', 'action': 'grant', 'user_id': 2, 'content_hash': '32aba5bf37bb389c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,521 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_cd2928ac9a527053', 'event_type': 'USER_LOGOUT', 'resource': 'auth', 'action': 'logout', 'user_id': 1, 'content_hash': 'a8ff0465fe3eb3d0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7c334c1698ec44ba', 'event_type': 'USER_LOGIN', 'resource': 'auth', 'action': 'login', 'user_id': 1, 'content_hash': '6c6723348a494d0b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5d04083472dfb5e1', 'event_type': 'PRIVILEGE_ESCALATION', 'resource': 'system', 'action': 'escalate', 'user_id': 1, 'content_hash': 'c8f0abaca4318dcb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_21832774b027a497', 'event_type': 'SENSITIVE_ACCESS', 'resource': 'secrets', 'action': 'read', 'user_id': 1, 'content_hash': 'f686ead2c6507fb2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7548eaa95090c77b', 'event_type': 'DATA_EXFILTRATION', 'resource': 'data', 'action': 'export', 'user_id': 1, 'content_hash': '620d84f0c33cb6ee...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_47b18793559de8dd', 'event_type': 'LOG_TAMPERING', 'resource': 'audit', 'action': 'delete', 'user_id': 1, 'content_hash': 'f53498e6c8aa18e9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,555 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 5, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 5}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:54,695 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:26:54,697 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_30ee7aa5d447a838', 'event_type': 'PERFORMANCE_EVENT_0', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '5754e1b8df2ab8d1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,698 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7c5e1c8d8c916315', 'event_type': 'PERFORMANCE_EVENT_1', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '1fdf146ce610ddb0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,699 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3545fa35044917bf', 'event_type': 'PERFORMANCE_EVENT_2', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'e868a42102e641b6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,700 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c1be6fd9a0ad292e', 'event_type': 'PERFORMANCE_EVENT_3', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '6df37c618d53f2f4...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,701 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4f3a0924c46af5f1', 'event_type': 'PERFORMANCE_EVENT_4', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '2b05c3f80c652dbd...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,703 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f48b55081c953ef5', 'event_type': 'PERFORMANCE_EVENT_5', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '28e583f5affc9c1d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,704 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_84984b4279bef742', 'event_type': 'PERFORMANCE_EVENT_6', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '95fa41acc6709e00...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,705 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ae4a0221089ab10b', 'event_type': 'PERFORMANCE_EVENT_7', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '10f28476b6d3a426...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,706 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_114ff526104a3cc1', 'event_type': 'PERFORMANCE_EVENT_8', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '6dad9ea5df07c8e6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,707 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b9c9e1ddea649d27', 'event_type': 'PERFORMANCE_EVENT_9', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'fba15d933529063f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,708 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_2fffe3e9f9ff378f', 'event_type': 'PERFORMANCE_EVENT_10', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '5d07ff70174e518a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,709 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4bc***-***-****c', 'event_type': 'PERFORMANCE_EVENT_11', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '6dcce87f21878d95...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,710 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fcd9407bc22d4fbc', 'event_type': 'PERFORMANCE_EVENT_12', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '4bdbe4c8ac974064...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,711 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_de484756fbc4ec46', 'event_type': 'PERFORMANCE_EVENT_13', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '58b7734000f77c33...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,712 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e99b1d74ae1f7daa', 'event_type': 'PERFORMANCE_EVENT_14', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'a0a058fdf08846cb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,713 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f2873e9e13cde69d', 'event_type': 'PERFORMANCE_EVENT_15', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '0f0c274a2ea1a127...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,714 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_37c3247b417ade99', 'event_type': 'PERFORMANCE_EVENT_16', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '729f29befc30ccbe...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,715 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9641279ed4268d1a', 'event_type': 'PERFORMANCE_EVENT_17', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'c12251a049d6a632...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,716 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_eb23ae39f8d1c3d1', 'event_type': 'PERFORMANCE_EVENT_18', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '4e816c19d0b92959...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,717 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a06f47e20af2931a', 'event_type': 'PERFORMANCE_EVENT_19', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '43df92e73cc4d267...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,718 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c954c8f4b4e65fa6', 'event_type': 'PERFORMANCE_EVENT_20', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'c2e72ea23f5dca32...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,719 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_002d0eec7f177598', 'event_type': 'PERFORMANCE_EVENT_21', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '956b32a405d1036f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,720 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0a05cce7ed021058', 'event_type': 'PERFORMANCE_EVENT_22', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '468921f950f4743a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,721 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9c21ac6484a8adde', 'event_type': 'PERFORMANCE_EVENT_23', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'c7ee7de88acbe9ad...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,724 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c3fb8e9538c29ba9', 'event_type': 'PERFORMANCE_EVENT_24', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'cd4a22f718893c60...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,724 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_68155a9be2fb99a3', 'event_type': 'PERFORMANCE_EVENT_25', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '9e2f1b0b07cc3818...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,726 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_06f1223d9f34dd6d', 'event_type': 'PERFORMANCE_EVENT_26', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '169bb0f0cd22b034...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_84a6afcf7e8f7e25', 'event_type': 'PERFORMANCE_EVENT_27', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'ee33b179c90d660c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_624863ef5a2e7c59', 'event_type': 'PERFORMANCE_EVENT_28', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '31c9e937acf7f4fb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f6bde9481c3d6b76', 'event_type': 'PERFORMANCE_EVENT_29', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '2d5fbcf600fd4ae3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_83c432280f3af3a6', 'event_type': 'PERFORMANCE_EVENT_30', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '0c743607d965121d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4d4eef66b74d41c3', 'event_type': 'PERFORMANCE_EVENT_31', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '51b6a69925cd64af...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_95e645b080f04afe', 'event_type': 'PERFORMANCE_EVENT_32', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '8fb99208c06ca241...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_230cabb70a5d6e73', 'event_type': 'PERFORMANCE_EVENT_33', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '53ba671c2bfde100...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ce184178940a6185', 'event_type': 'PERFORMANCE_EVENT_34', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '8fa1fc319d3831a0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_988195f6155ced1c', 'event_type': 'PERFORMANCE_EVENT_35', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '01769d5c709c391a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,727 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_29abbd7567c13d45', 'event_type': 'PERFORMANCE_EVENT_36', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '36d2fde32b48b7bc...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,738 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4a75cf3fa92aa239', 'event_type': 'PERFORMANCE_EVENT_37', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '2718dd0c8718feb0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_aa3c429f54fa6ea5', 'event_type': 'PERFORMANCE_EVENT_38', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '795f5dc8aaf7cfe7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0a15b5025375b3ab', 'event_type': 'PERFORMANCE_EVENT_39', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'd5c727bd1670c985...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c2d5f31e7fd9dcc8', 'event_type': 'PERFORMANCE_EVENT_40', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '293f495334e4e52d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_923b1dd306cd03e1', 'event_type': 'PERFORMANCE_EVENT_41', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'faebc60c16690f91...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_cc36c407c8112a2a', 'event_type': 'PERFORMANCE_EVENT_42', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '62247a801237ad02...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_2d686cf423c1294b', 'event_type': 'PERFORMANCE_EVENT_43', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '525aa583a8f740e9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_eb45cf6f1f8fd12f', 'event_type': 'PERFORMANCE_EVENT_44', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '236ff6ab74d46c15...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_37116ad67fd4d3ae', 'event_type': 'PERFORMANCE_EVENT_45', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'b35a0a8e7cd6deba...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_904993c6eed29176', 'event_type': 'PERFORMANCE_EVENT_46', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'eebb5fd56ac87325...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0e9e3fafbca4ebcd', 'event_type': 'PERFORMANCE_EVENT_47', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '2d45293f6b4285c2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_aab67e83792c39bd', 'event_type': 'PERFORMANCE_EVENT_48', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'd3e007353c4ed8f2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f1a1e33973ca348e', 'event_type': 'PERFORMANCE_EVENT_49', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'dfceb***-***-****f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_bf8b9e76b87d3260', 'event_type': 'PERFORMANCE_EVENT_50', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '276d13eb3cd0456b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,739 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5a2295593ed850ed', 'event_type': 'PERFORMANCE_EVENT_51', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '27b9015f41f34c24...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,754 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4d07a6ff35a990d7', 'event_type': 'PERFORMANCE_EVENT_52', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '9f6e4e0d32ee3edb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,755 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_164f0aa3d851c1d2', 'event_type': 'PERFORMANCE_EVENT_53', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'f2efa113698e7004...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,756 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b98f4005bc592fce', 'event_type': 'PERFORMANCE_EVENT_54', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '6f69bc21b612e454...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,757 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_52a589a97c50d7ba', 'event_type': 'PERFORMANCE_EVENT_55', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '0180489eeb71fa03...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,758 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_54def5eb15530ecd', 'event_type': 'PERFORMANCE_EVENT_56', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '1b9d3874f047b9e6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,759 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d377cf06a8abe821', 'event_type': 'PERFORMANCE_EVENT_57', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'eaccbcabb46a4ad8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,760 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_40fae03412f22543', 'event_type': 'PERFORMANCE_EVENT_58', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '58a01496d031e42b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,761 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5e88f44212a0830d', 'event_type': 'PERFORMANCE_EVENT_59', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '1c10c48a15b0574a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,762 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_302d63ab38579d23', 'event_type': 'PERFORMANCE_EVENT_60', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '52b034f6f200c9e6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,763 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fefc83d9be607fa7', 'event_type': 'PERFORMANCE_EVENT_61', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'bb6b6bb782db03b0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,764 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7e43652d5660258f', 'event_type': 'PERFORMANCE_EVENT_62', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '***-***-****ec34c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,765 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ab64ebfc861bd684', 'event_type': 'PERFORMANCE_EVENT_63', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '8d2648cb294ce40a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,767 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0c4c9efacbff3318', 'event_type': 'PERFORMANCE_EVENT_64', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'f340e11af9fb676d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,768 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f0440ef6e75b1d61', 'event_type': 'PERFORMANCE_EVENT_65', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '97a14d8876f12b9a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,769 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0d40685e0e636aeb', 'event_type': 'PERFORMANCE_EVENT_66', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '1dc4eb3063538bd9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,770 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_dc681ac6de78d93a', 'event_type': 'PERFORMANCE_EVENT_67', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '43a2e3eb46d7f098...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,771 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_09acdada6b447fe9', 'event_type': 'PERFORMANCE_EVENT_68', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'a2477f81662a593e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,772 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7feff3a062b70d2d', 'event_type': 'PERFORMANCE_EVENT_69', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '234a66d1884cc740...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,773 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7902f011924bc0a1', 'event_type': 'PERFORMANCE_EVENT_70', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'c5daa38bc3ac4b63...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,775 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_044502a0c2b5eaa9', 'event_type': 'PERFORMANCE_EVENT_71', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'a772ba038252cd0e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,776 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_183a62c5440fa8ab', 'event_type': 'PERFORMANCE_EVENT_72', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '2d7022a1768e02a9...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,777 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b5ccaafaf07c1649', 'event_type': 'PERFORMANCE_EVENT_73', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '6bba0fb514d985b1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,778 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4af851d2ef9272dd', 'event_type': 'PERFORMANCE_EVENT_74', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '6c764eaf062e5be1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,779 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d6ab9ae5647a8ed7', 'event_type': 'PERFORMANCE_EVENT_75', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '656afba74593fcf1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,780 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b452b83a51b84346', 'event_type': 'PERFORMANCE_EVENT_76', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '3f945a81ad55b127...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,781 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a1697da7ce86448c', 'event_type': 'PERFORMANCE_EVENT_77', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '49e8a1771ee2e87f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,782 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fb46cb659de9bcb3', 'event_type': 'PERFORMANCE_EVENT_78', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '931434c3ee81db02...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,783 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8d65ab12bd374c94', 'event_type': 'PERFORMANCE_EVENT_79', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'b83cdd9b87e42041...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,784 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_80329c4b565b6319', 'event_type': 'PERFORMANCE_EVENT_80', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '045a6f97fef26172...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,785 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_59d28b9d4e2fe280', 'event_type': 'PERFORMANCE_EVENT_81', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'fbf3b6e1cc5d5791...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,786 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9169fd8623e50e4a', 'event_type': 'PERFORMANCE_EVENT_82', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'd4d7f09bd45c3b99...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,787 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_af6ec0369017f56e', 'event_type': 'PERFORMANCE_EVENT_83', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '6fd211a721e8ec1d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,788 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_2397b5f3d3c14948', 'event_type': 'PERFORMANCE_EVENT_84', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'b0fe44a47de1022e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_87c6e7c3aafdb338', 'event_type': 'PERFORMANCE_EVENT_85', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '2ce448888cf814af...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0a6f1d7d4ff91724', 'event_type': 'PERFORMANCE_EVENT_86', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'ee758435667f4f8e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_33ba568533ffd4d3', 'event_type': 'PERFORMANCE_EVENT_87', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '4fe5153e39c6cbcf...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_afb83c2a3c3c8792', 'event_type': 'PERFORMANCE_EVENT_88', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '8bec5988918d849f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_837610ff0a968047', 'event_type': 'PERFORMANCE_EVENT_89', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '711a530fab617e6d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7b3c9a7e0f2ddd55', 'event_type': 'PERFORMANCE_EVENT_90', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '0b44dda09413f678...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3effb7d5825ace52', 'event_type': 'PERFORMANCE_EVENT_91', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'd253861de8130f8a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_35e9fdd7f3629234', 'event_type': 'PERFORMANCE_EVENT_92', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '82cea5628273bb2d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_991c81673f917471', 'event_type': 'PERFORMANCE_EVENT_93', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '04c22c077360cdd0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_1fdac43324fdb439', 'event_type': 'PERFORMANCE_EVENT_94', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '47f530291a32ecac...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ec79a352e95e198c', 'event_type': 'PERFORMANCE_EVENT_95', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '5066a217fd390854...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d577815e0e75b8ec', 'event_type': 'PERFORMANCE_EVENT_96', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '907c7fb395b58f99...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f6227fd00411a5e0', 'event_type': 'PERFORMANCE_EVENT_97', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'ab6d96ca8f5891c8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,789 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_6f94d08a910dab6e', 'event_type': 'PERFORMANCE_EVENT_98', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'f462f53522430f0a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,804 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7458a24c5a4297c0', 'event_type': 'PERFORMANCE_EVENT_99', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '031e16c0a5962ac3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:26:54,804 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 100, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 100}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:26:55,956 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp52ouux5p.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,076 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp9hzji8fy.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,180 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp1wlh_07o.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,191 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'test_role', 'parent_id': 1}] ROLE_CREATED: INFO
+***-***-****:26:56,293 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpdd_g267c.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,305 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'test_action'}] PERMISSION_CREATED: INFO
+***-***-****:26:56,407 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmptoox3aw8.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,417 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:56,576 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpptdhpj1f.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,589 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'test_action'}] PERMISSION_CREATED: INFO
+***-***-****:26:56,610 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:56,725 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmppvn4ivbc.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,748 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:26:56,758 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:56,775 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:56,777 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:56,904 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmph3n0q92k.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:56,909 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,052 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpzvpwuq4v.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,062 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'parent_role', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:26:57,072 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 7, 'name': 'child_role', 'parent_id': 6}] ROLE_CREATED: INFO
+***-***-****:26:57,088 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'inherited_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:26:57,101 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:57,112 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 7, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:57,116 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,213 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpbpxter43.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,223 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:57,236 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 3, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:57,349 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpu8b9j241.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,359 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'resource1', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:26:57,371 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 25, 'resource': 'resource2', 'action': 'write'}] PERMISSION_CREATED: INFO
+***-***-****:26:57,387 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:57,394 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 25, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:57,525 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpx3j96ha_.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,530 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,533 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,534 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,536 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:57,660 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpiesh7wd5.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,680 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:57,689 - rexus - WARNING - warning:289 - SECURITY [{'expired_count': 1}] ROLE_ASSIGNMENTS_EXPIRED: INFO
+***-***-****:26:57,805 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpalee0puo.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:57,817 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'cached_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:26:57,829 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:57,843 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:57,954 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp2nchukc0.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,081 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpb49tlyxm.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,089 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'global_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:26:58,105 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:58,115 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:58,124 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:58,126 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:58,239 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpchu_jduy.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,252 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'decorator_resource', 'action': 'execute'}] PERMISSION_CREATED: INFO
+***-***-****:26:58,261 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:58,271 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:58,276 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:58,276 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:58,388 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpcnqd5dig.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,401 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'ceo', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:26:58,406 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 7, 'name': 'department_manager', 'parent_id': 6}] ROLE_CREATED: INFO
+***-***-****:26:58,422 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 8, 'name': 'employee', 'parent_id': 7}] ROLE_CREATED: INFO
+***-***-****:26:58,581 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmps_p27w3n.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,599 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'temp_admin', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:26:58,612 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'temp_resource', 'action': 'admin'}] PERMISSION_CREATED: INFO
+***-***-****:26:58,623 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:26:58,637 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 6, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:58,642 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:26:58,782 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp9gy9iks9.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:26:58,797 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'audit_test_role', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:26:58,812 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 6, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:26:58,975 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_VALIDATION_ERROR: Invalid base64-encoded string: number of data characters (13) cannot be 1 more than a multiple of 4
+***-***-****:26:58,976 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_VALIDATION_ERROR: Incorrect padding
+***-***-****:26:58,979 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,979 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,979 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,982 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: test_user
+***-***-****:26:58,982 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_REUSED: User: test_user
+***-***-****:26:58,982 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_NOT_ACTIVE: User: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - Tokens CSRF invalidados para usuario: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,982 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,988 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,988 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:58,989 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:26:59,007 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:26:59,008 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:26:59,008 - rexus - INFO - info:285 - CSRF token generado para usuario: user2
+***-***-****:26:59,010 - rexus - INFO - info:285 - CSRF token generado para usuario: global_test_user
+***-***-****:26:59,012 - rexus - INFO - info:285 - CSRF token generado para usuario: global_test_user
+***-***-****:26:59,012 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: global_test_user
+***-***-****:26:59,015 - rexus - INFO - info:285 - CSRF token generado para usuario: integration_user
+***-***-****:26:59,015 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:26:59,015 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:26:59,015 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_REUSED: User: integration_user
+***-***-****:26:59,016 - rexus - INFO - info:285 - CSRF token generado para usuario: integration_user
+***-***-****:26:59,016 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:26:59,017 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:26:59,018 - rexus - INFO - info:285 - CSRF token generado para usuario: user2
+***-***-****:26:59,018 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: user1
+***-***-****:26:59,018 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: user2
+***-***-****:26:59,018 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_INVALID: User: user2, Error: Token no corresponde al usuario
+***-***-****:26:59,018 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_INVALID: User: user1, Error: Token no corresponde al usuario
+***-***-****:26:59,021 - rexus - INFO - info:285 - CSRF token generado para usuario: log_test_user
+***-***-****:26:59,805 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 3
+***-***-****:26:59,805 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 2
+***-***-****:26:59,823 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 1
+***-***-****:27:01,860 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 5
+***-***-****:27:01,931 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 1, 'default_ttl': 3600, 'compress_threshold': 512}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,021 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,022 - rexus - WARNING - warning:289 - SECURITY [{'key': 'test_key', 'resource_type': 'test_resource', 'required_permission': 'read', 'size_bytes': 164, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:02,022 - rexus - WARNING - warning:289 - SECURITY [{'key': 'test_key', 'user_id': 1, 'access_count': 1, 'resource_type': 'test_resource'}] CACHE_HIT: DEBUG
+***-***-****:27:02,099 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,100 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent_key', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:02,173 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,174 - rexus - WARNING - warning:289 - SECURITY [{'key': 'secure_data', 'resource_type': 'sensitive_resource', 'required_permission': 'admin', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:02,174 - rexus - WARNING - warning:289 - SECURITY [{'key': 'secure_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'sensitive_resource'}] CACHE_HIT: DEBUG
+***-***-****:27:02,247 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,247 - rexus - WARNING - warning:289 - SECURITY [{'key': 'restricted_data', 'resource_type': 'classified', 'required_permission': 'top_secret', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:02,248 - rexus - WARNING - warning:289 - SECURITY [{'key': 'restricted_data', 'user_id': 2, 'access_count': 1, 'resource_type': 'classified'}] CACHE_HIT: DEBUG
+***-***-****:27:02,326 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:02,326 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'resource_type': 'temporary', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': 1}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:02,326 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'user_id': 1, 'access_count': 1, 'resource_type': 'temporary'}] CACHE_HIT: DEBUG
+***-***-****:27:03,826 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'user_id': 1}] CACHE_ENTRY_EXPIRED: DEBUG
+***-***-****:27:03,921 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 100}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:03,922 - rexus - WARNING - warning:289 - SECURITY [{'key': 'large_data', 'resource_type': 'bulk_data', 'required_permission': 'read', 'size_bytes': 2680, 'compressed': True, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:03,924 - rexus - WARNING - warning:289 - SECURITY [{'key': 'large_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'bulk_data'}] CACHE_HIT: DEBUG
+***-***-****:27:03,993 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1000}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:03,993 - rexus - WARNING - warning:289 - SECURITY [{'key': 'force_compressed', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': True, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,002 - rexus - WARNING - warning:289 - SECURITY [{'key': 'force_compressed', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,077 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,077 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,078 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'user_id': 1, 'resource_type': 'test'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:27:04,078 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,154 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,155 - rexus - WARNING - warning:289 - SECURITY [{'key': 'protected', 'resource_type': 'secure', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,155 - rexus - WARNING - warning:289 - SECURITY [{'key': 'protected', 'user_id': 1, 'resource_type': 'secure'}] CACHE_DELETE_DENIED: WARNING
+***-***-****:27:04,223 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,227 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:profile', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,227 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:profile', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,227 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:settings', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,227 - rexus - WARNING - warning:289 - SECURITY [{'key': 'post:1:content', 'resource_type': 'post', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,229 - rexus - WARNING - warning:289 - SECURITY [{'pattern': 'user:*', 'user_id': 1, 'invalidated_count': 3}] CACHE_PATTERN_INVALIDATED: INFO
+***-***-****:27:04,229 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:profile', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,229 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:profile', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,229 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:settings', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,229 - rexus - WARNING - warning:289 - SECURITY [{'key': 'post:1:content', 'user_id': 1, 'access_count': 1, 'resource_type': 'post'}] CACHE_HIT: DEBUG
+***-***-****:27:04,305 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,306 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,306 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,306 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item3', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,306 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 2}] CACHE_CLEAR_ALL_DENIED: WARNING
+***-***-****:27:04,306 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'entries_cleared': 3}] CACHE_CLEARED_ALL: WARNING
+***-***-****:27:04,384 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,457 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,457 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,458 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,458 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'user_id': 1, 'access_count': 2, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,458 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent1', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,458 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent2', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,459 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent3', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:04,528 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 0, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,536 - rexus - WARNING - warning:289 - SECURITY [{'key': 'entry1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 780, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,536 - rexus - WARNING - warning:289 - SECURITY [{'evicted_count': 1, 'freed_bytes': 780, 'needed_bytes': 780}] CACHE_ENTRIES_EVICTED: INFO
+***-***-****:27:04,537 - rexus - WARNING - warning:289 - SECURITY [{'key': 'entry2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 780, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,622 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,623 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,623 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,624 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 2, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,624 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 3, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,624 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 4, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,625 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 5, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:27:04,694 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,694 - rexus - WARNING - warning:289 - SECURITY [{'key': 'with_metadata', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,771 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,772 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,772 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:04,773 - rexus - WARNING - warning:289 - SECURITY [{'final_entry_count': 2}] ENCRYPTED_CACHE_SHUTDOWN: INFO
+***-***-****:27:04,847 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,969 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:04,969 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'resource_type': 'global_resource', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,050 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:05,050 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'resource_type': 'global_resource', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,050 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'user_id': 1, 'access_count': 1, 'resource_type': 'global_resource'}] CACHE_HIT: DEBUG
+***-***-****:27:05,125 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:05,125 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,126 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'user_id': 1, 'resource_type': 'test'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:27:05,126 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:05,201 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:05,201 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'resource_type': 'admin_resource', 'required_permission': 'read', 'size_bytes': 164, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,202 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'admin_resource'}] CACHE_HIT: DEBUG
+***-***-****:27:05,203 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 2, 'access_count': 2, 'resource_type': 'admin_resource'}] CACHE_HIT: DEBUG
+***-***-****:27:05,203 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 2, 'resource_type': 'admin_resource'}] CACHE_DELETE_DENIED: WARNING
+***-***-****:27:05,203 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1, 'resource_type': 'admin_resource'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:27:05,203 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:27:05,273 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:05,273 - rexus - WARNING - warning:289 - SECURITY [{'key': 'sensitive', 'resource_type': 'secrets', 'required_permission': 'read', 'size_bytes': 312, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,273 - rexus - WARNING - warning:289 - SECURITY [{'key': 'sensitive', 'user_id': 1, 'access_count': 1, 'resource_type': 'secrets'}] CACHE_HIT: DEBUG
+***-***-****:27:05,347 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:27:05,347 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:0:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 0, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,347 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,347 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 2, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,351 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 3, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,352 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:4:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 4, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:27:05,457 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:data', 'user_id': 3, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:27:05,457 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:data', 'user_id': 1, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:27:05,457 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:4:data', 'user_id': 4, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:27:05,457 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:data', 'user_id': 2, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:27:05,460 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:0:data', 'user_id': 0, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:27:17,344 - rexus.errors - ERROR - handle_exception:24 - Uncaught exception: OSError: [Errno 22] Invalid argument
+Traceback (most recent call last):
+  File "C:\Python310\lib\runpy.py", line 196, in _run_module_as_main
+    return _run_code(code, main_globals, None,
+  File "C:\Python310\lib\runpy.py", line 86, in _run_code
+    exec(code, run_globals)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pytest\__main__.py", line 7, in <module>
+    raise SystemExit(pytest.console_main())
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\config\__init__.py", line 206, in console_main
+    code = main()
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\config\__init__.py", line 178, in main
+    ret: Union[ExitCode, int] = config.hook.pytest_cmdline_main(
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\main.py", line 332, in pytest_cmdline_main
+    return wrap_session(config, _main)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\main.py", line 320, in wrap_session
+    config.hook.pytest_sessionfinish(
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\logging.py", line 872, in pytest_sessionfinish
+    return (yield)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 152, in _multicall
+    teardown.send(result)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\terminal.py", line 877, in pytest_sessionfinish
+    self.config.hook.pytest_terminal_summary(
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\pluggy\_callers.py", line 116, in _multicall
+    next(function_gen)  # first yield
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\terminal.py", line 893, in pytest_terminal_summary
+    self.summary_failures()
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\terminal.py", line 1074, in summary_failures
+    self.summary_failures_combined("failed", "FAILURES")
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\terminal.py", line 1096, in summary_failures_combined
+    self._outrep_summary(rep)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\terminal.py", line 1125, in _outrep_summary
+    self._tw.line(content)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\_io\terminalwriter.py", line 173, in line
+    self.write(s, **markup)
+  File "C:\Users\itachi\AppData\Roaming\Python\Python310\site-packages\_pytest\_io\terminalwriter.py", line 158, in write
+    self._file.write(msg)
+OSError: [Errno 22] Invalid argument
+***-***-****:32:05,530 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,639 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,667 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,667 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a2c58dd12f2142e1', 'event_type': 'USER_LOGIN', 'resource': 'authentication', 'action': 'login', 'user_id': 1, 'content_hash': '1621e34cdad24920...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,766 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,766 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b546ac08ab1fbefc', 'event_type': 'TEST_EVENT', 'resource': 'test_resource', 'action': 'test_action', 'user_id': 1, 'content_hash': '7fd62fa2908d0c93...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,826 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,828 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c377cfd5b3b7431b', 'event_type': 'FIRST_EVENT', 'resource': 'test', 'action': 'create', 'user_id': 1, 'content_hash': '097ecec31a49107d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,829 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_1dcbeb4a00b3d561', 'event_type': 'SECOND_EVENT', 'resource': 'test', 'action': 'update', 'user_id': 1, 'content_hash': '5c22b15dcf57c4e0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,869 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,869 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0a6f4b846345c918', 'event_type': 'SIGNED_EVENT', 'resource': 'sensitive', 'action': 'access', 'user_id': 1, 'content_hash': '206e8e402765ee32...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,913 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,915 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e***-***-****', 'event_type': 'VALID_EVENT', 'resource': 'test', 'action': 'validate', 'user_id': 1, 'content_hash': '2765bacc94b76e17...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:05,983 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:05,985 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_11a79efe7d31cafb', 'event_type': 'ORIGINAL_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'eb7e144398ff7ed2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,050 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,051 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_faf1487d9c57e16a', 'event_type': 'SIGNED_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'bd820690a87fa4f4...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,091 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,093 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9f69774258c8ac1c', 'event_type': 'EVENT_0', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '15c58faa42910401...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,094 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_570b9fcabd89d442', 'event_type': 'EVENT_1', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': 'a5892a7420bd4304...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,095 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8c1c09ba89db0b61', 'event_type': 'EVENT_2', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '2c01da02803b927c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,096 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ffa51b350bc58ec6', 'event_type': 'EVENT_3', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '6c33580f6a29dc4a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,097 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_368b7d533959e20b', 'event_type': 'EVENT_4', 'resource': 'chain_test', 'action': 'sequence', 'user_id': 1, 'content_hash': '***-***-****a75f5b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,097 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 5, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 5}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,117 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,117 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_885b272fe413a1d3', 'event_type': 'EVENT_1', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'a7b2c0a89213ed09...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,117 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a35aa4f7afafb32c', 'event_type': 'EVENT_2', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '121a758009440eda...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,117 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_784fbee3ff257e36', 'event_type': 'EVENT_3', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '08db1eb6940a44b3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,117 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 4}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,184 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,186 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_008bc43d8d811793', 'event_type': 'EVENT_1', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '3db44dde375f68cb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,188 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_708fb8df9b7f8cbf', 'event_type': 'EVENT_2', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '94a2507fe25bfb27...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,188 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e9385b8f50757393', 'event_type': 'EVENT_3', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'b55b0ed97f1b8de1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,190 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 2, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_bf9c9948cabb3404', 'event_type': 'EXPORT_EVENT_0', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': '11463e2ec49d2976...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_66ca2b73106f764e', 'event_type': 'EXPORT_EVENT_1', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': 'a0cd86774a90e399...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9fa7a14cb73f2963', 'event_type': 'EXPORT_EVENT_2', 'resource': 'export_test', 'action': 'test', 'user_id': 1, 'content_hash': 'b325b024a2485380...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,211 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:32:06,242 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,242 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f5ecdb8b860772b0', 'event_type': 'CORRUPTED_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': 'bceee4e271d8f106...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,242 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 1, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 1}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,242 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_21b01a4d0f361f21', 'event_type': 'IMPORT_EVENT_0', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': '130727f800095b6b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_825fc3bbd8b73b0a', 'event_type': 'IMPORT_EVENT_1', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': '8186f1eedab00dfa...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_90fbba557fe67a96', 'event_type': 'IMPORT_EVENT_2', 'resource': 'import_test', 'action': 'test', 'user_id': 1, 'content_hash': '8d91213822e545a3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 3, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 3}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,290 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:32:06,411 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,413 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a2310b39878aa0f6', 'event_type': 'EXPORT_EVENT', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '556e0fe7414853c7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,413 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 1, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 1}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,415 - rexus - WARNING - warning:289 - SECURITY [{'error': 'No se puede exportar cadena con integridad comprometida'}] AUDIT_CHAIN_EXPORT_ERROR: ERROR
+***-***-****:32:06,458 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,460 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_25d15b45b36c3a90', 'event_type': 'FIRST', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '4a35bbbdcbf3bac3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,461 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0c357425dddd4e85', 'event_type': 'SECOND', 'resource': 'test', 'action': 'test', 'user_id': 1, 'content_hash': '7ac9710100e641b8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,539 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,581 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,581 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c7a99fa827fd2214', 'event_type': 'CONCURRENT_0', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 0, 'content_hash': 'a66d2dfc8ed14ad7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,581 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5dfd735080da9013', 'event_type': 'CONCURRENT_1', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 1, 'content_hash': 'cba7c95d24856c91...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,581 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_cd0e4bdbce916db0', 'event_type': 'CONCURRENT_2', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 2, 'content_hash': 'ef9c6cf1f0d6270c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,597 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5352269d91e5b823', 'event_type': 'CONCURRENT_3', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 3, 'content_hash': 'aff41d0161b7138b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,599 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_462359543dda5b82', 'event_type': 'CONCURRENT_4', 'resource': 'concurrent_test', 'action': 'create', 'user_id': 4, 'content_hash': '8baa277d0e9d4008...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,650 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,699 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,699 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e0c7a5ade75115ff', 'event_type': 'GLOBAL_EVENT', 'resource': 'global_resource', 'action': 'global_action', 'user_id': 1, 'content_hash': 'c8c5f4c8eec4cfe1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,753 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,753 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_afb41b038ddf65d6', 'event_type': 'VERIFY_EVENT', 'resource': 'verify_test', 'action': 'verify', 'user_id': 1, 'content_hash': '821eecea3c56c916...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e9dd82794a00aa7e', 'event_type': 'USER_LOGIN', 'resource': 'auth', 'action': 'login', 'user_id': 1, 'content_hash': '20e6001a1a8db720...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5444fefcf7804a43', 'event_type': 'RESOURCE_ACCESS', 'resource': 'documents', 'action': 'read', 'user_id': 1, 'content_hash': 'b1fd6d9e53c6330c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_793330c5b751dfc5', 'event_type': 'DATA_MODIFICATION', 'resource': 'documents', 'action': 'update', 'user_id': 1, 'content_hash': 'd4e2476b1d6d4dce...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_832a7c1ef0d04f6e', 'event_type': 'PERMISSION_CHANGE', 'resource': 'users', 'action': 'grant', 'user_id': 2, 'content_hash': '6ca9dfdaa5420b39...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,799 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b378fe5206ae52fc', 'event_type': 'USER_LOGOUT', 'resource': 'auth', 'action': 'logout', 'user_id': 1, 'content_hash': '3a161787efa692e8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,846 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,848 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7d48933d3ccdad11', 'event_type': 'USER_LOGIN', 'resource': 'auth', 'action': 'login', 'user_id': 1, 'content_hash': '58b6a5e47e82fdb1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,850 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_cbdab33dd992a536', 'event_type': 'PRIVILEGE_ESCALATION', 'resource': 'system', 'action': 'escalate', 'user_id': 1, 'content_hash': '318e01fffdc9202d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,852 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_***-***-****d99af5', 'event_type': 'SENSITIVE_ACCESS', 'resource': 'secrets', 'action': 'read', 'user_id': 1, 'content_hash': 'e0535a0b156a4dbb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,853 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_***-***-****cd1ff', 'event_type': 'DATA_EXFILTRATION', 'resource': 'data', 'action': 'export', 'user_id': 1, 'content_hash': 'a26a53daddea914c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,854 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3899be1de5e7e499', 'event_type': 'LOG_TAMPERING', 'resource': 'audit', 'action': 'delete', 'user_id': 1, 'content_hash': '65ac5fa32b24c5c1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,854 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 5, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 5}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:06,996 - rexus - WARNING - warning:289 - SECURITY [{'signature_enabled': True, 'hash_algorithm': 'SHA256'}] AUDIT_INTEGRITY_MANAGER_INITIALIZED: INFO
+***-***-****:32:06,997 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_48edb2834f2acaae', 'event_type': 'PERFORMANCE_EVENT_0', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'f3c2a4bf366d4022...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:06,999 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_75e79ac443ea551a', 'event_type': 'PERFORMANCE_EVENT_1', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '357339cc8f70ce1e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,000 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7c7da0687b6f3a9c', 'event_type': 'PERFORMANCE_EVENT_2', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '4bc16ea9057aecd5...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,001 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_676730c507fdbce0', 'event_type': 'PERFORMANCE_EVENT_3', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '5caf1506298cb2d1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,002 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4ca3c110ab3f5a72', 'event_type': 'PERFORMANCE_EVENT_4', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'f25c41566bc9f254...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_794f204db80db428', 'event_type': 'PERFORMANCE_EVENT_5', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '5e9a1ed8c8ff67a8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_18234fa9a8012360', 'event_type': 'PERFORMANCE_EVENT_6', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'c1262649e7e1e292...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fee5dc1b90fef504', 'event_type': 'PERFORMANCE_EVENT_7', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '17e68c7fcbc6d0ca...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0d48d811f4b027d6', 'event_type': 'PERFORMANCE_EVENT_8', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '5967f722b4f006f4...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8f1f2dec97ff229e', 'event_type': 'PERFORMANCE_EVENT_9', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '8d11ec01c7325d95...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7d7f5fc7a696a91e', 'event_type': 'PERFORMANCE_EVENT_10', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'cc34c4b5aa325a7a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c5db95b4466c722f', 'event_type': 'PERFORMANCE_EVENT_11', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '4291944da1c8fd9f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_bcab3ee3a088aa9f', 'event_type': 'PERFORMANCE_EVENT_12', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '11d4ec687ba0b9c8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5f65ea20f4aaba92', 'event_type': 'PERFORMANCE_EVENT_13', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '3a38c462ea4d7a6e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e37555e19f93fbda', 'event_type': 'PERFORMANCE_EVENT_14', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '90c932e15b9260d2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,003 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_eac73d6f43ea29b4', 'event_type': 'PERFORMANCE_EVENT_15', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '644b2d5b248264c2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,015 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_84dd94e07b828f32', 'event_type': 'PERFORMANCE_EVENT_16', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '1b8cb0b0be41ad40...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b6ae7ec2eed2e72c', 'event_type': 'PERFORMANCE_EVENT_17', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '41ef1f815709fb42...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fccae5cfd117c5e1', 'event_type': 'PERFORMANCE_EVENT_18', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'a23eb4402d97a676...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_1288404e0c0bda7b', 'event_type': 'PERFORMANCE_EVENT_19', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'cde52c85984ecc91...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_675e5f5e24e96304', 'event_type': 'PERFORMANCE_EVENT_20', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '55aa965079149b9d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_5e26e062192ccebf', 'event_type': 'PERFORMANCE_EVENT_21', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '863156858b1352f7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8aa24f2399d76624', 'event_type': 'PERFORMANCE_EVENT_22', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'a2115b107c550243...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_878f3e1a8f8f4a86', 'event_type': 'PERFORMANCE_EVENT_23', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '9f7f1a4ae860a746...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_11318d4654550b4d', 'event_type': 'PERFORMANCE_EVENT_24', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '3ef02bc9f87c8a57...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ef5028b304ffe5b2', 'event_type': 'PERFORMANCE_EVENT_25', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '07d7f95433eed9b6...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_39b9193886f68c03', 'event_type': 'PERFORMANCE_EVENT_26', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'd8d1b0aa1acdd87d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d622fdfd34f8bb6a', 'event_type': 'PERFORMANCE_EVENT_27', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '271f9f56e86c7b84...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_2d9b2fc668630f33', 'event_type': 'PERFORMANCE_EVENT_28', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'b81a80ecb6837149...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_1dd3fdaa760249e8', 'event_type': 'PERFORMANCE_EVENT_29', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'dd2890db0f07a577...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,017 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_af86d83385171b62', 'event_type': 'PERFORMANCE_EVENT_30', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '050b7482f99cc7ea...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,032 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e54f0ee486dee12f', 'event_type': 'PERFORMANCE_EVENT_31', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '7bccb5a099069d80...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,034 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_ead6b5d0d7edd604', 'event_type': 'PERFORMANCE_EVENT_32', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '345a94c0f83f01b1...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,035 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e165357b9bdb47f7', 'event_type': 'PERFORMANCE_EVENT_33', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '787d58cc4eb8b081...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,036 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4a8e5d5c10752a3e', 'event_type': 'PERFORMANCE_EVENT_34', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '0f38579d573588a0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,037 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4c8ff70b738238e8', 'event_type': 'PERFORMANCE_EVENT_35', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '3f89e5b2e29b3106...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,038 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4c02c3f2b55cc5fe', 'event_type': 'PERFORMANCE_EVENT_36', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '0b5de8b9eb774761...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,039 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_62dc8db5ddd53e67', 'event_type': 'PERFORMANCE_EVENT_37', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '521b82f090670cc2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,040 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f3f8ba35b4545474', 'event_type': 'PERFORMANCE_EVENT_38', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '33f***-***-****...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,041 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4e0997c44c3b40d8', 'event_type': 'PERFORMANCE_EVENT_39', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'e8be67f9cbadb867...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,042 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_dfa35d727923862d', 'event_type': 'PERFORMANCE_EVENT_40', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '3b0567499e93e196...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,043 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d9480e2b2f8227b5', 'event_type': 'PERFORMANCE_EVENT_41', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '4e9a92f0d6671ca7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,043 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_49fe5e6498d81bd6', 'event_type': 'PERFORMANCE_EVENT_42', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '9186e4ab3a49588d...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,044 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8d4b3ef62bce8212', 'event_type': 'PERFORMANCE_EVENT_43', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '9c6bd***-***-****...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,045 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_40ad1e9dc035b365', 'event_type': 'PERFORMANCE_EVENT_44', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '058de0b883d9f4e8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,046 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fb63f***-***-****d', 'event_type': 'PERFORMANCE_EVENT_45', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '3c10eed4dacb50a5...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,048 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_585997c2dbe09678', 'event_type': 'PERFORMANCE_EVENT_46', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '5ea286758e9e924e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,049 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d3e78fc550a88ad5', 'event_type': 'PERFORMANCE_EVENT_47', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'efd04e05d304fc76...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,050 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f4a30f5d98764d50', 'event_type': 'PERFORMANCE_EVENT_48', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '59b0bfcdb4ade1ea...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,051 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_65f61ee1d7123f73', 'event_type': 'PERFORMANCE_EVENT_49', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '1888790a4520c7ec...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,052 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_50f702402c22eba1', 'event_type': 'PERFORMANCE_EVENT_50', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'd28b42dcb14dfbb8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,053 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_7b16b4542e19e533', 'event_type': 'PERFORMANCE_EVENT_51', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '25da1b1e5ed0c8a5...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,054 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_6585e5100d11eb8e', 'event_type': 'PERFORMANCE_EVENT_52', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '867c54672bfb147c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,055 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a06b37a8281f9a16', 'event_type': 'PERFORMANCE_EVENT_53', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '83c6b6cdc6c1d40a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,057 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fd9ba1f10ebf55f6', 'event_type': 'PERFORMANCE_EVENT_54', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '0ab813846b764581...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,058 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c433d263df820f82', 'event_type': 'PERFORMANCE_EVENT_55', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '642d3e61c3228b7b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,059 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_abdf515589d9a1e6', 'event_type': 'PERFORMANCE_EVENT_56', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'f1c05e87dee8c781...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,061 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fc18f7ad091e3980', 'event_type': 'PERFORMANCE_EVENT_57', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '3d0ee7badc07be1f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,062 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_edcf063abd74ecc5', 'event_type': 'PERFORMANCE_EVENT_58', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'cc26c1763df136ed...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,063 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_99b184619d279d96', 'event_type': 'PERFORMANCE_EVENT_59', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'b3ad8e***-***-****...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,064 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_500afb516af6879e', 'event_type': 'PERFORMANCE_EVENT_60', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '935668be9064425b...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,065 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fc27b50ce97e7d73', 'event_type': 'PERFORMANCE_EVENT_61', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '1bfdcdebf1188546...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,067 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_d510f86e2ed4b706', 'event_type': 'PERFORMANCE_EVENT_62', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'ac9a1bd871db0a83...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,067 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_46d748bbdbb3c007', 'event_type': 'PERFORMANCE_EVENT_63', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '32ecc41f96488df0...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,069 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_454bad6a124f9147', 'event_type': 'PERFORMANCE_EVENT_64', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'cb940807fd348345...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,072 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fcbee5e9c6d7df46', 'event_type': 'PERFORMANCE_EVENT_65', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'e79d8ea33a57531c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,072 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3e550703331ef1ca', 'event_type': 'PERFORMANCE_EVENT_66', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '097c5b84cf80876f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,072 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8939648aeef7a404', 'event_type': 'PERFORMANCE_EVENT_67', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'dce476fa1a838f09...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,075 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e96495abcf19a532', 'event_type': 'PERFORMANCE_EVENT_68', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '6ebbeea4200742b8...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,075 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_a1cea807568c5676', 'event_type': 'PERFORMANCE_EVENT_69', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'e89b433d43407495...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,077 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_481e5efb6b54a338', 'event_type': 'PERFORMANCE_EVENT_70', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '82760a89175e006e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,080 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e10435869c0e5edb', 'event_type': 'PERFORMANCE_EVENT_71', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '5f2b929f266d9a35...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,080 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_aeeeb0ebeb70426c', 'event_type': 'PERFORMANCE_EVENT_72', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '08a19682b2459883...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,083 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_fa19740fb1137e7a', 'event_type': 'PERFORMANCE_EVENT_73', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'dba5c856844cbc41...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,083 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_2fead7561787d0c0', 'event_type': 'PERFORMANCE_EVENT_74', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'e8bf0b67b4a2ca9c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,083 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8e8c5a1cd57b31b4', 'event_type': 'PERFORMANCE_EVENT_75', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '5f5b7b840a6a0060...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,083 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_09de55debf5f406b', 'event_type': 'PERFORMANCE_EVENT_76', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': '54639dd6a9eb263c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,083 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_3eb98e4a8b500d43', 'event_type': 'PERFORMANCE_EVENT_77', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'ee6aa40d55478e03...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,089 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_972ac7b1ccdc7f4a', 'event_type': 'PERFORMANCE_EVENT_78', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'f51dfda01a2ed18f...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,090 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b16d704303e2d757', 'event_type': 'PERFORMANCE_EVENT_79', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'a8215b11e0f8547c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,090 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_293808c2a4b1ca02', 'event_type': 'PERFORMANCE_EVENT_80', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'd06fbb8ab9f0a682...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,094 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_0b3156b2f097a848', 'event_type': 'PERFORMANCE_EVENT_81', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'c04b25d6b29b3a1c...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,095 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_57b9573bffd3b335', 'event_type': 'PERFORMANCE_EVENT_82', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '602844b59bebafb4...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,095 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_f799c96bdd12d9b1', 'event_type': 'PERFORMANCE_EVENT_83', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '23eb6b0e887a6b18...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,098 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_c9193ffadd23e2ed', 'event_type': 'PERFORMANCE_EVENT_84', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'ffdec7d346e93eff...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,098 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_201344c082d83cd3', 'event_type': 'PERFORMANCE_EVENT_85', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '4d6f56d76f1330b3...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,098 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_b8ed0ffeb3f926fd', 'event_type': 'PERFORMANCE_EVENT_86', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'e088ae8a48e51260...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,098 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_9963ad74407b851c', 'event_type': 'PERFORMANCE_EVENT_87', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'ce3d4073cc4bbdc2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,098 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_83d383ca65b7dd1b', 'event_type': 'PERFORMANCE_EVENT_88', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'acae99cb56d7b063...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_107d731c12722163', 'event_type': 'PERFORMANCE_EVENT_89', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '0df85c31dd0e554a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4c1e0e42a8e18573', 'event_type': 'PERFORMANCE_EVENT_90', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': '02917cb0b48b5ceb...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_17219f648438a7f8', 'event_type': 'PERFORMANCE_EVENT_91', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'b07e682f6b5ae72a...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_bfd9819912de5545', 'event_type': 'PERFORMANCE_EVENT_92', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': 'bc8706773bfedcee...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e8d18430edb7d69a', 'event_type': 'PERFORMANCE_EVENT_93', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': '11eccfaff2fc7669...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_4c2dd693006f049e', 'event_type': 'PERFORMANCE_EVENT_94', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': '39fc28aa249399f7...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_6d4d2da215b8f66f', 'event_type': 'PERFORMANCE_EVENT_95', 'resource': 'performance_test', 'action': 'test', 'user_id': 1, 'content_hash': 'ad7a684d57bf72a2...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,103 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_e4be5b9e7980a92d', 'event_type': 'PERFORMANCE_EVENT_96', 'resource': 'performance_test', 'action': 'test', 'user_id': 2, 'content_hash': 'ed9a40b1942e0f99...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,113 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_8331f83ed345ba05', 'event_type': 'PERFORMANCE_EVENT_97', 'resource': 'performance_test', 'action': 'test', 'user_id': 3, 'content_hash': '56816cb0e86d61ea...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,113 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_21f9767a23dc3c0d', 'event_type': 'PERFORMANCE_EVENT_98', 'resource': 'performance_test', 'action': 'test', 'user_id': 4, 'content_hash': 'c0f52c83e8ee191e...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,116 - rexus - WARNING - warning:289 - SECURITY [{'record_id': 'audit_***-***-****_31c85ffb30176f1b', 'event_type': 'PERFORMANCE_EVENT_99', 'resource': 'performance_test', 'action': 'test', 'user_id': 5, 'content_hash': 'e7ab772bdf9f9fd5...'}] AUDIT_RECORD_CREATED: DEBUG
+***-***-****:32:07,120 - rexus - WARNING - warning:289 - SECURITY [{'total_records': 100, 'valid_records': 0, 'chain_integrity': False, 'issues_found': 100}] AUDIT_CHAIN_VERIFICATION_COMPLETED: INFO
+***-***-****:32:07,728 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp47t9d9p6.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:07,866 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp439d7uu7.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:07,968 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp1bsqddbk.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:07,979 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'test_role', 'parent_id': 1}] ROLE_CREATED: INFO
+***-***-****:32:08,089 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp2g59nn5t.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,100 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'test_action'}] PERMISSION_CREATED: INFO
+***-***-****:32:08,204 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp427yzxxb.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,221 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:08,314 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpzjhwm1nt.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,323 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'test_action'}] PERMISSION_CREATED: INFO
+***-***-****:32:08,330 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:08,461 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpedi2_plw.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,469 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'test_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:32:08,485 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:08,490 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:08,498 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:08,596 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpeppm92l7.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,599 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:08,687 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpk_ci2ii1.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,704 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'parent_role', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:32:08,706 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 7, 'name': 'child_role', 'parent_id': 6}] ROLE_CREATED: INFO
+***-***-****:32:08,722 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'inherited_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:32:08,733 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:08,743 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 7, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:08,748 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:08,855 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpd1ekvqsi.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,866 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:08,875 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 3, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:08,977 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpexkqotgz.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:08,989 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'resource1', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:32:08,998 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 25, 'resource': 'resource2', 'action': 'write'}] PERMISSION_CREATED: INFO
+***-***-****:32:09,010 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:09,018 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 25, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:09,118 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpw8s8fv8o.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,118 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,132 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,134 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,134 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,283 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpeva3rfpm.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,299 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:09,299 - rexus - WARNING - warning:289 - SECURITY [{'expired_count': 1}] ROLE_ASSIGNMENTS_EXPIRED: INFO
+***-***-****:32:09,406 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpr9_8ocfv.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,416 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'cached_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:32:09,432 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:09,440 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:09,554 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpnbqukios.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,667 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpqq2kae_v.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,669 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'global_resource', 'action': 'read'}] PERMISSION_CREATED: INFO
+***-***-****:32:09,692 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:09,703 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:09,708 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,711 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,819 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpw1x36byx.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,832 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'decorator_resource', 'action': 'execute'}] PERMISSION_CREATED: INFO
+***-***-****:32:09,844 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 2, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:09,855 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 2, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:09,860 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,863 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:09,967 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmprk8vv1c7.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:09,982 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'ceo', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:32:09,994 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 7, 'name': 'department_manager', 'parent_id': 6}] ROLE_CREATED: INFO
+***-***-****:32:10,004 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 8, 'name': 'employee', 'parent_id': 7}] ROLE_CREATED: INFO
+***-***-****:32:10,116 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmpqpl5iiym.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:10,116 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'temp_admin', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:32:10,139 - rexus - WARNING - warning:289 - SECURITY [{'permission_id': 24, 'resource': 'temp_resource', 'action': 'admin'}] PERMISSION_CREATED: INFO
+***-***-****:32:10,149 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'permission_id': 24, 'granted_by': 1}] PERMISSION_ASSIGNED: INFO
+***-***-****:32:10,161 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 6, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:10,164 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'error': "CHECK constraint failed: result IN ('GRANTED', 'DENIED', 'CONDITIONAL')"}] ACCESS_LOG_ERROR: ERROR
+***-***-****:32:10,277 - rexus - WARNING - warning:289 - SECURITY [{'database_path': 'C:\\Users\\itachi\\AppData\\Local\\Temp\\tmp87bpu0le.db'}] RBAC_SYSTEM_INITIALIZED: INFO
+***-***-****:32:10,284 - rexus - WARNING - warning:289 - SECURITY [{'role_id': 6, 'name': 'audit_test_role', 'parent_id': None}] ROLE_CREATED: INFO
+***-***-****:32:10,298 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'role_id': 6, 'granted_by': 1}] ROLE_ASSIGNED: INFO
+***-***-****:32:11,659 - rexus.utils.webengine_manager - WARNING - is_webengine_available:77 - QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+***-***-****:32:12,369 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_VALIDATION_ERROR: Invalid base64-encoded string: number of data characters (13) cannot be 1 more than a multiple of 4
+***-***-****:32:12,369 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_VALIDATION_ERROR: Incorrect padding
+***-***-****:32:12,369 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,369 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,369 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: test_user
+***-***-****:32:12,369 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,369 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: test_user
+***-***-****:32:12,382 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_REUSED: User: test_user
+***-***-****:32:12,384 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_NOT_ACTIVE: User: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - Tokens CSRF invalidados para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: test_user
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:32:12,384 - rexus - INFO - info:285 - CSRF token generado para usuario: user2
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: global_test_user
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: global_test_user
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: global_test_user
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: integration_user
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_REUSED: User: integration_user
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: integration_user
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: integration_user
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: user1
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: user2
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: user1
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [INFO] CSRF_TOKEN_VALID: User: user2
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_INVALID: User: user2, Error: Token no corresponde al usuario
+***-***-****:32:12,400 - rexus - WARNING - warning:289 - SECURITY [HIGH] CSRF_TOKEN_INVALID: User: user1, Error: Token no corresponde al usuario
+***-***-****:32:12,400 - rexus - INFO - info:285 - CSRF token generado para usuario: log_test_user
+***-***-****:32:12,906 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 3
+***-***-****:32:12,907 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 2
+***-***-****:32:12,922 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 1
+***-***-****:32:14,953 - rexus - WARNING - warning:289 - SECURITY [HIGH] IP_BLOCKED: IP: 192.168.xxx.xxx, Attempts: 5
+***-***-****:32:15,039 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 1, 'default_ttl': 3600, 'compress_threshold': 512}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,122 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,122 - rexus - WARNING - warning:289 - SECURITY [{'key': 'test_key', 'resource_type': 'test_resource', 'required_permission': 'read', 'size_bytes': 164, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:15,122 - rexus - WARNING - warning:289 - SECURITY [{'key': 'test_key', 'user_id': 1, 'access_count': 1, 'resource_type': 'test_resource'}] CACHE_HIT: DEBUG
+***-***-****:32:15,199 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,199 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent_key', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:15,287 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,287 - rexus - WARNING - warning:289 - SECURITY [{'key': 'secure_data', 'resource_type': 'sensitive_resource', 'required_permission': 'admin', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:15,287 - rexus - WARNING - warning:289 - SECURITY [{'key': 'secure_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'sensitive_resource'}] CACHE_HIT: DEBUG
+***-***-****:32:15,369 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,369 - rexus - WARNING - warning:289 - SECURITY [{'key': 'restricted_data', 'resource_type': 'classified', 'required_permission': 'top_secret', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:15,369 - rexus - WARNING - warning:289 - SECURITY [{'key': 'restricted_data', 'user_id': 2, 'access_count': 1, 'resource_type': 'classified'}] CACHE_HIT: DEBUG
+***-***-****:32:15,448 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:15,448 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'resource_type': 'temporary', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': 1}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:15,449 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'user_id': 1, 'access_count': 1, 'resource_type': 'temporary'}] CACHE_HIT: DEBUG
+***-***-****:32:16,951 - rexus - WARNING - warning:289 - SECURITY [{'key': 'short_lived', 'user_id': 1}] CACHE_ENTRY_EXPIRED: DEBUG
+***-***-****:32:17,032 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 100}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,034 - rexus - WARNING - warning:289 - SECURITY [{'key': 'large_data', 'resource_type': 'bulk_data', 'required_permission': 'read', 'size_bytes': 2680, 'compressed': True, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,034 - rexus - WARNING - warning:289 - SECURITY [{'key': 'large_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'bulk_data'}] CACHE_HIT: DEBUG
+***-***-****:32:17,109 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1000}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,110 - rexus - WARNING - warning:289 - SECURITY [{'key': 'force_compressed', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': True, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,110 - rexus - WARNING - warning:289 - SECURITY [{'key': 'force_compressed', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,182 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,183 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,183 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'user_id': 1, 'resource_type': 'test'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:32:17,183 - rexus - WARNING - warning:289 - SECURITY [{'key': 'deletable', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,253 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,256 - rexus - WARNING - warning:289 - SECURITY [{'key': 'protected', 'resource_type': 'secure', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,256 - rexus - WARNING - warning:289 - SECURITY [{'key': 'protected', 'user_id': 1, 'resource_type': 'secure'}] CACHE_DELETE_DENIED: WARNING
+***-***-****:32:17,329 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,330 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:profile', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,330 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:profile', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,331 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:settings', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,332 - rexus - WARNING - warning:289 - SECURITY [{'key': 'post:1:content', 'resource_type': 'post', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,332 - rexus - WARNING - warning:289 - SECURITY [{'pattern': 'user:*', 'user_id': 1, 'invalidated_count': 3}] CACHE_PATTERN_INVALIDATED: INFO
+***-***-****:32:17,332 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:profile', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,333 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:profile', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,334 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:settings', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,334 - rexus - WARNING - warning:289 - SECURITY [{'key': 'post:1:content', 'user_id': 1, 'access_count': 1, 'resource_type': 'post'}] CACHE_HIT: DEBUG
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item3', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 2}] CACHE_CLEAR_ALL_DENIED: WARNING
+***-***-****:32:17,400 - rexus - WARNING - warning:289 - SECURITY [{'user_id': 1, 'entries_cleared': 3}] CACHE_CLEARED_ALL: WARNING
+***-***-****:32:17,482 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,555 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,555 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,556 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,556 - rexus - WARNING - warning:289 - SECURITY [{'key': 'existing', 'user_id': 1, 'access_count': 2, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,556 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent1', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,556 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent2', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,557 - rexus - WARNING - warning:289 - SECURITY [{'key': 'nonexistent3', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:17,629 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 0, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,630 - rexus - WARNING - warning:289 - SECURITY [{'key': 'entry1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 780, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,631 - rexus - WARNING - warning:289 - SECURITY [{'evicted_count': 1, 'freed_bytes': 780, 'needed_bytes': 780}] CACHE_ENTRIES_EVICTED: INFO
+***-***-****:32:17,631 - rexus - WARNING - warning:289 - SECURITY [{'key': 'entry2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 780, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,707 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,707 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,708 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 1, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,708 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 2, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,708 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 3, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,709 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 4, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,709 - rexus - WARNING - warning:289 - SECURITY [{'key': 'tracked', 'user_id': 1, 'access_count': 5, 'resource_type': 'test'}] CACHE_HIT: DEBUG
+***-***-****:32:17,796 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,797 - rexus - WARNING - warning:289 - SECURITY [{'key': 'with_metadata', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,873 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:17,873 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item1', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,874 - rexus - WARNING - warning:289 - SECURITY [{'key': 'item2', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 100, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:17,874 - rexus - WARNING - warning:289 - SECURITY [{'final_entry_count': 2}] ENCRYPTED_CACHE_SHUTDOWN: INFO
+***-***-****:32:17,956 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,035 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,035 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'resource_type': 'global_resource', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,099 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,099 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'resource_type': 'global_resource', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,099 - rexus - WARNING - warning:289 - SECURITY [{'key': 'global_key', 'user_id': 1, 'access_count': 1, 'resource_type': 'global_resource'}] CACHE_HIT: DEBUG
+***-***-****:32:18,185 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,185 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'resource_type': 'test', 'required_permission': 'read', 'size_bytes': 120, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,185 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'user_id': 1, 'resource_type': 'test'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:32:18,185 - rexus - WARNING - warning:289 - SECURITY [{'key': 'to_delete', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:18,253 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,253 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'resource_type': 'admin_resource', 'required_permission': 'read', 'size_bytes': 164, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,253 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1, 'access_count': 1, 'resource_type': 'admin_resource'}] CACHE_HIT: DEBUG
+***-***-****:32:18,253 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 2, 'access_count': 2, 'resource_type': 'admin_resource'}] CACHE_HIT: DEBUG
+***-***-****:32:18,258 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 2, 'resource_type': 'admin_resource'}] CACHE_DELETE_DENIED: WARNING
+***-***-****:32:18,258 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1, 'resource_type': 'admin_resource'}] CACHE_ENTRY_DELETED: INFO
+***-***-****:32:18,258 - rexus - WARNING - warning:289 - SECURITY [{'key': 'admin:sensitive_data', 'user_id': 1}] CACHE_MISS: DEBUG
+***-***-****:32:18,342 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,343 - rexus - WARNING - warning:289 - SECURITY [{'key': 'sensitive', 'resource_type': 'secrets', 'required_permission': 'read', 'size_bytes': 312, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,344 - rexus - WARNING - warning:289 - SECURITY [{'key': 'sensitive', 'user_id': 1, 'access_count': 1, 'resource_type': 'secrets'}] CACHE_HIT: DEBUG
+***-***-****:32:18,423 - rexus - WARNING - warning:289 - SECURITY [{'max_size_mb': 100, 'default_ttl': 3600, 'compress_threshold': 1024}] ENCRYPTED_CACHE_INITIALIZED: INFO
+***-***-****:32:18,424 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:0:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 0, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,424 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 1, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,426 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 2, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,426 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 3, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,427 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:4:data', 'resource_type': 'user', 'required_permission': 'read', 'size_bytes': 140, 'compressed': False, 'user_id': 4, 'ttl': None}] CACHE_ENTRY_STORED: DEBUG
+***-***-****:32:18,532 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:3:data', 'user_id': 3, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:32:18,533 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:2:data', 'user_id': 2, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:32:18,535 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:1:data', 'user_id': 1, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:32:18,537 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:0:data', 'user_id': 0, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG
+***-***-****:32:18,538 - rexus - WARNING - warning:289 - SECURITY [{'key': 'user:4:data', 'user_id': 4, 'access_count': 1, 'resource_type': 'user'}] CACHE_HIT: DEBUG

@@ -340,7 +340,8 @@ def agregar_metodo_configuracion_personal(usuarios_model):
 
             try:
                 cursor = self.db_connection.cursor()
-                tabla_validada = self._validate_table_name(self.tabla_usuarios)
+                # Usar tabla hardcodeada segura
+                tabla_validada = "users"  # Tabla fija validada
 
                 query = f"UPDATE [{tabla_validada}] SET configuracion_personal = ? WHERE id = ?"
                 cursor.execute(query, (config_json, usuario_id))

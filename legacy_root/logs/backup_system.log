@@ -1,0 +1,434 @@
+2025-08-10 12:04:14,714 - root - INFO - Programador de backups iniciado
+2025-08-10 12:08:33,277 - root - INFO - Programador de backups iniciado
+2025-08-10 12:09:29,979 - root - INFO - Programador de backups iniciado
+2025-08-10 12:09:33,085 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:09:33,085 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:09:33,089 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:09:33,090 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:09:33,090 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:09:33,090 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:09:33,091 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:09:33,765 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 12:09:35,484 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 12:09:51,917 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 12:09:53,279 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53,284 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53,288 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 12:09:53,290 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 12:25:17,869 - root - INFO - Programador de backups iniciado
+2025-08-10 12:25:22,904 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:25:22,905 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:25:22,905 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:25:22,905 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:25:22,907 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:25:22,907 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:25:22,907 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:25:23,708 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 12:26:58,709 - root - INFO - Programador de backups iniciado
+2025-08-10 12:27:02,809 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:27:02,809 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:27:02,809 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:27:02,809 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:27:02,812 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:27:02,812 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:27:02,813 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:27:03,623 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 12:28:14,744 - root - INFO - Programador de backups iniciado
+2025-08-10 12:28:18,946 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:28:18,947 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:28:18,950 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:28:18,952 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:28:18,953 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:28:18,955 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:28:18,956 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:28:19,741 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 12:31:35,509 - root - INFO - Programador de backups iniciado
+2025-08-10 12:31:38,991 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:31:38,992 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:31:38,992 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:31:38,992 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:31:38,994 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:31:38,994 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:31:38,995 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:31:39,580 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 12:44:34,925 - root - INFO - Programador de backups iniciado
+2025-08-10 12:44:40,634 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 12:44:40,635 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 12:44:40,637 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 12:44:40,638 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 12:44:40,638 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 12:44:40,640 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 12:44:40,642 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 12:44:41,623 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 13:14:23,259 - root - INFO - Programador de backups iniciado
+2025-08-10 13:14:28,124 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 13:14:28,125 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 13:14:28,125 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 13:14:28,125 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 13:14:28,127 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 13:14:28,129 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 13:14:28,129 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 13:14:28,964 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 13:44:17,700 - root - INFO - Programador de backups iniciado
+2025-08-10 13:44:22,698 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 13:44:22,714 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 13:44:22,726 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 13:44:22,726 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 13:44:22,730 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 13:44:22,737 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 13:44:22,741 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 13:44:23,626 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 13:46:46,133 - root - INFO - Programador de backups iniciado
+2025-08-10 13:46:51,710 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 13:46:51,710 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 13:46:51,710 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 13:46:51,710 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 13:46:51,716 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 13:46:51,717 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 13:46:51,717 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 13:46:52,650 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 13:47:13,509 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 13:47:13,885 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 13:47:15,098 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15,098 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15,103 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 13:47:15,103 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 13:47:23,039 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-10 13:47:23,725 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 13:47:24,516 - root - INFO - Tema de módulo aplicado a MantenimientoView (None)
+2025-08-10 13:47:24,520 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 13:47:24,521 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 13:47:24,523 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 13:47:24,525 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 13:59:37,298 - root - INFO - Programador de backups iniciado
+2025-08-10 13:59:42,157 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 13:59:42,157 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 13:59:42,159 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 13:59:42,159 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 13:59:42,160 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 13:59:42,160 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 13:59:42,161 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 13:59:43,076 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 13:59:49,455 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 13:59:49,654 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 14:01:30,935 - root - INFO - Programador de backups iniciado
+2025-08-10 14:01:35,166 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:01:35,167 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:01:35,168 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:01:35,169 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:01:35,170 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:01:35,171 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:01:35,171 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:01:36,078 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:01:41,059 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 14:01:41,353 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 14:04:10,474 - root - INFO - Programador de backups iniciado
+2025-08-10 14:05:18,568 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:05:18,568 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:05:18,569 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:05:18,569 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:05:18,569 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:05:18,569 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:05:18,569 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:05:19,428 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:09:18,098 - root - INFO - Programador de backups iniciado
+2025-08-10 14:09:22,468 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:09:22,469 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:09:22,469 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:09:22,470 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:09:22,471 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:09:22,471 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:09:22,474 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:09:23,312 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:10:08,205 - root - INFO - Programador de backups iniciado
+2025-08-10 14:10:12,804 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:10:12,805 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:10:12,806 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:10:12,808 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:10:12,809 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:10:12,809 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:10:12,812 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:10:13,737 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:12:34,551 - root - INFO - Programador de backups iniciado
+2025-08-10 14:12:38,920 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:12:38,920 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:12:38,923 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:12:38,923 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:12:38,925 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:12:38,926 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:12:38,927 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:12:39,742 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:23:21,100 - root - INFO - Programador de backups iniciado
+2025-08-10 14:23:24,661 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:23:24,663 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:23:24,663 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:23:24,663 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:23:24,665 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:23:24,665 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:23:24,665 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:23:25,492 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:25:09,312 - root - INFO - Programador de backups iniciado
+2025-08-10 14:25:14,970 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:25:14,971 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:25:14,972 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:25:14,973 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:25:14,973 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:25:14,974 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:25:14,975 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:25:15,836 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:25:39,159 - root - INFO - Programador de backups iniciado
+2025-08-10 14:25:48,710 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:25:48,710 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:25:48,721 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:25:48,721 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:25:48,721 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:25:48,723 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:25:48,725 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:25:49,568 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:26:43,876 - root - INFO - Programador de backups iniciado
+2025-08-10 14:26:47,717 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:26:47,718 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:26:47,718 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:26:47,718 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:26:47,718 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:26:47,720 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:26:47,720 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:26:48,475 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:26:59,687 - root - INFO - Programador de backups iniciado
+2025-08-10 14:27:04,396 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:27:04,396 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:27:04,397 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:27:04,397 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:27:04,397 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:27:04,399 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:27:04,399 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:27:04,741 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:27:37,000 - root - INFO - Programador de backups iniciado
+2025-08-10 14:27:41,216 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 14:27:41,217 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 14:27:41,217 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 14:27:41,218 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 14:27:41,218 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 14:27:41,219 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 14:27:41,220 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 14:27:41,938 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 14:27:59,935 - root - INFO - Programador de backups iniciado
+2025-08-10 14:28:21,458 - root - INFO - Programador de backups iniciado
+2025-08-10 14:28:40,607 - root - INFO - Programador de backups iniciado
+2025-08-10 15:27:25,708 - root - INFO - Programador de backups iniciado
+2025-08-10 15:29:25,395 - root - INFO - Programador de backups iniciado
+2025-08-10 18:09:50,510 - root - INFO - Programador de backups iniciado
+2025-08-10 18:10:01,879 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:10:01,909 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:10:01,941 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:10:01,973 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:10:01,975 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:10:02,006 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:10:02,011 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:10:08,044 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:12:46,530 - root - INFO - Programador de backups iniciado
+2025-08-10 18:12:55,653 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:12:55,654 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:12:55,655 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:12:55,655 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:12:55,655 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:12:55,659 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:12:55,659 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:12:56,617 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:13:04,746 - root - INFO - Programador de backups iniciado
+2025-08-10 18:13:13,031 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:13:13,032 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:13:13,032 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:13:13,033 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:13:13,033 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:13:13,033 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:13:13,035 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:13:14,068 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:13:20,717 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 18:13:22,797 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 18:13:23,803 - root - INFO - Programador de backups iniciado
+2025-08-10 18:13:38,271 - root - INFO - Programador de backups iniciado
+2025-08-10 18:13:55,449 - root - INFO - Programador de backups iniciado
+2025-08-10 18:14:22,447 - root - INFO - Programador de backups iniciado
+2025-08-10 18:14:49,504 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:14:49,504 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:14:50,331 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:17:44,230 - root - INFO - Programador de backups iniciado
+2025-08-10 18:17:47,894 - root - INFO - Programador de backups iniciado
+2025-08-10 18:17:54,481 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:17:54,481 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:17:54,492 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:17:54,493 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:17:54,493 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:17:54,493 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:17:54,493 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:17:55,391 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:18:00,417 - root - INFO - Programador de backups iniciado
+2025-08-10 18:18:05,482 - root - INFO - Programador de backups iniciado
+2025-08-10 18:18:09,040 - root - INFO - Programador de backups iniciado
+2025-08-10 18:18:12,825 - root - INFO - Programador de backups iniciado
+2025-08-10 18:25:36,009 - root - INFO - Programador de backups iniciado
+2025-08-10 18:25:41,925 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:25:41,925 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:25:41,928 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:25:41,928 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:25:41,928 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:25:41,930 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:25:41,930 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:25:42,761 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:26:04,080 - root - INFO - Programador de backups iniciado
+2025-08-10 18:26:23,924 - root - INFO - Programador de backups iniciado
+2025-08-10 18:26:38,735 - root - INFO - Programador de backups iniciado
+2025-08-10 18:26:41,046 - root - INFO - Programador de backups iniciado
+2025-08-10 18:29:30,341 - root - INFO - Programador de backups iniciado
+2025-08-10 18:29:39,134 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:29:39,134 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:29:39,135 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:29:39,135 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:29:39,136 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:29:39,137 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:29:39,138 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:29:39,903 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:29:50,127 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 18:30:18,885 - root - INFO - Programador de backups iniciado
+2025-08-10 18:30:25,276 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:30:25,279 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:30:25,279 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:30:25,279 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:30:25,279 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:30:25,281 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:30:25,281 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:30:25,649 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:30:34,058 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 18:32:30,260 - root - INFO - Programador de backups iniciado
+2025-08-10 18:35:40,956 - root - INFO - Programador de backups iniciado
+2025-08-10 18:35:45,677 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:35:45,677 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:35:45,677 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:35:45,677 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:35:45,677 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:35:45,677 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:35:45,684 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:35:46,685 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:35:58,005 - root - INFO - Programador de backups iniciado
+2025-08-10 18:36:56,634 - root - INFO - Programador de backups iniciado
+2025-08-10 18:37:00,397 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:37:00,397 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:37:00,397 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:37:00,397 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:37:00,412 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:37:00,413 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:37:00,413 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:37:01,182 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:37:02,759 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02,763 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02,766 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:37:02,766 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 18:38:24,901 - root - INFO - Programador de backups iniciado
+2025-08-10 18:39:03,071 - root - INFO - Programador de backups iniciado
+2025-08-10 18:39:08,431 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:39:08,431 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:39:08,431 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:39:08,431 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:39:08,431 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:39:08,433 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:39:08,433 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:39:08,865 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:39:14,119 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-10 18:39:16,069 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 18:39:17,384 - root - INFO - Tema de módulo aplicado a MantenimientoView (None)
+2025-08-10 18:39:17,390 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:39:17,390 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:39:17,390 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:39:17,390 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:43:24,544 - root - INFO - Programador de backups iniciado
+2025-08-10 18:43:28,997 - root - INFO - Programador de backups iniciado
+2025-08-10 18:43:32,709 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:43:32,709 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:43:32,709 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:43:32,709 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:43:32,709 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:43:32,709 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:43:32,718 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:43:33,662 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:45:06,321 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 18:45:06,514 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 18:45:07,438 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07,442 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07,447 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:45:07,448 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 18:46:42,786 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-10 18:47:01,140 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 18:47:16,674 - root - INFO - Tema de módulo aplicado a MantenimientoView (None)
+2025-08-10 18:47:16,692 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:47:16,693 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:47:16,695 - rexus.modules.mantenimiento.controller - [32mINFO[0m - Verificación completada: 0 vencidos, 0 próximos
+2025-08-10 18:47:16,696 - rexus.modules.mantenimiento.controller - [31mERROR[0m - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-10 18:48:15,187 - root - INFO - Programador de backups iniciado
+2025-08-10 18:49:08,826 - root - INFO - Programador de backups iniciado
+2025-08-10 18:49:16,409 - root - INFO - Programador de backups iniciado
+2025-08-10 18:50:57,719 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:50:57,719 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:50:58,688 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:51:10,920 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-10 18:51:11,969 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-10 18:51:13,504 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-10 18:52:50,772 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 18:52:50,930 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 18:54:39,017 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39,026 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39,029 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-10 18:54:39,030 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-10 18:54:53,852 - root - INFO - Programador de backups iniciado
+2025-08-10 18:54:57,996 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:54:57,996 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:54:57,996 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:54:57,998 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:54:57,999 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:54:57,999 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:54:57,999 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:54:58,438 - root - INFO - Programador de backups iniciado
+2025-08-10 18:55:01,555 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 18:55:01,556 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 18:55:01,556 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 18:55:01,556 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 18:55:01,556 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 18:55:01,557 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 18:55:01,557 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 18:55:02,400 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 18:55:05,270 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 18:55:05,641 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-10 19:55:56,697 - root - INFO - Programador de backups iniciado
+2025-08-10 19:56:03,563 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-10 19:56:03,575 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-10 19:56:03,575 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-10 19:56:03,575 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-10 19:56:03,575 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-10 19:56:03,575 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-10 19:56:03,579 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-10 19:56:04,464 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-10 19:56:06,050 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-10 19:56:06,494 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-11 10:49:36,898 - root - INFO - Programador de backups iniciado
+2025-08-11 10:49:42,236 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-11 10:49:42,237 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-11 10:49:42,239 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-11 10:49:42,239 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-11 10:49:42,239 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-11 10:49:42,245 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-11 10:49:42,245 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-11 10:49:44,575 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-11 10:49:50,768 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-11 10:49:51,308 - root - INFO - Estilos unificados aplicados a InventarioView
+2025-08-11 10:50:09,407 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-11 10:50:17,898 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
