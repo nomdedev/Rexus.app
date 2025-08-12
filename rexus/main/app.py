@@ -635,7 +635,10 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error cargando módulo {module_name}: {e}")
-            self.mostrar_mensaje(f"Error al cargar {module_name}: {str(e)}", "error")
+            # Crear fallback con error específico
+            fallback_widget = self._create_fallback_module(module_name, str(e))
+            self.content_stack.addWidget(fallback_widget)
+            self.content_stack.setCurrentWidget(fallback_widget)
 
     def _create_module_widget(self, module_name: str) -> QWidget:
         """
@@ -707,7 +710,7 @@ QPushButton:disabled {
         if creation_method:
             return creation_method()
         else:
-            return self._create_fallback_module(module_name)
+            return self._create_fallback_module(module_name, f"Módulo {module_name} no implementado o no encontrado")
 
     def _create_administracion_module(self) -> QWidget:
         """Crea el módulo de administración usando la vista real"""
@@ -718,7 +721,7 @@ QPushButton:disabled {
             return view
         except Exception as e:
             print(f"Error creando administración real: {e}")
-            return self._create_fallback_module("Administración")
+            return self._create_fallback_module("Administración", str(e))
 
     def _create_inventario_module(self) -> QWidget:
         """Crea el módulo de inventario usando el gestor robusto de módulos"""
@@ -747,7 +750,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando inventario: {e}")
-            return self._create_fallback_module("Inventario")
+            return self._create_fallback_module("Inventario", str(e))
 
     def _create_contabilidad_module(self) -> QWidget:
         """Crea el módulo de contabilidad usando el gestor robusto"""
@@ -780,7 +783,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando contabilidad: {e}")
-            return self._create_fallback_module("Contabilidad")
+            return self._create_fallback_module("Contabilidad", str(e))
 
     def _create_obras_module(self) -> QWidget:
         """Crea el módulo de obras usando el gestor robusto"""
@@ -809,7 +812,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando obras: {e}")
-            return self._create_fallback_module("Obras")
+            return self._create_fallback_module("Obras", str(e))
 
     def _create_configuracion_module(self) -> QWidget:
         """Crea el módulo de configuración usando los archivos reales"""
@@ -834,7 +837,7 @@ QPushButton:disabled {
         except Exception as e:
             print(f"Error creando configuración real: {e}")
             # Fallback a widget simple
-            return self._create_fallback_module("Configuración")
+            return self._create_fallback_module("Configuración", str(e))
 
     def actualizar_usuario_label(self, user_data):
         """Actualiza la información del usuario"""
@@ -867,7 +870,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando vidrios: {e}")
-            return self._create_fallback_module("Vidrios")
+            return self._create_fallback_module("Vidrios", str(e))
 
     def _create_herrajes_module(self) -> QWidget:
         """Crea el módulo de herrajes usando el gestor robusto"""
@@ -896,7 +899,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando herrajes: {e}")
-            return self._create_fallback_module("Herrajes")
+            return self._create_fallback_module("Herrajes", str(e))
 
     def _create_pedidos_module(self) -> QWidget:
         """Crea el módulo de pedidos usando el gestor robusto"""
@@ -925,7 +928,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando pedidos: {e}")
-            return self._create_fallback_module("Pedidos")
+            return self._create_fallback_module("Pedidos", str(e))
 
     def _create_logistica_module(self) -> QWidget:
         """Crea el módulo de logística usando el gestor robusto"""
@@ -954,7 +957,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando logística: {e}")
-            return self._create_fallback_module("Logística")
+            return self._create_fallback_module("Logística", str(e))
 
     def _create_usuarios_module(self) -> QWidget:
         """Crea el módulo de usuarios usando el gestor robusto"""
@@ -983,7 +986,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando usuarios: {e}")
-            return self._create_fallback_module("Usuarios")
+            return self._create_fallback_module("Usuarios", str(e))
 
     def _create_auditoria_module(self) -> QWidget:
         """Crea el módulo de auditoría usando el gestor robusto"""
@@ -1012,7 +1015,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando auditoría: {e}")
-            return self._create_fallback_module("Auditoría")
+            return self._create_fallback_module("Auditoría", str(e))
 
     def _create_compras_module(self) -> QWidget:
         """Crea el módulo de compras usando el gestor robusto"""
@@ -1041,7 +1044,7 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando compras: {e}")
-            return self._create_fallback_module("Compras")
+            return self._create_fallback_module("Compras", str(e))
 
     def _create_mantenimiento_module(self) -> QWidget:
         """Crea el módulo de mantenimiento usando el gestor robusto"""
@@ -1070,67 +1073,102 @@ QPushButton:disabled {
 
         except Exception as e:
             print(f"Error crítico creando mantenimiento: {e}")
-            return self._create_fallback_module("Mantenimiento")
+            return self._create_fallback_module("Mantenimiento", str(e))
 
-    def _create_fallback_module(self, module_name: str) -> QWidget:
+    def _create_fallback_module(self, module_name: str, error_details: str = None) -> QWidget:
         """Crea un módulo de fallback cuando el real no está disponible"""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(40, 40, 40, 40)
 
         icon_map = {
-            "Vidrios": "V",
-            "Herrajes": "H",
-            "Pedidos": "P",
-            "Logística": "L",
-            "Usuarios": "U",
-            "Auditoría": "Au",
-            "Compras": "C",
-            "Mantenimiento": "M",
+            "Vidrios": "🪟",
+            "Herrajes": "🔧",
+            "Pedidos": "📝",
+            "Logística": "🚚",
+            "Usuarios": "👤",
+            "Auditoría": "🔍",
+            "Compras": "🛒",
+            "Mantenimiento": "🧰",
+            "Obras": "🏗️",
+            "Inventario": "📦",
+            "Administración": "💼",
+            "Configuración": "⚙️",
         }
 
-        icon = icon_map.get(module_name, "M")
+        icon = icon_map.get(module_name, "⚠️")
 
         # Contenido centrado
         content_layout = QVBoxLayout()
         content_layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
-        # Icono grande
-        icon_label = QLabel(icon)
+        # Icono grande con estado de error
+        icon_label = QLabel("⚠️")
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         icon_label.setStyleSheet("""
             QLabel {
                 font-size: 72px;
                 margin-bottom: 20px;
+                color: #f39c12;
             }
         """)
 
         # Título
-        title_label = QLabel(f"Módulo {module_name}")
+        title_label = QLabel(f"Error cargando {module_name}")
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("""
             QLabel {
                 font-size: 24px;
                 font-weight: bold;
-                color: #2c3e50;
+                color: #e74c3c;
                 margin-bottom: 15px;
             }
         """)
 
-        # Descripción
-        desc_label = QLabel("Módulo disponible y funcionando")
+        # Descripción del error específico
+        if error_details:
+            desc_label = QLabel(f"Error específico: {error_details}")
+        else:
+            desc_label = QLabel("El módulo no pudo iniciarse. Consulta los logs para más detalles.")
+            
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        desc_label.setWordWrap(True)
+        desc_label.setMaximumWidth(600)
         desc_label.setStyleSheet("""
             QLabel {
-                font-size: 16px;
-                color: #7f8c8d;
-                margin-bottom: 30px;
+                font-size: 14px;
+                color: #95a5a6;
+                margin-bottom: 20px;
+                padding: 15px;
+                background-color: #f8f9fa;
+                border: 1px solid #dee2e6;
+                border-radius: 8px;
+                line-height: 1.4;
+            }
+        """)
+
+        # Información adicional
+        help_label = QLabel("Posibles causas:\n• Faltan dependencias del módulo\n• Error en la configuración\n• Problemas de permisos de base de datos")
+        help_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        help_label.setWordWrap(True)
+        help_label.setMaximumWidth(500)
+        help_label.setStyleSheet("""
+            QLabel {
+                font-size: 12px;
+                color: #6c757d;
+                margin-top: 15px;
+                padding: 10px;
+                background-color: #fff3cd;
+                border: 1px solid #ffeaa7;
+                border-radius: 6px;
+                line-height: 1.3;
             }
         """)
 
         content_layout.addWidget(icon_label)
         content_layout.addWidget(title_label)
         content_layout.addWidget(desc_label)
+        content_layout.addWidget(help_label)
 
         layout.addLayout(content_layout)
         layout.addStretch()

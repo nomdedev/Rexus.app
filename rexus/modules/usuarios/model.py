@@ -1133,12 +1133,9 @@ class UsuariosModel:
             password_hash = self._hashear_password(datos_limpios["password"])
 
             # Insertar usuario con datos sanitizados
+            sql_insertar = self.sql_manager.get_query('usuarios', 'insertar_usuario')
             cursor.execute(
-                """
-                INSERT INTO usuarios 
-                (usuario, password_hash, nombre_completo, email, telefono, rol, estado)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """,
+                sql_insertar,
                 (
                     datos_limpios["usuario"],
                     password_hash,
@@ -1151,17 +1148,16 @@ class UsuariosModel:
             )
 
             # Obtener ID del usuario creado
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            sql_ultimo_id = self.sql_manager.get_query('usuarios', 'obtener_ultimo_id')
+            cursor.execute(sql_ultimo_id)
             usuario_id = cursor.fetchone()[0]
 
             # Asignar permisos por defecto
             permisos_defecto = datos_usuario.get("permisos", ["Configuración"])
             for modulo in permisos_defecto:
+                sql_permiso = self.sql_manager.get_query('usuarios', 'insertar_permiso')
                 cursor.execute(
-                    """
-                    INSERT INTO permisos_usuario (usuario_id, modulo, permisos)
-                    VALUES (?, ?, ?)
-                """,
+                    sql_permiso,
                     (usuario_id, modulo, "leer"),
                 )
 
@@ -1411,11 +1407,9 @@ class UsuariosModel:
                 )
 
                 for modulo in datos_usuario["permisos"]:
+                    sql_permiso = self.sql_manager.get_query('usuarios', 'insertar_permiso')
                     cursor.execute(
-                        """
-                        INSERT INTO permisos_usuario (usuario_id, modulo, permisos)
-                        VALUES (?, ?, ?)
-                    """,
+                        sql_permiso,
                         (usuario_id, modulo, "leer,escribir"),
                     )
 

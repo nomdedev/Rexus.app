@@ -29,6 +29,7 @@ class ComprasModel:
         self.db_connection = db_connection
         self.tabla_compras = "compras"
         self.tabla_detalle_compras = "detalle_compras"
+        self.sql_manager = SQLQueryManager()
         self._crear_tablas_si_no_existen()
 
     def _crear_tablas_si_no_existen(self):

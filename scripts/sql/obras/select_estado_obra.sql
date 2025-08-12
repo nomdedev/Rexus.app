@@ -1,0 +1,1 @@
+SELECT estado FROM obras WHERE id = ?
