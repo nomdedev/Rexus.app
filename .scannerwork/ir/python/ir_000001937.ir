@@ -1,0 +1,31 @@
+
+3*"Obtiene estados de herrajes disponibles."str
+
+	0int
+
+"Inactivo"str
+"Activo"strself
+×! ×(%list"˜)
+'
+
+Ù Ù(%"#unknown-value#Blist(
+&
+
+Ù Ù(%"
+#is-exact#:Bbool
+
+
+Ù Ù(%"
+#assume#::
+8
+
+Ù Ù(%
+"#set-field# __collection_size:	Bint(
+&
+
+Ù Ù(%"#array-add-last#:(
+&
+
+Ù Ù(%"#array-add-last#:
+
+Ù Ù(%*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\controller.py

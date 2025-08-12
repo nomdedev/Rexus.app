@@ -1,0 +1,70 @@
+
+Nrexus.modules.inventario.dialogs.reserva_dialog.ReservaDialog.cargar_info_obrag
+[C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\dialogs\reserva_dialog.py– –("3"4*9
+3
+reserva_dialog.py"
+ (
+implicit return*ò
+4
+™ ›(‘
+Ž
+
+™ ™("
+%1"__id*t
+
+__unknown_file (X*V?
+=rexus.modules.inventario.dialogs.reserva_dialog.ReservaDialog"
+obra_nombre_label~|
+
+š š(&
+%2"__mapGet*)
+
+__unknown_file (
+
+	obra_info*&
+
+__unknown_file (
+
+codigo2__getitem__~|
+
+š+ š(>
+%3"__mapGet*)
+
+__unknown_file (
+
+	obra_info*&
+
+__unknown_file (
+
+nombre2__getitem__a
+_
+
+š š(@
+%4"__concat*
+
+š š(&
+
+%2*
+
+š' š(*
+ - *
+
+š+ š(>
+
+%3ec
+
+™ ›(
+%5*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%42setText*
+3:
+
+– –((
+	obra_infoBA?
+=rexus.modules.inventario.dialogs.reserva_dialog.ReservaDialogH

@@ -1,0 +1,362 @@
+
+6rexus.modules.pedidos.view.DialogoPedido.obtener_datosR
+FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\view.pyÕ Õ("2*ó
+2
+Ö Ö(/
+
+× â(	
+%1"dictw
+u
+
+Ø Ø()
+%2"__id*[
+
+__unknown_file (?*=*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_cliente><
+
+Ø Ø(0
+%3*"
+
+__unknown_file (
+
+%22text?=
+
+Ø Ø(8
+%4*"
+
+__unknown_file (
+
+%32strip
+
+
+Ø Ø(8
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+cliente*"
+
+__unknown_file (
+
+%4x
+v
+
+Ù Ù(+
+%6"__id*\
+
+__unknown_file (@*>*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_contacto><
+
+Ù Ù(2
+%7*"
+
+__unknown_file (
+
+%62text?=
+
+Ù Ù(:
+%8*"
+
+__unknown_file (
+
+%72strip‘
+Ž
+
+Ù Ù(:
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+contacto*"
+
+__unknown_file (
+
+%8u
+s
+
+Ú Ú(#
+%10"__id*X
+
+__unknown_file (<*:*
+(rexus.modules.pedidos.view.DialogoPedido"
+
+combo_tipoGE
+
+Ú Ú(1
+%11*#
+
+__unknown_file (
+
+%102currentText
+Œ
+
+Ú Ú(1
+%12"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+tipo*#
+
+__unknown_file (
+
+%11z
+x
+
+Û Û(-
+%13"__id*]
+
+__unknown_file (A*?*
+(rexus.modules.pedidos.view.DialogoPedido"
+combo_prioridadGE
+
+Û Û(;
+%14*#
+
+__unknown_file (
+
+%132currentText”
+‘
+
+Û Û(;
+%15"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	prioridad*#
+
+__unknown_file (
+
+%14~
+|
+
+Ü Ü(5
+%16"__id*a
+
+__unknown_file (E*C*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_fecha_entrega@>
+
+Ü Ü(<
+%17*#
+
+__unknown_file (
+
+%162datepn
+
+Ü Ü(S
+%18*#
+
+__unknown_file (
+
+%17**
+
+__unknown_file (
+
+yyyy-MM-dd2toString˜
+•
+
+Ü Ü(S
+%19"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+fecha_entrega*#
+
+__unknown_file (
+
+%18|
+z
+
+Ý Ý(1
+%20"__id*_
+
+__unknown_file (C*A*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_descripcionGE
+
+Ý Ý(?
+%21*#
+
+__unknown_file (
+
+%202toPlainTextA?
+
+Ý Ý(G
+%22*#
+
+__unknown_file (
+
+%212strip–
+“
+
+Ý Ý(G
+%23"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+descripcion*#
+
+__unknown_file (
+
+%22z
+x
+
+Þ Þ(-
+%24"__id*]
+
+__unknown_file (A*?*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_direccionGE
+
+Þ Þ(;
+%25*#
+
+__unknown_file (
+
+%242toPlainTextA?
+
+Þ Þ(C
+%26*#
+
+__unknown_file (
+
+%252strip”
+‘
+
+Þ Þ(C
+%27"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	direccion*#
+
+__unknown_file (
+
+%26|
+z
+
+ß ß(1
+%28"__id*_
+
+__unknown_file (C*A*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_presupuestoA?
+
+ß ß(9
+%29*#
+
+__unknown_file (
+
+%282value–
+“
+
+ß ß(9
+%30"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+presupuesto*#
+
+__unknown_file (
+
+%29w
+u
+
+à à('
+%31"__id*Z
+
+__unknown_file (>*<*
+(rexus.modules.pedidos.view.DialogoPedido"
+combo_estadoGE
+
+à à(5
+%32*#
+
+__unknown_file (
+
+%312currentText‘
+Ž
+
+à à(5
+%33"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+estado*#
+
+__unknown_file (
+
+%32~
+|
+
+á á(5
+%34"__id*a
+
+__unknown_file (E*C*
+(rexus.modules.pedidos.view.DialogoPedido"
+input_observacionesGE
+
+á á(C
+%35*#
+
+__unknown_file (
+
+%342toPlainTextA?
+
+á á(K
+%36*#
+
+__unknown_file (
+
+%352strip˜
+•
+
+á á(K
+%37"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+observaciones*#
+
+__unknown_file (
+
+%36"
+
+× â(	
+
+%1B,*
+(rexus.modules.pedidos.view.DialogoPedidoH

@@ -1,0 +1,25 @@
+
+3*"Obtiene las rutas de las bases de datos."str
+""rexus/data/auditoria.db"str
+
+"auditoria"str
+#"rexus/data/inventario.db"str
+"rexus/data/users.db"str
+"users"str
+"inventario"strself
+Å! Å(%"¶&
+$
+
+É á(	"#new-object#Bdict"
+ 
+
+Ñ Ñ(*"	#map-set#:"
+ 
+
+Ö Ö(4	"	#map-set#:"
+ 
+
+Ü Ü(2"	#map-set#:
+
+
+É á(	*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\backup_system.py

@@ -1,0 +1,33 @@
+
+trueboolfunc
+Ÿ Ÿ("–#
+!
+
+¶ ¶("#unknown-value##
+!
+
+µ µ(	"#unknown-value##
+!
+
+´ ´("#unknown-value#*
+(
+
+  ´(%closure"#new-object#(
+&
+
+  ´("#set-field# func:-
++
+
+  ´("?python-partial-apply?:2
+0
+
+´ ´("#set-field# _xss_protected:#
+!
+
+µ$ µ(/"#unknown-value#5
+3
+
+µ µ(!
+"#set-field# _protected_fields:	
+
+¶ ¶(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py

@@ -1,0 +1,165 @@
+
+"precio_unitario"str
+"compra_id"str
+
+"subtotal"str
+#"Vidrio Templado 6mm"str
+"categoria"str
+"observaciones"str
+
+"Perfiles"str
+625.00float
+#"Items demo para testing."str
+;15.75float
+="UN"str
+A315.00float
+""Color anodizado natural"str
+/850.00float
+
+"cantidad"str
+50int
+#"Perfil de Aluminio 20x20"str
+
+G0int
+
+23int
+%	"Vidrios"str
+?"Carga pesada"str
+"unidad"str
+
+"descripcion"str
+'-"Transparente, bordes pulidos"str
+'10int
+
+ 2int
+"id"str
++"M2"str
+7
+"Herrajes"str
+
+1int
+)85.00float
+920int
+#5"Bisagra Acero Inoxidable"str
+"MT"str
+12.50floatself
+· ·(	compra_id
+· ·(,Dlist"†&
+$
+
+º Ä("#new-object#Bdict"
+ 
+
+» »("	#map-set#:"
+ 
+
+¼ ¼(&	"	#map-set#:"
+ 
+
+½ ½(9"	#map-set#:
+"
+ 
+
+¾ ¾('"	#map-set#:"
+ 
+
+¿ ¿("	#map-set#:"
+ 
+
+À À(("	#map-set#:"
+ 
+
+Á Á("	#map-set#:"
+ 
+
+Â Â(:"	#map-set#:"
+ 
+
+Ã Ã(""	#map-set#:&
+$
+
+Å Ï("#new-object#Bdict"
+ 
+
+Æ Æ(!"	#map-set#: "
+ 
+
+Ç Ç(&""	#map-set#:"
+ 
+
+È È(4$"	#map-set#:
+#"
+ 
+
+É É(&&"	#map-set#:%"
+ 
+
+Ê Ê(("	#map-set#:'"
+ 
+
+Ë Ë((*"	#map-set#:)"
+ 
+
+Ì Ì(,"	#map-set#:+"
+ 
+
+Í Í(?."	#map-set#:-"
+ 
+
+Î Î("0"	#map-set#:/&
+$
+
+Ð Ú(1"#new-object#Bdict"
+ 
+
+Ñ Ñ(3"	#map-set#:12"
+ 
+
+Ò Ò(&4"	#map-set#:1"
+ 
+
+Ó Ó(96"	#map-set#:1
+5"
+ 
+
+Ô Ô('8"	#map-set#:17"
+ 
+
+Õ Õ(:"	#map-set#:19"
+ 
+
+Ö Ö((<"	#map-set#:1;"
+ 
+
+× ×(>"	#map-set#:1="
+ 
+
+Ø Ø(/@"	#map-set#:1?"
+ 
+
+Ù Ù("B"	#map-set#:1A)
+'
+
+¹ Û(	C"#unknown-value#Blist(
+&
+
+¹ Û(	E"
+#is-exact#:CDBbool
+
+
+¹ Û(	F"
+#assume#:E:
+8
+
+¹ Û(	H"#set-field# __collection_size:CGBint(
+&
+
+¹ Û(	I"#array-add-last#:C(
+&
+
+¹ Û(	J"#array-add-last#:C(
+&
+
+¹ Û(	K"#array-add-last#:C1
+
+¹ Û(	C*OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\detalle_model.py

@@ -1,0 +1,94 @@
+
+8rexus.core.audit_system.AuditSystem.log_sensitive_accessO
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_system.pyµ µ("2*»
+2
+· ·(0y
+w
+
+¹ ¹(7
+%1"__id*]
+
+__unknown_file (A*?$
+"rexus.core.audit_system.AuditEvent"
+SENSITIVE_DATA_ACCESSl
+j
+
+º º(%
+%2"__id*P
+
+__unknown_file (4*2$
+"rexus.core.audit_system.AuditLevel"
+
+SECURITYh
+f
+
+¼ ¼(:
+%3"__concat*-
+
+¼ ¼(0
+Acceso a recurso sensible: *
+
+¼1 ¼(8
+	
+recursoÑÎ
+
+¸ Â(	
+%4*C
+
+__unknown_file ('%
+#rexus.core.audit_system.AuditSystem2	log_event:
+
+event_type
+
+%1:
+level
+
+%2:
+modulo
+
+
+modulo:
+accion
+
+%3:
+	resultado	
+SUCCESS:
+
+usuario_id
+
+
+usuario_id:$
+usuario_nombre
+
+usuario_nombre:
+
+session_id
+
+
+session_id:
+recurso_accedido
+	
+recurso*
+3*7
+3
+audit_system.py"
+Ä Ä(
+implicit return:
+
+µ# µ(2
+
+usuario_id:
+
+µ4 µ(G
+usuario_nombre:
+
+¶ ¶((
+modulo:
+
+¶* ¶(6	
+recurso:
+
+¶8 ¶(N
+
+session_idB'%
+#rexus.core.audit_system.AuditSystemH

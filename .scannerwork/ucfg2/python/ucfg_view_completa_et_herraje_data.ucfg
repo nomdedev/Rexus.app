@@ -1,0 +1,660 @@
+
+Crexus.modules.herrajes.view_completa.HerrajeDialog.get_herraje_data\
+PC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\view_completa.pyπ π("2*ã:
+2
+∫ ∫(.
+
+ª œ(	
+%1"dict
+}
+
+º º(&
+%2"__id*c
+
+__unknown_file (G*E4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+codigo_edit><
+
+º º(-
+%3*"
+
+__unknown_file (
+
+%22text?=
+
+º º(5
+%4*"
+
+__unknown_file (
+
+%32stripè
+å
+
+º º(5
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+codigo*"
+
+__unknown_file (
+
+%4Ö
+Ç
+
+Ω Ω(0
+%6"__id*h
+
+__unknown_file (L*J4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+descripcion_edit><
+
+Ω Ω(7
+%7*"
+
+__unknown_file (
+
+%62text?=
+
+Ω Ω(?
+%8*"
+
+__unknown_file (
+
+%72stripî
+ë
+
+Ω Ω(?
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+descripcion*"
+
+__unknown_file (
+
+%8
+}
+
+æ æ(#
+%10"__id*b
+
+__unknown_file (F*D4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+
+tipo_comboGE
+
+æ æ(1
+%11*#
+
+__unknown_file (
+
+%102currentTextè
+å
+
+æ æ(1
+%12"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+tipo*#
+
+__unknown_file (
+
+%11Ñ
+Å
+
+ø ø(,
+%13"__id*f
+
+__unknown_file (J*H4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+categoria_edit@>
+
+ø ø(3
+%14*#
+
+__unknown_file (
+
+%132textA?
+
+ø ø(;
+%15*#
+
+__unknown_file (
+
+%142stripî
+ë
+
+ø ø(;
+%16"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	categoria*#
+
+__unknown_file (
+
+%15Ö
+Ç
+
+¿ ¿(-
+%17"__id*g
+
+__unknown_file (K*I4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+proveedor_comboGE
+
+¿ ¿(;
+%18*#
+
+__unknown_file (
+
+%172currentTextA?
+
+¿ ¿(C
+%19*#
+
+__unknown_file (
+
+%182stripî
+ë
+
+¿ ¿(C
+%20"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	proveedor*#
+
+__unknown_file (
+
+%19Ä
+~
+
+¡ ¡(/
+%21"__id*c
+
+__unknown_file (G*E4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+precio_spinA?
+
+¡ ¡(7
+%22*#
+
+__unknown_file (
+
+%212valueö
+ó
+
+¡ ¡(7
+%23"__mapSet*"
+
+__unknown_file (
+
+%1*/
+
+__unknown_file (
+precio_unitario*#
+
+__unknown_file (
+
+%22Å
+
+
+¬ ¬(.
+%24"__id*d
+
+__unknown_file (H*F4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+unidad_comboGE
+
+¬ ¬(<
+%25*#
+
+__unknown_file (
+
+%242currentTextò
+ï
+
+¬ ¬(<
+%26"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+unidad_medida*#
+
+__unknown_file (
+
+%25á
+Ñ
+
+√ √(2
+%27"__id*i
+
+__unknown_file (M*K4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+stock_actual_spinA?
+
+√ √(:
+%28*#
+
+__unknown_file (
+
+%272valueó
+î
+
+√ √(:
+%29"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+stock_actual*#
+
+__unknown_file (
+
+%28á
+Ñ
+
+ƒ ƒ(2
+%30"__id*i
+
+__unknown_file (M*K4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+stock_minimo_spinA?
+
+ƒ ƒ(:
+%31*#
+
+__unknown_file (
+
+%302valueó
+î
+
+ƒ ƒ(:
+%32"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+stock_minimo*#
+
+__unknown_file (
+
+%31Ñ
+Å
+
+≈ ≈(,
+%33"__id*f
+
+__unknown_file (J*H4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+ubicacion_edit@>
+
+≈ ≈(3
+%34*#
+
+__unknown_file (
+
+%332textA?
+
+≈ ≈(;
+%35*#
+
+__unknown_file (
+
+%342stripî
+ë
+
+≈ ≈(;
+%36"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	ubicacion*#
+
+__unknown_file (
+
+%35
+}
+
+∆ ∆($
+%37"__id*b
+
+__unknown_file (F*D4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+
+marca_edit@>
+
+∆ ∆(+
+%38*#
+
+__unknown_file (
+
+%372textA?
+
+∆ ∆(3
+%39*#
+
+__unknown_file (
+
+%382stripê
+ç
+
+∆ ∆(3
+%40"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+marca*#
+
+__unknown_file (
+
+%39Ä
+~
+
+« «(&
+%41"__id*c
+
+__unknown_file (G*E4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+modelo_edit@>
+
+« «(-
+%42*#
+
+__unknown_file (
+
+%412textA?
+
+« «(5
+%43*#
+
+__unknown_file (
+
+%422stripë
+é
+
+« «(5
+%44"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+modelo*#
+
+__unknown_file (
+
+%43
+}
+
+» »($
+%45"__id*b
+
+__unknown_file (F*D4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+
+color_edit@>
+
+» »(+
+%46*#
+
+__unknown_file (
+
+%452textA?
+
+» »(3
+%47*#
+
+__unknown_file (
+
+%462stripê
+ç
+
+» »(3
+%48"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+color*#
+
+__unknown_file (
+
+%47É
+Ä
+
+… …(*
+%49"__id*e
+
+__unknown_file (I*G4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+material_edit@>
+
+… …(1
+%50*#
+
+__unknown_file (
+
+%492textA?
+
+… …(9
+%51*#
+
+__unknown_file (
+
+%502stripì
+ê
+
+… …(9
+%52"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+material*#
+
+__unknown_file (
+
+%51Ü
+É
+
+   (0
+%53"__id*h
+
+__unknown_file (L*J4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+dimensiones_edit@>
+
+   (7
+%54*#
+
+__unknown_file (
+
+%532textA?
+
+   (?
+%55*#
+
+__unknown_file (
+
+%542stripñ
+ì
+
+   (?
+%56"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+dimensiones*#
+
+__unknown_file (
+
+%55~
+|
+
+À À("
+%57"__id*a
+
+__unknown_file (E*C4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+	peso_spinA?
+
+À À(*
+%58*#
+
+__unknown_file (
+
+%572valueè
+å
+
+À À(*
+%59"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+peso*#
+
+__unknown_file (
+
+%58à
+Ö
+
+Ã Ã(4
+%60"__id*j
+
+__unknown_file (N*L4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+observaciones_textGE
+
+Ã Ã(B
+%61*#
+
+__unknown_file (
+
+%602toPlainTextò
+ï
+
+Ã Ã(B
+%62"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+observaciones*#
+
+__unknown_file (
+
+%61ã
+à
+
+Õ  Õ(:
+%63"__id*m
+
+__unknown_file (Q*O4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+especificaciones_textGE
+
+Õ  Õ(H
+%64*#
+
+__unknown_file (
+
+%632toPlainTextõ
+ò
+
+Õ Õ(H
+%65"__mapSet*"
+
+__unknown_file (
+
+%1*0
+
+__unknown_file (
+especificaciones*#
+
+__unknown_file (
+
+%64Å
+
+
+Œ Œ('
+%66"__id*d
+
+__unknown_file (H*F4
+2rexus.modules.herrajes.view_completa.HerrajeDialog"
+estado_comboGE
+
+Œ Œ(5
+%67*#
+
+__unknown_file (
+
+%662currentTextë
+é
+
+Œ Œ(5
+%68"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+estado*#
+
+__unknown_file (
+
+%67"
+
+ª œ(	
+
+%1B64
+2rexus.modules.herrajes.view_completa.HerrajeDialogH

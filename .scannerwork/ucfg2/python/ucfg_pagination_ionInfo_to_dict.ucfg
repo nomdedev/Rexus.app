@@ -1,0 +1,206 @@
+
+-rexus.utils.pagination.PaginationInfo.to_dictL
+BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py< <("2*á
+2= =(5
+> H(	
+%1"dicti
+g
+? ?(
+%2"__id*O
+
+__unknown_file (3*1'
+%rexus.utils.pagination.PaginationInfo"
+page‹
+ˆ
+? ?(
+%3"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+page*"
+
+__unknown_file (
+
+%2n
+l
+@ @('
+%4"__id*T
+
+__unknown_file (8*6'
+%rexus.utils.pagination.PaginationInfo"
+	page_size
+
+@ @('
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	page_size*"
+
+__unknown_file (
+
+%4p
+n
+A A(+
+%6"__id*V
+
+__unknown_file (:*8'
+%rexus.utils.pagination.PaginationInfo"
+total_items’
+
+A A(+
+%7"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+total_items*"
+
+__unknown_file (
+
+%6p
+n
+B B(+
+%8"__id*V
+
+__unknown_file (:*8'
+%rexus.utils.pagination.PaginationInfo"
+total_pages’
+
+B B(+
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+total_pages*"
+
+__unknown_file (
+
+%8l
+j
+C C(!
+%10"__id*Q
+
+__unknown_file (5*3'
+%rexus.utils.pagination.PaginationInfo"
+offset
+Œ
+C C(!
+%11"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+offset*#
+
+__unknown_file (
+
+%10r
+p
+D D(-
+%12"__id*W
+
+__unknown_file (;*9'
+%rexus.utils.pagination.PaginationInfo"
+has_previous•
+’
+D D(-
+%13"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+has_previous*#
+
+__unknown_file (
+
+%12n
+l
+E E(%
+%14"__id*S
+
+__unknown_file (7*5'
+%rexus.utils.pagination.PaginationInfo"
+
+has_next‘
+Ž
+E E(%
+%15"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+has_next*#
+
+__unknown_file (
+
+%14p
+n
+F F()
+%16"__id*U
+
+__unknown_file (9*7'
+%rexus.utils.pagination.PaginationInfo"
+
+start_item“
+
+F F()
+%17"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+start_item*#
+
+__unknown_file (
+
+%16n
+l
+G G(%
+%18"__id*S
+
+__unknown_file (7*5'
+%rexus.utils.pagination.PaginationInfo"
+
+end_item‘
+Ž
+G G(%
+%19"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+end_item*#
+
+__unknown_file (
+
+%18"
+> H(	
+
+%1B)'
+%rexus.utils.pagination.PaginationInfoH

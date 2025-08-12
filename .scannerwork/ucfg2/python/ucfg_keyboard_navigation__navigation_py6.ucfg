@@ -1,0 +1,2121 @@
+
+Tfile:///C:/Users/itachi/Desktop/martin/Rexus.app/rexus/utils/keyboard_navigation.py6
+__unknown_file ("1*‹
+2
+keyboard_navigation.py"l
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyÌ Ì(
+implicit return*¹²
+1S
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+FORM"__id*
+ (
+form
+}
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TABLE"__id*
+ (	
+table}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TREE"__id*
+ (
+tree{
+y
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TAB"__id*
+ (
+tab
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+DIALOG"__id*
+ (
+
+dialog}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+FORM"__id*
+ (
+form
+}
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TABLE"__id*
+ (	
+table}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TREE"__id*
+ (
+tree{
+y
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+TAB"__id*
+ (
+tab
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py (
+DIALOG"__id*
+ (
+
+dialogŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py" "(
+
+NEXT_FIELD"__id*
+ (
+
+next_fieldŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py# #(
+
+PREV_FIELD"__id*
+ (
+
+prev_fieldŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py$ $(
+FIRST_FIELD"__id*
+ (
+first_fieldŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py% %(
+
+LAST_FIELD"__id*
+ (
+
+last_field†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py( ((
+
+NEXT_ROW"__id*
+ (
+
+next_row†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py) )(
+
+PREV_ROW"__id*
+ (
+
+prev_rowˆ
+…
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py* *(
+	FIRST_ROW"__id*
+ (
+	first_row†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py+ +(
+
+LAST_ROW"__id*
+ (
+
+last_rowŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py, ,(
+NEXT_COLUMN"__id*
+ (
+next_columnŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py- -(
+PREV_COLUMN"__id*
+ (
+prev_columnŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py0 0(
+
+NEW_RECORD"__id*
+ (
+
+new_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py1 1(
+EDIT_RECORD"__id*
+ (
+edit_record
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py2 2(#
+DELETE_RECORD"__id*
+ (
+delete_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py3 3(
+SAVE_RECORD"__id*
+ (
+save_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py4 4(
+CANCEL_EDIT"__id*
+ (
+cancel_editŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py7 7(!
+FOCUS_SEARCH"__id*
+ (
+focus_searchŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py8 8(!
+CLEAR_SEARCH"__id*
+ (
+clear_searchŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py9 9(!
+APPLY_FILTER"__id*
+ (
+apply_filter
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py: :(#
+CLEAR_FILTERS"__id*
+ (
+clear_filters„
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py= =(	
+REFRESH"__id*
+ (	
+refresh}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py> >(
+HELP"__id*
+ (
+help}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py? ?(
+EXIT"__id*
+ (
+exitŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py" "(
+
+NEXT_FIELD"__id*
+ (
+
+next_fieldŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py# #(
+
+PREV_FIELD"__id*
+ (
+
+prev_fieldŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py$ $(
+FIRST_FIELD"__id*
+ (
+first_fieldŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py% %(
+
+LAST_FIELD"__id*
+ (
+
+last_field†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py( ((
+
+NEXT_ROW"__id*
+ (
+
+next_row†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py) )(
+
+PREV_ROW"__id*
+ (
+
+prev_rowˆ
+…
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py* *(
+	FIRST_ROW"__id*
+ (
+	first_row†
+ƒ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py+ +(
+
+LAST_ROW"__id*
+ (
+
+last_rowŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py, ,(
+NEXT_COLUMN"__id*
+ (
+next_columnŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py- -(
+PREV_COLUMN"__id*
+ (
+prev_columnŠ
+‡
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py0 0(
+
+NEW_RECORD"__id*
+ (
+
+new_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py1 1(
+EDIT_RECORD"__id*
+ (
+edit_record
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py2 2(#
+DELETE_RECORD"__id*
+ (
+delete_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py3 3(
+SAVE_RECORD"__id*
+ (
+save_recordŒ
+‰
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py4 4(
+CANCEL_EDIT"__id*
+ (
+cancel_editŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py7 7(!
+FOCUS_SEARCH"__id*
+ (
+focus_searchŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py8 8(!
+CLEAR_SEARCH"__id*
+ (
+clear_searchŽ
+‹
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py9 9(!
+APPLY_FILTER"__id*
+ (
+apply_filter
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py: :(#
+CLEAR_FILTERS"__id*
+ (
+clear_filters„
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py= =(	
+REFRESH"__id*
+ (	
+refresh}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py> >(
+HELP"__id*
+ (
+help}
+{
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py? ?(
+EXIT"__id*
+ (
+exitec
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyF b(
+%1"dict¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH H(!
+%2"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEXT_FIELDec
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH# H(*
+%3"list¥
+¢
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH$ H()
+%4"
+__arrayAdd*
+ (
+
+%3*
+ (: *
+ (
+Tab¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH H(*
+%5"__mapSet*
+ (
+
+%1*
+ (
+
+%2*
+ (
+
+%3¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI I(!
+%6"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+PREV_FIELDec
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI# I(0
+%7"list«
+¨
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI$ I(/
+%8"
+__arrayAdd*
+ (
+
+%7*
+ (: *
+ (
+	Shift+Tab¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI I(0
+%9"__mapSet*
+ (
+
+%1*
+ (
+
+%6*
+ (
+
+%7¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ J("
+%10"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+FIRST_FIELDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ$ J(1
+%11"list­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ% J(0
+%12"
+__arrayAdd*
+ (
+
+%11*
+ (: *
+ (
+	Ctrl+Home©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ J(1
+%13"__mapSet*
+ (
+
+%1*
+ (
+
+%10*
+ (
+
+%11·
+´
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK K(!
+%14"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+LAST_FIELDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK# K(/
+%15"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK$ K(.
+%16"
+__arrayAdd*
+ (
+
+%15*
+ (: *
+ (
+
+Ctrl+End©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK K(/
+%17"__mapSet*
+ (
+
+%1*
+ (
+
+%14*
+ (
+
+%15µ
+²
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM M(
+%18"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEXT_ROWfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM! M(6
+%19"list¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM" M((
+%20"
+__arrayAdd*
+ (
+
+%19*
+ (: *
+ (
+Down­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM* M(5
+%21"
+__arrayAdd*
+ (
+
+%19*
+ (: *
+ (
+	Ctrl+Down©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM M(6
+%22"__mapSet*
+ (
+
+%1*
+ (
+
+%18*
+ (
+
+%19µ
+²
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN N(
+%23"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+PREV_ROWfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN! N(2
+%24"list¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN" N(&
+%25"
+__arrayAdd*
+ (
+
+%24*
+ (: *
+ (
+Up«
+¨
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN( N(1
+%26"
+__arrayAdd*
+ (
+
+%24*
+ (: *
+ (	
+Ctrl+Up©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN N(2
+%27"__mapSet*
+ (
+
+%1*
+ (
+
+%23*
+ (
+
+%24¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO O( 
+%28"__id*M
+ (A*?0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+	FIRST_ROWfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO" O(/
+%29"list­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO# O(.
+%30"
+__arrayAdd*
+ (
+
+%29*
+ (: *
+ (
+	Ctrl+Home©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO O(/
+%31"__mapSet*
+ (
+
+%1*
+ (
+
+%28*
+ (
+
+%29µ
+²
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP P(
+%32"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+LAST_ROWfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP! P(-
+%33"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP" P(,
+%34"
+__arrayAdd*
+ (
+
+%33*
+ (: *
+ (
+
+Ctrl+End©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP P(-
+%35"__mapSet*
+ (
+
+%1*
+ (
+
+%32*
+ (
+
+%33¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ Q("
+%36"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+NEXT_COLUMNfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ$ Q(4
+%37"list©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ% Q(,
+%38"
+__arrayAdd*
+ (
+
+%37*
+ (: *
+ (	
+Right§
+¤
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ. Q(3
+%39"
+__arrayAdd*
+ (
+
+%37*
+ (: *
+ (
+Tab©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ Q(4
+%40"__mapSet*
+ (
+
+%1*
+ (
+
+%36*
+ (
+
+%37¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR R("
+%41"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+PREV_COLUMNfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR$ R(9
+%42"list¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR% R(+
+%43"
+__arrayAdd*
+ (
+
+%42*
+ (: *
+ (
+Left­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR- R(8
+%44"
+__arrayAdd*
+ (
+
+%42*
+ (: *
+ (
+	Shift+Tab©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR R(9
+%45"__mapSet*
+ (
+
+%1*
+ (
+
+%41*
+ (
+
+%42·
+´
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT T(!
+%46"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEW_RECORDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT# T(7
+%47"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT$ T(,
+%48"
+__arrayAdd*
+ (
+
+%47*
+ (: *
+ (
+
+Ctrl+Nª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT. T(6
+%49"
+__arrayAdd*
+ (
+
+%47*
+ (: *
+ (
+
+Insert©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT T(7
+%50"__mapSet*
+ (
+
+%1*
+ (
+
+%46*
+ (
+
+%47¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU U("
+%51"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+EDIT_RECORDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU$ U(4
+%52"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU% U(-
+%53"
+__arrayAdd*
+ (
+
+%52*
+ (: *
+ (
+
+Ctrl+E¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU/ U(3
+%54"
+__arrayAdd*
+ (
+
+%52*
+ (: *
+ (
+F2©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU U(4
+%55"__mapSet*
+ (
+
+%1*
+ (
+
+%51*
+ (
+
+%52º
+·
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV V($
+%56"__id*Q
+ (E*C0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+DELETE_RECORDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV& V(:
+%57"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV' V(/
+%58"
+__arrayAdd*
+ (
+
+%57*
+ (: *
+ (
+
+Deleteª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV1 V(9
+%59"
+__arrayAdd*
+ (
+
+%57*
+ (: *
+ (
+
+Ctrl+D©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV V(:
+%60"__mapSet*
+ (
+
+%1*
+ (
+
+%56*
+ (
+
+%57¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW W("
+%61"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+SAVE_RECORDfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW$ W(.
+%62"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW% W(-
+%63"
+__arrayAdd*
+ (
+
+%62*
+ (: *
+ (
+
+Ctrl+S©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW W(.
+%64"__mapSet*
+ (
+
+%1*
+ (
+
+%61*
+ (
+
+%62¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX X("
+%65"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CANCEL_EDITfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX$ X(.
+%66"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX% X(-
+%67"
+__arrayAdd*
+ (
+
+%66*
+ (: *
+ (
+
+Escape©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX X(.
+%68"__mapSet*
+ (
+
+%1*
+ (
+
+%65*
+ (
+
+%66¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ Z(#
+%69"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+FOCUS_SEARCHfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ% Z(5
+%70"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ& Z(.
+%71"
+__arrayAdd*
+ (
+
+%70*
+ (: *
+ (
+
+Ctrl+F¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ0 Z(4
+%72"
+__arrayAdd*
+ (
+
+%70*
+ (: *
+ (
+F3©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ Z(5
+%73"__mapSet*
+ (
+
+%1*
+ (
+
+%69*
+ (
+
+%70¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[ [(#
+%74"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CLEAR_SEARCHfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[% [(/
+%75"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[& [(.
+%76"
+__arrayAdd*
+ (
+
+%75*
+ (: *
+ (
+
+Escape©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[ [(/
+%77"__mapSet*
+ (
+
+%1*
+ (
+
+%74*
+ (
+
+%75¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\ \(#
+%78"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+APPLY_FILTERfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\% \(.
+%79"list©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\& \(-
+%80"
+__arrayAdd*
+ (
+
+%79*
+ (: *
+ (	
+Enter©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\ \(.
+%81"__mapSet*
+ (
+
+%1*
+ (
+
+%78*
+ (
+
+%79º
+·
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py] ]($
+%82"__id*Q
+ (E*C0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CLEAR_FILTERSfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py]& ](0
+%83"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py]' ](/
+%84"
+__arrayAdd*
+ (
+
+%83*
+ (: *
+ (
+
+Ctrl+R©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py] ](0
+%85"__mapSet*
+ (
+
+%1*
+ (
+
+%82*
+ (
+
+%83´
+±
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_ _(
+%86"__id*K
+ (?*=0
+.rexus.utils.keyboard_navigation.KeyboardAction"	
+REFRESHfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_  _(&
+%87"list¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_! _(%
+%88"
+__arrayAdd*
+ (
+
+%87*
+ (: *
+ (
+F5©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_ _(&
+%89"__mapSet*
+ (
+
+%1*
+ (
+
+%86*
+ (
+
+%87±
+®
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(
+%90"__id*H
+ (<*:0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+HELPfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(#
+%91"list¦
+£
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `("
+%92"
+__arrayAdd*
+ (
+
+%91*
+ (: *
+ (
+F1©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(#
+%93"__mapSet*
+ (
+
+%1*
+ (
+
+%90*
+ (
+
+%91±
+®
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(
+%94"__id*H
+ (<*:0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+EXITfd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(1
+%95"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(&
+%96"
+__arrayAdd*
+ (
+
+%95*
+ (: *
+ (
+
+Escapeª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya( a(0
+%97"
+__arrayAdd*
+ (
+
+%95*
+ (: *
+ (
+
+Alt+F4©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(1
+%98"__mapSet*
+ (
+
+%1*
+ (
+
+%94*
+ (
+
+%95€
+~
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyF b(
+	SHORTCUTS"__id*
+ (
+
+%1fd
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyF b(
+%99"dict¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH H(!
+%100"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEXT_FIELDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH# H(*
+%101"list©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH$ H()
+%102"
+__arrayAdd*
+ (
+
+%101*
+ (: *
+ (
+Tab­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyH H(*
+%103"__mapSet*
+ (
+
+%99*
+ (
+
+%100*
+ (
+
+%101¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI I(!
+%104"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+PREV_FIELDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI# I(0
+%105"list¯
+¬
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI$ I(/
+%106"
+__arrayAdd*
+ (
+
+%105*
+ (: *
+ (
+	Shift+Tab­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyI I(0
+%107"__mapSet*
+ (
+
+%99*
+ (
+
+%104*
+ (
+
+%105¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ J("
+%108"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+FIRST_FIELDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ$ J(1
+%109"list¯
+¬
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ% J(0
+%110"
+__arrayAdd*
+ (
+
+%109*
+ (: *
+ (
+	Ctrl+Home­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyJ J(1
+%111"__mapSet*
+ (
+
+%99*
+ (
+
+%108*
+ (
+
+%109¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK K(!
+%112"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+LAST_FIELDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK# K(/
+%113"list®
+«
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK$ K(.
+%114"
+__arrayAdd*
+ (
+
+%113*
+ (: *
+ (
+
+Ctrl+End­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyK K(/
+%115"__mapSet*
+ (
+
+%99*
+ (
+
+%112*
+ (
+
+%113¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM M(
+%116"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEXT_ROWge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM! M(6
+%117"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM" M((
+%118"
+__arrayAdd*
+ (
+
+%117*
+ (: *
+ (
+Down¯
+¬
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM* M(5
+%119"
+__arrayAdd*
+ (
+
+%117*
+ (: *
+ (
+	Ctrl+Down­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyM M(6
+%120"__mapSet*
+ (
+
+%99*
+ (
+
+%116*
+ (
+
+%117¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN N(
+%121"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+PREV_ROWge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN! N(2
+%122"list¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN" N(&
+%123"
+__arrayAdd*
+ (
+
+%122*
+ (: *
+ (
+Up­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN( N(1
+%124"
+__arrayAdd*
+ (
+
+%122*
+ (: *
+ (	
+Ctrl+Up­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyN N(2
+%125"__mapSet*
+ (
+
+%99*
+ (
+
+%121*
+ (
+
+%122·
+´
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO O( 
+%126"__id*M
+ (A*?0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+	FIRST_ROWge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO" O(/
+%127"list¯
+¬
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO# O(.
+%128"
+__arrayAdd*
+ (
+
+%127*
+ (: *
+ (
+	Ctrl+Home­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyO O(/
+%129"__mapSet*
+ (
+
+%99*
+ (
+
+%126*
+ (
+
+%127¶
+³
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP P(
+%130"__id*L
+ (@*>0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+LAST_ROWge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP! P(-
+%131"list®
+«
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP" P(,
+%132"
+__arrayAdd*
+ (
+
+%131*
+ (: *
+ (
+
+Ctrl+End­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyP P(-
+%133"__mapSet*
+ (
+
+%99*
+ (
+
+%130*
+ (
+
+%131¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ Q("
+%134"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+NEXT_COLUMNge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ$ Q(4
+%135"list«
+¨
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ% Q(,
+%136"
+__arrayAdd*
+ (
+
+%135*
+ (: *
+ (	
+Right©
+¦
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ. Q(3
+%137"
+__arrayAdd*
+ (
+
+%135*
+ (: *
+ (
+Tab­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyQ Q(4
+%138"__mapSet*
+ (
+
+%99*
+ (
+
+%134*
+ (
+
+%135¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR R("
+%139"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+PREV_COLUMNge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR$ R(9
+%140"listª
+§
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR% R(+
+%141"
+__arrayAdd*
+ (
+
+%140*
+ (: *
+ (
+Left¯
+¬
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR- R(8
+%142"
+__arrayAdd*
+ (
+
+%140*
+ (: *
+ (
+	Shift+Tab­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyR R(9
+%143"__mapSet*
+ (
+
+%99*
+ (
+
+%139*
+ (
+
+%140¸
+µ
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT T(!
+%144"__id*N
+ (B*@0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+
+NEW_RECORDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT# T(7
+%145"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT$ T(,
+%146"
+__arrayAdd*
+ (
+
+%145*
+ (: *
+ (
+
+Ctrl+N¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT. T(6
+%147"
+__arrayAdd*
+ (
+
+%145*
+ (: *
+ (
+
+Insert­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyT T(7
+%148"__mapSet*
+ (
+
+%99*
+ (
+
+%144*
+ (
+
+%145¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU U("
+%149"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+EDIT_RECORDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU$ U(4
+%150"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU% U(-
+%151"
+__arrayAdd*
+ (
+
+%150*
+ (: *
+ (
+
+Ctrl+E¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU/ U(3
+%152"
+__arrayAdd*
+ (
+
+%150*
+ (: *
+ (
+F2­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyU U(4
+%153"__mapSet*
+ (
+
+%99*
+ (
+
+%149*
+ (
+
+%150»
+¸
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV V($
+%154"__id*Q
+ (E*C0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+DELETE_RECORDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV& V(:
+%155"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV' V(/
+%156"
+__arrayAdd*
+ (
+
+%155*
+ (: *
+ (
+
+Delete¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV1 V(9
+%157"
+__arrayAdd*
+ (
+
+%155*
+ (: *
+ (
+
+Ctrl+D­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyV V(:
+%158"__mapSet*
+ (
+
+%99*
+ (
+
+%154*
+ (
+
+%155¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW W("
+%159"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+SAVE_RECORDge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW$ W(.
+%160"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW% W(-
+%161"
+__arrayAdd*
+ (
+
+%160*
+ (: *
+ (
+
+Ctrl+S­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyW W(.
+%162"__mapSet*
+ (
+
+%99*
+ (
+
+%159*
+ (
+
+%160¹
+¶
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX X("
+%163"__id*O
+ (C*A0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CANCEL_EDITge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX$ X(.
+%164"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX% X(-
+%165"
+__arrayAdd*
+ (
+
+%164*
+ (: *
+ (
+
+Escape­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyX X(.
+%166"__mapSet*
+ (
+
+%99*
+ (
+
+%163*
+ (
+
+%164º
+·
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ Z(#
+%167"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+FOCUS_SEARCHge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ% Z(5
+%168"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ& Z(.
+%169"
+__arrayAdd*
+ (
+
+%168*
+ (: *
+ (
+
+Ctrl+F¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ0 Z(4
+%170"
+__arrayAdd*
+ (
+
+%168*
+ (: *
+ (
+F3­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyZ Z(5
+%171"__mapSet*
+ (
+
+%99*
+ (
+
+%167*
+ (
+
+%168º
+·
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[ [(#
+%172"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CLEAR_SEARCHge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[% [(/
+%173"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[& [(.
+%174"
+__arrayAdd*
+ (
+
+%173*
+ (: *
+ (
+
+Escape­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py[ [(/
+%175"__mapSet*
+ (
+
+%99*
+ (
+
+%172*
+ (
+
+%173º
+·
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\ \(#
+%176"__id*P
+ (D*B0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+APPLY_FILTERge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\% \(.
+%177"list«
+¨
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\& \(-
+%178"
+__arrayAdd*
+ (
+
+%177*
+ (: *
+ (	
+Enter­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py\ \(.
+%179"__mapSet*
+ (
+
+%99*
+ (
+
+%176*
+ (
+
+%177»
+¸
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py] ]($
+%180"__id*Q
+ (E*C0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+CLEAR_FILTERSge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py]& ](0
+%181"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py]' ](/
+%182"
+__arrayAdd*
+ (
+
+%181*
+ (: *
+ (
+
+Ctrl+R­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py] ](0
+%183"__mapSet*
+ (
+
+%99*
+ (
+
+%180*
+ (
+
+%181µ
+²
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_ _(
+%184"__id*K
+ (?*=0
+.rexus.utils.keyboard_navigation.KeyboardAction"	
+REFRESHge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_  _(&
+%185"list¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_! _(%
+%186"
+__arrayAdd*
+ (
+
+%185*
+ (: *
+ (
+F5­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py_ _(&
+%187"__mapSet*
+ (
+
+%99*
+ (
+
+%184*
+ (
+
+%185²
+¯
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(
+%188"__id*H
+ (<*:0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+HELPge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(#
+%189"list¨
+¥
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `("
+%190"
+__arrayAdd*
+ (
+
+%189*
+ (: *
+ (
+F1­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py` `(#
+%191"__mapSet*
+ (
+
+%99*
+ (
+
+%188*
+ (
+
+%189²
+¯
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(
+%192"__id*H
+ (<*:0
+.rexus.utils.keyboard_navigation.KeyboardAction"
+EXITge
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(1
+%193"list¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(&
+%194"
+__arrayAdd*
+ (
+
+%193*
+ (: *
+ (
+
+Escape¬
+©
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya( a(0
+%195"
+__arrayAdd*
+ (
+
+%193*
+ (: *
+ (
+
+Alt+F4­
+ª
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pya a(1
+%196"__mapSet*
+ (
+
+%99*
+ (
+
+%192*
+ (
+
+%193
+
+U
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.pyF b(
+	SHORTCUTS"__id*
+ (
+
+%99*
+2B H

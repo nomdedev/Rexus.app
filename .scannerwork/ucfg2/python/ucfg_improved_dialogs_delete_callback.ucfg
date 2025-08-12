@@ -1,0 +1,51 @@
+
+]rexus.modules.pedidos.improved_dialogs.PedidoDialogManager.confirm_and_delete.delete_callback^
+RC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\improved_dialogs.py’ ’("1*í
+2
+” ”(AP
+N
+
+” ”(&
+%2"__id*4
+
+__unknown_file (*
+
+self"
+
+controllertr
+
+” ”(A
+%3*"
+
+__unknown_file (
+
+%2*)
+
+__unknown_file (
+
+	pedido_id2eliminar_pedido"
+
+” ”(A
+
+%3*(
+3
+• •("
+
+• •(	
+
+False*i
+1
+“ “(P
+N
+
+“ “(
+%1"__id*4
+
+__unknown_file (*
+
+self"
+
+controller*
+2
+3B><
+:rexus.modules.pedidos.improved_dialogs.PedidoDialogManagerH

@@ -1,0 +1,29 @@
+
+
+"division by zero"bool
+
+0int
+"S3518"bool
+	"a"bool
+0.0floatself% %("…1
+/
+&B &(W"#get-field# queries_executed:(
+&
+&B &(["	#binop >#2>:Bbool&"$
+&B &([ *&? &(A2&\ &(`"ò1
+/
+& &(%"#get-field# total_query_time:1
+/
+&( &(="#get-field# queries_executed:*
+(
+& &(="
+#binop !=#2!=:Bbool 
+
+& &(="
+#assert#:	
+*
+(
+& &(="#dependent-value#*:
+& &(d"
+& &(d"$*
+& &(d*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\database_pool.py

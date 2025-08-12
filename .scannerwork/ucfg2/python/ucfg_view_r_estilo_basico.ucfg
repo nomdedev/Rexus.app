@@ -1,0 +1,48 @@
+
+<rexus.modules.compras.view.ComprasView.aplicar_estilo_basicoR
+FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\view.py• •("2*¿
+2
+– –(3¨¥
+
+— ³(
+%1*F
+
+__unknown_file (*(
+&rexus.modules.compras.view.ComprasView*¹
+
+__unknown_file (œ™
+–
+            QWidget {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Arial, sans-serif;
+            }
+            QPushButton {
+                background-color: #3498db;
+                color: white;
+                border: none;
+                padding: 8px 16px;
+                border-radius: 4px;
+                font-weight: bold;
+            }
+            QPushButton:hover {
+                background-color: #2980b9;
+            }
+            QLineEdit, QComboBox, QDateEdit {
+                border: 1px solid #ced4da;
+                border-radius: 4px;
+                padding: 8px;
+                font-size: 14px;
+            }
+            QTableWidget {
+                background-color: white;
+                gridline-color: #dee2e6;
+                border: 1px solid #dee2e6;
+                border-radius: 4px;
+            }
+        2setStyleSheet*
+3*/
+3	
+view.py"
+µ µ(
+implicit returnB*(
+&rexus.modules.compras.view.ComprasViewH

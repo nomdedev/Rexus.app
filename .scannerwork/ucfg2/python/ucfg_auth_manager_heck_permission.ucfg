@@ -1,0 +1,66 @@
+
+4rexus.core.auth_manager.AuthManager.check_permissionM
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_manager.pya a("2*‹
+2b b(It
+r
+c c( 
+%6"__id*Z
+
+__unknown_file (>*<%
+#rexus.core.auth_manager.AuthManager"
+current_user_role*
+4
+5*©
+4f f(Ps
+q
+f f(1
+%1"__id*Y
+
+__unknown_file (=*;%
+#rexus.core.auth_manager.AuthManager"
+ROLE_PERMISSIONSt
+r
+f6 f(K
+%2"__id*Z
+
+__unknown_file (>*<%
+#rexus.core.auth_manager.AuthManager"
+current_user_role
+fM f(O
+%3"listŽ‹
+f f(P
+%4"dict.get*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%2*"
+
+__unknown_file (
+
+%32getpn
+f f(P
+%5*"
+
+__unknown_file (
+
+%4**
+
+__unknown_file (
+
+
+permission2__contains__"
+f f(P
+
+%5*$
+5d d("
+d d(	
+
+False:
+a a(4
+
+permissionB'%
+#rexus.core.auth_manager.AuthManagerH

@@ -1,0 +1,159 @@
+
+@rexus.modules.vidrios.view.VidriosModernView.configurar_pestanasR
+FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\view.py† †("2*ø
+2
+‡ ‡(Cx
+v
+
+ˆ ˆ(
+%1"__id*\
+
+__unknown_file (@*>.
+,rexus.modules.vidrios.view.VidriosModernView"
+
+tab_widgetW
+U
+
+ˆ' ˆ(=
+%2"__id*;
+
+__unknown_file (*
+
+
+QTabWidget"
+TabPositionI
+G
+
+ˆ' ˆ(C
+%3"__id*-
+
+__unknown_file (*
+
+%2"
+Northlj
+
+ˆ ˆ(D
+%4*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%32setTabPositionx
+v
+
+‰ ‰(
+%5"__id*\
+
+__unknown_file (@*>.
+,rexus.modules.vidrios.view.VidriosModernView"
+
+tab_widgetT
+R
+
+‰$ ‰(7
+%6"__id*8
+
+__unknown_file (*
+
+
+QTabWidget"
+
+TabShapeK
+I
+
+‰$ ‰(?
+%7"__id*/
+
+__unknown_file (*
+
+%6"	
+Roundedig
+
+‰ ‰(@
+%8*"
+
+__unknown_file (
+
+%5*"
+
+__unknown_file (
+
+%72setTabShapex
+v
+
+Š Š(
+%9"__id*\
+
+__unknown_file (@*>.
+,rexus.modules.vidrios.view.VidriosModernView"
+
+tab_widgetus
+
+Š Š(2
+%10*"
+
+__unknown_file (
+
+%9*$
+
+__unknown_file (
+
+True2setUsesScrollButtonsy
+w
+
+Œ Œ(
+%11"__id*\
+
+__unknown_file (@*>.
+,rexus.modules.vidrios.view.VidriosModernView"
+
+tab_widgetáÞ
+
+Œ ª(
+%12*#
+
+__unknown_file (
+
+%11*”
+
+__unknown_file (÷ô
+ñ
+            QTabWidget::pane {
+                border: 2px solid #e2e8f0;
+                border-radius: 8px;
+                background: white;
+                top: -1px;
+            }
+            QTabBar::tab {
+                background: #f8fafc;
+                color: #374151;
+                border: 1px solid #e2e8f0;
+                border-bottom: none;
+                border-top-left-radius: 6px;
+                border-top-right-radius: 6px;
+                padding: 8px 16px;
+                margin-right: 2px;
+                font-weight: 500;
+                min-width: 100px;
+            }
+            QTabBar::tab:selected {
+                background: white;
+                color: #1e40af;
+                border-color: #3b82f6;
+                border-bottom: 2px solid white;
+                font-weight: bold;
+            }
+            QTabBar::tab:hover:!selected {
+                background: #f1f5f9;
+                color: #1e40af;
+            }
+        2setStyleSheet*
+3*/
+3	
+view.py"
+¬ ¬(
+implicit returnB0.
+,rexus.modules.vidrios.view.VidriosModernViewH

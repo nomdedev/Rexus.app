@@ -1,0 +1,341 @@
+
+Drexus.ui.templates.base_module_view.BaseModuleView.setup_connections[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\templates\base_module_view.pyË Ë("2*Ô
+2
+Ì Ì(:~
+|
+
+Î Î(
+%1"__id*b
+
+__unknown_file (F*D4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+search_btnK
+I
+
+Î Î(
+%2"__id*/
+
+__unknown_file (*
+
+%1"	
+clickedƒ
+€
+
+Î( Î(;
+%3"__id*f
+
+__unknown_file (J*H4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+perform_searchec
+
+Î Î(<
+%4*"
+
+__unknown_file (
+
+%2*"
+
+__unknown_file (
+
+%32connect€
+~
+
+Ï Ï(
+%5"__id*d
+
+__unknown_file (H*F4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+search_inputQ
+O
+
+Ï Ï('
+%6"__id*5
+
+__unknown_file (*
+
+%5"
+returnPressedƒ
+€
+
+Ï0 Ï(C
+%7"__id*f
+
+__unknown_file (J*H4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+perform_searchec
+
+Ï Ï(D
+%8*"
+
+__unknown_file (
+
+%6*"
+
+__unknown_file (
+
+%72connect{
+y
+
+Ò Ò(
+%9"__id*_
+
+__unknown_file (C*A4
+2rexus.ui.templates.base_module_view.BaseModuleView"	
+new_btnL
+J
+
+Ò Ò(
+%10"__id*/
+
+__unknown_file (*
+
+%9"	
+clicked…
+‚
+
+Ò% Ò(9
+%11"__id*g
+
+__unknown_file (K*I4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+create_new_itemhf
+
+Ò Ò(:
+%12*#
+
+__unknown_file (
+
+%10*#
+
+__unknown_file (
+
+%112connect€
+~
+
+Ó Ó(
+%13"__id*c
+
+__unknown_file (G*E4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+refresh_btnM
+K
+
+Ó Ó( 
+%14"__id*0
+
+__unknown_file (*
+
+%13"	
+clicked
+
+
+Ó) Ó(:
+%15"__id*d
+
+__unknown_file (H*F4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+refresh_datahf
+
+Ó Ó(;
+%16*#
+
+__unknown_file (
+
+%14*#
+
+__unknown_file (
+
+%152connect
+}
+
+Ö Ö(
+%17"__id*b
+
+__unknown_file (F*D4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+main_tableZ
+X
+
+Ö Ö(,
+%18"__id*=
+
+__unknown_file (!*
+
+%17"
+itemSelectionChangedŠ
+‡
+
+Ö5 Ö(N
+%19"__id*l
+
+__unknown_file (P*N4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+on_selection_changedhf
+
+Ö Ö(O
+%20*#
+
+__unknown_file (
+
+%18*#
+
+__unknown_file (
+
+%192connect}
+{
+
+Ù Ù(
+%21"__id*`
+
+__unknown_file (D*B4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+edit_btnM
+K
+
+Ù Ù(
+%22"__id*0
+
+__unknown_file (*
+
+%21"	
+clicked…
+‚
+
+Ù& Ù(:
+%23"__id*g
+
+__unknown_file (K*I4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+enter_edit_modehf
+
+Ù Ù(;
+%24*#
+
+__unknown_file (
+
+%22*#
+
+__unknown_file (
+
+%232connect
+}
+
+Ú Ú(
+%25"__id*b
+
+__unknown_file (F*D4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+delete_btnM
+K
+
+Ú Ú(
+%26"__id*0
+
+__unknown_file (*
+
+%25"	
+clicked€
+~
+
+Ú( Ú(8
+%27"__id*c
+
+__unknown_file (G*E4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+delete_itemhf
+
+Ú Ú(9
+%28*#
+
+__unknown_file (
+
+%26*#
+
+__unknown_file (
+
+%272connect
+}
+
+Û Û(
+%29"__id*b
+
+__unknown_file (F*D4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+cancel_btnM
+K
+
+Û Û(
+%30"__id*0
+
+__unknown_file (*
+
+%29"	
+clicked€
+~
+
+Û( Û(8
+%31"__id*c
+
+__unknown_file (G*E4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+cancel_edithf
+
+Û Û(9
+%32*#
+
+__unknown_file (
+
+%30*#
+
+__unknown_file (
+
+%312connect}
+{
+
+Ü Ü(
+%33"__id*`
+
+__unknown_file (D*B4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+
+save_btnM
+K
+
+Ü Ü(
+%34"__id*0
+
+__unknown_file (*
+
+%33"	
+clicked~
+|
+
+Ü& Ü(4
+%35"__id*a
+
+__unknown_file (E*C4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+	save_itemhf
+
+Ü Ü(5
+%36*#
+
+__unknown_file (
+
+%34*#
+
+__unknown_file (
+
+%352connect*
+3*;
+3
+base_module_view.py"
+Þ Þ(
+implicit returnB64
+2rexus.ui.templates.base_module_view.BaseModuleViewH

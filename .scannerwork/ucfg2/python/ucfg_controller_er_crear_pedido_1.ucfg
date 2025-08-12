@@ -1,0 +1,158 @@
+
+?rexus.modules.vidrios.controller.VidriosController.crear_pedidoX
+LC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\controller.pyÉ É("2*î
+2
+Ñ Ñ(6z
+x
+
+Ö Ö(
+%10"__id*]
+
+__unknown_file (A*?4
+2rexus.modules.vidrios.controller.VidriosController"
+model*
+9
+10*5
+3
+controller.py"
+í í(
+implicit return*í
+4
+ê ê(<]
+[
+
+ê ê(;
+%1"__concat*(
+
+ê! ê(7
+Error creando pedido: *
+
+ê8 ê(9
+
+eúô
+
+ê ê(<
+%2*R
+
+__unknown_file (64
+2rexus.modules.vidrios.controller.VidriosController*"
+
+__unknown_file (
+
+%12mostrar_error*
+3*®
+7
+ã ã(P
+}
+
+ã% ã(O
+%3"__concat*
+
+ã' ã(/
+
+Pedido #*
+
+ã0 ã(9
+
+	pedido_id*&
+
+ã: ã(N
+ creado exitosamenteûõ
+
+ã ã(P
+%4*R
+
+__unknown_file (64
+2rexus.modules.vidrios.controller.VidriosController*"
+
+__unknown_file (
+
+%32mostrar_mensajeÅ
+
+
+å å("
+%5"__id*e
+
+__unknown_file (I*G4
+2rexus.modules.vidrios.controller.VidriosController"
+pedido_creadoig
+
+å å(2
+%6*"
+
+__unknown_file (
+
+%5*)
+
+__unknown_file (
+
+	pedido_id2emit*
+3
+4*…
+8
+é é(;Ø¨
+
+é é(;
+%7*R
+
+__unknown_file (64
+2rexus.modules.vidrios.controller.VidriosController*5
+
+__unknown_file (
+Error al crear pedido2mostrar_error*
+3
+4*´
+9
+â â(Wy
+w
+
+â â("
+%8"__id*]
+
+__unknown_file (A*?4
+2rexus.modules.vidrios.controller.VidriosController"
+modelœÃ
+
+â â(W
+%9*"
+
+__unknown_file (
+
+%8*'
+
+__unknown_file (
+	
+obra_id*)
+
+__unknown_file (
+
+	proveedor*-
+
+__unknown_file (
+
+vidrios_lista2crear_pedido_obraE
+C
+
+â â(W
+	pedido_id"__id*"
+
+__unknown_file (
+
+%9*
+7
+8*(
+10
+Ü Ü("
+
+Ü Ü(
+void:
+
+É É("	
+obra_id:
+
+É$ É(-
+	proveedor:
+
+É/ É(<
+vidrios_listaB64
+2rexus.modules.vidrios.controller.VidriosControllerH

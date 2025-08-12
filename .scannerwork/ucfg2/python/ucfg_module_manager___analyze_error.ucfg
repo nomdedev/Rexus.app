@@ -1,0 +1,178 @@
+
+6rexus.core.module_manager.ModuleManager._analyze_errorQ
+EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\module_manager.py∆ ∆("2*≥
+2
+« «(<US
+
+» »(+
+%9"	str.lower*-
+
+__unknown_file (
+
+error_message2lowerG
+E
+
+» »(+
+error_lower"__id*"
+
+__unknown_file (
+
+%9|z
+
+   (&
+%10*+
+
+__unknown_file (
+
+error_lower**
+
+__unknown_file (
+
+connection2__contains__{y
+
+ *  (C
+%11*+
+
+__unknown_file (
+
+error_lower*)
+
+__unknown_file (
+	conexi√≥n2__contains__*
+13
+4*å
+13
+Ã Ã(?wu
+
+Ã Ã($
+%7*+
+
+__unknown_file (
+
+error_lower*&
+
+__unknown_file (
+
+import2__contains__wu
+
+Ã( Ã(?
+%8*+
+
+__unknown_file (
+
+error_lower*&
+
+__unknown_file (
+
+module2__contains__*
+11
+12*K
+4
+À À(<":
+
+À À(<,*
+(Problema de conexi√≥n a la base de datos*<
+5
+’ ’(-"+
+
+’ ’(-
+Error general del m√≥dulo*@
+6
+” ”(2"/
+
+” ”(2!
+Problema de permisos o acceso*ç
+7
+“ “(C{y
+
+“ “((
+%1*+
+
+__unknown_file (
+
+error_lower**
+
+__unknown_file (
+
+permission2__contains__wu
+
+“, “(C
+%2*+
+
+__unknown_file (
+
+error_lower*&
+
+__unknown_file (
+
+access2__contains__*
+5
+6*G
+8
+— —(8"6
+
+— —(8(&
+$Error en operaci√≥n de base de datos*à
+9
+– –(>tr
+
+– –(!
+%3*+
+
+__unknown_file (
+
+error_lower*#
+
+__unknown_file (
+sql2__contains__yw
+
+–% –(>
+%4*+
+
+__unknown_file (
+
+error_lower*(
+
+__unknown_file (
+
+database2__contains__*
+7
+8*H
+10
+œ œ(9"6
+
+œ œ(9(&
+$Problema con tablas de base de datos*â
+11
+Œ Œ(=vt
+
+Œ Œ(#
+%5*+
+
+__unknown_file (
+
+error_lower*%
+
+__unknown_file (	
+table2__contains__vt
+
+Œ' Œ(=
+%6*+
+
+__unknown_file (
+
+error_lower*%
+
+__unknown_file (	
+tabla2__contains__*
+9
+10*L
+12
+Õ Õ(;":
+
+Õ Õ(;,*
+(Error de importaci√≥n de m√≥dulos Python:
+
+∆ ∆(/
+error_messageB+)
+'rexus.core.module_manager.ModuleManagerH

@@ -1,0 +1,21 @@
+
+∆º"
+        Verifica si una IP est√° bloqueada.
+        
+        Args:
+            ip: Direcci√≥n IP
+            
+        Returns:
+            bool: True si est√° bloqueada
+        "strself
+√ √(ip
+√ √(#"p.
+,
+
+Õ Õ(%"#get-field# blocked_ips:,
+*
+
+Õ Õ(%"
+#binop in#2in:Bbool
+
+Õ Õ(%*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\security_manager.py

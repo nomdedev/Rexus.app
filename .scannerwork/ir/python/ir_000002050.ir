@@ -1,0 +1,23 @@
+
+MD"Funci√≥n de conveniencia para crear registro de auditor√≠a seguro."str
+event_type
+Ò Ò(.user_id
+Ò0 Ò(Fresource
+ÒH Ò(Uaction
+Ú Ú()details
+Ú+ Ú(Bkwargs
+ÚD Ú(L"dict"¿T
+R
+
+Ù Ù(+manager"9
+rexus.core.audit_integrityget_audit_integrity_manager'
+%
+
+ıW ı(_	"#unaryop **#2**:-
++
+
+ı ı(`
+"?python-unknown?:	
+
+ı ı(`
+*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_integrity.py

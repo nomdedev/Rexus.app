@@ -1,0 +1,41 @@
+
+!"SELECT COUNT(*) FROM ?"str
+"tabla_principal"str
+
+0int
+MD"Obtiene la query de conteo (debe ser implementado por cada modelo)"strself
+á á(		tuple"¯>
+<
+
+ã ã(Mtabla_principal"
+builtinsgetattr*:*
+(
+
+å å(;"#unknown-value#Btuple(
+&
+
+å å(;"#array-add-last#:*
+(
+
+å) å(;"#unknown-value#Btuple(
+&
+
+å) å(;
+"
+#is-exact#:	Bbool
+
+
+å) å(;"
+#assume#:
+:
+8
+
+å) å(;"#set-field# __collection_size:Bint(
+&
+
+å) å(;"#array-add-last#:(
+&
+
+å å(;"#array-add-last#:
+
+å å(;*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\model.py

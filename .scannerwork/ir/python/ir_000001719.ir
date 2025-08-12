@@ -1,0 +1,72 @@
+
+truebool
+;
+2"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$"str
+%"Formato de email invรกlido"str
+falsebool
+""str
+""Valida formato de email"strvalue
+ม ม("|+
+)
+
+ร ร("
+__bool__*:BboolH+
+)
+
+ร ร("#unaryop !#2!:Bbool "
+
+ร ร( *
+ร ร(
+"”*
+(
+
+ฤ ฤ("#unknown-value#Btuple(
+&
+
+ฤ ฤ("#array-add-last#:(
+&
+
+ฤ ฤ(	"#array-add-last#:
+
+ฤ ฤ("ฬ)
+'
+
+ว ว(Epattern"#id#:
+Bstr!
+
+
+ศ ศ('"
+rematch:+
+)
+
+ศ ศ('"
+__bool__*:BboolH+
+)
+
+ศ ศ('"#unaryop !#2!:Bbool "
+
+ศ ศ(' *
+ศ ศ(
+"”*
+(
+
+ษ ษ(5"#unknown-value#Btuple(
+&
+
+ษ ษ(5"#array-add-last#:(
+&
+
+ษ ษ(5"#array-add-last#:
+
+ษ ษ(5"”*
+(
+
+ส ส("#unknown-value#Btuple(
+&
+
+ส ส("#array-add-last#:(
+&
+
+ส ส("#array-add-last#:
+
+ส ส(*NC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\modern_form_components.py

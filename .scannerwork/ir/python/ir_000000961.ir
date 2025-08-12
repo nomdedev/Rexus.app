@@ -1,0 +1,48 @@
+
+384int
+5,"Abre el archivo con permisos restrictivos."str
+"utf-8"str
+"a"strself
+à à("ù#
+!
+
+æ0 æ(2	"#unknown-value##
+!
+
+æ" æ($"#unknown-value##
+!
+
+æ æ("#unknown-value#/
+-
+
+å å(&"#get-field# baseFilename:*
+(
+
+æ æ("#get-field# O_CREAT:+
+)
+
+æ" æ(-"#get-field# O_WRONLY:#
+!
+
+æ æ(-"#unknown-value#+
+)
+
+æ0 æ(;
+"#get-field# O_APPEND:	#
+!
+
+æ æ(;"#unknown-value##
+!
+
+å ç("#unknown-value#+
+)
+
+å ç(fd"
+
+osopen:Bint#
+!
+
+è è(3"
+osfdopen:
+
+è è(3*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\secure_logger.py

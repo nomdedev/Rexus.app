@@ -1,0 +1,45 @@
+
+F="Estilo para campos de entrada (QLineEdit, QTextEdit, etc.)."str
+¸®"
+            QLineEdit, QTextEdit, QPlainTextEdit {{
+                border: 2px solid {FormStyleManager.COLORS["border"]};
+                border-radius: 8px;
+                padding: 12px 16px;
+                font-size: 14px;
+                color: {FormStyleManager.COLORS["text"]};
+                background-color: {FormStyleManager.COLORS["background"]};
+                selection-background-color: {FormStyleManager.COLORS["primary_light"]};
+                transition: all 0.3s ease;
+            }}
+            
+            QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
+                border-color: {FormStyleManager.COLORS["border_focus"]};
+                background-color: #ffffff;
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QLineEdit:hover, QTextEdit:hover, QPlainTextEdit:hover {{
+                border-color: {FormStyleManager.COLORS["primary_light"]};
+            }}
+            
+            QLineEdit[state="valid"] {{
+                border-color: {FormStyleManager.COLORS["success"]};
+                background-color: #f8fff9;
+            }}
+            
+            QLineEdit[state="invalid"] {{
+                border-color: {FormStyleManager.COLORS["error"]};
+                background-color: #fff8f8;
+            }}
+            
+            QLineEdit[state="warning"] {{
+                border-color: {FormStyleManager.COLORS["warning"]};
+                background-color: #fffdf8;
+            }}
+            
+            QTextEdit {{
+                min-height: 80px;
+                max-height: 120px;
+            }}
+        "str"
+D m(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py

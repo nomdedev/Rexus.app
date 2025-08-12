@@ -1,0 +1,145 @@
+
+grexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController.registrar_asistenciap
+dC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\controller.pyë ë("2*∑
+2
+í í(1õ
+ò
+
+ì ì(
+%11"__id*}
+
+__unknown_file (a*_T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+model*
+11
+12*5
+3
+controller.py"
+• •(
+implicit return*∫
+4
+£ £(De
+c
+
+£ £(C
+%1"__concat*0
+
+£! £(?" 
+Error registrando asistencia: *
+
+£@ £(A
+
+eºπ
+
+£ £(D
+%2*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*"
+
+__unknown_file (
+
+%12mostrar_error*
+3*∏
+7
+ú ú(Jﬁ€
+
+ú ú(J
+%3*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*B
+
+__unknown_file (&$
+"Asistencia registrada exitosamente2mostrar_mensajeùö
+
+ù ù()
+%4*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController2cargar_asistencias´
+®
+
+û û(*
+%5"__id*ç
+
+__unknown_file (q*oT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+asistencia_registradapn
+
+û û(A
+%6*"
+
+__unknown_file (
+
+%5*0
+
+__unknown_file (
+
+datos_asistencia2emit*
+3
+4*Ò
+8
+† †(C◊‘
+
+† †(C
+%7*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*=
+
+__unknown_file (!
+Error al registrar asistencia2mostrar_error*
+3
+4*∑
+9
+õ õ(@ö
+ó
+
+õ õ(
+%8"__id*}
+
+__unknown_file (a*_T
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
+modelÄ~
+
+õ õ(@
+%9*"
+
+__unknown_file (
+
+%8*0
+
+__unknown_file (
+
+datos_asistencia2registrar_asistencia*
+7
+8*(
+10
+ô ô("
+
+ô ô(
+void*Û
+11
+ò ò(C◊‘
+
+ò ò(C
+%10*r
+
+__unknown_file (VT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*0
+
+__unknown_file (
+
+datos_asistencia2_validar_datos_asistencia*
+9
+10*(
+12
+î î("
+
+î î(
+void: 
+
+ë# ë(3
+datos_asistenciaBVT
+Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosControllerH

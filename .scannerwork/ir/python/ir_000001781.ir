@@ -1,0 +1,13 @@
+
+
+1int
+;2"Calcula el offset para la consulta SQL (OFFSET)."strself! !("±%
+#
+# #("#get-field# page:%
+#
+# #("	#binop -#*2-:*
+(
+#! #(/"#get-field# page_size:%
+#
+# #(/"	#binop *#*2*:
+# #(/*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

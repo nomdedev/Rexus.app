@@ -1,0 +1,84 @@
+
+falsebool
+"{attr}\\s*="str
+ØÎ"
+        Valida que el contenido sea seguro.
+        
+        Args:
+            content: Contenido a validar
+            
+        Returns:
+            bool: True si el contenido es seguro
+        "str
+trueboolcontentb b(*,(rexus.utils.xss_protection.XSSProtection"t)
+'
+l l("
+__bool__*:BboolH)
+'
+l l("#unaryop !#2!:Bbool"
+l l( *l l(
+"
+m m("€3
+1
+p p(7" #get-field# DANGEROUS_PATTERNS:7
+5
+p p(7"
+builtinsiter*:Btyping.Iterator
+p p(7"q*content2
+0
+p p(7	"
+builtins
+__has_next*:Bbool"
+p p(7	 *p p(H"Þ/
+-
+q u(
+pattern"
+builtinsnext*:!
+
+q1 q(3"#unknown-value#+
+)
+q1 q(>"#get-field# IGNORECASE:!
+
+qA q(C"#unknown-value#'
+%
+qA q(J"#get-field# DOTALL:!
+
+q1 q(J"#unknown-value#!
+
+q q(K"
+research:
+)
+'
+q q(K"
+__bool__*:BboolH"
+q q(K *q q("‚5
+3
+u u(6"" #get-field# DANGEROUS_ATTRIBUTES:7
+5
+u u(6"
+builtinsiter*:Btyping.Iterator
+u u(6"
+r r(""q*content2
+0
+u u(6"
+builtins
+__has_next*:Bbool"
+u u(6	 
+*u u(H"ì	,
+*
+v y(attr"
+builtinsnext*:!
+
+v8 v(:"#unknown-value#+
+)
+v8 v(E"#get-field# IGNORECASE:!
+
+v v(F"
+research:)
+'
+v v(F"
+__bool__*:BboolH"
+v v(F *v v("
+
+y y("
+w w("*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py

@@ -1,0 +1,67 @@
+
+"precio_minimo"str
+
+"total_cantidad"str
+"descuento"str
+"total_items"str
+ 12.50float
+1740.00float
+%"Resumen demo para testing."str
+"total_final"str
+""precio_maximo"str
+1790.00float
+80int
+50.00float
+
+"subtotal"str
+
+3int
+37.75float
+261.00float
+"total_con_descuento"str
+"precio_promedio"str
+#85.00float
+2001.00float
+"compra_id"str
+"impuestos"strself
+Ý Ý(	compra_id
+Ý  Ý(."Æ&
+$
+
+ß ë(	"#new-object#Bdict"
+ 
+
+à à(""	#map-set#:"
+ 
+
+á á(	"	#map-set#:"
+ 
+
+â â( "	#map-set#:
+"
+ 
+
+ã ã("	#map-set#:"
+ 
+
+ä ä("	#map-set#:"
+ 
+
+å å("	#map-set#:"
+ 
+
+æ æ(*"	#map-set#:"
+ 
+
+ç ç(""	#map-set#:"
+ 
+
+è è($"	#map-set#:"
+ 
+
+é é("!"	#map-set#: "
+ 
+
+ê ê("$"	#map-set#:"#
+
+ß ë(	*OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\detalle_model.py

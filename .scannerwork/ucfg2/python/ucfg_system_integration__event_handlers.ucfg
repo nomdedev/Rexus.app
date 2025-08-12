@@ -1,0 +1,101 @@
+
+Lrexus.utils.system_integration.SystemIntegrationManager.setup_event_handlersV
+JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\system_integration.pyÆ Æ("2*¢
+2
+Ç Ç(?y
+w
+
+È$ È(=
+%1"__id*]
+
+__unknown_file (A*?,
+*rexus.utils.system_integration.SystemEvent"
+MODULE_LOADED‹
+ˆ
+
+È? È(U
+%2"__id*n
+
+__unknown_file (R*P9
+7rexus.utils.system_integration.SystemIntegrationManager"
+_on_module_loadedÎË
+
+È È(V
+%3*W
+
+__unknown_file (;9
+7rexus.utils.system_integration.SystemIntegrationManager*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%22register_event_handlerz
+x
+
+É$ É(>
+%4"__id*^
+
+__unknown_file (B*@,
+*rexus.utils.system_integration.SystemEvent"
+ERROR_OCCURREDŒ
+‰
+
+É@ É(W
+%5"__id*o
+
+__unknown_file (S*Q9
+7rexus.utils.system_integration.SystemIntegrationManager"
+_on_error_occurredÎË
+
+É É(X
+%6*W
+
+__unknown_file (;9
+7rexus.utils.system_integration.SystemIntegrationManager*"
+
+__unknown_file (
+
+%4*"
+
+__unknown_file (
+
+%52register_event_handlerx
+v
+
+Ê$ Ê(<
+%7"__id*\
+
+__unknown_file (@*>,
+*rexus.utils.system_integration.SystemEvent"
+DATA_UPDATEDŠ
+‡
+
+Ê> Ê(S
+%8"__id*m
+
+__unknown_file (Q*O9
+7rexus.utils.system_integration.SystemIntegrationManager"
+_on_data_updatedÎË
+
+Ê Ê(T
+%9*W
+
+__unknown_file (;9
+7rexus.utils.system_integration.SystemIntegrationManager*"
+
+__unknown_file (
+
+%7*"
+
+__unknown_file (
+
+%82register_event_handler*
+3*=
+3
+system_integration.py"
+Ì Ì(
+implicit returnB;9
+7rexus.utils.system_integration.SystemIntegrationManagerH

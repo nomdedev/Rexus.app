@@ -1,0 +1,44 @@
+
+!"Estilo para QComboBox."str
+ÔÊ"
+            QComboBox {{
+                border: 2px solid {FormStyleManager.COLORS["border"]};
+                border-radius: 8px;
+                padding: 12px 16px;
+                font-size: 14px;
+                color: {FormStyleManager.COLORS["text"]};
+                background-color: {FormStyleManager.COLORS["background"]};
+                min-width: 120px;
+            }}
+            
+            QComboBox:focus {{
+                border-color: {FormStyleManager.COLORS["border_focus"]};
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QComboBox:hover {{
+                border-color: {FormStyleManager.COLORS["primary_light"]};
+            }}
+            
+            QComboBox::drop-down {{
+                border: none;
+                width: 30px;
+            }}
+            
+            QComboBox::down-arrow {{
+                image: none;
+                border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 7px solid {FormStyleManager.COLORS["text_muted"]};
+                margin-right: 5px;
+            }}
+            
+            QComboBox QAbstractItemView {{
+                border: 2px solid {FormStyleManager.COLORS["border"]};
+                border-radius: 8px;
+                background-color: {FormStyleManager.COLORS["background"]};
+                selection-background-color: {FormStyleManager.COLORS["primary_light"]};
+                padding: 4px;
+            }}
+        "str"
+	r š(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py

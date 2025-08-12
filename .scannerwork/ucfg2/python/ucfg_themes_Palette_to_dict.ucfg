@@ -1,0 +1,568 @@
+
+&rexus.core.themes.ColorPalette.to_dictG
+=C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\themes.py5 5("2*∑4
+26 6(7
+7 R(	
+%1"dicte
+c
+8 8(#
+%2"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+primaryé
+ã
+8 8(#
+%3"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+primary*"
+
+__unknown_file (
+
+%2g
+e
+9 9('
+%4"__id*M
+
+__unknown_file (1*/ 
+rexus.core.themes.ColorPalette"
+	secondaryê
+ç
+9 9('
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	secondary*"
+
+__unknown_file (
+
+%4h
+f
+: :()
+%6"__id*N
+
+__unknown_file (2*0 
+rexus.core.themes.ColorPalette"
+
+backgroundë
+é
+: :()
+%7"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+background*"
+
+__unknown_file (
+
+%6e
+c
+; ;(#
+%8"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+surfaceé
+ã
+; ;(#
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+surface*"
+
+__unknown_file (
+
+%8n
+l
+< <(3
+%10"__id*S
+
+__unknown_file (7*5 
+rexus.core.themes.ColorPalette"
+surface_variantò
+ï
+< <(3
+%11"__mapSet*"
+
+__unknown_file (
+
+%1*/
+
+__unknown_file (
+surface_variant*#
+
+__unknown_file (
+
+%10i
+g
+= =()
+%12"__id*N
+
+__unknown_file (2*0 
+rexus.core.themes.ColorPalette"
+
+on_primaryì
+ê
+= =()
+%13"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+on_primary*#
+
+__unknown_file (
+
+%12k
+i
+> >(-
+%14"__id*P
+
+__unknown_file (4*2 
+rexus.core.themes.ColorPalette"
+on_secondaryï
+í
+> >(-
+%15"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+on_secondary*#
+
+__unknown_file (
+
+%14l
+j
+? ?(/
+%16"__id*Q
+
+__unknown_file (5*3 
+rexus.core.themes.ColorPalette"
+on_backgroundñ
+ì
+? ?(/
+%17"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+on_background*#
+
+__unknown_file (
+
+%16i
+g
+@ @()
+%18"__id*N
+
+__unknown_file (2*0 
+rexus.core.themes.ColorPalette"
+
+on_surfaceì
+ê
+@ @()
+%19"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+on_surface*#
+
+__unknown_file (
+
+%18q
+o
+A" A(9
+%20"__id*V
+
+__unknown_file (:*8 
+rexus.core.themes.ColorPalette"
+on_surface_variantõ
+ò
+A A(9
+%21"__mapSet*"
+
+__unknown_file (
+
+%1*2
+
+__unknown_file (
+on_surface_variant*#
+
+__unknown_file (
+
+%20f
+d
+B B(#
+%22"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+successê
+ç
+B B(#
+%23"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+success*#
+
+__unknown_file (
+
+%22f
+d
+C C(#
+%24"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+warningê
+ç
+C C(#
+%25"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+warning*#
+
+__unknown_file (
+
+%24d
+b
+D D(
+%26"__id*I
+
+__unknown_file (-*+ 
+rexus.core.themes.ColorPalette"
+erroré
+ã
+D D(
+%27"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+error*#
+
+__unknown_file (
+
+%26c
+a
+E E(
+%28"__id*H
+
+__unknown_file (,** 
+rexus.core.themes.ColorPalette"
+infoç
+ä
+E E(
+%29"__mapSet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+info*#
+
+__unknown_file (
+
+%28e
+c
+F F(!
+%30"__id*J
+
+__unknown_file (.*, 
+rexus.core.themes.ColorPalette"
+borderè
+å
+F F(!
+%31"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+border*#
+
+__unknown_file (
+
+%30k
+i
+G G(-
+%32"__id*P
+
+__unknown_file (4*2 
+rexus.core.themes.ColorPalette"
+border_focusï
+í
+G G(-
+%33"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+border_focus*#
+
+__unknown_file (
+
+%32e
+c
+H H(!
+%34"__id*J
+
+__unknown_file (.*, 
+rexus.core.themes.ColorPalette"
+shadowè
+å
+H H(!
+%35"__mapSet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+shadow*#
+
+__unknown_file (
+
+%34f
+d
+I I(#
+%36"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+overlayê
+ç
+I I(#
+%37"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+overlay*#
+
+__unknown_file (
+
+%36i
+g
+J J()
+%38"__id*N
+
+__unknown_file (2*0 
+rexus.core.themes.ColorPalette"
+
+sidebar_bgì
+ê
+J J()
+%39"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+sidebar_bg*#
+
+__unknown_file (
+
+%38m
+k
+K K(1
+%40"__id*R
+
+__unknown_file (6*4 
+rexus.core.themes.ColorPalette"
+sidebar_activeó
+î
+K K(1
+%41"__mapSet*"
+
+__unknown_file (
+
+%1*.
+
+__unknown_file (
+sidebar_active*#
+
+__unknown_file (
+
+%40l
+j
+L L(/
+%42"__id*Q
+
+__unknown_file (5*3 
+rexus.core.themes.ColorPalette"
+sidebar_hoverñ
+ì
+L L(/
+%43"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+sidebar_hover*#
+
+__unknown_file (
+
+%42h
+f
+M M('
+%44"__id*M
+
+__unknown_file (1*/ 
+rexus.core.themes.ColorPalette"
+	header_bgí
+è
+M M('
+%45"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	header_bg*#
+
+__unknown_file (
+
+%44g
+e
+N N(%
+%46"__id*L
+
+__unknown_file (0*. 
+rexus.core.themes.ColorPalette"
+
+input_bgë
+é
+N N(%
+%47"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+input_bg*#
+
+__unknown_file (
+
+%46k
+i
+O O(-
+%48"__id*P
+
+__unknown_file (4*2 
+rexus.core.themes.ColorPalette"
+button_hoverï
+í
+O O(-
+%49"__mapSet*"
+
+__unknown_file (
+
+%1*,
+
+__unknown_file (
+button_hover*#
+
+__unknown_file (
+
+%48l
+j
+P P(/
+%50"__id*Q
+
+__unknown_file (5*3 
+rexus.core.themes.ColorPalette"
+button_activeñ
+ì
+P P(/
+%51"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+button_active*#
+
+__unknown_file (
+
+%50f
+d
+Q Q(#
+%52"__id*K
+
+__unknown_file (/*- 
+rexus.core.themes.ColorPalette"	
+card_bgê
+ç
+Q Q(#
+%53"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+card_bg*#
+
+__unknown_file (
+
+%52"
+7 R(	
+
+%1B" 
+rexus.core.themes.ColorPaletteH

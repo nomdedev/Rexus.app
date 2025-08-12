@@ -1,0 +1,76 @@
+
+E<"Determina si un permiso es sensible y requiere auditorÃ­a."strself
+—! —(%
+permission
+—' —(=%!rexus.core.rbac_system.Permission"¦<
+:
+
+™  ¤(	sensitive_permissions"#new-object#Bset.
+,
+
+š š(""#get-field# DELETE_USER:(
+&
+
+™  ¤(	"#array-add-last#:/
+-
+
+› ›(#"#get-field# ASSIGN_ROLES:(
+&
+
+™  ¤(		"#array-add-last#:2
+0
+
+œ œ(&
+"#get-field# MANAGE_SECURITY:(
+&
+
+™  ¤(	"#array-add-last#:
+6
+4
+
+ (*"!#get-field# VIEW_SENSITIVE_DATA:(
+&
+
+™  ¤(	"#array-add-last#:0
+.
+
+ž ž($"#get-field# BACKUP_SYSTEM:(
+&
+
+™  ¤(	"#array-add-last#:1
+/
+
+Ÿ Ÿ(%"#get-field# RESTORE_SYSTEM:(
+&
+
+™  ¤(	"#array-add-last#:0
+.
+
+   ($"#get-field# MANAGE_SYSTEM:(
+&
+
+™  ¤(	"#array-add-last#:2
+0
+
+¡ ¡(&"#get-field# VIEW_AUDIT_LOGS:(
+&
+
+™  ¤(	"#array-add-last#:7
+5
+
+¢ ¢(+"" #get-field# APPROVE_TRANSACTIONS:(
+&
+
+™  ¤(	"#array-add-last#:1
+/
+
+£ £(%"#get-field# RESET_PASSWORD:(
+&
+
+™  ¤(	"#array-add-last#:,
+*
+
+¥ ¥(2"
+#binop in#2in:Bbool
+
+¥ ¥(2*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\rbac_system.py

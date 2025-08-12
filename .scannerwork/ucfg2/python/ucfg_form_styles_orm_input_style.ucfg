@@ -1,0 +1,245 @@
+
+=rexus.utils.form_styles.FormStyleManager.get_form_input_styleM
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.pyB B("1*å
+1C C(In
+l
+F# F(:
+%1"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSus
+F# F(D
+%2"__mapGet*"
+
+__unknown_file (
+
+%1*&
+
+__unknown_file (
+
+border2__getitem__n
+l
+J J(/
+%3"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSsq
+J J(7
+%4"__mapGet*"
+
+__unknown_file (
+
+%3*$
+
+__unknown_file (
+text2__getitem__n
+l
+K# K(:
+%5"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSyw
+K# K(H
+%6"__mapGet*"
+
+__unknown_file (
+
+%5**
+
+__unknown_file (
+
+background2__getitem__n
+l
+L- L(D
+%7"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS|z
+L- L(U
+%8"__mapGet*"
+
+__unknown_file (
+
+%7*-
+
+__unknown_file (
+primary_light2__getitem__n
+l
+Q Q(6
+%9"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS|z
+Q Q(F
+%10"__mapGet*"
+
+__unknown_file (
+
+%9*,
+
+__unknown_file (
+border_focus2__getitem__o
+m
+W W(6
+%11"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS~|
+W W(G
+%12"__mapGet*#
+
+__unknown_file (
+
+%11*-
+
+__unknown_file (
+primary_light2__getitem__o
+m
+[ [(6
+%13"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSxv
+[ [(A
+%14"__mapGet*#
+
+__unknown_file (
+
+%13*'
+
+__unknown_file (	
+success2__getitem__o
+m
+` `(6
+%15"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSvt
+` `(?
+%16"__mapGet*#
+
+__unknown_file (
+
+%15*%
+
+__unknown_file (	
+error2__getitem__o
+m
+e e(6
+%17"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSxv
+e e(A
+%18"__mapGet*#
+
+__unknown_file (
+
+%17*'
+
+__unknown_file (	
+warning2__getitem__ý
+ú
+D m(
+%19"__concat*i
+D F("][
+Y
+            QLineEdit, QTextEdit, QPlainTextEdit {{
+                border: 2px solid *
+F# F(D
+
+%2*™
+FE J(Œ‰
+†;
+                border-radius: 8px;
+                padding: 12px 16px;
+                font-size: 14px;
+                color: *
+J J(7
+
+%4*5
+J8 K(")'
+%;
+                background-color: *
+K# K(H
+
+%6*?
+KI L(,31
+/;
+                selection-background-color: *
+L- L(U
+
+%8*Å
+LV Q(¸µ
+²;
+                transition: all 0.3s ease;
+            }}
+            
+            QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
+                border-color: *
+Q Q(F
+
+%10*®
+QG W(¡ž
+›;
+                background-color: #ffffff;
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QLineEdit:hover, QTextEdit:hover, QPlainTextEdit:hover {{
+                border-color: *
+W W(G
+
+%12*x
+WH [(lj
+h;
+            }}
+            
+            QLineEdit[state="valid"] {{
+                border-color: *
+[ [(A
+
+%14*©
+[B `(œ™
+–;
+                background-color: #f8fff9;
+            }}
+            
+            QLineEdit[state="invalid"] {{
+                border-color: *
+` `(?
+
+%16*©
+`@ e(œ™
+–;
+                background-color: #fff8f8;
+            }}
+            
+            QLineEdit[state="warning"] {{
+                border-color: *
+e e(A
+
+%18*Ù
+eB m(ÌÉ
+Æ;
+                background-color: #fffdf8;
+            }}
+            
+            QTextEdit {{
+                min-height: 80px;
+                max-height: 120px;
+            }}
+        "
+D m(
+
+%19B,*
+(rexus.utils.form_styles.FormStyleManagerH

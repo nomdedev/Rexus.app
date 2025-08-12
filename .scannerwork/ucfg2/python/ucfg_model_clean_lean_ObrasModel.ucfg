@@ -1,0 +1,82 @@
+
+*rexus.modules.obras.model_clean.ObrasModelU
+KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\model_clean.pyb b("2*®
+2c c(*É
+Ä
+c c(*?,
+*rexus.modules.obras.model_clean.ObrasModel"
+db_connection"__id*-
+
+__unknown_file (
+
+db_connectionx
+v
+d d("=,
+*rexus.modules.obras.model_clean.ObrasModel"
+tabla_obras"__id*%
+
+__unknown_file (	
+obrasâ
+Ü
+e e(2E,
+*rexus.modules.obras.model_clean.ObrasModel"
+tabla_detalles_obra"__id*-
+
+__unknown_file (
+detalles_obraÑ
+Å
+f f(+<,
+*rexus.modules.obras.model_clean.ObrasModel"
+
+sql_loader"__id*1
+
+__unknown_file (
+
+sql_script_loader*
+4
+5*e
+3
+model_clean.py<:
+k k(
+%1"*rexus.modules.obras.model_clean.ObrasModel"
+k k(
+
+%1*e
+4h h(5Q
+O
+h h(5
+%2"__id*7
+
+__unknown_file (
+
+data_sanitizer_instance*
+6*\
+5hV h(dH
+F
+hV h(d
+%2"__id*.
+
+__unknown_file (
+
+data_sanitizer*
+6*ˇ
+6hV h(dx
+v
+h h(d@,
+*rexus.modules.obras.model_clean.ObrasModel"
+data_sanitizer"__id*"
+
+__unknown_file (
+
+%2qo
+i i( 
+%3*J
+
+__unknown_file (.,
+*rexus.modules.obras.model_clean.ObrasModel2_verificar_tablas*
+3:
+b b()
+db_connection:%
+b+ b(G
+data_sanitizer_instanceB.,
+*rexus.modules.obras.model_clean.ObrasModelH

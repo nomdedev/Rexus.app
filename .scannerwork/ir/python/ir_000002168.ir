@@ -1,0 +1,39 @@
+
+	"item_name"str
+"title"str
+"groups"str
+ËÁ"
+    Crea una configuraciÃ³n estÃ¡ndar para formularios.
+    
+    Args:
+        title: TÃ­tulo del formulario
+        item_name: Nombre del elemento (para mensajes)
+        groups: Lista de grupos de campos
+        size: TamaÃ±o del diÃ¡logo
+    
+    Returns:
+        Dict: ConfiguraciÃ³n del formulario
+    "str
+"size"strtitle
+Ã  Ã(*	item_name
+Ã, Ã(:groups
+Ä Ä(1size
+Ä3 Ä(K"Ê&
+$
+
+Ñ Ö("#new-object#Bdict"
+ 
+
+Ò Ò("	#map-set#:"
+ 
+
+Ó Ó(
+"	#map-set#:	"
+ 
+
+Ô Ô("	#map-set#:"
+ 
+
+Õ Õ("	#map-set#:
+
+Ñ Ö(*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\dialog_utils.py

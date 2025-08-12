@@ -1,0 +1,61 @@
+
+&"Administrador de Desarrollo"str
+"session_token"str
+"all"str
+"admin"str
+
+"nombre_completo"str
+!"development_mode"str
+
+0int
+"rol"str
+truebool
+
+"permisos"str
+"dev_session_token"str
+	"usuario"str
+
+1int
+	"user_id"str
+"is_dev_session"str
+ "login_time"str
+ôè"
+        Crea una sesi√≥n mock para desarrollo.
+        
+        Returns:
+            Diccionario con datos de sesi√≥n simulada
+        "strselfZ Z("list"√$
+"
+a j(	"#new-object#Bdict 
+
+b b("	#map-set#:)
+'
+c c($"#get-field# dev_user: 
+
+c c($	"	#map-set#: 
+
+d d(<"	#map-set#:
+ 
+
+e e("	#map-set#:'
+%
+f f("#unknown-value#Blist&
+$
+f f("
+#is-exact#:Bbool
+
+f f("
+#assume#:8
+6
+f f("#set-field# __collection_size:Bint&
+$
+f f("#array-add-last#: 
+
+f f("	#map-set#: 
+
+g g(0"	#map-set#: 
+
+h h(""	#map-set#: 
+
+i i(,""	#map-set#: !
+a j(	*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\dev_auth_manager.py

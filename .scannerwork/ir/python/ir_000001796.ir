@@ -1,0 +1,25 @@
+
+Õ√"
+        M√©todo que debe implementarse en las clases hijas.
+        
+        Args:
+            offset: N√∫mero de registros a saltar
+            limit: N√∫mero m√°ximo de registros a devolver
+            filters: Diccionario con filtros adicionales
+            
+        Returns:
+            Tupla (lista_datos, total_elementos)
+            
+        Raises:
+            NotImplementedError: Si no se implementa en la clase hija
+        "str
+B9"Las clases hijas deben implementar get_paginated_data()"strself
+† †(offset
+†! †(,limit
+†. †(8filters
+° °(8"VB
+@
+
+∞ ∞(\"NotImplementedError*:BNotImplementedError2
+
+∞ ∞(\*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

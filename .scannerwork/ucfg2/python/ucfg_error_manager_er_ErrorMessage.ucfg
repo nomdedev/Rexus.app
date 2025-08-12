@@ -1,0 +1,105 @@
+
+&rexus.utils.error_manager.ErrorMessageO
+EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyM M("2*Î
+2X X(l
+j
+X X(2(
+&rexus.utils.error_manager.ErrorMessage"
+code"__id*$
+
+__unknown_file (
+
+coden
+l
+Y Y(3(
+&rexus.utils.error_manager.ErrorMessage"
+title"__id*%
+
+__unknown_file (	
+
+titler
+p
+Z Z(5(
+&rexus.utils.error_manager.ErrorMessage"	
+message"__id*'
+
+__unknown_file (
+	
+messagex
+v
+[ [($8(
+&rexus.utils.error_manager.ErrorMessage"
+
+suggestion"__id**
+
+__unknown_file (
+
+
+suggestionx
+v
+\ \($8(
+&rexus.utils.error_manager.ErrorMessage"
+
+error_type"__id**
+
+__unknown_file (
+
+
+error_typet
+r
+] ]( 6(
+&rexus.utils.error_manager.ErrorMessage"
+
+severity"__id*(
+
+__unknown_file (
+
+
+severity‡
+„
+^ ^(2?(
+&rexus.utils.error_manager.ErrorMessage"
+technical_details"__id*1
+
+__unknown_file (
+
+technical_detailst
+r
+_ _( 6(
+&rexus.utils.error_manager.ErrorMessage"
+
+help_url"__id*(
+
+__unknown_file (
+
+
+help_url*
+3*_
+3
+error_manager.py64
+b b
+%1"&rexus.utils.error_manager.ErrorMessage"
+b b
+
+%1:
+O O(
+code:
+P P(
+title:
+Q Q(	
+message:
+R R(
+
+suggestion:
+S S(
+
+error_type:
+T T(
+
+severity:
+U U(#
+technical_details:
+V V(
+
+help_urlB*(
+&rexus.utils.error_manager.ErrorMessageH

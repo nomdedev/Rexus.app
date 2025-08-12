@@ -1,0 +1,36 @@
+
+1("Estilo para QSpinBox y QDoubleSpinBox."str
+Ñ	Ç	"
+            QSpinBox, QDoubleSpinBox {{
+                border: 2px solid {FormStyleManager.COLORS["border"]};
+                border-radius: 8px;
+                padding: 12px 16px;
+                font-size: 14px;
+                color: {FormStyleManager.COLORS["text"]};
+                background-color: {FormStyleManager.COLORS["background"]};
+                min-width: 100px;
+            }}
+            
+            QSpinBox:focus, QDoubleSpinBox:focus {{
+                border-color: {FormStyleManager.COLORS["border_focus"]};
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QSpinBox:hover, QDoubleSpinBox:hover {{
+                border-color: {FormStyleManager.COLORS["primary_light"]};
+            }}
+            
+            QSpinBox::up-button, QDoubleSpinBox::up-button {{
+                border: none;
+                width: 20px;
+                margin-right: 2px;
+            }}
+            
+            QSpinBox::down-button, QDoubleSpinBox::down-button {{
+                border: none;
+                width: 20px;
+                margin-right: 2px;
+            }}
+        "str"
+
+Ÿ ¾(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py

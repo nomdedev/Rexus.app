@@ -1,0 +1,369 @@
+
+]2648.38float
+48int
+,"promedio_orden"str
+á"productos_unicos"str
+i10.7float
+
+C8int
+="porcentaje"str
+
+~2int
+'ã"Materiales de Construcci√≥n"str
+N10int
+ì"proveedores_activos"str
+ë285.50float
+"ordenes_por_estado"str
+12int
+
+
+"APROBADA"str
+ W"Herrajes Industriales"str
+ê"ticket_promedio"str
+845250.30float
+>36.0float
+_12.6float
+ä"categoria_principal"str
+P22150.80float
+4"Materiales del Sur"str
+E28900.15float
+"total_ordenes"str
+[15890.25float
+)"monto_total"str
+;3770.86float
+:
+"promedio"str
+"PENDIENTE"str
+I23.0float
+&é"Perfiles de Aluminio 20x20"str
+G3612.52float
+
+"RECIBIDA"str
+18int
+u"proveedor_principal"str
+b"Perfiles T√©cnicos"str
+
+3int
+"CANCELADA"str
+à86int
+
+"cantidad"str
+R2215.08float
+Ö	"Al alza"str
+6	"ordenes"str
+Ñ"tendencia"str
+!ç"producto_mas_comprado"str
+/"ordenes_mes"str
+-2618.35float
+Ç"compras_mes"str
+
+Y6int
+L"Vidrios y Cristales"str
+e13489.25float
+Ä"compras_semana"str
+;2"Estad√≠sticas demo cuando no hay conexi√≥n a BD."str
+T17.6float
+}"compras_hoy"str
+A"Construcciones Norte"str
+1"proveedores_analisis"str
+15int
+
+"0int
+g1124.10float
+3"proveedor"str
+*	125680.75float
+	"estado"strself
+‡ ‡(#list"ˇ&
+$
+
+‚ ë(	"#new-object#Bdict"
+ 
+
+‰ ‰("	#map-set#:&
+$
+
+Ê Ê(6"#new-object#Bdict"
+ 
+
+Ê Ê(%"	#map-set#:	
+"
+ 
+
+Ê' Ê(5"	#map-set#:&
+$
+
+Á Á(7"#new-object#Bdict"
+ 
+
+Á Á(&"	#map-set#:	"
+ 
+
+Á( Á(6"	#map-set#:&
+$
+
+Ë Ë(6"#new-object#Bdict"
+ 
+
+Ë Ë(%"	#map-set#:	"
+ 
+
+Ë' Ë(5"	#map-set#:&
+$
+
+È È(6"#new-object#Bdict"
+ 
+
+È È(&"	#map-set#:	"
+ 
+
+È( È(5"	#map-set#:)
+'
+
+Â" Í("#unknown-value#Blist(
+&
+
+Â" Í( "
+#is-exact#:Bbool
+
+
+Â" Í(!"
+#assume#: :
+8
+
+Â" Í(#"#set-field# __collection_size:"Bint(
+&
+
+Â" Í($"#array-add-last#:(
+&
+
+Â" Í(%"#array-add-last#:(
+&
+
+Â" Í(&"#array-add-last#:(
+&
+
+Â" Í('"#array-add-last#:"
+ 
+
+Â Í(("	#map-set#:"
+ 
+
+Î Î($+"	#map-set#:)*"
+ 
+
+Ï Ï(%."	#map-set#:,-"
+ 
+
+Ì Ì(0"	#map-set#:/'
+%
+Ò Ò(Ñ2"#new-object#Bdict"
+ 
+
+Ò Ò(25"	#map-set#:234"
+ 
+
+Ò4 Ò(A7"	#map-set#:26"
+ 
+
+ÒC Ò(Z9"	#map-set#:2)8"
+ 
+
+Ò\ Ò(o<"	#map-set#:2:;#
+!
+Òq Ò(É?"	#map-set#:2=>'
+%
+Ú Ú(Ö@"#new-object#Bdict"
+ 
+
+Ú Ú(4B"	#map-set#:@3A"
+ 
+
+Ú6 Ú(BD"	#map-set#:@6C"
+ 
+
+ÚD Ú([F"	#map-set#:@)E"
+ 
+
+Ú] Ú(pH"	#map-set#:@:G#
+!
+Úr Ú(ÑJ"	#map-set#:@=I'
+%
+Û Û(ÖK"#new-object#Bdict"
+ 
+
+Û Û(3M"	#map-set#:K3L"
+ 
+
+Û5 Û(BO"	#map-set#:K6N"
+ 
+
+ÛD Û([Q"	#map-set#:K)P"
+ 
+
+Û] Û(pS"	#map-set#:K:R#
+!
+Ûr Û(ÑU"	#map-set#:K=T'
+%
+Ù Ù(ÜV"#new-object#Bdict"
+ 
+
+Ù Ù(5X"	#map-set#:V3W"
+ 
+
+Ù7 Ù(CZ"	#map-set#:V6Y"
+ 
+
+ÙE Ù(\\"	#map-set#:V)["
+ 
+
+Ù^ Ù(q^"	#map-set#:V:]#
+!
+Ùs Ù(Ö`"	#map-set#:V=_'
+%
+ı ı(Éa"#new-object#Bdict"
+ 
+
+ı ı(1c"	#map-set#:a3b"
+ 
+
+ı3 ı(@d"	#map-set#:a6"
+ 
+
+ıB ı(Yf"	#map-set#:a)e"
+ 
+
+ı[ ı(nh"	#map-set#:a:g#
+!
+ıp ı(Çj"	#map-set#:a=i)
+'
+
+$ ˆ(k"#unknown-value#Blist(
+&
+
+$ ˆ(l"
+#is-exact#:kBbool
+
+
+$ ˆ(m"
+#assume#:l:
+8
+
+$ ˆ(n"#set-field# __collection_size:k"Bint(
+&
+
+$ ˆ(o"#array-add-last#:k2(
+&
+
+$ ˆ(p"#array-add-last#:k@(
+&
+
+$ ˆ(q"#array-add-last#:kK(
+&
+
+$ ˆ(r"#array-add-last#:kV(
+&
+
+$ ˆ(s"#array-add-last#:ka"
+ 
+
+ ˆ(t"	#map-set#:1k&
+$
+
+˜# ˝(v"#new-object#Bdict"
+ 
+
+¯ ¯(1w"	#map-set#:v34"
+ 
+
+˘ ˘(x"	#map-set#:v6"
+ 
+
+˙ ˙('y"	#map-set#:v)8"
+ 
+
+˚ ˚(#z"	#map-set#:v:;"
+ 
+
+¸ ¸("{"	#map-set#:v=>"
+ 
+
+˜ ˝(|"	#map-set#:uv"
+ 
+
+Ä Ä("	#map-set#:}~$
+"
+
+Å Å(Å"	#map-set#:ÄC$
+"
+
+Ç Ç(É"	#map-set#:Ç%
+#
+
+É É("Ü"	#map-set#:ÑÖ%
+#
+
+Ü Ü("â"	#map-set#:áà%
+#
+
+á á(?å"	#map-set#:äã%
+#
+
+à à(Aè"	#map-set#:çé%
+#
+
+â â(%í"	#map-set#:êë'
+%
+
+ç ç(Cî"#new-object#Bdict$
+"
+
+ç ç(2ï"	#map-set#:î34$
+"
+
+ç4 ç(Bñ"	#map-set#:î'
+%
+
+é é(Dó"#new-object#Bdict$
+"
+
+é é(4ò"	#map-set#:ó3A$
+"
+
+é6 é(Cô"	#map-set#:óC'
+%
+
+è è(Dö"#new-object#Bdict$
+"
+
+è è(3õ"	#map-set#:ö3L$
+"
+
+è5 è(Cú"	#map-set#:öN*
+(
+
+å# ê(ù"#unknown-value#Blist*
+(
+
+å# ê(û"
+#is-exact#:ùBbool!
+
+
+å# ê(ü"
+#assume#:û<
+:
+
+å# ê(†"#set-field# __collection_size:ù"Bint+
+)
+
+å# ê(°"#array-add-last#:ùî+
+)
+
+å# ê(¢"#array-add-last#:ùó+
+)
+
+å# ê(£"#array-add-last#:ùö%
+#
+
+å ê(§"	#map-set#:ìù
+
+‚ ë(	*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\model.py

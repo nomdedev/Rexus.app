@@ -1,0 +1,21 @@
+
+
+0int
+
+1int
+<3"Número del primer elemento en la página actual."strself0 0("x,
+*
+2 2("#get-field# total_items:*
+(
+2 2( "
+#binop ==#2==:Bbool"
+2 2(  *2 2(
+"
+3 3("�'
+%
+4 4("#get-field# offset:,
+*
+4 4("?python-partial-apply?:"
+ 
+4 4(	"	#binop +#2+:
+4 4(	*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

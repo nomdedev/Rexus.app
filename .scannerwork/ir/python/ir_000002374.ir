@@ -1,0 +1,89 @@
+
+8/"Estilo para botones con diferentes variantes."str
+ÒÁ"
+            QPushButton {{
+                border: none;
+                border-radius: 8px;
+                padding: 12px 24px;
+                font-size: 14px;
+                font-weight: 600;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                min-width: 100px;
+            }}
+            
+            /* Bot√≥n primario */
+            QPushButton[buttonType="primary"] {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["primary"]}, 
+                    stop:1 {FormStyleManager.COLORS["primary_dark"]});
+                color: white;
+            }}
+            
+            QPushButton[buttonType="primary"]:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["primary_light"]}, 
+                    stop:1 {FormStyleManager.COLORS["primary"]});
+                /* transform no soportado en Qt - removido */
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            QPushButton[buttonType="primary"]:pressed {{
+                background: {FormStyleManager.COLORS["primary_dark"]};
+                /* transform no soportado en Qt - removido */
+            }}
+            
+            /* Bot√≥n de √©xito */
+            QPushButton[buttonType="success"] {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["success"]}, 
+                    stop:1 {FormStyleManager.COLORS["success_dark"]});
+                color: white;
+            }}
+            
+            QPushButton[buttonType="success"]:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["success_light"]}, 
+                    stop:1 {FormStyleManager.COLORS["success"]});
+                /* transform no soportado en Qt - removido */
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            /* Bot√≥n de error/cancelar */
+            QPushButton[buttonType="danger"] {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["error"]}, 
+                    stop:1 {FormStyleManager.COLORS["error_dark"]});
+                color: white;
+            }}
+            
+            QPushButton[buttonType="danger"]:hover {{
+                background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                    stop:0 {FormStyleManager.COLORS["error_light"]}, 
+                    stop:1 {FormStyleManager.COLORS["error"]});
+                /* transform no soportado en Qt - removido */
+                /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
+            }}
+            
+            /* Bot√≥n secundario */
+            QPushButton[buttonType="secondary"], QPushButton {{
+                background-color: {FormStyleManager.COLORS["light"]};
+                color: {FormStyleManager.COLORS["text"]};
+                border: 2px solid {FormStyleManager.COLORS["border"]};
+            }}
+            
+            QPushButton[buttonType="secondary"]:hover, QPushButton:hover {{
+                background-color: {FormStyleManager.COLORS["border"]};
+                border-color: {FormStyleManager.COLORS["secondary"]};
+                /* transform no soportado en Qt - removido */
+            }}
+            
+            QPushButton:disabled {{
+                background-color: {FormStyleManager.COLORS["border"]};
+                color: {FormStyleManager.COLORS["text_muted"]};
+                cursor: not-allowed;
+            }}
+        "str"
+
+√ ó(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py

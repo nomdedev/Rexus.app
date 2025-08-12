@@ -1,0 +1,32 @@
+
+"obras"str
++
+""Tabla no permitida: {table_name}"str
+"detalles_obra"str
+ÜÒ"
+        Valida el nombre de tabla para prevenir SQL injection.
+
+        Args:
+            table_name: Nombre de la tabla a validar
+
+        Returns:
+            str: Nombre de tabla validado
+        "strselfC C(!
+table_nameC# C(2"×3
+1
+N N(3allowed_tables"#new-object#Bset&
+$
+N N(3"#array-add-last#:&
+$
+N N(3"#array-add-last#:2
+0
+O O(+	"#binop not in#2not in:Bbool"
+O O(+	 *O O(
+"B.
+,
+P P(A"
+ValueError*:
+B
+ValueError2
+P P(A"
+Q Q(*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\model.py

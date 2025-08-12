@@ -1,0 +1,68 @@
+
+Crexus.ui.templates.base_module_view.BaseModuleView.confirmar_accion[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\templates\base_module_view.pyò ò("2*Ò
+2
+ó õ(õò
+
+ø ø(@
+%1*R
+
+__unknown_file (64
+2rexus.ui.templates.base_module_view.BaseModuleView*(
+
+__unknown_file (
+
+pregunta*&
+
+__unknown_file (
+
+
+titulo*'
+
+__unknown_file (
+	
+mensaje2mostrar_mensaje[
+Y
+
+øD ø(^
+%2"__id*?
+
+__unknown_file (#*!
+
+QMessageBox"
+StandardButtonG
+E
+
+øD ø(b
+%3"__id*+
+
+__unknown_file (*
+
+%2"
+YesŒ
+‰
+
+ø ø(b
+%4"	__compare*"
+
+__unknown_file (
+==*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%3"
+
+ø ø(b
+
+%4:
+
+ò ò(&	
+mensaje:
+
+ò( ò(:
+tituloB64
+2rexus.ui.templates.base_module_view.BaseModuleViewH

@@ -1,0 +1,136 @@
+
+[rexus.modules.administracion.contabilidad.controller.ContabilidadController.imprimir_recibol
+`C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\contabilidad\controller.py» »("2*¯
+2
+¼ ¼(?”
+‘
+
+½ ½(
+%11"__id*v
+
+__unknown_file (Z*XM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+model*
+9
+10*5
+3
+controller.py"
+Ñ Ñ(
+implicit return*¯
+4
+Í Í(@a
+_
+
+Í Í(?
+%1"__concat*,
+
+Í! Í(;
+Error imprimiendo recibo: *
+
+Í< Í(=
+
+eµ²
+
+Í Í(@
+%2*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*"
+
+__unknown_file (
+
+%12mostrar_error*
+3*Ò
+7
+Â Â(CÐÍ
+
+Â Â(C
+%3*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*;
+
+__unknown_file (
+Recibo marcado como impreso2mostrar_mensaje’
+
+Ã Ã(%
+%4*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController2cargar_recibosœ
+™
+
+Ä Ä(#
+%5"__id*
+
+__unknown_file (c*aM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+recibo_impresoig
+
+Ä Ä(3
+%6*"
+
+__unknown_file (
+
+%5*)
+
+__unknown_file (
+
+	recibo_id2emitÆÃ
+
+Ç Ç(7
+%7*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*)
+
+__unknown_file (
+
+	recibo_id2_generar_archivo_recibo*
+3
+4*ð
+8
+Ê Ê(IÖÓ
+
+Ê Ê(I
+%8*k
+
+__unknown_file (OM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController*C
+
+__unknown_file ('%
+#Error al marcar recibo como impreso2mostrar_error*
+3
+4*ª
+9
+Á Á(:“
+
+
+Á Á(
+%9"__id*v
+
+__unknown_file (Z*XM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
+model{y
+
+Á Á(:
+%10*"
+
+__unknown_file (
+
+%9*)
+
+__unknown_file (
+
+	recibo_id2marcar_recibo_impreso*
+7
+8*(
+10
+¾ ¾("
+
+¾ ¾(
+void:
+
+» »('
+	recibo_idBOM
+Krexus.modules.administracion.contabilidad.controller.ContabilidadControllerH

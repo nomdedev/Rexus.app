@@ -1,0 +1,14 @@
+
+I@"Verifica una contrase√±a contra su hash usando sistema seguro."strself
+‹ ‹( password
+‹" ‹(/hash_almacenado
+‹1 ‹(E"ü<
+:
+
+ﬁ ﬁ(Hverify_password_secure"?python-unknown?M
+K
+
+‡ ‡(@"7
+rexus.utils.password_securityverify_password_secure:
+
+‡ ‡(@*HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\model.py

@@ -1,0 +1,443 @@
+
+?6"Generar stylesheet completo basado en el tema actual"str
+""str
+éK	ÑK"
+/* ===== ESTILOS GLOBALES ===== */
+QWidget {{
+    font-family: "{self.current_font_family}";
+    font-size: {self.current_font_size}pt;
+    color: {colors['on_background']};
+    background-color: {colors['background']};
+}}
+
+/* ===== APLICACI√ìN PRINCIPAL ===== */
+QMainWindow {{
+    background-color: {colors['background']};
+    border: none;
+}}
+
+QMainWindow::separator {{
+    background-color: {colors['border']};
+    width: 1px;
+    height: 1px;
+}}
+
+/* ===== BOTONES ===== */
+QPushButton {{
+    background-color: {colors['primary']};
+    color: {colors['on_primary']};
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    font-weight: 500;
+    min-width: 80px;
+    min-height: 28px;
+}}
+
+QPushButton:hover {{
+    background-color: {colors['button_hover']};
+}}
+
+QPushButton:pressed {{
+    background-color: {colors['button_active']};
+}}
+
+QPushButton:disabled {{
+    background-color: {colors['surface_variant']};
+    color: {colors['on_surface_variant']};
+}}
+
+QPushButton[buttonType="secondary"] {{
+    background-color: {colors['surface']};
+    color: {colors['on_surface']};
+    border: 1px solid {colors['border']};
+}}
+
+QPushButton[buttonType="secondary"]:hover {{
+    background-color: {colors['surface_variant']};
+}}
+
+QPushButton[buttonType="danger"] {{
+    background-color: {colors['error']};
+    color: white;
+}}
+
+QPushButton[buttonType="danger"]:hover {{
+    background-color: #dc2626;
+}}
+
+QPushButton[buttonType="success"] {{
+    background-color: {colors['success']};
+    color: white;
+}}
+
+/* ===== CAMPOS DE ENTRADA ===== */
+QLineEdit, QTextEdit, QPlainTextEdit {{
+    background-color: {colors['input_bg']};
+    border: 2px solid {colors['border']};
+    border-radius: 6px;
+    padding: 8px 12px;
+    selection-background-color: {colors['primary']};
+    selection-color: {colors['on_primary']};
+}}
+
+QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
+    border-color: {colors['border_focus']};
+}}
+
+QLineEdit:disabled, QTextEdit:disabled, QPlainTextEdit:disabled {{
+    background-color: {colors['surface_variant']};
+    color: {colors['on_surface_variant']};
+}}
+
+/* ===== COMBOBOX ===== */
+QComboBox {{
+    background-color: {colors['input_bg']};
+    border: 2px solid {colors['border']};
+    border-radius: 6px;
+    padding: 6px 12px;
+    min-width: 100px;
+}}
+
+QComboBox:focus {{
+    border-color: {colors['border_focus']};
+}}
+
+QComboBox::drop-down {{
+    border: none;
+    width: 20px;
+}}
+
+QComboBox::down-arrow {{
+    image: none;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-top: 5px solid {colors['on_surface']};
+}}
+
+QComboBox QAbstractItemView {{
+    background-color: {colors['surface']};
+    border: 1px solid {colors['border']};
+    border-radius: 6px;
+    selection-background-color: {colors['primary']};
+    selection-color: {colors['on_primary']};
+}}
+
+/* ===== LABELS ===== */
+QLabel[labelType="title"] {{
+    font-size: {self.current_font_size + 2}pt;
+    font-weight: 600;
+    color: {colors['on_background']};
+}}
+
+QLabel[labelType="subtitle"] {{
+    font-size: {self.current_font_size + 1}pt;
+    font-weight: 500;
+    color: {colors['on_surface']};
+}}
+
+QLabel[labelType="error"] {{
+    color: {colors['error']};
+    font-weight: 500;
+}}
+
+QLabel[labelType="success"] {{
+    color: {colors['success']};
+    font-weight: 500;
+}}
+
+QLabel[labelType="warning"] {{
+    color: {colors['warning']};
+    font-weight: 500;
+}}
+
+QLabel[labelType="info"] {{
+    color: {colors['info']};
+    font-weight: 500;
+}}
+
+/* ===== DI√ÅLOGOS ===== */
+QDialog {{
+    background-color: {colors['card_bg']};
+    border-radius: 12px;
+}}
+
+QMessageBox {{
+    background-color: {colors['card_bg']};
+    border-radius: 8px;
+}}
+
+QMessageBox QLabel {{
+    color: {colors['on_surface']};
+}}
+
+/* ===== TABLAS ===== */
+QTableWidget, QTableView {{
+    background-color: {colors['card_bg']};
+    alternate-background-color: {colors['surface']};
+    border: 1px solid {colors['border']};
+    border-radius: 8px;
+    gridline-color: {colors['border']};
+    selection-background-color: {colors['primary']};
+    selection-color: {colors['on_primary']};
+}}
+
+QTableWidget::item, QTableView::item {{
+    padding: 8px;
+    border: none;
+}}
+
+QTableWidget::item:selected, QTableView::item:selected {{
+    background-color: {colors['primary']};
+    color: {colors['on_primary']};
+}}
+
+QHeaderView::section {{
+    background-color: {colors['surface']};
+    color: {colors['on_surface']};
+    padding: 8px;
+    border: none;
+    border-bottom: 2px solid {colors['primary']};
+    font-weight: 600;
+}}
+
+/* ===== MEN√öS ===== */
+QMenuBar {{
+    background-color: {colors['header_bg']};
+    border-bottom: 1px solid {colors['border']};
+}}
+
+QMenuBar::item {{
+    background-color: transparent;
+    padding: 8px 12px;
+}}
+
+QMenuBar::item:selected {{
+    background-color: {colors['surface_variant']};
+    border-radius: 4px;
+}}
+
+QMenu {{
+    background-color: {colors['surface']};
+    border: 1px solid {colors['border']};
+    border-radius: 8px;
+    padding: 4px;
+}}
+
+QMenu::item {{
+    padding: 8px 16px;
+    border-radius: 4px;
+}}
+
+QMenu::item:selected {{
+    background-color: {colors['primary']};
+    color: {colors['on_primary']};
+}}
+
+/* ===== TOOLBAR ===== */
+QToolBar {{
+    background-color: {colors['surface']};
+    border: none;
+    spacing: 4px;
+    padding: 4px;
+}}
+
+QToolButton {{
+    background-color: transparent;
+    border: none;
+    border-radius: 6px;
+    padding: 6px;
+}}
+
+QToolButton:hover {{
+    background-color: {colors['surface_variant']};
+}}
+
+QToolButton:pressed {{
+    background-color: {colors['primary']};
+    color: {colors['on_primary']};
+}}
+
+/* ===== SIDEBAR ===== */
+QWidget[widgetType="sidebar"] {{
+    background-color: {colors['sidebar_bg']};
+    border-right: 1px solid {colors['border']};
+}}
+
+QPushButton[buttonType="sidebar"] {{
+    background-color: transparent;
+    color: {colors['on_surface']};
+    border: none;
+    border-radius: 8px;
+    padding: 12px 16px;
+    text-align: left;
+    font-weight: 500;
+}}
+
+QPushButton[buttonType="sidebar"]:hover {{
+    background-color: {colors['sidebar_hover']};
+}}
+
+QPushButton[buttonType="sidebar"]:checked {{
+    background-color: {colors['sidebar_active']};
+    color: {colors['on_primary']};
+}}
+
+/* ===== SCROLLBARS ===== */
+QScrollBar:vertical {{
+    background-color: {colors['surface']};
+    width: 12px;
+    border-radius: 6px;
+}}
+
+QScrollBar::handle:vertical {{
+    background-color: {colors['surface_variant']};
+    border-radius: 6px;
+    min-height: 20px;
+}}
+
+QScrollBar::handle:vertical:hover {{
+    background-color: {colors['border']};
+}}
+
+QScrollBar:horizontal {{
+    background-color: {colors['surface']};
+    height: 12px;
+    border-radius: 6px;
+}}
+
+QScrollBar::handle:horizontal {{
+    background-color: {colors['surface_variant']};
+    border-radius: 6px;
+    min-width: 20px;
+}}
+
+QScrollBar::add-line, QScrollBar::sub-line {{
+    border: none;
+    background: none;
+}}
+
+/* ===== TABS ===== */
+QTabWidget::pane {{
+    border: 1px solid {colors['border']};
+    border-radius: 8px;
+    background-color: {colors['card_bg']};
+}}
+
+QTabBar::tab {{
+    background-color: {colors['surface']};
+    padding: 8px 16px;
+    margin-right: 2px;
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+}}
+
+QTabBar::tab:selected {{
+    background-color: {colors['primary']};
+    color: {colors['on_primary']};
+}}
+
+QTabBar::tab:hover {{
+    background-color: {colors['surface_variant']};
+}}
+
+/* ===== PROGRESS BAR ===== */
+QProgressBar {{
+    background-color: {colors['surface']};
+    border: 1px solid {colors['border']};
+    border-radius: 10px;
+    text-align: center;
+}}
+
+QProgressBar::chunk {{
+    background-color: {colors['primary']};
+    border-radius: 10px;
+}}
+
+/* ===== CHECKBOX Y RADIO ===== */
+QCheckBox, QRadioButton {{
+    spacing: 8px;
+}}
+
+QCheckBox::indicator, QRadioButton::indicator {{
+    width: 16px;
+    height: 16px;
+}}
+
+QCheckBox::indicator:unchecked {{
+    background-color: {colors['input_bg']};
+    border: 2px solid {colors['border']};
+    border-radius: 4px;
+}}
+
+QCheckBox::indicator:checked {{
+    background-color: {colors['primary']};
+    border: 2px solid {colors['primary']};
+    border-radius: 4px;
+}}
+
+QRadioButton::indicator:unchecked {{
+    background-color: {colors['input_bg']};
+    border: 2px solid {colors['border']};
+    border-radius: 8px;
+}}
+
+QRadioButton::indicator:checked {{
+    background-color: {colors['primary']};
+    border: 2px solid {colors['primary']};
+    border-radius: 8px;
+}}
+
+/* ===== STATUS BAR ===== */
+QStatusBar {{
+    background-color: {colors['surface']};
+    border-top: 1px solid {colors['border']};
+    color: {colors['on_surface']};
+}}
+
+/* ===== TOOLTIPS ===== */
+QToolTip {{
+    background-color: {colors['surface_variant']};
+    color: {colors['on_surface_variant']};
+    border: 1px solid {colors['border']};
+    border-radius: 6px;
+    padding: 6px 8px;
+}}
+
+/* ===== TARJETAS PERSONALIZADAS ===== */
+QWidget[widgetType="card"] {{
+    background-color: {colors['card_bg']};
+    border: 1px solid {colors['border']};
+    border-radius: 12px;
+}}
+
+QWidget[widgetType="header"] {{
+    background-color: {colors['header_bg']};
+    border-bottom: 1px solid {colors['border']};
+}}
+"strself
+¡& ¡(*"Æ0
+.
+
+√ √(!"#get-field# current_theme:+
+)
+
+√ √(!"
+__bool__*:BboolH+
+)
+
+√ √(!"#unaryop !#2!:Bbool "
+
+√ √(! *
+√ √(
+"
+
+ƒ ƒ("t0
+.
+
+∆ ∆(#"#get-field# current_theme:,
+*
+
+∆ ∆(-colors"	to_dict* :H
+
+» Ê(	*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\theme_manager.py

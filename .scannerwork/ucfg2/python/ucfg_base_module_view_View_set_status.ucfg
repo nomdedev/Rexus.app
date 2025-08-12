@@ -1,0 +1,56 @@
+
+=rexus.ui.templates.base_module_view.BaseModuleView.set_status[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\templates\base_module_view.pyÛ Û("2*û
+2
+Ü Ü(.€
+~
+
+Ý Ý(
+%1"__id*d
+
+__unknown_file (H*F4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+status_labeljh
+
+Ý Ý(*
+%2*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (
+	
+message2setText€
+~
+
+Þ Þ(
+%3"__id*d
+
+__unknown_file (H*F4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+progress_barsq
+
+Þ Þ(3
+%4*"
+
+__unknown_file (
+
+%3*-
+
+__unknown_file (
+
+show_progress2
+setVisible*
+3*;
+3
+base_module_view.py"
+à à(
+implicit return:
+
+Û Û(%	
+message:
+
+Û' Û(B
+show_progressB64
+2rexus.ui.templates.base_module_view.BaseModuleViewH

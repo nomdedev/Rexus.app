@@ -1,0 +1,50 @@
+
+
+
+"Herrajes"str
+7."[SIMPLE_AUTH] M√≥dulos permitidos: {modules}"str
+	"Compras"str
+
+0int
+"Inventario"str
+"Mantenimiento"str
+	"Log√≠stica"str
+G>"[SIMPLE_AUTH] Obteniendo m√≥dulos para usuario ID: {user_id}"str
+'"Lista de m√≥dulos permitidos"str
+"Administraci√≥n"str
+"Obras"str
+"Configuraci√≥n"str
+
+"Usuarios"str
+	"Pedidos"str
+	"Vidrios"str
+"Auditor√≠a"strself
+≈ ≈(user_id
+≈ ≈(+list"Ô3
+1
+
+« «(M"
+builtinsprint*:BNoneType2
+0
+
+… ÷(	modules"#unknown-value#Blist(
+&
+
+… ÷(	"
+#is-exact#:Bbool
+
+
+… ÷(	"
+#assume#::
+8
+
+… ÷(	"#set-field# __collection_size:Bint6
+4
+
+… ÷(	modules"?python-unknown?*Blist3
+1
+
+◊ ◊(="
+builtinsprint*:BNoneType
+
+ÿ ÿ(*:C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py

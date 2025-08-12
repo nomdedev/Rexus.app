@@ -1,0 +1,21 @@
+
+7."Obtiene el atajo principal para una acci√≥n."str
+
+0int
+	""strclsj j( actionj" j(-"ﬂ'
+%
+l l(-"#unknown-value#Btypea
+_
+l l(-	shortcuts"B
+1rexus.utils.keyboard_navigation.StandardShortcutsget_shortcuts:)
+'
+m m(("
+__bool__*:BboolH&"$
+m m(( *m m(2m) m(-"6"
+ 
+m m("#array-read#:
+m m(0"
+m m(0"$*
+	
+m m(0
+*KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\keyboard_navigation.py

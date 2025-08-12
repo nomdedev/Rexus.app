@@ -1,0 +1,54 @@
+
+"
+        Trunca un texto a una longitud mรกxima.
+        
+        Args:
+            text: Texto a truncar
+            max_length: Longitud mรกxima
+            suffix: Sufijo para texto truncado
+        
+        Returns:
+            str: Texto truncado
+        "str
+""strtext
+ฑ ฑ(
+max_length
+ฑ! ฑ(0suffix
+ฑ2 ฑ(E"|+
+)
+
+ฝ ฝ("
+__bool__*:BboolH+
+)
+
+ฝ ฝ("#unaryop !#2!:Bbool "
+
+ฝ ฝ( *
+ฝ ฝ(
+"
+
+พ พ("€,
+*
+
+ภ ภ("
+builtinslen*:Bint,
+*
+
+ภ ภ("	"
+#binop <=#2<=:Bbool "
+
+ภ ภ("	 *
+ภ ภ(
+"
+
+ม ม("_#
+!
+
+ร ร(.
+"#unknown-value#$
+"
+
+ร ร(7"	#binop +#2+:
+
+
+ร ร(7*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\format_utils.py

@@ -1,0 +1,103 @@
+
+?rexus.utils.contextual_error_system.ErrorCatalog.get_all_errors[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\contextual_error_system.py÷ ÷("2*„	
+2
+◊ ◊(5
+
+ÿ ÿ(
+%1"dictF
+D
+
+ÿ ÿ(
+
+all_errors"__id*"
+
+__unknown_file (
+
+%1Ñ
+Å
+
+Ÿ Ÿ(/
+%2"__id*g
+
+__unknown_file (K*I2
+0rexus.utils.contextual_error_system.ErrorCatalog"
+VALIDATION_ERRORSãà
+
+Ÿ Ÿ(0
+%3"typing.MutableMapping.update**
+
+__unknown_file (
+
+
+all_errors*"
+
+__unknown_file (
+
+%22updateÅ
+
+
+⁄ ⁄(-
+%4"__id*e
+
+__unknown_file (I*G2
+0rexus.utils.contextual_error_system.ErrorCatalog"
+DATABASE_ERRORSãà
+
+⁄ ⁄(.
+%5"typing.MutableMapping.update**
+
+__unknown_file (
+
+
+all_errors*"
+
+__unknown_file (
+
+%42updateÅ
+
+
+€ €(-
+%6"__id*e
+
+__unknown_file (I*G2
+0rexus.utils.contextual_error_system.ErrorCatalog"
+SECURITY_ERRORSãà
+
+€ €(.
+%7"typing.MutableMapping.update**
+
+__unknown_file (
+
+
+all_errors*"
+
+__unknown_file (
+
+%62updateà
+Ö
+
+‹ ‹(3
+%8"__id*k
+
+__unknown_file (O*M2
+0rexus.utils.contextual_error_system.ErrorCatalog"
+BUSINESS_LOGIC_ERRORSãà
+
+‹ ‹(4
+%9"typing.MutableMapping.update**
+
+__unknown_file (
+
+
+all_errors*"
+
+__unknown_file (
+
+%82update"
+
+› ›(
+
+
+all_errorsB42
+0rexus.utils.contextual_error_system.ErrorCatalogH

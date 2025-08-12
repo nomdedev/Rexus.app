@@ -1,0 +1,95 @@
+
+;rexus.utils.smart_tooltips.SmartTooltipsManager.add_tooltipP
+FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\smart_tooltips.py ("3"4*7
+3
+smart_tooltips.py"
+" "(
+implicit return*Ú
+4 (#lj
+ (#
+%1*&
+
+__unknown_file (
+
+
+widget*$
+
+__unknown_file (
+
+text2
+setToolTip
+(  (
+%2"dictç
+ä
+ (
+%3"__mapSet*"
+
+__unknown_file (
+
+%2*$
+
+__unknown_file (
+text*$
+
+__unknown_file (
+
+textè
+å
+ (
+%4"__mapSet*"
+
+__unknown_file (
+
+%2*%
+
+__unknown_file (	
+delay*%
+
+__unknown_file (	
+
+delayë
+é
+ ( 
+%5"__mapSet*"
+
+__unknown_file (
+
+%2*(
+
+__unknown_file (
+
+enhanced*$
+
+__unknown_file (
+
+True{
+y
+ (
+%7"__id*a
+
+__unknown_file (E*C1
+/rexus.utils.smart_tooltips.SmartTooltipsManager"
+tooltip_data¢ü
+  (
+%6"dict.__setitem__*"
+
+__unknown_file (
+
+%7*&
+
+__unknown_file (
+
+
+widget*"
+
+__unknown_file (
+
+%22__setitem__*
+3:
+ ()
+widget:
++ (4
+text:
+6 (F
+delayB31
+/rexus.utils.smart_tooltips.SmartTooltipsManagerH

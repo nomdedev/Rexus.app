@@ -1,0 +1,27 @@
+
+truebool
+��"
+    Decorador que requiere autenticación para ejecutar el método.
+    
+    Args:
+        func: Función a proteger
+        
+    Returns:
+        Función decorada que verifica autenticación
+        
+    Raises:
+        AuthenticationError: Si el usuario no está autenticado
+    "strfunc ( "�!
+
+F F(	"#unknown-value#!
+
+E E("#unknown-value#(
+&
+& E(%closure"#new-object#&
+$
+& E("#set-field# func:+
+)
+& E("?python-partial-apply?:0
+.
+E E("#set-field# _auth_required:
+F F(	*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

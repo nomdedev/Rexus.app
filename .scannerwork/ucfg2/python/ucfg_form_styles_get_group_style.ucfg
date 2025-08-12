@@ -1,0 +1,140 @@
+
+8rexus.utils.form_styles.FormStyleManager.get_group_styleO
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.pyÏ Ï("1*Â
+1
+Ð Ð($p
+n
+
+Õ Õ(/
+%1"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSus
+
+Õ Õ(7
+%2"__mapGet*"
+
+__unknown_file (
+
+%1*$
+
+__unknown_file (
+dark2__getitem__p
+n
+
+Ö# Ö(:
+%3"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSwu
+
+Ö# Ö(D
+%4"__mapGet*"
+
+__unknown_file (
+
+%3*&
+
+__unknown_file (
+
+border2__getitem__p
+n
+
+Ú# Ú(:
+%5"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORS{y
+
+Ú# Ú(H
+%6"__mapGet*"
+
+__unknown_file (
+
+%5**
+
+__unknown_file (
+
+background2__getitem__p
+n
+
+á# á(:
+%7"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSxv
+
+á# á(E
+%8"__mapGet*"
+
+__unknown_file (
+
+%7*'
+
+__unknown_file (	
+primary2__getitem__ë
+è
+
+Ñ æ(
+%9"__concat*‹
+
+Ñ Õ(}{
+y
+            QGroupBox {{
+                font-weight: bold;
+                font-size: 16px;
+                color: *
+
+Õ Õ(7
+
+%2*7
+
+Õ8 Ö(")'
+%;
+                border: 2px solid *
+
+Ö# Ö(D
+
+%4*§
+
+ÖE Ú("˜•
+’;
+                border-radius: 12px;
+                margin-top: 20px;
+                padding-top: 15px;
+                background-color: *
+
+Ú# Ú(H
+
+%6*æ
+
+ÚI á("×Ô
+Ñ;
+            }}
+            
+            QGroupBox::title {{
+                subcontrol-origin: margin;
+                left: 15px;
+                padding: 5px 10px;
+                background-color: *
+
+á# á(E
+
+%8*—
+
+áF æ(ˆ…
+‚;
+                color: white;
+                border-radius: 6px;
+                font-weight: 600;
+            }}
+        "
+
+Ñ æ(
+
+%9B,*
+(rexus.utils.form_styles.FormStyleManagerH

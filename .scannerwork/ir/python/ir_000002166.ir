@@ -1,0 +1,23 @@
+
+pg"¬øEst√° seguro que desea eliminar el {item_type} '{item_name}'?\n\nEsta acci√≥n no se puede deshacer."str
+!"Confirmar eliminaci√≥n"str
+Ó‰"
+        Muestra un di√°logo de confirmaci√≥n para eliminar un elemento.
+        
+        Args:
+            parent: Widget padre
+            item_name: Nombre del elemento a eliminar
+            item_type: Tipo de elemento (por defecto "elemento")
+        
+        Returns:
+            bool: True si el usuario confirma la eliminaci√≥n
+        "strparent
+ú ú(	item_name
+ú ú(-	item_type
+ú/ ú(J"UA
+?
+
+® ≠(	"*
+rexus.utils.message_systemask_question:
+
+® ≠(	*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\dialog_utils.py

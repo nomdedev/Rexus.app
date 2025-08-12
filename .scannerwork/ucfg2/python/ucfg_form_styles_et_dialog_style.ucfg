@@ -1,0 +1,95 @@
+
+9rexus.utils.form_styles.FormStyleManager.get_dialog_styleM
+CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py+ +("1*Ã
+1, ,((n
+l
+/# /(:
+%1"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSyw
+/# /(H
+%2"__mapGet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+background2__getitem__n
+l
+1 1(/
+%3"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSsq
+1 1(7
+%4"__mapGet*"
+
+__unknown_file (
+
+%3*$
+
+__unknown_file (
+text2__getitem__n
+l
+7# 7(:
+%5"__id*T
+
+__unknown_file (8*6*
+(rexus.utils.form_styles.FormStyleManager"
+COLORSvt
+7# 7(E
+%6"__mapGet*"
+
+__unknown_file (
+
+%5*'
+
+__unknown_file (	
+primary2__getitem__ç
+ä
+- ?(
+%7"__concat*L
+- /("@>
+<
+            QDialog {{
+                background-color: *
+/# /(H
+
+%2*P
+/I 1(DB
+@;
+                border-radius: 12px;
+                color: *
+1 1(7
+
+%4*Ö
+18 7("ÉÆ
+Ã;
+                font-family: 'Segoe UI', 'Arial', sans-serif;
+                font-size: 14px;
+            }}
+            
+            QDialog::title {{
+                background-color: *
+7# 7(E
+
+%6*’
+7F ?(…‚
+ÿ;
+                color: white;
+                padding: 15px;
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                font-weight: bold;
+                font-size: 16px;
+            }}
+        "
+- ?(
+
+%7B,*
+(rexus.utils.form_styles.FormStyleManagerH

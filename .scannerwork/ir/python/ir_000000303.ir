@@ -1,0 +1,28 @@
+
+çÉ"
+    Funci√≥n de conveniencia para obtener consultas SQL.
+
+    Args:
+        module: M√≥dulo de la consulta
+        query_name: Nombre de la consulta
+        **kwargs: Par√°metros de formateo
+
+    Returns:
+        str: Consulta SQL formateada
+    "strmodule
+ì ì(
+query_name
+ì ì(.kwargs
+ì0 ì(8"dict"¥K
+I
+
+ü ü(manager"0
+rexus.utils.sql_query_managerget_sql_manager'
+%
+
+†1 †(9"#unaryop **#2**:*
+(
+
+† †(:"?python-unknown?:
+
+† †(:*IC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\sql_query_manager.py

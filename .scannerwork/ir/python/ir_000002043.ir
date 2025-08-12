@@ -1,0 +1,28 @@
+
+*
+!"audit_{timestamp}_{random_part}"str
+
+8int
+0'"Genera un ID Ãºnico para el registro."str
+1000intself
+Ì Ì( "š%
+#
+
+Î Î('"
+timetimeBfloat3
+1
+
+Î Î(."#dependent-value#*:Bfloat0
+.
+
+Î Î(/"#dependent-value#*:Bint;
+9
+
+Î Î(0	timestamp"#dependent-value#*:Bstr;
+9
+
+Ï Ï(*	random_part"
+secrets	token_hex:Bstr
+
+Ð Ð(1
+*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_integrity.py

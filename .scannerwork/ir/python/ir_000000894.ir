@@ -1,0 +1,118 @@
+
+"empresa_nombre"str
+
+10int
+"tipo_dato"str
+ falsebool
+
+"descripcion"str
+%	"#3498db"str
+"categoria"str
+"'"Color primario del tema"str
+1("Configuraciones demo cuando no hay BD."str
+"VersiÃ³n del sistema"str
+"string"str
+"clave"str
+	"SISTEMA"str
+"Rexus Construction"str
+"2.0.0"str
+"valor"str
+*"TEMA"str
+	"EMPRESA"str
+"es_editable"str
+"Nombre de la empresa"str
+#"tema_color_primario"str
+truebool
+"sistema_version"strself
+ï" ï(&.list"Â&
+$
+
+ò ù("#new-object#Bdict"
+ 
+
+ó ó()"	#map-set#:"
+ 
+
+ô ô(-	"	#map-set#:"
+ 
+
+õ õ(5"	#map-set#:
+"
+ 
+
+ö ö(%"	#map-set#:"
+ 
+
+÷ ÷(&"	#map-set#:"
+ 
+
+ø ø(#"	#map-set#:&
+$
+
+ú ("#new-object#Bdict"
+ 
+
+û û(*"	#map-set#:"
+ 
+
+ü ü( "	#map-set#:"
+ 
+
+ı ı(4"	#map-set#:
+"
+ 
+
+ş ş(%"	#map-set#:"
+ 
+
+ÿ ÿ(&"	#map-set#:"
+ 
+
+€ €($!"	#map-set#: &
+$
+
+‚ ‰(""#new-object#Bdict"
+ 
+
+ƒ ƒ(.$"	#map-set#:"#"
+ 
+
+„ „("&"	#map-set#:"%"
+ 
+
+… …(8("	#map-set#:"
+'"
+ 
+
+† †(%)"	#map-set#:""
+ 
+
+‡ ‡(#+"	#map-set#:"*"
+ 
+
+ˆ ˆ(#,"	#map-set#:")
+'
+
+ñ Š(	-"#unknown-value#Blist(
+&
+
+ñ Š(	/"
+#is-exact#:-.Bbool
+
+
+ñ Š(	0"
+#assume#:/:
+8
+
+ñ Š(	2"#set-field# __collection_size:-1Bint(
+&
+
+ñ Š(	3"#array-add-last#:-(
+&
+
+ñ Š(	4"#array-add-last#:-(
+&
+
+ñ Š(	5"#array-add-last#:-"
+
+ñ Š(	-*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\configuracion\model.py

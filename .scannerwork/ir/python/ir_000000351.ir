@@ -1,0 +1,10 @@
+
+3*"Validador de parÃ¡metros de paginaciÃ³n."strpage
+Ç Ç(C	page_size
+È È(F"dP
+N
+
+Ê Ê(>":
+#rexus.api.validators.InputSanitizervalidate_pagination:
+
+Ê Ê(>*@C:\Users\itachi\Desktop\martin\Rexus.app\rexus\api\validators.py

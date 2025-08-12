@@ -1,0 +1,241 @@
+
+@rexus.utils.system_integration.ModuleFactory._apply_modern_themeV
+JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\system_integration.py· ·("2*¬
+2
+¸ ¸(<
+
+º Ç(	
+%1"dict“
+
+
+» »(
+%2"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+herrajes*$
+
+__unknown_file (
+blue”
+‘
+
+¼ ¼(
+%3"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+usuarios*%
+
+__unknown_file (	
+green—
+”
+
+½ ½("
+%4"__mapSet*"
+
+__unknown_file (
+
+%1**
+
+__unknown_file (
+
+inventario*&
+
+__unknown_file (
+
+orange’
+
+
+¾ ¾(
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*%
+
+__unknown_file (	
+obras*&
+
+__unknown_file (
+
+purple‘
+Ž
+
+¿ ¿(
+%6"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+pedidos*#
+
+__unknown_file (
+red”
+‘
+
+À À(
+%7"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	logistica*$
+
+__unknown_file (
+teal˜
+•
+
+Á Á(#
+%8"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+mantenimiento*$
+
+__unknown_file (
+grayš
+—
+
+Â Â(%
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*-
+
+__unknown_file (
+configuracion*&
+
+__unknown_file (
+
+indigoš
+—
+
+Ã Ã($
+%10"__mapSet*"
+
+__unknown_file (
+
+%1*.
+
+__unknown_file (
+administracion*$
+
+__unknown_file (
+navy–
+“
+
+Ä Ä( 
+%11"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	auditoria*%
+
+__unknown_file (	
+brown“
+
+
+Å Å(
+%12"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+vidrios*$
+
+__unknown_file (
+cyan”
+‘
+
+Æ Æ(
+%13"__mapSet*"
+
+__unknown_file (
+
+%1*(
+
+__unknown_file (
+
+reportes*$
+
+__unknown_file (
+limeB
+@
+
+º Ç(	
+themes"__id*"
+
+__unknown_file (
+
+%1 
+
+É É(5
+%14"dict.get*&
+
+__unknown_file (
+
+
+themes*+
+
+__unknown_file (
+
+module_name*$
+
+__unknown_file (
+blue2getH
+F
+
+É É(5
+theme_color"__id*#
+
+__unknown_file (
+
+%14¦£
+
+Ê Ê(7
+%15*&
+
+__unknown_file (
+
+
+widget*,
+
+__unknown_file (
+module_theme*+
+
+__unknown_file (
+
+theme_color2setProperty*
+3*=
+3
+system_integration.py"
+Ì Ì(
+implicit return:
+
+·" ·(1
+widget:
+
+·3 ·(C
+module_nameB0.
+,rexus.utils.system_integration.ModuleFactoryH

@@ -1,0 +1,70 @@
+
+\rexus.modules.mantenimiento.view_completa.MantenimientoCompletaView.generar_reporte_maquinasa
+UC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\view_completa.py≠ ≠( "2*ï
+2
+Æ Æ((¯
+ı
+
+Ø –(	
+reporte"__id*’
+
+__unknown_file (∏µ
+≤
+REPORTE DE MAQUINARIA - ENERO 2024
+==================================
+
+RESUMEN GENERAL:
+- Total m√°quinas: 5
+- Operativas: 3 (60%)
+- En mantenimiento: 1 (20%)
+- Fuera de servicio: 1 (20%)
+
+INVENTARIO POR TIPO:
+- Cortadoras: 1
+- Soldadoras: 1
+- Pulidoras: 1
+- Taladros: 1
+- Prensas: 1
+
+UBICACIONES:
+- Taller A: 3 m√°quinas
+- Taller B: 1 m√°quina
+- Taller C: 1 m√°quina
+
+PR√ìXIMOS MANTENIMIENTOS:
+- MAQ-001: 15/02/2024
+- MAQ-002: 10/02/2024
+- MAQ-003: 20/02/2024
+- MAQ-004: 05/03/2024
+- MAQ-005: 18/02/2024
+
+RECOMENDACIONES:
+- Priorizar reparaci√≥n de MAQ-004
+- Programar mantenimiento preventivo para febrero
+- Evaluar reemplazo de equipos antiguos
+        í
+è
+
+— —(
+%1"__id*u
+
+__unknown_file (Y*WE
+Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView"
+preview_textom
+
+— —(/
+%2*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (
+	
+reporte2setPlainText*
+3*8
+3
+view_completa.py"
+” ”(
+implicit returnBGE
+Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaViewH

@@ -1,0 +1,8 @@
+
+.%"Retorna el tema actualmente activo."strself
+Ò Ò("E1
+/
+
+Ô Ô(""#get-field# _current_theme:
+
+Ô Ô("*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\style_manager.py

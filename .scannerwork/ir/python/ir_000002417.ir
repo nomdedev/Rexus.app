@@ -1,0 +1,23 @@
+
+SJ"
+        Decorador para trackear el rendimiento de consultas.
+        "strself
+”  ”($func
+”& ”(4"æ#
+!
+
+¨ ¨("#unknown-value#*
+(
+
+˜ ¨(%closure"#new-object#(
+&
+
+˜ ¨("#set-field# func:(
+&
+
+˜ ¨("#set-field# self:-
++
+
+˜ ¨("?python-partial-apply?:
+
+¨ ¨(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\query_optimizer.py

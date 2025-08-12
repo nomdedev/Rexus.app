@@ -1,0 +1,142 @@
+
+.rexus.utils.backup_system.BackupResult.to_dictO
+EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\backup_system.pyR R("2*§
+2S S(3
+T [(	
+%1"dictm
+k
+U U(#
+%2"__id*S
+
+__unknown_file (7*5(
+&rexus.utils.backup_system.BackupResult"	
+successé
+ã
+U U(#
+%3"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+success*"
+
+__unknown_file (
+
+%2m
+k
+V V(#
+%4"__id*S
+
+__unknown_file (7*5(
+&rexus.utils.backup_system.BackupResult"	
+messageé
+ã
+V V(#
+%5"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+message*"
+
+__unknown_file (
+
+%4q
+o
+W W(+
+%6"__id*W
+
+__unknown_file (;*9(
+&rexus.utils.backup_system.BackupResult"
+backup_pathí
+è
+W W(+
+%7"__mapSet*"
+
+__unknown_file (
+
+%1*+
+
+__unknown_file (
+backup_path*"
+
+__unknown_file (
+
+%6m
+k
+X X(#
+%8"__id*S
+
+__unknown_file (7*5(
+&rexus.utils.backup_system.BackupResult"	
+size_mbé
+ã
+X X(#
+%9"__mapSet*"
+
+__unknown_file (
+
+%1*'
+
+__unknown_file (	
+size_mb*"
+
+__unknown_file (
+
+%8w
+u
+Y  Y(5
+%10"__id*\
+
+__unknown_file (@*>(
+&rexus.utils.backup_system.BackupResult"
+duration_secondsô
+ñ
+Y Y(5
+%11"__mapSet*"
+
+__unknown_file (
+
+%1*0
+
+__unknown_file (
+duration_seconds*#
+
+__unknown_file (
+
+%10p
+n
+Z Z('
+%12"__id*U
+
+__unknown_file (9*7(
+&rexus.utils.backup_system.BackupResult"
+	timestampCA
+Z Z(3
+%13*#
+
+__unknown_file (
+
+%122	isoformatí
+è
+Z Z(3
+%14"__mapSet*"
+
+__unknown_file (
+
+%1*)
+
+__unknown_file (
+	timestamp*#
+
+__unknown_file (
+
+%13"
+T [(	
+
+%1B*(
+&rexus.utils.backup_system.BackupResultH

@@ -1,0 +1,15 @@
+
+~u"
+        Genera un ID de sesiÃ³n seguro y Ãºnico.
+        
+        Returns:
+            ID de sesiÃ³n
+        "str
+32intself
+þ þ( "F2
+0
+
+… …(("
+secretstoken_urlsafe:Bstr
+
+… …((*^C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\submodules\sessions_manager.py

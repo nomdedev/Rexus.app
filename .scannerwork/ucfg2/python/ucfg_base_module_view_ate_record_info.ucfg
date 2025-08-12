@@ -1,0 +1,48 @@
+
+Erexus.ui.templates.base_module_view.BaseModuleView.update_record_info[
+OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\templates\base_module_view.pyï ï("2*Û
+2
+ð ð(0
+}
+
+ñ ñ(
+%1"__id*c
+
+__unknown_file (G*E4
+2rexus.ui.templates.base_module_view.BaseModuleView"
+record_info]
+[
+
+ñ! ñ(=
+%2"__concat*
+
+ñ$ ñ(1
+
+total_records*
+
+ñ2 ñ(<
+
+ registrosec
+
+ñ ñ(>
+%3*"
+
+__unknown_file (
+
+%1*"
+
+__unknown_file (
+
+%22setText*
+3*;
+3
+base_module_view.py"
+õ õ(
+implicit return:
+
+ï! ï(3
+total_records:
+
+ï5 ï(J
+current_pageB64
+2rexus.ui.templates.base_module_view.BaseModuleViewH

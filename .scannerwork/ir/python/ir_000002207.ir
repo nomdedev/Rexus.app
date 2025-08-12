@@ -1,0 +1,42 @@
+
+B9"Acceso denegado: se requiere permiso {permission.value}"strargs
+ã ã(kwargs
+ã ã('"dict"õ)
+'
+
+å å(7"#unknown-value#Btype#
+!
+
+å, å(6"#unknown-value#M
+K
+
+å å(7"7
+#rexus.core.auth_manager.AuthManagercheck_permission:+
+)
+
+å å(7"
+__bool__*:BboolH+
+)
+
+å å(7"#unaryop !#2!:Bbool "
+
+å å(7 *
+å å("P:
+8
+
+ç è(	"PermissionError*:BPermissionError2
+
+ç è(	"Ç%
+#
+
+ê ê(!
+"#unaryop *#2*:'
+%
+
+ê# ê(+"#unaryop **#2**:
+
+
+ê ê(,"func:
+
+
+ê ê(,*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_manager.py
