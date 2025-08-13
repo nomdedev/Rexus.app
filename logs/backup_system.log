@@ -9,3 +9,70 @@
 2025-08-12 15:17:02,990 - root - ERROR - Tema 'dark' no disponible
 2025-08-12 15:17:23,979 - root - INFO - Tema de módulo aplicado a ComprasView (None)
 2025-08-12 15:17:27,993 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-12 18:50:15,481 - root - INFO - Programador de backups iniciado
+2025-08-12 18:50:29,972 - root - INFO - Tema 'professional' cargado exitosamente
+2025-08-12 18:50:29,990 - root - INFO - Tema 'light' cargado exitosamente
+2025-08-12 18:50:30,006 - root - INFO - Tema 'dark' cargado exitosamente
+2025-08-12 18:50:30,022 - root - INFO - Tema 'minimal' cargado exitosamente
+2025-08-12 18:50:30,022 - root - INFO - Tema 'optimized' cargado exitosamente
+2025-08-12 18:50:30,038 - root - INFO - Tema 'consolidated' cargado exitosamente
+2025-08-12 18:50:30,047 - root - INFO - Tema 'unified' cargado exitosamente
+2025-08-12 18:50:32,434 - root - INFO - Tema global 'dark' aplicado exitosamente con correcciones críticas
+2025-08-12 18:51:25,304 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 18:51:25,307 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 18:51:25,309 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 18:51:25,310 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-12 18:51:55,191 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-12 18:52:27,227 - root - INFO - Tema de módulo aplicado a ComprasView (None)
+2025-08-12 18:52:28,045 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-12 19:59:58,121 - root - INFO - Programador de backups iniciado
+2025-08-12 20:00:08,331 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:00:08,334 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:00:08,338 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:00:08,338 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-12 20:26:39,715 - root - INFO - Programador de backups iniciado
+2025-08-12 20:26:51,612 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:26:51,615 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:26:51,616 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-12 20:26:51,616 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-12 20:30:17,037 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-12 20:30:17,137 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-12 20:30:17,177 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-12 20:30:17,177 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:10,660 - root - INFO - Programador de backups iniciado
+2025-08-13 13:53:41,711 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:41,712 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:41,712 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:41,713 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:45,836 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:45,836 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:45,836 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:53:45,836 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:54:21,130 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:54:21,135 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:54:21,135 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:54:21,135 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 13:55:21,679 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional
+2025-08-13 13:55:22,921 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-13 13:55:22,936 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-13 13:55:22,936 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-13 13:55:22,941 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-13 13:55:36,670 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-13 13:55:36,679 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-13 13:55:36,680 - rexus.modules.mantenimiento.controller - INFO - Verificación completada: 0 vencidos, 0 próximos
+2025-08-13 13:55:36,681 - rexus.modules.mantenimiento.controller - ERROR - Error cargando datos iniciales: 'MantenimientoView' object has no attribute 'cargar_equipos'
+2025-08-13 13:58:02,376 - root - INFO - Programador de backups iniciado
+2025-08-13 17:02:51,599 - root - INFO - Programador de backups iniciado
+2025-08-13 17:03:11,505 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:11,505 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:11,505 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:11,505 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:16,051 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:16,051 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:16,051 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:16,056 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:21,889 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:21,889 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:21,889 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:21,889 - rexus.modules.inventario.submodules.base_utilities - INFO - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-13 17:03:38,738 - root - INFO - Protección XSS inicializada en AdministracionViewFuncional

@@ -64,8 +64,8 @@ class InventarioView(BaseModuleView):
     solicitar_exportar = pyqtSignal()
     solicitar_importar = pyqtSignal()
 
-    def __init__(self):
-        super().__init__("📦 Gestión de Inventario")
+    def __init__(self, parent=None):
+        super().__init__("📦 Gestión de Inventario", parent=parent)
         self.controller = None
         self.productos_actuales = []
         self.filtros_activos = {}
@@ -435,23 +435,22 @@ class InventarioView(BaseModuleView):
             
             /* Pestañas ultra minimalistas */
             QTabWidget::pane {
-                border: 1px solid #e5e7eb;
-                border-radius: 4px;
-                background-color: white;
-                margin-top: 1px;
+                border: none;
+                background: transparent;
             }
-            
             QTabBar::tab {
                 background-color: #f8fafc;
                 border: 1px solid #e5e7eb;
                 border-bottom: none;
-                padding: 4px 12px;
+                padding: 0 10px;
                 margin-right: 2px;
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
                 font-size: 10px;
                 color: #6b7280;
-                min-width: 70px;
+                min-width: 60px;
+                min-height: 15px;
+                max-height: 15px;
             }
             
             QTabBar::tab:selected {
@@ -983,34 +982,33 @@ class InventarioView(BaseModuleView):
         if hasattr(controller, 'buscar_productos'):
             self.solicitar_busqueda.connect(controller.buscar_productos)
             
-        # Conectar botones principales
-        if hasattr(controller, 'nuevo_producto'):
-            self.btn_nuevo_producto.clicked.connect(controller.nuevo_producto)
-            
-        if hasattr(controller, 'editar_producto'):
-            self.btn_editar.clicked.connect(lambda: controller.editar_producto(self.obtener_producto_seleccionado_id()))
-            
-        if hasattr(controller, 'eliminar_producto'):
-            self.btn_eliminar.clicked.connect(lambda: controller.eliminar_producto(self.obtener_producto_seleccionado_id()))
-            
-        if hasattr(controller, 'exportar_inventario'):
-            self.btn_exportar.clicked.connect(controller.exportar_inventario)
-            
-        if hasattr(controller, 'importar_inventario'):
-            self.btn_importar.clicked.connect(controller.importar_inventario)
-            
-        if hasattr(controller, 'registrar_movimiento'):
-            self.btn_movimiento.clicked.connect(controller.registrar_movimiento)
-            
-        # Conectar botones adicionales del panel lateral
-        if hasattr(controller, 'generar_reporte_stock_bajo'):
-            self.btn_reporte_stock_bajo.clicked.connect(controller.generar_reporte_stock_bajo)
-            
-        if hasattr(controller, 'asociar_a_obra'):
-            self.btn_asociar_obra.clicked.connect(lambda: controller.asociar_a_obra(self.obtener_producto_seleccionado_id()))
-            
-        if hasattr(controller, 'generar_codigo_qr'):
-            self.btn_generar_qr.clicked.connect(lambda: controller.generar_codigo_qr(self.obtener_producto_seleccionado_id()))
+        # Conectar botones principales con verificación de existencia
+        buttons_to_connect = [
+            ('btn_nuevo_producto', 'nuevo_producto', lambda: controller.nuevo_producto()),
+            ('btn_editar', 'editar_producto', lambda: controller.editar_producto(self.obtener_producto_seleccionado_id())),
+            ('btn_eliminar', 'eliminar_producto', lambda: controller.eliminar_producto(self.obtener_producto_seleccionado_id())),
+            ('btn_exportar', 'exportar_inventario', lambda: controller.exportar_inventario()),
+            ('btn_importar', 'importar_inventario', lambda: controller.importar_inventario()),
+            ('btn_movimiento', 'registrar_movimiento', lambda: controller.registrar_movimiento()),
+            ('btn_reporte_stock_bajo', 'generar_reporte_stock_bajo', lambda: controller.generar_reporte_stock_bajo()),
+            ('btn_asociar_obra', 'asociar_a_obra', lambda: controller.asociar_a_obra(self.obtener_producto_seleccionado_id())),
+            ('btn_generar_qr', 'generar_codigo_qr', lambda: controller.generar_codigo_qr(self.obtener_producto_seleccionado_id()))
+        ]
+        
+        for button_name, controller_method, callback in buttons_to_connect:
+            try:
+                # Verificar que el botón existe y el controlador tiene el método
+                if hasattr(self, button_name) and hasattr(controller, controller_method):
+                    button = getattr(self, button_name)
+                    if button and hasattr(button, 'clicked'):
+                        button.clicked.connect(callback)
+                        print(f"[INVENTARIO] Conectado {button_name} -> {controller_method}")
+                    else:
+                        print(f"[INVENTARIO] Botón {button_name} no válido o ya destruido")
+                else:
+                    print(f"[INVENTARIO] Saltando {button_name} - no disponible")
+            except Exception as e:
+                print(f"[INVENTARIO] Error conectando {button_name}: {e}")
             
     def obtener_producto_seleccionado_id(self):
         """Obtiene el ID del producto seleccionado."""

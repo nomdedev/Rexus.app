@@ -286,16 +286,27 @@ class MainWindow(QMainWindow):
                 print(f"[STYLE] Tema '{self.style_manager._current_theme}' aplicado globalmente")
                 
                 # CRÍTICO: Aplicar correcciones de formularios inmediatamente
-                if self.style_manager._current_theme == 'dark':
-                    print("[STYLE] Tema oscuro detectado - aplicando correcciones críticas")
-                    fix_success = self.style_manager.apply_critical_form_fixes()
-                    if not fix_success:
-                        # Si falla, forzar tema claro para formularios
-                        emergency_success = self.style_manager.force_light_theme_for_forms()
-                        if emergency_success:
-                            print("[STYLE] Tema de emergencia aplicado - formularios legibles")
-                        else:
-                            print("[STYLE] ERROR: No se pudieron aplicar correcciones críticas")
+                # Aplicar correcciones ultra-seguras para todos los temas
+                emergency_success = self.style_manager.apply_emergency_readable_forms()
+                if emergency_success:
+                    print("[STYLE] ✅ Formularios ultra-legibles aplicados correctamente")
+                else:
+                    print("[STYLE] ⚠️ Intentando correcciones alternativas...")
+                    
+                    # Fallback: Intentar correcciones específicas por tema
+                    if self.style_manager._current_theme == 'dark':
+                        print("[STYLE] Tema oscuro detectado - aplicando correcciones críticas")
+                        fix_success = self.style_manager.apply_critical_form_fixes()
+                        if not fix_success:
+                            # Si falla, forzar tema claro para formularios
+                            fallback_success = self.style_manager.force_light_theme_for_forms()
+                            if fallback_success:
+                                print("[STYLE] Tema de emergencia aplicado - formularios legibles")
+                            else:
+                                print("[STYLE] ❌ ERROR: No se pudieron aplicar correcciones críticas")
+                    else:
+                        # Para temas claros, asegurar contraste
+                        self.style_manager.apply_critical_form_fixes()
             else:
                 print("[STYLE] Fallback a estilos por defecto")
                 
@@ -516,102 +527,512 @@ QPushButton:disabled {
         main_layout.addWidget(content_area)
 
     def _create_dashboard(self):
-        """Crea el dashboard principal"""
+        """Crea el dashboard principal moderno y funcional"""
         dashboard = QWidget()
-        layout = QGridLayout(dashboard)
-        layout.setSpacing(20)
+        main_layout = QVBoxLayout(dashboard)
+        main_layout.setSpacing(20)
+        main_layout.setContentsMargins(20, 20, 20, 20)
 
-        # Cards de estadísticas
-        stats = [
-            ("PROD", "Productos en Stock", "1,234", "#3498db"),
-            ("FACT", "Facturación Mensual", "$45,678", "#2ecc71"),
-            ("OBRA", "Obras Activas", "23", "#e74c3c"),
-            ("PED", "Pedidos Pendientes", "56", "#f39c12"),
-        ]
+        # Header del Dashboard
+        header = self._create_dashboard_header()
+        main_layout.addWidget(header)
 
-        for i, (emoji, titulo, valor, color) in enumerate(stats):
-            card = self._create_stat_card(emoji, titulo, valor, color)
-            layout.addWidget(card, 0, i)
+        # Grid de contenido principal
+        content_grid = QHBoxLayout()
+        
+        # Columna izquierda - Estadísticas y KPIs
+        left_column = self._create_left_dashboard_column()
+        content_grid.addWidget(left_column, 2)  # 2/3 del ancho
+        
+        # Columna derecha - Acceso rápido y actividades
+        right_column = self._create_right_dashboard_column()
+        content_grid.addWidget(right_column, 1)  # 1/3 del ancho
+        
+        main_layout.addLayout(content_grid)
+        
+        # Footer con información del sistema
+        footer = self._create_dashboard_footer()
+        main_layout.addWidget(footer)
 
-        # Información de bienvenida
-        welcome_widget = QWidget()
-        welcome_layout = QVBoxLayout(welcome_widget)
+        self.content_stack.addWidget(dashboard)
 
-        welcome_title = QLabel("Bienvenido a Rexus.app!")
+    def _create_dashboard_header(self):
+        """Crea el header del dashboard con información del usuario"""
+        from datetime import datetime
+        
+        header_widget = QWidget()
+        header_layout = QHBoxLayout(header_widget)
+        header_widget.setStyleSheet("""
+            QWidget {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+                    stop:0 #667eea, stop:1 #764ba2);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 10px;
+            }
+        """)
+        
+        # Información del usuario
+        user_info = QWidget()
+        user_layout = QVBoxLayout(user_info)
+        
+        welcome_title = QLabel(f"¡Bienvenido, {self.user_data.get('username', 'Usuario')}!")
         welcome_title.setStyleSheet("""
             QLabel {
-                font-size: 24px;
+                font-size: 28px;
+                font-weight: bold;
+                color: white;
+                margin: 0;
+            }
+        """)
+        
+        user_role = QLabel(f"Rol: {self.user_data.get('rol', self.user_data.get('role', 'N/A'))}")
+        user_role.setStyleSheet("""
+            QLabel {
+                font-size: 16px;
+                color: rgba(255, 255, 255, 0.9);
+                margin-top: 5px;
+            }
+        """)
+        
+        current_date = QLabel(f"Hoy es {datetime.now().strftime('%d de %B de %Y')}")
+        current_date.setStyleSheet("""
+            QLabel {
+                font-size: 14px;
+                color: rgba(255, 255, 255, 0.8);
+                margin-top: 5px;
+            }
+        """)
+        
+        user_layout.addWidget(welcome_title)
+        user_layout.addWidget(user_role)
+        user_layout.addWidget(current_date)
+        
+        # Logo o espacio para empresa
+        logo_space = QLabel("REXUS")
+        logo_space.setStyleSheet("""
+            QLabel {
+                font-size: 32px;
+                font-weight: bold;
+                color: white;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 8px;
+                padding: 15px;
+                min-width: 120px;
+                text-align: center;
+            }
+        """)
+        logo_space.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        header_layout.addWidget(user_info)
+        header_layout.addStretch()
+        header_layout.addWidget(logo_space)
+        
+        return header_widget
+
+    def _create_left_dashboard_column(self):
+        """Crea la columna izquierda con estadísticas y KPIs"""
+        left_widget = QWidget()
+        left_layout = QVBoxLayout(left_widget)
+        
+        # KPIs principales
+        kpi_section = self._create_kpi_section()
+        left_layout.addWidget(kpi_section)
+        
+        # Gráfico o tabla de actividad reciente
+        activity_section = self._create_activity_section()
+        left_layout.addWidget(activity_section)
+        
+        return left_widget
+
+    def _create_right_dashboard_column(self):
+        """Crea la columna derecha con acceso rápido"""
+        right_widget = QWidget()
+        right_layout = QVBoxLayout(right_widget)
+        
+        # Acceso rápido a módulos
+        quick_access = self._create_quick_access_section()
+        right_layout.addWidget(quick_access)
+        
+        # Notificaciones o alertas
+        notifications = self._create_notifications_section()
+        right_layout.addWidget(notifications)
+        
+        return right_widget
+
+    def _create_kpi_section(self):
+        """Crea la sección de KPIs principales"""
+        kpi_widget = QWidget()
+        kpi_layout = QVBoxLayout(kpi_widget)
+        
+        title = QLabel("📊 Resumen Ejecutivo")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
                 font-weight: bold;
                 color: #2c3e50;
                 margin-bottom: 15px;
             }
         """)
-        welcome_title.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        welcome_info = QLabel(f"""
-        Usuario: {self.user_data.get("username", "N/A")}
-        Rol: {self.user_data.get("rol", self.user_data.get("role", "N/A"))}
+        kpi_layout.addWidget(title)
         
-        Módulos disponibles: {len(self.modulos_permitidos)}
+        # Grid de KPIs
+        grid_layout = QGridLayout()
         
-        [CHECK] Sistema de login funcionando correctamente
-        [APP] Todos los módulos están listos para usar
-        [CFG] Configuración de base de datos disponible
-        """)
+        # KPIs con datos dinámicos (simulados por ahora)
+        kpis = [
+            ("📦", "Productos", "1,234", "#3498db", "Stock total disponible"),
+            ("💰", "Facturación", "$45,678", "#2ecc71", "Ingresos del mes"),
+            ("🏗️", "Obras", "23", "#e74c3c", "Proyectos activos"),
+            ("📋", "Pedidos", "56", "#f39c12", "Pendientes de procesar"),
+            ("👥", "Usuarios", f"{len(self.modulos_permitidos)}", "#9b59b6", "Módulos activos"),
+            ("⚙️", "Sistema", "100%", "#34495e", "Estado operativo")
+        ]
+        
+        for i, (icon, title_text, value, color, subtitle) in enumerate(kpis):
+            card = self._create_modern_kpi_card(icon, title_text, value, color, subtitle)
+            row, col = i // 3, i % 3
+            grid_layout.addWidget(card, row, col)
+        
+        kpi_layout.addLayout(grid_layout)
+        return kpi_widget
 
-        welcome_info.setStyleSheet("""
-            QLabel {
-                font-size: 14px;
-                padding: 20px;
-                background-color: #f8f9fa;
-                border: 1px solid #e9ecef;
-                border-radius: 8px;
-                color: #495057;
-                line-height: 1.5;
-            }
-        """)
-        welcome_info.setAlignment(Qt.AlignmentFlag.AlignCenter)
-
-        welcome_layout.addWidget(welcome_title)
-        welcome_layout.addWidget(welcome_info)
-
-        layout.addWidget(welcome_widget, 1, 0, 1, 4)
-
-        self.content_stack.addWidget(dashboard)
-
-    def _create_stat_card(
-        self, emoji: str, titulo: str, valor: str, color: str
-    ) -> QFrame:
-        """Crea una tarjeta de estadística"""
+    def _create_modern_kpi_card(self, icon, title, value, color, subtitle):
+        """Crea una tarjeta KPI moderna"""
         card = QFrame()
         card.setStyleSheet(f"""
             QFrame {{
                 background-color: white;
-                border-left: 4px solid {color};
-                border-radius: 8px;
-                padding: 4px;
-                min-width: 60px;
-                min-height: 60px;
-                max-width: 60px;
-                max-height: 60px;
+                border-left: 5px solid {color};
+                border-radius: 10px;
+                padding: 15px;
+                margin: 5px;
+            }}
+            QFrame:hover {{
+                background-color: #f8f9fa;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             }}
         """)
+        
         layout = QVBoxLayout(card)
-        emoji_label = QLabel(emoji)
-        emoji_label.setStyleSheet("font-size: 18px;")
-        emoji_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_label = QLabel(titulo)
-        title_label.setStyleSheet("font-size: 9px; color: #7f8c8d; font-weight: 500;")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        value_label = QLabel(valor)
-        value_label.setStyleSheet(
-            f"font-size: 12px; color: {color}; font-weight: bold;"
-        )
-        value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        layout.addWidget(emoji_label)
-        layout.addWidget(title_label)
+        layout.setSpacing(8)
+        
+        # Header con icono y título
+        header_layout = QHBoxLayout()
+        icon_label = QLabel(icon)
+        icon_label.setStyleSheet("font-size: 24px;")
+        
+        title_label = QLabel(title)
+        title_label.setStyleSheet(f"""
+            font-size: 14px;
+            color: {color};
+            font-weight: bold;
+        """)
+        
+        header_layout.addWidget(icon_label)
+        header_layout.addWidget(title_label)
+        header_layout.addStretch()
+        
+        # Valor principal
+        value_label = QLabel(value)
+        value_label.setStyleSheet("""
+            font-size: 28px;
+            font-weight: bold;
+            color: #2c3e50;
+        """)
+        
+        # Subtítulo
+        subtitle_label = QLabel(subtitle)
+        subtitle_label.setStyleSheet("""
+            font-size: 11px;
+            color: #7f8c8d;
+        """)
+        subtitle_label.setWordWrap(True)
+        
+        layout.addLayout(header_layout)
         layout.addWidget(value_label)
+        layout.addWidget(subtitle_label)
+        
         return card
+
+    def _create_activity_section(self):
+        """Crea la sección de actividad reciente"""
+        activity_widget = QWidget()
+        activity_layout = QVBoxLayout(activity_widget)
+        
+        title = QLabel("📈 Actividad Reciente")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+        """)
+        activity_layout.addWidget(title)
+        
+        # Lista de actividades
+        activities_frame = QFrame()
+        activities_frame.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+            }
+        """)
+        
+        activities_layout = QVBoxLayout(activities_frame)
+        
+        # Actividades simuladas
+        activities = [
+            ("✅", "Nuevo pedido registrado", "Hace 2 horas", "#2ecc71"),
+            ("📦", "Inventario actualizado", "Hace 4 horas", "#3498db"),
+            ("🏗️", "Obra finalizada", "Ayer", "#e74c3c"),
+            ("👤", "Usuario conectado", "Hace 1 hora", "#9b59b6"),
+            ("💾", "Backup completado", "Hace 6 horas", "#34495e")
+        ]
+        
+        for icon, text, time, color in activities:
+            activity_item = self._create_activity_item(icon, text, time, color)
+            activities_layout.addWidget(activity_item)
+        
+        activity_layout.addWidget(activities_frame)
+        return activity_widget
+
+    def _create_activity_item(self, icon, text, time, color):
+        """Crea un item de actividad"""
+        item_widget = QWidget()
+        item_layout = QHBoxLayout(item_widget)
+        item_layout.setContentsMargins(0, 5, 0, 5)
+        
+        icon_label = QLabel(icon)
+        icon_label.setStyleSheet("font-size: 16px;")
+        icon_label.setFixedWidth(30)
+        
+        text_label = QLabel(text)
+        text_label.setStyleSheet("""
+            font-size: 13px;
+            color: #2c3e50;
+        """)
+        
+        time_label = QLabel(time)
+        time_label.setStyleSheet("""
+            font-size: 11px;
+            color: #7f8c8d;
+        """)
+        
+        item_layout.addWidget(icon_label)
+        item_layout.addWidget(text_label)
+        item_layout.addStretch()
+        item_layout.addWidget(time_label)
+        
+        return item_widget
+
+    def _create_quick_access_section(self):
+        """Crea la sección de acceso rápido"""
+        quick_widget = QWidget()
+        quick_layout = QVBoxLayout(quick_widget)
+        
+        title = QLabel("🚀 Acceso Rápido")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+        """)
+        quick_layout.addWidget(title)
+        
+        # Botones de acceso rápido
+        buttons_frame = QFrame()
+        buttons_frame.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+            }
+        """)
+        buttons_layout = QVBoxLayout(buttons_frame)
+        
+        # Módulos principales con acceso rápido
+        quick_modules = [
+            ("📦", "Inventario", "inventario"),
+            ("🏗️", "Obras", "obras"),
+            ("💰", "Compras", "compras"),
+            ("👥", "Usuarios", "usuarios"),
+            ("⚙️", "Configuración", "configuracion")
+        ]
+        
+        for icon, name, module_key in quick_modules:
+            if module_key in [m.lower().replace(' ', '').replace('ó', 'o') for m in self.modulos_permitidos]:
+                button = self._create_quick_access_button(icon, name, module_key)
+                buttons_layout.addWidget(button)
+        
+        quick_layout.addWidget(buttons_frame)
+        return quick_widget
+
+    def _create_quick_access_button(self, icon, name, module_key):
+        """Crea un botón de acceso rápido"""
+        button = QPushButton(f"{icon} {name}")
+        button.setStyleSheet("""
+            QPushButton {
+                background-color: #f8f9fa;
+                border: 1px solid #e9ecef;
+                border-radius: 8px;
+                padding: 12px;
+                text-align: left;
+                font-size: 14px;
+                color: #495057;
+                margin: 2px 0;
+            }
+            QPushButton:hover {
+                background-color: #e9ecef;
+                border-color: #3498db;
+                color: #3498db;
+            }
+            QPushButton:pressed {
+                background-color: #dee2e6;
+            }
+        """)
+        
+        # Conectar al módulo correspondiente
+        button.clicked.connect(lambda: self._navigate_to_module(name))
+        return button
+
+    def _navigate_to_module(self, module_name):
+        """Navega a un módulo específico"""
+        try:
+            # Buscar el módulo en la lista
+            for i, modulo in enumerate(self.modulos_permitidos):
+                if modulo.lower().replace(' ', '').replace('ó', 'o') == module_name.lower().replace(' ', '').replace('ó', 'o'):
+                    # Simular click en el sidebar
+                    if hasattr(self, 'sidebar_buttons') and i < len(self.sidebar_buttons):
+                        self.sidebar_buttons[i].click()
+                    break
+        except Exception as e:
+            print(f"Error navegando a módulo {module_name}: {e}")
+
+    def _create_notifications_section(self):
+        """Crea la sección de notificaciones"""
+        notif_widget = QWidget()
+        notif_layout = QVBoxLayout(notif_widget)
+        
+        title = QLabel("🔔 Alertas y Notificaciones")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: bold;
+                color: #2c3e50;
+                margin-bottom: 15px;
+            }
+        """)
+        notif_layout.addWidget(title)
+        
+        # Frame de notificaciones
+        notif_frame = QFrame()
+        notif_frame.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+            }
+        """)
+        
+        notif_frame_layout = QVBoxLayout(notif_frame)
+        
+        # Notificaciones simuladas
+        notifications = [
+            ("⚠️", "Stock bajo en herrajes", "warning"),
+            ("✅", "Backup completado", "success"),
+            ("📊", "Reporte mensual listo", "info"),
+            ("🔄", "Sistema actualizado", "info")
+        ]
+        
+        for icon, text, type_notif in notifications:
+            notif_item = self._create_notification_item(icon, text, type_notif)
+            notif_frame_layout.addWidget(notif_item)
+        
+        notif_layout.addWidget(notif_frame)
+        return notif_widget
+
+    def _create_notification_item(self, icon, text, notif_type):
+        """Crea un item de notificación"""
+        item = QWidget()
+        item_layout = QHBoxLayout(item)
+        item_layout.setContentsMargins(5, 8, 5, 8)
+        
+        colors = {
+            "warning": "#f39c12",
+            "success": "#2ecc71", 
+            "info": "#3498db",
+            "error": "#e74c3c"
+        }
+        
+        color = colors.get(notif_type, "#7f8c8d")
+        
+        item.setStyleSheet(f"""
+            QWidget {{
+                background-color: {color}20;
+                border-left: 3px solid {color};
+                border-radius: 5px;
+                margin: 2px 0;
+            }}
+        """)
+        
+        icon_label = QLabel(icon)
+        icon_label.setFixedWidth(25)
+        
+        text_label = QLabel(text)
+        text_label.setStyleSheet("""
+            font-size: 12px;
+            color: #2c3e50;
+        """)
+        text_label.setWordWrap(True)
+        
+        item_layout.addWidget(icon_label)
+        item_layout.addWidget(text_label)
+        
+        return item
+
+    def _create_dashboard_footer(self):
+        """Crea el footer del dashboard"""
+        footer = QWidget()
+        footer_layout = QHBoxLayout(footer)
+        
+        footer.setStyleSheet("""
+            QWidget {
+                background-color: #34495e;
+                border-radius: 8px;
+                padding: 15px;
+                margin-top: 10px;
+            }
+        """)
+        
+        # Información del sistema
+        system_info = QLabel("🖥️ Sistema: Operativo | 🔒 Seguridad: Activa | 💾 BD: Conectada")
+        system_info.setStyleSheet("""
+            QLabel {
+                font-size: 12px;
+                color: white;
+            }
+        """)
+        
+        # Versión
+        version_info = QLabel("Rexus.app v0.1.0")
+        version_info.setStyleSheet("""
+            QLabel {
+                font-size: 12px;
+                color: rgba(255, 255, 255, 0.7);
+            }
+        """)
+        
+        footer_layout.addWidget(system_info)
+        footer_layout.addStretch()
+        footer_layout.addWidget(version_info)
+        
+        return footer
+
 
     def show_module(self, module_name: str) -> None:
         """

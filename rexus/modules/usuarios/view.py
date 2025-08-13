@@ -171,7 +171,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
             
             /* Pestañas minimalistas */
             QTabWidget::pane {
-                border: 1px solid #e1e4e8;
+                border: none;
                 border-radius: 6px;
                 background-color: white;
                 margin-top: 2px;
@@ -181,13 +181,15 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
                 border-bottom: none;
-                padding: 8px 16px;
+                padding: 0 10px;
                 margin-right: 2px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                font-size: 11px;
+                font-size: 10px;
                 color: #586069;
-                min-width: 80px;
+                min-width: 60px;
+                min-height: 15px;
+                max-height: 15px;
             }
             
             QTabBar::tab:selected {

@@ -21,7 +21,8 @@ from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 # DataSanitizer unificado
 try:
     from rexus.utils.unified_sanitizer import unified_sanitizer
-    DataSanitizer = unified_sanitizer
+    # unified_sanitizer ya es una instancia, no se necesita instanciar
+    data_sanitizer = unified_sanitizer
 except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
@@ -35,6 +36,8 @@ except ImportError:
 
         def sanitize_text(self, text):
             return str(text) if text else ""
+    
+    data_sanitizer = DataSanitizer()
 
 
 class ConsultasManager(PaginatedTableMixin):
@@ -43,7 +46,7 @@ class ConsultasManager(PaginatedTableMixin):
     def __init__(self, db_connection=None):
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
-        self.sanitizer = DataSanitizer()
+        self.sanitizer = data_sanitizer
 
     @auth_required
     @permission_required("view_inventario")

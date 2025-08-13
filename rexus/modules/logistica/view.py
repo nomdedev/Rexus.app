@@ -30,7 +30,7 @@ from PyQt6.QtWidgets import (
     QScrollArea, QSplitter
 )
 
-from PyQt6.QtGui import QFont, QPalette, QColor
+from PyQt6.QtGui import QFont, QColor
 
 # Importar componentes Rexus
 from rexus.ui.components.base_components import (
@@ -76,6 +76,12 @@ class LogisticaConstants:
     
     # Botones
     BOTON_EDITAR = "✏️ Editar"
+    
+    # UI Constants
+    MIN_WEBVIEW_HEIGHT = 400
+    DIALOG_MIN_WIDTH = 400
+    FONT_SIZE_SMALL = "10px"
+    PADDING_SMALL = "4px"
 
 
 class LogisticaView(QWidget, ModuleExportMixin):
@@ -92,7 +98,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
         self.cargar_datos_ejemplo()
         self.aplicar_estilo_botones_compactos()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         """Configura la interfaz principal con pestañas mejoradas."""
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
@@ -110,7 +116,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
         
         layout.addWidget(self.tab_widget)
 
-    def aplicar_estilo_botones_compactos(self):
+    def aplicar_estilo_botones_compactos(self) -> None:
         """Aplica estilo ultra compacto a todos los botones del módulo."""
         estilo_compacto = """
             QPushButton {
@@ -391,7 +397,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
         widget = QWidget()
         layout = QVBoxLayout(widget)
         label = QLabel("Sin direcciones disponibles.")
-        label.setStyleSheet("color: #888; font-size: 10px; padding: 4px;")
+        label.setStyleSheet(f"color: #888; font-size: {LogisticaConstants.FONT_SIZE_SMALL}; padding: {LogisticaConstants.PADDING_SMALL};")
         layout.addWidget(label)
         return widget
 
@@ -443,7 +449,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
                 
                 webview = webengine_manager.create_web_view("Vista de mapa logístico")
                 if webengine_manager.load_file(webview, temp_file.name):
-                    webview.setMinimumHeight(400)
+                    webview.setMinimumHeight(LogisticaConstants.MIN_WEBVIEW_HEIGHT)
                     layout.addWidget(webview)
                     return self.mapa_widget
                 else:
@@ -527,10 +533,11 @@ Para habilitar mapas interactivos:
                 color: #6b7280;
                 border: 1px solid #e5e7eb;
                 border-bottom: none;
-                min-width: 100px;
-                min-height: 32px;
-                padding: 8px 16px;
-                font-size: 12px;
+                min-width: 60px;
+                min-height: 15px;
+                max-height: 15px;
+                padding: 0 10px;
+                font-size: 10px;
                 font-weight: 500;
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
@@ -757,7 +764,10 @@ Para habilitar mapas interactivos:
             self.tabla_servicios.setItem(row, 3, QTableWidgetItem(servicio["cliente"]))
             self.tabla_servicios.setItem(row, 4, QTableWidgetItem(servicio["prioridad"]))
             btn_detalle = QPushButton("Detalle")
-            btn_detalle.setStyleSheet("background-color: #17a2b8; color: white; font-size: 11px; border-radius: 4px; padding: 4px 10px;")
+            btn_detalle.setStyleSheet(
+                "background-color: #17a2b8; color: white; font-size: 11px; "
+                "border-radius: 4px; padding: 4px 10px;"
+            )
             btn_detalle.clicked.connect(lambda checked, s=servicio: self.mostrar_dialogo_detalle_servicio(s))
             self.tabla_servicios.setCellWidget(row, 5, btn_detalle)
 
@@ -768,7 +778,7 @@ Para habilitar mapas interactivos:
         from PyQt6.QtWidgets import QDialog, QVBoxLayout, QLabel, QPushButton
         dialog = QDialog(self)
         dialog.setWindowTitle(f"Detalle del Servicio #{servicio['id']}")
-        dialog.setMinimumWidth(400)
+        dialog.setMinimumWidth(LogisticaConstants.DIALOG_MIN_WIDTH)
         layout = QVBoxLayout(dialog)
         layout.addWidget(QLabel(f"<b>ID:</b> {servicio['id']}"))
         layout.addWidget(QLabel(f"<b>Tipo:</b> {servicio['tipo']}"))
@@ -826,7 +836,10 @@ Para habilitar mapas interactivos:
 
         # Filtro de estado
         self.combo_estado = RexusComboBox()
-        self.combo_estado.addItems(["Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, "Entregado", "Cancelado"])
+        self.combo_estado.addItems([
+            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, 
+            "Entregado", "Cancelado"
+        ])
         fila_filtros.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
         fila_filtros.addWidget(self.combo_estado)
 
@@ -963,7 +976,10 @@ Para habilitar mapas interactivos:
 
         # Filtro de estado
         self.combo_estado = RexusComboBox()
-        self.combo_estado.addItems(["Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, "Entregado", "Cancelado"])
+        self.combo_estado.addItems([
+            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, 
+            "Entregado", "Cancelado"
+        ])
         layout.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
         layout.addWidget(self.combo_estado)
 

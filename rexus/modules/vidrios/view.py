@@ -139,10 +139,8 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         
         self.tab_widget.setStyleSheet("""
             QTabWidget::pane {
-                border: 2px solid #e2e8f0;
-                border-radius: 8px;
-                background: white;
-                top: -1px;
+                border: none;
+                background: transparent;
             }
             QTabBar::tab {
                 background: #f8fafc;
@@ -151,10 +149,12 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 border-bottom: none;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                padding: 8px 16px;
+                padding: 0 10px;
                 margin-right: 2px;
                 font-weight: 500;
-                min-width: 100px;
+                min-width: 60px;
+                min-height: 15px;
+                max-height: 15px;
             }
             QTabBar::tab:selected {
                 background: white;

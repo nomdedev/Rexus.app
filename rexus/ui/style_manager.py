@@ -42,8 +42,10 @@ class StyleManager:
     # Mapa de temas disponibles a archivos QSS  
     AVAILABLE_THEMES = {
         'professional': 'professional_theme_clean.qss',
-        'light': 'theme_light_clean.qss',
-        'dark': 'theme_dark_clean.qss',
+        'light': 'theme_light_improved.qss',  # MEJORADO: Tema claro con contraste optimizado
+        'light_original': 'theme_light_clean.qss',  # Respaldo del original
+        'dark': 'theme_dark_improved.qss',  # MEJORADO: Tema oscuro con contraste forzado
+        'dark_original': 'theme_dark_clean.qss',  # Respaldo del original
         'minimal': 'theme_light_minimal_clean.qss',
         'optimized': 'theme_optimized_clean.qss',
         'consolidated': 'consolidated_theme_clean.qss',
@@ -176,14 +178,14 @@ class StyleManager:
                 try:
                     with open(theme_path, 'r', encoding='utf-8') as f:
                         self._loaded_themes[theme_name] = f.read()
-                    logging.info(f"Tema '{theme_name}' cargado exitosamente")
+                    logging.debug(f"Tema '{theme_name}' cargado exitosamente")
                 except Exception as e:
                     logging.error(f"Error cargando tema '{theme_name}': {e}")
             else:
                 logging.warning(f"Archivo de tema no encontrado: {theme_path}")
     
     def apply_global_theme(self, theme_name: str = None) -> bool:
-        """Aplica un tema global a toda la aplicación."""
+        """Aplica un tema global a toda la aplicación sin modificaciones invasivas."""
         if theme_name is None:
             theme_name = self._current_theme
             
@@ -199,17 +201,19 @@ class StyleManager:
         try:
             app = QApplication.instance()
             if app:
-                # Obtener estilos base más estilos críticos para formularios
+                # Aplicar solo los estilos base del archivo QSS sin modificaciones
                 base_styles = self._loaded_themes[theme_name]
-                critical_form_styles = self._get_critical_form_styles(theme_name)
                 
-                # Combinar estilos
-                combined_styles = f"{base_styles}\n\n/* CRITICAL FORM FIXES */\n{critical_form_styles}"
-                
-                app.setStyleSheet(combined_styles)
+                app.setStyleSheet(base_styles)
                 self._current_theme = theme_name
-                logging.info(f"Tema global '{theme_name}' aplicado exitosamente con correcciones críticas")
-                print(f"[STYLE] Tema aplicado: {theme_name} con correcciones de contraste")
+                
+                # SOLUCIÓN CRÍTICA: Aplicar correcciones de contraste automáticamente para tema oscuro
+                if 'dark' in theme_name.lower():
+                    print(f"[STYLE] Detectado tema oscuro '{theme_name}' - aplicando correcciones críticas")
+                    self.apply_critical_contrast_fixes()
+                
+                logging.debug(f"Tema global '{theme_name}' aplicado exitosamente")
+                print(f"[STYLE] Tema aplicado: {theme_name}")
                 return True
             else:
                 logging.error("No se pudo obtener instancia de QApplication")
@@ -233,7 +237,7 @@ class StyleManager:
                 
                 # Aplicar estilos al widget
                 widget.setStyleSheet(unified_styles)
-                logging.info(f"Estilos unificados aplicados a {widget.__class__.__name__}")
+                logging.debug(f"Estilos unificados aplicados a {widget.__class__.__name__}")
                 return True
             else:
                 logging.warning("Archivo de estilos unificados no encontrado")
@@ -388,7 +392,7 @@ class StyleManager:
             widget.style().unpolish(widget)
             widget.style().polish(widget)
             
-            logging.info(f"Tema de módulo aplicado a {widget.__class__.__name__} ({module_name})")
+            logging.debug(f"Tema de módulo aplicado a {widget.__class__.__name__} ({module_name})")
             return True
             
         except Exception as e:
@@ -422,6 +426,88 @@ class StyleManager:
             
         except Exception as e:
             print(f"[WARNING] Error aplicando tema '{theme_name}': {e}")
+            return False
+    
+    def apply_critical_contrast_fixes(self, widget: QWidget = None) -> bool:
+        """
+        Aplica correcciones críticas de contraste para resolver formularios negros.
+        SOLUCIÓN PARA: QLineEdit, QTextEdit, QComboBox ilegibles con tema oscuro.
+        
+        Args:
+            widget: Widget específico o None para aplicar globalmente
+        """
+        try:
+            # Estilos críticos que SIEMPRE deben ser aplicados para legibilidad
+            critical_styles = """
+            /* CORRECCIÓN CRÍTICA: Formularios legibles con tema oscuro */
+            QLineEdit, QComboBox, QTextEdit, QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit {
+                background-color: #1e293b !important;
+                border: 2px solid #475569 !important;
+                border-radius: 6px !important;
+                color: #f1f5f9 !important;
+                font-size: 14px !important;
+                padding: 8px 12px !important;
+                min-height: 18px !important;
+            }
+            
+            QLineEdit:focus, QComboBox:focus, QTextEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus {
+                background-color: #334155 !important;
+                border: 2px solid #60a5fa !important;
+                color: #ffffff !important;
+            }
+            
+            QLineEdit:disabled, QComboBox:disabled, QTextEdit:disabled {
+                background-color: #374151 !important;
+                border: 2px solid #6b7280 !important;
+                color: #9ca3af !important;
+            }
+            
+            /* Corrección ComboBox dropdown */
+            QComboBox QAbstractItemView {
+                background-color: #1e293b !important;
+                border: 2px solid #475569 !important;
+                color: #f1f5f9 !important;
+                selection-background-color: #3b82f6 !important;
+                selection-color: #ffffff !important;
+            }
+            
+            /* Corrección botones críticos */
+            QPushButton {
+                background-color: #1e40af !important;
+                color: #ffffff !important;
+                border: 1px solid #3b82f6 !important;
+                border-radius: 6px !important;
+                min-height: 32px !important;
+                padding: 8px 16px !important;
+            }
+            
+            QPushButton:hover {
+                background-color: #2563eb !important;
+            }
+            
+            /* Corrección labels */
+            QLabel {
+                color: #e2e8f0 !important;
+            }
+            """
+            
+            if widget:
+                # Aplicar a widget específico
+                current_style = widget.styleSheet()
+                widget.setStyleSheet(current_style + critical_styles)
+                print(f"[STYLE] Correcciones críticas aplicadas a {widget.__class__.__name__}")
+            else:
+                # Aplicar globalmente
+                app = QApplication.instance()
+                if app:
+                    current_style = app.styleSheet()
+                    app.setStyleSheet(current_style + critical_styles)
+                    print("[STYLE] Correcciones críticas de contraste aplicadas globalmente")
+                    
+            return True
+            
+        except Exception as e:
+            print(f"[ERROR] Error aplicando correcciones críticas: {e}")
             return False
             
     def load_module_stylesheet(self, module_name: str) -> str:
@@ -475,116 +561,23 @@ class StyleManager:
         """Recarga todos los temas desde archivos."""
         self._loaded_themes.clear()
         self._load_available_themes()
-        logging.info("Temas recargados desde archivos")
+        logging.debug("Temas recargados desde archivos")
     
     def _get_critical_form_styles(self, theme_name: str) -> str:
         """
-        Obtiene estilos críticos para formularios con buen contraste.
+        DESHABILITADO: No retorna estilos invasivos.
+        
+        Este método causaba cambios invasivos en toda la UI.
+        Los estilos se manejan directamente desde archivos QSS.
         
         Args:
             theme_name: Nombre del tema activo
             
         Returns:
-            str: CSS crítico para formularios legibles
+            str: Cadena vacía (sin estilos invasivos)
         """
-        if theme_name == 'dark':
-            return """
-            /* CORRECCIONES CRÍTICAS PARA TEMA OSCURO */
-            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, 
-            QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
-                background-color: #2d3748 !important;
-                color: #ffffff !important;
-                border: 2px solid #4a5568 !important;
-                border-radius: 8px !important;
-                padding: 8px 12px !important;
-                font-size: 14px !important;
-                min-height: 20px !important;
-            }
-            
-            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, 
-            QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, 
-            QDateTimeEdit:focus, QPlainTextEdit:focus {
-                background-color: #374151 !important;
-                border: 2px solid #3b82f6 !important;
-                color: #ffffff !important;
-            }
-            
-            QLineEdit:disabled, QTextEdit:disabled, QComboBox:disabled, 
-            QSpinBox:disabled, QDoubleSpinBox:disabled, QDateEdit:disabled {
-                background-color: #1f2937 !important;
-                color: #9ca3af !important;
-                border: 2px solid #374151 !important;
-            }
-            
-            QLabel {
-                color: #f9fafb !important;
-                background: transparent !important;
-            }
-            
-            QComboBox::drop-down {
-                background-color: #4a5568 !important;
-                border: none !important;
-                border-radius: 6px !important;
-            }
-            
-            QComboBox::down-arrow {
-                image: none !important;
-                width: 0px !important;
-                height: 0px !important;
-            }
-            
-            /* Asegurar que el texto en combobox sea visible */
-            QComboBox QAbstractItemView {
-                background-color: #2d3748 !important;
-                color: #ffffff !important;
-                selection-background-color: #3b82f6 !important;
-                selection-color: #ffffff !important;
-                border: 1px solid #4a5568 !important;
-            }
-            """
-        else:
-            # Para temas claros
-            return """
-            /* CORRECCIONES CRÍTICAS PARA TEMA CLARO */
-            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, 
-            QDateEdit, QTimeEdit, QDateTimeEdit, QPlainTextEdit {
-                background-color: #ffffff !important;
-                color: #1f2937 !important;
-                border: 2px solid #d1d5db !important;
-                border-radius: 8px !important;
-                padding: 8px 12px !important;
-                font-size: 14px !important;
-                min-height: 20px !important;
-            }
-            
-            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, QSpinBox:focus, 
-            QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, 
-            QDateTimeEdit:focus, QPlainTextEdit:focus {
-                background-color: #f9fafb !important;
-                border: 2px solid #3b82f6 !important;
-                color: #1f2937 !important;
-            }
-            
-            QLineEdit:disabled, QTextEdit:disabled, QComboBox:disabled, 
-            QSpinBox:disabled, QDoubleSpinBox:disabled, QDateEdit:disabled {
-                background-color: #f3f4f6 !important;
-                color: #6b7280 !important;
-                border: 2px solid #e5e7eb !important;
-            }
-            
-            QLabel {
-                color: #1f2937 !important;
-                background: transparent !important;
-            }
-            
-            QComboBox QAbstractItemView {
-                background-color: #ffffff !important;
-                color: #1f2937 !important;
-                selection-background-color: #3b82f6 !important;
-                selection-color: #ffffff !important;
-                border: 1px solid #d1d5db !important;
-            }
-            """
+        print(f"[STYLE] _get_critical_form_styles DESHABILITADO para tema: {theme_name}")
+        return ""
     
     def apply_critical_form_fixes(self, widget: QWidget = None) -> bool:
         """
@@ -690,6 +683,19 @@ class StyleManager:
             print(f"[ERROR] Error aplicando tema de emergencia: {e}")
             
         return False
+    
+    def apply_emergency_readable_forms(self) -> bool:
+        """
+        DESHABILITADO: No se aplican correcciones invasivas.
+        
+        Este método fue causante de problemas de UI invasivos.
+        Los temas se aplican directamente desde archivos QSS.
+        
+        Returns:
+            bool: True (sin aplicar correcciones)
+        """
+        print("[STYLE] apply_emergency_readable_forms DESHABILITADO - sin correcciones invasivas")
+        return True
     
     @classmethod
     def get_colors(cls) -> Dict[str, str]:

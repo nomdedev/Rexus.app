@@ -486,10 +486,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Verificar tabla principal (crítica)
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_inventario,),
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
+            cursor.execute(sql_verificar, (self.tabla_inventario,))
             if cursor.fetchone():
                 print(
                     f"[INVENTARIO] Tabla principal '{self.tabla_inventario}' verificada correctamente."
@@ -503,10 +501,8 @@ class InventarioModel(PaginatedTableMixin):
             tablas_secundarias = [self.tabla_movimientos, self.tabla_reservas]
 
             for tabla in tablas_secundarias:
-                cursor.execute(
-                    "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                    (tabla,),
-                )
+                sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
+                cursor.execute(sql_verificar, (tabla,))
                 if cursor.fetchone():
                     print(f"[INVENTARIO] Tabla '{tabla}' verificada correctamente.")
                 else:
@@ -643,10 +639,8 @@ class InventarioModel(PaginatedTableMixin):
             # Si se proporciona producto_id, verificar stock actual
             if producto_id and self.db_connection:
                 cursor = self.db_connection.cursor()
-                cursor.execute(
-                    "SELECT stock_actual, stock_minimo, stock_maximo FROM productos WHERE id = ?",
-                    (producto_id,),
-                )
+                sql_stock = self.sql_manager.get_query('inventario', 'obtener_stock_producto')
+                cursor.execute(sql_stock, (producto_id,))
                 row = cursor.fetchone()
 
                 if row:
@@ -828,14 +822,7 @@ class InventarioModel(PaginatedTableMixin):
             if not producto_actual:
                 raise Exception("Producto no encontrado")
 
-            sql_update = """
-            UPDATE inventario_perfiles
-            SET descripcion = ?, categoria = ?, subcategoria = ?, stock_minimo = ?,
-                stock_maximo = ?, precio_unitario = ?, ubicacion = ?, proveedor = ?,
-                unidad_medida = ?, observaciones = ?, fecha_modificacion = GETDATE(),
-                usuario_modificacion = ?
-            WHERE id = ?
-            """
+            sql_update = self.sql_manager.get_query('inventario', 'actualizar_producto')
 
             cursor.execute(
                 sql_update,
@@ -920,9 +907,8 @@ class InventarioModel(PaginatedTableMixin):
                 raise Exception(f"Tipo de movimiento inválido: {tipo_movimiento}")
 
             # Verificar si existe la tabla historial
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'"
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
+            cursor.execute(sql_verificar, ('historial',))
             if cursor.fetchone():
                 # Registrar en historial usando estructura existente
                 cantidad_movimiento = (
@@ -933,17 +919,14 @@ class InventarioModel(PaginatedTableMixin):
 
                 detalles = f"Producto ID: {producto_id}, {tipo_movimiento}: {cantidad_movimiento}, Stock anterior: {stock_anterior}, Stock nuevo: {stock_nuevo}, Motivo: {motivo}, Doc: {documento_referencia}"
 
+                sql_historial = self.sql_manager.get_query('inventario', 'insertar_historial')
                 cursor.execute(
-                    "INSERT INTO historial (accion, usuario, fecha, detalles) VALUES (?, ?, GETDATE(), ?)",
+                    sql_historial,
                     (f"INVENTARIO_{tipo_movimiento}", usuario, detalles),
                 )
 
             # Actualizar stock en inventario_perfiles
-            sql_update_stock = """
-            UPDATE inventario_perfiles
-            SET stock_actual = ?, fecha_modificacion = GETDATE(), usuario_modificacion = ?
-            WHERE id = ?
-            """
+            sql_update_stock = self.sql_manager.get_query('inventario', 'actualizar_stock')
 
             cursor.execute(sql_update_stock, (stock_nuevo, usuario, producto_id))
 
@@ -975,27 +958,20 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Verificar si existe la tabla historial
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name='historial' AND xtype='U'"
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
+            cursor.execute(sql_verificar, ('historial',))
             if not cursor.fetchone():
                 print(
                     "[ADVERTENCIA] Tabla historial no existe. No se pueden obtener movimientos."
                 )
                 return []
 
-            sql_select = """
-            SELECT id, accion, usuario, fecha, detalles
-            FROM historial
-            WHERE accion LIKE 'INVENTARIO_%'
-            """
-
-            params = []
             if producto_id:
-        # TODO: MANUAL FIX REQUIRED - SQL Injection via concatenation
-        # sql_select += " AND detalles LIKE ?"
-                sql_select += " AND detalles LIKE ?"
-                params.append(f"%Producto ID: {producto_id}%")
+                sql_select = self.sql_manager.get_query('inventario', 'obtener_movimientos_por_producto')
+                params = [f"%Producto ID: {producto_id}%"]
+            else:
+                sql_select = self.sql_manager.get_query('inventario', 'obtener_movimientos')
+                params = []
 
             sql_select += (
                 f" ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY"
@@ -1131,29 +1107,23 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Total de productos
-            cursor.execute("SELECT COUNT(*) FROM inventario_perfiles")
+            sql_count = self.sql_manager.get_query('inventario', 'contar_productos_totales')
+            cursor.execute(sql_count)
             total_productos = cursor.fetchone()[0]
 
             # Productos con stock bajo
-            cursor.execute("""
-                SELECT COUNT(*) FROM inventario_perfiles
-                WHERE stock_actual <= stock_minimo
-            """)
+            sql_stock_bajo = self.sql_manager.get_query('inventario', 'contar_stock_bajo')
+            cursor.execute(sql_stock_bajo)
             stock_bajo = cursor.fetchone()[0]
 
             # Valor total del inventario
-            cursor.execute("""
-                SELECT SUM(stock_actual * ISNULL(importe, 0)) FROM inventario_perfiles
-            """)
+            sql_valor_total = self.sql_manager.get_query('inventario', 'calcular_valor_total')
+            cursor.execute(sql_valor_total)
             valor_total = cursor.fetchone()[0] or 0
 
             # Movimientos del mes actual desde historial
-            cursor.execute("""
-                SELECT COUNT(*) FROM historial
-                WHERE accion LIKE 'INVENTARIO_%'
-                  AND MONTH(fecha) = MONTH(GETDATE())
-                  AND YEAR(fecha) = YEAR(GETDATE())
-            """)
+            sql_movimientos_mes = self.sql_manager.get_query('inventario', 'contar_movimientos_mes')
+            cursor.execute(sql_movimientos_mes)
             movimientos_mes = cursor.fetchone()[0]
 
             return {
@@ -1183,16 +1153,7 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            sql_select = """
-            SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
-                   mo.cantidad as cantidad_asignada, mo.estado, mo.fecha_asignacion,
-                   mo.etapa_id, mo.observaciones
-            FROM materiales_obra mo
-            INNER JOIN inventario_perfiles i ON mo.producto_id = i.id
-            WHERE mo.obra_id = ?
-            ORDER BY mo.fecha_asignacion DESC
-            """
-
+            sql_select = self.sql_manager.get_query('inventario', 'obtener_productos_por_obra')
             cursor.execute(sql_select, (obra_id,))
             rows = cursor.fetchall()
 
@@ -2437,7 +2398,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Información de la obra
-            cursor.execute("SELECT codigo, nombre FROM obras WHERE id = ?", (obra_id,))
+            sql_obra = self.sql_manager.get_query('inventario', 'obtener_obra_info')
+            cursor.execute(sql_obra, (obra_id,))
             obra_info = cursor.fetchone()
 
             if not obra_info:
@@ -2577,7 +2539,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Total de productos
-            cursor.execute("SELECT COUNT(*) FROM inventario_perfiles WHERE activo = 1")
+            sql_activos = self.sql_manager.get_query('inventario', 'contar_productos_activos')
+            cursor.execute(sql_activos)
             total_productos = cursor.fetchone()[0]
 
             # Valor total
@@ -2597,7 +2560,8 @@ class InventarioModel(PaginatedTableMixin):
             stock_bajo = cursor.fetchone()[0]
 
             # Productos activos
-            cursor.execute("SELECT COUNT(*) FROM inventario_perfiles WHERE activo = 1")
+            sql_activos = self.sql_manager.get_query('inventario', 'contar_productos_activos')
+            cursor.execute(sql_activos)
             productos_activos = cursor.fetchone()[0]
 
             return {

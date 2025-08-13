@@ -4,7 +4,8 @@
       "Bash(mkdir:*)",
       "Bash(cp:*)",
       "Bash(python:*)",
-      "Bash(xcopy:*)"
+      "Bash(xcopy:*)",
+      "Bash(grep:*)"
     ],
     "deny": [],
     "ask": []

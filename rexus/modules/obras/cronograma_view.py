@@ -73,7 +73,7 @@ class CronogramaObrasView(QWidget):
         layout_principal.setContentsMargins(10, 10, 10, 10)
 
         # Título
-        self.crear_titulo(layout_principal)
+        # Título removido por solicitud del usuario
 
         # Panel de controles
         panel_controles = self.crear_panel_controles()
@@ -83,54 +83,41 @@ class CronogramaObrasView(QWidget):
         self.crear_area_cronograma(layout_principal)
 
     def crear_titulo(self, layout: QVBoxLayout):
-        """Crea el título de la vista."""
-        titulo_container = QFrame()
-        titulo_container.setStyleSheet("""
+        """Método removido - título eliminado por solicitud del usuario."""
+        # Crear solo el botón de alternar vista sin el título violeta
+        controles_container = QFrame()
+        controles_container.setStyleSheet("""
             QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
-                                           stop:0 #8e44ad, stop:1 #9b59b6);
-                border-radius: 8px;
-                padding: 15px;
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                padding: 8px;
                 margin-bottom: 10px;
             }
         """)
-
-        titulo_layout = QHBoxLayout(titulo_container)
-
-        # Título principal
-        titulo_label = QLabel("📅 Cronograma de Obras")
-        titulo_label.setStyleSheet("""
-            QLabel {
-                font-size: 28px;
-                font-weight: bold;
-                color: white;
-                background: transparent;
-                padding: 0;
-                margin: 0;
-            }
-        """)
-        titulo_layout.addWidget(titulo_label)
-
-        # Botón para alternar vista
-        self.btn_alternar_vista = QPushButton("[CHART] Vista Tabla")
+        
+        controles_layout = QHBoxLayout(controles_container)
+        controles_layout.addStretch()  # Empujar botón a la derecha
+        
+        # Solo el botón de alternar vista con nuevo estilo
+        self.btn_alternar_vista = QPushButton("🔄 Vista Tabla")
         self.btn_alternar_vista.setStyleSheet("""
             QPushButton {
-                background-color: rgba(255, 255, 255, 0.2);
+                background-color: #3b82f6;
                 color: white;
-                border: 2px solid rgba(255, 255, 255, 0.3);
+                border: none;
                 border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                font-size: 14px;
+                padding: 6px 12px;
+                font-weight: 500;
+                font-size: 12px;
             }
             QPushButton:hover {
-                background-color: rgba(255, 255, 255, 0.3);
-                border-color: rgba(255, 255, 255, 0.5);
+                background-color: #2563eb;
             }
         """)
-        titulo_layout.addWidget(self.btn_alternar_vista)
-
-        layout.addWidget(titulo_container)
+        controles_layout.addWidget(self.btn_alternar_vista)
+        
+        layout.addWidget(controles_container)
 
     def crear_panel_controles(self) -> QGroupBox:
         """Crea el panel de controles del cronograma."""

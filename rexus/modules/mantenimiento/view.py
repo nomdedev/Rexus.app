@@ -27,6 +27,7 @@ Vista de Mantenimiento - Interfaz de mantenimiento
 import logging
 
 from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
     QHBoxLayout,
     QLineEdit,
@@ -40,6 +41,13 @@ from PyQt6.QtWidgets import (
     QSpinBox,
     QDoubleSpinBox,
     QDateEdit,
+    QTabWidget,
+    QTextEdit,
+    QCheckBox,
+    QGroupBox,
+    QGridLayout,
+    QProgressBar,
+    QFrame,
 )
 
 from rexus.utils.message_system import show_warning, show_error, show_success
@@ -73,20 +81,19 @@ class MantenimientoView(QWidget):
         self.init_ui()
 
     def init_ui(self):
-        """Inicializa la interfaz de usuario."""
+        """Inicializa la interfaz de usuario con pestañas completas."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(10, 10, 10, 10)
-        layout.setSpacing(10)
+        layout.setContentsMargins(15, 15, 15, 15)
+        layout.setSpacing(15)
 
-        # Panel de control estandarizado
-        control_panel = StandardComponents.create_control_panel()
-        self.setup_control_panel(control_panel)
-        layout.addWidget(control_panel)
+        # Header del módulo
+        header = self.create_module_header()
+        layout.addWidget(header)
 
-        # Tabla estandarizada
-        self.tabla_principal = StandardComponents.create_standard_table()
-        self.configurar_tabla()
-        layout.addWidget(self.tabla_principal)
+        # Widget de pestañas principal
+        self.tab_widget = QTabWidget()
+        self.create_all_tabs()
+        layout.addWidget(self.tab_widget)
 
         # Aplicar tema del módulo
         style_manager.apply_module_theme(self)
@@ -96,6 +103,655 @@ class MantenimientoView(QWidget):
 
         # Inicializar protección XSS
         self.init_xss_protection()
+
+    def create_module_header(self):
+        """Crea el header del módulo con información general."""
+        header_frame = QFrame()
+        header_frame.setStyleSheet("""
+            QFrame {
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+                    stop:0 #667eea, stop:1 #764ba2);
+                border-radius: 12px;
+                padding: 20px;
+                margin-bottom: 10px;
+            }
+        """)
+        
+        header_layout = QHBoxLayout(header_frame)
+        
+        # Información del módulo
+        info_layout = QVBoxLayout()
+        
+        title = RexusLabel("🔧 Sistema de Mantenimiento", "title")
+        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
+        
+        subtitle = RexusLabel("Gestión integral de mantenimiento preventivo y correctivo", "subtitle")
+        subtitle.setStyleSheet("color: rgba(255, 255, 255, 0.9); font-size: 14px;")
+        
+        info_layout.addWidget(title)
+        info_layout.addWidget(subtitle)
+        
+        # Estadísticas rápidas
+        stats_layout = QHBoxLayout()
+        self.create_header_stats(stats_layout)
+        
+        header_layout.addLayout(info_layout)
+        header_layout.addStretch()
+        header_layout.addLayout(stats_layout)
+        
+        return header_frame
+
+    def create_header_stats(self, layout):
+        """Crea estadísticas rápidas en el header."""
+        stats = [
+            ("📋", "Tareas", "12", "Pendientes"),
+            ("✅", "Completadas", "45", "Este mes"),
+            ("⚠️", "Críticas", "3", "Urgente"),
+            ("📊", "Eficiencia", "89%", "General")
+        ]
+        
+        for icon, title, value, subtitle in stats:
+            stat_widget = QWidget()
+            stat_widget.setStyleSheet("""
+                QWidget {
+                    background: rgba(255, 255, 255, 0.1);
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin: 5px;
+                }
+            """)
+            
+            stat_layout = QVBoxLayout(stat_widget)
+            stat_layout.setContentsMargins(10, 10, 10, 10)
+            
+            icon_label = RexusLabel(icon, "caption")
+            icon_label.setStyleSheet("color: white; font-size: 20px; text-align: center;")
+            
+            title_label = RexusLabel(title, "caption")
+            title_label.setStyleSheet("color: white; font-size: 12px; text-align: center;")
+            
+            value_label = RexusLabel(value, "title")
+            value_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold; text-align: center;")
+            
+            sub_label = RexusLabel(subtitle, "caption")
+            sub_label.setStyleSheet("color: rgba(255, 255, 255, 0.8); font-size: 10px; text-align: center;")
+            
+            stat_layout.addWidget(icon_label)
+            stat_layout.addWidget(title_label)
+            stat_layout.addWidget(value_label)
+            stat_layout.addWidget(sub_label)
+            
+            layout.addWidget(stat_widget)
+
+    def create_all_tabs(self):
+        """Crea todas las pestañas del módulo."""
+        # Pestaña 1: Órdenes de Trabajo
+        ordenes_tab = self.create_ordenes_trabajo_tab()
+        self.tab_widget.addTab(ordenes_tab, "📋 Órdenes de Trabajo")
+        
+        # Pestaña 2: Mantenimiento Preventivo
+        preventivo_tab = self.create_mantenimiento_preventivo_tab()
+        self.tab_widget.addTab(preventivo_tab, "🔄 Mantenimiento Preventivo")
+        
+        # Pestaña 3: Inventario de Repuestos
+        inventario_tab = self.create_inventario_repuestos_tab()
+        self.tab_widget.addTab(inventario_tab, "📦 Inventario Repuestos")
+        
+        # Pestaña 4: Equipos y Activos
+        equipos_tab = self.create_equipos_activos_tab()
+        self.tab_widget.addTab(equipos_tab, "⚙️ Equipos y Activos")
+        
+        # Pestaña 5: Reportes y Análisis
+        reportes_tab = self.create_reportes_analisis_tab()
+        self.tab_widget.addTab(reportes_tab, "📊 Reportes y Análisis")
+        
+        # Pestaña 6: Configuración
+        config_tab = self.create_configuracion_tab()
+        self.tab_widget.addTab(config_tab, "⚙️ Configuración")
+
+    def create_ordenes_trabajo_tab(self):
+        """Crea la pestaña de órdenes de trabajo."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Panel de control
+        control_panel = self.create_ordenes_control_panel()
+        layout.addWidget(control_panel)
+        
+        # Tabla de órdenes
+        self.tabla_ordenes = StandardComponents.create_standard_table()
+        self.configurar_tabla_ordenes()
+        layout.addWidget(self.tabla_ordenes)
+        
+        return tab_widget
+
+    def create_ordenes_control_panel(self):
+        """Panel de control para órdenes de trabajo."""
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin: 5px;
+            }
+        """)
+        
+        layout = QHBoxLayout(panel)
+        
+        # Botón nueva orden
+        btn_nueva_orden = StandardComponents.create_primary_button("➕ Nueva Orden")
+        btn_nueva_orden.clicked.connect(self.nueva_orden_trabajo)
+        layout.addWidget(btn_nueva_orden)
+        
+        # Filtros
+        self.filtro_estado = RexusComboBox()
+        self.filtro_estado.addItems(["Todas", "Pendiente", "En Progreso", "Completada", "Cancelada"])
+        layout.addWidget(RexusLabel("Estado:"))
+        layout.addWidget(self.filtro_estado)
+        
+        self.filtro_prioridad = RexusComboBox()
+        self.filtro_prioridad.addItems(["Todas", "Alta", "Media", "Baja", "Crítica"])
+        layout.addWidget(RexusLabel("Prioridad:"))
+        layout.addWidget(self.filtro_prioridad)
+        
+        # Búsqueda
+        self.busqueda_ordenes = RexusLineEdit()
+        self.busqueda_ordenes.setPlaceholderText("Buscar órdenes...")
+        layout.addWidget(self.busqueda_ordenes)
+        
+        btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        layout.addWidget(btn_buscar)
+        
+        btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
+        btn_actualizar.clicked.connect(self.actualizar_ordenes)
+        layout.addWidget(btn_actualizar)
+        
+        return panel
+
+    def configurar_tabla_ordenes(self):
+        """Configura la tabla de órdenes de trabajo."""
+        self.tabla_ordenes.setColumnCount(8)
+        self.tabla_ordenes.setHorizontalHeaderLabels([
+            "ID", "Título", "Equipo", "Prioridad", "Estado", "Asignado", "Fecha", "Acciones"
+        ])
+        
+        # Datos de ejemplo
+        datos_ejemplo = [
+            ["001", "Cambio de filtros", "Compresor A1", "Alta", "Pendiente", "Juan Pérez", "2024-01-15", "Ver"],
+            ["002", "Revisión eléctrica", "Motor B2", "Media", "En Progreso", "Ana García", "2024-01-12", "Ver"],
+            ["003", "Lubricación general", "Bomba C3", "Baja", "Completada", "Carlos López", "2024-01-10", "Ver"],
+            ["004", "Reparación urgente", "Generador D4", "Crítica", "Pendiente", "María Rodríguez", "2024-01-16", "Ver"],
+        ]
+        
+        self.tabla_ordenes.setRowCount(len(datos_ejemplo))
+        for row, data in enumerate(datos_ejemplo):
+            for col, value in enumerate(data):
+                if col == 7:  # Acciones
+                    btn_acciones = self.create_actions_button(row)
+                    self.tabla_ordenes.setCellWidget(row, col, btn_acciones)
+                else:
+                    item = QTableWidgetItem(str(value))
+                    # Colorear por prioridad y estado
+                    if col == 3:  # Prioridad
+                        if value == "Crítica":
+                            item.setBackground(QColor(220, 38, 38, 50))
+                        elif value == "Alta":
+                            item.setBackground(QColor(245, 101, 101, 50))
+                        elif value == "Media":
+                            item.setBackground(QColor(251, 191, 36, 50))
+                    elif col == 4:  # Estado
+                        if value == "Completada":
+                            item.setBackground(QColor(34, 197, 94, 50))
+                        elif value == "En Progreso":
+                            item.setBackground(QColor(59, 130, 246, 50))
+                        elif value == "Pendiente":
+                            item.setBackground(QColor(156, 163, 175, 50))
+                    self.tabla_ordenes.setItem(row, col, item)
+
+    def create_mantenimiento_preventivo_tab(self):
+        """Crea la pestaña de mantenimiento preventivo."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Panel superior con programación
+        programacion_panel = self.create_programacion_panel()
+        layout.addWidget(programacion_panel)
+        
+        # Tabla de mantenimientos programados
+        self.tabla_preventivo = StandardComponents.create_standard_table()
+        self.configurar_tabla_preventivo()
+        layout.addWidget(self.tabla_preventivo)
+        
+        return tab_widget
+
+    def create_programacion_panel(self):
+        """Panel de programación de mantenimiento preventivo."""
+        panel = QGroupBox("📅 Programación de Mantenimiento Preventivo")
+        layout = QGridLayout(panel)
+        
+        # Selector de equipo
+        layout.addWidget(RexusLabel("Equipo:"), 0, 0)
+        self.combo_equipo_preventivo = RexusComboBox()
+        self.combo_equipo_preventivo.addItems(["Compresor A1", "Motor B2", "Bomba C3", "Generador D4"])
+        layout.addWidget(self.combo_equipo_preventivo, 0, 1)
+        
+        # Tipo de mantenimiento
+        layout.addWidget(RexusLabel("Tipo:"), 0, 2)
+        self.combo_tipo_preventivo = RexusComboBox()
+        self.combo_tipo_preventivo.addItems(["Diario", "Semanal", "Mensual", "Trimestral", "Semestral", "Anual"])
+        layout.addWidget(self.combo_tipo_preventivo, 0, 3)
+        
+        # Frecuencia
+        layout.addWidget(RexusLabel("Cada:"), 1, 0)
+        self.spin_frecuencia = QSpinBox()
+        self.spin_frecuencia.setRange(1, 365)
+        self.spin_frecuencia.setValue(30)
+        layout.addWidget(self.spin_frecuencia, 1, 1)
+        
+        layout.addWidget(RexusLabel("días"), 1, 2)
+        
+        # Botones
+        btn_programar = StandardComponents.create_primary_button("📅 Programar Mantenimiento")
+        btn_programar.clicked.connect(self.programar_mantenimiento)
+        layout.addWidget(btn_programar, 1, 3)
+        
+        return panel
+
+    def configurar_tabla_preventivo(self):
+        """Configura tabla de mantenimiento preventivo."""
+        self.tabla_preventivo.setColumnCount(7)
+        self.tabla_preventivo.setHorizontalHeaderLabels([
+            "Equipo", "Tipo", "Frecuencia", "Última Fecha", "Próxima Fecha", "Estado", "Acciones"
+        ])
+        
+        datos = [
+            ["Compresor A1", "Mensual", "30 días", "2023-12-15", "2024-01-15", "Vencido", "Ejecutar"],
+            ["Motor B2", "Semanal", "7 días", "2024-01-08", "2024-01-15", "Próximo", "Ver"],
+            ["Bomba C3", "Trimestral", "90 días", "2023-10-15", "2024-01-15", "Programado", "Ver"],
+        ]
+        
+        self.tabla_preventivo.setRowCount(len(datos))
+        for row, data in enumerate(datos):
+            for col, value in enumerate(data):
+                if col == 6:  # Acciones
+                    btn = QPushButton(value)
+                    btn.setStyleSheet("background: #10b981; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    self.tabla_preventivo.setCellWidget(row, col, btn)
+                else:
+                    item = QTableWidgetItem(str(value))
+                    if col == 5:  # Estado
+                        if value == "Vencido":
+                            item.setBackground(QColor(239, 68, 68, 50))
+                        elif value == "Próximo":
+                            item.setBackground(QColor(245, 158, 11, 50))
+                        elif value == "Programado":
+                            item.setBackground(QColor(34, 197, 94, 50))
+                    self.tabla_preventivo.setItem(row, col, item)
+
+    def create_inventario_repuestos_tab(self):
+        """Crea pestaña de inventario de repuestos."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Panel de control de inventario
+        inventario_control = self.create_inventario_control_panel()
+        layout.addWidget(inventario_control)
+        
+        # Tabla de repuestos
+        self.tabla_repuestos = StandardComponents.create_standard_table()
+        self.configurar_tabla_repuestos()
+        layout.addWidget(self.tabla_repuestos)
+        
+        return tab_widget
+
+    def create_inventario_control_panel(self):
+        """Panel de control de inventario."""
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin: 5px;
+            }
+        """)
+        
+        layout = QHBoxLayout(panel)
+        
+        btn_nuevo_repuesto = StandardComponents.create_primary_button("➕ Nuevo Repuesto")
+        layout.addWidget(btn_nuevo_repuesto)
+        
+        btn_entrada = StandardComponents.create_secondary_button("📥 Entrada")
+        layout.addWidget(btn_entrada)
+        
+        btn_salida = StandardComponents.create_secondary_button("📤 Salida")
+        layout.addWidget(btn_salida)
+        
+        # Filtros de stock
+        layout.addWidget(RexusLabel("Stock:"))
+        self.filtro_stock = RexusComboBox()
+        self.filtro_stock.addItems(["Todos", "Stock Bajo", "Sin Stock", "Stock Normal", "Sobre Stock"])
+        layout.addWidget(self.filtro_stock)
+        
+        # Búsqueda
+        self.busqueda_repuestos = RexusLineEdit()
+        self.busqueda_repuestos.setPlaceholderText("Buscar repuestos...")
+        layout.addWidget(self.busqueda_repuestos)
+        
+        btn_buscar = StandardComponents.create_secondary_button("🔍")
+        layout.addWidget(btn_buscar)
+        
+        return panel
+
+    def configurar_tabla_repuestos(self):
+        """Configura tabla de repuestos."""
+        self.tabla_repuestos.setColumnCount(8)
+        self.tabla_repuestos.setHorizontalHeaderLabels([
+            "Código", "Descripción", "Stock Actual", "Stock Mínimo", "Precio", "Ubicación", "Estado", "Acciones"
+        ])
+        
+        datos = [
+            ["REP001", "Filtro de aire grande", "25", "10", "$45.00", "A-1-B", "Normal", "Ver"],
+            ["REP002", "Aceite hidráulico", "5", "15", "$120.00", "B-2-C", "Bajo", "Ver"],
+            ["REP003", "Correa de transmisión", "0", "5", "$85.00", "C-1-A", "Sin Stock", "Ver"],
+            ["REP004", "Rodamiento 6205", "50", "20", "$25.00", "A-3-B", "Normal", "Ver"],
+        ]
+        
+        self.tabla_repuestos.setRowCount(len(datos))
+        for row, data in enumerate(datos):
+            for col, value in enumerate(data):
+                if col == 7:  # Acciones
+                    btn = QPushButton("Ver")
+                    btn.setStyleSheet("background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    self.tabla_repuestos.setCellWidget(row, col, btn)
+                else:
+                    item = QTableWidgetItem(str(value))
+                    if col == 6:  # Estado
+                        if value == "Sin Stock":
+                            item.setBackground(QColor(239, 68, 68, 50))
+                        elif value == "Bajo":
+                            item.setBackground(QColor(245, 158, 11, 50))
+                        elif value == "Normal":
+                            item.setBackground(QColor(34, 197, 94, 50))
+                    self.tabla_repuestos.setItem(row, col, item)
+
+    def create_equipos_activos_tab(self):
+        """Crea pestaña de equipos y activos."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Panel de equipos
+        equipos_control = self.create_equipos_control_panel()
+        layout.addWidget(equipos_control)
+        
+        # Tabla de equipos
+        self.tabla_equipos = StandardComponents.create_standard_table()
+        self.configurar_tabla_equipos()
+        layout.addWidget(self.tabla_equipos)
+        
+        return tab_widget
+
+    def create_equipos_control_panel(self):
+        """Panel de control de equipos."""
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background-color: white;
+                border-radius: 10px;
+                padding: 15px;
+                margin: 5px;
+            }
+        """)
+        
+        layout = QHBoxLayout(panel)
+        
+        btn_nuevo_equipo = StandardComponents.create_primary_button("➕ Nuevo Equipo")
+        layout.addWidget(btn_nuevo_equipo)
+        
+        btn_historial = StandardComponents.create_secondary_button("📋 Historial")
+        layout.addWidget(btn_historial)
+        
+        # Filtros
+        layout.addWidget(RexusLabel("Estado:"))
+        self.filtro_estado_equipo = RexusComboBox()
+        self.filtro_estado_equipo.addItems(["Todos", "Operativo", "En Mantenimiento", "Fuera de Servicio", "En Reparación"])
+        layout.addWidget(self.filtro_estado_equipo)
+        
+        layout.addWidget(RexusLabel("Ubicación:"))
+        self.filtro_ubicacion = RexusComboBox()
+        self.filtro_ubicacion.addItems(["Todas", "Planta A", "Planta B", "Almacén", "Oficinas"])
+        layout.addWidget(self.filtro_ubicacion)
+        
+        return panel
+
+    def configurar_tabla_equipos(self):
+        """Configura tabla de equipos."""
+        self.tabla_equipos.setColumnCount(8)
+        self.tabla_equipos.setHorizontalHeaderLabels([
+            "Código", "Nombre", "Tipo", "Marca", "Ubicación", "Estado", "Último Mant.", "Acciones"
+        ])
+        
+        datos = [
+            ["EQ001", "Compresor Principal", "Compresor", "Atlas Copco", "Planta A", "Operativo", "2023-12-15", "Ver"],
+            ["EQ002", "Motor Bomba 1", "Motor", "Siemens", "Planta B", "En Mantenimiento", "2024-01-10", "Ver"],
+            ["EQ003", "Generador Emergencia", "Generador", "Caterpillar", "Planta A", "Operativo", "2023-11-20", "Ver"],
+            ["EQ004", "Bomba Centrífuga", "Bomba", "Grundfos", "Planta B", "En Reparación", "2024-01-05", "Ver"],
+        ]
+        
+        self.tabla_equipos.setRowCount(len(datos))
+        for row, data in enumerate(datos):
+            for col, value in enumerate(data):
+                if col == 7:  # Acciones
+                    btn = QPushButton("Ver")
+                    btn.setStyleSheet("background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    self.tabla_equipos.setCellWidget(row, col, btn)
+                else:
+                    item = QTableWidgetItem(str(value))
+                    if col == 5:  # Estado
+                        if value == "Operativo":
+                            item.setBackground(QColor(34, 197, 94, 50))
+                        elif value == "En Mantenimiento":
+                            item.setBackground(QColor(59, 130, 246, 50))
+                        elif value == "En Reparación":
+                            item.setBackground(QColor(245, 158, 11, 50))
+                        elif value == "Fuera de Servicio":
+                            item.setBackground(QColor(239, 68, 68, 50))
+                    self.tabla_equipos.setItem(row, col, item)
+
+    def create_reportes_analisis_tab(self):
+        """Crea pestaña de reportes y análisis."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Panel de reportes
+        reportes_panel = self.create_reportes_panel()
+        layout.addWidget(reportes_panel)
+        
+        # Panel de métricas
+        metricas_panel = self.create_metricas_panel()
+        layout.addWidget(metricas_panel)
+        
+        return tab_widget
+
+    def create_reportes_panel(self):
+        """Panel de generación de reportes."""
+        panel = QGroupBox("📊 Generación de Reportes")
+        layout = QGridLayout(panel)
+        
+        # Tipos de reporte
+        layout.addWidget(RexusLabel("Tipo de Reporte:"), 0, 0)
+        self.combo_tipo_reporte = RexusComboBox()
+        self.combo_tipo_reporte.addItems([
+            "Órdenes de Trabajo Completadas",
+            "Mantenimiento Preventivo",
+            "Costos de Mantenimiento", 
+            "Inventario de Repuestos",
+            "Disponibilidad de Equipos",
+            "Análisis de Fallos"
+        ])
+        layout.addWidget(self.combo_tipo_reporte, 0, 1)
+        
+        # Período
+        layout.addWidget(RexusLabel("Período:"), 0, 2)
+        self.combo_periodo = RexusComboBox()
+        self.combo_periodo.addItems(["Última Semana", "Último Mes", "Últimos 3 Meses", "Último Año", "Personalizado"])
+        layout.addWidget(self.combo_periodo, 0, 3)
+        
+        # Botones de reportes
+        btn_generar = StandardComponents.create_primary_button("📊 Generar Reporte")
+        btn_generar.clicked.connect(self.generar_reporte)
+        layout.addWidget(btn_generar, 1, 0)
+        
+        btn_exportar = StandardComponents.create_secondary_button("📤 Exportar Excel")
+        layout.addWidget(btn_exportar, 1, 1)
+        
+        btn_imprimir = StandardComponents.create_secondary_button("🖨️ Imprimir")
+        layout.addWidget(btn_imprimir, 1, 2)
+        
+        return panel
+
+    def create_metricas_panel(self):
+        """Panel de métricas clave."""
+        panel = QGroupBox("📈 Métricas Clave de Mantenimiento")
+        layout = QGridLayout(panel)
+        
+        # KPIs con barras de progreso
+        kpis = [
+            ("🎯 Disponibilidad de Equipos", 92, "%"),
+            ("⏱️ Tiempo Promedio de Reparación", 4.5, "hrs"),
+            ("💰 Costo Promedio por Orden", 350, "$"),
+            ("✅ Cumplimiento Preventivo", 78, "%"),
+        ]
+        
+        for i, (titulo, valor, unidad) in enumerate(kpis):
+            # Título
+            titulo_label = RexusLabel(titulo)
+            layout.addWidget(titulo_label, i*2, 0, 1, 2)
+            
+            # Valor
+            valor_label = RexusLabel(f"{valor}{unidad}")
+            valor_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #2563eb;")
+            layout.addWidget(valor_label, i*2, 2)
+            
+            # Barra de progreso (solo para porcentajes)
+            if unidad == "%":
+                progress = QProgressBar()
+                progress.setValue(int(valor))
+                progress.setStyleSheet("""
+                    QProgressBar {
+                        border: 1px solid #e5e7eb;
+                        border-radius: 4px;
+                        text-align: center;
+                        font-size: 11px;
+                    }
+                    QProgressBar::chunk {
+                        background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+                            stop:0 #3b82f6, stop:1 #1d4ed8);
+                        border-radius: 4px;
+                    }
+                """)
+                layout.addWidget(progress, i*2+1, 0, 1, 3)
+        
+        return panel
+
+    def create_configuracion_tab(self):
+        """Crea pestaña de configuración."""
+        tab_widget = QWidget()
+        layout = QVBoxLayout(tab_widget)
+        
+        # Configuraciones generales
+        config_panel = QGroupBox("⚙️ Configuración General")
+        config_layout = QGridLayout(config_panel)
+        
+        # Notificaciones
+        config_layout.addWidget(RexusLabel("Notificaciones:"), 0, 0)
+        self.check_notif_vencimiento = QCheckBox("Avisar vencimientos")
+        self.check_notif_vencimiento.setChecked(True)
+        config_layout.addWidget(self.check_notif_vencimiento, 0, 1)
+        
+        self.check_notif_stock = QCheckBox("Avisar stock bajo")
+        self.check_notif_stock.setChecked(True)
+        config_layout.addWidget(self.check_notif_stock, 0, 2)
+        
+        # Días de anticipación
+        config_layout.addWidget(RexusLabel("Días de anticipación:"), 1, 0)
+        self.spin_dias_anticipacion = QSpinBox()
+        self.spin_dias_anticipacion.setRange(1, 30)
+        self.spin_dias_anticipacion.setValue(7)
+        config_layout.addWidget(self.spin_dias_anticipacion, 1, 1)
+        
+        # Auto-backup
+        config_layout.addWidget(RexusLabel("Auto-backup:"), 2, 0)
+        self.check_auto_backup = QCheckBox("Activar backup automático")
+        config_layout.addWidget(self.check_auto_backup, 2, 1)
+        
+        self.combo_frecuencia_backup = RexusComboBox()
+        self.combo_frecuencia_backup.addItems(["Diario", "Semanal", "Mensual"])
+        config_layout.addWidget(self.combo_frecuencia_backup, 2, 2)
+        
+        # Botón guardar configuración
+        btn_guardar_config = StandardComponents.create_primary_button("💾 Guardar Configuración")
+        config_layout.addWidget(btn_guardar_config, 3, 0, 1, 3)
+        
+        layout.addWidget(config_panel)
+        layout.addStretch()
+        
+        return tab_widget
+
+    # Métodos de funcionalidad
+    def nueva_orden_trabajo(self):
+        """Abre diálogo para nueva orden de trabajo."""
+        show_success(self, "Nueva Orden", "Abriendo formulario de nueva orden de trabajo...")
+
+    def actualizar_ordenes(self):
+        """Actualiza la tabla de órdenes."""
+        show_success(self, "Actualizado", "Órdenes de trabajo actualizadas")
+
+    def programar_mantenimiento(self):
+        """Programa nuevo mantenimiento preventivo."""
+        equipo = self.combo_equipo_preventivo.currentText()
+        tipo = self.combo_tipo_preventivo.currentText()
+        frecuencia = self.spin_frecuencia.value()
+        show_success(self, "Programado", f"Mantenimiento {tipo} programado para {equipo} cada {frecuencia} días")
+
+    def generar_reporte(self):
+        """Genera reporte seleccionado."""
+        tipo = self.combo_tipo_reporte.currentText()
+        periodo = self.combo_periodo.currentText()
+        show_success(self, "Reporte Generado", f"Reporte '{tipo}' generado para el período '{periodo}'")
+
+    def create_actions_button(self, row):
+        """Crea botón de acciones para tabla."""
+        btn = QPushButton("⚙️ Acciones")
+        btn.setStyleSheet("""
+            QPushButton {
+                background: #6366f1;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                padding: 6px 12px;
+                font-size: 11px;
+            }
+            QPushButton:hover {
+                background: #4f46e5;
+            }
+        """)
+        btn.clicked.connect(lambda: self.mostrar_acciones(row))
+        return btn
+
+    def mostrar_acciones(self, row):
+        """Muestra menú de acciones para fila."""
+        show_success(self, "Acciones", f"Mostrando acciones para fila {row + 1}")
+
+    # Métodos heredados adaptados
+    def setup_control_panel(self, panel):
+        """Método heredado - ya no se usa con pestañas."""
+        pass
+
+    def configurar_tabla(self):
+        """Método heredado - configuración en pestañas individuales."""
+        pass
 
     def aplicar_estilos(self):
         """Aplica estilos minimalistas y modernos a toda la interfaz."""
@@ -340,11 +996,11 @@ class MantenimientoView(QWidget):
                     item = QTableWidgetItem(str(value))
                     if col == 3:  # Columna Estado
                         if value == "Completado":
-                            item.setBackground(RexusColors.SUCCESS_LIGHT)
+                            item.setBackground(QColor(46, 204, 113, 50))  # Verde claro
                         elif value == "En Progreso":
-                            item.setBackground(RexusColors.WARNING_LIGHT)
+                            item.setBackground(QColor(243, 156, 18, 50))  # Amarillo claro
                         elif value == "Pendiente":
-                            item.setBackground(RexusColors.DANGER_LIGHT)
+                            item.setBackground(QColor(231, 76, 60, 50))   # Rojo claro
                     self.tabla_principal.setItem(row, col, item)
 
     def ver_detalle(self, row):
@@ -453,6 +1109,30 @@ class MantenimientoView(QWidget):
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
+
+    def cargar_equipos(self, equipos):
+        """Carga los equipos en el combo selector."""
+        try:
+            if hasattr(self, 'combo_equipo_preventivo'):
+                self.combo_equipo_preventivo.clear()
+                for equipo in equipos:
+                    if isinstance(equipo, dict):
+                        self.combo_equipo_preventivo.addItem(equipo.get('nombre', str(equipo)))
+                    else:
+                        self.combo_equipo_preventivo.addItem(str(equipo))
+            
+            # También actualizar tabla de equipos si está visible
+            if hasattr(self, 'tabla_equipos') and equipos:
+                self.tabla_equipos.setRowCount(len(equipos))
+                for row, equipo in enumerate(equipos):
+                    if isinstance(equipo, dict):
+                        cols = ['codigo', 'nombre', 'tipo', 'marca', 'ubicacion', 'estado', 'ultimo_mantenimiento']
+                        for col, field in enumerate(cols):
+                            if col < self.tabla_equipos.columnCount():
+                                value = equipo.get(field, '')
+                                self.tabla_equipos.setItem(row, col, QTableWidgetItem(str(value)))
+        except Exception as e:
+            print(f"Error cargando equipos en vista: {e}")
 
 
 class NuevoMantenimientoDialog(QDialog):

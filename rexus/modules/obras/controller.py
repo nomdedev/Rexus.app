@@ -6,7 +6,7 @@ from typing import Any, Dict, Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
-from rexus.core.auth_manager import AuthManager, admin_required, auth_required
+from rexus.core.auth_manager import AuthManager
 from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 # Importar sistema moderno de mensajes
@@ -35,11 +35,44 @@ class ObrasController(QObject):
         self.usuarios_model = usuarios_model
         self.logistica_controller = logistica_controller
         self.usuario_actual = "SISTEMA"
+        
+        # Inicializar current_user para compatibilidad con @auth_required
+        self.current_user = self._get_current_auth_user()
 
         # Asegurar que la vista tiene referencia al controller
         if self.view:
             self.view.controller = self
             self.conectar_señales()
+
+    def _get_current_auth_user(self):
+        """Obtiene el usuario autenticado actual desde AuthManager."""
+        try:
+            from rexus.core.auth_manager import AuthManager
+            
+            # Si hay un usuario actual en AuthManager, usarlo
+            if AuthManager.current_user and AuthManager.current_user_role:
+                return {
+                    'id': 1,  # ID por defecto
+                    'username': AuthManager.current_user,
+                    'role': AuthManager.current_user_role.value,
+                    'name': AuthManager.current_user
+                }
+            else:
+                # Usuario por defecto para desarrollo/fallback
+                return {
+                    'id': 1,
+                    'username': 'SISTEMA',
+                    'role': 'admin',
+                    'name': 'Usuario Sistema'
+                }
+        except ImportError:
+            # Fallback si AuthManager no está disponible
+            return {
+                'id': 1,
+                'username': 'SISTEMA',
+                'role': 'admin', 
+                'name': 'Usuario Sistema'
+            }
 
     def conectar_señales(self):
         """Conecta las señales de la vista con los métodos del controlador."""
