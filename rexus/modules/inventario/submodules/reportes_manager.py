@@ -123,7 +123,7 @@ class ReportesManager:
         """
         self.db_connection = db_connection
         self.sql_manager = SQLQueryManager()
-        self.sanitizer = DataSanitizer()
+        self.sanitizer = data_sanitizer
         self.sql_path = "scripts/sql/inventario/reportes"
         self.logger = logging.getLogger(__name__)
         

@@ -481,11 +481,7 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_select = """
-            SELECT id, usuario, password_hash, nombre_completo, email, telefono, rol, estado,
-                   fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos, bloqueado_hasta, avatar, configuracion_personal, activo
-            FROM usuarios WHERE usuario = ?
-            """
+            sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_nombre')
             cursor.execute(sql_select, (nombre_limpio,))
             row = cursor.fetchone()
             print(
@@ -570,11 +566,7 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_select = """
-            SELECT id, usuario, password_hash, nombre_completo, email, telefono, rol, estado,
-                   fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos, bloqueado_hasta, avatar, configuracion_personal, activo
-            FROM usuarios WHERE email = ?
-            """
+            sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_email')
             cursor.execute(sql_select, (email_limpio,))
             row = cursor.fetchone()
 
@@ -731,11 +723,7 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_select = """
-            SELECT intentos_fallidos, bloqueado_hasta 
-            FROM usuarios 
-            WHERE usuario = ?
-            """
+            sql_select = self.sql_manager.get_query('usuarios', 'verificar_bloqueo_cuenta_detallado')
             cursor.execute(sql_select, (username_limpio,))
             row = cursor.fetchone()
 
@@ -827,11 +815,7 @@ class UsuariosModel:
                     minutes=TIEMPO_BLOQUEO_MINUTOS
                 )
 
-                sql_update = """
-                UPDATE usuarios 
-                SET intentos_fallidos = ?, bloqueado_hasta = ? 
-                WHERE usuario = ?
-                """
+                sql_update = self.sql_manager.get_query('usuarios', 'actualizar_bloqueo_usuario')
                 cursor.execute(
                     sql_update, (intentos_nuevos, bloqueado_hasta, username_limpio)
                 )
@@ -881,11 +865,7 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_update = """
-            UPDATE usuarios 
-            SET intentos_fallidos = 0, bloqueado_hasta = NULL 
-            WHERE usuario = ?
-            """
+            sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username_limpio,))
             self.db_connection.connection.commit()
 
@@ -908,11 +888,7 @@ class UsuariosModel:
 
         try:
             cursor = self.db_connection.connection.cursor()
-            sql_update = """
-            UPDATE usuarios 
-            SET intentos_fallidos = 0, bloqueado_hasta = NULL 
-            WHERE usuario = ?
-            """
+            sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username,))
             self.db_connection.connection.commit()
 

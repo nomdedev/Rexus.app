@@ -324,6 +324,55 @@ class StandardComponents:
         return button
     
     @classmethod
+    def create_standard_label(cls, text: str, style: str = 'body') -> QLabel:
+        """Crea un label estandarizado."""
+        label = QLabel(text)
+        
+        # Obtener fuente según el estilo
+        font_info = cls.FONTS.get(style, cls.FONTS['body'])
+        font = QFont(*font_info)
+        label.setFont(font)
+        
+        # Aplicar estilos según el tipo
+        if style == 'title':
+            label.setStyleSheet(f"""
+                QLabel {{
+                    color: {cls.COLORS['dark']};
+                    background: transparent;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                }}
+            """)
+        elif style == 'subtitle':
+            label.setStyleSheet(f"""
+                QLabel {{
+                    color: {cls.COLORS['dark']};
+                    background: transparent;
+                    font-weight: 600;
+                    margin-bottom: 6px;
+                }}
+            """)
+        elif style == 'caption':
+            label.setStyleSheet(f"""
+                QLabel {{
+                    color: #64748b;
+                    background: transparent;
+                    font-size: 11px;
+                }}
+            """)
+        else:  # body por defecto
+            label.setStyleSheet(f"""
+                QLabel {{
+                    color: {cls.COLORS['dark']};
+                    background: transparent;
+                    font-size: 13px;
+                    padding: 2px 4px;
+                }}
+            """)
+        
+        return label
+    
+    @classmethod
     def create_standard_table(cls) -> QTableWidget:
         """Crea una tabla ultra compacta y sin color de fondo."""
         table = QTableWidget()

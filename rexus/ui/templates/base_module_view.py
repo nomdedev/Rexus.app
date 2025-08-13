@@ -385,12 +385,36 @@ class BaseModuleView(QWidget):
         self.next_btn.clicked.connect(self.next_page)
     
     def apply_styles(self):
-        """Aplica estilos específicos del módulo"""
-        self.setStyleSheet(f"""
-            QWidget {{
-                background-color: {RexusColors.BACKGROUND};
-            }}
-        """)
+        """Aplica estilos específicos del módulo con correcciones críticas de legibilidad"""
+        try:
+            # Estilos base del módulo
+            base_styles = f"""
+                QWidget {{
+                    background-color: {RexusColors.BACKGROUND};
+                }}
+            """
+            
+            # SOLUCIÓN CRÍTICA: Aplicar correcciones automáticas de legibilidad
+            try:
+                from rexus.utils.theme_fixes import ensure_module_forms_readable
+                
+                # Aplicar estilos base
+                self.setStyleSheet(base_styles)
+                
+                # Aplicar correcciones críticas si es necesario
+                ensure_module_forms_readable(self)
+                
+                print(f"[{self.module_name.upper()}] Estilos aplicados con correcciones de legibilidad")
+                
+            except ImportError:
+                # Fallback si theme_fixes no está disponible
+                self.setStyleSheet(base_styles)
+                print(f"[{self.module_name.upper()}] Estilos básicos aplicados (sin correcciones)")
+                
+        except Exception as e:
+            print(f"[ERROR {self.module_name.upper()}] Error aplicando estilos: {e}")
+            # Aplicar estilos mínimos en caso de error
+            self.setStyleSheet("QWidget { background-color: #fafbfc; }")
     
     # Métodos de interfaz que pueden ser override por las clases hijas
     

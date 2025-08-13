@@ -1,0 +1,2 @@
+-- Verifica si una tabla existe en SQL Server
+SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?

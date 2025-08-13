@@ -93,7 +93,8 @@ class ObrasModel:
             # Verificar tabla de obras con query más compatible
             try:
                 # Usar query más compatible que funcione con diferentes motores de BD
-                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.tabla_obras,))
+                sql_verificar = self.sql_manager.get_query('obras', 'verificar_tabla_sqlite')
+                cursor.execute(sql_verificar, (self.tabla_obras,))
                 if cursor.fetchone():
                     print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                 else:
@@ -101,7 +102,8 @@ class ObrasModel:
             except Exception:
                 # Si SQLite no funciona, intentar con SQL Server/otros
                 try:
-                    cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?", (self.tabla_obras,))
+                    sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
+                    cursor.execute(sql_sql_server, (self.tabla_obras,))
                     if cursor.fetchone():
                         print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                     else:
@@ -111,12 +113,14 @@ class ObrasModel:
 
             # Verificar tabla de detalles de obra (opcional)
             try:
-                cursor.execute("SELECT name FROM sqlite_master WHERE type='table' AND name=?", (self.tabla_detalles_obra,))
+                sql_verificar = self.sql_manager.get_query('obras', 'verificar_tabla_sqlite')
+                cursor.execute(sql_verificar, (self.tabla_detalles_obra,))
                 if cursor.fetchone():
                     print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
             except Exception as e:
                 try:
-                    cursor.execute("SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?", (self.tabla_detalles_obra,))
+                    sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
+                    cursor.execute(sql_sql_server, (self.tabla_detalles_obra,))
                     if cursor.fetchone():
                         print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
                 except Exception as e2:
@@ -362,45 +366,106 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def obtener_datos_paginados(self, offset=0, limit=10):
+    def obtener_datos_paginados(self, page=1, page_size=50, search_term="", filters=None):
         """
-        Obtiene datos paginados de obras.
+        Obtiene datos paginados de obras con búsqueda y filtros optimizados.
 
         Args:
-            offset: Desplazamiento
-            limit: Límite de registros
+            page: Número de página (1-based)
+            page_size: Registros por página
+            search_term: Término de búsqueda
+            filters: Filtros adicionales
 
         Returns:
-            tuple: (lista_obras, total_count)
+            dict: Resultado con datos, total, página actual, etc.
         """
         if not self.db_connection:
-            return [], 0
+            return {
+                'data': [],
+                'total_records': 0,
+                'current_page': page,
+                'page_size': page_size,
+                'total_pages': 1,
+                'has_next': False,
+                'has_previous': False
+            }
 
         cursor = None
         try:
             cursor = self.db_connection.cursor()
             
-            # Query para datos paginados
-            query = """
-            SELECT * FROM obras 
-            WHERE activo = 1 
-            ORDER BY fecha_creacion DESC 
-            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-            """
+            # Calcular offset
+            offset = (page - 1) * page_size
             
-            cursor.execute(query, (offset, limit))
-            obras = cursor.fetchall()
+            # Determinar si es búsqueda o listado normal
+            if search_term and search_term.strip():
+                # Búsqueda paginada
+                sql_data = self.sql_manager.get_query('obras', 'buscar_obras_paginadas')
+                search_param = f"%{search_term.strip()}%"
+                
+                # Ejecutar búsqueda (la query espera múltiples parámetros de search_term)
+                cursor.execute(sql_data, (
+                    search_param, search_param, search_param, search_param, search_param,  # Para relevancia
+                    search_param, search_param, search_param, search_param, search_param, search_param,  # Para WHERE
+                    page_size, offset
+                ))
+                
+                # Contar total de búsqueda
+                sql_count = """
+                    SELECT COUNT(*) FROM obras 
+                    WHERE activo = 1 
+                    AND (codigo_obra LIKE ? OR nombre_obra LIKE ? OR cliente LIKE ? 
+                         OR direccion LIKE ? OR descripcion LIKE ? OR responsable LIKE ?)
+                """
+                cursor.execute(sql_count, (search_param, search_param, search_param, 
+                                         search_param, search_param, search_param))
+                total_count = cursor.fetchone()[0]
+                
+            else:
+                # Listado normal paginado
+                sql_data = self.sql_manager.get_query('obras', 'obtener_obras_paginadas')
+                cursor.execute(sql_data, (page_size, offset))
+                
+                # Contar total
+                sql_count = self.sql_manager.get_query('obras', 'contar_obras_activas')
+                cursor.execute(sql_count)
+                total_count = cursor.fetchone()[0]
             
-            # Query para total count 
-            sql = "SELECT COUNT(*) FROM obras WHERE activo = 1"
-            cursor.execute(sql)
-            total = cursor.fetchone()[0]
+            # Obtener datos
+            rows = cursor.fetchall()
             
-            return obras, total
+            # Convertir a diccionarios
+            obras = []
+            if rows:
+                columns = [column[0] for column in cursor.description]
+                obras = [dict(zip(columns, row)) for row in rows]
+            
+            # Calcular información de paginación
+            total_pages = (total_count + page_size - 1) // page_size if total_count > 0 else 1
+            
+            return {
+                'data': obras,
+                'total_records': total_count,
+                'current_page': page,
+                'page_size': page_size,
+                'total_pages': total_pages,
+                'has_next': page < total_pages,
+                'has_previous': page > 1,
+                'start_record': offset + 1 if obras else 0,
+                'end_record': min(offset + len(obras), total_count)
+            }
 
         except Exception as e:
             print(f"[ERROR OBRAS] Error obteniendo datos paginados: {e}")
-            return [], 0
+            return {
+                'data': [],
+                'total_records': 0,
+                'current_page': page,
+                'page_size': page_size,
+                'total_pages': 1,
+                'has_next': False,
+                'has_previous': False
+            }
         finally:
             if cursor:
                 cursor.close()
@@ -526,7 +591,7 @@ class ObrasModel:
             cursor = self.db_connection.cursor()
 
             # Verificar que la obra existe
-            sql_verificacion = "SELECT id FROM obras WHERE id = ? AND activo = 1"
+            sql_verificacion = self.sql_manager.get_query('obras', 'verificar_obra_existe')
             cursor.execute(sql_verificacion, (obra_id_limpio,))
             if not cursor.fetchone():
                 return False, "La obra no existe o está inactiva"
@@ -595,7 +660,7 @@ class ObrasModel:
             cursor = self.db_connection.cursor()
 
             # Verificar que la obra existe
-            sql = "SELECT codigo FROM obras WHERE id = ? AND activo = 1"
+            sql = self.sql_manager.get_query('obras', 'obtener_codigo_obra')
             cursor.execute(sql, (obra_id_limpio,))
             result = cursor.fetchone()
             if not result:
@@ -604,7 +669,7 @@ class ObrasModel:
             codigo_obra = result[0]
 
             # Soft delete
-            sql = "UPDATE obras SET activo = 0, fecha_eliminacion = GETDATE() WHERE id = ?"
+            sql = self.sql_manager.get_query('obras', 'desactivar_obra')
             cursor.execute(sql, (obra_id_limpio,))
             
             if cursor.rowcount == 0:
@@ -650,7 +715,7 @@ class ObrasModel:
             cursor = self.db_connection.cursor()
 
             # Actualizar estado
-            sql = "UPDATE obras SET estado = ? WHERE id = ? AND activo = 1"
+            sql = self.sql_manager.get_query('obras', 'actualizar_estado_obra')
             cursor.execute(sql, (estado_limpio, obra_id_limpio))
             
             if cursor.rowcount == 0:
@@ -709,7 +774,7 @@ class ObrasModel:
                 }
             
             # Presupuesto total
-            sql = "SELECT SUM(presupuesto_total) FROM obras WHERE activo = 1"
+            sql = self.sql_manager.get_query('obras', 'calcular_presupuesto_total')
             cursor.execute(sql)
             result = cursor.fetchone()[0]
             estadisticas['presupuesto_total'] = float(result) if result else 0.0

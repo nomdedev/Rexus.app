@@ -1577,7 +1577,9 @@ QFrame#sidebar-header, QFrame#sidebar-buttons, QFrame#sidebar-header, QFrame#sid
     margin-top: 0;
     }
 QLabel#sidebar-user {
-    display: none;
+    /* display: none; - Propiedad no soportada en Qt, usar setVisible(false) en el código */
+    max-height: 0px;
+    max-width: 0px;
     }
 QPushButton.sidebar-button, QPushButton#botonMenu {
     background: #ffffff;

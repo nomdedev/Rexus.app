@@ -1,0 +1,292 @@
+/* 
+ * Tema Claro Mejorado para Rexus.app
+ * Complemento del tema oscuro mejorado - máxima legibilidad
+ * Fecha: 13/08/2025
+ * Objetivo: Contraste óptimo y legibilidad en modo claro
+ */
+
+/* ============================================================================
+   CONFIGURACIÓN BASE - Colores principales
+   ============================================================================ */
+QWidget {
+    background-color: transparent;
+    color: #1f2937;  /* Texto oscuro sobre fondo claro */
+    font-family: "Segoe UI", Arial, sans-serif;
+    font-size: 12px;
+}
+
+QMainWindow, QDialog, QScrollArea, QScrollArea > QWidget {
+    background-color: #f8fafc;  /* Fondo principal muy claro */
+}
+
+/* ============================================================================
+   CAMPOS DE FORMULARIO - Contraste óptimo para tema claro
+   ============================================================================ */
+
+/* PRIORIDAD MÁXIMA: Campos de entrada legibles */
+QLineEdit, QComboBox, QTextEdit, QSpinBox, QDoubleSpinBox, QDateEdit, QTimeEdit, QDateTimeEdit {
+    background-color: #ffffff !important;   /* Blanco puro */
+    border: 2px solid #d1d5db !important;   /* Gris claro para borde */
+    border-radius: 6px !important;
+    color: #111827 !important;              /* Texto muy oscuro */
+    font-size: 14px !important;
+    min-height: 18px !important;
+    padding: 10px 12px !important;
+}
+
+/* Estado de foco - CRÍTICO para usabilidad */
+QLineEdit:focus, QComboBox:focus, QTextEdit:focus, QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus, QTimeEdit:focus, QDateTimeEdit:focus {
+    background-color: #ffffff !important;   /* Mantener blanco */
+    border: 2px solid #3b82f6 !important;   /* Azul brillante para foco */
+    color: #111827 !important;              /* Texto muy oscuro */
+}
+
+/* Estados especiales - CRÍTICOS */
+QLineEdit:disabled, QComboBox:disabled, QTextEdit:disabled, QSpinBox:disabled, QDoubleSpinBox:disabled, QDateEdit:disabled {
+    background-color: #f3f4f6 !important;
+    border: 2px solid #d1d5db !important;
+    color: #6b7280 !important;
+}
+
+/* Campos de error - deben ser visibles */
+QLineEdit[error="true"], QComboBox[error="true"], QTextEdit[error="true"], QSpinBox[error="true"], QDateEdit[error="true"] {
+    background-color: #fef2f2 !important;  /* Rosa muy claro */
+    border: 2px solid #ef4444 !important;  /* Borde rojo brillante */
+    color: #7f1d1d !important;             /* Texto rojo oscuro */
+}
+
+/* ============================================================================
+   MEJORA COMBOBOX - Dropdown legible
+   ============================================================================ */
+QComboBox::drop-down {
+    background-color: #e5e7eb !important;
+    border: none !important;
+    border-radius: 4px !important;
+    width: 24px !important;
+}
+
+QComboBox::down-arrow {
+    image: none !important;  /* Remover icono si causa problemas */
+    border: 4px solid transparent !important;
+    border-top: 6px solid #374151 !important;  /* Flecha CSS simple */
+}
+
+QComboBox QAbstractItemView {
+    background-color: #ffffff !important;
+    border: 2px solid #d1d5db !important;
+    color: #111827 !important;
+    selection-background-color: #3b82f6 !important;
+    selection-color: #ffffff !important;
+}
+
+/* ============================================================================
+   BOTONES - Profesionales y accesibles
+   ============================================================================ */
+QPushButton {
+    background-color: #1e40af !important;
+    border: 1px solid #1d4ed8 !important;
+    border-radius: 6px !important;
+    color: #ffffff !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+    min-height: 32px !important;
+    padding: 8px 16px !important;
+}
+
+QPushButton:hover {
+    background-color: #2563eb !important;
+    border: 1px solid #3b82f6 !important;
+}
+
+QPushButton:pressed {
+    background-color: #1d4ed8 !important;
+    border: 1px solid #1e40af !important;
+}
+
+QPushButton:disabled {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    color: #9ca3af !important;
+}
+
+/* Botones secundarios */
+QPushButton[class="secondary"] {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #374151 !important;
+}
+
+QPushButton[class="secondary"]:hover {
+    background-color: #f9fafb !important;
+    border: 1px solid #9ca3af !important;
+}
+
+/* ============================================================================
+   TABLAS - Legibles y contrastantes
+   ============================================================================ */
+QTableWidget, QTableView {
+    background-color: #ffffff !important;
+    alternate-background-color: #f9fafb !important;
+    color: #111827 !important;
+    gridline-color: #e5e7eb !important;
+    selection-background-color: #3b82f6 !important;
+    selection-color: #ffffff !important;
+}
+
+QHeaderView::section {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    color: #111827 !important;
+    font-weight: bold !important;
+    padding: 8px !important;
+}
+
+/* ============================================================================
+   LABELS Y TEXTO - Contraste mejorado
+   ============================================================================ */
+QLabel {
+    background-color: transparent !important;
+    color: #1f2937 !important;
+}
+
+QLabel[class="title"] {
+    color: #111827 !important;
+    font-size: 16px !important;
+    font-weight: bold !important;
+}
+
+QLabel[class="subtitle"] {
+    color: #374151 !important;
+    font-size: 14px !important;
+    font-weight: 500 !important;
+}
+
+/* ============================================================================
+   PANELES Y CONTENEDORES - Estructura visible
+   ============================================================================ */
+QFrame {
+    background-color: transparent !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 8px !important;
+}
+
+QFrame[class="card"] {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 8px !important;
+    padding: 16px !important;
+}
+
+QScrollArea {
+    background-color: transparent !important;
+    border: none !important;
+}
+
+/* ============================================================================
+   BARRAS DE DESPLAZAMIENTO - Tema claro
+   ============================================================================ */
+QScrollBar:vertical {
+    background-color: #f3f4f6 !important;
+    border: none !important;
+    width: 12px !important;
+}
+
+QScrollBar::handle:vertical {
+    background-color: #d1d5db !important;
+    border-radius: 6px !important;
+    min-height: 20px !important;
+}
+
+QScrollBar::handle:vertical:hover {
+    background-color: #9ca3af !important;
+}
+
+QScrollBar:horizontal {
+    background-color: #f3f4f6 !important;
+    border: none !important;
+    height: 12px !important;
+}
+
+QScrollBar::handle:horizontal {
+    background-color: #d1d5db !important;
+    border-radius: 6px !important;
+    min-width: 20px !important;
+}
+
+/* ============================================================================
+   MENÚS Y TOOLTIPS - Accesibles
+   ============================================================================ */
+QMenu {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+    color: #1f2937 !important;
+}
+
+QMenu::item:selected {
+    background-color: #3b82f6 !important;
+    color: #ffffff !important;
+}
+
+QToolTip {
+    background-color: #374151 !important;
+    border: 1px solid #6b7280 !important;
+    color: #f9fafb !important;
+    padding: 4px 8px !important;
+}
+
+/* ============================================================================
+   CHECKBOXES Y RADIOBUTTONS - Visibles
+   ============================================================================ */
+QCheckBox, QRadioButton {
+    color: #1f2937 !important;
+    spacing: 8px !important;
+}
+
+QCheckBox::indicator, QRadioButton::indicator {
+    background-color: #ffffff !important;
+    border: 2px solid #d1d5db !important;
+    width: 16px !important;
+    height: 16px !important;
+}
+
+QCheckBox::indicator:checked, QRadioButton::indicator:checked {
+    background-color: #3b82f6 !important;
+    border: 2px solid #1e40af !important;
+}
+
+/* ============================================================================
+   TAB WIDGETS - Navegación visible
+   ============================================================================ */
+QTabWidget::pane {
+    background-color: #ffffff !important;
+    border: 1px solid #d1d5db !important;
+}
+
+QTabBar::tab {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    color: #374151 !important;
+    padding: 8px 16px !important;
+}
+
+QTabBar::tab:selected {
+    background-color: #ffffff !important;
+    border-bottom: none !important;
+    color: #111827 !important;
+}
+
+/* ============================================================================
+   PROGRESS BAR - Visible y funcional
+   ============================================================================ */
+QProgressBar {
+    background-color: #f3f4f6 !important;
+    border: 1px solid #d1d5db !important;
+    border-radius: 4px !important;
+    color: #111827 !important;
+    text-align: center !important;
+}
+
+QProgressBar::chunk {
+    background-color: #10b981 !important;
+    border-radius: 3px !important;
+}
