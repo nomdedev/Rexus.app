@@ -442,15 +442,15 @@ class InventarioView(BaseModuleView):
                 background-color: #f8fafc;
                 border: 1px solid #e5e7eb;
                 border-bottom: none;
-                padding: 0 10px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 border-top-left-radius: 4px;
                 border-top-right-radius: 4px;
-                font-size: 10px;
+                font-size: 12px;
                 color: #6b7280;
-                min-width: 60px;
-                min-height: 15px;
-                max-height: 15px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
             }
             
             QTabBar::tab:selected {

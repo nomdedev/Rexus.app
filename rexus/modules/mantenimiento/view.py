@@ -86,10 +86,6 @@ class MantenimientoView(QWidget):
         layout.setContentsMargins(15, 15, 15, 15)
         layout.setSpacing(15)
 
-        # Header del módulo
-        header = self.create_module_header()
-        layout.addWidget(header)
-
         # Widget de pestañas principal
         self.tab_widget = QTabWidget()
         self.create_all_tabs()
@@ -103,85 +99,6 @@ class MantenimientoView(QWidget):
 
         # Inicializar protección XSS
         self.init_xss_protection()
-
-    def create_module_header(self):
-        """Crea el header del módulo con información general."""
-        header_frame = QFrame()
-        header_frame.setStyleSheet("""
-            QFrame {
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
-                    stop:0 #667eea, stop:1 #764ba2);
-                border-radius: 12px;
-                padding: 20px;
-                margin-bottom: 10px;
-            }
-        """)
-        
-        header_layout = QHBoxLayout(header_frame)
-        
-        # Información del módulo
-        info_layout = QVBoxLayout()
-        
-        title = RexusLabel("🔧 Sistema de Mantenimiento", "title")
-        title.setStyleSheet("color: white; font-size: 24px; font-weight: bold;")
-        
-        subtitle = RexusLabel("Gestión integral de mantenimiento preventivo y correctivo", "subtitle")
-        subtitle.setStyleSheet("color: rgba(255, 255, 255, 0.9); font-size: 14px;")
-        
-        info_layout.addWidget(title)
-        info_layout.addWidget(subtitle)
-        
-        # Estadísticas rápidas
-        stats_layout = QHBoxLayout()
-        self.create_header_stats(stats_layout)
-        
-        header_layout.addLayout(info_layout)
-        header_layout.addStretch()
-        header_layout.addLayout(stats_layout)
-        
-        return header_frame
-
-    def create_header_stats(self, layout):
-        """Crea estadísticas rápidas en el header."""
-        stats = [
-            ("📋", "Tareas", "12", "Pendientes"),
-            ("✅", "Completadas", "45", "Este mes"),
-            ("⚠️", "Críticas", "3", "Urgente"),
-            ("📊", "Eficiencia", "89%", "General")
-        ]
-        
-        for icon, title, value, subtitle in stats:
-            stat_widget = QWidget()
-            stat_widget.setStyleSheet("""
-                QWidget {
-                    background: rgba(255, 255, 255, 0.1);
-                    border-radius: 8px;
-                    padding: 15px;
-                    margin: 5px;
-                }
-            """)
-            
-            stat_layout = QVBoxLayout(stat_widget)
-            stat_layout.setContentsMargins(10, 10, 10, 10)
-            
-            icon_label = RexusLabel(icon, "caption")
-            icon_label.setStyleSheet("color: white; font-size: 20px; text-align: center;")
-            
-            title_label = RexusLabel(title, "caption")
-            title_label.setStyleSheet("color: white; font-size: 12px; text-align: center;")
-            
-            value_label = RexusLabel(value, "title")
-            value_label.setStyleSheet("color: white; font-size: 18px; font-weight: bold; text-align: center;")
-            
-            sub_label = RexusLabel(subtitle, "caption")
-            sub_label.setStyleSheet("color: rgba(255, 255, 255, 0.8); font-size: 10px; text-align: center;")
-            
-            stat_layout.addWidget(icon_label)
-            stat_layout.addWidget(title_label)
-            stat_layout.addWidget(value_label)
-            stat_layout.addWidget(sub_label)
-            
-            layout.addWidget(stat_widget)
 
     def create_all_tabs(self):
         """Crea todas las pestañas del módulo."""
@@ -775,13 +692,15 @@ class MantenimientoView(QWidget):
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
                 border-bottom: none;
-                padding: 8px 16px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                font-size: 11px;
+                font-size: 12px;
                 color: #586069;
                 min-width: 80px;
+                height: 24px;
+                max-height: 24px;
             }
             
             QTabBar::tab:selected {

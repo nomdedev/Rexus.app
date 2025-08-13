@@ -522,10 +522,14 @@ QTabWidget::pane {{
 
 QTabBar::tab {{
     background-color: {colors['surface']};
-    padding: 8px 16px;
+    padding: 8px 12px;
     margin-right: 2px;
     border-top-left-radius: 6px;
     border-top-right-radius: 6px;
+    min-width: 80px;
+    min-height: 24px;
+    max-height: 24px;
+    font-size: 12px;
 }}
 
 QTabBar::tab:selected {{

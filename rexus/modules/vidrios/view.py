@@ -149,12 +149,13 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 border-bottom: none;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                padding: 0 10px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 font-weight: 500;
-                min-width: 60px;
-                min-height: 15px;
-                max-height: 15px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
+                font-size: 12px;
             }
             QTabBar::tab:selected {
                 background: white;
@@ -971,13 +972,15 @@ class DialogoVidrioModerno(QDialog):
                 background-color: #f8fafc;
                 border: 1px solid #e5e7eb;
                 border-bottom: none;
-                padding: 3px 10px;
+                padding: 8px 12px;
                 margin-right: 1px;
                 border-top-left-radius: 3px;
                 border-top-right-radius: 3px;
-                font-size: 9px;
+                font-size: 12px;
                 color: #6b7280;
-                min-width: 60px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
             }
             
             QTabBar::tab:selected {

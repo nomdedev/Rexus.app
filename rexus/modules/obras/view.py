@@ -94,12 +94,13 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                 border-bottom: none;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                padding: 0 10px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 font-weight: 500;
-                min-width: 60px;
-                min-height: 15px;
-                max-height: 15px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
+                font-size: 12px;
             }
             QTabBar::tab:selected {
                 background: white;
