@@ -10,9 +10,9 @@ Vista principal con pestañas para tabla, estadísticas, servicios y mapa
 import logging
 import hashlib
 import tempfile
-from typing import Dict, List, Any
+from typing import Dict, List
 
-from PyQt6.QtCore import QUrl
+from PyQt6.QtCore import QUrl, Qt, pyqtSignal
 
 try:
     import folium
@@ -21,31 +21,28 @@ except ImportError:
     folium = None
     pd = None
 
-from PyQt6.QtCore import Qt, pyqtSignal, QSize
 from PyQt6.QtWidgets import (
-    QComboBox, QDialog, QDialogButtonBox, QFormLayout, QFrame, QGroupBox,
-    QHBoxLayout, QLabel, QLineEdit, QPushButton, QTableWidget, 
-    QTableWidgetItem, QVBoxLayout, QWidget, QTextEdit, QDateEdit,
-    QDoubleSpinBox, QSpinBox, QTabWidget, QGridLayout, QProgressBar,
+    QComboBox, QDialog, QFormLayout, QFrame,
+    QHBoxLayout, QLabel, QPushButton, QTableWidget, 
+    QTableWidgetItem, QVBoxLayout, QWidget, QDateEdit,
+    QTabWidget, QGridLayout, QProgressBar,
     QScrollArea, QSplitter
 )
 
-from PyQt6.QtGui import QFont, QColor
-
 # Importar componentes Rexus
 from rexus.ui.components.base_components import (
-    RexusButton, RexusLabel, RexusLineEdit, RexusComboBox, RexusTable,
-    RexusFrame, RexusGroupBox, RexusLayoutHelper
+    RexusButton, RexusLineEdit, RexusComboBox,
+    RexusGroupBox
 )
 
 from rexus.ui.standard_components import StandardComponents
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-from rexus.utils.message_system import show_error, show_warning
-from rexus.utils.xss_protection import FormProtector
 from rexus.utils.export_manager import ModuleExportMixin
 
 # Importar el diálogo de transporte
 from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
+
+# Importar constantes
+from rexus.modules.logistica.constants import LogisticaConstants
 
 # Constantes para literales duplicados
 class LogisticaConstants:
@@ -215,34 +212,34 @@ class LogisticaView(QWidget, ModuleExportMixin):
         """)
 
     def crear_panel_graficos_mejorado(self) -> QWidget:
-        w = QWidget()
-        l = QVBoxLayout(w)
-        l.addWidget(QLabel("Gráficos (stub)"))
-        return w
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.addWidget(QLabel("Gráficos (stub)"))
+        return widget
 
     def crear_panel_metricas_compacto(self) -> QWidget:
-        w = QWidget()
-        l = QVBoxLayout(w)
-        l.addWidget(QLabel("Métricas (stub)"))
-        return w
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.addWidget(QLabel("Métricas (stub)"))
+        return widget
 
     def crear_panel_resumen_optimizado(self) -> QWidget:
-        w = QWidget()
-        l = QVBoxLayout(w)
-        l.addWidget(QLabel("Resumen (stub)"))
-        return w
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        layout.addWidget(QLabel("Resumen (stub)"))
+        return widget
 
     def crear_panel_filtros_servicios_optimizado(self) -> QWidget:
-        w = QWidget()
-        l = QHBoxLayout(w)
-        l.addWidget(QLabel("Filtros servicios (stub)"))
-        return w
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.addWidget(QLabel("Filtros servicios (stub)"))
+        return widget
 
     def crear_panel_control_mapa_optimizado(self) -> QWidget:
-        w = QWidget()
-        l = QHBoxLayout(w)
-        l.addWidget(QLabel("Control mapa (stub)"))
-        return w
+        widget = QWidget()
+        layout = QHBoxLayout(widget)
+        layout.addWidget(QLabel("Control mapa (stub)"))
+        return widget
 
     def buscar_transportes(self):
         """Realiza búsqueda de transportes con filtros."""
@@ -522,7 +519,7 @@ Para habilitar mapas interactivos:
         self.tab_widget.setUsesScrollButtons(True)
         self.tab_widget.setElideMode(Qt.TextElideMode.ElideRight)
         
-        # Estilos modernos con mejor jerarquía visual
+        # Estilos modernos con mejor jerarquía visual - ESTANDARIZADO
         self.tab_widget.setStyleSheet('''
             QTabWidget {
                 border: none;
@@ -533,11 +530,11 @@ Para habilitar mapas interactivos:
                 color: #6b7280;
                 border: 1px solid #e5e7eb;
                 border-bottom: none;
-                min-width: 60px;
-                min-height: 15px;
-                max-height: 15px;
-                padding: 0 10px;
-                font-size: 10px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
+                padding: 8px 12px;
+                font-size: 12px;
                 font-weight: 500;
                 border-top-left-radius: 8px;
                 border-top-right-radius: 8px;
@@ -1183,19 +1180,13 @@ Para habilitar mapas interactivos:
         
         # Título compacto
         titulo_label = QLabel(titulo)
-        titulo_label.setStyleSheet(f"""
-            QLabel {{
-                font-size: 10px;
-                color: #6c757d;
-                font-weight: 500;
-            }}
-        """)
+        titulo_label.setStyleSheet(LogisticaConstants.TITLE_LABEL_STYLE)
         layout.addWidget(titulo_label)
         
         # Valor destacado
         valor_label = QLabel(valor)
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        valor_label.setStyleSheet(f"""
+        valor_label.setStyleSheet("""
             QLabel {{
                 font-size: 15px;
                 font-weight: bold;
@@ -1511,14 +1502,7 @@ Para habilitar mapas interactivos:
 
     def crear_tarjeta_metrica_minimalista(self, titulo, valor, color):
         card = QWidget()
-        card.setStyleSheet(f"""
-            background-color: #fafbfc;
-            border: 1px solid #e1e4e8;
-            border-radius: 4px;
-            padding: 6px 8px;
-            min-width: 70px;
-            min-height: 38px;
-        """)
+        card.setStyleSheet(LogisticaConstants.CARD_STYLE)
         layout = QVBoxLayout(card)
         layout.setSpacing(2)
         label_valor = QLabel(valor)

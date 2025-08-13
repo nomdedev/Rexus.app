@@ -174,13 +174,15 @@ class PedidosView(QWidget):
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
                 border-bottom: none;
-                padding: 8px 16px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                font-size: 11px;
+                font-size: 12px;
                 color: #586069;
                 min-width: 80px;
+                height: 24px;
+                max-height: 24px;
             }
             
             QTabBar::tab:selected {

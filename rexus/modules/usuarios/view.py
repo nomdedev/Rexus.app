@@ -83,6 +83,9 @@ from rexus.utils.export_manager import ModuleExportMixin
 
 
 class UsuariosView(BaseModuleView, ModuleExportMixin):
+    def actualizar_tabla(self, usuarios):
+        """Actualiza la tabla de usuarios (alias para cargar_usuarios_en_tabla)."""
+        self.cargar_usuarios_en_tabla(usuarios)
     """Vista principal del módulo de usuarios."""
     
     # Señales
@@ -181,15 +184,15 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
                 border-bottom: none;
-                padding: 0 10px;
+                padding: 8px 12px;
                 margin-right: 2px;
                 border-top-left-radius: 6px;
                 border-top-right-radius: 6px;
-                font-size: 10px;
+                font-size: 12px;
                 color: #586069;
-                min-width: 60px;
-                min-height: 15px;
-                max-height: 15px;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
             }
             
             QTabBar::tab:selected {
