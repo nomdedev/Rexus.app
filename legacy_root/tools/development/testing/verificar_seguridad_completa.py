@@ -29,7 +29,8 @@ from datetime import datetime
             if "passed" in result.stdout:
                 lines = result.stdout.split('\n')
                 for line in lines:
-                    if "passed" in line and ("failed" in line or "error" in line):
+                    if "passed" in line and \
+                        ("failed" in line or "error" in line):
                         print(f"[CHART] Resultado: {line.strip()}")
                         break
         else:

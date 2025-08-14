@@ -5,16 +5,11 @@ Sistema centralizado de autenticación, autorización y control de acceso
 para toda la aplicación.
 """
 
-import hashlib
-import json
-import os
 import uuid
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class SecurityManager(QObject):
@@ -236,7 +231,11 @@ class SecurityManager(QObject):
                 cursor.execute(
                     """
                     IF NOT EXISTS (SELECT * FROM permisos WHERE nombre = ?)
-                    INSERT INTO permisos (nombre, modulo, descripcion) VALUES (?, ?, ?)
+                    INSERT INTO permisos (nombre,
+modulo,
+                        descripcion) VALUES (?,
+                        ?,
+                        ?)
                 """,
                     (nombre, nombre, modulo, descripcion),
                 )
@@ -444,12 +443,11 @@ class SecurityManager(QObject):
         """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
         print("[ERROR] SEGURIDAD: No se crean usuarios por defecto automáticamente")
         print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
-        pass
 
     def hash_password(self, password: str) -> str:
         """
         Genera hash seguro de contraseña usando bcrypt/PBKDF2.
-        
+
         ACTUALIZADO: Migrado de SHA-256 inseguro a hashing seguro con salt.
         """
         # Usar sistema de hashing seguro
@@ -459,19 +457,19 @@ class SecurityManager(QObject):
     def verify_password(self, password: str, password_hash: str) -> bool:
         """
         Verifica una contraseña contra su hash usando sistema seguro.
-        
+
         ACTUALIZADO: Soporta hashes bcrypt/PBKDF2 y migración desde SHA-256.
         """
         try:
             from rexus.utils.password_security import verify_password_secure, check_password_needs_rehash
-            
+
             # Verificar con sistema seguro
             is_valid = verify_password_secure(password, password_hash)
-            
+
             # Si es válida y el hash necesita actualización, loggear para migración
             if is_valid and check_password_needs_rehash(password_hash):
                 print(f"[SECURITY] Hash de contraseña necesita migración a formato seguro")
-            
+
             return is_valid
         except Exception as e:
             print(f"[ERROR] Error verificando contraseña: {e}")
@@ -483,13 +481,13 @@ class SecurityManager(QObject):
             # Usar AuthManager para la autenticación
             from rexus.core.auth import get_auth_manager
             auth_manager = get_auth_manager()
-            
+
             user_data = auth_manager.authenticate_user(username, password)
-            
+
             if not user_data:
                 self.log_security_event(
                     None,
-                    "LOGIN_FAILED", 
+                    "LOGIN_FAILED",
                     "GENERAL",
                     f"Usuario no encontrado o credenciales incorrectas: {username}",
                 )
@@ -540,7 +538,7 @@ class SecurityManager(QObject):
                 self.user_logged_out.emit(self.current_user)
 
                 # Limpiar estado
-                old_user = self.current_user
+                self.current_user
                 self.current_user = None
                 self.current_role = None
                 self.session_id = None
@@ -671,13 +669,13 @@ class SecurityManager(QObject):
             print(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
             print(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
             print(f"[SECURITY DEBUG] current_user: {self.current_user}")
-            
+
             # Basado en el rol del usuario actual, devolver módulos permitidos
             if self.current_role in ['admin', 'ADMIN']:
                 # Admin tiene acceso a todos los módulos - usar nombres con capitalización como UI
                 modules = [
                     "Inventario",
-                    "Administración", 
+                    "Administración",
                     "Obras",
                     "Pedidos",
                     "Logística",
@@ -695,7 +693,7 @@ class SecurityManager(QObject):
                 # Supervisor tiene acceso a gestión general
                 return [
                     "Inventario",
-                    "Obras", 
+                    "Obras",
                     "Pedidos",
                     "Logística",
                     "Herrajes",
@@ -707,7 +705,7 @@ class SecurityManager(QObject):
                 # Especialista en contabilidad - módulos financieros y administrativos
                 return [
                     "Administración",
-                    "Compras", 
+                    "Compras",
                     "Pedidos",
                     "Obras",
                     "Inventario",
@@ -754,11 +752,11 @@ class SecurityManager(QObject):
     def get_current_user_string(self) -> Optional[str]:
         """Obtiene el nombre del usuario actual (para compatibilidad)."""
         return self.current_user
-    
+
     def diagnose_permissions(self) -> Dict[str, Any]:
         """
         Método de diagnóstico para verificar el estado del sistema de permisos.
-        
+
         Returns:
             Dict con información de diagnóstico
         """
@@ -769,15 +767,15 @@ class SecurityManager(QObject):
             "db_connection_status": "Connected" if self.db_connection else "Not connected",
             "session_active": self.current_user is not None,
         }
-        
+
         # Verificar configuración de roles
         if self.current_role:
             diagnosis["role_recognized"] = self.current_role in [
-                'admin', 'ADMIN', 'supervisor', 'SUPERVISOR', 
+                'admin', 'ADMIN', 'supervisor', 'SUPERVISOR',
                 'contabilidad', 'CONTABILIDAD', 'inventario', 'INVENTARIO',
                 'obras', 'OBRAS'
             ]
-            
+
             # Simular obtención de módulos para diagnóstico
             try:
                 test_modules = self.get_user_modules(1)
@@ -790,11 +788,11 @@ class SecurityManager(QObject):
             diagnosis["role_recognized"] = False
             diagnosis["modules_count"] = 0
             diagnosis["has_admin_access"] = False
-        
+
         print(f"[SECURITY DIAGNOSIS] Estado del sistema de permisos:")
         for key, value in diagnosis.items():
             print(f"  {key}: {value}")
-        
+
         return diagnosis
 
     def get_current_role(self) -> Optional[str]:
@@ -860,12 +858,18 @@ class SecurityManager(QObject):
             if not hasattr(self, 'current_user') or self.current_role != 'ADMIN':
                 print("[ERROR] SEGURIDAD: Solo admins pueden crear usuarios")
                 return False
-            
+
             # Crear usuario con validaciones adicionales
             password_hash = self.hash_password(password)
             cursor.execute(
                 """
-                INSERT INTO usuarios (username, password_hash, email, nombre, apellido, rol, activo)
+                INSERT INTO usuarios (username,
+password_hash,
+                    email,
+                    nombre,
+                    apellido,
+                    rol,
+                    activo)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (username, password_hash, email, nombre, apellido, rol, 1),
@@ -919,7 +923,7 @@ class SecurityManager(QObject):
             # SEGURIDAD: Usar queries predefinidas para campos específicos
             if not fields:
                 return False
-            
+
             # Mapear campos permitidos a queries predefinidas (más seguro que construcción dinámica)
             allowed_updates = {
                 'username': 'UPDATE usuarios SET username = ? WHERE id = ?',
@@ -931,7 +935,7 @@ class SecurityManager(QObject):
                 'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',
                 'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'
             }
-            
+
             # Ejecutar updates de forma segura
             for i, field in enumerate(fields):
                 field_name = field.replace(' = ?', '').strip()

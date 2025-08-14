@@ -29,8 +29,6 @@ Proporciona funciones de utilidad para mostrar diálogos
 de información, advertencias y errores de forma consistente.
 """
 
-from PyQt6.QtCore import Qt
-from PyQt6.QtGui import QIcon
 from PyQt6.QtWidgets import QMessageBox, QWidget
 
 

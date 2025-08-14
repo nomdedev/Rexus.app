@@ -1,3 +1,4 @@
+from PyQt6.QtWidgets import QWidget
 from rexus.modules.administracion.view import AdministracionView
 
 # ...existing code...

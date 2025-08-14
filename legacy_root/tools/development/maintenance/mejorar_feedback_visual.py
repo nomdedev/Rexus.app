@@ -202,7 +202,8 @@ class MejoradorFeedbackVisual:
                 )
 
             # Verificar estructura de UI básica
-            if "QVBoxLayout" not in contenido and "QHBoxLayout" not in contenido:
+            if "QVBoxLayout" not in contenido and \
+                "QHBoxLayout" not in contenido:
                 analisis["mejoras_necesarias"].append(
                     "Estructura de layout básica faltante"
                 )
@@ -364,7 +365,8 @@ class MejoradorFeedbackVisual:
                 current_indent = len(line) - len(line.lstrip())
                 if indent_level is None and line.strip():
                     indent_level = current_indent
-                elif line.strip() and current_indent <= 4:  # Vuelta al nivel de clase
+                elif line.strip() and \
+                    current_indent <= 4:  # Vuelta al nivel de clase
                     return last_method.start() + len("\\n".join(lines[:i]))
             # Si llegamos aquí, es el final del archivo
             return len(contenido)

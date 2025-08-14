@@ -137,7 +137,10 @@ class AnalizadorCodigoSQL:
             print(f"Error al analizar archivo {ruta_archivo}: {e}")
             return []
 
-    def analizar_directorio(self, directorio, extensiones=['.py'], exclusiones=[]):
+    def analizar_directorio(self,
+directorio,
+        extensiones=['.py'],
+        exclusiones=[]):
         """
         Analiza recursivamente los archivos en un directorio.
 
@@ -268,7 +271,8 @@ class AnalizadorCodigoSQL:
             <div class="code">{problema['fragmento']}</div>
 """
 
-                    if 'detalles' in problema and 'recomendacion' in problema['detalles']:
+                    if 'detalles' in problema and \
+                        'recomendacion' in problema['detalles']:
                         html += f"""
             <p><strong>Recomendación:</strong> {problema['detalles']['recomendacion']}</p>
 """
@@ -341,8 +345,14 @@ class AnalizadorCodigoSQL:
 def main():
     """Función principal para ejecutar el análisis desde línea de comandos."""
     parser = argparse.ArgumentParser(description='Analizador de seguridad SQL en código Python')
-    parser.add_argument('--dir', '-d', default='.', help='Directorio a analizar (por defecto: directorio actual)')
-    parser.add_argument('--output', '-o', default='informe_seguridad_sql.html', help='Ruta del archivo de salida')
+    parser.add_argument('--dir',
+'-d',
+        default='.',
+        help='Directorio a analizar (por defecto: directorio actual)')
+    parser.add_argument('--output',
+'-o',
+        default='informe_seguridad_sql.html',
+        help='Ruta del archivo de salida')
     parser.add_argument('--format', '-f', choices=['html', 'json'], default='html', help='Formato del informe (html o json)')
     parser.add_argument('--exclude', '-e', action='append', default=['venv', '__pycache__', '.git'], help='Patrones a excluir')
 

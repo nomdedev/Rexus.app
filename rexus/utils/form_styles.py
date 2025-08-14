@@ -5,8 +5,7 @@ Proporciona estilos consistentes y feedback visual para todos los formularios
 de la aplicación, incluyendo estados de validación y efectos visuales.
 """
 
-from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, pyqtProperty
-from PyQt6.QtGui import QColor
+from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
 from PyQt6.QtWidgets import QWidget
 
 
@@ -50,7 +49,7 @@ class FormStyleManager:
                 font-family: 'Segoe UI', 'Arial', sans-serif;
                 font-size: 14px;
             }}
-            
+
             QDialog::title {{
                 background-color: {FormStyleManager.COLORS["primary"]};
                 color: white;
@@ -76,32 +75,32 @@ class FormStyleManager:
                 selection-background-color: {FormStyleManager.COLORS["primary_light"]};
                 transition: all 0.3s ease;
             }}
-            
+
             QLineEdit:focus, QTextEdit:focus, QPlainTextEdit:focus {{
                 border-color: {FormStyleManager.COLORS["border_focus"]};
                 background-color: #ffffff;
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             QLineEdit:hover, QTextEdit:hover, QPlainTextEdit:hover {{
                 border-color: {FormStyleManager.COLORS["primary_light"]};
             }}
-            
+
             QLineEdit[state="valid"] {{
                 border-color: {FormStyleManager.COLORS["success"]};
                 background-color: #f8fff9;
             }}
-            
+
             QLineEdit[state="invalid"] {{
                 border-color: {FormStyleManager.COLORS["error"]};
                 background-color: #fff8f8;
             }}
-            
+
             QLineEdit[state="warning"] {{
                 border-color: {FormStyleManager.COLORS["warning"]};
                 background-color: #fffdf8;
             }}
-            
+
             QTextEdit {{
                 min-height: 80px;
                 max-height: 120px;
@@ -121,21 +120,21 @@ class FormStyleManager:
                 background-color: {FormStyleManager.COLORS["background"]};
                 min-width: 120px;
             }}
-            
+
             QComboBox:focus {{
                 border-color: {FormStyleManager.COLORS["border_focus"]};
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             QComboBox:hover {{
                 border-color: {FormStyleManager.COLORS["primary_light"]};
             }}
-            
+
             QComboBox::drop-down {{
                 border: none;
                 width: 30px;
             }}
-            
+
             QComboBox::down-arrow {{
                 image: none;
                 border-left: 5px solid transparent;
@@ -143,7 +142,7 @@ class FormStyleManager:
                 border-top: 7px solid {FormStyleManager.COLORS["text_muted"]};
                 margin-right: 5px;
             }}
-            
+
             QComboBox QAbstractItemView {{
                 border: 2px solid {FormStyleManager.COLORS["border"]};
                 border-radius: 8px;
@@ -166,22 +165,22 @@ class FormStyleManager:
                 background-color: {FormStyleManager.COLORS["background"]};
                 min-width: 100px;
             }}
-            
+
             QSpinBox:focus, QDoubleSpinBox:focus {{
                 border-color: {FormStyleManager.COLORS["border_focus"]};
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             QSpinBox:hover, QDoubleSpinBox:hover {{
                 border-color: {FormStyleManager.COLORS["primary_light"]};
             }}
-            
+
             QSpinBox::up-button, QDoubleSpinBox::up-button {{
                 border: none;
                 width: 20px;
                 margin-right: 2px;
             }}
-            
+
             QSpinBox::down-button, QDoubleSpinBox::down-button {{
                 border: none;
                 width: 20px;
@@ -204,73 +203,73 @@ class FormStyleManager:
                 transition: all 0.3s ease;
                 min-width: 100px;
             }}
-            
+
             /* Botón primario */
             QPushButton[buttonType="primary"] {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["primary"]}, 
+                    stop:0 {FormStyleManager.COLORS["primary"]},
                     stop:1 {FormStyleManager.COLORS["primary_dark"]});
                 color: white;
             }}
-            
+
             QPushButton[buttonType="primary"]:hover {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["primary_light"]}, 
+                    stop:0 {FormStyleManager.COLORS["primary_light"]},
                     stop:1 {FormStyleManager.COLORS["primary"]});
                 /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             QPushButton[buttonType="primary"]:pressed {{
                 background: {FormStyleManager.COLORS["primary_dark"]};
                 /* transform no soportado en Qt - removido */
             }}
-            
+
             /* Botón de éxito */
             QPushButton[buttonType="success"] {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["success"]}, 
+                    stop:0 {FormStyleManager.COLORS["success"]},
                     stop:1 {FormStyleManager.COLORS["success_dark"]});
                 color: white;
             }}
-            
+
             QPushButton[buttonType="success"]:hover {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["success_light"]}, 
+                    stop:0 {FormStyleManager.COLORS["success_light"]},
                     stop:1 {FormStyleManager.COLORS["success"]});
                 /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             /* Botón de error/cancelar */
             QPushButton[buttonType="danger"] {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["error"]}, 
+                    stop:0 {FormStyleManager.COLORS["error"]},
                     stop:1 {FormStyleManager.COLORS["error_dark"]});
                 color: white;
             }}
-            
+
             QPushButton[buttonType="danger"]:hover {{
                 background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
-                    stop:0 {FormStyleManager.COLORS["error_light"]}, 
+                    stop:0 {FormStyleManager.COLORS["error_light"]},
                     stop:1 {FormStyleManager.COLORS["error"]});
                 /* transform no soportado en Qt - removido */
                 /* box-shadow eliminado: usar QGraphicsDropShadowEffect en el widget correspondiente */
             }}
-            
+
             /* Botón secundario */
             QPushButton[buttonType="secondary"], QPushButton {{
                 background-color: {FormStyleManager.COLORS["light"]};
                 color: {FormStyleManager.COLORS["text"]};
                 border: 2px solid {FormStyleManager.COLORS["border"]};
             }}
-            
+
             QPushButton[buttonType="secondary"]:hover, QPushButton:hover {{
                 background-color: {FormStyleManager.COLORS["border"]};
                 border-color: {FormStyleManager.COLORS["secondary"]};
                 /* transform no soportado en Qt - removido */
             }}
-            
+
             QPushButton:disabled {{
                 background-color: {FormStyleManager.COLORS["border"]};
                 color: {FormStyleManager.COLORS["text_muted"]};
@@ -288,42 +287,42 @@ class FormStyleManager:
                 font-weight: 500;
                 margin-bottom: 6px;
             }}
-            
+
             QLabel[labelType="title"] {{
                 font-size: 24px;
                 font-weight: bold;
                 color: {FormStyleManager.COLORS["dark"]};
                 margin-bottom: 20px;
             }}
-            
+
             QLabel[labelType="subtitle"] {{
                 font-size: 18px;
                 font-weight: 600;
                 color: {FormStyleManager.COLORS["dark"]};
                 margin-bottom: 15px;
             }}
-            
+
             QLabel[labelType="error"] {{
                 color: {FormStyleManager.COLORS["error"]};
                 font-size: 12px;
                 font-weight: 500;
                 margin-top: 4px;
             }}
-            
+
             QLabel[labelType="success"] {{
                 color: {FormStyleManager.COLORS["success"]};
                 font-size: 12px;
                 font-weight: 500;
                 margin-top: 4px;
             }}
-            
+
             QLabel[labelType="warning"] {{
                 color: {FormStyleManager.COLORS["warning"]};
                 font-size: 12px;
                 font-weight: 500;
                 margin-top: 4px;
             }}
-            
+
             QLabel[labelType="muted"] {{
                 color: {FormStyleManager.COLORS["text_muted"]};
                 font-size: 12px;
@@ -345,7 +344,7 @@ class FormStyleManager:
                 padding-top: 15px;
                 background-color: {FormStyleManager.COLORS["background"]};
             }}
-            
+
             QGroupBox::title {{
                 subcontrol-origin: margin;
                 left: 15px;
@@ -429,7 +428,10 @@ class FormAnimations:
     @staticmethod
     def fade_in(widget: QWidget, duration: int = 300):
         """Animación de fade in."""
-        widget.setStyleSheet("QWidget { background-color: rgba(255, 255, 255, 0); }")
+        widget.setStyleSheet("QWidget { background-color: rgba(255,
+255,
+            255,
+            0); }")
 
         animation = QPropertyAnimation(widget, b"windowOpacity")
         animation.setDuration(duration)

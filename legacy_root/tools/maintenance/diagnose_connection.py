@@ -32,23 +32,23 @@ def test_pyodbc_drivers():
 def test_basic_connection():
     """Prueba conexión básica sin especificar base de datos"""
     print("\n=== PRUEBA DE CONEXIÓN BÁSICA ===")
-    
+
     server = os.getenv('DB_SERVER')
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
-    
+
     drivers_to_try = [
         "ODBC Driver 17 for SQL Server",
         "ODBC Driver 18 for SQL Server",
         "SQL Server Native Client 11.0",
         "SQL Server"
     ]
-    
+
     for driver in drivers_to_try:
         print(f"\nProbando con driver: {driver}")
         try:
             import pyodbc
-            
+
             # Conexión sin especificar base de datos
             connection_string = (
                 f"DRIVER={{{driver}}};"
@@ -57,51 +57,51 @@ def test_basic_connection():
                 f"PWD={password};"
                 f"TrustServerCertificate=yes;"
             )
-            
+
             print(f"String de conexión: DRIVER={{{driver}}};SERVER={server};UID={username};PWD=****;TrustServerCertificate=yes;")
-            
+
             conn = pyodbc.connect(connection_string, timeout=10)
-            
+
             # Probar consulta simple
             cursor = conn.cursor()
             cursor.execute("SELECT @@VERSION")
             result = cursor.fetchone()
             print(f"EXITO: Conectado con {driver}")
             print(f"Versión SQL Server: {result[0][:100]}...")
-            
+
             # Listar bases de datos
             cursor.execute("SELECT name FROM sys.databases WHERE name IN ('users', 'inventario', 'auditoria')")
             dbs = cursor.fetchall()
             print(f"Bases de datos relevantes encontradas: {[db[0] for db in dbs]}")
-            
+
             cursor.close()
             conn.close()
             return driver
-            
+
         except Exception as e:
             print(f"FALLO con {driver}: {e}")
-    
+
     return None
 
 def test_specific_database_connection(working_driver):
     """Prueba conexión a bases de datos específicas"""
     print(f"\n=== PRUEBA DE CONEXIÓN A BASES ESPECÍFICAS ===")
-    
+
     if not working_driver:
         print("No hay driver funcional disponible")
         return False
-    
+
     server = os.getenv('DB_SERVER')
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
-    
+
     databases = ['users', 'inventario', 'auditoria']
-    
+
     for db_name in databases:
         print(f"\nProbando conexión a base de datos: {db_name}")
         try:
             import pyodbc
-            
+
             connection_string = (
                 f"DRIVER={{{working_driver}}};"
                 f"SERVER={server};"
@@ -110,38 +110,38 @@ def test_specific_database_connection(working_driver):
                 f"PWD={password};"
                 f"TrustServerCertificate=yes;"
             )
-            
+
             conn = pyodbc.connect(connection_string, timeout=10)
-            
+
             # Probar consulta simple
             cursor = conn.cursor()
             cursor.execute("SELECT DB_NAME()")
             result = cursor.fetchone()
             print(f"EXITO: Conectado a base de datos {result[0]}")
-            
+
             cursor.close()
             conn.close()
-            
+
         except Exception as e:
             print(f"FALLO conectando a {db_name}: {e}")
-    
+
     return True
 
 if __name__ == "__main__":
     print("DIAGNÓSTICO DE CONEXIÓN SQL SERVER")
     print("=" * 50)
-    
+
     # Mostrar configuración
     print(f"Servidor: {os.getenv('DB_SERVER', 'NO CONFIGURADO')}")
     print(f"Usuario: {os.getenv('DB_USERNAME', 'NO CONFIGURADO')}")
     print(f"Password: {'*' * len(os.getenv('DB_PASSWORD', '')) if os.getenv('DB_PASSWORD') else 'NO CONFIGURADO'}")
-    
+
     # Verificar drivers
     available_drivers = test_pyodbc_drivers()
-    
+
     # Probar conexión básica
     working_driver = test_basic_connection()
-    
+
     # Probar bases específicas
     if working_driver:
         test_specific_database_connection(working_driver)

@@ -1,7 +1,6 @@
 from rexus.core.auth_decorators import (
     admin_required,
     auth_required,
-    permission_required,
 )
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
@@ -20,13 +19,10 @@ NO_CONNECTION_MSG = "No hay conexión a la base de datos"
 DB_ERROR_MSG = "Error en la base de datos"
 INVALID_DATA_MSG = "Datos inválidos"
 
-import sys
-from pathlib import Path
 
 # Importar utilidades requeridas
 from rexus.utils.sql_script_loader import sql_script_loader
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import sanitize_string
 
 # Importar sistema unificado de sanitización
 try:
@@ -76,16 +72,16 @@ class VidriosModel:
                 "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
-    
+
     def _sanitizar_entrada_segura(self, value, tipo='string', **kwargs):
         """
         Sanitiza entrada de forma segura manejando la disponibilidad del sanitizador.
-        
+
         Args:
             value: Valor a sanitizar
             tipo: Tipo de sanitización ('string', 'numeric', 'integer')
             **kwargs: Argumentos adicionales (max_length, min_val, max_val)
-            
+
         Returns:
             Valor sanitizado o fallback seguro
         """
@@ -125,7 +121,7 @@ class VidriosModel:
                     return 0
             else:
                 return value
-        
+
         # Usar sanitizador disponible
         try:
             if tipo == 'string':
@@ -140,19 +136,19 @@ class VidriosModel:
             print(f"[ERROR VIDRIOS] Error en sanitización: {e}")
             # Fallback en caso de error
             return self._sanitizar_entrada_segura(value, tipo, **kwargs)
-    
+
     def _sanitizar_datos_vidrio(self, datos_vidrio: dict) -> dict:
         """
         Sanitiza todos los datos de un vidrio de forma centralizada.
-        
+
         Args:
             datos_vidrio: Diccionario con datos del vidrio a sanitizar
-            
+
         Returns:
             Diccionario con datos sanitizados
         """
         datos_limpios = {}
-        
+
         # Sanitizar strings con longitudes apropiadas
         datos_limpios["codigo"] = self._sanitizar_entrada_segura(
             datos_vidrio.get("codigo", ""), 'string', max_length=20
@@ -173,7 +169,10 @@ class VidriosModel:
             datos_vidrio.get("tratamiento", ""), 'string', max_length=50
         )
         datos_limpios["dimensiones_especiales"] = self._sanitizar_entrada_segura(
-            datos_vidrio.get("dimensiones_especiales", ""), 'string', max_length=100
+            datos_vidrio.get("dimensiones_especiales",
+""),
+                'string',
+                max_length=100
         )
         datos_limpios["estado"] = self._sanitizar_entrada_segura(
             datos_vidrio.get("estado", "ACTIVO"), 'string', max_length=20
@@ -181,12 +180,12 @@ class VidriosModel:
         datos_limpios["observaciones"] = self._sanitizar_entrada_segura(
             datos_vidrio.get("observaciones", ""), 'string', max_length=500
         )
-        
+
         # Sanitizar valores numéricos
         datos_limpios["espesor"] = self._sanitizar_entrada_segura(
             datos_vidrio.get("espesor", 0), 'numeric', min_val=0, max_val=100
         )
-        
+
         # Manejar precios (pueden ser múltiples)
         for campo_precio in ["precio_unitario", "precio_metro2", "precio_compra"]:
             if campo_precio in datos_vidrio:
@@ -194,7 +193,7 @@ class VidriosModel:
                     datos_vidrio[campo_precio], 'numeric', min_val=0, max_val=999999.99
                 )
                 datos_limpios[campo_precio] = precio_limpio
-        
+
         return datos_limpios
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -562,7 +561,11 @@ class VidriosModel:
 
             # Usar script SQL externo
             script_content = self.sql_loader.load_script("vidrios/buscar_vidrios")
-            cursor.execute(script_content, (termino, termino, termino, termino))
+            cursor.execute(script_content,
+(termino,
+                termino,
+                termino,
+                termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 

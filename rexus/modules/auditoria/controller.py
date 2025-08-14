@@ -5,15 +5,10 @@ Maneja la lógica entre el modelo y la vista de auditoría.
 """
 
 import csv
-import os
 from datetime import datetime
 
-from PyQt6.QtCore import QObject, QThread, pyqtSignal
+from PyQt6.QtCore import QObject
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 class AuditoriaController(QObject):
     """Controlador para el módulo de auditoría."""
@@ -155,7 +150,7 @@ class AuditoriaController(QObject):
             )
 
             self.view.mostrar_mensaje(
-                "informacion", "Exportación Exitosa", 
+                "informacion", "Exportación Exitosa",
                 f"Datos exportados exitosamente a:\n{archivo}"
             )
 

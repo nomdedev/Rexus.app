@@ -177,7 +177,10 @@ class AccessibilityAuditor:
 
             # Analizar cada línea
             for i, linea in enumerate(lineas, 1):
-                issues.extend(self._verificar_patrones_wcag(linea, i, archivo, modulo))
+                issues.extend(self._verificar_patrones_wcag(linea,
+i,
+                    archivo,
+                    modulo))
                 issues.extend(
                     self._verificar_estructura_accesible(
                         linea, i, archivo, modulo, contenido
@@ -549,7 +552,8 @@ class AccessibilityAuditor:
             issues_criticos_a = [
                 i
                 for i in self.report.issues
-                if i.nivel == WCAGLevel.A and i.severidad in ["critical", "high"]
+                if i.nivel == WCAGLevel.A and \
+                    i.severidad in ["critical", "high"]
             ]
             if issues_criticos_a:
                 self.report.nivel_conformidad = None

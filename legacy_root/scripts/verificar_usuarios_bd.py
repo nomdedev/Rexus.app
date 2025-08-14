@@ -30,8 +30,8 @@ def verificar_usuarios_bd():
         # Verificar si existe la tabla usuarios
         print("\n📋 Verificando existencia de tabla 'usuarios'...")
         cursor.execute("""
-            SELECT COUNT(*) 
-            FROM INFORMATION_SCHEMA.TABLES 
+            SELECT COUNT(*)
+            FROM INFORMATION_SCHEMA.TABLES
             WHERE TABLE_NAME = 'usuarios'
         """)
 
@@ -83,8 +83,8 @@ def verificar_usuarios_bd():
         # Verificar si hay passwords configuradas
         print("🔐 Verificando configuración de passwords...")
         cursor.execute("""
-            SELECT COUNT(*) 
-            FROM usuarios 
+            SELECT COUNT(*)
+            FROM usuarios
             WHERE password_hash IS NOT NULL AND password_hash != ''
         """)
 

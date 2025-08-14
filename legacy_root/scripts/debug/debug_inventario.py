@@ -14,35 +14,35 @@ def test_inventario_instantiation():
     """Test inventario module creation step by step"""
     try:
         print("=== DEBUGGING INVENTARIO MODULE ===")
-        
+
         # Test PyQt6 import
         print("1. Testing PyQt6...")
         from PyQt6.QtWidgets import QApplication
         app = QApplication([])
         print("   [CHECK] PyQt6 imported successfully")
-        
+
         # Test inventario imports
         print("2. Testing inventario imports...")
         from src.modules.inventario.model import InventarioModel
         from src.modules.inventario.view import InventarioView
         from src.modules.inventario.controller import InventarioController
         print("   [CHECK] Inventario modules imported successfully")
-        
+
         # Test model creation
         print("3. Testing model creation...")
         model = InventarioModel()
         print("   [CHECK] InventarioModel created successfully")
-        
+
         # Test view creation
         print("4. Testing view creation...")
         view = InventarioView()
         print("   [CHECK] InventarioView created successfully")
-        
+
         # Test controller creation
         print("5. Testing controller creation...")
         controller = InventarioController(model, view)
         print("   [CHECK] InventarioController created successfully")
-        
+
         # Test signal connections
         print("6. Testing signal connections...")
         if hasattr(view, 'set_controller'):
@@ -50,7 +50,7 @@ def test_inventario_instantiation():
             print("   [CHECK] Controller set on view successfully")
         else:
             print("   [WARN]  View has no set_controller method")
-        
+
         # Check for specific methods
         print("7. Checking for specific methods...")
         methods_to_check = ['filtrar_inventario_tiempo_real', 'filtrar_disponibilidad', 'buscar_productos']
@@ -59,10 +59,10 @@ def test_inventario_instantiation():
                 print(f"   [CHECK] View has method: {method}")
             else:
                 print(f"   [ERROR] View missing method: {method}")
-        
+
         print("\n=== INVENTARIO MODULE DEBUG COMPLETE ===")
         return True
-        
+
     except Exception as e:
         print(f"[ERROR] ERROR: {e}")
         import traceback
@@ -73,24 +73,24 @@ def test_pedidos_debug():
     """Test pedidos module for rollback error"""
     try:
         print("\n=== DEBUGGING PEDIDOS MODULE ===")
-        
+
         from src.modules.pedidos.model import PedidosModel
         from src.modules.pedidos.view import PedidosView
         from src.modules.pedidos.controller import PedidosController
-        
+
         model = PedidosModel()
         view = PedidosView()
         controller = PedidosController(model, view)
-        
+
         # Check for rollback method
         if hasattr(view, 'rollback'):
             print("   [CHECK] PedidosView has rollback method")
         else:
             print("   [ERROR] PedidosView missing rollback method")
-            
+
         print("=== PEDIDOS MODULE DEBUG COMPLETE ===")
         return True
-        
+
     except Exception as e:
         print(f"[ERROR] PEDIDOS ERROR: {e}")
         import traceback
@@ -100,7 +100,7 @@ def test_pedidos_debug():
 if __name__ == "__main__":
     success1 = test_inventario_instantiation()
     success2 = test_pedidos_debug()
-    
+
     if success1 and success2:
         print("\n🎉 All tests passed!")
     else:

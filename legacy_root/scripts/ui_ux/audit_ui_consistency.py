@@ -115,12 +115,27 @@ class UIConsistencyAuditor:
 
             # Buscar patrones problemáticos
             for i, linea in enumerate(lineas, 1):
-                issues.extend(self._verificar_colores(linea, i, archivo, modulo))
-                issues.extend(self._verificar_fuentes(linea, i, archivo, modulo))
-                issues.extend(self._verificar_espaciado(linea, i, archivo, modulo))
-                issues.extend(self._verificar_accesibilidad(linea, i, archivo, modulo))
+                issues.extend(self._verificar_colores(linea,
+i,
+                    archivo,
+                    modulo))
+                issues.extend(self._verificar_fuentes(linea,
+i,
+                    archivo,
+                    modulo))
+                issues.extend(self._verificar_espaciado(linea,
+i,
+                    archivo,
+                    modulo))
+                issues.extend(self._verificar_accesibilidad(linea,
+i,
+                    archivo,
+                    modulo))
                 issues.extend(
-                    self._verificar_textos_hardcoded(linea, i, archivo, modulo)
+                    self._verificar_textos_hardcoded(linea,
+i,
+                        archivo,
+                        modulo)
                 )
 
         except Exception as e:
@@ -213,7 +228,8 @@ class UIConsistencyAuditor:
                     )
                 )
 
-            if tamaño and int(tamaño) not in self.ui_standards["tamaños_fuente"]:
+            if tamaño and \
+                int(tamaño) not in self.ui_standards["tamaños_fuente"]:
                 issues.append(
                     UIIssue(
                         modulo=modulo,
@@ -242,7 +258,8 @@ class UIConsistencyAuditor:
         for top, left, bottom, right in margenes:
             valores = [int(top), int(left), int(bottom), int(right)]
             for valor in valores:
-                if valor not in self.ui_standards["margenes_estandar"] and valor != 0:
+                if valor not in self.ui_standards["margenes_estandar"] and \
+                    valor != 0:
                     issues.append(
                         UIIssue(
                             modulo=modulo,

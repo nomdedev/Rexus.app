@@ -14,13 +14,13 @@ from datetime import datetime, date
 def mock_db_connection():
     """
     Mock de conexión a base de datos.
-    
+
     Proporciona un mock completo de la conexión a DB
     con cursor y métodos básicos mockeados.
     """
     db = Mock()
     cursor = Mock()
-    
+
     # Configurar cursor mock
     cursor.fetchall.return_value = []
     cursor.fetchone.return_value = None
@@ -29,13 +29,13 @@ def mock_db_connection():
     cursor.rowcount = 0
     cursor.lastrowid = 1
     cursor.description = []
-    
+
     # Configurar conexión mock
     db.cursor.return_value = cursor
     db.commit.return_value = None
     db.rollback.return_value = None
     db.close.return_value = None
-    
+
     return db
 
 
@@ -190,14 +190,14 @@ def invalid_data_samples():
 def mock_security_manager():
     """Mock del gestor de seguridad."""
     security = Mock()
-    
+
     # Configurar métodos comunes
     security.validate_user.return_value = True
     security.check_permissions.return_value = True
     security.sanitize_input.side_effect = lambda x: x  # Passthrough
     security.validate_sql.return_value = True
     security.log_security_event.return_value = None
-    
+
     return security
 
 
@@ -205,14 +205,14 @@ def mock_security_manager():
 def mock_logger():
     """Mock del sistema de logging."""
     logger = Mock()
-    
+
     # Configurar niveles de log
     logger.debug.return_value = None
     logger.info.return_value = None
     logger.warning.return_value = None
     logger.error.return_value = None
     logger.critical.return_value = None
-    
+
     return logger
 
 
@@ -220,7 +220,7 @@ def mock_logger():
 def mock_config():
     """Mock de configuración del sistema."""
     config = Mock()
-    
+
     # Configuraciones típicas
     config.get.return_value = "test_value"
     config.database_url = "sqlite:///:memory:"
@@ -228,7 +228,7 @@ def mock_config():
     config.testing = True
     config.max_connections = 10
     config.timeout = 30
-    
+
     return config
 
 
@@ -242,23 +242,23 @@ def test_database_path():
 def clean_database(test_database_path):
     """
     Limpia la base de datos de testing antes y después de cada test.
-    
+
     Asegura que cada test empiece con un estado limpio.
     """
     import sqlite3
     import os
-    
+
     # Limpiar antes del test
     if os.path.exists(test_database_path):
         os.remove(test_database_path)
-    
+
     # Crear base de datos limpia
     conn = sqlite3.connect(test_database_path)
     conn.execute("PRAGMA foreign_keys = ON")
     conn.close()
-    
+
     yield test_database_path
-    
+
     # Limpiar después del test
     if os.path.exists(test_database_path):
         os.remove(test_database_path)
@@ -268,7 +268,7 @@ def clean_database(test_database_path):
 def performance_timer():
     """
     Timer para medir performance en tests.
-    
+
     Usage:
         with performance_timer() as timer:
             # código a medir
@@ -277,7 +277,7 @@ def performance_timer():
     """
     import time
     from contextlib import contextmanager
-    
+
     @contextmanager
     def timer():
         class Timer:
@@ -285,14 +285,14 @@ def performance_timer():
                 self.start = None
                 self.end = None
                 self.elapsed = None
-        
+
         timer_obj = Timer()
         timer_obj.start = time.time()
-        
+
         try:
             yield timer_obj
         finally:
             timer_obj.end = time.time()
             timer_obj.elapsed = timer_obj.end - timer_obj.start
-    
+
     return timer

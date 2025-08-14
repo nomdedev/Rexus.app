@@ -483,7 +483,8 @@ class ConfigManager:
                 Environment.STAGING,
             ]:
                 validation_result["errors"].append("Secret key no configurado")
-            if env == Environment.PRODUCTION and not security_config.enable_ssl:
+            if env == Environment.PRODUCTION and \
+                not security_config.enable_ssl:
                 validation_result["warnings"].append("SSL deshabilitado en producción")
 
             # Validar configuración de app

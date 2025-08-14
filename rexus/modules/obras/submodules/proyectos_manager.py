@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -41,10 +41,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -158,7 +158,10 @@ class ProyectosManager:
 
     @auth_required
     @permission_required("change_obras")
-    def actualizar_obra(self, obra_id: int, datos_obra: Dict[str, Any]) -> bool:
+    def actualizar_obra(self,
+obra_id: int,
+        datos_obra: Dict[str,
+        Any]) -> bool:
         """Actualiza un proyecto de obra existente."""
         if not self.db_connection or not obra_id:
             return False

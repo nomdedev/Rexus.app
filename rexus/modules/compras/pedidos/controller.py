@@ -5,17 +5,20 @@ Maneja la lógica de control entre el modelo y la vista para pedidos/órdenes de
 """
 
 from PyQt6.QtCore import QObject
-from typing import Dict, List, Any
+from typing import Dict, Any
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.message_system import show_success, show_error, show_warning
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.message_system import show_success, show_error
 from .model import PedidosModel
 
 
 class ComprasPedidosController(QObject):
     """Controlador para gestionar pedidos de compra."""
 
-    def __init__(self, model=None, view=None, db_connection=None, usuarios_model=None):
+    def __init__(self,
+model=None,
+        view=None,
+        db_connection=None,
+        usuarios_model=None):
         """
         Inicializa el controlador de pedidos.
 
@@ -30,7 +33,7 @@ class ComprasPedidosController(QObject):
         self.db_connection = db_connection
         self.usuarios_model = usuarios_model
         self.usuario_actual = "SISTEMA"
-        
+
         # Inicializar modelo de pedidos
         self.pedidos_model = model or PedidosModel(db_connection)
 
@@ -64,7 +67,7 @@ class ComprasPedidosController(QObject):
             if not datos_pedido.get('proveedor_id'):
                 show_error(self.view, "Error", "Debe seleccionar un proveedor")
                 return False
-            
+
             if not datos_pedido.get('fecha_pedido'):
                 show_error(self.view, "Error", "Debe especificar la fecha del pedido")
                 return False
@@ -149,7 +152,10 @@ class ComprasPedidosController(QObject):
             return False
 
     @auth_required
-    def agregar_detalle_a_pedido(self, pedido_id: int, detalle_data: Dict[str, Any]):
+    def agregar_detalle_a_pedido(self,
+pedido_id: int,
+        detalle_data: Dict[str,
+        Any]):
         """
         Agrega un detalle a un pedido existente.
 
@@ -162,7 +168,7 @@ class ComprasPedidosController(QObject):
             if not detalle_data.get('producto_id'):
                 show_error(self.view, "Error", "Debe especificar el producto")
                 return False
-                
+
             if not detalle_data.get('cantidad') or float(detalle_data['cantidad']) <= 0:
                 show_error(self.view, "Error", "La cantidad debe ser mayor a 0")
                 return False

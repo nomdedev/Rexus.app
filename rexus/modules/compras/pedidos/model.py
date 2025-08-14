@@ -4,10 +4,9 @@ Modelo de Pedidos de Compras
 Maneja la lógica de negocio y acceso a datos para órdenes de compra.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 from datetime import datetime
 from rexus.utils.security import SecurityUtils
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class PedidosModel:
@@ -72,7 +71,10 @@ class PedidosModel:
             proveedor_id: ID del proveedor
             fecha_pedido: Fecha del pedido
             fecha_entrega_esperada: Fecha esperada de entrega
-            estado: Estado del pedido (PENDIENTE, ENVIADO, RECIBIDO, CANCELADO)
+            estado: Estado del pedido (PENDIENTE,
+ENVIADO,
+                RECIBIDO,
+                CANCELADO)
             observaciones: Observaciones del pedido
             usuario_creacion: Usuario que crea el pedido
 
@@ -84,7 +86,7 @@ class PedidosModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Sanitizar datos de entrada
             proveedor_id = SecurityUtils.sanitize_input(str(proveedor_id))
             fecha_pedido = SecurityUtils.sanitize_input(fecha_pedido)
@@ -141,7 +143,7 @@ class PedidosModel:
             estado = SecurityUtils.sanitize_input(estado)
 
             query = f"""
-                SELECT 
+                SELECT
                     pc.id, pc.proveedor_id, pc.fecha_pedido, pc.fecha_entrega_esperada,
                     pc.estado, pc.observaciones, pc.usuario_creacion, pc.fecha_creacion,
                     prov.nombre as proveedor_nombre
@@ -182,21 +184,24 @@ class PedidosModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Sanitizar datos
             pedido_id = SecurityUtils.sanitize_input(str(pedido_id))
             nuevo_estado = SecurityUtils.sanitize_input(nuevo_estado)
             usuario_actualizacion = SecurityUtils.sanitize_input(usuario_actualizacion)
 
             query = f"""
-                UPDATE [{self.tabla_pedidos}] 
+                UPDATE [{self.tabla_pedidos}]
                 SET estado = ?, usuario_actualizacion = ?, fecha_actualizacion = ?
                 WHERE id = ?
             """
 
             cursor.execute(
                 query,
-                (nuevo_estado, usuario_actualizacion, datetime.now().isoformat(), pedido_id)
+                (nuevo_estado,
+usuario_actualizacion,
+                    datetime.now().isoformat(),
+                    pedido_id)
             )
 
             self.db_connection.commit()
@@ -223,7 +228,7 @@ class PedidosModel:
             cursor = self.db_connection.cursor()
 
             query = f"""
-                SELECT 
+                SELECT
                     pc.id, pc.proveedor_id, pc.fecha_pedido, pc.fecha_entrega_esperada,
                     pc.estado, pc.observaciones, pc.usuario_creacion, pc.fecha_creacion,
                     prov.nombre as proveedor_nombre, prov.razon_social
@@ -272,7 +277,7 @@ class PedidosModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Sanitizar datos
             pedido_id = SecurityUtils.sanitize_input(str(pedido_id))
             producto_id = SecurityUtils.sanitize_input(str(producto_id))
@@ -286,7 +291,12 @@ class PedidosModel:
                 ) VALUES (?, ?, ?, ?, ?)
             """
 
-            cursor.execute(query, (pedido_id, producto_id, cantidad, precio_unitario, subtotal))
+            cursor.execute(query,
+(pedido_id,
+                producto_id,
+                cantidad,
+                precio_unitario,
+                subtotal))
             self.db_connection.commit()
             print(f"[PEDIDOS] Detalle agregado al pedido {pedido_id}")
             return True

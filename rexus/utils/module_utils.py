@@ -9,18 +9,18 @@ from typing import Dict, Any
 def normalize_module_name(name: str) -> str:
     """
     Normaliza nombres de módulos eliminando tildes y espacios.
-    
+
     Args:
         name: Nombre del módulo original
-        
+
     Returns:
         str: Nombre normalizado
     """
     # Remover tildes
     normalized = unicodedata.normalize('NFD', name)
-    without_accents = ''.join(char for char in normalized 
+    without_accents = ''.join(char for char in normalized
                              if unicodedata.category(char) != 'Mn')
-    
+
     # Convertir a minúsculas y remover espacios
     return without_accents.lower().replace(' ', '_')
 
@@ -28,17 +28,17 @@ def normalize_module_name(name: str) -> str:
 def get_module_display_name(internal_name: str) -> str:
     """
     Convierte nombre interno a nombre para mostrar.
-    
+
     Args:
         internal_name: Nombre interno del módulo
-        
+
     Returns:
         str: Nombre para mostrar en UI
     """
     display_map = {
         'usuarios': 'Usuarios',
         'obras': 'Obras',
-        'inventario': 'Inventario', 
+        'inventario': 'Inventario',
         'compras': 'Compras',
         'pedidos': 'Pedidos',
         'logistica': 'Logística',
@@ -50,7 +50,7 @@ def get_module_display_name(internal_name: str) -> str:
         'contabilidad': 'Contabilidad',
         'configuracion': 'Configuración'
     }
-    
+
     return display_map.get(internal_name, internal_name.title())
 
 
@@ -58,7 +58,7 @@ class ModuleRegistry:
     """
     Registro centralizado de módulos para evitar inconsistencias.
     """
-    
+
     _modules = {
         'usuarios': {
             'display_name': 'Usuarios',
@@ -67,21 +67,21 @@ class ModuleRegistry:
             'description': 'Gestión de usuarios y permisos'
         },
         'obras': {
-            'display_name': 'Obras', 
+            'display_name': 'Obras',
             'factory_method': '_create_obras_module',
             'icon': 'obras.svg',
             'description': 'Gestión de obras y proyectos'
         },
         'inventario': {
             'display_name': 'Inventario',
-            'factory_method': '_create_inventario_module', 
+            'factory_method': '_create_inventario_module',
             'icon': 'inventory.svg',
             'description': 'Control de inventario y stock'
         },
         'compras': {
             'display_name': 'Compras',
             'factory_method': '_create_compras_module',
-            'icon': 'compras.svg', 
+            'icon': 'compras.svg',
             'description': 'Gestión de compras y proveedores'
         },
         'pedidos': {
@@ -103,7 +103,7 @@ class ModuleRegistry:
             'description': 'Gestión de herrajes'
         },
         'vidrios': {
-            'display_name': 'Vidrios', 
+            'display_name': 'Vidrios',
             'factory_method': '_create_vidrios_module',
             'icon': 'vidrios.svg',
             'description': 'Gestión de vidrios'
@@ -128,7 +128,7 @@ class ModuleRegistry:
         },
         'contabilidad': {
             'display_name': 'Contabilidad',
-            'factory_method': '_create_contabilidad_module', 
+            'factory_method': '_create_contabilidad_module',
             'icon': 'contabilidad.svg',
             'description': 'Gestión contable'
         },
@@ -139,49 +139,49 @@ class ModuleRegistry:
             'description': 'Configuración del sistema'
         }
     }
-    
+
     @classmethod
     def get_all_modules(cls) -> Dict[str, Dict[str, Any]]:
         """Retorna todos los módulos registrados."""
         return cls._modules.copy()
-    
-    @classmethod  
+
+    @classmethod
     def get_module_info(cls, module_key: str) -> Dict[str, Any]:
         """Retorna información de un módulo específico."""
         return cls._modules.get(module_key, {})
-    
+
     @classmethod
     def get_display_name(cls, module_key: str) -> str:
         """Retorna el nombre para mostrar de un módulo."""
         return cls._modules.get(module_key, {}).get('display_name', module_key.title())
-    
+
     @classmethod
     def get_factory_method(cls, module_key: str) -> str:
         """Retorna el método del factory para un módulo."""
         return cls._modules.get(module_key, {}).get('factory_method', '')
-    
+
     @classmethod
     def normalize_and_find(cls, input_name: str) -> str:
         """
         Normaliza un nombre de entrada y encuentra el módulo correspondiente.
-        
+
         Args:
             input_name: Nombre de entrada (puede tener tildes, espacios, etc.)
-            
+
         Returns:
             str: Clave del módulo encontrado o cadena vacía si no existe
         """
         normalized_input = normalize_module_name(input_name)
-        
+
         # Buscar coincidencia directa
         if normalized_input in cls._modules:
             return normalized_input
-            
+
         # Buscar por nombre de display normalizado
         for key, info in cls._modules.items():
             if normalize_module_name(info['display_name']) == normalized_input:
                 return key
-                
+
         return ""
 
 

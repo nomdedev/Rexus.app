@@ -88,7 +88,14 @@ def crear_usuario_prueba():
             # Crear nuevo usuario
             password_hash = hash_password(usuario_data['password'])
             db.ejecutar_query("""
-                INSERT INTO usuarios (usuario, nombre, apellido, email, password, rol, activo, fecha_creacion)
+                INSERT INTO usuarios (usuario,
+nombre,
+                    apellido,
+                    email,
+                    password,
+                    rol,
+                    activo,
+                    fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)
             """, (
                 usuario_data['usuario'],
@@ -124,7 +131,12 @@ def crear_usuario_prueba():
         # Asignar permisos completos
         for modulo in modulos:
             db.ejecutar_query("""
-                INSERT INTO permisos_usuarios (usuario_id, modulo, lectura, escritura, eliminacion, configuracion)
+                INSERT INTO permisos_usuarios (usuario_id,
+modulo,
+                    lectura,
+                    escritura,
+                    eliminacion,
+                    configuracion)
                 VALUES (?, ?, 1, 1, 1, 1)
             """, (user_id, modulo))
 
@@ -142,7 +154,10 @@ def crear_usuario_prueba():
 
         print("\n🔐 PERMISOS ASIGNADOS:")
         for modulo in modulos:
-            print(f"  [CHECK] {modulo}: Lectura, Escritura, Eliminación, Configuración")
+            print(f"  [CHECK] {modulo}: Lectura,
+Escritura,
+                Eliminación,
+                Configuración")
 
         print("\n[WARN] IMPORTANTE:")
         print("• Este usuario es SOLO para testing y desarrollo")

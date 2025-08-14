@@ -10,10 +10,8 @@ Maneja la lógica de negocio y acceso a datos para el sistema de compras.
 
 import datetime
 from typing import Any, Dict, List
-from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.query_optimizer import cached_query, track_performance
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ComprasModel:
@@ -96,7 +94,10 @@ class ComprasModel:
             numero_orden: Número de orden de compra
             fecha_pedido: Fecha del pedido
             fecha_entrega_estimada: Fecha estimada de entrega
-            estado: Estado de la compra (PENDIENTE, APROBADA, RECIBIDA, CANCELADA)
+            estado: Estado de la compra (PENDIENTE,
+APROBADA,
+                RECIBIDA,
+                CANCELADA)
             observaciones: Observaciones adicionales
             usuario_creacion: Usuario que crea la orden
             descuento: Descuento aplicado
@@ -233,27 +234,27 @@ class ComprasModel:
         except Exception as e:
             print(f"[ERROR COMPRAS] Error actualizando estado: {e}")
             return False
-    
+
     @cached_query(cache_key="productos_disponibles_compra", ttl=300)
     @track_performance
     def obtener_productos_disponibles_compra(self):
         """
         Obtiene productos disponibles para compra desde inventario.
-        
+
         Returns:
             List: Lista de productos disponibles con información de stock
         """
         try:
             from rexus.modules.inventario.model import InventarioModel
-            
+
             if not self.db_connection:
                 return []
-                
+
             inventario_model = InventarioModel(self.db_connection)
-            
+
             # Obtener productos con stock bajo o próximos a agotarse
             productos_stock_bajo = inventario_model.obtener_productos_stock_bajo()
-            
+
             # Formatear datos para compras
             productos_compra = []
             for producto in productos_stock_bajo:
@@ -270,41 +271,41 @@ class ComprasModel:
                     ),
                     'prioridad': 'ALTA' if producto.get('stock_actual', 0) <= 0 else 'MEDIA'
                 })
-            
+
             return productos_compra
-            
+
         except Exception as e:
             print(f"[ERROR COMPRAS] Error obteniendo productos para compra: {e}")
             return []
-    
+
     @track_performance
     def actualizar_stock_por_compra(self, compra_id: int, productos: List[Dict]) -> bool:
         """
         Actualiza el stock en inventario cuando se recibe una compra.
-        
+
         Args:
             compra_id: ID de la compra
             productos: Lista de productos con cantidades recibidas
-            
+
         Returns:
             bool: True si se actualizó exitosamente
         """
         try:
             from rexus.modules.inventario.model import InventarioModel
-            
+
             if not self.db_connection:
                 return False
-                
+
             inventario_model = InventarioModel(self.db_connection)
-            
+
             for producto in productos:
                 producto_id = producto.get('id_producto')
                 cantidad_recibida = producto.get('cantidad_recibida', 0)
                 precio_unitario = producto.get('precio_unitario', 0.0)
-                
+
                 if cantidad_recibida <= 0:
                     continue
-                
+
                 # Registrar movimiento de entrada en inventario
                 movimiento_data = {
                     'producto_id': producto_id,
@@ -315,43 +316,43 @@ class ComprasModel:
                     'usuario': producto.get('usuario', 'sistema'),
                     'fecha': datetime.datetime.now()
                 }
-                
+
                 # Usar el método del inventario para registrar movimiento
                 if hasattr(inventario_model, 'registrar_movimiento_inventario'):
                     inventario_model.registrar_movimiento_inventario(movimiento_data)
-                
+
                 print(f"[INTEGRACIÓN] Stock actualizado para producto {producto_id}: +{cantidad_recibida}")
-            
+
             return True
-            
+
         except Exception as e:
             print(f"[ERROR COMPRAS] Error actualizando stock por compra: {e}")
             return False
-    
+
     @cached_query(ttl=600)
     @track_performance
     def verificar_disponibilidad_producto(self, producto_id: int) -> Dict[str, Any]:
         """
         Verifica la disponibilidad de un producto en inventario.
-        
+
         Args:
             producto_id: ID del producto
-            
+
         Returns:
             Dict: Información de disponibilidad del producto
         """
         try:
             from rexus.modules.inventario.model import InventarioModel
-            
+
             if not self.db_connection:
                 return {'disponible': False, 'stock_actual': 0}
-                
+
             inventario_model = InventarioModel(self.db_connection)
-            
+
             # Obtener información del producto desde inventario
             if hasattr(inventario_model, 'obtener_producto_por_id'):
                 producto = inventario_model.obtener_producto_por_id(producto_id)
-                
+
                 if producto:
                     return {
                         'disponible': producto.get('stock_actual', 0) > 0,
@@ -361,9 +362,9 @@ class ComprasModel:
                         'precio_promedio': producto.get('precio_promedio', 0.0),
                         'necesita_compra': producto.get('stock_actual', 0) <= producto.get('stock_minimo', 0)
                     }
-            
+
             return {'disponible': False, 'stock_actual': 0}
-            
+
         except Exception as e:
             print(f"[ERROR COMPRAS] Error verificando disponibilidad: {e}")
             return {'disponible': False, 'stock_actual': 0, 'error': str(e)}
@@ -424,7 +425,7 @@ class ComprasModel:
             cursor.execute(
                 """
                 SELECT COUNT(*) FROM compras
-                WHERE MONTH(fecha_creacion) = MONTH(GETDATE()) 
+                WHERE MONTH(fecha_creacion) = MONTH(GETDATE())
                 AND YEAR(fecha_creacion) = YEAR(GETDATE())
             """
             )
@@ -434,7 +435,7 @@ class ComprasModel:
             # Análisis completo de proveedores
             cursor.execute(
                 """
-                SELECT 
+                SELECT
                     c.proveedor,
                     COUNT(*) as ordenes,
                     ISNULL(SUM(
@@ -442,14 +443,14 @@ class ComprasModel:
                                 FROM detalle_compras dc
                                 WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
                     ), 0) as monto_total,
-                    CASE 
-                        WHEN COUNT(*) > 0 THEN 
+                    CASE
+                        WHEN COUNT(*) > 0 THEN
                             ISNULL(SUM(
                                 ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
                                         FROM detalle_compras dc
                                         WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
                             ), 0) / COUNT(*)
-                        ELSE 0 
+                        ELSE 0
                     END as promedio
                 FROM compras c
                 GROUP BY c.proveedor
@@ -457,7 +458,7 @@ class ComprasModel:
             """
             )
             proveedores_data = cursor.fetchall()
-            
+
             # Calcular porcentajes
             proveedores_analisis = []
             for proveedor, ordenes, monto, promedio in proveedores_data:
@@ -512,7 +513,7 @@ class ComprasModel:
             """
             )
             compras_mes_anterior = cursor.fetchone()[0]
-            
+
             if compras_mes_anterior > 0:
                 if compras_mes > compras_mes_anterior:
                     tendencia = "Al alza"
@@ -527,7 +528,7 @@ class ComprasModel:
             # Productos únicos (basado en detalle_compras)
             cursor.execute(
                 """
-                SELECT COUNT(DISTINCT dc.descripcion) 
+                SELECT COUNT(DISTINCT dc.descripcion)
                 FROM detalle_compras dc
                 INNER JOIN compras c ON dc.compra_id = c.id
             """
@@ -564,7 +565,7 @@ class ComprasModel:
             # Ticket promedio
             cursor.execute(
                 """
-                SELECT AVG(dc.precio_unitario) 
+                SELECT AVG(dc.precio_unitario)
                 FROM detalle_compras dc
                 INNER JOIN compras c ON dc.compra_id = c.id
             """
@@ -578,26 +579,26 @@ class ComprasModel:
                 "monto_total": monto_total,
                 "promedio_orden": promedio_orden,
                 "ordenes_mes": ordenes_mes,
-                
+
                 # Análisis por proveedores
                 "proveedores_analisis": proveedores_analisis,
                 "proveedor_principal": proveedor_principal,
-                
+
                 # Análisis temporal
                 "compras_hoy": compras_hoy,
                 "compras_semana": compras_semana,
                 "compras_mes": compras_mes,
                 "tendencia": tendencia,
-                
+
                 # Análisis de productos
                 "productos_unicos": productos_unicos,
                 "categoria_principal": categoria_principal,
                 "producto_mas_comprado": producto_mas_comprado,
                 "ticket_promedio": ticket_promedio,
-                
+
                 # Compatibilidad con código existente
                 "proveedores_activos": [
-                    {"proveedor": p["proveedor"], "cantidad": p["ordenes"]} 
+                    {"proveedor": p["proveedor"], "cantidad": p["ordenes"]}
                     for p in proveedores_analisis
                 ]
             }
@@ -620,7 +621,7 @@ class ComprasModel:
             "monto_total": 125680.75,
             "promedio_orden": 2618.35,
             "ordenes_mes": 15,
-            
+
             # Análisis por proveedores
             "proveedores_analisis": [
                 {"proveedor": "Materiales del Sur", "ordenes": 12, "monto_total": 45250.30, "promedio": 3770.86, "porcentaje": 36.0},
@@ -636,19 +637,19 @@ class ComprasModel:
                 "promedio": 3770.86,
                 "porcentaje": 36.0
             },
-            
+
             # Análisis temporal
             "compras_hoy": 2,
             "compras_semana": 8,
             "compras_mes": 15,
             "tendencia": "Al alza",
-            
+
             # Análisis de productos
             "productos_unicos": 86,
             "categoria_principal": "Materiales de Construcción",
             "producto_mas_comprado": "Perfiles de Aluminio 20x20",
             "ticket_promedio": 285.50,
-            
+
             # Compatibilidad
             "proveedores_activos": [
                 {"proveedor": "Materiales del Sur", "cantidad": 12},
@@ -753,19 +754,19 @@ class ComprasModel:
         try:
             if not self.db_connection:
                 return False
-            
+
             cursor = self.db_connection.cursor()
             cursor.execute("""
-            UPDATE compras 
-            SET estado = 'CANCELADA', 
+            UPDATE compras
+            SET estado = 'CANCELADA',
                 fecha_cancelacion = GETDATE(),
                 motivo_cancelacion = ?
             WHERE id = ?
             """, (motivo, orden_id))
-            
+
             self.db_connection.commit()
             return cursor.rowcount > 0
-            
+
         except Exception as e:
             print(f"Error cancelando orden: {e}")
             return False
@@ -775,19 +776,19 @@ class ComprasModel:
         try:
             if not self.db_connection:
                 return False
-            
+
             cursor = self.db_connection.cursor()
             cursor.execute("""
-            UPDATE compras 
-            SET estado = 'APROBADA', 
+            UPDATE compras
+            SET estado = 'APROBADA',
                 fecha_aprobacion = GETDATE(),
                 usuario_aprobacion = ?
             WHERE id = ?
             """, (usuario_aprobacion, orden_id))
-            
+
             self.db_connection.commit()
             return cursor.rowcount > 0
-            
+
         except Exception as e:
             print(f"Error aprobando orden: {e}")
             return False
@@ -795,80 +796,83 @@ class ComprasModel:
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
         """
         Obtiene datos paginados de la tabla principal
-        
+
         Args:
             offset: Número de registros a saltar
             limit: Número máximo de registros a devolver
             filtros: Filtros adicionales a aplicar
-            
+
         Returns:
             tuple: (datos, total_registros)
         """
         try:
             if not self.db_connection:
                 return [], 0
-            
+
             cursor = self.db_connection.cursor()
-            
+
             # Query base
             base_query = self._get_base_query()
             count_query = self._get_count_query()
-            
+
             # Aplicar filtros si existen
             where_clause = ""
             params = []
-            
+
             if filtros:
                 where_conditions = []
                 for campo, valor in filtros.items():
                     if valor:
                         where_conditions.append(f"{campo} LIKE ?")
                         params.append(f"%{valor}%")
-                
+
                 if where_conditions:
                     where_clause = " WHERE " + " AND ".join(where_conditions)
-            
+
             # Obtener total de registros
             full_count_query = count_query + where_clause
             cursor.execute(full_count_query, params)
             total_registros = cursor.fetchone()[0]
-            
+
             # Obtener datos paginados
             paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
             cursor.execute(paginated_query, params + [offset, limit])
-            
+
             datos = []
             for row in cursor.fetchall():
                 datos.append(self._row_to_dict(row, cursor.description))
-            
+
             return datos, total_registros
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo datos paginados: {e}")
             return [], 0
-    
+
     def obtener_total_registros(self, filtros=None):
         """Obtiene el total de registros disponibles"""
         try:
-            _, total = self.obtener_datos_paginados(offset=0, limit=1, filtros=filtros)
+            _,
+total = self.obtener_datos_paginados(offset=0,
+                limit=1,
+                filtros=filtros)
             return total
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
-    
+
     def _get_base_query(self):
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
         # Esta es una implementación genérica
         tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
         # FIXED: SQL Injection vulnerability
         return "SELECT * FROM ?", (tabla_principal,)
-    
+
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
         tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
         # FIXED: SQL Injection vulnerability
         return "SELECT COUNT(*) FROM ?", (tabla_principal,)
-    
+
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}

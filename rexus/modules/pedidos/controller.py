@@ -9,13 +9,7 @@ from typing import Any, Dict, List, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
-from rexus.core.auth_manager import auth_required, admin_required, manager_required
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
-from .model import PedidosModel
 
 class PedidosController(QObject):
     """Controlador para el módulo de pedidos."""
@@ -176,7 +170,8 @@ class PedidosController(QObject):
             stats = self.model.obtener_estadisticas()
 
             # Actualizar estadísticas en la vista
-            if self.view and hasattr(self.view, "actualizar_estadisticas_completas"):
+            if self.view and \
+                hasattr(self.view, "actualizar_estadisticas_completas"):
                 self.view.actualizar_estadisticas_completas(stats)
 
         except Exception as e:
@@ -278,41 +273,41 @@ class PedidosController(QObject):
         if self.view:
             QMessageBox.information(self.view, "Éxito", mensaje)
 
-    
+
     def cargar_pagina(self, pagina, registros_por_pagina=50):
         """Carga una página específica de datos"""
         try:
             if self.model:
                 offset = (pagina - 1) * registros_por_pagina
-                
+
                 # Obtener datos paginados
                 datos, total_registros = self.model.obtener_datos_paginados(
-                    offset=offset, 
+                    offset=offset,
                     limit=registros_por_pagina
                 )
-                
+
                 if self.view:
                     # Cargar datos en la tabla
                     if hasattr(self.view, 'cargar_en_tabla'):
                         self.view.cargar_en_tabla(datos)
-                    
+
                     # Actualizar controles de paginación
                     total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
                     if hasattr(self.view, 'actualizar_controles_paginacion'):
                         self.view.actualizar_controles_paginacion(
                             pagina, total_paginas, total_registros, len(datos)
                         )
-        
+
         except Exception as e:
             print(f"[ERROR] Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error("Error", f"Error cargando página: {str(e)}")
-    
+
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página y recarga"""
         self.registros_por_pagina = registros
         self.cargar_pagina(1, registros)
-    
+
     def obtener_total_registros(self):
         """Obtiene el total de registros disponibles"""
         try:

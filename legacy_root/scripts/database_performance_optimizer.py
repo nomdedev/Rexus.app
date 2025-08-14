@@ -25,12 +25,12 @@ class IndexRecommendation:
 
 class DatabasePerformanceOptimizer:
     """Optimizador de rendimiento de base de datos."""
-    
+
     def __init__(self, root_dir: Path):
         self.root_dir = root_dir
         self.models_dir = root_dir / "rexus" / "modules"
         self.recommendations = []
-        
+
         # Patrones comunes de consultas que se benefician de índices
         self.query_patterns = [
             # WHERE clauses
@@ -40,19 +40,19 @@ class DatabasePerformanceOptimizer:
             r'WHERE\s+(\w+)\s+BETWEEN',
             r'WHERE\s+(\w+)\s*<',
             r'WHERE\s+(\w+)\s*>',
-            
+
             # JOIN conditions
             r'JOIN\s+\w+\s+ON\s+\w+\.(\w+)\s*=',
             r'LEFT\s+JOIN\s+\w+\s+ON\s+\w+\.(\w+)\s*=',
             r'INNER\s+JOIN\s+\w+\s+ON\s+\w+\.(\w+)\s*=',
-            
+
             # ORDER BY
             r'ORDER\s+BY\s+(\w+)',
-            
+
             # GROUP BY
             r'GROUP\s+BY\s+(\w+)',
         ]
-        
+
         # Tablas principales identificadas
         self.main_tables = {
             'usuarios': ['username', 'email', 'estado', 'fecha_creacion'],
@@ -66,11 +66,11 @@ class DatabasePerformanceOptimizer:
             'herrajes': ['codigo', 'categoria', 'proveedor'],
             'logistica': ['codigo_envio', 'destino', 'estado', 'fecha_envio']
         }
-    
+
     def analyze_model_files(self) -> Dict[str, List[str]]:
         """Analiza archivos de modelo para encontrar patrones de consulta."""
         query_analysis = {}
-        
+
         for module_dir in self.models_dir.iterdir():
             if module_dir.is_dir():
                 model_file = module_dir / "model.py"
@@ -78,14 +78,14 @@ class DatabasePerformanceOptimizer:
                     queries = self.extract_queries_from_file(model_file)
                     if queries:
                         query_analysis[module_dir.name] = queries
-        
+
         return query_analysis
-    
+
     def extract_queries_from_file(self, file_path: Path) -> List[str]:
         """Extrae consultas SQL de un archivo."""
         try:
             content = file_path.read_text(encoding='utf-8')
-            
+
             # Buscar consultas SQL
             sql_patterns = [
                 r'SELECT[^;]+',
@@ -93,22 +93,22 @@ class DatabasePerformanceOptimizer:
                 r'DELETE[^;]+',
                 r'INSERT[^;]+',
             ]
-            
+
             queries = []
             for pattern in sql_patterns:
                 matches = re.findall(pattern, content, re.IGNORECASE | re.MULTILINE | re.DOTALL)
                 queries.extend(matches)
-            
+
             return queries
-            
+
         except Exception as e:
             print(f"Error analizando {file_path}: {e}")
             return []
-    
+
     def analyze_query_patterns(self, queries: List[str]) -> Set[Tuple[str, str]]:
         """Analiza patrones en las consultas para identificar campos que necesitan índices."""
         indexed_fields = set()
-        
+
         for query in queries:
             for pattern in self.query_patterns:
                 matches = re.findall(pattern, query, re.IGNORECASE)
@@ -118,12 +118,12 @@ class DatabasePerformanceOptimizer:
                     if table_match:
                         table = table_match.group(1)
                         indexed_fields.add((table, match))
-        
+
         return indexed_fields
-    
+
     def generate_basic_recommendations(self):
         """Genera recomendaciones básicas de índices para tablas principales."""
-        
+
         # Índices primarios y únicos esenciales
         for table, columns in self.main_tables.items():
             # Índice en campo de identificación principal
@@ -136,7 +136,7 @@ class DatabasePerformanceOptimizer:
                     priority='high',
                     estimated_impact='Alto - Mejora significativa en consultas por código'
                 ))
-            
+
             # Índice en estado para filtros
             if 'estado' in columns:
                 self.recommendations.append(IndexRecommendation(
@@ -147,7 +147,7 @@ class DatabasePerformanceOptimizer:
                     priority='high',
                     estimated_impact='Alto - Mejora filtros por estado'
                 ))
-            
+
             # Índice en fecha de creación para ordenamiento temporal
             if 'fecha_creacion' in columns:
                 self.recommendations.append(IndexRecommendation(
@@ -158,7 +158,7 @@ class DatabasePerformanceOptimizer:
                     priority='medium',
                     estimated_impact='Medio - Mejora consultas temporales y paginación'
                 ))
-            
+
             # Índices compuestos para consultas combinadas comunes
             if 'estado' in columns and 'fecha_creacion' in columns:
                 self.recommendations.append(IndexRecommendation(
@@ -169,10 +169,10 @@ class DatabasePerformanceOptimizer:
                     priority='medium',
                     estimated_impact='Medio - Optimiza consultas combinadas estado-fecha'
                 ))
-    
+
     def generate_specific_recommendations(self):
         """Genera recomendaciones específicas por módulo."""
-        
+
         # Usuarios - Índices para autenticación y búsqueda
         self.recommendations.extend([
             IndexRecommendation(
@@ -192,7 +192,7 @@ class DatabasePerformanceOptimizer:
                 estimated_impact='Alto - Mejora validaciones y recuperación de cuenta'
             )
         ])
-        
+
         # Inventario - Índices para gestión de stock
         self.recommendations.extend([
             IndexRecommendation(
@@ -212,7 +212,7 @@ class DatabasePerformanceOptimizer:
                 estimated_impact='Medio - Mejora búsquedas por proveedor'
             )
         ])
-        
+
         # Compras - Índices para gestión de órdenes
         self.recommendations.extend([
             IndexRecommendation(
@@ -232,7 +232,7 @@ class DatabasePerformanceOptimizer:
                 estimated_impact='Medio - Optimiza reportes de compras por proveedor'
             )
         ])
-        
+
         # Mantenimiento - Índices para programación
         self.recommendations.extend([
             IndexRecommendation(
@@ -252,7 +252,7 @@ class DatabasePerformanceOptimizer:
                 estimated_impact='Alto - Optimiza calendario de mantenimientos'
             )
         ])
-        
+
         # Auditoria - Índices para trazabilidad
         self.recommendations.extend([
             IndexRecommendation(
@@ -272,11 +272,11 @@ class DatabasePerformanceOptimizer:
                 estimated_impact='Bajo - Mejora filtros por tipo de acción'
             )
         ])
-    
+
     def generate_sql_scripts(self) -> List[str]:
         """Genera scripts SQL para crear los índices."""
         sql_scripts = []
-        
+
         # Header del script
         sql_scripts.append("""
 -- ====================================================
@@ -288,17 +288,17 @@ class DatabasePerformanceOptimizer:
 -- (Compatible con SQL Server)
 
 """)
-        
+
         for rec in self.recommendations:
             # Generar nombre del índice
             if len(rec.columns) == 1:
                 index_name = f"IX_{rec.table}_{rec.columns[0]}"
             else:
                 index_name = f"IX_{rec.table}_{'_'.join(rec.columns)}"
-            
+
             # Generar script SQL
             columns_str = ', '.join(rec.columns)
-            
+
             sql_script = f"""
 -- {rec.reason}
 -- Impacto: {rec.estimated_impact}
@@ -316,18 +316,18 @@ GO
 
 """
             sql_scripts.append(sql_script)
-        
+
         return sql_scripts
-    
+
     def save_optimization_script(self, output_path: Path):
         """Guarda el script de optimización."""
         sql_scripts = self.generate_sql_scripts()
-        
+
         with open(output_path, 'w', encoding='utf-8') as f:
             f.writelines(sql_scripts)
-        
+
         print(f"Script de optimización guardado en: {output_path}")
-    
+
     def generate_performance_report(self) -> str:
         """Genera reporte de recomendaciones de rendimiento."""
         report = []
@@ -335,25 +335,31 @@ GO
         report.append("REPORTE DE OPTIMIZACIÓN DE RENDIMIENTO - REXUS.APP")
         report.append("=" * 60)
         report.append("")
-        
+
         # Resumen
         high_priority = [r for r in self.recommendations if r.priority == 'high']
         medium_priority = [r for r in self.recommendations if r.priority == 'medium']
         low_priority = [r for r in self.recommendations if r.priority == 'low']
-        
+
         report.append("RESUMEN DE RECOMENDACIONES:")
         report.append(f"- Total de índices recomendados: {len(self.recommendations)}")
         report.append(f"- Prioridad ALTA: {len(high_priority)} índices")
         report.append(f"- Prioridad MEDIA: {len(medium_priority)} índices")
         report.append(f"- Prioridad BAJA: {len(low_priority)} índices")
         report.append("")
-        
+
         # Recomendaciones por prioridad
-        for priority, recs in [("ALTA", high_priority), ("MEDIA", medium_priority), ("BAJA", low_priority)]:
+        for priority,
+recs in [("ALTA",
+            high_priority),
+            ("MEDIA",
+            medium_priority),
+            ("BAJA",
+            low_priority)]:
             if recs:
                 report.append(f"RECOMENDACIONES DE PRIORIDAD {priority}:")
                 report.append("-" * 40)
-                
+
                 for i, rec in enumerate(recs, 1):
                     report.append(f"{i}. Tabla: {rec.table}")
                     report.append(f"   Columnas: {', '.join(rec.columns)}")
@@ -361,7 +367,7 @@ GO
                     report.append(f"   Razón: {rec.reason}")
                     report.append(f"   Impacto: {rec.estimated_impact}")
                     report.append("")
-        
+
         # Beneficios esperados
         report.append("BENEFICIOS ESPERADOS:")
         report.append("-" * 20)
@@ -371,7 +377,7 @@ GO
         report.append("• Optimización de consultas de autenticación")
         report.append("• Aceleración de filtros y ordenamientos")
         report.append("")
-        
+
         # Implementación
         report.append("IMPLEMENTACIÓN:")
         report.append("-" * 15)
@@ -380,44 +386,44 @@ GO
         report.append("3. Ajustar índices según patrones de uso reales")
         report.append("4. Considerar mantenimiento periódico de índices")
         report.append("")
-        
+
         return '\n'.join(report)
-    
+
     def run_optimization_analysis(self):
         """Ejecuta el análisis completo de optimización."""
         print("=== ANÁLISIS DE OPTIMIZACIÓN DE RENDIMIENTO ===")
         print()
-        
+
         # Generar recomendaciones
         print("Generando recomendaciones básicas...")
         self.generate_basic_recommendations()
-        
+
         print("Generando recomendaciones específicas...")
         self.generate_specific_recommendations()
-        
+
         # Generar archivos de salida
         scripts_dir = self.root_dir / "scripts" / "database"
         scripts_dir.mkdir(exist_ok=True)
-        
+
         # Script SQL
         sql_script_path = scripts_dir / "performance_optimization.sql"
         self.save_optimization_script(sql_script_path)
-        
+
         # Reporte
         report_content = self.generate_performance_report()
         report_path = scripts_dir / "performance_optimization_report.txt"
         report_path.write_text(report_content, encoding='utf-8')
-        
+
         print(f"Reporte guardado en: {report_path}")
         print()
-        
+
         # Mostrar resumen
         print("RESUMEN:")
         print(f"- {len(self.recommendations)} índices recomendados")
         high_priority = [r for r in self.recommendations if r.priority == 'high']
         print(f"- {len(high_priority)} de prioridad ALTA")
         print()
-        
+
         return len(self.recommendations)
 
 
@@ -426,14 +432,14 @@ def main():
     # Obtener directorio raíz del proyecto
     script_dir = Path(__file__).parent
     root_dir = script_dir.parent
-    
+
     print(f"Directorio del proyecto: {root_dir}")
     print()
-    
+
     # Crear optimizador y ejecutar análisis
     optimizer = DatabasePerformanceOptimizer(root_dir)
     total_recommendations = optimizer.run_optimization_analysis()
-    
+
     print(f"[OK] Analisis completado: {total_recommendations} recomendaciones generadas")
     print()
     print("Para aplicar las optimizaciones:")

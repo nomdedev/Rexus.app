@@ -17,12 +17,12 @@ class AuthTODOCleaner:
     def clean_all_modules(self):
         """Limpia TODOs de auth_required en todos los módulos"""
         modules_dir = self.base_path / "rexus" / "modules"
-        
+
         for module_path in modules_dir.rglob("*.py"):
             if self.has_auth_todos_to_clean(module_path):
                 print(f"[INFO] Limpiando: {module_path.relative_to(self.base_path)}")
                 self.clean_todos(module_path)
-        
+
         self.generate_report()
 
     def has_auth_todos_to_clean(self, file_path):
@@ -44,7 +44,7 @@ class AuthTODOCleaner:
                 content = f.read()
 
             original_content = content
-            
+
             # Patrón para encontrar sección completa de TODO a limpiar
             patterns_to_remove = [
                 # Patrón 1: TODO con comentarios de verificación
@@ -54,17 +54,17 @@ class AuthTODOCleaner:
                 # Patrón 3: Comentarios de verificación solos
                 r'\s*# if not AuthManager\.check_permission.*\n\s*# .*raise PermissionError.*\n'
             ]
-            
+
             todos_removed = 0
             for pattern in patterns_to_remove:
                 matches = re.findall(pattern, content)
                 if matches:
                     todos_removed += len(matches)
                 content = re.sub(pattern, '', content, flags=re.MULTILINE)
-            
+
             # Limpiar líneas vacías duplicadas
             content = re.sub(r'\n\s*\n\s*\n', '\n\n', content)
-            
+
             # Solo escribir si hubo cambios
             if content != original_content:
                 with open(file_path, 'w', encoding='utf-8') as f:
@@ -74,7 +74,7 @@ class AuthTODOCleaner:
                 print(f"  [OK] Limpiado: {todos_removed} TODOs")
             else:
                 print(f"  [SKIP] Sin cambios")
-                
+
         except Exception as e:
             print(f"[ERROR] Error limpiando {file_path}: {e}")
 
@@ -83,17 +83,17 @@ class AuthTODOCleaner:
         print("\n" + "="*60)
         print("[CLEANUP] REPORTE DE LIMPIEZA DE TODOS")
         print("="*60)
-        
+
         print(f"\n[STATS] ESTADISTICAS:")
         print(f"   Archivos procesados: {len(self.processed_files)}")
         print(f"   TODOs limpiados: {self.todos_cleaned}")
-        
+
         if self.processed_files:
             print(f"\n[FILES] ARCHIVOS MODIFICADOS:")
             for file_path in self.processed_files:
                 rel_path = file_path.relative_to(self.base_path)
                 print(f"   [OK] {rel_path}")
-        
+
         return len(self.processed_files) > 0
 
 
@@ -101,17 +101,17 @@ def main():
     """Función principal"""
     print("[CLEANUP] LIMPIADOR DE TODOS @auth_required RESUELTOS")
     print("=" * 60)
-    
+
     cleaner = AuthTODOCleaner()
-    
+
     try:
         cleaner.clean_all_modules()
         print("\n[SUCCESS] Limpieza completada exitosamente")
-        
+
     except Exception as e:
         print(f"\n[ERROR] Error durante la limpieza: {e}")
         return False
-    
+
     return True
 
 

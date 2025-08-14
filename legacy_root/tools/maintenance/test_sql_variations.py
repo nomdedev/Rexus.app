@@ -19,10 +19,10 @@ def test_sql_server_variations():
     """Prueba diferentes configuraciones de servidor"""
     print("PROBANDO VARIACIONES DE CONFIGURACION SQL SERVER")
     print("=" * 60)
-    
+
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
-    
+
     # Diferentes configuraciones de servidor a probar
     server_configs = [
         "DESKTOP-QHMPTGO\\SQLEXPRESS",
@@ -38,16 +38,16 @@ def test_sql_server_variations():
         "localhost,1433",
         "127.0.0.1,1433",
     ]
-    
+
     drivers = ["ODBC Driver 17 for SQL Server", "ODBC Driver 18 for SQL Server"]
-    
+
     for driver in drivers:
         print(f"\n--- PROBANDO CON {driver} ---")
-        
+
         for server in server_configs:
             try:
                 import pyodbc
-                
+
                 connection_string = (
                     f"DRIVER={{{driver}}};"
                     f"SERVER={server};"
@@ -56,31 +56,31 @@ def test_sql_server_variations():
                     f"TrustServerCertificate=yes;"
                     f"Timeout=5;"
                 )
-                
+
                 print(f"Probando: {server:<30} ", end="")
-                
+
                 conn = pyodbc.connect(connection_string, timeout=5)
-                
+
                 # Probar consulta
                 cursor = conn.cursor()
                 cursor.execute("SELECT @@SERVERNAME, @@VERSION")
                 result = cursor.fetchone()
-                
+
                 print(f"[OK] EXITO - Servidor: {result[0]}")
-                
+
                 # Listar bases de datos
                 cursor.execute("SELECT name FROM sys.databases")
                 dbs = [row[0] for row in cursor.fetchall()]
                 print(f"   Bases disponibles: {dbs}")
-                
+
                 cursor.close()
                 conn.close()
-                
+
                 print(f"\n🎉 CONFIGURACION EXITOSA:")
                 print(f"   Servidor: {server}")
                 print(f"   Driver: {driver}")
                 return server, driver
-                
+
             except Exception as e:
                 error_msg = str(e)
                 if "timeout" in error_msg.lower():
@@ -91,12 +91,12 @@ def test_sql_server_variations():
                     print("✗ CREDENCIALES")
                 else:
                     print(f"✗ ERROR: {error_msg[:50]}...")
-    
+
     return None, None
 
 if __name__ == "__main__":
     working_server, working_driver = test_sql_server_variations()
-    
+
     if working_server and working_driver:
         print(f"\n[OK] SOLUCION ENCONTRADA:")
         print(f"Actualiza tu .env con:")

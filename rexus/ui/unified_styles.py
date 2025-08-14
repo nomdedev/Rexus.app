@@ -8,7 +8,7 @@ Basado en las especificaciones del usuario:
 
 class UnifiedStyles:
     """Estilos unificados para aplicar consistencia en todos los módulos."""
-    
+
     @staticmethod
     def get_tab_styles():
         """Retorna estilos unificados para pestañas - 20px de alto según usuario."""
@@ -50,7 +50,7 @@ class UnifiedStyles:
                 border-radius: 0 0 6px 6px;
             }
         """
-    
+
     @staticmethod
     def get_button_styles():
         """Retorna estilos unificados para botones - basado en logística."""
@@ -78,7 +78,7 @@ class UnifiedStyles:
                 color: #959da5;
                 border-color: #e1e4e8;
             }
-            
+
             /* Botones primarios */
             QPushButton[class="primary"] {
                 background-color: #007bff;
@@ -89,7 +89,7 @@ class UnifiedStyles:
                 background-color: #0056b3;
                 border-color: #0056b3;
             }
-            
+
             /* Botones de peligro */
             QPushButton[class="danger"] {
                 background-color: #dc3545;
@@ -100,7 +100,7 @@ class UnifiedStyles:
                 background-color: #c82333;
                 border-color: #c82333;
             }
-            
+
             /* Botones de éxito */
             QPushButton[class="success"] {
                 background-color: #28a745;
@@ -112,7 +112,7 @@ class UnifiedStyles:
                 border-color: #1e7e34;
             }
         """
-    
+
     @staticmethod
     def get_table_styles():
         """Retorna estilos unificados para tablas."""
@@ -142,7 +142,7 @@ class UnifiedStyles:
                 font-size: 12px;
             }
         """
-    
+
     @staticmethod
     def get_input_styles():
         """Retorna estilos unificados para campos de entrada."""
@@ -166,7 +166,7 @@ class UnifiedStyles:
                 border-color: #e9ecef;
             }
         """
-    
+
     @staticmethod
     def get_groupbox_styles():
         """Retorna estilos unificados para group boxes."""
@@ -189,7 +189,7 @@ class UnifiedStyles:
                 color: #212529;
             }
         """
-    
+
     @staticmethod
     def get_label_styles():
         """Retorna estilos unificados para labels."""
@@ -213,31 +213,31 @@ class UnifiedStyles:
                 color: #6c757d;
             }
         """
-    
+
     @staticmethod
     def get_complete_unified_styles():
         """Retorna todos los estilos unificados combinados."""
         return f"""
             /* === ESTILOS UNIFICADOS REXUS.APP === */
-            
+
             /* Pestañas - 20px según especificación del usuario */
             {UnifiedStyles.get_tab_styles()}
-            
+
             /* Botones - basados en módulo logística */
             {UnifiedStyles.get_button_styles()}
-            
+
             /* Tablas */
             {UnifiedStyles.get_table_styles()}
-            
+
             /* Campos de entrada */
             {UnifiedStyles.get_input_styles()}
-            
+
             /* Group Boxes */
             {UnifiedStyles.get_groupbox_styles()}
-            
+
             /* Labels */
             {UnifiedStyles.get_label_styles()}
-            
+
             /* Scrollbars */
             QScrollBar:vertical {{
                 width: 12px;
@@ -253,7 +253,7 @@ class UnifiedStyles:
             QScrollBar::handle:vertical:hover {{
                 background-color: #adb5bd;
             }}
-            
+
             /* TextEdit */
             QTextEdit {{
                 border: 1px solid #ced4da;
@@ -266,19 +266,19 @@ class UnifiedStyles:
                 border-color: #007bff;
             }}
         """
-    
+
     @staticmethod
     def apply_to_widget(widget):
         """Aplica estilos unificados a un widget específico."""
         if widget:
             widget.setStyleSheet(UnifiedStyles.get_complete_unified_styles())
-    
+
     @staticmethod
     def apply_tab_styles_only(tab_widget):
         """Aplica solo estilos de pestañas a un QTabWidget."""
         if tab_widget:
             tab_widget.setStyleSheet(UnifiedStyles.get_tab_styles())
-            
+
     @staticmethod
     def set_button_class(button, button_class="default"):
         """Establece la clase de un botón para aplicar estilos específicos."""

@@ -93,7 +93,7 @@ class VidriosView(QWidget):
         # Inicializar protección XSS
         self.form_protector = FormProtector(self)
         self.form_protector.dangerous_content_detected.connect(self._on_dangerous_content)
-        
+
         super().__init__()
         self.logger = logging.getLogger(f"{__name__}.VidriosView")
         self.vidrios_data = []
@@ -207,7 +207,11 @@ class VidriosView(QWidget):
 
         # Filtro por tipo
         self.combo_tipo = QComboBox()
-        self.combo_tipo.addItems(["Todos", "Templado", "Laminado", "Común", "Espejo"])
+        self.combo_tipo.addItems(["Todos",
+"Templado",
+            "Laminado",
+            "Común",
+            "Espejo"])
         self.combo_tipo.currentTextChanged.connect(self.aplicar_filtros)
         self.combo_tipo.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Tipo:"))
@@ -878,14 +882,14 @@ class CrearPedidoDialog(QDialog):
         """Maneja la detección de contenido peligroso en formularios."""
         from rexus.utils.security import log_security_event
         from rexus.utils.message_system import show_warning
-        
+
         # Log del evento de seguridad
         log_security_event(
             "XSS_ATTEMPT",
             f"Contenido peligroso detectado en campo '{field_name}': {content[:100]}...",
             "unknown"
         )
-        
+
         # Mostrar advertencia al usuario
         show_warning(
             self,
@@ -895,7 +899,7 @@ class CrearPedidoDialog(QDialog):
 "
             "El contenido ha sido automáticamente sanitizado por seguridad."
         )
-    
+
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""
         if hasattr(self, 'form_protector'):

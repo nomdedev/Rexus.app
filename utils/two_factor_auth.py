@@ -145,7 +145,10 @@ class TwoFactorAuth:
 
         return False
 
-    def habilitar_2fa_usuario(self, usuarios_model, username: str) -> Dict[str, Any]:
+    def habilitar_2fa_usuario(self,
+usuarios_model,
+        username: str) -> Dict[str,
+        Any]:
         """
         Habilita 2FA para un usuario específico.
 
@@ -246,7 +249,10 @@ class TwoFactorAuth:
             print(f"[ERROR 2FA] Error verificando setup: {e}")
             return False
 
-    def validar_2fa_login(self, usuarios_model, username: str, codigo_2fa: str) -> bool:
+    def validar_2fa_login(self,
+usuarios_model,
+        username: str,
+        codigo_2fa: str) -> bool:
         """
         Valida el código 2FA durante el login.
 
@@ -365,5 +371,3 @@ def agregar_metodo_configuracion_personal(usuarios_model):
 
 # Instancia global para uso en la aplicación
 two_factor_auth = TwoFactorAuth()
-
-

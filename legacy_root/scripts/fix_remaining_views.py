@@ -6,7 +6,10 @@ Rexus.app - Corrección Final de Views
 
 from pathlib import Path
 
-def create_view_template(module_name: str, class_name: str, description: str, color: str) -> str:
+def create_view_template(module_name: str,
+class_name: str,
+    description: str,
+    color: str) -> str:
     """Crea una plantilla de vista básica para un módulo."""
     return f'''"""
 MIT License
@@ -59,48 +62,48 @@ from rexus.utils.xss_protection import XSSProtection, FormProtector
 
 class {class_name}(QWidget):
     """Vista principal del módulo de {module_name.lower()}."""
-    
+
     # Señales
     datos_actualizados = pyqtSignal()
     error_ocurrido = pyqtSignal(str)
-    
+
     def __init__(self):
         super().__init__()
         self.controller = None
         self.form_protector = None
         self.init_ui()
-    
+
     def init_ui(self):
         """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
-        
+
         # Panel de control
         control_panel = self.crear_panel_control()
         layout.addWidget(control_panel)
-        
+
         # Tabla principal
         self.tabla_principal = QTableWidget()
         self.configurar_tabla()
         layout.addWidget(self.tabla_principal)
-        
+
         # Aplicar estilo
         self.aplicar_estilo()
-        
+
         # Inicializar protección XSS
         self.init_xss_protection()
-    
+
     def init_xss_protection(self):
         """Inicializa la protección XSS para los campos del formulario."""
         try:
             self.form_protector = FormProtector()
-            
+
             # Proteger campos si existen
             if hasattr(self, 'input_busqueda'):
                 self.form_protector.protect_field(self.input_busqueda, 'busqueda')
-                
+
         except Exception as e:
             logging.error(f"Error inicializando protección XSS: {{e}}")
-    
+
     def crear_panel_control(self):
         """Crea el panel de control superior."""
         panel = QFrame()
@@ -114,47 +117,47 @@ class {class_name}(QWidget):
                 padding: 15px;
             }}
         """)
-        
+
         layout = QHBoxLayout(panel)
-        
+
         # Botón Nuevo
         self.btn_nuevo = QPushButton("Nuevo")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
-        
+
         # Campo de búsqueda
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar...")
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
-        
+
         # Botón buscar
         self.btn_buscar = QPushButton("Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
-        
+
         # Botón actualizar
         self.btn_actualizar = QPushButton("Actualizar")
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
-        
+
         return panel
-    
+
     def configurar_tabla(self):
         """Configura la tabla principal."""
         self.tabla_principal.setColumnCount(5)
         self.tabla_principal.setHorizontalHeaderLabels([
             "ID", "Nombre", "Descripción", "Estado", "Acciones"
         ])
-        
+
         # Configurar encabezados
         header = self.tabla_principal.horizontalHeader()
         if header:
             header.setStretchLastSection(True)
-        
+
         self.tabla_principal.setAlternatingRowColors(True)
         self.tabla_principal.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-    
+
     def aplicar_estilo(self):
         """Aplica el estilo general."""
         self.setStyleSheet(f"""
@@ -186,37 +189,49 @@ class {class_name}(QWidget):
                 border-radius: 4px;
             }}
         """)
-    
+
     def nuevo_registro(self):
         """Abre el diálogo para crear un nuevo registro."""
         show_warning(self, "Función en desarrollo", "Diálogo en desarrollo")
-    
+
     def buscar(self):
         """Busca registros según los criterios especificados."""
         if self.controller:
             filtros = {{'busqueda': self.input_busqueda.text()}}
             self.controller.buscar(filtros)
-    
+
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""
         if self.controller:
             self.controller.cargar_datos()
-    
+
     def cargar_datos_en_tabla(self, datos):
         """Carga los datos en la tabla."""
         self.tabla_principal.setRowCount(len(datos))
-        
+
         for row, registro in enumerate(datos):
-            self.tabla_principal.setItem(row, 0, QTableWidgetItem(str(registro.get("id", ""))))
-            self.tabla_principal.setItem(row, 1, QTableWidgetItem(str(registro.get("nombre", ""))))
-            self.tabla_principal.setItem(row, 2, QTableWidgetItem(str(registro.get("descripcion", ""))))
-            self.tabla_principal.setItem(row, 3, QTableWidgetItem(str(registro.get("estado", ""))))
-            
+            self.tabla_principal.setItem(row,
+0,
+                QTableWidgetItem(str(registro.get("id",
+                ""))))
+            self.tabla_principal.setItem(row,
+1,
+                QTableWidgetItem(str(registro.get("nombre",
+                ""))))
+            self.tabla_principal.setItem(row,
+2,
+                QTableWidgetItem(str(registro.get("descripcion",
+                ""))))
+            self.tabla_principal.setItem(row,
+3,
+                QTableWidgetItem(str(registro.get("estado",
+                ""))))
+
             # Botón de acciones
             btn_editar = QPushButton("Editar")
             btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
-    
+
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""
         if hasattr(self, 'form_protector') and self.form_protector:
@@ -227,7 +242,7 @@ class {class_name}(QWidget):
             if hasattr(self, 'input_busqueda'):
                 datos['busqueda'] = XSSProtection.sanitize_text(self.input_busqueda.text())
             return datos
-    
+
     def set_controller(self, controller):
         """Establece el controlador para la vista."""
         self.controller = controller
@@ -237,35 +252,56 @@ def fix_broken_views():
     """Corrige las vistas rotas reemplazándolas con plantillas funcionales."""
     project_root = Path(__file__).parent.parent
     modules_to_fix = [
-        ("herrajes", "HerrajesView", "Interfaz de gestión de herrajes", "#6c757d"),
-        ("vidrios", "VidriosView", "Interfaz de gestión de vidrios", "#20c997"),
-        ("pedidos", "PedidosView", "Interfaz de gestión de pedidos", "#fd7e14"),
-        ("administracion", "AdministracionView", "Interfaz de administración", "#dc3545"),
-        ("mantenimiento", "MantenimientoView", "Interfaz de mantenimiento", "#6f42c1"),
-        ("configuracion", "ConfiguracionView", "Interfaz de configuración", "#495057"),
+        ("herrajes",
+"HerrajesView",
+            "Interfaz de gestión de herrajes",
+            "#6c757d"),
+        ("vidrios",
+"VidriosView",
+            "Interfaz de gestión de vidrios",
+            "#20c997"),
+        ("pedidos",
+"PedidosView",
+            "Interfaz de gestión de pedidos",
+            "#fd7e14"),
+        ("administracion",
+"AdministracionView",
+            "Interfaz de administración",
+            "#dc3545"),
+        ("mantenimiento",
+"MantenimientoView",
+            "Interfaz de mantenimiento",
+            "#6f42c1"),
+        ("configuracion",
+"ConfiguracionView",
+            "Interfaz de configuración",
+            "#495057"),
         ("auditoria", "AuditoriaView", "Interfaz de auditoría", "#e83e8c"),
     ]
-    
+
     fixed_count = 0
-    
+
     for module_name, class_name, description, color in modules_to_fix:
         view_file = project_root / f"rexus/modules/{module_name}/view.py"
-        
+
         if view_file.exists():
             print(f"Corrigiendo {view_file}")
-            
+
             # Crear contenido de la vista
-            content = create_view_template(module_name.title(), class_name, description, color)
-            
+            content = create_view_template(module_name.title(),
+class_name,
+                description,
+                color)
+
             # Escribir el archivo
             with open(view_file, 'w', encoding='utf-8') as f:
                 f.write(content)
-            
+
             fixed_count += 1
             print(f"  - Vista {module_name} corregida")
         else:
             print(f"  - Vista {module_name} no encontrada")
-    
+
     print(f"\\nTotal de vistas corregidas: {fixed_count}")
     return fixed_count
 

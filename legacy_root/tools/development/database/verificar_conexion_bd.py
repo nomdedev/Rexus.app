@@ -8,7 +8,10 @@ from dotenv import load_dotenv
 sys.path.append(os.path.dirname(os.path.abspath(__file__)))
 
 # Buscar primero en config/privado/.env, luego fallback a .env en raíz
-PRIVADO_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'config', 'privado', '.env'))
+PRIVADO_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__),
+'config',
+    'privado',
+    '.env'))
 ROOT_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '.env'))
 EXAMPLE_DOTENV_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), 'core', 'config.example.py'))
 

@@ -91,7 +91,10 @@ def crear_directorio_salida():
 
     # Crear archivo índice
     with open(
-        os.path.join(OUTPUT_DIR, "00_indice_analisis.md"), "w", encoding="utf-8"
+        os.path.join(OUTPUT_DIR,
+"00_indice_analisis.md"),
+            "w",
+            encoding="utf-8"
     ) as f:
         f.write("# Índice de Análisis de Módulos\n\n")
         f.write(
@@ -395,7 +398,8 @@ def generar_informe_modulo(info_modulo):
                 "- Considerar implementar una estructura MVC más clara para mejorar la organización del código."
             )
 
-        if info_modulo["tiene_db_conexion"] and not info_modulo["tiene_validaciones"]:
+        if info_modulo["tiene_db_conexion"] and \
+            not info_modulo["tiene_validaciones"]:
             recomendaciones.append(
                 "- Añadir validaciones de datos en los archivos que interactúan con la base de datos."
             )
@@ -407,7 +411,8 @@ def generar_informe_modulo(info_modulo):
                 "- Aumentar la cobertura de tests. Actualmente hay menos tests que archivos en el módulo."
             )
 
-        if not info_modulo["tiene_validaciones"] and info_modulo["tiene_formularios"]:
+        if not info_modulo["tiene_validaciones"] and \
+            info_modulo["tiene_formularios"]:
             recomendaciones.append(
                 "- Implementar validación de entradas en los formularios UI."
             )
@@ -625,7 +630,8 @@ def generar_checklist_especifico_modulo(nombre_modulo, info_modulo):
                 "- [ ] **Estructura**: Considerar refactorización a patrón MVC más claro\n"
             )
 
-        if info_modulo["tiene_db_conexion"] and not info_modulo["tiene_validaciones"]:
+        if info_modulo["tiene_db_conexion"] and \
+            not info_modulo["tiene_validaciones"]:
             f.write(
                 "- [ ] **Seguridad**: Implementar validaciones estrictas para todas las entradas antes de operaciones SQL\n"
             )

@@ -18,30 +18,30 @@ def print_header(title):
 def check_critical_files():
     """Verifica que todos los archivos críticos estén presentes"""
     print_header("VERIFICACIÓN DE ARCHIVOS CRÍTICOS")
-    
+
     critical_files = [
         # Archivos de seguridad
         "rexus/utils/security.py",
         "rexus/core/auth_manager.py",
-        
+
         # Mejoras técnicas
         "rexus/utils/logging_config.py",
         "rexus/utils/error_handler.py",
         "rexus/utils/performance_monitor.py",
         "rexus/utils/database_manager.py",
-        
+
         # Configuración
         "requirements_updated.txt",
         "config/rexus_config.json",
-        
+
         # Documentación
         "REPORTE_FINAL_MEJORAS.md",
         "CHECKLIST_IMPLEMENTACION_ACTUALIZADO.md"
     ]
-    
+
     passed = 0
     total = len(critical_files)
-    
+
     for file_path in critical_files:
         if os.path.exists(file_path):
             size = os.path.getsize(file_path)
@@ -49,19 +49,19 @@ def check_critical_files():
             passed += 1
         else:
             print(f"[ERROR] {file_path} - FALTANTE")
-    
+
     success_rate = (passed / total * 100) if total > 0 else 0
     print(f"\n[CHART] Archivos críticos: {passed}/{total} ({success_rate:.1f}%)")
-    
+
     return success_rate >= 95
 
 def test_imports():
     """Verifica que todas las importaciones críticas funcionen"""
     print_header("VERIFICACIÓN DE IMPORTACIONES")
-    
+
     # Agregar el directorio actual al path para imports
     sys.path.insert(0, os.getcwd())
-    
+
     import_tests = [
         ("rexus.utils.security", "SecurityUtils"),
         ("rexus.core.auth_manager", "AuthManager"),
@@ -70,10 +70,10 @@ def test_imports():
         ("rexus.utils.performance_monitor", "PerformanceMonitor"),
         ("rexus.utils.database_manager", "DatabaseManager")
     ]
-    
+
     passed = 0
     total = len(import_tests)
-    
+
     for module_name, class_name in import_tests:
         try:
             module = __import__(module_name, fromlist=[class_name])
@@ -86,24 +86,27 @@ def test_imports():
             print(f"[ERROR] {module_name}.{class_name} - Clase no encontrada: {e}")
         except Exception as e:
             print(f"[ERROR] {module_name}.{class_name} - Error: {e}")
-    
+
     success_rate = (passed / total * 100) if total > 0 else 0
     print(f"\n[CHART] Importaciones: {passed}/{total} ({success_rate:.1f}%)")
-    
+
     return success_rate >= 80
 
 def verify_security():
     """Ejecuta verificación de seguridad"""
     print_header("VERIFICACIÓN DE SEGURIDAD")
-    
+
     try:
         # Ejecutar validación de seguridad simplificada
         os.system("python tools\\security\\validate_security_simple.py > temp_security.log 2>&1")
-        
+
         if os.path.exists("temp_security.log"):
-            with open("temp_security.log", "r", encoding="utf-8", errors="ignore") as f:
+            with open("temp_security.log",
+"r",
+                encoding="utf-8",
+                errors="ignore") as f:
                 content = f.read()
-            
+
             if "100.0%" in content and "SUCCESS" in content:
                 print("[CHECK] Validación de seguridad: 100% (EXITOSA)")
                 security_status = True
@@ -113,23 +116,23 @@ def verify_security():
             else:
                 print("[WARN] Validación de seguridad: Revisar resultados")
                 security_status = False
-            
+
             # Limpiar archivo temporal
             os.remove("temp_security.log")
         else:
             print("[WARN] No se pudo ejecutar validación de seguridad")
             security_status = False
-            
+
     except Exception as e:
         print(f"[ERROR] Error en validación de seguridad: {e}")
         security_status = False
-    
+
     return security_status
 
 def create_deployment_checklist():
     """Crea checklist final para despliegue"""
     print_header("CREANDO CHECKLIST DE DESPLIEGUE")
-    
+
     checklist_content = """# [ROCKET] CHECKLIST FINAL DE DESPLIEGUE - REXUS.APP
 
 ## [CHECK] Pre-despliegue (COMPLETADO)
@@ -176,37 +179,37 @@ def create_deployment_checklist():
 **Versión:** Rexus.app v2.0 - Production Ready
 **Estado:** [CHECK] LISTO PARA DESPLIEGUE
 """.format(fecha=time.strftime('%Y-%m-%d %H:%M:%S'))
-    
+
     with open("CHECKLIST_DESPLIEGUE.md", "w", encoding="utf-8") as f:
         f.write(checklist_content)
-    
+
     print("[CHECK] Checklist de despliegue creado: CHECKLIST_DESPLIEGUE.md")
     return True
 
 def generate_production_summary():
     """Genera resumen final para producción"""
     print_header("RESUMEN FINAL PARA PRODUCCIÓN")
-    
+
     # Ejecutar verificaciones
     files_ok = check_critical_files()
     imports_ok = test_imports()
     security_ok = verify_security()
     checklist_ok = create_deployment_checklist()
-    
+
     # Calcular puntuación total
     checks = [files_ok, imports_ok, security_ok, checklist_ok]
     passed_checks = sum(checks)
     total_checks = len(checks)
     final_score = (passed_checks / total_checks * 100) if total_checks > 0 else 0
-    
+
     print_header("RESULTADO FINAL")
     print(f"📁 Archivos críticos: {'[CHECK]' if files_ok else '[ERROR]'}")
     print(f"📦 Importaciones: {'[CHECK]' if imports_ok else '[ERROR]'}")
     print(f"🛡️ Seguridad: {'[CHECK]' if security_ok else '[ERROR]'}")
     print(f"📋 Checklist: {'[CHECK]' if checklist_ok else '[ERROR]'}")
-    
+
     print(f"\n🎯 PUNTUACIÓN FINAL: {passed_checks}/{total_checks} ({final_score:.1f}%)")
-    
+
     if final_score >= 90:
         print("🎉 SISTEMA 100% LISTO PARA PRODUCCIÓN")
         print("[CHECK] Proceder con despliegue inmediato")
@@ -219,7 +222,7 @@ def generate_production_summary():
         print("[ERROR] SISTEMA NECESITA ATENCIÓN")
         print("🚨 Corregir problemas críticos antes del despliegue")
         status = "NOT_READY"
-    
+
     # Guardar resumen
     summary_content = f"""Resumen de Preparación para Producción
 Fecha: {time.strftime('%Y-%m-%d %H:%M:%S')}
@@ -230,24 +233,24 @@ Importaciones: {'OK' if imports_ok else 'FAIL'}
 Seguridad: {'OK' if security_ok else 'FAIL'}
 Checklist: {'OK' if checklist_ok else 'FAIL'}
 """
-    
+
     with open("logs/production_readiness.txt", "w", encoding="utf-8") as f:
         f.write(summary_content)
-    
+
     print(f"\n📄 Resumen guardado en: logs/production_readiness.txt")
-    
+
     return final_score >= 75
 
 if __name__ == "__main__":
     print("[ROCKET] PREPARACIÓN FINAL PARA PRODUCCIÓN - REXUS.APP")
     print("Verificando que el sistema esté listo para despliegue...")
-    
+
     # Crear directorio de logs si no existe
     os.makedirs("logs", exist_ok=True)
-    
+
     # Ejecutar preparación
     ready = generate_production_summary()
-    
+
     if ready:
         print("\n🎊 ¡FELICITACIONES!")
         print("[ROCKET] Rexus.app está listo para producción")
@@ -255,5 +258,5 @@ if __name__ == "__main__":
     else:
         print("\n[WARN] ATENCIÓN REQUERIDA")
         print("🔧 Revisar y corregir elementos marcados")
-    
+
     sys.exit(0 if ready else 1)

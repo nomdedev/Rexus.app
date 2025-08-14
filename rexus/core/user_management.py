@@ -7,18 +7,14 @@ Incluye autenticación, autorización, gestión de roles y edge cases
 import hashlib
 import re
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 
 # Agregar el directorio raíz al path
 root_dir = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
-from rexus.core.auth_manager import Permission, UserRole
 from rexus.core.database import get_users_connection
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class UserManagementSystem:
@@ -134,7 +130,7 @@ class UserManagementSystem:
             # Verificar que no exista el usuario
             existing = db.execute_query(
                 """
-                SELECT COUNT(*) FROM usuarios 
+                SELECT COUNT(*) FROM usuarios
                 WHERE usuario = ? OR email = ?
             """,
                 (username, email),
@@ -148,10 +144,22 @@ class UserManagementSystem:
 
             result = db.execute_non_query(
                 """
-                INSERT INTO usuarios (usuario, password_hash, email, nombre, apellido, rol, estado, fecha_creacion)
+                INSERT INTO usuarios (usuario,
+password_hash,
+                    email,
+                    nombre,
+                    apellido,
+                    rol,
+                    estado,
+                    fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, 'activo', GETDATE())
             """,
-                (username, password_hash, email, nombre, apellido, rol.upper()),
+                (username,
+password_hash,
+                    email,
+                    nombre,
+                    apellido,
+                    rol.upper()),
             )
 
             if result:
@@ -163,11 +171,15 @@ class UserManagementSystem:
             return False, f"Error interno: {str(e)}"
 
     @staticmethod
-    def update_user(username: str, data: Dict, current_user: str) -> Tuple[bool, str]:
+    def update_user(username: str,
+data: Dict,
+        current_user: str) -> Tuple[bool,
+        str]:
         """Actualiza un usuario con validaciones de seguridad"""
         try:
             # Verificar que el usuario admin no puede ser modificado por otros
-            if username.lower() == "admin" and current_user.lower() != "admin":
+            if username.lower() == "admin" and \
+                current_user.lower() != "admin":
                 return False, "Solo el administrador puede modificar la cuenta admin"
 
             # Si se está cambiando el rol del admin, debe ser solo por el mismo admin
@@ -194,7 +206,7 @@ class UserManagementSystem:
             if not user_check:
                 return False, f"Usuario '{username}' no encontrado"
 
-            current_role = user_check[0][1]
+            user_check[0][1]
 
             # Construir query de actualización
             updates = []
@@ -221,7 +233,8 @@ class UserManagementSystem:
 
             if "rol" in data:
                 # Validación especial para rol de admin
-                if username.lower() == "admin" and data["rol"].upper() != "ADMIN":
+                if username.lower() == "admin" and \
+                    data["rol"].upper() != "ADMIN":
                     return False, "El rol del usuario admin no puede ser cambiado"
 
                 valid_roles = ["ADMIN", "MANAGER", "USER", "VIEWER"]
@@ -236,7 +249,8 @@ class UserManagementSystem:
 
             if "estado" in data:
                 # El admin no puede ser desactivado
-                if username.lower() == "admin" and data["estado"].lower() != "activo":
+                if username.lower() == "admin" and \
+                    data["estado"].lower() != "activo":
                     return False, "El usuario admin no puede ser desactivado"
 
                 valid_states = ["activo", "inactivo", "suspendido"]
@@ -310,7 +324,7 @@ class UserManagementSystem:
 
             result = db.execute_non_query(
                 """
-                UPDATE usuarios 
+                UPDATE usuarios
                 SET password_hash = ?, fecha_cambio_password = GETDATE()
                 WHERE usuario = ?
             """,
@@ -356,7 +370,7 @@ class UserManagementSystem:
             # Soft delete (cambiar estado a eliminado)
             result = db.execute_non_query(
                 """
-                UPDATE usuarios 
+                UPDATE usuarios
                 SET estado = 'eliminado', fecha_eliminacion = GETDATE()
                 WHERE usuario = ?
             """,
@@ -384,7 +398,7 @@ class UserManagementSystem:
                 where_clause += " AND estado = 'activo'"
 
             users = db.execute_query(f"""
-                SELECT usuario, email, nombre, apellido, rol, estado, 
+                SELECT usuario, email, nombre, apellido, rol, estado,
                        fecha_creacion, ultima_conexion
                 FROM usuarios
                 {where_clause}

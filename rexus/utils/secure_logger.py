@@ -27,17 +27,17 @@ Secure Logger - Logger con anonimización automática de datos sensibles
 import logging
 import re
 import hashlib
-from typing import Any, Dict, List, Optional, Pattern
+from typing import Any, Dict, List, Pattern
 from datetime import datetime
 
 
 class SensitiveDataMasker:
     """Enmascarador de datos sensibles en logs."""
-    
+
     def __init__(self):
         self.sensitive_patterns = self._compile_patterns()
         self.hash_salt = self._generate_salt()
-        
+
     def _generate_salt(self) -> str:
         """Genera salt para hashing consistente."""
         import os
@@ -47,7 +47,7 @@ class SensitiveDataMasker:
             today = datetime.now().strftime('%Y%m%d')
             salt = hashlib.sha256(f"rexus_log_salt_{today}".encode()).hexdigest()[:16]
         return salt
-    
+
     def _compile_patterns(self) -> List[Dict[str, Pattern]]:
         """Compila patrones regex para datos sensibles."""
         return [
@@ -62,7 +62,7 @@ class SensitiveDataMasker:
                 'pattern': re.compile(r'(passwd[\'"\s]*[:=][\'"\s]*)([^\s\'"]+)', re.IGNORECASE),
                 'replacement': r'\1***MASKED***'
             },
-            
+
             # Tokens y claves
             {
                 'name': 'token',
@@ -79,42 +79,42 @@ class SensitiveDataMasker:
                 'pattern': re.compile(r'(secret[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})', re.IGNORECASE),
                 'replacement': r'\1***SECRET_MASKED***'
             },
-            
+
             # Números de tarjeta de crédito
             {
                 'name': 'credit_card',
                 'pattern': re.compile(r'\b(?:\d{4}[-\s]?){3}\d{4}\b'),
                 'replacement': '****-****-****-****'
             },
-            
+
             # Emails (parcial)
             {
                 'name': 'email',
                 'pattern': re.compile(r'\b([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b'),
                 'replacement': lambda m: f"{self._mask_email(m.group(1))}@{m.group(2)}"
             },
-            
+
             # Números de teléfono
             {
                 'name': 'phone',
                 'pattern': re.compile(r'(\+?[\d\s\-\(\)]{10,15})'),
                 'replacement': '***-***-****'
             },
-            
+
             # Direcciones IP (mantener primeros 2 octetos)
             {
                 'name': 'ip_address',
                 'pattern': re.compile(r'\b(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\b'),
                 'replacement': lambda m: f"{m.group(1)}.{m.group(2)}.xxx.xxx"
             },
-            
+
             # URLs con parámetros sensibles
             {
                 'name': 'url_params',
                 'pattern': re.compile(r'([?&](?:password|token|key|secret)[=])([^&\s]+)', re.IGNORECASE),
                 'replacement': r'\1***MASKED***'
             },
-            
+
             # JSON con datos sensibles
             {
                 'name': 'json_password',
@@ -126,7 +126,7 @@ class SensitiveDataMasker:
                 'pattern': re.compile(r'("(?:token|key|secret)"\s*:\s*")([^"]+)(")', re.IGNORECASE),
                 'replacement': r'\1***MASKED***\3'
             },
-            
+
             # Números de documento/identificación
             {
                 'name': 'id_document',
@@ -134,7 +134,7 @@ class SensitiveDataMasker:
                 'replacement': lambda m: self._hash_preserve_length(m.group(1))
             }
         ]
-    
+
     def _mask_email(self, username: str) -> str:
         """Enmascara parcialmente un username de email."""
         if len(username) <= 2:
@@ -143,55 +143,55 @@ class SensitiveDataMasker:
             return username[0] + "*" * (len(username) - 2) + username[-1]
         else:
             return username[:2] + "*" * (len(username) - 4) + username[-2:]
-    
+
     def _hash_preserve_length(self, value: str) -> str:
         """Hash que preserva la longitud original."""
         hash_full = hashlib.sha256((value + self.hash_salt).encode()).hexdigest()
         return hash_full[:len(value)]
-    
+
     def mask_sensitive_data(self, message: str) -> str:
         """
         Enmascara datos sensibles en un mensaje de log.
-        
+
         Args:
             message: Mensaje original
-            
+
         Returns:
             Mensaje con datos sensibles enmascarados
         """
         masked_message = message
-        
+
         for pattern_info in self.sensitive_patterns:
             pattern = pattern_info['pattern']
             replacement = pattern_info['replacement']
-            
+
             if callable(replacement):
                 # Replacement es una función lambda
                 masked_message = pattern.sub(replacement, masked_message)
             else:
                 # Replacement es una string
                 masked_message = pattern.sub(replacement, masked_message)
-        
+
         return masked_message
 
 
 class SecureLogRecord(logging.LogRecord):
     """LogRecord que enmascara automáticamente datos sensibles."""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        
+
         # Enmascarar mensaje
         if hasattr(self, '_masker'):
             masker = self._masker
         else:
             masker = SensitiveDataMasker()
             SecureLogRecord._masker = masker
-        
+
         # Aplicar enmascarado a mensaje y argumentos
         if self.msg:
             self.msg = masker.mask_sensitive_data(str(self.msg))
-        
+
         if self.args:
             masked_args = []
             for arg in self.args:
@@ -204,29 +204,29 @@ class SecureLogRecord(logging.LogRecord):
 
 class SecureFormatter(logging.Formatter):
     """Formatter que aplica enmascarado adicional."""
-    
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.masker = SensitiveDataMasker()
-    
+
     def format(self, record):
         """Formatea el record aplicando enmascarado adicional."""
         # Formatear normalmente
         formatted = super().format(record)
-        
+
         # Aplicar enmascarado final por si acaso
         return self.masker.mask_sensitive_data(formatted)
 
 
 class SecureFileHandler(logging.FileHandler):
     """FileHandler que asegura permisos seguros en archivos de log."""
-    
+
     def _open(self):
         """Abre el archivo con permisos restrictivos."""
         import os
-        
+
         # Crear el archivo con permisos restrictivos (600 = rw-------)
-        fd = os.open(self.baseFilename, 
+        fd = os.open(self.baseFilename,
                      os.O_CREAT | os.O_WRONLY | os.O_APPEND,
                      0o600)
         return os.fdopen(fd, 'a', encoding='utf-8')
@@ -234,21 +234,21 @@ class SecureFileHandler(logging.FileHandler):
 
 class SecureLogger:
     """Logger principal con seguridad integrada."""
-    
+
     def __init__(self, name: str, level: str = 'INFO'):
         self.logger = logging.getLogger(name)
         self.logger.setLevel(getattr(logging, level.upper()))
-        
+
         # Usar nuestro LogRecord personalizado
         logging.setLogRecordFactory(SecureLogRecord)
-        
+
         # Configurar handler si no existe
         if not self.logger.handlers:
             self._setup_handlers()
-    
+
     def _setup_handlers(self):
         """Configura handlers seguros."""
-        
+
         # Handler de consola
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.INFO)
@@ -257,12 +257,12 @@ class SecureLogger:
         )
         console_handler.setFormatter(console_formatter)
         self.logger.addHandler(console_handler)
-        
+
         # Handler de archivo (si está configurado)
         try:
             from ..core.config import LOGGING_CONFIG
             log_file = LOGGING_CONFIG.get('file_path')
-            
+
             if log_file:
                 file_handler = SecureFileHandler(log_file)
                 file_handler.setLevel(logging.DEBUG)
@@ -271,32 +271,36 @@ class SecureLogger:
                 )
                 file_handler.setFormatter(file_formatter)
                 self.logger.addHandler(file_handler)
-                
+
         except Exception as e:
             # Fallback silencioso si no se puede configurar archivo
             pass
-    
+
     def debug(self, msg, *args, **kwargs):
         """Log debug con enmascarado."""
         self.logger.debug(msg, *args, **kwargs)
-    
+
     def info(self, msg, *args, **kwargs):
         """Log info con enmascarado."""
         self.logger.info(msg, *args, **kwargs)
-    
+
     def warning(self, msg, *args, **kwargs):
         """Log warning con enmascarado."""
         self.logger.warning(msg, *args, **kwargs)
-    
+
     def error(self, msg, *args, **kwargs):
         """Log error con enmascarado."""
         self.logger.error(msg, *args, **kwargs)
-    
+
     def critical(self, msg, *args, **kwargs):
         """Log critical con enmascarado."""
         self.logger.critical(msg, *args, **kwargs)
-    
-    def log_user_action(self, user: str, action: str, details: Dict[str, Any] = None):
+
+    def log_user_action(self,
+user: str,
+        action: str,
+        details: Dict[str,
+        Any] = None):
         """Log específico para acciones de usuario."""
         details_str = ""
         if details:
@@ -308,14 +312,21 @@ class SecureLogger:
                 else:
                     safe_details[key] = value
             details_str = f" | Details: {safe_details}"
-        
+
         self.info(f"User: {user} | Action: {action}{details_str}")
-    
-    def log_security_event(self, event_type: str, severity: str, details: str):
+
+    def log_security_event(self,
+event_type: str,
+        severity: str,
+        details: str):
         """Log específico para eventos de seguridad."""
         self.warning(f"SECURITY [{severity}] {event_type}: {details}")
-    
-    def log_data_access(self, user: str, table: str, operation: str, record_count: int = None):
+
+    def log_data_access(self,
+user: str,
+        table: str,
+        operation: str,
+        record_count: int = None):
         """Log específico para acceso a datos."""
         count_str = f" | Records: {record_count}" if record_count else ""
         self.info(f"DATA_ACCESS | User: {user} | Table: {table} | Op: {operation}{count_str}")
@@ -325,11 +336,11 @@ class SecureLogger:
 def get_secure_logger(name: str, level: str = 'INFO') -> SecureLogger:
     """
     Factory para obtener un logger seguro.
-    
+
     Args:
         name: Nombre del logger
         level: Nivel de logging
-        
+
     Returns:
         SecureLogger configurado
     """

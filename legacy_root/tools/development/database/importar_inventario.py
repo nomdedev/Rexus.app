@@ -69,7 +69,8 @@ def importar_inventario_desde_archivo(
             return resultado
 
         # Callback de confirmación si se proporciona
-        if confirmar_importacion_callback and callable(confirmar_importacion_callback):
+        if confirmar_importacion_callback and \
+            callable(confirmar_importacion_callback):
             try:
                 if not confirmar_importacion_callback(df, resultado):
                     resultado["mensajes"].append("Importación cancelada por el usuario")

@@ -12,10 +12,10 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 def main():
     print("Testing Logistica Service Generation Dialog...")
     print("=" * 50)
-    
+
     tests_passed = 0
     total_tests = 5
-    
+
     # Test 1: Import Dialog Classes
     try:
         from src.modules.logistica.view import DialogoGenerarServicio, DialogoPreviewServicios
@@ -23,7 +23,7 @@ def main():
         tests_passed += 1
     except Exception as e:
         print(f"[FAIL] Dialog import failed: {e}")
-    
+
     # Test 2: Import Controller
     try:
         from src.modules.logistica.controller import LogisticaController
@@ -32,7 +32,7 @@ def main():
         tests_passed += 1
     except Exception as e:
         print(f"[FAIL] Controller import failed: {e}")
-    
+
     # Test 3: Check Controller Methods
     try:
         if hasattr(controller, 'generar_servicios_automaticos'):
@@ -42,7 +42,7 @@ def main():
             print("[FAIL] generar_servicios_automaticos method missing")
     except Exception as e:
         print(f"[FAIL] Method check failed: {e}")
-    
+
     # Test 4: Test Service Generation
     try:
         configuracion = {
@@ -54,13 +54,13 @@ def main():
             'max_paradas': '8',
             'criterio_optimizacion': 'Eficiencia balanceada'
         }
-        
+
         servicios = controller._simular_servicios_generados(configuracion)
         print(f"[PASS] Generated {len(servicios)} test services")
         tests_passed += 1
     except Exception as e:
         print(f"[FAIL] Service generation failed: {e}")
-    
+
     # Test 5: Check View Method
     try:
         from src.modules.logistica.view import LogisticaView
@@ -72,10 +72,10 @@ def main():
             print("[FAIL] View button method missing")
     except Exception as e:
         print(f"[FAIL] View test failed: {e}")
-    
+
     print("=" * 50)
     print(f"RESULTS: {tests_passed}/{total_tests} tests passed")
-    
+
     if tests_passed == total_tests:
         print("SUCCESS: All tests passed!")
         print("The logistica service generation dialog is fully implemented.")

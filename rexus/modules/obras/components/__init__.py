@@ -11,9 +11,9 @@ from .optimized_table_widget import OptimizedTableWidget, EnhancedTableContainer
 from .enhanced_label_widget import EnhancedLabel, StatusIndicatorLabel, MetricDisplayLabel
 
 __all__ = [
-    'OptimizedTableWidget', 
+    'OptimizedTableWidget',
     'EnhancedTableContainer',
-    'EnhancedLabel', 
-    'StatusIndicatorLabel', 
+    'EnhancedLabel',
+    'StatusIndicatorLabel',
     'MetricDisplayLabel'
 ]

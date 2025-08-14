@@ -10,7 +10,7 @@ from datetime import datetime
 def implement_logging_improvements():
     """Implementa mejoras en el sistema de logging"""
     print("🔧 IMPLEMENTANDO MEJORAS DE LOGGING")
-    
+
     # Crear configuración de logging mejorada
     logging_config = '''"""
 Configuración mejorada de logging para Rexus.app
@@ -23,63 +23,63 @@ from datetime import datetime
 
 class RexusLogger:
     """Logger personalizado para Rexus.app"""
-    
+
     def __init__(self):
         self.setup_logging()
-    
+
     def setup_logging(self):
         """Configura el sistema de logging"""
-        
+
         # Crear directorio de logs si no existe
         log_dir = Path("logs")
         log_dir.mkdir(exist_ok=True)
-        
+
         # Configurar loggers
         self.setup_main_logger()
         self.setup_security_logger()
         self.setup_error_logger()
         self.setup_audit_logger()
-    
+
     def setup_main_logger(self):
         """Logger principal de la aplicación"""
         logger = logging.getLogger('rexus.main')
         logger.setLevel(logging.INFO)
-        
+
         # Handler para archivo
         file_handler = logging.FileHandler('logs/rexus_main.log')
         file_handler.setLevel(logging.INFO)
-        
+
         # Handler para consola
         console_handler = logging.StreamHandler()
         console_handler.setLevel(logging.WARNING)
-        
+
         # Formato
         formatter = logging.Formatter(
             '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
         )
         file_handler.setFormatter(formatter)
         console_handler.setFormatter(formatter)
-        
+
         logger.addHandler(file_handler)
         logger.addHandler(console_handler)
-    
+
     def setup_security_logger(self):
         """Logger para eventos de seguridad"""
         logger = logging.getLogger('rexus.security')
         logger.setLevel(logging.INFO)
-        
+
         handler = logging.FileHandler('logs/security.log')
         formatter = logging.Formatter(
             '%(asctime)s - SECURITY - %(levelname)s - %(message)s'
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-    
+
     def setup_error_logger(self):
         """Logger para errores críticos"""
         logger = logging.getLogger('rexus.errors')
         logger.setLevel(logging.ERROR)
-        
+
         handler = logging.FileHandler('logs/errors.log')
         formatter = logging.Formatter(
             '%(asctime)s - ERROR - %(name)s - %(levelname)s\\n'
@@ -90,12 +90,12 @@ class RexusLogger:
         )
         handler.setFormatter(formatter)
         logger.addHandler(handler)
-    
+
     def setup_audit_logger(self):
         """Logger para auditoría de acciones"""
         logger = logging.getLogger('rexus.audit')
         logger.setLevel(logging.INFO)
-        
+
         handler = logging.FileHandler('logs/audit.log')
         formatter = logging.Formatter(
             '%(asctime)s - AUDIT - %(message)s'
@@ -123,7 +123,7 @@ def log_security_event(event, severity="INFO", details=None):
     message = f"Event: {event}"
     if details:
         message += f" | Details: {details}"
-    
+
     if severity == "CRITICAL":
         logger.critical(message)
     elif severity == "ERROR":
@@ -136,18 +136,18 @@ def log_security_event(event, severity="INFO", details=None):
 # Inicializar logging al importar
 rexus_logger = RexusLogger()
 '''
-    
+
     logging_path = Path("rexus/utils/logging_config.py")
     with open(logging_path, 'w', encoding='utf-8') as f:
         f.write(logging_config)
-    
+
     print(f"  [CHECK] Configuración de logging mejorada creada: {logging_path}")
     return True
 
 def implement_error_handling_improvements():
     """Implementa mejoras en el manejo de errores"""
     print("\n🔧 IMPLEMENTANDO MEJORAS DE MANEJO DE ERRORES")
-    
+
     error_handler_code = '''"""
 Sistema mejorado de manejo de errores para Rexus.app
 """
@@ -160,27 +160,30 @@ from rexus.utils.logging_config import get_logger
 
 class RexusErrorHandler:
     """Manejador centralizado de errores"""
-    
+
     def __init__(self):
         self.logger = get_logger('errors')
-    
+
     def handle_exception(self, exc_type, exc_value, exc_traceback):
         """Maneja excepciones no capturadas"""
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
-        
+
         error_msg = f"Uncaught exception: {exc_type.__name__}: {exc_value}"
-        self.logger.error(error_msg, exc_info=(exc_type, exc_value, exc_traceback))
-        
+        self.logger.error(error_msg,
+exc_info=(exc_type,
+            exc_value,
+            exc_traceback))
+
         # Mostrar error amigable al usuario
         self.show_user_friendly_error(str(exc_value))
-    
+
     def show_user_friendly_error(self, error_message):
         """Muestra error amigable al usuario"""
         try:
             from PyQt6.QtWidgets import QMessageBox
-            
+
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Icon.Critical)
             msg_box.setWindowTitle("Error - Rexus.app")
@@ -203,7 +206,7 @@ def error_boundary(func: Callable) -> Callable:
         except Exception as e:
             logger = get_logger('errors')
             logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
-            
+
             # Re-raise para que el llamador pueda manejar el error
             raise
     return wrapper
@@ -246,18 +249,18 @@ class SecurityError(Exception):
 error_handler = RexusErrorHandler()
 sys.excepthook = error_handler.handle_exception
 '''
-    
+
     error_handler_path = Path("rexus/utils/error_handler.py")
     with open(error_handler_path, 'w', encoding='utf-8') as f:
         f.write(error_handler_code)
-    
+
     print(f"  [CHECK] Sistema de manejo de errores mejorado: {error_handler_path}")
     return True
 
 def implement_performance_monitoring():
     """Implementa monitoreo de rendimiento"""
     print("\n🔧 IMPLEMENTANDO MONITOREO DE RENDIMIENTO")
-    
+
     performance_code = '''"""
 Sistema de monitoreo de rendimiento para Rexus.app
 """
@@ -282,18 +285,18 @@ class PerformanceMetric:
 
 class PerformanceMonitor:
     """Monitor de rendimiento de la aplicación"""
-    
+
     def __init__(self):
         self.logger = get_logger('performance')
         self.metrics: List[PerformanceMetric] = []
         self.monitoring = False
         self.monitor_thread: Optional[threading.Thread] = None
-        
+
     def start_monitoring(self, interval_seconds=60):
         """Inicia el monitoreo de rendimiento"""
         if self.monitoring:
             return
-        
+
         self.monitoring = True
         self.monitor_thread = threading.Thread(
             target=self._monitor_loop,
@@ -302,37 +305,37 @@ class PerformanceMonitor:
         )
         self.monitor_thread.start()
         self.logger.info("Performance monitoring started")
-    
+
     def stop_monitoring(self):
         """Detiene el monitoreo"""
         self.monitoring = False
         if self.monitor_thread:
             self.monitor_thread.join(timeout=5)
         self.logger.info("Performance monitoring stopped")
-    
+
     def _monitor_loop(self, interval_seconds):
         """Loop principal de monitoreo"""
         while self.monitoring:
             try:
                 metric = self._collect_metric()
                 self.metrics.append(metric)
-                
+
                 # Mantener solo las últimas 100 métricas
                 if len(self.metrics) > 100:
                     self.metrics = self.metrics[-100:]
-                
+
                 # Log métricas críticas
                 self._check_critical_thresholds(metric)
-                
+
                 time.sleep(interval_seconds)
             except Exception as e:
                 self.logger.error(f"Error in monitoring loop: {e}")
                 time.sleep(interval_seconds)
-    
+
     def _collect_metric(self) -> PerformanceMetric:
         """Recolecta métricas actuales"""
         process = psutil.Process()
-        
+
         return PerformanceMetric(
             timestamp=datetime.now(),
             cpu_percent=process.cpu_percent(),
@@ -340,30 +343,30 @@ class PerformanceMonitor:
             memory_mb=process.memory_info().rss / 1024 / 1024,
             active_threads=threading.active_count()
         )
-    
+
     def _check_critical_thresholds(self, metric: PerformanceMetric):
         """Verifica umbrales críticos"""
         warnings = []
-        
+
         if metric.cpu_percent > 80:
             warnings.append(f"High CPU usage: {metric.cpu_percent:.1f}%")
-        
+
         if metric.memory_percent > 80:
             warnings.append(f"High memory usage: {metric.memory_percent:.1f}%")
-        
+
         if metric.active_threads > 20:
             warnings.append(f"High thread count: {metric.active_threads}")
-        
+
         for warning in warnings:
             self.logger.warning(warning)
-    
+
     def get_current_stats(self) -> Dict:
         """Obtiene estadísticas actuales"""
         if not self.metrics:
             return {}
-        
+
         recent_metrics = self.metrics[-10:]  # Últimas 10 métricas
-        
+
         return {
             'avg_cpu_percent': sum(m.cpu_percent for m in recent_metrics) / len(recent_metrics),
             'avg_memory_percent': sum(m.memory_percent for m in recent_metrics) / len(recent_metrics),
@@ -389,18 +392,18 @@ def performance_timer(func):
 # Instancia global del monitor
 performance_monitor = PerformanceMonitor()
 '''
-    
+
     performance_path = Path("rexus/utils/performance_monitor.py")
     with open(performance_path, 'w', encoding='utf-8') as f:
         f.write(performance_code)
-    
+
     print(f"  [CHECK] Sistema de monitoreo de rendimiento: {performance_path}")
     return True
 
 def implement_database_improvements():
     """Implementa mejoras en la base de datos"""
     print("\n🔧 IMPLEMENTANDO MEJORAS DE BASE DE DATOS")
-    
+
     # Crear mejoras en el pool de conexiones
     db_improvements = '''"""
 Mejoras en la gestión de base de datos para Rexus.app
@@ -417,7 +420,7 @@ from rexus.utils.error_handler import DatabaseConnectionError
 
 class DatabasePool:
     """Pool de conexiones de base de datos mejorado"""
-    
+
     def __init__(self, database_path: str, max_connections: int = 10):
         self.database_path = database_path
         self.max_connections = max_connections
@@ -425,10 +428,10 @@ class DatabasePool:
         self.active_connections = 0
         self.lock = threading.Lock()
         self.logger = get_logger('database')
-        
+
         # Crear conexiones iniciales
         self._initialize_pool()
-    
+
     def _initialize_pool(self):
         """Inicializa el pool de conexiones"""
         try:
@@ -437,12 +440,12 @@ class DatabasePool:
                 if conn:
                     self.connections.put(conn)
                     self.active_connections += 1
-            
+
             self.logger.info(f"Database pool initialized with {self.active_connections} connections")
         except Exception as e:
             self.logger.error(f"Failed to initialize database pool: {e}")
             raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e}")
-    
+
     def _create_connection(self) -> Optional[sqlite3.Connection]:
         """Crea una nueva conexión a la base de datos"""
         try:
@@ -451,24 +454,24 @@ class DatabasePool:
                 check_same_thread=False,
                 timeout=30.0
             )
-            
+
             # Configuraciones de rendimiento
             conn.execute("PRAGMA journal_mode=WAL")
             conn.execute("PRAGMA synchronous=NORMAL")
             conn.execute("PRAGMA cache_size=10000")
             conn.execute("PRAGMA foreign_keys=ON")
-            
+
             return conn
         except Exception as e:
             self.logger.error(f"Failed to create database connection: {e}")
             return None
-    
+
     @contextmanager
     def get_connection(self, timeout: float = 10.0):
         """Obtiene una conexión del pool"""
         connection = None
         start_time = time.time()
-        
+
         try:
             # Intentar obtener conexión existente
             try:
@@ -484,7 +487,7 @@ class DatabasePool:
                             raise DatabaseConnectionError("No se pudo crear nueva conexión")
                     else:
                         raise DatabaseConnectionError("Pool de conexiones agotado")
-            
+
             # Verificar que la conexión esté activa
             if connection:
                 try:
@@ -495,9 +498,9 @@ class DatabasePool:
                     connection = self._create_connection()
                     if not connection:
                         raise DatabaseConnectionError("No se pudo restablecer la conexión")
-            
+
             yield connection
-            
+
         except Exception as e:
             self.logger.error(f"Database connection error: {e}")
             raise DatabaseConnectionError(f"Error de conexión a BD: {e}")
@@ -513,7 +516,7 @@ class DatabasePool:
                     connection.close()
                     with self.lock:
                         self.active_connections -= 1
-    
+
     def close_all(self):
         """Cierra todas las conexiones del pool"""
         with self.lock:
@@ -524,50 +527,53 @@ class DatabasePool:
                 except:
                     pass
             self.active_connections = 0
-        
+
         self.logger.info("All database connections closed")
 
 class DatabaseManager:
     """Gestor mejorado de base de datos"""
-    
+
     def __init__(self, database_path: str):
         self.pool = DatabasePool(database_path)
         self.logger = get_logger('database')
-    
-    def execute_query(self, query: str, params: tuple = (), fetch: str = None):
+
+    def execute_query(self,
+query: str,
+        params: tuple = (),
+        fetch: str = None):
         """Ejecuta una consulta de forma segura"""
         with self.pool.get_connection() as conn:
             try:
                 cursor = conn.cursor()
                 cursor.execute(query, params)
-                
+
                 if fetch == 'one':
                     result = cursor.fetchone()
                 elif fetch == 'all':
                     result = cursor.fetchall()
                 else:
                     result = cursor.rowcount
-                
+
                 conn.commit()
                 return result
-                
+
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Database query failed: {query[:100]}... Error: {e}")
                 raise DatabaseConnectionError(f"Error en consulta: {e}")
-    
+
     def execute_transaction(self, queries: list):
         """Ejecuta múltiples consultas en una transacción"""
         with self.pool.get_connection() as conn:
             try:
                 cursor = conn.cursor()
-                
+
                 for query, params in queries:
                     cursor.execute(query, params or ())
-                
+
                 conn.commit()
                 self.logger.info(f"Transaction completed with {len(queries)} queries")
-                
+
             except sqlite3.Error as e:
                 conn.rollback()
                 self.logger.error(f"Transaction failed: {e}")
@@ -587,18 +593,18 @@ def get_database_manager() -> DatabaseManager:
         raise RuntimeError("Database manager not initialized")
     return db_manager
 '''
-    
+
     db_improvements_path = Path("rexus/utils/database_manager.py")
     with open(db_improvements_path, 'w', encoding='utf-8') as f:
         f.write(db_improvements)
-    
+
     print(f"  [CHECK] Mejoras de base de datos implementadas: {db_improvements_path}")
     return True
 
 def create_requirements_update():
     """Actualiza requirements.txt con las nuevas dependencias"""
     print("\n🔧 ACTUALIZANDO REQUIREMENTS.TXT")
-    
+
     new_requirements = """# Rexus.app Dependencies - Updated with improvements
 
 # Core Framework
@@ -639,22 +645,22 @@ openpyxl>=3.1.0  # For Excel file support
 pathlib  # Built-in Python module
 typing-extensions>=4.7.0
 """
-    
+
     with open("requirements_updated.txt", 'w', encoding='utf-8') as f:
         f.write(new_requirements)
-    
+
     print("  [CHECK] requirements_updated.txt creado con nuevas dependencias")
     return True
 
 def update_checklist_status():
     """Actualiza el checklist con el progreso actual"""
     print("\n📋 ACTUALIZANDO CHECKLIST DE IMPLEMENTACIÓN")
-    
+
     checklist_update = f"""# CHECKLIST DE IMPLEMENTACIÓN TOTAL - REXUS.APP
 
-**Última actualización**: {datetime.now().strftime('%d %B %Y - %H:%M')}  
-**Estado general**: 🟡 MEJORAS TÉCNICAS EN PROGRESO  
-**Prioridad siguiente**: Optimización y mejoras de rendimiento  
+**Última actualización**: {datetime.now().strftime('%d %B %Y - %H:%M')}
+**Estado general**: 🟡 MEJORAS TÉCNICAS EN PROGRESO
+**Prioridad siguiente**: Optimización y mejoras de rendimiento
 
 ---
 
@@ -709,10 +715,10 @@ def update_checklist_status():
 
 **Estado general**: 🟢 SISTEMA ROBUSTO Y FUNCIONAL
 """
-    
+
     with open("CHECKLIST_IMPLEMENTACION_ACTUALIZADO.md", 'w', encoding='utf-8') as f:
         f.write(checklist_update)
-    
+
     print("  [CHECK] Checklist actualizado con progreso actual")
     return True
 
@@ -722,7 +728,7 @@ def main():
     print("=" * 60)
     print("Implementando mejoras basadas en CHECKLIST_IMPLEMENTACION_TOTAL.md")
     print()
-    
+
     improvements = [
         implement_logging_improvements,
         implement_error_handling_improvements,
@@ -731,7 +737,7 @@ def main():
         create_requirements_update,
         update_checklist_status
     ]
-    
+
     completed = 0
     for improvement in improvements:
         try:
@@ -739,11 +745,11 @@ def main():
                 completed += 1
         except Exception as e:
             print(f"  [ERROR] Error en {improvement.__name__}: {e}")
-    
+
     print("\n" + "=" * 60)
     print("[CHART] RESUMEN DE MEJORAS IMPLEMENTADAS")
     print(f"[CHECK] Mejoras completadas: {completed}/{len(improvements)}")
-    
+
     if completed == len(improvements):
         print("🎉 TODAS LAS MEJORAS TÉCNICAS IMPLEMENTADAS EXITOSAMENTE")
         print("\n📋 PRÓXIMOS PASOS:")

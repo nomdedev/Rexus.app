@@ -218,7 +218,8 @@ from datetime import datetime
             categoria_dir = f"scripts/{categoria}"
             if os.path.exists(categoria_dir):
                 for archivo in sorted(os.listdir(categoria_dir)):
-                    if archivo.endswith(('.py', '.bat', '.sh', '.sql')) and archivo != 'README.md':
+                    if archivo.endswith(('.py', '.bat', '.sh', '.sql')) and \
+                        archivo != 'README.md':
                         f.write(f"- `{archivo}`\n")
 
             f.write(f"""

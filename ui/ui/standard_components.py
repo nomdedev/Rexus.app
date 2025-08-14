@@ -28,18 +28,18 @@ Proporciona componentes consistentes para todos los módulos.
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QFont, QIcon
 from PyQt6.QtWidgets import (
-    QFrame, QGroupBox, QHBoxLayout, QLabel, QPushButton, 
+    QFrame, QGroupBox, QHBoxLayout, QLabel, QPushButton,
     QTableWidget, QVBoxLayout, QHeaderView
 )
 
 
 class StandardComponents:
     """Factoría de componentes UI estandarizados."""
-    
+
     # Colores estándar de la aplicación
     COLORS = {
         'primary': '#1e40af',
-        'secondary': '#3b82f6', 
+        'secondary': '#3b82f6',
         'success': '#059669',
         'warning': '#d97706',
         'danger': '#dc2626',
@@ -47,7 +47,7 @@ class StandardComponents:
         'dark': '#1e293b',
         'border': '#e2e8f0'
     }
-    
+
     # Fuentes estándar
     FONTS = {
         'title': ('Segoe UI', 16, QFont.Weight.Bold),
@@ -55,7 +55,7 @@ class StandardComponents:
         'body': ('Segoe UI', 13, QFont.Weight.Normal),
         'caption': ('Segoe UI', 11, QFont.Weight.Normal)
     }
-    
+
     @classmethod
     def create_title(cls, text: str, parent_layout: QVBoxLayout) -> QLabel:
         """Crea un título estandarizado para módulos."""
@@ -63,7 +63,7 @@ class StandardComponents:
         title_frame.setFrameStyle(QFrame.Shape.Box)
         title_frame.setStyleSheet(f"""
             QFrame {{
-                background: qlineargradient(x1:0, y1:0, x2:1, y2:1, 
+                background: qlineargradient(x1:0, y1:0, x2:1, y2:1,
                     stop:0 {cls.COLORS['primary']}, stop:1 {cls.COLORS['secondary']});
                 border: none;
                 border-radius: 8px;
@@ -71,10 +71,10 @@ class StandardComponents:
                 padding: 5px;
             }}
         """)
-        
+
         title_layout = QHBoxLayout(title_frame)
         title_layout.setContentsMargins(20, 15, 20, 15)
-        
+
         title_label = QLabel(text)
         font = QFont(*cls.FONTS['title'])
         title_label.setFont(font)
@@ -87,14 +87,14 @@ class StandardComponents:
             }
         """)
         title_label.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-        
+
         title_layout.addWidget(title_label)
         title_layout.addStretch()
-        
+
         parent_layout.addWidget(title_frame)
         return title_label
-    
-    @classmethod 
+
+    @classmethod
     def create_control_panel(cls) -> QFrame:
         """Crea un panel de control estandarizado."""
         panel = QFrame()
@@ -108,21 +108,21 @@ class StandardComponents:
                 padding: 10px;
             }}
         """)
-        
+
         layout = QHBoxLayout(panel)
         layout.setContentsMargins(15, 10, 15, 10)
         layout.setSpacing(10)
-        
+
         return panel
-    
+
     @classmethod
     def create_primary_button(cls, text: str, icon_path: str = None) -> QPushButton:
         """Crea un botón primario estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: {cls.COLORS['primary']};
@@ -146,17 +146,17 @@ class StandardComponents:
                 color: #64748b;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_secondary_button(cls, text: str, icon_path: str = None) -> QPushButton:
         """Crea un botón secundario estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: white;
@@ -184,17 +184,17 @@ class StandardComponents:
                 color: #94a3b8;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_danger_button(cls, text: str, icon_path: str = None) -> QPushButton:
         """Crea un botón de peligro estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: {cls.COLORS['danger']};
@@ -218,17 +218,17 @@ class StandardComponents:
                 color: #64748b;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_success_button(cls, text: str, icon_path: str = None) -> QPushButton:
-        """Crea un botón de éxito estandarizado.""" 
+        """Crea un botón de éxito estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: {cls.COLORS['success']};
@@ -252,17 +252,17 @@ class StandardComponents:
                 color: #64748b;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_info_button(cls, text: str, icon_path: str = None) -> QPushButton:
         """Crea un botón de información estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: {cls.COLORS['secondary']};
@@ -286,17 +286,17 @@ class StandardComponents:
                 color: #cbd5e1;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_warning_button(cls, text: str, icon_path: str = None) -> QPushButton:
         """Crea un botón de advertencia estandarizado."""
         button = QPushButton(text)
-        
+
         if icon_path:
             button.setIcon(QIcon(icon_path))
-        
+
         button.setStyleSheet(f"""
             QPushButton {{
                 background: {cls.COLORS['warning']};
@@ -320,9 +320,9 @@ class StandardComponents:
                 color: #cbd5e1;
             }}
         """)
-        
+
         return button
-    
+
     @classmethod
     def create_standard_table(cls) -> QTableWidget:
         """Crea una tabla ultra compacta y sin color de fondo."""
@@ -385,15 +385,15 @@ class StandardComponents:
         table.horizontalHeader().setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
         table.verticalHeader().setVisible(False)
         return table
-    
+
     @classmethod
     def create_group_box(cls, title: str) -> QGroupBox:
         """Crea un group box estandarizado."""
         group = QGroupBox(title)
-        
+
         font = QFont(*cls.FONTS['subtitle'])
         group.setFont(font)
-        
+
         group.setStyleSheet(f"""
             QGroupBox {{
                 font-weight: bold;
@@ -413,5 +413,5 @@ class StandardComponents:
                 font-size: 14px;
             }}
         """)
-        
+
         return group

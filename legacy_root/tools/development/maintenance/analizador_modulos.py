@@ -632,8 +632,14 @@ def main():
     """Función principal para ejecutar el análisis desde línea de comandos."""
     parser = argparse.ArgumentParser(description='Analizador de módulos del proyecto')
     parser.add_argument('--modulo', '-m', help='Nombre específico del módulo a analizar')
-    parser.add_argument('--todos', '-t', action='store_true', help='Analizar todos los módulos')
-    parser.add_argument('--output', '-o', default='informes_modulos', help='Directorio de salida')
+    parser.add_argument('--todos',
+'-t',
+        action='store_true',
+        help='Analizar todos los módulos')
+    parser.add_argument('--output',
+'-o',
+        default='informes_modulos',
+        help='Directorio de salida')
 
     args = parser.parse_args()
 

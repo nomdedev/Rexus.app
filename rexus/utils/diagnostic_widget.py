@@ -9,17 +9,13 @@ import sys
 import traceback
 from pathlib import Path
 
-from PyQt6.QtCore import Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon, QPixmap
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import (
     QFrame,
-    QGridLayout,
     QGroupBox,
     QHBoxLayout,
     QLabel,
-    QProgressBar,
     QPushButton,
-    QScrollArea,
     QTextEdit,
     QVBoxLayout,
     QWidget,

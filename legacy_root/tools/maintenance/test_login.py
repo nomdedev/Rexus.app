@@ -41,48 +41,48 @@ class SimpleLoginTest(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-        
+
     def initUI(self):
         self.setWindowTitle('Test Login Rexus.app')
         self.setGeometry(300, 300, 400, 200)
-        
+
         layout = QVBoxLayout()
-        
+
         # Labels
         layout.addWidget(QLabel('Usuario:'))
         self.username_input = QLineEdit()
         self.username_input.setText('admin')
         layout.addWidget(self.username_input)
-        
+
         layout.addWidget(QLabel('Contraseña:'))
         self.password_input = QLineEdit()
         self.password_input.setEchoMode(QLineEdit.EchoMode.Password)
         self.password_input.setText('admin')
         layout.addWidget(self.password_input)
-        
+
         # Botón
         login_btn = QPushButton('Iniciar Sesión')
         login_btn.clicked.connect(self.test_login)
         layout.addWidget(login_btn)
-        
+
         # Resultado
         self.result_label = QLabel('Ingrese credenciales y haga clic en Iniciar Sesión')
         layout.addWidget(self.result_label)
-        
+
         self.setLayout(layout)
-        
+
     def test_login(self):
         username = self.username_input.text()
         password = self.password_input.text()
-        
+
         try:
             auth = AuthManager()
             result = auth.authenticate_user(username, password)
-            
+
             if result:
                 self.result_label.setText(f"[CHECK] Login exitoso: {result['username']} ({result['role']})")
                 self.result_label.setStyleSheet("color: green; font-weight: bold;")
-                
+
                 # Mostrar datos completos en un mensaje
                 details = f"""
 Usuario: {result['username']}
@@ -92,12 +92,12 @@ Email: {result['email']}
 ID: {result['id']}
 """
                 QMessageBox.information(self, "Login Exitoso", details)
-                
+
             else:
                 self.result_label.setText("[ERROR] Login fallido: Credenciales incorrectas")
                 self.result_label.setStyleSheet("color: red; font-weight: bold;")
                 QMessageBox.warning(self, "Login Fallido", "Usuario o contraseña incorrectos")
-                
+
         except Exception as e:
             error_msg = f"Error de autenticación: {str(e)}"
             self.result_label.setText(f"[ERROR] {error_msg}")
@@ -106,15 +106,15 @@ ID: {result['id']}
 
 def main():
     app = QApplication(sys.argv)
-    
+
     # Mostrar información del sistema
     print(f"[INFO] Python: {sys.version}")
     print(f"[INFO] Directorio actual: {os.getcwd()}")
     print(f"[INFO] Variables de entorno cargadas: {os.getenv('DB_SERVER') is not None}")
-    
+
     window = SimpleLoginTest()
     window.show()
-    
+
     sys.exit(app.exec())
 
 if __name__ == '__main__':

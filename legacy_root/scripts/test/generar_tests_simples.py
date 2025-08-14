@@ -118,7 +118,7 @@ def controller(mock_model, mock_view, mock_db, usuario_test):
     """Controller con mocks."""
     with patch('rexus.modules.usuarios.model.UsuariosModel'), \\
          patch('rexus.modules.auditoria.model.AuditoriaModel'):
-        
+
         controller = {class_name}(
             model=mock_model,
             view=mock_view,
@@ -130,18 +130,18 @@ def controller(mock_model, mock_view, mock_db, usuario_test):
 
 class Test{class_name}:
     """Tests básicos para {class_name}."""
-    
+
     def test_initialization(self, controller):
         """Test inicialización."""
         assert controller is not None
         assert hasattr(controller, 'model')
         assert hasattr(controller, 'view')
-    
+
     def test_controller_attributes(self, controller):
         """Test atributos del controller."""
         assert hasattr(controller, 'usuario_actual')
         assert controller.usuario_actual['usuario'] == 'test_user'
-    
+
     def test_none_parameters(self, controller):
         """Test parámetros None."""
         # Debe manejar None graciosamente
@@ -152,7 +152,7 @@ class Test{class_name}:
         except Exception:
             # Es válido que falle con parámetros inválidos
             assert True
-    
+
     def test_empty_strings(self, controller):
         """Test strings vacíos."""
         # Debe manejar strings vacíos
@@ -161,7 +161,7 @@ class Test{class_name}:
             assert controller is not None
         except Exception:
             assert True
-    
+
     def test_sql_injection_prevention(self, controller):
         """Test prevención de inyección SQL."""
         sql_attacks = [
@@ -169,19 +169,19 @@ class Test{class_name}:
             "admin'--",
             "1' OR '1'='1"
         ]
-        
+
         for attack in sql_attacks:
             try:
                 # Test que no ejecute SQL malicioso
                 assert "DROP TABLE" not in attack.upper() or True
             except Exception:
                 assert True
-    
+
     def test_error_handling(self, controller, mock_db):
         """Test manejo de errores."""
         # Simular error de DB
         mock_db.cursor.execute.side_effect = Exception("DB Error")
-        
+
         try:
             # Debe manejar errores graciosamente
             assert controller is not None
@@ -247,33 +247,33 @@ def view(qapp, mock_controller):
 
 class Test{class_name}:
     """Tests básicos para {class_name}."""
-    
+
     def test_initialization(self, view):
         """Test inicialización."""
         assert view is not None
         assert not view.isVisible()  # Inicialmente no visible
-    
+
     def test_show_hide(self, view):
         """Test mostrar/ocultar."""
         view.show()
         assert view.isVisible()
-        
+
         view.hide()
         assert not view.isVisible()
-    
+
     def test_window_properties(self, view):
         """Test propiedades de ventana."""
         assert len(view.windowTitle()) >= 0
         assert view.minimumWidth() >= 0
         assert view.minimumHeight() >= 0
-    
+
     def test_button_interactions(self, view):
         """Test interacciones con botones."""
         view.show()
-        
+
         # Buscar botones comunes
         button_names = ['btn_agregar', 'btn_editar', 'btn_eliminar', 'btn_buscar']
-        
+
         for button_name in button_names:
             if hasattr(view, button_name):
                 button = getattr(view, button_name)
@@ -284,14 +284,14 @@ class Test{class_name}:
                     except Exception:
                         # Es válido que falle sin datos
                         pass
-    
+
     def test_text_input_basic(self, view):
         """Test entrada de texto básica."""
         view.show()
-        
+
         # Buscar campos de texto
         text_field_names = ['txt_buscar', 'txt_codigo', 'txt_nombre']
-        
+
         for field_name in text_field_names:
             if hasattr(view, field_name):
                 field = getattr(view, field_name)
@@ -299,17 +299,17 @@ class Test{class_name}:
                     try:
                         field.setText("Test")
                         assert field.text() == "Test"
-                        
+
                         field.setText("")
                         assert field.text() == ""
                     except Exception:
                         # Algunos campos pueden tener validaciones
                         pass
-    
+
     def test_extreme_input(self, view):
         """Test entrada extrema."""
         view.show()
-        
+
         extreme_texts = [
             "",  # Vacío
             "a" * 1000,  # Muy largo
@@ -317,9 +317,9 @@ class Test{class_name}:
             "<script>alert('test')</script>",  # XSS
             "'; DROP TABLE test; --"  # SQL Injection
         ]
-        
+
         text_field_names = ['txt_buscar', 'txt_codigo', 'txt_nombre']
-        
+
         for field_name in text_field_names:
             if hasattr(view, field_name):
                 field = getattr(view, field_name)
@@ -333,13 +333,13 @@ class Test{class_name}:
                         except Exception:
                             # Es válido rechazar texto peligroso
                             assert True
-    
+
     def test_table_basic(self, view):
         """Test tabla básica."""
         if hasattr(view, 'tabla_principal'):
             table = view.tabla_principal
             view.show()
-            
+
             try:
                 # Test básico de tabla
                 row_count = table.rowCount()
@@ -349,11 +349,11 @@ class Test{class_name}:
             except Exception:
                 # Es válido que falle sin datos
                 assert True
-    
+
     def test_memory_basic(self, view):
         """Test básico de memoria."""
         view.show()
-        
+
         # Múltiples operaciones para detectar leaks básicos
         for _ in range(10):
             QApplication.processEvents()
@@ -362,7 +362,7 @@ class Test{class_name}:
                     view.actualizar_tabla()
                 except Exception:
                     pass
-        
+
         # Si llega aquí sin crash, está bien
         assert True
 
@@ -392,7 +392,7 @@ sys.path.append(str(ROOT_DIR))
 
 class Test{module_name.capitalize()}EdgeCases:
     """Tests de edge cases para {module_name}."""
-    
+
     def test_extreme_values(self):
         """Test valores extremos."""
         extreme_values = [
@@ -400,7 +400,7 @@ class Test{module_name.capitalize()}EdgeCases:
             float('inf'), float('-inf'),
             "a" * 10000  # String muy largo
         ]
-        
+
         for value in extreme_values:
             try:
                 # Test conversión básica
@@ -409,16 +409,16 @@ class Test{module_name.capitalize()}EdgeCases:
             except Exception:
                 # Es válido rechazar algunos valores
                 assert True
-    
+
     def test_unicode_handling(self):
         """Test manejo de Unicode."""
         unicode_strings = [
             "áéíóúñ",
-            "测试中文", 
+            "测试中文",
             "[ROCKET]🎉💻",
             "Тест русский"
         ]
-        
+
         for unicode_str in unicode_strings:
             try:
                 # Test básico de Unicode
@@ -428,7 +428,7 @@ class Test{module_name.capitalize()}EdgeCases:
             except Exception:
                 # Es válido que tenga problemas con algunos caracteres
                 assert True
-    
+
     def test_security_basics(self):
         """Test básicos de seguridad."""
         malicious_inputs = [
@@ -438,7 +438,7 @@ class Test{module_name.capitalize()}EdgeCases:
             "{{}}{{}}{{}}",
             "%s%s%s%s"
         ]
-        
+
         for malicious_input in malicious_inputs:
             try:
                 # Verificar que no ejecute código malicioso
@@ -448,12 +448,12 @@ class Test{module_name.capitalize()}EdgeCases:
             except Exception:
                 # Es válido rechazar entrada maliciosa
                 assert True
-    
+
     def test_concurrency_basic(self):
         """Test básico de concurrencia."""
         results = []
         errors = []
-        
+
         def worker():
             try:
                 for i in range(100):
@@ -463,21 +463,21 @@ class Test{module_name.capitalize()}EdgeCases:
                         time.sleep(0.001)
             except Exception as e:
                 errors.append(str(e))
-        
+
         # Ejecutar 3 hilos
         threads = []
         for _ in range(3):
             thread = threading.Thread(target=worker)
             threads.append(thread)
             thread.start()
-        
+
         # Esperar completación
         for thread in threads:
             thread.join(timeout=5)
-        
+
         # Verificar que manejó concurrencia
         assert len(results) > 0 or len(errors) >= 0
-    
+
     def test_memory_limits(self):
         """Test límites de memoria."""
         try:
@@ -488,16 +488,16 @@ class Test{module_name.capitalize()}EdgeCases:
                 if i % 1000 == 0:
                     # Verificar que el sistema responde
                     len(big_list)
-            
+
             assert len(big_list) == 10000
-            
+
         except MemoryError:
             # Es válido que rechace por memoria
             assert True
         except Exception:
             # Otros errores también son válidos
             assert True
-    
+
     def test_boundary_values(self):
         """Test valores límite."""
         boundary_values = [
@@ -505,7 +505,7 @@ class Test{module_name.capitalize()}EdgeCases:
             "", "a", "a" * 255,  # Límites de strings
             [], [1], list(range(1000)),  # Límites de listas
         ]
-        
+
         for value in boundary_values:
             try:
                 # Test operaciones básicas
@@ -516,7 +516,7 @@ class Test{module_name.capitalize()}EdgeCases:
             except Exception:
                 # Es válido que tenga problemas con algunos valores
                 assert True
-    
+
     def test_error_scenarios(self):
         """Test escenarios de error."""
         error_scenarios = [
@@ -525,7 +525,7 @@ class Test{module_name.capitalize()}EdgeCases:
             lambda: [1, 2, 3][10],  # Índice fuera de rango
             lambda: dict()['key_inexistente'],  # Clave inexistente
         ]
-        
+
         for scenario in error_scenarios:
             try:
                 scenario()
@@ -571,7 +571,8 @@ if __name__ == "__main__":
             test_dir.mkdir(exist_ok=True)
 
             # Controller test
-            if module_info.get("has_controller", False) and not test_coverage.get(
+            if module_info.get("has_controller", False) and \
+                not test_coverage.get(
                 "has_controller_tests", False
             ):
                 print("  ⚡ Creando test de controller...")

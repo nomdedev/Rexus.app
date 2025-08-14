@@ -63,7 +63,8 @@ import shutil
 def limpiar_archivos_temporales():
     """Elimina archivos temporales .table_columns de la raíz"""
     for archivo in os.listdir(ROOT_DIR):
-        if archivo.startswith(".table_columns_") and archivo.endswith(".json"):
+        if archivo.startswith(".table_columns_") and \
+            archivo.endswith(".json"):
             ruta_archivo = os.path.join(ROOT_DIR, archivo)
             try:
                 os.remove(ruta_archivo)

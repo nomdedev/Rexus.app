@@ -16,14 +16,14 @@ from rexus.core.database import get_inventario_connection
 
 def verificar_y_agregar_columnas():
     """Verificar y agregar columnas faltantes a la tabla obras."""
-    
+
     try:
         db_conn = get_inventario_connection(auto_connect=True)
         connection = db_conn.connection
         cursor = connection.cursor()
-        
+
         print("🔧 [DB UPDATE] Verificando y agregando columnas faltantes...")
-        
+
         # Mapeo de columnas: modelo_esperado -> real_existente_o_nueva
         mapeo_columnas = {
             # Columnas que ya existen con nombre similar
@@ -39,7 +39,7 @@ def verificar_y_agregar_columnas():
             'activo': None,  # Crear nueva - CRÍTICA
             'fecha_actualizacion': 'updated_at',  # Ya existe
         }
-        
+
         # Columnas que necesitamos crear
         columnas_nuevas = [
             ("activo", "BIT NOT NULL DEFAULT 1", "Campo para soft delete"),
@@ -48,16 +48,16 @@ def verificar_y_agregar_columnas():
             ("costo_actual", "DECIMAL(18,2) NULL DEFAULT 0", "Costo actual acumulado"),
             ("margen_estimado", "DECIMAL(5,2) NULL DEFAULT 0", "Margen de ganancia estimado")
         ]
-        
+
         # Verificar qué columnas ya existen
         cursor.execute("""
-            SELECT COLUMN_NAME 
-            FROM INFORMATION_SCHEMA.COLUMNS 
+            SELECT COLUMN_NAME
+            FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_NAME = 'obras'
         """)
         columnas_existentes = [row[0] for row in cursor.fetchall()]
         print(f"📋 [DB UPDATE] Columnas existentes: {len(columnas_existentes)}")
-        
+
         # Agregar columnas faltantes
         for nombre_col, tipo_col, descripcion in columnas_nuevas:
             if nombre_col not in columnas_existentes:
@@ -71,15 +71,15 @@ def verificar_y_agregar_columnas():
                     print(f"   [ERROR] Error agregando '{nombre_col}': {e}")
             else:
                 print(f"   [WARN] Columna '{nombre_col}' ya existe")
-        
+
         # Verificar que las obras existentes tengan valores por defecto
         print("\n🔄 [DB UPDATE] Actualizando valores por defecto en obras existentes...")
-        
+
         # Contar obras antes de actualizar
         cursor.execute("SELECT COUNT(*) FROM obras")
         total_obras = cursor.fetchone()[0]
         print(f"   [CHART] Total de obras a actualizar: {total_obras}")
-        
+
         if total_obras > 0:
             # Actualizar obras existentes con valores por defecto
             updates = [
@@ -88,7 +88,7 @@ def verificar_y_agregar_columnas():
                 ("costo_actual", "0", "Inicializar costo actual"),
                 ("margen_estimado", "15.0", "Establecer margen por defecto del 15%")
             ]
-            
+
             for campo, valor, desc in updates:
                 try:
                     if campo in [col[0] for col in columnas_nuevas]:
@@ -99,18 +99,18 @@ def verificar_y_agregar_columnas():
                         print(f"   [CHECK] {desc}: {filas_afectadas} filas actualizadas")
                 except Exception as e:
                     print(f"   [ERROR] Error actualizando {campo}: {e}")
-        
+
         # Verificar estructura final
         print("\n📋 [DB UPDATE] Verificando estructura final...")
         cursor.execute("""
-            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE 
-            FROM INFORMATION_SCHEMA.COLUMNS 
+            SELECT COLUMN_NAME, DATA_TYPE, IS_NULLABLE
+            FROM INFORMATION_SCHEMA.COLUMNS
             WHERE TABLE_NAME = 'obras'
             ORDER BY ORDINAL_POSITION
         """)
         columnas_finales = cursor.fetchall()
         print(f"   [CHART] Total de columnas después: {len(columnas_finales)}")
-        
+
         # Mostrar mapeo final
         print(f"\n🗺️ [DB UPDATE] Mapeo de columnas modelo -> base de datos:")
         mapeos_finales = {
@@ -135,14 +135,14 @@ def verificar_y_agregar_columnas():
             'fecha_creacion': 'created_at',
             'fecha_actualizacion': 'updated_at'
         }
-        
+
         for modelo, bd in mapeos_finales.items():
             print(f"   {modelo} -> {bd}")
-        
+
         cursor.close()
         print(f"\n[CHECK] [DB UPDATE] Actualización de estructura completada")
         return True
-        
+
     except Exception as e:
         print(f"[ERROR] [DB UPDATE] Error actualizando estructura: {e}")
         import traceback
@@ -154,9 +154,9 @@ def main():
     """Función principal."""
     print("[ROCKET] [DB UPDATE] Iniciando actualización de estructura de tabla obras...")
     print("=" * 70)
-    
+
     success = verificar_y_agregar_columnas()
-    
+
     print("=" * 70)
     if success:
         print("[CHECK] [DB UPDATE] Actualización completada exitosamente")

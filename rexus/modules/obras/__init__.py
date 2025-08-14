@@ -2,17 +2,16 @@
 
 from .controller import ObrasController
 from .model import ObrasModel
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 # Importar submódulos especializados
 try:
-    from .submodules import ConsultasManager, ProyectosManager, RecursosManager
+    pass
 except ImportError:
     print("[OBRAS] Warning: Some submodules not available")
 from .view import ObrasModernView as ObrasView
 
 __all__ = [
     "ObrasModel",
-    "ObrasView", 
+    "ObrasView",
     "ObrasController",
 ]

@@ -144,7 +144,8 @@ class TestCoverageAnalyzer:
                 missing_tests[module_name].append(
                     "Tests de controller completamente faltantes"
                 )
-            elif module_info["has_controller"] and not tests.get(module_name, {}).get(
+            elif module_info["has_controller"] and \
+                not tests.get(module_name, {}).get(
                 "controller_tests"
             ):
                 missing_tests[module_name].append("Tests de controller faltantes")
@@ -153,7 +154,8 @@ class TestCoverageAnalyzer:
                 missing_tests[module_name].append(
                     "Tests de view completamente faltantes"
                 )
-            elif module_info["has_view"] and not tests.get(module_name, {}).get(
+            elif module_info["has_view"] and \
+                not tests.get(module_name, {}).get(
                 "view_tests"
             ):
                 missing_tests[module_name].append("Tests de view faltantes")

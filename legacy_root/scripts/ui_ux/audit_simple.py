@@ -31,7 +31,8 @@ def ejecutar_auditoria_manual():
 
     # Contar módulos disponibles
     modulos = [
-        d for d in rexus_path.iterdir() if d.is_dir() and not d.name.startswith("__")
+        d for d in rexus_path.iterdir() if d.is_dir() and \
+            not d.name.startswith("__")
     ]
     print(f"[INFO] Encontrados {len(modulos)} módulos para analizar")
 

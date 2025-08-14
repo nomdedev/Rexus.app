@@ -35,7 +35,10 @@ def corregir_f_strings_archivo(filepath):
 
         # Aplicar correcciones
         for patron, reemplazo in correcciones:
-            contenido = re.sub(patron, reemplazo, contenido, flags=re.MULTILINE)
+            contenido = re.sub(patron,
+reemplazo,
+                contenido,
+                flags=re.MULTILINE)
 
         # Corregir imports mal estructurados
         contenido = corregir_imports_mal_estructurados(contenido)

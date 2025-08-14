@@ -1,6 +1,4 @@
-from rexus.core.auth_manager import admin_required, auth_required, manager_required
-from rexus.core.auth_decorators import permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.sql_query_manager import SQLQueryManager
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
@@ -14,11 +12,9 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import sys
-import uuid
-from datetime import date, datetime
-from decimal import Decimal
+from datetime import date
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Dict, Optional
 
 # Importar utilidades de seguridad
 try:
@@ -26,7 +22,6 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from rexus.utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
@@ -53,7 +48,7 @@ class ContabilidadModel:
 
 class AdministracionModel(ContabilidadModel):
     """Alias para compatibilidad con tests y controladores."""
-    
+
     def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         super().__init__(db_connection, usuario_actual)
         self.usuario_actual = usuario_actual
@@ -64,7 +59,7 @@ class AdministracionModel(ContabilidadModel):
         self.tabla_empleados = "empleados"
         self.tabla_departamentos = "departamentos"
         self.tabla_auditoria = "auditoria_contable"
-        
+
         # Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()
 
@@ -95,7 +90,6 @@ class AdministracionModel(ContabilidadModel):
             except SQLSecurityError as e:
                 print(f"[ERROR SEGURIDAD ADMINISTRACION] {str(e)}")
                 # Fallback a verificación básica
-                pass
 
         # Verificación básica si la utilidad no está disponible
         if not table_name or not isinstance(table_name, str):
@@ -145,7 +139,7 @@ class AdministracionModel(ContabilidadModel):
                 nombre_limpio = nombre.strip()
 
             # Validar tabla
-            tabla_validada = self._validate_table_name(self.tabla_departamentos)
+            self._validate_table_name(self.tabla_departamentos)
 
             cursor = self.db_connection.cursor()
 
@@ -391,7 +385,13 @@ class AdministracionModel(ContabilidadModel):
             cursor.execute(
                 """
                 INSERT INTO [{self._validate_table_name(self.tabla_auditoria)}]_contable
-                (tabla_afectada, registro_id, accion, datos_anteriores, datos_nuevos, usuario, observaciones)
+                (tabla_afectada,
+registro_id,
+                    accion,
+                    datos_anteriores,
+                    datos_nuevos,
+                    usuario,
+                    observaciones)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """,
                 (
@@ -448,7 +448,7 @@ class AdministracionModel(ContabilidadModel):
                 )
 
             # Validar tabla
-            tabla_validada = self._validate_table_name(self.tabla_departamentos)
+            self._validate_table_name(self.tabla_departamentos)
 
             cursor = self.db_connection.cursor()
             query_insert = self.sql_manager.get_query('administracion/insert_departamento')
@@ -662,7 +662,10 @@ class AdministracionModel(ContabilidadModel):
 
             # Generar número de asiento
             cursor.execute("""
-                SELECT ISNULL(MAX(CAST(SUBSTRING(numero_asiento, 4, 10) AS INT)), 0) + 1
+                SELECT ISNULL(MAX(CAST(SUBSTRING(numero_asiento,
+4,
+                    10) AS INT)),
+                    0) + 1
                 FROM libro_contable
                 WHERE numero_asiento LIKE 'AS-%'
             """)
@@ -830,7 +833,10 @@ class AdministracionModel(ContabilidadModel):
 
             # Generar número de recibo
             cursor.execute("""
-                SELECT ISNULL(MAX(CAST(SUBSTRING(numero_recibo, 4, 10) AS INT)), 0) + 1
+                SELECT ISNULL(MAX(CAST(SUBSTRING(numero_recibo,
+4,
+                    10) AS INT)),
+                    0) + 1
                 FROM recibos
                 WHERE numero_recibo LIKE 'REC-%'
             """)

@@ -8,7 +8,7 @@ from .base_components import (
     # Colores y fuentes
     RexusColors,
     RexusFonts,
-    
+
     # Componentes básicos
     RexusButton,
     RexusLabel,
@@ -18,7 +18,7 @@ from .base_components import (
     RexusGroupBox,
     RexusFrame,
     RexusProgressBar,
-    
+
     # Utilidades
     RexusMessageBox,
     RexusLayoutHelper,

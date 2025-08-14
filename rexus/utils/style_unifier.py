@@ -8,7 +8,7 @@ Fecha: 13/08/2025
 
 class StyleUnifier:
     """Centralizador de estilos comunes para todos los módulos"""
-    
+
     # Estándares de tamaños unificados
     SIZES = {
         'tab_height': 24,
@@ -24,7 +24,7 @@ class StyleUnifier:
         'margin_normal': 12,
         'margin_small': 8,
     }
-    
+
     # Colores estándar (material design inspired)
     COLORS = {
         'primary': '#3b82f6',
@@ -38,19 +38,19 @@ class StyleUnifier:
         'text_secondary': '#6b7280',
         'text_muted': '#9ca3af',
     }
-    
+
     @classmethod
     def get_standard_tab_style(cls, custom_colors=None):
         """
         Retorna el estilo estándar para QTabWidget/QTabBar
-        
+
         Args:
             custom_colors (dict): Colores personalizados para sobrescribir los por defecto
         """
         colors = cls.COLORS.copy()
         if custom_colors:
             colors.update(custom_colors)
-            
+
         return f"""
             QTabWidget {{
                 border: none;
@@ -89,19 +89,19 @@ class StyleUnifier:
                 border-radius: 0 0 8px 8px;
             }}
         """
-    
+
     @classmethod
     def get_standard_button_style(cls, custom_colors=None):
         """
         Retorna el estilo estándar para QPushButton
-        
+
         Args:
             custom_colors (dict): Colores personalizados para sobrescribir los por defecto
         """
         colors = cls.COLORS.copy()
         if custom_colors:
             colors.update(custom_colors)
-            
+
         return f"""
             QPushButton {{
                 background: {colors['primary']};
@@ -126,19 +126,19 @@ class StyleUnifier:
                 color: white;
             }}
         """
-    
+
     @classmethod
     def get_standard_input_style(cls, custom_colors=None):
         """
         Retorna el estilo estándar para QLineEdit/QTextEdit
-        
+
         Args:
             custom_colors (dict): Colores personalizados para sobrescribir los por defecto
         """
         colors = cls.COLORS.copy()
         if custom_colors:
             colors.update(custom_colors)
-            
+
         return f"""
             QLineEdit, QTextEdit {{
                 border: 1px solid {colors['border']};
@@ -159,19 +159,19 @@ class StyleUnifier:
                 color: {colors['text_muted']};
             }}
         """
-    
+
     @classmethod
     def get_standard_table_style(cls, custom_colors=None):
         """
         Retorna el estilo estándar para QTableWidget
-        
+
         Args:
             custom_colors (dict): Colores personalizados para sobrescribir los por defecto
         """
         colors = cls.COLORS.copy()
         if custom_colors:
             colors.update(custom_colors)
-            
+
         return f"""
             QTableWidget {{
                 border: 1px solid {colors['border']};
@@ -200,27 +200,30 @@ class StyleUnifier:
                 max-height: {cls.SIZES['header_height']}px;
             }}
         """
-    
+
     @classmethod
     def get_compact_layout_margins(cls):
         """Retorna márgenes compactos estándar"""
         return {
-            'small': (cls.SIZES['margin_small'], cls.SIZES['margin_small'], 
+            'small': (cls.SIZES['margin_small'], cls.SIZES['margin_small'],
                      cls.SIZES['margin_small'], cls.SIZES['margin_small']),
-            'normal': (cls.SIZES['margin_normal'], cls.SIZES['margin_normal'], 
+            'normal': (cls.SIZES['margin_normal'], cls.SIZES['margin_normal'],
                       cls.SIZES['margin_normal'], cls.SIZES['margin_normal']),
             'spacing_small': cls.SIZES['margin_small'],
             'spacing_normal': cls.SIZES['margin_normal'],
         }
-    
+
     @classmethod
     def apply_to_widget(cls, widget, style_type="tab", custom_colors=None):
         """
         Aplica un estilo estándar a un widget específico
-        
+
         Args:
             widget: El widget al que aplicar el estilo
-            style_type (str): Tipo de estilo ('tab', 'button', 'input', 'table')
+            style_type (str): Tipo de estilo ('tab',
+'button',
+                'input',
+                'table')
             custom_colors (dict): Colores personalizados
         """
         style_map = {
@@ -229,7 +232,7 @@ class StyleUnifier:
             'input': cls.get_standard_input_style,
             'table': cls.get_standard_table_style,
         }
-        
+
         if style_type in style_map:
             style = style_map[style_type](custom_colors)
             widget.setStyleSheet(style)

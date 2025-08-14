@@ -4,10 +4,9 @@ Modelo de Programación de Mantenimiento
 Maneja la programación automática y calendario de mantenimientos.
 """
 
-from datetime import datetime, date, timedelta
+from datetime import date, timedelta
 from typing import Dict, List, Optional, Any
 from rexus.utils.security import SecurityUtils
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProgramacionMantenimientoModel:
@@ -140,7 +139,7 @@ class ProgramacionMantenimientoModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
+            SELECT
                 p.id, p.equipo_id, e.nombre as equipo_nombre, e.codigo as equipo_codigo,
                 p.tipo_mantenimiento, p.frecuencia_dias, p.descripcion,
                 p.fecha_inicio, p.fecha_proximo, p.responsable, p.costo_estimado,
@@ -160,7 +159,7 @@ class ProgramacionMantenimientoModel:
 
             for row in rows:
                 programacion = dict(zip(columns, row))
-                
+
                 # Determinar estado basado en días hasta próximo
                 dias_hasta = programacion.get('dias_hasta_proximo', 0)
                 if dias_hasta < 0:
@@ -171,7 +170,7 @@ class ProgramacionMantenimientoModel:
                     programacion['estado'] = 'PRÓXIMO'
                 else:
                     programacion['estado'] = 'PROGRAMADO'
-                
+
                 programaciones.append(programacion)
 
             print(f"[PROGRAMACION] Obtenidas {len(programaciones)} programaciones activas")
@@ -196,15 +195,15 @@ class ProgramacionMantenimientoModel:
 
             # Buscar programaciones que necesitan generar mantenimiento
             sql_pendientes = """
-            SELECT 
+            SELECT
                 p.id, p.equipo_id, p.tipo_mantenimiento, p.descripcion,
                 p.responsable, p.costo_estimado, p.frecuencia_dias
             FROM programacion_mantenimiento p
-            WHERE p.activo = 1 
+            WHERE p.activo = 1
             AND p.fecha_proximo <= GETDATE()
             AND NOT EXISTS (
-                SELECT 1 FROM mantenimientos m 
-                WHERE m.equipo_id = p.equipo_id 
+                SELECT 1 FROM mantenimientos m
+                WHERE m.equipo_id = p.equipo_id
                 AND m.estado IN ('PROGRAMADO', 'EN_PROGRESO')
                 AND m.fecha_programada >= p.fecha_proximo
             )
@@ -275,7 +274,7 @@ class ProgramacionMantenimientoModel:
             cursor = self.db_connection.cursor()
 
             sql_calendario = """
-            SELECT 
+            SELECT
                 m.id, m.equipo_id, e.nombre as equipo_nombre,
                 m.tipo, m.descripcion, m.fecha_programada, m.estado,
                 m.responsable, m.costo_estimado,
@@ -284,28 +283,32 @@ class ProgramacionMantenimientoModel:
             INNER JOIN equipos e ON m.equipo_id = e.id
             LEFT JOIN programacion_mantenimiento p ON m.programacion_id = p.id
             WHERE m.fecha_programada BETWEEN ? AND ?
-            
+
             UNION ALL
-            
-            SELECT 
+
+            SELECT
                 NULL as id, p.equipo_id, e.nombre as equipo_nombre,
                 p.tipo_mantenimiento as tipo, p.descripcion, p.fecha_proximo as fecha_programada,
                 'PROGRAMADO' as estado, p.responsable, p.costo_estimado,
                 p.frecuencia_dias
             FROM programacion_mantenimiento p
             INNER JOIN equipos e ON p.equipo_id = e.id
-            WHERE p.activo = 1 
+            WHERE p.activo = 1
             AND p.fecha_proximo BETWEEN ? AND ?
             AND NOT EXISTS (
-                SELECT 1 FROM mantenimientos m 
-                WHERE m.equipo_id = p.equipo_id 
+                SELECT 1 FROM mantenimientos m
+                WHERE m.equipo_id = p.equipo_id
                 AND m.fecha_programada = p.fecha_proximo
             )
-            
+
             ORDER BY fecha_programada ASC
             """
 
-            cursor.execute(sql_calendario, (fecha_inicio, fecha_fin, fecha_inicio, fecha_fin))
+            cursor.execute(sql_calendario,
+(fecha_inicio,
+                fecha_fin,
+                fecha_inicio,
+                fecha_fin))
             rows = cursor.fetchall()
 
             columns = [desc[0] for desc in cursor.description]
@@ -313,13 +316,13 @@ class ProgramacionMantenimientoModel:
 
             for row in rows:
                 evento = dict(zip(columns, row))
-                
+
                 # Agregar información adicional para el calendario
                 evento['es_programacion'] = evento['id'] is None
                 evento['color'] = self._get_color_por_tipo_estado(
                     evento['tipo'], evento['estado']
                 )
-                
+
                 eventos.append(evento)
 
             print(f"[PROGRAMACION] Obtenidos {len(eventos)} eventos de calendario")
@@ -412,7 +415,7 @@ class ProgramacionMantenimientoModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
+            SELECT
                 id, nombre, tipo_mantenimiento, descripcion, frecuencia_sugerida,
                 tareas_json, tiempo_estimado, costo_estimado, requisitos,
                 fecha_creacion
@@ -429,7 +432,7 @@ class ProgramacionMantenimientoModel:
 
             for row in rows:
                 plantilla = dict(zip(columns, row))
-                
+
                 # Parsear JSON de tareas
                 try:
                     import json
@@ -437,7 +440,7 @@ class ProgramacionMantenimientoModel:
                 except (json.JSONDecodeError, TypeError) as e:
                     print(f"[WARNING PROGRAMACION] Error parsing tasks JSON: {e}")
                     plantilla['tareas'] = []
-                
+
                 del plantilla['tareas_json']
                 plantillas.append(plantilla)
 
@@ -448,7 +451,10 @@ class ProgramacionMantenimientoModel:
             print(f"[ERROR PROGRAMACION] Error obteniendo plantillas: {e}")
             return self._get_plantillas_demo()
 
-    def aplicar_plantilla_a_equipo(self, plantilla_id: int, equipo_id: int, responsable: str = "") -> bool:
+    def aplicar_plantilla_a_equipo(self,
+plantilla_id: int,
+        equipo_id: int,
+        responsable: str = "") -> bool:
         """
         Aplica una plantilla de mantenimiento a un equipo específico.
 
@@ -490,7 +496,7 @@ class ProgramacionMantenimientoModel:
 
             if exito:
                 print(f"[PROGRAMACION] Plantilla aplicada a equipo {equipo_id}")
-            
+
             return exito
 
         except Exception as e:
@@ -517,32 +523,32 @@ class ProgramacionMantenimientoModel:
 
             # Programaciones por tipo
             cursor.execute("""
-                SELECT tipo_mantenimiento, COUNT(*) 
-                FROM programacion_mantenimiento 
-                WHERE activo = 1 
+                SELECT tipo_mantenimiento, COUNT(*)
+                FROM programacion_mantenimiento
+                WHERE activo = 1
                 GROUP BY tipo_mantenimiento
             """)
             stats['por_tipo'] = dict(cursor.fetchall())
 
             # Mantenimientos vencidos
             cursor.execute("""
-                SELECT COUNT(*) FROM programacion_mantenimiento 
+                SELECT COUNT(*) FROM programacion_mantenimiento
                 WHERE activo = 1 AND fecha_proximo < GETDATE()
             """)
             stats['vencidos'] = cursor.fetchone()[0]
 
             # Próximos 7 días
             cursor.execute("""
-                SELECT COUNT(*) FROM programacion_mantenimiento 
-                WHERE activo = 1 
+                SELECT COUNT(*) FROM programacion_mantenimiento
+                WHERE activo = 1
                 AND fecha_proximo BETWEEN GETDATE() AND DATEADD(day, 7, GETDATE())
             """)
             stats['proximos_7_dias'] = cursor.fetchone()[0]
 
             # Próximos 30 días
             cursor.execute("""
-                SELECT COUNT(*) FROM programacion_mantenimiento 
-                WHERE activo = 1 
+                SELECT COUNT(*) FROM programacion_mantenimiento
+                WHERE activo = 1
                 AND fecha_proximo BETWEEN GETDATE() AND DATEADD(day, 30, GETDATE())
             """)
             stats['proximos_30_dias'] = cursor.fetchone()[0]
@@ -560,12 +566,12 @@ class ProgramacionMantenimientoModel:
             'CORRECTIVO': '#dc3545',    # Rojo
             'PREDICTIVO': '#007bff',    # Azul
         }
-        
+
         if estado == 'VENCIDO':
             return '#dc3545'  # Rojo para vencidos
         elif estado == 'URGENTE':
             return '#fd7e14'  # Naranja para urgentes
-        
+
         return colores.get(tipo, '#6c757d')  # Gris por defecto
 
     def _get_programaciones_demo(self) -> List[Dict]:
@@ -605,7 +611,7 @@ class ProgramacionMantenimientoModel:
         """Calendario demo para testing."""
         eventos = []
         fecha_actual = fecha_inicio
-        
+
         while fecha_actual <= fecha_fin:
             if fecha_actual.weekday() == 1:  # Martes
                 eventos.append({
@@ -620,9 +626,9 @@ class ProgramacionMantenimientoModel:
                     'color': '#28a745',
                     'es_programacion': False
                 })
-            
+
             fecha_actual += timedelta(days=1)
-        
+
         return eventos
 
     def _get_plantillas_demo(self) -> List[Dict]:
@@ -677,12 +683,12 @@ class ProgramacionMantenimientoModel:
             'proximos_7_dias': 4,
             'proximos_30_dias': 8
         }
-    
+
     def obtener_mantenimientos_vencidos(self) -> List[Dict]:
         """Obtiene mantenimientos vencidos."""
         if not self.db_connection:
             return []
-            
+
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
@@ -693,19 +699,19 @@ class ProgramacionMantenimientoModel:
                 WHERE p.activo = 1 AND p.fecha_proximo < GETDATE()
                 ORDER BY p.fecha_proximo ASC
             """)
-            
+
             columns = [desc[0] for desc in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo mantenimientos vencidos: {e}")
             return []
-    
+
     def obtener_mantenimientos_proximos(self, dias: int) -> List[Dict]:
         """Obtiene mantenimientos próximos a vencer en N días."""
         if not self.db_connection:
             return []
-            
+
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
@@ -714,43 +720,43 @@ class ProgramacionMantenimientoModel:
                        DATEDIFF(day, GETDATE(), p.fecha_proximo) as dias_hasta
                 FROM programacion_mantenimiento p
                 INNER JOIN equipos e ON p.equipo_id = e.id
-                WHERE p.activo = 1 
+                WHERE p.activo = 1
                 AND p.fecha_proximo BETWEEN GETDATE() AND DATEADD(day, ?, GETDATE())
                 ORDER BY p.fecha_proximo ASC
             """, (dias,))
-            
+
             columns = [desc[0] for desc in cursor.description]
             return [dict(zip(columns, row)) for row in cursor.fetchall()]
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo mantenimientos próximos: {e}")
             return []
-    
+
     def actualizar_estado_programacion(self, programacion_id: int, nuevo_estado: str) -> bool:
         """Actualiza el estado de una programación."""
         if not self.db_connection:
             return False
-            
+
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
-                UPDATE programacion_mantenimiento 
+                UPDATE programacion_mantenimiento
                 SET estado = ?, fecha_actualizacion = GETDATE()
                 WHERE id = ?
             """, (nuevo_estado, programacion_id))
-            
+
             self.db_connection.commit()
             return cursor.rowcount > 0
-            
+
         except Exception as e:
             print(f"[ERROR] Error actualizando estado programación: {e}")
             return False
-    
+
     def obtener_programacion(self, programacion_id: int) -> Optional[Dict]:
         """Obtiene una programación por ID."""
         if not self.db_connection:
             return None
-            
+
         try:
             cursor = self.db_connection.cursor()
             cursor.execute("""
@@ -759,13 +765,13 @@ class ProgramacionMantenimientoModel:
                 INNER JOIN equipos e ON p.equipo_id = e.id
                 WHERE p.id = ?
             """, (programacion_id,))
-            
+
             row = cursor.fetchone()
             if row:
                 columns = [desc[0] for desc in cursor.description]
                 return dict(zip(columns, row))
             return None
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo programación: {e}")
             return None

@@ -421,7 +421,8 @@ if __name__ == "__main__":
 
     if resultado:
         print(f"\n[CHECK] Análisis completado exitosamente")
-        if isinstance(resultado, dict) and len(resultado.get('criticas_faltantes', [])) == 0:
+        if isinstance(resultado, dict) and \
+            len(resultado.get('criticas_faltantes', [])) == 0:
             print(f"🎉 Tu sistema está listo para usar!")
         else:
             print(f"[WARN]  Considera crear las tablas críticas para funcionalidad completa")

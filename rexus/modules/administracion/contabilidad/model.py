@@ -8,15 +8,10 @@ Maneja la lógica de negocio para:
 - Materiales y compras
 """
 
-from datetime import datetime, date
-from decimal import Decimal
-import sys
-from pathlib import Path
 
 # Importar sistema SQL seguro
 try:
     from rexus.utils.sql_query_manager import SQLQueryManager
-    from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] SQL System not available in contabilidad: {e}")
@@ -39,7 +34,7 @@ class ContabilidadModel:
         self.tabla_pagos_obra = "pagos_obra"
         self.tabla_pagos_materiales = "pagos_materiales"
         self.tabla_departamentos = "departamentos"
-        
+
         # Configurar sistema SQL seguro
         if SQL_SYSTEM_AVAILABLE:
             self.sql_manager = SQLQueryManager()
@@ -47,36 +42,36 @@ class ContabilidadModel:
         else:
             self.sql_manager = None
             print("[WARNING CONTABILIDAD] SQL System no disponible - usando queries embebidas")
-            
+
         self._verificar_tablas()
 
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
-        
+
         Args:
             table_name: Nombre de tabla a validar
-            
+
         Returns:
             Nombre de tabla validado
-            
+
         Raises:
             ValueError: Si el nombre de tabla no es válido
         """
         import re
-        
+
         # Solo permitir nombres alfanuméricos y underscore
         if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
             raise ValueError(f"Nombre de tabla inválido: {table_name}")
-        
+
         # Lista blanca de tablas permitidas
         allowed_tables = {
-            'libro_contable', 'recibos', 'pagos_obra', 
+            'libro_contable', 'recibos', 'pagos_obra',
             'pagos_materiales', 'departamentos'
         }
         if table_name not in allowed_tables:
             raise ValueError(f"Tabla no permitida: {table_name}")
-            
+
         return table_name
 
     def _verificar_tablas(self):
@@ -109,7 +104,10 @@ class ContabilidadModel:
 
     # MÉTODOS PARA LIBRO CONTABLE
 
-    def obtener_asientos_contables(self, fecha_desde=None, fecha_hasta=None, tipo=None):
+    def obtener_asientos_contables(self,
+fecha_desde=None,
+        fecha_hasta=None,
+        tipo=None):
         """
         Obtiene asientos del libro contable con filtros opcionales.
 
@@ -161,7 +159,7 @@ class ContabilidadModel:
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
-                        SELECT 
+                        SELECT
                             id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
                             referencia, debe, haber, saldo, estado, usuario_creacion,
                             fecha_creacion, fecha_modificacion
@@ -169,7 +167,8 @@ class ContabilidadModel:
                         WHERE 1=1
                         {" AND fecha_asiento >= ?" if fecha_desde else ""}
                         {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                        {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
+                        {" AND tipo_asiento = ?" if tipo and \
+                            tipo != "Todos" else ""}
                         ORDER BY fecha_asiento DESC, numero_asiento DESC
                     """
                     cursor.execute(query, params)
@@ -177,7 +176,7 @@ class ContabilidadModel:
                 # Fallback con query validada
                 tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                 query = f"""
-                    SELECT 
+                    SELECT
                         id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
                         referencia, debe, haber, saldo, estado, usuario_creacion,
                         fecha_creacion, fecha_modificacion
@@ -185,7 +184,8 @@ class ContabilidadModel:
                     WHERE 1=1
                     {" AND fecha_asiento >= ?" if fecha_desde else ""}
                     {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                    {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
+                    {" AND tipo_asiento = ?" if tipo and \
+                        tipo != "Todos" else ""}
                     ORDER BY fecha_asiento DESC, numero_asiento DESC
                 """
                 cursor.execute(query, params)
@@ -234,9 +234,9 @@ class ContabilidadModel:
                     cursor.execute(query)
             else:
                 # Usar query parametrizada segura
-                query = "SELECT MAX(numero_asiento) FROM libro_contable" 
+                query = "SELECT MAX(numero_asiento) FROM libro_contable"
                 cursor.execute(query)
-                
+
             ultimo_numero = cursor.fetchone()[0]
             numero_asiento = (ultimo_numero or 0) + 1
 
@@ -271,7 +271,18 @@ class ContabilidadModel:
                         INSERT INTO [{tabla_validada}]
                         (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                          debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
+                        VALUES (?,
+?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            ?,
+                            GETDATE(),
+                            GETDATE())
                     """
                     cursor.execute(query, (
                         numero_asiento,
@@ -291,7 +302,18 @@ class ContabilidadModel:
                     INSERT INTO [{tabla_validada}]
                     (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
                      debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
+                    VALUES (?,
+?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        ?,
+                        GETDATE(),
+                        GETDATE())
                 """
                 cursor.execute(query, (
                     numero_asiento,
@@ -367,7 +389,11 @@ class ContabilidadModel:
                     query = f"""
                         UPDATE [{tabla_validada}]
                         SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
-                            debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
+                            debe = ?,
+haber = ?,
+                                saldo = ?,
+                                estado = ?,
+                                fecha_modificacion = GETDATE()
                         WHERE id = ?
                     """
                     cursor.execute(query, (
@@ -386,7 +412,11 @@ class ContabilidadModel:
                 query = f"""
                     UPDATE [{tabla_validada}]
                     SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
-                        debe = ?, haber = ?, saldo = ?, estado = ?, fecha_modificacion = GETDATE()
+                        debe = ?,
+haber = ?,
+                            saldo = ?,
+                            estado = ?,
+                            fecha_modificacion = GETDATE()
                     WHERE id = ?
                 """
                 cursor.execute(query, (
@@ -447,7 +477,7 @@ class ContabilidadModel:
                 params.append(tipo)
 
             query = """
-                SELECT 
+                SELECT
                     id, numero_recibo, fecha_emision, tipo_recibo, concepto,
                     beneficiario, monto, moneda, estado, impreso,
                     usuario_creacion, fecha_creacion
@@ -488,7 +518,7 @@ class ContabilidadModel:
             cursor = self.db_connection.cursor()
 
             # Generar número de recibo usando tabla validada
-            tabla_validada = self._validate_table_name(self.tabla_recibos)
+            self._validate_table_name(self.tabla_recibos)
             query = "SELECT MAX(numero_recibo) FROM recibos"
             cursor.execute(query)
             ultimo_numero = cursor.fetchone()[0]
@@ -552,7 +582,7 @@ class ContabilidadModel:
 
             cursor.execute(query, (recibo_id,))
             self.db_connection.commit()
-            
+
             print(f"[CONTABILIDAD] Recibo {recibo_id} marcado como impreso")
             return True
 
@@ -593,7 +623,7 @@ class ContabilidadModel:
                 params.append(categoria)
 
             query = """
-                SELECT 
+                SELECT
                     id, obra_id, concepto, categoria, monto, fecha_pago,
                     metodo_pago, estado, usuario_creacion, fecha_creacion,
                     observaciones
@@ -697,7 +727,7 @@ class ContabilidadModel:
                 params.append(estado)
 
             query = """
-                SELECT 
+                SELECT
                     id, producto, proveedor, cantidad, precio_unitario,
                     total, pagado, pendiente, estado, fecha_compra,
                     fecha_pago, usuario_creacion
@@ -796,7 +826,7 @@ class ContabilidadModel:
 
             # Total ingresos y egresos del libro contable
             cursor.execute("""
-                SELECT 
+                SELECT
                     SUM(debe) as total_debe,
                     SUM(haber) as total_haber,
                     SUM(saldo) as saldo_total
@@ -869,7 +899,7 @@ class ContabilidadModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             conditions = ["estado = 'ACTIVO'"]
             params = []
 
@@ -882,7 +912,7 @@ class ContabilidadModel:
                 params.append(fecha_hasta)
 
             query = """
-                SELECT 
+                SELECT
                     tipo_asiento,
                     SUM(debe) as total_debe,
                     SUM(haber) as total_haber,
@@ -944,12 +974,12 @@ class ContabilidadModel:
             # Use secure parametrized query
             query = """
                 SELECT tipo_recibo, SUM(monto)
-                FROM recibos 
+                FROM recibos
                 """ + where_clause + """
                 GROUP BY tipo_recibo
             """
             cursor.execute(query, params)
-            
+
             ingresos = dict(cursor.fetchall())
             flujo['ingresos'] = ingresos
 
@@ -967,7 +997,7 @@ class ContabilidadModel:
                     FROM pagos_obra
                     GROUP BY categoria
                 """)
-            
+
             egresos = dict(cursor.fetchall())
             flujo['egresos'] = egresos
 

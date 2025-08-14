@@ -178,7 +178,8 @@ class UIUXAuditRunner:
         score_promedio = 0
         modulos_analizados = set()
 
-        if "consistency" in self.results and "issues" in self.results["consistency"]:
+        if "consistency" in self.results and \
+            "issues" in self.results["consistency"]:
             total_consistency_issues = len(self.results["consistency"]["issues"])
             if "modulos_analizados" in self.results["consistency"]:
                 modulos_analizados.update(
@@ -290,7 +291,8 @@ class UIUXAuditRunner:
         # Recomendaciones de accesibilidad
         if (
             "accessibility" in self.results
-            and "recomendaciones_prioritarias" in self.results["accessibility"]
+ and \
+                "recomendaciones_prioritarias" in self.results["accessibility"]
         ):
             recomendaciones.extend(
                 self.results["accessibility"]["recomendaciones_prioritarias"]

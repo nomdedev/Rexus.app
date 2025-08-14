@@ -33,7 +33,10 @@ class SecurityUtils:
             salt = hashed[:64]
             stored_hash = hashed[64:]
             pwdhash = hashlib.pbkdf2_hmac(
-                "sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000
+                "sha256",
+password.encode("utf-8"),
+                    salt.encode("utf-8"),
+                    100000
             )
             return pwdhash.hex() == stored_hash
         except Exception:
@@ -71,7 +74,10 @@ class SecurityUtils:
         ]
 
         for pattern in script_patterns:
-            sanitized = re.sub(pattern, "", sanitized, flags=re.IGNORECASE | re.DOTALL)
+            sanitized = re.sub(pattern,
+"",
+                sanitized,
+                flags=re.IGNORECASE | re.DOTALL)
 
         return sanitized.strip()
 

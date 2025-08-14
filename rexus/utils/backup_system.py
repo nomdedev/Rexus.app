@@ -13,7 +13,7 @@ import json
 import schedule
 import threading
 from datetime import datetime, timedelta
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List, Tuple
 from pathlib import Path
 import logging
 from PyQt6.QtCore import QObject, pyqtSignal
@@ -21,7 +21,7 @@ from PyQt6.QtCore import QObject, pyqtSignal
 
 class BackupConfig:
     """Configuración del sistema de backups."""
-    
+
     def __init__(self):
         self.backup_dir = "backups"
         self.backup_schedule = "daily"  # daily, weekly, monthly
@@ -31,7 +31,7 @@ class BackupConfig:
         self.backup_databases = ["users", "inventario", "auditoria"]
         self.notification_enabled = True
         self.auto_cleanup = True
-    
+
     @classmethod
     def from_file(cls, config_path: str):
         """Carga configuración desde archivo JSON."""
@@ -46,7 +46,7 @@ class BackupConfig:
         except Exception as e:
             logging.error(f"Error cargando configuración de backup: {e}")
         return config
-    
+
     def save_to_file(self, config_path: str):
         """Guarda configuración a archivo JSON."""
         try:
@@ -68,8 +68,8 @@ class BackupConfig:
 
 class BackupResult:
     """Resultado de una operación de backup."""
-    
-    def __init__(self, success: bool = False, message: str = "", 
+
+    def __init__(self, success: bool = False, message: str = "",
                  backup_path: str = "", size_mb: float = 0.0,
                  duration_seconds: float = 0.0):
         self.success = success
@@ -78,7 +78,7 @@ class BackupResult:
         self.size_mb = size_mb
         self.duration_seconds = duration_seconds
         self.timestamp = datetime.now()
-    
+
     def to_dict(self) -> Dict:
         """Convierte el resultado a diccionario."""
         return {
@@ -93,24 +93,28 @@ class BackupResult:
 
 class DatabaseBackupManager(QObject):
     """Gestor de backups para bases de datos."""
-    
+
     # Señales para notificaciones
     backup_started = pyqtSignal(str)  # database_name
-    backup_completed = pyqtSignal(str, bool, str)  # database_name, success, message
+    backup_completed = pyqtSignal(str,
+bool,
+        str)  # database_name,
+        success,
+        message
     backup_error = pyqtSignal(str, str)  # database_name, error_message
-    
+
     def __init__(self, config: BackupConfig):
         super().__init__()
         self.config = config
         self.backup_history = []
         self.setup_logging()
         self.ensure_backup_directory()
-    
+
     def setup_logging(self):
         """Configura el sistema de logging."""
         log_dir = Path("logs")
         log_dir.mkdir(exist_ok=True)
-        
+
         logging.basicConfig(
             level=logging.INFO,
             format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -120,46 +124,46 @@ class DatabaseBackupManager(QObject):
             ]
         )
         self.logger = logging.getLogger('BackupManager')
-    
+
     def ensure_backup_directory(self):
         """Asegura que el directorio de backups exista."""
         backup_path = Path(self.config.backup_dir)
         backup_path.mkdir(parents=True, exist_ok=True)
-    
+
     def get_database_connections(self) -> Dict[str, str]:
         """Obtiene las rutas de las bases de datos."""
         return {
             "users": "rexus/data/users.db",
-            "inventario": "rexus/data/inventario.db", 
+            "inventario": "rexus/data/inventario.db",
             "auditoria": "rexus/data/auditoria.db"
         }
-    
+
     def backup_single_database(self, db_name: str, db_path: str) -> BackupResult:
         """Realiza backup de una base de datos específica."""
         start_time = datetime.now()
-        
+
         try:
             self.backup_started.emit(db_name)
             self.logger.info(f"Iniciando backup de {db_name}")
-            
+
             # Verificar que la base de datos existe
             if not os.path.exists(db_path):
                 error_msg = f"Base de datos no encontrada: {db_path}"
                 self.logger.error(error_msg)
                 return BackupResult(False, error_msg)
-            
+
             # Crear nombre del archivo de backup
             timestamp = start_time.strftime("%Y%m%d_%H%M%S")
             backup_filename = f"{db_name}_backup_{timestamp}.db"
             backup_path = Path(self.config.backup_dir) / backup_filename
-            
+
             # Realizar backup usando SQLite backup API (más seguro que copiar archivo)
             success = self._perform_sqlite_backup(db_path, str(backup_path))
-            
+
             if not success:
                 error_msg = f"Error en backup SQLite de {db_name}"
                 return BackupResult(False, error_msg)
-            
+
             # Comprimir si está habilitado
             final_path = str(backup_path)
             if self.config.compress_backups:
@@ -168,11 +172,11 @@ class DatabaseBackupManager(QObject):
                 if success:
                     os.remove(str(backup_path))  # Eliminar archivo sin comprimir
                     final_path = compressed_path
-            
+
             # Calcular tamaño y duración
             file_size_mb = os.path.getsize(final_path) / (1024 * 1024)
             duration = (datetime.now() - start_time).total_seconds()
-            
+
             # Crear resultado exitoso
             result = BackupResult(
                 success=True,
@@ -181,43 +185,43 @@ class DatabaseBackupManager(QObject):
                 size_mb=file_size_mb,
                 duration_seconds=duration
             )
-            
+
             self.backup_history.append(result)
             self.backup_completed.emit(db_name, True, result.message)
             self.logger.info(f"Backup de {db_name} completado: {final_path} ({file_size_mb:.2f} MB)")
-            
+
             return result
-            
+
         except Exception as e:
             error_msg = f"Error en backup de {db_name}: {str(e)}"
             self.logger.error(error_msg)
             self.backup_error.emit(db_name, error_msg)
-            
+
             duration = (datetime.now() - start_time).total_seconds()
             return BackupResult(False, error_msg, duration_seconds=duration)
-    
+
     def _perform_sqlite_backup(self, source_path: str, backup_path: str) -> bool:
         """Realiza backup usando la API nativa de SQLite."""
         try:
             # Conectar a la base de datos fuente
             source_conn = sqlite3.connect(source_path)
-            
+
             # Crear base de datos de backup
             backup_conn = sqlite3.connect(backup_path)
-            
+
             # Realizar backup usando la función nativa
             source_conn.backup(backup_conn)
-            
+
             # Cerrar conexiones
             backup_conn.close()
             source_conn.close()
-            
+
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error en backup SQLite: {e}")
             return False
-    
+
     def _compress_backup(self, source_path: str, compressed_path: str) -> bool:
         """Comprime un archivo de backup."""
         try:
@@ -227,14 +231,14 @@ class DatabaseBackupManager(QObject):
         except Exception as e:
             self.logger.error(f"Error comprimiendo backup: {e}")
             return False
-    
+
     def backup_all_databases(self) -> List[BackupResult]:
         """Realiza backup de todas las bases de datos configuradas."""
         results = []
         db_connections = self.get_database_connections()
-        
+
         self.logger.info("Iniciando backup completo del sistema")
-        
+
         for db_name in self.config.backup_databases:
             if db_name in db_connections:
                 db_path = db_connections[db_name]
@@ -244,24 +248,24 @@ class DatabaseBackupManager(QObject):
                 error_msg = f"Base de datos no configurada: {db_name}"
                 self.logger.error(error_msg)
                 results.append(BackupResult(False, error_msg))
-        
+
         # Ejecutar limpieza automática si está habilitada
         if self.config.auto_cleanup:
             self.cleanup_old_backups()
-        
+
         self.logger.info("Backup completo del sistema finalizado")
         return results
-    
+
     def cleanup_old_backups(self):
         """Elimina backups antiguos según la política de retención."""
         try:
             backup_dir = Path(self.config.backup_dir)
             if not backup_dir.exists():
                 return
-            
+
             cutoff_date = datetime.now() - timedelta(days=self.config.retention_days)
             deleted_count = 0
-            
+
             for backup_file in backup_dir.glob("*_backup_*"):
                 if backup_file.is_file():
                     file_time = datetime.fromtimestamp(backup_file.stat().st_mtime)
@@ -269,23 +273,23 @@ class DatabaseBackupManager(QObject):
                         backup_file.unlink()
                         deleted_count += 1
                         self.logger.info(f"Backup antiguo eliminado: {backup_file.name}")
-            
+
             if deleted_count > 0:
                 self.logger.info(f"Limpieza completada: {deleted_count} backups eliminados")
-            
+
         except Exception as e:
             self.logger.error(f"Error en limpieza de backups: {e}")
-    
+
     def restore_database(self, backup_path: str, target_db_path: str) -> bool:
         """Restaura una base de datos desde un backup."""
         try:
             self.logger.info(f"Iniciando restauración desde {backup_path}")
-            
+
             # Verificar que el backup existe
             if not os.path.exists(backup_path):
                 self.logger.error(f"Archivo de backup no encontrado: {backup_path}")
                 return False
-            
+
             # Si es un archivo comprimido, extraerlo primero
             temp_db_path = None
             if backup_path.endswith('.zip'):
@@ -301,35 +305,35 @@ class DatabaseBackupManager(QObject):
                 source_path = temp_db_path
             else:
                 source_path = backup_path
-            
+
             # Hacer backup de la base de datos actual si existe
             if os.path.exists(target_db_path):
                 backup_current = f"{target_db_path}.backup_before_restore"
                 shutil.copy2(target_db_path, backup_current)
                 self.logger.info(f"Backup de seguridad creado: {backup_current}")
-            
+
             # Restaurar la base de datos
             shutil.copy2(source_path, target_db_path)
-            
+
             # Limpiar archivo temporal si se creó
             if temp_db_path and os.path.exists(temp_db_path):
                 os.remove(temp_db_path)
-            
+
             self.logger.info(f"Base de datos restaurada exitosamente: {target_db_path}")
             return True
-            
+
         except Exception as e:
             self.logger.error(f"Error en restauración: {e}")
             return False
-    
+
     def get_available_backups(self) -> List[Dict]:
         """Obtiene lista de backups disponibles."""
         backups = []
         backup_dir = Path(self.config.backup_dir)
-        
+
         if not backup_dir.exists():
             return backups
-        
+
         for backup_file in backup_dir.glob("*_backup_*"):
             if backup_file.is_file():
                 try:
@@ -338,13 +342,13 @@ class DatabaseBackupManager(QObject):
                     if len(parts) == 2:
                         db_name = parts[0]
                         timestamp_str = parts[1]
-                        
+
                         # Parsear timestamp
                         timestamp = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-                        
+
                         # Información del archivo
                         file_size_mb = backup_file.stat().st_size / (1024 * 1024)
-                        
+
                         backups.append({
                             'database': db_name,
                             'timestamp': timestamp,
@@ -355,15 +359,15 @@ class DatabaseBackupManager(QObject):
                         })
                 except Exception as e:
                     self.logger.error(f"Error procesando backup {backup_file}: {e}")
-        
+
         # Ordenar por timestamp descendente (más recientes primero)
         backups.sort(key=lambda x: x['timestamp'], reverse=True)
         return backups
-    
+
     def get_backup_statistics(self) -> Dict:
         """Obtiene estadísticas del sistema de backups."""
         backups = self.get_available_backups()
-        
+
         if not backups:
             return {
                 'total_backups': 0,
@@ -373,10 +377,10 @@ class DatabaseBackupManager(QObject):
                 'newest_backup': None,
                 'average_size_mb': 0.0
             }
-        
+
         total_size = sum(b['size_mb'] for b in backups)
         databases = list(set(b['database'] for b in backups))
-        
+
         return {
             'total_backups': len(backups),
             'total_size_mb': total_size,
@@ -389,59 +393,59 @@ class DatabaseBackupManager(QObject):
 
 class AutomatedBackupScheduler:
     """Programador automático de backups."""
-    
+
     def __init__(self, backup_manager: DatabaseBackupManager, config: BackupConfig):
         self.backup_manager = backup_manager
         self.config = config
         self.scheduler_thread = None
         self.running = False
         self.setup_schedule()
-    
+
     def setup_schedule(self):
         """Configura el horario de backups automáticos."""
         schedule.clear()  # Limpiar horarios previos
-        
+
         if self.config.backup_schedule == "daily":
             schedule.every().day.at(self.config.backup_time).do(self._run_scheduled_backup)
         elif self.config.backup_schedule == "weekly":
             schedule.every().monday.at(self.config.backup_time).do(self._run_scheduled_backup)
         elif self.config.backup_schedule == "monthly":
             schedule.every().month.do(self._run_scheduled_backup)
-    
+
     def _run_scheduled_backup(self):
         """Ejecuta backup programado."""
         try:
             logging.info("Ejecutando backup programado")
             results = self.backup_manager.backup_all_databases()
-            
+
             # Log de resultados
             success_count = sum(1 for r in results if r.success)
             total_count = len(results)
-            
+
             if success_count == total_count:
                 logging.info(f"Backup programado completado exitosamente: {success_count}/{total_count}")
             else:
                 logging.warning(f"Backup programado completado con errores: {success_count}/{total_count}")
-                
+
         except Exception as e:
             logging.error(f"Error en backup programado: {e}")
-    
+
     def start_scheduler(self):
         """Inicia el programador de backups."""
         if self.running:
             return
-        
+
         self.running = True
-        
+
         def run_scheduler():
             while self.running:
                 schedule.run_pending()
                 threading.Event().wait(60)  # Verificar cada minuto
-        
+
         self.scheduler_thread = threading.Thread(target=run_scheduler, daemon=True)
         self.scheduler_thread.start()
         logging.info("Programador de backups iniciado")
-    
+
     def stop_scheduler(self):
         """Detiene el programador de backups."""
         self.running = False
@@ -455,29 +459,29 @@ class AutomatedBackupScheduler:
 def create_backup_system(config_path: str = "config/backup_config.json") -> Tuple[DatabaseBackupManager, AutomatedBackupScheduler]:
     """
     Crea e inicializa el sistema completo de backups.
-    
+
     Args:
         config_path: Ruta al archivo de configuración
-        
+
     Returns:
         Tupla (backup_manager, scheduler)
     """
     # Cargar configuración
     config = BackupConfig.from_file(config_path)
-    
+
     # Crear gestor de backups
     backup_manager = DatabaseBackupManager(config)
-    
+
     # Crear programador
     scheduler = AutomatedBackupScheduler(backup_manager, config)
-    
+
     return backup_manager, scheduler
 
 
 def perform_immediate_backup() -> List[BackupResult]:
     """
     Realiza un backup inmediato de todas las bases de datos.
-    
+
     Returns:
         Lista de resultados de backup
     """
@@ -489,7 +493,7 @@ def perform_immediate_backup() -> List[BackupResult]:
 def get_backup_status() -> Dict:
     """
     Obtiene el estado actual del sistema de backups.
-    
+
     Returns:
         Diccionario con estadísticas y estado
     """
@@ -502,24 +506,24 @@ def get_backup_status() -> Dict:
 if __name__ == "__main__":
     # Crear sistema de backups
     backup_manager, scheduler = create_backup_system()
-    
+
     # Realizar backup inmediato
     print("Realizando backup inmediato...")
     results = backup_manager.backup_all_databases()
-    
+
     for result in results:
         if result.success:
             print(f"[CHECK] Backup exitoso: {result.backup_path} ({result.size_mb:.2f} MB)")
         else:
             print(f"[ERROR] Error en backup: {result.message}")
-    
+
     # Mostrar estadísticas
     stats = backup_manager.get_backup_statistics()
     print(f"\nEstadísticas de backups:")
     print(f"Total de backups: {stats['total_backups']}")
     print(f"Tamaño total: {stats['total_size_mb']:.2f} MB")
     print(f"Bases de datos: {', '.join(stats['databases_backed_up'])}")
-    
+
     # Iniciar programador automático
     print("\nIniciando programador automático...")
     scheduler.start_scheduler()

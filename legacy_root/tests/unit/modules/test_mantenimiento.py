@@ -25,7 +25,7 @@ class TestMantenimientoModel:
     def test_model_initialization(self, mock_db_connection):
         """Test inicialización del modelo con conexión mock."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         try:
             with patch('rexus.modules.mantenimiento.model.database_manager') as mock_db_manager:
                 mock_db_manager.get_connection.return_value = mock_db_connection
@@ -37,12 +37,12 @@ class TestMantenimientoModel:
     def test_maintenance_types(self):
         """Test tipos de mantenimiento."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         # Verificar que existe configuración de tipos
         if hasattr(MantenimientoModel, 'TIPOS_MANTENIMIENTO'):
             tipos = MantenimientoModel.TIPOS_MANTENIMIENTO
             assert isinstance(tipos, (list, dict))
-            
+
             # Verificar tipos típicos de mantenimiento
             expected_types = ['PREVENTIVO', 'CORRECTIVO', 'PREDICTIVO', 'URGENTE']
             if isinstance(tipos, list):
@@ -56,9 +56,9 @@ class TestMantenimientoModel:
     def test_equipment_management_methods(self):
         """Test métodos de gestión de equipos."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         equipment_methods = ['crear_equipo', 'obtener_equipos', 'actualizar_equipo', 'eliminar_equipo']
-        
+
         for method in equipment_methods:
             if hasattr(MantenimientoModel, method):
                 assert callable(getattr(MantenimientoModel, method))
@@ -66,9 +66,9 @@ class TestMantenimientoModel:
     def test_maintenance_schedule_methods(self):
         """Test métodos de programación de mantenimiento."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         schedule_methods = ['programar_mantenimiento', 'obtener_calendario', 'generar_alertas']
-        
+
         for method in schedule_methods:
             if hasattr(MantenimientoModel, method):
                 assert callable(getattr(MantenimientoModel, method))
@@ -88,7 +88,7 @@ class TestMantenimientoView:
     def test_view_initialization(self, qapp):
         """Test inicialización de la vista."""
         from rexus.modules.mantenimiento.view import MantenimientoView
-        
+
         try:
             view = MantenimientoView()
             assert view is not None
@@ -99,10 +99,10 @@ class TestMantenimientoView:
     def test_equipment_ui_methods(self, qapp):
         """Test métodos de interfaz de equipos."""
         from rexus.modules.mantenimiento.view import MantenimientoView
-        
+
         try:
             view = MantenimientoView()
-            
+
             # Verificar métodos críticos de UI
             ui_methods = [
                 'mostrar_equipos',
@@ -110,49 +110,49 @@ class TestMantenimientoView:
                 'editar_equipo',
                 'eliminar_equipo'
             ]
-            
+
             for method_name in ui_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Vista no disponible para test: {e}")
 
     def test_maintenance_scheduling_ui(self, qapp):
         """Test interfaz de programación de mantenimiento."""
         from rexus.modules.mantenimiento.view import MantenimientoView
-        
+
         try:
             view = MantenimientoView()
-            
+
             # Verificar métodos de programación
             scheduling_methods = ['mostrar_calendario', 'programar_servicio', 'mostrar_alertas']
-            
+
             for method_name in scheduling_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Test programación skipped: {e}")
 
     def test_color_rexus_usage(self, qapp):
         """Test que no usa RexusColors problemáticos."""
         from rexus.modules.mantenimiento.view import MantenimientoView
-        
+
         try:
             view = MantenimientoView()
-            
+
             # Verificar que no usa colores que causan errores
             # Como DANGER_LIGHT que causaba problemas antes
             problematic_colors = ['DANGER_LIGHT', 'WARNING_LIGHT', 'SUCCESS_LIGHT']
-            
+
             # Si usa RexusColors, debería evitar estos colores problemáticos
             view_source = str(view.__class__.__dict__)
             for color in problematic_colors:
                 if color in view_source:
                     # Solo advertencia, no falla el test
                     print(f"Warning: Vista usa color problemático {color}")
-                    
+
         except Exception as e:
             pytest.skip(f"Test colores skipped: {e}")
 
@@ -171,7 +171,7 @@ class TestMantenimientoController:
     def test_controller_initialization(self, mock_db_connection):
         """Test inicialización del controlador."""
         from rexus.modules.mantenimiento.controller import MantenimientoController
-        
+
         try:
             with patch('rexus.modules.mantenimiento.controller.MantenimientoModel') as mock_model:
                 mock_model.return_value = Mock()
@@ -183,9 +183,9 @@ class TestMantenimientoController:
     def test_maintenance_workflow_methods(self):
         """Test métodos de flujo de trabajo."""
         from rexus.modules.mantenimiento.controller import MantenimientoController
-        
+
         workflow_methods = ['crear_orden_trabajo', 'asignar_tecnico', 'completar_servicio', 'generar_reporte']
-        
+
         try:
             controller = MantenimientoController()
             for method in workflow_methods:
@@ -201,9 +201,9 @@ class TestMantenimientoIntegration:
     def test_module_structure_integrity(self):
         """Test integridad de la estructura del módulo."""
         import os
-        
+
         module_path = "rexus/modules/mantenimiento"
-        
+
         # Verificar archivos críticos
         critical_files = [
             "__init__.py",
@@ -211,7 +211,7 @@ class TestMantenimientoIntegration:
             "view.py",
             "controller.py"
         ]
-        
+
         for file_name in critical_files:
             file_path = os.path.join(module_path, file_name)
             assert os.path.exists(file_path), f"Archivo crítico {file_name} no encontrado"
@@ -219,7 +219,7 @@ class TestMantenimientoIntegration:
     def test_sql_scripts_exist(self):
         """Test que existen scripts SQL."""
         import os
-        
+
         sql_path = "sql/mantenimiento"
         if os.path.exists(sql_path):
             sql_files = [f for f in os.listdir(sql_path) if f.endswith('.sql')]
@@ -247,10 +247,10 @@ class TestMantenimientoIntegration:
 def test_equipo_data_structure(equipo_data):
     """Test parametrizado para estructura de datos de equipo."""
     required_fields = ['nombre', 'tipo', 'modelo', 'fecha_instalacion', 'estado', 'ubicacion']
-    
+
     for field in required_fields:
         assert field in equipo_data, f"Campo {field} requerido"
-    
+
     assert len(equipo_data['nombre']) > 0
     assert len(equipo_data['tipo']) > 0
     assert len(equipo_data['modelo']) > 0
@@ -279,10 +279,10 @@ def test_equipo_data_structure(equipo_data):
 def test_mantenimiento_data_structure(mantenimiento_data):
     """Test parametrizado para estructura de datos de mantenimiento."""
     required_fields = ['equipo_id', 'tipo', 'descripcion', 'fecha_programada', 'frecuencia_dias', 'prioridad']
-    
+
     for field in required_fields:
         assert field in mantenimiento_data, f"Campo {field} requerido"
-    
+
     assert isinstance(mantenimiento_data['equipo_id'], int)
     assert mantenimiento_data['equipo_id'] > 0
     assert mantenimiento_data['tipo'] in ['PREVENTIVO', 'CORRECTIVO', 'PREDICTIVO', 'URGENTE']
@@ -298,13 +298,13 @@ class TestMantenimientoBusinessLogic:
     def test_maintenance_scheduling_logic(self):
         """Test lógica de programación de mantenimiento."""
         from datetime import datetime, timedelta
-        
+
         # Test programación preventiva
         last_maintenance = datetime(2025, 7, 15)
         frequency_days = 30
         next_maintenance = last_maintenance + timedelta(days=frequency_days)
         expected_date = datetime(2025, 8, 14)
-        
+
         assert next_maintenance == expected_date
 
     def test_priority_calculation(self):
@@ -316,12 +316,12 @@ class TestMantenimientoBusinessLogic:
             'MEDIO': 2,
             'BAJO': 1
         }
-        
+
         # Equipo crítico vencido = máxima prioridad
         days_overdue = 5
         criticality = equipment_criticality['CRITICO']
         priority_score = criticality * max(1, days_overdue)
-        
+
         assert priority_score >= 4  # Mínimo para equipo crítico
 
     def test_maintenance_cost_calculation(self):
@@ -330,10 +330,10 @@ class TestMantenimientoBusinessLogic:
         labor_hours = 4
         labor_rate = 25.00  # $/hora
         parts_cost = 150.00
-        
+
         total_cost = (labor_hours * labor_rate) + parts_cost
         expected_cost = (4 * 25.00) + 150.00  # 100 + 150 = 250
-        
+
         assert total_cost == expected_cost
         assert total_cost == 250.00
 
@@ -344,7 +344,7 @@ class TestMantenimientoErrorHandling:
     def test_model_handles_invalid_dates(self):
         """Test que el modelo maneja fechas inválidas."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         invalid_dates = [
             None,
             '',
@@ -352,7 +352,7 @@ class TestMantenimientoErrorHandling:
             'not-a-date',
             '2020-02-30'   # 30 de febrero no existe
         ]
-        
+
         for invalid_date in invalid_dates:
             try:
                 # Si existe método de validación, probarlo
@@ -366,29 +366,29 @@ class TestMantenimientoErrorHandling:
     def test_view_handles_missing_equipment(self, qapp):
         """Test que la vista maneja equipos faltantes."""
         from rexus.modules.mantenimiento.view import MantenimientoView
-        
+
         try:
             view = MantenimientoView()
-            
+
             # La vista debería manejar lista vacía sin crash
             if hasattr(view, 'mostrar_equipos'):
                 # No debería crash con lista vacía
                 assert True
-                
+
         except Exception as e:
             pytest.skip(f"Test equipos faltantes skipped: {e}")
 
     def test_controller_handles_scheduling_conflicts(self):
         """Test que el controlador maneja conflictos de programación."""
         from rexus.modules.mantenimiento.controller import MantenimientoController
-        
+
         try:
             controller = MantenimientoController()
-            
+
             # Verificar que existe método para detectar conflictos
             if hasattr(controller, 'detectar_conflictos_programacion'):
                 assert callable(controller.detectar_conflictos_programacion)
-                
+
         except Exception as e:
             pytest.skip(f"Test conflictos skipped: {e}")
 
@@ -399,10 +399,10 @@ class TestMantenimientoSecurity:
     def test_maintenance_access_control(self):
         """Test control de acceso a mantenimiento."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         # Verificar métodos de control de acceso
         access_methods = ['verificar_permisos_tecnico', 'log_maintenance_action', 'validate_user_role']
-        
+
         for method in access_methods:
             if hasattr(MantenimientoModel, method):
                 assert callable(getattr(MantenimientoModel, method))
@@ -411,7 +411,7 @@ class TestMantenimientoSecurity:
         """Test protección de equipos sensibles."""
         # Equipos que requieren permisos especiales
         critical_equipment_types = ['SISTEMA_SEGURIDAD', 'SERVIDOR_PRINCIPAL', 'EQUIPO_MEDICO']
-        
+
         for equipment_type in critical_equipment_types:
             # En un sistema real, estos equipos tendrían controles de acceso especiales
             assert len(equipment_type) > 0
@@ -424,22 +424,22 @@ class TestMantenimientoPerformance:
     def test_model_initialization_performance(self, performance_timer, mock_db_connection):
         """Test rendimiento de inicialización del modelo."""
         from rexus.modules.mantenimiento.model import MantenimientoModel
-        
+
         with performance_timer() as timer:
             try:
                 model = MantenimientoModel(db_connection=mock_db_connection)
                 assert model is not None
             except Exception:
                 pytest.skip("Model no puede inicializarse para test de rendimiento")
-        
+
         # Inicialización debería ser rápida
         assert timer.elapsed < 1.0, f"Model tardó {timer.elapsed:.2f}s en inicializar"
 
-    @pytest.mark.performance  
+    @pytest.mark.performance
     def test_maintenance_scheduling_performance(self, performance_timer):
         """Test rendimiento de programación masiva."""
         from datetime import datetime, timedelta
-        
+
         # Simular programación de muchos mantenimientos
         equipment_list = []
         for i in range(100):
@@ -450,14 +450,14 @@ class TestMantenimientoPerformance:
                 'ultimo_mantenimiento': datetime.now() - timedelta(days=i % 60)
             }
             equipment_list.append(equipment)
-        
+
         with performance_timer() as timer:
             # Calcular próximos mantenimientos (simulado)
             scheduled = []
             for eq in equipment_list:
                 next_date = eq['ultimo_mantenimiento'] + timedelta(days=eq['frecuencia_dias'])
                 scheduled.append({'equipo_id': eq['id'], 'fecha': next_date})
-        
+
         # La programación debería ser rápida
         assert timer.elapsed < 0.1, f"Programación tardó {timer.elapsed:.3f}s (muy lento)"
         assert len(scheduled) == 100, "Todos los equipos deben programarse"

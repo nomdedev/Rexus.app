@@ -10,7 +10,7 @@ FUNCIONALIDADES DE SEGURIDAD:
 """
 
 from enum import Enum
-from typing import Dict, List, Set, Optional, Tuple
+from typing import Set, Optional
 from dataclasses import dataclass
 
 
@@ -20,7 +20,7 @@ class Permission(Enum):
     LOGIN = "login"
     LOGOUT = "logout"
     VIEW_DASHBOARD = "view_dashboard"
-    
+
     # Gestión de usuarios
     VIEW_USERS = "view_users"
     CREATE_USER = "create_user"
@@ -30,7 +30,7 @@ class Permission(Enum):
     LOCK_USER = "lock_user"
     UNLOCK_USER = "unlock_user"
     ASSIGN_ROLES = "assign_roles"
-    
+
     # Inventario
     VIEW_INVENTORY = "view_inventory"
     CREATE_INVENTORY = "create_inventory"
@@ -39,7 +39,7 @@ class Permission(Enum):
     MANAGE_RESERVATIONS = "manage_reservations"
     VIEW_AVAILABILITY = "view_availability"
     EXPORT_INVENTORY = "export_inventory"
-    
+
     # Obras
     VIEW_PROJECTS = "view_projects"
     CREATE_PROJECT = "create_project"
@@ -48,7 +48,7 @@ class Permission(Enum):
     MANAGE_SCHEDULE = "manage_schedule"
     VIEW_PRODUCTION = "view_production"
     APPROVE_PROJECT = "approve_project"
-    
+
     # Administración/Contabilidad
     VIEW_ACCOUNTING = "view_accounting"
     CREATE_ENTRY = "create_entry"
@@ -59,38 +59,38 @@ class Permission(Enum):
     GENERATE_REPORT = "generate_report"
     VIEW_AUDIT = "view_audit"
     APPROVE_TRANSACTIONS = "approve_transactions"
-    
+
     # Compras y Pedidos
     VIEW_PURCHASES = "view_purchases"
     CREATE_ORDER = "create_order"
     APPROVE_ORDER = "approve_order"
     CANCEL_ORDER = "cancel_order"
     MANAGE_SUPPLIERS = "manage_suppliers"
-    
+
     # Logística
     VIEW_LOGISTICS = "view_logistics"
     MANAGE_TRANSPORT = "manage_transport"
     SCHEDULE_DELIVERY = "schedule_delivery"
     TRACK_SHIPMENTS = "track_shipments"
-    
+
     # Herrajes y Vidrios
     VIEW_HARDWARE = "view_hardware"
     MANAGE_HARDWARE = "manage_hardware"
     VIEW_GLASS = "view_glass"
     MANAGE_GLASS = "manage_glass"
-    
+
     # Mantenimiento
     VIEW_MAINTENANCE = "view_maintenance"
     MANAGE_MAINTENANCE = "manage_maintenance"
     SCHEDULE_MAINTENANCE = "schedule_maintenance"
-    
+
     # Configuración del sistema
     VIEW_CONFIG = "view_config"
     UPDATE_CONFIG = "update_config"
     MANAGE_SYSTEM = "manage_system"
     BACKUP_SYSTEM = "backup_system"
     RESTORE_SYSTEM = "restore_system"
-    
+
     # Auditoría y seguridad
     VIEW_AUDIT_LOGS = "view_audit_logs"
     EXPORT_AUDIT = "export_audit"
@@ -108,7 +108,7 @@ class Role(Enum):
     OPERATOR = "OPERATOR"
     USER = "USER"
     GUEST = "GUEST"
-    
+
     # Roles especializados
     ACCOUNTANT = "ACCOUNTANT"
     INVENTORY_MANAGER = "INVENTORY_MANAGER"
@@ -136,14 +136,14 @@ class RBACSystem:
 
     def _initialize_roles(self):
         """Inicializa las definiciones de roles y permisos."""
-        
+
         # Permisos básicos para todos los usuarios
         basic_permissions = {
             Permission.LOGIN,
             Permission.LOGOUT,
             Permission.VIEW_DASHBOARD
         }
-        
+
         # Permisos de solo lectura
         read_permissions = basic_permissions | {
             Permission.VIEW_INVENTORY,
@@ -153,7 +153,7 @@ class RBACSystem:
             Permission.VIEW_PURCHASES,
             Permission.VIEW_LOGISTICS
         }
-        
+
         # Permisos operativos
         operator_permissions = read_permissions | {
             Permission.CREATE_INVENTORY,
@@ -163,7 +163,7 @@ class RBACSystem:
             Permission.UPDATE_PROJECT,
             Permission.CREATE_ORDER
         }
-        
+
         # Permisos de especialista
         specialist_permissions = operator_permissions | {
             Permission.DELETE_INVENTORY,
@@ -173,7 +173,7 @@ class RBACSystem:
             Permission.MANAGE_TRANSPORT,
             Permission.GENERATE_REPORT
         }
-        
+
         # Permisos de supervisor
         supervisor_permissions = specialist_permissions | {
             Permission.VIEW_USERS,
@@ -185,7 +185,7 @@ class RBACSystem:
             Permission.EXPORT_INVENTORY,
             Permission.VIEW_AUDIT
         }
-        
+
         # Permisos de administrador
         admin_permissions = supervisor_permissions | {
             Permission.CREATE_USER,
@@ -199,7 +199,7 @@ class RBACSystem:
             Permission.EXPORT_AUDIT,
             Permission.BACKUP_SYSTEM
         }
-        
+
         # Permisos de super administrador
         super_admin_permissions = admin_permissions | {
             Permission.DELETE_USER,
@@ -209,7 +209,7 @@ class RBACSystem:
             Permission.MANAGE_SECURITY,
             Permission.VIEW_SENSITIVE_DATA
         }
-        
+
         # Permisos especializados
         accountant_permissions = read_permissions | {
             Permission.VIEW_ACCOUNTING,
@@ -221,19 +221,19 @@ class RBACSystem:
             Permission.GENERATE_REPORT,
             Permission.VIEW_AUDIT
         }
-        
+
         inventory_manager_permissions = operator_permissions | {
             Permission.DELETE_INVENTORY,
             Permission.EXPORT_INVENTORY,
             Permission.MANAGE_SUPPLIERS
         }
-        
+
         project_manager_permissions = specialist_permissions | {
             Permission.APPROVE_PROJECT,
             Permission.MANAGE_SCHEDULE,
             Permission.DELETE_PROJECT
         }
-        
+
         logistics_manager_permissions = specialist_permissions | {
             Permission.SCHEDULE_DELIVERY,
             Permission.TRACK_SHIPMENTS,
@@ -270,7 +270,7 @@ class RBACSystem:
                 Role.SUPER_ADMIN, "Super Administrador", "Control total del sistema",
                 super_admin_permissions
             ),
-            
+
             # Roles especializados
             Role.ACCOUNTANT: RoleDefinition(
                 Role.ACCOUNTANT, "Contable", "Especialista en contabilidad",
@@ -372,11 +372,11 @@ class RBACSystem:
             if self.db_connection:
                 self.db_connection.connection.rollback()
 
-    def has_permission(self, usuario_id: int, permission: Permission, 
+    def has_permission(self, usuario_id: int, permission: Permission,
                        audit_access: bool = True) -> bool:
         """
         Verifica si un usuario tiene un permiso específico.
-        
+
         Args:
             usuario_id: ID del usuario
             permission: Permiso a verificar
@@ -393,7 +393,7 @@ class RBACSystem:
                 SELECT r.nombre
                 FROM rbac_user_roles ur
                 JOIN rbac_roles r ON ur.role_id = r.id
-                WHERE ur.usuario_id = ? AND ur.activo = 1 
+                WHERE ur.usuario_id = ? AND ur.activo = 1
                 AND (ur.fecha_expiracion IS NULL OR ur.fecha_expiracion > GETDATE())
                 AND r.activo = 1
             """, (usuario_id,))
@@ -408,7 +408,8 @@ class RBACSystem:
                         role_permissions = self.role_definitions[role].permissions
                         if permission in role_permissions:
                             # Auditar acceso a permisos sensibles
-                            if audit_access and self._is_sensitive_permission(permission):
+                            if audit_access and \
+                                self._is_sensitive_permission(permission):
                                 self._audit_permission_check(usuario_id, permission, True)
                             return True
                 except ValueError:
@@ -438,7 +439,7 @@ class RBACSystem:
                 SELECT r.nombre
                 FROM rbac_user_roles ur
                 JOIN rbac_roles r ON ur.role_id = r.id
-                WHERE ur.usuario_id = ? AND ur.activo = 1 
+                WHERE ur.usuario_id = ? AND ur.activo = 1
                 AND (ur.fecha_expiracion IS NULL OR ur.fecha_expiracion > GETDATE())
                 AND r.activo = 1
             """, (usuario_id,))
@@ -461,7 +462,7 @@ class RBACSystem:
             print(f"[ERROR] [RBAC] Error obteniendo permisos de usuario: {e}")
             return set()
 
-    def assign_role_to_user(self, usuario_id: int, role: Role, 
+    def assign_role_to_user(self, usuario_id: int, role: Role,
                             assigned_by: int) -> bool:
         """Asigna un rol a un usuario."""
         if not self.db_connection:
@@ -473,7 +474,7 @@ class RBACSystem:
             # Verificar que el rol existe
             cursor.execute("SELECT id FROM rbac_roles WHERE nombre = ?", (role.value,))
             role_row = cursor.fetchone()
-            
+
             if not role_row:
                 print(f"[ERROR] [RBAC] Rol no encontrado: {role.value}")
                 return False
@@ -489,7 +490,10 @@ class RBACSystem:
             self.db_connection.connection.commit()
 
             # Auditar asignación de rol
-            self._audit_role_assignment(usuario_id, role, assigned_by, "ASSIGNED")
+            self._audit_role_assignment(usuario_id,
+role,
+                assigned_by,
+                "ASSIGNED")
 
             print(f"[CHECK] [RBAC] Rol {role.value} asignado a usuario {usuario_id}")
             return True
@@ -500,7 +504,7 @@ class RBACSystem:
                 self.db_connection.connection.rollback()
             return False
 
-    def revoke_role_from_user(self, usuario_id: int, role: Role, 
+    def revoke_role_from_user(self, usuario_id: int, role: Role,
                               revoked_by: int) -> bool:
         """Revoca un rol de un usuario."""
         if not self.db_connection:
@@ -511,8 +515,8 @@ class RBACSystem:
 
             # Desactivar el rol del usuario
             cursor.execute("""
-                UPDATE rbac_user_roles 
-                SET activo = 0 
+                UPDATE rbac_user_roles
+                SET activo = 0
                 WHERE usuario_id = ? AND role_id = (
                     SELECT id FROM rbac_roles WHERE nombre = ?
                 )
@@ -521,7 +525,10 @@ class RBACSystem:
             self.db_connection.connection.commit()
 
             # Auditar revocación de rol
-            self._audit_role_assignment(usuario_id, role, revoked_by, "REVOKED")
+            self._audit_role_assignment(usuario_id,
+role,
+                revoked_by,
+                "REVOKED")
 
             print(f"[CHECK] [RBAC] Rol {role.value} revocado de usuario {usuario_id}")
             return True
@@ -548,12 +555,12 @@ class RBACSystem:
         }
         return permission in sensitive_permissions
 
-    def _audit_permission_check(self, usuario_id: int, permission: Permission, 
+    def _audit_permission_check(self, usuario_id: int, permission: Permission,
                                 granted: bool):
         """Audita verificaciones de permisos sensibles."""
         try:
             from rexus.core.audit_system import get_audit_system, AuditEvent, AuditLevel
-            
+
             audit = get_audit_system()
             if audit:
                 audit.log_event(
@@ -569,12 +576,12 @@ class RBACSystem:
         except Exception as e:
             print(f"[ERROR] [RBAC] Error auditando verificación de permiso: {e}")
 
-    def _audit_role_assignment(self, usuario_id: int, role: Role, 
+    def _audit_role_assignment(self, usuario_id: int, role: Role,
                                assigned_by: int, action: str):
         """Audita asignaciones/revocaciones de roles."""
         try:
             from rexus.core.audit_system import get_audit_system, AuditEvent, AuditLevel
-            
+
             audit = get_audit_system()
             if audit:
                 audit.log_event(
@@ -605,7 +612,7 @@ class RBACSystem:
                     IF NOT EXISTS (SELECT * FROM rbac_roles WHERE nombre = ?)
                     INSERT INTO rbac_roles (nombre, display_name, descripcion)
                     VALUES (?, ?, ?)
-                """, (role_def.name.value, role_def.name.value, 
+                """, (role_def.name.value, role_def.name.value,
                       role_def.display_name, role_def.description))
 
             # Insertar permisos
@@ -613,12 +620,20 @@ class RBACSystem:
                 # Determinar módulo basado en el nombre del permiso
                 modulo = self._get_permission_module(permission)
                 es_sensible = self._is_sensitive_permission(permission)
-                
+
                 cursor.execute("""
                     IF NOT EXISTS (SELECT * FROM rbac_permissions WHERE nombre = ?)
-                    INSERT INTO rbac_permissions (nombre, display_name, modulo, es_sensible)
+                    INSERT INTO rbac_permissions (nombre,
+display_name,
+                        modulo,
+                        es_sensible)
                     VALUES (?, ?, ?, ?)
-                """, (permission.value, permission.value, permission.value, modulo, es_sensible))
+                """,
+(permission.value,
+                    permission.value,
+                    permission.value,
+                    modulo,
+                    es_sensible))
 
             self.db_connection.connection.commit()
             print("[CHECK] [RBAC] Roles y permisos por defecto inicializados")
@@ -631,26 +646,44 @@ class RBACSystem:
     def _get_permission_module(self, permission: Permission) -> str:
         """Determina el módulo de un permiso basado en su nombre."""
         permission_name = permission.value.lower()
-        
-        if any(word in permission_name for word in ['user', 'usuario', 'role', 'rol']):
+
+        if any(word in permission_name for word in ['user',
+'usuario',
+            'role',
+            'rol']):
             return "USUARIOS"
         elif any(word in permission_name for word in ['inventory', 'inventario']):
             return "INVENTARIO"
         elif any(word in permission_name for word in ['project', 'proyecto', 'obra']):
             return "OBRAS"
-        elif any(word in permission_name for word in ['accounting', 'contabilidad', 'entry', 'receipt']):
+        elif any(word in permission_name for word in ['accounting',
+'contabilidad',
+            'entry',
+            'receipt']):
             return "ADMINISTRACION"
-        elif any(word in permission_name for word in ['purchase', 'compra', 'order', 'pedido']):
+        elif any(word in permission_name for word in ['purchase',
+'compra',
+            'order',
+            'pedido']):
             return "COMPRAS"
         elif any(word in permission_name for word in ['logistics', 'logistica', 'transport']):
             return "LOGISTICA"
-        elif any(word in permission_name for word in ['hardware', 'herraje', 'glass', 'vidrio']):
+        elif any(word in permission_name for word in ['hardware',
+'herraje',
+            'glass',
+            'vidrio']):
             return "MATERIALES"
         elif any(word in permission_name for word in ['maintenance', 'mantenimiento']):
             return "MANTENIMIENTO"
-        elif any(word in permission_name for word in ['config', 'configuracion', 'system', 'sistema']):
+        elif any(word in permission_name for word in ['config',
+'configuracion',
+            'system',
+            'sistema']):
             return "CONFIGURACION"
-        elif any(word in permission_name for word in ['audit', 'auditoria', 'security', 'seguridad']):
+        elif any(word in permission_name for word in ['audit',
+'auditoria',
+            'security',
+            'seguridad']):
             return "AUDITORIA"
         else:
             return "GENERAL"

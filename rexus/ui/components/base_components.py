@@ -5,10 +5,10 @@ Componentes base para la UI de Rexus con estilos unificados y funcionalidad com�
 Proporciona widgets estándar con estilos consistentes entre módulos.
 """
 
-from typing import Any, Dict, List, Optional
+from typing import List, Optional
 
-from PyQt6.QtCore import QSize, Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon, QPalette, QPixmap
+from PyQt6.QtCore import Qt
+from PyQt6.QtGui import QFont
 from PyQt6.QtWidgets import (
     QCheckBox,
     QComboBox,
@@ -24,13 +24,10 @@ from PyQt6.QtWidgets import (
     QPushButton,
     QRadioButton,
     QSpinBox,
-    QSplitter,
     QTableWidget,
-    QTableWidgetItem,
     QTabWidget,
     QTextEdit,
     QVBoxLayout,
-    QWidget,
 )
 
 
@@ -68,7 +65,7 @@ class RexusColors:
     TEXT_WHITE = "#FFFFFF"  # Texto blanco
     TEXT_DISABLED = "#ADB5BD"  # Texto deshabilitado (alias de TEXT_LIGHT)
     DISABLED = "#ADB5BD"  # Elementos deshabilitados
-    
+
     # Colores de estado extendidos para compatibilidad
     SUCCESS_LIGHT = "#d4edda"  # Verde claro
     SUCCESS_DARK = "#1e3a0e"  # Verde oscuro
@@ -85,7 +82,7 @@ class RexusColors:
 
 class RexusFonts:
     """Tipografías estándar para Rexus.app"""
-    
+
     # Constantes de fuentes
     FAMILY = "Segoe UI"
     BODY_SIZE = 13
@@ -120,7 +117,10 @@ class RexusFonts:
 class RexusButton(QPushButton):
     """Botón estándar de Rexus con estilos unificados"""
 
-    def __init__(self, text: str = "", button_type: str = "primary", parent=None):
+    def __init__(self,
+text: str = "",
+        button_type: str = "primary",
+        parent=None):
         super().__init__(text, parent)
         self.button_type = button_type
         self._setup_button()
@@ -217,7 +217,7 @@ class RexusButton(QPushButton):
         }
 
         self.setStyleSheet(styles.get(self.button_type, styles["primary"]))
-    
+
     def cleanup(self):
         """Limpia las conexiones y referencias de manera segura"""
         try:
@@ -225,7 +225,7 @@ class RexusButton(QPushButton):
             self.clicked.disconnect()
         except:
             pass  # Ignorar si no hay conexiones
-            
+
         # NOTA: setParent(None) puede causar errores "wrapped C/C++ object deleted"
         # Solo limpiar parent si realmente es necesario para evitar memory leaks
         # try:
@@ -233,7 +233,7 @@ class RexusButton(QPushButton):
         #         self.setParent(None)
         # except:
         #     pass
-    
+
     def __del__(self):
         """Destructor seguro"""
         try:
@@ -610,7 +610,10 @@ class RexusLayoutHelper:
         layout = QHBoxLayout()
         layout.setSpacing(spacing)
         if margins:
-            layout.setContentsMargins(margins[0], margins[1], margins[2], margins[3])
+            layout.setContentsMargins(margins[0],
+margins[1],
+                margins[2],
+                margins[3])
         return layout
 
     @staticmethod
@@ -619,7 +622,10 @@ class RexusLayoutHelper:
         layout = QVBoxLayout()
         layout.setSpacing(spacing)
         if margins:
-            layout.setContentsMargins(margins[0], margins[1], margins[2], margins[3])
+            layout.setContentsMargins(margins[0],
+margins[1],
+                margins[2],
+                margins[3])
         return layout
 
     @staticmethod
@@ -674,7 +680,7 @@ class RexusLayoutHelper:
 
 # Añadir métodos de compatibilidad a las clases existentes
 RexusLabel.apply_icon_style = lambda self, color_type="primary": None
-RexusLabel.apply_subtitle_style = lambda self, color_type="primary": None  
+RexusLabel.apply_subtitle_style = lambda self, color_type="primary": None
 RexusLabel.apply_stat_value_style = lambda self, color_type="primary": None
 RexusButton.apply_action_button_style = lambda self: None
 RexusLineEdit.apply_search_style = lambda self: None
@@ -688,7 +694,7 @@ def get_background_color_static(cls, color_type):
     """Método estático para obtener colores de fondo."""
     colors = {
         'primary': cls.PRIMARY_LIGHT,
-        'success': "#d4edda", 
+        'success': "#d4edda",
         'warning': "#fff3cd",
         'danger': "#f8d7da",
         'info': cls.PRIMARY_LIGHT
@@ -696,19 +702,19 @@ def get_background_color_static(cls, color_type):
     from PyQt6.QtGui import QColor
     return QColor(colors.get(color_type, colors['primary']))
 
-@classmethod 
+@classmethod
 def get_text_color_static(cls, color_type):
     """Método estático para obtener colores de texto."""
     colors = {
         'primary': cls.PRIMARY,
         'success': cls.SUCCESS,
-        'warning': "#856404", 
+        'warning': "#856404",
         'danger': cls.ERROR,
         'info': cls.INFO
     }
     from PyQt6.QtGui import QColor
     return QColor(colors.get(color_type, colors['primary']))
-    
+
 RexusColors.get_background_color_static = get_background_color_static
 RexusColors.get_text_color_static = get_text_color_static
 
@@ -716,12 +722,12 @@ RexusColors.get_text_color_static = get_text_color_static
 def setup_columns_method(self, columnas):
     """Configura columnas de la tabla con compatibilidad."""
     self.setColumnCount(len(columnas))
-    
+
     headers = []
     for i, columna in enumerate(columnas):
         header_text = f"{columna.get('icono', '')} {columna.get('titulo', '')}"
         headers.append(header_text.strip())
-        
+
         # Configurar ancho
         if columna.get('ancho', 0) > 0:
             self.setColumnWidth(i, columna['ancho'])
@@ -729,9 +735,9 @@ def setup_columns_method(self, columnas):
             header = self.horizontalHeader()
             if header:
                 header.setStretchLastSection(True)
-    
+
     self.setHorizontalHeaderLabels(headers)
-    
+
 RexusTable.setup_columns = setup_columns_method
 
 class RexusSpinBox(QSpinBox):
@@ -753,18 +759,18 @@ class RexusSpinBox(QSpinBox):
                 color: {RexusColors.TEXT};
                 min-height: 20px;
             }}
-            
+
             QSpinBox:focus {{
                 border: 2px solid {RexusColors.PRIMARY};
                 background-color: {RexusColors.ACCENT};
             }}
-            
+
             QSpinBox:disabled {{
                 background-color: {RexusColors.BACKGROUND};
                 color: {RexusColors.DISABLED};
                 border-color: {RexusColors.DISABLED};
             }}
-            
+
             QSpinBox::up-button {{
                 subcontrol-origin: border;
                 subcontrol-position: top right;
@@ -773,11 +779,11 @@ class RexusSpinBox(QSpinBox):
                 border-radius: 0 6px 0 0;
                 background-color: {RexusColors.BACKGROUND};
             }}
-            
+
             QSpinBox::up-button:hover {{
                 background-color: {RexusColors.PRIMARY_LIGHT};
             }}
-            
+
             QSpinBox::down-button {{
                 subcontrol-origin: border;
                 subcontrol-position: bottom right;
@@ -786,7 +792,7 @@ class RexusSpinBox(QSpinBox):
                 border-radius: 0 0 6px 0;
                 background-color: {RexusColors.BACKGROUND};
             }}
-            
+
             QSpinBox::down-button:hover {{
                 background-color: {RexusColors.PRIMARY_LIGHT};
             }}
@@ -796,41 +802,41 @@ class RexusSpinBox(QSpinBox):
         self.setMinimum(1)
         self.setMaximum(9999)
         self.setValue(1)
-        
+
     # Métodos de compatibilidad para el sistema Inventario migrado
     def apply_icon_style(self, color_type="primary"):
         """Aplica estilo de icono para compatibilidad."""
         pass  # Los estilos ya están aplicados
-    
+
     def apply_subtitle_style(self, color_type="primary"):
         """Aplica estilo de subtítulo para compatibilidad."""
         pass  # Los estilos ya están aplicados
-        
+
     def apply_stat_value_style(self, color_type="primary"):
         """Aplica estilo de valor estadístico para compatibilidad."""
         pass  # Los estilos ya están aplicados
-        
+
     def apply_action_button_style(self):
         """Aplica estilo para botones de acción en tabla."""
         pass  # Los estilos ya están aplicados
-        
+
     def apply_search_style(self):
         """Aplica estilo de campo de búsqueda."""
         pass  # Los estilos ya están aplicados
-        
+
     def apply_filter_style(self):
         """Aplica estilo de filtro."""
         pass  # Los estilos ya están aplicados
-        
+
     def setup_columns(self, columnas):
         """Configura columnas de la tabla con compatibilidad."""
         self.setColumnCount(len(columnas))
-        
+
         headers = []
         for i, columna in enumerate(columnas):
             header_text = f"{columna.get('icono', '')} {columna.get('titulo', '')}"
             headers.append(header_text.strip())
-            
+
             # Configurar ancho
             if columna.get('ancho', 0) > 0:
                 self.setColumnWidth(i, columna['ancho'])
@@ -838,29 +844,29 @@ class RexusSpinBox(QSpinBox):
                 header = self.horizontalHeader()
                 if header:
                     header.setStretchLastSection(True)
-        
+
         self.setHorizontalHeaderLabels(headers)
-        
+
     @classmethod
     def get_background_color(cls, color_type):
         """Método de compatibilidad para obtener colores de fondo."""
         colors = {
             'primary': cls.PRIMARY_LIGHT,
-            'success': "#d4edda", 
+            'success': "#d4edda",
             'warning': "#fff3cd",
             'danger': "#f8d7da",
             'info': cls.PRIMARY_LIGHT
         }
         from PyQt6.QtGui import QColor
         return QColor(colors.get(color_type, colors['primary']))
-    
+
     @classmethod
     def get_text_color(cls, color_type):
         """Método de compatibilidad para obtener colores de texto."""
         colors = {
             'primary': cls.PRIMARY,
             'success': cls.SUCCESS,
-            'warning': "#856404", 
+            'warning': "#856404",
             'danger': cls.ERROR,
             'info': cls.INFO
         }
@@ -870,11 +876,11 @@ class RexusSpinBox(QSpinBox):
 
 class RexusCheckBox(QCheckBox):
     """CheckBox estándar de Rexus con estilos unificados."""
-    
+
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self.apply_theme()
-    
+
     def apply_theme(self):
         """Aplica el tema estándar al CheckBox."""
         self.setStyleSheet(f"""
@@ -903,11 +909,11 @@ class RexusCheckBox(QCheckBox):
 
 class RexusRadioButton(QRadioButton):
     """RadioButton estándar de Rexus con estilos unificados."""
-    
+
     def __init__(self, text="", parent=None):
         super().__init__(text, parent)
         self.apply_theme()
-    
+
     def apply_theme(self):
         """Aplica el tema estándar al RadioButton."""
         self.setStyleSheet(f"""
@@ -936,11 +942,11 @@ class RexusRadioButton(QRadioButton):
 
 class RexusTabWidget(QTabWidget):
     """TabWidget estándar de Rexus con estilos unificados."""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.apply_theme()
-    
+
     def apply_theme(self):
         """Aplica el tema estándar al TabWidget."""
         self.setStyleSheet(f"""
@@ -982,11 +988,11 @@ class RexusTabWidget(QTabWidget):
 
 class RexusTextEdit(QTextEdit):
     """TextEdit estándar de Rexus con estilos unificados."""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.apply_theme()
-    
+
     def apply_theme(self):
         """Aplica el tema estándar al TextEdit."""
         self.setStyleSheet(f"""

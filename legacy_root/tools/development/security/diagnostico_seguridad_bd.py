@@ -58,7 +58,10 @@ from utils.analizador_db import AnalizadorDB
         recomendaciones = generar_recomendaciones(permisos, vulnerabilidades)
 
         # 6. Mostrar resumen y guardar informe
-        mostrar_resumen_seguridad(tablas, permisos, vulnerabilidades, recomendaciones)
+        mostrar_resumen_seguridad(tablas,
+permisos,
+            vulnerabilidades,
+            recomendaciones)
 
     except (ConnectionError, QueryError, SecurityError) as e:
         logger.error(f"Error durante el análisis de seguridad: {e}")
@@ -321,7 +324,10 @@ def generar_recomendaciones(permisos, vulnerabilidades):
     return recomendaciones
 
 
-def mostrar_resumen_seguridad(tablas, permisos, vulnerabilidades, recomendaciones):
+def mostrar_resumen_seguridad(tablas,
+permisos,
+    vulnerabilidades,
+    recomendaciones):
     """
     Muestra un resumen del análisis de seguridad.
 
@@ -654,7 +660,10 @@ def main():
                 {"prioridad": "Alta", "titulo": "Parametrizar consultas", "descripcion": "Usar siempre consultas parametrizadas"}
             ]
 
-            informe_html = generar_informe_html(tablas, permisos, vulnerabilidades, recomendaciones)
+            informe_html = generar_informe_html(tablas,
+permisos,
+                vulnerabilidades,
+                recomendaciones)
             ruta_informe = guardar_informe_html(informe_html, args.salida)
             print(f"\n📄 Informe HTML guardado en: {ruta_informe}")
 

@@ -2,35 +2,36 @@
 Sistema mejorado de manejo de errores para Rexus.app
 """
 
-import traceback
 import sys
-from datetime import datetime
-from typing import Optional, Callable, Any
+from typing import Callable, Any
 from rexus.utils.logging_config import get_logger
 
 class RexusErrorHandler:
     """Manejador centralizado de errores"""
-    
+
     def __init__(self):
         self.logger = get_logger('errors')
-    
+
     def handle_exception(self, exc_type, exc_value, exc_traceback):
         """Maneja excepciones no capturadas"""
         if issubclass(exc_type, KeyboardInterrupt):
             sys.__excepthook__(exc_type, exc_value, exc_traceback)
             return
-        
+
         error_msg = f"Uncaught exception: {exc_type.__name__}: {exc_value}"
-        self.logger.error(error_msg, exc_info=(exc_type, exc_value, exc_traceback))
-        
+        self.logger.error(error_msg,
+exc_info=(exc_type,
+            exc_value,
+            exc_traceback))
+
         # Mostrar error amigable al usuario
         self.show_user_friendly_error(str(exc_value))
-    
+
     def show_user_friendly_error(self, error_message):
         """Muestra error amigable al usuario"""
         try:
             from PyQt6.QtWidgets import QMessageBox
-            
+
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Icon.Critical)
             msg_box.setWindowTitle("Error - Rexus.app")
@@ -53,7 +54,7 @@ def error_boundary(func: Callable) -> Callable:
         except Exception as e:
             logger = get_logger('errors')
             logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
-            
+
             # Re-raise para que el llamador pueda manejar el error
             raise
     return wrapper
@@ -82,15 +83,12 @@ def validate_database_connection(func: Callable) -> Callable:
 
 class DatabaseConnectionError(Exception):
     """Excepción para errores de conexión de base de datos"""
-    pass
 
 class ValidationError(Exception):
     """Excepción para errores de validación"""
-    pass
 
 class SecurityError(Exception):
     """Excepción para errores de seguridad"""
-    pass
 
 # Instalar el manejador global de errores
 error_handler = RexusErrorHandler()

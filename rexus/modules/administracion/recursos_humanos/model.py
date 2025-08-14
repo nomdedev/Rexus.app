@@ -9,10 +9,8 @@ Maneja la lógica de negocio para:
 - Historial laboral
 """
 
-from datetime import datetime, date
-from decimal import Decimal
+from datetime import datetime
 import calendar
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import get_sql_manager
 
 
@@ -87,7 +85,8 @@ class RecursosHumanosModel:
             params = []
 
             if filtros:
-                if filtros.get("departamento") and filtros["departamento"] != "Todos":
+                if filtros.get("departamento") and \
+                    filtros["departamento"] != "Todos":
                     conditions.append("d.nombre = ?")
                     params.append(filtros["departamento"])
 
@@ -102,19 +101,20 @@ class RecursosHumanosModel:
 
             # Obtener query base desde archivo SQL
             base_query = self.sql_manager.get_query('recursos_humanos', 'obtener_todos_empleados')
-            
+
             # Agregar condiciones dinámicas
             if conditions[1:]:  # Si hay condiciones adicionales además de e.activo = 1
                 # Modificar query para incluir condiciones dinámicas
                 where_clause = "WHERE e.activo = 1"
                 if filtros:
-                    if filtros.get("departamento") and filtros["departamento"] != "Todos":
+                    if filtros.get("departamento") and \
+                        filtros["departamento"] != "Todos":
                         where_clause += " AND d.nombre = ?"
                     if filtros.get("estado") and filtros["estado"] != "Todos":
                         where_clause += " AND e.estado = ?"
                     if filtros.get("busqueda"):
                         where_clause += " AND (e.nombre LIKE ? OR e.apellido LIKE ? OR e.dni LIKE ?)"
-                
+
                 query = base_query.replace("WHERE e.activo = 1", where_clause)
             else:
                 query = base_query
@@ -172,7 +172,7 @@ class RecursosHumanosModel:
             empleado_id = cursor.fetchone()[0]
 
             # Registrar en historial
-            self._registrar_historial(empleado_id, 'CONTRATACION', 
+            self._registrar_historial(empleado_id, 'CONTRATACION',
                                     f"Empleado contratado como {datos_empleado.get('cargo', '')}")
 
             self.db_connection.commit()
@@ -226,11 +226,11 @@ class RecursosHumanosModel:
             # Registrar cambios en historial
             if datos_actuales:
                 if datos_actuales[0] != datos_empleado.get('salario_base', 0):
-                    self._registrar_historial(empleado_id, 'CAMBIO_SALARIO', 
+                    self._registrar_historial(empleado_id, 'CAMBIO_SALARIO',
                                             f"Salario cambiado de ${datos_actuales[0]} a ${datos_empleado.get('salario_base', 0)}")
-                
+
                 if datos_actuales[1] != datos_empleado.get('cargo', ''):
-                    self._registrar_historial(empleado_id, 'PROMOCION', 
+                    self._registrar_historial(empleado_id, 'PROMOCION',
                                             f"Cargo cambiado de {datos_actuales[1]} a {datos_empleado.get('cargo', '')}")
 
             self.db_connection.commit()
@@ -261,7 +261,7 @@ class RecursosHumanosModel:
 
             query = self.sql_manager.get_query('recursos_humanos', 'eliminar_empleado')
             cursor.execute(query, (empleado_id,))
-            
+
             # Registrar en historial
             self._registrar_historial(empleado_id, 'DESPIDO', "Empleado dado de baja")
 
@@ -297,7 +297,7 @@ class RecursosHumanosModel:
 
             # Obtener empleados activos
             empleados_query = self.sql_manager.get_query('recursos_humanos', 'calcular_nomina_empleados')
-            
+
             if empleado_id:
                 empleados_query += " AND e.id = ?"
                 cursor.execute(empleados_query, (empleado_id,))
@@ -314,28 +314,28 @@ class RecursosHumanosModel:
 
                 # Calcular días trabajados
                 dias_trabajados = self._calcular_dias_trabajados(emp_id, mes, anio)
-                
+
                 # Calcular horas extra
                 horas_extra = self._calcular_horas_extra(emp_id, mes, anio)
-                
+
                 # Obtener bonos del período
                 bonos = self._obtener_bonos_periodo(emp_id, mes, anio)
-                
+
                 # Obtener descuentos del período
                 descuentos = self._obtener_descuentos_periodo(emp_id, mes, anio)
-                
+
                 # Calcular faltas
                 faltas = self._calcular_faltas(emp_id, mes, anio)
 
                 # Días del mes
                 dias_mes = calendar.monthrange(anio, mes)[1]
-                
+
                 # Cálculos
                 salario_diario = salario_base / dias_mes
                 salario_por_dias = salario_diario * dias_trabajados
                 valor_horas_extra = horas_extra * (salario_base / 240)  # 240 horas mensuales aprox
                 descuento_faltas = faltas * salario_diario
-                
+
                 bruto = salario_por_dias + valor_horas_extra + bonos
                 total_descuentos = descuentos + descuento_faltas
                 neto = bruto - total_descuentos
@@ -384,7 +384,7 @@ class RecursosHumanosModel:
             for nomina in nomina_data:
                 # Verificar si ya existe registro para ese empleado/período
                 cursor.execute("""
-                    SELECT id FROM """ + self.tabla_nomina + """ 
+                    SELECT id FROM """ + self.tabla_nomina + """
                     WHERE empleado_id = ? AND mes = ? AND anio = ?
                 """, (nomina['empleado_id'], nomina['mes'], nomina['anio']))
 
@@ -474,13 +474,16 @@ class RecursosHumanosModel:
                 self.db_connection.rollback()
             return False
 
-    def obtener_asistencias(self, fecha_desde=None, fecha_hasta=None, empleado_id=None):
+    def obtener_asistencias(self,
+fecha_desde=None,
+        fecha_hasta=None,
+        empleado_id=None):
         """
         Obtiene registros de asistencia.
 
         Args:
             fecha_desde (date): Fecha desde
-            fecha_hasta (date): Fecha hasta  
+            fecha_hasta (date): Fecha hasta
             empleado_id (int): ID específico del empleado
 
         Returns:
@@ -508,7 +511,11 @@ class RecursosHumanosModel:
                 params.append(empleado_id)
 
             query = """
-                SELECT a.id, a.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
+                SELECT a.id,
+a.empleado_id,
+                    CONCAT(e.nombre,
+                    ' ',
+                    e.apellido) as empleado,
                        a.fecha, a.hora_entrada, a.hora_salida, a.horas_trabajadas,
                        a.horas_extra, a.tipo, a.observaciones
                 FROM {self.tabla_asistencias} a
@@ -613,7 +620,11 @@ class RecursosHumanosModel:
                 params.append(anio)
 
             query = """
-                SELECT b.id, b.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
+                SELECT b.id,
+b.empleado_id,
+                    CONCAT(e.nombre,
+                    ' ',
+                    e.apellido) as empleado,
                        b.tipo, b.concepto, b.monto, b.fecha_aplicacion,
                        b.mes_aplicacion, b.anio_aplicacion, b.estado, b.observaciones
                 FROM {self.tabla_bonos} b
@@ -668,7 +679,11 @@ class RecursosHumanosModel:
                 params.append(tipo)
 
             query = """
-                SELECT h.id, h.empleado_id, CONCAT(e.nombre, ' ', e.apellido) as empleado,
+                SELECT h.id,
+h.empleado_id,
+                    CONCAT(e.nombre,
+                    ' ',
+                    e.apellido) as empleado,
                        h.tipo, h.descripcion, h.fecha, h.valor_anterior,
                        h.valor_nuevo, h.usuario_creacion
                 FROM {self.tabla_historial} h
@@ -739,7 +754,7 @@ class RecursosHumanosModel:
     def obtener_estadisticas_rh(self):
         """
         Alias para obtener_estadisticas_empleados para compatibilidad.
-        
+
         Returns:
             Dict: Estadísticas de recursos humanos
         """
@@ -747,7 +762,12 @@ class RecursosHumanosModel:
 
     # MÉTODOS AUXILIARES PRIVADOS
 
-    def _registrar_historial(self, empleado_id, tipo, descripcion, valor_anterior=None, valor_nuevo=None):
+    def _registrar_historial(self,
+empleado_id,
+        tipo,
+        descripcion,
+        valor_anterior=None,
+        valor_nuevo=None):
         """Registra un evento en el historial laboral."""
         if not self.db_connection:
             return
@@ -756,7 +776,12 @@ class RecursosHumanosModel:
             cursor = self.db_connection.cursor()
 
             query = self.sql_manager.get_query('recursos_humanos', 'registrar_historial')
-            cursor.execute(query, (empleado_id, tipo, descripcion, valor_anterior, valor_nuevo))
+            cursor.execute(query,
+(empleado_id,
+                tipo,
+                descripcion,
+                valor_anterior,
+                valor_nuevo))
 
         except Exception as e:
             print(f"[ERROR RRHH] Error registrando historial: {e}")

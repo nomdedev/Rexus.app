@@ -13,7 +13,7 @@ def test_webengine():
     except ImportError as e:
         print(f"FAILED: QtWebEngine not available - {e}")
         return False
-        
+
 def test_folium():
     """Test if Folium is available"""
     try:
@@ -33,7 +33,7 @@ def test_logistica_import():
         from pathlib import Path
         root_dir = Path(__file__).parent.parent.parent
         sys.path.insert(0, str(root_dir))
-        
+
         from src.modules.logistica.interactive_map import InteractiveMapWidget
         print("SUCCESS: InteractiveMapWidget imported successfully")
         return True
@@ -43,16 +43,16 @@ def test_logistica_import():
 
 if __name__ == "__main__":
     print("=== TESTING LOGISTICA MAP DEPENDENCIES ===")
-    
+
     webengine_ok = test_webengine()
     folium_ok = test_folium()
     map_import_ok = test_logistica_import()
-    
+
     print("\n=== RESULTS ===")
     print(f"QtWebEngine: {'OK' if webengine_ok else 'FAILED'}")
     print(f"Folium: {'OK' if folium_ok else 'FAILED'}")
     print(f"InteractiveMapWidget: {'OK' if map_import_ok else 'FAILED'}")
-    
+
     if all([webengine_ok, folium_ok, map_import_ok]):
         print("\nAll dependencies are available. Map should work!")
     else:

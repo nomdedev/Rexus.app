@@ -98,8 +98,8 @@ class ValidadorConectividad:
         """Obtiene la lista real de tablas en una base de datos."""
         try:
             cursor.execute("""
-                SELECT TABLE_NAME 
-                FROM INFORMATION_SCHEMA.TABLES 
+                SELECT TABLE_NAME
+                FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_TYPE = 'BASE TABLE'
                 ORDER BY TABLE_NAME
             """)
@@ -143,7 +143,10 @@ class ValidadorConectividad:
                 print(f"   [CHECK] Script generado: {script_file}")
                 self.resultados["scripts_generados"].append(script_file)
 
-    def crear_script_bd(self, bd_nombre: str, tablas: list, archivo_script: str):
+    def crear_script_bd(self,
+bd_nombre: str,
+        tablas: list,
+        archivo_script: str):
         """Crea un script SQL para recrear una base de datos."""
 
         script_content = f"""-- ============================================

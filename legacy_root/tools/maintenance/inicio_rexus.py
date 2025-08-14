@@ -16,10 +16,10 @@ def setup_environment():
     root_dir = Path(__file__).parent
     os.chdir(root_dir)
     sys.path.insert(0, str(root_dir))
-    
+
     print(f"[SETUP] Directorio raíz: {root_dir}")
     print(f"[SETUP] Directorio actual: {os.getcwd()}")
-    
+
     # Cargar variables de entorno
     try:
         from dotenv import load_dotenv
@@ -35,40 +35,40 @@ def setup_environment():
     except Exception as e:
         print(f"[ERROR] Error cargando variables de entorno: {e}")
         return False
-    
+
     # Verificar variables críticas
     critical_vars = ['DB_SERVER', 'DB_USERNAME', 'DB_PASSWORD', 'DB_USERS']
     missing_vars = []
-    
+
     for var in critical_vars:
         if not os.getenv(var):
             missing_vars.append(var)
-    
+
     if missing_vars:
         print(f"[WARNING] Variables faltantes: {', '.join(missing_vars)}")
         print("[INFO] La aplicación funcionará en modo demo limitado")
     else:
         print("[OK] Todas las variables críticas están configuradas")
-    
+
     return True
 
 def test_database_connection():
     """Prueba la conexión a la base de datos."""
     try:
         from src.core.database import UsersDatabaseConnection
-        
+
         print("[TEST] Probando conexión a base de datos...")
         db = UsersDatabaseConnection()
         db.connect()
         print("[OK] Conexión a base de datos exitosa")
-        
+
         # Probar autenticación
         from src.core.auth import AuthManager
         auth = AuthManager()
-        
+
         print("[TEST] Verificando usuario admin...")
         admin_result = auth.authenticate_user('admin', 'admin')
-        
+
         if admin_result:
             print(f"[OK] Usuario admin disponible (ID: {admin_result['id']})")
             return True
@@ -76,7 +76,7 @@ def test_database_connection():
             print("[WARNING] Usuario admin no encontrado o contraseña incorrecta")
             print("[INFO] Puede que necesite ejecutar scripts/setup_admin_simple.py")
             return False
-            
+
     except Exception as e:
         print(f"[ERROR] Error de base de datos: {e}")
         print("[INFO] La aplicación funcionará en modo de prueba")
@@ -95,7 +95,7 @@ def start_application():
         import traceback
         traceback.print_exc()
         return False
-    
+
     return True
 
 def main():
@@ -103,29 +103,29 @@ def main():
     print("=" * 50)
     print("[ROCKET] INICIANDO REXUS.APP v2.0.0")
     print("=" * 50)
-    
+
     # Configurar entorno
     if not setup_environment():
         print("[FATAL] No se pudo configurar el entorno")
         sys.exit(1)
-    
+
     # Probar conexión BD (no crítico)
     db_ok = test_database_connection()
-    
+
     if db_ok:
         print("[READY] Sistema completamente operativo")
     else:
         print("[READY] Sistema en modo limitado (sin BD)")
-    
+
     print("\n" + "=" * 50)
     print("💡 CREDENCIALES DE ACCESO:")
     print("   Usuario: admin")
     print("   Contraseña: admin")
     print("=" * 50 + "\n")
-    
+
     # Iniciar aplicación
     success = start_application()
-    
+
     if success:
         print("\n[EXIT] Aplicación cerrada normalmente")
     else:

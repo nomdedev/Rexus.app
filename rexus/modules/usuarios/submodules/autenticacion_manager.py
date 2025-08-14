@@ -11,11 +11,10 @@ Responsabilidades:
 
 import datetime
 import hashlib
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict
 
 # Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -42,10 +41,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -86,7 +85,10 @@ class AutenticacionManager:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
 
-    def autenticar_usuario_seguro(self, username: str, password: str) -> Dict[str, Any]:
+    def autenticar_usuario_seguro(self,
+username: str,
+        password: str) -> Dict[str,
+        Any]:
         """
         Autentica un usuario de forma segura con validaciones completas.
 
@@ -323,7 +325,10 @@ class AutenticacionManager:
             query_actualizar = self.sql_manager.get_query(
                 self.sql_path, "actualizar_password"
             )
-            cursor.execute(query_actualizar, (nuevo_hash, nuevo_salt, usuario_id))
+            cursor.execute(query_actualizar,
+(nuevo_hash,
+                nuevo_salt,
+                usuario_id))
 
             self.db_connection.commit()
 
@@ -354,7 +359,10 @@ class AutenticacionManager:
                 self.sql_path, "actualizar_intentos_fallidos"
             )
             cursor.execute(
-                query_actualizar, (intentos_actuales, datetime.datetime.now(), username)
+                query_actualizar,
+(intentos_actuales,
+                    datetime.datetime.now(),
+                    username)
             )
 
             # Si supera el límite, bloquear usuario

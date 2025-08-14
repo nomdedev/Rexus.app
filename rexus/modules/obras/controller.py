@@ -4,15 +4,11 @@ import datetime
 from typing import Any, Dict, Optional
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
+from PyQt6.QtWidgets import QMessageBox
 
-from rexus.core.auth_manager import AuthManager
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.auth_decorators import auth_required, admin_required
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 class ObrasController(QObject):
     # Señales para comunicación con otros módulos
@@ -35,7 +31,7 @@ class ObrasController(QObject):
         self.usuarios_model = usuarios_model
         self.logistica_controller = logistica_controller
         self.usuario_actual = "SISTEMA"
-        
+
         # Inicializar current_user para compatibilidad con @auth_required
         self.current_user = self._get_current_auth_user()
 
@@ -48,7 +44,7 @@ class ObrasController(QObject):
         """Obtiene el usuario autenticado actual desde AuthManager."""
         try:
             from rexus.core.auth_manager import AuthManager
-            
+
             # Si hay un usuario actual en AuthManager, usarlo
             if AuthManager.current_user and AuthManager.current_user_role:
                 return {
@@ -70,7 +66,7 @@ class ObrasController(QObject):
             return {
                 'id': 1,
                 'username': 'SISTEMA',
-                'role': 'admin', 
+                'role': 'admin',
                 'name': 'Usuario Sistema'
             }
 
@@ -180,7 +176,10 @@ class ObrasController(QObject):
             self.mostrar_mensaje_error(f"Error editando obra: {str(e)}")
 
     @auth_required
-    def actualizar_obra(self, obra_id: int, datos_actualizados: Dict[str, Any]) -> bool:
+    def actualizar_obra(self,
+obra_id: int,
+        datos_actualizados: Dict[str,
+        Any]) -> bool:
         """Actualiza una obra existente con nuevos datos."""
         try:
             if not self.validar_datos_obra(datos_actualizados, es_actualizacion=True):
@@ -281,7 +280,7 @@ class ObrasController(QObject):
             if not self.model:
                 self.mostrar_mensaje_error("Modelo no inicializado")
                 return
-                
+
             obras = self.model.obtener_obras_filtradas(filtros)
             self.view.cargar_obras_en_tabla(obras)
             self.actualizar_estadisticas()
@@ -413,35 +412,35 @@ class ObrasController(QObject):
         try:
             if self.model:
                 offset = (pagina - 1) * registros_por_pagina
-                
+
                 # Obtener datos paginados
                 datos, total_registros = self.model.obtener_datos_paginados(
-                    offset=offset, 
+                    offset=offset,
                     limit=registros_por_pagina
                 )
-                
+
                 if self.view:
                     # Cargar datos en la tabla
                     if hasattr(self.view, 'cargar_en_tabla'):
                         self.view.cargar_en_tabla(datos)
-                    
+
                     # Actualizar controles de paginación
                     total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
                     if hasattr(self.view, 'actualizar_controles_paginacion'):
                         self.view.actualizar_controles_paginacion(
                             pagina, total_paginas, total_registros, len(datos)
                         )
-        
+
         except Exception as e:
             print(f"[ERROR] Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error("Error", f"Error cargando página: {str(e)}")
-    
+
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página y recarga"""
         self.registros_por_pagina = registros
         self.cargar_pagina(1, registros)
-    
+
     def obtener_total_registros(self):
         """Obtiene el total de registros disponibles"""
         try:

@@ -6,7 +6,6 @@ Maneja los detalles de productos/items en las órdenes de compra.
 
 from typing import Any, Dict, List
 from rexus.utils.security import SecurityUtils
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class DetalleComprasModel:
@@ -85,7 +84,7 @@ class DetalleComprasModel:
 
             sql_insert = """
             INSERT INTO detalle_compras
-            (compra_id, descripcion, categoria, cantidad, precio_unitario, 
+            (compra_id, descripcion, categoria, cantidad, precio_unitario,
              unidad, observaciones, usuario_creacion, fecha_creacion)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
             """
@@ -129,8 +128,8 @@ class DetalleComprasModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
-                id, compra_id, descripcion, categoria, cantidad, 
+            SELECT
+                id, compra_id, descripcion, categoria, cantidad,
                 precio_unitario, unidad, observaciones, usuario_creacion,
                 fecha_creacion,
                 (cantidad * precio_unitario) as subtotal
@@ -223,7 +222,7 @@ class DetalleComprasModel:
             params.append(item_id)
 
             sql_update = f"""
-            UPDATE detalle_compras 
+            UPDATE detalle_compras
             SET {', '.join(updates)}
             WHERE id = ?
             """
@@ -283,7 +282,7 @@ class DetalleComprasModel:
 
             # Obtener resumen de items
             sql_resumen = """
-            SELECT 
+            SELECT
                 COUNT(*) as total_items,
                 SUM(cantidad) as total_cantidad,
                 SUM(cantidad * precio_unitario) as subtotal,
@@ -346,7 +345,7 @@ class DetalleComprasModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
+            SELECT
                 categoria,
                 descripcion,
                 COUNT(*) as veces_comprado,
@@ -404,7 +403,7 @@ class DetalleComprasModel:
             cursor = self.db_connection.cursor()
 
             sql_search = """
-            SELECT 
+            SELECT
                 descripcion,
                 categoria,
                 AVG(precio_unitario) as precio_promedio,

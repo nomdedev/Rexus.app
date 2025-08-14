@@ -5,18 +5,16 @@ Versión: 2.0.0 - Enterprise Ready
 
 import json
 import os
-from pathlib import Path
 from typing import Optional, Dict, Any, Callable
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtGui import QFont
 
 from ..core.themes import (
-    DEFAULT_THEME, THEMES, THEME_METADATA, 
-    get_theme, get_available_themes, is_dark_theme,
-    ColorPalette
+    DEFAULT_THEME, THEMES, get_theme,
+    get_available_themes, is_dark_theme, ColorPalette
 )
-from ..core.config import get_env_var, PROJECT_ROOT
+from ..core.config import PROJECT_ROOT
 from ..core.logger import get_logger
 
 logger = get_logger("theme_manager")
@@ -25,55 +23,55 @@ class ThemeManager(QObject):
     """
     Gestor centralizado de temas con persistencia y funcionalidades avanzadas
     """
-    
+
     # Señales para notificar cambios de tema
     theme_changed = pyqtSignal(str, dict)  # theme_name, theme_colors
     font_changed = pyqtSignal(str, int)    # font_family, font_size
-    
+
     def __init__(self):
         super().__init__()
         self.logger = get_logger("theme_manager")
-        
+
         # Configuración
         self.config_file = PROJECT_ROOT / "config" / "theme_preferences.json"
         self.config_file.parent.mkdir(exist_ok=True)
-        
+
         # Estado actual
         self.current_theme_name = DEFAULT_THEME
         self.current_theme = get_theme(DEFAULT_THEME)
         self.current_font_family = "Segoe UI"
         self.current_font_size = 10
-        
+
         # Callbacks para actualización
         self.theme_callbacks: list[Callable] = []
-        
+
         # Cargar preferencias guardadas
         self._load_preferences()
-        
+
         self.logger.info("ThemeManager inicializado", extra={
             "current_theme": self.current_theme_name,
             "font": f"{self.current_font_family} {self.current_font_size}pt"
         })
-    
+
     def _load_preferences(self):
         """Cargar preferencias de tema desde archivo"""
         try:
             if self.config_file.exists():
                 with open(self.config_file, 'r', encoding='utf-8') as f:
                     prefs = json.load(f)
-                
+
                 # Cargar tema
                 theme_name = prefs.get("theme", DEFAULT_THEME)
                 if theme_name in THEMES:
                     self.current_theme_name = theme_name
                     self.current_theme = get_theme(theme_name)
-                
+
                 # Cargar fuente
                 self.current_font_family = prefs.get("font_family", "Segoe UI")
                 self.current_font_size = prefs.get("font_size", 10)
-                
+
                 self.logger.info("Preferencias de tema cargadas", extra=prefs)
-                
+
         except Exception as e:
             self.logger.warning("Error cargando preferencias de tema", extra={
                 "error": str(e)
@@ -81,7 +79,7 @@ class ThemeManager(QObject):
             # Usar valores por defecto
             self.current_theme_name = DEFAULT_THEME
             self.current_theme = get_theme(DEFAULT_THEME)
-    
+
     def _save_preferences(self):
         """Guardar preferencias de tema en archivo"""
         try:
@@ -91,46 +89,46 @@ class ThemeManager(QObject):
                 "font_size": self.current_font_size,
                 "last_updated": os.path.getmtime(self.config_file) if self.config_file.exists() else None
             }
-            
+
             with open(self.config_file, 'w', encoding='utf-8') as f:
                 json.dump(prefs, f, indent=2, ensure_ascii=False)
-            
+
             self.logger.debug("Preferencias de tema guardadas", extra=prefs)
-            
+
         except Exception as e:
             self.logger.error("Error guardando preferencias de tema", extra={
                 "error": str(e)
             })
-    
+
     def set_theme(self, theme_name: str, apply_immediately: bool = True) -> bool:
         """
         Establecer tema activo
-        
+
         Args:
             theme_name: Nombre del tema
             apply_immediately: Si aplicar inmediatamente a la aplicación
-        
+
         Returns:
             True si el tema fue aplicado exitosamente
         """
         if theme_name not in THEMES:
             self.logger.warning("Tema no encontrado", extra={"theme": theme_name})
             return False
-        
+
         old_theme = self.current_theme_name
         self.current_theme_name = theme_name
         self.current_theme = get_theme(theme_name)
-        
+
         # Guardar preferencias
         self._save_preferences()
-        
+
         # Aplicar inmediatamente si se solicita
         if apply_immediately:
             self.apply_theme_to_application()
-        
+
         # Emitir señal de cambio
         self.theme_changed.emit(theme_name, self.current_theme.to_dict())
-        
+
         # Ejecutar callbacks
         for callback in self.theme_callbacks:
             try:
@@ -139,64 +137,67 @@ class ThemeManager(QObject):
                 self.logger.error("Error en callback de tema", extra={
                     "error": str(e)
                 })
-        
+
         self.logger.info("Tema cambiado", extra={
             "old_theme": old_theme,
             "new_theme": theme_name
         })
-        
+
         return True
-    
-    def set_font(self, font_family: str, font_size: int, apply_immediately: bool = True):
+
+    def set_font(self,
+font_family: str,
+        font_size: int,
+        apply_immediately: bool = True):
         """Establecer fuente de la aplicación"""
         old_family = self.current_font_family
         old_size = self.current_font_size
-        
+
         self.current_font_family = font_family
         self.current_font_size = font_size
-        
+
         # Guardar preferencias
         self._save_preferences()
-        
+
         # Aplicar inmediatamente si se solicita
         if apply_immediately:
             self.apply_theme_to_application()
-        
+
         # Emitir señal
         self.font_changed.emit(font_family, font_size)
-        
+
         self.logger.info("Fuente cambiada", extra={
             "old_font": f"{old_family} {old_size}pt",
             "new_font": f"{font_family} {font_size}pt"
         })
-    
+
     def apply_theme_to_application(self):
         """Aplicar tema actual a toda la aplicación PyQt6"""
         app = QApplication.instance()
         if not app:
             self.logger.warning("No hay instancia de QApplication")
             return
-        
+
         # Aplicar fuente global
         font = QFont(self.current_font_family, self.current_font_size)
         app.setFont(font)
-        
+
         # Generar y aplicar stylesheet
         stylesheet = self._generate_complete_stylesheet()
         app.setStyleSheet(stylesheet)
-        
+
         self.logger.info("Tema aplicado a la aplicación", extra={
             "theme": self.current_theme_name,
             "stylesheet_length": len(stylesheet)
         })
-    
+
     def _generate_complete_stylesheet(self) -> str:
         """Generar stylesheet completo basado en el tema actual"""
         if not self.current_theme:
             return ""
-        
+
         colors = self.current_theme.to_dict()
-        
+
         return f"""
 /* ===== ESTILOS GLOBALES ===== */
 QWidget {{
@@ -616,46 +617,46 @@ QWidget[widgetType="header"] {{
     border-bottom: 1px solid {colors['border']};
 }}
 """
-    
+
     def get_current_theme_name(self) -> str:
         """Obtener nombre del tema actual"""
         return self.current_theme_name
-    
+
     def get_current_theme(self) -> Optional[ColorPalette]:
         """Obtener objeto del tema actual"""
         return self.current_theme
-    
+
     def get_current_colors(self) -> Dict[str, str]:
         """Obtener diccionario de colores del tema actual"""
         return self.current_theme.to_dict() if self.current_theme else {}
-    
+
     def get_available_themes(self) -> Dict[str, Dict[str, Any]]:
         """Obtener temas disponibles con metadata"""
         return get_available_themes()
-    
+
     def is_dark_theme(self) -> bool:
         """Verificar si el tema actual es oscuro"""
         return is_dark_theme(self.current_theme_name)
-    
+
     def register_theme_callback(self, callback: Callable):
         """Registrar callback para cambios de tema"""
         self.theme_callbacks.append(callback)
-    
+
     def unregister_theme_callback(self, callback: Callable):
         """Desregistrar callback de cambios de tema"""
         if callback in self.theme_callbacks:
             self.theme_callbacks.remove(callback)
-    
+
     def reset_to_default(self):
         """Restablecer tema por defecto"""
         self.set_theme(DEFAULT_THEME)
         self.set_font("Segoe UI", 10)
-    
+
     def get_preferences(self) -> Dict[str, Any]:
         """Obtener preferencias actuales"""
         return {
             "theme": self.current_theme_name,
-            "font_family": self.current_font_family, 
+            "font_family": self.current_font_family,
             "font_size": self.current_font_size
         }
 

@@ -1,6 +1,5 @@
 """SQL Script Loader Utility"""
 
-import os
 import logging
 from pathlib import Path
 
@@ -11,10 +10,10 @@ class SQLScriptLoader:
             current_file = Path(__file__)
             project_root = current_file.parent.parent.parent  # Go up from rexus/utils/
             scripts_dir = project_root / "scripts" / "sql"
-        
+
         self.scripts_dir = Path(scripts_dir)
         self.logger = logging.getLogger(__name__)
-    
+
     def load_script(self, script_name):
         try:
             script_path = self.scripts_dir / f"{script_name}.sql"
@@ -27,7 +26,7 @@ class SQLScriptLoader:
         except Exception as e:
             self.logger.error(f"Error cargando script {script_name}: {e}")
             return None
-    
+
     def execute_script(self, cursor, script_name, params=None):
         script = self.load_script(script_name)
         if script:

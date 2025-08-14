@@ -134,7 +134,10 @@ from typing import Any, Dict, List, Optional, Tuple
             archivo_path = modulo_path / archivo
             if archivo_path.exists():
                 stats = archivo_path.stat()
-                with open(archivo_path, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(archivo_path,
+'r',
+                    encoding='utf-8',
+                    errors='ignore') as f:
                     lineas = len(f.readlines())
 
                 estructura['archivos_core'][archivo] = {
@@ -170,11 +173,17 @@ from typing import Any, Dict, List, Optional, Tuple
         # Analizar archivos del módulo
         for archivo in modulo_path.rglob('*.py'):
             try:
-                with open(archivo, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(archivo,
+'r',
+                    encoding='utf-8',
+                    errors='ignore') as f:
                     contenido = f.read()
 
                 # Detectar conexiones a BD
-                if any(term in contenido.lower() for term in ['connect', 'database', 'cursor', 'execute']):
+                if any(term in contenido.lower() for term in ['connect',
+'database',
+                    'cursor',
+                    'execute']):
                     carga['conexion_bd']['detectada'] = True
                     carga['conexion_bd']['detalles'].append(f"Detectada en {archivo.name}")
 
@@ -218,7 +227,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
         for archivo in modulo_path.rglob('*.py'):
             try:
-                with open(archivo, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(archivo,
+'r',
+                    encoding='utf-8',
+                    errors='ignore') as f:
                     contenido = f.read()
 
                 # Analizar indicadores de carga
@@ -266,7 +278,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
         for archivo in modulo_path.rglob('*.py'):
             try:
-                with open(archivo, 'r', encoding='utf-8', errors='ignore') as f:
+                with open(archivo,
+'r',
+                    encoding='utf-8',
+                    errors='ignore') as f:
                     contenido = f.read()
 
                 # Analizar SQL seguro
@@ -313,7 +328,10 @@ from typing import Any, Dict, List, Optional, Tuple
                 tests['archivos_test'].append(archivo_test.name)
 
                 try:
-                    with open(archivo_test, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(archivo_test,
+'r',
+                        encoding='utf-8',
+                        errors='ignore') as f:
                         contenido = f.read()
 
                     # Contar tipos de tests
@@ -358,7 +376,10 @@ from typing import Any, Dict, List, Optional, Tuple
             # Buscar edge cases implementados
             for archivo_test in tests_modulo_dir.rglob('*edge*.py'):
                 try:
-                    with open(archivo_test, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(archivo_test,
+'r',
+                        encoding='utf-8',
+                        errors='ignore') as f:
                         contenido = f.read()
 
                     # Extraer nombres de tests de edge cases
@@ -423,7 +444,10 @@ from typing import Any, Dict, List, Optional, Tuple
 
         return edge_cases
 
-    def _generar_sugerencias(self, analisis: Dict[str, Any]) -> List[Dict[str, str]]:
+    def _generar_sugerencias(self,
+analisis: Dict[str,
+        Any]) -> List[Dict[str,
+        str]]:
         """Genera sugerencias de mejora basadas en el análisis."""
         sugerencias = []
 

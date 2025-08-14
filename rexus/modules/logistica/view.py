@@ -22,11 +22,10 @@ except ImportError:
     pd = None
 
 from PyQt6.QtWidgets import (
-    QComboBox, QDialog, QFormLayout, QFrame,
-    QHBoxLayout, QLabel, QPushButton, QTableWidget, 
-    QTableWidgetItem, QVBoxLayout, QWidget, QDateEdit,
-    QTabWidget, QGridLayout, QProgressBar,
-    QScrollArea, QSplitter
+    QComboBox, QDialog, QFrame, QHBoxLayout,
+    QLabel, QPushButton, QTableWidget, QTableWidgetItem,
+    QVBoxLayout, QWidget, QTabWidget, QGridLayout,
+    QProgressBar, QScrollArea, QSplitter
 )
 
 # Importar componentes Rexus
@@ -51,29 +50,29 @@ class LogisticaConstants:
     ESTADO_TRANSITO = "En tránsito"
     ETIQUETA_ESTADO = "Estado:"
     VALIDACION = "Validación"
-    
+
     # Ubicaciones
     ALMACEN_CENTRAL = "Almacén Central"
-    SUCURSAL_NORTE = "Sucursal Norte" 
+    SUCURSAL_NORTE = "Sucursal Norte"
     DEPOSITO_SUR = "Depósito Sur"
     CENTRO_DISTRIBUCION = "Centro Distribución"
-    
+
     # Direcciones
     DIRECCION_ALMACEN_CENTRAL = "Calle 7 entre 47 y 48, La Plata"
     DIRECCION_SUCURSAL_NORTE = "Av. 13 y 44, La Plata"
     DIRECCION_DEPOSITO_SUR = "Calle 120 y 610, La Plata"
     DIRECCION_CENTRO = "Av. 1 y 60, La Plata"
-    
+
     # Ciudades
     CIUDAD_BUENOS_AIRES = "Buenos Aires"
     CIUDAD_LA_PLATA = "La Plata"
-    
+
     # Archivos
     EXTENSION_HTML = ".html"
-    
+
     # Botones
     BOTON_EDITAR = "✏️ Editar"
-    
+
     # UI Constants
     MIN_WEBVIEW_HEIGHT = 400
     DIALOG_MIN_WIDTH = 400
@@ -100,17 +99,17 @@ class LogisticaView(QWidget, ModuleExportMixin):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(8, 8, 8, 8)
         layout.setSpacing(5)
-        
+
         # Widget de pestañas con mejor organización
         self.tab_widget = QTabWidget()
         self.configurar_tabs()
-        
+
         # Crear pestañas con orden optimizado
         self.crear_pestana_tabla()
         self.crear_pestana_estadisticas()
         self.crear_pestana_servicios()
         self.crear_pestana_mapa()
-        
+
         layout.addWidget(self.tab_widget)
 
     def aplicar_estilo_botones_compactos(self) -> None:
@@ -128,7 +127,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
                 transform: none;
             }
         """
-        
+
         # Aplicar a todos los botones RexusButton del widget
         for button in self.findChildren(QPushButton):
             if isinstance(button, (RexusButton, QPushButton)):
@@ -140,25 +139,43 @@ class LogisticaView(QWidget, ModuleExportMixin):
         """Carga entregas en la tabla principal."""
         if not hasattr(self, 'tabla_transportes'):
             return
-        
+
         if entregas is None:
             entregas = []
-        
+
         self.tabla_transportes.setRowCount(len(entregas))
         for row, entrega in enumerate(entregas):
-            self.tabla_transportes.setItem(row, 0, QTableWidgetItem(str(entrega.get('id', ''))))
-            self.tabla_transportes.setItem(row, 1, QTableWidgetItem(str(entrega.get('origen', ''))))
-            self.tabla_transportes.setItem(row, 2, QTableWidgetItem(str(entrega.get('destino', ''))))
-            self.tabla_transportes.setItem(row, 3, QTableWidgetItem(str(entrega.get('estado', ''))))
-            self.tabla_transportes.setItem(row, 4, QTableWidgetItem(str(entrega.get('conductor', ''))))
-            self.tabla_transportes.setItem(row, 5, QTableWidgetItem(str(entrega.get('fecha', ''))))
+            self.tabla_transportes.setItem(row,
+0,
+                QTableWidgetItem(str(entrega.get('id',
+                ''))))
+            self.tabla_transportes.setItem(row,
+1,
+                QTableWidgetItem(str(entrega.get('origen',
+                ''))))
+            self.tabla_transportes.setItem(row,
+2,
+                QTableWidgetItem(str(entrega.get('destino',
+                ''))))
+            self.tabla_transportes.setItem(row,
+3,
+                QTableWidgetItem(str(entrega.get('estado',
+                ''))))
+            self.tabla_transportes.setItem(row,
+4,
+                QTableWidgetItem(str(entrega.get('conductor',
+                ''))))
+            self.tabla_transportes.setItem(row,
+5,
+                QTableWidgetItem(str(entrega.get('fecha',
+                ''))))
 
     def configurar_tabla_transportes(self):
         """Configura la tabla de transportes."""
         headers = ["ID", "Origen", "Destino", "Estado", "Conductor", "Fecha"]
         self.tabla_transportes.setColumnCount(len(headers))
         self.tabla_transportes.setHorizontalHeaderLabels(headers)
-        
+
         # Ajustar anchos compactos
         self.tabla_transportes.setColumnWidth(0, 50)
         self.tabla_transportes.setColumnWidth(1, 90)
@@ -166,11 +183,11 @@ class LogisticaView(QWidget, ModuleExportMixin):
         self.tabla_transportes.setColumnWidth(3, 70)
         self.tabla_transportes.setColumnWidth(4, 80)
         self.tabla_transportes.setColumnWidth(5, 70)
-        
+
         # Desactivar filas alternadas y mejorar estilo
         self.tabla_transportes.setAlternatingRowColors(False)
         self.tabla_transportes.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        
+
         # Estilo mejorado con headers visibles
         self.tabla_transportes.setStyleSheet("""
             QTableWidget {
@@ -247,13 +264,13 @@ class LogisticaView(QWidget, ModuleExportMixin):
             # Obtener criterios de búsqueda
             termino = ""
             estado = "Todos"
-            
+
             # Buscar elementos de búsqueda en la interfaz
             if hasattr(self, 'campo_busqueda'):
                 termino = self.campo_busqueda.text().strip()
             if hasattr(self, 'combo_estado'):
                 estado = self.combo_estado.currentText()
-            
+
             # Solicitar búsqueda al controlador
             if self.controller:
                 self.controller.buscar_transportes(termino, estado)
@@ -267,15 +284,15 @@ class LogisticaView(QWidget, ModuleExportMixin):
             if not hasattr(self, 'tabla_transportes'):
                 logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
-                
+
             current_row = self.tabla_transportes.currentRow()
             if current_row < 0:
                 self.mostrar_mensaje("Selecciona un transporte para editar", "advertencia")
                 return
-            
+
             # Obtener ID del transporte seleccionado
             transporte_id = self.tabla_transportes.item(current_row, 0).text()
-            
+
             # Abrir diálogo de edición
             dialog = DialogoNuevoTransporte(self, transporte_id)
             if dialog.exec() == dialog.DialogCode.Accepted:
@@ -283,7 +300,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
                 datos = dialog.obtener_datos()
                 if self.controller:
                     self.controller.actualizar_transporte(datos)
-                    
+
         except Exception as e:
             self.mostrar_error(f"Error al editar transporte: {str(e)}")
 
@@ -293,22 +310,22 @@ class LogisticaView(QWidget, ModuleExportMixin):
             if not hasattr(self, 'tabla_transportes'):
                 logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
-                
+
             current_row = self.tabla_transportes.currentRow()
             if current_row < 0:
                 self.mostrar_mensaje("Selecciona un transporte para eliminar", "advertencia")
                 return
-            
+
             # Obtener datos del transporte
             transporte_id = self.tabla_transportes.item(current_row, 0).text()
             origen = self.tabla_transportes.item(current_row, 1).text()
             destino = self.tabla_transportes.item(current_row, 2).text()
-            
+
             # Confirmar eliminación
             if self.confirmar_accion(f"¿Eliminar transporte de {origen} a {destino}?", "Confirmar Eliminación"):
                 if self.controller:
                     self.controller.eliminar_transporte(transporte_id)
-                    
+
         except Exception as e:
             self.mostrar_error(f"Error al eliminar transporte: {str(e)}")
 
@@ -318,11 +335,11 @@ class LogisticaView(QWidget, ModuleExportMixin):
             if not hasattr(self, 'tabla_transportes'):
                 logging.warning(LogisticaConstants.TABLA_NO_DISPONIBLE)
                 return
-                
+
             from PyQt6.QtWidgets import QFileDialog
             import csv
             from datetime import datetime
-            
+
             # Seleccionar archivo de destino
             filename, _ = QFileDialog.getSaveFileName(
                 self,
@@ -330,20 +347,20 @@ class LogisticaView(QWidget, ModuleExportMixin):
                 f"transportes_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv",
                 "CSV files (*.csv);;All files (*.*)"
             )
-            
+
             if not filename:
                 return
-                
+
             # Exportar datos
             with open(filename, 'w', newline='', encoding='utf-8') as file:
                 writer = csv.writer(file)
-                
+
                 # Escribir encabezados
                 headers = []
                 for col in range(self.tabla_transportes.columnCount()):
                     headers.append(self.tabla_transportes.horizontalHeaderItem(col).text())
                 writer.writerow(headers)
-                
+
                 # Escribir datos
                 for row in range(self.tabla_transportes.rowCount()):
                     row_data = []
@@ -351,10 +368,10 @@ class LogisticaView(QWidget, ModuleExportMixin):
                         item = self.tabla_transportes.item(row, col)
                         row_data.append(item.text() if item else "")
                     writer.writerow(row_data)
-            
+
             self.mostrar_informacion(f"Datos exportados exitosamente a:\n{filename}")
             print(f"[OK] Exportación completada: {filename}")
-            
+
         except Exception as e:
             self.mostrar_error(f"Error al exportar: {str(e)}")
 
@@ -365,13 +382,13 @@ class LogisticaView(QWidget, ModuleExportMixin):
             if dialog.exec() == dialog.DialogCode.Accepted:
                 # Obtener datos del diálogo
                 datos = dialog.obtener_datos()
-                
+
                 # Enviar al controlador
                 if self.controller:
                     self.controller.crear_transporte(datos)
                 else:
                     print("[OK] Nuevo transporte creado (simulado):", datos)
-                    
+
         except Exception as e:
             self.mostrar_error(f"Error al crear transporte: {str(e)}")
 
@@ -381,7 +398,6 @@ class LogisticaView(QWidget, ModuleExportMixin):
         TODO: Implementar lógica de habilitación/deshabilitación de botones
         basada en selecciones de tabla y permisos de usuario.
         """
-        pass
 
     @property
     def combo_tipo_servicio(self):
@@ -401,12 +417,12 @@ class LogisticaView(QWidget, ModuleExportMixin):
     def _get_webengine_view(self):
         """
         Obtiene QWebEngineView usando el gestor robusto.
-        
+
         Returns:
             QWebEngineView class o None si no está disponible
         """
         from rexus.utils.webengine_manager import webengine_manager
-        
+
         if webengine_manager.is_webengine_available():
             try:
                 from PyQt6.QtWebEngineWidgets import QWebEngineView
@@ -427,23 +443,27 @@ class LogisticaView(QWidget, ModuleExportMixin):
         from rexus.utils.webengine_manager import webengine_manager
 
         try:
-            if folium is not None and webengine_manager.is_webengine_available():
+            if folium is not None and \
+                webengine_manager.is_webengine_available():
                 # Crear mapa folium
-                m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
-                
+                m = folium.Map(location=[-34.6037,
+-58.3816],
+                    zoom_start=12,
+                    control_scale=True)
+
                 # Guardar HTML temporal con nombre único
                 temp_file = tempfile.NamedTemporaryFile(
-                    delete=False, 
+                    delete=False,
                     suffix='.html',
                     prefix='rexus_map_'
                 )
                 m.save(temp_file.name)
                 temp_file.close()
-                
+
                 # Crear widget de mapa usando el gestor robusto
                 self.mapa_widget = QWidget()
                 layout = QVBoxLayout(self.mapa_widget)
-                
+
                 webview = webengine_manager.create_web_view("Vista de mapa logístico")
                 if webengine_manager.load_file(webview, temp_file.name):
                     webview.setMinimumHeight(LogisticaConstants.MIN_WEBVIEW_HEIGHT)
@@ -460,7 +480,7 @@ class LogisticaView(QWidget, ModuleExportMixin):
                 if not webengine_manager.is_webengine_available():
                     missing_deps.append("QtWebEngine")
                 raise Exception(f"Dependencias faltantes: {', '.join(missing_deps)}")
-                
+
         except Exception as e:
             # Crear fallback usando el gestor
             fallback_message = f"""
@@ -473,7 +493,7 @@ Para habilitar mapas interactivos:
 • Instale PyQt6-WebEngine: pip install PyQt6-WebEngine
             """
             self.mapa_widget = webengine_manager.create_map_widget(fallback_message)
-            
+
         return self.mapa_widget
 
     def cargar_datos_ejemplo(self):
@@ -482,7 +502,10 @@ Para habilitar mapas interactivos:
 
         if folium is not None and webengine_view_class is not None:
             try:
-                m = folium.Map(location=[-34.6037, -58.3816], zoom_start=12, control_scale=True)
+                m = folium.Map(location=[-34.6037,
+-58.3816],
+                    zoom_start=12,
+                    control_scale=True)
                 temp_file = tempfile.NamedTemporaryFile(delete=False, suffix='.html')
                 m.save(temp_file.name)
                 temp_file.close()
@@ -518,7 +541,7 @@ Para habilitar mapas interactivos:
         self.tab_widget.setTabShape(QTabWidget.TabShape.Rounded)
         self.tab_widget.setUsesScrollButtons(True)
         self.tab_widget.setElideMode(Qt.TextElideMode.ElideRight)
-        
+
         # Estilos modernos con mejor jerarquía visual - ESTANDARIZADO
         self.tab_widget.setStyleSheet('''
             QTabWidget {
@@ -569,7 +592,7 @@ Para habilitar mapas interactivos:
         # Panel unificado de control y acciones (optimizado)
         panel_unificado = self.crear_panel_unificado_tabla()
         layout.addWidget(panel_unificado)
-        
+
         # Divisor visual entre panel y tabla
         divisor = QFrame()
         divisor.setFrameShape(QFrame.Shape.HLine)
@@ -581,17 +604,17 @@ Para habilitar mapas interactivos:
         self.tabla_transportes = StandardComponents.create_standard_table()
         self.configurar_tabla_transportes()
         layout.addWidget(self.tabla_transportes)
-        
+
         # Asignar referencia para exportación
         self.tabla_principal = self.tabla_transportes
-        
+
         # Panel de acciones con botón de exportación
         panel_acciones = QFrame()
         acciones_layout = QHBoxLayout(panel_acciones)
-        
+
         # Agregar botón de exportación
         self.add_export_button(acciones_layout, "📄 Exportar Logística")
-        
+
         acciones_layout.addStretch()
         layout.addWidget(panel_acciones)
 
@@ -623,7 +646,7 @@ Para habilitar mapas interactivos:
         # Splitter horizontal para mejor uso del espacio
         splitter_stats = QSplitter(Qt.Orientation.Horizontal)
         splitter_stats.setHandleWidth(2)  # Handle más delgado
-        
+
         # Panel izquierdo: Gráficos mejorados
         graficos_panel = self.crear_panel_graficos_mejorado()
         splitter_stats.addWidget(graficos_panel)
@@ -631,17 +654,17 @@ Para habilitar mapas interactivos:
         # Panel derecho: Métricas detalladas
         metricas_panel = self.crear_panel_metricas_compacto()
         splitter_stats.addWidget(metricas_panel)
-        
+
         # Configurar tamaños del splitter más responsivos
         splitter_stats.setSizes([60, 40])  # Porcentajes en lugar de píxeles fijos
         splitter_stats.setCollapsible(0, False)
         splitter_stats.setCollapsible(1, True)  # Permitir colapsar métricas
         splitter_stats.setStretchFactor(0, 3)
         splitter_stats.setStretchFactor(1, 2)
-        
+
         stats_layout.addWidget(splitter_stats)
         stats_layout.addStretch()
-        
+
         scroll.setWidget(stats_widget)
         layout.addWidget(scroll)
 
@@ -821,10 +844,10 @@ Para habilitar mapas interactivos:
         panel = RexusGroupBox("Control de Transportes y Acciones")
         layout = QVBoxLayout(panel)
         layout.setSpacing(6)
-        
+
         # Fila superior: Filtros y búsqueda
         fila_filtros = QHBoxLayout()
-        
+
         # Búsqueda
         self.input_busqueda = RexusLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar transportes...")
@@ -834,7 +857,7 @@ Para habilitar mapas interactivos:
         # Filtro de estado
         self.combo_estado = RexusComboBox()
         self.combo_estado.addItems([
-            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, 
+            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO,
             "Entregado", "Cancelado"
         ])
         fila_filtros.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
@@ -853,13 +876,13 @@ Para habilitar mapas interactivos:
             }
         """)
         fila_filtros.addWidget(btn_buscar)
-        
+
         fila_filtros.addStretch()
         layout.addLayout(fila_filtros)
-        
+
         # Fila inferior: Acciones principales (botones compactos)
         fila_acciones = QHBoxLayout()
-        
+
         # Botones de acción compactos
         self.btn_nuevo_transporte = RexusButton("🚛 Nuevo")
         self.btn_nuevo_transporte.clicked.connect(self.mostrar_dialogo_nuevo_transporte)
@@ -950,13 +973,13 @@ Para habilitar mapas interactivos:
             }
         """)
         fila_acciones.addWidget(self.btn_exportar)
-        
+
         layout.addLayout(fila_acciones)
-        
+
         # Conectar eventos de selección para habilitar/deshabilitar botones
         if hasattr(self, 'tabla_transportes'):
             self.tabla_transportes.itemSelectionChanged.connect(self.actualizar_estado_botones)
-        
+
         return panel
 
     # Panel de control para tabla
@@ -974,7 +997,7 @@ Para habilitar mapas interactivos:
         # Filtro de estado
         self.combo_estado = RexusComboBox()
         self.combo_estado.addItems([
-            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO, 
+            "Todos", "Pendiente", LogisticaConstants.ESTADO_TRANSITO,
             "Entregado", "Cancelado"
         ])
         layout.addWidget(QLabel(LogisticaConstants.ETIQUETA_ESTADO))
@@ -1083,7 +1106,7 @@ Para habilitar mapas interactivos:
             }
         """)
         layout.addWidget(self.btn_exportar)
-        
+
         return panel
 
         # Conectar eventos de selección para habilitar/deshabilitar botones
@@ -1099,7 +1122,7 @@ Para habilitar mapas interactivos:
         # Placeholder mejorado para gráficos
         grafico_container = QWidget()
         grafico_layout = QVBoxLayout(grafico_container)
-        
+
         # Título del gráfico
         titulo_grafico = QLabel("[CHART] Estadísticas de Entregas - Últimos 30 días")
         titulo_grafico.setStyleSheet("""
@@ -1115,7 +1138,7 @@ Para habilitar mapas interactivos:
         """)
         titulo_grafico.setAlignment(Qt.AlignmentFlag.AlignCenter)
         grafico_layout.addWidget(titulo_grafico)
-        
+
         # Placeholder visual mejorado
         grafico_placeholder = QLabel("🔄 Cargando gráficos interactivos...\n\n📈 Próximamente:\n• Gráfico de entregas por día\n• Tendencias de tiempo de entrega\n• Análisis de rutas eficientes\n• Métricas de satisfacción")
         grafico_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1133,7 +1156,7 @@ Para habilitar mapas interactivos:
         """)
         grafico_placeholder.setMinimumHeight(180)  # Reducido de 200
         grafico_layout.addWidget(grafico_placeholder)
-        
+
         layout.addWidget(grafico_container)
         return panel
 
@@ -1145,19 +1168,38 @@ Para habilitar mapas interactivos:
 
         # Barras de progreso compactas para diferentes métricas
         metricas_detalle = [
-            ("[TARGET] Eficiencia de entregas", 85, "#27ae60", "85% de entregas a tiempo"),
-            ("⏱️ Tiempo promedio entrega", 72, "#3498db", "72% dentro del objetivo"),
-            ("😊 Satisfacción del cliente", 92, "#9b59b6", "92% de clientes satisfechos"),
-            ("🚛 Utilización de flota", 68, "#f39c12", "68% de capacidad utilizada")
+            ("[TARGET] Eficiencia de entregas",
+85,
+                "#27ae60",
+                "85% de entregas a tiempo"),
+            ("⏱️ Tiempo promedio entrega",
+72,
+                "#3498db",
+                "72% dentro del objetivo"),
+            ("😊 Satisfacción del cliente",
+92,
+                "#9b59b6",
+                "92% de clientes satisfechos"),
+            ("🚛 Utilización de flota",
+68,
+                "#f39c12",
+                "68% de capacidad utilizada")
         ]
 
         for nombre, porcentaje, color, descripcion in metricas_detalle:
-            metrica_widget = self.crear_widget_metrica_compacta(nombre, porcentaje, color, descripcion)
+            metrica_widget = self.crear_widget_metrica_compacta(nombre,
+porcentaje,
+                color,
+                descripcion)
             layout.addWidget(metrica_widget)
 
         return panel
 
-    def crear_tarjeta_metrica_compacta(self, titulo: str, valor: str, color: str, tooltip: str) -> QWidget:
+    def crear_tarjeta_metrica_compacta(self,
+titulo: str,
+        valor: str,
+        color: str,
+        tooltip: str) -> QWidget:
         """Crea una tarjeta de métrica compacta y visual."""
         card = QWidget()
         card.setToolTip(tooltip)
@@ -1173,16 +1215,16 @@ Para habilitar mapas interactivos:
                 background-color: #f8f9fa;
             }}
         """)
-        
+
         layout = QVBoxLayout(card)
         layout.setContentsMargins(8, 6, 8, 6)
         layout.setSpacing(2)
-        
+
         # Título compacto
         titulo_label = QLabel(titulo)
         titulo_label.setStyleSheet(LogisticaConstants.TITLE_LABEL_STYLE)
         layout.addWidget(titulo_label)
-        
+
         # Valor destacado
         valor_label = QLabel(valor)
         valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
@@ -1195,28 +1237,32 @@ Para habilitar mapas interactivos:
             }}
         """)
         layout.addWidget(valor_label)
-        
+
         card.setFixedHeight(60)  # Altura fija compacta
         return card
 
-    def crear_widget_metrica_compacta(self, nombre: str, porcentaje: int, color: str, descripcion: str) -> QWidget:
+    def crear_widget_metrica_compacta(self,
+nombre: str,
+        porcentaje: int,
+        color: str,
+        descripcion: str) -> QWidget:
         """Crea un widget de métrica con barra de progreso compacta."""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setContentsMargins(8, 6, 8, 6)
         layout.setSpacing(3)
-        
+
         # Encabezado con nombre y porcentaje
         header_layout = QHBoxLayout()
         nombre_label = QLabel(nombre)
         nombre_label.setStyleSheet("font-size: 11px; font-weight: 500; color: #2c3e50;")
         header_layout.addWidget(nombre_label)
-        
+
         porcentaje_label = QLabel(f"{porcentaje}%")
         porcentaje_label.setStyleSheet(f"font-size: 11px; font-weight: bold; color: {color};")
         header_layout.addWidget(porcentaje_label)
         layout.addLayout(header_layout)
-        
+
         # Barra de progreso compacta
         progress_bar = QProgressBar()
         progress_bar.setValue(porcentaje)
@@ -1234,12 +1280,12 @@ Para habilitar mapas interactivos:
             }}
         """)
         layout.addWidget(progress_bar)
-        
+
         # Descripción pequeña
         desc_label = QLabel(descripcion)
         desc_label.setStyleSheet("font-size: 9px; color: #6c757d; padding-top: 2px;")
         layout.addWidget(desc_label)
-        
+
         widget.setFixedHeight(55)  # Altura fija para consistencia
         return widget
 
@@ -1294,7 +1340,6 @@ Para habilitar mapas interactivos:
         fallback_reason = None
         try:
             import tempfile
-            import os
             if folium is not None:
                 try:
                     mapa = folium.Map(
@@ -1315,7 +1360,10 @@ Para habilitar mapas interactivos:
                             tooltip=direccion["nombre"],
                             icon=folium.Icon(color='blue', icon='truck', prefix='fa')
                         ).add_to(mapa)
-                    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html', encoding='utf-8') as f:
+                    with tempfile.NamedTemporaryFile(mode='w',
+delete=False,
+                        suffix='.html',
+                        encoding='utf-8') as f:
                         mapa.save(f.name)
                         self.mapa_temp_file = f.name
                 except Exception as e:
@@ -1476,11 +1524,13 @@ Para habilitar mapas interactivos:
                         tooltip=direccion["nombre"],
                         icon=folium.Icon(color='blue', icon='truck', prefix='fa')
                     ).add_to(mapa)
-                with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.html', encoding='utf-8') as f:
+                with tempfile.NamedTemporaryFile(mode='w',
+delete=False,
+                    suffix='.html',
+                    encoding='utf-8') as f:
                     mapa.save(f.name)
                     self.mapa_temp_file = f.name
                 try:
-                    from PyQt6.QtWebEngineWidgets import QWebEngineView
                     from PyQt6.QtCore import QUrl
                     self.mapa_web_view = webengine_view_class()
                     self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
@@ -1539,7 +1589,8 @@ Para habilitar mapas interactivos:
 
     def mostrar_todas_rutas(self):
         """Muestra todas las rutas en el mapa."""
-        if hasattr(self, 'mapa_placeholder') and hasattr(self.mapa_placeholder, 'layout'):
+        if hasattr(self, 'mapa_placeholder') and \
+            hasattr(self.mapa_placeholder, 'layout'):
             # Buscar el label de información
             layout = self.mapa_placeholder.layout()
             if layout and layout.count() > 1:
@@ -1548,7 +1599,7 @@ Para habilitar mapas interactivos:
                     info_label = item.widget()
                     if isinstance(info_label, QLabel):
                         info_label.setText("""📍 Ruta 1: Buenos Aires → La Plata (67 km)
-📍 Ruta 2: La Plata → Berisso (15 km) 
+📍 Ruta 2: La Plata → Berisso (15 km)
 📍 Ruta 3: Berisso → Ensenada (8 km)
 📍 Ruta 4: Buenos Aires → San Isidro (32 km)
 
@@ -1580,7 +1631,7 @@ Para habilitar mapas interactivos:
         """Aplica filtros a los servicios."""
         tipo = self.combo_tipo_servicio.currentText()
         estado = self.combo_estado_servicio.currentText()
-        
+
         # Simular filtrado
         mensaje = f"Filtros aplicados:\nTipo: {tipo}\nEstado: {estado}\n\nResultados encontrados: 12"
         if hasattr(self, 'label_servicio_info'):
@@ -1596,7 +1647,10 @@ Para habilitar mapas interactivos:
             """)
 
     # Métodos auxiliares
-    def crear_tarjeta_metrica(self, titulo: str, valor: str, color: str) -> QWidget:
+    def crear_tarjeta_metrica(self,
+titulo: str,
+        valor: str,
+        color: str) -> QWidget:
         """Crea una tarjeta de métrica."""
         card = QFrame()
         card.setStyleSheet(f"""
@@ -1610,7 +1664,7 @@ Para habilitar mapas interactivos:
         """)
 
         layout = QVBoxLayout(card)
-        
+
         titulo_label = QLabel(titulo)
         titulo_label.setStyleSheet("font-size: 12px; color: #7f8c8d; font-weight: bold;")
         layout.addWidget(titulo_label)
@@ -1621,7 +1675,10 @@ Para habilitar mapas interactivos:
 
         return card
 
-    def crear_widget_metrica(self, nombre: str, porcentaje: int, color: str) -> QWidget:
+    def crear_widget_metrica(self,
+nombre: str,
+        porcentaje: int,
+        color: str) -> QWidget:
         """Crea un widget de métrica con barra de progreso."""
         widget = QWidget()
         layout = QVBoxLayout(widget)
@@ -1661,14 +1718,13 @@ Para habilitar mapas interactivos:
 
     def configurar_tabla_direcciones(self):
         """Stub: tabla de direcciones no implementada."""
-        pass
 
     # Métodos de evento
     def buscar_transportes(self):
         """Busca transportes según los filtros."""
         termino = self.input_busqueda.text()
         estado = self.combo_estado.currentText()
-        
+
         if self.controller:
             self.controller.buscar_transportes(termino, estado)
 
@@ -1676,16 +1732,16 @@ Para habilitar mapas interactivos:
         """Actualiza todos los datos de las pestañas."""
         try:
             self.solicitud_actualizar_estadisticas.emit()
-            
+
             # Cargar datos de ejemplo si no hay controlador
             self.cargar_datos_ejemplo()
-            
+
             if self.controller:
                 self.controller.cargar_datos_iniciales()
-            
+
             # Actualizar estadísticas
             self.actualizar_estadisticas({})
-            
+
             from rexus.utils.message_system import show_success
             show_success(self, "Actualización", "Datos actualizados correctamente")
         except Exception as e:
@@ -1750,7 +1806,7 @@ Para habilitar mapas interactivos:
     def _crear_dialogo_confirmacion_eliminar(self, transporte_id: str) -> bool:
         """Crea y muestra diálogo de confirmación para eliminar transporte."""
         from PyQt6.QtWidgets import QMessageBox
-        
+
         msg_box = QMessageBox(self)
         msg_box.setWindowTitle("Confirmar eliminación")
         msg_box.setText(f"¿Está seguro de eliminar el transporte #{transporte_id}?")
@@ -1760,7 +1816,7 @@ Para habilitar mapas interactivos:
             QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
         )
         msg_box.setDefaultButton(QMessageBox.StandardButton.No)
-        
+
         # Personalizar botones
         yes_button = msg_box.button(QMessageBox.StandardButton.Yes)
         if yes_button:
@@ -1768,7 +1824,7 @@ Para habilitar mapas interactivos:
         no_button = msg_box.button(QMessageBox.StandardButton.No)
         if no_button:
             no_button.setText("Cancelar")
-        
+
         return msg_box.exec() == QMessageBox.StandardButton.Yes
 
     def eliminar_transporte_seleccionado(self):
@@ -1776,24 +1832,24 @@ Para habilitar mapas interactivos:
         fila_actual = self.tabla_transportes.currentRow()
         if fila_actual < 0:
             return
-            
+
         try:
             # Obtener ID de manera segura
             item_id = self.tabla_transportes.item(fila_actual, 0)
             if not item_id:
                 return
-                
+
             transporte_id = item_id.text()
-            
+
             # Confirmar eliminación
             if self._crear_dialogo_confirmacion_eliminar(transporte_id):
                 self.solicitud_eliminar_transporte.emit(transporte_id)
                 self.actualizar_tabla_transportes()
-                
+
                 # Feedback de éxito
                 from rexus.utils.message_system import show_success
                 show_success(self, "Éxito", f"Transporte #{transporte_id} eliminado correctamente")
-                        
+
         except Exception as e:
             from rexus.utils.message_system import show_error
             show_error(self, "Error", f"Error al eliminar transporte: {str(e)}")
@@ -1803,7 +1859,7 @@ Para habilitar mapas interactivos:
         try:
             from PyQt6.QtWidgets import QFileDialog
             import pandas as pd
-            
+
             # Obtener datos de la tabla
             datos = []
             for fila in range(self.tabla_transportes.rowCount()):
@@ -1814,7 +1870,7 @@ Para habilitar mapas interactivos:
                     item = self.tabla_transportes.item(fila, col)
                     fila_datos[header] = item.text() if item else ""
                 datos.append(fila_datos)
-            
+
             if datos:
                 # Solicitar ubicación del archivo
                 archivo, _ = QFileDialog.getSaveFileName(
@@ -1823,14 +1879,14 @@ Para habilitar mapas interactivos:
                     "transportes_logistica.xlsx",
                     "Excel files (*.xlsx)"
                 )
-                
+
                 if archivo:
                     df = pd.DataFrame(datos)
                     df.to_excel(archivo, index=False)
                     print(f"[OK] Datos exportados exitosamente a: {archivo}")
             else:
                 print("[WARNING] No hay datos para exportar")
-                
+
         except ImportError:
             print("[ERROR] pandas no está instalado. Instale pandas para usar esta funcionalidad.")
         except Exception as e:
@@ -1841,38 +1897,55 @@ Para habilitar mapas interactivos:
         """Inicializa la protección XSS."""
         try:
             self.form_protector = FormProtector()
-            
+
             # Proteger campos de entrada
             if hasattr(self, 'input_busqueda'):
                 self.form_protector.protect_field(self.input_busqueda, "busqueda")
-                
+
         except Exception as e:
             logging.error(f"Error inicializando protección XSS: {e}")
 
     def configurar_interfaz_segura(self):
         """Configura controles de seguridad adicionales."""
-        pass
 
     def set_controller(self, controller):
         """Establece el controlador."""
         self.controller = controller
-        
+
     # Métodos de compatibilidad con el controlador existente
     def cargar_transportes(self, transportes: List[Dict]):
         """Carga transportes en la tabla."""
         if not hasattr(self, 'tabla_transportes'):
             return
-            
+
         self.tabla_transportes.setRowCount(len(transportes))
-        
+
         for row, transporte in enumerate(transportes):
             # Llenar datos de transporte
-            self.tabla_transportes.setItem(row, 0, QTableWidgetItem(str(transporte.get('id', ''))))
-            self.tabla_transportes.setItem(row, 1, QTableWidgetItem(str(transporte.get('origen', ''))))
-            self.tabla_transportes.setItem(row, 2, QTableWidgetItem(str(transporte.get('destino', ''))))
-            self.tabla_transportes.setItem(row, 3, QTableWidgetItem(str(transporte.get('estado', ''))))
-            self.tabla_transportes.setItem(row, 4, QTableWidgetItem(str(transporte.get('conductor', ''))))
-            self.tabla_transportes.setItem(row, 5, QTableWidgetItem(str(transporte.get('fecha', ''))))
+            self.tabla_transportes.setItem(row,
+0,
+                QTableWidgetItem(str(transporte.get('id',
+                ''))))
+            self.tabla_transportes.setItem(row,
+1,
+                QTableWidgetItem(str(transporte.get('origen',
+                ''))))
+            self.tabla_transportes.setItem(row,
+2,
+                QTableWidgetItem(str(transporte.get('destino',
+                ''))))
+            self.tabla_transportes.setItem(row,
+3,
+                QTableWidgetItem(str(transporte.get('estado',
+                ''))))
+            self.tabla_transportes.setItem(row,
+4,
+                QTableWidgetItem(str(transporte.get('conductor',
+                ''))))
+            self.tabla_transportes.setItem(row,
+5,
+                QTableWidgetItem(str(transporte.get('fecha',
+                ''))))
 
     def actualizar_estadisticas(self, stats: Dict):
         """Actualiza las estadísticas mostradas."""
@@ -1886,7 +1959,7 @@ Para habilitar mapas interactivos:
                 'entregados_hoy': 8,
                 'pendientes': 12
             })
-            
+
             # Si existe el panel de métricas, actualizarlo
             if hasattr(self, 'tab_widget'):
                 from rexus.utils.message_system import show_success
@@ -1906,27 +1979,27 @@ Para habilitar mapas interactivos:
                 {'id': '004', 'origen': 'Quilmes', 'destino': 'Avellaneda', 'estado': 'En tránsito', 'conductor': 'Ana Silva', 'fecha': '2025-08-09'},
                 {'id': '005', 'origen': 'Tigre', 'destino': 'San Fernando', 'estado': 'Pendiente', 'conductor': 'Roberto López', 'fecha': '2025-08-10'}
             ]
-            
+
             self.cargar_transportes(transportes_ejemplo)
-            
+
             # Datos de ejemplo para servicios
             servicios_ejemplo = [
                 {'id': 'SRV001', 'tipo': 'Express', 'estado': 'Activo', 'cliente': 'Empresa ABC', 'prioridad': 'Alta'},
                 {'id': 'SRV002', 'tipo': 'Estándar', 'estado': 'Activo', 'cliente': 'Comercial XYZ', 'prioridad': 'Media'},
                 {'id': 'SRV003', 'tipo': 'Económico', 'estado': 'Pausado', 'cliente': 'Distribuidor 123', 'prioridad': 'Baja'}
             ]
-            
+
             self.cargar_servicios(servicios_ejemplo)
-            
+
             # Datos de ejemplo para direcciones
             direcciones_ejemplo = [
                 {'direccion': 'Av. 7 N° 1234', 'ciudad': 'La Plata', 'estado': 'Buenos Aires', 'tipo': 'Almacén'},
                 {'direccion': 'Calle 50 N° 567', 'ciudad': 'La Plata', 'estado': 'Buenos Aires', 'tipo': 'Sucursal'},
                 {'direccion': 'Av. Corrientes 890', 'ciudad': 'Buenos Aires', 'estado': 'CABA', 'tipo': 'Depósito'}
             ]
-            
+
             self.cargar_direcciones(direcciones_ejemplo)
-            
+
         except Exception as e:
             from rexus.utils.message_system import show_error
             show_error(self, "Error", f"Error cargando datos de ejemplo: {str(e)}")
@@ -1935,38 +2008,51 @@ Para habilitar mapas interactivos:
         """Carga servicios en la tabla de servicios."""
         if not hasattr(self, 'tabla_servicios'):
             return
-            
+
         self.tabla_servicios.setRowCount(len(servicios))
-        
+
         for row, servicio in enumerate(servicios):
-            self.tabla_servicios.setItem(row, 0, QTableWidgetItem(str(servicio.get('id', ''))))
-            self.tabla_servicios.setItem(row, 1, QTableWidgetItem(str(servicio.get('tipo', ''))))
-            self.tabla_servicios.setItem(row, 2, QTableWidgetItem(str(servicio.get('estado', ''))))
-            self.tabla_servicios.setItem(row, 3, QTableWidgetItem(str(servicio.get('cliente', ''))))
-            self.tabla_servicios.setItem(row, 4, QTableWidgetItem(str(servicio.get('prioridad', ''))))
+            self.tabla_servicios.setItem(row,
+0,
+                QTableWidgetItem(str(servicio.get('id',
+                ''))))
+            self.tabla_servicios.setItem(row,
+1,
+                QTableWidgetItem(str(servicio.get('tipo',
+                ''))))
+            self.tabla_servicios.setItem(row,
+2,
+                QTableWidgetItem(str(servicio.get('estado',
+                ''))))
+            self.tabla_servicios.setItem(row,
+3,
+                QTableWidgetItem(str(servicio.get('cliente',
+                ''))))
+            self.tabla_servicios.setItem(row,
+4,
+                QTableWidgetItem(str(servicio.get('prioridad',
+                ''))))
 
     def cargar_direcciones(self, direcciones: List[Dict]):
         """Stub: tabla de direcciones no implementada."""
-        pass
 
     # Métodos para el mapa interactivo
     def actualizar_marcadores_mapa(self):
         """Stub: función de mapa interactivo no implementada."""
-        pass
 
     def obtener_coordenadas_ejemplo(self, direccion: str, ciudad: str) -> tuple:
         """Obtiene coordenadas de ejemplo para direcciones de La Plata."""
         # Coordenadas base de La Plata
         base_lat, base_lng = -34.9214, -57.9544
-        
+
         # Generar variaciones basadas en la dirección para simular ubicaciones reales
         hash_obj = hashlib.md5(f"{direccion}{ciudad}".encode(), usedforsecurity=False)
         hash_hex = hash_obj.hexdigest()
-        
+
         # Usar los primeros caracteres del hash para generar offsets
         offset_lat = (int(hash_hex[:2], 16) % 100 - 50) * 0.001  # ±0.05 grados
         offset_lng = (int(hash_hex[2:4], 16) % 100 - 50) * 0.001  # ±0.05 grados
-        
+
         return (base_lat + offset_lat, base_lng + offset_lng)
 
     def on_mapa_location_clicked(self, lat: float, lng: float):
@@ -1982,7 +2068,7 @@ Para habilitar mapas interactivos:
         try:
             direccion = marker_data.get('descripcion', 'Ubicación desconocida')
             tipo = marker_data.get('tipo', 'Ubicación')
-            
+
             from rexus.utils.message_system import show_success
             show_success(self, "Marcador", f"Marcador seleccionado:\n{tipo}: {direccion}")
         except Exception as e:
@@ -1995,4 +2081,3 @@ Para habilitar mapas interactivos:
             show_error(self, "Error", mensaje)
         else:
             show_warning(self, "Información", mensaje)
-
