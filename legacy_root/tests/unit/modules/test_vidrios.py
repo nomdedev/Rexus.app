@@ -25,7 +25,7 @@ class TestVidriosModel:
     def test_model_initialization(self, mock_db_connection):
         """Test inicialización del modelo con conexión mock."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         try:
             with patch('rexus.modules.vidrios.model.database_manager') as mock_db_manager:
                 mock_db_manager.get_connection.return_value = mock_db_connection
@@ -37,12 +37,12 @@ class TestVidriosModel:
     def test_glass_types_configuration(self):
         """Test configuración de tipos de vidrio."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         # Verificar que existe configuración de tipos
         if hasattr(VidriosModel, 'TIPOS_VIDRIO'):
             tipos = VidriosModel.TIPOS_VIDRIO
             assert isinstance(tipos, (list, dict))
-            
+
             # Verificar tipos típicos de vidrio
             expected_types = ['TEMPLADO', 'LAMINADO', 'FLOTADO', 'DOBLE_VIDRIO', 'ESPEJO']
             if isinstance(tipos, list):
@@ -56,9 +56,9 @@ class TestVidriosModel:
     def test_glass_specifications_methods(self):
         """Test métodos de especificaciones de vidrio."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         spec_methods = ['calcular_peso', 'validar_dimensiones', 'calcular_precio_m2']
-        
+
         for method in spec_methods:
             if hasattr(VidriosModel, method):
                 assert callable(getattr(VidriosModel, method))
@@ -66,10 +66,10 @@ class TestVidriosModel:
     def test_sanitization_system(self):
         """Test sistema unificado de sanitización."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         try:
             model = VidriosModel()
-            
+
             # Verificar que existe sistema de sanitización unificado
             if hasattr(model, 'data_sanitizer'):
                 assert model.data_sanitizer is not None
@@ -78,7 +78,7 @@ class TestVidriosModel:
                 sanitize_methods = ['sanitize_input', 'clean_data', 'validate_glass_data']
                 has_sanitization = any(hasattr(model, method) for method in sanitize_methods)
                 assert has_sanitization, "Debe tener algún sistema de sanitización"
-                
+
         except Exception as e:
             pytest.skip(f"Sanitization system test skipped: {e}")
 
@@ -130,7 +130,7 @@ class TestVidriosView:
         try:
             from rexus.modules.vidrios.view import VidriosModernView
             view = VidriosModernView()
-            
+
             # Verificar métodos críticos de gestión
             management_methods = [
                 'mostrar_vidrios',
@@ -138,11 +138,11 @@ class TestVidriosView:
                 'editar_vidrio',
                 'calcular_presupuesto'
             ]
-            
+
             for method_name in management_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Vista no disponible para test: {e}")
 
@@ -151,11 +151,11 @@ class TestVidriosView:
         try:
             from rexus.modules.vidrios.view import VidriosModernView
             view = VidriosModernView()
-            
+
             # Verificar que existe método de estilos minimalistas
             if hasattr(view, 'aplicar_estilos_minimalistas'):
                 assert callable(view.aplicar_estilos_minimalistas)
-                
+
                 # Verificar que se aplicaron estilos
                 stylesheet = view.styleSheet()
                 if stylesheet:
@@ -166,10 +166,10 @@ class TestVidriosView:
                         "font-size: 8px",
                         "padding: 1px"
                     ]
-                    
+
                     compact_found = any(indicator in stylesheet for indicator in compact_indicators)
                     assert compact_found or len(stylesheet) > 0, "Debe tener estilos aplicados"
-                    
+
         except Exception as e:
             pytest.skip(f"Test estilos minimalistas skipped: {e}")
 
@@ -178,14 +178,14 @@ class TestVidriosView:
         try:
             from rexus.modules.vidrios.view import VidriosModernView
             view = VidriosModernView()
-            
+
             # Verificar métodos de calculadora
             calculator_methods = ['calcular_area', 'calcular_peso', 'calcular_precio', 'mostrar_resultado']
-            
+
             for method_name in calculator_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Test calculadora skipped: {e}")
 
@@ -204,7 +204,7 @@ class TestVidriosController:
     def test_controller_initialization(self, mock_db_connection):
         """Test inicialización del controlador."""
         from rexus.modules.vidrios.controller import VidriosController
-        
+
         try:
             with patch('rexus.modules.vidrios.controller.VidriosModel') as mock_model:
                 mock_model.return_value = Mock()
@@ -216,9 +216,9 @@ class TestVidriosController:
     def test_glass_business_logic_methods(self):
         """Test métodos de lógica de negocio."""
         from rexus.modules.vidrios.controller import VidriosController
-        
+
         business_methods = ['procesar_pedido_vidrio', 'validar_especificaciones', 'generar_cotizacion']
-        
+
         try:
             controller = VidriosController()
             for method in business_methods:
@@ -234,9 +234,9 @@ class TestVidriosIntegration:
     def test_module_structure_integrity(self):
         """Test integridad de la estructura del módulo."""
         import os
-        
+
         module_path = "rexus/modules/vidrios"
-        
+
         # Verificar archivos críticos
         critical_files = [
             "__init__.py",
@@ -244,7 +244,7 @@ class TestVidriosIntegration:
             "view.py",
             "controller.py"
         ]
-        
+
         for file_name in critical_files:
             file_path = os.path.join(module_path, file_name)
             assert os.path.exists(file_path), f"Archivo crítico {file_name} no encontrado"
@@ -252,10 +252,10 @@ class TestVidriosIntegration:
     def test_database_configuration(self):
         """Test configuración de base de datos."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         # Verificar configuración de tablas
         table_attrs = ['TABLE_NAME', 'VIDRIOS_TABLE']
-        
+
         for attr in table_attrs:
             if hasattr(VidriosModel, attr):
                 table_name = getattr(VidriosModel, attr)
@@ -267,11 +267,11 @@ class TestVidriosIntegration:
         try:
             from rexus.modules.vidrios.model import VidriosModel
             model = VidriosModel()
-            
+
             # Verificar que el sistema unificado está cargado correctamente
             # Como se vió en los logs: "OK [VIDRIOS] Sistema unificado de sanitización cargado"
             assert model is not None
-            
+
         except Exception as e:
             pytest.skip(f"Unified sanitization test skipped: {e}")
 
@@ -299,10 +299,10 @@ class TestVidriosIntegration:
 def test_vidrio_data_structure(vidrio_data):
     """Test parametrizado para estructura de datos de vidrio."""
     required_fields = ['tipo', 'espesor', 'ancho', 'alto', 'color', 'acabado', 'precio_m2']
-    
+
     for field in required_fields:
         assert field in vidrio_data, f"Campo {field} requerido"
-    
+
     assert vidrio_data['tipo'] in ['TEMPLADO', 'LAMINADO', 'FLOTADO', 'DOBLE_VIDRIO', 'ESPEJO']
     assert isinstance(vidrio_data['espesor'], (int, float))
     assert vidrio_data['espesor'] > 0
@@ -323,7 +323,7 @@ class TestVidriosBusinessLogic:
         ancho_metros = 1.2  # 1200mm = 1.2m
         alto_metros = 0.8   # 800mm = 0.8m
         area_m2 = ancho_metros * alto_metros
-        
+
         expected_area = 0.96  # m2
         assert area_m2 == expected_area
 
@@ -333,10 +333,10 @@ class TestVidriosBusinessLogic:
         area_m2 = 1.0
         espesor_mm = 6
         peso_especifico = 2.5  # kg/m2/mm
-        
+
         peso_kg = area_m2 * espesor_mm * peso_especifico
         expected_weight = 15.0  # kg
-        
+
         assert peso_kg == expected_weight
 
     def test_price_calculation(self):
@@ -346,10 +346,10 @@ class TestVidriosBusinessLogic:
         precio_base_m2 = 50.00
         factor_tipo = 1.2  # Factor por tipo de vidrio
         factor_espesor = 1.1  # Factor por espesor
-        
+
         precio_total = area_m2 * precio_base_m2 * factor_tipo * factor_espesor
         expected_price = 1.5 * 50.0 * 1.2 * 1.1  # 99.00
-        
+
         assert precio_total == expected_price
         assert precio_total == 99.00
 
@@ -358,17 +358,17 @@ class TestVidriosBusinessLogic:
         # Test optimización básica de corte
         sheet_width = 3000  # mm
         sheet_height = 2000  # mm
-        
+
         piece_width = 1200
         piece_height = 800
-        
+
         # Calcular cuántas piezas caben
         pieces_horizontal = sheet_width // piece_width  # 3000 // 1200 = 2
         pieces_vertical = sheet_height // piece_height  # 2000 // 800 = 2
-        
+
         total_pieces = pieces_horizontal * pieces_vertical
         expected_pieces = 4
-        
+
         assert total_pieces == expected_pieces
 
     def test_glass_specifications_validation(self):
@@ -380,7 +380,7 @@ class TestVidriosBusinessLogic:
             {'tipo': 'LAMINADO', 'espesor': 6.38, 'valid': True},
             {'tipo': 'FLOTADO', 'espesor': 0, 'valid': False},   # Espesor inválido
         ]
-        
+
         for spec in valid_specs:
             if spec['valid']:
                 assert spec['espesor'] > 0
@@ -396,13 +396,13 @@ class TestVidriosErrorHandling:
     def test_model_handles_invalid_dimensions(self):
         """Test que el modelo maneja dimensiones inválidas."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         invalid_dimensions = [
             {'ancho': 0, 'alto': 100},      # Ancho cero
             {'ancho': 100, 'alto': -50},    # Alto negativo
             {'ancho': None, 'alto': 100},   # Ancho None
         ]
-        
+
         for invalid_dim in invalid_dimensions:
             try:
                 # Si existe método de validación, probarlo
@@ -418,29 +418,30 @@ class TestVidriosErrorHandling:
         try:
             from rexus.modules.vidrios.view import VidriosModernView
             view = VidriosModernView()
-            
+
             # La vista debería manejar errores de cálculo sin crash
             if hasattr(view, 'calcular_precio'):
                 # No debería crash con valores inválidos
                 assert True
-                
+
         except Exception as e:
             pytest.skip(f"Test errores cálculo skipped: {e}")
 
     def test_sanitization_error_handling(self):
         """Test manejo de errores de sanitización."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         try:
             model = VidriosModel()
-            
+
             # Verificar que maneja errores de sanitización gracefully
-            if hasattr(model, 'data_sanitizer') and model.data_sanitizer is None:
+            if hasattr(model, 'data_sanitizer') and \
+                model.data_sanitizer is None:
                 # Debería tener fallback si no hay sanitizer
                 fallback_methods = ['sanitize_input', 'clean_data']
                 has_fallback = any(hasattr(model, method) for method in fallback_methods)
                 assert has_fallback or True  # Permitir si tiene otro mecanismo
-                
+
         except Exception as e:
             pytest.skip(f"Sanitization error handling test skipped: {e}")
 
@@ -460,10 +461,10 @@ class TestVidriosSecurity:
     def test_price_tampering_protection(self):
         """Test protección contra alteración de precios."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         # Verificar métodos de protección de precios
         security_methods = ['validar_precio', 'log_price_change', 'verify_calculation']
-        
+
         for method in security_methods:
             if hasattr(VidriosModel, method):
                 assert callable(getattr(VidriosModel, method))
@@ -476,18 +477,18 @@ class TestVidriosPerformance:
     def test_model_initialization_performance(self, performance_timer, mock_db_connection):
         """Test rendimiento de inicialización del modelo."""
         from rexus.modules.vidrios.model import VidriosModel
-        
+
         with performance_timer() as timer:
             try:
                 model = VidriosModel(db_connection=mock_db_connection)
                 assert model is not None
             except Exception:
                 pytest.skip("Model no puede inicializarse para test de rendimiento")
-        
+
         # Inicialización debería ser rápida
         assert timer.elapsed < 1.0, f"Model tardó {timer.elapsed:.2f}s en inicializar"
 
-    @pytest.mark.performance  
+    @pytest.mark.performance
     def test_bulk_calculation_performance(self, performance_timer):
         """Test rendimiento con cálculos masivos."""
         # Simular cálculos para muchos vidrios
@@ -500,7 +501,7 @@ class TestVidriosPerformance:
                 'precio_m2': 50.0 + (i % 20)
             }
             glass_specs.append(spec)
-        
+
         with performance_timer() as timer:
             # Calcular precios (simulado)
             calculations = []
@@ -508,7 +509,7 @@ class TestVidriosPerformance:
                 area = (spec['ancho'] / 1000.0) * (spec['alto'] / 1000.0)  # m2
                 price = area * spec['precio_m2']
                 calculations.append(price)
-        
+
         # Los cálculos masivos deberían ser rápidos
         assert timer.elapsed < 0.2, f"Cálculos tardaron {timer.elapsed:.3f}s (muy lento)"
         assert len(calculations) == 1000, "Todos los cálculos deben completarse"

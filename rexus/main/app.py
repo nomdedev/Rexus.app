@@ -33,7 +33,6 @@ Sigue principios de arquitectura MVC y patrones de diseño para mantenibilidad.
 # Imports estándar
 import datetime
 import os
-import platform
 import sys
 from pathlib import Path
 from typing import Any, Dict
@@ -216,7 +215,8 @@ class SimpleSecurityManager:
 
     def has_permission(self, permission: str, module: str | None = None) -> bool:
         """Verifica permisos - admin tiene todos"""
-        return bool(self.current_user_data and self.current_user_data.get("rol") == "ADMIN")
+        return bool(self.current_user_data and \
+            self.current_user_data.get("rol") == "ADMIN")
 
     def log_security_event(
         self, user_id: int, accion: str, modulo: str | None = None, detalles: str | None = None
@@ -271,19 +271,19 @@ class MainWindow(QMainWindow):
         # Inicializar StyleManager y aplicar tema automático
         self._init_styles()
         self._init_ui()
-    
+
     def _init_styles(self):
         """Inicializa y aplica el sistema de estilos."""
         try:
             from rexus.ui.style_manager import StyleManager
-            
+
             self.style_manager = StyleManager()
-            
+
             # Aplicar tema global (auto-detectado en StyleManager)
             success = self.style_manager.apply_global_theme()
             if success:
                 print(f"[STYLE] Tema '{self.style_manager._current_theme}' aplicado globalmente")
-                
+
                 # CRÍTICO: Aplicar correcciones de formularios inmediatamente
                 # Aplicar correcciones ultra-seguras para todos los temas
                 emergency_success = self.style_manager.apply_emergency_readable_forms()
@@ -291,7 +291,7 @@ class MainWindow(QMainWindow):
                     print("[STYLE] [OK] Formularios ultra-legibles aplicados correctamente")
                 else:
                     print("[STYLE] [WARNING] Intentando correcciones alternativas...")
-                    
+
                     # Fallback: Intentar correcciones específicas por tema
                     if self.style_manager._current_theme == 'dark':
                         print("[STYLE] Tema oscuro detectado - aplicando correcciones críticas")
@@ -308,7 +308,7 @@ class MainWindow(QMainWindow):
                         self.style_manager.apply_critical_form_fixes()
             else:
                 print("[STYLE] Fallback a estilos por defecto")
-                
+
         except Exception as e:
             print(f"[WARNING] Error inicializando StyleManager: {e}")
             self.style_manager = None
@@ -559,7 +559,7 @@ QPushButton:disabled {
         main_layout.addWidget(footer)
 
         self.content_stack.addWidget(dashboard)
-    
+
     def _create_premium_dashboard(self):
         """Crea el dashboard premium moderno."""
         dashboard = PremiumDashboard(self.user_data)
@@ -569,7 +569,7 @@ QPushButton:disabled {
     def _create_simple_header(self):
         """Header limpio y compacto"""
         from datetime import datetime
-        
+
         header = QWidget()
         header.setFixedHeight(60)
         header.setStyleSheet("""
@@ -578,10 +578,10 @@ QPushButton:disabled {
                 border-bottom: 1px solid #e9ecef;
             }
         """)
-        
+
         layout = QHBoxLayout(header)
         layout.setContentsMargins(20, 10, 20, 10)
-        
+
         # Título principal
         title = QLabel("Dashboard")
         title.setStyleSheet("""
@@ -591,7 +591,7 @@ QPushButton:disabled {
                 color: #212529;
             }
         """)
-        
+
         # Fecha actual
         date_label = QLabel(datetime.now().strftime("%d de %B, %Y"))
         date_label.setStyleSheet("""
@@ -600,11 +600,11 @@ QPushButton:disabled {
                 color: #6c757d;
             }
         """)
-        
+
         layout.addWidget(title)
         layout.addStretch()
         layout.addWidget(date_label)
-        
+
         return header
 
     def _create_stats_grid(self):
@@ -616,9 +616,9 @@ QPushButton:disabled {
                 padding: 20px;
             }
         """)
-        
+
         layout = QVBoxLayout(stats_widget)
-        
+
         # Título de sección
         section_title = QLabel("[CHART] Estadísticas del Sistema")
         section_title.setStyleSheet("""
@@ -630,11 +630,11 @@ QPushButton:disabled {
             }
         """)
         layout.addWidget(section_title)
-        
+
         # Grid de tarjetas
         grid = QGridLayout()
         grid.setSpacing(15)
-        
+
         # Estadísticas simples
         stats = [
             ("Productos", "1,234", "#007bff"),
@@ -642,11 +642,11 @@ QPushButton:disabled {
             ("Pedidos", "56", "#ffc107"),
             ("Usuarios", f"{len(self.modulos_permitidos)}", "#6f42c1")
         ]
-        
+
         for i, (label, value, color) in enumerate(stats):
             card = self._create_simple_stat_card(label, value, color)
             grid.addWidget(card, 0, i)
-        
+
         layout.addLayout(grid)
         return stats_widget
 
@@ -667,10 +667,10 @@ QPushButton:disabled {
                 border-color: {color};
             }}
         """)
-        
+
         layout = QVBoxLayout(card)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         value_label = QLabel(value)
         value_label.setStyleSheet(f"""
             QLabel {{
@@ -681,7 +681,7 @@ QPushButton:disabled {
             }}
         """)
         value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         label_widget = QLabel(label)
         label_widget.setStyleSheet("""
             QLabel {
@@ -691,10 +691,10 @@ QPushButton:disabled {
             }
         """)
         label_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         layout.addWidget(value_label)
         layout.addWidget(label_widget)
-        
+
         return card
 
     def _create_simple_quick_access(self):
@@ -706,9 +706,9 @@ QPushButton:disabled {
                 padding: 20px;
             }
         """)
-        
+
         layout = QVBoxLayout(quick_widget)
-        
+
         # Título
         title = QLabel("[ROCKET] Acceso Rápido")
         title.setStyleSheet("""
@@ -720,18 +720,18 @@ QPushButton:disabled {
             }
         """)
         layout.addWidget(title)
-        
+
         # Botones principales
         buttons_layout = QHBoxLayout()
         buttons_layout.setSpacing(15)
-        
+
         quick_modules = [
             ("📦", "Inventario"),
             ("🏗️", "Obras"),
             ("[NOTE]", "Pedidos"),
             ("👤", "Usuarios")
         ]
-        
+
         for emoji, name in quick_modules:
             if name in self.modulos_permitidos:
                 btn = QPushButton(f"{emoji} {name}")
@@ -752,10 +752,10 @@ QPushButton:disabled {
                 """)
                 btn.clicked.connect(lambda checked, module=name: self.show_module(module))
                 buttons_layout.addWidget(btn)
-        
+
         buttons_layout.addStretch()
         layout.addLayout(buttons_layout)
-        
+
         return quick_widget
 
     def _create_simple_footer(self):
@@ -768,10 +768,10 @@ QPushButton:disabled {
                 border-top: 1px solid #e9ecef;
             }
         """)
-        
+
         layout = QHBoxLayout(footer)
         layout.setContentsMargins(20, 5, 20, 5)
-        
+
         # Información del sistema
         info = QLabel("Rexus.app v2.0.0 - Sistema Operativo")
         info.setStyleSheet("""
@@ -780,7 +780,7 @@ QPushButton:disabled {
                 color: #6c757d;
             }
         """)
-        
+
         # Usuario actual
         user_info = QLabel(f"Usuario: {self.user_data.get('username', 'N/A')}")
         user_info.setStyleSheet("""
@@ -789,17 +789,17 @@ QPushButton:disabled {
                 color: #6c757d;
             }
         """)
-        
+
         layout.addWidget(info)
         layout.addStretch()
         layout.addWidget(user_info)
-        
+
         return footer
 
     def _create_dashboard_header(self):
         """Crea el header del dashboard moderno y limpio"""
         from datetime import datetime
-        
+
         header_widget = QWidget()
         header_layout = QHBoxLayout(header_widget)
         header_widget.setStyleSheet("""
@@ -811,11 +811,11 @@ QPushButton:disabled {
                 margin-bottom: 8px;
             }
         """)
-        
+
         # Información del usuario
         user_info = QWidget()
         user_layout = QVBoxLayout(user_info)
-        
+
         welcome_title = QLabel(f"¡Bienvenido, {self.user_data.get('username', 'Usuario')}!")
         welcome_title.setStyleSheet("""
             QLabel {
@@ -825,7 +825,7 @@ QPushButton:disabled {
                 margin: 0;
             }
         """)
-        
+
         user_role = QLabel(f"Rol: {self.user_data.get('rol', self.user_data.get('role', 'N/A'))}")
         user_role.setStyleSheet("""
             QLabel {
@@ -834,7 +834,7 @@ QPushButton:disabled {
                 margin-top: 5px;
             }
         """)
-        
+
         current_date = QLabel(f"Hoy es {datetime.now().strftime('%d de %B de %Y')}")
         current_date.setStyleSheet("""
             QLabel {
@@ -843,11 +843,11 @@ QPushButton:disabled {
                 margin-top: 5px;
             }
         """)
-        
+
         user_layout.addWidget(welcome_title)
         user_layout.addWidget(user_role)
         user_layout.addWidget(current_date)
-        
+
         # Logo o espacio para empresa - moderno y limpio
         logo_space = QLabel("REXUS.APP")
         logo_space.setStyleSheet("""
@@ -864,48 +864,48 @@ QPushButton:disabled {
             }
         """)
         logo_space.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         header_layout.addWidget(user_info)
         header_layout.addStretch()
         header_layout.addWidget(logo_space)
-        
+
         return header_widget
 
     def _create_left_dashboard_column(self):
         """Crea la columna izquierda con estadísticas y KPIs"""
         left_widget = QWidget()
         left_layout = QVBoxLayout(left_widget)
-        
+
         # KPIs principales
         kpi_section = self._create_kpi_section()
         left_layout.addWidget(kpi_section)
-        
+
         # Gráfico o tabla de actividad reciente
         activity_section = self._create_activity_section()
         left_layout.addWidget(activity_section)
-        
+
         return left_widget
 
     def _create_right_dashboard_column(self):
         """Crea la columna derecha con acceso rápido"""
         right_widget = QWidget()
         right_layout = QVBoxLayout(right_widget)
-        
+
         # Acceso rápido a módulos
         quick_access = self._create_quick_access_section()
         right_layout.addWidget(quick_access)
-        
+
         # Notificaciones o alertas
         notifications = self._create_notifications_section()
         right_layout.addWidget(notifications)
-        
+
         return right_widget
 
     def _create_kpi_section(self):
         """Crea la sección de KPIs principales"""
         kpi_widget = QWidget()
         kpi_layout = QVBoxLayout(kpi_widget)
-        
+
         title = QLabel("[CHART] Resumen Ejecutivo")
         title.setStyleSheet("""
             QLabel {
@@ -916,25 +916,37 @@ QPushButton:disabled {
             }
         """)
         kpi_layout.addWidget(title)
-        
+
         # Grid de KPIs
         grid_layout = QGridLayout()
-        
+
         # KPIs con datos dinámicos (simulados por ahora)
         kpis = [
             ("📦", "Productos", "1,234", "#3498db", "Stock total disponible"),
-            ("[MONEY]", "Facturación", "$45,678", "#2ecc71", "Ingresos del mes"),
+            ("[MONEY]",
+"Facturación",
+                "$45,678",
+                "#2ecc71",
+                "Ingresos del mes"),
             ("🏗️", "Obras", "23", "#e74c3c", "Proyectos activos"),
             ("📋", "Pedidos", "56", "#f39c12", "Pendientes de procesar"),
-            ("👥", "Usuarios", f"{len(self.modulos_permitidos)}", "#9b59b6", "Módulos activos"),
+            ("👥",
+"Usuarios",
+                f"{len(self.modulos_permitidos)}",
+                "#9b59b6",
+                "Módulos activos"),
             ("⚙️", "Sistema", "100%", "#34495e", "Estado operativo")
         ]
-        
+
         for i, (icon, title_text, value, color, subtitle) in enumerate(kpis):
-            card = self._create_modern_kpi_card(icon, title_text, value, color, subtitle)
+            card = self._create_modern_kpi_card(icon,
+title_text,
+                value,
+                color,
+                subtitle)
             row, col = i // 3, i % 3
             grid_layout.addWidget(card, row, col)
-        
+
         kpi_layout.addLayout(grid_layout)
         return kpi_widget
 
@@ -955,26 +967,26 @@ QPushButton:disabled {
                 border: 1px solid #d0d7de;
             }}
         """)
-        
+
         layout = QVBoxLayout(card)
         layout.setSpacing(8)
-        
+
         # Header con icono y título
         header_layout = QHBoxLayout()
         icon_label = QLabel(icon)
         icon_label.setStyleSheet("font-size: 20px;")
-        
+
         title_label = QLabel(title)
         title_label.setStyleSheet(f"""
             font-size: 12px;
             color: {color};
             font-weight: 600;
         """)
-        
+
         header_layout.addWidget(icon_label)
         header_layout.addWidget(title_label)
         header_layout.addStretch()
-        
+
         # Valor principal
         value_label = QLabel(value)
         value_label.setStyleSheet("""
@@ -983,7 +995,7 @@ QPushButton:disabled {
             color: #24292e;
             margin: 8px 0px;
         """)
-        
+
         # Subtítulo
         subtitle_label = QLabel(subtitle)
         subtitle_label.setStyleSheet("""
@@ -991,18 +1003,18 @@ QPushButton:disabled {
             color: #586069;
         """)
         subtitle_label.setWordWrap(True)
-        
+
         layout.addLayout(header_layout)
         layout.addWidget(value_label)
         layout.addWidget(subtitle_label)
-        
+
         return card
 
     def _create_activity_section(self):
         """Crea la sección de actividad reciente"""
         activity_widget = QWidget()
         activity_layout = QVBoxLayout(activity_widget)
-        
+
         title = QLabel("📈 Actividad Reciente")
         title.setStyleSheet("""
             QLabel {
@@ -1013,7 +1025,7 @@ QPushButton:disabled {
             }
         """)
         activity_layout.addWidget(title)
-        
+
         # Lista de actividades
         activities_frame = QFrame()
         activities_frame.setStyleSheet("""
@@ -1024,9 +1036,9 @@ QPushButton:disabled {
                 padding: 16px;
             }
         """)
-        
+
         activities_layout = QVBoxLayout(activities_frame)
-        
+
         # Actividades simuladas
         activities = [
             ("[OK]", "Nuevo pedido registrado", "Hace 2 horas", "#28a745"),
@@ -1035,11 +1047,14 @@ QPushButton:disabled {
             ("👤", "Usuario conectado", "Hace 1 hora", "#6f42c1"),
             ("💾", "Backup completado", "Hace 6 horas", "#586069")
         ]
-        
+
         for icon, text, time, color in activities:
-            activity_item = self._create_activity_item(icon, text, time, color)
+            activity_item = self._create_activity_item(icon,
+text,
+                time,
+                color)
             activities_layout.addWidget(activity_item)
-        
+
         activity_layout.addWidget(activities_frame)
         return activity_widget
 
@@ -1049,7 +1064,7 @@ QPushButton:disabled {
         item_widget.setFixedHeight(48)
         item_layout = QHBoxLayout(item_widget)
         item_layout.setContentsMargins(8, 8, 8, 8)
-        
+
         # Ícono con background
         icon_label = QLabel(icon)
         icon_label.setFixedSize(24, 24)
@@ -1062,12 +1077,12 @@ QPushButton:disabled {
                 color: {color};
             }}
         """)
-        
+
         # Contenido vertical
         content_layout = QVBoxLayout()
         content_layout.setSpacing(2)
         content_layout.setContentsMargins(12, 0, 0, 0)
-        
+
         text_label = QLabel(text)
         text_label.setStyleSheet("""
             QLabel {
@@ -1076,7 +1091,7 @@ QPushButton:disabled {
                 color: #24292e;
             }
         """)
-        
+
         time_label = QLabel(time)
         time_label.setStyleSheet("""
             QLabel {
@@ -1084,14 +1099,14 @@ QPushButton:disabled {
                 color: #586069;
             }
         """)
-        
+
         content_layout.addWidget(text_label)
         content_layout.addWidget(time_label)
-        
+
         item_layout.addWidget(icon_label)
         item_layout.addLayout(content_layout)
         item_layout.addStretch()
-        
+
         # Hover effect
         item_widget.setStyleSheet("""
             QWidget {
@@ -1102,14 +1117,14 @@ QPushButton:disabled {
                 background-color: #f6f8fa;
             }
         """)
-        
+
         return item_widget
 
     def _create_quick_access_section(self):
         """Crea la sección de acceso rápido"""
         quick_widget = QWidget()
         quick_layout = QVBoxLayout(quick_widget)
-        
+
         title = QLabel("[ROCKET] Acceso Rápido")
         title.setStyleSheet("""
             QLabel {
@@ -1120,7 +1135,7 @@ QPushButton:disabled {
             }
         """)
         quick_layout.addWidget(title)
-        
+
         # Botones de acceso rápido
         buttons_frame = QFrame()
         buttons_frame.setStyleSheet("""
@@ -1133,7 +1148,7 @@ QPushButton:disabled {
         """)
         buttons_layout = QVBoxLayout(buttons_frame)
         buttons_layout.setSpacing(8)
-        
+
         # Módulos principales con acceso rápido
         quick_modules = [
             ("📦", "Inventario", "inventario"),
@@ -1142,12 +1157,12 @@ QPushButton:disabled {
             ("👥", "Usuarios", "usuarios"),
             ("⚙️", "Configuración", "configuracion")
         ]
-        
+
         for icon, name, module_key in quick_modules:
             if module_key in [m.lower().replace(' ', '').replace('ó', 'o') for m in self.modulos_permitidos]:
                 button = self._create_quick_access_button(icon, name, module_key)
                 buttons_layout.addWidget(button)
-        
+
         quick_layout.addWidget(buttons_frame)
         return quick_widget
 
@@ -1175,7 +1190,7 @@ QPushButton:disabled {
                 background-color: #e1e4e8;
             }
         """)
-        
+
         # Conectar al módulo correspondiente
         button.clicked.connect(lambda: self._navigate_to_module(name))
         return button
@@ -1190,7 +1205,7 @@ QPushButton:disabled {
                     break
         except Exception as e:
             print(f"Error navegando a módulo {module_name}: {e}")
-    
+
     def cargar_modulo(self, module_name):
         """Carga un módulo específico - método requerido por PremiumDashboard."""
         self._navigate_to_module(module_name)
@@ -1199,7 +1214,7 @@ QPushButton:disabled {
         """Crea la sección de notificaciones"""
         notif_widget = QWidget()
         notif_layout = QVBoxLayout(notif_widget)
-        
+
         title = QLabel("🔔 Alertas y Notificaciones")
         title.setStyleSheet("""
             QLabel {
@@ -1210,7 +1225,7 @@ QPushButton:disabled {
             }
         """)
         notif_layout.addWidget(title)
-        
+
         # Frame de notificaciones
         notif_frame = QFrame()
         notif_frame.setStyleSheet("""
@@ -1221,9 +1236,9 @@ QPushButton:disabled {
                 padding: 16px;
             }
         """)
-        
+
         notif_frame_layout = QVBoxLayout(notif_frame)
-        
+
         # Notificaciones simuladas
         notifications = [
             ("[WARNING]", "Stock bajo en herrajes", "warning"),
@@ -1231,11 +1246,11 @@ QPushButton:disabled {
             ("[CHART]", "Reporte mensual listo", "info"),
             ("🔄", "Sistema actualizado", "info")
         ]
-        
+
         for icon, text, type_notif in notifications:
             notif_item = self._create_notification_item(icon, text, type_notif)
             notif_frame_layout.addWidget(notif_item)
-        
+
         notif_layout.addWidget(notif_frame)
         return notif_widget
 
@@ -1245,16 +1260,16 @@ QPushButton:disabled {
         item.setFixedHeight(44)
         item_layout = QHBoxLayout(item)
         item_layout.setContentsMargins(12, 8, 12, 8)
-        
+
         colors = {
             "warning": "#fbbf24",
-            "success": "#10b981", 
+            "success": "#10b981",
             "info": "#3b82f6",
             "error": "#ef4444"
         }
-        
+
         color = colors.get(notif_type, "#6b7280")
-        
+
         # Ícono con background circular
         icon_label = QLabel(icon)
         icon_label.setFixedSize(20, 20)
@@ -1267,7 +1282,7 @@ QPushButton:disabled {
                 color: {color};
             }}
         """)
-        
+
         text_label = QLabel(text)
         text_label.setStyleSheet("""
             QLabel {
@@ -1277,11 +1292,11 @@ QPushButton:disabled {
                 margin-left: 8px;
             }
         """)
-        
+
         item_layout.addWidget(icon_label)
         item_layout.addWidget(text_label)
         item_layout.addStretch()
-        
+
         # Background color and hover effect
         item.setStyleSheet(f"""
             QWidget {{
@@ -1293,14 +1308,14 @@ QPushButton:disabled {
                 background-color: {color}15;
             }}
         """)
-        
+
         return item
 
     def _create_dashboard_footer(self):
         """Crea el footer del dashboard"""
         footer = QWidget()
         footer_layout = QHBoxLayout(footer)
-        
+
         footer.setStyleSheet("""
             QWidget {
                 background-color: #f6f8fa;
@@ -1310,7 +1325,7 @@ QPushButton:disabled {
                 margin-top: 8px;
             }
         """)
-        
+
         # Información del sistema
         system_info = QLabel("🖥️ Sistema Operativo | [LOCK] Seguridad Activa | 💾 Base de Datos Conectada")
         system_info.setStyleSheet("""
@@ -1319,7 +1334,7 @@ QPushButton:disabled {
                 color: #586069;
             }
         """)
-        
+
         # Versión
         version_info = QLabel("Rexus.app v0.1.0")
         version_info.setStyleSheet("""
@@ -1329,11 +1344,11 @@ QPushButton:disabled {
                 color: #24292e;
             }
         """)
-        
+
         footer_layout.addWidget(system_info)
         footer_layout.addStretch()
         footer_layout.addWidget(version_info)
-        
+
         return footer
 
 
@@ -1486,7 +1501,7 @@ QPushButton:disabled {
             from rexus.modules.administracion.contabilidad.model import (
                 ContabilidadModel,
             )
-            
+
             # Import condicional para la vista
             try:
                 from rexus.modules.administracion.contabilidad.view import ContabilidadView
@@ -1861,7 +1876,7 @@ QPushButton:disabled {
             desc_label = QLabel(f"Error específico: {error_details}")
         else:
             desc_label = QLabel("El módulo no pudo iniciarse. Consulta los logs para más detalles.")
-            
+
         desc_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         desc_label.setWordWrap(True)
         desc_label.setMaximumWidth(600)
@@ -1916,17 +1931,17 @@ QPushButton:disabled {
 
 def main():
     print("[LOG 4.1] Inicializando QtWebEngine de forma robusta...")
-    
+
     # Usar el gestor robusto de WebEngine
     from rexus.utils.webengine_manager import webengine_manager
-    
+
     qtwebengine_available = webengine_manager.is_webengine_available()
-    
+
     if qtwebengine_available:
         print("[LOG 4.1] QtWebEngine disponible y inicializado")
         import os
         os.environ["QT_OPENGL"] = "angle"  # Forzar OpenGL ANGLE para compatibilidad
-        
+
         from PyQt6.QtCore import Qt
         from PyQt6.QtWidgets import QApplication
         QApplication.setAttribute(Qt.ApplicationAttribute.AA_UseOpenGLES)

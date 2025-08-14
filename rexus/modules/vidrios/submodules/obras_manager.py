@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -39,10 +39,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -316,7 +316,10 @@ class ObrasManager:
             print(f"Error actualizando estado de pedido: {str(e)}")
             return False
 
-    def _validar_datos_asignacion(self, datos: Dict[str, Any]) -> Dict[str, Any]:
+    def _validar_datos_asignacion(self,
+datos: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Valida y sanitiza datos de asignación de vidrio a obra."""
         # Campos requeridos
         campos_requeridos = ["obra_id", "vidrio_id", "cantidad"]
@@ -411,12 +414,12 @@ class ObrasManager:
 
             # Query para obtener vidrios de la obra
             query = """
-                SELECT v.id, v.codigo, v.tipo, v.descripcion, 
+                SELECT v.id, v.codigo, v.tipo, v.descripcion,
                        ov.cantidad_asignada, ov.fecha_asignacion,
                        v.precio, (v.precio * ov.cantidad_asignada) as subtotal
                 FROM vidrios v
                 INNER JOIN obras_vidrios ov ON v.id = ov.vidrio_id
-                WHERE ov.obra_id = %(obra_id)s 
+                WHERE ov.obra_id = %(obra_id)s
                   AND v.activo = 1
                 ORDER BY ov.fecha_asignacion DESC
             """

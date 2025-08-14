@@ -7,12 +7,10 @@ import json
 import pickle
 import time
 import hashlib
-from datetime import datetime, timedelta
-from typing import Any, Optional, Union, Dict, List, Callable
+from typing import Any, Optional, Dict, List, Callable
 from functools import wraps
 from dataclasses import dataclass, asdict
 import threading
-from concurrent.futures import ThreadPoolExecutor
 
 try:
     import redis
@@ -39,50 +37,53 @@ class CacheStats:
     sets: int = 0
     deletes: int = 0
     errors: int = 0
-    
+
     @property
     def hit_rate(self) -> float:
         total = self.hits + self.misses
         return (self.hits / total * 100) if total > 0 else 0.0
-    
+
     def to_dict(self) -> Dict[str, Any]:
         return asdict(self)
 
 class CacheBackend:
     """Interfaz base para backends de cache"""
-    
+
     def get(self, key: str) -> Optional[Any]:
         raise NotImplementedError
-    
-    def set(self, key: str, value: Any, timeout: Optional[int] = None) -> bool:
+
+    def set(self,
+key: str,
+        value: Any,
+        timeout: Optional[int] = None) -> bool:
         raise NotImplementedError
-    
+
     def delete(self, key: str) -> bool:
         raise NotImplementedError
-    
+
     def clear(self) -> bool:
         raise NotImplementedError
-    
+
     def exists(self, key: str) -> bool:
         raise NotImplementedError
-    
+
     def get_stats(self) -> Dict[str, Any]:
         raise NotImplementedError
 
 class MemoryCache(CacheBackend):
     """Cache en memoria local (fallback)"""
-    
+
     def __init__(self):
         self._cache = {}
         self._expiry = {}
         self._lock = threading.RLock()
         self._stats = CacheStats()
-    
+
     def _is_expired(self, key: str) -> bool:
         if key not in self._expiry:
             return False
         return time.time() > self._expiry[key]
-    
+
     def _cleanup_expired(self):
         """Limpiar entradas expiradas"""
         current_time = time.time()
@@ -90,53 +91,56 @@ class MemoryCache(CacheBackend):
             key for key, expiry_time in self._expiry.items()
             if current_time > expiry_time
         ]
-        
+
         for key in expired_keys:
             self._cache.pop(key, None)
             self._expiry.pop(key, None)
-    
+
     def get(self, key: str) -> Optional[Any]:
         with self._lock:
             self._cleanup_expired()
-            
+
             if key in self._cache and not self._is_expired(key):
                 self._stats.hits += 1
                 return self._cache[key]
             else:
                 self._stats.misses += 1
                 return None
-    
-    def set(self, key: str, value: Any, timeout: Optional[int] = None) -> bool:
+
+    def set(self,
+key: str,
+        value: Any,
+        timeout: Optional[int] = None) -> bool:
         try:
             with self._lock:
                 self._cache[key] = value
-                
+
                 if timeout:
                     self._expiry[key] = time.time() + timeout
                 elif key in self._expiry:
                     del self._expiry[key]
-                
+
                 self._stats.sets += 1
                 return True
         except Exception:
             self._stats.errors += 1
             return False
-    
+
     def delete(self, key: str) -> bool:
         try:
             with self._lock:
                 deleted = key in self._cache
                 self._cache.pop(key, None)
                 self._expiry.pop(key, None)
-                
+
                 if deleted:
                     self._stats.deletes += 1
-                
+
                 return deleted
         except Exception:
             self._stats.errors += 1
             return False
-    
+
     def clear(self) -> bool:
         try:
             with self._lock:
@@ -146,11 +150,11 @@ class MemoryCache(CacheBackend):
         except Exception:
             self._stats.errors += 1
             return False
-    
+
     def exists(self, key: str) -> bool:
         with self._lock:
             return key in self._cache and not self._is_expired(key)
-    
+
     def get_stats(self) -> Dict[str, Any]:
         with self._lock:
             return {
@@ -162,14 +166,14 @@ class MemoryCache(CacheBackend):
 
 class RedisCache(CacheBackend):
     """Cache con Redis"""
-    
+
     def __init__(self, redis_url: str):
         if not REDIS_AVAILABLE:
             raise ImportError("redis no está disponible")
-        
+
         self.redis_client = redis.from_url(redis_url, decode_responses=False)
         self._stats = CacheStats()
-        
+
         # Verificar conexión
         try:
             self.redis_client.ping()
@@ -177,7 +181,7 @@ class RedisCache(CacheBackend):
         except redis.ConnectionError as e:
             logger.error("Error conectando a Redis", extra={"error": str(e)})
             raise
-    
+
     def _serialize(self, value: Any) -> bytes:
         """Serializar valor para almacenamiento"""
         try:
@@ -185,7 +189,7 @@ class RedisCache(CacheBackend):
         except Exception:
             # Fallback a JSON para objetos simples
             return json.dumps(value).encode('utf-8')
-    
+
     def _deserialize(self, data: bytes) -> Any:
         """Deserializar valor desde almacenamiento"""
         try:
@@ -196,7 +200,7 @@ class RedisCache(CacheBackend):
                 return json.loads(data.decode('utf-8'))
             except Exception:
                 return data.decode('utf-8')
-    
+
     def get(self, key: str) -> Optional[Any]:
         try:
             data = self.redis_client.get(key)
@@ -213,17 +217,20 @@ class RedisCache(CacheBackend):
                 "error": str(e)
             })
             return None
-    
-    def set(self, key: str, value: Any, timeout: Optional[int] = None) -> bool:
+
+    def set(self,
+key: str,
+        value: Any,
+        timeout: Optional[int] = None) -> bool:
         try:
             data = self._serialize(value)
             result = self.redis_client.set(key, data, ex=timeout)
-            
+
             if result:
                 self._stats.sets += 1
             else:
                 self._stats.errors += 1
-            
+
             return bool(result)
         except Exception as e:
             self._stats.errors += 1
@@ -232,11 +239,11 @@ class RedisCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def delete(self, key: str) -> bool:
         try:
             result = self.redis_client.delete(key)
-            
+
             if result > 0:
                 self._stats.deletes += 1
                 return True
@@ -248,7 +255,7 @@ class RedisCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def clear(self) -> bool:
         try:
             self.redis_client.flushdb()
@@ -259,7 +266,7 @@ class RedisCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def exists(self, key: str) -> bool:
         try:
             return bool(self.redis_client.exists(key))
@@ -270,7 +277,7 @@ class RedisCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def get_stats(self) -> Dict[str, Any]:
         try:
             redis_info = self.redis_client.info()
@@ -291,16 +298,16 @@ class RedisCache(CacheBackend):
 
 class DiskCache(CacheBackend):
     """Cache en disco usando diskcache"""
-    
+
     def __init__(self, cache_dir: str):
         if not DISKCACHE_AVAILABLE:
             raise ImportError("diskcache no está disponible")
-        
+
         self.cache = diskcache.Cache(cache_dir)
         self._stats = CacheStats()
-        
+
         logger.info("Cache en disco inicializado", extra={"cache_dir": cache_dir})
-    
+
     def get(self, key: str) -> Optional[Any]:
         try:
             value = self.cache.get(key)
@@ -316,20 +323,23 @@ class DiskCache(CacheBackend):
                 "error": str(e)
             })
             return None
-    
-    def set(self, key: str, value: Any, timeout: Optional[int] = None) -> bool:
+
+    def set(self,
+key: str,
+        value: Any,
+        timeout: Optional[int] = None) -> bool:
         try:
             expire_time = None
             if timeout:
                 expire_time = time.time() + timeout
-            
+
             result = self.cache.set(key, value, expire=expire_time)
-            
+
             if result:
                 self._stats.sets += 1
             else:
                 self._stats.errors += 1
-            
+
             return result
         except Exception as e:
             self._stats.errors += 1
@@ -338,7 +348,7 @@ class DiskCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def delete(self, key: str) -> bool:
         try:
             result = self.cache.delete(key)
@@ -352,7 +362,7 @@ class DiskCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def clear(self) -> bool:
         try:
             self.cache.clear()
@@ -363,14 +373,14 @@ class DiskCache(CacheBackend):
                 "error": str(e)
             })
             return False
-    
+
     def exists(self, key: str) -> bool:
         try:
             return key in self.cache
         except Exception as e:
             self._stats.errors += 1
             return False
-    
+
     def get_stats(self) -> Dict[str, Any]:
         try:
             return {
@@ -378,7 +388,7 @@ class DiskCache(CacheBackend):
                 "backend": "disk",
                 "cache_size": len(self.cache),
                 "disk_usage_mb": round(sum(
-                    f.stat().st_size for f in self.cache.directory.rglob('*') 
+                    f.stat().st_size for f in self.cache.directory.rglob('*')
                     if f.is_file()
                 ) / 1024 / 1024, 2)
             }
@@ -394,24 +404,24 @@ class CacheManager:
     Manager principal del sistema de cache
     Soporta múltiples backends y failover automático
     """
-    
+
     def __init__(self):
         self.logger = get_logger("cache_manager")
         self.config = CACHE_CONFIG  # Agregar referencia a configuración
         self.default_timeout = CACHE_CONFIG.get("default_timeout", 3600)
-        
+
         # Inicializar backend
         self.backend = self._initialize_backend()
-        
+
         self.logger.info("CacheManager inicializado", extra={
             "backend": type(self.backend).__name__,
             "default_timeout": self.default_timeout
         })
-    
+
     def _initialize_backend(self) -> CacheBackend:
         """Inicializar backend de cache con fallback"""
         cache_type = CACHE_CONFIG.get("type", "memory").lower()
-        
+
         # Intentar Redis primero si está configurado
         if cache_type == "redis" and REDIS_AVAILABLE:
             try:
@@ -421,7 +431,7 @@ class CacheManager:
                 self.logger.warning("Error inicializando Redis, usando fallback", extra={
                     "error": str(e)
                 })
-        
+
         # Intentar DiskCache
         if cache_type == "disk" and DISKCACHE_AVAILABLE:
             try:
@@ -432,13 +442,13 @@ class CacheManager:
                 self.logger.warning("Error inicializando DiskCache, usando memoria", extra={
                     "error": str(e)
                 })
-        
+
         # Fallback a memoria
         fallback_warnings = self.config.get("enable_fallback_warnings", False)
         if fallback_warnings:
             self.logger.info("Usando cache en memoria como fallback")
         return MemoryCache()
-    
+
     def get(self, key: str, default: Any = None) -> Any:
         """Obtener valor del cache"""
         try:
@@ -450,33 +460,40 @@ class CacheManager:
                 "error": str(e)
             })
             return default
-    
-    def set(self, key: str, value: Any, timeout: Optional[int] = None) -> bool:
+
+    def set(self,
+key: str,
+        value: Any,
+        timeout: Optional[int] = None) -> bool:
         """Guardar valor en cache"""
         if timeout is None:
             timeout = self.default_timeout
-        
+
         return self.backend.set(key, value, timeout)
-    
+
     def delete(self, key: str) -> bool:
         """Eliminar valor del cache"""
         return self.backend.delete(key)
-    
+
     def clear(self) -> bool:
         """Limpiar todo el cache"""
         return self.backend.clear()
-    
+
     def exists(self, key: str) -> bool:
         """Verificar si existe una clave"""
         return self.backend.exists(key)
-    
-    def get_or_set(self, key: str, func: Callable[[], Any], timeout: Optional[int] = None) -> Any:
+
+    def get_or_set(self,
+key: str,
+        func: Callable[[],
+        Any],
+        timeout: Optional[int] = None) -> Any:
         """Obtener del cache o ejecutar función y cachear resultado"""
         value = self.get(key)
-        
+
         if value is not None:
             return value
-        
+
         # Ejecutar función y cachear resultado
         try:
             result = func()
@@ -488,26 +505,29 @@ class CacheManager:
                 "error": str(e)
             })
             raise
-    
+
     def mget(self, keys: List[str]) -> Dict[str, Any]:
         """Obtener múltiples valores"""
         result = {}
         for key in keys:
             result[key] = self.get(key)
         return result
-    
-    def mset(self, mapping: Dict[str, Any], timeout: Optional[int] = None) -> bool:
+
+    def mset(self,
+mapping: Dict[str,
+        Any],
+        timeout: Optional[int] = None) -> bool:
         """Establecer múltiples valores"""
         success = True
         for key, value in mapping.items():
             if not self.set(key, value, timeout):
                 success = False
         return success
-    
+
     def get_stats(self) -> Dict[str, Any]:
         """Obtener estadísticas del cache"""
         return self.backend.get_stats()
-    
+
     def generate_key(self, *parts) -> str:
         """Generar clave de cache consistente"""
         key_string = ":".join(str(part) for part in parts)
@@ -517,7 +537,7 @@ class CacheManager:
 def cached(timeout: Optional[int] = None, key_prefix: str = "func"):
     """
     Decorador para cachear automáticamente resultados de funciones
-    
+
     Args:
         timeout: Tiempo de expiración en segundos
         key_prefix: Prefijo para la clave de cache
@@ -533,34 +553,34 @@ def cached(timeout: Optional[int] = None, key_prefix: str = "func"):
                 str(hash(str(args) + str(sorted(kwargs.items()))))
             ]
             cache_key = cache_manager.generate_key(*cache_key_parts)
-            
+
             # Intentar obtener del cache
             cached_result = cache_manager.get(cache_key)
             if cached_result is not None:
                 return cached_result
-            
+
             # Ejecutar función y cachear resultado
             result = func(*args, **kwargs)
             cache_manager.set(cache_key, result, timeout)
-            
+
             return result
-        
+
         # Agregar método para limpiar cache de esta función
         def clear_cache():
             # Esto es una implementación simplificada
             # En producción, podrías usar patrones de clave más sofisticados
             pass
-        
+
         wrapper.clear_cache = clear_cache
         return wrapper
-    
+
     return decorator
 
 def cache_query_result(query_hash: str, timeout: Optional[int] = None):
     """Decorador específico para cachear resultados de queries de BD"""
     if timeout is None:
         timeout = CACHE_CONFIG.get("query_cache_timeout", 1800)
-    
+
     return cached(timeout=timeout, key_prefix=f"query:{query_hash}")
 
 # Instancia global del cache manager

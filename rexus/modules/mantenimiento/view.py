@@ -42,7 +42,6 @@ from PyQt6.QtWidgets import (
     QDoubleSpinBox,
     QDateEdit,
     QTabWidget,
-    QTextEdit,
     QCheckBox,
     QGroupBox,
     QGridLayout,
@@ -50,7 +49,7 @@ from PyQt6.QtWidgets import (
     QFrame,
 )
 
-from rexus.utils.message_system import show_warning, show_error, show_success
+from rexus.utils.message_system import show_error, show_success
 from rexus.ui.components.base_components import (
     RexusButton,
     RexusLabel,
@@ -60,7 +59,6 @@ from rexus.ui.components.base_components import (
 )
 
 # Importar utilidades de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 from rexus.utils.xss_protection import FormProtector, XSSProtection
 from rexus.ui.standard_components import StandardComponents
@@ -105,23 +103,23 @@ class MantenimientoView(QWidget):
         # Pestaña 1: Órdenes de Trabajo
         ordenes_tab = self.create_ordenes_trabajo_tab()
         self.tab_widget.addTab(ordenes_tab, "📋 Órdenes de Trabajo")
-        
+
         # Pestaña 2: Mantenimiento Preventivo
         preventivo_tab = self.create_mantenimiento_preventivo_tab()
         self.tab_widget.addTab(preventivo_tab, "🔄 Mantenimiento Preventivo")
-        
+
         # Pestaña 3: Inventario de Repuestos
         inventario_tab = self.create_inventario_repuestos_tab()
         self.tab_widget.addTab(inventario_tab, "📦 Inventario Repuestos")
-        
+
         # Pestaña 4: Equipos y Activos
         equipos_tab = self.create_equipos_activos_tab()
         self.tab_widget.addTab(equipos_tab, "⚙️ Equipos y Activos")
-        
+
         # Pestaña 5: Reportes y Análisis
         reportes_tab = self.create_reportes_analisis_tab()
         self.tab_widget.addTab(reportes_tab, "[CHART] Reportes y Análisis")
-        
+
         # Pestaña 6: Configuración
         config_tab = self.create_configuracion_tab()
         self.tab_widget.addTab(config_tab, "⚙️ Configuración")
@@ -130,16 +128,16 @@ class MantenimientoView(QWidget):
         """Crea la pestaña de órdenes de trabajo."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Panel de control
         control_panel = self.create_ordenes_control_panel()
         layout.addWidget(control_panel)
-        
+
         # Tabla de órdenes
         self.tabla_ordenes = StandardComponents.create_standard_table()
         self.configurar_tabla_ordenes()
         layout.addWidget(self.tabla_ordenes)
-        
+
         return tab_widget
 
     def create_ordenes_control_panel(self):
@@ -153,37 +151,45 @@ class MantenimientoView(QWidget):
                 margin: 5px;
             }
         """)
-        
+
         layout = QHBoxLayout(panel)
-        
+
         # Botón nueva orden
         btn_nueva_orden = StandardComponents.create_primary_button("➕ Nueva Orden")
         btn_nueva_orden.clicked.connect(self.nueva_orden_trabajo)
         layout.addWidget(btn_nueva_orden)
-        
+
         # Filtros
         self.filtro_estado = RexusComboBox()
-        self.filtro_estado.addItems(["Todas", "Pendiente", "En Progreso", "Completada", "Cancelada"])
+        self.filtro_estado.addItems(["Todas",
+"Pendiente",
+            "En Progreso",
+            "Completada",
+            "Cancelada"])
         layout.addWidget(RexusLabel("Estado:"))
         layout.addWidget(self.filtro_estado)
-        
+
         self.filtro_prioridad = RexusComboBox()
-        self.filtro_prioridad.addItems(["Todas", "Alta", "Media", "Baja", "Crítica"])
+        self.filtro_prioridad.addItems(["Todas",
+"Alta",
+            "Media",
+            "Baja",
+            "Crítica"])
         layout.addWidget(RexusLabel("Prioridad:"))
         layout.addWidget(self.filtro_prioridad)
-        
+
         # Búsqueda
         self.busqueda_ordenes = RexusLineEdit()
         self.busqueda_ordenes.setPlaceholderText("Buscar órdenes...")
         layout.addWidget(self.busqueda_ordenes)
-        
+
         btn_buscar = StandardComponents.create_secondary_button("[SEARCH] Buscar")
         layout.addWidget(btn_buscar)
-        
+
         btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
         btn_actualizar.clicked.connect(self.actualizar_ordenes)
         layout.addWidget(btn_actualizar)
-        
+
         return panel
 
     def configurar_tabla_ordenes(self):
@@ -192,7 +198,7 @@ class MantenimientoView(QWidget):
         self.tabla_ordenes.setHorizontalHeaderLabels([
             "ID", "Título", "Equipo", "Prioridad", "Estado", "Asignado", "Fecha", "Acciones"
         ])
-        
+
         # Datos de ejemplo
         datos_ejemplo = [
             ["001", "Cambio de filtros", "Compresor A1", "Alta", "Pendiente", "Juan Pérez", "2024-01-15", "Ver"],
@@ -200,7 +206,7 @@ class MantenimientoView(QWidget):
             ["003", "Lubricación general", "Bomba C3", "Baja", "Completada", "Carlos López", "2024-01-10", "Ver"],
             ["004", "Reparación urgente", "Generador D4", "Crítica", "Pendiente", "María Rodríguez", "2024-01-16", "Ver"],
         ]
-        
+
         self.tabla_ordenes.setRowCount(len(datos_ejemplo))
         for row, data in enumerate(datos_ejemplo):
             for col, value in enumerate(data):
@@ -230,49 +236,57 @@ class MantenimientoView(QWidget):
         """Crea la pestaña de mantenimiento preventivo."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Panel superior con programación
         programacion_panel = self.create_programacion_panel()
         layout.addWidget(programacion_panel)
-        
+
         # Tabla de mantenimientos programados
         self.tabla_preventivo = StandardComponents.create_standard_table()
         self.configurar_tabla_preventivo()
         layout.addWidget(self.tabla_preventivo)
-        
+
         return tab_widget
 
     def create_programacion_panel(self):
         """Panel de programación de mantenimiento preventivo."""
         panel = QGroupBox("📅 Programación de Mantenimiento Preventivo")
         layout = QGridLayout(panel)
-        
+
         # Selector de equipo
         layout.addWidget(RexusLabel("Equipo:"), 0, 0)
         self.combo_equipo_preventivo = RexusComboBox()
-        self.combo_equipo_preventivo.addItems(["Compresor A1", "Motor B2", "Bomba C3", "Generador D4"])
+        self.combo_equipo_preventivo.addItems(["Compresor A1",
+"Motor B2",
+            "Bomba C3",
+            "Generador D4"])
         layout.addWidget(self.combo_equipo_preventivo, 0, 1)
-        
+
         # Tipo de mantenimiento
         layout.addWidget(RexusLabel("Tipo:"), 0, 2)
         self.combo_tipo_preventivo = RexusComboBox()
-        self.combo_tipo_preventivo.addItems(["Diario", "Semanal", "Mensual", "Trimestral", "Semestral", "Anual"])
+        self.combo_tipo_preventivo.addItems(["Diario",
+"Semanal",
+            "Mensual",
+            "Trimestral",
+            "Semestral",
+            "Anual"])
         layout.addWidget(self.combo_tipo_preventivo, 0, 3)
-        
+
         # Frecuencia
         layout.addWidget(RexusLabel("Cada:"), 1, 0)
         self.spin_frecuencia = QSpinBox()
         self.spin_frecuencia.setRange(1, 365)
         self.spin_frecuencia.setValue(30)
         layout.addWidget(self.spin_frecuencia, 1, 1)
-        
+
         layout.addWidget(RexusLabel("días"), 1, 2)
-        
+
         # Botones
         btn_programar = StandardComponents.create_primary_button("📅 Programar Mantenimiento")
         btn_programar.clicked.connect(self.programar_mantenimiento)
         layout.addWidget(btn_programar, 1, 3)
-        
+
         return panel
 
     def configurar_tabla_preventivo(self):
@@ -281,13 +295,13 @@ class MantenimientoView(QWidget):
         self.tabla_preventivo.setHorizontalHeaderLabels([
             "Equipo", "Tipo", "Frecuencia", "Última Fecha", "Próxima Fecha", "Estado", "Acciones"
         ])
-        
+
         datos = [
             ["Compresor A1", "Mensual", "30 días", "2023-12-15", "2024-01-15", "Vencido", "Ejecutar"],
             ["Motor B2", "Semanal", "7 días", "2024-01-08", "2024-01-15", "Próximo", "Ver"],
             ["Bomba C3", "Trimestral", "90 días", "2023-10-15", "2024-01-15", "Programado", "Ver"],
         ]
-        
+
         self.tabla_preventivo.setRowCount(len(datos))
         for row, data in enumerate(datos):
             for col, value in enumerate(data):
@@ -311,16 +325,16 @@ class MantenimientoView(QWidget):
         """Crea pestaña de inventario de repuestos."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Panel de control de inventario
         inventario_control = self.create_inventario_control_panel()
         layout.addWidget(inventario_control)
-        
+
         # Tabla de repuestos
         self.tabla_repuestos = StandardComponents.create_standard_table()
         self.configurar_tabla_repuestos()
         layout.addWidget(self.tabla_repuestos)
-        
+
         return tab_widget
 
     def create_inventario_control_panel(self):
@@ -334,32 +348,36 @@ class MantenimientoView(QWidget):
                 margin: 5px;
             }
         """)
-        
+
         layout = QHBoxLayout(panel)
-        
+
         btn_nuevo_repuesto = StandardComponents.create_primary_button("➕ Nuevo Repuesto")
         layout.addWidget(btn_nuevo_repuesto)
-        
+
         btn_entrada = StandardComponents.create_secondary_button("📥 Entrada")
         layout.addWidget(btn_entrada)
-        
+
         btn_salida = StandardComponents.create_secondary_button("📤 Salida")
         layout.addWidget(btn_salida)
-        
+
         # Filtros de stock
         layout.addWidget(RexusLabel("Stock:"))
         self.filtro_stock = RexusComboBox()
-        self.filtro_stock.addItems(["Todos", "Stock Bajo", "Sin Stock", "Stock Normal", "Sobre Stock"])
+        self.filtro_stock.addItems(["Todos",
+"Stock Bajo",
+            "Sin Stock",
+            "Stock Normal",
+            "Sobre Stock"])
         layout.addWidget(self.filtro_stock)
-        
+
         # Búsqueda
         self.busqueda_repuestos = RexusLineEdit()
         self.busqueda_repuestos.setPlaceholderText("Buscar repuestos...")
         layout.addWidget(self.busqueda_repuestos)
-        
+
         btn_buscar = StandardComponents.create_secondary_button("[SEARCH]")
         layout.addWidget(btn_buscar)
-        
+
         return panel
 
     def configurar_tabla_repuestos(self):
@@ -368,14 +386,14 @@ class MantenimientoView(QWidget):
         self.tabla_repuestos.setHorizontalHeaderLabels([
             "Código", "Descripción", "Stock Actual", "Stock Mínimo", "Precio", "Ubicación", "Estado", "Acciones"
         ])
-        
+
         datos = [
             ["REP001", "Filtro de aire grande", "25", "10", "$45.00", "A-1-B", "Normal", "Ver"],
             ["REP002", "Aceite hidráulico", "5", "15", "$120.00", "B-2-C", "Bajo", "Ver"],
             ["REP003", "Correa de transmisión", "0", "5", "$85.00", "C-1-A", "Sin Stock", "Ver"],
             ["REP004", "Rodamiento 6205", "50", "20", "$25.00", "A-3-B", "Normal", "Ver"],
         ]
-        
+
         self.tabla_repuestos.setRowCount(len(datos))
         for row, data in enumerate(datos):
             for col, value in enumerate(data):
@@ -399,16 +417,16 @@ class MantenimientoView(QWidget):
         """Crea pestaña de equipos y activos."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Panel de equipos
         equipos_control = self.create_equipos_control_panel()
         layout.addWidget(equipos_control)
-        
+
         # Tabla de equipos
         self.tabla_equipos = StandardComponents.create_standard_table()
         self.configurar_tabla_equipos()
         layout.addWidget(self.tabla_equipos)
-        
+
         return tab_widget
 
     def create_equipos_control_panel(self):
@@ -422,26 +440,30 @@ class MantenimientoView(QWidget):
                 margin: 5px;
             }
         """)
-        
+
         layout = QHBoxLayout(panel)
-        
+
         btn_nuevo_equipo = StandardComponents.create_primary_button("➕ Nuevo Equipo")
         layout.addWidget(btn_nuevo_equipo)
-        
+
         btn_historial = StandardComponents.create_secondary_button("📋 Historial")
         layout.addWidget(btn_historial)
-        
+
         # Filtros
         layout.addWidget(RexusLabel("Estado:"))
         self.filtro_estado_equipo = RexusComboBox()
         self.filtro_estado_equipo.addItems(["Todos", "Operativo", "En Mantenimiento", "Fuera de Servicio", "En Reparación"])
         layout.addWidget(self.filtro_estado_equipo)
-        
+
         layout.addWidget(RexusLabel("Ubicación:"))
         self.filtro_ubicacion = RexusComboBox()
-        self.filtro_ubicacion.addItems(["Todas", "Planta A", "Planta B", "Almacén", "Oficinas"])
+        self.filtro_ubicacion.addItems(["Todas",
+"Planta A",
+            "Planta B",
+            "Almacén",
+            "Oficinas"])
         layout.addWidget(self.filtro_ubicacion)
-        
+
         return panel
 
     def configurar_tabla_equipos(self):
@@ -450,14 +472,14 @@ class MantenimientoView(QWidget):
         self.tabla_equipos.setHorizontalHeaderLabels([
             "Código", "Nombre", "Tipo", "Marca", "Ubicación", "Estado", "Último Mant.", "Acciones"
         ])
-        
+
         datos = [
             ["EQ001", "Compresor Principal", "Compresor", "Atlas Copco", "Planta A", "Operativo", "2023-12-15", "Ver"],
             ["EQ002", "Motor Bomba 1", "Motor", "Siemens", "Planta B", "En Mantenimiento", "2024-01-10", "Ver"],
             ["EQ003", "Generador Emergencia", "Generador", "Caterpillar", "Planta A", "Operativo", "2023-11-20", "Ver"],
             ["EQ004", "Bomba Centrífuga", "Bomba", "Grundfos", "Planta B", "En Reparación", "2024-01-05", "Ver"],
         ]
-        
+
         self.tabla_equipos.setRowCount(len(datos))
         for row, data in enumerate(datos):
             for col, value in enumerate(data):
@@ -483,59 +505,63 @@ class MantenimientoView(QWidget):
         """Crea pestaña de reportes y análisis."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Panel de reportes
         reportes_panel = self.create_reportes_panel()
         layout.addWidget(reportes_panel)
-        
+
         # Panel de métricas
         metricas_panel = self.create_metricas_panel()
         layout.addWidget(metricas_panel)
-        
+
         return tab_widget
 
     def create_reportes_panel(self):
         """Panel de generación de reportes."""
         panel = QGroupBox("[CHART] Generación de Reportes")
         layout = QGridLayout(panel)
-        
+
         # Tipos de reporte
         layout.addWidget(RexusLabel("Tipo de Reporte:"), 0, 0)
         self.combo_tipo_reporte = RexusComboBox()
         self.combo_tipo_reporte.addItems([
             "Órdenes de Trabajo Completadas",
             "Mantenimiento Preventivo",
-            "Costos de Mantenimiento", 
+            "Costos de Mantenimiento",
             "Inventario de Repuestos",
             "Disponibilidad de Equipos",
             "Análisis de Fallos"
         ])
         layout.addWidget(self.combo_tipo_reporte, 0, 1)
-        
+
         # Período
         layout.addWidget(RexusLabel("Período:"), 0, 2)
         self.combo_periodo = RexusComboBox()
-        self.combo_periodo.addItems(["Última Semana", "Último Mes", "Últimos 3 Meses", "Último Año", "Personalizado"])
+        self.combo_periodo.addItems(["Última Semana",
+"Último Mes",
+            "Últimos 3 Meses",
+            "Último Año",
+            "Personalizado"])
         layout.addWidget(self.combo_periodo, 0, 3)
-        
+
         # Botones de reportes
         btn_generar = StandardComponents.create_primary_button("[CHART] Generar Reporte")
         btn_generar.clicked.connect(self.generar_reporte)
         layout.addWidget(btn_generar, 1, 0)
-        
+
         btn_exportar = StandardComponents.create_secondary_button("📤 Exportar Excel")
         layout.addWidget(btn_exportar, 1, 1)
-        
+
         btn_imprimir = StandardComponents.create_secondary_button("🖨️ Imprimir")
         layout.addWidget(btn_imprimir, 1, 2)
-        
+
         return panel
 
     def create_metricas_panel(self):
         """Panel de métricas clave."""
         panel = QGroupBox("📈 Métricas Clave de Mantenimiento")
         layout = QGridLayout(panel)
-        
+
         # KPIs con barras de progreso
         kpis = [
             ("[TARGET] Disponibilidad de Equipos", 92, "%"),
@@ -543,17 +569,17 @@ class MantenimientoView(QWidget):
             ("[MONEY] Costo Promedio por Orden", 350, "$"),
             ("[OK] Cumplimiento Preventivo", 78, "%"),
         ]
-        
+
         for i, (titulo, valor, unidad) in enumerate(kpis):
             # Título
             titulo_label = RexusLabel(titulo)
             layout.addWidget(titulo_label, i*2, 0, 1, 2)
-            
+
             # Valor
             valor_label = RexusLabel(f"{valor}{unidad}")
             valor_label.setStyleSheet("font-size: 18px; font-weight: bold; color: #2563eb;")
             layout.addWidget(valor_label, i*2, 2)
-            
+
             # Barra de progreso (solo para porcentajes)
             if unidad == "%":
                 progress = QProgressBar()
@@ -566,57 +592,57 @@ class MantenimientoView(QWidget):
                         font-size: 11px;
                     }
                     QProgressBar::chunk {
-                        background: qlineargradient(x1:0, y1:0, x2:1, y2:0, 
+                        background: qlineargradient(x1:0, y1:0, x2:1, y2:0,
                             stop:0 #3b82f6, stop:1 #1d4ed8);
                         border-radius: 4px;
                     }
                 """)
                 layout.addWidget(progress, i*2+1, 0, 1, 3)
-        
+
         return panel
 
     def create_configuracion_tab(self):
         """Crea pestaña de configuración."""
         tab_widget = QWidget()
         layout = QVBoxLayout(tab_widget)
-        
+
         # Configuraciones generales
         config_panel = QGroupBox("⚙️ Configuración General")
         config_layout = QGridLayout(config_panel)
-        
+
         # Notificaciones
         config_layout.addWidget(RexusLabel("Notificaciones:"), 0, 0)
         self.check_notif_vencimiento = QCheckBox("Avisar vencimientos")
         self.check_notif_vencimiento.setChecked(True)
         config_layout.addWidget(self.check_notif_vencimiento, 0, 1)
-        
+
         self.check_notif_stock = QCheckBox("Avisar stock bajo")
         self.check_notif_stock.setChecked(True)
         config_layout.addWidget(self.check_notif_stock, 0, 2)
-        
+
         # Días de anticipación
         config_layout.addWidget(RexusLabel("Días de anticipación:"), 1, 0)
         self.spin_dias_anticipacion = QSpinBox()
         self.spin_dias_anticipacion.setRange(1, 30)
         self.spin_dias_anticipacion.setValue(7)
         config_layout.addWidget(self.spin_dias_anticipacion, 1, 1)
-        
+
         # Auto-backup
         config_layout.addWidget(RexusLabel("Auto-backup:"), 2, 0)
         self.check_auto_backup = QCheckBox("Activar backup automático")
         config_layout.addWidget(self.check_auto_backup, 2, 1)
-        
+
         self.combo_frecuencia_backup = RexusComboBox()
         self.combo_frecuencia_backup.addItems(["Diario", "Semanal", "Mensual"])
         config_layout.addWidget(self.combo_frecuencia_backup, 2, 2)
-        
+
         # Botón guardar configuración
         btn_guardar_config = StandardComponents.create_primary_button("💾 Guardar Configuración")
         config_layout.addWidget(btn_guardar_config, 3, 0, 1, 3)
-        
+
         layout.addWidget(config_panel)
         layout.addStretch()
-        
+
         return tab_widget
 
     # Métodos de funcionalidad
@@ -663,7 +689,7 @@ class MantenimientoView(QWidget):
     def mostrar_acciones(self, row):
         """Muestra menú de acciones para fila."""
         show_success(self, "Acciones", f"Mostrando acciones para fila {row + 1}")
-    
+
     def editar_registro(self, row):
         """Edita un registro de la tabla."""
         show_success(self, "Editar", f"Editando registro de la fila {row + 1}")
@@ -671,11 +697,9 @@ class MantenimientoView(QWidget):
     # Métodos heredados adaptados
     def setup_control_panel(self, panel):
         """Método heredado - ya no se usa con pestañas."""
-        pass
 
     def configurar_tabla(self):
         """Método heredado - configuración en pestañas individuales."""
-        pass
 
     def aplicar_estilos(self):
         """Aplica estilos minimalistas y modernos a toda la interfaz."""
@@ -686,7 +710,7 @@ class MantenimientoView(QWidget):
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-size: 12px;
             }
-            
+
             /* Pestañas minimalistas */
             QTabWidget::pane {
                 border: 1px solid #e1e4e8;
@@ -694,7 +718,7 @@ class MantenimientoView(QWidget):
                 background-color: white;
                 margin-top: 2px;
             }
-            
+
             QTabBar::tab {
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
@@ -709,19 +733,19 @@ class MantenimientoView(QWidget):
                 height: 24px;
                 max-height: 24px;
             }
-            
+
             QTabBar::tab:selected {
                 background-color: white;
                 color: #24292e;
                 font-weight: 500;
                 border-bottom: 2px solid #0366d6;
             }
-            
+
             QTabBar::tab:hover:!selected {
                 background-color: #e1e4e8;
                 color: #24292e;
             }
-            
+
             /* Tablas compactas */
             QTableWidget {
                 gridline-color: #e1e4e8;
@@ -732,12 +756,12 @@ class MantenimientoView(QWidget):
                 border: 1px solid #e1e4e8;
                 border-radius: 4px;
             }
-            
+
             QTableWidget::item {
                 padding: 4px 8px;
                 border: none;
             }
-            
+
             QHeaderView::section {
                 background: transparent;
                 color: #1e293b;
@@ -749,7 +773,7 @@ class MantenimientoView(QWidget):
                 padding: 8px 6px;
                 text-align: left;
             }
-            
+
             /* GroupBox minimalista */
             QGroupBox {
                 font-weight: 600;
@@ -761,7 +785,7 @@ class MantenimientoView(QWidget):
                 padding-top: 8px;
                 background-color: white;
             }
-            
+
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 8px;
@@ -769,7 +793,7 @@ class MantenimientoView(QWidget):
                 background-color: white;
                 color: #24292e;
             }
-            
+
             /* Botones minimalistas */
             QPushButton {
                 background-color: #f6f8fa;
@@ -781,16 +805,16 @@ class MantenimientoView(QWidget):
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QPushButton:hover {
                 background-color: #e1e4e8;
                 border-color: #d0d7de;
             }
-            
+
             QPushButton:pressed {
                 background-color: #d0d7de;
             }
-            
+
             /* Campos de entrada compactos */
             QLineEdit, QComboBox {
                 border: 1px solid #e1e4e8;
@@ -800,32 +824,32 @@ class MantenimientoView(QWidget):
                 background-color: white;
                 min-height: 18px;
             }
-            
+
             QLineEdit:focus, QComboBox:focus {
                 border-color: #0366d6;
                 outline: none;
             }
-            
+
             /* Labels compactos */
             QLabel {
                 color: #24292e;
                 font-size: 11px;
             }
-            
+
             /* Scroll bars minimalistas */
             QScrollBar:vertical {
                 width: 12px;
                 background-color: #f6f8fa;
                 border-radius: 6px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background-color: #d0d7de;
                 border-radius: 6px;
                 min-height: 20px;
                 margin: 2px;
             }
-            
+
             QScrollBar::handle:vertical:hover {
                 background-color: #bbb;
             }
@@ -885,7 +909,7 @@ class MantenimientoView(QWidget):
         self.tabla_principal.setSelectionBehavior(
             QTableWidget.SelectionBehavior.SelectRows
         )
-        
+
         # Cargar datos de ejemplo para verificar funcionalidad
         self.cargar_datos_ejemplo()
 
@@ -897,7 +921,7 @@ class MantenimientoView(QWidget):
             ["3", "Limpieza Sistema", "Limpieza de archivos temporales", "En Progreso", "Ver"],
             ["4", "Update Software", "Actualización de sistema", "Programado", "Ver"],
         ]
-        
+
         self.tabla_principal.setRowCount(len(datos_ejemplo))
         for row, data in enumerate(datos_ejemplo):
             for col, value in enumerate(data):
@@ -922,11 +946,20 @@ class MantenimientoView(QWidget):
                     item = QTableWidgetItem(str(value))
                     if col == 3:  # Columna Estado
                         if value == "Completado":
-                            item.setBackground(QColor(46, 204, 113, 50))  # Verde claro
+                            item.setBackground(QColor(46,
+204,
+                                113,
+                                50))  # Verde claro
                         elif value == "En Progreso":
-                            item.setBackground(QColor(243, 156, 18, 50))  # Amarillo claro
+                            item.setBackground(QColor(243,
+156,
+                                18,
+                                50))  # Amarillo claro
                         elif value == "Pendiente":
-                            item.setBackground(QColor(231, 76, 60, 50))   # Rojo claro
+                            item.setBackground(QColor(231,
+76,
+                                60,
+                                50))   # Rojo claro
                     self.tabla_principal.setItem(row, col, item)
 
     def ver_detalle(self, row):
@@ -935,7 +968,7 @@ class MantenimientoView(QWidget):
         item = self.tabla_principal.item(row, 1)
         if item:
             QMessageBox.information(
-                self, 
+                self,
                 "Detalle de Mantenimiento",
                 f"Mostrando detalles de: {item.text()}"
             )
@@ -1047,7 +1080,7 @@ class MantenimientoView(QWidget):
                         self.combo_equipo_preventivo.addItem(equipo.get('nombre', str(equipo)))
                     else:
                         self.combo_equipo_preventivo.addItem(str(equipo))
-            
+
             # También actualizar tabla de equipos si está visible
             if hasattr(self, 'tabla_equipos') and equipos:
                 self.tabla_equipos.setRowCount(len(equipos))
@@ -1064,33 +1097,33 @@ class MantenimientoView(QWidget):
 
 class NuevoMantenimientoDialog(QDialog):
     """Diálogo para crear un nuevo mantenimiento."""
-    
+
     def __init__(self, parent=None):
         super().__init__(parent)
         self.setWindowTitle("Nuevo Mantenimiento")
         self.setModal(True)
         self.setFixedSize(500, 600)
         self.setup_ui()
-        
+
     def setup_ui(self):
         """Configura la interfaz del diálogo."""
         from PyQt6.QtCore import QDate
-        
+
         layout = QVBoxLayout(self)
-        
+
         # Título
         titulo = RexusLabel("Crear Nuevo Mantenimiento", "title")
         layout.addWidget(titulo)
-        
+
         # Formulario
         form_layout = QFormLayout()
-        
+
         # Equipo ID (obligatorio)
         self.equipo_id_input = QSpinBox()
         self.equipo_id_input.setRange(1, 999999)
         self.equipo_id_input.setValue(1)
         form_layout.addRow("ID del Equipo*:", self.equipo_id_input)
-        
+
         # Tipo de mantenimiento
         self.tipo_input = RexusComboBox()
         self.tipo_input.addItems([
@@ -1101,19 +1134,19 @@ class NuevoMantenimientoDialog(QDialog):
             "INSPECCION"
         ])
         form_layout.addRow("Tipo*:", self.tipo_input)
-        
+
         # Descripción (obligatorio)
         self.descripcion_input = RexusLineEdit()
         self.descripcion_input.setPlaceholderText("Descripción del mantenimiento")
         self.descripcion_input.setMaxLength(500)
         form_layout.addRow("Descripción*:", self.descripcion_input)
-        
+
         # Fecha programada
         self.fecha_programada_input = QDateEdit()
         self.fecha_programada_input.setDate(QDate.currentDate())
         self.fecha_programada_input.setCalendarPopup(True)
         form_layout.addRow("Fecha Programada:", self.fecha_programada_input)
-        
+
         # Estado
         self.estado_input = RexusComboBox()
         self.estado_input.addItems([
@@ -1124,50 +1157,50 @@ class NuevoMantenimientoDialog(QDialog):
             "PENDIENTE"
         ])
         form_layout.addRow("Estado:", self.estado_input)
-        
+
         # Costo estimado
         self.costo_estimado_input = QDoubleSpinBox()
         self.costo_estimado_input.setRange(0.0, 999999.99)
         self.costo_estimado_input.setPrefix("$ ")
         self.costo_estimado_input.setDecimals(2)
         form_layout.addRow("Costo Estimado:", self.costo_estimado_input)
-        
+
         # Responsable
         self.responsable_input = RexusLineEdit()
         self.responsable_input.setPlaceholderText("Nombre del responsable")
         self.responsable_input.setMaxLength(100)
         form_layout.addRow("Responsable:", self.responsable_input)
-        
+
         # Observaciones
         self.observaciones_input = RexusLineEdit()
         self.observaciones_input.setPlaceholderText("Observaciones adicionales")
         self.observaciones_input.setMaxLength(500)
         form_layout.addRow("Observaciones:", self.observaciones_input)
-        
+
         layout.addLayout(form_layout)
-        
+
         # Nota de campos obligatorios
         nota = RexusLabel("* Campos obligatorios", "caption")
         nota.setStyleSheet(f"color: {RexusColors.TEXT_SECONDARY}; font-style: italic;")
         layout.addWidget(nota)
-        
+
         layout.addStretch()
-        
+
         # Botones
         botones_layout = QHBoxLayout()
-        
+
         self.btn_cancelar = RexusButton("Cancelar", "secondary")
         self.btn_cancelar.clicked.connect(self.reject)
         botones_layout.addWidget(self.btn_cancelar)
-        
+
         botones_layout.addStretch()
-        
+
         self.btn_crear = RexusButton("Crear Mantenimiento", "primary")
         self.btn_crear.clicked.connect(self.validar_y_aceptar)
         botones_layout.addWidget(self.btn_crear)
-        
+
         layout.addLayout(botones_layout)
-        
+
     def validar_y_aceptar(self):
         """Valida los datos antes de aceptar."""
         # Validar campos obligatorios
@@ -1175,14 +1208,14 @@ class NuevoMantenimientoDialog(QDialog):
             show_error(self, "Error", "Debe especificar un ID de equipo válido")
             self.equipo_id_input.setFocus()
             return
-            
+
         if not self.descripcion_input.text().strip():
             show_error(self, "Error", "La descripción es obligatoria")
             self.descripcion_input.setFocus()
             return
-            
+
         self.accept()
-        
+
     def obtener_datos(self):
         """Retorna los datos del formulario."""
         return {
@@ -1197,19 +1230,19 @@ class NuevoMantenimientoDialog(QDialog):
         }
 
     # === MÉTODOS PARA BOTONES CORREGIDOS ===
-    
+
     def ejecutar_accion_preventivo(self, row):
         """Ejecuta acción para mantenimiento preventivo."""
         show_success(self, "Acción Ejecutada", f"Procesando acción para fila {row + 1}")
-        
+
     def ver_detalle_repuesto(self, row):
         """Ver detalle de repuesto."""
         show_success(self, "Ver Repuesto", f"Mostrando detalle del repuesto en fila {row + 1}")
-        
+
     def ver_detalle_equipo(self, row):
         """Ver detalle de equipo."""
         show_success(self, "Ver Equipo", f"Mostrando detalle del equipo en fila {row + 1}")
-        
+
     def ver_detalle(self, row):
         """Ver detalle general."""
         show_success(self, "Ver Detalle", f"Mostrando detalle para fila {row + 1}")

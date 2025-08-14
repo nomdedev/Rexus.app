@@ -12,7 +12,6 @@ from typing import List, Set
 class SQLSecurityError(Exception):
     """Excepción lanzada cuando se detecta un problema de seguridad SQL."""
 
-    pass
 
 
 # Lista blanca de tablas permitidas en el sistema
@@ -357,3 +356,76 @@ def remove_allowed_table(table_name: str) -> None:
         table_name (str): Nombre de tabla a remover
     """
     ALLOWED_TABLES.discard(table_name.lower())
+
+
+class SQLSecurityValidator:
+    """Validador de seguridad SQL."""
+
+    @staticmethod
+    def validate_query(query: str) -> bool:
+        """Valida una consulta SQL por seguridad."""
+        if not query or not isinstance(query, str):
+            return False
+
+        # Verificar patrones peligrosos
+        dangerous_patterns = [
+            r';\s*(drop|delete|truncate|alter)',
+            r'union\s+select',
+            r'exec\s*\(',
+            r'sp_\w+',
+            r'xp_\w+'
+        ]
+
+        query_lower = query.lower()
+        for pattern in dangerous_patterns:
+            if re.search(pattern, query_lower):
+                return False
+
+        return True
+
+    @staticmethod
+    def sanitize_input(input_value: str) -> str:
+        """Sanitiza entrada de usuario."""
+        if not isinstance(input_value, str):
+            return str(input_value)
+
+        # Escapar comillas y caracteres peligrosos
+        sanitized = input_value.replace("'", "''")
+        sanitized = re.sub(r'[;\-\-\/\*]', '', sanitized)
+
+        return sanitized
+
+
+class SecureSQLBuilder:
+    """Constructor seguro de consultas SQL."""
+
+    def __init__(self):
+        self.query_parts = []
+        self.parameters = []
+
+    def select(self, columns: str = "*"):
+        """Agrega SELECT a la consulta."""
+        if not validate_column_names(columns):
+            raise SQLSecurityError(f"Nombres de columnas inválidos: {columns}")
+
+        self.query_parts.append(f"SELECT {columns}")
+        return self
+
+    def from_table(self, table: str):
+        """Agrega FROM a la consulta."""
+        if not validate_table_name(table):
+            raise SQLSecurityError(f"Nombre de tabla inválido: {table}")
+
+        self.query_parts.append(f"FROM {table}")
+        return self
+
+    def where(self, condition: str, *params):
+        """Agrega WHERE con parámetros seguros."""
+        self.query_parts.append(f"WHERE {condition}")
+        self.parameters.extend(params)
+        return self
+
+    def build(self) -> tuple:
+        """Construye la consulta final."""
+        query = " ".join(self.query_parts)
+        return query, tuple(self.parameters)

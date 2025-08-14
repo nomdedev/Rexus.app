@@ -12,22 +12,12 @@ Maneja la lógica de negocio para:
 - Gestión de equipos y herramientas
 """
 
-from datetime import date, datetime
-from decimal import Decimal
 
-from rexus.core.auth_decorators import (
-    admin_required,
-    auth_required,
-    permission_required,
-)
 
 # Importar utilidades de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
-from rexus.core.auth_manager import AuthManager
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class MantenimientoModel:
@@ -141,7 +131,7 @@ class MantenimientoModel:
             # Usar consulta base y agregar filtros dinámicamente
             query = self.sql_manager.get_query("mantenimiento", "obtener_equipos_base")
             params = []
-            
+
             if filtros:
                 conditions = []
                 if filtros.get("estado") and filtros["estado"] != "Todos":
@@ -152,7 +142,8 @@ class MantenimientoModel:
                     conditions.append("e.tipo = ?")
                     params.append(filtros["tipo"])
 
-                if filtros.get("ubicacion") and filtros["ubicacion"] != "Todas":
+                if filtros.get("ubicacion") and \
+                    filtros["ubicacion"] != "Todas":
                     conditions.append("e.ubicacion = ?")
                     params.append(filtros["ubicacion"])
 
@@ -160,7 +151,7 @@ class MantenimientoModel:
                     conditions.append("(e.nombre LIKE ? OR e.codigo LIKE ? OR e.modelo LIKE ?)")
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
-                
+
                 if conditions:
                     query = query.replace("WHERE e.activo = 1", f"WHERE e.activo = 1 AND {' AND '.join(conditions)}")
 
@@ -199,7 +190,7 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
 
             # Validar y securizar nombre de tabla
-            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+            self._validate_table_name(self.tabla_equipos)
 
             query = self.sql_manager.get_query("mantenimiento", "crear_equipo")
 
@@ -260,7 +251,7 @@ class MantenimientoModel:
         try:
             cursor = self.db_connection.cursor()
 
-            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+            self._validate_table_name(self.tabla_equipos)
             query = self.sql_manager.get_query("mantenimiento", "update_equipo")
 
             cursor.execute(
@@ -481,7 +472,7 @@ class MantenimientoModel:
             estadisticas = {}
 
             # Total equipos
-            tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+            self._validate_table_name(self.tabla_equipos)
             cursor.execute(
                 self.sql_manager.get_query("mantenimiento", "obtener_estadisticas")
             )
@@ -537,7 +528,10 @@ class MantenimientoModel:
         except Exception as e:
             print(f"[ERROR MANTENIMIENTO] Error registrando historial de equipo: {e}")
 
-    def _registrar_historial_mantenimiento(self, mantenimiento_id, tipo, descripcion):
+    def _registrar_historial_mantenimiento(self,
+mantenimiento_id,
+        tipo,
+        descripcion):
         """Registra un evento en el historial de mantenimientos."""
         if not self.db_connection:
             return
@@ -576,7 +570,7 @@ class MantenimientoModel:
                 equipo_id = resultado[0]
 
                 # Actualizar fechas de revisión
-                tabla_equipos_segura = self._validate_table_name(self.tabla_equipos)
+                self._validate_table_name(self.tabla_equipos)
                 query = self.sql_manager.get_query("mantenimiento", "update_equipo")
 
                 cursor.execute(query, (equipo_id,))

@@ -37,29 +37,29 @@ from functools import wraps
 
 class IntelligentCache:
     """Sistema de cache inteligente con TTL y LRU"""
-    
+
     def __init__(self, max_size: int = 1000, default_ttl: int = 300):
         self.max_size = max_size
         self.default_ttl = default_ttl
         self.cache: Dict[str, Dict] = {}
         self.access_times: Dict[str, float] = {}
-        
+
     def _generate_key(self, func_name: str, args: tuple, kwargs: dict) -> str:
         """Genera clave única para la función y parámetros"""
         key_data = f"{func_name}:{str(args)}:{str(sorted(kwargs.items()))}"
         return hashlib.md5(key_data.encode()).hexdigest()
-    
+
     def _is_expired(self, cache_entry: Dict) -> bool:
         """Verifica si una entrada de cache ha expirado"""
         return time.time() > cache_entry['expires_at']
-    
+
     def _evict_lru(self):
         """Elimina la entrada menos recientemente usada"""
         if len(self.cache) >= self.max_size:
             lru_key = min(self.access_times.keys(), key=lambda k: self.access_times[k])
             del self.cache[lru_key]
             del self.access_times[lru_key]
-    
+
     def get(self, key: str) -> Optional[Any]:
         """Obtiene valor del cache"""
         if key in self.cache:
@@ -71,11 +71,11 @@ class IntelligentCache:
                 del self.cache[key]
                 del self.access_times[key]
         return None
-    
+
     def set(self, key: str, value: Any, ttl: Optional[int] = None):
         """Almacena valor en cache"""
         self._evict_lru()
-        
+
         ttl = ttl or self.default_ttl
         self.cache[key] = {
             'data': value,
@@ -83,7 +83,7 @@ class IntelligentCache:
             'created_at': time.time()
         }
         self.access_times[key] = time.time()
-    
+
     def invalidate(self, pattern: str = None):
         """Invalida entradas de cache"""
         if pattern:
@@ -94,18 +94,23 @@ class IntelligentCache:
         else:
             self.cache.clear()
             self.access_times.clear()
-    
+
     def get_stats(self) -> Dict:
         """Obtiene estadísticas del cache"""
         total_entries = len(self.cache)
         expired_entries = sum(1 for entry in self.cache.values() if self._is_expired(entry))
-        
+
         return {
             'total_entries': total_entries,
             'expired_entries': expired_entries,
             'active_entries': total_entries - expired_entries,
             'max_size': self.max_size,
-            'hit_ratio': getattr(self, '_hit_count', 0) / max(getattr(self, '_total_requests', 1), 1)
+            'hit_ratio': getattr(self,
+'_hit_count',
+                0) / max(getattr(self,
+                '_total_requests',
+                1),
+                1)
         }
 
 # Instancia global del cache
@@ -118,17 +123,17 @@ def cached_query(ttl: int = 300):
         def wrapper(*args, **kwargs):
             # Generar clave de cache
             cache_key = cache_instance._generate_key(func.__name__, args, kwargs)
-            
+
             # Intentar obtener del cache
             cached_result = cache_instance.get(cache_key)
             if cached_result is not None:
                 cache_instance._hit_count = getattr(cache_instance, '_hit_count', 0) + 1
                 return cached_result
-            
+
             # Ejecutar función y cachear resultado
             result = func(*args, **kwargs)
             cache_instance.set(cache_key, result, ttl)
-            
+
             cache_instance._total_requests = getattr(cache_instance, '_total_requests', 0) + 1
             return result
         return wrapper
@@ -169,53 +174,57 @@ from functools import wraps
 
 class LazyLoader:
     """Cargador lazy para módulos y componentes"""
-    
+
     def __init__(self):
         self._loaded_modules: Dict[str, Any] = {}
         self._loading_stats: Dict[str, Dict] = {}
-    
+
     def load_module(self, module_path: str, reload: bool = False) -> Optional[Any]:
         """Carga un módulo bajo demanda"""
         if module_path in self._loaded_modules and not reload:
             return self._loaded_modules[module_path]
-        
+
         try:
             start_time = time.time()
-            
+
             if reload and module_path in sys.modules:
                 module = importlib.reload(sys.modules[module_path])
             else:
                 module = importlib.import_module(module_path)
-            
+
             load_time = time.time() - start_time
-            
+
             self._loaded_modules[module_path] = module
             self._loading_stats[module_path] = {
                 'load_time': load_time,
                 'loaded_at': time.time(),
                 'reload_count': self._loading_stats.get(module_path, {}).get('reload_count', 0) + (1 if reload else 0)
             }
-            
+
             return module
-            
+
         except ImportError as e:
             print(f"Error cargando módulo {module_path}: {e}")
             return None
-    
-    def load_class(self, module_path: str, class_name: str, *args, **kwargs) -> Optional[Any]:
+
+    def load_class(self,
+module_path: str,
+        class_name: str,
+        *args,
+        **kwargs) -> Optional[Any]:
         """Carga una clase específica bajo demanda"""
         module = self.load_module(module_path)
         if module and hasattr(module, class_name):
             cls = getattr(module, class_name)
             return cls(*args, **kwargs) if args or kwargs else cls
         return None
-    
+
     def preload_critical_modules(self, module_list: list):
         """Precarga módulos críticos"""
         print("Precargando módulos críticos...")
         for module_path in module_list:
             self.load_module(module_path)
-    
+
     def get_loading_stats(self) -> Dict:
         """Obtiene estadísticas de carga"""
         return {
@@ -284,47 +293,47 @@ from typing import List, Dict
 
 class BackupCompressor:
     """Compresor de backups y archivos de log"""
-    
+
     def __init__(self, backup_dir: str = "backups", compression_level: int = 6):
         self.backup_dir = Path(backup_dir)
         self.compression_level = compression_level
         self.backup_dir.mkdir(exist_ok=True)
-    
+
     def compress_file(self, source_path: str, compressed_path: str = None) -> str:
         """Comprime un archivo individual"""
         source = Path(source_path)
         if not source.exists():
             raise FileNotFoundError(f"Archivo no encontrado: {source_path}")
-        
+
         if compressed_path is None:
             compressed_path = str(source) + ".gz"
-        
+
         with open(source, 'rb') as f_in:
             with gzip.open(compressed_path, 'wb', compresslevel=self.compression_level) as f_out:
                 shutil.copyfileobj(f_in, f_out)
-        
+
         original_size = source.stat().st_size
         compressed_size = Path(compressed_path).stat().st_size
         compression_ratio = (1 - compressed_size / original_size) * 100
-        
+
         return {
             'compressed_path': compressed_path,
             'original_size': original_size,
             'compressed_size': compressed_size,
             'compression_ratio': compression_ratio
         }
-    
+
     def compress_directory(self, source_dir: str, archive_name: str = None) -> Dict:
         """Comprime un directorio completo"""
         source = Path(source_dir)
         if not source.exists():
             raise FileNotFoundError(f"Directorio no encontrado: {source_dir}")
-        
+
         if archive_name is None:
             archive_name = f"{source.name}_{int(time.time())}.tar.gz"
-        
+
         archive_path = self.backup_dir / archive_name
-        
+
         # Crear archivo tar.gz
         shutil.make_archive(
             str(archive_path).replace('.tar.gz', ''),
@@ -332,22 +341,22 @@ class BackupCompressor:
             str(source.parent),
             str(source.name)
         )
-        
+
         return {
             'archive_path': str(archive_path),
             'source_directory': str(source),
             'created_at': time.time()
         }
-    
+
     def compress_logs(self, log_dir: str = "logs", age_days: int = 7) -> List[Dict]:
         """Comprime logs antiguos"""
         log_path = Path(log_dir)
         if not log_path.exists():
             return []
-        
+
         compressed_files = []
         cutoff_time = time.time() - (age_days * 24 * 3600)
-        
+
         for log_file in log_path.glob("*.log"):
             if log_file.stat().st_mtime < cutoff_time:
                 try:
@@ -357,14 +366,14 @@ class BackupCompressor:
                     compressed_files.append(result)
                 except Exception as e:
                     print(f"Error comprimiendo {log_file}: {e}")
-        
+
         return compressed_files
-    
+
     def cleanup_old_backups(self, max_backups: int = 10) -> List[str]:
         """Limpia backups antiguos manteniendo solo los más recientes"""
         backup_files = list(self.backup_dir.glob("*.gz"))
         backup_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-        
+
         removed_files = []
         for backup_file in backup_files[max_backups:]:
             try:
@@ -372,14 +381,14 @@ class BackupCompressor:
                 removed_files.append(str(backup_file))
             except Exception as e:
                 print(f"Error eliminando backup {backup_file}: {e}")
-        
+
         return removed_files
-    
+
     def get_compression_stats(self) -> Dict:
         """Obtiene estadísticas de compresión"""
         backup_files = list(self.backup_dir.glob("*.gz"))
         total_size = sum(f.stat().st_size for f in backup_files)
-        
+
         return {
             'total_backups': len(backup_files),
             'total_size_mb': round(total_size / (1024 * 1024), 2),
@@ -463,7 +472,7 @@ import time
 
 class OptimizationManager:
     """Gestor central de todas las optimizaciones"""
-    
+
     def __init__(self):
         self.cache_system = None
         self.lazy_loader = None
@@ -474,7 +483,7 @@ class OptimizationManager:
             'modules_loaded': 0,
             'backups_compressed': 0
         }
-    
+
     def initialize_systems(self):
         """Inicializa todos los sistemas de optimización"""
         try:
@@ -483,7 +492,7 @@ class OptimizationManager:
             print("[CHECK] Cache inteligente inicializado")
         except ImportError:
             print("[WARN] Cache inteligente no disponible")
-        
+
         try:
             from .lazy_loader import lazy_loader, preload_essential_modules
             self.lazy_loader = lazy_loader
@@ -491,53 +500,53 @@ class OptimizationManager:
             print("[CHECK] Carga bajo demanda inicializada")
         except ImportError:
             print("[WARN] Carga bajo demanda no disponible")
-        
+
         try:
             from .backup_compressor import backup_compressor
             self.backup_compressor = backup_compressor
             print("[CHECK] Compresión de backups inicializada")
         except ImportError:
             print("[WARN] Compresión de backups no disponible")
-    
+
     def get_performance_report(self) -> Dict[str, Any]:
         """Genera reporte de rendimiento"""
         report = {
             'uptime_seconds': time.time() - self._stats['optimization_start_time'],
             'systems_active': []
         }
-        
+
         if self.cache_system:
             cache_stats = self.cache_system.get_stats()
             report['cache_system'] = cache_stats
             report['systems_active'].append('cache')
-        
+
         if self.lazy_loader:
             loader_stats = self.lazy_loader.get_loading_stats()
             report['lazy_loading'] = loader_stats
             report['systems_active'].append('lazy_loading')
-        
+
         if self.backup_compressor:
             compression_stats = self.backup_compressor.get_compression_stats()
             report['backup_compression'] = compression_stats
             report['systems_active'].append('backup_compression')
-        
+
         return report
-    
+
     def optimize_system(self):
         """Ejecuta optimización completa del sistema"""
         optimizations_applied = []
-        
+
         # Limpiar cache expirado
         if self.cache_system:
             self.cache_system.invalidate()
             optimizations_applied.append("cache_cleanup")
-        
+
         # Comprimir logs antiguos
         if self.backup_compressor:
             compressed = self.backup_compressor.compress_logs()
             if compressed:
                 optimizations_applied.append(f"compressed_{len(compressed)}_logs")
-        
+
         return optimizations_applied
 
 # Instancia global del gestor

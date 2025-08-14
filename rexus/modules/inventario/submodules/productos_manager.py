@@ -16,7 +16,7 @@ import qrcode
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -40,7 +40,7 @@ except ImportError:
 
 
 # Importar utilidades de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 
 class ProductosManager:

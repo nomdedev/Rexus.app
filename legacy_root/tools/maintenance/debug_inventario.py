@@ -19,9 +19,9 @@ from PyQt6.QtCore import Qt
 
 def test_inventory_data_loading():
     """Test completo de carga de datos de inventario"""
-    
+
     print("=== DIAGNÓSTICO INVENTARIO ===")
-    
+
     # 1. Test environment variables
     print("\n1. VARIABLES DE ENTORNO:")
     import os
@@ -29,7 +29,7 @@ def test_inventory_data_loading():
     for var in required_vars:
         value = os.getenv(var)
         print(f"   {var}: {'OK' if value else 'MISSING'}")
-    
+
     # 2. Test database connection
     print("\n2. CONEXIÓN BASE DE DATOS:")
     try:
@@ -42,7 +42,7 @@ def test_inventory_data_loading():
     except Exception as e:
         print(f"   ERROR Error conexion BD: {e}")
         return
-    
+
     # 3. Test model
     print("\n3. MODELO DE INVENTARIO:")
     try:
@@ -50,14 +50,14 @@ def test_inventory_data_loading():
         model = InventarioModel(db)
         productos = model.obtener_todos_productos()
         print(f"   OK Modelo cargado, {len(productos)} productos obtenidos")
-        
+
         if productos:
             sample = productos[0]
             print(f"   OK Producto ejemplo: {sample.get('codigo', 'N/A')} - {sample.get('descripcion', 'N/A')}")
     except Exception as e:
         print(f"   ERROR Error modelo: {e}")
         return
-    
+
     # 4. Test view creation
     print("\n4. VISTA DE INVENTARIO:")
     try:
@@ -70,42 +70,42 @@ def test_inventory_data_loading():
     except Exception as e:
         print(f"   ERROR Error vista: {e}")
         return
-    
+
     # 5. Test controller
     print("\n5. CONTROLADOR DE INVENTARIO:")
     try:
         from src.modules.inventario.controller import InventarioController
         controller = InventarioController(model, view, db)
         print(f"   OK Controlador creado: {type(controller).__name__}")
-        
+
         # Test data loading
         print("   - Ejecutando cargar_datos_iniciales()...")
         controller.cargar_datos_iniciales()
-        
+
         # Check if data was loaded to view
         if hasattr(view, 'tabla_inventario'):
             final_rows = view.tabla_inventario.rowCount()
             print(f"   OK Filas despues de cargar datos: {final_rows}")
-            
+
             if final_rows > 0:
                 print("   EXITO: Los datos se cargaron correctamente en la tabla")
             else:
                 print("   PROBLEMA: La tabla sigue vacia despues de cargar datos")
-        
+
     except Exception as e:
         print(f"   ERROR Error controlador: {e}")
         import traceback
         traceback.print_exc()
         return
-    
+
     print("\n=== DIAGNÓSTICO COMPLETADO ===")
 
 if __name__ == '__main__':
     # Create QApplication for PyQt widgets
     app = QApplication(sys.argv)
     app.setAttribute(Qt.ApplicationAttribute.AA_DontShowIconsInMenus, False)
-    
+
     test_inventory_data_loading()
-    
+
     # Don't start event loop, just exit
     sys.exit(0)

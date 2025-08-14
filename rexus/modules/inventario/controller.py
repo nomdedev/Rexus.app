@@ -9,15 +9,12 @@ Controlador completamente funcional que maneja todos los errores identificados:
 """
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
 
 try:
     from rexus.core.auth_decorators import auth_required, permission_required
     from rexus.core.auth_manager import AuthManager
     from rexus.utils.security import SecurityUtils
-    from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 except ImportError:
     # Fallbacks si no están disponibles
     def auth_required(func):
@@ -57,7 +54,8 @@ class InventarioController(QObject):
         # Obtener información del usuario autenticado
         try:
             auth_manager = AuthManager()
-            if hasattr(auth_manager, "current_user") and auth_manager.current_user:
+            if hasattr(auth_manager, "current_user") and \
+                auth_manager.current_user:
                 usuario_info = auth_manager.current_user
                 if isinstance(usuario_info, dict):
                     self.usuario_actual = usuario_info.get("username", "SISTEMA")
@@ -139,17 +137,17 @@ class InventarioController(QObject):
         """Carga inventario con paginación mejorada."""
         try:
             print(f"[INVENTARIO CONTROLLER] Cargando página {pagina}, {registros_por_pagina} registros...")
-            
+
             if not self.model:
                 print("[ERROR] No hay modelo disponible")
                 return
-            
+
             # Calcular offset
             offset = (pagina - 1) * registros_por_pagina
-            
+
             productos = []
             total = 0
-            
+
             # Intentar con múltiples métodos del modelo
             if hasattr(self.model, "obtener_productos_paginados_inicial"):
                 resultado = self.model.obtener_productos_paginados_inicial(
@@ -161,7 +159,7 @@ class InventarioController(QObject):
                 else:
                     productos = resultado or []
                     total = len(productos)
-                    
+
             elif hasattr(self.model, "obtener_productos_paginados"):
                 resultado = self.model.obtener_productos_paginados(
                     page=pagina, page_size=registros_por_pagina
@@ -181,18 +179,19 @@ class InventarioController(QObject):
                 total = len(productos)
                 # Aplicar paginación manual
                 productos = productos[offset:offset + registros_por_pagina]
-            
+
             print(f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total")
-            
+
             # Actualizar vista con datos paginados
-            if self.view and hasattr(self.view, 'actualizar_tabla_inventario'):
+            if self.view and \
+                hasattr(self.view, 'actualizar_tabla_inventario'):
                 self.view.actualizar_tabla_inventario(productos, total)
             elif self.view and hasattr(self.view, 'actualizar_tabla'):
                 # Fallback para vista antigua
                 self.view.actualizar_tabla(productos)
-                
+
             return productos, total
-            
+
         except Exception as e:
             print(f"[ERROR INVENTARIO CONTROLLER] Error en paginación: {e}")
             self._mostrar_error("cargar inventario paginado", e)
@@ -201,22 +200,23 @@ class InventarioController(QObject):
     def _cargar_datos_inventario_simple(self):
         """Carga datos de inventario de forma simple para fallback."""
         try:
-            if hasattr(self.model, 'db_connection') and self.model.db_connection:
+            if hasattr(self.model, 'db_connection') and \
+                self.model.db_connection:
                 cursor = self.model.db_connection.cursor()
-                
+
                 # Query simple para obtener todos los productos
                 query = """
                     SELECT TOP 1000
-                        id, codigo, descripcion, categoria, stock_actual, 
+                        id, codigo, descripcion, categoria, stock_actual,
                         precio_unitario, estado, ubicacion, fecha_actualizacion
-                    FROM inventario_perfiles 
+                    FROM inventario_perfiles
                     WHERE activo = 1
                     ORDER BY codigo ASC
                 """
-                
+
                 cursor.execute(query)
                 rows = cursor.fetchall()
-                
+
                 productos = []
                 for row in rows:
                     productos.append({
@@ -230,17 +230,17 @@ class InventarioController(QObject):
                         'ubicacion': row[7] if row[7] else 'Sin ubicación',
                         'fecha_actualizacion': str(row[8]) if row[8] else '2025-08-07'
                     })
-                
+
                 return productos
-                
+
             else:
                 # Datos de ejemplo si no hay conexión
                 return self._generar_datos_ejemplo()
-                
+
         except Exception as e:
             print(f"[ERROR] Error cargando datos simples: {e}")
             return self._generar_datos_ejemplo()
-            
+
     def _generar_datos_ejemplo(self):
         """Genera datos de ejemplo para pruebas."""
         productos = []

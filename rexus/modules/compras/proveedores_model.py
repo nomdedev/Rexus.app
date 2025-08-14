@@ -6,7 +6,6 @@ Maneja la gestión de proveedores para el módulo de compras.
 
 from typing import Any, Dict, List, Optional
 from rexus.utils.security import SecurityUtils
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class ProveedoresModel:
@@ -110,8 +109,8 @@ class ProveedoresModel:
 
             sql_insert = """
             INSERT INTO proveedores
-            (nombre, razon_social, ruc, telefono, email, direccion, 
-             contacto_principal, categoria, estado, observaciones, 
+            (nombre, razon_social, ruc, telefono, email, direccion,
+             contacto_principal, categoria, estado, observaciones,
              usuario_creacion, fecha_creacion, fecha_actualizacion)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
             """
@@ -155,7 +154,7 @@ class ProveedoresModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
+            SELECT
                 p.id, p.nombre, p.razon_social, p.ruc, p.telefono, p.email,
                 p.direccion, p.contacto_principal, p.categoria, p.estado,
                 p.observaciones, p.usuario_creacion, p.fecha_creacion,
@@ -210,7 +209,7 @@ class ProveedoresModel:
             cursor = self.db_connection.cursor()
 
             sql_select = """
-            SELECT 
+            SELECT
                 id, nombre, razon_social, ruc, telefono, email, direccion,
                 contacto_principal, categoria, estado, observaciones,
                 usuario_creacion, fecha_creacion, fecha_actualizacion
@@ -317,7 +316,7 @@ class ProveedoresModel:
             params.append(proveedor_id)
 
             sql_update = f"""
-            UPDATE proveedores 
+            UPDATE proveedores
             SET {', '.join(updates)}
             WHERE id = ?
             """
@@ -382,7 +381,7 @@ class ProveedoresModel:
                 where_clause = "WHERE " + " AND ".join(conditions)
 
             sql_select = f"""
-            SELECT 
+            SELECT
                 id, nombre, razon_social, ruc, telefono, email, direccion,
                 contacto_principal, categoria, estado, observaciones,
                 usuario_creacion, fecha_creacion, fecha_actualizacion
@@ -439,7 +438,7 @@ class ProveedoresModel:
 
             # Estadísticas de compras
             cursor.execute("""
-                SELECT 
+                SELECT
                     COUNT(*) as total_ordenes,
                     COUNT(CASE WHEN estado = 'PENDIENTE' THEN 1 END) as ordenes_pendientes,
                     COUNT(CASE WHEN estado = 'APROBADA' THEN 1 END) as ordenes_aprobadas,
@@ -453,7 +452,7 @@ class ProveedoresModel:
 
             # Montos totales
             cursor.execute("""
-                SELECT 
+                SELECT
                     ISNULL(SUM(
                         ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
                                 FROM detalle_compras dc

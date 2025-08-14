@@ -14,34 +14,34 @@ os.environ['PYTHONIOENCODING'] = 'utf-8'
 
 def test_obras():
     """Test simple de obras."""
-    
+
     try:
         print("=== TEST OBRAS ===")
-        
+
         print("1. Suprimiendo logs...")
         import logging
         logging.getLogger().setLevel(logging.CRITICAL)
-        
+
         print("2. Test import...")
         from rexus.modules.obras.view import ObrasModernView
         print("   Import OK")
-        
+
         print("3. Test instanciacion...")
         try:
             instance = ObrasModernView()
             print("   Instanciacion OK")
-            
+
             if hasattr(instance, 'deleteLater'):
                 instance.deleteLater()
-                
+
         except Exception as e:
             print(f"   ERROR en instanciacion: {str(e)}")
             traceback.print_exc()
             return False
-        
+
         print("=== TEST COMPLETADO ===")
         return True
-        
+
     except Exception as e:
         print(f"ERROR GENERAL: {str(e)}")
         traceback.print_exc()

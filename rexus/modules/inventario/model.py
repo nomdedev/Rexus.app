@@ -1,11 +1,6 @@
-from rexus.core.auth_decorators import (
-    admin_required,
-    auth_required,
-    permission_required,
-)
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
+from rexus.core.query_optimizer import cached_query, track_performance
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -26,20 +21,18 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
 
 import qrcode
-from PIL import Image
 
 # Importar sistema de paginación
-from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.pagination import PaginatedTableMixin
 
 # Importar utilidades de seguridad
 try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
-    
-    from rexus.utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
-    
+
+    from rexus.utils.sql_security import SQLSecurityValidator
+
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available in inventario: {e}")
@@ -64,7 +57,7 @@ try:
     from rexus.modules.inventario.submodules.reservas_manager import ReservasManager
     from rexus.modules.inventario.submodules.reportes_manager import ReportesManager
     from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
-    
+
     SUBMODULES_AVAILABLE = True
     print("OK [INVENTARIO] Submódulos especializados cargados")
 except ImportError as e:
@@ -93,7 +86,7 @@ except ImportError as e:
 class InventarioModel(PaginatedTableMixin):
     """
     Modelo para gestionar el inventario de productos.
-    
+
     MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
     para prevenir inyección SQL y mejorar mantenibilidad.
     """
@@ -170,7 +163,7 @@ class InventarioModel(PaginatedTableMixin):
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
-    
+
     def _init_fallback_managers(self):
         """Inicializa managers básicos como fallback cuando los submódulos no están disponibles."""
         self.base_utils = None
@@ -184,31 +177,37 @@ class InventarioModel(PaginatedTableMixin):
     # ===========================================
     # MÉTODOS DE PROXY PARA COMPATIBILIDAD
     # ===========================================
-    
-    def crear_producto(self, datos_producto: Dict[str, Any]) -> Dict[str, Any]:
+
+    def crear_producto(self,
+datos_producto: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Proxy para crear producto - usa ProductosManager si está disponible."""
         if self.managers_available and self.productos_manager:
             return self.productos_manager.crear_producto(datos_producto)
         else:
             # Fallback al método original (si existe)
             return self._crear_producto_fallback(datos_producto)
-    
+
     def obtener_producto_por_codigo(self, codigo: str) -> Optional[Dict[str, Any]]:
         """Proxy para obtener producto por código."""
         if self.managers_available and self.productos_manager:
             return self.productos_manager.obtener_producto_por_codigo(codigo)
         else:
             return self._obtener_producto_por_codigo_fallback(codigo)
-    
-    def actualizar_stock_producto(self, producto_id: int, nuevo_stock: Union[int, float], 
+
+    def actualizar_stock_producto(self, producto_id: int, nuevo_stock: Union[int, float],
                                 razon: str = "Ajuste manual") -> Dict[str, Any]:
         """Proxy para actualizar stock de producto."""
         if self.managers_available and self.productos_manager:
             return self.productos_manager.actualizar_stock(producto_id, nuevo_stock, razon)
         else:
             return self._actualizar_stock_fallback(producto_id, nuevo_stock, razon)
-    
-    def registrar_movimiento_stock(self, datos_movimiento: Dict[str, Any]) -> Dict[str, Any]:
+
+    def registrar_movimiento_stock(self,
+datos_movimiento: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Proxy para registrar movimiento de stock."""
         if self.managers_available and self.movimientos_manager:
             return self.movimientos_manager.registrar_movimiento(
@@ -221,15 +220,18 @@ class InventarioModel(PaginatedTableMixin):
             )
         else:
             return self._registrar_movimiento_fallback(datos_movimiento)
-    
-    def crear_reserva_material(self, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
+
+    def crear_reserva_material(self,
+datos_reserva: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Proxy para crear reserva de material."""
         if self.managers_available and self.reservas_manager:
             return self.reservas_manager.crear_reserva(datos_reserva)
         else:
             return self._crear_reserva_fallback(datos_reserva)
-    
-    def generar_reporte_inventario(self, tipo_reporte: str, filtros: Optional[Dict] = None, 
+
+    def generar_reporte_inventario(self, tipo_reporte: str, filtros: Optional[Dict] = None,
                                  formato: str = 'DICT') -> Dict[str, Any]:
         """Proxy para generar reportes de inventario."""
         if self.managers_available and self.reportes_manager:
@@ -255,7 +257,7 @@ class InventarioModel(PaginatedTableMixin):
                 return {'success': False, 'error': f'Tipo de reporte no soportado: {tipo_reporte}'}
         else:
             return self._generar_reporte_fallback(tipo_reporte, filtros, formato)
-    
+
     def obtener_categorias(self, incluir_estadisticas: bool = False) -> List[Dict[str, Any]]:
         """Proxy para obtener categorías."""
         if self.managers_available and self.categorias_manager:
@@ -322,7 +324,6 @@ class InventarioModel(PaginatedTableMixin):
             except SQLSecurityError as e:
                 print(f"[ERROR SEGURIDAD] {str(e)}")
                 # Fallback a verificación básica
-                pass
 
         # Verificación básica si la utilidad no está disponible
         if not table_name or not isinstance(table_name, str):
@@ -403,10 +404,10 @@ class InventarioModel(PaginatedTableMixin):
             # [LOCK] Usar consulta SQL externa segura
             params = {
                 "categoria": filters.get("categoria") if filters else None,
-                "codigo": filters.get("codigo") if filters else None, 
+                "codigo": filters.get("codigo") if filters else None,
                 "nombre": filters.get("nombre") if filters else None
             }
-            
+
             sql = self.sql_manager.get_query('inventario', 'list_productos_with_filters')
             cursor = self.db_connection.cursor()
             cursor.execute(sql, params)
@@ -416,7 +417,7 @@ class InventarioModel(PaginatedTableMixin):
             total_items = len(productos)
             offset = (page - 1) * limit
             productos_paginados = productos[offset:offset + limit]
-            
+
             return productos_paginados, total_items
 
             productos = []
@@ -529,7 +530,7 @@ class InventarioModel(PaginatedTableMixin):
             return []
 
         try:
-            cursor = self.db_connection.cursor()
+            self.db_connection.cursor()
 
             # Construir query con filtros
             conditions = ["1=1"]  # Condición base
@@ -552,7 +553,7 @@ class InventarioModel(PaginatedTableMixin):
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
 
-            where_clause = " AND ".join(conditions)
+            " AND ".join(conditions)
 
             # Usar la tabla real inventario_perfiles con columnas existentes
             # SECURITY: Validar nombre de tabla para prevenir SQL injection
@@ -564,12 +565,12 @@ class InventarioModel(PaginatedTableMixin):
 
                     if tabla_segura not in sql_validator.ALLOWED_TABLES:
                         sql_validator.add_allowed_table(tabla_segura)
-                    tabla_validada = validate_table_name(tabla_segura)
+                    validate_table_name(tabla_segura)
                 except SQLSecurityError as e:
                     print(f"[SECURITY ERROR] Tabla no válida: {e}")
                     return []
             else:
-                tabla_validada = tabla_segura
+                pass
 
             # [LOCK] Usar consulta SQL externa segura
             params_query = {
@@ -577,7 +578,7 @@ class InventarioModel(PaginatedTableMixin):
                 "categoria": None,  # Agregar filtros según necesidad
                 "activo": 1
             }
-            
+
             productos = self.sql_manager.execute_query(
                 "get_productos_estructura_estandar",
                 params=params_query
@@ -795,7 +796,10 @@ class InventarioModel(PaginatedTableMixin):
                 self.db_connection.connection.rollback()
             return None
 
-    def actualizar_producto(self, producto_id, datos_producto, usuario="SISTEMA"):
+    def actualizar_producto(self,
+producto_id,
+        datos_producto,
+        usuario="SISTEMA"):
         """
         Actualiza un producto existente.
 
@@ -924,7 +928,10 @@ class InventarioModel(PaginatedTableMixin):
             # Actualizar stock en inventario_perfiles
             sql_update_stock = self.sql_manager.get_query('inventario', 'actualizar_stock')
 
-            cursor.execute(sql_update_stock, (stock_nuevo, usuario, producto_id))
+            cursor.execute(sql_update_stock,
+(stock_nuevo,
+                usuario,
+                producto_id))
 
             self.db_connection.commit()
             print(f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}")
@@ -983,7 +990,7 @@ class InventarioModel(PaginatedTableMixin):
             for row in rows:
                 movimiento = dict(zip(columns, row))
                 # Parse basic info from detalles field
-                detalles = movimiento.get("detalles", "")
+                movimiento.get("detalles", "")
                 movimiento["tipo_movimiento"] = movimiento["accion"].replace(
                     "INVENTARIO_", ""
                 )
@@ -1054,7 +1061,7 @@ class InventarioModel(PaginatedTableMixin):
 
             # Query optimizada con índice en tipo
             sql_select = """
-            SELECT DISTINCT tipo 
+            SELECT DISTINCT tipo
             FROM inventario_perfiles
             WHERE tipo IS NOT NULL AND tipo != ''
             ORDER BY tipo
@@ -1387,7 +1394,10 @@ class InventarioModel(PaginatedTableMixin):
         Genera un reporte detallado de movimientos con filtros avanzados.
 
         Args:
-            filtros (dict): Filtros como fecha_inicio, fecha_fin, tipo, categoria
+            filtros (dict): Filtros como fecha_inicio,
+fecha_fin,
+                tipo,
+                categoria
 
         Returns:
             List[Dict]: Lista de movimientos con detalles
@@ -1461,7 +1471,8 @@ class InventarioModel(PaginatedTableMixin):
                 movimiento = dict(zip(columns, row))
 
                 # Calcular valores adicionales
-                if movimiento.get("precio_unitario") and movimiento.get("cantidad"):
+                if movimiento.get("precio_unitario") and \
+                    movimiento.get("cantidad"):
                     movimiento["valor_total"] = float(
                         movimiento["precio_unitario"]
                     ) * float(movimiento["cantidad"])
@@ -1664,8 +1675,8 @@ class InventarioModel(PaginatedTableMixin):
                     print(f"[ERROR] Error con script loader: {e}")
                     # Query base de respaldo segura
                     base_query = """
-                    SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
-                           stock as stock_actual, stock_minimo, precio as precio_unitario, 
+                    SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
+                           stock as stock_actual, stock_minimo, precio as precio_unitario,
                            'unidad' as unidad_medida, ubicacion, proveedor, activo,
                            fecha_creacion, fecha_modificacion
                     FROM inventario_perfiles
@@ -1674,8 +1685,8 @@ class InventarioModel(PaginatedTableMixin):
             else:
                 # Query base de respaldo segura
                 base_query = """
-                SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria, 
-                       stock as stock_actual, stock_minimo, precio as precio_unitario, 
+                SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
+                       stock as stock_actual, stock_minimo, precio as precio_unitario,
                        'unidad' as unidad_medida, ubicacion, proveedor, activo,
                        fecha_creacion, fecha_modificacion
                 FROM inventario_perfiles
@@ -1967,15 +1978,15 @@ class InventarioModel(PaginatedTableMixin):
                 "inventario/select_disponibilidad_material",
                 [producto_id],
                 """
-                SELECT i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                SELECT i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
                        i.stock_minimo, i.precio as precio_unitario, 'unidad' as unidad_medida,
                        COALESCE(r.stock_reservado, 0) as stock_reservado,
                        (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
                 FROM inventario_perfiles i
                 LEFT JOIN (
-                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
-                    FROM reserva_materiales 
-                    WHERE estado = 'ACTIVA' 
+                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
+                    FROM reserva_materiales
+                    WHERE estado = 'ACTIVA'
                     GROUP BY producto_id
                 ) r ON i.id = r.producto_id
                 WHERE i.id = ? AND i.activo = 1
@@ -2005,7 +2016,10 @@ class InventarioModel(PaginatedTableMixin):
                     if script_content:
                         cursor.execute(
                             script_content,
-                            (obra_id, producto_id, cantidad_reservada, usuario_id),
+                            (obra_id,
+producto_id,
+                                cantidad_reservada,
+                                usuario_id),
                         )
                     else:
                         raise Exception("Script no disponible")
@@ -2013,11 +2027,19 @@ class InventarioModel(PaginatedTableMixin):
                     # Query de respaldo segura
                     cursor.execute(
                         """
-                        INSERT INTO reserva_materiales 
-                        (obra_id, producto_id, cantidad_reservada, fecha_reserva, estado, usuario_id)
+                        INSERT INTO reserva_materiales
+                        (obra_id,
+producto_id,
+                            cantidad_reservada,
+                            fecha_reserva,
+                            estado,
+                            usuario_id)
                         VALUES (?, ?, ?, GETDATE(), 'ACTIVA', ?)
                     """,
-                        (obra_id, producto_id, cantidad_reservada, usuario_id),
+                        (obra_id,
+producto_id,
+                            cantidad_reservada,
+                            usuario_id),
                     )
 
                 # Registrar movimiento usando script seguro
@@ -2039,7 +2061,11 @@ class InventarioModel(PaginatedTableMixin):
                         # Fallback para historial
                         cursor.execute(
                             """
-                            INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                            INSERT INTO historial (accion,
+descripcion,
+                                usuario,
+                                fecha,
+                                detalles)
                             VALUES (?, ?, ?, ?, ?)
                         """,
                             movimiento_params,
@@ -2048,7 +2074,11 @@ class InventarioModel(PaginatedTableMixin):
                     # Fallback para historial
                     cursor.execute(
                         """
-                        INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                        INSERT INTO historial (accion,
+descripcion,
+                            usuario,
+                            fecha,
+                            detalles)
                         VALUES (?, ?, ?, ?, ?)
                     """,
                         movimiento_params,
@@ -2059,8 +2089,13 @@ class InventarioModel(PaginatedTableMixin):
                 # Fallback completo con queries seguras fijas
                 cursor.execute(
                     """
-                    INSERT INTO reserva_materiales 
-                    (obra_id, producto_id, cantidad_reservada, fecha_reserva, estado, usuario_id)
+                    INSERT INTO reserva_materiales
+                    (obra_id,
+producto_id,
+                        cantidad_reservada,
+                        fecha_reserva,
+                        estado,
+                        usuario_id)
                     VALUES (?, ?, ?, GETDATE(), 'ACTIVA', ?)
                 """,
                     (obra_id, producto_id, cantidad_reservada, usuario_id),
@@ -2068,7 +2103,11 @@ class InventarioModel(PaginatedTableMixin):
 
                 cursor.execute(
                     """
-                    INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                    INSERT INTO historial (accion,
+descripcion,
+                        usuario,
+                        fecha,
+                        detalles)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     movimiento_params,
@@ -2108,7 +2147,7 @@ class InventarioModel(PaginatedTableMixin):
                 "inventario/select_reservas_por_obra",
                 [obra_id],
                 """
-                SELECT 
+                SELECT
                     r.id, r.obra_id, r.producto_id, r.cantidad_reservada,
                     r.fecha_reserva, r.fecha_liberacion, r.estado, r.usuario_id, r.motivo_liberacion,
                     i.codigo as producto_codigo, i.descripcion as producto_descripcion,
@@ -2171,7 +2210,7 @@ class InventarioModel(PaginatedTableMixin):
                 "inventario/select_reservas_por_producto",
                 [producto_id],
                 """
-                SELECT 
+                SELECT
                     r.id, r.obra_id, r.producto_id, r.cantidad_reservada,
                     r.fecha_reserva, r.fecha_liberacion, r.estado, r.usuario_id, r.motivo_liberacion,
                     o.nombre as obra_nombre, o.direccion as obra_direccion
@@ -2263,7 +2302,7 @@ class InventarioModel(PaginatedTableMixin):
                     # Fallback con query segura
                     cursor.execute(
                         """
-                        UPDATE reserva_materiales 
+                        UPDATE reserva_materiales
                         SET estado = 'LIBERADA', fecha_liberacion = ?, motivo_liberacion = ?
                         WHERE id = ? AND estado = 'ACTIVA'
                     """,
@@ -2273,7 +2312,7 @@ class InventarioModel(PaginatedTableMixin):
                 # Query de respaldo segura
                 cursor.execute(
                     """
-                    UPDATE reserva_materiales 
+                    UPDATE reserva_materiales
                     SET estado = 'LIBERADA', fecha_liberacion = ?, motivo_liberacion = ?
                     WHERE id = ? AND estado = 'ACTIVA'
                 """,
@@ -2300,7 +2339,11 @@ class InventarioModel(PaginatedTableMixin):
                         # Fallback para historial
                         cursor.execute(
                             """
-                            INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                            INSERT INTO historial (accion,
+descripcion,
+                                usuario,
+                                fecha,
+                                detalles)
                             VALUES (?, ?, ?, ?, ?)
                         """,
                             movimiento_params,
@@ -2309,7 +2352,11 @@ class InventarioModel(PaginatedTableMixin):
                     print(f"[ERROR] Error usando script movimiento: {e}")
                     cursor.execute(
                         """
-                        INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                        INSERT INTO historial (accion,
+descripcion,
+                            usuario,
+                            fecha,
+                            detalles)
                         VALUES (?, ?, ?, ?, ?)
                     """,
                         movimiento_params,
@@ -2318,7 +2365,11 @@ class InventarioModel(PaginatedTableMixin):
                 # Fallback para historial
                 cursor.execute(
                     """
-                    INSERT INTO historial (accion, descripcion, usuario, fecha, detalles)
+                    INSERT INTO historial (accion,
+descripcion,
+                        usuario,
+                        fecha,
+                        detalles)
                     VALUES (?, ?, ?, ?, ?)
                 """,
                     movimiento_params,
@@ -2348,7 +2399,7 @@ class InventarioModel(PaginatedTableMixin):
             return []
 
         try:
-            cursor = self.db_connection.cursor()
+            self.db_connection.cursor()
 
             where_clause = ""
             params = []
@@ -2361,7 +2412,7 @@ class InventarioModel(PaginatedTableMixin):
             params_query = {
                 "producto_id": producto_id
             }
-            
+
             resultados = self.sql_manager.execute_query(
                 "analisis_stock_completo",
                 params=params_query
@@ -2584,7 +2635,7 @@ class InventarioModel(PaginatedTableMixin):
                 "busqueda": filtros.get("busqueda"),
                 "categoria": filtros.get("categoria")
             }
-            
+
             cursor.execute(sql, params)
 
             productos = []
@@ -2714,19 +2765,19 @@ class InventarioModel(PaginatedTableMixin):
                         )
                         # Consulta de respaldo parameterizada
                         cursor.execute("""
-                            SELECT 
-                                i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                            SELECT
+                                i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
                                 i.precio as precio_unitario, 'unidad' as unidad_medida,
                                 COALESCE(r.stock_reservado, 0) as stock_reservado,
                                 (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
                             FROM inventario_perfiles i
                             LEFT JOIN (
-                                SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
-                                FROM reserva_materiales 
-                                WHERE estado = 'ACTIVA' 
+                                SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
+                                FROM reserva_materiales
+                                WHERE estado = 'ACTIVA'
                                 GROUP BY producto_id
                             ) r ON i.id = r.producto_id
-                            WHERE i.activo = 1 
+                            WHERE i.activo = 1
                                 AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
                             ORDER BY i.codigo
                         """)
@@ -2734,38 +2785,38 @@ class InventarioModel(PaginatedTableMixin):
                     print(f"[ERROR] Error con script loader: {e}")
                     # Consulta de respaldo parameterizada
                     cursor.execute("""
-                        SELECT 
-                            i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                        SELECT
+                            i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
                             i.precio as precio_unitario, 'unidad' as unidad_medida,
                             COALESCE(r.stock_reservado, 0) as stock_reservado,
                             (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
                         FROM inventario_perfiles i
                         LEFT JOIN (
-                            SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
-                            FROM reserva_materiales 
-                            WHERE estado = 'ACTIVA' 
+                            SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
+                            FROM reserva_materiales
+                            WHERE estado = 'ACTIVA'
                             GROUP BY producto_id
                         ) r ON i.id = r.producto_id
-                        WHERE i.activo = 1 
+                        WHERE i.activo = 1
                             AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
                         ORDER BY i.codigo
                     """)
             else:
                 # Consulta de respaldo parameterizada cuando no hay script loader
                 cursor.execute("""
-                    SELECT 
-                        i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual, 
+                    SELECT
+                        i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
                         i.precio as precio_unitario, 'unidad' as unidad_medida,
                         COALESCE(r.stock_reservado, 0) as stock_reservado,
                         (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
                     FROM inventario_perfiles i
                     LEFT JOIN (
-                        SELECT producto_id, SUM(cantidad_reservada) as stock_reservado 
-                        FROM reserva_materiales 
-                        WHERE estado = 'ACTIVA' 
+                        SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
+                        FROM reserva_materiales
+                        WHERE estado = 'ACTIVA'
                         GROUP BY producto_id
                     ) r ON i.id = r.producto_id
-                    WHERE i.activo = 1 
+                    WHERE i.activo = 1
                         AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
                     ORDER BY i.codigo
                 """)
@@ -3019,7 +3070,8 @@ class InventarioModel(PaginatedTableMixin):
                         lines = [
                             line.strip()
                             for line in paginated_script.split("\n")
-                            if line.strip() and not line.strip().startswith("--")
+                            if line.strip() and \
+                                not line.strip().startswith("--")
                         ]
                         base_paginated_query = " ".join(lines)
                     else:
@@ -3118,7 +3170,9 @@ class InventarioModel(PaginatedTableMixin):
     def obtener_total_registros(self, filtros=None):
         """Obtiene el total de registros disponibles"""
         try:
-            _, total = self.obtener_datos_paginados(offset=0, limit=1, filtros=filtros)
+            _, total = self.obtener_datos_paginados(offset=0,
+                                                   limit=1,
+                                                   filtros=filtros)
             return total
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
@@ -3200,25 +3254,28 @@ class InventarioModel(PaginatedTableMixin):
                 "offset": offset,
                 "limit": limit,
             }
-    
+
     # ===========================================
     # MÉTODOS FALLBACK PARA COMPATIBILIDAD
     # ===========================================
-    
-    def _crear_producto_fallback(self, datos_producto: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _crear_producto_fallback(self,
+datos_producto: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Método fallback para crear producto cuando los submódulos no están disponibles."""
         return {
             'success': False,
             'error': 'Submódulos no disponibles. Funcionalidad limitada.',
             'producto_id': None
         }
-    
+
     def _obtener_producto_por_codigo_fallback(self, codigo: str) -> Optional[Dict[str, Any]]:
         """Método fallback para obtener producto por código."""
         print(f"[WARNING] Función obtener_producto_por_codigo no disponible para código: {codigo}")
         return None
-    
-    def _actualizar_stock_fallback(self, producto_id: int, nuevo_stock: Union[int, float], 
+
+    def _actualizar_stock_fallback(self, producto_id: int, nuevo_stock: Union[int, float],
                                  razon: str = "Ajuste manual") -> Dict[str, Any]:
         """Método fallback para actualizar stock."""
         return {
@@ -3228,23 +3285,29 @@ class InventarioModel(PaginatedTableMixin):
             'stock_nuevo': nuevo_stock,
             'diferencia': 0
         }
-    
-    def _registrar_movimiento_fallback(self, datos_movimiento: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _registrar_movimiento_fallback(self,
+datos_movimiento: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Método fallback para registrar movimiento."""
         return {
             'success': False,
             'error': 'Submódulos no disponibles. No se puede registrar movimiento.'
         }
-    
-    def _crear_reserva_fallback(self, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
+
+    def _crear_reserva_fallback(self,
+datos_reserva: Dict[str,
+        Any]) -> Dict[str,
+        Any]:
         """Método fallback para crear reserva."""
         return {
             'success': False,
             'error': 'Submódulos no disponibles. No se puede crear reserva.',
             'reserva_id': None
         }
-    
-    def _generar_reporte_fallback(self, tipo_reporte: str, filtros: Optional[Dict] = None, 
+
+    def _generar_reporte_fallback(self, tipo_reporte: str, filtros: Optional[Dict] = None,
                                 formato: str = 'DICT') -> Dict[str, Any]:
         """Método fallback para generar reportes."""
         return {
@@ -3252,7 +3315,7 @@ class InventarioModel(PaginatedTableMixin):
             'error': f'Submódulos no disponibles. No se puede generar reporte: {tipo_reporte}',
             'data': None
         }
-    
+
     def _obtener_categorias_fallback(self, incluir_estadisticas: bool = False) -> List[Dict[str, Any]]:
         """Método fallback para obtener categorías."""
         # Devolver categorías básicas por defecto
@@ -3266,7 +3329,7 @@ class InventarioModel(PaginatedTableMixin):
             {'categoria': 'CONSUMIBLES', 'total_productos': 0},
             {'categoria': 'REPUESTOS', 'total_productos': 0}
         ]
-        
+
         if incluir_estadisticas:
             for categoria in categorias_default:
                 categoria.update({
@@ -3280,5 +3343,5 @@ class InventarioModel(PaginatedTableMixin):
                     'porcentaje_sin_stock': 0,
                     'porcentaje_stock_bajo': 0
                 })
-        
+
         return categorias_default

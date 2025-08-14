@@ -29,7 +29,8 @@ def analyze_mvc_violations():
         return
 
     modules = [
-        d for d in modules_path.iterdir() if d.is_dir() and not d.name.startswith("__")
+        d for d in modules_path.iterdir() if d.is_dir() and \
+            not d.name.startswith("__")
     ]
 
     for module_dir in modules:

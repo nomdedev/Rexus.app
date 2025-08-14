@@ -12,11 +12,11 @@ from typing import List, Dict, Any
 
 class DemoDataGenerator:
     """Generador de datos demo para todos los módulos."""
-    
+
     # Datos base para generación
     NOMBRES = ["Juan", "María", "Carlos", "Ana", "Luis", "Carmen", "Miguel", "Isabel", "José", "Laura"]
     APELLIDOS = ["García", "Rodríguez", "López", "Martínez", "González", "Pérez", "Sánchez", "Ramírez", "Cruz", "Flores"]
-    
+
     DIRECCIONES_LA_PLATA = [
         "Calle 7 entre 47 y 48, La Plata",
         "Av. 13 y 60, La Plata",
@@ -29,21 +29,21 @@ class DemoDataGenerator:
         "Calle 520 y 15, Melchor Romero",
         "Calle 2 y 64, Ringuelet"
     ]
-    
+
     TIPOS_VIDRIO = ["Templado", "Laminado", "Float", "Espejo", "Doble Vidriado Hermético"]
     ACABADOS_VIDRIO = ["Natural", "Bronceado", "Reflectivo", "Satinado", "Serigrafía"]
-    
+
     TIPOS_HERRAJE = ["Bisagra", "Cerradura", "Manija", "Tirador", "Pestillo", "Corredera"]
-    
+
     ESTADOS_OBRA = ["Planificada", "En Proceso", "Pausada", "Finalizada", "Cancelada"]
     ESTADOS_PEDIDO = ["Borrador", "Pendiente", "Aprobado", "En Preparación", "Entregado"]
     ESTADOS_ENTREGA = ["Programada", "En Preparación", "En Tránsito", "Entregada"]
-    
+
     @staticmethod
     def generar_inventario_demo() -> List[Dict[str, Any]]:
         """Genera datos demo para el módulo de inventario."""
         productos = []
-        
+
         # Generar vidrios
         for i in range(50):
             producto = {
@@ -60,7 +60,7 @@ class DemoDataGenerator:
                 'fecha_actualizacion': datetime.now() - timedelta(days=random.randint(0, 30))
             }
             productos.append(producto)
-        
+
         # Generar herrajes
         for i in range(30):
             producto = {
@@ -68,7 +68,10 @@ class DemoDataGenerator:
                 'codigo': f"HER-{2000 + i}",
                 'descripcion': f"{random.choice(DemoDataGenerator.TIPOS_HERRAJE)} {random.choice(['Estándar', 'Premium', 'Industrial'])}",
                 'tipo': 'Herraje',
-                'acabado': random.choice(['Aluminio', 'Acero', 'Bronce', 'Negro']),
+                'acabado': random.choice(['Aluminio',
+'Acero',
+                    'Bronce',
+                    'Negro']),
                 'stock': random.randint(10, 200),
                 'stock_minimo': random.randint(15, 25),
                 'importe': round(random.uniform(20, 150), 2),
@@ -77,18 +80,18 @@ class DemoDataGenerator:
                 'fecha_actualizacion': datetime.now() - timedelta(days=random.randint(0, 30))
             }
             productos.append(producto)
-        
+
         return productos
-    
+
     @staticmethod
     def generar_obras_demo() -> List[Dict[str, Any]]:
         """Genera datos demo para el módulo de obras."""
         obras = []
-        
+
         for i in range(15):
             fecha_inicio = datetime.now() - timedelta(days=random.randint(0, 60))
             fecha_fin = fecha_inicio + timedelta(days=random.randint(15, 90))
-            
+
             obra = {
                 'id': i + 1,
                 'numero_obra': f"OBR-{2025}-{1000 + i}",
@@ -104,18 +107,18 @@ class DemoDataGenerator:
                 'telefono': f"221-{random.randint(1000000, 9999999)}"
             }
             obras.append(obra)
-        
+
         return obras
-    
+
     @staticmethod
     def generar_pedidos_demo() -> List[Dict[str, Any]]:
         """Genera datos demo para el módulo de pedidos."""
         pedidos = []
-        
+
         for i in range(20):
             fecha_pedido = datetime.now() - timedelta(days=random.randint(0, 30))
             fecha_entrega = fecha_pedido + timedelta(days=random.randint(5, 15))
-            
+
             pedido = {
                 'id': i + 1,
                 'numero_pedido': f"PED-{fecha_pedido.year}-{10000 + i}",
@@ -131,9 +134,9 @@ class DemoDataGenerator:
                 'prioridad': random.choice(['Normal', 'Alta', 'Urgente'])
             }
             pedidos.append(pedido)
-        
+
         return pedidos
-    
+
     @staticmethod
     def generar_logistica_demo() -> Dict[str, List[Dict[str, Any]]]:
         """Genera datos demo para el módulo de logística."""
@@ -141,7 +144,7 @@ class DemoDataGenerator:
         entregas = []
         for i in range(12):
             fecha_programada = datetime.now() + timedelta(days=random.randint(0, 15))
-            
+
             entrega = {
                 'id': i + 1,
                 'fecha_programada': fecha_programada,
@@ -152,36 +155,42 @@ class DemoDataGenerator:
                 'observaciones': f"Entrega de {random.choice(['vidrios', 'herrajes', 'materiales varios'])}"
             }
             entregas.append(entrega)
-        
+
         # Servicios
         servicios = []
         for i in range(10):
             fecha_programada = datetime.now() + timedelta(days=random.randint(0, 10))
-            
+
             servicio = {
                 'id': i + 1,
-                'tipo': random.choice(['Instalación', 'Reparación', 'Mantenimiento', 'Medición']),
+                'tipo': random.choice(['Instalación',
+'Reparación',
+                    'Mantenimiento',
+                    'Medición']),
                 'cliente': f"{random.choice(DemoDataGenerator.NOMBRES)} {random.choice(DemoDataGenerator.APELLIDOS)}",
                 'direccion': random.choice(DemoDataGenerator.DIRECCIONES_LA_PLATA),
                 'fecha_programada': fecha_programada,
                 'hora': f"{random.randint(8, 17)}:{random.choice(['00', '30'])}",
-                'estado': random.choice(['Programado', 'En Proceso', 'Completado', 'Cancelado']),
+                'estado': random.choice(['Programado',
+'En Proceso',
+                    'Completado',
+                    'Cancelado']),
                 'tecnico': f"{random.choice(DemoDataGenerator.NOMBRES)} {random.choice(DemoDataGenerator.APELLIDOS)}"
             }
             servicios.append(servicio)
-        
+
         return {'entregas': entregas, 'servicios': servicios}
-    
+
     @staticmethod
     def generar_usuarios_demo() -> List[Dict[str, Any]]:
         """Genera datos demo para el módulo de usuarios."""
         usuarios = []
         roles = ['ADMIN', 'GERENTE', 'VENDEDOR', 'TECNICO', 'USUARIO']
-        
+
         for i in range(8):
             nombre = random.choice(DemoDataGenerator.NOMBRES)
             apellido = random.choice(DemoDataGenerator.APELLIDOS)
-            
+
             usuario = {
                 'id': i + 1,
                 'username': f"{nombre.lower()}.{apellido.lower()}",
@@ -194,35 +203,39 @@ class DemoDataGenerator:
                 'ultimo_acceso': datetime.now() - timedelta(days=random.randint(0, 7))
             }
             usuarios.append(usuario)
-        
+
         return usuarios
-    
+
     @staticmethod
     def generar_compras_demo() -> List[Dict[str, Any]]:
         """Genera datos demo para el módulo de compras."""
         compras = []
         proveedores = ['Vidrios del Sur', 'Herrajes Premium', 'Aluminios La Plata', 'Cristales Industriales']
-        
+
         for i in range(15):
             fecha_pedido = datetime.now() - timedelta(days=random.randint(0, 45))
             fecha_entrega = fecha_pedido + timedelta(days=random.randint(7, 21))
-            
+
             compra = {
                 'id': i + 1,
                 'numero_orden': f"OC-{fecha_pedido.year}-{5000 + i}",
                 'proveedor': random.choice(proveedores),
                 'fecha_pedido': fecha_pedido,
                 'fecha_entrega_estimada': fecha_entrega,
-                'estado': random.choice(['Pendiente', 'Confirmada', 'En Tránsito', 'Recibida', 'Cancelada']),
+                'estado': random.choice(['Pendiente',
+'Confirmada',
+                    'En Tránsito',
+                    'Recibida',
+                    'Cancelada']),
                 'total': round(random.uniform(10000, 100000), 2),
                 'descuento': round(random.uniform(0, 10), 2),
                 'observaciones': f"Compra de {random.choice(['vidrios', 'herrajes', 'materiales', 'insumos'])} para stock",
                 'usuario_creacion': random.choice(['admin', 'compras.manager', 'juan.garcia'])
             }
             compras.append(compra)
-        
+
         return compras
-    
+
     @staticmethod
     def obtener_todos_los_datos_demo() -> Dict[str, Any]:
         """Obtiene todos los datos demo para todos los módulos."""
@@ -234,7 +247,7 @@ class DemoDataGenerator:
             'usuarios': DemoDataGenerator.generar_usuarios_demo(),
             'compras': DemoDataGenerator.generar_compras_demo()
         }
-    
+
     @staticmethod
     def es_modo_demo() -> bool:
         """Determina si la aplicación debe funcionar en modo demo."""

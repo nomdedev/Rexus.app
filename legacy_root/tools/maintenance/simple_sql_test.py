@@ -19,7 +19,7 @@ def simple_connection_test():
     """Prueba conexión simple"""
     username = os.getenv('DB_USERNAME')
     password = os.getenv('DB_PASSWORD')
-    
+
     # Configuraciones a probar (de más específica a más general)
     configs = [
         ("DESKTOP-QHMPTGO\\SQLEXPRESS", "ODBC Driver 17 for SQL Server"),
@@ -30,17 +30,17 @@ def simple_connection_test():
         ("DESKTOP-QHMPTGO\\SQLEXPRESS", "ODBC Driver 18 for SQL Server"),
         ("localhost\\SQLEXPRESS", "ODBC Driver 18 for SQL Server"),
     ]
-    
+
     print("Probando configuraciones SQL Server...")
     print("=====================================")
-    
+
     for server, driver in configs:
         print(f"\nServidor: {server}")
         print(f"Driver: {driver}")
-        
+
         try:
             import pyodbc
-            
+
             connection_string = (
                 f"DRIVER={{{driver}}};"
                 f"SERVER={server};"
@@ -49,32 +49,32 @@ def simple_connection_test():
                 f"TrustServerCertificate=yes;"
                 f"Timeout=10;"
             )
-            
+
             print("Conectando...", end=" ")
             conn = pyodbc.connect(connection_string, timeout=10)
-            
+
             cursor = conn.cursor()
             cursor.execute("SELECT @@SERVERNAME")
             server_name = cursor.fetchone()[0]
-            
+
             print("EXITO!")
             print(f"Nombre del servidor: {server_name}")
-            
+
             # Verificar bases de datos
             cursor.execute("SELECT name FROM sys.databases WHERE name IN ('users', 'inventario', 'auditoria')")
             dbs = cursor.fetchall()
             found_dbs = [db[0] for db in dbs]
             print(f"Bases encontradas: {found_dbs}")
-            
+
             cursor.close()
             conn.close()
-            
+
             print(f"\n*** CONFIGURACION EXITOSA ***")
             print(f"DB_SERVER={server}")
             print(f"DB_DRIVER={driver}")
-            
+
             return server, driver
-            
+
         except Exception as e:
             error_str = str(e)
             print("FALLO")
@@ -86,7 +86,7 @@ def simple_connection_test():
                 print("Razon: Error de credenciales")
             else:
                 print(f"Razon: {error_str[:80]}...")
-    
+
     return None, None
 
 if __name__ == "__main__":
@@ -95,9 +95,9 @@ if __name__ == "__main__":
     print(f"  DB_SERVER: {os.getenv('DB_SERVER')}")
     print(f"  DB_USERNAME: {os.getenv('DB_USERNAME')}")
     print(f"  DB_PASSWORD: {'*' * len(os.getenv('DB_PASSWORD', ''))}")
-    
+
     server, driver = simple_connection_test()
-    
+
     if server and driver:
         print(f"\nSolucion encontrada! Actualiza tu archivo .env:")
         print(f"DB_SERVER={server}")

@@ -87,7 +87,10 @@ if __name__ == "__main__":
 
             if error:
                 # Imprimir el error como JSON si ocurrió uno
-                print(json.dumps({"error": error, "tablas_parciales": schema_data.get("tablas", {})}, indent=4))
+                print(json.dumps({"error": error,
+"tablas_parciales": schema_data.get("tablas",
+                    {})},
+                    indent=4))
             else:
                 # Imprimir el esquema completo si no hubo errores
                 print(json.dumps(schema_data, indent=4))

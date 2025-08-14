@@ -7,7 +7,6 @@ Optimiza el almacenamiento de backups y logs
 import gzip
 import shutil
 import os
-import json
 import time
 import logging
 from pathlib import Path
@@ -18,12 +17,12 @@ logger = logging.getLogger(__name__)
 
 class BackupCompressor:
     """Compresor de backups y archivos de log"""
-    
+
     def __init__(self, backup_dir: str = "backups", compression_level: int = 6):
         self.backup_dir = Path(backup_dir)
         self.compression_level = compression_level
         self.backup_dir.mkdir(exist_ok=True)
-    
+
     def compress_file(self, source_path: str, compressed_path: str = None) -> str:
         """Comprime un archivo individual"""
         # Sanitize and validate paths
@@ -31,44 +30,44 @@ class BackupCompressor:
         if not source.exists():
             logger.error(f"Archivo no encontrado durante compresión: {source.name}")
             raise FileNotFoundError(f"Archivo no encontrado: {source_path}")
-        
+
         # Check file permissions before proceeding
         if not os.access(source, os.R_OK):
             logger.error(f"Sin permisos de lectura para archivo: {source.name}")
             raise PermissionError(f"Sin permisos de lectura: {source_path}")
-        
+
         if compressed_path is None:
             compressed_path = str(source) + ".gz"
-        
+
         # Validate compressed path
         compressed_path = os.path.normpath(compressed_path)
-        
+
         with open(source, 'rb') as f_in:
             with gzip.open(compressed_path, 'wb', compresslevel=self.compression_level) as f_out:
                 shutil.copyfileobj(f_in, f_out)
-        
+
         original_size = source.stat().st_size
         compressed_size = Path(compressed_path).stat().st_size
         compression_ratio = (1 - compressed_size / original_size) * 100
-        
+
         return {
             'compressed_path': compressed_path,
             'original_size': original_size,
             'compressed_size': compressed_size,
             'compression_ratio': compression_ratio
         }
-    
+
     def compress_directory(self, source_dir: str, archive_name: str = None) -> Dict:
         """Comprime un directorio completo"""
         source = Path(source_dir)
         if not source.exists():
             raise FileNotFoundError(f"Directorio no encontrado: {source_dir}")
-        
+
         if archive_name is None:
             archive_name = f"{source.name}_{int(time.time())}.tar.gz"
-        
+
         archive_path = self.backup_dir / archive_name
-        
+
         # Crear archivo tar.gz
         shutil.make_archive(
             str(archive_path).replace('.tar.gz', ''),
@@ -76,22 +75,22 @@ class BackupCompressor:
             str(source.parent),
             str(source.name)
         )
-        
+
         return {
             'archive_path': str(archive_path),
             'source_directory': str(source),
             'created_at': time.time()
         }
-    
+
     def compress_logs(self, log_dir: str = "logs", age_days: int = 7) -> List[Dict]:
         """Comprime logs antiguos"""
         log_path = Path(log_dir)
         if not log_path.exists():
             return []
-        
+
         compressed_files = []
         cutoff_time = time.time() - (age_days * 24 * 3600)
-        
+
         for log_file in log_path.glob("*.log"):
             if log_file.stat().st_mtime < cutoff_time:
                 try:
@@ -101,14 +100,14 @@ class BackupCompressor:
                     compressed_files.append(result)
                 except Exception as e:
                     logger.error(f"Error comprimiendo archivo de log: {e}", exc_info=True)
-        
+
         return compressed_files
-    
+
     def cleanup_old_backups(self, max_backups: int = 10) -> List[str]:
         """Limpia backups antiguos manteniendo solo los más recientes"""
         backup_files = list(self.backup_dir.glob("*.gz"))
         backup_files.sort(key=lambda x: x.stat().st_mtime, reverse=True)
-        
+
         removed_files = []
         for backup_file in backup_files[max_backups:]:
             try:
@@ -116,20 +115,20 @@ class BackupCompressor:
                 if not os.access(backup_file, os.W_OK):
                     logger.warning(f"Sin permisos de escritura para eliminar backup: {backup_file.name}")
                     continue
-                    
+
                 backup_file.unlink()
                 removed_files.append(str(backup_file))
                 logger.info(f"Backup antiguo eliminado exitosamente: {backup_file.name}")
             except Exception as e:
                 logger.error(f"Error eliminando backup: {e}", exc_info=True)
-        
+
         return removed_files
-    
+
     def get_compression_stats(self) -> Dict:
         """Obtiene estadísticas de compresión"""
         backup_files = list(self.backup_dir.glob("*.gz"))
         total_size = sum(f.stat().st_size for f in backup_files)
-        
+
         return {
             'total_backups': len(backup_files),
             'total_size_mb': round(total_size / (1024 * 1024), 2),

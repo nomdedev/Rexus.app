@@ -17,20 +17,17 @@ Maneja la lógica de negocio para:
 - Control de costos logísticos
 """
 
-from datetime import date, datetime
-from decimal import Decimal
 
 from rexus.utils.demo_data_generator import DemoDataGenerator
 from rexus.utils.sql_security import SQLSecurityError, validate_table_name
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.auth_manager import AuthManager
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.core.auth_decorators import auth_required
+from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 class LogisticaModel:
     """
     Modelo para gestionar logística y distribución.
-    
+
     MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
     para prevenir inyección SQL y mejorar mantenibilidad.
     """
@@ -127,7 +124,10 @@ class LogisticaModel:
         Obtiene transportes con filtros opcionales.
 
         Args:
-            filtros (dict): Filtros opcionales (tipo, proveedor, disponible, etc.)
+            filtros (dict): Filtros opcionales (tipo,
+proveedor,
+                disponible,
+                etc.)
 
         Returns:
             List[Dict]: Lista de transportes
@@ -148,7 +148,8 @@ class LogisticaModel:
                     conditions.append("AND t.tipo = ?")
                     params.append(filtros["tipo"])
 
-                if filtros.get("proveedor") and filtros["proveedor"] != "Todos":
+                if filtros.get("proveedor") and \
+                    filtros["proveedor"] != "Todos":
                     conditions.append("AND t.proveedor = ?")
                     params.append(filtros["proveedor"])
 
@@ -254,7 +255,10 @@ class LogisticaModel:
                 """
                 UPDATE [{self._validate_table_name(self.tabla_transportes)}]
                 SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
-                    costo_km = ?, disponible = ?, observaciones = ?, fecha_modificacion = GETDATE()
+                    costo_km = ?,
+disponible = ?,
+                        observaciones = ?,
+                        fecha_modificacion = GETDATE()
                 WHERE id = ?
             """
             )
@@ -405,7 +409,10 @@ class LogisticaModel:
                 self.db_connection.rollback()
             return None
 
-    def actualizar_estado_entrega(self, entrega_id, nuevo_estado, observaciones=""):
+    def actualizar_estado_entrega(self,
+entrega_id,
+        nuevo_estado,
+        observaciones=""):
         """
         Actualiza el estado de una entrega.
 
@@ -475,7 +482,7 @@ class LogisticaModel:
 
             query = (
                 """
-                SELECT 
+                SELECT
                     d.id, d.entrega_id, d.producto, d.cantidad, d.peso_kg,
                     d.volumen_m3, d.observaciones
                 FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] d
@@ -519,7 +526,12 @@ class LogisticaModel:
             query = (
                 """
                 INSERT INTO [{self._validate_table_name(self.tabla_detalle_entregas)}]
-                (entrega_id, producto, cantidad, peso_kg, volumen_m3, observaciones)
+                (entrega_id,
+producto,
+                    cantidad,
+                    peso_kg,
+                    volumen_m3,
+                    observaciones)
                 VALUES (?, ?, ?, ?, ?, ?)
             """
             )
@@ -689,7 +701,11 @@ class LogisticaModel:
             print(f"[ERROR LOGÍSTICA] Error obteniendo obras disponibles: {e}")
             return []
 
-    def calcular_costo_envio(self, transporte_id, distancia_km, peso_kg, volumen_m3):
+    def calcular_costo_envio(self,
+transporte_id,
+        distancia_km,
+        peso_kg,
+        volumen_m3):
         """
         Calcula el costo de envío para una entrega.
 
@@ -807,7 +823,7 @@ class LogisticaModel:
                 {
                     'id': 1,
                     'origen': 'Madrid',
-                    'destino': 'Barcelona', 
+                    'destino': 'Barcelona',
                     'estado': 'En tránsito',
                     'conductor': 'Juan Pérez',
                     'fecha': '2025-01-15'
@@ -824,36 +840,36 @@ class LogisticaModel:
 
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Construir query con filtros
             base_sql = """
                 SELECT id, origen, destino, estado, conductor, fecha_entrega,
                        observaciones, costo_estimado, fecha_creacion
-                FROM transportes 
+                FROM transportes
                 WHERE 1=1
             """
-            
+
             params = []
-            
+
             # Filtro por término de búsqueda
             if termino_busqueda and termino_busqueda.strip():
                 termino = sanitize_string(termino_busqueda.strip())
                 base_sql += " AND (origen LIKE ? OR destino LIKE ? OR conductor LIKE ?)"
                 like_term = f"%{termino}%"
                 params.extend([like_term, like_term, like_term])
-            
+
             # Filtro por estado
             if estado and estado != "Todos":
                 estado_clean = sanitize_string(estado)
                 base_sql += " AND estado = ?"
                 params.append(estado_clean)
-            
+
             # Ordenar por fecha más reciente
             base_sql += " ORDER BY fecha_creacion DESC"
-            
+
             cursor.execute(base_sql, params)
             results = cursor.fetchall()
-            
+
             transportes = []
             for row in results:
                 transporte = {
@@ -868,7 +884,7 @@ class LogisticaModel:
                     'fecha_creacion': row[8]
                 }
                 transportes.append(transporte)
-            
+
             print(f"[SEARCH] Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
             return transportes
 
@@ -879,7 +895,7 @@ class LogisticaModel:
     def obtener_estadisticas(self):
         """
         Obtiene estadísticas generales de logística.
-        
+
         Returns:
             dict: Diccionario con estadísticas clave
         """
@@ -897,54 +913,54 @@ class LogisticaModel:
         try:
             cursor = self.db_connection.cursor()
             stats = {}
-            
+
             # Total de transportes
             sql_count_total = self.sql_manager.get_query('logistica', 'count_transportes_total')
             cursor.execute(sql_count_total)
             stats['total_transportes'] = cursor.fetchone()[0]
-            
+
             # Transportes en tránsito
             sql_count_transito = self.sql_manager.get_query('logistica', 'count_transportes_en_transito')
             cursor.execute(sql_count_transito)
             stats['en_transito'] = cursor.fetchone()[0]
-            
+
             # Entregados hoy
             cursor.execute("""
-                SELECT COUNT(*) FROM transportes 
-                WHERE estado = 'Entregado' 
+                SELECT COUNT(*) FROM transportes
+                WHERE estado = 'Entregado'
                 AND CAST(fecha_entrega AS DATE) = CAST(GETDATE() AS DATE)
             """)
             stats['entregados_hoy'] = cursor.fetchone()[0]
-            
+
             # Pendientes
             sql_count_pendientes = self.sql_manager.get_query('logistica', 'count_transportes_pendientes')
             cursor.execute(sql_count_pendientes)
             stats['pendientes'] = cursor.fetchone()[0]
-            
+
             # Costo total del mes actual
             cursor.execute("""
-                SELECT COALESCE(SUM(costo_estimado), 0) 
-                FROM transportes 
-                WHERE MONTH(fecha_creacion) = MONTH(GETDATE()) 
+                SELECT COALESCE(SUM(costo_estimado), 0)
+                FROM transportes
+                WHERE MONTH(fecha_creacion) = MONTH(GETDATE())
                 AND YEAR(fecha_creacion) = YEAR(GETDATE())
             """)
             stats['costo_total_mes'] = float(cursor.fetchone()[0])
-            
+
             # Entregas programadas para los próximos 7 días
             cursor.execute("""
-                SELECT COUNT(*) FROM entregas 
+                SELECT COUNT(*) FROM entregas
                 WHERE fecha_programada BETWEEN GETDATE() AND DATEADD(day, 7, GETDATE())
                 AND estado != 'Entregado'
             """)
             stats['entregas_programadas'] = cursor.fetchone()[0]
-            
+
             return stats
 
         except Exception as e:
             print(f"[ERROR] Error obteniendo estadísticas: {e}")
             return {
                 'total_transportes': 0,
-                'en_transito': 0, 
+                'en_transito': 0,
                 'entregados_hoy': 0,
                 'pendientes': 0,
                 'costo_total_mes': 0.0,

@@ -24,9 +24,8 @@ from rexus.utils.sql_script_loader import sql_script_loader
 
 
 # Importar sistema unificado de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import sanitize_string
 
 
 class ConfiguracionModel:
@@ -201,7 +200,12 @@ class ConfiguracionModel:
                     descripcion = self._obtener_descripcion_por_clave(clave)
                     tipo_dato = self._obtener_tipo_dato_por_valor(valor)
                     cursor.execute(
-                        query_insert, (clave, valor, descripcion, tipo_dato, categoria)
+                        query_insert,
+(clave,
+                            valor,
+                            descripcion,
+                            tipo_dato,
+                            categoria)
                     )
                 self.db_connection.commit()
                 print("[CONFIGURACION] Configuración inicial cargada en BD")
@@ -428,7 +432,7 @@ class ConfiguracionModel:
 
                 try:
                     # Verificar si existe con parámetros seguros
-                    tabla_validada = self._validate_table_name(self.tabla_configuracion)
+                    self._validate_table_name(self.tabla_configuracion)
                     script_content = self.sql_loader.load_script('configuracion/count_config_by_key')
                     cursor.execute(script_content, (clave_sanitizada,))
                     result = cursor.fetchone()
@@ -570,7 +574,7 @@ class ConfiguracionModel:
             try:
                 # Intentar con todas las columnas
                 cursor.execute(f"""
-                    SELECT clave, valor, descripcion, tipo, categoria, 
+                    SELECT clave, valor, descripcion, tipo, categoria,
                            fecha_modificacion
                     FROM [{self._validate_table_name(self.tabla_configuracion)}]
                     WHERE activo = 1
@@ -663,7 +667,11 @@ class ConfiguracionModel:
             configuraciones = self.obtener_todas_configuraciones()
 
             with open(archivo, "w", encoding="utf-8") as f:
-                json.dump(configuraciones, f, indent=2, ensure_ascii=False, default=str)
+                json.dump(configuraciones,
+f,
+                    indent=2,
+                    ensure_ascii=False,
+                    default=str)
 
             return True, f"Configuración exportada a '{archivo}'"
 

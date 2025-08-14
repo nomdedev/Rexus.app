@@ -471,7 +471,11 @@ class AuditorCompletoBD:
 
         try:
             with open(archivo_reporte, "w", encoding="utf-8") as f:
-                json.dump(self.resultados, f, indent=2, ensure_ascii=False, default=str)
+                json.dump(self.resultados,
+f,
+                    indent=2,
+                    ensure_ascii=False,
+                    default=str)
 
             print(f"\n💾 Reporte guardado en: {archivo_reporte}")
 

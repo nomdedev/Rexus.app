@@ -25,7 +25,7 @@ class TestObrasModel:
     def test_model_initialization(self, mock_db_connection):
         """Test inicialización del modelo con conexión mock."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         try:
             with patch('rexus.modules.obras.model.database_manager') as mock_db_manager:
                 mock_db_manager.get_connection.return_value = mock_db_connection
@@ -37,11 +37,11 @@ class TestObrasModel:
     def test_obras_states_configuration(self):
         """Test configuración de estados de obras."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         # Verificar que existe configuración de estados
         assert hasattr(ObrasModel, 'ESTADOS')
         estados = ObrasModel.ESTADOS
-        
+
         # Verificar estados críticos
         expected_states = ['PLANIFICACION', 'EN_PROGRESO', 'COMPLETADA', 'CANCELADA']
         for state in expected_states:
@@ -51,9 +51,9 @@ class TestObrasModel:
     def test_project_validation_methods(self):
         """Test métodos de validación de proyectos."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         validation_methods = ['validate_project_data', 'validate_dates', 'validate_budget']
-        
+
         for method in validation_methods:
             if hasattr(ObrasModel, method):
                 assert callable(getattr(ObrasModel, method))
@@ -73,7 +73,7 @@ class TestObrasView:
     def test_view_initialization(self, qapp):
         """Test inicialización de la vista."""
         from rexus.modules.obras.view import ObrasView
-        
+
         try:
             view = ObrasView()
             assert view is not None
@@ -92,39 +92,39 @@ class TestObrasView:
     def test_project_management_methods(self, qapp):
         """Test métodos de gestión de proyectos."""
         from rexus.modules.obras.view import ObrasView
-        
+
         try:
             view = ObrasView()
-            
+
             # Verificar métodos críticos de gestión
             management_methods = [
                 'actualizar_tabla_obras',
-                'mostrar_proyecto', 
+                'mostrar_proyecto',
                 'cargar_proyectos',
                 'filtrar_obras'
             ]
-            
+
             for method_name in management_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Vista no disponible para test: {e}")
 
     def test_project_status_indicators(self, qapp):
         """Test indicadores de estado de proyecto."""
         from rexus.modules.obras.view import ObrasView
-        
+
         try:
             view = ObrasView()
-            
+
             # Verificar que existen métodos para mostrar estados
             status_methods = ['actualizar_estado_proyecto', 'mostrar_progreso', 'colorear_por_estado']
-            
+
             for method_name in status_methods:
                 if hasattr(view, method_name):
                     assert callable(getattr(view, method_name))
-                    
+
         except Exception as e:
             pytest.skip(f"Test indicadores skipped: {e}")
 
@@ -143,7 +143,7 @@ class TestObrasController:
     def test_controller_initialization(self, mock_db_connection):
         """Test inicialización del controlador."""
         from rexus.modules.obras.controller import ObrasController
-        
+
         try:
             with patch('rexus.modules.obras.controller.ObrasModel') as mock_model:
                 mock_model.return_value = Mock()
@@ -155,9 +155,9 @@ class TestObrasController:
     def test_project_workflow_methods(self):
         """Test métodos de flujo de trabajo de proyectos."""
         from rexus.modules.obras.controller import ObrasController
-        
+
         workflow_methods = ['crear_proyecto', 'actualizar_progreso', 'finalizar_proyecto']
-        
+
         try:
             controller = ObrasController()
             for method in workflow_methods:
@@ -198,9 +198,9 @@ class TestObrasIntegration:
     def test_module_structure_integrity(self):
         """Test integridad de la estructura del módulo."""
         import os
-        
+
         module_path = "rexus/modules/obras"
-        
+
         # Verificar archivos críticos
         critical_files = [
             "__init__.py",
@@ -208,7 +208,7 @@ class TestObrasIntegration:
             "view.py",
             "controller.py"
         ]
-        
+
         for file_name in critical_files:
             file_path = os.path.join(module_path, file_name)
             assert os.path.exists(file_path), f"Archivo crítico {file_name} no encontrado"
@@ -216,10 +216,10 @@ class TestObrasIntegration:
     def test_database_configuration(self):
         """Test configuración de base de datos."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         # Verificar configuración de tablas
         table_attrs = ['TABLE_NAME', 'OBRAS_TABLE']
-        
+
         for attr in table_attrs:
             if hasattr(ObrasModel, attr):
                 table_name = getattr(ObrasModel, attr)
@@ -230,10 +230,10 @@ class TestObrasIntegration:
         """Test que los componentes principales son importables."""
         components = [
             'rexus.modules.obras.model',
-            'rexus.modules.obras.view', 
+            'rexus.modules.obras.view',
             'rexus.modules.obras.controller'
         ]
-        
+
         for component in components:
             try:
                 __import__(component)
@@ -262,10 +262,10 @@ class TestObrasIntegration:
 def test_obra_data_structure(obra_data):
     """Test parametrizado para estructura de datos de obra."""
     required_fields = ['nombre', 'cliente', 'fecha_inicio', 'fecha_fin_estimada', 'presupuesto', 'estado']
-    
+
     for field in required_fields:
         assert field in obra_data, f"Campo {field} requerido"
-    
+
     assert isinstance(obra_data['presupuesto'], (int, float))
     assert obra_data['presupuesto'] > 0
     assert len(obra_data['nombre']) > 0
@@ -279,11 +279,11 @@ class TestObrasBusinessLogic:
     def test_project_timeline_validation(self):
         """Test validación de timeline de proyecto."""
         from datetime import datetime, timedelta
-        
+
         # Test data con fechas válidas
         start_date = datetime.now()
         end_date = start_date + timedelta(days=90)
-        
+
         assert end_date > start_date, "Fecha fin debe ser posterior a fecha inicio"
 
     def test_budget_calculations(self):
@@ -294,10 +294,10 @@ class TestObrasBusinessLogic:
             {'concepto': 'Mano de obra', 'costo': 20000.00},
             {'concepto': 'Equipos', 'costo': 5000.00}
         ]
-        
+
         total = sum(item['costo'] for item in budget_items)
         assert total == 40000.00
-        
+
         # Verificar que todos los costos sean positivos
         for item in budget_items:
             assert item['costo'] > 0
@@ -311,7 +311,7 @@ class TestObrasBusinessLogic:
             'COMPLETADA': [],  # Estado final
             'CANCELADA': []   # Estado final
         }
-        
+
         for current_state, valid_next_states in valid_transitions.items():
             assert isinstance(valid_next_states, list)
             for next_state in valid_next_states:
@@ -324,14 +324,14 @@ class TestObrasErrorHandling:
     def test_model_handles_invalid_dates(self):
         """Test que el modelo maneja fechas inválidas."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         invalid_dates = [
             None,
             '',
             '2025-13-45',  # Fecha inválida
             'not-a-date'
         ]
-        
+
         # El modelo debería manejar fechas inválidas sin crash
         for invalid_date in invalid_dates:
             try:
@@ -346,17 +346,17 @@ class TestObrasErrorHandling:
     def test_view_handles_empty_data(self, qapp):
         """Test que la vista maneja datos vacíos."""
         from rexus.modules.obras.view import ObrasView
-        
+
         try:
             view = ObrasView()
-            
+
             # La vista debería inicializarse sin crash aunque no haya datos
             if hasattr(view, 'cargar_proyectos'):
                 # Intentar cargar con lista vacía
                 empty_data = []
                 # No debería crash
                 assert True
-                
+
         except Exception as e:
             pytest.skip(f"Test datos vacíos skipped: {e}")
 
@@ -368,28 +368,28 @@ class TestObrasPerformance:
     def test_model_initialization_performance(self, performance_timer, mock_db_connection):
         """Test rendimiento de inicialización del modelo."""
         from rexus.modules.obras.model import ObrasModel
-        
+
         with performance_timer() as timer:
             try:
                 model = ObrasModel(db_connection=mock_db_connection)
                 assert model is not None
             except Exception:
                 pytest.skip("Model no puede inicializarse para test de rendimiento")
-        
+
         # Inicialización debería ser rápida
         assert timer.elapsed < 1.0, f"Model tardó {timer.elapsed:.2f}s en inicializar"
 
-    @pytest.mark.performance  
+    @pytest.mark.performance
     def test_view_initialization_performance(self, qapp, performance_timer):
         """Test rendimiento de inicialización de vista."""
         from rexus.modules.obras.view import ObrasView
-        
+
         with performance_timer() as timer:
             try:
                 view = ObrasView()
                 assert view is not None
             except Exception:
                 pytest.skip("Vista no puede inicializarse para test de rendimiento")
-        
+
         # La vista debería inicializarse rápido
         assert timer.elapsed < 3.0, f"Vista tardó {timer.elapsed:.2f}s en inicializar"

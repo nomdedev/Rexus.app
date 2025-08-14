@@ -7,67 +7,67 @@ from PyQt6.QtGui import QFont, QColor
 
 class RexusStyles:
     """Estilos estandarizados para toda la aplicación"""
-    
+
     # Colores del sistema
     COLOR_PRIMARIO = "#2E7D32"      # Verde oscuro
-    COLOR_SECUNDARIO = "#388E3C"    # Verde medio  
+    COLOR_SECUNDARIO = "#388E3C"    # Verde medio
     COLOR_ACENTO = "#4CAF50"        # Verde claro
     COLOR_INFO = "#1976D2"          # Azul
     COLOR_ADVERTENCIA = "#FF9800"   # Naranja
     COLOR_ERROR = "#F44336"         # Rojo
     COLOR_EXITO = "#4CAF50"         # Verde
-    
+
     # Fuentes estandarizadas
     FUENTE_PRINCIPAL = "Arial"
     FUENTE_MONOSPACE = "Courier New"
-    
+
     # Tamaños de fuente
     TAMAÑO_TITULO = 16
     TAMAÑO_SUBTITULO = 14
     TAMAÑO_NORMAL = 11
     TAMAÑO_PEQUEÑO = 9
-    
+
     # Espaciado estándar
     ESPACIADO_PEQUENO = 5
     ESPACIADO_NORMAL = 10
     ESPACIADO_GRANDE = 15
     ESPACIADO_EXTRA = 20
-    
+
     # Márgenes estándar
     MARGEN_PEQUENO = 5
     MARGEN_NORMAL = 10
     MARGEN_GRANDE = 15
     MARGEN_EXTRA = 20
-    
+
     @staticmethod
     def fuente_titulo():
         """Retorna fuente para títulos"""
         font = QFont(RexusStyles.FUENTE_PRINCIPAL, RexusStyles.TAMAÑO_TITULO)
         font.setBold(True)
         return font
-        
+
     @staticmethod
     def fuente_subtitulo():
         """Retorna fuente para subtítulos"""
         font = QFont(RexusStyles.FUENTE_PRINCIPAL, RexusStyles.TAMAÑO_SUBTITULO)
         font.setBold(True)
         return font
-        
+
     @staticmethod
     def fuente_normal():
         """Retorna fuente normal"""
         return QFont(RexusStyles.FUENTE_PRINCIPAL, RexusStyles.TAMAÑO_NORMAL)
-        
+
     @staticmethod
     def fuente_monospace():
         """Retorna fuente monospace"""
         return QFont(RexusStyles.FUENTE_MONOSPACE, RexusStyles.TAMAÑO_NORMAL)
-        
+
     @staticmethod
     def color_primario():
         """Retorna color primario como QColor"""
         return QColor(RexusStyles.COLOR_PRIMARIO)
-        
+
     @staticmethod
     def estilo_boton_primario():
         """Retorna stylesheet para botón primario"""
@@ -95,7 +95,7 @@ class RexusStyles:
             border-color: #CCCCCC;
         }}
         """
-        
+
     @staticmethod
     def estilo_input():
         """Retorna stylesheet para campos de entrada"""
@@ -116,7 +116,7 @@ class RexusStyles:
             color: #666666;
         }}
         """
-        
+
     @staticmethod
     def estilo_tabla():
         """Retorna stylesheet para tablas"""

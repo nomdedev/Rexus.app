@@ -1,13 +1,11 @@
-import datetime
 import logging
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Optional
 
-from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.query_optimizer import cached_query, track_performance, prevent_n_plus_one, paginated
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import sanitize_string
 
 # [LOCK] MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
 # para prevenir inyección SQL y mejorar mantenibilidad.
@@ -48,11 +46,11 @@ except ImportError:
 class ObrasModel:
     """
     Modelo para gestionar obras.
-    
+
     MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
     para prevenir inyección SQL y mejorar mantenibilidad.
     """
-    
+
     def __init__(self, db_connection=None, data_sanitizer_instance=None):
         self.db_connection = db_connection
         # [LOCK] Inicializar SQLQueryManager para consultas seguras
@@ -198,7 +196,8 @@ class ObrasModel:
 
             # Validar presupuesto
             presupuesto_original = datos_limpios.get("presupuesto_total")
-            if presupuesto_original is not None and presupuesto_original != "":
+            if presupuesto_original is not None and \
+                presupuesto_original != "":
                 try:
                     presupuesto_limpio = float(presupuesto_original)
                     if presupuesto_limpio < 0:
@@ -265,7 +264,7 @@ class ObrasModel:
             # Log de auditoria
             logger.info(f"Obra creada exitosamente: {datos_limpios.get('codigo')} por usuario {datos_limpios.get('usuario_creacion', 'SISTEMA')}")
             print(f"[OBRAS] Obra creada exitosamente: {datos_limpios.get('codigo')}")
-            
+
             return True, f"Obra {datos_limpios.get('codigo')} creada exitosamente"
 
         except Exception as e:
@@ -332,7 +331,7 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Construir query con filtros
             base_query = self.sql_loader.load_script('obras/select_all_obras')
             where_conditions = []
@@ -366,7 +365,11 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def obtener_datos_paginados(self, page=1, page_size=50, search_term="", filters=None):
+    def obtener_datos_paginados(self,
+page=1,
+        page_size=50,
+        search_term="",
+        filters=None):
         """
         Obtiene datos paginados de obras con búsqueda y filtros optimizados.
 
@@ -393,56 +396,56 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Calcular offset
             offset = (page - 1) * page_size
-            
+
             # Determinar si es búsqueda o listado normal
             if search_term and search_term.strip():
                 # Búsqueda paginada
                 sql_data = self.sql_manager.get_query('obras', 'buscar_obras_paginadas')
                 search_param = f"%{search_term.strip()}%"
-                
+
                 # Ejecutar búsqueda (la query espera múltiples parámetros de search_term)
                 cursor.execute(sql_data, (
                     search_param, search_param, search_param, search_param, search_param,  # Para relevancia
                     search_param, search_param, search_param, search_param, search_param, search_param,  # Para WHERE
                     page_size, offset
                 ))
-                
+
                 # Contar total de búsqueda
                 sql_count = """
-                    SELECT COUNT(*) FROM obras 
-                    WHERE activo = 1 
-                    AND (codigo_obra LIKE ? OR nombre_obra LIKE ? OR cliente LIKE ? 
+                    SELECT COUNT(*) FROM obras
+                    WHERE activo = 1
+                    AND (codigo_obra LIKE ? OR nombre_obra LIKE ? OR cliente LIKE ?
                          OR direccion LIKE ? OR descripcion LIKE ? OR responsable LIKE ?)
                 """
-                cursor.execute(sql_count, (search_param, search_param, search_param, 
+                cursor.execute(sql_count, (search_param, search_param, search_param,
                                          search_param, search_param, search_param))
                 total_count = cursor.fetchone()[0]
-                
+
             else:
                 # Listado normal paginado
                 sql_data = self.sql_manager.get_query('obras', 'obtener_obras_paginadas')
                 cursor.execute(sql_data, (page_size, offset))
-                
+
                 # Contar total
                 sql_count = self.sql_manager.get_query('obras', 'contar_obras_activas')
                 cursor.execute(sql_count)
                 total_count = cursor.fetchone()[0]
-            
+
             # Obtener datos
             rows = cursor.fetchall()
-            
+
             # Convertir a diccionarios
             obras = []
             if rows:
                 columns = [column[0] for column in cursor.description]
                 obras = [dict(zip(columns, row)) for row in rows]
-            
+
             # Calcular información de paginación
             total_pages = (total_count + page_size - 1) // page_size if total_count > 0 else 1
-            
+
             return {
                 'data': obras,
                 'total_records': total_count,
@@ -490,20 +493,20 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Query optimizada con paginación para SQL Server
             query = """
-            SELECT id, codigo_obra, nombre_obra, cliente, estado, 
-                   fecha_creacion, fecha_actualizacion, presupuesto_total 
-            FROM obras 
-            WHERE activo = 1 
+            SELECT id, codigo_obra, nombre_obra, cliente, estado,
+                   fecha_creacion, fecha_actualizacion, presupuesto_total
+            FROM obras
+            WHERE activo = 1
             ORDER BY fecha_creacion DESC
             OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
             """
-            
+
             cursor.execute(query, (offset, limit or 50))
             obras = cursor.fetchall()
-            
+
             return obras
 
         except Exception as e:
@@ -532,19 +535,19 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Query optimizada sin SELECT *
             query = """
-            SELECT id, codigo_obra, nombre_obra, cliente, estado, 
+            SELECT id, codigo_obra, nombre_obra, cliente, estado,
                    fecha_creacion, fecha_actualizacion, presupuesto_total,
                    descripcion, ubicacion, activo
-            FROM obras 
+            FROM obras
             WHERE id = ? AND activo = 1
             """
-            
+
             cursor.execute(query, (obra_id,))
             row = cursor.fetchone()
-            
+
             if row:
                 # Para manejar tanto datos reales como mocks
                 try:
@@ -570,7 +573,10 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def actualizar_obra(self, obra_id: int, datos_actualizados: Dict[str, Any]):
+    def actualizar_obra(self,
+obra_id: int,
+        datos_actualizados: Dict[str,
+        Any]):
         """Actualiza una obra existente."""
         if not self.db_connection:
             return False, DB_ERROR_MESSAGE
@@ -579,7 +585,7 @@ class ObrasModel:
         try:
             # Sanitizar datos
             datos_limpios = self.data_sanitizer.sanitize_dict(datos_actualizados)
-            
+
             # Validar ID
             try:
                 obra_id_limpio = int(obra_id)
@@ -598,7 +604,7 @@ class ObrasModel:
 
             # Actualizar obra completa
             sql = """
-                UPDATE obras SET 
+                UPDATE obras SET
                     nombre = ?, descripcion = ?, direccion = ?, cliente = ?,
                     estado = ?, fecha_inicio = ?, fecha_fin_estimada = ?,
                     presupuesto_total = ?, presupuesto_utilizado = ?, observaciones = ?
@@ -618,10 +624,10 @@ class ObrasModel:
                 obra_id_limpio
             )
             cursor.execute(sql, params)
-            
+
             if cursor.rowcount == 0:
                 return False, "No se pudo actualizar la obra"
-            
+
             self.db_connection.commit()
             return True, f"Obra actualizada exitosamente"
 
@@ -651,9 +657,9 @@ class ObrasModel:
                     return False, "ID de obra inválido"
             except (ValueError, TypeError):
                 return False, "ID de obra inválido"
-            
+
             usuario_limpio = str(usuario_eliminacion)[:50] if usuario_eliminacion else ""
-            
+
             if not usuario_limpio:
                 return False, "Usuario de eliminación es requerido"
 
@@ -665,16 +671,16 @@ class ObrasModel:
             result = cursor.fetchone()
             if not result:
                 return False, "La obra no existe o ya está eliminada"
-            
+
             codigo_obra = result[0]
 
             # Soft delete
             sql = self.sql_manager.get_query('obras', 'desactivar_obra')
             cursor.execute(sql, (obra_id_limpio,))
-            
+
             if cursor.rowcount == 0:
                 return False, "No se pudo eliminar la obra"
-            
+
             self.db_connection.commit()
             return True, f"Obra {codigo_obra} eliminada exitosamente"
 
@@ -690,7 +696,10 @@ class ObrasModel:
             if cursor:
                 cursor.close()
 
-    def cambiar_estado_obra(self, obra_id: int, nuevo_estado: str, usuario_cambio: str):
+    def cambiar_estado_obra(self,
+obra_id: int,
+        nuevo_estado: str,
+        usuario_cambio: str):
         """Cambia el estado de una obra."""
         if not self.db_connection:
             return False, DB_ERROR_MESSAGE
@@ -704,10 +713,10 @@ class ObrasModel:
                     return False, "ID de obra inválido"
             except (ValueError, TypeError):
                 return False, "ID de obra inválido"
-                
+
             estado_limpio = str(nuevo_estado)[:20] if nuevo_estado else ""
             usuario_limpio = str(usuario_cambio)[:50] if usuario_cambio else ""
-            
+
             estados_validos = ['PLANIFICACION', 'EN_PROCESO', 'PAUSADA', 'FINALIZADA', 'CANCELADA']
             if estado_limpio not in estados_validos:
                 return False, f"Estado inválido. Debe ser uno de: {', '.join(estados_validos)}"
@@ -717,10 +726,10 @@ class ObrasModel:
             # Actualizar estado
             sql = self.sql_manager.get_query('obras', 'actualizar_estado_obra')
             cursor.execute(sql, (estado_limpio, obra_id_limpio))
-            
+
             if cursor.rowcount == 0:
                 return False, "No se pudo cambiar el estado de la obra"
-            
+
             self.db_connection.commit()
             return True, f"Estado cambiado a {estado_limpio}"
 
@@ -746,22 +755,22 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            
+
             estadisticas = {}
-            
+
             # Query optimizada que obtiene todas las estadísticas en una consulta
             cursor.execute("""
-                SELECT 
+                SELECT
                     COUNT(*) as total_obras,
                     SUM(CASE WHEN estado = 'EN_PROCESO' THEN 1 ELSE 0 END) as obras_activas,
                     SUM(CASE WHEN estado = 'FINALIZADA' THEN 1 ELSE 0 END) as obras_finalizadas,
                     SUM(CASE WHEN estado = 'PENDIENTE' THEN 1 ELSE 0 END) as obras_pendientes,
                     AVG(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE NULL END) as presupuesto_promedio,
                     SUM(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE 0 END) as presupuesto_total_acumulado
-                FROM obras 
+                FROM obras
                 WHERE activo = 1
             """)
-            
+
             row = cursor.fetchone()
             if row:
                 estadisticas = {
@@ -772,13 +781,13 @@ class ObrasModel:
                     'presupuesto_promedio': round(row[4] or 0, 2),
                     'presupuesto_total_acumulado': round(row[5] or 0, 2)
                 }
-            
+
             # Presupuesto total
             sql = self.sql_manager.get_query('obras', 'calcular_presupuesto_total')
             cursor.execute(sql)
             result = cursor.fetchone()[0]
             estadisticas['presupuesto_total'] = float(result) if result else 0.0
-            
+
             return estadisticas
 
         except Exception as e:

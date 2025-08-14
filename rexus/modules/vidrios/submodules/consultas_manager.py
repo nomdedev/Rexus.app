@@ -13,7 +13,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -40,10 +40,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -219,7 +219,10 @@ class ConsultasManager:
             # Sanitizar parámetros de paginación
             page = max(1, self.sanitizer.sanitize_integer(page, min_val=1))
             per_page = max(
-                1, min(100, self.sanitizer.sanitize_integer(per_page, min_val=1))
+                1,
+min(100,
+                    self.sanitizer.sanitize_integer(per_page,
+                    min_val=1))
             )
 
             offset = (page - 1) * per_page
@@ -338,7 +341,10 @@ class ConsultasManager:
 
         return filtros_sanitizados
 
-    def _calcular_relevancia(self, vidrio: Dict[str, Any], termino: str) -> int:
+    def _calcular_relevancia(self,
+vidrio: Dict[str,
+        Any],
+        termino: str) -> int:
         """Calcula la relevancia de un vidrio en la búsqueda."""
         relevancia = 0
         termino_lower = termino.lower()

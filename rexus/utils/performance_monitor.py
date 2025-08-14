@@ -3,8 +3,32 @@ Sistema de monitoreo de rendimiento para Rexus.app
 """
 
 import time
-import psutil
 import threading
+
+# Fallback para psutil si no está disponible
+try:
+    import psutil
+    PSUTIL_AVAILABLE = True
+except ImportError:
+    PSUTIL_AVAILABLE = False
+    # Crear un mock de psutil para funcionalidad básica
+    class MockPsutil:
+        @staticmethod
+        def cpu_percent(interval=None):
+            return 0.0
+
+        @staticmethod
+        def virtual_memory():
+            class MockMemory:
+                percent = 0.0
+                used = 1024 * 1024 * 1024  # 1GB mock
+            return MockMemory()
+
+        @staticmethod
+        def active_children():
+            return []
+
+    psutil = MockPsutil()
 from datetime import datetime
 from typing import Dict, List, Optional
 from dataclasses import dataclass
@@ -22,18 +46,18 @@ class PerformanceMetric:
 
 class PerformanceMonitor:
     """Monitor de rendimiento de la aplicación"""
-    
+
     def __init__(self):
         self.logger = get_logger('performance')
         self.metrics: List[PerformanceMetric] = []
         self.monitoring = False
         self.monitor_thread: Optional[threading.Thread] = None
-        
+
     def start_monitoring(self, interval_seconds=60):
         """Inicia el monitoreo de rendimiento"""
         if self.monitoring:
             return
-        
+
         self.monitoring = True
         self.monitor_thread = threading.Thread(
             target=self._monitor_loop,
@@ -42,37 +66,37 @@ class PerformanceMonitor:
         )
         self.monitor_thread.start()
         self.logger.info("Performance monitoring started")
-    
+
     def stop_monitoring(self):
         """Detiene el monitoreo"""
         self.monitoring = False
         if self.monitor_thread:
             self.monitor_thread.join(timeout=5)
         self.logger.info("Performance monitoring stopped")
-    
+
     def _monitor_loop(self, interval_seconds):
         """Loop principal de monitoreo"""
         while self.monitoring:
             try:
                 metric = self._collect_metric()
                 self.metrics.append(metric)
-                
+
                 # Mantener solo las últimas 100 métricas
                 if len(self.metrics) > 100:
                     self.metrics = self.metrics[-100:]
-                
+
                 # Log métricas críticas
                 self._check_critical_thresholds(metric)
-                
+
                 time.sleep(interval_seconds)
             except Exception as e:
                 self.logger.error(f"Error in monitoring loop: {e}")
                 time.sleep(interval_seconds)
-    
+
     def _collect_metric(self) -> PerformanceMetric:
         """Recolecta métricas actuales"""
         process = psutil.Process()
-        
+
         return PerformanceMetric(
             timestamp=datetime.now(),
             cpu_percent=process.cpu_percent(),
@@ -80,30 +104,30 @@ class PerformanceMonitor:
             memory_mb=process.memory_info().rss / 1024 / 1024,
             active_threads=threading.active_count()
         )
-    
+
     def _check_critical_thresholds(self, metric: PerformanceMetric):
         """Verifica umbrales críticos"""
         warnings = []
-        
+
         if metric.cpu_percent > 80:
             warnings.append(f"High CPU usage: {metric.cpu_percent:.1f}%")
-        
+
         if metric.memory_percent > 80:
             warnings.append(f"High memory usage: {metric.memory_percent:.1f}%")
-        
+
         if metric.active_threads > 20:
             warnings.append(f"High thread count: {metric.active_threads}")
-        
+
         for warning in warnings:
             self.logger.warning(warning)
-    
+
     def get_current_stats(self) -> Dict:
         """Obtiene estadísticas actuales"""
         if not self.metrics:
             return {}
-        
+
         recent_metrics = self.metrics[-10:]  # Últimas 10 métricas
-        
+
         return {
             'avg_cpu_percent': sum(m.cpu_percent for m in recent_metrics) / len(recent_metrics),
             'avg_memory_percent': sum(m.memory_percent for m in recent_metrics) / len(recent_metrics),

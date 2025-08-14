@@ -200,7 +200,7 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
 3. `VidriosInventarioManager`: Stock específico
 4. `VidriosConsultasManager`: Búsquedas y reportes
 
-### Prioridad 2: Obras (853 líneas)  
+### Prioridad 2: Obras (853 líneas)
 **Situación actual**: SQL embebido, validaciones básicas
 **Responsabilidades mezcladas**:
 - Gestión de proyectos/obras
@@ -262,8 +262,8 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
    ```sql
    -- Plantilla: scripts/sql/[modulo]/[area]/[operacion].sql
    -- Ejemplo: scripts/sql/vidrios/productos/obtener_vidrio_por_id.sql
-   SELECT v.id, v.tipo, v.dimensiones 
-   FROM vidrios v 
+   SELECT v.id, v.tipo, v.dimensiones
+   FROM vidrios v
    WHERE v.id = :vidrio_id AND v.activo = 1;
    ```
 
@@ -275,7 +275,7 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
            self.[area1]_manager = [Area1]Manager(db_connection)
            self.[area2]_manager = [Area2]Manager(db_connection)
            self.[area3]_manager = [Area3]Manager(db_connection)
-       
+
        # Métodos de delegación para compatibilidad
        def metodo_existente(self, *args, **kwargs):
            return self.[area_apropiada]_manager.metodo_especializado(*args, **kwargs)
@@ -328,7 +328,7 @@ Basado en el éxito de la refactorización del inventario (3092 → 1227 líneas
 - Migración SQL completa
 - Tests y validación
 
-### Semana 3-4: Obras  
+### Semana 3-4: Obras
 - Aplicación de metodología probada
 - Foco en gestión de estados
 - Integración con inventario refactorizado

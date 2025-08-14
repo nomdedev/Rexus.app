@@ -28,7 +28,7 @@ def test_inventario_submodules():
         from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
         from rexus.modules.inventario.submodules.reportes_manager import ReportesManager
         from rexus.modules.inventario.submodules.reservas_manager import ReservasManager
-        
+
         print("OK - Todos los submodulos importados correctamente")
         return True
     except Exception as e:
@@ -39,14 +39,14 @@ def test_data_sanitizer():
     """Test que el DataSanitizer funcione en los submódulos."""
     try:
         from rexus.modules.inventario.submodules.consultas_manager import ConsultasManager
-        
+
         # Crear instancia sin conexión DB para test
         manager = ConsultasManager()
-        
+
         # Verificar que tenga sanitizer
         if hasattr(manager, 'sanitizer'):
             print("OK - ConsultasManager tiene sanitizer configurado")
-            
+
             # Test básico de sanitización
             if hasattr(manager.sanitizer, 'sanitize_string'):
                 result = manager.sanitizer.sanitize_string("test string")
@@ -66,33 +66,33 @@ def run_tests():
     """Ejecuta todos los tests."""
     print("=== TESTS DEL MÓDULO INVENTARIO ===")
     print()
-    
+
     tests = [
         ("Import InventarioView", test_inventario_import),
-        ("Import Submódulos", test_inventario_submodules),  
+        ("Import Submódulos", test_inventario_submodules),
         ("DataSanitizer funcionando", test_data_sanitizer)
     ]
-    
+
     results = []
     for name, test_func in tests:
         print(f"Test: {name}")
         result = test_func()
         results.append(result)
         print()
-    
+
     # Resumen
     passed = sum(results)
     total = len(results)
-    
+
     print("=" * 50)
     print(f"RESUMEN: {passed}/{total} tests pasaron")
-    
+
     if passed == total:
         print("OK - TODOS LOS TESTS PASARON")
         print("OK - Modulo inventario funcionando correctamente")
     else:
         print("ERROR - ALGUNOS TESTS FALLARON")
-    
+
     return passed == total
 
 if __name__ == '__main__':

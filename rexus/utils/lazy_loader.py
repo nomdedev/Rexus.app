@@ -11,53 +11,57 @@ from functools import wraps
 
 class LazyLoader:
     """Cargador lazy para módulos y componentes"""
-    
+
     def __init__(self):
         self._loaded_modules: Dict[str, Any] = {}
         self._loading_stats: Dict[str, Dict] = {}
-    
+
     def load_module(self, module_path: str, reload: bool = False) -> Optional[Any]:
         """Carga un módulo bajo demanda"""
         if module_path in self._loaded_modules and not reload:
             return self._loaded_modules[module_path]
-        
+
         try:
             start_time = time.time()
-            
+
             if reload and module_path in sys.modules:
                 module = importlib.reload(sys.modules[module_path])
             else:
                 module = importlib.import_module(module_path)
-            
+
             load_time = time.time() - start_time
-            
+
             self._loaded_modules[module_path] = module
             self._loading_stats[module_path] = {
                 'load_time': load_time,
                 'loaded_at': time.time(),
                 'reload_count': self._loading_stats.get(module_path, {}).get('reload_count', 0) + (1 if reload else 0)
             }
-            
+
             return module
-            
+
         except ImportError as e:
             print(f"Error cargando módulo {module_path}: {e}")
             return None
-    
-    def load_class(self, module_path: str, class_name: str, *args, **kwargs) -> Optional[Any]:
+
+    def load_class(self,
+module_path: str,
+        class_name: str,
+        *args,
+        **kwargs) -> Optional[Any]:
         """Carga una clase específica bajo demanda"""
         module = self.load_module(module_path)
         if module and hasattr(module, class_name):
             cls = getattr(module, class_name)
             return cls(*args, **kwargs) if args or kwargs else cls
         return None
-    
+
     def preload_critical_modules(self, module_list: list):
         """Precarga módulos críticos"""
         print("Precargando módulos críticos...")
         for module_path in module_list:
             self.load_module(module_path)
-    
+
     def get_loading_stats(self) -> Dict:
         """Obtiene estadísticas de carga"""
         return {

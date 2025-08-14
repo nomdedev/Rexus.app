@@ -60,7 +60,10 @@ def ejecutar_analisis():
 
 def actualizar_indice_principal():
     """Actualiza el índice principal de checklists con referencias a los nuevos checklists específicos."""
-    indice_path = os.path.join(root_dir, "docs", "checklists", "00_indice_checklists.md")
+    indice_path = os.path.join(root_dir,
+"docs",
+        "checklists",
+        "00_indice_checklists.md")
 
     # Si no existe el archivo, no hacer nada
     if not os.path.exists(indice_path):
@@ -87,7 +90,10 @@ def actualizar_indice_principal():
     modulos_dir = os.path.join(root_dir, "modules")
     for modulo in os.listdir(modulos_dir):
         if os.path.isdir(os.path.join(modulos_dir, modulo)):
-            checklist_path = os.path.join(root_dir, "docs", "checklists", f"verificacion_{modulo}.md")
+            checklist_path = os.path.join(root_dir,
+"docs",
+                "checklists",
+                f"verificacion_{modulo}.md")
             if os.path.exists(checklist_path):
                 checklists_modulos.append((modulo, f"verificacion_{modulo}.md"))
 
@@ -102,7 +108,10 @@ def actualizar_indice_principal():
     if seccion_existente:
         # Reemplazar la sección existente
         patron = r"## Checklists de Verificación por Módulo.*?(?=\n## |$)"
-        contenido_actualizado = re.sub(patron, nueva_seccion, contenido, flags=re.DOTALL)
+        contenido_actualizado = re.sub(patron,
+nueva_seccion,
+            contenido,
+            flags=re.DOTALL)
     else:
         # Añadir después de la última sección existente
 import os
@@ -131,7 +140,10 @@ from datetime import datetime
 
 def actualizar_marco_metodologico():
     """Asegura que el marco metodológico existe y está actualizado."""
-    marco_path = os.path.join(root_dir, "docs", "checklists", "01_marco_verificacion_modulos.md")
+    marco_path = os.path.join(root_dir,
+"docs",
+        "checklists",
+        "01_marco_verificacion_modulos.md")
 
     # Si el archivo ya existe, no lo modificamos
     if os.path.exists(marco_path):

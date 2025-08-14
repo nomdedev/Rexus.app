@@ -14,7 +14,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -37,7 +37,7 @@ except ImportError:
             return None
 
 # Importar utilidades de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 
 class MovimientosManager:
@@ -90,7 +90,8 @@ class MovimientosManager:
                 raise ValueError(f"Producto {producto_id} no encontrado")
 
             # Validar stock para salidas
-            if tipo_movimiento in ["SALIDA", "TRANSFERENCIA"] and cantidad > 0:
+            if tipo_movimiento in ["SALIDA", "TRANSFERENCIA"] and \
+                cantidad > 0:
                 if stock_actual < cantidad:
                     raise ValueError(
                         f"Stock insuficiente. Disponible: {stock_actual}, Solicitado: {cantidad}"
@@ -200,7 +201,7 @@ class MovimientosManager:
 
             # Construir query base
             query = """
-                SELECT 
+                SELECT
                     m.id, m.producto_id, m.tipo_movimiento, m.cantidad,
                     m.stock_anterior, m.stock_nuevo, m.observaciones,
                     m.obra_id, m.usuario, m.fecha_movimiento,
@@ -260,7 +261,7 @@ class MovimientosManager:
 
             # Query para estadísticas generales
             cursor.execute("""
-                SELECT 
+                SELECT
                     tipo_movimiento,
                     COUNT(*) as total_movimientos,
                     SUM(ABS(cantidad)) as cantidad_total,
@@ -338,7 +339,7 @@ class MovimientosManager:
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
-                SELECT 
+                SELECT
                     id, codigo, descripcion, categoria,
                     stock_actual, stock_minimo,
                     (stock_minimo - stock_actual) as faltante

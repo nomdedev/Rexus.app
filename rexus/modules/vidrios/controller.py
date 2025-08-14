@@ -2,18 +2,15 @@
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.core.auth_decorators import auth_required, admin_required
 
 class VidriosController(QObject):
-    
+
     vidrio_agregado = pyqtSignal(dict)
     vidrio_actualizado = pyqtSignal(dict)
     vidrio_eliminado = pyqtSignal(int)
     pedido_creado = pyqtSignal(int)
-    
+
     def __init__(self, model=None, view=None, db_connection=None):
         super().__init__()
         self.model = model
@@ -37,20 +34,20 @@ class VidriosController(QObject):
         """Carga los datos de vidrios en la vista."""
         if not self.model:
             return
-            
+
         try:
             vidrios = self.model.obtener_todos_vidrios(filtros)
             if self.view:
                 self.view.actualizar_tabla(vidrios)
-                
+
             # Cargar estadísticas
             estadisticas = self.model.obtener_estadisticas()
             if self.view:
                 self.view.actualizar_estadisticas(estadisticas)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error cargando datos: {e}")
-    
+
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales de vidrios."""
         self.cargar_datos()
@@ -59,7 +56,7 @@ class VidriosController(QObject):
         """Busca vidrios por término de búsqueda."""
         if not self.model:
             return
-            
+
         try:
             vidrios = self.model.buscar_vidrios(termino)
             if self.view:
@@ -71,7 +68,7 @@ class VidriosController(QObject):
         """Agrega un nuevo vidrio."""
         if not self.model:
             return
-            
+
         try:
             vidrio_id = self.model.crear_vidrio(datos_vidrio)
             if vidrio_id:
@@ -87,7 +84,7 @@ class VidriosController(QObject):
         """Edita un vidrio existente."""
         if not self.model:
             return
-            
+
         try:
             if self.model.actualizar_vidrio(vidrio_id, datos_vidrio):
                 self.mostrar_mensaje("Vidrio actualizado exitosamente")
@@ -103,7 +100,7 @@ class VidriosController(QObject):
         """Elimina un vidrio."""
         if not self.model:
             return
-            
+
         try:
             if self.model.eliminar_vidrio(vidrio_id):
                 self.mostrar_mensaje("Vidrio eliminado exitosamente")
@@ -114,13 +111,20 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error eliminando vidrio: {e}")
 
-    def asignar_vidrio_obra(self, vidrio_id, obra_id, metros_cuadrados, medidas_especificas=None):
+    def asignar_vidrio_obra(self,
+vidrio_id,
+        obra_id,
+        metros_cuadrados,
+        medidas_especificas=None):
         """Asigna un vidrio a una obra específica."""
         if not self.model:
             return
-            
+
         try:
-            if self.model.asignar_vidrio_obra(vidrio_id, obra_id, metros_cuadrados, medidas_especificas):
+            if self.model.asignar_vidrio_obra(vidrio_id,
+obra_id,
+                metros_cuadrados,
+                medidas_especificas):
                 self.mostrar_mensaje("Vidrio asignado a la obra exitosamente")
             else:
                 self.mostrar_error("Error al asignar vidrio a la obra")
@@ -132,7 +136,7 @@ class VidriosController(QObject):
         """Crea un pedido de vidrios para una obra."""
         if not self.model:
             return
-            
+
         try:
             pedido_id = self.model.crear_pedido_obra(obra_id, proveedor, vidrios_lista)
             if pedido_id:
@@ -151,7 +155,7 @@ class VidriosController(QObject):
         """Obtiene vidrios asignados a una obra específica."""
         if not self.model:
             return []
-            
+
         try:
             return self.model.obtener_vidrios_por_obra(obra_id)
         except Exception as e:
@@ -162,7 +166,7 @@ class VidriosController(QObject):
         """Crea un nuevo vidrio usando el modelo."""
         if not self.model:
             return False, "Modelo no disponible"
-            
+
         try:
             resultado = self.model.crear_vidrio(datos_vidrio)
             if resultado[0]:  # Éxito

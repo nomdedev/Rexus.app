@@ -14,11 +14,11 @@ class DevDatabaseMock:
     Mock de base de datos para desarrollo.
     Almacena usuarios en un archivo JSON local.
     """
-    
+
     def __init__(self):
         self.db_file = Path('.dev_users.json')
         self.users_db = self._load_users_db()
-    
+
     def _load_users_db(self) -> Dict[str, Dict]:
         """Carga o crea la base de datos de usuarios de desarrollo."""
         if self.db_file.exists():
@@ -27,7 +27,7 @@ class DevDatabaseMock:
                     return json.load(f)
             except (json.JSONDecodeError, FileNotFoundError):
                 pass
-        
+
         # Crear usuarios por defecto solo si existen variables de entorno
         admin_pwd = os.environ.get('DEV_ADMIN_PASSWORD')
         user_pwd = os.environ.get('DEV_USER_PASSWORD')
@@ -60,7 +60,7 @@ class DevDatabaseMock:
         }
         self._save_users_db(default_users)
         return default_users
-    
+
     def _save_users_db(self, users_data: Dict):
         """Guarda la base de datos de usuarios."""
         try:
@@ -68,32 +68,35 @@ class DevDatabaseMock:
                 json.dump(users_data, f, indent=2, ensure_ascii=False)
         except Exception as e:
             print(f"[DEV_DB] Error guardando usuarios: {e}")
-    
-    def authenticate(self, username: str, password: str) -> Optional[Dict[str, Any]]:
+
+    def authenticate(self,
+username: str,
+        password: str) -> Optional[Dict[str,
+        Any]]:
         """
         Autentica un usuario.
-        
+
         Args:
             username: Nombre de usuario
             password: Contraseña
-            
+
         Returns:
             Diccionario con datos del usuario si es válido, None si no
         """
         user_data = self.users_db.get(username)
-        
+
         if not user_data:
             print(f"[DEV_DB] Usuario '{username}' no encontrado")
             return None
-        
+
         if not user_data.get('activo', False):
             print(f"[DEV_DB] Usuario '{username}' está inactivo")
             return None
-            
+
         if user_data.get('password') != password:
             print(f"[DEV_DB] Contraseña incorrecta para '{username}'")
             return None
-        
+
         # Autenticación exitosa
         session_data = {
             'user_id': hash(username),  # Simular ID
@@ -105,18 +108,22 @@ class DevDatabaseMock:
             'is_dev_session': True,
             'login_time': 'development_mode'
         }
-        
+
         print(f"[DEV_DB] Autenticación exitosa: {username} ({user_data.get('rol', 'user')})")
         return session_data
-    
+
     def is_available(self) -> bool:
         """Verifica si el sistema está disponible."""
         return True
-    
+
     def get_available_users(self) -> list:
         """Retorna lista de usuarios disponibles para desarrollo."""
         return [
-            {'username': user, 'rol': data.get('rol', 'user'), 'activo': data.get('activo', False)}
+            {'username': user,
+'rol': data.get('rol',
+                'user'),
+                'activo': data.get('activo',
+                False)}
             for user, data in self.users_db.items()
             if data.get('activo', False)
         ]
@@ -129,7 +136,7 @@ dev_db_mock = DevDatabaseMock()
 def get_dev_authentication_method():
     """
     Retorna el método de autenticación para desarrollo.
-    
+
     Returns:
         función que acepta (username, password) y retorna user_data o None
     """
@@ -155,6 +162,6 @@ def setup_dev_authentication():
         for user, data in dev_db_mock.users_db.items():
             if data.get('activo', False):
                 print(f"[DEV_DB]   - {user} ({data.get('rol', 'user')})")
-        
+
         return True
     return False

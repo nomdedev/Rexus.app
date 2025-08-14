@@ -103,7 +103,8 @@ def analizar_modulos_coverage():
                 module_name = module_path.name
                 test_path = Path("tests") / module_name
 
-                has_tests = test_path.exists() and any(test_path.rglob("test_*.py"))
+                has_tests = test_path.exists() and \
+                    any(test_path.rglob("test_*.py"))
                 test_count = len(list(test_path.rglob("test_*.py"))) if has_tests else 0
 
                 modules_with_tests[module_name] = {

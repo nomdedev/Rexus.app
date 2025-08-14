@@ -88,7 +88,10 @@ def verificar_inicializacion(managers):
 
         print("[CHECK] Inicialización con conexión exitosa")
 
-        return True, (productos_mgr_conn, movimientos_mgr_conn, consultas_mgr_conn)
+        return True,
+(productos_mgr_conn,
+            movimientos_mgr_conn,
+            consultas_mgr_conn)
 
     except Exception as e:
         print(f"[ERROR] Error en inicialización: {e}")
@@ -142,7 +145,10 @@ def verificar_sql_externo():
     archivos_encontrados = 0
 
     for archivo in archivos_sql_esperados:
-        ruta_completa = os.path.join(os.path.dirname(__file__), "..", "..", archivo)
+        ruta_completa = os.path.join(os.path.dirname(__file__),
+"..",
+            "..",
+            archivo)
         if os.path.exists(ruta_completa):
             print(f"[CHECK] {archivo}")
             archivos_encontrados += 1

@@ -31,8 +31,8 @@ def verificar_usuarios():
         # Verificar tabla usuarios
         try:
             result = db.execute_query("""
-                SELECT COUNT(*) 
-                FROM INFORMATION_SCHEMA.TABLES 
+                SELECT COUNT(*)
+                FROM INFORMATION_SCHEMA.TABLES
                 WHERE TABLE_NAME = 'usuarios'
             """)
 
@@ -70,8 +70,8 @@ def verificar_usuarios():
         # Verificar passwords
         try:
             pass_count = db.execute_query("""
-                SELECT COUNT(*) 
-                FROM usuarios 
+                SELECT COUNT(*)
+                FROM usuarios
                 WHERE password_hash IS NOT NULL AND password_hash != ''
             """)
 

@@ -10,27 +10,27 @@ def fix_file(file_path):
     """Corrige un archivo específico"""
     if not os.path.exists(file_path):
         return False
-        
+
     print(f"Procesando: {file_path}")
-    
+
     try:
         with open(file_path, 'r', encoding='utf-8') as f:
             content = f.read()
-        
+
         original = content
-        
+
         # Reemplazar f-strings en SQL con concatenación segura
         # f"SELECT ... FROM {table}" -> "SELECT ... FROM " + table
-        content = re.sub(r'f"([^"]*)(SELECT|INSERT|UPDATE|DELETE)([^"]*)\{([^}]+)\}([^"]*)"', 
+        content = re.sub(r'f"([^"]*)(SELECT|INSERT|UPDATE|DELETE)([^"]*)\{([^}]+)\}([^"]*)"',
                         r'"\1\2\3" + \4 + "\5"', content, flags=re.IGNORECASE)
-        
-        content = re.sub(r"f'([^']*)(SELECT|INSERT|UPDATE|DELETE)([^']*)\{([^}]+)\}([^']*)'", 
+
+        content = re.sub(r"f'([^']*)(SELECT|INSERT|UPDATE|DELETE)([^']*)\{([^}]+)\}([^']*)'",
                         r"'\1\2\3' + \4 + '\5'", content, flags=re.IGNORECASE)
-        
+
         # Queries multilinea
-        content = re.sub(r'f"""([^"]*)(SELECT|INSERT|UPDATE|DELETE)([^"]*)\{([^}]+)\}([^"]*)"""', 
+        content = re.sub(r'f"""([^"]*)(SELECT|INSERT|UPDATE|DELETE)([^"]*)\{([^}]+)\}([^"]*)"""',
                         r'"""\1\2\3""" + \4 + """\5"""', content, flags=re.IGNORECASE | re.DOTALL)
-        
+
         if content != original:
             with open(file_path, 'w', encoding='utf-8') as f:
                 f.write(content)
@@ -39,7 +39,7 @@ def fix_file(file_path):
         else:
             print(f"  Sin cambios")
             return False
-            
+
     except Exception as e:
         print(f"  ERROR: {e}")
         return False
@@ -48,7 +48,7 @@ def fix_file(file_path):
 files = [
     "src/modules/vidrios/model.py",
     "src/core/audit_trail.py",
-    "src/core/database.py", 
+    "src/core/database.py",
     "src/core/backup_manager.py",
     "src/modules/mantenimiento/model.py",
     "src/modules/inventario/model.py",

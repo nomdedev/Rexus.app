@@ -140,7 +140,12 @@ class VerificadorCompleto:
         """Ejecuta los tests del proyecto."""
         try:
             # Ejecutar pytest con coverage
-            cmd = [sys.executable, "-m", "pytest", str(self.tests_dir), "-v", "--tb=short"]
+            cmd = [sys.executable,
+"-m",
+                "pytest",
+                str(self.tests_dir),
+                "-v",
+                "--tb=short"]
 
             result = subprocess.run(
                 cmd,

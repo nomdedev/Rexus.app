@@ -472,7 +472,7 @@ class ContextualErrorManager(QObject):
 
             dialog.exec()
             return dialog
-            
+
         finally:
             # Desconectar señales para evitar memory leaks
             try:

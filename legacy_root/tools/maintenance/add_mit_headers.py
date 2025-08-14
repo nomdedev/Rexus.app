@@ -124,7 +124,8 @@ def add_mit_header(file_path):
 
     # Saltar encoding si existe
     for i in range(insert_position, min(insert_position + 3, len(lines))):
-        if i < len(lines) and ("coding:" in lines[i] or "encoding:" in lines[i]):
+        if i < len(lines) and \
+            ("coding:" in lines[i] or "encoding:" in lines[i]):
             insert_position = i + 1
             break
 

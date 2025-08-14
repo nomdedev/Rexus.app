@@ -19,15 +19,15 @@ except ImportError:
 def create_admin_user():
     try:
         from src.core.database import UsersDatabaseConnection
-        
+
         print("[INFO] Conectando a la base de datos...")
         db = UsersDatabaseConnection()
         db.connect()
         print("[OK] Conexion exitosa")
-        
+
         # Verificar si existe la tabla usuarios
         tables = db.execute_query("SELECT name FROM sys.tables WHERE name = 'usuarios'")
-        
+
         if not tables:
             print("[INFO] Creando tabla usuarios...")
             db.execute_non_query("""
@@ -47,30 +47,36 @@ def create_admin_user():
             print("[OK] Tabla usuarios creada")
         else:
             print("[OK] Tabla usuarios ya existe")
-        
+
         # Verificar si existe el usuario admin
         admin_user = db.execute_query("SELECT id, usuario FROM usuarios WHERE usuario = 'admin'")
-        
+
         if not admin_user:
             print("[INFO] Creando usuario administrador...")
-            
+
             # Crear hash de la contrasena 'admin'
             password_hash = hashlib.sha256('admin'.encode()).hexdigest()
-            
+
             # Insertar usuario admin
             db.execute_non_query("""
-                INSERT INTO usuarios (usuario, password_hash, rol, estado, nombre, apellido, email)
+                INSERT INTO usuarios (usuario,
+password_hash,
+                    rol,
+                    estado,
+                    nombre,
+                    apellido,
+                    email)
                 VALUES (?, ?, ?, ?, ?, ?, ?)
             """, (
                 'admin',
-                password_hash, 
+                password_hash,
                 'admin',
                 'Activo',
                 'Administrador',
                 'Sistema',
                 'admin@rexus.app'
             ))
-            
+
             print("[OK] Usuario administrador creado exitosamente")
             print("[INFO] Credenciales:")
             print("   Usuario: admin")
@@ -81,27 +87,30 @@ def create_admin_user():
             admin_data = admin_user[0]
             print(f"   ID: {admin_data[0]}")
             print(f"   Usuario: {admin_data[1]}")
-        
+
         # Verificar la contrasena del admin
-        admin_full = db.execute_query("SELECT id, usuario, password_hash, rol FROM usuarios WHERE usuario = 'admin'")
-        
+        admin_full = db.execute_query("SELECT id,
+usuario,
+            password_hash,
+            rol FROM usuarios WHERE usuario = 'admin'")
+
         if admin_full:
             admin_data = admin_full[0]
             expected_hash = hashlib.sha256('admin'.encode()).hexdigest()
             current_hash = admin_data[2]
-            
+
             if current_hash != expected_hash:
                 print("[INFO] Actualizando contrasena del admin...")
                 db.execute_non_query("UPDATE usuarios SET password_hash = ? WHERE usuario = 'admin'", (expected_hash,))
                 print("[OK] Contrasena actualizada")
             else:
                 print("[OK] Contrasena del admin correcta")
-        
+
         print("\n[SUCCESS] Configuracion de usuario administrador completada")
         print("[INFO] Ahora puedes iniciar sesion con:")
-        print("   Usuario: admin")  
+        print("   Usuario: admin")
         print("   Contrasena: admin")
-        
+
     except Exception as e:
         print(f"[ERROR] Error configurando usuario admin: {e}")
         import traceback

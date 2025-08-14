@@ -1,6 +1,5 @@
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -15,8 +14,8 @@ para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import uuid
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional, Tuple
+from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 # DataSanitizer unificado
 try:
@@ -26,18 +25,18 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
-            
+
             @staticmethod
             def sanitize_string(data):
                 return str(data).strip() if data else ""
-                
-            @staticmethod  
+
+            @staticmethod
             def sanitize_dict(data_dict):
                 if not isinstance(data_dict, dict):
                     return {}
@@ -82,11 +81,11 @@ class PedidosModel:
         self.db_connection = db_connection
         self.sanitizer = unified_sanitizer  # Para validación y sanitización
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
-        
+
         # Validar conexión a BD
         if not self.db_connection:
             raise ValueError("Conexión a base de datos requerida")
-            
+
         # Inicializar tablas
         self._crear_tablas_si_no_existen()
         self.create_tables()
@@ -95,28 +94,28 @@ class PedidosModel:
         """Crea las tablas necesarias para pedidos usando SQL externo."""
         try:
             cursor = self.db_connection.cursor()
-            
+
             # Ejecutar scripts SQL externos para crear tablas
             queries_tablas = [
                 'create_pedidos_table',
-                'create_pedidos_detalle_table', 
+                'create_pedidos_detalle_table',
                 'create_pedidos_historial_table',
                 'create_pedidos_entregas_table'
             ]
-            
+
             for query_name in queries_tablas:
                 sql = self.sql_manager.get_query('pedidos', query_name)
                 if sql:
                     cursor.execute(sql)
-                    
+
             self.db_connection.commit()
             print("[PEDIDOS] Tablas verificadas/creadas exitosamente")
-            
+
         except Exception as e:
             print(f"[PEDIDOS] Error creando tablas: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
-    
+
     # Método legacy mantenido para compatibilidad
     def create_tables(self):
         """Método legacy - usar _crear_tablas_si_no_existen()."""
@@ -185,7 +184,7 @@ class PedidosModel:
                     sql = self.sql_manager.get_query('pedidos', 'validar_pedido_duplicado_edicion')
                     cursor.execute(sql, (numero_sanitizado, excluir_id))
                 else:
-                    # Para nuevos pedidos  
+                    # Para nuevos pedidos
                     sql = self.sql_manager.get_query('pedidos', 'validar_pedido_duplicado_creacion')
                     cursor.execute(sql, (numero_sanitizado,))
 
@@ -212,7 +211,7 @@ class PedidosModel:
                 cursor.execute(
                     """
                     SELECT MAX(CAST(SUBSTRING(numero_pedido, LEN(?)+1, LEN(numero_pedido)) AS INT))
-                    FROM pedidos 
+                    FROM pedidos
                     WHERE numero_pedido LIKE ?
                 """,
                     (prefijo, f"{prefijo}%"),
@@ -336,7 +335,7 @@ class PedidosModel:
             detalles = datos_sanitizados.get("detalles", [])
             total_pedido = 0
 
-            tabla_detalle = self._validate_table_name("pedidos_detalle")
+            self._validate_table_name("pedidos_detalle")
             for detalle in detalles:
                 # Validar y sanitizar cada detalle
                 if not isinstance(detalle, dict):
@@ -381,12 +380,20 @@ class PedidosModel:
 
             cursor.execute(
                 self.sql_manager.get_query('pedidos', 'actualizar_totales_pedido'),
-                (total_pedido, descuento_general, impuestos, total_final, pedido_id),
+                (total_pedido,
+descuento_general,
+                    impuestos,
+                    total_final,
+                    pedido_id),
             )
 
             # Registrar en historial
             self.registrar_cambio_estado(
-                pedido_id, None, "BORRADOR", datos_sanitizados.get("usuario_creador", 1)
+                pedido_id,
+None,
+                    "BORRADOR",
+                    datos_sanitizados.get("usuario_creador",
+                    1)
             )
 
             self.db_connection.commit()
@@ -431,7 +438,7 @@ class PedidosModel:
 
                 if filtros.get("busqueda"):
                     where_clauses.append("""
-                        (p.numero_pedido LIKE ? OR 
+                        (p.numero_pedido LIKE ? OR
                          p.observaciones LIKE ? OR
                          p.responsable_entrega LIKE ?)
                     """)
@@ -442,7 +449,7 @@ class PedidosModel:
 
             # Obtener consulta base y agregar filtros de manera segura
             query_base = self.sql_manager.get_query('pedidos', 'obtener_pedidos_base')
-            
+
             # Reemplazar el WHERE base con nuestros filtros dinámicos
             query = query_base.replace(
                 "WHERE p.activo = 1",
@@ -525,7 +532,7 @@ class PedidosModel:
             # Obtener historial
             cursor.execute(
                 """
-                SELECT * FROM pedidos_historial 
+                SELECT * FROM pedidos_historial
                 WHERE pedido_id = ?
                 ORDER BY fecha_cambio DESC
             """,
@@ -578,7 +585,7 @@ class PedidosModel:
             # Actualizar estado
             cursor.execute(
                 """
-                UPDATE pedidos 
+                UPDATE pedidos
                 SET estado = ?, fecha_modificacion = GETDATE()
                 WHERE id = ?
             """,
@@ -589,7 +596,7 @@ class PedidosModel:
             if nuevo_estado == "APROBADO":
                 cursor.execute(
                     """
-                    UPDATE pedidos 
+                    UPDATE pedidos
                     SET usuario_aprobador = ?, fecha_aprobacion = GETDATE()
                     WHERE id = ?
                 """,
@@ -630,7 +637,11 @@ class PedidosModel:
                     pedido_id, estado_anterior, estado_nuevo, usuario_id, observaciones
                 ) VALUES (?, ?, ?, ?, ?)
             """,
-                (pedido_id, estado_anterior, estado_nuevo, usuario_id, observaciones),
+                (pedido_id,
+estado_anterior,
+                    estado_nuevo,
+                    usuario_id,
+                    observaciones),
             )
 
         except Exception as e:
@@ -668,9 +679,9 @@ class PedidosModel:
 
             # Por estado
             cursor.execute("""
-                SELECT estado, COUNT(*) 
-                FROM pedidos 
-                WHERE activo = 1 
+                SELECT estado, COUNT(*)
+                FROM pedidos
+                WHERE activo = 1
                 GROUP BY estado
             """)
             stats["por_estado"] = {row[0]: row[1] for row in cursor.fetchall()}
@@ -684,14 +695,14 @@ class PedidosModel:
 
             # Pedidos urgentes
             cursor.execute("""
-                SELECT COUNT(*) FROM pedidos 
+                SELECT COUNT(*) FROM pedidos
                 WHERE activo = 1 AND prioridad = 'URGENTE' AND estado NOT IN ('ENTREGADO', 'CANCELADO', 'FACTURADO')
             """)
             stats["urgentes_pendientes"] = cursor.fetchone()[0]
 
             # Pedidos del mes
             cursor.execute("""
-                SELECT COUNT(*) FROM pedidos 
+                SELECT COUNT(*) FROM pedidos
                 WHERE activo = 1 AND MONTH(fecha_pedido) = MONTH(GETDATE()) AND YEAR(fecha_pedido) = YEAR(GETDATE())
             """)
             stats["pedidos_mes"] = cursor.fetchone()[0]
@@ -714,8 +725,8 @@ class PedidosModel:
                 """
                 SELECT TOP 20
                     id, codigo, descripcion, categoria, stock_actual, precio_unitario
-                FROM inventario_perfiles 
-                WHERE activo = 1 
+                FROM inventario_perfiles
+                WHERE activo = 1
                 AND (codigo LIKE ? OR descripcion LIKE ? OR categoria LIKE ?)
                 ORDER BY descripcion
             """,
@@ -796,67 +807,70 @@ class PedidosModel:
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
         """
         Obtiene datos paginados de la tabla principal
-        
+
         Args:
             offset: Número de registros a saltar
             limit: Número máximo de registros a devolver
             filtros: Filtros adicionales a aplicar
-            
+
         Returns:
             tuple: (datos, total_registros)
         """
         try:
             if not self.db_connection:
                 return [], 0
-            
+
             cursor = self.db_connection.cursor()
-            
+
             # Query base
             base_query = self._get_base_query()
             count_query = self._get_count_query()
-            
+
             # Aplicar filtros si existen
             where_clause = ""
             params = []
-            
+
             if filtros:
                 where_conditions = []
                 for campo, valor in filtros.items():
                     if valor:
                         where_conditions.append(f"{campo} LIKE ?")
                         params.append(f"%{valor}%")
-                
+
                 if where_conditions:
                     where_clause = " WHERE " + " AND ".join(where_conditions)
-            
+
             # Obtener total de registros
             full_count_query = count_query + where_clause
             cursor.execute(full_count_query, params)
             total_registros = cursor.fetchone()[0]
-            
+
             # Obtener datos paginados
             paginated_query = f"{base_query}{where_clause} ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
             cursor.execute(paginated_query, params + [offset, limit])
-            
+
             datos = []
             for row in cursor.fetchall():
                 datos.append(self._row_to_dict(row, cursor.description))
-            
+
             return datos, total_registros
-            
+
         except Exception as e:
             print(f"[ERROR] Error obteniendo datos paginados: {e}")
             return [], 0
-    
+
     def obtener_total_registros(self, filtros=None):
         """Obtiene el total de registros disponibles"""
         try:
-            _, total = self.obtener_datos_paginados(offset=0, limit=1, filtros=filtros)
+            _,
+total = self.obtener_datos_paginados(offset=0,
+                limit=1,
+                filtros=filtros)
             return total
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
-    
+
     def _get_base_query(self):
         """Obtiene la query base para paginación usando SQL externo."""
         # White-list de tablas permitidas para paginación
@@ -865,30 +879,30 @@ class PedidosModel:
             'pedidos_detalle': 'get_base_query_pedidos_detalle',
             'pedidos_historial': 'get_base_query_pedidos_historial'
         }
-        
+
         tabla_principal = getattr(self, 'tabla_principal', 'pedidos')
         if tabla_principal in tabla_queries:
             return self.sql_manager.get_query('pedidos', tabla_queries[tabla_principal])
         else:
             # Fallback seguro para tabla por defecto
             return self.sql_manager.get_query('pedidos', 'get_base_query_pedidos')
-    
+
     def _get_count_query(self):
         """Obtiene la query de conteo usando SQL externo."""
         # White-list de tablas permitidas para conteo
         tabla_queries = {
             'pedidos': 'get_count_query_pedidos',
-            'pedidos_detalle': 'get_count_query_pedidos_detalle', 
+            'pedidos_detalle': 'get_count_query_pedidos_detalle',
             'pedidos_historial': 'get_count_query_pedidos_historial'
         }
-        
+
         tabla_principal = getattr(self, 'tabla_principal', 'pedidos')
         if tabla_principal in tabla_queries:
             return self.sql_manager.get_query('pedidos', tabla_queries[tabla_principal])
         else:
             # Fallback seguro para tabla por defecto
             return self.sql_manager.get_query('pedidos', 'get_count_query_pedidos')
-    
+
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}

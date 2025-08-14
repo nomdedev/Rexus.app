@@ -11,7 +11,7 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 import datetime
 import sys
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List
 
 # Importar utilidades de seguridad
 try:
@@ -19,7 +19,6 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from rexus.utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
@@ -28,9 +27,9 @@ except ImportError as e:
     data_sanitizer = None
 
 # Importar utilidades de seguridad SQL y sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import sanitize_string
 
 try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name
@@ -54,7 +53,7 @@ class AuditoriaModel:
         """
         self.db_connection = db_connection
         self.tabla_auditoria = "auditoria_log"
-        
+
         # Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()
 
@@ -85,7 +84,6 @@ class AuditoriaModel:
             except SQLSecurityError as e:
                 print(f"[ERROR SEGURIDAD AUDITORIA] {str(e)}")
                 # Fallback a verificación básica
-                pass
 
         # Verificación básica si la utilidad no está disponible
         if not table_name or not isinstance(table_name, str):
@@ -118,7 +116,7 @@ class AuditoriaModel:
             # Verificar si la tabla de auditoría existe usando SQL externo
             query_verificar = self.sql_manager.get_query('auditoria/verificar_tabla_existe')
             cursor.execute(query_verificar, (self.tabla_auditoria,))
-            
+
             if cursor.fetchone():
                 print(f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente.")
 
@@ -171,7 +169,10 @@ class AuditoriaModel:
         """
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
             print("[WARN AUDITORÍA] Sin conexión BD - guardando en log local")
-            return self._guardar_log_local(usuario, modulo, accion, descripcion)
+            return self._guardar_log_local(usuario,
+modulo,
+                accion,
+                descripcion)
 
         try:
             # [LOCK] SANITIZACIÓN Y VALIDACIÓN DE DATOS
@@ -260,7 +261,10 @@ class AuditoriaModel:
         except Exception as e:
             print(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
             # Fallback a log local
-            return self._guardar_log_local(usuario, modulo, accion, descripcion)
+            return self._guardar_log_local(usuario,
+modulo,
+                accion,
+                descripcion)
 
     def _guardar_log_local(
         self, usuario: str, modulo: str, accion: str, descripcion: str

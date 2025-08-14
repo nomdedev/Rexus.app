@@ -5,19 +5,14 @@ Maneja la lógica de negocio entre la vista y el modelo de compras.
 Incluye gestión de órdenes, proveedores y detalles de compra.
 """
 
-from datetime import date, datetime
+from datetime import datetime
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox
 from rexus.utils.message_system import show_success, show_error, show_warning
-from rexus.core.auth_manager import AuthManager
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
 from rexus.modules.compras.inventory_integration import InventoryIntegration
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ComprasController(QObject):
@@ -43,7 +38,7 @@ class ComprasController(QObject):
         # Inicializar modelos adicionales
         self.detalle_model = DetalleComprasModel(db_connection)
         self.proveedores_model = ProveedoresModel(db_connection)
-        
+
         # Inicializar integración de inventario
         try:
             from rexus.core.database import get_inventario_connection
@@ -304,12 +299,15 @@ class ComprasController(QObject):
         else:
             from rexus.utils.message_system import show_info
             show_info(self.view, titulo, mensaje)
-    
+
     @auth_required
-    def procesar_recepcion_orden(self, orden_id, items_recibidos, datos_seguimiento):
+    def procesar_recepcion_orden(self,
+orden_id,
+        items_recibidos,
+        datos_seguimiento):
         """
         Procesa la recepción completa de una orden con integración al inventario.
-        
+
         Args:
             orden_id: ID de la orden
             items_recibidos: Lista de items recibidos con cantidades
@@ -318,58 +316,58 @@ class ComprasController(QObject):
         try:
             # Actualizar estado de la orden
             exito_estado = self.actualizar_estado_orden(orden_id, "RECIBIDA")
-            
+
             if not exito_estado:
                 self.mostrar_error("Error", "No se pudo actualizar el estado de la orden")
                 return False
-            
+
             # Procesar integración con inventario si está disponible
             if self.inventory_integration:
                 exito_inventario = self.inventory_integration.procesar_recepcion_completa(
                     orden_id, items_recibidos
                 )
-                
+
                 if exito_inventario:
-                    self.mostrar_mensaje("Éxito", 
+                    self.mostrar_mensaje("Éxito",
                         "Orden recibida y inventario actualizado correctamente")
                 else:
-                    show_warning(self.view, "Advertencia", 
+                    show_warning(self.view, "Advertencia",
                         "Orden recibida pero hubo problemas actualizando el inventario")
             else:
-                show_warning(self.view, "Advertencia", 
+                show_warning(self.view, "Advertencia",
                     "Orden recibida pero integración de inventario no disponible")
-            
+
             # Registrar seguimiento
             self._registrar_seguimiento_orden(orden_id, datos_seguimiento)
-            
+
             # Actualizar vista
             self.datos_actualizados.emit()
-            
+
             return True
-            
+
         except Exception as e:
             print(f"[ERROR] Error procesando recepción de orden: {e}")
             self.mostrar_error("Error", f"Error procesando recepción: {str(e)}")
             return False
-    
+
     def _registrar_seguimiento_orden(self, orden_id, datos_seguimiento):
         """Registra información de seguimiento de la orden."""
         try:
             # Aquí se registrarían los datos de seguimiento en la base de datos
             # Por ahora solo log para demostrar la funcionalidad
             print(f"[INFO] Seguimiento registrado para orden {orden_id}: {datos_seguimiento}")
-            
+
         except Exception as e:
             print(f"[ERROR] Error registrando seguimiento: {e}")
-    
-    @auth_required 
+
+    @auth_required
     def verificar_disponibilidad_antes_orden(self, items_solicitud):
         """
         Verifica disponibilidad en inventario antes de crear una orden.
-        
+
         Args:
             items_solicitud: Lista de items solicitados
-            
+
         Returns:
             dict: Resultado de la verificación
         """
@@ -379,19 +377,19 @@ class ComprasController(QObject):
                     'disponible_completo': True,
                     'advertencia': 'Verificación de inventario no disponible'
                 }
-            
+
             resultado = self.inventory_integration.verificar_disponibilidad_stock(items_solicitud)
-            
+
             if not resultado.get('disponible_completo', True):
                 advertencias = resultado.get('advertencias', [])
                 show_warning(
-                    self.view, 
+                    self.view,
                     "Stock Insuficiente",
                     "Algunos items no tienen stock suficiente:\n" + "\n".join(advertencias)
                 )
-            
+
             return resultado
-            
+
         except Exception as e:
             print(f"[ERROR] Error verificando disponibilidad: {e}")
             return {'disponible_completo': False, 'error': str(e)}
@@ -408,9 +406,12 @@ class ComprasController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error obteniendo estado de pedido: {e}")
             return None
-    
+
     @auth_required
-    def actualizar_seguimiento_pedido(self, pedido_id, nuevo_estado, observaciones=""):
+    def actualizar_seguimiento_pedido(self,
+pedido_id,
+        nuevo_estado,
+        observaciones=""):
         """Actualiza el seguimiento de un pedido"""
         try:
             if self.model:
@@ -433,30 +434,30 @@ class ComprasController(QObject):
             if self.model:
                 # Obtener detalles de la orden
                 detalles = self.model.obtener_detalles_orden(orden_id)
-                
+
                 # Actualizar inventario
                 for detalle in detalles:
                     # Aquí se integrará con el módulo de inventario
                     # TODO: Implementar actualización de stock en inventario
                     pass
-                
+
                 self.mostrar_exito("Stock actualizado desde compra")
         except Exception as e:
             self.mostrar_error(f"Error actualizando stock: {e}")
-    
+
     @auth_required
     def verificar_stock_minimos(self):
         """Verifica productos con stock mínimo para generar órdenes automáticas"""
         try:
             if self.model:
                 productos_minimos = self.model.obtener_productos_stock_minimo()
-                
+
                 if productos_minimos:
                     mensaje = f"Se encontraron {len(productos_minimos)} productos con stock mínimo"
                     self.mostrar_info(mensaje)
-                    
+
                     # TODO: Proponer generación automática de órdenes
-                    
+
                 return productos_minimos
         except Exception as e:
             self.mostrar_error(f"Error verificando stock mínimos: {e}")
@@ -464,14 +465,17 @@ class ComprasController(QObject):
 
 
     @admin_required
-    def generar_reporte_compras(self, fecha_inicio, fecha_fin, proveedor_id=None):
+    def generar_reporte_compras(self,
+fecha_inicio,
+        fecha_fin,
+        proveedor_id=None):
         """Genera reporte de compras por período"""
         try:
             if self.model:
                 reporte = self.model.generar_reporte_periodo(
                     fecha_inicio, fecha_fin, proveedor_id
                 )
-                
+
                 if reporte:
                     self.mostrar_exito("Reporte generado exitosamente")
                     return reporte
@@ -480,7 +484,7 @@ class ComprasController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error generando reporte: {e}")
         return None
-    
+
     @auth_required
     def obtener_estadisticas_proveedor(self, proveedor_id):
         """Obtiene estadísticas detalladas de un proveedor"""
@@ -492,41 +496,41 @@ class ComprasController(QObject):
             self.mostrar_error(f"Error obteniendo estadísticas: {e}")
         return {}
 
-    
+
     def cargar_pagina(self, pagina, registros_por_pagina=50):
         """Carga una página específica de datos"""
         try:
             if self.model:
                 offset = (pagina - 1) * registros_por_pagina
-                
+
                 # Obtener datos paginados
                 datos, total_registros = self.model.obtener_datos_paginados(
-                    offset=offset, 
+                    offset=offset,
                     limit=registros_por_pagina
                 )
-                
+
                 if self.view:
                     # Cargar datos en la tabla
                     if hasattr(self.view, 'cargar_en_tabla'):
                         self.view.cargar_en_tabla(datos)
-                    
+
                     # Actualizar controles de paginación
                     total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
                     if hasattr(self.view, 'actualizar_controles_paginacion'):
                         self.view.actualizar_controles_paginacion(
                             pagina, total_paginas, total_registros, len(datos)
                         )
-        
+
         except Exception as e:
             print(f"[ERROR] Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error("Error", f"Error cargando página: {str(e)}")
-    
+
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página y recarga"""
         self.registros_por_pagina = registros
         self.cargar_pagina(1, registros)
-    
+
     def obtener_total_registros(self):
         """Obtiene el total de registros disponibles"""
         try:
@@ -761,13 +765,13 @@ class ComprasController(QObject):
         try:
             # Obtener estadísticas generales
             stats_generales = self.model.obtener_estadisticas_compras()
-            
+
             # Obtener datos de proveedores
             proveedores = self.proveedores_model.obtener_todos_proveedores()
-            
+
             # Obtener productos por categoría
             productos_categoria = self.detalle_model.obtener_productos_por_categoria()
-            
+
             # Obtener compras recientes
             compras_recientes = self.model.obtener_todas_compras()[:20]  # Últimas 20
 

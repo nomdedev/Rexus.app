@@ -5,10 +5,8 @@ Este módulo gestiona todas las consultas SQL desde archivos externos
 para mejorar la seguridad y mantenibilidad del código.
 """
 
-import json
-import os
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 
 class SQLQueryManager:

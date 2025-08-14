@@ -70,7 +70,10 @@ def fix_sql_injections_logistica():
     changes_made = 0
     for pattern, replacement in replacements:
         old_content = content
-        content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
+        content = re.sub(pattern,
+replacement,
+            content,
+            flags=re.MULTILINE | re.DOTALL)
         if content != old_content:
             matches = len(
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)
@@ -97,7 +100,10 @@ def fix_sql_injections_logistica():
 
     for pattern, replacement in additional_fixes:
         old_content = content
-        content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
+        content = re.sub(pattern,
+replacement,
+            content,
+            flags=re.MULTILINE | re.DOTALL)
         if content != old_content:
             matches = len(
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)

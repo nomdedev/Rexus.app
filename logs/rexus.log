@@ -15,3 +15,96 @@
 2025-08-12 20:30:17 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
 2025-08-12 20:30:17 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
 2025-08-12 20:30:17 - rexus.modules.inventario.submodules.base_utilities - [32mINFO[0m - Utilidades de seguridad cargadas en BaseUtilities
+2025-08-14 12:23:34 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:23:34 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:34 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:23:36 - rexus.utils.env_manager - [32mINFO[0m - Variables de entorno cargadas desde .env
+2025-08-14 12:23:36 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:23:36 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:23:42 - theme_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:42 - theme_manager - [32mINFO[0m - ThemeManager inicializado
+2025-08-14 12:23:42 - advanced_feedback - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:42 - feedback_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:23:42 - feedback_mixin - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:27:27 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:27:27 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:27:27 - api_server - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:28:05 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:05 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:28:05 - api_server - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:28:38 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:28:38 - api_server - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:28:38 - rexus.utils.env_manager - [32mINFO[0m - Variables de entorno cargadas desde .env
+2025-08-14 12:28:38 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:28:38 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:29:21 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:29:21 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:21 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:29:22 - api_server - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:22 - rexus.utils.env_manager - [32mINFO[0m - Variables de entorno cargadas desde .env
+2025-08-14 12:29:22 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:29:22 - rexus.utils.env_manager - [33mWARNING[0m - Variable de entorno 'REXUS_DEV_PASSWORD' no encontrada, usando default
+2025-08-14 12:29:25 - theme_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:25 - theme_manager - [32mINFO[0m - ThemeManager inicializado
+2025-08-14 12:29:25 - advanced_feedback - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:25 - feedback_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:29:25 - feedback_mixin - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:31:45 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:31:45 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:31:45 - api_server - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-14 12:49:51 - database_pool - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - database_pool_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - backup - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - backup_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-14 12:49:51 - backup_manager - [32mINFO[0m - BackupManager inicializado
+2025-08-14 12:49:51 - rexus.errors - [31mERROR[0m - Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 44, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>

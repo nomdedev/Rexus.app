@@ -50,7 +50,8 @@ def actualizar_scripts_testing():
                 contenido = re.sub(patron, reemplazo, contenido)
 
             # Agregar creación de directorio si no existe
-            if "tests/reports/" in contenido and "os.makedirs" not in contenido:
+            if "tests/reports/" in contenido and \
+                "os.makedirs" not in contenido:
                 # Buscar imports de os
                 if "import os" in contenido:
                     # Agregar después de los imports

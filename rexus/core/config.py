@@ -32,30 +32,33 @@ BACKUPS_DIR = PROJECT_ROOT / "backups"
 for directory in [LOGS_DIR, UPLOADS_DIR, BACKUPS_DIR]:
     directory.mkdir(exist_ok=True)
 
-def get_env_var(key: str, default: Any = None, required: bool = False, var_type: type = str) -> Any:
+def get_env_var(key: str,
+default: Any = None,
+    required: bool = False,
+    var_type: type = str) -> Any:
     """
     Obtiene una variable de entorno con validación y conversión de tipos.
-    
+
     Args:
         key: Nombre de la variable de entorno
         default: Valor por defecto
         required: Si es True, lanza excepción si no existe
         var_type: Tipo al que convertir el valor
-    
+
     Returns:
         Valor convertido al tipo especificado
-    
+
     Raises:
         ValueError: Si la variable es requerida y no existe
     """
     value = os.getenv(key, default)
-    
+
     if required and value is None:
         raise ValueError(f"Variable de entorno requerida no encontrada: {key}")
-    
+
     if value is None:
         return default
-    
+
     # Conversión de tipos
     if var_type == bool:
         return str(value).lower() in ('true', '1', 'yes', 'on')
@@ -69,7 +72,7 @@ def get_env_var(key: str, default: Any = None, required: bool = False, var_type:
             return float(value)
         except ValueError:
             return default if default is not None else 0.0
-    
+
     return str(value)
 
 # ===== CONFIGURACIÓN DE LA APLICACIÓN =====
@@ -109,9 +112,9 @@ def _get_secure_key(env_var: str, min_length: int = 32) -> str:
     """
     import secrets
     import os
-    
+
     key = os.getenv(env_var)
-    
+
     if not key:
         # En desarrollo, generar clave temporal con advertencia
         if os.getenv('APP_ENV', 'development') == 'development':
@@ -121,10 +124,10 @@ def _get_secure_key(env_var: str, min_length: int = 32) -> str:
         else:
             # En producción, fallar completamente
             raise ValueError(f"Variable de entorno {env_var} requerida para producción")
-    
+
     if len(key) < min_length:
         raise ValueError(f"Variable {env_var} debe tener al menos {min_length} caracteres")
-    
+
     return key
 
 SECURITY_CONFIG = {

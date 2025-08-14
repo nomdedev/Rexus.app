@@ -130,23 +130,22 @@ class AuthManager:
             from rexus.core.database import get_users_connection
             from rexus.core.rate_limiter import get_rate_limiter
             from rexus.utils.password_security import (
-                hash_password_secure,
                 verify_password_secure,
             )
-            
+
             # Verificar rate limiting antes de intentar autenticación
             rate_limiter = get_rate_limiter()
             is_blocked, locked_until = rate_limiter.is_blocked(username)
-            
+
             if is_blocked:
                 remaining_time = locked_until - datetime.datetime.now()
                 minutes_remaining = max(1, int(remaining_time.total_seconds() / 60))
                 error_msg = f"Usuario bloqueado por {minutes_remaining} minutos debido a demasiados intentos fallidos"
                 print(f"[ERROR] Rate limit: {error_msg}")
-                
+
                 # Registrar intento en usuario bloqueado
                 rate_limiter._log_security_event(username, "blocked_attempt", minutes_remaining)
-                
+
                 return {"error": error_msg, "blocked_until": locked_until}
 
             # Conectar a la base de datos de usuarios
@@ -169,10 +168,10 @@ class AuthManager:
             if not result:
                 # Usuario no encontrado - también registrar como intento fallido para prevenir enumeración
                 rate_limiter.record_failed_attempt(username)
-                
+
                 lockout_info = rate_limiter.get_lockout_info(username)
                 remaining_attempts = lockout_info['remaining_attempts']
-                
+
                 print(f"[ERROR] Usuario '{username}' no encontrado o inactivo")
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
@@ -198,7 +197,7 @@ class AuthManager:
             if password_valid:
                 # Login exitoso - registrar en rate limiter
                 rate_limiter.record_successful_attempt(username)
-                
+
                 # Mapear rol de la BD a enum
                 role_mapping = {
                     "ADMIN": UserRole.ADMIN,
@@ -219,7 +218,7 @@ class AuthManager:
                 # Actualizar última conexión
                 db.execute_non_query(
                     """
-                    UPDATE usuarios 
+                    UPDATE usuarios
                     SET ultima_conexion = GETDATE()
                     WHERE usuario = ?
                 """,
@@ -239,17 +238,17 @@ class AuthManager:
             else:
                 # Login fallido - registrar intento fallido
                 rate_limiter.record_failed_attempt(username)
-                
+
                 # Obtener información de rate limiting para el mensaje
                 lockout_info = rate_limiter.get_lockout_info(username)
                 remaining_attempts = lockout_info['remaining_attempts']
-                
+
                 if remaining_attempts > 0:
                     print(f"[ERROR] Contraseña incorrecta para usuario: {username} "
                           f"(quedan {remaining_attempts} intentos)")
                 else:
                     print(f"[ERROR] Contraseña incorrecta para usuario: {username} - USUARIO BLOQUEADO")
-                
+
                 return {"error": "Credenciales incorrectas", "remaining_attempts": remaining_attempts}
 
         except Exception as e:

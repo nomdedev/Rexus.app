@@ -7,11 +7,10 @@ Objetivo: Completar UI/UX del módulo Obras con componente de etiquetas mejorado
 """
 
 from PyQt6.QtWidgets import (
-    QLabel, QWidget, QHBoxLayout, QVBoxLayout, QFrame, 
-    QGraphicsDropShadowEffect, QSizePolicy
+    QLabel, QGraphicsDropShadowEffect
 )
 from PyQt6.QtCore import Qt, QPropertyAnimation, QEasingCurve, pyqtSignal, QTimer
-from PyQt6.QtGui import QFont, QColor, QPalette, QPixmap, QPainter
+from PyQt6.QtGui import QFont, QColor
 from typing import Optional, Dict, Any, Union
 import datetime
 
@@ -19,7 +18,7 @@ import datetime
 class EnhancedLabel(QLabel):
     """
     QLabel mejorado con soporte para temas, animaciones y estados dinámicos.
-    
+
     Características:
     - Soporte automático para tema oscuro/claro
     - Animaciones de hover y cambio de estado
@@ -27,26 +26,29 @@ class EnhancedLabel(QLabel):
     - Iconos integrados y colores dinámicos
     - Efectos visuales (sombras, gradientes)
     """
-    
+
     # Señales personalizadas
     clicked = pyqtSignal()
     hover_enter = pyqtSignal()
     hover_leave = pyqtSignal()
-    
-    def __init__(self, text: str = "", label_type: str = "default", parent=None):
+
+    def __init__(self,
+text: str = "",
+        label_type: str = "default",
+        parent=None):
         super().__init__(text, parent)
-        
+
         # Configuración
         self.label_type = label_type
         self.is_clickable = False
         self.is_animated = True
         self.current_theme = "light"
         self.icon_text = ""
-        
+
         # Animaciones
         self.fade_animation = None
         self.scale_animation = None
-        
+
         # Configuraciones por tipo
         self.type_configs = {
             'default': {
@@ -131,7 +133,7 @@ class EnhancedLabel(QLabel):
                 'border_radius': '6px'
             }
         }
-        
+
         # Estados específicos para obras
         self.obra_status_colors = {
             'EN_PROCESO': {'color': '#059669', 'bg': '#d1fae5', 'icon': '🚧'},
@@ -143,28 +145,28 @@ class EnhancedLabel(QLabel):
             'PROXIMA_VENCER': {'color': '#d97706', 'bg': '#fde68a', 'icon': '⏰'},
             'EN_TIEMPO': {'color': '#059669', 'bg': '#dcfce7', 'icon': '🟢'}
         }
-        
+
         self._apply_type_style()
         self._setup_interactions()
-    
+
     def _apply_type_style(self):
         """Aplica el estilo según el tipo de etiqueta."""
         if self.label_type not in self.type_configs:
             self.label_type = 'default'
-        
+
         config = self.type_configs[self.label_type]
-        
+
         # Configurar fuente
         font = QFont()
         font.setPointSize(config['font_size'])
-        
+
         if config['font_weight'] == 'bold':
             font.setBold(True)
         elif config['font_weight'] == '600':
             font.setWeight(QFont.Weight.DemiBold)
-        
+
         self.setFont(font)
-        
+
         # Aplicar estilos CSS
         style = f"""
             QLabel {{
@@ -175,7 +177,7 @@ class EnhancedLabel(QLabel):
                 border-radius: {config['border_radius']};
             }}
         """
-        
+
         # Estilos para hover si es clickeable
         if self.is_clickable:
             style += """
@@ -184,9 +186,9 @@ class EnhancedLabel(QLabel):
                     cursor: pointer;
                 }
             """
-        
+
         self.setStyleSheet(style)
-        
+
         # Configurar alineación según tipo
         if self.label_type in ['header', 'subheader']:
             self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
@@ -194,16 +196,16 @@ class EnhancedLabel(QLabel):
             self.setAlignment(Qt.AlignmentFlag.AlignCenter)
         else:
             self.setAlignment(Qt.AlignmentFlag.AlignLeft | Qt.AlignmentFlag.AlignVCenter)
-    
+
     def _setup_interactions(self):
         """Configura las interacciones del widget."""
         # Habilitar tracking del mouse para hover
         self.setMouseTracking(True)
-        
+
         # Configurar efectos visuales para algunos tipos
         if self.label_type in ['metric', 'status', 'header']:
             self._add_shadow_effect()
-    
+
     def _add_shadow_effect(self):
         """Agrega efecto de sombra."""
         shadow = QGraphicsDropShadowEffect()
@@ -211,11 +213,11 @@ class EnhancedLabel(QLabel):
         shadow.setColor(QColor(0, 0, 0, 30))
         shadow.setOffset(0, 2)
         self.setGraphicsEffect(shadow)
-    
+
     def set_clickable(self, clickable: bool):
         """
         Establece si la etiqueta es clickeable.
-        
+
         Args:
             clickable: True si debe ser clickeable
         """
@@ -225,11 +227,11 @@ class EnhancedLabel(QLabel):
         else:
             self.setCursor(Qt.CursorShape.ArrowCursor)
         self._apply_type_style()
-    
+
     def set_obra_status(self, status: str):
         """
         Configura la etiqueta para mostrar un estado de obra.
-        
+
         Args:
             status: Estado de la obra
         """
@@ -237,10 +239,10 @@ class EnhancedLabel(QLabel):
         if status in self.obra_status_colors:
             config = self.obra_status_colors[status]
             icon = config['icon']
-            
+
             # Configurar texto con icono
             self.setText(f"{icon} {status}")
-            
+
             # Aplicar colores específicos
             style = f"""
                 QLabel {{
@@ -255,12 +257,12 @@ class EnhancedLabel(QLabel):
             """
             self.setStyleSheet(style)
             self.setAlignment(Qt.AlignmentFlag.AlignCenter)
-    
-    def set_metric_value(self, value: Union[int, float], format_type: str = "number", 
+
+    def set_metric_value(self, value: Union[int, float], format_type: str = "number",
                          prefix: str = "", suffix: str = ""):
         """
         Configura la etiqueta para mostrar una métrica.
-        
+
         Args:
             value: Valor de la métrica
             format_type: Tipo de formato ('number', 'currency', 'percentage')
@@ -278,10 +280,10 @@ class EnhancedLabel(QLabel):
                 formatted_value = f"{value:,}"
         else:
             formatted_value = str(value)
-        
+
         full_text = f"{prefix}{formatted_value}{suffix}"
         self.setText(full_text)
-        
+
         # Aplicar color según valor (para métricas)
         if self.label_type == 'metric':
             if isinstance(value, (int, float)):
@@ -294,7 +296,7 @@ class EnhancedLabel(QLabel):
                 else:  # Valor bajo
                     color = "#6b7280"  # Gris
                     bg_color = "#f3f4f6"
-                
+
                 style = f"""
                     QLabel {{
                         color: {color};
@@ -307,22 +309,22 @@ class EnhancedLabel(QLabel):
                     }}
                 """
                 self.setStyleSheet(style)
-    
+
     def set_icon_text(self, icon: str, text: str):
         """
         Establece icono y texto.
-        
+
         Args:
             icon: Emoji o carácter de icono
             text: Texto a mostrar
         """
         self.icon_text = icon
         self.setText(f"{icon} {text}")
-    
+
     def update_dynamic_content(self, content_type: str, data: Dict[str, Any]):
         """
         Actualiza contenido dinámico según tipo.
-        
+
         Args:
             content_type: Tipo de contenido ('date_countdown', 'progress', 'status_live')
             data: Datos para el contenido
@@ -330,25 +332,28 @@ class EnhancedLabel(QLabel):
         if content_type == "date_countdown":
             self._update_date_countdown(data.get('target_date'))
         elif content_type == "progress":
-            self._update_progress_display(data.get('current', 0), data.get('total', 100))
+            self._update_progress_display(data.get('current',
+0),
+                data.get('total',
+                100))
         elif content_type == "status_live":
             self._update_live_status(data.get('status'), data.get('last_update'))
-    
+
     def _update_date_countdown(self, target_date):
         """Actualiza cuenta regresiva a una fecha."""
         if not target_date:
             self.setText("📅 Sin fecha")
             return
-        
+
         try:
             if isinstance(target_date, str):
                 target = datetime.datetime.strptime(target_date, "%Y-%m-%d").date()
             else:
                 target = target_date
-            
+
             today = datetime.date.today()
             diff = target - today
-            
+
             if diff.days > 0:
                 self.setText(f"⏳ {diff.days} días restantes")
                 self.set_obra_status('EN_TIEMPO')
@@ -358,19 +363,19 @@ class EnhancedLabel(QLabel):
             else:
                 self.setText(f"[WARNING] Vencida hace {abs(diff.days)} días")
                 self.set_obra_status('VENCIDA')
-                
+
         except Exception:
             self.setText("📅 Fecha inválida")
-    
+
     def _update_progress_display(self, current: float, total: float):
         """Actualiza display de progreso."""
         if total == 0:
             percentage = 0
         else:
             percentage = (current / total) * 100
-        
+
         self.set_metric_value(percentage, "percentage")
-        
+
         # Cambiar color según progreso
         if percentage >= 90:
             self.label_type = 'success'
@@ -378,9 +383,9 @@ class EnhancedLabel(QLabel):
             self.label_type = 'warning'
         else:
             self.label_type = 'error'
-        
+
         self._apply_type_style()
-    
+
     def _update_live_status(self, status: str, last_update: Optional[datetime.datetime]):
         """Actualiza estado en vivo."""
         if last_update:
@@ -391,15 +396,15 @@ class EnhancedLabel(QLabel):
                 time_text = f"{time_diff.seconds // 60}m"
             else:
                 time_text = f"{time_diff.seconds // 3600}h"
-            
+
             self.setText(f"🔴 {status} (act. {time_text})")
         else:
             self.setText(f"⚫ {status}")
-    
+
     def animate_value_change(self, old_value: str, new_value: str):
         """
         Anima el cambio de valor.
-        
+
         Args:
             old_value: Valor anterior
             new_value: Nuevo valor
@@ -407,14 +412,14 @@ class EnhancedLabel(QLabel):
         if not self.is_animated:
             self.setText(new_value)
             return
-        
+
         # Animación de fade out/in
         self.fade_animation = QPropertyAnimation(self, b"windowOpacity")
         self.fade_animation.setDuration(200)
         self.fade_animation.setStartValue(1.0)
         self.fade_animation.setEndValue(0.3)
         self.fade_animation.setEasingCurve(QEasingCurve.Type.OutCubic)
-        
+
         def change_text():
             self.setText(new_value)
             # Fade in
@@ -424,24 +429,24 @@ class EnhancedLabel(QLabel):
             fade_in.setEndValue(1.0)
             fade_in.setEasingCurve(QEasingCurve.Type.InCubic)
             fade_in.start()
-        
+
         self.fade_animation.finished.connect(change_text)
         self.fade_animation.start()
-    
+
     def set_theme(self, dark_mode: bool):
         """
         Aplica tema oscuro o claro.
-        
+
         Args:
             dark_mode: True para tema oscuro
         """
         self.current_theme = "dark" if dark_mode else "light"
-        
+
         if dark_mode:
             # Ajustar colores para tema oscuro
             if self.label_type in self.type_configs:
                 config = self.type_configs[self.label_type].copy()
-                
+
                 # Invertir colores principales
                 if config['color'] == '#374151':
                     config['color'] = '#f9fafb'
@@ -449,13 +454,13 @@ class EnhancedLabel(QLabel):
                     config['color'] = '#ffffff'
                 elif config['color'] == '#4b5563':
                     config['color'] = '#d1d5db'
-                
+
                 # Ajustar fondos
                 if config['bg_color'] == 'transparent':
                     config['bg_color'] = 'transparent'
                 elif config['bg_color'] == '#f9fafb':
                     config['bg_color'] = '#374151'
-                
+
                 # Aplicar estilos ajustados
                 style = f"""
                     QLabel {{
@@ -470,13 +475,13 @@ class EnhancedLabel(QLabel):
         else:
             # Aplicar tema claro normal
             self._apply_type_style()
-    
+
     def mousePressEvent(self, event):
         """Maneja el click del mouse."""
         if self.is_clickable and event.button() == Qt.MouseButton.LeftButton:
             self.clicked.emit()
         super().mousePressEvent(event)
-    
+
     def enterEvent(self, event):
         """Maneja la entrada del mouse."""
         self.hover_enter.emit()
@@ -490,7 +495,7 @@ class EnhancedLabel(QLabel):
             self.scale_animation.setEndValue(expanded_geo)
             self.scale_animation.start()
         super().enterEvent(event)
-    
+
     def leaveEvent(self, event):
         """Maneja la salida del mouse."""
         self.hover_leave.emit()
@@ -501,44 +506,44 @@ class EnhancedLabel(QLabel):
 
 class StatusIndicatorLabel(EnhancedLabel):
     """Etiqueta especializada para indicadores de estado de obras."""
-    
+
     def __init__(self, parent=None):
         super().__init__("", "status", parent)
         self.status_history = []
         self.update_timer = QTimer()
         self.update_timer.timeout.connect(self._update_display)
         self.update_timer.start(30000)  # Actualizar cada 30 segundos
-    
+
     def set_obra_status_with_history(self, status: str, timestamp: datetime.datetime = None):
         """
         Establece estado con historial.
-        
+
         Args:
             status: Nuevo estado
             timestamp: Timestamp del cambio
         """
         if timestamp is None:
             timestamp = datetime.datetime.now()
-        
+
         # Agregar al historial
         self.status_history.append({
             'status': status,
             'timestamp': timestamp
         })
-        
+
         # Mantener solo los últimos 10 cambios
         if len(self.status_history) > 10:
             self.status_history = self.status_history[-10:]
-        
+
         # Actualizar display
         self.set_obra_status(status)
-    
+
     def _update_display(self):
         """Actualiza el display periódicamente."""
         if self.status_history:
             last_change = self.status_history[-1]
             time_since = datetime.datetime.now() - last_change['timestamp']
-            
+
             # Agregar indicador de tiempo si es reciente
             if time_since.total_seconds() < 3600:  # Menos de 1 hora
                 minutes = int(time_since.total_seconds() / 60)
@@ -549,17 +554,20 @@ class StatusIndicatorLabel(EnhancedLabel):
 
 class MetricDisplayLabel(EnhancedLabel):
     """Etiqueta especializada para mostrar métricas de obras."""
-    
+
     def __init__(self, metric_name: str, parent=None):
         super().__init__("", "metric", parent)
         self.metric_name = metric_name
         self.previous_value = None
         self.trend_indicator = ""
-    
-    def update_metric(self, value: Union[int, float], format_type: str = "number"):
+
+    def update_metric(self,
+value: Union[int,
+        float],
+        format_type: str = "number"):
         """
         Actualiza la métrica con indicador de tendencia.
-        
+
         Args:
             value: Nuevo valor
             format_type: Tipo de formato
@@ -572,13 +580,14 @@ class MetricDisplayLabel(EnhancedLabel):
                 self.trend_indicator = "📉"
             else:
                 self.trend_indicator = "➡️"
-        
+
         # Actualizar valor
         old_text = self.text()
         self.set_metric_value(value, format_type, suffix=f" {self.trend_indicator}")
-        
+
         # Animar cambio si hay diferencia significativa
-        if self.previous_value is not None and abs(value - self.previous_value) > 0:
+        if self.previous_value is not None and \
+            abs(value - self.previous_value) > 0:
             self.animate_value_change(old_text, self.text())
-        
+
         self.previous_value = value

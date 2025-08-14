@@ -14,7 +14,7 @@ from typing import Any, Dict, List
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -41,10 +41,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -322,12 +322,15 @@ class RecursosManager:
         except Exception as e:
             print(f"Error actualizando stock: {str(e)}")
 
-    def _devolver_stock_material(self, material_id: int, cantidad: int, cursor) -> None:
+    def _devolver_stock_material(self,
+material_id: int,
+        cantidad: int,
+        cursor) -> None:
         """Devuelve material al inventario."""
         try:
             # Por simplicidad, asumir que es vidrio
             query = """
-                UPDATE vidrios 
+                UPDATE vidrios
                 SET stock = stock + %(cantidad)s,
                     fecha_modificacion = GETDATE()
                 WHERE id = %(material_id)s
@@ -347,9 +350,9 @@ class RecursosManager:
             cursor = self.db_connection.cursor()
 
             query = """
-                SELECT COUNT(*) 
-                FROM obra_materiales 
-                WHERE obra_id = %(obra_id)s 
+                SELECT COUNT(*)
+                FROM obra_materiales
+                WHERE obra_id = %(obra_id)s
                   AND material_id = %(material_id)s
                   AND cantidad_asignada > 0
             """

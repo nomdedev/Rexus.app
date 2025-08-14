@@ -5,8 +5,6 @@ Versión: 2.0.0 - Enterprise Ready
 
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
-import json
-from pathlib import Path
 
 # Tema por defecto
 DEFAULT_THEME = "light"
@@ -16,30 +14,30 @@ class ColorPalette:
     """Paleta de colores para un tema"""
     # Colores base
     primary: str
-    secondary: str 
+    secondary: str
     background: str
     surface: str
     surface_variant: str
-    
+
     # Colores de texto
     on_primary: str
     on_secondary: str
     on_background: str
     on_surface: str
     on_surface_variant: str
-    
+
     # Colores de estado
     success: str
     warning: str
     error: str
     info: str
-    
+
     # Colores de borde y sombra
     border: str
     border_focus: str
     shadow: str
     overlay: str
-    
+
     # Colores específicos de UI
     sidebar_bg: str
     sidebar_active: str
@@ -49,7 +47,7 @@ class ColorPalette:
     button_hover: str
     button_active: str
     card_bg: str
-    
+
     def to_dict(self) -> Dict[str, str]:
         """Convertir a diccionario para fácil acceso"""
         return {
@@ -249,7 +247,7 @@ THEME_METADATA = {
         "category": "standard"
     },
     "dark": {
-        "name": "Oscuro", 
+        "name": "Oscuro",
         "description": "Tema oscuro elegante para uso nocturno",
         "icon": "[DARK]",
         "category": "standard"
@@ -267,7 +265,7 @@ THEME_METADATA = {
         "category": "accessibility"
     },
     "green": {
-        "name": "Verde Naturaleza", 
+        "name": "Verde Naturaleza",
         "description": "Tema verde inspirado en la naturaleza",
         "icon": "🌿",
         "category": "themed"
@@ -285,8 +283,8 @@ def get_available_themes() -> Dict[str, Dict[str, Any]]:
             **metadata,
             "colors": theme.to_dict()
         }
-        for theme_id, (theme, metadata) in zip(THEMES.keys(), 
-                                             [(theme, THEME_METADATA[theme_id]) 
+        for theme_id, (theme, metadata) in zip(THEMES.keys(),
+                                             [(theme, THEME_METADATA[theme_id])
                                               for theme_id, theme in THEMES.items()])
     }
 
@@ -300,7 +298,7 @@ def get_theme_preview_colors(theme_name: str) -> Dict[str, str]:
     theme = get_theme(theme_name)
     if not theme:
         return {}
-    
+
     return {
         "primary": theme.primary,
         "background": theme.background,

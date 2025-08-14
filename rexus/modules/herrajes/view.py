@@ -8,7 +8,7 @@ Versión simplificada con componentes básicos de PyQt6
 """
 
 import logging
-from typing import Optional, Dict, List
+from typing import Dict, List
 
 from PyQt6.QtCore import pyqtSignal, Qt
 from PyQt6.QtGui import QColor
@@ -28,12 +28,9 @@ from PyQt6.QtWidgets import (
 
 # Importar componentes básicos
 from rexus.ui.components.base_components import RexusColors
-from rexus.ui.standard_components import StandardComponents
-from rexus.ui.style_manager import style_manager
 from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.export_manager import ModuleExportMixin
 
 
@@ -94,29 +91,29 @@ class HerrajesView(QWidget, ModuleExportMixin):
         asignacion_layout = QVBoxLayout(tab_asignacion)
         asignacion_layout.setSpacing(10)
         asignacion_layout.setContentsMargins(10, 10, 10, 10)
-        
+
         # Panel de selección de obra
         obra_panel = QGroupBox("Seleccionar Obra")
         obra_layout = QHBoxLayout(obra_panel)
-        
+
         self.combo_obras = QComboBox()
         self.combo_obras.setPlaceholderText("Seleccione una obra...")
         self.combo_obras.setMinimumHeight(35)
         obra_layout.addWidget(QLabel("Obra:"))
         obra_layout.addWidget(self.combo_obras, 2)
-        
+
         self.btn_cargar_obra = QPushButton("Cargar Herrajes")
         self.btn_cargar_obra.setMinimumHeight(35)
         self.btn_cargar_obra.clicked.connect(self.on_cargar_herrajes_obra)
         obra_layout.addWidget(self.btn_cargar_obra)
-        
+
         asignacion_layout.addWidget(obra_panel)
-        
+
         # Tabla de herrajes asignados a la obra
         self.tabla_herrajes_obra = QTableWidget()
         self.configurar_tabla_obra()
         asignacion_layout.addWidget(self.tabla_herrajes_obra)
-        
+
         self.tabs.addTab(tab_asignacion, "Asignación a Obra")
 
         # --- Pestaña Proveedores ---
@@ -124,16 +121,16 @@ class HerrajesView(QWidget, ModuleExportMixin):
         proveedores_layout = QVBoxLayout(tab_proveedores)
         proveedores_layout.setSpacing(10)
         proveedores_layout.setContentsMargins(10, 10, 10, 10)
-        
+
         # Panel de gestión de proveedores
         proveedor_panel = QGroupBox("Gestión de Proveedores")
         proveedor_layout = QVBoxLayout(proveedor_panel)
-        
+
         # Lista de proveedores
         self.lista_proveedores = QTableWidget()
         self.lista_proveedores.setColumnCount(3)
         self.lista_proveedores.setHorizontalHeaderLabels(["Proveedor", "Contacto", "Herrajes Suministrados"])
-        
+
         # Aplicar estilos mejorados para tabla de proveedores
         self.lista_proveedores.setStyleSheet("""
             QTableWidget {
@@ -167,9 +164,9 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """)
         self.lista_proveedores.setAlternatingRowColors(True)
         self.lista_proveedores.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
-        
+
         proveedor_layout.addWidget(self.lista_proveedores)
-        
+
         proveedores_layout.addWidget(proveedor_panel)
         self.tabs.addTab(tab_proveedores, "Proveedores")
 
@@ -196,7 +193,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-size: 12px;
             }
-            
+
             /* Pestañas minimalistas */
             QTabWidget::pane {
                 border: 1px solid #e1e4e8;
@@ -204,7 +201,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 background-color: white;
                 margin-top: 2px;
             }
-            
+
             QTabBar::tab {
                 background-color: #f6f8fa;
                 border: 1px solid #e1e4e8;
@@ -217,19 +214,19 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 color: #586069;
                 min-width: 80px;
             }
-            
+
             QTabBar::tab:selected {
                 background-color: white;
                 color: #24292e;
                 font-weight: 500;
                 border-bottom: 2px solid #0366d6;
             }
-            
+
             QTabBar::tab:hover:!selected {
                 background-color: #e1e4e8;
                 color: #24292e;
             }
-            
+
             /* Tablas compactas */
             QTableWidget {
                 gridline-color: #e1e4e8;
@@ -240,12 +237,12 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 border: 1px solid #e1e4e8;
                 border-radius: 4px;
             }
-            
+
             QTableWidget::item {
                 padding: 4px 8px;
                 border: none;
             }
-            
+
             QHeaderView::section {
                 background-color: #f6f8fa;
                 color: #586069;
@@ -256,7 +253,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 border-bottom: 1px solid #e1e4e8;
                 padding: 6px 8px;
             }
-            
+
             /* GroupBox minimalista */
             QGroupBox {
                 font-weight: 600;
@@ -268,7 +265,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 padding-top: 8px;
                 background-color: white;
             }
-            
+
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 8px;
@@ -276,7 +273,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 background-color: white;
                 color: #24292e;
             }
-            
+
             /* Botones minimalistas */
             QPushButton {
                 background-color: #f6f8fa;
@@ -288,16 +285,16 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 border-radius: 4px;
                 min-height: 20px;
             }
-            
+
             QPushButton:hover {
                 background-color: #e1e4e8;
                 border-color: #d0d7de;
             }
-            
+
             QPushButton:pressed {
                 background-color: #d0d7de;
             }
-            
+
             /* Campos de entrada compactos */
             QLineEdit, QComboBox {
                 border: 1px solid #e1e4e8;
@@ -307,32 +304,32 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 background-color: white;
                 min-height: 18px;
             }
-            
+
             QLineEdit:focus, QComboBox:focus {
                 border-color: #0366d6;
                 outline: none;
             }
-            
+
             /* Labels compactos */
             QLabel {
                 color: #24292e;
                 font-size: 11px;
             }
-            
+
             /* Scroll bars minimalistas */
             QScrollBar:vertical {
                 width: 12px;
                 background-color: #f6f8fa;
                 border-radius: 6px;
             }
-            
+
             QScrollBar::handle:vertical {
                 background-color: #d0d7de;
                 border-radius: 6px;
                 min-height: 20px;
                 margin: 2px;
             }
-            
+
             QScrollBar::handle:vertical:hover {
                 background-color: #bbb;
             }
@@ -348,7 +345,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
 
         # Fila superior: Búsqueda y filtros
         fila_busqueda = QHBoxLayout()
-        
+
         # Campo de búsqueda
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("[SEARCH] Buscar herrajes por código, nombre o tipo...")
@@ -361,7 +358,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         self.combo_categoria.addItems([
             "📂 Todas las categorías",
             "🚪 Bisagras",
-            "🔐 Cerraduras", 
+            "🔐 Cerraduras",
             "[TARGET] Manijas",
             "⚙️ Otros herrajes"
         ])
@@ -373,7 +370,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
 
         # Fila inferior: Botones de acción
         botones_layout = QHBoxLayout()
-        
+
         # Crear botones básicos
         self.btn_nuevo = self.crear_boton("➕ Nuevo Herraje", "primary")
         self.btn_editar = self.crear_boton("✏️ Editar", "secondary")
@@ -389,11 +386,11 @@ class HerrajesView(QWidget, ModuleExportMixin):
         botones_layout.addWidget(self.btn_editar)
         botones_layout.addWidget(self.btn_eliminar)
         botones_layout.addWidget(self.btn_actualizar)
-        
+
         # Agregar botón de exportación estándar
         self.add_export_button(botones_layout, "📄 Exportar Herrajes")
         botones_layout.addStretch()
-        
+
         layout.addLayout(botones_layout)
 
         # Conectar señales de búsqueda
@@ -406,7 +403,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Crea un botón con estilo específico."""
         boton = QPushButton(texto)
         boton.setMinimumHeight(30)
-        
+
         # Aplicar estilos según el tipo
         if estilo == "primary":
             boton.setStyleSheet(f"""
@@ -478,35 +475,42 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     background-color: #5a6268;
                 }}
             """)
-        
+
         return boton
 
     def crear_panel_estadisticas(self) -> QGroupBox:
         """Crea panel de estadísticas."""
         grupo = QGroupBox("Estadísticas")
         layout = QHBoxLayout(grupo)
-        
+
         # Crear estadísticas básicas
         stats = [
-            ("[TOOL]", "Total Herrajes", "total_herrajes", RexusColors.PRIMARY),
+            ("[TOOL]",
+"Total Herrajes",
+                "total_herrajes",
+                RexusColors.PRIMARY),
             ("📦", "En Stock", "en_stock", "#28a745"),
             ("[WARN]", "Stock Bajo", "stock_bajo", "#ffc107"),
             ("🚫", "Sin Stock", "sin_stock", "#dc3545")
         ]
-        
+
         for icon, title, key, color in stats:
             stat_widget = self.crear_stat_widget(icon, title, "0", color)
             self.stats_labels[key] = stat_widget.findChild(QLabel, "value_label")
             layout.addWidget(stat_widget)
-        
+
         return grupo
 
-    def crear_stat_widget(self, icon: str, title: str, value: str, color: str) -> QWidget:
+    def crear_stat_widget(self,
+icon: str,
+        title: str,
+        value: str,
+        color: str) -> QWidget:
         """Crea un widget de estadística individual."""
         widget = QWidget()
         layout = QVBoxLayout(widget)
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         # Icono y valor
         icon_label = QLabel(f"{icon} {value}")
         icon_label.setObjectName("value_label")
@@ -519,7 +523,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
             }}
         """)
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         # Título
         title_label = QLabel(title)
         title_label.setStyleSheet(f"""
@@ -530,10 +534,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
             }}
         """)
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        
+
         layout.addWidget(icon_label)
         layout.addWidget(title_label)
-        
+
         widget.setStyleSheet(f"""
             QWidget {{
                 border: 1px solid {RexusColors.BORDER_LIGHT};
@@ -543,7 +547,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 padding: 10px;
             }}
         """)
-        
+
         return widget
 
     def crear_tabla_herrajes(self, layout: QVBoxLayout):
@@ -556,7 +560,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         self.tabla_herrajes = QTableWidget()
         self.configurar_tabla()
         tabla_layout.addWidget(self.tabla_herrajes)
-        
+
         # Asignar referencia para exportación
         self.tabla_principal = self.tabla_herrajes
 
@@ -569,7 +573,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
 
         columnas = [
             "Código",
-            "Nombre", 
+            "Nombre",
             "Tipo",
             "Stock",
             "Precio Unit.",
@@ -644,16 +648,16 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Configura la tabla de herrajes por obra."""
         if not self.tabla_herrajes_obra:
             return
-            
+
         columnas = ["Código", "Nombre", "Cantidad Requerida", "Cantidad Instalada", "Estado"]
         self.tabla_herrajes_obra.setColumnCount(len(columnas))
         self.tabla_herrajes_obra.setHorizontalHeaderLabels(columnas)
-        
+
         # Configurar comportamiento
         self.tabla_herrajes_obra.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
         self.tabla_herrajes_obra.setAlternatingRowColors(True)
         self.tabla_herrajes_obra.setSortingEnabled(True)
-        
+
         # Aplicar estilos mejorados para mejor contraste
         self.tabla_herrajes_obra.setStyleSheet("""
             QTableWidget {
@@ -695,10 +699,9 @@ class HerrajesView(QWidget, ModuleExportMixin):
     # El método on_actualizar_datos ya existe, no duplicar
 
     # === MÉTODOS DE CONTROL ===
-    
+
     def aplicar_estilos_adicionales(self):
         """Aplica estilos adicionales si es necesario."""
-        pass
 
     # === MÉTODOS DE CONTROL ===
 
@@ -719,10 +722,11 @@ class HerrajesView(QWidget, ModuleExportMixin):
     def on_nuevo_herraje(self):
         """Maneja la creación de nuevo herraje."""
         try:
-            if self.controller and hasattr(self.controller, 'mostrar_dialogo_herraje'):
+            if self.controller and \
+                hasattr(self.controller, 'mostrar_dialogo_herraje'):
                 self.controller.mostrar_dialogo_herraje()
             else:
-                show_warning(self, "Funcionalidad no disponible", 
+                show_warning(self, "Funcionalidad no disponible",
                            "La creación de herrajes aún no está implementada.")
         except Exception as e:
             logging.error(f"Error al abrir diálogo de nuevo herraje: {e}")
@@ -736,11 +740,12 @@ class HerrajesView(QWidget, ModuleExportMixin):
 
             selected_items = self.tabla_herrajes.selectedItems()
             if not selected_items:
-                show_warning(self, "Selección requerida", 
+                show_warning(self, "Selección requerida",
                            "Por favor seleccione un herraje para editar.")
                 return
 
-            if self.controller and hasattr(self.controller, 'mostrar_dialogo_herraje'):
+            if self.controller and \
+                hasattr(self.controller, 'mostrar_dialogo_herraje'):
                 row = selected_items[0].row()
                 herraje_data = self.obtener_datos_fila(row)
                 if herraje_data:
@@ -748,7 +753,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 else:
                     show_warning(self, "Error", "No se pudieron obtener los datos del herraje.")
             else:
-                show_warning(self, "Funcionalidad no disponible", 
+                show_warning(self, "Funcionalidad no disponible",
                            "La edición de herrajes aún no está implementada.")
         except Exception as e:
             logging.error(f"Error al editar herraje: {e}")
@@ -762,29 +767,30 @@ class HerrajesView(QWidget, ModuleExportMixin):
 
             selected_items = self.tabla_herrajes.selectedItems()
             if not selected_items:
-                show_warning(self, "Selección requerida", 
+                show_warning(self, "Selección requerida",
                            "Por favor seleccione un herraje para eliminar.")
                 return
 
             row = selected_items[0].row()
             codigo_item = self.tabla_herrajes.item(row, 0)
             nombre_item = self.tabla_herrajes.item(row, 1)
-            
+
             if not codigo_item or not nombre_item:
                 show_warning(self, "Error", "No se pueden obtener los datos del herraje.")
                 return
-                
+
             codigo = codigo_item.text()
             nombre = nombre_item.text()
 
             if ask_question(self, "Confirmar eliminación",
                           f"¿Está seguro que desea eliminar el herraje '{nombre}' (Código: {codigo})?"):
-                if self.controller and hasattr(self.controller, 'eliminar_herraje'):
+                if self.controller and \
+                    hasattr(self.controller, 'eliminar_herraje'):
                     success = self.controller.eliminar_herraje(codigo)
                     if success:
                         self.on_actualizar_datos()  # Recargar tabla
                 else:
-                    show_warning(self, "Funcionalidad no disponible", 
+                    show_warning(self, "Funcionalidad no disponible",
                                "La eliminación de herrajes aún no está implementada.")
         except Exception as e:
             logging.error(f"Error al eliminar herraje: {e}")
@@ -793,11 +799,13 @@ class HerrajesView(QWidget, ModuleExportMixin):
     def on_actualizar_datos(self):
         """Actualiza los datos de la tabla."""
         try:
-            if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+            if self.controller and \
+                hasattr(self.controller, 'cargar_herrajes'):
                 self.mostrar_loading("Actualizando datos...")
                 self.controller.cargar_herrajes()
                 self.ocultar_loading()
-            elif self.controller and hasattr(self.controller, 'cargar_datos_iniciales'):
+            elif self.controller and \
+                hasattr(self.controller, 'cargar_datos_iniciales'):
                 self.mostrar_loading("Actualizando datos...")
                 self.controller.cargar_datos_iniciales()
                 self.ocultar_loading()
@@ -811,12 +819,13 @@ class HerrajesView(QWidget, ModuleExportMixin):
     def on_exportar_datos(self):
         """Exporta los datos de herrajes."""
         try:
-            if self.controller and hasattr(self.controller, 'exportar_herrajes'):
+            if self.controller and \
+                hasattr(self.controller, 'exportar_herrajes'):
                 self.mostrar_loading("Exportando datos...")
                 self.controller.exportar_herrajes("excel")
                 self.ocultar_loading()
             else:
-                show_warning(self, "Funcionalidad no disponible", 
+                show_warning(self, "Funcionalidad no disponible",
                            "La exportación de herrajes aún no está implementada.")
         except Exception as e:
             logging.error(f"Error al exportar datos: {e}")
@@ -827,13 +836,15 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Maneja la búsqueda de herrajes con debounce."""
         if len(texto.strip()) == 0:
             # Si el texto está vacío, mostrar todos los herrajes
-            if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+            if self.controller and \
+                hasattr(self.controller, 'cargar_herrajes'):
                 self.controller.cargar_herrajes()
             return
-            
+
         if len(texto.strip()) >= 2:  # Buscar con mínimo 2 caracteres
             try:
-                if self.controller and hasattr(self.controller, 'buscar_herrajes'):
+                if self.controller and \
+                    hasattr(self.controller, 'buscar_herrajes'):
                     categoria = self.combo_categoria.currentText() if self.combo_categoria else ""
                     # Limpiar categoria si es "Todas las categorías"
                     if categoria.startswith("📂"):
@@ -848,7 +859,8 @@ class HerrajesView(QWidget, ModuleExportMixin):
     def on_filtrar_categoria(self, categoria: str):
         """Maneja el filtro por categoría."""
         try:
-            if self.controller and hasattr(self.controller, 'buscar_herrajes'):
+            if self.controller and \
+                hasattr(self.controller, 'buscar_herrajes'):
                 termino_busqueda = self.input_busqueda.text().strip() if self.input_busqueda else ""
                 # Limpiar categoria si es "Todas las categorías"
                 if categoria.startswith("📂"):
@@ -864,34 +876,34 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Filtra la tabla localmente por término de búsqueda."""
         if not self.tabla_herrajes:
             return
-            
+
         termino_lower = termino.lower()
         for row in range(self.tabla_herrajes.rowCount()):
             mostrar_fila = False
-            
+
             # Buscar en todas las columnas relevantes
             for col in range(min(6, self.tabla_herrajes.columnCount())):  # Hasta la columna de proveedor
                 item = self.tabla_herrajes.item(row, col)
                 if item and termino_lower in item.text().lower():
                     mostrar_fila = True
                     break
-                    
+
             self.tabla_herrajes.setRowHidden(row, not mostrar_fila)
 
     def _filtrar_tabla_local_por_categoria(self, categoria: str):
         """Filtra la tabla localmente por categoría."""
         if not self.tabla_herrajes:
             return
-            
+
         if categoria.startswith("📂"):
             # Mostrar todas las filas si es "Todas las categorías"
             for row in range(self.tabla_herrajes.rowCount()):
                 self.tabla_herrajes.setRowHidden(row, False)
             return
-            
+
         # Extraer la categoría real del texto con emoji
         categoria_real = categoria.split(" ", 1)[1] if " " in categoria else categoria
-        
+
         for row in range(self.tabla_herrajes.rowCount()):
             tipo_item = self.tabla_herrajes.item(row, 2)  # Columna "Tipo"
             if tipo_item:
@@ -905,12 +917,12 @@ class HerrajesView(QWidget, ModuleExportMixin):
         if not self.combo_obras or not self.controller:
             show_warning(self, "Error", "No se puede cargar la información de la obra.")
             return
-            
+
         obra_text = self.combo_obras.currentText()
         if not obra_text or obra_text == "Seleccione una obra...":
             show_warning(self, "Selección requerida", "Por favor seleccione una obra.")
             return
-            
+
         # Extraer ID de obra del texto (formato: "ID - Nombre")
         try:
             obra_id = int(obra_text.split(" - ")[0])
@@ -920,7 +932,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 self.cargar_herrajes_en_tabla_obra(herrajes_obra)
                 self.ocultar_loading()
             else:
-                show_warning(self, "Funcionalidad no disponible", 
+                show_warning(self, "Funcionalidad no disponible",
                            "La carga de herrajes por obra aún no está implementada.")
         except (ValueError, IndexError):
             show_warning(self, "Error", "Formato de obra no válido.")
@@ -929,25 +941,31 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Carga herrajes en la tabla de obra."""
         if not self.tabla_herrajes_obra:
             return
-            
+
         try:
             self.tabla_herrajes_obra.setRowCount(len(herrajes))
-            
+
             for fila, herraje in enumerate(herrajes):
                 # Código
-                self.tabla_herrajes_obra.setItem(fila, 0, QTableWidgetItem(str(herraje.get("codigo", ""))))
-                
+                self.tabla_herrajes_obra.setItem(fila,
+0,
+                    QTableWidgetItem(str(herraje.get("codigo",
+                    ""))))
+
                 # Nombre
-                self.tabla_herrajes_obra.setItem(fila, 1, QTableWidgetItem(str(herraje.get("nombre", ""))))
-                
+                self.tabla_herrajes_obra.setItem(fila,
+1,
+                    QTableWidgetItem(str(herraje.get("nombre",
+                    ""))))
+
                 # Cantidad requerida
                 cant_req = int(herraje.get("cantidad_requerida", 0))
                 self.tabla_herrajes_obra.setItem(fila, 2, QTableWidgetItem(str(cant_req)))
-                
+
                 # Cantidad instalada
                 cant_inst = int(herraje.get("cantidad_instalada", 0))
                 self.tabla_herrajes_obra.setItem(fila, 3, QTableWidgetItem(str(cant_inst)))
-                
+
                 # Estado con mejor contraste
                 if cant_inst >= cant_req:
                     estado = "Completo"
@@ -961,12 +979,12 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     estado = "Pendiente"
                     bg_color = QColor(180, 30, 30)  # Rojo oscuro
                     text_color = QColor(255, 255, 255)  # Blanco
-                    
+
                 estado_item = QTableWidgetItem(estado)
                 estado_item.setBackground(bg_color)
                 estado_item.setForeground(text_color)
                 self.tabla_herrajes_obra.setItem(fila, 4, estado_item)
-                
+
         except Exception as e:
             logging.error(f"Error cargando herrajes en tabla de obra: {e}")
             show_error(self, "Error", f"No se pudieron cargar los herrajes de la obra: {e}")
@@ -975,16 +993,25 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Carga la lista de proveedores."""
         if not self.controller or not hasattr(self.controller, 'obtener_proveedores'):
             return
-            
+
         try:
             proveedores = self.controller.obtener_proveedores()
             self.lista_proveedores.setRowCount(len(proveedores))
-            
+
             for fila, proveedor in enumerate(proveedores):
-                self.lista_proveedores.setItem(fila, 0, QTableWidgetItem(str(proveedor.get("nombre", ""))))
-                self.lista_proveedores.setItem(fila, 1, QTableWidgetItem(str(proveedor.get("contacto", ""))))
-                self.lista_proveedores.setItem(fila, 2, QTableWidgetItem(str(proveedor.get("herrajes_count", 0))))
-                
+                self.lista_proveedores.setItem(fila,
+0,
+                    QTableWidgetItem(str(proveedor.get("nombre",
+                    ""))))
+                self.lista_proveedores.setItem(fila,
+1,
+                    QTableWidgetItem(str(proveedor.get("contacto",
+                    ""))))
+                self.lista_proveedores.setItem(fila,
+2,
+                    QTableWidgetItem(str(proveedor.get("herrajes_count",
+                    0))))
+
         except Exception as e:
             logging.error(f"Error cargando proveedores: {e}")
 
@@ -1025,7 +1052,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                 # Stock con colores de alto contraste
                 stock = int(herraje.get("stock_actual", herraje.get("stock", 0)))
                 stock_item = QTableWidgetItem(str(stock))
-                
+
                 # Aplicar colores con mejor contraste
                 if stock == 0:
                     # Rojo fuerte con texto blanco
@@ -1039,7 +1066,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     # Verde con texto blanco
                     stock_item.setBackground(QColor(34, 139, 34))  # Verde bosque
                     stock_item.setForeground(QColor(255, 255, 255))  # Blanco
-                    
+
                 self.tabla_herrajes.setItem(fila, 3, stock_item)
 
                 # Precio
@@ -1069,8 +1096,8 @@ class HerrajesView(QWidget, ModuleExportMixin):
         except Exception as e:
             self.error_ocurrido.emit(f"Error cargando herrajes: {str(e)}")
             show_error(
-                self, 
-                "Error de datos", 
+                self,
+                "Error de datos",
                 f"No se pudieron cargar los herrajes: {str(e)}"
             )
             self.ocultar_loading()
@@ -1085,7 +1112,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
                     current_text = self.stats_labels[key].text()
                     icon = current_text.split()[0] if current_text else "[CHART]"
                     self.stats_labels[key].setText(f"{icon} {value}")
-                    
+
         except Exception as e:
             logging.error(f"Error actualizando estadísticas: {e}")
 
@@ -1148,10 +1175,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """Limpia todos los datos de la vista."""
         if self.tabla_herrajes:
             self.tabla_herrajes.setRowCount(0)
-        
+
         if self.input_busqueda:
             self.input_busqueda.clear()
-        
+
         if self.combo_categoria:
             self.combo_categoria.setCurrentIndex(0)
 

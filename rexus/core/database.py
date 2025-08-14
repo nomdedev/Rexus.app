@@ -11,7 +11,12 @@ DOCUMENTACIÓN DE USO DE BASES DE DATOS EN LA APP
    - Gestión de permisos y roles
    - Todo lo relacionado con autenticación y seguridad
 
-2. TODOS los demás módulos (inventario, obras, pedidos, vidrios, herrajes, etc.)
+2. TODOS los demás módulos (inventario,
+obras,
+    pedidos,
+    vidrios,
+    herrajes,
+    etc.)
    deben usar la base de datos 'inventario' para sus tablas y operaciones.
 
 3. La base de datos 'auditoria' se usa exclusivamente para trazabilidad y registro de eventos críticos.
@@ -55,7 +60,7 @@ def validate_environment():
         'DB_INVENTARIO': DB_INVENTARIO,
         'DB_AUDITORIA': DB_AUDITORIA
     }
-    
+
     missing = [var for var, value in required_vars.items() if not value]
     if missing:
         print(f"[WARNING] Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo.")
@@ -83,7 +88,7 @@ class DatabaseConnection:
         self._connection: Optional[pyodbc.Connection] = None
         if auto_connect:
             self.connect()
-    
+
     @property
     def connection(self) -> Optional[pyodbc.Connection]:
         """Proporciona acceso a la conexión actual"""
@@ -92,10 +97,10 @@ class DatabaseConnection:
     def switch_database(self, new_database: str) -> bool:
         """
         Cambia a una base de datos diferente usando la misma conexión
-        
+
         Args:
             new_database: Nombre de la nueva base de datos
-            
+
         Returns:
             True si el cambio fue exitoso, False si no
         """
@@ -103,17 +108,18 @@ class DatabaseConnection:
         if not new_database or not isinstance(new_database, str):
             print(f"[DB ERROR] Invalid database name: {new_database}")
             return False
-        
-        # Sanitize database name - only allow alphanumeric, underscore, and hyphen
+
+        # Sanitize database name - only allow alphanumeric, underscore, and \
+            hyphen
         import re
         if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):
             print(f"[DB ERROR] Database name contains invalid characters: {new_database}")
             return False
-        
+
         if not self._connection:
             self.database = new_database
             return self.connect()
-        
+
         try:
             cursor = self._connection.cursor()
             # Use secure string concatenation with brackets for database names
@@ -185,7 +191,7 @@ class DatabaseConnection:
             except Exception as e:
                 print(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
             self._connection = None
-    
+
     def close(self):
         """Alias para disconnect() - cierra la conexión a la base de datos"""
         self.disconnect()
@@ -241,23 +247,23 @@ class DatabaseConnection:
 # Singleton para conexiones reutilizables
 class SmartDatabaseConnection:
     """Conexión inteligente que permite cambiar de base de datos dinámicamente"""
-    
+
     _instance = None
     _connection_obj = None
-    
+
     def __new__(cls):
         if cls._instance is None:
             cls._instance = super().__new__(cls)
         return cls._instance
-    
+
     def get_connection(self, database: str, auto_connect: bool = True) -> DatabaseConnection:
         """
         Obtiene una conexión a la base de datos especificada
-        
+
         Args:
             database: Nombre de la base de datos
             auto_connect: Si debe conectar automáticamente
-            
+
         Returns:
             Objeto DatabaseConnection configurado para la base de datos
         """
@@ -269,9 +275,9 @@ class SmartDatabaseConnection:
         elif not self._connection_obj._connection and auto_connect:
             # Reconectar si no hay conexión activa
             self._connection_obj.connect()
-            
+
         return self._connection_obj
-    
+
     def disconnect(self):
         """Desconecta la conexión actual"""
         if self._connection_obj:

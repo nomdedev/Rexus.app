@@ -32,13 +32,9 @@ import os
 import sys
 
 from PyQt6.QtCore import Qt, pyqtSignal
-from PyQt6.QtGui import QFont, QIcon, QPixmap
 from PyQt6.QtWidgets import (
-    QCheckBox,
     QDialog,
-    QFormLayout,
     QFrame,
-    QHBoxLayout,
     QLabel,
     QLineEdit,
     QMessageBox,
@@ -47,8 +43,6 @@ from PyQt6.QtWidgets import (
 )
 
 from rexus.core.auth_manager import AuthManager
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class LoginDialog(QDialog):
@@ -61,7 +55,7 @@ class LoginDialog(QDialog):
     def __init__(self, parent=None):
         super().__init__(parent)
         self.init_ui()
-        
+
         # Verificar si debe hacer auto-login en modo desarrollo
         self.check_dev_auto_login()
 
@@ -366,12 +360,12 @@ class LoginDialog(QDialog):
         # Intentar login
         try:
             result = AuthManager.authenticate_user(username, password)
-            
+
             # Verificar si el resultado es un dict con error (rate limiting o credenciales incorrectas)
             if isinstance(result, dict):
                 if "error" in result:
                     error_msg = result["error"]
-                    
+
                     # Verificar si hay información de rate limiting
                     if "remaining_attempts" in result:
                         remaining = result["remaining_attempts"]
@@ -379,17 +373,18 @@ class LoginDialog(QDialog):
                             error_msg += f"\nIntentos restantes: {remaining}"
                         else:
                             error_msg = "Demasiados intentos fallidos. Usuario temporalmente bloqueado."
-                    
+
                     self.show_error(error_msg)
                     self.login_failed.emit(error_msg)
                     self.password_edit.clear()
-                    
+
                     # Si hay intentos restantes, enfocar campo de contraseña, sino usuario
-                    if "remaining_attempts" in result and result["remaining_attempts"] > 0:
+                    if "remaining_attempts" in result and \
+                        result["remaining_attempts"] > 0:
                         self.password_edit.setFocus()
                     else:
                         self.username_edit.setFocus()
-                        
+
                 elif "authenticated" in result:
                     # Login exitoso
                     self.login_successful.emit(result)
@@ -449,7 +444,7 @@ class LoginDialog(QDialog):
             self.reject()
         else:
             super().keyPressEvent(event)
-    
+
     def check_dev_auto_login(self):
         """
         Verifica si debe hacer auto-login en modo desarrollo.
@@ -460,30 +455,30 @@ class LoginDialog(QDialog):
             auto_login_enabled = os.getenv('REXUS_DEV_AUTO_LOGIN', 'false').lower() == 'true'
             dev_user = os.getenv('REXUS_DEV_USER', '')
             dev_password = os.getenv('REXUS_DEV_PASSWORD', '')
-            
+
             # Verificar modo desarrollo
             is_dev_mode = (
                 '--dev' in sys.argv or
                 os.getenv('REXUS_ENV') == 'development' or
                 os.getenv('HOTRELOAD_ENABLED', '').lower() == 'true'
             )
-            
+
             if is_dev_mode and auto_login_enabled and dev_user and dev_password:
                 print(f"[DEV] Auto-login habilitado - Usuario: {dev_user}")
-                
+
                 # Pre-llenar campos
                 if hasattr(self, 'username_edit'):
                     self.username_edit.setText(dev_user)
                 if hasattr(self, 'password_edit'):
                     self.password_edit.setText(dev_password)
-                
+
                 # Ejecutar login automáticamente después de mostrar el diálogo
                 from PyQt6.QtCore import QTimer
                 QTimer.singleShot(500, self.auto_login_dev)
-                
+
         except Exception as e:
             print(f"[DEV] Error en auto-login: {e}")
-    
+
     def auto_login_dev(self):
         """Ejecuta el login automático para desarrollo."""
         try:

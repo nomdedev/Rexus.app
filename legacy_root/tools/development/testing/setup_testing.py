@@ -14,7 +14,10 @@ from datetime import datetime
     print("🗄️ EJECUTANDO SCRIPT SQL DEL MÓDULO RRHH")
     print("="*50)
 
-    sql_file = os.path.join(os.path.dirname(__file__), '..', 'database', 'crear_modulo_rrhh.sql')
+    sql_file = os.path.join(os.path.dirname(__file__),
+'..',
+        'database',
+        'crear_modulo_rrhh.sql')
 
     if not os.path.exists(sql_file):
         print(f"[ERROR] No se encontró el archivo SQL: {sql_file}")
@@ -63,7 +66,10 @@ def probar_aplicacion():
     print("="*45)
 
     try:
-        main_path = os.path.join(os.path.dirname(__file__), '..', '..', 'main.py')
+        main_path = os.path.join(os.path.dirname(__file__),
+'..',
+            '..',
+            'main.py')
 
         if not os.path.exists(main_path):
             print(f"[ERROR] No se encontró main.py en: {main_path}")
@@ -142,7 +148,13 @@ USE MPS_INVENTARIO;
 -- Crear usuario de prueba si no existe
 IF NOT EXISTS (SELECT 1 FROM usuarios WHERE username = 'test_user')
 BEGIN
-    INSERT INTO usuarios (username, password, nombre, email, rol, activo, fecha_creacion)
+    INSERT INTO usuarios (username,
+password,
+        nombre,
+        email,
+        rol,
+        activo,
+        fecha_creacion)
     VALUES (
         'test_user',
         'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855', -- Hash de 'test123'

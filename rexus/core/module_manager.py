@@ -5,13 +5,11 @@ Proporciona una solución sistemática para la carga de módulos,
 manejo de errores y prevención de vulnerabilidades SQL injection.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 from PyQt6.QtWidgets import QWidget
 
 from rexus.utils.module_utils import module_registry, normalize_module_name
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class ModuleManager:
@@ -194,7 +192,11 @@ class ModuleManager:
             traceback.print_exc()
             raise Exception(f"Error creando vista: {e}")
 
-    def _create_controller_safely(self, controller_class, model, view, module_name):
+    def _create_controller_safely(self,
+controller_class,
+        model,
+        view,
+        module_name):
         """Crea controlador con validación de dependencias."""
         try:
             print(
@@ -225,7 +227,7 @@ class ModuleManager:
         """Carga datos iniciales de forma segura usando registry centralizado."""
         try:
             # Normalizar nombre del módulo para búsqueda consistente
-            normalized_name = normalize_module_name(module_name)
+            normalize_module_name(module_name)
             module_key = module_registry.normalize_and_find(module_name)
 
             # Mapeo robusto basado en registry
@@ -352,7 +354,6 @@ class ModuleManager:
         from PyQt6.QtWidgets import (
             QGroupBox,
             QLabel,
-            QPushButton,
             QTextEdit,
             QVBoxLayout,
         )

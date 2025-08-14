@@ -75,7 +75,10 @@ def fix_inventario_view_db_access(project_root):
         self.usuario_actual = usuario_actual"""
 
     if re.search(old_init_pattern, view_content, re.DOTALL):
-        view_content = re.sub(old_init_pattern, new_init, view_content, flags=re.DOTALL)
+        view_content = re.sub(old_init_pattern,
+new_init,
+            view_content,
+            flags=re.DOTALL)
         print("   + Constructor refactorizado para usar modelo")
 
     # PASO 3: Reemplazar cualquier uso directo de self.db_connection
@@ -92,7 +95,7 @@ def fix_inventario_view_db_access(project_root):
     def get_model(self):
         """Retorna el modelo de inventario para operaciones de datos"""
         return self.model
-    
+
     def refresh_data(self):
         """Actualiza los datos desde el modelo"""
         if hasattr(self, 'model') and self.model:
@@ -178,17 +181,17 @@ def create_mvc_guidelines():
 
 ### MODELO (Model)
 - **Responsabilidad**: Lógica de negocio y acceso a datos
-- **Contiene**: 
+- **Contiene**:
   - Conexiones a base de datos
   - Validaciones de datos
   - Cálculos y operaciones de negocio
   - Métodos CRUD (Create, Read, Update, Delete)
-- **NO debe contener**: 
+- **NO debe contener**:
   - Imports de PyQt6 o interfaces gráficas
   - Lógica de presentación
   - Manejo directo de eventos UI
 
-### VISTA (View)  
+### VISTA (View)
 - **Responsabilidad**: Presentación e interfaz de usuario
 - **Contiene**:
   - Widgets de PyQt6
@@ -230,12 +233,12 @@ class InventarioView(QWidget):
         super().__init__()
         self.model = InventarioModel(db_connection)  # [CHECK] Usa modelo
         self.init_ui()
-    
+
     def cargar_productos(self):
         productos = self.model.obtener_productos()  # [CHECK] Delega al modelo
         self.actualizar_tabla(productos)
 
-# En model.py  
+# En model.py
 class InventarioModel:
     def obtener_productos(self):
         cursor = self.db_connection.cursor()  # [CHECK] SQL en modelo
@@ -254,7 +257,7 @@ cursor.execute("SELECT * FROM productos")
 
 [ERROR] Modelo con UI:
 ```python
-# En model.py - MAL  
+# En model.py - MAL
 from PyQt6.QtWidgets import QMessageBox
 QMessageBox.warning(None, "Error", "Mensaje")
 ```

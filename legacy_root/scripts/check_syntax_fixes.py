@@ -11,11 +11,11 @@ def check_syntax_errors():
     """Verifica errores de sintaxis en archivos Python del proyecto."""
     root_path = Path(".")
     syntax_errors = []
-    
+
     # Lista de archivos que sabemos que tienen errores críticos
     critical_files = [
         "rexus/modules/administracion/view_integrated.py",
-        "rexus/modules/compras/dialogs/dialog_proveedor.py", 
+        "rexus/modules/compras/dialogs/dialog_proveedor.py",
         "rexus/modules/compras/dialogs/dialog_seguimiento.py",
         "rexus/modules/herrajes/view_simple.py",
         "rexus/modules/inventario/dialogs/missing_dialogs.py",
@@ -25,15 +25,15 @@ def check_syntax_errors():
         "rexus/modules/usuarios/submodules/permissions_manager.py",
         "rexus/modules/usuarios/submodules/profiles_manager.py"
     ]
-    
+
     print("🔍 Verificando corrección de errores de sintaxis críticos...")
-    
+
     for file_path in critical_files:
         py_file = root_path / file_path
         if not py_file.exists():
             print(f"❌ Archivo no encontrado: {file_path}")
             continue
-            
+
         try:
             with open(py_file, 'r', encoding='utf-8') as f:
                 content = f.read()
@@ -45,7 +45,7 @@ def check_syntax_errors():
         except Exception as e:
             syntax_errors.append(f"{file_path}: Error inesperado - {e}")
             print(f"❌ {file_path}: Error inesperado - {e}")
-    
+
     print(f"\n📊 RESULTADO:")
     if syntax_errors:
         print(f"❌ {len(syntax_errors)} archivos con errores de sintaxis")
@@ -53,7 +53,7 @@ def check_syntax_errors():
             print(f"  • {error}")
     else:
         print(f"✅ Todos los archivos críticos tienen sintaxis correcta")
-    
+
     return syntax_errors
 
 if __name__ == "__main__":

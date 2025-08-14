@@ -198,7 +198,11 @@ class VidriosView(QWidget):
 
         # Filtro por tipo
         self.combo_tipo = QComboBox()
-        self.combo_tipo.addItems(["Todos", "Templado", "Laminado", "Común", "Espejo"])
+        self.combo_tipo.addItems(["Todos",
+"Templado",
+            "Laminado",
+            "Común",
+            "Espejo"])
         self.combo_tipo.currentTextChanged.connect(self.aplicar_filtros)
         self.combo_tipo.setMaximumWidth(180)
         filtros_layout.addWidget(QLabel("Tipo:"))

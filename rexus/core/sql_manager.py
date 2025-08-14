@@ -6,8 +6,6 @@ desde archivos externos. Garantiza separación completa entre lógica
 de negocio y consultas SQL.
 """
 
-import json
-import os
 from pathlib import Path
 from typing import Any, Dict, Optional
 
@@ -66,7 +64,10 @@ class SQLManager:
         except Exception as e:
             print(f"[ERROR SQL_MANAGER] Error cargando consultas: {e}")
 
-    def get_query(self, module: str, query_name: str, **params) -> Optional[str]:
+    def get_query(self,
+module: str,
+        query_name: str,
+        **params) -> Optional[str]:
         """
         Obtiene una consulta SQL del módulo especificado.
 

@@ -12,21 +12,21 @@ def setup_environment():
     root_dir = Path(__file__).parent
     os.chdir(root_dir)
     sys.path.insert(0, str(root_dir))
-    
+
     # Cargar variables de entorno
     try:
         from dotenv import load_dotenv
         load_dotenv()
     except ImportError:
         pass
-    
+
     return True
 
 def main():
     """Función principal."""
     if not setup_environment():
         sys.exit(1)
-    
+
     try:
         from rexus.main.app import main as app_main
         app_main()

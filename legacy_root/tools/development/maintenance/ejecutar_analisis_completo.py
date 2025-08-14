@@ -20,7 +20,10 @@ def ejecutar_comando(comando, descripcion):
     """
     print(f"\n[*] {descripcion}...")
     try:
-        result = subprocess.run(comando, capture_output=True, text=True, cwd=ROOT_DIR)
+        result = subprocess.run(comando,
+capture_output=True,
+            text=True,
+            cwd=ROOT_DIR)
         if result.returncode == 0:
             print(f"  [CHECK] {descripcion} completado exitosamente")
             if result.stdout:

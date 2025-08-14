@@ -242,7 +242,10 @@ class ContextualErrorManager:
         return error_info
 
     @classmethod
-    def _personalize_message(cls, message: str, suggestion: str, context: Dict) -> str:
+    def _personalize_message(cls,
+message: str,
+        suggestion: str,
+        context: Dict) -> str:
         """Personaliza el mensaje con información del contexto."""
 
         # Agregar información específica del campo si está disponible

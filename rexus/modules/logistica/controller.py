@@ -1,37 +1,38 @@
 """Controlador de Logística"""
 
 from PyQt6.QtCore import QObject
-from rexus.utils.error_handler import RexusErrorHandler as ErrorHandler, error_boundary as safe_method_decorator
-from rexus.core.auth_manager import AuthManager, auth_required, admin_required, manager_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.error_handler import error_boundary as safe_method_decorator
+from rexus.core.auth_manager import auth_required
 
 
 class LogisticaController(QObject):
-    def __init__(self, model=None, view=None, db_connection=None, usuarios_model=None):
+    def __init__(self,
+model=None,
+        view=None,
+        db_connection=None,
+        usuarios_model=None):
         super().__init__()
         self.model = model
         self.view = view
         self.db_connection = db_connection
         self.usuarios_model = usuarios_model
         self.usuario_actual = "SISTEMA"
-        
+
         # Conectar señales de la vista
         if self.view:
             self.conectar_senales_vista()
-    
+
     def conectar_senales_vista(self):
         """Conecta todas las señales de la vista con sus métodos correspondientes."""
         try:
             # Verificar que la vista existe antes de conectar señales
             if not self.view:
                 return
-                
+
             # Señales existentes
             if hasattr(self.view, 'crear_entrega_solicitada'):
                 self.view.crear_entrega_solicitada.connect(self.guardar_entrega)
-            
+
             # Nuevas señales para transportes
             if hasattr(self.view, 'solicitud_crear_transporte'):
                 self.view.solicitud_crear_transporte.connect(self.crear_transporte)
@@ -43,13 +44,13 @@ class LogisticaController(QObject):
                 self.view.solicitud_actualizar_estadisticas.connect(self.cargar_estadisticas)
         except Exception as e:
             print(f"Error conectando señales: {e}")
-    
+
     @safe_method_decorator
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales del módulo."""
         self.cargar_entregas()
         self.cargar_services()
-    
+
     def cargar_entregas(self):
         """Carga las entregas en la tabla."""
         if self.model and self.view:
@@ -112,7 +113,8 @@ class LogisticaController(QObject):
             else:
                 # Simulación para pruebas
                 print("[OK] Transporte creado exitosamente (simulado)")
-                if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
+                if self.view and \
+                    hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
             print(f"[ERROR] Error al crear transporte: {str(e)}")
@@ -131,7 +133,8 @@ class LogisticaController(QObject):
             else:
                 # Simulación para pruebas
                 print("[OK] Transporte actualizado exitosamente (simulado)")
-                if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
+                if self.view and \
+                    hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
             print(f"[ERROR] Error al actualizar transporte: {str(e)}")
@@ -150,7 +153,8 @@ class LogisticaController(QObject):
             else:
                 # Simulación para pruebas
                 print("[OK] Transporte eliminado exitosamente (simulado)")
-                if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
+                if self.view and \
+                    hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
             print(f"[ERROR] Error al eliminar transporte: {str(e)}")
@@ -192,7 +196,7 @@ class LogisticaController(QObject):
                     'entregados_hoy': 8,
                     'pendientes': 12
                 }
-            
+
             if self.view:
                 self.view.actualizar_estadisticas(stats)
         except Exception as e:

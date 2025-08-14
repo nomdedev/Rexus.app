@@ -4,15 +4,14 @@ Sistema de Tooltips Inteligentes para Rexus.app
 Proporciona tooltips contextuales y dinámicos para mejorar la experiencia del usuario.
 """
 
-from typing import Any, Dict, List, Optional
-from PyQt6.QtWidgets import QWidget, QToolTip, QLabel, QPushButton, QLineEdit, QComboBox
+from typing import Dict
+from PyQt6.QtWidgets import QWidget, QToolTip, QLineEdit
 from PyQt6.QtCore import QPoint, QTimer
-from PyQt6.QtGui import QEnterEvent, QMouseEvent
 
 
 class SmartTooltipsManager:
     """Gestor de tooltips inteligentes para widgets."""
-    
+
     def __init__(self):
         self.tooltip_data = {}
         self.hover_timer = QTimer()
@@ -31,7 +30,10 @@ class SmartTooltipsManager:
                 'enhanced': True
             }
 
-    def add_contextual_tooltip(self, widget: QWidget, base_text: str, context_func=None):
+    def add_contextual_tooltip(self,
+widget: QWidget,
+        base_text: str,
+        context_func=None):
         """Añade un tooltip que cambia según el contexto."""
         def get_contextual_text():
             if context_func and callable(context_func):
@@ -41,13 +43,13 @@ class SmartTooltipsManager:
                 except Exception:
                     return base_text
             return base_text
-        
+
         self.tooltip_data[widget] = {
             'text': base_text,
             'context_func': get_contextual_text,
             'enhanced': True
         }
-        
+
         widget.setToolTip(get_contextual_text())
 
     def _show_delayed_tooltip(self):
@@ -75,7 +77,7 @@ _tooltip_manager = SmartTooltipsManager()
 def setup_smart_tooltips(parent_widget: QWidget):
     """
     Configura tooltips inteligentes para un widget padre y sus hijos.
-    
+
     Args:
         parent_widget: Widget padre que contendrá los tooltips
     """
@@ -143,7 +145,7 @@ def update_tooltip(widget: QWidget, new_text: str):
 def setup_form_tooltips(form_widget: QWidget, field_descriptions: Dict[str, str]):
     """
     Configura tooltips para campos de formulario.
-    
+
     Args:
         form_widget: Widget del formulario
         field_descriptions: Diccionario con nombre_campo: descripción
@@ -157,14 +159,14 @@ def setup_form_tooltips(form_widget: QWidget, field_descriptions: Dict[str, str]
 def setup_table_tooltips(table_widget: QWidget):
     """Configura tooltips para elementos de tabla."""
     if table_widget:
-        add_tooltip(table_widget, 
+        add_tooltip(table_widget,
                    "Haga clic para seleccionar, doble clic para editar")
 
 
 def setup_button_tooltips(parent: QWidget, button_configs: Dict[str, str]):
     """
     Configura tooltips para botones.
-    
+
     Args:
         parent: Widget padre
         button_configs: Diccionario con nombre_boton: tooltip

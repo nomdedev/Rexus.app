@@ -312,7 +312,8 @@ class SystemIntegrationManager(QObject):
                 print(f"Error configurando navegación en {module_info.name}: {e}")
 
         # Configurar manejo de errores
-        if module_info.error_enabled and hasattr(widget, "setup_error_handling"):
+        if module_info.error_enabled and \
+            hasattr(widget, "setup_error_handling"):
             try:
                 getattr(widget, "setup_error_handling")()
             except Exception as e:

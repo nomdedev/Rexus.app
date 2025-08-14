@@ -159,7 +159,8 @@ class TabOrderManager:
             widget.isVisible()
             and widget.isEnabled()
             and widget.focusPolicy() != Qt.FocusPolicy.NoFocus
-            and isinstance(widget, (QLineEdit, QComboBox, QPushButton, QTableWidget))
+ and \
+                isinstance(widget, (QLineEdit, QComboBox, QPushButton, QTableWidget))
         )
 
     def _apply_qt_tab_order(self):
@@ -248,12 +249,14 @@ class TableKeyEventFilter(QObject):
         modifiers = event.modifiers()
 
         # Ctrl+Home: Ir a primera celda
-        if key == Qt.Key.Key_Home and modifiers == Qt.KeyboardModifier.ControlModifier:
+        if key == Qt.Key.Key_Home and \
+            modifiers == Qt.KeyboardModifier.ControlModifier:
             self.table.setCurrentCell(0, 0)
             return True
 
         # Ctrl+End: Ir a última celda
-        if key == Qt.Key.Key_End and modifiers == Qt.KeyboardModifier.ControlModifier:
+        if key == Qt.Key.Key_End and \
+            modifiers == Qt.KeyboardModifier.ControlModifier:
             last_row = self.table.rowCount() - 1
             last_col = self.table.columnCount() - 1
             self.table.setCurrentCell(last_row, last_col)

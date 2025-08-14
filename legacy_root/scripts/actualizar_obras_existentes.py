@@ -48,7 +48,7 @@ def actualizar_obras_existentes():
         # Obtener obras sin código
         cursor.execute("""
             SELECT id, nombre, cliente, fecha_inicio, fecha_fin_estimada
-            FROM obras 
+            FROM obras
             WHERE codigo IS NULL OR codigo = '' OR codigo = 'Sin código'
         """)
 
@@ -77,11 +77,11 @@ def actualizar_obras_existentes():
             # Actualizar obra
             cursor.execute(
                 """
-                UPDATE obras 
-                SET codigo = ?, 
-                    fecha_medicion = ?, 
+                UPDATE obras
+                SET codigo = ?,
+                    fecha_medicion = ?,
                     fecha_colocacion = ?,
-                    observaciones = COALESCE(observaciones, '') || ? 
+                    observaciones = COALESCE(observaciones, '') || ?
                 WHERE id = ?
             """,
                 (
@@ -106,7 +106,7 @@ def actualizar_obras_existentes():
         # Mostrar obras actualizadas
         cursor.execute("""
             SELECT codigo, nombre, cliente, fecha_medicion, fecha_colocacion
-            FROM obras 
+            FROM obras
             ORDER BY fecha_medicion DESC
         """)
 
@@ -142,7 +142,7 @@ def generar_cargas_material_obras():
         # Obtener todas las obras
         cursor.execute("""
             SELECT id, codigo, nombre, cliente, fecha_medicion, fecha_colocacion, estado
-            FROM obras 
+            FROM obras
             ORDER BY fecha_medicion
         """)
 
@@ -214,9 +214,9 @@ def generar_cargas_material_obras():
 
                 cursor.execute(
                     """
-                    INSERT INTO cargas_material 
-                    (obra_id, codigo_carga, tipo_material, cantidad, unidad, 
-                     fecha_solicitud, fecha_entrega_estimada, estado, prioridad, 
+                    INSERT INTO cargas_material
+                    (obra_id, codigo_carga, tipo_material, cantidad, unidad,
+                     fecha_solicitud, fecha_entrega_estimada, estado, prioridad,
                      observaciones, usuario_creacion)
                     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                 """,

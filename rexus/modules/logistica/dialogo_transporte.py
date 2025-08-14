@@ -9,20 +9,18 @@ Implementación minimalista con el estilo visual del módulo
 
 import logging
 from typing import Dict, Optional
-from datetime import datetime
 
 from PyQt6.QtCore import Qt, QDate
 from PyQt6.QtWidgets import (
-    QDialog, QDialogButtonBox, QFormLayout, QVBoxLayout, QHBoxLayout,
-    QLabel, QLineEdit, QComboBox, QTextEdit, QDateEdit, QSpinBox,
-    QWidget, QGroupBox, QMessageBox
+    QDialog, QFormLayout, QVBoxLayout, QHBoxLayout, QLabel,
+    QTextEdit, QDateEdit, QSpinBox, QWidget
 )
 
 from rexus.ui.components.base_components import (
-    RexusButton, RexusLabel, RexusLineEdit, RexusComboBox, RexusGroupBox
+    RexusButton, RexusLineEdit, RexusComboBox, RexusGroupBox
 )
 from rexus.utils.unified_sanitizer import sanitize_string
-from rexus.utils.message_system import show_error, show_warning, show_success
+from rexus.utils.message_system import show_error
 
 
 class DialogoNuevoTransporte(QDialog):
@@ -34,7 +32,7 @@ class DialogoNuevoTransporte(QDialog):
         self.es_edicion = transporte_id is not None
         self.init_ui()
         self.configurar_validaciones()
-        
+
         if self.es_edicion and self.transporte_id is not None:
             self.cargar_datos_transporte(self.transporte_id)
 
@@ -210,7 +208,7 @@ class DialogoNuevoTransporte(QDialog):
                 font-family: 'Segoe UI', Arial, sans-serif;
                 font-size: 12px;
             }
-            
+
             QLineEdit, QComboBox, QSpinBox, QDateEdit {
                 border: 1px solid #e1e4e8;
                 border-radius: 4px;
@@ -219,12 +217,12 @@ class DialogoNuevoTransporte(QDialog):
                 background-color: white;
                 min-height: 20px;
             }
-            
+
             QLineEdit:focus, QComboBox:focus, QSpinBox:focus, QDateEdit:focus {
                 border-color: #0366d6;
                 outline: none;
             }
-            
+
             QTextEdit {
                 border: 1px solid #e1e4e8;
                 border-radius: 4px;
@@ -232,12 +230,12 @@ class DialogoNuevoTransporte(QDialog):
                 font-size: 11px;
                 background-color: white;
             }
-            
+
             QTextEdit:focus {
                 border-color: #0366d6;
                 outline: none;
             }
-            
+
             QGroupBox {
                 font-weight: 600;
                 font-size: 11px;
@@ -248,7 +246,7 @@ class DialogoNuevoTransporte(QDialog):
                 padding-top: 8px;
                 background-color: white;
             }
-            
+
             QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 8px;
@@ -256,7 +254,7 @@ class DialogoNuevoTransporte(QDialog):
                 background-color: white;
                 color: #24292e;
             }
-            
+
             QLabel {
                 color: #24292e;
                 font-size: 11px;
@@ -276,10 +274,10 @@ class DialogoNuevoTransporte(QDialog):
         origen_valido = len(self.input_origen.text().strip()) >= 3
         destino_valido = len(self.input_destino.text().strip()) >= 3
         conductor_valido = len(self.input_conductor.text().strip()) >= 2
-        
+
         campos_validos = origen_valido and destino_valido and conductor_valido
         self.btn_guardar.setEnabled(campos_validos)
-        
+
         # Feedback visual opcional
         if not campos_validos:
             self.btn_guardar.setStyleSheet("""
@@ -317,29 +315,29 @@ class DialogoNuevoTransporte(QDialog):
         try:
             # Validar campos obligatorios
             errores = []
-            
+
             if len(self.input_origen.text().strip()) < 3:
                 errores.append("El origen debe tener al menos 3 caracteres")
-            
+
             if len(self.input_destino.text().strip()) < 3:
                 errores.append("El destino debe tener al menos 3 caracteres")
-            
+
             if len(self.input_conductor.text().strip()) < 2:
                 errores.append("El conductor debe tener al menos 2 caracteres")
-            
+
             # Validar que origen y destino no sean iguales
             if self.input_origen.text().strip().lower() == self.input_destino.text().strip().lower():
                 errores.append("El origen y destino no pueden ser iguales")
-            
+
             # Mostrar errores si los hay
             if errores:
                 mensaje_error = "Por favor corrija los siguientes errores:\n\n" + "\n".join(f"• {error}" for error in errores)
                 show_error(self, "Errores de validación", mensaje_error)
                 return
-            
+
             # Si todo está bien, aceptar el diálogo
             self.accept()
-            
+
         except Exception as e:
             logging.error(f"Error en validación del diálogo: {e}")
             show_error(self, "Error", f"Error inesperado durante la validación: {str(e)}")
@@ -358,14 +356,14 @@ class DialogoNuevoTransporte(QDialog):
                 'costo': self.input_costo.value(),
                 'observaciones': sanitize_string(self.input_observaciones.toPlainText().strip()) or "Sin observaciones"
             }
-            
+
             # Agregar ID si es edición
             if self.es_edicion and self.transporte_id:
                 datos['id'] = self.transporte_id
-            
+
             logging.info(f"Datos del transporte {'editado' if self.es_edicion else 'creado'}: {datos}")
             return datos
-            
+
         except Exception as e:
             logging.error(f"Error obteniendo datos del diálogo: {e}")
             return {}
@@ -386,35 +384,35 @@ class DialogoNuevoTransporte(QDialog):
                 'costo': 15000,
                 'observaciones': 'Entrega programada para la mañana'
             }
-            
+
             # Cargar datos en los campos
             self.input_origen.setText(datos_ejemplo['origen'])
             self.input_destino.setText(datos_ejemplo['destino'])
-            
+
             # Seleccionar estado
             index = self.combo_estado.findText(datos_ejemplo['estado'])
             if index >= 0:
                 self.combo_estado.setCurrentIndex(index)
-            
+
             self.input_conductor.setText(datos_ejemplo['conductor'])
-            
+
             # Configurar fecha
             fecha = QDate.fromString(datos_ejemplo['fecha'], 'yyyy-MM-dd')
             if fecha.isValid():
                 self.input_fecha.setDate(fecha)
-            
+
             self.input_vehiculo.setText(datos_ejemplo['vehiculo'])
-            
+
             # Seleccionar prioridad
             index_prioridad = self.combo_prioridad.findText(datos_ejemplo['prioridad'])
             if index_prioridad >= 0:
                 self.combo_prioridad.setCurrentIndex(index_prioridad)
-            
+
             self.input_costo.setValue(datos_ejemplo['costo'])
             self.input_observaciones.setPlainText(datos_ejemplo['observaciones'])
-            
+
             logging.info(f"Datos cargados para edición del transporte {transporte_id}")
-            
+
         except Exception as e:
             logging.error(f"Error cargando datos del transporte {transporte_id}: {e}")
             show_error(self, "Error", f"No se pudieron cargar los datos del transporte: {str(e)}")

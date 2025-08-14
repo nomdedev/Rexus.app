@@ -22,7 +22,7 @@ def qapp():
 def mock_db():
     """Mock de base de datos para tests unitarios."""
     from unittest.mock import Mock
-    
+
     db = Mock()
     cursor = Mock()
     db.cursor.return_value = cursor
@@ -31,7 +31,7 @@ def mock_db():
     cursor.execute.return_value = None
     cursor.rowcount = 0
     cursor.lastrowid = 1
-    
+
     return db
 
 
@@ -54,7 +54,7 @@ def sample_user_data():
 def mock_db_connection():
     """Mock de conexión a base de datos para tests."""
     from unittest.mock import Mock
-    
+
     db = Mock()
     cursor = Mock()
     db.cursor.return_value = cursor
@@ -63,7 +63,7 @@ def mock_db_connection():
     cursor.execute.return_value = None
     cursor.rowcount = 0
     cursor.lastrowid = 1
-    
+
     return db
 
 
@@ -72,14 +72,14 @@ def test_database_path(tmp_path_factory):
     """Path a la base de datos de testing."""
     # Crear base de datos temporal para tests
     temp_db = tmp_path_factory.mktemp("test_db") / "test_database.db"
-    
+
     # Crear base de datos básica para tests
     import sqlite3
     conn = sqlite3.connect(str(temp_db))
     conn.execute("CREATE TABLE test_table (id INTEGER PRIMARY KEY, name TEXT)")
     conn.commit()
     conn.close()
-    
+
     return str(temp_db)
 
 
@@ -88,7 +88,7 @@ def performance_timer():
     """Timer para medir performance en tests."""
     import time
     from contextlib import contextmanager
-    
+
     @contextmanager
     def timer():
         class Timer:
@@ -96,16 +96,16 @@ def performance_timer():
                 self.start = None
                 self.end = None
                 self.elapsed = None
-        
+
         timer_obj = Timer()
         timer_obj.start = time.time()
-        
+
         try:
             yield timer_obj
         finally:
             timer_obj.end = time.time()
             timer_obj.elapsed = timer_obj.end - timer_obj.start
-    
+
     return timer
 
 
@@ -113,14 +113,14 @@ def performance_timer():
 def mock_logger():
     """Mock del sistema de logging."""
     from unittest.mock import Mock
-    
+
     logger = Mock()
     logger.debug.return_value = None
     logger.info.return_value = None
     logger.warning.return_value = None
     logger.error.return_value = None
     logger.critical.return_value = None
-    
+
     return logger
 
 

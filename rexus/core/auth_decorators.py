@@ -6,32 +6,28 @@ en controladores y métodos críticos.
 """
 
 import functools
-from typing import List, Optional, Callable, Any
+from typing import Callable
 from PyQt6.QtWidgets import QMessageBox
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 
 class AuthenticationError(Exception):
     """Excepción para errores de autenticación"""
-    pass
 
 
 class AuthorizationError(Exception):
     """Excepción para errores de autorización"""
-    pass
 
 
 def auth_required(func: Callable) -> Callable:
     """
     Decorador que requiere autenticación para ejecutar el método.
-    
+
     Args:
         func: Función a proteger
-        
+
     Returns:
         Función decorada que verifica autenticación
-        
+
     Raises:
         AuthenticationError: Si el usuario no está autenticado
     """
@@ -50,7 +46,7 @@ def auth_required(func: Callable) -> Callable:
                     self.current_user = current_user
             except ImportError:
                 raise AuthenticationError("Sistema de autenticación no disponible")
-        
+
         # Registrar acceso para auditoría
         try:
             from rexus.core.security import SecurityManager
@@ -63,9 +59,9 @@ def auth_required(func: Callable) -> Callable:
             )
         except Exception as e:
             print(f"[WARNING] Error registrando acceso: {e}")
-        
+
         return func(self, *args, **kwargs)
-    
+
     wrapper._auth_required = True
     return wrapper
 
@@ -73,13 +69,13 @@ def auth_required(func: Callable) -> Callable:
 def permission_required(permission: str):
     """
     Decorador que requiere un permiso específico para ejecutar el método.
-    
+
     Args:
         permission: Nombre del permiso requerido
-        
+
     Returns:
         Decorador que verifica el permiso
-        
+
     Raises:
         AuthorizationError: Si el usuario no tiene el permiso requerido
     """
@@ -91,12 +87,12 @@ def permission_required(permission: str):
                 # Aplicar auth_required automáticamente
                 auth_func = auth_required(func)
                 return auth_func(self, *args, **kwargs)
-            
+
             # Verificar permiso específico
             try:
                 from rexus.core.auth_manager import AuthManager
                 auth_manager = AuthManager()
-                
+
                 user_role = self.current_user.get('role', 'user')
                 if not auth_manager.has_permission(user_role, permission):
                     # Registrar intento no autorizado
@@ -110,31 +106,31 @@ def permission_required(permission: str):
                         )
                     except Exception as e:
                         print(f"[WARNING] Error registrando evento de seguridad: {e}")
-                    
+
                     raise AuthorizationError(f"Permiso '{permission}' requerido")
-                
+
             except ImportError:
                 print(f"[WARNING] Sistema de permisos no disponible - permitiendo acceso")
-            
+
             return func(self, *args, **kwargs)
-        
+
         wrapper._permission_required = permission
         wrapper._auth_required = True
         return wrapper
-    
+
     return decorator
 
 
 def role_required(*roles: str):
     """
     Decorador que requiere uno de los roles especificados.
-    
+
     Args:
         *roles: Lista de roles permitidos
-        
+
     Returns:
         Decorador que verifica roles
-        
+
     Raises:
         AuthorizationError: Si el usuario no tiene ninguno de los roles requeridos
     """
@@ -145,7 +141,7 @@ def role_required(*roles: str):
             if not hasattr(self, 'current_user') or not self.current_user:
                 auth_func = auth_required(func)
                 return auth_func(self, *args, **kwargs)
-            
+
             # Verificar rol
             user_role = self.current_user.get('role', 'user')
             if user_role not in roles:
@@ -160,25 +156,25 @@ def role_required(*roles: str):
                     )
                 except Exception as e:
                     print(f"[WARNING] Error registrando evento de seguridad: {e}")
-                
+
                 raise AuthorizationError(f"Rol requerido: {' o '.join(roles)}")
-            
+
             return func(self, *args, **kwargs)
-        
+
         wrapper._roles_required = roles
         wrapper._auth_required = True
         return wrapper
-    
+
     return decorator
 
 
 def admin_required(func: Callable) -> Callable:
     """
     Decorador que requiere rol de administrador.
-    
+
     Args:
         func: Función a proteger
-        
+
     Returns:
         Función decorada que verifica rol admin
     """
@@ -189,10 +185,10 @@ def handle_auth_error(func: Callable) -> Callable:
     """
     Decorador que maneja errores de autenticación y autorización
     mostrando mensajes de error apropiados al usuario.
-    
+
     Args:
         func: Función a proteger
-        
+
     Returns:
         Función decorada con manejo de errores
     """
@@ -227,18 +223,18 @@ def handle_auth_error(func: Callable) -> Callable:
                 f"Error interno del sistema.\n\nContacte al administrador.",
                 QMessageBox.StandardButton.Ok
             )
-    
+
     return wrapper
 
 
 def audit_action(action: str, resource: str = None):
     """
     Decorador que registra acciones para auditoría.
-    
+
     Args:
         action: Acción realizada (create, read, update, delete)
         resource: Recurso afectado (opcional)
-        
+
     Returns:
         Decorador que registra la acción
     """
@@ -247,16 +243,16 @@ def audit_action(action: str, resource: str = None):
         def wrapper(self, *args, **kwargs):
             # Ejecutar función
             result = func(self, *args, **kwargs)
-            
+
             # Registrar acción para auditoría
             try:
                 from rexus.core.audit_system import AuditSystem
                 audit = AuditSystem()
-                
+
                 user_id = None
                 if hasattr(self, 'current_user') and self.current_user:
                     user_id = self.current_user.get('id')
-                
+
                 audit.log_action(
                     user_id=user_id,
                     action=action,
@@ -266,47 +262,47 @@ def audit_action(action: str, resource: str = None):
                 )
             except Exception as e:
                 print(f"[WARNING] Error registrando auditoría: {e}")
-            
+
             return result
-        
+
         wrapper._audit_action = action
         wrapper._audit_resource = resource
         return wrapper
-    
+
     return decorator
 
 
 # Decoradores combinados para casos comunes
 def secure_operation(permission: str = None, audit_action: str = None):
     """
-    Decorador combinado que aplica autenticación, autorización, 
+    Decorador combinado que aplica autenticación, autorización,
     manejo de errores y auditoría.
-    
+
     Args:
         permission: Permiso requerido (opcional)
         audit_action: Acción para auditoría (opcional)
-        
+
     Returns:
         Decorador combinado
     """
     def decorator(func: Callable) -> Callable:
         # Aplicar decoradores en orden
         decorated_func = func
-        
+
         # 1. Auditoría (si se especifica)
         if audit_action:
             decorated_func = audit_action(audit_action)(decorated_func)
-        
+
         # 2. Autorización (si se especifica)
         if permission:
             decorated_func = permission_required(permission)(decorated_func)
         else:
             # 3. Al menos autenticación
             decorated_func = auth_required(decorated_func)
-        
+
         # 4. Manejo de errores
         decorated_func = handle_auth_error(decorated_func)
-        
+
         return decorated_func
-    
+
     return decorator

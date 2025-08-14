@@ -65,7 +65,10 @@ def fix_sql_injections():
     changes_made = 0
     for pattern, replacement in replacements:
         old_content = content
-        content = re.sub(pattern, replacement, content, flags=re.MULTILINE | re.DOTALL)
+        content = re.sub(pattern,
+replacement,
+            content,
+            flags=re.MULTILINE | re.DOTALL)
         if content != old_content:
             matches = len(
                 re.findall(pattern, old_content, flags=re.MULTILINE | re.DOTALL)

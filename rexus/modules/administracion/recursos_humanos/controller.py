@@ -10,33 +10,32 @@ Maneja la lógica de control para:
 """
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox, QFileDialog
-from datetime import datetime, date
+from PyQt6.QtWidgets import QMessageBox
+from datetime import datetime
 import csv
 import os
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 
 
 class RecursosHumanosController(QObject):
-    
+
     # Señales para empleados
     empleado_agregado = pyqtSignal(dict)
     empleado_actualizado = pyqtSignal(dict)
     empleado_eliminado = pyqtSignal(int)
-    
+
     # Señales para nómina
     nomina_calculada = pyqtSignal(list)
     nomina_guardada = pyqtSignal(bool)
-    
+
     # Señales para asistencias
     asistencia_registrada = pyqtSignal(dict)
-    
+
     # Señales para bonos
     bono_creado = pyqtSignal(dict)
-    
+
     # Señales para reportes
     reporte_generado = pyqtSignal(str)
-    
+
     def __init__(self, model=None, view=None, db_connection=None):
         super().__init__()
         self.model = model
@@ -52,14 +51,14 @@ class RecursosHumanosController(QObject):
             self.view.crear_empleado_rrhh_signal.connect(self.crear_empleado)
             self.view.actualizar_empleado_signal.connect(self.actualizar_empleado)
             self.view.eliminar_empleado_signal.connect(self.eliminar_empleado)
-            
+
             # Señales de nómina
             self.view.calcular_nomina_signal.connect(self.calcular_nomina)
-            
+
             # Señales de asistencias
             self.view.registrar_asistencia_signal.connect(self.registrar_asistencia)
             self.view.registrar_falta_signal.connect(self.registrar_falta)
-            
+
             # Señales de bonos
             self.view.generar_bono_signal.connect(self.crear_bono_descuento)
 
@@ -69,17 +68,17 @@ class RecursosHumanosController(QObject):
         """Carga la lista de empleados en la vista."""
         if not self.model:
             return
-            
+
         try:
             empleados = self.model.obtener_todos_empleados(filtros)
             if self.view:
                 self.view.actualizar_tabla_empleados(empleados)
-                
+
             # Cargar estadísticas
             estadisticas = self.model.obtener_estadisticas_empleados()
             if self.view:
                 self.view.actualizar_estadisticas_empleados(estadisticas)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error cargando empleados: {e}")
 
@@ -91,12 +90,12 @@ class RecursosHumanosController(QObject):
         """Crea un nuevo empleado."""
         if not self.model:
             return
-            
+
         try:
             # Validar datos requeridos
             if not self._validar_datos_empleado(datos_empleado):
                 return
-                
+
             empleado_id = self.model.crear_empleado(datos_empleado)
             if empleado_id:
                 self.mostrar_mensaje("Empleado creado exitosamente")
@@ -104,7 +103,7 @@ class RecursosHumanosController(QObject):
                 self.empleado_agregado.emit(datos_empleado)
             else:
                 self.mostrar_error("Error al crear empleado")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error creando empleado: {e}")
 
@@ -112,19 +111,19 @@ class RecursosHumanosController(QObject):
         """Actualiza un empleado existente."""
         if not self.model:
             return
-            
+
         try:
             # Validar datos requeridos
             if not self._validar_datos_empleado(datos_empleado):
                 return
-                
+
             if self.model.actualizar_empleado(empleado_id, datos_empleado):
                 self.mostrar_mensaje("Empleado actualizado exitosamente")
                 self.cargar_empleados()
                 self.empleado_actualizado.emit(datos_empleado)
             else:
                 self.mostrar_error("Error al actualizar empleado")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error actualizando empleado: {e}")
 
@@ -132,19 +131,19 @@ class RecursosHumanosController(QObject):
         """Elimina un empleado."""
         if not self.model:
             return
-            
+
         try:
             # Confirmar eliminación
             if not self._confirmar_eliminacion("¿Está seguro de eliminar este empleado?"):
                 return
-                
+
             if self.model.eliminar_empleado(empleado_id):
                 self.mostrar_mensaje("Empleado eliminado exitosamente")
                 self.cargar_empleados()
                 self.empleado_eliminado.emit(empleado_id)
             else:
                 self.mostrar_error("Error al eliminar empleado")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error eliminando empleado: {e}")
 
@@ -152,14 +151,14 @@ class RecursosHumanosController(QObject):
         """Importa empleados desde un archivo CSV."""
         if not self.model:
             return
-            
+
         try:
             empleados_importados = 0
             empleados_error = 0
-            
+
             with open(archivo_csv, 'r', newline='', encoding='utf-8') as file:
                 reader = csv.DictReader(file)
-                
+
                 for row in reader:
                     try:
                         # Mapear columnas del CSV a campos del empleado
@@ -178,19 +177,19 @@ class RecursosHumanosController(QObject):
                             'departamento_id': int(row.get('departamento_id', 1)),
                             'estado': row.get('estado', 'ACTIVO')
                         }
-                        
+
                         if self.model.crear_empleado(datos_empleado):
                             empleados_importados += 1
                         else:
                             empleados_error += 1
-                            
+
                     except Exception as e:
                         empleados_error += 1
                         print(f"Error importando empleado {row}: {e}")
-            
+
             self.mostrar_mensaje(f"Importación completada: {empleados_importados} empleados importados, {empleados_error} errores")
             self.cargar_empleados()
-            
+
         except Exception as e:
             self.mostrar_error(f"Error importando empleados: {e}")
 
@@ -200,14 +199,14 @@ class RecursosHumanosController(QObject):
         """Calcula la nómina para un período específico."""
         if not self.model:
             return
-            
+
         try:
             mes = parametros.get('mes', datetime.now().month)
             anio = parametros.get('anio', datetime.now().year)
             empleado_id = parametros.get('empleado_id')
-            
+
             nomina_calculada = self.model.calcular_nomina(mes, anio, empleado_id)
-            
+
             if nomina_calculada:
                 if self.view:
                     self.view.actualizar_tabla_nomina(nomina_calculada)
@@ -215,7 +214,7 @@ class RecursosHumanosController(QObject):
                 self.mostrar_mensaje(f"Nómina calculada para {len(nomina_calculada)} empleados")
             else:
                 self.mostrar_error("No se pudo calcular la nómina")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error calculando nómina: {e}")
 
@@ -223,7 +222,7 @@ class RecursosHumanosController(QObject):
         """Guarda los cálculos de nómina."""
         if not self.model:
             return
-            
+
         try:
             if self.model.guardar_nomina(nomina_data):
                 self.mostrar_mensaje("Nómina guardada exitosamente")
@@ -231,7 +230,7 @@ class RecursosHumanosController(QObject):
             else:
                 self.mostrar_error("Error al guardar nómina")
                 self.nomina_guardada.emit(False)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error guardando nómina: {e}")
             self.nomina_guardada.emit(False)
@@ -241,30 +240,30 @@ class RecursosHumanosController(QObject):
         if not nomina_data:
             self.mostrar_error("No hay datos de nómina para generar recibos")
             return
-            
+
         try:
             # Crear directorio para recibos si no existe
             directorio_recibos = os.path.join(os.getcwd(), "recibos_sueldo")
             os.makedirs(directorio_recibos, exist_ok=True)
-            
+
             recibos_generados = 0
-            
+
             for empleado_nomina in nomina_data:
                 try:
                     nombre_archivo = f"recibo_{empleado_nomina['empleado_id']}_{empleado_nomina['mes']}_{empleado_nomina['anio']}.pdf"
                     ruta_archivo = os.path.join(directorio_recibos, nombre_archivo)
-                    
+
                     # Aquí iría la lógica para generar el PDF del recibo
                     # Por ahora, crear un archivo de texto como ejemplo
                     self._generar_recibo_texto(empleado_nomina, ruta_archivo.replace('.pdf', '.txt'))
-                    
+
                     recibos_generados += 1
-                    
+
                 except Exception as e:
                     print(f"Error generando recibo para empleado {empleado_nomina['empleado_id']}: {e}")
-            
+
             self.mostrar_mensaje(f"Se generaron {recibos_generados} recibos de sueldo")
-            
+
         except Exception as e:
             self.mostrar_error(f"Error generando recibos: {e}")
 
@@ -274,19 +273,19 @@ class RecursosHumanosController(QObject):
         """Registra asistencia de un empleado."""
         if not self.model:
             return
-            
+
         try:
             # Validar datos de asistencia
             if not self._validar_datos_asistencia(datos_asistencia):
                 return
-                
+
             if self.model.registrar_asistencia(datos_asistencia):
                 self.mostrar_mensaje("Asistencia registrada exitosamente")
                 self.cargar_asistencias()
                 self.asistencia_registrada.emit(datos_asistencia)
             else:
                 self.mostrar_error("Error al registrar asistencia")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error registrando asistencia: {e}")
 
@@ -294,19 +293,19 @@ class RecursosHumanosController(QObject):
         """Registra una falta de empleado."""
         if not self.model:
             return
-            
+
         try:
             # Configurar como falta
             datos_falta['tipo'] = 'FALTA'
             datos_falta['horas_trabajadas'] = 0
             datos_falta['horas_extra'] = 0
-            
+
             if self.model.registrar_asistencia(datos_falta):
                 self.mostrar_mensaje("Falta registrada exitosamente")
                 self.cargar_asistencias()
             else:
                 self.mostrar_error("Error al registrar falta")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error registrando falta: {e}")
 
@@ -314,17 +313,17 @@ class RecursosHumanosController(QObject):
         """Carga las asistencias en la vista."""
         if not self.model:
             return
-            
+
         try:
             fecha_desde = filtros.get('fecha_desde') if filtros else None
             fecha_hasta = filtros.get('fecha_hasta') if filtros else None
             empleado_id = filtros.get('empleado_id') if filtros else None
-            
+
             asistencias = self.model.obtener_asistencias(fecha_desde, fecha_hasta, empleado_id)
-            
+
             if self.view:
                 self.view.actualizar_tabla_asistencias(asistencias)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error cargando asistencias: {e}")
 
@@ -338,12 +337,12 @@ class RecursosHumanosController(QObject):
         """Crea un bono o descuento."""
         if not self.model:
             return
-            
+
         try:
             # Validar datos del bono
             if not self._validar_datos_bono(datos_bono):
                 return
-                
+
             if self.model.crear_bono_descuento(datos_bono):
                 tipo = datos_bono.get('tipo', 'BONO')
                 self.mostrar_mensaje(f"{tipo} creado exitosamente")
@@ -351,7 +350,7 @@ class RecursosHumanosController(QObject):
                 self.bono_creado.emit(datos_bono)
             else:
                 self.mostrar_error("Error al crear bono/descuento")
-                
+
         except Exception as e:
             self.mostrar_error(f"Error creando bono/descuento: {e}")
 
@@ -359,17 +358,17 @@ class RecursosHumanosController(QObject):
         """Carga los bonos y descuentos en la vista."""
         if not self.model:
             return
-            
+
         try:
             empleado_id = filtros.get('empleado_id') if filtros else None
             mes = filtros.get('mes') if filtros else None
             anio = filtros.get('anio') if filtros else None
-            
+
             bonos = self.model.obtener_bonos_descuentos(empleado_id, mes, anio)
-            
+
             if self.view:
                 self.view.actualizar_tabla_bonos(bonos)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error cargando bonos/descuentos: {e}")
 
@@ -379,16 +378,16 @@ class RecursosHumanosController(QObject):
         """Carga el historial laboral en la vista."""
         if not self.model:
             return
-            
+
         try:
             empleado_id = filtros.get('empleado_id') if filtros else None
             tipo = filtros.get('tipo') if filtros else None
-            
+
             historial = self.model.obtener_historial_laboral(empleado_id, tipo)
-            
+
             if self.view:
                 self.view.actualizar_tabla_historial(historial)
-                
+
         except Exception as e:
             self.mostrar_error(f"Error cargando historial: {e}")
 
@@ -402,19 +401,19 @@ class RecursosHumanosController(QObject):
         """Genera reporte de empleados."""
         if not self.model:
             return
-            
+
         try:
             empleados = self.model.obtener_todos_empleados()
-            
+
             if formato == 'CSV':
                 self._generar_reporte_csv(empleados, 'empleados')
             elif formato == 'Excel':
                 self._generar_reporte_excel(empleados, 'empleados')
             else:
                 self._generar_reporte_pdf(empleados, 'empleados')
-                
+
             self.mostrar_mensaje(f"Reporte de empleados generado en formato {formato}")
-            
+
         except Exception as e:
             self.mostrar_error(f"Error generando reporte: {e}")
 
@@ -422,19 +421,19 @@ class RecursosHumanosController(QObject):
         """Genera reporte de nómina."""
         if not self.model:
             return
-            
+
         try:
             nomina = self.model.calcular_nomina(mes, anio)
-            
+
             if formato == 'CSV':
                 self._generar_reporte_csv(nomina, f'nomina_{mes}_{anio}')
             elif formato == 'Excel':
                 self._generar_reporte_excel(nomina, f'nomina_{mes}_{anio}')
             else:
                 self._generar_reporte_pdf(nomina, f'nomina_{mes}_{anio}')
-                
+
             self.mostrar_mensaje(f"Reporte de nómina generado en formato {formato}")
-            
+
         except Exception as e:
             self.mostrar_error(f"Error generando reporte de nómina: {e}")
 
@@ -443,12 +442,12 @@ class RecursosHumanosController(QObject):
     def _validar_datos_empleado(self, datos):
         """Valida los datos de un empleado."""
         campos_requeridos = ['nombre', 'apellido', 'dni', 'fecha_ingreso', 'salario_base']
-        
+
         for campo in campos_requeridos:
             if not datos.get(campo):
                 self.mostrar_error(f"El campo {campo} es requerido")
                 return False
-                
+
         # Validar salario
         try:
             salario = float(datos.get('salario_base', 0))
@@ -458,29 +457,29 @@ class RecursosHumanosController(QObject):
         except ValueError:
             self.mostrar_error("El salario debe ser un número válido")
             return False
-            
+
         return True
 
     def _validar_datos_asistencia(self, datos):
         """Valida los datos de asistencia."""
         campos_requeridos = ['empleado_id', 'fecha']
-        
+
         for campo in campos_requeridos:
             if not datos.get(campo):
                 self.mostrar_error(f"El campo {campo} es requerido")
                 return False
-                
+
         return True
 
     def _validar_datos_bono(self, datos):
         """Valida los datos de un bono/descuento."""
         campos_requeridos = ['empleado_id', 'tipo', 'concepto', 'monto']
-        
+
         for campo in campos_requeridos:
             if not datos.get(campo):
                 self.mostrar_error(f"El campo {campo} es requerido")
                 return False
-                
+
         # Validar monto
         try:
             monto = float(datos.get('monto', 0))
@@ -490,7 +489,7 @@ class RecursosHumanosController(QObject):
         except ValueError:
             self.mostrar_error("El monto debe ser un número válido")
             return False
-            
+
         return True
 
     def _confirmar_eliminacion(self, mensaje):
@@ -527,9 +526,9 @@ class RecursosHumanosController(QObject):
         """Genera un reporte en formato CSV."""
         if not datos:
             return
-            
+
         ruta_archivo = f"{nombre_archivo}.csv"
-        
+
         with open(ruta_archivo, 'w', newline='', encoding='utf-8') as file:
             writer = csv.DictWriter(file, fieldnames=datos[0].keys())
             writer.writeheader()
@@ -546,11 +545,11 @@ class RecursosHumanosController(QObject):
         # Aquí iría la lógica para generar PDF usando reportlab
         # Por ahora, generar texto
         ruta_archivo = f"{nombre_archivo}.txt"
-        
+
         with open(ruta_archivo, 'w', encoding='utf-8') as file:
             file.write(f"REPORTE: {nombre_archivo.upper()}\n")
             file.write("=" * 50 + "\n\n")
-            
+
             for item in datos:
                 for key, value in item.items():
                     file.write(f"{key}: {value}\n")

@@ -3,7 +3,7 @@
 
 class LogisticaConstants:
     """Constantes para el módulo de Logística"""
-    
+
     # Mensajes
     TABLA_NO_DISPONIBLE = "Tabla de transportes no disponible"
     EDITAR_ICON = "✏️ Editar"
@@ -11,7 +11,7 @@ class LogisticaConstants:
     ESTADO_LABEL = "Estado:"
     VALIDACION_LABEL = "Validación"
     HTML_EXTENSION = ".html"
-    
+
     # Ubicaciones
     ALMACEN_CENTRAL = "Almacén Central"
     ALMACEN_CENTRAL_DIRECCION = "Calle 7 entre 47 y 48, La Plata"
@@ -21,11 +21,11 @@ class LogisticaConstants:
     DEPOSITO_SUR_DIRECCION = "Calle 120 y 610, La Plata"
     CENTRO_DISTRIBUCION = "Centro Distribución"
     CENTRO_DISTRIBUCION_DIRECCION = "Av. 1 y 60, La Plata"
-    
+
     # Ciudades
     BUENOS_AIRES = "Buenos Aires"
     LA_PLATA = "La Plata"
-    
+
     # Estilos repetidos
     CARD_STYLE = """
         background-color: #fafbfc;
@@ -35,7 +35,7 @@ class LogisticaConstants:
         min-width: 80px;
         max-width: 120px;
     """
-    
+
     TITLE_LABEL_STYLE = """
         QLabel {
             font-size: 10px;

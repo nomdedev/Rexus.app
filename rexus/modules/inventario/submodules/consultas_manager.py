@@ -13,10 +13,9 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.pagination import PaginatedTableMixin, create_pagination_query
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from rexus.utils.pagination import PaginatedTableMixin
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import sanitize_string
 
 # DataSanitizer unificado
 try:
@@ -27,16 +26,16 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
         def sanitize_text(self, text):
             return str(text) if text else ""
-    
+
     data_sanitizer = DataSanitizer()
 
 
@@ -69,7 +68,7 @@ class ConsultasManager(PaginatedTableMixin):
 
             # Construir query base
             query_base = """
-                SELECT 
+                SELECT
                     id, codigo, descripcion, categoria, unidad_medida,
                     precio_compra, precio_venta, stock_actual, stock_minimo,
                     ubicacion, observaciones, fecha_creacion, fecha_modificacion
@@ -153,7 +152,7 @@ class ConsultasManager(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             query = """
-                SELECT 
+                SELECT
                     id, codigo, descripcion, categoria, unidad_medida,
                     precio_compra, precio_venta, stock_actual, stock_minimo,
                     ubicacion, observaciones, qr_data, fecha_creacion
@@ -197,7 +196,7 @@ class ConsultasManager(PaginatedTableMixin):
 
             # Estadísticas generales
             cursor.execute("""
-                SELECT 
+                SELECT
                     COUNT(*) as total_productos,
                     COUNT(CASE WHEN stock_actual > 0 THEN 1 END) as productos_con_stock,
                     COUNT(CASE WHEN stock_actual = 0 THEN 1 END) as productos_sin_stock,
@@ -222,7 +221,7 @@ class ConsultasManager(PaginatedTableMixin):
 
             # Estadísticas por categoría
             cursor.execute("""
-                SELECT 
+                SELECT
                     categoria,
                     COUNT(*) as cantidad_productos,
                     SUM(stock_actual) as stock_total,
@@ -299,8 +298,8 @@ class ConsultasManager(PaginatedTableMixin):
                 FROM inventario
                 WHERE activo = 1
                     AND (codigo LIKE ? OR descripcion LIKE ?)
-                ORDER BY 
-                    CASE 
+                ORDER BY
+                    CASE
                         WHEN codigo = ? THEN 1
                         WHEN codigo LIKE ? THEN 2
                         WHEN descripcion LIKE ? THEN 3
@@ -308,7 +307,11 @@ class ConsultasManager(PaginatedTableMixin):
                     END,
                     descripcion ASC
             """,
-                (termino_like, termino_like, termino, f"{termino}%", f"%{termino}%"),
+                (termino_like,
+termino_like,
+                    termino,
+                    f"{termino}%",
+                    f"%{termino}%"),
             )
 
             columns = [column[0] for column in cursor.description]

@@ -80,7 +80,8 @@ def migrar_modelo_pedidos():
 
             # Contar imports y SQL embebido
             imports_auth = sum(
-                1 for line in lines if "auth_required" in line and "import" in line
+                1 for line in lines if "auth_required" in line and \
+                    "import" in line
             )
             sql_embebido = sum(
                 1

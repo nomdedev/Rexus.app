@@ -12,7 +12,7 @@ from typing import Any, Dict, List, Optional
 
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -39,10 +39,10 @@ except ImportError:
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
-            
+
         def sanitize_string(self, text):
             return str(text) if text else ""
-            
+
         def sanitize_integer(self, value):
             return int(value) if value else 0
 
@@ -127,7 +127,10 @@ class ProductosManager:
 
     @auth_required
     @permission_required("change_inventario")
-    def actualizar_vidrio(self, vidrio_id: int, datos_vidrio: Dict[str, Any]) -> bool:
+    def actualizar_vidrio(self,
+vidrio_id: int,
+        datos_vidrio: Dict[str,
+        Any]) -> bool:
         """Actualiza un producto vidrio existente."""
         if not self.db_connection or not vidrio_id:
             return False
@@ -335,7 +338,7 @@ class ProductosManager:
 
             # Actualización específica de stock
             query = """
-                UPDATE vidrios 
+                UPDATE vidrios
                 SET stock = %(stock)s,
                     fecha_modificacion = GETDATE()
                 WHERE id = %(vidrio_id)s AND activo = 1
@@ -371,7 +374,7 @@ class ProductosManager:
 
             # Actualización específica de precio
             query = """
-                UPDATE vidrios 
+                UPDATE vidrios
                 SET precio = %(precio)s,
                     fecha_modificacion = GETDATE()
                 WHERE id = %(vidrio_id)s AND activo = 1
@@ -404,8 +407,8 @@ class ProductosManager:
 
             # Consultar stock actual
             query = """
-                SELECT stock 
-                FROM vidrios 
+                SELECT stock
+                FROM vidrios
                 WHERE id = %(vidrio_id)s AND activo = 1
             """
 

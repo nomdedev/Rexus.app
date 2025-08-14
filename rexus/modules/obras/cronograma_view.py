@@ -27,8 +27,7 @@ Muestra las obras en un cronograma visual para facilitar la planificación y seg
 """
 
 import datetime
-from typing import Any, Dict, List, Optional
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
+from typing import Any, Dict, List
 
 from PyQt6.QtCore import QDate, QRect, Qt, pyqtSignal
 from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
@@ -39,11 +38,8 @@ from PyQt6.QtWidgets import (
     QGroupBox,
     QHBoxLayout,
     QLabel,
-    QMenu,
-    QMenuBar,
     QPushButton,
     QScrollArea,
-    QSplitter,
     QToolTip,
     QVBoxLayout,
     QWidget,
@@ -95,10 +91,10 @@ class CronogramaObrasView(QWidget):
                 margin-bottom: 10px;
             }
         """)
-        
+
         controles_layout = QHBoxLayout(controles_container)
         controles_layout.addStretch()  # Empujar botón a la derecha
-        
+
         # Solo el botón de alternar vista con nuevo estilo
         self.btn_alternar_vista = QPushButton("🔄 Vista Tabla")
         self.btn_alternar_vista.setStyleSheet("""
@@ -116,7 +112,7 @@ class CronogramaObrasView(QWidget):
             }
         """)
         controles_layout.addWidget(self.btn_alternar_vista)
-        
+
         layout.addWidget(controles_container)
 
     def crear_panel_controles(self) -> QGroupBox:
@@ -264,7 +260,8 @@ class CronogramaObrasView(QWidget):
 
         for obra in self.obras_data:
             # Filtro por estado
-            if estado_filtro != "Todos" and obra.get("estado") != estado_filtro:
+            if estado_filtro != "Todos" and \
+                obra.get("estado") != estado_filtro:
                 continue
 
             # Filtro por rango de fechas
@@ -477,7 +474,10 @@ class CronogramaWidget(QWidget):
         else:  # diario
             self.dibujar_lineas_diarias(painter, x_inicio, ancho_cronograma)
 
-    def dibujar_lineas_mensuales(self, painter: QPainter, x_inicio: int, ancho: int):
+    def dibujar_lineas_mensuales(self,
+painter: QPainter,
+        x_inicio: int,
+        ancho: int):
         """Dibuja líneas mensuales."""
         painter.setPen(QPen(QColor(127, 140, 141), 1))
         painter.setFont(QFont("Arial", 10))
@@ -505,7 +505,10 @@ class CronogramaWidget(QWidget):
             else:
                 fecha_actual = fecha_actual.replace(month=fecha_actual.month + 1)
 
-    def dibujar_lineas_semanales(self, painter: QPainter, x_inicio: int, ancho: int):
+    def dibujar_lineas_semanales(self,
+painter: QPainter,
+        x_inicio: int,
+        ancho: int):
         """Dibuja líneas semanales."""
         painter.setPen(QPen(QColor(127, 140, 141), 1))
         painter.setFont(QFont("Arial", 9))
@@ -530,7 +533,10 @@ class CronogramaWidget(QWidget):
 
             fecha_actual += datetime.timedelta(days=7)
 
-    def dibujar_lineas_diarias(self, painter: QPainter, x_inicio: int, ancho: int):
+    def dibujar_lineas_diarias(self,
+painter: QPainter,
+        x_inicio: int,
+        ancho: int):
         """Dibuja líneas diarias."""
         painter.setPen(QPen(QColor(189, 195, 199), 1))
         painter.setFont(QFont("Arial", 8))
@@ -564,7 +570,7 @@ class CronogramaWidget(QWidget):
         # Datos de la obra
         codigo = obra.get("codigo", "Sin código")
         nombre = obra.get("nombre", "Sin nombre")
-        estado = obra.get("estado", "PLANIFICACION")
+        obra.get("estado", "PLANIFICACION")
         fecha_inicio = obra.get("fecha_inicio")
         fecha_fin = obra.get("fecha_fin_estimada")
 
@@ -578,7 +584,10 @@ class CronogramaWidget(QWidget):
             return
 
         # Dibujar etiqueta de obra
-        etiqueta_rect = QRect(5, y, self.ancho_etiqueta - 10, self.altura_fila - 5)
+        etiqueta_rect = QRect(5,
+y,
+            self.ancho_etiqueta - 10,
+            self.altura_fila - 5)
         painter.fillRect(etiqueta_rect, QColor(236, 240, 241))
         painter.setPen(QPen(QColor(44, 62, 80), 1))
         painter.drawRect(etiqueta_rect)
@@ -586,16 +595,30 @@ class CronogramaWidget(QWidget):
         # Texto de la etiqueta
         painter.setFont(QFont("Arial", 10, QFont.Weight.Bold))
         painter.drawText(
-            etiqueta_rect.adjusted(5, 2, -5, -2), Qt.AlignmentFlag.AlignTop, codigo
+            etiqueta_rect.adjusted(5,
+2,
+                -5,
+                -2),
+                Qt.AlignmentFlag.AlignTop,
+                codigo
         )
 
         painter.setFont(QFont("Arial", 9))
         painter.drawText(
-            etiqueta_rect.adjusted(5, 18, -5, -2), Qt.AlignmentFlag.AlignTop, nombre
+            etiqueta_rect.adjusted(5,
+18,
+                -5,
+                -2),
+                Qt.AlignmentFlag.AlignTop,
+                nombre
         )
 
         # Dibujar barra de cronograma
-        self.dibujar_barra_cronograma(painter, obra, fecha_inicio, fecha_fin, y)
+        self.dibujar_barra_cronograma(painter,
+obra,
+            fecha_inicio,
+            fecha_fin,
+            y)
 
     def dibujar_barra_cronograma(
         self,
@@ -677,7 +700,13 @@ class CronogramaWidget(QWidget):
 
                 # Etiqueta "HOY"
                 painter.setPen(QPen(QColor(255, 255, 255), 1))
-                painter.fillRect(x_hoy - 20, 5, 40, 20, QBrush(QColor(231, 76, 60)))
+                painter.fillRect(x_hoy - 20,
+5,
+                    40,
+                    20,
+                    QBrush(QColor(231,
+                    76,
+                    60)))
                 painter.setFont(QFont("Arial", 9, QFont.Weight.Bold))
                 painter.drawText(
                     x_hoy - 20, 5, 40, 20, Qt.AlignmentFlag.AlignCenter, "HOY"

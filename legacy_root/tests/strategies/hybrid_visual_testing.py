@@ -11,7 +11,7 @@ ANÁLISIS DE APPROACHES:
    - Determinísticos y repetibles
    - No requieren setup de datos
    - Ideales para CI/CD
-   
+
    ❌ CONTRAS:
    - No validan integración real
    - Pueden ocultar bugs de datos reales
@@ -25,7 +25,7 @@ ANÁLISIS DE APPROACHES:
    - Validan comportamiento con datos complejos
    - Detectan edge cases con datos reales
    - Mayor confianza en el comportamiento
-   
+
    ❌ CONTRAS:
    - Lentos de ejecutar
    - Difíciles de setup y teardown
@@ -79,14 +79,14 @@ class TestingStrategy(Enum):
 
 class VisualTestConfig:
     """Configuración para tests visuales."""
-    
+
     def __init__(self):
         self.strategy = TestingStrategy.HYBRID
         self.screenshot_enabled = True
         self.performance_tracking = True
         self.mock_database = True
         self.real_data_percentage = 10  # % de tests con datos reales
-        
+
     def should_use_real_data(self, test_name: str) -> bool:
         """Determina si un test específico debe usar datos reales."""
         critical_tests = [
@@ -100,7 +100,7 @@ class VisualTestConfig:
 
 class MockDataFactory:
     """Factory para generar datos mock consistentes."""
-    
+
     @staticmethod
     def create_usuarios_mock(count: int = 5) -> List[Dict]:
         """Crea datos mock de usuarios."""
@@ -117,7 +117,7 @@ class MockDataFactory:
             }
             for i in range(1, count + 1)
         ]
-    
+
     @staticmethod
     def create_inventario_mock(count: int = 20) -> List[Dict]:
         """Crea datos mock de inventario."""
@@ -137,7 +137,7 @@ class MockDataFactory:
             }
             for i in range(1, count + 1)
         ]
-    
+
     @staticmethod
     def create_obras_mock(count: int = 10) -> List[Dict]:
         """Crea datos mock de obras."""
@@ -162,16 +162,19 @@ class MockDataFactory:
 
 class VisualTestValidator:
     """Validador para tests visuales."""
-    
+
     def __init__(self, config: VisualTestConfig):
         self.config = config
         self.screenshots = []
         self.performance_metrics = {}
-    
-    def validate_widget_rendering(self, widget: QWidget, test_name: str) -> Dict[str, Any]:
+
+    def validate_widget_rendering(self,
+widget: QWidget,
+        test_name: str) -> Dict[str,
+        Any]:
         """Valida el rendering de un widget."""
         start_time = time.time()
-        
+
         # Verificaciones básicas
         results = {
             'widget_valid': widget is not None,
@@ -180,20 +183,20 @@ class VisualTestValidator:
             'children_count': len(widget.children()) if widget else 0,
             'size_valid': widget.size().isValid() if widget else False
         }
-        
+
         # Screenshot si está habilitado
         if self.config.screenshot_enabled and widget:
             screenshot = self._take_screenshot(widget, test_name)
             results['screenshot_path'] = screenshot
-        
+
         # Métricas de performance
         if self.config.performance_tracking:
             render_time = time.time() - start_time
             self.performance_metrics[test_name] = render_time
             results['render_time'] = render_time
-        
+
         return results
-    
+
     def _take_screenshot(self, widget: QWidget, test_name: str) -> Optional[str]:
         """Toma screenshot del widget."""
         try:
@@ -204,8 +207,11 @@ class VisualTestValidator:
             return screenshot_path
         except Exception:
             return None
-    
-    def validate_data_consistency(self, expected_data: List[Dict], displayed_data: List[Dict]) -> Dict[str, Any]:
+
+    def validate_data_consistency(self,
+expected_data: List[Dict],
+        displayed_data: List[Dict]) -> Dict[str,
+        Any]:
         """Valida consistencia entre datos esperados y mostrados."""
         return {
             'count_matches': len(expected_data) == len(displayed_data),
@@ -222,59 +228,59 @@ class VisualTestValidator:
 
 class HybridTestRunner:
     """Runner para ejecutar tests híbridos."""
-    
+
     def __init__(self):
         self.config = VisualTestConfig()
         self.validator = VisualTestValidator(self.config)
         self.mock_factory = MockDataFactory()
-    
+
     def run_visual_test(self, test_func, test_name: str, **kwargs):
         """Ejecuta un test visual con la estrategia apropiada."""
         use_real_data = self.config.should_use_real_data(test_name)
-        
+
         if use_real_data:
             return self._run_with_real_data(test_func, test_name, **kwargs)
         else:
             return self._run_with_mock_data(test_func, test_name, **kwargs)
-    
+
     def _run_with_mock_data(self, test_func, test_name: str, **kwargs):
         """Ejecuta test con datos mock."""
         # Preparar mocks
         mock_data = self._prepare_mock_data(test_name)
-        
+
         with patch('rexus.core.database.DatabaseConnection') as mock_db:
             mock_db.return_value.execute_query.return_value = mock_data
-            
+
             # Ejecutar test
             result = test_func(**kwargs)
-            
+
             # Validar resultado
             if isinstance(result, QWidget):
                 validation = self.validator.validate_widget_rendering(result, test_name)
                 return {'test_result': result, 'validation': validation, 'strategy': 'mock'}
-            
+
             return {'test_result': result, 'strategy': 'mock'}
-    
+
     def _run_with_real_data(self, test_func, test_name: str, **kwargs):
         """Ejecuta test con datos reales."""
         # Setup datos reales (si es necesario)
         real_data_setup = self._setup_real_data(test_name)
-        
+
         try:
             # Ejecutar test con datos reales
             result = test_func(**kwargs)
-            
+
             # Validar resultado
             if isinstance(result, QWidget):
                 validation = self.validator.validate_widget_rendering(result, test_name)
                 return {'test_result': result, 'validation': validation, 'strategy': 'real_data'}
-            
+
             return {'test_result': result, 'strategy': 'real_data'}
-            
+
         finally:
             # Cleanup datos reales
             self._cleanup_real_data(real_data_setup)
-    
+
     def _prepare_mock_data(self, test_name: str) -> List[Dict]:
         """Prepara datos mock según el tipo de test."""
         if 'usuario' in test_name or 'user' in test_name:
@@ -285,12 +291,12 @@ class HybridTestRunner:
             return self.mock_factory.create_obras_mock()
         else:
             return []
-    
+
     def _setup_real_data(self, test_name: str) -> Dict[str, Any]:
         """Setup para datos reales."""
         # En un caso real, aquí se configurarían datos de test en DB
         return {'setup_completed': True, 'test_name': test_name}
-    
+
     def _cleanup_real_data(self, setup_info: Dict[str, Any]):
         """Cleanup de datos reales."""
         # En un caso real, aquí se limpiarían los datos de test

@@ -5,7 +5,10 @@ Este script elimina el modo invitado y crea un usuario con permisos completos.
 """
 
 # Agregar el directorio raíz al path
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.insert(0,
+os.path.abspath(os.path.join(os.path.dirname(__file__),
+    '..',
+    '..')))
 
 def hash_password(password):
     """Genera hash de contraseña simple"""
@@ -65,7 +68,13 @@ def crear_usuario_prueba():
             print("➕ Creando nuevo usuario de prueba...")
 
             insert_query = """
-                INSERT INTO usuarios (username, password, nombre, email, rol, activo, fecha_creacion)
+                INSERT INTO usuarios (username,
+password,
+                    nombre,
+                    email,
+                    rol,
+                    activo,
+                    fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, GETDATE())
             """
 
@@ -113,7 +122,10 @@ def eliminar_modo_invitado():
 
     try:
         # Leer el archivo main.py
-        main_path = os.path.join(os.path.dirname(__file__), '..', '..', 'main.py')
+        main_path = os.path.join(os.path.dirname(__file__),
+'..',
+            '..',
+            'main.py')
 
         with open(main_path, 'r', encoding='utf-8') as f:
             content = f.read()
@@ -128,7 +140,12 @@ def eliminar_modo_invitado():
             changes_made = True
 
         # Buscar en login_view.py también
-        login_path = os.path.join(os.path.dirname(__file__), '..', '..', 'modules', 'usuarios', 'login_view.py')
+        login_path = os.path.join(os.path.dirname(__file__),
+'..',
+            '..',
+            'modules',
+            'usuarios',
+            'login_view.py')
 
         if os.path.exists(login_path):
             with open(login_path, 'r', encoding='utf-8') as f:

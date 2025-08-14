@@ -39,13 +39,13 @@ def main():
     """Función principal"""
     print("[SYNTAX VALIDATION] Validando sintaxis de módulos")
     print("=" * 50)
-    
+
     modules_dir = root_dir / "rexus" / "modules"
-    
+
     if not modules_dir.exists():
         print(f"Error: {modules_dir} not found")
         return 1
-    
+
     # Obtener todos los archivos Python en módulos
     python_files = []
     for module_dir in modules_dir.iterdir():
@@ -53,28 +53,28 @@ def main():
             view_file = module_dir / "view.py"
             if view_file.exists():
                 python_files.append(view_file)
-    
+
     print(f"Found {len(python_files)} view.py files to validate")
     print("-" * 50)
-    
+
     valid_count = 0
     invalid_count = 0
-    
+
     for py_file in sorted(python_files):
         module_name = py_file.parent.name
         is_valid, message = validate_python_syntax(py_file)
-        
+
         if is_valid:
             print(f"[OK] {module_name}: {message}")
             valid_count += 1
         else:
             print(f"[ERROR] {module_name}: {message}")
             invalid_count += 1
-    
+
     # Resumen
     print("-" * 50)
     print(f"[SUMMARY] Valid: {valid_count}, Invalid: {invalid_count}")
-    
+
     if invalid_count == 0:
         print("[SUCCESS] All module files have valid Python syntax")
         return 0

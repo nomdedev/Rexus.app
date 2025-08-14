@@ -9,16 +9,11 @@ Integrado con el sistema de seguridad global
 
 import json
 import os
-from datetime import date, datetime
+from datetime import datetime
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSlot
 
 from rexus.core.security import get_security_manager
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
-from rexus.core.auth_manager import AuthManager
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # Importar submódulos
 from .contabilidad import ContabilidadModel, ContabilidadController
@@ -27,7 +22,11 @@ from .recursos_humanos import RecursosHumanosModel, RecursosHumanosController
 class AdministracionController(QObject):
     """Controlador principal del módulo de administración."""
 
-    def __init__(self, model=None, view=None, db_connection=None, usuarios_model=None):
+    def __init__(self,
+model=None,
+        view=None,
+        db_connection=None,
+        usuarios_model=None):
         super().__init__()
         self.model = model
         self.view = view
@@ -90,7 +89,7 @@ class AdministracionController(QObject):
                 view=self.view,
                 db_connection=self.db_connection
             )
-            
+
             # Inicializar submódulo de recursos humanos
             self.recursos_humanos_model = RecursosHumanosModel(self.db_connection)
             self.recursos_humanos_controller = RecursosHumanosController(
@@ -98,12 +97,12 @@ class AdministracionController(QObject):
                 view=self.view,
                 db_connection=self.db_connection
             )
-            
+
             # Conectar señales entre submódulos
             self.conectar_senales_submodulos()
-            
+
             print("[ADMINISTRACIÓN] Submódulos inicializados correctamente")
-            
+
         except Exception as e:
             print(f"[ERROR ADMINISTRACIÓN] Error inicializando submódulos: {e}")
 
@@ -118,7 +117,7 @@ class AdministracionController(QObject):
                 self.contabilidad_controller.reporte_generado.connect(
                     self.manejar_reporte_generado
                 )
-                
+
             # Conectar señales del submódulo de recursos humanos
             if self.recursos_humanos_controller:
                 self.recursos_humanos_controller.nomina_calculada.connect(
@@ -127,7 +126,7 @@ class AdministracionController(QObject):
                 self.recursos_humanos_controller.empleado_agregado.connect(
                     self.manejar_empleado_agregado
                 )
-                
+
         except Exception as e:
             print(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
 
@@ -207,7 +206,7 @@ class AdministracionController(QObject):
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_dashboard")
                 return
-            
+
             # Obtener resumen contable
             resumen = self.model.obtener_resumen_contable()
 
@@ -222,7 +221,7 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_libro_contable")
                 return
@@ -253,7 +252,7 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_recibos")
                 return
@@ -284,7 +283,7 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_pagos_obra")
                 return
@@ -326,13 +325,13 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_departamentos")
                 return
 
             # Obtener departamentos
-            departamentos = self.model.obtener_departamentos()
+            self.model.obtener_departamentos()
 
             # Actualizar tabla (método a implementar en la vista)
             # self.view.actualizar_tabla_departamentos(departamentos)
@@ -345,7 +344,7 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_empleados")
                 return
@@ -372,7 +371,7 @@ class AdministracionController(QObject):
         try:
             if not self.view:
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en actualizar_auditoria")
                 return
@@ -400,7 +399,7 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("crear_departamento"):
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en crear_departamento")
                 if self.view:
@@ -444,7 +443,7 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("crear_empleado"):
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en crear_empleado")
                 if self.view:
@@ -493,7 +492,7 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("crear_asiento"):
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en crear_asiento_contable")
                 if self.view:
@@ -542,7 +541,7 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("crear_recibo"):
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en crear_recibo")
                 if self.view:
@@ -591,7 +590,7 @@ class AdministracionController(QObject):
         try:
             if not self.verificar_permisos("imprimir_recibo"):
                 return
-            
+
             if not self.model:
                 print("[ERROR] self.model es None en imprimir_recibo")
                 if self.view:
@@ -637,7 +636,7 @@ class AdministracionController(QObject):
             if not self.model:
                 print("[ERROR] self.model es None en generar_pdf_recibo")
                 return None
-                
+
             # Obtener datos del recibo
             recibos = self.model.obtener_recibos()
             recibo = None
@@ -729,7 +728,7 @@ class AdministracionController(QObject):
             if not self.model:
                 print("[ERROR] self.model es None en obtener_datos_reporte")
                 return None
-                
+
             if tipo_reporte == "libro_contable":
                 return self.model.obtener_libro_contable(fecha_desde, fecha_hasta)
             elif tipo_reporte == "recibos":
@@ -921,7 +920,11 @@ class AdministracionController(QObject):
 
             with open(archivo, "w", encoding="utf-8") as f:
                 if formato == "JSON":
-                    json.dump(datos, f, indent=2, ensure_ascii=False, default=str)
+                    json.dump(datos,
+f,
+                        indent=2,
+                        ensure_ascii=False,
+                        default=str)
                 else:
                     f.write(str(datos))
 

@@ -157,9 +157,20 @@ def verificar_archivos_sensibles(directorio_base, directorio_salida):
                 })
 
             # Verificar contenido solo en tipos de archivo de texto
-            if file.endswith(('.py', '.txt', '.json', '.yaml', '.yml', '.env', '.ini', '.cfg', '.conf')):
+            if file.endswith(('.py',
+'.txt',
+                '.json',
+                '.yaml',
+                '.yml',
+                '.env',
+                '.ini',
+                '.cfg',
+                '.conf')):
                 try:
-                    with open(ruta_completa, 'r', encoding='utf-8', errors='ignore') as f:
+                    with open(ruta_completa,
+'r',
+                        encoding='utf-8',
+                        errors='ignore') as f:
                         contenido = f.read()
 
                         # Buscar patrones en contenido
@@ -491,8 +502,14 @@ def generar_indice(reportes, directorio_salida):
 def main():
     """Función principal para ejecutar el escáner de vulnerabilidades."""
     parser = argparse.ArgumentParser(description='Escáner completo de vulnerabilidades')
-    parser.add_argument('--dir', '-d', default=str(ROOT_DIR), help='Directorio a analizar')
-    parser.add_argument('--output', '-o', default=os.path.join(str(ROOT_DIR), 'informes_seguridad'),
+    parser.add_argument('--dir',
+'-d',
+        default=str(ROOT_DIR),
+        help='Directorio a analizar')
+    parser.add_argument('--output',
+'-o',
+        default=os.path.join(str(ROOT_DIR),
+        'informes_seguridad'),
                         help='Directorio donde guardar los informes')
     parser.add_argument('--skip-sql', action='store_true', help='Omitir análisis de código SQL')
     parser.add_argument('--skip-bd', action='store_true', help='Omitir diagnóstico de BD')

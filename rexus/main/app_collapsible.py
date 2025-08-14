@@ -3,9 +3,8 @@
 Rexus.app - Sistema de Gestión Integral con Sidebar Colapsible
 """
 
-import os
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 # Cargar variables de entorno antes de cualquier otra importación
 try:
@@ -18,8 +17,7 @@ except ImportError:
 except Exception as e:
     print(f"[ENV] Error cargando variables: {e}")
 
-from PyQt6.QtCore import QEasingCurve, QPropertyAnimation, QRect, Qt, QTimer, pyqtSignal
-from PyQt6.QtGui import QColor, QIcon
+from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QApplication,
     QFrame,
@@ -29,7 +27,6 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QPushButton,
     QScrollArea,
-    QSizePolicy,
     QTabWidget,
     QVBoxLayout,
     QWidget,
@@ -449,8 +446,8 @@ class MainWindow(QMainWindow):
         # Valor principal
         value_label = QLabel(valor)
         value_label.setStyleSheet(f"""
-            font-size: 24px; 
-            color: {color}; 
+            font-size: 24px;
+            color: {color};
             font-weight: bold;
             text-align: center;
         """)
@@ -459,8 +456,8 @@ class MainWindow(QMainWindow):
         # Título
         title_label = QLabel(titulo)
         title_label.setStyleSheet("""
-            font-size: 14px; 
-            color: #7f8c8d; 
+            font-size: 14px;
+            color: #7f8c8d;
             font-weight: 500;
             text-align: center;
         """)
@@ -495,7 +492,7 @@ class MainWindow(QMainWindow):
         👤 Usuario: {self.user_data.get("username", "N/A")}
         🔑 Rol: {self.user_data.get("rol", "N/A")}
         📱 Módulos disponibles: {len(self.modulos_permitidos)}
-        
+
         [CHECK] Sistema funcionando correctamente
         [TOOL] Sidebar colapsible implementado
         [CHART] Dashboard optimizado
@@ -590,8 +587,9 @@ class SimpleSecurityManager:
         # Usar variable de entorno para credenciales de desarrollo
         dev_password = os.getenv('REXUS_DEV_PASSWORD')
         fallback_password = os.getenv('FALLBACK_ADMIN_PASSWORD')
-        
-        if user and (password == dev_password or password == fallback_password):
+
+        if user and \
+            (password == dev_password or password == fallback_password):
             self.current_user_data = user.copy()
             return True
         return False
