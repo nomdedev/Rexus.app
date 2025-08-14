@@ -17,7 +17,7 @@ from pathlib import Path
 
 from rexus.utils.security import SecurityUtils
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
-from utils.two_factor_auth import TwoFactorAuth
+from rexus.utils.two_factor_auth import TwoFactorAuth
 
 
 class UserSecurityManager:

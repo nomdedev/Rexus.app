@@ -447,7 +447,7 @@ class UsuariosController(QObject):
                 
                 return None
                 
-            # 🎉 LOGIN EXITOSO
+            # [PARTY] LOGIN EXITOSO
             
             # Limpiar intentos fallidos
             self.model.limpiar_intentos_fallidos(username_sanitizado)

@@ -245,13 +245,13 @@ THEME_METADATA = {
     "light": {
         "name": "Claro",
         "description": "Tema claro moderno con tonos azules",
-        "icon": "☀️",
+        "icon": "[LIGHT]",
         "category": "standard"
     },
     "dark": {
         "name": "Oscuro", 
         "description": "Tema oscuro elegante para uso nocturno",
-        "icon": "🌙",
+        "icon": "[DARK]",
         "category": "standard"
     },
     "blue": {

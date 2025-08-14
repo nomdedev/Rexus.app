@@ -125,7 +125,7 @@ class DialogProveedor(QDialog):
         layout.addWidget(grupo_principal)
         
         # Información fiscal
-        grupo_fiscal = RexusGroupBox("💰 Información Fiscal")
+        grupo_fiscal = RexusGroupBox("[MONEY] Información Fiscal")
         fiscal_layout = QFormLayout(grupo_fiscal)
         
         self.combo_condicion_iva = RexusComboBox([
@@ -240,7 +240,7 @@ class DialogProveedor(QDialog):
         layout.addWidget(grupo_comercial)
         
         # Observaciones
-        grupo_observaciones = RexusGroupBox("📝 Observaciones")
+        grupo_observaciones = RexusGroupBox("[NOTE] Observaciones")
         obs_layout = QVBoxLayout(grupo_observaciones)
         
         self.input_observaciones = QTextEdit()

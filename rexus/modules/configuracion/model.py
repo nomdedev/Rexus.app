@@ -218,8 +218,8 @@ class ConfiguracionModel:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    pass
+                except (AttributeError, ConnectionError) as e:
+                    print(f"[WARNING] No se pudo hacer rollback: {e}")
             # Fallback a archivo
             self.db_connection = None
             self._cargar_desde_archivo()
@@ -519,8 +519,9 @@ class ConfiguracionModel:
                 """,
                     (categoria,),
                 )
-            except Exception:
+            except (KeyError, ValueError, ConnectionError) as e:
                 # Si falla, usar sin columna activo
+                print(f"[WARNING] Usando query alternativa: {e}")
                 cursor.execute(
                     f"""
                     SELECT clave, valor, descripcion, tipo
@@ -575,7 +576,8 @@ class ConfiguracionModel:
                     WHERE activo = 1
                     ORDER BY categoria, clave
                 """)
-            except Exception:
+            except (KeyError, ValueError, ConnectionError) as e:
+                print(f"[WARNING] Error en query completa, usando alternativa: {e}")
                 try:
                     # Sin fecha_modificacion ni activo
                     cursor.execute(f"""
@@ -583,8 +585,9 @@ class ConfiguracionModel:
                         FROM [{self._validate_table_name(self.tabla_configuracion)}]
                         ORDER BY categoria, clave
                     """)
-                except Exception:
+                except (KeyError, ValueError, ConnectionError) as e:
                     # Solo columnas básicas
+                    print(f"[WARNING] Usando query básica: {e}")
                     cursor.execute(f"""
                         SELECT clave, valor
                         FROM [{self._validate_table_name(self.tabla_configuracion)}]

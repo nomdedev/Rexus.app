@@ -223,8 +223,8 @@ class PedidosController(QObject):
                     fecha_entrega = datetime.datetime.strptime(
                         fecha_entrega, "%Y-%m-%d"
                     ).date()
-                except:
-                    errores.append("Formato de fecha de entrega inválido")
+                except (ValueError, TypeError) as e:
+                    errores.append(f"Formato de fecha de entrega inválido: {e}")
 
             if fecha_entrega and fecha_entrega < datetime.date.today():
                 errores.append("La fecha de entrega no puede ser anterior a hoy")

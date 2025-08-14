@@ -137,9 +137,9 @@ class EnhancedLabel(QLabel):
             'EN_PROCESO': {'color': '#059669', 'bg': '#d1fae5', 'icon': '🚧'},
             'PLANIFICACION': {'color': '#d97706', 'bg': '#fef3c7', 'icon': '📋'},
             'PAUSADA': {'color': '#dc2626', 'bg': '#fecaca', 'icon': '⏸️'},
-            'FINALIZADA': {'color': '#3730a3', 'bg': '#e0e7ff', 'icon': '✅'},
-            'CANCELADA': {'color': '#6b7280', 'bg': '#f3f4f6', 'icon': '❌'},
-            'VENCIDA': {'color': '#dc2626', 'bg': '#fee2e2', 'icon': '⚠️'},
+            'FINALIZADA': {'color': '#3730a3', 'bg': '#e0e7ff', 'icon': '[OK]'},
+            'CANCELADA': {'color': '#6b7280', 'bg': '#f3f4f6', 'icon': '[ERROR]'},
+            'VENCIDA': {'color': '#dc2626', 'bg': '#fee2e2', 'icon': '[WARNING]'},
             'PROXIMA_VENCER': {'color': '#d97706', 'bg': '#fde68a', 'icon': '⏰'},
             'EN_TIEMPO': {'color': '#059669', 'bg': '#dcfce7', 'icon': '🟢'}
         }
@@ -356,7 +356,7 @@ class EnhancedLabel(QLabel):
                 self.setText(f"🕐 Vence hoy")
                 self.set_obra_status('PROXIMA_VENCER')
             else:
-                self.setText(f"⚠️ Vencida hace {abs(diff.days)} días")
+                self.setText(f"[WARNING] Vencida hace {abs(diff.days)} días")
                 self.set_obra_status('VENCIDA')
                 
         except Exception:

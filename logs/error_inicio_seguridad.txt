@@ -1,0 +1,14 @@
+[ERROR SEGURIDAD] 'MainWindow' object has no attribute 'cargar_modulo'
+Traceback (most recent call last):
+  File "C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py", line 1976, in cargar_main_window_con_seguridad
+    main_window = MainWindow(user_data, modulos_permitidos)
+  File "C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py", line 273, in __init__
+    self._init_ui()
+  File "C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py", line 332, in _init_ui
+    self._create_main_content(main_layout)
+  File "C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py", line 527, in _create_main_content
+    self._create_premium_dashboard()
+  File "C:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app.py", line 566, in _create_premium_dashboard
+    dashboard.navegar_modulo.connect(self.cargar_modulo)
+AttributeError: 'MainWindow' object has no attribute 'cargar_modulo'
+

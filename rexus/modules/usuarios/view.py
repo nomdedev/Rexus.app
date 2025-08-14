@@ -127,7 +127,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
         controls_layout.addWidget(self.input_busqueda)
         
         # Botón buscar con componente Rexus
-        self.btn_buscar = RexusButton("🔍 Buscar", "secondary")
+        self.btn_buscar = RexusButton("[SEARCH] Buscar", "secondary")
         self.btn_buscar.clicked.connect(self.buscar_usuarios)
         controls_layout.addWidget(self.btn_buscar)
         

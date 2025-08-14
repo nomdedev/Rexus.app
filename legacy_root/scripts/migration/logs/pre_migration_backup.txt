@@ -1,7 +1,0 @@
-Pre-Migration Backup Summary
-Generated: 2025-07-30 19:25:25.041666
-
-inventario_perfiles: exists
-herrajes: exists
-vidrios: exists
-pedidos: exists

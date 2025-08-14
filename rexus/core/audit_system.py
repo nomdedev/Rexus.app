@@ -173,7 +173,7 @@ class AuditSystem:
             timestamp = datetime.datetime.now()
             detalles_json = json.dumps(detalles, default=str, ensure_ascii=False)
             
-            print(f"🔍 [AUDIT {level.value}] {timestamp} | {event_type.value} | "
+            print(f"[SEARCH] [AUDIT {level.value}] {timestamp} | {event_type.value} | "
                   f"Usuario: {usuario_nombre or 'Sistema'} | Módulo: {modulo} | "
                   f"Acción: {accion} | Resultado: {resultado}")
             

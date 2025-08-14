@@ -120,7 +120,7 @@ class MantenimientoView(QWidget):
         
         # Pestaña 5: Reportes y Análisis
         reportes_tab = self.create_reportes_analisis_tab()
-        self.tab_widget.addTab(reportes_tab, "📊 Reportes y Análisis")
+        self.tab_widget.addTab(reportes_tab, "[CHART] Reportes y Análisis")
         
         # Pestaña 6: Configuración
         config_tab = self.create_configuracion_tab()
@@ -177,7 +177,7 @@ class MantenimientoView(QWidget):
         self.busqueda_ordenes.setPlaceholderText("Buscar órdenes...")
         layout.addWidget(self.busqueda_ordenes)
         
-        btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        btn_buscar = StandardComponents.create_secondary_button("[SEARCH] Buscar")
         layout.addWidget(btn_buscar)
         
         btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
@@ -294,6 +294,7 @@ class MantenimientoView(QWidget):
                 if col == 6:  # Acciones
                     btn = QPushButton(value)
                     btn.setStyleSheet("background: #10b981; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    btn.clicked.connect(lambda checked, r=row: self.ejecutar_accion_preventivo(r))
                     self.tabla_preventivo.setCellWidget(row, col, btn)
                 else:
                     item = QTableWidgetItem(str(value))
@@ -356,7 +357,7 @@ class MantenimientoView(QWidget):
         self.busqueda_repuestos.setPlaceholderText("Buscar repuestos...")
         layout.addWidget(self.busqueda_repuestos)
         
-        btn_buscar = StandardComponents.create_secondary_button("🔍")
+        btn_buscar = StandardComponents.create_secondary_button("[SEARCH]")
         layout.addWidget(btn_buscar)
         
         return panel
@@ -381,6 +382,7 @@ class MantenimientoView(QWidget):
                 if col == 7:  # Acciones
                     btn = QPushButton("Ver")
                     btn.setStyleSheet("background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    btn.clicked.connect(lambda checked, r=row: self.ver_detalle_repuesto(r))
                     self.tabla_repuestos.setCellWidget(row, col, btn)
                 else:
                     item = QTableWidgetItem(str(value))
@@ -462,6 +464,7 @@ class MantenimientoView(QWidget):
                 if col == 7:  # Acciones
                     btn = QPushButton("Ver")
                     btn.setStyleSheet("background: #3b82f6; color: white; border: none; border-radius: 4px; padding: 6px;")
+                    btn.clicked.connect(lambda checked, r=row: self.ver_detalle_equipo(r))
                     self.tabla_equipos.setCellWidget(row, col, btn)
                 else:
                     item = QTableWidgetItem(str(value))
@@ -493,7 +496,7 @@ class MantenimientoView(QWidget):
 
     def create_reportes_panel(self):
         """Panel de generación de reportes."""
-        panel = QGroupBox("📊 Generación de Reportes")
+        panel = QGroupBox("[CHART] Generación de Reportes")
         layout = QGridLayout(panel)
         
         # Tipos de reporte
@@ -516,7 +519,7 @@ class MantenimientoView(QWidget):
         layout.addWidget(self.combo_periodo, 0, 3)
         
         # Botones de reportes
-        btn_generar = StandardComponents.create_primary_button("📊 Generar Reporte")
+        btn_generar = StandardComponents.create_primary_button("[CHART] Generar Reporte")
         btn_generar.clicked.connect(self.generar_reporte)
         layout.addWidget(btn_generar, 1, 0)
         
@@ -535,10 +538,10 @@ class MantenimientoView(QWidget):
         
         # KPIs con barras de progreso
         kpis = [
-            ("🎯 Disponibilidad de Equipos", 92, "%"),
+            ("[TARGET] Disponibilidad de Equipos", 92, "%"),
             ("⏱️ Tiempo Promedio de Reparación", 4.5, "hrs"),
-            ("💰 Costo Promedio por Orden", 350, "$"),
-            ("✅ Cumplimiento Preventivo", 78, "%"),
+            ("[MONEY] Costo Promedio por Orden", 350, "$"),
+            ("[OK] Cumplimiento Preventivo", 78, "%"),
         ]
         
         for i, (titulo, valor, unidad) in enumerate(kpis):
@@ -660,6 +663,10 @@ class MantenimientoView(QWidget):
     def mostrar_acciones(self, row):
         """Muestra menú de acciones para fila."""
         show_success(self, "Acciones", f"Mostrando acciones para fila {row + 1}")
+    
+    def editar_registro(self, row):
+        """Edita un registro de la tabla."""
+        show_success(self, "Editar", f"Editando registro de la fila {row + 1}")
 
     # Métodos heredados adaptados
     def setup_control_panel(self, panel):
@@ -841,7 +848,7 @@ class MantenimientoView(QWidget):
         layout = QHBoxLayout(panel)
 
         # Botón Nuevo estandarizado
-        self.btn_nuevo = StandardComponents.create_primary_button("🔧 Nuevo Mantenimiento")
+        self.btn_nuevo = StandardComponents.create_primary_button("[TOOL] Nuevo Mantenimiento")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
 
@@ -852,7 +859,7 @@ class MantenimientoView(QWidget):
         layout.addWidget(self.input_busqueda)
 
         # Botón buscar estandarizado
-        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        self.btn_buscar = StandardComponents.create_secondary_button("[SEARCH] Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
 
@@ -1010,6 +1017,7 @@ class MantenimientoView(QWidget):
             # Botón de acciones
             btn_editar = QPushButton("Editar")
             btn_editar.setStyleSheet("background-color: #ffc107; color: #212529;")
+            btn_editar.clicked.connect(lambda checked, r=row: self.editar_registro(r))
             self.tabla_principal.setCellWidget(row, 4, btn_editar)
 
     def obtener_datos_seguros(self) -> dict:
@@ -1187,3 +1195,21 @@ class NuevoMantenimientoDialog(QDialog):
             "responsable": self.responsable_input.text().strip() or "",
             "observaciones": self.observaciones_input.text().strip() or "",
         }
+
+    # === MÉTODOS PARA BOTONES CORREGIDOS ===
+    
+    def ejecutar_accion_preventivo(self, row):
+        """Ejecuta acción para mantenimiento preventivo."""
+        show_success(self, "Acción Ejecutada", f"Procesando acción para fila {row + 1}")
+        
+    def ver_detalle_repuesto(self, row):
+        """Ver detalle de repuesto."""
+        show_success(self, "Ver Repuesto", f"Mostrando detalle del repuesto en fila {row + 1}")
+        
+    def ver_detalle_equipo(self, row):
+        """Ver detalle de equipo."""
+        show_success(self, "Ver Equipo", f"Mostrando detalle del equipo en fila {row + 1}")
+        
+    def ver_detalle(self, row):
+        """Ver detalle general."""
+        show_success(self, "Ver Detalle", f"Mostrando detalle para fila {row + 1}")

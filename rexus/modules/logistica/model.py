@@ -773,7 +773,7 @@ class LogisticaModel:
             verify_sql = "SELECT COUNT(*) FROM transportes WHERE id = ?"
             cursor.execute(verify_sql, (transporte_id,))
             if cursor.fetchone()[0] == 0:
-                print(f"❌ Transporte {transporte_id} no encontrado")
+                print(f"[ERROR] Transporte {transporte_id} no encontrado")
                 return False
 
             # Eliminar el transporte
@@ -781,11 +781,11 @@ class LogisticaModel:
             cursor.execute(delete_sql, (transporte_id,))
             self.db_connection.commit()
 
-            print(f"✅ Transporte {transporte_id} eliminado exitosamente")
+            print(f"[OK] Transporte {transporte_id} eliminado exitosamente")
             return True
 
         except Exception as e:
-            print(f"❌ Error eliminando transporte: {e}")
+            print(f"[ERROR] Error eliminando transporte: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -869,11 +869,11 @@ class LogisticaModel:
                 }
                 transportes.append(transporte)
             
-            print(f"🔍 Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
+            print(f"[SEARCH] Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
             return transportes
 
         except Exception as e:
-            print(f"❌ Error buscando transportes: {e}")
+            print(f"[ERROR] Error buscando transportes: {e}")
             return []
 
     def obtener_estadisticas(self):
@@ -941,7 +941,7 @@ class LogisticaModel:
             return stats
 
         except Exception as e:
-            print(f"❌ Error obteniendo estadísticas: {e}")
+            print(f"[ERROR] Error obteniendo estadísticas: {e}")
             return {
                 'total_transportes': 0,
                 'en_transito': 0, 

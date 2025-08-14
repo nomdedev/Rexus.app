@@ -289,7 +289,7 @@ class ContextualErrorManager:
 
         icon = severity_icons.get(error_info["severity"], "[ERROR]")
 
-        return f"{icon} {error_info['title']}\n\n{error_info['message']}\n\n💡 {error_info['suggestion']}"
+        return f"{icon} {error_info['title']}\n\n{error_info['message']}\n\n[IDEA] {error_info['suggestion']}"
 
     @classmethod
     def format_technical_message(

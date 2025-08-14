@@ -19,7 +19,7 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from utils.sql_security import SQLSecurityValidator
+    from rexus.utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
 except ImportError as e:

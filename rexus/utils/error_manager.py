@@ -330,14 +330,14 @@ class ErrorManager:
 
         # Sugerencia de solución
         if error.suggestion:
-            details.append(f"💡 Sugerencia: {error.suggestion}")
+            details.append(f"[IDEA] Sugerencia: {error.suggestion}")
 
         # Código de error
-        details.append(f"🔍 Código: {error.code}")
+        details.append(f"[SEARCH] Código: {error.code}")
 
         # Información técnica
         if error.technical_details:
-            details.append(f"🔧 Detalles técnicos: {error.technical_details}")
+            details.append(f"[TOOL] Detalles técnicos: {error.technical_details}")
 
         # Datos del contexto
         if context_data:

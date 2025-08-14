@@ -384,7 +384,7 @@ class ModuleManager:
         diagnosis_label.setWordWrap(True)
 
         # Grupo de detalles técnicos
-        details_group = QGroupBox("🔧 Detalles Técnicos")
+        details_group = QGroupBox("[TOOL] Detalles Técnicos")
         details_layout = QVBoxLayout(details_group)
 
         # Mensaje de error detallado
@@ -409,7 +409,7 @@ class ModuleManager:
         # Sugerencias de solución
         suggestions = self._get_error_suggestions(error_message, module_name)
         if suggestions:
-            suggestions_label = QLabel(f"💡 Sugerencias:\n{suggestions}")
+            suggestions_label = QLabel(f"[IDEA] Sugerencias:\n{suggestions}")
             suggestions_label.setStyleSheet("""
                 font-size: 12px;
                 color: #27ae60;

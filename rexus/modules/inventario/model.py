@@ -38,7 +38,7 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir / "src"))
     
-    from utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
+    from rexus.utils.sql_security import SecureSQLBuilder, SQLSecurityValidator
     
     SECURITY_AVAILABLE = True
 except ImportError as e:
@@ -676,10 +676,8 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            sql_select = """
-            SELECT * FROM inventario_perfiles WHERE id = ?
-            """
-
+            # Usar query externa para seguridad
+            sql_select = self.sql_manager.get_query('inventario', 'obtener_perfil_por_id')
             cursor.execute(sql_select, (producto_id,))
             row = cursor.fetchone()
 
@@ -701,10 +699,8 @@ class InventarioModel(PaginatedTableMixin):
         try:
             cursor = self.db_connection.cursor()
 
-            sql_select = """
-            SELECT * FROM inventario_perfiles WHERE codigo = ?
-            """
-
+            # Usar query externa para seguridad
+            sql_select = self.sql_manager.get_query('inventario', 'obtener_perfil_por_codigo')
             cursor.execute(sql_select, (codigo,))
             row = cursor.fetchone()
 
@@ -1272,9 +1268,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name='lotes_inventario' AND xtype='U'"
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
+            cursor.execute(sql_verificar)
             if not cursor.fetchone():
                 print("[ADVERTENCIA] Tabla 'lotes_inventario' no existe")
                 return False
@@ -1342,9 +1337,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name='lotes_inventario' AND xtype='U'"
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
+            cursor.execute(sql_verificar)
             if not cursor.fetchone():
                 return []
 
@@ -1497,9 +1491,8 @@ class InventarioModel(PaginatedTableMixin):
             cursor = self.db_connection.cursor()
 
             # Validar existencia de la tabla
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name='lotes_inventario' AND xtype='U'"
-            )
+            sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
+            cursor.execute(sql_verificar)
             if not cursor.fetchone():
                 return []
 
@@ -1859,7 +1852,7 @@ class InventarioModel(PaginatedTableMixin):
 
                     # Obtener precio actual para registro de cambio
                     cursor.execute(
-                        "SELECT precio_unitario FROM inventario_perfiles WHERE id = ?",
+                        self.sql_manager.get_query('inventario', 'obtener_precio_perfil'),
                         (producto_id,),
                     )
                     row = cursor.fetchone()
@@ -1884,7 +1877,7 @@ class InventarioModel(PaginatedTableMixin):
 
                     # Registrar historial de precio si existe la tabla
                     cursor.execute(
-                        "SELECT * FROM sysobjects WHERE name='historial_precios' AND xtype='U'"
+                        self.sql_manager.get_query('inventario', 'verificar_tabla_historial_precios')
                     )
                     if cursor.fetchone():
                         cursor.execute(
@@ -3144,12 +3137,7 @@ class InventarioModel(PaginatedTableMixin):
                 print(f"[ERROR] Error cargando script base: {e}")
 
         # Query de respaldo segura usando tabla fija
-        return """SELECT 
-            id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
-            stock as stock_actual, precio as precio_unitario, activo,
-            fecha_creacion, fecha_modificacion
-        FROM inventario_perfiles
-        WHERE activo = 1"""
+        return self.sql_manager.get_query('inventario', 'obtener_reportes_inventario')
 
     def _get_count_query(self):
         """Obtiene la query de conteo usando scripts SQL seguros."""
@@ -3164,7 +3152,7 @@ class InventarioModel(PaginatedTableMixin):
                 print(f"[ERROR] Error cargando script count: {e}")
 
         # Query de respaldo segura usando tabla fija
-        return "SELECT COUNT(*) as total FROM inventario_perfiles WHERE activo = 1"
+        return self.sql_manager.get_query('inventario', 'contar_perfiles_activos')
 
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""

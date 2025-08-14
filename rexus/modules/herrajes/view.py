@@ -351,7 +351,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         
         # Campo de búsqueda
         self.input_busqueda = QLineEdit()
-        self.input_busqueda.setPlaceholderText("🔍 Buscar herrajes por código, nombre o tipo...")
+        self.input_busqueda.setPlaceholderText("[SEARCH] Buscar herrajes por código, nombre o tipo...")
         self.input_busqueda.setToolTip("Buscar herrajes por código, nombre, tipo o proveedor")
         self.input_busqueda.setMinimumHeight(35)
         fila_busqueda.addWidget(self.input_busqueda, 2)
@@ -362,7 +362,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
             "📂 Todas las categorías",
             "🚪 Bisagras",
             "🔐 Cerraduras", 
-            "🎯 Manijas",
+            "[TARGET] Manijas",
             "⚙️ Otros herrajes"
         ])
         self.combo_categoria.setMinimumHeight(35)
@@ -488,7 +488,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         
         # Crear estadísticas básicas
         stats = [
-            ("🔧", "Total Herrajes", "total_herrajes", RexusColors.PRIMARY),
+            ("[TOOL]", "Total Herrajes", "total_herrajes", RexusColors.PRIMARY),
             ("📦", "En Stock", "en_stock", "#28a745"),
             ("[WARN]", "Stock Bajo", "stock_bajo", "#ffc107"),
             ("🚫", "Sin Stock", "sin_stock", "#dc3545")
@@ -695,147 +695,10 @@ class HerrajesView(QWidget, ModuleExportMixin):
     # El método on_actualizar_datos ya existe, no duplicar
 
     # === MÉTODOS DE CONTROL ===
-            
-            /* Pestañas minimalistas */
-            QTabWidget::pane {
-                border: 1px solid #e1e4e8;
-                border-radius: 6px;
-                background-color: white;
-                margin-top: 2px;
-            }
-            
-            QTabBar::tab {
-                background-color: #f6f8fa;
-                border: 1px solid #e1e4e8;
-                border-bottom: none;
-                padding: 8px 16px;
-                margin-right: 2px;
-                border-top-left-radius: 6px;
-                border-top-right-radius: 6px;
-                font-size: 11px;
-                color: #586069;
-                min-width: 80px;
-            }
-            
-            QTabBar::tab:selected {
-                background-color: white;
-                color: #24292e;
-                font-weight: 500;
-                border-bottom: 2px solid #0366d6;
-            }
-            
-            QTabBar::tab:hover:!selected {
-                background-color: #e1e4e8;
-                color: #24292e;
-            }
-            
-            /* Tablas compactas */
-            QTableWidget {
-                gridline-color: #e1e4e8;
-                selection-background-color: #f1f8ff;
-                selection-color: #24292e;
-                alternate-background-color: #f6f8fa;
-                font-size: 11px;
-                border: 1px solid #e1e4e8;
-                border-radius: 4px;
-            }
-            
-            QTableWidget::item {
-                padding: 4px 8px;
-                border: none;
-            }
-            
-            QHeaderView::section {
-                background-color: #f6f8fa;
-                color: #586069;
-                font-weight: 600;
-                font-size: 10px;
-                border: none;
-                border-right: 1px solid #e1e4e8;
-                border-bottom: 1px solid #e1e4e8;
-                padding: 6px 8px;
-            }
-            
-            /* GroupBox minimalista */
-            QGroupBox {
-                font-weight: 600;
-                font-size: 11px;
-                color: #24292e;
-                border: 1px solid #e1e4e8;
-                border-radius: 6px;
-                margin-top: 8px;
-                padding-top: 8px;
-                background-color: white;
-            }
-            
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 8px;
-                padding: 0 8px 0 8px;
-                background-color: white;
-                color: #24292e;
-            }
-            
-            /* Botones minimalistas */
-            QPushButton {
-                background-color: #f6f8fa;
-                border: 1px solid #e1e4e8;
-                color: #24292e;
-                font-size: 11px;
-                font-weight: 500;
-                padding: 6px 12px;
-                border-radius: 4px;
-                min-height: 20px;
-            }
-            
-            QPushButton:hover {
-                background-color: #e1e4e8;
-                border-color: #d0d7de;
-            }
-            
-            QPushButton:pressed {
-                background-color: #d0d7de;
-            }
-            
-            /* Campos de entrada compactos */
-            QLineEdit, QComboBox {
-                border: 1px solid #e1e4e8;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-size: 11px;
-                background-color: white;
-                min-height: 18px;
-            }
-            
-            QLineEdit:focus, QComboBox:focus {
-                border-color: #0366d6;
-                outline: none;
-            }
-            
-            /* Labels compactos */
-            QLabel {
-                color: #24292e;
-                font-size: 11px;
-            }
-            
-            /* Scroll bars minimalistas */
-            QScrollBar:vertical {
-                width: 12px;
-                background-color: #f6f8fa;
-                border-radius: 6px;
-            }
-            
-            QScrollBar::handle:vertical {
-                background-color: #d0d7de;
-                border-radius: 6px;
-                min-height: 20px;
-                margin: 2px;
-            }
-            
-            QScrollBar::handle:vertical:hover {
-                background-color: #bbb;
-            }
-        """)
+    
+    def aplicar_estilos_adicionales(self):
+        """Aplica estilos adicionales si es necesario."""
+        pass
 
     # === MÉTODOS DE CONTROL ===
 

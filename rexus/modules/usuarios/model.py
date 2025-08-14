@@ -46,7 +46,7 @@ try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
-    from utils.sql_security import SQLSecurityValidator
+    from rexus.utils.sql_security import SQLSecurityValidator
     SECURITY_AVAILABLE = True
 except ImportError as e:
     print(f"[WARNING] Security utilities not available: {e}")
@@ -745,8 +745,9 @@ class UsuariosModel:
                     bloqueado_hasta = datetime.fromisoformat(
                         bloqueado_hasta.replace("Z", "+00:00")
                     )
-                except Exception:
+                except (ValueError, TypeError, AttributeError) as e:
                     # Si no se puede parsear, asumir que no está bloqueado
+                    print(f"[WARNING] Error parseando fecha de bloqueo: {e}")
                     return False, 0
 
             ahora = datetime.now()
@@ -1070,7 +1071,8 @@ class UsuariosModel:
                         ):
                             return False, "Formato de email inválido"
                         datos_limpios["email"] = email_limpio
-                    except Exception:
+                    except (ValueError, AttributeError, TypeError) as e:
+                        print(f"[WARNING] Error validando email: {e}")
                         return False, "Formato de email inválido"
 
                 # Validar teléfono si se proporciona
@@ -1162,15 +1164,8 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
             
             # Query optimizada con JOIN para eliminar consultas N+1
-            cursor.execute("""
-                SELECT u.id, u.usuario, u.nombre_completo, u.email, u.telefono, u.rol, u.estado,
-                       u.fecha_creacion, u.ultimo_acceso, u.intentos_fallidos,
-                       p.modulo as permiso
-                FROM usuarios u
-                LEFT JOIN permisos_usuario p ON u.id = p.usuario_id
-                WHERE u.activo = 1
-                ORDER BY u.nombre_completo, p.modulo
-            """)
+            sql = self.sql_manager.get_query('usuarios', 'obtener_usuarios_con_permisos')
+            cursor.execute(sql)
 
             # Procesar resultados agrupando permisos por usuario
             usuarios_dict = {}
@@ -1235,19 +1230,8 @@ class UsuariosModel:
             cursor = self.db_connection.connection.cursor()
             
             # Query optimizada con JOIN para eliminar consultas N+1 en búsqueda
-            cursor.execute("""
-                SELECT u.id, u.usuario, u.nombre_completo, u.email, u.telefono, u.rol, u.estado,
-                       u.fecha_creacion, u.ultimo_acceso, u.intentos_fallidos,
-                       p.modulo as permiso
-                FROM usuarios u
-                LEFT JOIN permisos_usuario p ON u.id = p.usuario_id
-                WHERE u.activo = 1 AND (
-                    LOWER(u.nombre_completo) LIKE ? OR
-                    LOWER(u.usuario) LIKE ? OR
-                    LOWER(u.email) LIKE ?
-                )
-                ORDER BY u.nombre_completo, p.modulo
-            """, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
+            sql = self.sql_manager.get_query('usuarios', 'buscar_usuarios_con_permisos')
+            cursor.execute(sql, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
 
             # Procesar resultados agrupando permisos por usuario
             usuarios_dict = {}

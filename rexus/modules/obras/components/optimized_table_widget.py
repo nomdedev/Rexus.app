@@ -421,7 +421,7 @@ class OptimizedTableWidget(QTableWidget):
         ver_action = QAction("👁️ Ver Detalles", self)
         editar_action = QAction("✏️ Editar", self)
         cronograma_action = QAction("📅 Ver Cronograma", self)
-        export_action = QAction("📊 Exportar", self)
+        export_action = QAction("[CHART] Exportar", self)
         refresh_action = QAction("🔄 Actualizar", self)
         
         menu.addAction(ver_action)
@@ -557,8 +557,8 @@ class EnhancedTableContainer(QWidget):
         
         # Botones de acción
         refresh_btn = QPushButton("🔄 Actualizar")
-        export_btn = QPushButton("📊 Exportar")
-        filter_btn = QPushButton("🔍 Filtros")
+        export_btn = QPushButton("[CHART] Exportar")
+        filter_btn = QPushButton("[SEARCH] Filtros")
         
         for btn in [refresh_btn, export_btn, filter_btn]:
             btn.setMaximumHeight(32)
