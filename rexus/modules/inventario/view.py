@@ -145,7 +145,7 @@ class InventarioView(BaseModuleView):
         
     def crear_panel_filtros_avanzados(self):
         """Crea panel de filtros avanzados y búsqueda."""
-        panel = RexusGroupBox("🔍 Búsqueda y Filtros Avanzados")
+        panel = RexusGroupBox("[SEARCH] Búsqueda y Filtros Avanzados")
         panel.setCheckable(True)
         panel.setChecked(True)  # Expandido por defecto
         
@@ -156,14 +156,14 @@ class InventarioView(BaseModuleView):
         
         # Campo de búsqueda principal con búsqueda en tiempo real
         self.input_busqueda = RexusLineEdit()
-        self.input_busqueda.setPlaceholderText("🔍 Buscar por código, descripción, categoría...")
+        self.input_busqueda.setPlaceholderText("[SEARCH] Buscar por código, descripción, categoría...")
         self.input_busqueda.textChanged.connect(self.on_texto_busqueda_cambiado)
         self.input_busqueda.setMinimumWidth(300)
         fila1.addWidget(RexusLabel("Búsqueda:", "body"))
         fila1.addWidget(self.input_busqueda)
         
         # Botón buscar y limpiar
-        self.btn_buscar = RexusButton("🔍 Buscar", "secondary")
+        self.btn_buscar = RexusButton("[SEARCH] Buscar", "secondary")
         self.btn_buscar.clicked.connect(self.ejecutar_busqueda)
         fila1.addWidget(self.btn_buscar)
         
@@ -389,8 +389,8 @@ class InventarioView(BaseModuleView):
         """Configura la tabla con todas las funcionalidades mejoradas."""
         # Configurar columnas con más información
         columnas = [
-            "📋 Código", "📝 Descripción", "📂 Categoría", "📦 Stock", 
-            "💰 Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización"
+            "📋 Código", "[NOTE] Descripción", "📂 Categoría", "📦 Stock", 
+            "[MONEY] Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización"
         ]
         
         self.tabla_inventario.setColumnCount(len(columnas))
@@ -424,156 +424,10 @@ class InventarioView(BaseModuleView):
         pass
         
     def apply_theme(self):
-        """Aplica estilos minimalistas y modernos a toda la interfaz."""
-        self.setStyleSheet("""
-            /* Estilo general ultra compacto */
-            QWidget {
-                background-color: #ffffff;
-                font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 11px;
-            }
-            
-            /* Pestañas ultra minimalistas */
-            QTabWidget::pane {
-                border: none;
-                background: transparent;
-            }
-            QTabBar::tab {
-                background-color: #f8fafc;
-                border: 1px solid #e5e7eb;
-                border-bottom: none;
-                padding: 8px 12px;
-                margin-right: 2px;
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
-                font-size: 12px;
-                color: #6b7280;
-                min-width: 80px;
-                min-height: 24px;
-                max-height: 24px;
-            }
-            
-            QTabBar::tab:selected {
-                background-color: white;
-                color: #24292e;
-                font-weight: 500;
-                border-bottom: 2px solid #0366d6;
-            }
-            
-            QTabBar::tab:hover:!selected {
-                background-color: #e1e4e8;
-                color: #24292e;
-            }
-            
-            /* Tablas ultra compactas */
-            QTableWidget {
-                gridline-color: #e5e7eb;
-                selection-background-color: #3b82f6;
-                selection-color: white;
-                alternate-background-color: transparent;
-                font-size: 10px;
-                border: 1px solid #e5e7eb;
-                border-radius: 3px;
-                background: transparent;
-            }
-            
-            QTableWidget::item {
-                padding: 2px 6px;
-                border: none;
-                font-size: 10px;
-            }
-            
-            QHeaderView::section {
-                background-color: transparent;
-                color: #374151;
-                font-weight: 500;
-                font-size: 9px;
-                border: none;
-                border-right: 1px solid #e5e7eb;
-                border-bottom: 1px solid #e5e7eb;
-                padding: 4px 6px;
-            }
-            
-            /* GroupBox minimalista */
-            QGroupBox {
-                font-weight: 600;
-                font-size: 11px;
-                color: #24292e;
-                border: 1px solid #e1e4e8;
-                border-radius: 6px;
-                margin-top: 8px;
-                padding-top: 8px;
-                background-color: white;
-            }
-            
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 8px;
-                padding: 0 8px 0 8px;
-                background-color: white;
-                color: #24292e;
-            }
-            
-            /* Botones minimalistas */
-            QPushButton {
-                background-color: #f6f8fa;
-                border: 1px solid #e1e4e8;
-                color: #24292e;
-                font-size: 11px;
-                font-weight: 500;
-                padding: 6px 12px;
-                border-radius: 4px;
-                min-height: 20px;
-            }
-            
-            QPushButton:hover {
-                background-color: #e1e4e8;
-                border-color: #d0d7de;
-            }
-            
-            QPushButton:pressed {
-                background-color: #d0d7de;
-            }
-            
-            /* Campos de entrada compactos */
-            QLineEdit, QComboBox {
-                border: 1px solid #e1e4e8;
-                border-radius: 4px;
-                padding: 4px 8px;
-                font-size: 11px;
-                background-color: white;
-                min-height: 18px;
-            }
-            
-            QLineEdit:focus, QComboBox:focus {
-                border-color: #0366d6;
-                outline: none;
-            }
-            
-            /* Labels compactos */
-            QLabel {
-                color: #24292e;
-                font-size: 11px;
-            }
-            
-            /* Scroll bars minimalistas */
-            QScrollBar:vertical {
-                width: 12px;
-                background-color: #f6f8fa;
-                border-radius: 6px;
-            }
-            
-            QScrollBar::handle:vertical {
-                background-color: #d0d7de;
-                border-radius: 6px;
-                min-height: 20px;
-                margin: 2px;
-            }
-            
-            QScrollBar::handle:vertical:hover {
-                background-color: #bbb;
-            }
-        """)
+        """Aplica estilos limpios y legibles - SIMPLIFICADO."""
+        # NO sobrescribir estilos - usar el sistema unificado
+        # Los estilos se manejan automáticamente por StyleManager
+        pass
         
         # Configuraciones específicas para el módulo de inventario si es necesario
         self._apply_inventario_specific_styling()
@@ -757,10 +611,10 @@ class InventarioView(BaseModuleView):
         """Muestra información detallada del producto seleccionado."""
         info = f"""
 📋 <b>Código:</b> {producto.get('codigo', 'N/A')}
-📝 <b>Descripción:</b> {producto.get('descripcion', 'N/A')}
+[NOTE] <b>Descripción:</b> {producto.get('descripcion', 'N/A')}
 📂 <b>Categoría:</b> {producto.get('categoria', 'N/A')}
 📦 <b>Stock actual:</b> {producto.get('stock_actual', 0)}
-💰 <b>Precio:</b> ${producto.get('precio_unitario', 0):,.2f}
+[MONEY] <b>Precio:</b> ${producto.get('precio_unitario', 0):,.2f}
 [CHART] <b>Estado:</b> {producto.get('estado', 'N/A')}
 📍 <b>Ubicación:</b> {producto.get('ubicacion', 'No especificada')}
 📅 <b>Última actualización:</b> {producto.get('fecha_actualizacion', 'N/A')}

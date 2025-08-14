@@ -52,7 +52,7 @@ class MessageSystem:
         },
         MessageType.QUESTION: {
             'icon': QMessageBox.Icon.Question,
-            'title_prefix': '❓ Confirmación',
+            'title_prefix': '[QUESTION] Confirmación',
             'color': '#9b59b6',
             'button_style': 'question'
         }

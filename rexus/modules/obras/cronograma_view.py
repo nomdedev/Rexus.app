@@ -179,10 +179,10 @@ class CronogramaObrasView(QWidget):
         self.btn_hoy = QPushButton("Hoy")
         self.btn_hoy.clicked.connect(self.ir_a_hoy)
 
-        self.btn_zoom_in = QPushButton("🔍+")
+        self.btn_zoom_in = QPushButton("[SEARCH]+")
         self.btn_zoom_in.clicked.connect(self.zoom_in)
 
-        self.btn_zoom_out = QPushButton("🔍-")
+        self.btn_zoom_out = QPushButton("[SEARCH]-")
         self.btn_zoom_out.clicked.connect(self.zoom_out)
 
         self.btn_exportar = QPushButton("📄 Exportar")

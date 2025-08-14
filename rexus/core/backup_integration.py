@@ -219,7 +219,7 @@ class BackupIntegration:
             for key, value in kwargs.items():
                 if hasattr(config, key):
                     setattr(config, key, value)
-                    print(f"📝 Configuración actualizada: {key} = {value}")
+                    print(f"[NOTE] Configuración actualizada: {key} = {value}")
             
             # Guardar configuración
             config.save_to_file(self.config_path)
@@ -361,7 +361,7 @@ def backup_before_critical_operation(operation_name: str = "operación crítica"
     Returns:
         True si el backup fue exitoso, False si no
     """
-    print(f"🛡️ Realizando backup de seguridad antes de {operation_name}...")
+    print(f"[SHIELD] Realizando backup de seguridad antes de {operation_name}...")
     
     backup_system = get_backup_system()
     if not backup_system.is_running():

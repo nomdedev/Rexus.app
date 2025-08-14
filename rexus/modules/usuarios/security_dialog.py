@@ -76,7 +76,7 @@ class SecurityConfigDialog(QDialog):
         tabs.addTab(self.create_2fa_tab(), "📱 2FA")
         
         # Tab 3: Seguridad de cuenta
-        tabs.addTab(self.create_account_security_tab(), "🛡️ Seguridad")
+        tabs.addTab(self.create_account_security_tab(), "[SHIELD] Seguridad")
         
         # Tab 4: Actividad
         tabs.addTab(self.create_activity_tab(), "[CHART] Actividad")

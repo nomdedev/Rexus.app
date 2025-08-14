@@ -170,7 +170,7 @@ class DiagnosticWidget(QWidget):
 
     def create_diagnostic_section(self, parent_layout):
         """Crea la sección de diagnóstico automático."""
-        diagnostic_group = QGroupBox("🔍 Diagnóstico Automático")
+        diagnostic_group = QGroupBox("[SEARCH] Diagnóstico Automático")
         diagnostic_group.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -323,7 +323,7 @@ class DiagnosticWidget(QWidget):
 
     def create_solutions_section(self, parent_layout):
         """Crea la sección de soluciones sugeridas."""
-        solutions_group = QGroupBox("🔧 Soluciones Sugeridas")
+        solutions_group = QGroupBox("[TOOL] Soluciones Sugeridas")
         solutions_group.setStyleSheet("""
             QGroupBox {
                 font-weight: bold;
@@ -462,7 +462,7 @@ class DiagnosticWidget(QWidget):
         retry_btn.clicked.connect(lambda: self.retry_requested.emit(self.module_name))
 
         # Botón de ejecutar correcciones automáticas
-        auto_fix_btn = QPushButton("🔧 Corrección Automática")
+        auto_fix_btn = QPushButton("[TOOL] Corrección Automática")
         auto_fix_btn.setStyleSheet("""
             QPushButton {
                 background-color: #388e3c;

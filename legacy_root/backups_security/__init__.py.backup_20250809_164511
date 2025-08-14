@@ -1,1 +1,0 @@
-# Inicialización del módulo core

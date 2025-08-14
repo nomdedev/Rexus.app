@@ -116,7 +116,7 @@ class ErrorMessageWidget(QFrame):
         suggestion_layout = QVBoxLayout(suggestion_frame)
         suggestion_layout.setContentsMargins(8, 8, 8, 8)
 
-        suggestion_header = QLabel("💡 Sugerencia:")
+        suggestion_header = QLabel("[IDEA] Sugerencia:")
         suggestion_header.setFont(QFont("Segoe UI", 9, QFont.Weight.Bold))
         suggestion_layout.addWidget(suggestion_header)
 
@@ -139,7 +139,7 @@ class ErrorMessageWidget(QFrame):
         buttons_layout.addStretch()
 
         # Botón de detalles técnicos
-        details_btn = QPushButton("🔧 Detalles Técnicos")
+        details_btn = QPushButton("[TOOL] Detalles Técnicos")
         details_btn.setStyleSheet("""
             QPushButton {
                 background-color: #6c757d;
@@ -238,7 +238,7 @@ class TechnicalDetailsDialog(QDialog):
         layout = QVBoxLayout(self)
 
         # Título
-        title = QLabel("🔧 Información Técnica")
+        title = QLabel("[TOOL] Información Técnica")
         title.setFont(QFont("Segoe UI", 14, QFont.Weight.Bold))
         layout.addWidget(title)
 

@@ -5,7 +5,12 @@
       "Bash(cp:*)",
       "Bash(python:*)",
       "Bash(xcopy:*)",
-      "Bash(grep:*)"
+      "Bash(grep:*)",
+      "Bash(sed:*)",
+      "Bash(del view_completa.py view_integrated.py)",
+      "Bash(rm:*)",
+      "Bash(find:*)",
+      "Bash(timeout:*)"
     ],
     "deny": [],
     "ask": []

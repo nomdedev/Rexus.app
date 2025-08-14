@@ -37,7 +37,7 @@ except ImportError:
                 if max_val is not None:
                     val = min(val, max_val)
                 return val
-            except:
+            except (ValueError, TypeError):
                 return 0
         def sanitize_sql_input(self, text):
             return str(text).replace("'", "").replace('"', '') if text else ""

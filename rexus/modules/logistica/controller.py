@@ -105,17 +105,17 @@ class LogisticaController(QObject):
             if self.model and hasattr(self.model, 'crear_transporte'):
                 resultado = self.model.crear_transporte(datos)
                 if resultado:
-                    print("✅ Transporte creado exitosamente")
+                    print("[OK] Transporte creado exitosamente")
                     self.cargar_datos_iniciales()
                 else:
-                    print("❌ Error al crear el transporte")
+                    print("[ERROR] Error al crear el transporte")
             else:
                 # Simulación para pruebas
-                print("✅ Transporte creado exitosamente (simulado)")
+                print("[OK] Transporte creado exitosamente (simulado)")
                 if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
-            print(f"❌ Error al crear transporte: {str(e)}")
+            print(f"[ERROR] Error al crear transporte: {str(e)}")
 
     @auth_required
     def actualizar_transporte(self, datos):
@@ -124,17 +124,17 @@ class LogisticaController(QObject):
             if self.model and hasattr(self.model, 'actualizar_transporte'):
                 resultado = self.model.actualizar_transporte(datos)
                 if resultado:
-                    print("✅ Transporte actualizado exitosamente")
+                    print("[OK] Transporte actualizado exitosamente")
                     self.cargar_datos_iniciales()
                 else:
-                    print("❌ Error al actualizar el transporte")
+                    print("[ERROR] Error al actualizar el transporte")
             else:
                 # Simulación para pruebas
-                print("✅ Transporte actualizado exitosamente (simulado)")
+                print("[OK] Transporte actualizado exitosamente (simulado)")
                 if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
-            print(f"❌ Error al actualizar transporte: {str(e)}")
+            print(f"[ERROR] Error al actualizar transporte: {str(e)}")
 
     @auth_required
     def eliminar_transporte(self, transporte_id):
@@ -143,17 +143,17 @@ class LogisticaController(QObject):
             if self.model and hasattr(self.model, 'eliminar_transporte'):
                 resultado = self.model.eliminar_transporte(transporte_id)
                 if resultado:
-                    print("✅ Transporte eliminado exitosamente")
+                    print("[OK] Transporte eliminado exitosamente")
                     self.cargar_datos_iniciales()
                 else:
-                    print("❌ Error al eliminar el transporte")
+                    print("[ERROR] Error al eliminar el transporte")
             else:
                 # Simulación para pruebas
-                print("✅ Transporte eliminado exitosamente (simulado)")
+                print("[OK] Transporte eliminado exitosamente (simulado)")
                 if self.view and hasattr(self.view, 'actualizar_tabla_transportes'):
                     self.view.actualizar_tabla_transportes()
         except Exception as e:
-            print(f"❌ Error al eliminar transporte: {str(e)}")
+            print(f"[ERROR] Error al eliminar transporte: {str(e)}")
 
     def buscar_transportes(self, termino, estado):
         """Busca transportes según criterios."""

@@ -176,7 +176,7 @@ class CollapsibleSidebar(QFrame):
         self.modules = [
             ("🏗️", "Obras", "Gestión de proyectos y construcción"),
             ("📦", "Inventario", "Gestión de inventario y stock"),
-            ("🔧", "Herrajes", "Gestión de herrajes"),
+            ("[TOOL]", "Herrajes", "Gestión de herrajes"),
             ("🪟", "Vidrios", "Gestión de vidrios"),
             ("📋", "Pedidos", "Solicitudes y órdenes de trabajo"),
             ("🛒", "Compras", "Gestión de compras y proveedores"),
@@ -405,7 +405,7 @@ class MainWindow(QMainWindow):
         # Cards de estadísticas mejoradas
         stats = [
             ("📦", "Stock", "1,234", "#3498db"),
-            ("💰", "Ventas", "$45,678", "#2ecc71"),
+            ("[MONEY]", "Ventas", "$45,678", "#2ecc71"),
             ("🏗️", "Obras", "23", "#e74c3c"),
             ("📋", "Pedidos", "56", "#f39c12"),
         ]
@@ -479,7 +479,7 @@ class MainWindow(QMainWindow):
         welcome_layout.setSpacing(20)
 
         # Título de bienvenida
-        welcome_title = QLabel("🎉 ¡Bienvenido a Rexus.app!")
+        welcome_title = QLabel("[PARTY] ¡Bienvenido a Rexus.app!")
         welcome_title.setStyleSheet("""
             QLabel {
                 font-size: 28px;
@@ -497,7 +497,7 @@ class MainWindow(QMainWindow):
         📱 Módulos disponibles: {len(self.modulos_permitidos)}
         
         [CHECK] Sistema funcionando correctamente
-        🔧 Sidebar colapsible implementado
+        [TOOL] Sidebar colapsible implementado
         [CHART] Dashboard optimizado
         """)
 
@@ -563,7 +563,7 @@ class MainWindow(QMainWindow):
         emoji_map = {
             "Obras": "🏗️",
             "Inventario": "📦",
-            "Herrajes": "🔧",
+            "Herrajes": "[TOOL]",
             "Vidrios": "🪟",
             "Pedidos": "📋",
             "Compras": "🛒",

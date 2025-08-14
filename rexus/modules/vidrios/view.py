@@ -101,7 +101,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         
         # Botones de acción rápida
         btn_actualizar = QPushButton("🔄")
-        btn_exportar = QPushButton("📊")
+        btn_exportar = QPushButton("[CHART]")
         
         for btn in [btn_actualizar, btn_exportar]:
             btn.setStyleSheet("""
@@ -216,7 +216,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         busqueda_layout.setSpacing(8)
         
         # Búsqueda
-        busqueda_layout.addWidget(QLabel("🔍 Buscar:"))
+        busqueda_layout.addWidget(QLabel("[SEARCH] Buscar:"))
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar por código, tipo, dimensiones...")
         self.input_busqueda.setStyleSheet("""
@@ -257,7 +257,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         busqueda_layout.addWidget(self.combo_stock)
         
         # Botón buscar
-        btn_buscar = StandardComponents.create_primary_button("🔍 Buscar")
+        btn_buscar = StandardComponents.create_primary_button("[SEARCH] Buscar")
         btn_buscar.clicked.connect(self.buscar_vidrios)
         busqueda_layout.addWidget(btn_buscar)
         
@@ -330,7 +330,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.addStretch()
         
         # Botones de exportación
-        btn_export_excel = StandardComponents.create_success_button("📊 Excel")
+        btn_export_excel = StandardComponents.create_success_button("[CHART] Excel")
         btn_export_pdf = StandardComponents.create_info_button("📄 PDF")
         
         btn_export_excel.clicked.connect(lambda: self.exportar_datos('excel'))
@@ -525,7 +525,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         self.combo_prioridad.addItems(["Todas", "Alta", "Media", "Baja"])
         layout.addWidget(self.combo_prioridad)
         
-        btn_filtrar_pedidos = StandardComponents.create_primary_button("🔍 Filtrar")
+        btn_filtrar_pedidos = StandardComponents.create_primary_button("[SEARCH] Filtrar")
         layout.addWidget(btn_filtrar_pedidos)
         
         layout.addStretch()
@@ -565,7 +565,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         # Botones de gestión de pedidos
         self.btn_nuevo_pedido = StandardComponents.create_primary_button("➕ Nuevo Pedido")
         self.btn_editar_pedido = StandardComponents.create_secondary_button("✏️ Editar")
-        self.btn_cancelar_pedido = StandardComponents.create_danger_button("❌ Cancelar")
+        self.btn_cancelar_pedido = StandardComponents.create_danger_button("[ERROR] Cancelar")
         self.btn_procesar_pedido = StandardComponents.create_success_button("⚡ Procesar")
         
         layout.addWidget(self.btn_nuevo_pedido)
@@ -575,7 +575,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.addStretch()
         
         # Exportación de pedidos
-        btn_export_pedidos = StandardComponents.create_info_button("📊 Exportar")
+        btn_export_pedidos = StandardComponents.create_info_button("[CHART] Exportar")
         layout.addWidget(btn_export_pedidos)
         
         return panel
@@ -604,7 +604,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
             stats_layout.addWidget(widget, pos[0], pos[1])
         
         layout.addLayout(stats_layout)
-        self.tab_widget.addTab(tab_stats, "📊 Estadísticas")
+        self.tab_widget.addTab(tab_stats, "[CHART] Estadísticas")
     
     def crear_widget_resumen_inventario(self) -> QWidget:
         """Widget de resumen del inventario."""
@@ -621,7 +621,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
     def crear_widget_top_vidrios(self) -> QWidget:
         """Widget de vidrios más vendidos."""
         return self._crear_widget_estadistica(
-            "🏆 Más Vendidos",
+            "[TROPHY] Más Vendidos",
             [
                 ("Templado 6mm", "324 m²", "#3b82f6"),
                 ("Laminado 8mm", "289 m²", "#10b981"),
@@ -645,7 +645,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
     def crear_widget_valoracion_stock(self) -> QWidget:
         """Widget de valoración del stock."""
         return self._crear_widget_estadistica(
-            "💰 Valoración Stock",
+            "[MONEY] Valoración Stock",
             [
                 ("Total General", "$2.847.500", "#10b981"),
                 ("Templados", "$1.234.800", "#3b82f6"),

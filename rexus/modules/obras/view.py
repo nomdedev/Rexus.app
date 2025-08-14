@@ -161,7 +161,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         busqueda_layout.setSpacing(8)
         
         # Búsqueda
-        busqueda_layout.addWidget(StandardComponents.create_standard_label("🔍 Buscar:"))
+        busqueda_layout.addWidget(StandardComponents.create_standard_label("[SEARCH] Buscar:"))
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar por código, nombre, cliente...")
         self.input_busqueda.setStyleSheet("""
@@ -207,7 +207,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         busqueda_layout.addWidget(self.combo_tipo)
         
         # Botón buscar - extra compacto
-        btn_buscar = StandardComponents.create_primary_button("🔍 Buscar")
+        btn_buscar = StandardComponents.create_primary_button("[SEARCH] Buscar")
         btn_buscar.setStyleSheet("""
             QPushButton {
                 background: #f8fafc;
@@ -477,7 +477,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         
         # Botones movidos desde el header - más pequeños
         btn_actualizar_small = StandardComponents.create_primary_button("🔄 Actualizar")
-        btn_estadisticas_small = StandardComponents.create_info_button("📊 Estadísticas")  
+        btn_estadisticas_small = StandardComponents.create_info_button("[CHART] Estadísticas")  
         btn_nueva_obra_small = StandardComponents.create_success_button("➕ Nueva Obra")
         
         # Estilo compacto para botones pequeños
@@ -517,7 +517,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.addStretch()
         
         # Botones de exportación - extra pequeños
-        btn_export_excel = StandardComponents.create_success_button("📊 Excel")
+        btn_export_excel = StandardComponents.create_success_button("[CHART] Excel")
         btn_export_pdf = StandardComponents.create_info_button("📄 PDF")
         
         # Aplicar estilo extra compacto a botones de exportación
@@ -603,7 +603,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         filtros_layout.addWidget(vista_label)
         
         self.combo_vista_cronograma = QComboBox()
-        self.combo_vista_cronograma.addItems(["📅 Semanal", "📆 Mensual", "🗓️ Trimestral", "📊 Anual"])
+        self.combo_vista_cronograma.addItems(["📅 Semanal", "📆 Mensual", "🗓️ Trimestral", "[CHART] Anual"])
         self.combo_vista_cronograma.setCurrentText("📆 Mensual")
         self.combo_vista_cronograma.setStyleSheet("""
             QComboBox {
@@ -649,11 +649,11 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         
         self.combo_estado_cronograma = QComboBox()
         self.combo_estado_cronograma.addItems([
-            "🔍 Todas", 
+            "[SEARCH] Todas", 
             "🟢 En Progreso", 
             "🟡 Pendientes", 
             "🔴 Retrasadas",
-            "✅ Finalizadas"
+            "[OK] Finalizadas"
         ])
         self.combo_estado_cronograma.setStyleSheet("min-width: 120px; padding: 4px;")
         filtros_layout.addWidget(self.combo_estado_cronograma)
@@ -665,7 +665,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         acciones_layout = QHBoxLayout(acciones_frame)
         
         btn_actualizar_cronograma = StandardComponents.create_primary_button("🔄 Actualizar")
-        btn_exportar_cronograma = StandardComponents.create_info_button("📊 Exportar")
+        btn_exportar_cronograma = StandardComponents.create_info_button("[CHART] Exportar")
         btn_imprimir_cronograma = StandardComponents.create_secondary_button("🖨️ Imprimir")
         
         btn_actualizar_cronograma.clicked.connect(self.actualizar_cronograma)
@@ -791,7 +791,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         splitter.setSizes([350, 650])
         
         layout.addWidget(splitter)
-        self.tab_widget.addTab(tab_presupuestos, "💰 Presupuestos")
+        self.tab_widget.addTab(tab_presupuestos, "[MONEY] Presupuestos")
     
     def crear_panel_control_presupuestos(self) -> QFrame:
         """Panel de control para gestión de presupuestos."""
@@ -814,18 +814,18 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         filtros_layout = QHBoxLayout(filtros_frame)
         
         # Estado del presupuesto
-        estado_label = QLabel("📊 Estado:")
+        estado_label = QLabel("[CHART] Estado:")
         estado_label.setStyleSheet("font-weight: 600; color: #1e40af;")
         filtros_layout.addWidget(estado_label)
         
         self.combo_estado_presupuesto = QComboBox()
         self.combo_estado_presupuesto.addItems([
-            "🔍 Todos",
-            "📝 Borrador", 
-            "✅ Aprobado",
+            "[SEARCH] Todos",
+            "[NOTE] Borrador", 
+            "[OK] Aprobado",
             "⏳ Pendiente",
             "🔄 Revisión",
-            "❌ Rechazado"
+            "[ERROR] Rechazado"
         ])
         self.combo_estado_presupuesto.setStyleSheet("min-width: 120px; padding: 4px;")
         filtros_layout.addWidget(self.combo_estado_presupuesto)
@@ -837,13 +837,13 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         filtros_layout.addWidget(separador)
         
         # Rango de montos
-        monto_label = QLabel("💰 Monto:")
+        monto_label = QLabel("[MONEY] Monto:")
         monto_label.setStyleSheet("font-weight: 600; color: #1e40af;")
         filtros_layout.addWidget(monto_label)
         
         self.combo_rango_monto = QComboBox()
         self.combo_rango_monto.addItems([
-            "🔍 Todos",
+            "[SEARCH] Todos",
             "💵 Hasta $100K",
             "💴 $100K - $500K", 
             "💶 $500K - $1M",
@@ -861,7 +861,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         
         btn_nuevo_presupuesto = StandardComponents.create_success_button("➕ Nuevo")
         btn_comparar_presupuestos = StandardComponents.create_info_button("⚖️ Comparar")
-        btn_exportar_presupuestos = StandardComponents.create_primary_button("📊 Exportar")
+        btn_exportar_presupuestos = StandardComponents.create_primary_button("[CHART] Exportar")
         btn_imprimir_presupuestos = StandardComponents.create_secondary_button("🖨️ Imprimir")
         
         for btn in [btn_nuevo_presupuesto, btn_comparar_presupuestos, btn_exportar_presupuestos, btn_imprimir_presupuestos]:
@@ -944,7 +944,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.setContentsMargins(12, 12, 12, 12)
         
         # Header
-        self.presupuesto_header = QLabel("💰 Seleccionar una obra para ver presupuesto")
+        self.presupuesto_header = QLabel("[MONEY] Seleccionar una obra para ver presupuesto")
         self.presupuesto_header.setStyleSheet("""
             QLabel {
                 font-size: 14px;
@@ -1015,7 +1015,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             stats_layout.addWidget(widget, pos[0], pos[1])
         
         layout.addLayout(stats_layout)
-        self.tab_widget.addTab(tab_stats, "📊 Estadísticas")
+        self.tab_widget.addTab(tab_stats, "[CHART] Estadísticas")
     
     def crear_widget_resumen_obras(self) -> QWidget:
         """Widget de resumen de obras."""
@@ -1044,7 +1044,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
     def crear_widget_presupuestos_mes(self) -> QWidget:
         """Widget de presupuestos del mes."""
         return self._crear_widget_estadistica(
-            "💰 Presupuestos Mes",
+            "[MONEY] Presupuestos Mes",
             [
                 ("Aprobados", "$2.847.500", "#10b981"),
                 ("Pendientes", "$1.234.800", "#f59e0b"),
@@ -1382,7 +1382,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             codigo_item = self.lista_presupuestos.item(row, 0)
             if codigo_item:
                 codigo = codigo_item.text()
-                self.presupuesto_header.setText(f"💰 Presupuesto: {codigo}")
+                self.presupuesto_header.setText(f"[MONEY] Presupuesto: {codigo}")
                 self._mostrar_detalle_presupuesto_ejemplo(codigo)
     
     def _mostrar_detalle_presupuesto_ejemplo(self, codigo: str):
@@ -1443,7 +1443,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         botones_layout = QHBoxLayout()
         btn_editar_presupuesto = StandardComponents.create_primary_button("✏️ Editar")
         btn_generar_pdf = StandardComponents.create_info_button("📄 PDF")
-        btn_aprobar = StandardComponents.create_success_button("✅ Aprobar")
+        btn_aprobar = StandardComponents.create_success_button("[OK] Aprobar")
         
         botones_layout.addWidget(btn_editar_presupuesto)
         botones_layout.addWidget(btn_generar_pdf)
@@ -1491,6 +1491,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                             background: #2563eb;
                         }
                     """)
+                    btn.clicked.connect(lambda checked, r=row: self.ver_detalle_obra_tabla(r))
                     self.tabla_obras.setCellWidget(row, col, btn)
                 else:
                     item = QTableWidgetItem(str(value))
@@ -1612,6 +1613,12 @@ class DialogoObraModerna(QDialog):
             'presupuesto': self.presupuesto_spin.value(),
             'descripcion': sanitize_string(self.descripcion_edit.toPlainText())
         }
+
+    # === MÉTODO PARA BOTÓN CORREGIDO ===
+    
+    def ver_detalle_obra_tabla(self, row):
+        """Ver detalle de obra desde tabla."""
+        show_success(self, "Ver Obra", f"Mostrando detalle de la obra en fila {row + 1}")
 
 
 # Alias para compatibilidad con importaciones existentes

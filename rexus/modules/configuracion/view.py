@@ -125,7 +125,7 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
         layout.addWidget(self.input_busqueda)
         
         # Botón buscar estandarizado
-        self.btn_buscar = StandardComponents.create_secondary_button("🔍 Buscar")
+        self.btn_buscar = StandardComponents.create_secondary_button("[SEARCH] Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
         

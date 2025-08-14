@@ -78,7 +78,7 @@ class PaginationWidget(QWidget):
         
         # Sección de búsqueda
         search_layout = QHBoxLayout()
-        search_label = QLabel("🔍 Buscar:")
+        search_label = QLabel("[SEARCH] Buscar:")
         search_label.setObjectName("searchLabel")
         
         self.search_input = QLineEdit()

@@ -273,11 +273,11 @@ class DatabaseConfigDialog(QDialog):
         """Crea la pestaña para configurar la BD de auditoría"""
         tab = self.create_database_tab(
             "auditoria",
-            "🔍 Base de Datos de Auditoría",
+            "[SEARCH] Base de Datos de Auditoría",
             "Configuración para logs y trazabilidad",
             ["auditoria", "logs_usuarios", "eventos_sistema"]
         )
-        self.tab_widget.addTab(tab, "🔍 Auditoría DB")
+        self.tab_widget.addTab(tab, "[SEARCH] Auditoría DB")
     
     def create_database_tab(self, db_key, title, description, tables):
         """Crea una pestaña genérica para configuración de BD"""
@@ -357,7 +357,7 @@ class DatabaseConfigDialog(QDialog):
         layout.setContentsMargins(20, 20, 20, 20)
         
         # Header
-        header = QLabel("🔧 Prueba de Conexión")
+        header = QLabel("[TOOL] Prueba de Conexión")
         header.setStyleSheet("""
             QLabel {
                 font-size: 18px;
@@ -599,7 +599,7 @@ class DatabaseConfigDialog(QDialog):
     
     def test_connection(self, db_type):
         """Prueba la conexión a una base de datos específica"""
-        self.results_text.append(f"\\n🔍 Probando conexión a BD {db_type}...")
+        self.results_text.append(f"\\n[SEARCH] Probando conexión a BD {db_type}...")
         
         try:
             # Configuración de prueba

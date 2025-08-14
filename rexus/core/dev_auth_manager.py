@@ -40,7 +40,7 @@ class DevAuthManager:
         self.auto_login_enabled = dev_creds.get('auto_login', False)
         
         # No mostrar credenciales en logs por seguridad
-        print(f"[DEV_AUTH] Auto-login: {'✅ Habilitado' if self.auto_login_enabled else '❌ Deshabilitado'}")
+        print(f"[DEV_AUTH] Auto-login: {'[OK] Habilitado' if self.auto_login_enabled else '[ERROR] Deshabilitado'}")
         print(f"[DEV_AUTH] Usuario: {self.dev_user[:2]}***")
     
     def get_dev_credentials(self) -> Dict[str, str]:

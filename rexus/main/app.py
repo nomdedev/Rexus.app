@@ -72,6 +72,7 @@ from PyQt6.QtWidgets import (
 # Imports del core de Rexus
 from rexus.core.login_dialog import LoginDialog
 from rexus.core.module_manager import module_manager
+from rexus.main.dashboard_premium import PremiumDashboard
 
 
 def initialize_security_manager():
@@ -287,9 +288,9 @@ class MainWindow(QMainWindow):
                 # Aplicar correcciones ultra-seguras para todos los temas
                 emergency_success = self.style_manager.apply_emergency_readable_forms()
                 if emergency_success:
-                    print("[STYLE] ✅ Formularios ultra-legibles aplicados correctamente")
+                    print("[STYLE] [OK] Formularios ultra-legibles aplicados correctamente")
                 else:
-                    print("[STYLE] ⚠️ Intentando correcciones alternativas...")
+                    print("[STYLE] [WARNING] Intentando correcciones alternativas...")
                     
                     # Fallback: Intentar correcciones específicas por tema
                     if self.style_manager._current_theme == 'dark':
@@ -301,7 +302,7 @@ class MainWindow(QMainWindow):
                             if fallback_success:
                                 print("[STYLE] Tema de emergencia aplicado - formularios legibles")
                             else:
-                                print("[STYLE] ❌ ERROR: No se pudieron aplicar correcciones críticas")
+                                print("[STYLE] [ERROR] ERROR: No se pudieron aplicar correcciones críticas")
                     else:
                         # Para temas claros, asegurar contraste
                         self.style_manager.apply_critical_form_fixes()
@@ -314,7 +315,8 @@ class MainWindow(QMainWindow):
 
     def _init_ui(self):
         self.setWindowTitle("Rexus.app v2.0.0 - Sistema de Gestión Integral")
-        self.setGeometry(100, 100, 1400, 900)
+        # Configurar para iniciar en fullscreen maximizado
+        self.showMaximized()
 
         # Widget central
         central_widget = QWidget()
@@ -402,7 +404,7 @@ class MainWindow(QMainWindow):
             ("🛠️", "Herrajes", "Gestión de herrajes"),
             ("🪟", "Vidrios", "Gestión de vidrios"),
             ("🚚", "Logística", "Gestión de logística y transporte"),
-            ("📝", "Pedidos", "Solicitudes y órdenes de trabajo"),
+            ("[NOTE]", "Pedidos", "Solicitudes y órdenes de trabajo"),
             ("🛒", "Compras", "Gestión de compras y proveedores"),
             ("💼", "Administración", "Gestión administrativa y financiera"),
             ("🧰", "Mantenimiento", "Gestión de mantenimiento"),
@@ -443,13 +445,15 @@ class MainWindow(QMainWindow):
             """
 QPushButton {
     text-align: left;
-    padding: 15px 20px;
+    padding: 8px 16px;
     border: none;
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 13px;
+    font-weight: 500;
     background-color: rgba(255, 255, 255, 0.15);
     border-radius: 6px;
-    margin: 3px 8px;
+    margin: 2px 8px;
+    max-height: 36px;
+    min-height: 36px;
 }
 QPushButton:hover {
     background-color: #3498db;
@@ -477,16 +481,16 @@ QPushButton:pressed {
             """
 QPushButton {
     text-align: left;
-    padding: 7px 16px;
+    padding: 8px 16px;
     border: none;
     color: #888888;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
+    max-height: 36px;
+    min-height: 36px;
     background-color: rgba(255, 255, 255, 0.08);
     border-radius: 6px;
-    margin: 3px 8px;
-    min-height: 28px;
-    max-height: 34px;
+    margin: 2px 8px;
 }
 QPushButton:disabled {
     background-color: rgba(255, 255, 255, 0.05);
@@ -519,41 +523,278 @@ QPushButton:disabled {
             }
         """)
 
-        # Dashboard inicial
-        self._create_dashboard()
+        # Dashboard inicial premium
+        self._create_premium_dashboard()
 
         content_layout.addWidget(self.content_stack)
         main_layout.addWidget(content_area)
 
     def _create_dashboard(self):
-        """Crea el dashboard principal moderno y funcional"""
+        """Crea el dashboard principal - RENOVADO COMPLETAMENTE"""
         dashboard = QWidget()
+        dashboard.setStyleSheet("""
+            QWidget {
+                background-color: #ffffff;
+                color: #1a1a1a;
+            }
+        """)
         main_layout = QVBoxLayout(dashboard)
-        main_layout.setSpacing(20)
-        main_layout.setContentsMargins(20, 20, 20, 20)
+        main_layout.setSpacing(0)
+        main_layout.setContentsMargins(0, 0, 0, 0)
 
-        # Header del Dashboard
-        header = self._create_dashboard_header()
+        # Header compacto y limpio
+        header = self._create_simple_header()
         main_layout.addWidget(header)
 
-        # Grid de contenido principal
-        content_grid = QHBoxLayout()
-        
-        # Columna izquierda - Estadísticas y KPIs
-        left_column = self._create_left_dashboard_column()
-        content_grid.addWidget(left_column, 2)  # 2/3 del ancho
-        
-        # Columna derecha - Acceso rápido y actividades
-        right_column = self._create_right_dashboard_column()
-        content_grid.addWidget(right_column, 1)  # 1/3 del ancho
-        
-        main_layout.addLayout(content_grid)
-        
-        # Footer con información del sistema
-        footer = self._create_dashboard_footer()
+        # Grid principal con estadísticas
+        stats_grid = self._create_stats_grid()
+        main_layout.addWidget(stats_grid)
+
+        # Sección de acceso rápido
+        quick_access = self._create_simple_quick_access()
+        main_layout.addWidget(quick_access)
+
+        # Footer minimalista
+        footer = self._create_simple_footer()
         main_layout.addWidget(footer)
 
         self.content_stack.addWidget(dashboard)
+    
+    def _create_premium_dashboard(self):
+        """Crea el dashboard premium moderno."""
+        dashboard = PremiumDashboard(self.user_data)
+        dashboard.navegar_modulo.connect(self.cargar_modulo)
+        self.content_stack.addWidget(dashboard)
+
+    def _create_simple_header(self):
+        """Header limpio y compacto"""
+        from datetime import datetime
+        
+        header = QWidget()
+        header.setFixedHeight(60)
+        header.setStyleSheet("""
+            QWidget {
+                background-color: #f8f9fa;
+                border-bottom: 1px solid #e9ecef;
+            }
+        """)
+        
+        layout = QHBoxLayout(header)
+        layout.setContentsMargins(20, 10, 20, 10)
+        
+        # Título principal
+        title = QLabel("Dashboard")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 24px;
+                font-weight: bold;
+                color: #212529;
+            }
+        """)
+        
+        # Fecha actual
+        date_label = QLabel(datetime.now().strftime("%d de %B, %Y"))
+        date_label.setStyleSheet("""
+            QLabel {
+                font-size: 14px;
+                color: #6c757d;
+            }
+        """)
+        
+        layout.addWidget(title)
+        layout.addStretch()
+        layout.addWidget(date_label)
+        
+        return header
+
+    def _create_stats_grid(self):
+        """Grid de estadísticas principales"""
+        stats_widget = QWidget()
+        stats_widget.setStyleSheet("""
+            QWidget {
+                background-color: #ffffff;
+                padding: 20px;
+            }
+        """)
+        
+        layout = QVBoxLayout(stats_widget)
+        
+        # Título de sección
+        section_title = QLabel("[CHART] Estadísticas del Sistema")
+        section_title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: 600;
+                color: #212529;
+                margin-bottom: 20px;
+            }
+        """)
+        layout.addWidget(section_title)
+        
+        # Grid de tarjetas
+        grid = QGridLayout()
+        grid.setSpacing(15)
+        
+        # Estadísticas simples
+        stats = [
+            ("Productos", "1,234", "#007bff"),
+            ("Obras", "23", "#28a745"),
+            ("Pedidos", "56", "#ffc107"),
+            ("Usuarios", f"{len(self.modulos_permitidos)}", "#6f42c1")
+        ]
+        
+        for i, (label, value, color) in enumerate(stats):
+            card = self._create_simple_stat_card(label, value, color)
+            grid.addWidget(card, 0, i)
+        
+        layout.addLayout(grid)
+        return stats_widget
+
+    def _create_simple_stat_card(self, label, value, color):
+        """Tarjeta de estadística simple"""
+        card = QFrame()
+        card.setStyleSheet(f"""
+            QFrame {{
+                background-color: #ffffff;
+                border: 1px solid #dee2e6;
+                border-left: 4px solid {color};
+                border-radius: 8px;
+                padding: 20px;
+                min-height: 80px;
+            }}
+            QFrame:hover {{
+                background-color: #f8f9fa;
+                border-color: {color};
+            }}
+        """)
+        
+        layout = QVBoxLayout(card)
+        layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        value_label = QLabel(value)
+        value_label.setStyleSheet(f"""
+            QLabel {{
+                font-size: 32px;
+                font-weight: bold;
+                color: {color};
+                margin: 0;
+            }}
+        """)
+        value_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        label_widget = QLabel(label)
+        label_widget.setStyleSheet("""
+            QLabel {
+                font-size: 14px;
+                color: #6c757d;
+                margin: 0;
+            }
+        """)
+        label_widget.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        
+        layout.addWidget(value_label)
+        layout.addWidget(label_widget)
+        
+        return card
+
+    def _create_simple_quick_access(self):
+        """Acceso rápido minimalista"""
+        quick_widget = QWidget()
+        quick_widget.setStyleSheet("""
+            QWidget {
+                background-color: #f8f9fa;
+                padding: 20px;
+            }
+        """)
+        
+        layout = QVBoxLayout(quick_widget)
+        
+        # Título
+        title = QLabel("[ROCKET] Acceso Rápido")
+        title.setStyleSheet("""
+            QLabel {
+                font-size: 18px;
+                font-weight: 600;
+                color: #212529;
+                margin-bottom: 15px;
+            }
+        """)
+        layout.addWidget(title)
+        
+        # Botones principales
+        buttons_layout = QHBoxLayout()
+        buttons_layout.setSpacing(15)
+        
+        quick_modules = [
+            ("📦", "Inventario"),
+            ("🏗️", "Obras"),
+            ("[NOTE]", "Pedidos"),
+            ("👤", "Usuarios")
+        ]
+        
+        for emoji, name in quick_modules:
+            if name in self.modulos_permitidos:
+                btn = QPushButton(f"{emoji} {name}")
+                btn.setStyleSheet("""
+                    QPushButton {
+                        background-color: #007bff;
+                        color: white;
+                        border: none;
+                        border-radius: 8px;
+                        padding: 15px 25px;
+                        font-size: 14px;
+                        font-weight: 500;
+                        min-width: 120px;
+                    }
+                    QPushButton:hover {
+                        background-color: #0056b3;
+                    }
+                """)
+                btn.clicked.connect(lambda checked, module=name: self.show_module(module))
+                buttons_layout.addWidget(btn)
+        
+        buttons_layout.addStretch()
+        layout.addLayout(buttons_layout)
+        
+        return quick_widget
+
+    def _create_simple_footer(self):
+        """Footer minimalista"""
+        footer = QWidget()
+        footer.setFixedHeight(40)
+        footer.setStyleSheet("""
+            QWidget {
+                background-color: #f8f9fa;
+                border-top: 1px solid #e9ecef;
+            }
+        """)
+        
+        layout = QHBoxLayout(footer)
+        layout.setContentsMargins(20, 5, 20, 5)
+        
+        # Información del sistema
+        info = QLabel("Rexus.app v2.0.0 - Sistema Operativo")
+        info.setStyleSheet("""
+            QLabel {
+                font-size: 12px;
+                color: #6c757d;
+            }
+        """)
+        
+        # Usuario actual
+        user_info = QLabel(f"Usuario: {self.user_data.get('username', 'N/A')}")
+        user_info.setStyleSheet("""
+            QLabel {
+                font-size: 12px;
+                color: #6c757d;
+            }
+        """)
+        
+        layout.addWidget(info)
+        layout.addStretch()
+        layout.addWidget(user_info)
+        
+        return footer
 
     def _create_dashboard_header(self):
         """Crea el header del dashboard moderno y limpio"""
@@ -564,10 +805,10 @@ QPushButton:disabled {
         header_widget.setStyleSheet("""
             QWidget {
                 background-color: white;
-                border: 1px solid #e1e4e8;
+                border: 1px solid #d0d7de;
                 border-radius: 8px;
-                padding: 20px;
-                margin-bottom: 10px;
+                padding: 16px;
+                margin-bottom: 8px;
             }
         """)
         
@@ -665,7 +906,7 @@ QPushButton:disabled {
         kpi_widget = QWidget()
         kpi_layout = QVBoxLayout(kpi_widget)
         
-        title = QLabel("📊 Resumen Ejecutivo")
+        title = QLabel("[CHART] Resumen Ejecutivo")
         title.setStyleSheet("""
             QLabel {
                 font-size: 18px;
@@ -682,7 +923,7 @@ QPushButton:disabled {
         # KPIs con datos dinámicos (simulados por ahora)
         kpis = [
             ("📦", "Productos", "1,234", "#3498db", "Stock total disponible"),
-            ("💰", "Facturación", "$45,678", "#2ecc71", "Ingresos del mes"),
+            ("[MONEY]", "Facturación", "$45,678", "#2ecc71", "Ingresos del mes"),
             ("🏗️", "Obras", "23", "#e74c3c", "Proyectos activos"),
             ("📋", "Pedidos", "56", "#f39c12", "Pendientes de procesar"),
             ("👥", "Usuarios", f"{len(self.modulos_permitidos)}", "#9b59b6", "Módulos activos"),
@@ -788,7 +1029,7 @@ QPushButton:disabled {
         
         # Actividades simuladas
         activities = [
-            ("✅", "Nuevo pedido registrado", "Hace 2 horas", "#28a745"),
+            ("[OK]", "Nuevo pedido registrado", "Hace 2 horas", "#28a745"),
             ("📦", "Inventario actualizado", "Hace 4 horas", "#0366d6"),
             ("🏗️", "Obra finalizada", "Ayer", "#d73a49"),
             ("👤", "Usuario conectado", "Hace 1 hora", "#6f42c1"),
@@ -869,7 +1110,7 @@ QPushButton:disabled {
         quick_widget = QWidget()
         quick_layout = QVBoxLayout(quick_widget)
         
-        title = QLabel("🚀 Acceso Rápido")
+        title = QLabel("[ROCKET] Acceso Rápido")
         title.setStyleSheet("""
             QLabel {
                 font-size: 16px;
@@ -897,7 +1138,7 @@ QPushButton:disabled {
         quick_modules = [
             ("📦", "Inventario", "inventario"),
             ("🏗️", "Obras", "obras"),
-            ("💰", "Compras", "compras"),
+            ("[MONEY]", "Compras", "compras"),
             ("👥", "Usuarios", "usuarios"),
             ("⚙️", "Configuración", "configuracion")
         ]
@@ -949,6 +1190,10 @@ QPushButton:disabled {
                     break
         except Exception as e:
             print(f"Error navegando a módulo {module_name}: {e}")
+    
+    def cargar_modulo(self, module_name):
+        """Carga un módulo específico - método requerido por PremiumDashboard."""
+        self._navigate_to_module(module_name)
 
     def _create_notifications_section(self):
         """Crea la sección de notificaciones"""
@@ -981,9 +1226,9 @@ QPushButton:disabled {
         
         # Notificaciones simuladas
         notifications = [
-            ("⚠️", "Stock bajo en herrajes", "warning"),
-            ("✅", "Backup completado", "success"),
-            ("📊", "Reporte mensual listo", "info"),
+            ("[WARNING]", "Stock bajo en herrajes", "warning"),
+            ("[OK]", "Backup completado", "success"),
+            ("[CHART]", "Reporte mensual listo", "info"),
             ("🔄", "Sistema actualizado", "info")
         ]
         
@@ -1067,7 +1312,7 @@ QPushButton:disabled {
         """)
         
         # Información del sistema
-        system_info = QLabel("🖥️ Sistema Operativo | 🔒 Seguridad Activa | 💾 Base de Datos Conectada")
+        system_info = QLabel("🖥️ Sistema Operativo | [LOCK] Seguridad Activa | 💾 Base de Datos Conectada")
         system_info.setStyleSheet("""
             QLabel {
                 font-size: 12px;
@@ -1568,11 +1813,11 @@ QPushButton:disabled {
 
         icon_map = {
             "Vidrios": "🪟",
-            "Herrajes": "🔧",
-            "Pedidos": "📝",
+            "Herrajes": "[TOOL]",
+            "Pedidos": "[NOTE]",
             "Logística": "🚚",
             "Usuarios": "👤",
-            "Auditoría": "🔍",
+            "Auditoría": "[SEARCH]",
             "Compras": "🛒",
             "Mantenimiento": "🧰",
             "Obras": "🏗️",
@@ -1582,7 +1827,7 @@ QPushButton:disabled {
         }
 
         # Obtener icono para el módulo
-        module_icon = icon_map.get(module_name, "⚠️")
+        module_icon = icon_map.get(module_name, "[WARNING]")
 
         # Contenido centrado
         content_layout = QVBoxLayout()
@@ -1769,7 +2014,7 @@ def main():
             print("[ERROR] [LOGIN] Error: No se pudo obtener datos del usuario")
             return
 
-        # 🔥 SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
+        # [HOT] SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
         try:
             # Establecer usuario y rol actual en SecurityManager
             security_manager.current_user = user_data
@@ -1779,7 +2024,7 @@ def main():
                 f"[SECURITY] Contexto establecido - Usuario: {user_data.get('username')}, Rol: {security_manager.current_role}"
             )
 
-            # 🔍 DIAGNÓSTICO: Verificar estado del sistema de permisos
+            # [SEARCH] DIAGNÓSTICO: Verificar estado del sistema de permisos
             if hasattr(security_manager, "diagnose_permissions"):
                 diagnosis = security_manager.diagnose_permissions()
                 if (

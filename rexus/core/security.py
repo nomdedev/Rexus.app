@@ -667,7 +667,7 @@ class SecurityManager(QObject):
     def get_user_modules(self, user_id: int) -> List[str]:
         """Obtiene los módulos a los que tiene acceso un usuario."""
         try:
-            # 🔍 DIAGNÓSTICO: Logging detallado para debug
+            # [SEARCH] DIAGNÓSTICO: Logging detallado para debug
             print(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
             print(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
             print(f"[SECURITY DEBUG] current_user: {self.current_user}")

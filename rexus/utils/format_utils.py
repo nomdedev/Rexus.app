@@ -474,7 +474,7 @@ class StatusFormatter:
             'HIGH': '🔴 Alta',
             'MEDIUM': '🟡 Media',
             'LOW': '🟢 Baja',
-            'URGENT': '🔥 Urgente',
+            'URGENT': '[HOT] Urgente',
         }
         
         return priority_map.get(priority.upper() if priority else '', priority)

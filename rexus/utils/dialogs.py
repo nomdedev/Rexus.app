@@ -79,6 +79,21 @@ def show_error(title: str, message: str, parent: QWidget = None):
         print(f"Mensaje: {message}")
 
 
+def show_success(title: str, message: str, parent: QWidget = None):
+    """Muestra un diálogo de éxito."""
+    try:
+        msg_box = QMessageBox(parent)
+        msg_box.setIcon(QMessageBox.Icon.Information)
+        msg_box.setWindowTitle(title)
+        msg_box.setText(message)
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.exec()
+    except Exception as e:
+        print(f"Error mostrando diálogo de éxito: {e}")
+        print(f"Título: {title}")
+        print(f"Mensaje: {message}")
+
+
 def show_question(title: str, message: str, parent: QWidget = None) -> bool:
     """Muestra un diálogo de pregunta y retorna True si el usuario acepta."""
     try:

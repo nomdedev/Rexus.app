@@ -1,9 +1,7 @@
 from rexus.core.auth_manager import admin_required, auth_required, manager_required
-from rexus.core.auth_decorators import auth_required, admin_required, permission_required
+from rexus.core.auth_decorators import permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string, sanitize_numeric
 from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.sql_query_manager import SQLQueryManager
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
 # Ensure all database operations are properly authorized
@@ -28,7 +26,7 @@ try:
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-    from utils.sql_security import SQLSecurityValidator
+    from rexus.utils.sql_security import SQLSecurityValidator
 
     SECURITY_AVAILABLE = True
 except ImportError as e:

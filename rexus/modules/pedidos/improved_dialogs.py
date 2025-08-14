@@ -379,7 +379,7 @@ class PedidoDetalleDialog:
         btn_quitar = QPushButton("➖ Quitar Producto")
         btn_quitar.clicked.connect(lambda: self._quitar_producto_seleccionado(productos_table))
         
-        btn_buscar = QPushButton("🔍 Buscar en Inventario")
+        btn_buscar = QPushButton("[SEARCH] Buscar en Inventario")
         btn_buscar.clicked.connect(lambda: self._buscar_en_inventario_dialog(productos_table))
         
         botones_layout.addWidget(btn_agregar)

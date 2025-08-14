@@ -41,7 +41,7 @@ class DashboardWidget(QWidget):
         
         # Tarjetas de métricas
         self.crear_tarjeta_metrica("👥 Empleados Activos", "0", 0, 0, layout)
-        self.crear_tarjeta_metrica("💰 Balance General", "$0.00", 0, 1, layout)
+        self.crear_tarjeta_metrica("[MONEY] Balance General", "$0.00", 0, 1, layout)
         self.crear_tarjeta_metrica("[CHART] Transacciones Mes", "0", 1, 0, layout)
         self.crear_tarjeta_metrica("[WARN] Alertas Pendientes", "0", 1, 1, layout)
         
@@ -117,7 +117,7 @@ class ContabilidadWidget(QWidget):
         self.btn_nuevo_asiento.clicked.connect(self.nuevo_asiento_contable)
         controles_layout.addWidget(self.btn_nuevo_asiento)
         
-        self.btn_balance = RexusButton("[CHART] Balance General", "secondary")
+        self.btn_balance = RexusButton(" Balance General", "secondary")
         self.btn_balance.clicked.connect(self.generar_balance)
         controles_layout.addWidget(self.btn_balance)
         
@@ -181,7 +181,7 @@ class RecursosHumanosWidget(QWidget):
         self.btn_nuevo_empleado.clicked.connect(self.nuevo_empleado)
         controles_layout.addWidget(self.btn_nuevo_empleado)
         
-        self.btn_nomina = RexusButton("💰 Nómina", "secondary")
+        self.btn_nomina = RexusButton("[MONEY] Nómina", "secondary")
         self.btn_nomina.clicked.connect(self.generar_nomina)
         controles_layout.addWidget(self.btn_nomina)
         
@@ -279,7 +279,7 @@ class AdministracionViewFuncional(QWidget):
         # Pestaña Contabilidad  
         self.contabilidad_widget = ContabilidadWidget()
         self.contabilidad_widget.solicitud_crear_asiento.connect(self.solicitud_crear_asiento)
-        self.tabs.addTab(self.contabilidad_widget, "💰 Contabilidad")
+        self.tabs.addTab(self.contabilidad_widget, "[MONEY] Contabilidad")
         
         # Pestaña Recursos Humanos
         self.rrhh_widget = RecursosHumanosWidget()
@@ -533,7 +533,7 @@ class AdministracionViewFuncional(QWidget):
             
         termino = filtros.get('busqueda', '').strip()
         if termino:
-            self.status_label.setText(f"🔍 Buscando: {termino}")
+            self.status_label.setText(f"[SEARCH] Buscando: {termino}")
             # La búsqueda específica se maneja en el controlador
         else:
             self.actualizar_datos()

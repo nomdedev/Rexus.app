@@ -208,7 +208,7 @@ class ModernObraDialog(ModernFormDialog):
         )
         
         # SECCIÓN: ASPECTOS FINANCIEROS
-        financiero_section = self.add_section("💰 Aspectos Financieros")
+        financiero_section = self.add_section("[MONEY] Aspectos Financieros")
         financiero_layout = QVBoxLayout(financiero_section)
         
         # Presupuesto inicial

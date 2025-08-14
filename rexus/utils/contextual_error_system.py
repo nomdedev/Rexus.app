@@ -318,7 +318,7 @@ class ContextualErrorDialog(QDialog):
         frame = QFrame()
         layout = QVBoxLayout(frame)
 
-        suggestions_label = QLabel("💡 Sugerencias para resolver el problema:")
+        suggestions_label = QLabel("[IDEA] Sugerencias para resolver el problema:")
         suggestions_label.setStyleSheet("font-weight: bold; margin-bottom: 5px;")
         layout.addWidget(suggestions_label)
 
@@ -339,7 +339,7 @@ class ContextualErrorDialog(QDialog):
         frame = QFrame()
         layout = QVBoxLayout(frame)
 
-        details_label = QLabel("🔧 Detalles técnicos:")
+        details_label = QLabel("[TOOL] Detalles técnicos:")
         details_label.setStyleSheet("font-weight: bold; margin-bottom: 5px;")
         layout.addWidget(details_label)
 
@@ -361,7 +361,7 @@ class ContextualErrorDialog(QDialog):
 
         # Botón de ayuda
         if self.error.help_url:
-            help_button = QPushButton("❓ Ayuda")
+            help_button = QPushButton("[QUESTION] Ayuda")
             help_button.clicked.connect(
                 lambda: self.help_requested.emit(self.error.help_url)
             )
@@ -391,7 +391,7 @@ class ContextualErrorDialog(QDialog):
             ErrorSeverity.ERROR: "[ERROR]",
             ErrorSeverity.CRITICAL: "🚨",
         }
-        return icons.get(self.error.severity, "❓")
+        return icons.get(self.error.severity, "[QUESTION]")
 
     def get_severity_color(self) -> str:
         """Obtiene el color de fondo según la severidad."""
