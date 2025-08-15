@@ -475,14 +475,10 @@ class PedidoDetalleDialog:
 2,
                 QTableWidgetItem(str(producto.get('cantidad',
                 ''))))
-            tabla.setItem(row,
-3,
-                QTableWidgetItem(f"${producto.get('precio_unitario',
-                0):.2f}"))
-            tabla.setItem(row,
-4,
-                QTableWidgetItem(f"${producto.get('total_linea',
-                0):.2f}"))
+            tabla.setItem(row, 3,
+                QTableWidgetItem(f"${producto.get('precio_unitario', 0):.2f}"))
+            tabla.setItem(row, 4,
+                QTableWidgetItem(f"${producto.get('total_linea', 0):.2f}"))
 
             # Botón de acción
             btn_eliminar = QPushButton("🗑️")
@@ -634,4 +630,4 @@ class PedidoEstadoDialog:
                         "No se pudo cambiar el estado del pedido."
                     )
 
-        return False"
+        return False

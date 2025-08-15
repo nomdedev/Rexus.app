@@ -2015,8 +2015,7 @@ def main():
         print(
             f"[CHECK] [LOGIN] Autenticación exitosa para {user_data.get('username', '???')} ({user_data.get('role', '???')})"
         )
-        # Acceder al security_manager del contexto exterior
-        nonlocal security_manager
+        # Usar el security_manager del contexto exterior
         if security_manager is None:
             print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
             QMessageBox.critical(

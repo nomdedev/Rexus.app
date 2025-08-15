@@ -31,6 +31,7 @@ try:
     print("OK [VIDRIOS] Sistema unificado de sanitización cargado")
 except ImportError:
     try:
+        from rexus.utils.data_sanitizer import DataSanitizer
         data_sanitizer = DataSanitizer()
         SANITIZER_AVAILABLE = True
         print("OK [VIDRIOS] DataSanitizer legacy cargado")

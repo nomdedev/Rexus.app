@@ -33,7 +33,7 @@ avanzados de feedback integrados con el sistema de temas.
 from typing import Optional
 from PyQt6.QtCore import (
     QTimer, QPropertyAnimation, QRect, QEasingCurve,
-    pyqtSignal
+    pyqtSignal, Qt
 )
 from PyQt6.QtGui import QPainter, QPen, QColor, QPixmap
 from PyQt6.QtWidgets import (
@@ -438,10 +438,7 @@ class LoadingOverlay(QWidget):
             '').replace(' ',
             ''))
         if overlay_color.isValid():
-            bg_color = f"rgba({overlay_color.red()},
-{overlay_color.green()},
-                {overlay_color.blue()},
-                0.8)"
+            bg_color = f"rgba({overlay_color.red()}, {overlay_color.green()}, {overlay_color.blue()}, 0.8)"
         else:
             bg_color = "rgba(0, 0, 0, 0.5)"
 

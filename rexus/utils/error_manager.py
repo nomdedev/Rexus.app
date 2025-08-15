@@ -265,9 +265,7 @@ class ErrorManager:
         parent: QWidget,
         validation_errors: List[Tuple[str,
 str]],
-            # [(field_name,
-            error_code),
-            ...]
+            # [(field_name, error_code), ...]
     ):
         """
         Muestra múltiples errores de validación en un solo diálogo.
@@ -419,4 +417,4 @@ def show_permission_error(parent: QWidget, action: str = ""):
     context = {"action": action} if action else None
     return error_manager.show_error(
         parent, ErrorCode.SECURITY_UNAUTHORIZED, context_data=context
-    )"
+    )

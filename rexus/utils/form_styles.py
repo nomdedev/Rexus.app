@@ -428,10 +428,7 @@ class FormAnimations:
     @staticmethod
     def fade_in(widget: QWidget, duration: int = 300):
         """Animación de fade in."""
-        widget.setStyleSheet("QWidget { background-color: rgba(255,
-255,
-            255,
-            0); }")
+        widget.setStyleSheet("QWidget { background-color: rgba(255, 255, 255, 0); }")
 
         animation = QPropertyAnimation(widget, b"windowOpacity")
         animation.setDuration(duration)

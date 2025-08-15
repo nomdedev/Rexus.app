@@ -97,10 +97,7 @@ class DatabaseBackupManager(QObject):
     # Señales para notificaciones
     backup_started = pyqtSignal(str)  # database_name
     backup_completed = pyqtSignal(str,
-bool,
-        str)  # database_name,
-        success,
-        message
+bool, str)  # database_name, success, message
     backup_error = pyqtSignal(str, str)  # database_name, error_message
 
     def __init__(self, config: BackupConfig):

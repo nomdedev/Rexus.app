@@ -6,6 +6,7 @@ Optimiza la carga de módulos y componentes
 
 import importlib
 import sys
+import time
 from typing import Any, Dict, Optional
 from functools import wraps
 

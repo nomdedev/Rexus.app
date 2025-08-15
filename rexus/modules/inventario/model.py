@@ -415,7 +415,6 @@ datos_reserva: Dict[str,
 
             # Aplicar paginación a resultados
             total_items = len(productos)
-            offset = (page - 1) * limit
             productos_paginados = productos[offset:offset + limit]
 
             return productos_paginados, total_items
@@ -573,6 +572,7 @@ datos_reserva: Dict[str,
                 pass
 
             # [LOCK] Usar consulta SQL externa segura
+            search_term = filtros.get("search") if filtros else None
             params_query = {
                 "search": search_term if search_term else None,
                 "categoria": None,  # Agregar filtros según necesidad
@@ -2840,30 +2840,6 @@ descripcion,
             return productos
         except Exception as e:
             print(f"[ERROR] Error en obtener_productos_disponibles_para_reserva: {e}")
-            return []
-
-            cursor.execute(query)
-
-            productos = []
-            for row in cursor.fetchall():
-                productos.append(
-                    {
-                        "id": row[0],
-                        "codigo": row[1],
-                        "descripcion": row[2],
-                        "categoria": row[3],
-                        "stock_actual": row[4],
-                        "precio_unitario": row[5],
-                        "unidad_medida": row[6],
-                        "stock_reservado": row[7],
-                        "stock_disponible": row[8],
-                    }
-                )
-
-            return productos
-
-        except Exception as e:
-            print(f"Error al obtener productos disponibles: {str(e)}")
             return []
 
     def obtener_info_obra(self, obra_id):

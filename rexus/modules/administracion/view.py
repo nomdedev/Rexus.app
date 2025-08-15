@@ -174,14 +174,10 @@ class ContabilidadWidget(QWidget):
 3,
                 QTableWidgetItem(str(asiento.get('cuenta_contable',
                 ''))))
-            self.tabla_asientos.setItem(row,
-4,
-                QTableWidgetItem(f"${asiento.get('debe',
-                0):,.2f}"))
-            self.tabla_asientos.setItem(row,
-5,
-                QTableWidgetItem(f"${asiento.get('haber',
-                0):,.2f}"))
+            self.tabla_asientos.setItem(row, 4,
+                QTableWidgetItem(f"${asiento.get('debe', 0):,.2f}"))
+            self.tabla_asientos.setItem(row, 5,
+                QTableWidgetItem(f"${asiento.get('haber', 0):,.2f}"))
             self.tabla_asientos.setItem(row,
 6,
                 QTableWidgetItem(str(asiento.get('estado',
@@ -256,10 +252,8 @@ class RecursosHumanosWidget(QWidget):
 3,
                 QTableWidgetItem(str(empleado.get('departamento',
                 ''))))
-            self.tabla_empleados.setItem(row,
-4,
-                QTableWidgetItem(f"${empleado.get('salario',
-                0):,.2f}"))
+            self.tabla_empleados.setItem(row, 4,
+                QTableWidgetItem(f"${empleado.get('salario', 0):,.2f}"))
             self.tabla_empleados.setItem(row,
 5,
                 QTableWidgetItem(str(empleado.get('estado',
@@ -563,7 +557,7 @@ class AdministracionViewFuncional(QWidget):
         show_warning(
             self,
             "Crear Nuevo Registro",
-            "Seleccione la pestaña correspondiente:"\n\n" +
+            "Seleccione la pestaña correspondiente:\\n\\n" +
             "• Contabilidad: Para asientos contables\n" +
             "• Recursos Humanos: Para empleados\n\n" +
             "Luego use el botón específico de cada sección."
@@ -738,4 +732,4 @@ class EmpleadoDialog(QDialog):
 
 
 # Alias para compatibilidad con el sistema de módulos existente
-AdministracionView = AdministracionViewFuncional"
+AdministracionView = AdministracionViewFuncional

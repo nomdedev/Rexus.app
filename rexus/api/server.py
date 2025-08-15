@@ -395,7 +395,7 @@ class RexusAPI:
         # Autenticación con validación exhaustiva
         if JWT_AVAILABLE:
             @self.app.post("/auth/token", response_model=TokenResponse, tags=["Authentication"])
-            async def login(username: str = Body(..., min_length=3, max_length=50),
+            async def login(request: Request, username: str = Body(..., min_length=3, max_length=50),
                           password: str = Body(..., min_length=6, max_length=100)):
                 """Obtener token de acceso con validación de seguridad"""
                 from ..utils.secure_logger import log_security_event, log_user_action
@@ -579,6 +579,7 @@ class RexusAPI:
                 log_data_access(username, 'inventario', 'CREATE')
 
                 # Sanitizar todos los campos
+                safe_codigo = InputSanitizer.sanitize_string(item.codigo, max_length=50)
                 safe_nombre = InputSanitizer.sanitize_string(item.nombre, max_length=255)
                 safe_categoria = InputSanitizer.sanitize_string(item.categoria, max_length=100)
 

@@ -197,16 +197,11 @@ class CSRFProtection:
         from ..utils.secure_logger import log_security_event
 
         # Validar token cryptográficamente
-        is_valid,
-message = self.token_generator.validate_token(token,
-            user_id,
-            session_id)
+        is_valid, message = self.token_generator.validate_token(token, user_id, session_id)
 
         if not is_valid:
-            log_security_event("CSRF_TOKEN_INVALID",
-"HIGH",
-                f"User: {user_id},
-                Error: {message}")
+            log_security_event("CSRF_TOKEN_INVALID", "HIGH",
+                f"User: {user_id}, Error: {message}")
             return False, message
 
         # Verificar si el token está en tokens activos
@@ -354,8 +349,5 @@ def validate_csrf_token(token: str, user_id: str, session_id: str = None) -> boo
     Returns:
         True si el token es válido
     """
-    is_valid,
-_ = get_csrf_protection().validate_token_for_user(token,
-        user_id,
-        session_id)
+    is_valid, _ = get_csrf_protection().validate_token_for_user(token, user_id, session_id)
     return is_valid

@@ -916,18 +916,12 @@ class PedidosViewComplete(BaseModuleView):
 
             self.tabla_pedidos.setItem(row, 5, prioridad_item)
 
-            self.tabla_pedidos.setItem(row,
-6,
-                QTableWidgetItem(f"$ {pedido.get('total',
-                0):.2f}"))
-            self.tabla_pedidos.setItem(row,
-7,
-                QTableWidgetItem(str(pedido.get('productos',
-                0))))
-            self.tabla_pedidos.setItem(row,
-8,
-                QTableWidgetItem(pedido.get('observaciones',
-                '')))
+            self.tabla_pedidos.setItem(row, 6,
+                QTableWidgetItem(f"$ {pedido.get('total', 0):.2f}"))
+            self.tabla_pedidos.setItem(row, 7,
+                QTableWidgetItem(str(pedido.get('productos', 0))))
+            self.tabla_pedidos.setItem(row, 8,
+                QTableWidgetItem(pedido.get('observaciones', '')))
 
             # Botón de acciones
             btn_acciones = QPushButton("Ver Detalle")

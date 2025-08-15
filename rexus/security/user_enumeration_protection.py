@@ -49,10 +49,8 @@ class UserEnumerationProtection:
 
         # Verificar si la IP está bloqueada
         if self._is_ip_blocked(ip_address, current_time):
-            log_security_event("IP_BLOCKED_ATTEMPT",
-"HIGH",
-                f"IP: {ip_address},
-                User: {username}")
+            log_security_event("IP_BLOCKED_ATTEMPT", "HIGH",
+                f"IP: {ip_address}, User: {username}")
             return True
 
         # Registrar el intento

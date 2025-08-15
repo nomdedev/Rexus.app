@@ -27,6 +27,7 @@ DiÃ¡logo moderno mejorado para productos de inventario
 Incluye todos los campos de la base de datos con feedback visual avanzado
 """
 
+import sys
 from typing import Optional, Dict, Any
 from PyQt6.QtWidgets import (
     QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox,

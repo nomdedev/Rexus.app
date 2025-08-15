@@ -969,26 +969,16 @@ class ComprasViewComplete(BaseModuleView):
 
             self.tabla_compras.setItem(row, 4, prioridad_item)
 
-            self.tabla_compras.setItem(row,
-5,
-                QTableWidgetItem(f"$ {compra.get('total',
-                0):.2f}"))
-            self.tabla_compras.setItem(row,
-6,
-                QTableWidgetItem(str(compra.get('productos',
-                0))))
-            self.tabla_compras.setItem(row,
-7,
-                QTableWidgetItem(compra.get('fecha_entrega',
-                '')))
-            self.tabla_compras.setItem(row,
-8,
-                QTableWidgetItem(compra.get('metodo_pago',
-                '')))
-            self.tabla_compras.setItem(row,
-9,
-                QTableWidgetItem(compra.get('observaciones',
-                '')))
+            self.tabla_compras.setItem(row, 5,
+                                            QTableWidgetItem(f"$ {compra.get('total', 0):.2f}"))
+            self.tabla_compras.setItem(row, 6,
+                                            QTableWidgetItem(str(compra.get('productos', 0))))
+            self.tabla_compras.setItem(row, 7,
+                                            QTableWidgetItem(compra.get('fecha_entrega', '')))
+            self.tabla_compras.setItem(row, 8,
+                                            QTableWidgetItem(compra.get('metodo_pago', '')))
+            self.tabla_compras.setItem(row, 9,
+                                            QTableWidgetItem(compra.get('observaciones', '')))
 
             # Botón de acciones
             btn_acciones = QPushButton("Ver Detalle")

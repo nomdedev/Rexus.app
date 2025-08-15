@@ -287,10 +287,7 @@ file_path: Path,
                     module_stats[module] = 0
                 module_stats[module] += len(issues)
 
-        for module,
-count in sorted(module_stats.items(),
-            key=lambda x: x[1],
-            reverse=True):
+        for module, count in sorted(module_stats.items(), key=lambda x: x[1], reverse=True):
             status = "[CRITICAL]" if count > 10 else "[WARNING]" if count > 5 else "[OK]"
             report.append(f"  {status} {module}: {count} problemas")
 
