@@ -216,39 +216,19 @@ class FormValidatorManager:
                     # Obtener valor del campo según su tipo
                     if isinstance(campo, QLineEdit):
                         valor = campo.text()
-                        valido,
-mensaje = validador_func(campo,
-                            valor,
-                            *args,
-                            **kwargs)
+                        valido, mensaje = validador_func(campo, valor, *args, **kwargs)
                     elif isinstance(campo, QComboBox):
                         valor = campo.currentText()
-                        valido,
-mensaje = validador_func(campo,
-                            valor,
-                            *args,
-                            **kwargs)
+                        valido, mensaje = validador_func(campo, valor, *args, **kwargs)
                     elif isinstance(campo, QDateEdit):
                         valor = campo.date()
-                        valido,
-mensaje = validador_func(campo,
-                            valor,
-                            *args,
-                            **kwargs)
+                        valido, mensaje = validador_func(campo, valor, *args, **kwargs)
                     elif isinstance(campo, QTextEdit):
                         valor = campo.toPlainText()
-                        valido,
-mensaje = validador_func(campo,
-                            valor,
-                            *args,
-                            **kwargs)
+                        valido, mensaje = validador_func(campo, valor, *args, **kwargs)
                     elif isinstance(campo, (QSpinBox, QDoubleSpinBox)):
                         valor = str(campo.value())
-                        valido,
-mensaje = validador_func(campo,
-                            valor,
-                            *args,
-                            **kwargs)
+                        valido, mensaje = validador_func(campo, valor, *args, **kwargs)
                     else:
                         continue
 

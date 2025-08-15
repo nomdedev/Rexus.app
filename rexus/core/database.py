@@ -109,8 +109,7 @@ class DatabaseConnection:
             print(f"[DB ERROR] Invalid database name: {new_database}")
             return False
 
-        # Sanitize database name - only allow alphanumeric, underscore, and \
-            hyphen
+        # Sanitize database name - only allow alphanumeric, underscore, and hyphen
         import re
         if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):
             print(f"[DB ERROR] Database name contains invalid characters: {new_database}")
@@ -286,6 +285,19 @@ class SmartDatabaseConnection:
 
 # Instancia global del gestor de conexiones
 _db_manager = SmartDatabaseConnection()
+
+def get_connection(database: str, auto_connect: bool = True) -> DatabaseConnection:
+    """
+    Función global para obtener conexión a cualquier base de datos
+    
+    Args:
+        database: Nombre de la base de datos ('inventario', 'users', 'auditoria')
+        auto_connect: Si debe conectar automáticamente
+    
+    Returns:
+        Objeto DatabaseConnection configurado
+    """
+    return _db_manager.get_connection(database, auto_connect)
 
 def get_inventario_connection(auto_connect: bool = True) -> DatabaseConnection:
     """Obtiene conexión a la base de datos de inventario"""

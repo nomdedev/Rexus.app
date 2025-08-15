@@ -254,11 +254,7 @@ class RBACDatabase:
 
             for name, description, parent_id in default_roles:
                 cursor.execute(
-                    "INSERT OR IGNORE INTO rbac_roles (name,
-description,
-                        parent_id) VALUES (?,
-                        ?,
-                        ?)",
+                    "INSERT OR IGNORE INTO rbac_roles (name, description, parent_id) VALUES (?, ?, ?)",
                     (name, description, parent_id)
                 )
 
@@ -300,11 +296,7 @@ description,
 
             for resource, action, description in default_permissions:
                 cursor.execute(
-                    "INSERT OR IGNORE INTO rbac_permissions (resource,
-action,
-                        description) VALUES (?,
-                        ?,
-                        ?)",
+                    "INSERT OR IGNORE INTO rbac_permissions (resource, action, description) VALUES (?, ?, ?)",
                     (resource, action, description)
                 )
 
@@ -329,11 +321,7 @@ name: str,
             cursor = conn.cursor()
 
             cursor.execute(
-                "INSERT INTO rbac_roles (name,
-description,
-                    parent_id) VALUES (?,
-                    ?,
-                    ?)",
+                "INSERT INTO rbac_roles (name, description, parent_id) VALUES (?, ?, ?)",
                 (name, description, parent_id)
             )
 
@@ -367,11 +355,7 @@ resource: str,
             cursor = conn.cursor()
 
             cursor.execute(
-                "INSERT INTO rbac_permissions (resource,
-action,
-                    description) VALUES (?,
-                    ?,
-                    ?)",
+                "INSERT INTO rbac_permissions (resource, action, description) VALUES (?, ?, ?)",
                 (resource, action, description)
             )
 

@@ -531,9 +531,6 @@ Para habilitar mapas interactivos:
         label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         layout.addWidget(label)
         return widget
-        mapa_widget = self.crear_widget_mapa_mejorado()
-        layout.addWidget(mapa_widget)
-        self.tab_widget.addTab(tab_mapa, "🗺️ Mapa")
 
     def configurar_tabs(self):
         """Configura el widget de pestañas con diseño moderno y compacto."""
@@ -1532,6 +1529,9 @@ delete=False,
                     self.mapa_temp_file = f.name
                 try:
                     from PyQt6.QtCore import QUrl
+                    webengine_view_class = self._get_webengine_view()
+                    if webengine_view_class is None:
+                        raise ImportError("QWebEngineView no disponible")
                     self.mapa_web_view = webengine_view_class()
                     self.mapa_web_view.setUrl(QUrl.fromLocalFile(self.mapa_temp_file))
                     self.mapa_web_view.setMinimumHeight(400)
@@ -1896,7 +1896,9 @@ nombre: str,
     def init_xss_protection(self):
         """Inicializa la protección XSS."""
         try:
-            self.form_protector = FormProtector()
+            # TODO: Implementar FormProtector cuando esté disponible
+            # self.form_protector = FormProtector()
+            self.form_protector = None
 
             # Proteger campos de entrada
             if hasattr(self, 'input_busqueda'):

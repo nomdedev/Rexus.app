@@ -862,10 +862,9 @@ estado_anterior,
     def obtener_total_registros(self, filtros=None):
         """Obtiene el total de registros disponibles"""
         try:
-            _,
-total = self.obtener_datos_paginados(offset=0,
-                limit=1,
-                filtros=filtros)
+            _, total = self.obtener_datos_paginados(offset=0,
+                                                   limit=1,
+                                                   filtros=filtros)
             return total
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")

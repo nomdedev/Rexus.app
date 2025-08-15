@@ -7,7 +7,6 @@ que necesiten mejoras visuales, garantizando consistencia y calidad.
 """
 
 import sys
-import os
 from pathlib import Path
 
 # Agregar la ruta del proyecto al path de Python

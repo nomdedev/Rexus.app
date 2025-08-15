@@ -562,11 +562,8 @@ class DialogoConfiguracion(QDialog):
                 "0",
                 "si",
                 "no"]:
-                show_error(self,
-"Error de Validación",
-                    "El valor booleano debe ser: true/false,
-                    1/0,
-                    si/no.")
+                show_error(self, "Error de Validación",
+                    "El valor booleano debe ser: true/false, 1/0, si/no.")
                 return False
 
         elif datos["tipo"] == "JSON":

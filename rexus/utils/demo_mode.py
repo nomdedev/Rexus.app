@@ -140,10 +140,7 @@ class DemoDataProvider:
                 "stock_actual": random.randint(0, 150),
                 "stock_minimo": random.randint(5, 25),
                 "proveedor": random.choice(self.proveedores),
-                "ubicacion": f"Sector {random.choice(['A',
-'B',
-                    'C'])}-{random.randint(1,
-                    30)}",
+                "ubicacion": f"Sector {random.choice(['A', 'B', 'C'])}-{random.randint(1, 30)}",
                 "estado": "Activo",
                 "fecha_creacion": (datetime.now() - timedelta(days=random.randint(1, 90))).strftime('%Y-%m-%d')
             }

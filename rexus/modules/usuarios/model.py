@@ -8,7 +8,8 @@ try:
     data_sanitizer = unified_sanitizer
 except ImportError:
     try:
-                data_sanitizer = DataSanitizer()
+        from rexus.utils.data_sanitizer import DataSanitizer
+        data_sanitizer = DataSanitizer()
     except ImportError:
         data_sanitizer = None
 

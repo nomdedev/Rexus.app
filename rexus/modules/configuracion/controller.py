@@ -99,10 +99,7 @@ model=None,
         """Actualiza una configuración."""
         try:
             usuario = self.usuario_actual.get("nombre", "SISTEMA")
-            exito,
-mensaje = self.model.establecer_valor(clave,
-                valor,
-                usuario)
+            exito, mensaje = self.model.establecer_valor(clave, valor, usuario)
 
             if exito:
                 self.mostrar_exito(mensaje)
@@ -129,7 +126,7 @@ mensaje = self.model.establecer_valor(clave,
                 respuesta = QMessageBox.question(
                     self.view,
                     "Confirmar restauración",
-                    f"¿Está seguro de restaurar la configuración '{clave}' a su valor por defecto?"\n\n"
+                    f"¿Está seguro de restaurar la configuración '{clave}' a su valor por defecto?\\n\\n"
                     "Esta acción no se puede deshacer.",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                     QMessageBox.StandardButton.No
@@ -363,4 +360,4 @@ Estado: Configuración cargada correctamente"""
             # Desconectar señales si es necesario
             # Cerrar conexiones, etc.
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error en cleanup: {e}")"
+            print(f"[ERROR CONFIGURACION CONTROLLER] Error en cleanup: {e}")

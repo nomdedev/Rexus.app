@@ -311,7 +311,7 @@ data: List[Dict[str,
                 item.setBackground(QColor("#fecaca"))  # Rojo claro
 
             return item
-        except:
+        except (ValueError, TypeError, AttributeError):
             return QTableWidgetItem("0.0%")
 
     def _create_currency_item(self, value: Any) -> QTableWidgetItem:

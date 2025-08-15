@@ -167,8 +167,7 @@ fecha_desde=None,
                         WHERE 1=1
                         {" AND fecha_asiento >= ?" if fecha_desde else ""}
                         {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                        {" AND tipo_asiento = ?" if tipo and \
-                            tipo != "Todos" else ""}
+                        {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
                         ORDER BY fecha_asiento DESC, numero_asiento DESC
                     """
                     cursor.execute(query, params)
@@ -184,8 +183,7 @@ fecha_desde=None,
                     WHERE 1=1
                     {" AND fecha_asiento >= ?" if fecha_desde else ""}
                     {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                    {" AND tipo_asiento = ?" if tipo and \
-                        tipo != "Todos" else ""}
+                    {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
                     ORDER BY fecha_asiento DESC, numero_asiento DESC
                 """
                 cursor.execute(query, params)

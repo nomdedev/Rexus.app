@@ -13,6 +13,24 @@ class SQLSecurityError(Exception):
     """Excepción lanzada cuando se detecta un problema de seguridad SQL."""
 
 
+def validate_column_names(columns: str) -> bool:
+    """Valida nombres de columnas para prevenir SQL injection."""
+    if not columns or columns == "*":
+        return True
+    
+    # Patrón para nombres válidos de columnas (alfanuméricos, underscore, punto)
+    column_pattern = r'^[a-zA-Z_][a-zA-Z0-9_]*(\.[a-zA-Z_][a-zA-Z0-9_]*)?$'
+    
+    # Dividir por comas y validar cada columna
+    column_list = [col.strip() for col in columns.split(',')]
+    
+    for column in column_list:
+        if not re.match(column_pattern, column):
+            return False
+    
+    return True
+
+
 
 # Lista blanca de tablas permitidas en el sistema
 ALLOWED_TABLES: Set[str] = {

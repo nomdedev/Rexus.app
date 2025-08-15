@@ -260,12 +260,7 @@ class LoginRateLimiter:
         if failures <= self.config.max_attempts:
             lockout_minutes = self.config.base_lockout_minutes
         else:
-            # Escalación progresiva: 5min,
-10min,
-                20min,
-                40min,
-                80min,
-                120min (máx)
+            # Escalación progresiva: 5min, 10min, 20min, 40min, 80min, 120min (máx)
             escalation = failures - self.config.max_attempts
             lockout_minutes = min(
                 self.config.base_lockout_minutes * (self.config.progressive_multiplier ** escalation),

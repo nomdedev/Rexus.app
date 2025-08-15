@@ -438,7 +438,7 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
 
         # Actualizar requisitos
         if result['issues']:
-            requirements_text = "Requisitos faltantes:"\n• " + "\n• ".join(result['issues'])
+            requirements_text = "Requisitos faltantes:\\n• " + "\\n• ".join(result['issues'])
         else:
             requirements_text = "[CHECK] Todos los requisitos cumplidos"
 
@@ -471,10 +471,8 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
                     "Configuración 2FA generada. Escanee el código QR y verifique con un código."
                 )
             else:
-                QMessageBox.warning(self,
-"Error",
-                    f"Error generando 2FA: {result.get('error',
-                    'Error desconocido')}")
+                QMessageBox.warning(self, "Error",
+                    f"Error generando 2FA: {result.get('error', 'Error desconocido')}")
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error generando 2FA: {e}")
@@ -633,4 +631,4 @@ if __name__ == "__main__":
     dialog = SecurityConfigDialog(MockUsuariosModel(), "admin")
     dialog.show()
 
-    sys.exit(app.exec())"
+    sys.exit(app.exec())
