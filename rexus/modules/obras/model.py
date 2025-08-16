@@ -1,5 +1,6 @@
 import logging
 from typing import Any, Dict, Optional
+from sqlite3 import IntegrityError
 
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.sql_query_manager import SQLQueryManager
@@ -97,7 +98,7 @@ class ObrasModel:
                     print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                 else:
                     print(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
-            except Exception:
+            except (AttributeError, RuntimeError, ConnectionError):
                 # Si SQLite no funciona, intentar con SQL Server/otros
                 try:
                     sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
@@ -106,7 +107,7 @@ class ObrasModel:
                         print(f"[OBRAS] Tabla '{self.tabla_obras}' verificada correctamente.")
                     else:
                         print(f"[INFO] La tabla '{self.tabla_obras}' no existe - se creará cuando sea necesaria.")
-                except Exception as e:
+                except (AttributeError, RuntimeError, ConnectionError) as e:
                     print(f"[INFO] No se pudo verificar tabla '{self.tabla_obras}' - continuando sin verificación: {e}")
 
             # Verificar tabla de detalles de obra (opcional)
@@ -115,23 +116,23 @@ class ObrasModel:
                 cursor.execute(sql_verificar, (self.tabla_detalles_obra,))
                 if cursor.fetchone():
                     print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
-            except Exception as e:
+            except (AttributeError, RuntimeError, ConnectionError) as e:
                 try:
                     sql_sql_server = self.sql_manager.get_query('obras', 'verificar_tabla_sql_server')
                     cursor.execute(sql_sql_server, (self.tabla_detalles_obra,))
                     if cursor.fetchone():
                         print(f"[OBRAS] Tabla '{self.tabla_detalles_obra}' verificada correctamente.")
-                except Exception as e2:
+                except (AttributeError, RuntimeError, ConnectionError) as e2:
                     print(f"[ERROR OBRAS] Error en rollback: {e2}")
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             # Error en verificación no debe bloquear el módulo
             print(f"[INFO OBRAS] Verificación de tablas omitida: {e}")
         finally:
             if cursor:
                 try:
                     cursor.close()
-                except Exception as e2:
+                except (AttributeError, RuntimeError, ConnectionError) as e2:
                     print(f"[ERROR OBRAS] Error en rollback: {e2}")
 
     def validar_obra_duplicada(
@@ -172,7 +173,7 @@ class ObrasModel:
             count = result[0]
             return count > 0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR OBRAS] Error validando obra duplicada: {e}")
             return False
 
@@ -203,7 +204,7 @@ class ObrasModel:
                     if presupuesto_limpio < 0:
                         return False, "El presupuesto no puede ser negativo"
                     datos_limpios["presupuesto_total"] = presupuesto_limpio
-                except Exception:
+                except (ValueError, TypeError):
                     return False, "El presupuesto debe ser un número válido"
             else:
                 datos_limpios["presupuesto_total"] = 0.0
@@ -267,12 +268,12 @@ class ObrasModel:
 
             return True, f"Obra {datos_limpios.get('codigo')} creada exitosamente"
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR OBRAS] Error creando obra: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception as rollback_error:
+                except (AttributeError, RuntimeError) as rollback_error:
                     print(f"[ERROR OBRAS] Error en rollback: {rollback_error}")
             return False, f"Error creando obra: {str(e)}"
         finally:
@@ -304,7 +305,7 @@ class ObrasModel:
                 return dict(zip(columnas, row))
             return None
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR OBRAS] Error obteniendo obra: {e}")
             return None
         finally:
@@ -358,7 +359,7 @@ class ObrasModel:
             cursor.execute(query, params)
             return cursor.fetchall()
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR OBRAS] Error obteniendo obras filtradas: {e}")
             return []
         finally:
@@ -458,7 +459,7 @@ page=1,
                 'end_record': min(offset + len(obras), total_count)
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR OBRAS] Error obteniendo datos paginados: {e}")
             return {
                 'data': [],

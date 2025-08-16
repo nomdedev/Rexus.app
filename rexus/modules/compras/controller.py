@@ -8,6 +8,7 @@ Incluye gestión de órdenes, proveedores y detalles de compra.
 from datetime import datetime
 
 from PyQt6.QtCore import QObject, pyqtSignal
+from rexus.core.base_controller import BaseController
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
@@ -15,7 +16,7 @@ from rexus.modules.compras.proveedores_model import ProveedoresModel
 from rexus.modules.compras.inventory_integration import InventoryIntegration
 
 
-class ComprasController(QObject):
+class ComprasController(BaseController):
     """Controlador para el módulo de compras."""
 
     # Señales
@@ -797,3 +798,20 @@ fecha_inicio,
                 "error": str(e),
                 "estado": "Error"
             }
+    def ensure_safe_operation(self, operation_name, operation_func, *args, **kwargs):
+        """Ejecuta una operación de forma segura con defensas completas."""
+        try:
+            if not self._ensure_model_available(operation_name):
+                return None
+            
+            self.logger.debug(f"Ejecutando operación segura: {operation_name}")
+            result = operation_func(*args, **kwargs)
+            self.logger.info(f"Operación {operation_name} completada exitosamente")
+            return result
+            
+        except Exception as e:
+            error_msg = f"Error en {operation_name}: {str(e)}"
+            self.logger.error(error_msg, exc_info=True)
+            self.show_error_message(error_msg)
+            return None
+    

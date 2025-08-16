@@ -10,9 +10,15 @@
       "Bash(del view_completa.py view_integrated.py)",
       "Bash(rm:*)",
       "Bash(find:*)",
-      "Bash(timeout:*)"
+      "Bash(timeout:*)",
+      "Bash(del analyze_functions.py analyze_core_functions.py)"
     ],
     "deny": [],
-    "ask": []
+    "ask": [],
+    "defaultMode": "acceptEdits",
+    "additionalDirectories": [
+      "C:\\tmp",
+      "C:\\c\\Users\\itachi\\Desktop\\martin"
+    ]
   }
 }

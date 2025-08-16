@@ -1,0 +1,12 @@
+2025-08-15 12:55:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-15 12:55:35 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+2025-08-15 12:55:40 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-15 13:14:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-15 13:16:29 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-15 13:31:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-15 14:07:37 | INFO     | rexus           | Sistema de logging Rexus inicializado

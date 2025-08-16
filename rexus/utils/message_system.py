@@ -103,7 +103,7 @@ class MessageSystem:
             rgb = tuple(int(hex_color[i:i+2], 16) for i in (0, 2, 4))
             dark_rgb = tuple(int(c * factor) for c in rgb)
             return f"#{dark_rgb[0]:02x}{dark_rgb[1]:02x}{dark_rgb[2]:02x}"
-        except:
+        except (ValueError, TypeError, IndexError):
             return "#666666"  # Color por defecto si falla
 
     @staticmethod

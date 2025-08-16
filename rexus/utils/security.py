@@ -37,7 +37,7 @@ password.encode('utf-8'),
                 salt.encode('utf-8'),
                 100000)
             return pwdhash.hex() == stored_hash
-        except Exception:
+        except (ValueError, TypeError, UnicodeDecodeError, IndexError):
             return False
 
     @staticmethod

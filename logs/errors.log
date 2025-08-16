@@ -34,3 +34,19 @@ Traceback (most recent call last):
   File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
 UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>
+2025-08-15 12:55:35,037 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+File: C:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+2025-08-15 12:55:35 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2713' in position 0: character maps to <undefined>

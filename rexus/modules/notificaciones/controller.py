@@ -8,8 +8,14 @@ Coordina entre el modelo y la vista siguiendo el patrón MVC.
 from typing import Dict, List, Optional
 from datetime import datetime, timedelta
 
+# Importar logging centralizado
+from rexus.utils.app_logger import get_logger
+
 from rexus.core.auth_manager import admin_required, auth_required
 from rexus.modules.notificaciones.model import NotificacionesModel, TipoNotificacion
+
+# Configurar logger
+logger = get_logger("notificaciones.controller")
 
 
 class NotificacionesController:
@@ -28,7 +34,7 @@ class NotificacionesController:
         self.view = view
         self.usuario_actual = usuario_actual or {}
 
-        print("OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente")
+        logger.info("OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente")
 
     @auth_required
     def obtener_notificaciones_usuario(self, solo_no_leidas: bool = False,
@@ -46,7 +52,7 @@ class NotificacionesController:
         try:
             usuario_id = self.usuario_actual.get('id')
             if not usuario_id:
-                print("[ERROR] No hay usuario actual")
+                logger.info("[ERROR] No hay usuario actual")
                 return []
 
             notificaciones = self.model.obtener_notificaciones_usuario(
@@ -58,8 +64,8 @@ class NotificacionesController:
 
             return notificaciones
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error obteniendo notificaciones: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error obteniendo notificaciones: {str(e)}")
             if self.view:
                 self.view.mostrar_error(f"Error cargando notificaciones: {str(e)}")
             return []
@@ -78,7 +84,7 @@ class NotificacionesController:
         try:
             usuario_id = self.usuario_actual.get('id')
             if not usuario_id:
-                print("[ERROR] No hay usuario actual")
+                logger.info("[ERROR] No hay usuario actual")
                 return False
 
             resultado = self.model.marcar_como_leida(notificacion_id, usuario_id)
@@ -90,8 +96,8 @@ class NotificacionesController:
 
             return resultado
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error marcando como leída: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error marcando como leída: {str(e)}")
             if self.view:
                 self.view.mostrar_error(f"Error marcando notificación: {str(e)}")
             return False
@@ -112,8 +118,8 @@ class NotificacionesController:
             count = self.model.contar_no_leidas(usuario_id)
             return count
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error contando no leídas: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error contando no leídas: {str(e)}")
             return 0
 
     @auth_required
@@ -124,8 +130,8 @@ class NotificacionesController:
             if self.view:
                 self.view.actualizar_contador_no_leidas(count)
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error actualizando contador: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error actualizando contador: {str(e)}")
 
     @auth_required
     def crear_notificacion(self, titulo: str, mensaje: str,
@@ -176,8 +182,8 @@ class NotificacionesController:
 
             return resultado
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error creando notificación: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error creando notificación: {str(e)}")
             if self.view:
                 self.view.mostrar_error(f"Error creando notificación: {str(e)}")
             return False
@@ -203,8 +209,8 @@ class NotificacionesController:
 
             return resultado
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error eliminando notificación: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error eliminando notificación: {str(e)}")
             if self.view:
                 self.view.mostrar_error(f"Error eliminando notificación: {str(e)}")
             return False
@@ -231,8 +237,8 @@ class NotificacionesController:
 
             return resultado
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error manejando evento: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error manejando evento: {str(e)}")
             return False
 
     def inicializar_notificaciones_sistema(self):
@@ -245,8 +251,8 @@ class NotificacionesController:
                 {'timestamp': datetime.now().isoformat()}
             )
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error inicializando: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error inicializando: {str(e)}")
 
     def procesar_notificaciones_programadas(self):
         """Procesa notificaciones programadas (para ejecutar periódicamente)."""
@@ -255,8 +261,8 @@ class NotificacionesController:
             # Por ejemplo: recordatorios de mantenimiento, alertas de stock bajo, etc.
             pass
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error procesando programadas: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error procesando programadas: {str(e)}")
 
     def obtener_estadisticas(self) -> Dict:
         """
@@ -298,6 +304,6 @@ class NotificacionesController:
 
             return stats
 
-        except Exception as e:
-            print(f"[ERROR NOTIFICACIONES CONTROLLER] Error obteniendo estadísticas: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error obteniendo estadísticas: {str(e)}")
             return {}

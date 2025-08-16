@@ -359,7 +359,7 @@ page_size,
             # El cache se maneja automáticamente por el decorador @cache_consultas
             # Esta función es para compatibilidad futura
             return None
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             return None
 
     def _save_to_cache(self, cache_key: str, result: PaginationResult):
@@ -374,7 +374,7 @@ page_size,
             # El cache se maneja automáticamente por el decorador @cache_consultas
             # Esta función es para compatibilidad futura
             pass
-        except Exception:
+        except (KeyError, TypeError, AttributeError):
             pass
 
     def invalidate_cache(self, pattern: str = None):

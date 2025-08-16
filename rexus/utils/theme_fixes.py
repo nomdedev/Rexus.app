@@ -6,7 +6,11 @@ Fecha: 13/08/2025
 Problema resuelto: QLineEdit, QTextEdit, QComboBox ilegibles con tema oscuro
 """
 
+import logging
 from PyQt6.QtWidgets import QWidget
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 def apply_critical_form_fixes(widget: QWidget = None):
@@ -24,14 +28,14 @@ def apply_critical_form_fixes(widget: QWidget = None):
         success = style_manager.apply_critical_contrast_fixes(widget)
 
         if success:
-            print("[THEME_FIX] Correcciones críticas aplicadas correctamente")
+            logger.info("Correcciones críticas aplicadas correctamente")
         else:
-            print("[THEME_FIX] Error aplicando correcciones críticas")
+            logger.error("Error aplicando correcciones críticas")
 
         return success
 
-    except Exception as e:
-        print(f"[THEME_FIX] Error: {e}")
+    except (ImportError, AttributeError, RuntimeError) as e:
+        logger.error(f"Error aplicando correcciones: {e}")
         return False
 
 
@@ -44,8 +48,8 @@ def ensure_forms_readable():
         # Aplicar correcciones globalmente
         return apply_critical_form_fixes()
 
-    except Exception as e:
-        print(f"[THEME_FIX] Error garantizando legibilidad: {e}")
+    except (ImportError, AttributeError, RuntimeError) as e:
+        logger.error(f"Error garantizando legibilidad: {e}")
         return False
 
 

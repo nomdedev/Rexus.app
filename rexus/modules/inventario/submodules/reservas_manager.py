@@ -14,6 +14,7 @@ Responsabilidades:
 import logging
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional
+from sqlite3 import IntegrityError
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -133,7 +134,7 @@ class ReservasManager:
             cursor.execute("SELECT 1")
             cursor.fetchone()
             return True
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error validando conexión: {e}")
             return False
         finally:
@@ -229,7 +230,7 @@ class ReservasManager:
                 # Fallback manual
                 return self._crear_reserva_fallback(datos_limpios)
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error creando reserva: {e}")
             return {
                 'success': False,
@@ -343,12 +344,12 @@ reserva_id: int,
                     'error': 'No se pudo actualizar la reserva'
                 }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error actualizando reserva {reserva_id}: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -500,12 +501,12 @@ reserva_id: int,
                 'cantidad_consumida': cantidad_consumida
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error consumiendo reserva {reserva_id}: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -588,7 +589,7 @@ reserva_id: int,
 
             return reservas
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             self.logger.error(f"Error obteniendo reservas activas: {e}")
             return []
 
@@ -659,12 +660,12 @@ reserva_id: int,
                 'detalles': [{'reserva_id': r[0], 'producto_id': r[1]} for r in reservas_vencidas]
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error procesando reservas vencidas: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -770,7 +771,7 @@ datos: Dict[str,
                 'data': datos_limpios
             }
 
-        except Exception as e:
+        except (ValueError, TypeError, AttributeError) as e:
             self.logger.error(f"Error validando datos de reserva: {e}")
             return {
                 'valid': False,
@@ -806,7 +807,7 @@ datos: Dict[str,
 
             return stock_total - stock_reservado
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error obteniendo stock disponible para producto {producto_id}: {e}")
             return None
 
@@ -825,7 +826,7 @@ datos: Dict[str,
                 return dict(zip(columnas, fila))
             return None
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error obteniendo reserva por ID: {e}")
             return None
 
@@ -844,7 +845,7 @@ datos: Dict[str,
             columnas = [desc[0] for desc in cursor.description]
             cursor.close()
             return columnas
-        except Exception:
+        except (AttributeError, RuntimeError, ConnectionError):
             return columnas_default
 
     def _obtener_ultima_reserva_id(self) -> Optional[int]:
@@ -855,7 +856,7 @@ datos: Dict[str,
             resultado = cursor.fetchone()
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error obteniendo último ID de reserva: {e}")
             return None
 
@@ -933,12 +934,12 @@ reserva_id: int,
                     'error': 'No se pudo cambiar el estado de la reserva'
                 }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error cambiando estado de reserva {reserva_id}: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -986,12 +987,12 @@ datos_limpios: Dict[str,
                 'fecha_vencimiento': datos_limpios.get('fecha_vencimiento')
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error en fallback de creación de reserva: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,

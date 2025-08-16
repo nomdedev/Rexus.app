@@ -183,14 +183,15 @@ class AuthManager:
             try:
                 # Intentar verificación con sistema seguro (PBKDF2, bcrypt, argon2)
                 password_valid = verify_password_secure(password, stored_hash)
-            except Exception:
+            except (ValueError, TypeError, ImportError, AttributeError) as e:
                 # Fallback para contraseñas SHA-256 legacy (durante migración)
+                logger.warning(f"Error verificación segura, usando fallback legacy: {e}")
                 password_hash = hashlib.sha256(password.encode("utf-8")).hexdigest()
                 password_valid = password_hash == stored_hash
 
                 # Log de advertencia para contraseñas legacy
-                print(
-                    f"[WARN]  Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
+                logger.warning(
+                    f"Usuario '{username}' usando contraseña SHA-256 legacy. Migración recomendada."
                 )
 
             # Verificar contraseña

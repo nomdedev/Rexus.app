@@ -569,7 +569,7 @@ product_data: Dict[str,
             cursor = self.db_connection.cursor()
             cursor.execute("SELECT COUNT(*) FROM productos WHERE codigo = ?", (codigo,))
             return cursor.fetchone()[0] > 0
-        except Exception:
+        except (sqlite3.Error, TypeError, AttributeError, IndexError):
             return False
 
     def _create_stock_movement(self, product_id: int, movement_type: str,

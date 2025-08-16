@@ -671,7 +671,8 @@ export_data: Dict[str,
             signature_content = json.dumps(sign_data, sort_keys=True).encode()
             return self._verify_data_signature(signature_content, record.signature)
 
-        except Exception:
+        except (json.JSONEncodeError, ValueError, TypeError, AttributeError) as e:
+            logger.error(f"Error verificando integridad de registro: {e}")
             return False
 
     def _verify_data_signature(self, data: bytes, signature: str) -> bool:
@@ -693,7 +694,8 @@ export_data: Dict[str,
             )
             return True
 
-        except Exception:
+        except (cryptography.exceptions.InvalidSignature, ValueError, TypeError) as e:
+            logger.error(f"Error verificando firma de datos: {e}")
             return False
 
     def _update_chain_state(self, record: AuditRecord):
@@ -729,7 +731,8 @@ export_data: Dict[str,
                 format=serialization.PublicFormat.SubjectPublicKeyInfo
             )
             return hashlib.sha256(public_pem).hexdigest()[:16]
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.error(f"Error generando fingerprint de clave: {e}")
             return "unknown"
 
 

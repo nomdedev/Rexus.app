@@ -328,7 +328,8 @@ class PedidosModel:
             )
 
             # Obtener ID del pedido creado
-            cursor.execute("SELECT @@IDENTITY")
+            sql_identity = self.sql_manager.get_query('pedidos', 'get_last_identity')
+            cursor.execute(sql_identity)
             pedido_id = cursor.fetchone()[0]
 
             # Insertar detalles del pedido con validación
@@ -568,7 +569,8 @@ None,
             cursor = self.db_connection.cursor()
 
             # Obtener estado actual
-            cursor.execute("SELECT estado FROM pedidos WHERE id = ?", (pedido_id,))
+            sql_estado = self.sql_manager.get_query('pedidos', 'get_estado_pedido')
+            cursor.execute(sql_estado, (pedido_id,))
             result = cursor.fetchone()
             if not result:
                 return False
@@ -674,7 +676,8 @@ estado_anterior,
             stats = {}
 
             # Total pedidos
-            cursor.execute("SELECT COUNT(*) FROM pedidos WHERE activo = 1")
+            sql_count = self.sql_manager.get_query('pedidos', 'count_pedidos_activos')
+            cursor.execute(sql_count)
             stats["total_pedidos"] = cursor.fetchone()[0]
 
             # Por estado
@@ -905,3 +908,117 @@ estado_anterior,
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}
+
+    def actualizar_pedido(self, datos: Dict[str, Any]) -> bool:
+        """Actualiza un pedido existente."""
+        if not self.db_connection:
+            return False
+
+        try:
+            pedido_id = datos.get('id')
+            if not pedido_id:
+                print("[PEDIDOS] Error: ID de pedido requerido para actualización")
+                return False
+
+            # Sanitizar datos de entrada
+            datos_limpios = self.sanitizer.sanitize_dict(datos)
+            
+            cursor = self.db_connection.cursor()
+
+            # Actualizar pedido principal
+            cursor.execute("""
+                UPDATE pedidos SET
+                    cliente = ?,
+                    contacto = ?,
+                    tipo_pedido = ?,
+                    prioridad = ?,
+                    fecha_entrega_solicitada = ?,
+                    descripcion = ?,
+                    direccion = ?,
+                    presupuesto = ?,
+                    estado = ?,
+                    observaciones = ?,
+                    fecha_modificacion = GETDATE()
+                WHERE id = ? AND activo = 1
+            """, (
+                datos_limpios.get('cliente', ''),
+                datos_limpios.get('contacto', ''),
+                datos_limpios.get('tipo', ''),
+                datos_limpios.get('prioridad', ''),
+                datos_limpios.get('fecha_entrega', ''),
+                datos_limpios.get('descripcion', ''),
+                datos_limpios.get('direccion', ''),
+                float(datos_limpios.get('presupuesto', 0)),
+                datos_limpios.get('estado', ''),
+                datos_limpios.get('observaciones', ''),
+                pedido_id
+            ))
+
+            if cursor.rowcount == 0:
+                print(f"[PEDIDOS] No se pudo actualizar el pedido {pedido_id}")
+                return False
+
+            self.db_connection.commit()
+            print(f"[PEDIDOS] Pedido {pedido_id} actualizado exitosamente")
+            return True
+
+        except Exception as e:
+            print(f"[PEDIDOS] Error actualizando pedido: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+
+    def eliminar_pedido(self, pedido_id: int) -> bool:
+        """Elimina un pedido (borrado lógico)."""
+        if not self.db_connection:
+            return False
+
+        try:
+            cursor = self.db_connection.cursor()
+
+            # Verificar que el pedido existe y no está en un estado que no permita eliminación
+            cursor.execute("""
+                SELECT estado FROM pedidos 
+                WHERE id = ? AND activo = 1
+            """, (pedido_id,))
+            
+            resultado = cursor.fetchone()
+            if not resultado:
+                print(f"[PEDIDOS] Pedido {pedido_id} no encontrado")
+                return False
+
+            estado_actual = resultado[0]
+            
+            # No permitir eliminar pedidos entregados o facturados
+            if estado_actual in ['ENTREGADO', 'FACTURADO']:
+                print(f"[PEDIDOS] No se puede eliminar pedido en estado {estado_actual}")
+                return False
+
+            # Realizar borrado lógico
+            cursor.execute("""
+                UPDATE pedidos SET 
+                    activo = 0, 
+                    fecha_eliminacion = GETDATE()
+                WHERE id = ? AND activo = 1
+            """, (pedido_id,))
+
+            if cursor.rowcount == 0:
+                print(f"[PEDIDOS] No se pudo eliminar el pedido {pedido_id}")
+                return False
+
+            # También marcar como inactivos los detalles del pedido
+            cursor.execute("""
+                UPDATE pedidos_detalle SET 
+                    activo = 0
+                WHERE pedido_id = ?
+            """, (pedido_id,))
+
+            self.db_connection.commit()
+            print(f"[PEDIDOS] Pedido {pedido_id} eliminado exitosamente")
+            return True
+
+        except Exception as e:
+            print(f"[PEDIDOS] Error eliminando pedido: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False

@@ -11,13 +11,14 @@ from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QFrame,
     QMenu
 )
+from rexus.ui.components.base_components import RexusTable, RexusLabel
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtGui import QColor, QAction
 from typing import List, Dict, Any, Optional, Callable
 import datetime
 
 
-class OptimizedTableWidget(QTableWidget):
+class OptimizedTableWidget(RexusTable):
     """
     QTableWidget optimizado para el módulo Obras con características avanzadas.
 
@@ -330,7 +331,7 @@ data: List[Dict[str,
                 item.setForeground(QColor("#6b7280"))  # Gris
 
             return item
-        except:
+        except (ValueError, TypeError, AttributeError):
             return QTableWidgetItem("$0")
 
     def _create_date_item(self, value: Any) -> QTableWidgetItem:
@@ -604,8 +605,7 @@ class EnhancedTableContainer(QWidget):
         layout = QHBoxLayout(status_bar)
         layout.setContentsMargins(8, 4, 8, 4)
 
-        self.status_label = QLabel("Listo")
-        self.status_label.setStyleSheet("color: #6b7280; font-size: 11px;")
+        self.status_label = RexusLabel("Listo", "caption")
 
         layout.addWidget(self.status_label)
         layout.addStretch()

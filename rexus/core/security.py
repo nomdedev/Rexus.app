@@ -139,7 +139,7 @@ class SecurityManager(QObject):
             print("[CHECK] Tablas de seguridad creadas exitosamente")
 
         except Exception as e:
-            print(f"[ERROR] Error creando tablas de seguridad: {e}")
+            logger.error(Error creando tablas de seguridad: {e})
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -246,7 +246,7 @@ modulo,
             self.assign_default_role_permissions()
 
         except Exception as e:
-            print(f"[ERROR] Error cargando permisos por defecto: {e}")
+            logger.error(Error cargando permisos por defecto: {e})
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -435,13 +435,13 @@ modulo,
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"[ERROR] Error asignando permisos por defecto: {e}")
+            logger.error(Error asignando permisos por defecto: {e})
             if self.db_connection:
                 self.db_connection.rollback()
 
     def create_default_admin(self):
         """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
-        print("[ERROR] SEGURIDAD: No se crean usuarios por defecto automáticamente")
+        logger.error(SEGURIDAD: No se crean usuarios por defecto automáticamente)
         print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
 
     def hash_password(self, password: str) -> str:
@@ -472,7 +472,7 @@ modulo,
 
             return is_valid
         except Exception as e:
-            print(f"[ERROR] Error verificando contraseña: {e}")
+            logger.error(Error verificando contraseña: {e})
             return False
 
     def login(self, username: str, password: str) -> bool:
@@ -508,7 +508,7 @@ modulo,
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error en login: {e}")
+            logger.error(Error en login: {e})
             return False
 
     def logout(self) -> bool:
@@ -548,7 +548,7 @@ modulo,
                 return True
 
         except Exception as e:
-            print(f"[ERROR] Error en logout: {e}")
+            logger.error(Error en logout: {e})
 
         return False
 
@@ -579,7 +579,7 @@ modulo,
                 self.permissions_cache[module].add(perm_name)
 
         except Exception as e:
-            print(f"[ERROR] Error cargando permisos: {e}")
+            logger.error(Error cargando permisos: {e})
             self.permissions_cache = {}
 
     def has_permission(self, permission: str, module: str = None) -> bool:
@@ -643,7 +643,7 @@ modulo,
             return cursor.fetchone() is not None
 
         except Exception as e:
-            print(f"[ERROR] Error verificando sesión: {e}")
+            logger.error(Error verificando sesión: {e})
             return False
 
     def log_security_event(
@@ -654,7 +654,7 @@ modulo,
             # Solo registrar en consola por ahora (sin BD)
             print(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
         except Exception as e:
-            print(f"[ERROR] Error logging evento de seguridad: {e}")
+            logger.error(Error logging evento de seguridad: {e})
 
     def get_current_user(self) -> Optional[Dict]:
         """Obtiene los datos completos del usuario actual."""
@@ -830,7 +830,7 @@ modulo,
             return users
 
         except Exception as e:
-            print(f"[ERROR] Error obteniendo usuarios: {e}")
+            logger.error(Error obteniendo usuarios: {e})
             return []
 
     def create_user(
@@ -856,7 +856,7 @@ modulo,
             # SEGURIDAD: Validar que no se permita creación no autorizada
             # Solo permitir crear usuarios si el usuario actual es admin
             if not hasattr(self, 'current_user') or self.current_role != 'ADMIN':
-                print("[ERROR] SEGURIDAD: Solo admins pueden crear usuarios")
+                logger.error(SEGURIDAD: Solo admins pueden crear usuarios)
                 return False
 
             # Crear usuario con validaciones adicionales
@@ -885,7 +885,7 @@ password_hash,
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error creando usuario: {e}")
+            logger.error(Error creando usuario: {e})
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -952,7 +952,7 @@ password_hash,
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error actualizando usuario: {e}")
+            logger.error(Error actualizando usuario: {e})
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -990,7 +990,7 @@ password_hash,
             return logs
 
         except Exception as e:
-            print(f"[ERROR] Error obteniendo logs de seguridad: {e}")
+            logger.error(Error obteniendo logs de seguridad: {e})
             return []
 
 

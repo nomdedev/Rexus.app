@@ -3,8 +3,7 @@ MIT License
 
 Copyright (c) 2024 Rexus.app
 
-Permission is hereby granted, free of charge, to any person obtaining         # Botón nuevo
-        self.btn_nuevo = RexusButton("Nuevo")copy
+Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
 in the Software without restriction, including without limitation the rights
 to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
@@ -326,6 +325,65 @@ class PedidosView(QWidget):
             filtros = {'busqueda': self.input_busqueda.text()}
             self.controller.buscar(filtros)
 
+    def editar_pedido(self, pedido_id):
+        """Abre el diálogo para editar un pedido existente."""
+        if not self.controller:
+            show_warning(self, "Advertencia", "No hay controlador disponible.")
+            return
+
+        try:
+            # Obtener datos del pedido
+            pedido_data = self.controller.obtener_pedido_por_id(pedido_id)
+            if not pedido_data:
+                show_error(self, "Error", "No se pudo obtener la información del pedido.")
+                return
+
+            # Abrir diálogo de edición
+            dialogo = DialogoPedido(self, pedido_data)
+            if dialogo.exec() == QDialog.DialogCode.Accepted:
+                if dialogo.validar_datos():
+                    datos = dialogo.obtener_datos()
+                    datos['id'] = pedido_id  # Agregar ID para la actualización
+
+                    exito = self.controller.actualizar_pedido(datos)
+                    if exito:
+                        show_success(self, "Éxito", "Pedido actualizado exitosamente.")
+                        self.actualizar_datos()
+                    else:
+                        show_error(self, "Error", "No se pudo actualizar el pedido.")
+
+        except Exception as e:
+            show_error(self, "Error", f"Error al editar pedido: {str(e)}")
+
+    def eliminar_pedido(self, pedido_id):
+        """Elimina un pedido después de confirmar con el usuario."""
+        if not self.controller:
+            show_warning(self, "Advertencia", "No hay controlador disponible.")
+            return
+
+        try:
+            from PyQt6.QtWidgets import QMessageBox
+            
+            # Confirmación del usuario
+            respuesta = QMessageBox.question(
+                self,
+                "Confirmar Eliminación",
+                "¿Está seguro de que desea eliminar este pedido?\n\nEsta acción no se puede deshacer.",
+                QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                QMessageBox.StandardButton.No
+            )
+
+            if respuesta == QMessageBox.StandardButton.Yes:
+                exito = self.controller.eliminar_pedido(pedido_id)
+                if exito:
+                    show_success(self, "Éxito", "Pedido eliminado exitosamente.")
+                    self.actualizar_datos()
+                else:
+                    show_error(self, "Error", "No se pudo eliminar el pedido.")
+
+        except Exception as e:
+            show_error(self, "Error", f"Error al eliminar pedido: {str(e)}")
+
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""
         if self.controller:
@@ -355,7 +413,21 @@ class PedidosView(QWidget):
 
             # Botón de acciones
             btn_editar = RexusButton("Editar")
-            self.tabla_principal.setCellWidget(row, 4, btn_editar)
+            btn_editar.clicked.connect(lambda checked, pedido_id=registro.get("id"): self.editar_pedido(pedido_id))
+            
+            btn_eliminar = RexusButton("Eliminar")
+            btn_eliminar.clicked.connect(lambda checked, pedido_id=registro.get("id"): self.eliminar_pedido(pedido_id))
+            btn_eliminar.setStyleSheet("QPushButton { background-color: #dc2626; color: white; }")
+            
+            # Contenedor para los botones
+            from PyQt6.QtWidgets import QHBoxLayout, QWidget
+            botones_widget = QWidget()
+            botones_layout = QHBoxLayout(botones_widget)
+            botones_layout.setContentsMargins(5, 2, 5, 2)
+            botones_layout.addWidget(btn_editar)
+            botones_layout.addWidget(btn_eliminar)
+            
+            self.tabla_principal.setCellWidget(row, 4, botones_widget)
 
     def obtener_datos_seguros(self) -> dict:
         """Obtiene datos del formulario con sanitización XSS."""

@@ -122,8 +122,9 @@ key: str,
 
                 self._stats.sets += 1
                 return True
-        except Exception:
+        except (KeyError, ValueError, TypeError, RuntimeError) as e:
             self._stats.errors += 1
+            logger.error(f"Error en cache set: {e}")
             return False
 
     def delete(self, key: str) -> bool:
@@ -137,8 +138,9 @@ key: str,
                     self._stats.deletes += 1
 
                 return deleted
-        except Exception:
+        except (KeyError, ValueError, TypeError, RuntimeError) as e:
             self._stats.errors += 1
+            logger.error(f"Error en cache delete: {e}")
             return False
 
     def clear(self) -> bool:
@@ -147,8 +149,9 @@ key: str,
                 self._cache.clear()
                 self._expiry.clear()
                 return True
-        except Exception:
+        except (RuntimeError, ValueError) as e:
             self._stats.errors += 1
+            logger.error(f"Error en cache clear: {e}")
             return False
 
     def exists(self, key: str) -> bool:
@@ -186,20 +189,23 @@ class RedisCache(CacheBackend):
         """Serializar valor para almacenamiento"""
         try:
             return pickle.dumps(value)
-        except Exception:
+        except (pickle.PickleError, TypeError, AttributeError) as e:
             # Fallback a JSON para objetos simples
+            logger.debug(f"Pickle falló, usando JSON: {e}")
             return json.dumps(value).encode('utf-8')
 
     def _deserialize(self, data: bytes) -> Any:
         """Deserializar valor desde almacenamiento"""
         try:
             return pickle.loads(data)
-        except Exception:
+        except (pickle.PickleError, EOFError, TypeError) as e:
             # Fallback a JSON
+            logger.debug(f"Pickle deserialización falló, probando JSON: {e}")
             try:
                 return json.loads(data.decode('utf-8'))
-            except Exception:
-                return data.decode('utf-8')
+            except (json.JSONDecodeError, UnicodeDecodeError) as json_e:
+                logger.debug(f"JSON deserialización falló: {json_e}")
+                return data.decode('utf-8', errors='ignore')
 
     def get(self, key: str) -> Optional[Any]:
         try:
@@ -289,7 +295,8 @@ key: str,
                 "redis_keyspace_hits": redis_info.get("keyspace_hits", 0),
                 "redis_keyspace_misses": redis_info.get("keyspace_misses", 0)
             }
-        except Exception:
+        except (redis.RedisError, ConnectionError) as e:
+            logger.warning(f"Error obteniendo stats de Redis: {e}")
             return {
                 **self._stats.to_dict(),
                 "backend": "redis",
@@ -392,7 +399,8 @@ key: str,
                     if f.is_file()
                 ) / 1024 / 1024, 2)
             }
-        except Exception:
+        except (OSError, IOError, ValueError) as e:
+            logger.warning(f"Error calculando stats de disco: {e}")
             return {
                 **self._stats.to_dict(),
                 "backend": "disk",

@@ -223,7 +223,7 @@ text: str = "",
         try:
             # Desconectar todas las señales
             self.clicked.disconnect()
-        except:
+        except (RuntimeError, TypeError):
             pass  # Ignorar si no hay conexiones
 
         # NOTA: setParent(None) puede causar errores "wrapped C/C++ object deleted"
@@ -231,14 +231,14 @@ text: str = "",
         # try:
         #     if self.parent():
         #         self.setParent(None)
-        # except:
+        # except (RuntimeError, AttributeError):
         #     pass
 
     def __del__(self):
         """Destructor seguro"""
         try:
             self.cleanup()
-        except:
+        except (RuntimeError, AttributeError):
             pass
 
 

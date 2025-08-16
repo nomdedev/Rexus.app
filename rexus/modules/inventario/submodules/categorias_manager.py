@@ -14,6 +14,7 @@ Responsabilidades:
 import logging
 from datetime import datetime
 from typing import Any, Dict, List, Optional
+from sqlite3 import IntegrityError
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -136,7 +137,7 @@ class CategoriasManager:
             cursor.execute("SELECT 1")
             cursor.fetchone()
             return True
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error validando conexión: {e}")
             return False
         finally:
@@ -226,7 +227,7 @@ class CategoriasManager:
 
             return categorias
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             self.logger.error(f"Error obteniendo categorías: {e}")
             # Devolver categorías por defecto en caso de error
             return [{'categoria': cat, 'total_productos': 0} for cat in self.CATEGORIAS_DEFAULT]
@@ -333,7 +334,7 @@ class CategoriasManager:
                 'tiene_mas_paginas': (offset + limite) < total_productos
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             self.logger.error(f"Error obteniendo productos por categoría {categoria}: {e}")
             return {
                 'success': False,
@@ -431,12 +432,12 @@ class CategoriasManager:
                     'message': f'Categoría "{nombre_limpio}" validada para uso futuro'
                 }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error creando categoría {nombre_categoria}: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -549,12 +550,12 @@ categoria_actual: str,
                 'productos_actualizados': productos_actualizados
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error renombrando categoría: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -645,12 +646,12 @@ categoria_origen: str,
                 'categoria_destino': destino_limpia
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error migrando productos de categoría: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -725,12 +726,12 @@ categoria_origen: str,
                 'categorias_afectadas': categorias_vacias
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             self.logger.error(f"Error limpiando categorías vacías: {e}")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError):
                     pass
             return {
                 'success': False,
@@ -881,7 +882,7 @@ categoria_origen: str,
                 'data': reporte
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             self.logger.error(f"Error generando reporte de categorías: {e}")
             return {
                 'success': False,
@@ -915,7 +916,7 @@ categoria_origen: str,
             cursor.close()
             return count > 0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             self.logger.error(f"Error verificando existencia de categoría: {e}")
             return False
 
@@ -933,7 +934,7 @@ categoria_origen: str,
             cursor.close()
             return exists
 
-        except Exception:
+        except (AttributeError, RuntimeError, ConnectionError):
             return False
 
     def _calcular_salud_categoria(self, categoria_info: Dict[str, Any]) -> str:
@@ -957,5 +958,5 @@ categoria_origen: str,
             else:
                 return 'ESTABLE'
 
-        except Exception:
+        except (KeyError, TypeError, ValueError):
             return 'DESCONOCIDO'

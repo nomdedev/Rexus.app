@@ -100,7 +100,7 @@ class TwoFactorAuth:
         # Decodificar secret key
         try:
             secret_bytes = base64.b32decode(secret_key.upper())
-        except Exception:
+        except (ValueError, TypeError, base64.binascii.Error):
             raise ValueError("Clave secreta inválida")
 
         # Generar HMAC-SHA1

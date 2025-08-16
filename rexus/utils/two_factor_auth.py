@@ -43,7 +43,7 @@ class TwoFactorAuth:
                 secret_key += '=' * padding_needed
 
             secret_bytes = base64.b32decode(secret_key, casefold=True)
-        except Exception:
+        except (ValueError, TypeError, base64.binascii.Error):
             # Fallback: usar el secreto como está
             secret_bytes = secret_key.encode('utf-8')
 

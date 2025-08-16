@@ -10,6 +10,7 @@ from PyQt6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QPushButton,
                             QLabel, QComboBox, QSpinBox, QFrame)
 from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtGui import QFont
+from rexus.ui.components.base_components import RexusLabel
 
 
 class PaginacionWidget(QWidget):
@@ -42,10 +43,7 @@ class PaginacionWidget(QWidget):
         layout_frame = QHBoxLayout(frame)
 
         # Información de página
-        self.lbl_info_pagina = QLabel("Página 1 de 1")
-        font_info = QFont()
-        font_info.setBold(True)
-        self.lbl_info_pagina.setFont(font_info)
+        self.lbl_info_pagina = RexusLabel("Página 1 de 1", "subtitle")
         layout_frame.addWidget(self.lbl_info_pagina)
 
         layout_frame.addStretch()
@@ -62,7 +60,7 @@ class PaginacionWidget(QWidget):
         layout_frame.addWidget(self.btn_anterior)
 
         # Selector de página
-        layout_frame.addWidget(QLabel("Página:"))
+        layout_frame.addWidget(RexusLabel("Página:", "body"))
         self.spin_pagina = QSpinBox()
         self.spin_pagina.setMinimum(1)
         self.spin_pagina.setMaximum(1)
@@ -82,18 +80,18 @@ class PaginacionWidget(QWidget):
         layout_frame.addStretch()
 
         # Selector de items por página
-        layout_frame.addWidget(QLabel("Mostrar:"))
+        layout_frame.addWidget(RexusLabel("Mostrar:", "body"))
         self.combo_items_pagina = QComboBox()
         self.combo_items_pagina.addItems(["25", "50", "100", "200"])
         self.combo_items_pagina.setCurrentText("50")
         self.combo_items_pagina.setMaximumWidth(80)
         layout_frame.addWidget(self.combo_items_pagina)
-        layout_frame.addWidget(QLabel("por página"))
+        layout_frame.addWidget(RexusLabel("por página", "body"))
 
         layout_frame.addStretch()
 
         # Información de registros
-        self.lbl_info_registros = QLabel("0 registros")
+        self.lbl_info_registros = RexusLabel("0 registros", "caption")
         layout_frame.addWidget(self.lbl_info_registros)
 
         layout_principal.addWidget(frame)

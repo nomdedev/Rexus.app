@@ -9,7 +9,7 @@ Objetivo: Optimizar rendimiento con cache selectivo por módulo
 import time
 import functools
 import threading
-from typing import Any, Dict, Optional, Callable, Tuple
+from typing import Any, Dict, Optional, Callable, Tuple, List
 import json
 import hashlib
 
@@ -192,6 +192,211 @@ class SmartCache:
 
 # Instancia global del cache
 _global_cache = SmartCache(default_ttl=300, max_size=1000)
+
+
+# ============================================================================
+# DECORADORES ESPECIALIZADOS - REQUERIDOS POR CLAUDE.MD
+# ============================================================================
+
+def cache_estadisticas(ttl: int = 300):
+    """
+    Decorador especializado para cachear consultas de estadísticas.
+    TTL por defecto: 5 minutos
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = f"estadisticas:{_global_cache._generate_key(func.__name__, args, kwargs)}"
+            
+            # Intentar obtener del cache
+            result = _global_cache.get(cache_key)
+            if result is not None:
+                return result
+            
+            # Ejecutar función y cachear resultado
+            result = func(*args, **kwargs)
+            _global_cache.set(cache_key, result, ttl)
+            return result
+        return wrapper
+    return decorator
+
+
+def cache_reportes(ttl: int = 600):
+    """
+    Decorador especializado para cachear reportes y consultas complejas.
+    TTL por defecto: 10 minutos
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = f"reportes:{_global_cache._generate_key(func.__name__, args, kwargs)}"
+            
+            result = _global_cache.get(cache_key)
+            if result is not None:
+                return result
+            
+            result = func(*args, **kwargs)
+            _global_cache.set(cache_key, result, ttl)
+            return result
+        return wrapper
+    return decorator
+
+
+def cache_consultas(ttl: int = 120):
+    """
+    Decorador especializado para cachear consultas SQL frecuentes.
+    TTL por defecto: 2 minutos
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = f"consultas:{_global_cache._generate_key(func.__name__, args, kwargs)}"
+            
+            result = _global_cache.get(cache_key)
+            if result is not None:
+                return result
+            
+            result = func(*args, **kwargs)
+            _global_cache.set(cache_key, result, ttl)
+            return result
+        return wrapper
+    return decorator
+
+
+def cache_catalogos(ttl: int = 1800):
+    """
+    Decorador especializado para cachear catálogos y datos de referencia.
+    TTL por defecto: 30 minutos
+    """
+    def decorator(func: Callable) -> Callable:
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            cache_key = f"catalogos:{_global_cache._generate_key(func.__name__, args, kwargs)}"
+            
+            result = _global_cache.get(cache_key)
+            if result is not None:
+                return result
+            
+            result = func(*args, **kwargs)
+            _global_cache.set(cache_key, result, ttl)
+            return result
+        return wrapper
+    return decorator
+
+
+# ============================================================================
+# INVALIDACIÓN SELECTIVA POR MÓDULO Y PATRÓN
+# ============================================================================
+
+def invalidate_cache_by_module(module: str) -> int:
+    """
+    Invalida todo el cache de un módulo específico.
+    
+    Args:
+        module: Nombre del módulo (estadisticas, reportes, consultas, catalogos)
+        
+    Returns:
+        Número de entradas invalidadas
+    """
+    return _global_cache.invalidate(f"{module}:")
+
+
+def invalidate_cache_by_pattern(pattern: str) -> int:
+    """
+    Invalida entradas del cache que coincidan con un patrón específico.
+    
+    Args:
+        pattern: Patrón a buscar en las claves del cache
+        
+    Returns:
+        Número de entradas invalidadas
+    """
+    return _global_cache.invalidate(pattern)
+
+
+def get_cache_metrics() -> Dict[str, Any]:
+    """
+    Obtiene métricas completas del sistema de cache.
+    
+    Returns:
+        Diccionario con estadísticas de rendimiento
+    """
+    stats = _global_cache.get_stats()
+    
+    # Agregar métricas adicionales requeridas
+    stats.update({
+        'cache_hit_ratio': stats['hit_rate'] / 100,  # Ratio entre 0-1
+        'memory_efficiency': f"{stats['current_size']}/{stats['max_size']}",
+        'recommendations': _get_cache_recommendations(stats)
+    })
+    
+    return stats
+
+
+def _get_cache_recommendations(stats: Dict[str, Any]) -> List[str]:
+    """Genera recomendaciones basadas en las métricas del cache."""
+    recommendations = []
+    
+    if stats['hit_rate'] < 50:
+        recommendations.append("Tasa de aciertos baja - considerar aumentar TTL o revisar patrones de acceso")
+    
+    if stats['current_size'] >= stats['max_size'] * 0.9:
+        recommendations.append("Cache cerca del límite - considerar aumentar max_size")
+    
+    if stats['evictions'] > stats['hits'] * 0.1:
+        recommendations.append("Muchas expulsiones - considerar aumentar tamaño del cache")
+    
+    if not recommendations:
+        recommendations.append("Cache funcionando óptimamente")
+    
+    return recommendations
+
+
+# ============================================================================
+# PRELOADING AUTOMÁTICO DE DATOS FRECUENTES
+# ============================================================================
+
+def preload_cache_data():
+    """
+    Precarga datos frecuentes en el cache para optimizar rendimiento.
+    Esta función debe ser llamada durante la inicialización del sistema.
+    """
+    # Implementar preloading de datos comunes
+    # Esto se puede expandir según las necesidades específicas de cada módulo
+    pass
+
+
+def setup_cache_preloading(preload_functions: List[Callable]):
+    """
+    Configura funciones de preloading para ejecutar durante la inicialización.
+    
+    Args:
+        preload_functions: Lista de funciones a ejecutar para precargar datos
+    """
+    for func in preload_functions:
+        try:
+            func()
+        except Exception as e:
+            print(f"Error en preloading de cache: {e}")
+
+
+# ============================================================================
+# UTILIDADES ADICIONALES
+# ============================================================================
+
+def clear_all_cache():
+    """Limpia completamente el cache global."""
+    _global_cache.clear()
+
+
+def get_cache_size() -> int:
+    """Obtiene el número actual de entradas en cache."""
+    return len(_global_cache._cache)
+
+
+def force_cache_cleanup():
+    """Fuerza la limpieza de entradas expiradas."""
+    _global_cache._evict_expired()
 
 
 def cached_function(ttl: int = 300, cache_key_prefix: str = None):

@@ -6,6 +6,19 @@ Maneja la lógica de negocio para la configuración del sistema.
 
 from typing import Any, Dict, List
 from PyQt6.QtCore import QObject, pyqtSignal
+
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("configuracion.controller")
+except ImportError:
+    class DummyLogger:
+        def info(self, msg): logger.debug(f"[INFO] {msg}")
+        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
+        def error(self, msg): logger.error(f"[ERROR] {msg}")
+        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+
 from PyQt6.QtWidgets import QMessageBox, QFileDialog
 from rexus.core.auth_decorators import admin_required
 
@@ -73,10 +86,10 @@ model=None,
             if self.view and hasattr(self.view, 'cargar_configuraciones'):
                 self.view.cargar_configuraciones(configuraciones)
 
-            print(f"[CONFIGURACION CONTROLLER] Cargadas {len(configuraciones)} configuraciones")
+            logger.info(f"[CONFIGURACION CONTROLLER] Cargadas {len(configuraciones)} configuraciones")
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: {e}")
             self.mostrar_error(f"Error cargando configuraciones: {str(e)}")
 
     def cargar_configuracion_por_categoria(self, categoria: str):
@@ -88,10 +101,10 @@ model=None,
                 hasattr(self.view, 'cargar_configuraciones_categoria'):
                 self.view.cargar_configuraciones_categoria(categoria, configuraciones)
 
-            print(f"[CONFIGURACION CONTROLLER] Cargadas configuraciones de categoría {categoria}")
+            logger.info(f"[CONFIGURACION CONTROLLER] Cargadas configuraciones de categoría {categoria}")
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones por categoría: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones por categoría: {e}")
             self.mostrar_error(f"Error cargando configuraciones: {str(e)}")
 
     @admin_required
@@ -115,7 +128,7 @@ model=None,
                 self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error actualizando configuración: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error actualizando configuración: {e}")
             self.mostrar_error(f"Error actualizando configuración: {str(e)}")
 
     def restaurar_configuracion(self, clave: str):
@@ -144,7 +157,7 @@ model=None,
                         self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error restaurando configuración: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error restaurando configuración: {e}")
             self.mostrar_error(f"Error restaurando configuración: {str(e)}")
 
     def exportar_configuracion(self):
@@ -168,7 +181,7 @@ model=None,
                         self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error exportando configuración: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error exportando configuración: {e}")
             self.mostrar_error(f"Error exportando configuración: {str(e)}")
 
     def importar_configuracion(self):
@@ -205,7 +218,7 @@ model=None,
                             self.mostrar_error(mensaje)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error importando configuración: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error importando configuración: {e}")
             self.mostrar_error(f"Error importando configuración: {str(e)}")
 
     def probar_conexion_bd(self):
@@ -235,7 +248,7 @@ Estado: Configuración cargada correctamente"""
             self.mostrar_info(mensaje)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error probando conexión BD: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error probando conexión BD: {e}")
             self.mostrar_error(f"Error probando conexión: {str(e)}")
 
     def obtener_valor_configuracion(self, clave: str, valor_por_defecto: Any = None) -> Any:
@@ -243,7 +256,7 @@ Estado: Configuración cargada correctamente"""
         try:
             return self.model.obtener_valor(clave, valor_por_defecto)
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo valor: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo valor: {e}")
             return valor_por_defecto
 
     def obtener_configuracion_empresa(self) -> Dict[str, Any]:
@@ -251,7 +264,7 @@ Estado: Configuración cargada correctamente"""
         try:
             return self.model.obtener_configuracion_por_categoria('EMPRESA')
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración empresa: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración empresa: {e}")
             return {}
 
     def obtener_configuracion_sistema(self) -> Dict[str, Any]:
@@ -259,7 +272,7 @@ Estado: Configuración cargada correctamente"""
         try:
             return self.model.obtener_configuracion_por_categoria('SISTEMA')
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración sistema: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración sistema: {e}")
             return {}
 
     def obtener_configuracion_tema(self) -> Dict[str, Any]:
@@ -267,7 +280,7 @@ Estado: Configuración cargada correctamente"""
         try:
             return self.model.obtener_configuracion_por_categoria('TEMA')
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración tema: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error obteniendo configuración tema: {e}")
             return {}
 
     def _aplicar_cambio_configuracion(self, clave: str, valor: Any):
@@ -286,7 +299,7 @@ Estado: Configuración cargada correctamente"""
                 self._aplicar_cambio_usuarios(clave, valor)
 
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio: {e}")
 
     def _aplicar_cambio_tema(self, clave: str, valor: Any):
         """Aplica cambios de tema."""
@@ -294,31 +307,31 @@ Estado: Configuración cargada correctamente"""
             if self.view and hasattr(self.view, 'aplicar_cambio_tema'):
                 self.view.aplicar_cambio_tema(clave, valor)
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio tema: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio tema: {e}")
 
     def _aplicar_cambio_sistema(self, clave: str, valor: Any):
         """Aplica cambios de sistema."""
         try:
             if clave == 'sistema_idioma':
                 # Cambiar idioma de la aplicación
-                print(f"[CONFIGURACION] Cambiando idioma a: {valor}")
+                logger.debug(f"[CONFIGURACION] Cambiando idioma a: {valor}")
             elif clave == 'sistema_modo_debug':
                 # Cambiar modo debug
-                print(f"[CONFIGURACION] Cambiando modo debug a: {valor}")
+                logger.debug(f"[CONFIGURACION] Cambiando modo debug a: {valor}")
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio sistema: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio sistema: {e}")
 
     def _aplicar_cambio_usuarios(self, clave: str, valor: Any):
         """Aplica cambios de configuración de usuarios."""
         try:
             if clave == 'usuarios_session_timeout':
                 # Actualizar timeout de sesión
-                print(f"[CONFIGURACION] Cambiando timeout de sesión a: {valor}")
+                logger.debug(f"[CONFIGURACION] Cambiando timeout de sesión a: {valor}")
             elif clave == 'usuarios_password_min_length':
                 # Actualizar política de contraseñas
-                print(f"[CONFIGURACION] Cambiando longitud mínima de contraseña a: {valor}")
+                logger.debug(f"[CONFIGURACION] Cambiando longitud mínima de contraseña a: {valor}")
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio usuarios: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error aplicando cambio usuarios: {e}")
 
     def obtener_categorias_configuracion(self) -> List[str]:
         """Obtiene las categorías de configuración disponibles."""
@@ -327,7 +340,7 @@ Estado: Configuración cargada correctamente"""
     def set_usuario_actual(self, usuario: Dict[str, Any]):
         """Establece el usuario actual."""
         self.usuario_actual = usuario
-        print(f"[CONFIGURACION CONTROLLER] Usuario actual: {usuario.get('nombre', 'Desconocido')}")
+        logger.info(f"[CONFIGURACION CONTROLLER] Usuario actual: {usuario.get('nombre', 'Desconocido')}")
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito."""
@@ -356,8 +369,8 @@ Estado: Configuración cargada correctamente"""
     def cleanup(self):
         """Limpia recursos al cerrar el módulo."""
         try:
-            print("[CONFIGURACION CONTROLLER] Limpiando recursos...")
+            logger.info("[CONFIGURACION CONTROLLER] Limpiando recursos...")
             # Desconectar señales si es necesario
             # Cerrar conexiones, etc.
         except Exception as e:
-            print(f"[ERROR CONFIGURACION CONTROLLER] Error en cleanup: {e}")
+            logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error en cleanup: {e}")

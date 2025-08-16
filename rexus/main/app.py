@@ -37,6 +37,31 @@ import sys
 from pathlib import Path
 from typing import Any, Dict
 
+# Importar sistema de logging centralizado
+try:
+    from rexus.utils.app_logger import (
+        get_logger, log_info, log_error, log_critical, log_warning, 
+        log_security, app_logger
+    )
+    LOGGING_AVAILABLE = True
+except ImportError:
+    # Fallback si el logger no está disponible
+    def get_logger(name): return None
+    def log_info(msg, comp="general"): logger.info({msg})
+    def log_error(msg, comp="general"): logger.error({msg})
+    def log_critical(msg, comp="general"): print(f"[CRITICAL] {msg}")
+    def log_warning(msg, comp="general"): logger.warning({msg})
+    def log_security(level, msg, user=None): print(f"[SECURITY-{level}] {msg}")
+    LOGGING_AVAILABLE = False
+
+# Importar validador de dependencias críticas
+try:
+    from rexus.utils.dependency_validator import validate_system_dependencies, DependencyValidator
+    DEPENDENCY_VALIDATION_AVAILABLE = True
+except ImportError:
+    def validate_system_dependencies(): return True, {"status": "FALLBACK"}
+    DEPENDENCY_VALIDATION_AVAILABLE = False
+
 # Agregar el directorio raíz al path de Python
 root_dir = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(root_dir))
@@ -46,9 +71,9 @@ try:
     from dotenv import load_dotenv
 
     load_dotenv(root_dir / ".env")
-    print("[ENV] Variables de entorno cargadas desde .env")
+    log_info("Variables de entorno cargadas desde .env", "startup")
 except ImportError:
-    print("[ENV] Warning: python-dotenv no instalado, usando variables del sistema")
+    log_warning("python-dotenv no instalado, usando variables del sistema", "startup")
 except Exception as e:
     print(f"[ENV] Error cargando .env: {e}")
 
@@ -90,14 +115,14 @@ def initialize_security_manager():
 
         # Inicializar con o sin conexión BD
         security_manager = init_security_manager(db_connection)
-        print("[SECURITY] SecurityManager inicializado correctamente")
+        log_security("INFO", "SecurityManager inicializado correctamente")
         return security_manager
 
     except ImportError as e:
-        print(f"[SECURITY] Error importando módulo de seguridad: {e}")
+        log_security("CRITICAL", f"Error importando módulo de seguridad: {e}")
         return SimpleSecurityManager()
     except Exception as e:
-        print(f"[SECURITY] Error general inicializando seguridad: {e}")
+        log_security("CRITICAL", f"Error general inicializando seguridad: {e}")
         return SimpleSecurityManager()
 
 
@@ -310,7 +335,7 @@ class MainWindow(QMainWindow):
                 print("[STYLE] Fallback a estilos por defecto")
 
         except Exception as e:
-            print(f"[WARNING] Error inicializando StyleManager: {e}")
+            logger.warning(Error inicializando StyleManager: {e})
             self.style_manager = None
 
     def _init_ui(self):
@@ -413,7 +438,7 @@ class MainWindow(QMainWindow):
             ("⚙️", "Configuración", "Configuración del sistema"),
         ]
 
-        print(f"[DEBUG] Módulos permitidos: {self.modulos_permitidos}")
+        logger.debug(Módulos permitidos: {self.modulos_permitidos})
 
         for emoji, nombre, descripcion in modulos:
             # Verificar si el usuario tiene permisos para este módulo
@@ -1204,7 +1229,7 @@ text,
                     self.show_module(modulo)
                     break
         except Exception as e:
-            print(f"Error navegando a módulo {module_name}: {e}")
+            logger.error(f"Error navegando a módulo {module_name}: {e}"))
 
     def cargar_modulo(self, module_name):
         """Carga un módulo específico - método requerido por PremiumDashboard."""
@@ -1373,7 +1398,7 @@ text,
             self.content_stack.setCurrentWidget(module_widget)
 
         except Exception as e:
-            print(f"Error cargando módulo {module_name}: {e}")
+            logger.error(f"Error cargando módulo {module_name}: {e}"))
             # Crear fallback con error específico
             fallback_widget = self._create_fallback_module(module_name, str(e))
             self.content_stack.addWidget(fallback_widget)
@@ -1459,7 +1484,7 @@ text,
             view = AdministracionView()
             return view
         except Exception as e:
-            print(f"Error creando administración real: {e}")
+            logger.error(f"Error creando administración real: {e}"))
             return self._create_fallback_module("Administración", str(e))
 
     def _create_inventario_module(self) -> QWidget:
@@ -1474,7 +1499,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1488,7 +1513,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando inventario: {e}")
+            logger.error(f"Error crítico creando inventario: {e}"))
             return self._create_fallback_module("Inventario", str(e))
 
     def _create_contabilidad_module(self) -> QWidget:
@@ -1513,7 +1538,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1527,7 +1552,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando contabilidad: {e}")
+            logger.error(f"Error crítico creando contabilidad: {e}"))
             return self._create_fallback_module("Contabilidad", str(e))
 
     def _create_obras_module(self) -> QWidget:
@@ -1542,7 +1567,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1556,7 +1581,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando obras: {e}")
+            logger.error(f"Error crítico creando obras: {e}"))
             return self._create_fallback_module("Obras", str(e))
 
     def _create_configuracion_module(self) -> QWidget:
@@ -1580,7 +1605,7 @@ text,
             return view
 
         except Exception as e:
-            print(f"Error creando configuración real: {e}")
+            logger.error(f"Error creando configuración real: {e}"))
             # Fallback a widget simple
             return self._create_fallback_module("Configuración", str(e))
 
@@ -1600,7 +1625,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1614,7 +1639,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando vidrios: {e}")
+            logger.error(f"Error crítico creando vidrios: {e}"))
             return self._create_fallback_module("Vidrios", str(e))
 
     def _create_herrajes_module(self) -> QWidget:
@@ -1629,7 +1654,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1643,7 +1668,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando herrajes: {e}")
+            logger.error(f"Error crítico creando herrajes: {e}"))
             return self._create_fallback_module("Herrajes", str(e))
 
     def _create_pedidos_module(self) -> QWidget:
@@ -1658,7 +1683,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1672,7 +1697,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando pedidos: {e}")
+            logger.error(f"Error crítico creando pedidos: {e}"))
             return self._create_fallback_module("Pedidos", str(e))
 
     def _create_logistica_module(self) -> QWidget:
@@ -1687,7 +1712,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1701,7 +1726,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando logística: {e}")
+            logger.error(f"Error crítico creando logística: {e}"))
             return self._create_fallback_module("Logística", str(e))
 
     def _create_usuarios_module(self) -> QWidget:
@@ -1716,7 +1741,7 @@ text,
             try:
                 db_connection = UsersDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1730,7 +1755,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando usuarios: {e}")
+            logger.error(f"Error crítico creando usuarios: {e}"))
             return self._create_fallback_module("Usuarios", str(e))
 
     def _create_auditoria_module(self) -> QWidget:
@@ -1745,7 +1770,7 @@ text,
             try:
                 db_connection = AuditoriaDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1759,7 +1784,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando auditoría: {e}")
+            logger.error(f"Error crítico creando auditoría: {e}"))
             return self._create_fallback_module("Auditoría", str(e))
 
     def _create_compras_module(self) -> QWidget:
@@ -1774,7 +1799,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1788,7 +1813,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando compras: {e}")
+            logger.error(f"Error crítico creando compras: {e}"))
             return self._create_fallback_module("Compras", str(e))
 
     def _create_mantenimiento_module(self) -> QWidget:
@@ -1803,7 +1828,7 @@ text,
             try:
                 db_connection = InventarioDatabaseConnection()
             except Exception as e:
-                print(f"Error BD: {e}, usando datos demo")
+                logger.error(f"Error BD: {e}, usando datos demo"))
                 db_connection = None
 
             # Usar el gestor de módulos para carga robusta
@@ -1817,7 +1842,7 @@ text,
             )
 
         except Exception as e:
-            print(f"Error crítico creando mantenimiento: {e}")
+            logger.error(f"Error crítico creando mantenimiento: {e}"))
             return self._create_fallback_module("Mantenimiento", str(e))
 
     def _create_fallback_module(self, module_name: str, error_details: str | None = None) -> QWidget:
@@ -1950,20 +1975,96 @@ def main():
         webengine_status = webengine_manager.get_status_info()
         print(f"[LOG 4.1] Razones: {webengine_status['fallback_reasons']}")
         from PyQt6.QtWidgets import QApplication
-    print("[LOG 4.1] Iniciando QApplication...")
+    # Inicializar sistema de logging como primera acción
+    if LOGGING_AVAILABLE:
+        app_logger.log_startup_info()
+        log_info("Iniciando Rexus.app", "startup")
+    else:
+        print("[LOG] Sistema de logging no disponible, usando prints")
+    
+    # VALIDACIÓN CRÍTICA DE DEPENDENCIAS ANTES DE CONTINUAR
+    if DEPENDENCY_VALIDATION_AVAILABLE:
+        log_info("Validando dependencias críticas del sistema", "startup")
+        can_start, dependency_report = validate_system_dependencies()
+        
+        if not can_start:
+            log_critical("Dependencias críticas faltantes - aplicación no puede iniciar", "startup")
+            
+            # Mostrar errores críticos en consola
+            validator = DependencyValidator()
+            validator.print_validation_summary(dependency_report)
+            
+            # Mostrar mensaje de error al usuario
+            from PyQt6.QtWidgets import QApplication, QMessageBox
+            app = QApplication(sys.argv)
+            
+            error_message = "Dependencias críticas faltantes:\n\n"
+            for error in dependency_report['critical_errors'][:5]:  # Mostrar solo los primeros 5
+                error_message += f"• {error}\n"
+            
+            if len(dependency_report['critical_errors']) > 5:
+                error_message += f"\n... y {len(dependency_report['critical_errors']) - 5} errores más."
+            
+            error_message += "\n\nContacte al administrador del sistema."
+            
+            QMessageBox.critical(
+                None,
+                "Error de Dependencias Críticas",
+                error_message
+            )
+            sys.exit(1)
+        else:
+            log_info(f"Validación de dependencias exitosa - {dependency_report['warnings_count']} advertencias", "startup")
+    else:
+        log_warning("Validador de dependencias no disponible - continuando sin validación", "startup")
+    
+    # VALIDACIÓN ESPECÍFICA DEL MODULE_MANAGER (mencionado en auditoría)
+    try:
+        from rexus.core.module_manager import module_manager
+        
+        # Verificar que module_manager tiene los métodos críticos
+        required_methods = ['create_module_safely']
+        missing_methods = []
+        
+        for method in required_methods:
+            if not hasattr(module_manager, method):
+                missing_methods.append(method)
+        
+        if missing_methods:
+            log_critical(f"module_manager incompleto - métodos faltantes: {missing_methods}", "startup")
+            sys.exit(1)
+        else:
+            log_info("module_manager validado correctamente", "startup")
+            
+    except ImportError as e:
+        log_critical(f"module_manager no disponible: {e}", "startup")
+        log_critical("module_manager es crítico para la carga de módulos - aplicación no puede continuar", "startup")
+        sys.exit(1)
+    
+    log_info("Iniciando QApplication", "startup")
     app = QApplication(sys.argv)
-    print("[LOG 4.2] Mostrando login profesional...")
+    log_info("QApplication inicializada, preparando login", "startup")
 
-    # Inicializar sistema de seguridad
+    # Inicializar sistema de seguridad - MODO FALLO SEGURO
     try:
         security_manager = initialize_security_manager()
-        print("[SEGURIDAD] Sistema de seguridad completo inicializado")
+        if security_manager is None:
+            raise Exception("SecurityManager no inicializado correctamente")
+        log_security("INFO", "Sistema de seguridad completo inicializado")
     except Exception as e:
-        print(f"[SEGURIDAD] Error inicializando sistema completo: {e}")
-        print(
-            "[SEGURIDAD] No se pudo inicializar el sistema de seguridad completo. La app funcionará sin seguridad avanzada."
+        log_security("CRITICAL", f"Error inicializando sistema de seguridad: {e}")
+        log_critical("Sistema de seguridad OBLIGATORIO - Aplicación no puede continuar sin seguridad", "startup")
+        
+        # FALLO SEGURO: No permitir arranque sin security_manager
+        from PyQt6.QtWidgets import QMessageBox
+        QMessageBox.critical(
+            None,
+            "Error Crítico de Seguridad",
+            "No se pudo inicializar el sistema de seguridad.\n\n"
+            "La aplicación no puede ejecutarse sin componentes de seguridad.\n"
+            "Contacte al administrador del sistema."
         )
-        security_manager = None
+        sys.exit(1)  # Terminar aplicación de forma segura
 
     # Inicializar sistema de backup automático
     try:
@@ -1973,11 +2074,9 @@ def main():
         if backup_initialized:
             print("[CHECK] Sistema de backup automático inicializado")
         else:
-            print(
-                "[WARN] Sistema de backup no se pudo inicializar, continuando sin backup automático"
-            )
+            logger.warning(Sistema de backup no se pudo inicializar, continuando sin backup automático)
     except Exception as e:
-        print(f"[WARN] Error inicializando sistema de backup: {e}")
+        logger.warning(Error inicializando sistema de backup: {e})
 
     # Crear dialog de login moderno
     login_dialog = LoginDialog()
@@ -1987,45 +2086,60 @@ def main():
         login_dialog.security_manager = security_manager
 
     def cargar_main_window_con_seguridad(user_data, modulos_permitidos):
-        global main_window
+        """
+        Crea y muestra la ventana principal de forma segura.
+        
+        Args:
+            user_data: Datos del usuario autenticado
+            modulos_permitidos: Lista de módulos a los que tiene acceso
+            
+        Returns:
+            MainWindow: Instancia de la ventana principal o None si hay error
+        """
         try:
-            print(
-                f"[SEGURIDAD] Creando MainWindow para usuario: {user_data['username']}"
-            )
+            log_info(f"Creando MainWindow para usuario: {user_data['username']}", "security")
+            
             main_window = MainWindow(user_data, modulos_permitidos)
             main_window.actualizar_usuario_label(user_data)
             main_window.show()
-            print(f"[CHECK] [SEGURIDAD] Aplicación iniciada para {user_data['username']}")
+            
+            log_info(f"Aplicación iniciada para {user_data['username']}", "security")
+            return main_window
         except Exception as e:
             import traceback
 
-            error_msg = f"[ERROR SEGURIDAD] {e}\n{traceback.format_exc()}"
-            print(f"[ERROR] [ERROR] {error_msg}", flush=True)
+            error_msg = f"Error al iniciar aplicación con seguridad: {e}"
+            log_critical(error_msg, "security", exc_info=True)
+            
+            # Guardar log de error adicional para casos críticos
             Path("logs").mkdir(exist_ok=True)
             with open("logs/error_inicio_seguridad.txt", "a", encoding="utf-8") as f:
-                f.write(error_msg + "\n")
+                f.write(f"{datetime.datetime.now()}: {error_msg}\n{traceback.format_exc()}\n")
+            
             QMessageBox.critical(
                 None,
                 "Error crítico",
                 f"Error al iniciar la aplicación con seguridad: {e}",
             )
-            app.quit()
+            return None  # Retornar None en lugar de app.quit() para mejor control
 
     def on_login_success(user_data):
         print(
             f"[CHECK] [LOGIN] Autenticación exitosa para {user_data.get('username', '???')} ({user_data.get('role', '???')})"
         )
         # Usar el security_manager del contexto exterior
+        # NOTA: Con el nuevo fallo seguro, security_manager nunca debería ser None aquí
+        # Pero mantenemos la verificación defensiva
         if security_manager is None:
-            print("[ERROR] No se puede continuar: sistema de seguridad no disponible.")
+            print("[CRÍTICO] Estado de seguridad inconsistente detectado")
             QMessageBox.critical(
                 None,
-                "Error de seguridad",
-                "No se pudo inicializar el sistema de seguridad. Contacte al administrador.",
+                "Error Crítico de Seguridad",
+                "Estado de seguridad inconsistente detectado.\nLa aplicación se cerrará por seguridad.",
             )
-            return
+            sys.exit(1)
         if not user_data:
-            print("[ERROR] [LOGIN] Error: No se pudo obtener datos del usuario")
+            logger.error([LOGIN] Error: No se pudo obtener datos del usuario)
             return
 
         # [HOT] SOLUCIÓN CRÍTICA: Establecer contexto de seguridad ANTES de obtener módulos
@@ -2045,9 +2159,7 @@ def main():
                     not diagnosis.get("has_admin_access")
                     and user_data.get("role", "").upper() == "ADMIN"
                 ):
-                    print(
-                        "[WARN] [SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema..."
-                    )
+                    logger.warning([SECURITY WARNING] Usuario admin no tiene acceso completo - verificando problema...)
 
             # Ahora obtener módulos permitidos
             modulos_permitidos = security_manager.get_user_modules(
@@ -2064,9 +2176,7 @@ def main():
                 user_data.get("role", "").upper() == "ADMIN"
                 and len(modulos_permitidos) < 12
             ):
-                print(
-                    f"[WARN] [SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12"
-                )
+                logger.warning([SECURITY WARNING] Admin solo tiene {len(modulos_permitidos)} módulos en lugar de 12)
                 print(
                     f"[WARN] [SECURITY WARNING] Rol actual en SecurityManager: '{security_manager.current_role}'"
                 )
@@ -2123,10 +2233,18 @@ def main():
                     f"[SECURITY] Fallback: Usuario básico, asignando {len(modulos_permitidos)} módulos"
                 )
 
-        cargar_main_window_con_seguridad(user_data, modulos_permitidos)
+        # Crear y mostrar ventana principal sin variable global
+        main_window_instance = cargar_main_window_con_seguridad(user_data, modulos_permitidos)
+        if main_window_instance is None:
+            log_error("No se pudo crear la ventana principal", "security")
+            app.quit()
+            return
+        
+        # Mantener referencia local para evitar garbage collection
+        app.main_window = main_window_instance
 
     def on_login_failed(error_message):
-        print(f"[ERROR] [LOGIN] Autenticación fallida: {error_message}")
+        logger.error([LOGIN] Autenticación fallida: {error_message})
 
     login_dialog.login_successful.connect(on_login_success)
     login_dialog.login_failed.connect(on_login_failed)

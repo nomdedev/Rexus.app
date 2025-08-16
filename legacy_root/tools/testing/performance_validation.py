@@ -158,8 +158,9 @@ def test_security_system():
     try:
         from rexus.utils.security import SecurityUtils
 
-        # Test hashing de contraseñas
-        test_password = "MySecurePassword123!"
+        # Test hashing de contraseñas - usar variable de entorno o configuración
+        import os
+        test_password = os.environ.get('TEST_PASSWORD', 'DefaultTestPass123!')
         hashed = SecurityUtils.hash_password(test_password)
         print(f"[CHECK] Password hasheada: {len(hashed)} caracteres")
 

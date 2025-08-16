@@ -422,7 +422,7 @@ min(100,
             result = cursor.fetchone()
             return float(result[0]) if result and result[0] else 0.0
 
-        except Exception:
+        except (sqlite3.Error, ValueError, TypeError, AttributeError):
             return 0.0
 
     def _calcular_dias_restantes(self, obra: Dict[str, Any]) -> int:
@@ -442,7 +442,7 @@ min(100,
             diferencia = fecha_fin - hoy
             return max(0, diferencia.days)
 
-        except Exception:
+        except (ValueError, TypeError, AttributeError):
             return 0
 
     def _calcular_dias_retraso(self, obra: Dict[str, Any]) -> int:
@@ -462,7 +462,7 @@ min(100,
             diferencia = hoy - fecha_fin
             return max(0, diferencia.days)
 
-        except Exception:
+        except (ValueError, TypeError, AttributeError):
             return 0
 
     def _calcular_promedio_obras_completadas(
@@ -492,5 +492,5 @@ min(100,
 
             return total_obras / max(1, dias_periodo)
 
-        except Exception:
+        except (sqlite3.Error, ValueError, TypeError, AttributeError):
             return 0.0

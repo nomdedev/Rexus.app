@@ -125,7 +125,7 @@ class HerrajesModel:
             return herrajes_dict
 
         except Exception as e:
-            print(f"[ERROR] [HERRAJES] Error obteniendo herrajes: {e}")
+            logger.error([HERRAJES] Error obteniendo herrajes: {e})
             return self._get_herrajes_demo()
 
     def obtener_herrajes_por_obra(self, obra_id: int) -> List[Dict]:
@@ -161,7 +161,7 @@ class HerrajesModel:
             return herrajes_obra
 
         except Exception as e:
-            print(f"[ERROR] [HERRAJES] Error obteniendo herrajes por obra: {e}")
+            logger.error([HERRAJES] Error obteniendo herrajes por obra: {e})
             return []
 
     def buscar_herrajes(self, termino: str) -> List[Dict]:
@@ -207,7 +207,7 @@ class HerrajesModel:
             return herrajes_dict
 
         except Exception as e:
-            print(f"[ERROR] [HERRAJES] Error en búsqueda: {e}")
+            logger.error([HERRAJES] Error en búsqueda: {e})
             return []
 
     def obtener_estadisticas(self) -> Dict:
@@ -255,7 +255,7 @@ class HerrajesModel:
             return stats
 
         except Exception as e:
-            print(f"[ERROR] [HERRAJES] Error obteniendo estadísticas: {e}")
+            logger.error([HERRAJES] Error obteniendo estadísticas: {e})
             return {
                 "total_herrajes": 0,
                 "total_stock": 0,

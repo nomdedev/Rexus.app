@@ -42,7 +42,7 @@ exc_info=(exc_type,
                 "Si el problema persiste, contacte con soporte técnico."
             )
             msg_box.exec()
-        except:
+        except (ImportError, AttributeError, RuntimeError):
             # Fallback si PyQt no está disponible
             print(f"ERROR: {error_message}")
 

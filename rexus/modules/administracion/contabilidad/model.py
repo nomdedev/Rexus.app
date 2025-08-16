@@ -14,7 +14,7 @@ try:
     from rexus.utils.sql_query_manager import SQLQueryManager
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] SQL System not available in contabilidad: {e}")
+    logger.warning(SQL System not available in contabilidad: {e})
     SQL_SYSTEM_AVAILABLE = False
 
 
@@ -155,7 +155,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
@@ -226,7 +226,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
                     # Usar query parametrizada segura
                     query = "SELECT MAX(numero_asiento) FROM libro_contable"
                     cursor.execute(query)
@@ -263,7 +263,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         INSERT INTO [{tabla_validada}]
@@ -382,7 +382,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar script SQL")
                 except Exception as e:
-                    print(f"[ERROR] No se pudo usar script SQL: {e}. Usando fallback seguro.")
+                    logger.error(No se pudo usar script SQL: {e}. Usando fallback seguro.)
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         UPDATE [{tabla_validada}]
