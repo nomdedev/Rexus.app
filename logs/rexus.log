@@ -138,3 +138,13 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in posit
 2025-08-16 18:55:33 - cache_manager - [32mINFO[0m - CacheManager inicializado
 2025-08-16 18:55:33 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
 2025-08-16 18:55:34 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:21:42 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:21:42 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:21:42 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:21:42 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:21:43 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:21:43 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:22:41 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:41 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:41 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:41 - cache_manager - [32mINFO[0m - CacheManager inicializado
