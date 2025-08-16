@@ -1,0 +1,17 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rexus-app"
+version = "0.1.0"
+description = "Rexus application — packaging for editable installs in dev/CI"
+readme = "README.md"
+requires-python = ">=3.10"
+authors = [ { name = "nomdedev" } ]
+license = { text = "MIT" }
+dependencies = []
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["rexus*"]
