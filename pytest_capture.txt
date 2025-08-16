@@ -1,0 +1,17 @@
+
+=================================== ERRORS ====================================
+____ ERROR collecting legacy_root/scripts/test/test_consolidated_models.py ____
+legacy_root\scripts\test\test_consolidated_models.py:18: in <module>
+    from src.modules.inventario.model_consolidado import InventarioModel
+E   ModuleNotFoundError: No module named 'src.modules'
+
+During handling of the above exception, another exception occurred:
+legacy_root\scripts\test\test_consolidated_models.py:26: in <module>
+    sys.exit(1)
+E   SystemExit: 1
+------------------------------- Captured stdout -------------------------------
+[ERROR] Error importing consolidated models: No module named 'src.modules'
+=========================== short test summary info ===========================
+ERROR legacy_root/scripts/test/test_consolidated_models.py - SystemExit: 1
+!!!!!!!!!!!!!!!!!!!!!!!!!! stopping after 1 failures !!!!!!!!!!!!!!!!!!!!!!!!!!
+1 error in 0.48s
