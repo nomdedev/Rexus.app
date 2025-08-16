@@ -853,6 +853,110 @@ APROBADA,
         # FIXED: SQL Injection vulnerability
         return "SELECT COUNT(*) FROM ?", (tabla_principal,)
 
+    def obtener_compra_por_id(self, compra_id: int) -> Dict[str, Any]:
+        """
+        Obtiene una compra específica por su ID.
+
+        Args:
+            compra_id: ID de la compra
+
+        Returns:
+            Dict con datos de la compra o None si no existe
+        """
+        if not self.db_connection:
+            print("[ERROR COMPRAS] No hay conexión a base de datos")
+            return None
+
+        try:
+            cursor = self.db_connection.cursor()
+            
+            query = f"""
+                SELECT TOP 1 
+                    id, proveedor, numero_orden, fecha_pedido, 
+                    fecha_entrega_estimada, estado, observaciones,
+                    usuario_creacion, fecha_creacion, descuento, 
+                    impuestos, total_final
+                FROM {self.tabla_compras}
+                WHERE id = ?
+            """
+            
+            cursor.execute(query, (compra_id,))
+            row = cursor.fetchone()
+            
+            if row:
+                return {
+                    'id': row[0],
+                    'proveedor': row[1],
+                    'numero_orden': row[2],
+                    'fecha_pedido': row[3],
+                    'fecha_entrega_estimada': row[4],
+                    'estado': row[5],
+                    'observaciones': row[6],
+                    'usuario_creacion': row[7],
+                    'fecha_creacion': row[8],
+                    'descuento': row[9],
+                    'impuestos': row[10],
+                    'total_final': row[11]
+                }
+            
+            return None
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS] Error obteniendo compra por ID: {e}")
+            return None
+
+    def eliminar_compra(self, compra_id: int) -> bool:
+        """
+        Elimina una orden de compra de la base de datos.
+
+        Args:
+            compra_id: ID de la compra a eliminar
+
+        Returns:
+            bool: True si se eliminó exitosamente
+        """
+        if not self.db_connection:
+            print("[ERROR COMPRAS] No hay conexión a base de datos")
+            return False
+
+        try:
+            cursor = self.db_connection.cursor()
+            
+            # Verificar que existe la compra
+            compra = self.obtener_compra_por_id(compra_id)
+            if not compra:
+                print(f"[ERROR COMPRAS] No se encontró la compra {compra_id}")
+                return False
+
+            # Eliminar primero los detalles de la compra (foreign key constraint)
+            delete_details_query = f"DELETE FROM {self.tabla_detalle_compras} WHERE compra_id = ?"
+            cursor.execute(delete_details_query, (compra_id,))
+            
+            # Eliminar la compra principal
+            delete_query = f"DELETE FROM {self.tabla_compras} WHERE id = ?"
+            result = cursor.execute(delete_query, (compra_id,))
+            
+            # Confirmar transacción
+            self.db_connection.commit()
+            
+            # Verificar que se eliminó
+            rows_affected = result.rowcount
+            if rows_affected > 0:
+                print(f"[COMPRAS] Compra {compra_id} eliminada exitosamente")
+                return True
+            else:
+                print(f"[ERROR COMPRAS] No se pudo eliminar la compra {compra_id}")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS] Error eliminando compra: {e}")
+            # Rollback en caso de error
+            try:
+                self.db_connection.rollback()
+            except:
+                pass
+            return False
+
     def _row_to_dict(self, row, description):
         """Convierte una fila de base de datos a diccionario"""
         return {desc[0]: row[i] for i, desc in enumerate(description)}

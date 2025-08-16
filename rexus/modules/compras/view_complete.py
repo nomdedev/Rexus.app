@@ -597,13 +597,14 @@ class ComprasViewComplete(BaseModuleView):
 
         self.btn_nueva_orden = QPushButton("➕ Nueva Orden")
         self.btn_editar_orden = QPushButton("✏️ Editar")
+        self.btn_eliminar_orden = QPushButton("🗑️ Eliminar")
         self.btn_cambiar_estado = QPushButton("🔄 Cambiar Estado")
         self.btn_ver_detalle = QPushButton("👁️ Ver Detalle")
         self.btn_generar_oc = QPushButton("📄 Generar OC")
         self.btn_exportar = QPushButton("[CHART] Exportar")
         self.btn_actualizar = QPushButton("🔄 Actualizar")
 
-        for btn in [self.btn_nueva_orden, self.btn_editar_orden, self.btn_cambiar_estado,
+        for btn in [self.btn_nueva_orden, self.btn_editar_orden, self.btn_eliminar_orden, self.btn_cambiar_estado,
                    self.btn_ver_detalle, self.btn_generar_oc, self.btn_exportar, self.btn_actualizar]:
             acciones_layout.addWidget(btn)
 
@@ -682,6 +683,7 @@ class ComprasViewComplete(BaseModuleView):
         """Configura las conexiones de señales."""
         self.btn_nueva_orden.clicked.connect(self.nueva_orden)
         self.btn_editar_orden.clicked.connect(self.editar_orden)
+        self.btn_eliminar_orden.clicked.connect(self.eliminar_orden)
         self.btn_cambiar_estado.clicked.connect(self.cambiar_estado_orden)
         self.btn_ver_detalle.clicked.connect(self.ver_detalle_orden)
         self.btn_generar_oc.clicked.connect(self.generar_orden_compra)
@@ -776,6 +778,60 @@ class ComprasViewComplete(BaseModuleView):
             datos = dialog.get_datos_orden()
             show_success(self, "Éxito", "Orden actualizada correctamente")
             self.actualizar_fila_orden(row, datos)
+
+    def eliminar_orden(self):
+        """Elimina la orden seleccionada."""
+        row = self.tabla_compras.currentRow()
+        if row < 0:
+            show_warning(self, "Atención", "Seleccione una orden para eliminar")
+            return
+
+        orden_item = self.tabla_compras.item(row, 0)
+        if not orden_item:
+            return
+
+        numero_orden = orden_item.text()
+        
+        # Confirmar eliminación
+        reply = QMessageBox.question(
+            self,
+            "Confirmar Eliminación",
+            f"¿Está seguro de que desea eliminar la orden {numero_orden}?\n\nEsta acción no se puede deshacer.",
+            QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+            QMessageBox.StandardButton.No
+        )
+        
+        if reply == QMessageBox.StandardButton.Yes:
+            try:
+                # Conectar con el controlador para eliminar de la BD
+                if hasattr(self, 'controller') and self.controller:
+                    # Obtener el ID de la orden (asumiendo que está en otra columna o se puede mapear)
+                    # Por ahora usamos el número de orden como ID
+                    try:
+                        orden_id = int(numero_orden)
+                    except ValueError:
+                        # Si no es numérico, buscar por número de orden
+                        orden_id = numero_orden
+                    
+                    resultado = self.controller.eliminar_orden(orden_id)
+                    
+                    if resultado:
+                        # Eliminar fila de la tabla solo si el controlador tuvo éxito
+                        self.tabla_compras.removeRow(row)
+                        # Actualizar estadísticas
+                        self.actualizar_estadisticas()
+                        # El mensaje de éxito lo muestra el controlador
+                    else:
+                        # El mensaje de error lo muestra el controlador
+                        return
+                else:
+                    # Fallback si no hay controlador
+                    self.tabla_compras.removeRow(row)
+                    show_success(self, "Éxito", f"Orden {numero_orden} eliminada correctamente")
+                    self.actualizar_estadisticas()
+                
+            except Exception as e:
+                show_error(self, "Error", f"Error al eliminar la orden: {str(e)}")
 
     def cambiar_estado_orden(self):
         """Cambia el estado de la orden seleccionada."""

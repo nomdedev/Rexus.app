@@ -125,7 +125,8 @@ class ObrasDataMapper:
             if '-' in fecha_formateada and len(fecha_formateada) == 10:
                 return fecha_formateada  # Ya está en formato YYYY-MM-DD
             return fecha_formateada
-        except Exception:
+        except (TypeError, AttributeError, ValueError) as e:
+            logger.warning(f"Error formateando fecha para tabla: {e}")
             return str(fecha)
 
     @classmethod
@@ -148,7 +149,8 @@ class ObrasDataMapper:
 
         try:
             return f"${presupuesto_num:,.2f}"
-        except Exception:
+        except (ValueError, TypeError, OverflowError) as e:
+            logger.warning(f"Error formateando presupuesto para tabla: {e}")
             return str(presupuesto)
 
     @classmethod

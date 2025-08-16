@@ -42,7 +42,7 @@ try:
     sys.path.insert(0, str(root_dir))
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning(Security utilities not available: {e})
+    logger.warning(f"Security utilities not available: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -52,7 +52,7 @@ try:
 
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    logger.warning(SQL security utilities not available in usuarios)
+    logger.warning("SQL security utilities not available in usuarios")
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -439,7 +439,7 @@ class UsuariosModel:
 
     def crear_usuarios_iniciales(self):
         """ELIMINADO: RIESGO DE SEGURIDAD CRÍTICO - No crear usuarios por defecto"""
-        logger.error(SEGURIDAD CRÍTICA: No se crean usuarios automáticamente)
+        logger.error("SEGURIDAD CRÍTICA: No se crean usuarios automáticamente")
         print(
             "   Los usuarios deben ser creados manualmente por el administrador del sistema"
         )
@@ -739,7 +739,7 @@ class UsuariosModel:
                     )
                 except (ValueError, TypeError, AttributeError) as e:
                     # Si no se puede parsear, asumir que no está bloqueado
-                    logger.warning(Error parseando fecha de bloqueo: {e})
+                    logger.warning(f"Error parseando fecha de bloqueo: {e}")
                     return False, 0
 
             ahora = datetime.now()
@@ -1070,7 +1070,7 @@ username: str,
                             return False, "Formato de email inválido"
                         datos_limpios["email"] = email_limpio
                     except (ValueError, AttributeError, TypeError) as e:
-                        logger.warning(Error validando email: {e})
+                        logger.warning(f"Error validando email: {e}")
                         return False, "Formato de email inválido"
 
                 # Validar teléfono si se proporciona
@@ -1359,8 +1359,7 @@ username: str,
 
             # Actualizar permisos
             if "permisos" in datos_usuario:
-                cursor.execute(self.sql_manager.get_query("usuarios", "delete_usuarios_1"), params),
-                )
+                cursor.execute(self.sql_manager.get_query("usuarios", "delete_usuarios_1"), params)
 
                 for modulo in datos_usuario["permisos"]:
                     sql_permiso = self.sql_manager.get_query('usuarios', 'insertar_permiso')
@@ -1683,7 +1682,7 @@ username: str,
             return datos, total_registros
 
         except Exception as e:
-            logger.error(Error obteniendo datos paginados: {e})
+            logger.error(f"Error obteniendo datos paginados: {e}")
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
@@ -1694,7 +1693,7 @@ username: str,
                                                    filtros=filtros)
             return total
         except Exception as e:
-            logger.error(Error obteniendo total de registros: {e})
+            logger.error(f"Error obteniendo total de registros: {e}")
             return 0
 
     def _get_base_query(self):

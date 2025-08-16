@@ -798,6 +798,51 @@ fecha_inicio,
                 "error": str(e),
                 "estado": "Error"
             }
+    @auth_required
+    def eliminar_orden(self, orden_id):
+        """
+        Elimina una orden de compra.
+
+        Args:
+            orden_id: ID de la orden a eliminar
+
+        Returns:
+            bool: True si se eliminó exitosamente
+        """
+        try:
+            if not orden_id:
+                self.mostrar_error("Error", "ID de orden requerido")
+                return False
+
+            # Verificar que la orden existe
+            orden = self.model.obtener_compra_por_id(orden_id)
+            if not orden:
+                self.mostrar_error("Error", f"No se encontró la orden {orden_id}")
+                return False
+
+            # Verificar permisos y estado
+            estado_actual = orden.get("estado", "")
+            if estado_actual in ["RECIBIDA", "COMPLETADA"]:
+                self.mostrar_error("Error", 
+                    f"No se puede eliminar una orden en estado {estado_actual}")
+                return False
+
+            # Eliminar la orden
+            exito = self.model.eliminar_compra(orden_id)
+
+            if exito:
+                self.mostrar_mensaje("Éxito", f"Orden {orden_id} eliminada exitosamente")
+                self.datos_actualizados.emit()
+                return True
+            else:
+                self.mostrar_error("Error", "No se pudo eliminar la orden")
+                return False
+
+        except Exception as e:
+            print(f"[ERROR COMPRAS CONTROLLER] Error eliminando orden: {e}")
+            self.mostrar_error("Error eliminando orden", str(e))
+            return False
+
     def ensure_safe_operation(self, operation_name, operation_func, *args, **kwargs):
         """Ejecuta una operación de forma segura con defensas completas."""
         try:

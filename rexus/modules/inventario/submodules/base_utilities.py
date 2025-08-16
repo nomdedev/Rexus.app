@@ -173,7 +173,8 @@ class BaseUtilities:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (AttributeError, RuntimeError, ConnectionError) as rollback_error:
+                    logger.error(f"Error en rollback: {rollback_error}")
                     pass
             return None
         finally:

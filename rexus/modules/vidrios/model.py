@@ -36,7 +36,7 @@ except ImportError:
         SANITIZER_AVAILABLE = True
         print("OK [VIDRIOS] DataSanitizer legacy cargado")
     except ImportError:
-        logger.error(f"Error [VIDRIOS] No se pudo cargar ningún sistema de sanitización"))
+        logger.error(f"Error [VIDRIOS] No se pudo cargar ningún sistema de sanitización")
         SANITIZER_AVAILABLE = False
         data_sanitizer = None
 
@@ -884,6 +884,113 @@ class VidriosModel:
         except Exception as e:
             print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
             return False, None
+
+    def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
+        """
+        Obtiene datos paginados de vidrios.
+
+        Args:
+            offset: Registro inicial
+            limit: Cantidad de registros
+            filtros: Filtros adicionales
+
+        Returns:
+            tuple: (datos, total_registros)
+        """
+        if not self.db_connection:
+            # Fallback con datos demo
+            datos_demo = self._get_vidrios_demo()
+            return datos_demo[offset:offset+limit], len(datos_demo)
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+
+            # Query principal con paginación
+            query = """
+                SELECT id, codigo, descripcion, tipo, espesor, 
+                       proveedor, precio_m2, color, tratamiento, estado,
+                       dimensiones_disponibles, observaciones
+                FROM vidrios
+                WHERE activo = 1
+            """
+            
+            params = []
+            
+            # Aplicar filtros si existen
+            if filtros:
+                if filtros.get('tipo') and filtros['tipo'] != 'Todos':
+                    query += " AND tipo = ?"
+                    params.append(filtros['tipo'])
+                
+                if filtros.get('busqueda'):
+                    query += " AND (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ?)"
+                    busqueda = f"%{filtros['busqueda']}%"
+                    params.extend([busqueda, busqueda, busqueda])
+
+            # Query de conteo
+            count_query = query.replace(
+                "SELECT id, codigo, descripcion, tipo, espesor, proveedor, precio_m2, color, tratamiento, estado, dimensiones_disponibles, observaciones",
+                "SELECT COUNT(*)"
+            )
+            
+            cursor.execute(count_query, params)
+            total_registros = cursor.fetchone()[0]
+
+            # Query principal con paginación
+            query += " ORDER BY id DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+            params.extend([offset, limit])
+            
+            cursor.execute(query, params)
+            columnas = [column[0] for column in cursor.description]
+            datos = []
+            
+            for row in cursor.fetchall():
+                datos.append(dict(zip(columnas, row)))
+
+            return datos, total_registros
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error obteniendo datos paginados: {e}")
+            # Fallback con datos demo en caso de error
+            datos_demo = self._get_vidrios_demo()
+            return datos_demo[offset:offset+limit], len(datos_demo)
+
+    def obtener_total_registros(self, filtros=None):
+        """
+        Obtiene el total de registros de vidrios.
+
+        Args:
+            filtros: Filtros aplicados
+
+        Returns:
+            int: Total de registros
+        """
+        if not self.db_connection:
+            return len(self._get_vidrios_demo())
+
+        try:
+            cursor = self.db_connection.connection.cursor()
+            
+            query = "SELECT COUNT(*) FROM vidrios WHERE activo = 1"
+            params = []
+            
+            # Aplicar filtros si existen
+            if filtros:
+                if filtros.get('tipo') and filtros['tipo'] != 'Todos':
+                    query += " AND tipo = ?"
+                    params.append(filtros['tipo'])
+                
+                if filtros.get('busqueda'):
+                    query += " AND (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ?)"
+                    busqueda = f"%{filtros['busqueda']}%"
+                    params.extend([busqueda, busqueda, busqueda])
+            
+            cursor.execute(query, params)
+            return cursor.fetchone()[0]
+
+        except Exception as e:
+            print(f"[ERROR VIDRIOS] Error obteniendo total de registros: {e}")
+            return len(self._get_vidrios_demo())
 
     def _get_vidrios_demo(self):
         """Datos demo para cuando no hay conexión a base de datos."""

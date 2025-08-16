@@ -186,6 +186,10 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         # Asignar referencia para exportación
         self.tabla_principal = self.tabla_vidrios
 
+        # Controles de paginación
+        paginacion_panel = self.crear_controles_paginacion()
+        layout.addWidget(paginacion_panel)
+
         # Panel de acciones
         acciones_panel = self.crear_panel_acciones_inventario()
         layout.addWidget(acciones_panel)
@@ -953,6 +957,187 @@ class DialogoVidrioModerno(QDialog):
             'precio': self.precio_spin.value(),
             'ubicacion': sanitize_string(self.ubicacion_edit.text())
         }
+
+    def crear_controles_paginacion(self) -> QFrame:
+        """Crea los controles de paginación."""
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                max-height: 40px;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(12, 4, 12, 4)
+        layout.setSpacing(8)
+
+        # Información de registros
+        self.info_label = QLabel("Mostrando 1-50 de 0 vidrios")
+        self.info_label.setStyleSheet("QLabel { color: #6b7280; font-size: 11px; }")
+        layout.addWidget(self.info_label)
+
+        layout.addStretch()
+
+        # Botones de navegación
+        self.btn_primera = QPushButton("⏮")
+        self.btn_primera.setMaximumWidth(30)
+        self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
+        layout.addWidget(self.btn_primera)
+
+        self.btn_anterior = QPushButton("⏪")
+        self.btn_anterior.setMaximumWidth(30)
+        self.btn_anterior.clicked.connect(self.pagina_anterior)
+        layout.addWidget(self.btn_anterior)
+
+        # Control de página actual
+        from PyQt6.QtWidgets import QSpinBox
+        self.pagina_actual_spin = QSpinBox()
+        self.pagina_actual_spin.setMinimum(1)
+        self.pagina_actual_spin.setMaximum(1)
+        self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
+        self.pagina_actual_spin.setMaximumWidth(60)
+        self.pagina_actual_spin.setStyleSheet("""
+            QSpinBox {
+                padding: 4px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+        """)
+        layout.addWidget(QLabel("Pág."))
+        layout.addWidget(self.pagina_actual_spin)
+
+        self.total_paginas_label = QLabel("de 1")
+        self.total_paginas_label.setStyleSheet("QLabel { color: #6b7280; font-size: 11px; }")
+        layout.addWidget(self.total_paginas_label)
+
+        self.btn_siguiente = QPushButton("⏩")
+        self.btn_siguiente.setMaximumWidth(30)
+        self.btn_siguiente.clicked.connect(self.pagina_siguiente)
+        layout.addWidget(self.btn_siguiente)
+
+        self.btn_ultima = QPushButton("⏭")
+        self.btn_ultima.setMaximumWidth(30)
+        self.btn_ultima.clicked.connect(self.ultima_pagina)
+        layout.addWidget(self.btn_ultima)
+
+        # Selector de registros por página
+        layout.addWidget(QLabel("Items:"))
+        self.registros_por_pagina_combo = QComboBox()
+        self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
+        self.registros_por_pagina_combo.setCurrentText("50")
+        self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
+        self.registros_por_pagina_combo.setMaximumWidth(70)
+        self.registros_por_pagina_combo.setStyleSheet("""
+            QComboBox {
+                padding: 4px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+        """)
+        layout.addWidget(self.registros_por_pagina_combo)
+
+        return panel
+
+    def actualizar_controles_paginacion(self, pagina_actual, total_paginas, total_registros, registros_mostrados):
+        """Actualiza los controles de paginación."""
+        if hasattr(self, 'info_label'):
+            inicio = ((pagina_actual - 1) * int(self.registros_por_pagina_combo.currentText())) + 1
+            fin = min(inicio + registros_mostrados - 1, total_registros)
+            self.info_label.setText(f"Mostrando {inicio}-{fin} de {total_registros} vidrios")
+
+        if hasattr(self, 'pagina_actual_spin'):
+            self.pagina_actual_spin.blockSignals(True)
+            self.pagina_actual_spin.setValue(pagina_actual)
+            self.pagina_actual_spin.setMaximum(max(1, total_paginas))
+            self.pagina_actual_spin.blockSignals(False)
+
+        if hasattr(self, 'total_paginas_label'):
+            self.total_paginas_label.setText(f"de {total_paginas}")
+
+        # Habilitar/deshabilitar botones
+        if hasattr(self, 'btn_primera'):
+            self.btn_primera.setEnabled(pagina_actual > 1)
+            self.btn_anterior.setEnabled(pagina_actual > 1)
+            self.btn_siguiente.setEnabled(pagina_actual < total_paginas)
+            self.btn_ultima.setEnabled(pagina_actual < total_paginas)
+
+    def ir_a_pagina(self, pagina):
+        """Va a una página específica."""
+        if hasattr(self.controller, 'cargar_pagina'):
+            self.controller.cargar_pagina(pagina)
+
+    def pagina_anterior(self):
+        """Va a la página anterior."""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            if pagina_actual > 1:
+                self.ir_a_pagina(pagina_actual - 1)
+
+    def pagina_siguiente(self):
+        """Va a la página siguiente."""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            total_paginas = self.pagina_actual_spin.maximum()
+            if pagina_actual < total_paginas:
+                self.ir_a_pagina(pagina_actual + 1)
+
+    def ultima_pagina(self):
+        """Va a la última página."""
+        if hasattr(self, 'pagina_actual_spin'):
+            total_paginas = self.pagina_actual_spin.maximum()
+            self.ir_a_pagina(total_paginas)
+
+    def cambiar_pagina(self, pagina):
+        """Cambia a la página seleccionada."""
+        self.ir_a_pagina(pagina)
+
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página."""
+        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
+            self.controller.cambiar_registros_por_pagina(int(registros))
+
+    def cargar_datos_en_tabla(self, datos):
+        """Carga datos en la tabla de vidrios para paginación."""
+        if not datos:
+            self.tabla_vidrios.setRowCount(0)
+            return
+
+        self.tabla_vidrios.setRowCount(len(datos))
+        
+        for row, vidrio in enumerate(datos):
+            # Crear items para cada columna
+            items = [
+                str(vidrio.get('id', '')),
+                str(vidrio.get('codigo', '')),
+                str(vidrio.get('tipo', '')),
+                f"{vidrio.get('espesor', 0)}mm",
+                str(vidrio.get('ancho', vidrio.get('dimensiones_disponibles', '').split('x')[0] if 'x' in str(vidrio.get('dimensiones_disponibles', '')) else '')),
+                str(vidrio.get('alto', vidrio.get('dimensiones_disponibles', '').split('x')[1] if 'x' in str(vidrio.get('dimensiones_disponibles', '')) else '')),
+                f"{vidrio.get('area_m2', vidrio.get('ancho', 2) * vidrio.get('alto', 2) / 1000000):.2f}",
+                str(vidrio.get('stock_actual', vidrio.get('cantidad', 25))),
+                f"${vidrio.get('precio_m2', vidrio.get('precio', 45000)):,.0f}",
+                str(vidrio.get('estado', 'Disponible')),
+                str(vidrio.get('ubicacion', vidrio.get('proveedor', 'Sector A')))
+            ]
+            
+            for col, item_text in enumerate(items):
+                item = QTableWidgetItem(item_text)
+                
+                # Colorear según stock (columna 9 - Estado)
+                if col == 9:
+                    if "Sin Stock" in item_text:
+                        item.setBackground(QColor("#fee2e2"))
+                    elif "Stock Bajo" in item_text:
+                        item.setBackground(QColor("#fef3c7"))
+                    else:
+                        item.setBackground(QColor("#dcfce7"))
+                
+                self.tabla_vidrios.setItem(row, col, item)
 
     def aplicar_estilos_minimalistas(self):
         """Aplica estilos ultra minimalistas y compactos al módulo de vidrios."""

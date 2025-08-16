@@ -402,6 +402,50 @@ obra_id,
             else:
                 show_info(self.view, "Vidrios", mensaje)
 
+    def cargar_pagina(self, pagina, registros_por_pagina=50):
+        """Carga una página específica de datos."""
+        try:
+            if self.model:
+                offset = (pagina - 1) * registros_por_pagina
+
+                # Obtener datos paginados
+                datos, total_registros = self.model.obtener_datos_paginados(
+                    offset=offset,
+                    limit=registros_por_pagina
+                )
+
+                if self.view:
+                    # Cargar datos en la tabla
+                    if hasattr(self.view, 'cargar_datos_en_tabla'):
+                        self.view.cargar_datos_en_tabla(datos)
+
+                    # Actualizar controles de paginación
+                    total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
+                    if hasattr(self.view, 'actualizar_controles_paginacion'):
+                        self.view.actualizar_controles_paginacion(
+                            pagina, total_paginas, total_registros, len(datos)
+                        )
+
+        except Exception as e:
+            logger.error(f"Error cargando página: {e}")
+            if hasattr(self, 'mostrar_error'):
+                self.mostrar_error(f"Error cargando página: {str(e)}")
+
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página y recarga."""
+        self.registros_por_pagina = registros
+        self.cargar_pagina(1, registros)
+
+    def obtener_total_registros(self):
+        """Obtiene el total de registros disponibles."""
+        try:
+            if self.model:
+                return self.model.obtener_total_registros()
+            return 0
+        except Exception as e:
+            logger.error(f"Error obteniendo total de registros: {e}")
+            return 0
+
     def mostrar_error(self, mensaje):
         """Muestra un mensaje de error con logging."""
         logger.error(f"Error en vidrios: {mensaje}")
