@@ -14,158 +14,109 @@ def test_dialog_import():
     """Test that the dialog classes can be imported correctly."""
     print("\n[TEST] Dialog Import Test...")
 
-    try:
-        from src.modules.logistica.view import DialogoGenerarServicio, DialogoPreviewServicios
-        print("  [OK] DialogoGenerarServicio imported successfully")
-        print("  [OK] DialogoPreviewServicios imported successfully")
-        return True
-    except ImportError as e:
-        print(f"  [FAIL] Import failed: {e}")
-        return False
-    except Exception as e:
-        print(f"  [FAIL] Unexpected error: {e}")
-        return False
+    from rexus.modules.logistica.view import DialogoGenerarServicio, DialogoPreviewServicios
+    print("  [OK] DialogoGenerarServicio imported successfully")
+    print("  [OK] DialogoPreviewServicios imported successfully")
 
 def test_controller_method():
     """Test that the controller method exists."""
     print("\n[TEST] Controller Method Test...")
 
-    try:
-        from src.modules.logistica.controller import LogisticaController
+    from rexus.modules.logistica.controller import LogisticaController
 
-        # Create controller instance
-        controller = LogisticaController()
+    # Create controller instance
+    controller = LogisticaController()
 
-        # Check if the new method exists
-        if hasattr(controller, 'generar_servicios_automaticos'):
-            print("  [OK] generar_servicios_automaticos method exists")
-        else:
-            print("  [FAIL] generar_servicios_automaticos method not found")
-            return False
+    # Check if the new method exists
+    assert hasattr(controller, 'generar_servicios_automaticos'), "generar_servicios_automaticos method not found"
+    print("  [OK] generar_servicios_automaticos method exists")
 
-        if hasattr(controller, '_procesar_generacion_servicios'):
-            print("  [OK] _procesar_generacion_servicios method exists")
-        else:
-            print("  [FAIL] _procesar_generacion_servicios method not found")
-            return False
+    assert hasattr(controller, '_procesar_generacion_servicios'), "_procesar_generacion_servicios method not found"
+    print("  [OK] _procesar_generacion_servicios method exists")
 
-        if hasattr(controller, '_simular_servicios_generados'):
-            print("  [OK] _simular_servicios_generados method exists")
-        else:
-            print("  [FAIL] _simular_servicios_generados method not found")
-            return False
+    assert hasattr(controller, '_simular_servicios_generados'), "_simular_servicios_generados method not found"
+    print("  [OK] _simular_servicios_generados method exists")
 
-        return True
-
-    except ImportError as e:
-        print(f"  [FAIL] Import failed: {e}")
-        return False
-    except Exception as e:
-        print(f"  [FAIL] Unexpected error: {e}")
-        return False
+    return True
 
 def test_view_button_method():
     """Test that the view button method exists."""
     print("\n[TEST] View Button Method Test...")
 
-    try:
-        from src.modules.logistica.view import LogisticaView
+    from rexus.modules.logistica.view import LogisticaView
 
-        # Create view instance
-        view = LogisticaView()
+    # Create view instance
+    view = LogisticaView()
 
-        # Check if the new method exists
-        if hasattr(view, 'abrir_generador_automatico'):
-            print("  [OK] abrir_generador_automatico method exists")
-            return True
-        else:
-            print("  [FAIL] abrir_generador_automatico method not found")
-            return False
-
-    except ImportError as e:
-        print(f"  [FAIL] Import failed: {e}")
-        return False
-    except Exception as e:
-        print(f"  [FAIL] Unexpected error: {e}")
-        return False
+    # Check if the new method exists
+    assert hasattr(view, 'abrir_generador_automatico'), "abrir_generador_automatico method not found"
+    print("  [OK] abrir_generador_automatico method exists")
+    return True
 
 def test_service_generation_simulation():
     """Test the service generation simulation."""
     print("\n[TEST] Service Generation Simulation...")
 
-    try:
-        from src.modules.logistica.controller import LogisticaController
+    from rexus.modules.logistica.controller import LogisticaController
 
-        controller = LogisticaController()
+    controller = LogisticaController()
 
-        # Create test configuration
-        configuracion = {
-            'fecha_desde': '2025-07-31',
-            'fecha_hasta': '2025-08-15',
-            'estados': 'Pendiente',
-            'prioridad': 'Alta',
-            'zona': 'Todas las zonas',
-            'radio_maximo': '50',
-            'tipo_vehiculo': 'Automático (mejor opción)',
-            'capacidad_maxima': '1000',
-            'max_paradas': '8',
-            'criterio_optimizacion': 'Eficiencia balanceada',
-            'considerar_trafico': 'Sí, considerar tráfico actual',
-            'hora_inicio': '08:00',
-            'hora_fin': '18:00',
-            'duracion_maxima': '480',
-            'consolidar_entregas': 'Sí, consolidar por zona',
-            'generar_etiquetas': 'Sí, generar automáticamente',
-            'notificaciones': 'Notificar a clientes automáticamente',
-            'observaciones': 'Test de generación automática'
-        }
+    # Create test configuration
+    configuracion = {
+        'fecha_desde': '2025-07-31',
+        'fecha_hasta': '2025-08-15',
+        'estados': 'Pendiente',
+        'prioridad': 'Alta',
+        'zona': 'Todas las zonas',
+        'radio_maximo': '50',
+        'tipo_vehiculo': 'Automático (mejor opción)',
+        'capacidad_maxima': '1000',
+        'max_paradas': '8',
+        'criterio_optimizacion': 'Eficiencia balanceada',
+        'considerar_trafico': 'Sí, considerar tráfico actual',
+        'hora_inicio': '08:00',
+        'hora_fin': '18:00',
+        'duracion_maxima': '480',
+        'consolidar_entregas': 'Sí, consolidar por zona',
+        'generar_etiquetas': 'Sí, generar automáticamente',
+        'notificaciones': 'Notificar a clientes automáticamente',
+        'observaciones': 'Test de generación automática'
+    }
 
-        # Test service generation simulation
-        servicios = controller._simular_servicios_generados(configuracion)
+    # Test service generation simulation
+    servicios = controller._simular_servicios_generados(configuracion)
 
-        if len(servicios) > 0:
-            print(f"  [OK] Generated {len(servicios)} simulated services")
+    assert len(servicios) > 0, "No services generated"
+    print(f"  [OK] Generated {len(servicios)} simulated services")
 
-            # Check service structure
-            sample_service = servicios[0]
-            required_fields = ['codigo', 'descripcion', 'zona', 'fecha_programada', 'estado']
+    # Check service structure
+    sample_service = servicios[0]
+    required_fields = ['codigo', 'descripcion', 'zona', 'fecha_programada', 'estado']
 
-            missing_fields = [field for field in required_fields if field not in sample_service]
-            if missing_fields:
-                print(f"  [WARNING] Missing fields in service: {missing_fields}")
-            else:
-                print("  [OK] Service structure is complete")
+    missing_fields = [field for field in required_fields if field not in sample_service]
+    if missing_fields:
+        print(f"  [WARNING] Missing fields in service: {missing_fields}")
+    else:
+        print("  [OK] Service structure is complete")
 
-            # Show sample service
-            print(f"  [INFO] Sample service: {sample_service['codigo']} - {sample_service['descripcion']}")
+    # Show sample service
+    print(f"  [INFO] Sample service: {sample_service['codigo']} - {sample_service['descripcion']}")
 
-            return True
-        else:
-            print("  [FAIL] No services generated")
-            return False
-
-    except Exception as e:
-        print(f"  [FAIL] Service generation test failed: {e}")
-        return False
+    return True
 
 def test_dialog_configuration():
     """Test dialog configuration retrieval."""
     print("\n[TEST] Dialog Configuration Test...")
 
-    try:
-        # This test would require PyQt6 to be fully functional
-        # For now, we'll just test that the classes can be instantiated
-        from src.modules.logistica.view import DialogoGenerarServicio
+    # This test would require PyQt6 to be fully functional
+    # For now, we'll just test that the classes can be instantiated
+    from rexus.modules.logistica.view import DialogoGenerarServicio
 
-        # Note: This would normally require a QApplication to run
-        print("  [OK] Dialog class definition is valid")
-        print("  [INFO] Full dialog testing requires PyQt6 runtime environment")
+    # Note: This would normally require a QApplication to run
+    print("  [OK] Dialog class definition is valid")
+    print("  [INFO] Full dialog testing requires PyQt6 runtime environment")
 
-        return True
-
-    except Exception as e:
-        print(f"  [FAIL] Dialog configuration test failed: {e}")
-        return False
+    return True
 
 def main():
     """Main test execution."""
@@ -186,22 +137,24 @@ def main():
 
     for test_name, test_func in tests:
         print(f"\n{'='*20} {test_name} {'='*20}")
-        result = test_func()
-        results.append((test_name, result))
+        try:
+            test_func()
+            results.append((test_name, True))
+        except Exception as e:
+            print(f"  [FAIL] {test_name} raised exception: {e}")
+            results.append((test_name, False))
 
     # Summary
     print("\n" + "="*70)
     print("TEST SUMMARY")
     print("="*70)
 
-    passed = 0
+    passed = sum(1 for _, ok in results if ok)
     total = len(results)
 
-    for test_name, result in results:
-        status = "[PASS]" if result else "[FAIL]"
+    for test_name, ok in results:
+        status = "[PASS]" if ok else "[FAIL]"
         print(f"{status} {test_name}")
-        if result:
-            passed += 1
 
     success_rate = (passed / total * 100) if total > 0 else 0
     print(f"\nTotal tests: {total}")
@@ -209,21 +162,11 @@ def main():
     print(f"Failed: {total - passed}")
     print(f"Success rate: {success_rate:.1f}%")
 
-    # Overall assessment
-    if success_rate >= 90:
-        print("\n[SUCCESS] Logística service generation dialog implementation is complete!")
-        print("- All components are properly implemented")
-        print("- Dialog classes are importable and functional")
-        print("- Controller integration is working")
-        print("- Service generation simulation is operational")
-        return True
-    elif success_rate >= 70:
-        print("\n[ACCEPTABLE] Most functionality is working correctly")
-        print("- Minor issues may exist but core functionality is operational")
+    if success_rate >= 70:
+        print("\n[CHECK] Logística dialog tests mostly working or acceptable")
         return True
     else:
-        print("\n[CRITICAL] Multiple implementation issues detected")
-        print("- Review failed tests and address issues before deployment")
+        print("\n[ERROR] Logística dialog tests need attention")
         return False
 
 if __name__ == "__main__":

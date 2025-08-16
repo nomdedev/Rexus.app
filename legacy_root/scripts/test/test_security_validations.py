@@ -14,7 +14,7 @@ def test_form_validator():
     """Test form validation functionality."""
     print("\n[TEST] Form Validator Tests...")
 
-    from src.utils.form_validator import form_validator
+    from rexus.utils.form_validator import form_validator
 
     # Test username validation
     valid, error = form_validator.validate_username("test_user")
@@ -60,7 +60,7 @@ def test_security_manager():
     """Test security manager functionality."""
     print("\n[TEST] Security Manager Tests...")
 
-    from src.utils.security_manager import SecurityManager
+    from rexus.utils.security_manager import SecurityManager
 
     # Create test security manager
     security_mgr = SecurityManager(max_attempts=3, lockout_duration=5)
@@ -112,7 +112,7 @@ def test_sql_loader():
     """Test SQL loader functionality."""
     print("\n[TEST] SQL Loader Tests...")
 
-    from src.utils.sql_loader import load_sql
+    from rexus.utils.sql_loader import load_sql
 
     # Test loading existing SQL file
     query = load_sql("usuarios", "check_username_exists")
@@ -131,7 +131,7 @@ def test_html_sanitization():
     """Test HTML sanitization."""
     print("\n[TEST] HTML Sanitization Tests...")
 
-    from src.utils.form_validator import form_validator
+    from rexus.utils.form_validator import form_validator
 
     # Test basic XSS prevention
     dangerous_input = "<script>alert('xss')</script>"
