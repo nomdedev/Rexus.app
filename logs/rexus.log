@@ -114,3 +114,27 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in posit
 2025-08-16 18:44:04 - cache_manager - [32mINFO[0m - CacheManager inicializado
 2025-08-16 18:44:05 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
 2025-08-16 18:44:05 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:52:04 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:52:04 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:52:04 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:52:04 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 18:52:04 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:52:05 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:53:13 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:13 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:13 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:13 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 18:53:14 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:53:14 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:53:56 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:56 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:56 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:53:56 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 18:53:57 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:53:57 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:55:33 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:55:33 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:55:33 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:55:33 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 18:55:33 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:55:34 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
