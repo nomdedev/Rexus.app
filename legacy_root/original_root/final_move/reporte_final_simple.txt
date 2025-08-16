@@ -1,0 +1,3 @@
+BACKUP FINAL: reporte_final_simple.txt
+
+Versión original guardada antes de limpieza de raíz.

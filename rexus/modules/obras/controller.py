@@ -152,6 +152,10 @@ class ObrasController(QObject):
             self.view.btn_actualizar.clicked.connect(self.cargar_obras)
         if hasattr(self.view, "combo_filtro_estado"):
             self.view.combo_filtro_estado.currentTextChanged.connect(self.filtrar_obras)
+        
+        # Conectar señal de exportación
+        if hasattr(self.view, 'solicitud_exportar'):
+            self.view.solicitud_exportar.connect(self.exportar_obras)
 
     def cargar_obras(self):
         """Carga todas las obras en la tabla."""
@@ -513,8 +517,8 @@ obra_id: int,
 
                 if self.view:
                     # Cargar datos en la tabla
-                    if hasattr(self.view, 'cargar_en_tabla'):
-                        self.view.cargar_en_tabla(datos)
+                    if hasattr(self.view, 'cargar_datos_en_tabla'):
+                        self.view.cargar_datos_en_tabla(datos)
 
                     # Actualizar controles de paginación
                     total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
@@ -542,3 +546,72 @@ obra_id: int,
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
+
+    @auth_required
+    def exportar_obras(self, formato="excel"):
+        """Exporta obras al formato especificado."""
+        try:
+            logger.info(f"Iniciando exportación de obras en formato {formato}")
+            
+            if not self._ensure_model_available("exportar obras"):
+                return False
+
+            # Obtener todos los datos para exportar
+            datos, total = self.model.obtener_datos_paginados(0, 10000)  # Obtener todos los registros
+            
+            if not datos:
+                show_warning(self.view, "Exportar", "No hay obras para exportar")
+                return False
+
+            # Usar ExportManager para exportar
+            try:
+                from rexus.utils.export_manager import ExportManager
+                from datetime import datetime
+                
+                export_manager = ExportManager()
+                
+                # Preparar datos para exportación
+                datos_export = {
+                    'datos': datos,
+                    'columnas': ['Código', 'Nombre', 'Cliente', 'Estado', 'Fecha Inicio', 'Fecha Fin', 'Presupuesto', 'Responsable'],
+                    'titulo': 'Listado de Obras',
+                    'modulo': 'Obras',
+                    'usuario': self.usuario_actual,
+                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                }
+                
+                # Generar nombre de archivo
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"obras_export_{timestamp}.{formato}"
+                
+                # Exportar según formato
+                resultado = False
+                if formato.lower() == 'excel':
+                    resultado = export_manager.exportar_excel(datos_export, filename)
+                elif formato.lower() == 'csv':
+                    resultado = export_manager.exportar_csv(datos_export, filename)
+                elif formato.lower() == 'pdf':
+                    resultado = export_manager.exportar_pdf(datos_export, filename)
+                else:
+                    self.mostrar_mensaje_error(f"Formato {formato} no soportado")
+                    return False
+                
+                if resultado:
+                    self.mostrar_mensaje_exito(f"Obras exportadas exitosamente a {filename}")
+                    logger.info(f"Obras exportadas exitosamente a {filename}")
+                    return True
+                else:
+                    self.mostrar_mensaje_error("Error durante la exportación")
+                    return False
+                    
+            except ImportError:
+                self.mostrar_mensaje_error("ExportManager no disponible")
+                return False
+            except Exception as e:
+                self.mostrar_mensaje_error(f"Error en exportación: {str(e)}")
+                return False
+
+        except Exception as e:
+            logger.error(f"Error exportando obras: {e}")
+            self.mostrar_mensaje_error(f"Error exportando obras: {str(e)}")
+            return False

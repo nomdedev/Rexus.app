@@ -334,17 +334,24 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Verificar si la columna 'activo' existe
+            # FIXED: Usar consultas parametrizadas seguras en lugar de script_content
             try:
-                script_content = self.sql_loader.load_script('configuracion/select_all_configs_active')
-                cursor.execute(script_content)
+                cursor.execute("""
+                    SELECT clave, valor, categoria, descripcion, tipo_dato, fecha_modificacion
+                    FROM configuracion 
+                    WHERE activo = 1
+                    ORDER BY categoria, clave
+                """)
             except Exception as e:
                 # Si falla, la tabla podría no tener columna 'activo'
                 print(
                     f"[CONFIGURACION] Error al consultar con 'activo': {e}, intentando sin columna 'activo'"
                 )
-                script_content = self.sql_loader.load_script('configuracion/select_all_configs')
-                cursor.execute(script_content)
+                cursor.execute("""
+                    SELECT clave, valor, categoria, descripcion, tipo_dato, fecha_modificacion
+                    FROM configuracion 
+                    ORDER BY categoria, clave
+                """)
 
             self.config_cache = {}
             rows = cursor.fetchall()
@@ -431,25 +438,29 @@ class ConfiguracionModel:
                 cursor = self.db_connection.cursor()
 
                 try:
-                    # Verificar si existe con parámetros seguros
-                    self._validate_table_name(self.tabla_configuracion)
-                    script_content = self.sql_loader.load_script('configuracion/count_config_by_key')
-                    cursor.execute(script_content, (clave_sanitizada,))
+                    # FIXED: Verificar si existe con consulta parametrizada segura
+                    cursor.execute("""
+                        SELECT COUNT(*) FROM configuracion WHERE clave = ?
+                    """, (clave_sanitizada,))
                     result = cursor.fetchone()
                     existe = result[0] > 0 if result else False
 
                     if existe:
-                        # Actualizar con validación
+                        # FIXED: Actualizar con consulta parametrizada segura
                         try:
-                            script_content = self.sql_loader.load_script('configuracion/update_config_value')
-                            cursor.execute(script_content, (valor_str, clave_sanitizada))
+                            cursor.execute("""
+                                UPDATE configuracion 
+                                SET valor = ?, fecha_modificacion = GETDATE() 
+                                WHERE clave = ?
+                            """, (valor_str, clave_sanitizada))
                         except Exception as e:
                             # Si no existe fecha_modificacion, usar versión simple
                             print(
                                 f"[CONFIGURACION] Error actualizando con fecha_modificacion: {e}, usando versión simple"
                             )
-                            script_content = self.sql_loader.load_script('configuracion/update_config_simple')
-                            cursor.execute(script_content, (valor_str, clave_sanitizada))
+                            cursor.execute("""
+                                UPDATE configuracion SET valor = ? WHERE clave = ?
+                            """, (valor_str, clave_sanitizada))
                     else:
                         # Insertar con datos validados
                         categoria = self._obtener_categoria_por_clave(clave_sanitizada)
@@ -458,15 +469,18 @@ class ConfiguracionModel:
                         )
                         tipo_dato = self._obtener_tipo_dato_por_valor(valor_str)
 
-                        script_content = self.sql_loader.load_script('configuracion/insert_config_full')
-                        cursor.execute(script_content, (
+                        # FIXED: Insertar con consulta parametrizada segura
+                        cursor.execute("""
+                            INSERT INTO configuracion 
+                            (clave, valor, descripcion, tipo_dato, categoria, fecha_creacion, fecha_modificacion)
+                            VALUES (?, ?, ?, ?, ?, GETDATE(), GETDATE())
+                        """, (
                             clave_sanitizada,
                             valor_str,
-                                descripcion,
-                                tipo_dato,
-                                categoria,
-                            ),
-                        )
+                            descripcion,
+                            tipo_dato,
+                            categoria
+                        ))
 
                     self.db_connection.commit()
 
@@ -787,3 +801,111 @@ f,
                 "es_editable": True,
             },
         ]
+
+    def obtener_configuraciones_filtradas(self, filtros: Dict[str, Any]) -> List[Dict]:
+        """
+        Obtiene configuraciones aplicando filtros específicos.
+        
+        Args:
+            filtros: Diccionario con filtros a aplicar
+            
+        Returns:
+            Lista de configuraciones filtradas
+        """
+        try:
+            print(f"[CONFIGURACION MODEL] Aplicando filtros: {filtros}")
+            
+            if not self.db_connection:
+                print("[ERROR CONFIGURACION MODEL] No hay conexión a la base de datos")
+                # Fallback con datos demo filtrados
+                configuraciones_demo = self._obtener_configuraciones_demo()
+                return self._aplicar_filtros_demo(configuraciones_demo, filtros)
+            
+            cursor = self.db_connection.cursor()
+            
+            # Query base
+            query = """
+                SELECT 
+                    id, clave, valor, descripcion, tipo_dato, categoria, 
+                    es_editable, fecha_creacion, fecha_modificacion, usuario_modificacion
+                FROM configuraciones
+                WHERE 1=1
+            """
+            
+            params = []
+            
+            # Aplicar filtros dinámicamente
+            if filtros.get('busqueda'):
+                query += """
+                    AND (clave LIKE ? OR descripcion LIKE ? OR valor LIKE ? OR categoria LIKE ?)
+                """
+                busqueda = f"%{filtros['busqueda']}%"
+                params.extend([busqueda, busqueda, busqueda, busqueda])
+            
+            if filtros.get('categoria') and filtros['categoria'] != 'Todas':
+                query += " AND categoria = ?"
+                params.append(filtros['categoria'])
+            
+            if filtros.get('tipo') and filtros['tipo'] != 'Todos':
+                query += " AND tipo_dato = ?"
+                params.append(filtros['tipo'].lower())
+            
+            if filtros.get('estado') and filtros['estado'] != 'Todos':
+                if filtros['estado'] == 'Activo':
+                    query += " AND es_editable = 1"
+                elif filtros['estado'] == 'Inactivo':
+                    query += " AND es_editable = 0"
+                elif filtros['estado'] == 'Por Defecto':
+                    query += " AND usuario_modificacion IS NULL"
+                elif filtros['estado'] == 'Personalizado':
+                    query += " AND usuario_modificacion IS NOT NULL"
+            
+            # Ordenar por categoría y clave
+            query += " ORDER BY categoria, clave"
+            
+            print(f"[CONFIGURACION MODEL] Ejecutando query con {len(params)} parámetros")
+            cursor.execute(query, params)
+            
+            # Convertir resultados a diccionarios
+            configuraciones = []
+            columns = [desc[0] for desc in cursor.description]
+            
+            for row in cursor.fetchall():
+                configuracion = dict(zip(columns, row))
+                configuraciones.append(configuracion)
+            
+            print(f"[CONFIGURACION MODEL] Filtradas {len(configuraciones)} configuraciones exitosamente")
+            return configuraciones
+            
+        except Exception as e:
+            print(f"[ERROR CONFIGURACION MODEL] Error filtrando configuraciones: {e}")
+            # Fallback con datos demo en caso de error
+            configuraciones_demo = self._obtener_configuraciones_demo()
+            return self._aplicar_filtros_demo(configuraciones_demo, filtros)
+
+    def _aplicar_filtros_demo(self, configuraciones: List[Dict], filtros: Dict[str, Any]) -> List[Dict]:
+        """Aplica filtros a los datos demo."""
+        resultado = configuraciones
+        
+        if filtros.get('busqueda'):
+            termino = filtros['busqueda'].lower()
+            resultado = [c for c in resultado if (
+                termino in c.get('clave', '').lower() or
+                termino in c.get('descripcion', '').lower() or
+                termino in c.get('valor', '').lower() or
+                termino in c.get('categoria', '').lower()
+            )]
+        
+        if filtros.get('categoria') and filtros['categoria'] != 'Todas':
+            resultado = [c for c in resultado if c.get('categoria', '') == filtros['categoria']]
+        
+        if filtros.get('tipo') and filtros['tipo'] != 'Todos':
+            resultado = [c for c in resultado if c.get('tipo_dato', '') == filtros['tipo'].lower()]
+        
+        if filtros.get('estado') and filtros['estado'] != 'Todos':
+            if filtros['estado'] == 'Activo':
+                resultado = [c for c in resultado if c.get('es_editable', False)]
+            elif filtros['estado'] == 'Inactivo':
+                resultado = [c for c in resultado if not c.get('es_editable', True)]
+        
+        return resultado

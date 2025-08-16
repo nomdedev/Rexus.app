@@ -1,8 +1,6 @@
-================================================================================
-REPORTE DE AUDITORÍA DE MÓDULOS
-================================================================================
+BACKUP: Este reporte fue movido a `legacy_root/original_root/modules_audit_report.txt`.
 
-RESUMEN EJECUTIVO:
+Consulta la copia completa en `legacy_root/original_root/`.
   - Módulos auditados: 13
   - Total de problemas: 3183
   - Problemas críticos: 3152

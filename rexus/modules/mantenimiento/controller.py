@@ -315,3 +315,79 @@ model=None,
             return False
 
         return True
+
+    # === MÉTODOS DE PAGINACIÓN ===
+
+    def cargar_pagina(self, pagina, registros_por_pagina=50):
+        """Carga una página específica de datos"""
+        try:
+            if self.model:
+                offset = (pagina - 1) * registros_por_pagina
+
+                # Obtener datos paginados
+                datos, total_registros = self.model.obtener_datos_paginados(
+                    offset=offset,
+                    limit=registros_por_pagina
+                )
+
+                if self.view:
+                    # Cargar datos en la tabla
+                    if hasattr(self.view, 'cargar_datos_en_tabla'):
+                        self.view.cargar_datos_en_tabla(datos)
+
+                    # Actualizar controles de paginación
+                    total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
+                    if hasattr(self.view, 'actualizar_controles_paginacion'):
+                        self.view.actualizar_controles_paginacion(
+                            pagina, total_paginas, total_registros, len(datos)
+                        )
+
+        except Exception as e:
+            logger.error(f"Error cargando página: {e}")
+            if hasattr(self, 'mostrar_error'):
+                self.mostrar_error("Error", f"Error cargando página: {str(e)}")
+
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página y recarga"""
+        self.registros_por_pagina = registros
+        self.cargar_pagina(1, registros)
+
+    def obtener_total_registros(self):
+        """Obtiene el total de registros disponibles"""
+        try:
+            if self.model:
+                return self.model.obtener_total_registros()
+            return 0
+        except Exception as e:
+            logger.error(f"Error obteniendo total de registros: {e}")
+            return 0
+
+    def cargar_datos(self):
+        """Carga datos iniciales - método de compatibilidad"""
+        try:
+            self.cargar_pagina(1)
+        except Exception as e:
+            logger.error(f"Error cargando datos: {e}")
+
+    def buscar(self, filtros):
+        """Busca registros con filtros aplicados"""
+        try:
+            if self.model and hasattr(self.model, 'buscar_ordenes'):
+                datos = self.model.buscar_ordenes(filtros)
+                if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
+                    self.view.cargar_datos_en_tabla(datos)
+        except Exception as e:
+            logger.error(f"Error en búsqueda: {e}")
+
+    def crear_mantenimiento(self, datos):
+        """Crea una nueva orden de mantenimiento"""
+        try:
+            if self.model and hasattr(self.model, 'crear_orden_trabajo'):
+                resultado = self.model.crear_orden_trabajo(datos)
+                if resultado:
+                    self.cargar_pagina(1)  # Recargar primera página
+                return resultado
+            return False
+        except Exception as e:
+            logger.error(f"Error creando mantenimiento: {e}")
+            return False

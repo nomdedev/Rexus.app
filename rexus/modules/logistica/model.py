@@ -197,14 +197,12 @@ proveedor,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_transportes)}]
+            query = """
+                INSERT INTO transportes
                 (codigo, tipo, proveedor, capacidad_kg, capacidad_m3, costo_km,
                  disponible, observaciones, activo, fecha_creacion, fecha_modificacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
             """
-            )
 
             cursor.execute(
                 query,
@@ -251,17 +249,13 @@ proveedor,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                UPDATE [{self._validate_table_name(self.tabla_transportes)}]
+            query = """
+                UPDATE transportes
                 SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
-                    costo_km = ?,
-disponible = ?,
-                        observaciones = ?,
-                        fecha_modificacion = GETDATE()
+                    costo_km = ?, disponible = ?, observaciones = ?,
+                    fecha_modificacion = GETDATE()
                 WHERE id = ?
             """
-            )
 
             cursor.execute(
                 query,
@@ -369,15 +363,13 @@ disponible = ?,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_entregas)}]
+            query = """
+                INSERT INTO entregas
                 (obra_id, transporte_id, fecha_programada, direccion_entrega,
                  contacto, telefono, estado, observaciones, costo_envio,
                  usuario_creacion, fecha_creacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
             """
-            )
 
             cursor.execute(
                 query,
@@ -432,21 +424,17 @@ entrega_id,
 
             # Si se marca como entregada, agregar fecha de entrega
             if nuevo_estado == "ENTREGADA":
-                query = (
-                    """
-                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
+                query = """
+                    UPDATE entregas
                     SET estado = ?, fecha_entrega = GETDATE(), observaciones = ?
                     WHERE id = ?
                 """
-                )
             else:
-                query = (
-                    """
-                    UPDATE [{self._validate_table_name(self.tabla_entregas)}]
+                query = """
+                    UPDATE entregas
                     SET estado = ?, observaciones = ?
                     WHERE id = ?
                 """
-                )
 
             cursor.execute(query, (nuevo_estado, observaciones, entrega_id))
 
@@ -480,16 +468,14 @@ entrega_id,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
+            query = """
                 SELECT
                     d.id, d.entrega_id, d.producto, d.cantidad, d.peso_kg,
                     d.volumen_m3, d.observaciones
-                FROM [{self._validate_table_name(self.tabla_detalle_entregas)}] d
+                FROM detalle_entregas d
                 WHERE d.entrega_id = ?
                 ORDER BY d.producto
             """
-            )
 
             cursor.execute(query, (entrega_id,))
             columnas = [column[0] for column in cursor.description]
@@ -523,18 +509,11 @@ entrega_id,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
-                INSERT INTO [{self._validate_table_name(self.tabla_detalle_entregas)}]
-                (entrega_id,
-producto,
-                    cantidad,
-                    peso_kg,
-                    volumen_m3,
-                    observaciones)
+            query = """
+                INSERT INTO detalle_entregas
+                (entrega_id, producto, cantidad, peso_kg, volumen_m3, observaciones)
                 VALUES (?, ?, ?, ?, ?, ?)
             """
-            )
 
             cursor.execute(
                 query,
@@ -619,42 +598,34 @@ producto,
             estadisticas["transportes_disponibles"] = cursor.fetchone()[0]
 
             # Entregas por estado
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT estado, COUNT(*) as cantidad
-                FROM [{self._validate_table_name(self.tabla_entregas)}]
+                FROM entregas
                 GROUP BY estado
-            """
-            )
+            """)
             estadisticas["entregas_por_estado"] = dict(cursor.fetchall())
 
             # Entregas del mes actual
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
+            cursor.execute("""
+                SELECT COUNT(*) FROM entregas
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """
-            )
+            """)
             estadisticas["entregas_mes_actual"] = cursor.fetchone()[0]
 
             # Entregas pendientes
-            cursor.execute(
-                """
-                SELECT COUNT(*) FROM [{self._validate_table_name(self.tabla_entregas)}]
+            cursor.execute("""
+                SELECT COUNT(*) FROM entregas
                 WHERE estado IN ('PROGRAMADA', 'EN_TRANSITO')
-            """
-            )
+            """)
             estadisticas["entregas_pendientes"] = cursor.fetchone()[0]
 
             # Costo total de envíos del mes
-            cursor.execute(
-                """
-                SELECT SUM(costo_envio) FROM [{self._validate_table_name(self.tabla_entregas)}]
+            cursor.execute("""
+                SELECT SUM(costo_envio) FROM entregas
                 WHERE MONTH(fecha_programada) = MONTH(GETDATE())
                 AND YEAR(fecha_programada) = YEAR(GETDATE())
-            """
-            )
+            """)
             resultado = cursor.fetchone()[0]
             estadisticas["costo_envios_mes"] = float(resultado) if resultado else 0.0
 
@@ -677,14 +648,12 @@ producto,
         try:
             cursor = self.db_connection.cursor()
 
-            query = (
-                """
+            query = """
                 SELECT id, nombre, direccion, estado
-                FROM [{self._validate_table_name(self.tabla_obras)}]
+                FROM obras
                 WHERE activo = 1 AND estado != 'TERMINADA'
                 ORDER BY nombre
             """
-            )
 
             cursor.execute(query)
             columnas = [column[0] for column in cursor.description]
@@ -725,14 +694,11 @@ transporte_id,
             cursor = self.db_connection.cursor()
 
             # Obtener información del transporte
-            cursor.execute(
-                """
+            cursor.execute("""
                 SELECT costo_km, capacidad_kg, capacidad_m3
-                FROM [{self._validate_table_name(self.tabla_transportes)}]
+                FROM transportes
                 WHERE id = ?
-            """,
-                (transporte_id,),
-            )
+            """, (transporte_id,))
 
             resultado = cursor.fetchone()
             if not resultado:

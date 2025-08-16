@@ -1,3 +1,12 @@
+"""
+Tool: fix_syntax_errors (moved from project root)
+"""
+
+def notice():
+    print('Versión operativa: scripts/tools/fix_syntax_errors.py')
+
+if __name__ == '__main__':
+    notice()
 #!/usr/bin/env python3
 """
 Script para corregir errores de sintaxis críticos detectados por PyLint

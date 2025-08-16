@@ -1,20 +1,79 @@
-# 🤖 CLAUDE CONTEXT - Rexus.app Master Reference
+# 🤖 CLAUDE CONTEXT - Rexus.app (Unificado)
 
+Última actualización: 2025-08-16
 
-
-**Última actualización**: 2025-08-13  
-**Estado del sistema**: 🟢 SISTEMA COMPLETAMENTE OPTIMIZADO (100/100)  
-**Contexto de trabajo**: TODAS LAS OPTIMIZACIONES COMPLETADAS - SISTEMA PRODUCTION-READY  
-**Estructura de carpetas y organización finalizada**
+Este archivo es la fuente única de verdad para la arquitectura, organización y reglas del proyecto Rexus.app.
+Se mantiene una sola copia completa en la raíz del repositorio: `CLAUDE.md`.
 
 ---
 
-## 🎯 CONTEXTO PRINCIPAL
+## 📁 Estructura recomendada de la raíz
 
+```
+Rexus.app/
+├─ main.py
+├─ requirements.txt
+├─ .env
+├─ legacy_root/              # Backups e históricos
+├─ rexus/                    # Código principal (MVC, modules, core, utils, ui)
+├─ utils/                    # Utilidades generales
+├─ ui/                       # Recursos UI compartidos
+├─ uploads/                  # Archivos subidos
+├─ project_scripts/          # Scripts de desarrollo, CI y Docker
+└─ README-DEV.md (breve pointer a project_scripts/README-DEV.md)
+```
 
-Este documento es la **fuente única de verdad** para la arquitectura, estructura y organización de Rexus.app. Antes de crear cualquier archivo, verifica aquí la ubicación y evita duplicados.
+## 📚 Reglas de organización (obligatorio)
+- No crear archivos en la raíz salvo `main.py`, `requirements.txt`, `.env` y archivos de configuración esenciales (Dockerfile, docker-compose.yml, .gitignore).
+- Scripts de desarrollo, Makefile y helpers → `project_scripts/`.
+- Documentación extensa y checklists → `legacy_root/docs/`.
+- Backups y copias históricas → `legacy_root/original_root/`.
 
-### 📁 Estructura actual de la raíz del proyecto
+## ✅ Objetivos de este fichero
+- Consolidar la información del proyecto en un único `CLAUDE.md` en la raíz.
+- Evitar duplicados y mantener una sola fuente de verdad.
+- Instruir dónde deben residir archivos nuevos.
+
+---
+
+## ⚠️ Prioridades inmediatas (resumen)
+
+1. Correcciones críticas de tema y contraste (formularios) — revisar `rexus/ui/style_manager.py` y `rexus/ui/components/base_components.py`.
+2. Migración de queries a archivos `.sql` en `scripts/sql/{modulo}/` y uso de `SQLQueryManager`.
+3. Corregir errores de sintaxis que impidan importar módulos críticos.
+
+---
+
+## 🛠 Comandos rápidos de validación
+
+Ver imports críticos:
+```powershell
+python -c "import rexus.modules.inventario.model_inventario_refactorizado"
+python -c "import rexus.modules.vidrios.model"
+```
+
+Buscar queries hardcodeadas:
+```powershell
+grep -r "SELECT\|INSERT\|UPDATE\|DELETE" rexus/modules/ --include="*.py" | Select-String -NotMatch "sql_manager"
+```
+
+---
+
+## 🧭 Mantenimiento de este fichero
+- Si editas este archivo, documenta la fecha y el motivo en la sección de cambios al final.
+- Antes de crear cualquier archivo nuevo usa búsqueda global para evitar duplicados.
+
+---
+
+## � Historial de copias y limpieza
+Las copias dispersas de `CLAUDE.md` fueron consolidadas en esta versión. Las copias antiguas han sido eliminadas del árbol del repositorio para evitar confusión; si necesitas la versión histórica, revisa `legacy_root/original_root/final_move/` (se mantuvo un backup previo antes de la consolidación).
+
+---
+
+## 📌 Resumen corto
+- Este archivo en la raíz es la única `CLAUDE.md` activa y completa.
+- Para documentación extensa adicional usa `legacy_root/docs/`.
+
 
 ```
 Rexus.app/

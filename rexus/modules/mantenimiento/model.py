@@ -577,3 +577,235 @@ mantenimiento_id,
 
         except Exception as e:
             print(f"[ERROR MANTENIMIENTO] Error actualizando próxima revisión: {e}")
+
+    # === MÉTODOS DE PAGINACIÓN ===
+
+    def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
+        """
+        Obtiene datos paginados de órdenes de trabajo.
+
+        Args:
+            offset: Registro inicial
+            limit: Cantidad de registros
+            filtros: Filtros adicionales
+
+        Returns:
+            tuple: (datos, total_registros)
+        """
+        if not self.db_connection:
+            # Fallback con datos demo
+            datos_demo = self._get_ordenes_demo()
+            return datos_demo[offset:offset+limit], len(datos_demo)
+
+        try:
+            cursor = self.db_connection.cursor()
+
+            # Query principal con paginación
+            query = """
+                SELECT 
+                    id, 
+                    titulo,
+                    equipo_nombre as equipo,
+                    prioridad,
+                    estado,
+                    responsable as asignado,
+                    CONVERT(varchar, fecha_programada, 103) as fecha
+                FROM ordenes_trabajo
+                WHERE activo = 1
+            """
+            
+            params = []
+            
+            # Aplicar filtros si existen
+            if filtros:
+                if filtros.get('estado') and filtros['estado'] not in ['Todas', 'Todos']:
+                    query += " AND estado = ?"
+                    params.append(filtros['estado'])
+                
+                if filtros.get('prioridad') and filtros['prioridad'] not in ['Todas', 'Todos']:
+                    query += " AND prioridad = ?"
+                    params.append(filtros['prioridad'])
+                
+                if filtros.get('busqueda'):
+                    query += " AND (titulo LIKE ? OR equipo_nombre LIKE ? OR responsable LIKE ?)"
+                    busqueda = f"%{filtros['busqueda']}%"
+                    params.extend([busqueda, busqueda, busqueda])
+
+            # Query de conteo
+            count_query = query.replace(
+                "SELECT id, titulo, equipo_nombre as equipo, prioridad, estado, responsable as asignado, CONVERT(varchar, fecha_programada, 103) as fecha",
+                "SELECT COUNT(*)"
+            )
+            
+            cursor.execute(count_query, params)
+            total_registros = cursor.fetchone()[0]
+
+            # Query principal con paginación
+            query += " ORDER BY fecha_programada DESC OFFSET ? ROWS FETCH NEXT ? ROWS ONLY"
+            params.extend([offset, limit])
+            
+            cursor.execute(query, params)
+            datos = []
+            
+            for row in cursor.fetchall():
+                datos.append({
+                    "id": row[0],
+                    "titulo": row[1],
+                    "equipo": row[2],
+                    "prioridad": row[3],
+                    "estado": row[4],
+                    "asignado": row[5],
+                    "fecha": row[6]
+                })
+
+            return datos, total_registros
+
+        except Exception as e:
+            print(f"[ERROR MANTENIMIENTO] Error obteniendo datos paginados: {e}")
+            # Fallback con datos demo en caso de error
+            datos_demo = self._get_ordenes_demo()
+            return datos_demo[offset:offset+limit], len(datos_demo)
+
+    def obtener_total_registros(self, filtros=None):
+        """
+        Obtiene el total de registros de órdenes de trabajo.
+
+        Args:
+            filtros: Filtros aplicados
+
+        Returns:
+            int: Total de registros
+        """
+        if not self.db_connection:
+            return len(self._get_ordenes_demo())
+
+        try:
+            cursor = self.db_connection.cursor()
+            
+            query = "SELECT COUNT(*) FROM ordenes_trabajo WHERE activo = 1"
+            params = []
+            
+            # Aplicar filtros si existen
+            if filtros:
+                if filtros.get('estado') and filtros['estado'] not in ['Todas', 'Todos']:
+                    query += " AND estado = ?"
+                    params.append(filtros['estado'])
+                
+                if filtros.get('prioridad') and filtros['prioridad'] not in ['Todas', 'Todos']:
+                    query += " AND prioridad = ?"
+                    params.append(filtros['prioridad'])
+                
+                if filtros.get('busqueda'):
+                    query += " AND (titulo LIKE ? OR equipo_nombre LIKE ? OR responsable LIKE ?)"
+                    busqueda = f"%{filtros['busqueda']}%"
+                    params.extend([busqueda, busqueda, busqueda])
+            
+            cursor.execute(query, params)
+            return cursor.fetchone()[0]
+
+        except Exception as e:
+            print(f"[ERROR MANTENIMIENTO] Error obteniendo total de registros: {e}")
+            return len(self._get_ordenes_demo())
+
+    def buscar_ordenes(self, filtros):
+        """
+        Busca órdenes de trabajo con filtros.
+
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+
+        Returns:
+            list: Lista de órdenes de trabajo que coinciden
+        """
+        datos, _ = self.obtener_datos_paginados(0, 1000, filtros)
+        return datos
+
+    def crear_orden_trabajo(self, datos):
+        """
+        Crea una nueva orden de trabajo.
+
+        Args:
+            datos: Diccionario con datos de la orden
+
+        Returns:
+            int: ID de la orden creada o None si falla
+        """
+        if not self.db_connection:
+            return None
+
+        try:
+            cursor = self.db_connection.cursor()
+
+            query = """
+                INSERT INTO ordenes_trabajo (
+                    equipo_id, titulo, equipo_nombre, prioridad, estado,
+                    responsable, fecha_programada, descripcion, observaciones, activo
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 1)
+            """
+
+            cursor.execute(query, (
+                datos.get('equipo_id', 1),
+                datos.get('titulo', datos.get('descripcion', '')),
+                datos.get('equipo', 'Equipo General'),
+                datos.get('prioridad', 'Media'),
+                datos.get('estado', 'PROGRAMADO'),
+                datos.get('responsable', ''),
+                datos.get('fecha_programada'),
+                datos.get('descripcion', ''),
+                datos.get('observaciones', '')
+            ))
+
+            # Obtener ID de la orden creada
+            cursor.execute("SELECT @@IDENTITY")
+            orden_id = cursor.fetchone()[0]
+
+            self.db_connection.commit()
+            print(f"[MANTENIMIENTO] Orden de trabajo creada con ID: {orden_id}")
+            return orden_id
+
+        except Exception as e:
+            print(f"[ERROR MANTENIMIENTO] Error creando orden de trabajo: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return None
+
+    def _get_ordenes_demo(self):
+        """Datos demo para cuando no hay conexión a base de datos."""
+        return [
+            {
+                "id": "001",
+                "titulo": "Cambio de filtros",
+                "equipo": "Compresor A1",
+                "prioridad": "Alta",
+                "estado": "Pendiente",
+                "asignado": "Juan Pérez",
+                "fecha": "15/01/2024"
+            },
+            {
+                "id": "002",
+                "titulo": "Revisión eléctrica",
+                "equipo": "Motor B2",
+                "prioridad": "Media",
+                "estado": "En Progreso",
+                "asignado": "Ana García",
+                "fecha": "12/01/2024"
+            },
+            {
+                "id": "003",
+                "titulo": "Lubricación general",
+                "equipo": "Bomba C3",
+                "prioridad": "Baja",
+                "estado": "Completada",
+                "asignado": "Carlos López",
+                "fecha": "10/01/2024"
+            },
+            {
+                "id": "004",
+                "titulo": "Reparación urgente",
+                "equipo": "Generador D4",
+                "prioridad": "Crítica",
+                "estado": "Pendiente",
+                "asignado": "María Rodríguez",
+                "fecha": "16/01/2024"
+            }
+        ]

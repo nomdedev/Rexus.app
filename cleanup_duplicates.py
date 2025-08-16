@@ -1,10 +1,8 @@
-"""
-Este script fue movido a `scripts/tools/cleanup_duplicates.py`.
-Usa esa ruta para ejecutar la versión completa.
-"""
-
-def notice():
-    print("Use scripts/tools/cleanup_duplicates.py para la funcionalidad completa.")
+#!/usr/bin/env python3
+"""Root stub: cleanup_duplicates.py -> legacy_root/original_root/final_move/cleanup_duplicates.py"""
+import sys
+def main():
+	print('Este archivo fue movido a legacy_root/original_root/final_move/cleanup_duplicates.py')
 
 if __name__ == '__main__':
-    notice()
+	main()

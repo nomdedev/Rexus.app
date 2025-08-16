@@ -1,3 +1,12 @@
+"""
+Tool: fix_code_quality (moved from project root)
+"""
+
+def notice():
+    print('Versión operativa: scripts/tools/fix_code_quality.py')
+
+if __name__ == '__main__':
+    notice()
 #!/usr/bin/env python3
 """
 Script automático para corregir problemas de calidad de código detectados por flake8

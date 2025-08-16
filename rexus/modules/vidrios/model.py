@@ -21,8 +21,12 @@ INVALID_DATA_MSG = "Datos inválidos"
 
 
 # Importar utilidades requeridas
+import logging
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.unified_sanitizer import sanitize_string
+
+# Configurar logger específico para el módulo
+logger = logging.getLogger(__name__)
 
 # Importar sistema unificado de sanitización
 try:
@@ -134,7 +138,7 @@ class VidriosModel:
             else:
                 return value
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error en sanitización: {e}")
+            logger.error(f"Error en sanitización de datos: {e}")
             # Fallback en caso de error
             return self._sanitizar_entrada_segura(value, tipo, **kwargs)
 
@@ -265,12 +269,12 @@ class VidriosModel:
                     f"[VIDRIOS] Tabla '{self.tabla_vidrios_obra}' verificada correctamente."
                 )
             else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_vidrios_obra}' no existe en la base de datos."
+                logger.warning(
+                    f"La tabla '{self.tabla_vidrios_obra}' no existe en la base de datos."
                 )
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error verificando tablas: {e}")
+            logger.error(f"Error verificando tablas: {e}")
 
     def obtener_todos_vidrios(self, filtros=None):
         """
@@ -305,13 +309,16 @@ class VidriosModel:
                     conditions.append("espesor = ?")
                     params.append(filtros["espesor"])
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script(
-                "vidrios/select_vidrios_filtered"
-            )
-            # Construir query completa con filtros dinámicos
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
             where_clause = " AND ".join(conditions)
-            query = script_content.replace("WHERE 1=1", f"WHERE {where_clause}")
+            query = f"""
+                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
+                       color, precio_m2, estado, ubicacion, observaciones, 
+                       fecha_creacion, fecha_modificacion
+                FROM vidrios
+                WHERE {where_clause}
+                ORDER BY codigo
+            """
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -324,7 +331,7 @@ class VidriosModel:
             return vidrios
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo vidrios: {e}")
+            logger.error(f"Error obteniendo vidrios: {e}")
             return []
 
     def obtener_vidrios_por_obra(self, obra_id):
@@ -343,11 +350,16 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script(
-                "vidrios/select_vidrios_por_obra"
-            )
-            cursor.execute(script_content, (obra_id,))
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT v.id, v.codigo, v.descripcion, v.tipo, v.proveedor,
+                       v.espesor, v.color, v.precio_m2, v.estado, v.ubicacion,
+                       vo.cantidad_utilizada, vo.fecha_asignacion
+                FROM vidrios v
+                INNER JOIN vidrios_obra vo ON v.id = vo.vidrio_id
+                WHERE vo.obra_id = ?
+                ORDER BY v.codigo
+            """, (obra_id,))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -359,7 +371,7 @@ class VidriosModel:
             return vidrios_obra
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo vidrios por obra: {e}")
+            logger.error(f"Error obteniendo vidrios por obra: {e}")
             return []
 
     @auth_required
@@ -452,14 +464,12 @@ class VidriosModel:
 
             # Actualizar cantidades pedidas en vidrios_obra
             for vidrio in vidrios_lista:
-                # Usar script SQL externo
-                script_content = self.sql_loader.load_script(
-                    "vidrios/update_metros_pedidos"
-                )
-                cursor.execute(
-                    script_content,
-                    (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id),
-                )
+                # FIXED: Usar consulta parametrizada segura en lugar de script_content
+                cursor.execute("""
+                    UPDATE vidrios_obra 
+                    SET metros_pedidos = metros_pedidos + ?
+                    WHERE vidrio_id = ? AND obra_id = ?
+                """, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Pedido {pedido_id} creado para obra {obra_id}")
@@ -511,11 +521,14 @@ class VidriosModel:
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
-            # Vidrios por tipo usando script SQL externo
-            script_content = self.sql_loader.load_script(
-                "vidrios/select_estadisticas_tipos"
-            )
-            cursor.execute(script_content)
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT tipo, COUNT(*) as cantidad
+                FROM vidrios 
+                WHERE activo = 1
+                GROUP BY tipo
+                ORDER BY cantidad DESC
+            """)
             estadisticas["vidrios_por_tipo"] = [
                 {"tipo": row[0], "cantidad": row[1]} for row in cursor.fetchall()
             ]
@@ -560,13 +573,16 @@ class VidriosModel:
 
             termino = f"%{termino_limpio}%"
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/buscar_vidrios")
-            cursor.execute(script_content,
-(termino,
-                termino,
-                termino,
-                termino))
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
+                       color, precio_m2, estado, ubicacion, observaciones,
+                       fecha_creacion, fecha_modificacion
+                FROM vidrios
+                WHERE (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ? OR proveedor LIKE ?)
+                    AND estado = 'ACTIVO'
+                ORDER BY codigo
+            """, (termino, termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -630,11 +646,14 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/insert_vidrio_nuevo")
-            cursor.execute(
-                script_content,
-                (
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                INSERT INTO vidrios 
+                (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
+                 color, tratamiento, dimensiones_disponibles, estado,
+                 ubicacion, observaciones, fecha_creacion, fecha_modificacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
+            """, (
                     datos_limpios["codigo"],
                     datos_limpios["descripcion"],
                     datos_limpios["tipo"],
@@ -645,9 +664,9 @@ class VidriosModel:
                     datos_limpios["tratamiento"],
                     datos_limpios["dimensiones_disponibles"],
                     datos_limpios["estado"],
-                    datos_limpios["observaciones"],
-                ),
-            )
+                    datos_limpios.get("ubicacion", ""),
+                    datos_limpios["observaciones"]
+                ))
 
             # Obtener ID del vidrio creado
             cursor.execute("SELECT SCOPE_IDENTITY()")
@@ -751,11 +770,15 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/update_vidrio")
-            cursor.execute(
-                script_content,
-                (
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                UPDATE vidrios 
+                SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, 
+                    proveedor = ?, precio_m2 = ?, color = ?, tratamiento = ?,
+                    dimensiones_disponibles = ?, estado = ?, observaciones = ?,
+                    fecha_modificacion = GETDATE()
+                WHERE id = ?
+            """, (
                     datos_limpios["codigo"],
                     datos_limpios["descripcion"],
                     datos_limpios["tipo"],
@@ -767,9 +790,8 @@ class VidriosModel:
                     datos_limpios["dimensiones_disponibles"],
                     datos_limpios["estado"],
                     datos_limpios["observaciones"],
-                    vidrio_id_limpio,
-                ),
-            )
+                    vidrio_id_limpio
+                ))
 
             self.db_connection.connection.commit()
             print(f"[VIDRIOS] Vidrio {vidrio_id_limpio} actualizado exitosamente")
@@ -805,9 +827,10 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            # Verificar si el vidrio existe usando script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/select_vidrio_info")
-            cursor.execute(script_content, (vidrio_id_limpio,))
+            # FIXED: Verificar si el vidrio existe usando consulta parametrizada segura
+            cursor.execute("""
+                SELECT id, codigo, descripcion FROM vidrios WHERE id = ?
+            """, (vidrio_id_limpio,))
 
             vidrio_info = cursor.fetchone()
             if not vidrio_info:
@@ -815,26 +838,28 @@ class VidriosModel:
 
             codigo, _ = vidrio_info
 
-            # Verificar si el vidrio está asignado a alguna obra usando script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/count_vidrio_obras")
-            cursor.execute(script_content, (vidrio_id_limpio,))
+            # FIXED: Verificar si el vidrio está asignado a alguna obra usando consulta parametrizada segura
+            cursor.execute("""
+                SELECT COUNT(*) FROM vidrios_obra WHERE vidrio_id = ?
+            """, (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:
                 print(
                     f"[ADVERTENCIA] El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo"
                 )
-                # Marcar como inactivo en lugar de eliminar usando script SQL externo
-                script_content = self.sql_loader.load_script(
-                    "vidrios/update_vidrio_inactivo"
-                )
-                cursor.execute(script_content, (vidrio_id_limpio,))
+                # FIXED: Marcar como inactivo en lugar de eliminar usando consulta parametrizada segura
+                cursor.execute("""
+                    UPDATE vidrios SET estado = 'INACTIVO', fecha_modificacion = GETDATE() 
+                    WHERE id = ?
+                """, (vidrio_id_limpio,))
                 mensaje = (
                     f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
                 )
             else:
-                # Eliminar completamente si no está asignado usando script SQL externo
-                script_content = self.sql_loader.load_script("vidrios/delete_vidrio")
-                cursor.execute(script_content, (vidrio_id_limpio,))
+                # FIXED: Eliminar completamente si no está asignado usando consulta parametrizada segura
+                cursor.execute("""
+                    DELETE FROM vidrios WHERE id = ?
+                """, (vidrio_id_limpio,))
                 mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
             self.db_connection.connection.commit()
@@ -870,9 +895,14 @@ class VidriosModel:
 
             cursor = self.db_connection.connection.cursor()
 
-            # Usar script SQL externo
-            script_content = self.sql_loader.load_script("vidrios/select_vidrio_por_id")
-            cursor.execute(script_content, (vidrio_id_limpio,))
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
+                       color, precio_m2, estado, ubicacion, observaciones,
+                       fecha_creacion, fecha_modificacion
+                FROM vidrios 
+                WHERE id = ?
+            """, (vidrio_id_limpio,))
             columnas = [column[0] for column in cursor.description]
             resultado = cursor.fetchone()
 

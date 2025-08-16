@@ -1,10 +1,7 @@
-"""
-Este script fue movido a `scripts/tools/fix_code_quality.py`.
-Usa esa ruta para ejecutar la versión completa.
-"""
-
-def notice():
-    print("Use scripts/tools/fix_code_quality.py para la funcionalidad completa.")
+#!/usr/bin/env python3
+"""Root stub: fix_code_quality.py -> legacy_root/original_root/final_move/fix_code_quality.py"""
+def main():
+	print('fix_code_quality movido a legacy_root/original_root/final_move/fix_code_quality.py')
 
 if __name__ == '__main__':
-    notice()
+	main()

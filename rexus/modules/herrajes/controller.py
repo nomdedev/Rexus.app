@@ -298,44 +298,70 @@ model=None,
     def exportar_herrajes(self, formato="excel"):
         """Exporta herrajes al formato especificado."""
         try:
+            print(f"[HERRAJES CONTROLLER] Iniciando exportación en formato {formato}")
+            
             if not self.model:
+                self.mostrar_error("Modelo no disponible para exportación")
                 return False
 
-            herrajes = self.model.obtener_todos_herrajes()
+            # Obtener todos los datos para exportar
+            datos, total = self.model.obtener_datos_paginados(0, 10000)  # Obtener todos los registros
 
-            if not herrajes:
-                from PyQt6.QtWidgets import QMessageBox
-                QMessageBox.information(self.view, "Exportar", "No hay herrajes para exportar")
+            if not datos:
+                self.mostrar_advertencia("No hay herrajes para exportar")
                 return False
 
-            # Seleccionar archivo de destino
-            from PyQt6.QtWidgets import QFileDialog
-            if formato.lower() == "excel":
-                filtro = "Excel files (*.xlsx)"
-                extension = ".xlsx"
-            else:
-                filtro = "CSV files (*.csv)"
-                extension = ".csv"
-
-            archivo, _ = QFileDialog.getSaveFileName(
-                self.view,
-                "Exportar herrajes",
-                f"herrajes{extension}",
-                filtro
-            )
-
-            if archivo:
-                # Aquí iría la lógica de exportación real
-                # Por ahora, simular éxito
-                from PyQt6.QtWidgets import QMessageBox
-                QMessageBox.information(self.view, "Exportar", f"Herrajes exportados a {archivo}")
-                print(f"[HERRAJES CONTROLLER] Herrajes exportados a {archivo}")
-                return True
-
-            return False
+            # Usar ExportManager para exportar
+            try:
+                from rexus.utils.export_manager import ExportManager
+                from datetime import datetime
+                
+                export_manager = ExportManager()
+                
+                # Preparar datos para exportación
+                datos_export = {
+                    'datos': datos,
+                    'columnas': ['Código', 'Nombre', 'Categoría', 'Proveedor', 'Precio', 'Stock', 'Stock Mínimo'],
+                    'titulo': 'Listado de Herrajes',
+                    'modulo': 'Herrajes',
+                    'usuario': self.usuario_actual,
+                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                }
+                
+                # Generar nombre de archivo
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"herrajes_export_{timestamp}.{formato}"
+                
+                # Exportar según formato
+                resultado = False
+                if formato.lower() == 'excel':
+                    resultado = export_manager.exportar_excel(datos_export, filename)
+                elif formato.lower() == 'csv':
+                    resultado = export_manager.exportar_csv(datos_export, filename)
+                elif formato.lower() == 'pdf':
+                    resultado = export_manager.exportar_pdf(datos_export, filename)
+                else:
+                    self.mostrar_error(f"Formato {formato} no soportado")
+                    return False
+                
+                if resultado:
+                    self.mostrar_exito(f"Herrajes exportados exitosamente a {filename}")
+                    print(f"[HERRAJES CONTROLLER] Herrajes exportados exitosamente a {filename}")
+                    return True
+                else:
+                    self.mostrar_error("Error durante la exportación")
+                    return False
+                    
+            except ImportError:
+                self.mostrar_error("ExportManager no disponible")
+                return False
+            except Exception as e:
+                self.mostrar_error(f"Error en exportación: {str(e)}")
+                return False
 
         except Exception as e:
             print(f"[ERROR HERRAJES CONTROLLER] Error exportando herrajes: {e}")
+            self.mostrar_error(f"Error exportando herrajes: {str(e)}")
             return False
 
     # Métodos de utilidad

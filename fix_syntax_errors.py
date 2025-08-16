@@ -1,10 +1,7 @@
-"""
-Este script fue movido a `scripts/tools/fix_syntax_errors.py`.
-Usa esa ruta para ejecutar la versión completa.
-"""
-
-def notice():
-    print("Use scripts/tools/fix_syntax_errors.py para la funcionalidad completa.")
+#!/usr/bin/env python3
+"""Root stub: fix_syntax_errors.py -> legacy_root/original_root/final_move/fix_syntax_errors.py"""
+def main():
+	print('fix_syntax_errors movido a legacy_root/original_root/final_move/fix_syntax_errors.py')
 
 if __name__ == '__main__':
-    notice()
+	main()

@@ -1,2 +1,11 @@
+"""
+Backup of fix_syntax_errors.py
+"""
+
+def notice():
+    print('Backup: scripts/tools/fix_syntax_errors.py')
+
+if __name__ == '__main__':
+    notice()
 # Backup of original fix_syntax_errors.py from project root
 # Original content preserved for reference.

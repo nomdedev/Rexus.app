@@ -12,9 +12,13 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import sys
+import logging
 from datetime import date
 from pathlib import Path
 from typing import Dict, Optional
+
+# Configurar logger específico para el módulo
+logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
@@ -88,7 +92,7 @@ class AdministracionModel(ContabilidadModel):
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                print(f"[ERROR SEGURIDAD ADMINISTRACION] {str(e)}")
+                logger.error(f"Error de seguridad SQL en validación de tabla: {str(e)}")
                 # Fallback a verificación básica
 
         # Verificación básica si la utilidad no está disponible
@@ -166,7 +170,7 @@ class AdministracionModel(ContabilidadModel):
             return resultado
 
         except Exception as e:
-            print(f"[ERROR ADMINISTRACION] Error validando departamento duplicado: {e}")
+            logger.error(f"Error validando departamento duplicado: {e}")
             return resultado
 
     def _validate_limit(self, limite):
@@ -363,10 +367,10 @@ class AdministracionModel(ContabilidadModel):
             """)
 
             self.db_connection.commit()
-            print("[CHECK] Tablas de contabilidad creadas exitosamente")
+            logger.info("Tablas de contabilidad creadas exitosamente")
 
         except Exception as e:
-            print(f"[ERROR] Error creando tablas de contabilidad: {e}")
+            logger.error(f"Error creando tablas de contabilidad: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
