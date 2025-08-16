@@ -117,10 +117,42 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
         self.input_busqueda.returnPressed.connect(self.buscar)
         layout.addWidget(self.input_busqueda)
 
+        # === FILTROS AVANZADOS ===
+        
+        # Filtro por Categoría
+        from rexus.ui.components.base_components import RexusLabel
+        layout.addWidget(RexusLabel("Categoría:"))
+        self.filtro_categoria = RexusComboBox()
+        self.filtro_categoria.addItems([
+            "Todas", "Sistema", "Apariencia", "Base de Datos", 
+            "Seguridad", "Notificaciones", "Integración", "Rendimiento"
+        ])
+        self.filtro_categoria.currentTextChanged.connect(self.aplicar_filtros)
+        layout.addWidget(self.filtro_categoria)
+
+        # Filtro por Tipo
+        layout.addWidget(RexusLabel("Tipo:"))
+        self.filtro_tipo = RexusComboBox()
+        self.filtro_tipo.addItems(["Todos", "Texto", "Número", "Booleano", "JSON", "Lista"])
+        self.filtro_tipo.currentTextChanged.connect(self.aplicar_filtros)
+        layout.addWidget(self.filtro_tipo)
+
+        # Filtro por Estado
+        layout.addWidget(RexusLabel("Estado:"))
+        self.filtro_estado = RexusComboBox()
+        self.filtro_estado.addItems(["Todos", "Activo", "Inactivo", "Por Defecto", "Personalizado"])
+        self.filtro_estado.currentTextChanged.connect(self.aplicar_filtros)
+        layout.addWidget(self.filtro_estado)
+
         # Botón buscar estandarizado
         self.btn_buscar = StandardComponents.create_secondary_button("[SEARCH] Buscar")
         self.btn_buscar.clicked.connect(self.buscar)
         layout.addWidget(self.btn_buscar)
+
+        # Botón limpiar filtros
+        self.btn_limpiar_filtros = StandardComponents.create_secondary_button("🧹 Limpiar")
+        self.btn_limpiar_filtros.clicked.connect(self.limpiar_filtros)
+        layout.addWidget(self.btn_limpiar_filtros)
 
         # Botón actualizar estandarizado
         self.btn_actualizar = StandardComponents.create_secondary_button("🔄 Actualizar")
@@ -367,6 +399,71 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
         if self.controller:
             filtros = {'busqueda': self.input_busqueda.text()}
             self.controller.buscar(filtros)
+
+    def aplicar_filtros(self):
+        """Aplica los filtros seleccionados."""
+        if not self.controller:
+            return
+
+        try:
+            # Obtener valores de los filtros
+            filtros = self.obtener_filtros_aplicados()
+            
+            # Aplicar filtros a través del controlador
+            configuraciones = self.controller.filtrar_configuraciones(filtros)
+            if configuraciones is not None:
+                self.cargar_datos_en_tabla(configuraciones)
+            else:
+                from rexus.utils.message_system import show_error
+                show_error(self, "Error", "Error al aplicar filtros")
+                
+        except Exception as e:
+            from rexus.utils.message_system import show_error
+            show_error(self, "Error", f"Error aplicando filtros: {str(e)}")
+
+    def obtener_filtros_aplicados(self):
+        """Obtiene los filtros actualmente aplicados."""
+        filtros = {}
+        
+        # Filtro de búsqueda
+        busqueda = self.input_busqueda.text().strip()
+        if busqueda:
+            filtros['busqueda'] = busqueda
+            
+        # Filtro por categoría
+        if hasattr(self, 'filtro_categoria') and self.filtro_categoria.currentText() != "Todas":
+            filtros['categoria'] = self.filtro_categoria.currentText()
+            
+        # Filtro por tipo
+        if hasattr(self, 'filtro_tipo') and self.filtro_tipo.currentText() != "Todos":
+            filtros['tipo'] = self.filtro_tipo.currentText()
+            
+        # Filtro por estado
+        if hasattr(self, 'filtro_estado') and self.filtro_estado.currentText() != "Todos":
+            filtros['estado'] = self.filtro_estado.currentText()
+            
+        return filtros
+
+    def limpiar_filtros(self):
+        """Limpia todos los filtros aplicados."""
+        try:
+            # Resetear combos de filtros
+            if hasattr(self, 'filtro_categoria'):
+                self.filtro_categoria.setCurrentText("Todas")
+            if hasattr(self, 'filtro_tipo'):
+                self.filtro_tipo.setCurrentText("Todos")
+            if hasattr(self, 'filtro_estado'):
+                self.filtro_estado.setCurrentText("Todos")
+            
+            # Limpiar campo de búsqueda
+            self.input_busqueda.clear()
+            
+            # Recargar todos los datos
+            self.actualizar_datos()
+            
+        except Exception as e:
+            from rexus.utils.message_system import show_error
+            show_error(self, "Error", f"Error limpiando filtros: {str(e)}")
 
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""

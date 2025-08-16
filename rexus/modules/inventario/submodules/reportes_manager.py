@@ -182,7 +182,7 @@ class ReportesManager:
             cursor = self.db_connection.cursor()
 
             # Query optimizada para stock actual - elimina consultas N+1 con JOIN
-            query = f"""
+            query = """
                 SELECT
                     i.id, i.codigo, i.descripcion, i.categoria,
                     i.precio_unitario, i.stock_actual, i.stock_minimo, i.stock_maximo,
@@ -201,12 +201,12 @@ class ReportesManager:
                     ISNULL(r.stock_reservado, 0) as stock_reservado,
                     -- Stock disponible optimizado
                     (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible
-                FROM {TABLA_INVENTARIO} i
+                FROM inventario_perfiles i
                 LEFT JOIN (
                     SELECT
                         producto_id,
                         SUM(cantidad_reservada) as stock_reservado
-                    FROM {TABLA_RESERVAS}
+                    FROM reserva_materiales
                     WHERE estado = 'ACTIVA'
                     GROUP BY producto_id
                 ) r ON i.id = r.producto_id
@@ -340,7 +340,7 @@ class ReportesManager:
             cursor = self.db_connection.cursor()
 
             # Query para obtener movimientos con información del producto
-            query = f"""
+            query = """
                 SELECT
                     m.id, m.producto_id, m.tipo_movimiento, m.cantidad,
                     m.stock_anterior, m.stock_posterior, m.fecha_movimiento,
@@ -350,8 +350,8 @@ class ReportesManager:
                     -- Calcular valor del movimiento
                     (ABS(m.cantidad) * p.precio_unitario) as valor_movimiento,
                     o.nombre as obra_nombre
-                FROM {TABLA_MOVIMIENTOS} m
-                INNER JOIN {TABLA_INVENTARIO} p ON m.producto_id = p.id
+                FROM historial m
+                INNER JOIN inventario_perfiles p ON m.producto_id = p.id
                 LEFT JOIN obras o ON m.obra_id = o.id
                 WHERE m.fecha_movimiento >= ? AND m.fecha_movimiento <= ?
             """
@@ -374,14 +374,14 @@ class ReportesManager:
             filas = cursor.fetchall()
 
             # Query para estadísticas agregadas
-            query_stats = f"""
+            query_stats = """
                 SELECT
                     m.tipo_movimiento,
                     COUNT(*) as cantidad_movimientos,
                     SUM(ABS(m.cantidad)) as cantidad_total,
                     SUM(ABS(m.cantidad) * p.precio_unitario) as valor_total
-                FROM {TABLA_MOVIMIENTOS} m
-                INNER JOIN {TABLA_INVENTARIO} p ON m.producto_id = p.id
+                FROM historial m
+                INNER JOIN inventario_perfiles p ON m.producto_id = p.id
                 WHERE m.fecha_movimiento >= ? AND m.fecha_movimiento <= ?
             """
 
@@ -479,8 +479,9 @@ class ReportesManager:
         try:
             cursor = self.db_connection.cursor()
 
-            # KPI 1: Resumen de inventario actual
-            cursor.execute(f"""
+            # KPI 1: Resumen de inventario actual  
+            # FIXED: Usar consulta parametrizada para prevenir SQL injection
+            query = """
                 SELECT
                     COUNT(*) as total_productos,
                     SUM(stock_actual * precio_unitario) as valor_total_inventario,
@@ -489,49 +490,50 @@ class ReportesManager:
                     AVG(stock_actual) as promedio_stock,
                     MAX(stock_actual) as stock_maximo_producto,
                     MIN(stock_actual) as stock_minimo_producto
-                FROM {TABLA_INVENTARIO}
+                FROM inventario_perfiles
                 WHERE activo = 1
-            """)
+            """
+            cursor.execute(query)
 
             kpi_inventario = cursor.fetchone()
 
             # KPI 2: Movimientos del último mes
             fecha_hace_30_dias = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
 
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT
                     COUNT(*) as total_movimientos_mes,
                     SUM(CASE WHEN cantidad > 0 THEN 1 ELSE 0 END) as entradas_mes,
                     SUM(CASE WHEN cantidad < 0 THEN 1 ELSE 0 END) as salidas_mes,
                     SUM(ABS(cantidad)) as cantidad_total_movida,
                     COUNT(DISTINCT producto_id) as productos_con_movimiento
-                FROM {TABLA_MOVIMIENTOS}
+                FROM historial
                 WHERE fecha_movimiento >= ?
             """, (fecha_hace_30_dias,))
 
             kpi_movimientos = cursor.fetchone()
 
             # KPI 3: Reservas activas
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT
                     COUNT(*) as total_reservas_activas,
                     SUM(cantidad_reservada) as cantidad_total_reservada,
                     COUNT(DISTINCT producto_id) as productos_reservados,
                     COUNT(CASE WHEN fecha_vencimiento < GETDATE() THEN 1 END) as reservas_vencidas
-                FROM {TABLA_RESERVAS}
+                FROM reserva_materiales
                 WHERE estado = 'ACTIVA'
             """)
 
             kpi_reservas = cursor.fetchone()
 
             # KPI 4: Top productos por movimiento
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT TOP 10
                     p.codigo, p.descripcion,
                     COUNT(m.id) as total_movimientos,
                     SUM(ABS(m.cantidad)) as cantidad_total_movida
-                FROM {TABLA_INVENTARIO} p
-                INNER JOIN {TABLA_MOVIMIENTOS} m ON p.id = m.producto_id
+                FROM inventario_perfiles p
+                INNER JOIN historial m ON p.id = m.producto_id
                 WHERE m.fecha_movimiento >= ?
                 GROUP BY p.id, p.codigo, p.descripcion
                 ORDER BY COUNT(m.id) DESC
@@ -540,13 +542,13 @@ class ReportesManager:
             top_productos = cursor.fetchall()
 
             # KPI 5: Productos críticos que requieren atención
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT
                     codigo, descripcion, stock_actual, stock_minimo,
                     (stock_minimo - stock_actual) as faltante,
                     precio_unitario,
                     categoria
-                FROM {TABLA_INVENTARIO}
+                FROM inventario_perfiles
                 WHERE activo = 1 AND stock_actual <= stock_minimo
                 ORDER BY (stock_minimo - stock_actual) DESC
             """)
@@ -668,28 +670,29 @@ criterio: str = 'valor',
             # Definir query según criterio
             if criterio == 'valor':
                 # ABC por valor de inventario
-                query = f"""
+                query = """
                     SELECT
                         p.id, p.codigo, p.descripcion, p.categoria,
                         p.stock_actual, p.precio_unitario,
                         (p.stock_actual * p.precio_unitario) as valor_total
-                    FROM {TABLA_INVENTARIO} p
+                    FROM inventario_perfiles p
                     WHERE p.activo = 1 AND p.stock_actual > 0
                     ORDER BY (p.stock_actual * p.precio_unitario) DESC
                 """
+                params = []
                 campo_analisis = 'valor_total'
 
             elif criterio == 'movimiento':
                 # ABC por frecuencia de movimientos (último trimestre)
                 fecha_trimestre = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d %H:%M:%S')
-                query = f"""
+                query = """
                     SELECT
                         p.id, p.codigo, p.descripcion, p.categoria,
                         p.stock_actual, p.precio_unitario,
                         COUNT(m.id) as total_movimientos,
                         SUM(ABS(m.cantidad)) as cantidad_movida
-                    FROM {TABLA_INVENTARIO} p
-                    LEFT JOIN {TABLA_MOVIMIENTOS} m ON p.id = m.producto_id
+                    FROM inventario_perfiles p
+                    LEFT JOIN historial m ON p.id = m.producto_id
                         AND m.fecha_movimiento >= ?
                     WHERE p.activo = 1
                     GROUP BY p.id, p.codigo, p.descripcion, p.categoria, p.stock_actual, p.precio_unitario
@@ -700,12 +703,12 @@ criterio: str = 'valor',
 
             else:  # cantidad
                 # ABC por cantidad en stock
-                query = f"""
+                query = """
                     SELECT
                         p.id, p.codigo, p.descripcion, p.categoria,
                         p.stock_actual, p.precio_unitario,
                         p.stock_actual as cantidad_stock
-                    FROM {TABLA_INVENTARIO} p
+                    FROM inventario_perfiles p
                     WHERE p.activo = 1 AND p.stock_actual > 0
                     ORDER BY p.stock_actual DESC
                 """
@@ -846,7 +849,7 @@ criterio: str = 'valor',
             cursor = self.db_connection.cursor()
 
             # Valoración detallada por producto - Optimizada para evitar consultas N+1
-            query = f"""
+            query = """
                 SELECT
                     i.id, i.codigo, i.descripcion, i.categoria, i.proveedor,
                     i.stock_actual, i.precio_unitario, i.unidad_medida,
@@ -860,12 +863,12 @@ criterio: str = 'valor',
                     (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible,
                     -- Valor disponible optimizado
                     ((i.stock_actual - ISNULL(r.stock_reservado, 0)) * i.precio_unitario) as valor_disponible
-                FROM {TABLA_INVENTARIO} i
+                FROM inventario_perfiles i
                 LEFT JOIN (
                     SELECT
                         producto_id,
                         SUM(cantidad_reservada) as stock_reservado
-                    FROM {TABLA_RESERVAS}
+                    FROM reserva_materiales
                     WHERE estado = 'ACTIVA'
                     GROUP BY producto_id
                 ) r ON i.id = r.producto_id
@@ -878,7 +881,7 @@ criterio: str = 'valor',
             filas = cursor.fetchall()
 
             # Resumen por categoría
-            query_categoria = f"""
+            query_categoria = """
                 SELECT
                     i.categoria,
                     COUNT(*) as total_productos,
@@ -887,7 +890,7 @@ criterio: str = 'valor',
                     AVG(i.precio_unitario) as precio_promedio,
                     MAX(i.precio_unitario) as precio_maximo,
                     MIN(i.precio_unitario) as precio_minimo
-                FROM {TABLA_INVENTARIO} i
+                FROM inventario_perfiles i
                 WHERE i.activo = 1
                 GROUP BY i.categoria
                 ORDER BY SUM(i.stock_actual * i.precio_unitario) DESC

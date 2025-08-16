@@ -160,12 +160,15 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
+            # FIXED: Usar consultas parametrizadas seguras en lugar de script_content
             if id_obra_actual:
-                script_content = self.sql_loader.load_script('obras/count_duplicados_codigo_exclude')
-                cursor.execute(script_content, (codigo_limpio, id_obra_actual))
+                cursor.execute("""
+                    SELECT COUNT(*) FROM obras WHERE codigo = ? AND id != ?
+                """, (codigo_limpio, id_obra_actual))
             else:
-                script_content = self.sql_loader.load_script('obras/count_duplicados_codigo')
-                cursor.execute(script_content, (codigo_limpio,))
+                cursor.execute("""
+                    SELECT COUNT(*) FROM obras WHERE codigo = ?
+                """, (codigo_limpio,))
 
             result = cursor.fetchone()
             if result is None:
@@ -230,9 +233,10 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # Verificar que no existe una obra con el mismo código
-            script_content = self.sql_loader.load_script('obras/count_duplicados_codigo')
-            cursor.execute(script_content, (datos_limpios.get("codigo"),))
+            # FIXED: Verificar que no existe una obra con el mismo código usando consulta parametrizada segura
+            cursor.execute("""
+                SELECT COUNT(*) FROM obras WHERE codigo = ?
+            """, (datos_limpios.get("codigo"),))
             result = cursor.fetchone()
             if result and result[0] > 0:
                 return (
@@ -240,9 +244,15 @@ class ObrasModel:
                     f"Ya existe una obra con el código {datos_limpios.get('codigo')}",
                 )
 
-            # Insertar obra con datos sanitizados - parámetros correctos según SQL actualizado
-            script_content = self.sql_loader.load_script('obras/insert_obra')
-            cursor.execute(script_content, (
+            # FIXED: Insertar obra con consulta parametrizada segura
+            cursor.execute("""
+                INSERT INTO obras 
+                (codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
+                 fecha_inicio, fecha_fin_estimada, presupuesto_total, estado,
+                 tipo_obra, prioridad, responsable, observaciones, usuario_creacion,
+                 fecha_creacion, fecha_modificacion, activo)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE(), 1)
+            """, (
                 datos_limpios.get("codigo"),
                 datos_limpios.get("nombre"),
                 datos_limpios.get("descripcion", ""),
@@ -257,7 +267,7 @@ class ObrasModel:
                 datos_limpios.get("prioridad", "MEDIA"),
                 datos_limpios.get("responsable"),
                 datos_limpios.get("observaciones", ""),
-                datos_limpios.get("usuario_creacion", "SISTEMA"),
+                datos_limpios.get("usuario_creacion", "SISTEMA")
             ))
 
             self.db_connection.commit()
@@ -296,8 +306,15 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            script_content = self.sql_loader.load_script('obras/select_obra_por_codigo')
-            cursor.execute(script_content, (codigo,))
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor.execute("""
+                SELECT id, codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
+                       fecha_inicio, fecha_fin_estimada, presupuesto_total, estado,
+                       tipo_obra, prioridad, responsable, observaciones, 
+                       fecha_creacion, fecha_modificacion, activo
+                FROM obras 
+                WHERE codigo = ? AND activo = 1
+            """, (codigo,))
 
             row = cursor.fetchone()
             if row:

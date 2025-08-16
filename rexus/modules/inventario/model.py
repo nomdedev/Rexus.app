@@ -372,43 +372,42 @@ datos_reserva: Dict[str,
             return [], 0
 
         try:
-            # Usar script SQL externo si está disponible
-            if SQL_SECURITY_AVAILABLE and sql_script_loader:
-                script_content = sql_script_loader.load_script(
-                    "inventario/select_all_productos"
-                )
-                if script_content:
-                    cursor = self.db_connection.cursor()
-                    cursor.execute(script_content)
-                    productos = []
+            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT 
+                    id, codigo, descripcion, tipo, proveedor, stock, precio, 
+                    stock_minimo, stock_maximo, ubicacion, observaciones, 
+                    fecha_creacion
+                FROM inventario_perfiles 
+                WHERE activo = 1
+                ORDER BY codigo
+            """)
+            productos = []
 
-                    for row in cursor.fetchall():
-                        if row and len(row) > 11:
-                            productos.append(
-                                {
-                                    "id": row[0],
-                                    "codigo": row[1],
-                                    "nombre": row[2] if len(row) > 2 else "",
-                                    "categoria": row[3] if len(row) > 3 else "",
-                                    "tipo": row[4] if len(row) > 4 else "",
-                                    "marca": row[5] if len(row) > 5 else "",
-                                    "cantidad_disponible": row[6]
-                                    if len(row) > 6
-                                    else 0,
-                                    "precio_unitario": row[7] if len(row) > 7 else 0.0,
-                                    "proveedor": row[8] if len(row) > 8 else "",
-                                    "ubicacion_almacen": row[9] if len(row) > 9 else "",
-                                    "fecha_creacion": row[10]
-                                    if len(row) > 10
-                                    else None,
-                                    "activo": bool(row[11]) if len(row) > 11 else True,
-                                }
-                            )
+            for row in cursor.fetchall():
+                if row and len(row) > 11:
+                    productos.append(
+                        {
+                            "id": row[0],
+                            "codigo": row[1],
+                            "nombre": row[2] if len(row) > 2 else "",
+                            "categoria": row[3] if len(row) > 3 else "",
+                            "tipo": row[4] if len(row) > 4 else "",
+                            "marca": row[5] if len(row) > 5 else "",
+                            "cantidad_disponible": row[6] if len(row) > 6 else 0,
+                            "precio_unitario": row[7] if len(row) > 7 else 0.0,
+                            "proveedor": row[8] if len(row) > 8 else "",
+                            "ubicacion_almacen": row[9] if len(row) > 9 else "",
+                            "fecha_creacion": row[10] if len(row) > 10 else None,
+                            "activo": bool(row[11]) if len(row) > 11 else True,
+                        }
+                    )
 
-                    # Aplicar paginación
-                    total_items = len(productos)
-                    productos_paginados = productos[offset : offset + limit]
-                    return productos_paginados, total_items
+            # Aplicar paginación
+            total_items = len(productos)
+            productos_paginados = productos[offset : offset + limit]
+            return productos_paginados, total_items
 
             # [LOCK] Usar consulta SQL externa segura
             params = {
@@ -2758,73 +2757,24 @@ descripcion,
         try:
             cursor = self.db_connection.cursor()
 
-            # Usar script SQL externo seguro
-            if self.sql_loader_available:
-                try:
-                    script_content = self.script_loader.load_script(
-                        "inventario/select_productos_disponibles_reserva"
-                    )
-                    if script_content:
-                        cursor.execute(script_content)
-                    else:
-                        logger.warning("No se pudo cargar script, usando consulta de respaldo")
-                        # Consulta de respaldo parameterizada
-                        cursor.execute("""
-                            SELECT
-                                i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
-                                i.precio as precio_unitario, 'unidad' as unidad_medida,
-                                COALESCE(r.stock_reservado, 0) as stock_reservado,
-                                (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                            FROM inventario_perfiles i
-                            LEFT JOIN (
-                                SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
-                                FROM reserva_materiales
-                                WHERE estado = 'ACTIVA'
-                                GROUP BY producto_id
-                            ) r ON i.id = r.producto_id
-                            WHERE i.activo = 1
-                                AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
-                            ORDER BY i.codigo
-                        """)
-                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    logger.error(f"Error con script loader: {e}")
-                    # Consulta de respaldo parameterizada
-                    cursor.execute("""
-                        SELECT
-                            i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
-                            i.precio as precio_unitario, 'unidad' as unidad_medida,
-                            COALESCE(r.stock_reservado, 0) as stock_reservado,
-                            (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                        FROM inventario_perfiles i
-                        LEFT JOIN (
-                            SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
-                            FROM reserva_materiales
-                            WHERE estado = 'ACTIVA'
-                            GROUP BY producto_id
-                        ) r ON i.id = r.producto_id
-                        WHERE i.activo = 1
-                            AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
-                        ORDER BY i.codigo
-                    """)
-            else:
-                # Consulta de respaldo parameterizada cuando no hay script loader
-                cursor.execute("""
-                    SELECT
-                        i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
-                        i.precio as precio_unitario, 'unidad' as unidad_medida,
-                        COALESCE(r.stock_reservado, 0) as stock_reservado,
-                        (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
-                    FROM inventario_perfiles i
-                    LEFT JOIN (
-                        SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
-                        FROM reserva_materiales
-                        WHERE estado = 'ACTIVA'
-                        GROUP BY producto_id
-                    ) r ON i.id = r.producto_id
-                    WHERE i.activo = 1
-                        AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
-                    ORDER BY i.codigo
-                """)
+            # FIXED: Usar consulta parametrizada segura directamente
+            cursor.execute("""
+                SELECT
+                    i.id, i.codigo, i.descripcion, i.tipo as categoria, i.stock as stock_actual,
+                    i.precio as precio_unitario, 'unidad' as unidad_medida,
+                    COALESCE(r.stock_reservado, 0) as stock_reservado,
+                    (i.stock - COALESCE(r.stock_reservado, 0)) as stock_disponible
+                FROM inventario_perfiles i
+                LEFT JOIN (
+                    SELECT producto_id, SUM(cantidad_reservada) as stock_reservado
+                    FROM reserva_materiales
+                    WHERE estado = 'ACTIVA'
+                    GROUP BY producto_id
+                ) r ON i.id = r.producto_id
+                WHERE i.activo = 1
+                    AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
+                ORDER BY i.codigo
+            """)
 
             # Procesar resultados
             productos = []

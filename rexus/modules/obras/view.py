@@ -133,6 +133,10 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         # Asignar referencia para exportación
         self.tabla_principal = self.tabla_obras
 
+        # Controles de paginación
+        paginacion_panel = self.crear_controles_paginacion()
+        layout.addWidget(paginacion_panel)
+
         # Panel de acciones
         acciones_panel = self.crear_panel_acciones_obras()
         layout.addWidget(acciones_panel)
@@ -1540,6 +1544,192 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                         elif value == "En Revisión":
                             item.setBackground(QColor("#f3e8ff"))
                     self.lista_presupuestos.setItem(row, col, item)
+
+    # === MÉTODOS DE PAGINACIÓN ===
+
+    def crear_controles_paginacion(self) -> QFrame:
+        """Crea los controles de paginación."""
+        from PyQt6.QtWidgets import QFrame, QSpinBox
+        
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                max-height: 40px;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(12, 4, 12, 4)
+        layout.setSpacing(8)
+
+        # Información de registros
+        self.info_label = QLabel("Mostrando 1-50 de 0 obras")
+        self.info_label.setStyleSheet("QLabel { color: #6b7280; font-size: 11px; }")
+        layout.addWidget(self.info_label)
+
+        layout.addStretch()
+
+        # Botones de navegación
+        self.btn_primera = QPushButton("⏮")
+        self.btn_primera.setMaximumWidth(30)
+        self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
+        layout.addWidget(self.btn_primera)
+
+        self.btn_anterior = QPushButton("⏪")
+        self.btn_anterior.setMaximumWidth(30)
+        self.btn_anterior.clicked.connect(self.pagina_anterior)
+        layout.addWidget(self.btn_anterior)
+
+        # Control de página actual
+        self.pagina_actual_spin = QSpinBox()
+        self.pagina_actual_spin.setMinimum(1)
+        self.pagina_actual_spin.setMaximum(1)
+        self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
+        self.pagina_actual_spin.setMaximumWidth(60)
+        self.pagina_actual_spin.setStyleSheet("""
+            QSpinBox {
+                padding: 4px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+        """)
+        layout.addWidget(QLabel("Pág."))
+        layout.addWidget(self.pagina_actual_spin)
+
+        self.total_paginas_label = QLabel("de 1")
+        self.total_paginas_label.setStyleSheet("QLabel { color: #6b7280; font-size: 11px; }")
+        layout.addWidget(self.total_paginas_label)
+
+        self.btn_siguiente = QPushButton("⏩")
+        self.btn_siguiente.setMaximumWidth(30)
+        self.btn_siguiente.clicked.connect(self.pagina_siguiente)
+        layout.addWidget(self.btn_siguiente)
+
+        self.btn_ultima = QPushButton("⏭")
+        self.btn_ultima.setMaximumWidth(30)
+        self.btn_ultima.clicked.connect(self.ultima_pagina)
+        layout.addWidget(self.btn_ultima)
+
+        # Selector de registros por página
+        layout.addWidget(QLabel("Items:"))
+        self.registros_por_pagina_combo = QComboBox()
+        self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
+        self.registros_por_pagina_combo.setCurrentText("50")
+        self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
+        self.registros_por_pagina_combo.setMaximumWidth(70)
+        self.registros_por_pagina_combo.setStyleSheet("""
+            QComboBox {
+                padding: 4px;
+                border: 1px solid #d1d5db;
+                border-radius: 4px;
+                font-size: 11px;
+            }
+        """)
+        layout.addWidget(self.registros_por_pagina_combo)
+
+        return panel
+
+    def actualizar_controles_paginacion(self, pagina_actual, total_paginas, total_registros, registros_mostrados):
+        """Actualiza los controles de paginación."""
+        if hasattr(self, 'info_label'):
+            inicio = ((pagina_actual - 1) * int(self.registros_por_pagina_combo.currentText())) + 1
+            fin = min(inicio + registros_mostrados - 1, total_registros)
+            self.info_label.setText(f"Mostrando {inicio}-{fin} de {total_registros} obras")
+
+        if hasattr(self, 'pagina_actual_spin'):
+            self.pagina_actual_spin.blockSignals(True)
+            self.pagina_actual_spin.setValue(pagina_actual)
+            self.pagina_actual_spin.setMaximum(max(1, total_paginas))
+            self.pagina_actual_spin.blockSignals(False)
+
+        if hasattr(self, 'total_paginas_label'):
+            self.total_paginas_label.setText(f"de {total_paginas}")
+
+        # Habilitar/deshabilitar botones
+        if hasattr(self, 'btn_primera'):
+            self.btn_primera.setEnabled(pagina_actual > 1)
+            self.btn_anterior.setEnabled(pagina_actual > 1)
+            self.btn_siguiente.setEnabled(pagina_actual < total_paginas)
+            self.btn_ultima.setEnabled(pagina_actual < total_paginas)
+
+    def ir_a_pagina(self, pagina):
+        """Va a una página específica."""
+        if hasattr(self.controller, 'cargar_pagina'):
+            self.controller.cargar_pagina(pagina)
+
+    def pagina_anterior(self):
+        """Va a la página anterior."""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            if pagina_actual > 1:
+                self.ir_a_pagina(pagina_actual - 1)
+
+    def pagina_siguiente(self):
+        """Va a la página siguiente."""
+        if hasattr(self, 'pagina_actual_spin'):
+            pagina_actual = self.pagina_actual_spin.value()
+            total_paginas = self.pagina_actual_spin.maximum()
+            if pagina_actual < total_paginas:
+                self.ir_a_pagina(pagina_actual + 1)
+
+    def ultima_pagina(self):
+        """Va a la última página."""
+        if hasattr(self, 'pagina_actual_spin'):
+            total_paginas = self.pagina_actual_spin.maximum()
+            self.ir_a_pagina(total_paginas)
+
+    def cambiar_pagina(self, pagina):
+        """Cambia a la página seleccionada."""
+        self.ir_a_pagina(pagina)
+
+    def cambiar_registros_por_pagina(self, registros):
+        """Cambia la cantidad de registros por página."""
+        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
+            self.controller.cambiar_registros_por_pagina(int(registros))
+
+    def cargar_datos_en_tabla(self, datos):
+        """Carga datos en la tabla de obras para paginación."""
+        if not datos:
+            self.tabla_obras.setRowCount(0)
+            return
+
+        self.tabla_obras.setRowCount(len(datos))
+        
+        for row, obra in enumerate(datos):
+            # Crear items para cada columna según la estructura de obras
+            items = [
+                str(obra.get('id', '')),
+                str(obra.get('codigo', '')),
+                str(obra.get('nombre', '')),
+                str(obra.get('cliente', '')),
+                str(obra.get('estado', '')),
+                str(obra.get('tipo', '')),
+                str(obra.get('fecha_inicio', '')),
+                str(obra.get('fecha_fin', '')),
+                f"{obra.get('progreso', 0)}%",
+                f"${obra.get('presupuesto', 0):,.2f}"
+            ]
+            
+            for col, item_text in enumerate(items):
+                if col < len(items) - 1:  # No agregar botón en la última columna por ahora
+                    item = QTableWidgetItem(item_text)
+                    
+                    # Colorear según estado (columna 4)
+                    if col == 4:
+                        if item_text == "En Curso":
+                            item.setBackground(QColor("#dcfce7"))
+                        elif item_text == "Pausada":
+                            item.setBackground(QColor("#fef3c7"))
+                        elif item_text == "Finalizada":
+                            item.setBackground(QColor("#e0e7ff"))
+                        elif item_text == "Planificación":
+                            item.setBackground(QColor("#f3e8ff"))
+                    
+                    self.tabla_obras.setItem(row, col, item)
 
 
 class DialogoObraModerna(QDialog):

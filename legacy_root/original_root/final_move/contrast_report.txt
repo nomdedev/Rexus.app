@@ -1,0 +1,6 @@
+BACKUP FINAL: contrast_report.txt
+
+Contenido original del reporte movido desde la raíz.
+
+[RESUMEN]
+- Issues de contraste y padding, ver archivo original en backups si necesita detalles.

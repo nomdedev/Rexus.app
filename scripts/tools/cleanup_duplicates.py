@@ -1,3 +1,12 @@
+"""
+Tool: cleanup_duplicates (moved from project root)
+"""
+
+def notice():
+    print('Versión operativa: scripts/tools/cleanup_duplicates.py')
+
+if __name__ == '__main__':
+    notice()
 #!/usr/bin/env python3
 """
 Script de limpieza de archivos duplicados - Rexus.app

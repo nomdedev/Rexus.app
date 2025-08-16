@@ -1,2 +1,11 @@
+"""
+Backup of fix_code_quality.py
+"""
+
+def notice():
+    print('Backup: scripts/tools/fix_code_quality.py')
+
+if __name__ == '__main__':
+    notice()
 # Backup of original fix_code_quality.py from project root
 # Original content preserved for reference.

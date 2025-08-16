@@ -55,6 +55,10 @@ class VidriosController(QObject):
             self.view.asignar_obra_requested.connect(self.asignar_vidrio_obra)
             self.view.crear_pedido_requested.connect(self.crear_pedido)
             self.view.filtrar_requested.connect(self.filtrar_vidrios)
+            
+            # Conectar señal de exportación
+            if hasattr(self.view, 'solicitud_exportar'):
+                self.view.solicitud_exportar.connect(self.exportar_vidrios)
 
     def _validar_datos_vidrio(self, datos_vidrio):
         """
@@ -455,3 +459,73 @@ obra_id,
         else:
             # Fallback si no hay vista
             logger.error(f"[NO VIEW] Error: {mensaje}")
+
+    @auth_required
+    def exportar_vidrios(self, formato="excel"):
+        """Exporta vidrios al formato especificado."""
+        try:
+            logger.info(f"Iniciando exportación de vidrios en formato {formato}")
+            
+            if not self.model:
+                self.mostrar_error("Modelo no disponible para exportación")
+                return False
+
+            # Obtener todos los datos para exportar
+            datos, total = self.model.obtener_datos_paginados(0, 10000)  # Obtener todos los registros
+            
+            if not datos:
+                show_warning(self.view, "Exportar", "No hay vidrios para exportar")
+                return False
+
+            # Usar ExportManager para exportar
+            try:
+                from rexus.utils.export_manager import ExportManager
+                from datetime import datetime
+                
+                export_manager = ExportManager()
+                
+                # Preparar datos para exportación
+                datos_export = {
+                    'datos': datos,
+                    'columnas': ['Código', 'Descripción', 'Tipo', 'Espesor', 'Precio', 'Stock'],
+                    'titulo': 'Listado de Vidrios',
+                    'modulo': 'Vidrios',
+                    'usuario': self.usuario_actual,
+                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                }
+                
+                # Generar nombre de archivo
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"vidrios_export_{timestamp}.{formato}"
+                
+                # Exportar según formato
+                resultado = False
+                if formato.lower() == 'excel':
+                    resultado = export_manager.exportar_excel(datos_export, filename)
+                elif formato.lower() == 'csv':
+                    resultado = export_manager.exportar_csv(datos_export, filename)
+                elif formato.lower() == 'pdf':
+                    resultado = export_manager.exportar_pdf(datos_export, filename)
+                else:
+                    self.mostrar_error(f"Formato {formato} no soportado")
+                    return False
+                
+                if resultado:
+                    show_success(self.view, "Exportar", f"Vidrios exportados exitosamente a {filename}")
+                    logger.info(f"Vidrios exportados exitosamente a {filename}")
+                    return True
+                else:
+                    self.mostrar_error("Error durante la exportación")
+                    return False
+                    
+            except ImportError:
+                self.mostrar_error("ExportManager no disponible")
+                return False
+            except Exception as e:
+                self.mostrar_error(f"Error en exportación: {str(e)}")
+                return False
+
+        except Exception as e:
+            logger.error(f"Error exportando vidrios: {e}")
+            self.mostrar_error(f"Error exportando vidrios: {str(e)}")
+            return False

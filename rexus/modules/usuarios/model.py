@@ -1227,9 +1227,13 @@ username: str,
         try:
             cursor = self.db_connection.connection.cursor()
 
+            # Sanitizar término de búsqueda antes de usarlo
+            termino_limpio = termino_busqueda.strip()[:50]  # Limitar longitud
+            termino_parametrizado = f'%{termino_limpio.lower()}%'
+
             # Query optimizada con JOIN para eliminar consultas N+1 en búsqueda
             sql = self.sql_manager.get_query('usuarios', 'buscar_usuarios_con_permisos')
-            cursor.execute(sql, (f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%', f'%{termino_busqueda.lower()}%'))
+            cursor.execute(sql, (termino_parametrizado, termino_parametrizado, termino_parametrizado))
 
             # Procesar resultados agrupando permisos por usuario
             usuarios_dict = {}
@@ -1831,3 +1835,85 @@ usuario_id: int,
             print("[USUARIOS] Cache invalidado después de cambios")
         except Exception as e:
             print(f"[WARNING USUARIOS] Error invalidando cache: {e}")
+
+    def obtener_usuarios_filtrados(self, filtros: Dict[str, Any]) -> Optional[List[Dict]]:
+        """
+        Obtiene usuarios aplicando filtros específicos.
+        
+        Args:
+            filtros: Diccionario con filtros a aplicar
+            
+        Returns:
+            Lista de usuarios filtrados o None en caso de error
+        """
+        try:
+            print(f"[USUARIOS MODEL] Aplicando filtros: {filtros}")
+            
+            if not self.db_connection:
+                print("[ERROR USUARIOS MODEL] No hay conexión a la base de datos")
+                return []
+            
+            cursor = self.db_connection.cursor()
+            
+            # Query base
+            query = """
+                SELECT 
+                    u.id, u.username, u.email, u.nombre_completo, u.departamento,
+                    u.cargo, u.telefono, u.activo, u.fecha_creacion, u.ultimo_acceso,
+                    ur.role_name as rol, u.estado
+                FROM usuarios u
+                LEFT JOIN user_roles ur ON u.id = ur.user_id
+                WHERE 1=1
+            """
+            
+            params = []
+            
+            # Aplicar filtros dinámicamente
+            if filtros.get('busqueda'):
+                query += """
+                    AND (u.username LIKE ? OR u.email LIKE ? OR u.nombre_completo LIKE ? 
+                         OR u.departamento LIKE ? OR u.cargo LIKE ?)
+                """
+                busqueda = f"%{filtros['busqueda']}%"
+                params.extend([busqueda, busqueda, busqueda, busqueda, busqueda])
+            
+            if filtros.get('rol') and filtros['rol'] != 'Todos':
+                query += " AND ur.role_name = ?"
+                params.append(filtros['rol'])
+            
+            if filtros.get('estado') and filtros['estado'] != 'Todos':
+                if filtros['estado'] == 'Activo':
+                    query += " AND u.activo = 1"
+                elif filtros['estado'] == 'Inactivo':
+                    query += " AND u.activo = 0"
+                elif filtros['estado'] in ['Suspendido', 'Bloqueado']:
+                    query += " AND u.estado = ?"
+                    params.append(filtros['estado'])
+            
+            if filtros.get('departamento') and filtros['departamento'] != 'Todos':
+                query += " AND u.departamento = ?"
+                params.append(filtros['departamento'])
+            
+            # Ordenar por fecha de creación descendente
+            query += " ORDER BY u.fecha_creacion DESC"
+            
+            print(f"[USUARIOS MODEL] Ejecutando query con {len(params)} parámetros")
+            cursor.execute(query, params)
+            
+            # Convertir resultados a diccionarios
+            usuarios = []
+            columns = [desc[0] for desc in cursor.description]
+            
+            for row in cursor.fetchall():
+                usuario = dict(zip(columns, row))
+                # Sanitizar datos de salida
+                if data_sanitizer:
+                    usuario = data_sanitizer.sanitize_dict(usuario)
+                usuarios.append(usuario)
+            
+            print(f"[USUARIOS MODEL] Filtrados {len(usuarios)} usuarios exitosamente")
+            return usuarios
+            
+        except Exception as e:
+            print(f"[ERROR USUARIOS MODEL] Error filtrando usuarios: {e}")
+            return None

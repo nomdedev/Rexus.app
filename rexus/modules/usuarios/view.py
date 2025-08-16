@@ -106,10 +106,41 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
         self.input_busqueda.returnPressed.connect(self.buscar_usuarios)
         controls_layout.addWidget(self.input_busqueda)
 
+        # === FILTROS AVANZADOS ===
+        
+        # Filtro por Rol
+        controls_layout.addWidget(RexusLabel("Rol:"))
+        self.filtro_rol = RexusComboBox()
+        self.filtro_rol.addItems(["Todos", "Admin", "Usuario", "Supervisor", "Invitado"])
+        self.filtro_rol.currentTextChanged.connect(self.aplicar_filtros)
+        controls_layout.addWidget(self.filtro_rol)
+
+        # Filtro por Estado
+        controls_layout.addWidget(RexusLabel("Estado:"))
+        self.filtro_estado = RexusComboBox()
+        self.filtro_estado.addItems(["Todos", "Activo", "Inactivo", "Suspendido", "Bloqueado"])
+        self.filtro_estado.currentTextChanged.connect(self.aplicar_filtros)
+        controls_layout.addWidget(self.filtro_estado)
+
+        # Filtro por Departamento
+        controls_layout.addWidget(RexusLabel("Departamento:"))
+        self.filtro_departamento = RexusComboBox()
+        self.filtro_departamento.addItems([
+            "Todos", "Administración", "Ventas", "Producción", 
+            "Recursos Humanos", "Contabilidad", "Sistemas"
+        ])
+        self.filtro_departamento.currentTextChanged.connect(self.aplicar_filtros)
+        controls_layout.addWidget(self.filtro_departamento)
+
         # Botón buscar con componente Rexus
         self.btn_buscar = RexusButton("[SEARCH] Buscar", "secondary")
         self.btn_buscar.clicked.connect(self.buscar_usuarios)
         controls_layout.addWidget(self.btn_buscar)
+
+        # Botón limpiar filtros
+        self.btn_limpiar_filtros = RexusButton("🧹 Limpiar", "secondary")
+        self.btn_limpiar_filtros.clicked.connect(self.limpiar_filtros)
+        controls_layout.addWidget(self.btn_limpiar_filtros)
 
         # Botón actualizar con componente Rexus
         self.btn_actualizar = RexusButton("🔄 Actualizar", "secondary")
@@ -362,6 +393,69 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                 show_error(self, "Error", f"Error en la búsqueda: {str(e)}")
         else:
             show_warning(self, "Sin Controlador", "No hay controlador disponible para realizar la búsqueda")
+
+    def aplicar_filtros(self):
+        """Aplica los filtros seleccionados."""
+        if not self.controller:
+            return
+
+        try:
+            # Obtener valores de los filtros
+            filtros = self.obtener_filtros_aplicados()
+            
+            # Aplicar filtros a través del controlador
+            usuarios = self.controller.filtrar_usuarios(filtros)
+            if usuarios is not None:
+                self.actualizar_tabla(usuarios)
+                self.lbl_info.setText(f"Filtrados {len(usuarios)} usuarios")
+            else:
+                show_error(self, "Error", "Error al aplicar filtros")
+                
+        except Exception as e:
+            show_error(self, "Error", f"Error aplicando filtros: {str(e)}")
+
+    def obtener_filtros_aplicados(self):
+        """Obtiene los filtros actualmente aplicados."""
+        filtros = {}
+        
+        # Filtro de búsqueda
+        busqueda = self.input_busqueda.text().strip()
+        if busqueda:
+            filtros['busqueda'] = busqueda
+            
+        # Filtro por rol
+        if hasattr(self, 'filtro_rol') and self.filtro_rol.currentText() != "Todos":
+            filtros['rol'] = self.filtro_rol.currentText()
+            
+        # Filtro por estado
+        if hasattr(self, 'filtro_estado') and self.filtro_estado.currentText() != "Todos":
+            filtros['estado'] = self.filtro_estado.currentText()
+            
+        # Filtro por departamento
+        if hasattr(self, 'filtro_departamento') and self.filtro_departamento.currentText() != "Todos":
+            filtros['departamento'] = self.filtro_departamento.currentText()
+            
+        return filtros
+
+    def limpiar_filtros(self):
+        """Limpia todos los filtros aplicados."""
+        try:
+            # Resetear combos de filtros
+            if hasattr(self, 'filtro_rol'):
+                self.filtro_rol.setCurrentText("Todos")
+            if hasattr(self, 'filtro_estado'):
+                self.filtro_estado.setCurrentText("Todos")
+            if hasattr(self, 'filtro_departamento'):
+                self.filtro_departamento.setCurrentText("Todos")
+            
+            # Limpiar campo de búsqueda
+            self.input_busqueda.clear()
+            
+            # Recargar todos los datos
+            self.actualizar_datos()
+            
+        except Exception as e:
+            show_error(self, "Error", f"Error limpiando filtros: {str(e)}")
 
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""

@@ -683,3 +683,67 @@ accion: str,
     def inicializar_vista(self):
         """Inicializa la vista de usuarios."""
         print("[USUARIOS] Vista inicializada")
+
+    @auth_required
+    def filtrar_usuarios(self, filtros: Dict[str, Any]) -> Optional[List[Dict]]:
+        """
+        Filtra usuarios según los criterios especificados.
+        
+        Args:
+            filtros: Diccionario con filtros a aplicar
+            
+        Returns:
+            Lista de usuarios filtrados o None en caso de error
+        """
+        try:
+            print(f"[USUARIOS CONTROLLER] Aplicando filtros: {filtros}")
+            
+            if not self.model:
+                print("[ERROR USUARIOS CONTROLLER] Modelo no disponible")
+                return None
+            
+            # Delegar al modelo la aplicación de filtros
+            usuarios = self.model.obtener_usuarios_filtrados(filtros)
+            
+            if usuarios is not None:
+                print(f"[USUARIOS CONTROLLER] Filtrados {len(usuarios)} usuarios")
+                return usuarios
+            else:
+                print("[ERROR USUARIOS CONTROLLER] Error en filtros del modelo")
+                return None
+                
+        except Exception as e:
+            print(f"[ERROR USUARIOS CONTROLLER] Error filtrando usuarios: {e}")
+            return None
+
+    def buscar_usuarios(self, termino: str) -> Optional[List[Dict]]:
+        """
+        Busca usuarios por término de búsqueda.
+        
+        Args:
+            termino: Término de búsqueda
+            
+        Returns:
+            Lista de usuarios encontrados o None en caso de error
+        """
+        try:
+            print(f"[USUARIOS CONTROLLER] Buscando usuarios con término: '{termino}'")
+            
+            if not self.model:
+                print("[ERROR USUARIOS CONTROLLER] Modelo no disponible")
+                return None
+            
+            # Usar filtros para realizar la búsqueda
+            filtros = {'busqueda': termino}
+            usuarios = self.model.obtener_usuarios_filtrados(filtros)
+            
+            if usuarios is not None:
+                print(f"[USUARIOS CONTROLLER] Encontrados {len(usuarios)} usuarios")
+                return usuarios
+            else:
+                print("[ERROR USUARIOS CONTROLLER] Error en búsqueda del modelo")
+                return None
+                
+        except Exception as e:
+            print(f"[ERROR USUARIOS CONTROLLER] Error buscando usuarios: {e}")
+            return None

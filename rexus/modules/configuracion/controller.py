@@ -374,3 +374,49 @@ Estado: Configuración cargada correctamente"""
             # Cerrar conexiones, etc.
         except Exception as e:
             logger.error(f"[ERROR CONFIGURACION CONTROLLER] Error en cleanup: {e}")
+
+    @admin_required
+    def filtrar_configuraciones(self, filtros: Dict[str, Any]) -> List[Dict]:
+        """
+        Filtra configuraciones según los criterios especificados.
+        
+        Args:
+            filtros: Diccionario con filtros a aplicar
+            
+        Returns:
+            Lista de configuraciones filtradas
+        """
+        try:
+            logger.info(f"[CONFIGURACION CONTROLLER] Aplicando filtros: {filtros}")
+            
+            if not self.model:
+                logger.error("[CONFIGURACION CONTROLLER] Modelo no disponible")
+                return []
+            
+            # Delegar al modelo la aplicación de filtros
+            configuraciones = self.model.obtener_configuraciones_filtradas(filtros)
+            
+            if configuraciones is not None:
+                logger.info(f"[CONFIGURACION CONTROLLER] Filtradas {len(configuraciones)} configuraciones")
+                return configuraciones
+            else:
+                logger.error("[CONFIGURACION CONTROLLER] Error en filtros del modelo")
+                return []
+                
+        except Exception as e:
+            logger.error(f"[CONFIGURACION CONTROLLER] Error filtrando configuraciones: {e}")
+            return []
+
+    def buscar(self, filtros: Dict[str, Any]):
+        """
+        Busca configuraciones y actualiza la vista.
+        
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+        """
+        try:
+            configuraciones = self.filtrar_configuraciones(filtros)
+            if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
+                self.view.cargar_datos_en_tabla(configuraciones)
+        except Exception as e:
+            logger.error(f"[CONFIGURACION CONTROLLER] Error en búsqueda: {e}")

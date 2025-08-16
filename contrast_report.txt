@@ -1,20 +1,7 @@
-================================================================================
-REPORTE DE ANÁLISIS DE CONTRASTE Y ESTILOS UI
-================================================================================
+BACKUP: Este reporte fue movido a `legacy_root/original_root/final_move/contrast_report.txt`.
 
-RESUMEN:
-  - Total de archivos analizados: 9
-  - Total de problemas: 19
-  - Problemas críticos: 13
-  - Advertencias: 1
-
-CRITICAL ISSUES:
-----------------------------------------
-[FILE] rexus\modules\configuracion\database_config_dialog.py:476
-   [ISSUE] Texto transparente: background-color: transparent;
-   [FIX] Evitar texto transparente, usar colores visibles
-
-[FILE] rexus\modules\inventario\view.py:466
+Para ver la versión completa, abra:
+   legacy_root/original_root/final_move/contrast_report.txt
    [ISSUE] Texto transparente: alternate-background-color: transparent;
    [FIX] Evitar texto transparente, usar colores visibles
 

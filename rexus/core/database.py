@@ -26,9 +26,13 @@ NO mezclar tablas de negocio en 'users'. NO usar 'inventario' para login o permi
 """
 
 import os
+import logging
 from typing import Optional
 
 import pyodbc
+
+# Configurar logger específico para el módulo de database
+logger = logging.getLogger(__name__)
 
 # Cargar variables de entorno
 try:
@@ -128,18 +132,21 @@ class DatabaseConnection:
             cursor.close()
             print(f"[DB] Cambiado a base de datos: {new_database}")
             return True
+        except (pyodbc.Error, pyodbc.DatabaseError) as e:
+            logger.error(f"No se pudo cambiar a la base de datos {new_database}: {e}")
+            return False
         except Exception as e:
-            print(f"[DB ERROR] No se pudo cambiar a la base de datos {new_database}: {e}")
+            logger.error(f"Error inesperado cambiando a base de datos {new_database}: {e}")
             return False
 
     def connect(self):
-        """Establece la conexión a la base de datos y muestra el flujo en consola"""
-        print("\n[DB] Intentando conectar a la base de datos...")
-        print(f"[DB] Servidor: {self.server}")
-        print(f"[DB] Base de datos: {self.database}")
-        print(f"[DB] Driver: {self.driver}")
-        print(
-            f"[DB] Usuario: {self.username if not self.trusted else '[Trusted_Connection]'}"
+        """Establece la conexión a la base de datos y registra el flujo"""
+        logger.info("Intentando conectar a la base de datos")
+        logger.info(f"Servidor: {self.server}")
+        logger.info(f"Base de datos: {self.database}")
+        logger.info(f"Driver: {self.driver}")
+        logger.info(
+            f"Usuario: {self.username if not self.trusted else '[Trusted_Connection]'}"
         )
         try:
             if self.trusted:

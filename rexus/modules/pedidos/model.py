@@ -829,15 +829,26 @@ estado_anterior,
             base_query = self._get_base_query()
             count_query = self._get_count_query()
 
-            # Aplicar filtros si existen
+            # FIXED: Aplicar filtros con whitelist de campos permitidos para prevenir SQL injection
             where_clause = ""
             params = []
 
             if filtros:
+                # SECURITY: Whitelist de campos permitidos para prevenir SQL injection
+                campos_permitidos = {
+                    'codigo': 'codigo',
+                    'cliente': 'cliente', 
+                    'estado': 'estado',
+                    'proveedor': 'proveedor',
+                    'descripcion': 'descripcion'
+                }
+                
                 where_conditions = []
                 for campo, valor in filtros.items():
-                    if valor:
-                        where_conditions.append(f"{campo} LIKE ?")
+                    if valor and campo in campos_permitidos:
+                        # Usar el nombre de campo validado desde el whitelist
+                        campo_seguro = campos_permitidos[campo]
+                        where_conditions.append(f"{campo_seguro} LIKE ?")
                         params.append(f"%{valor}%")
 
                 if where_conditions:

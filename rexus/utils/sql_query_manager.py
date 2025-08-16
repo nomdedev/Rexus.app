@@ -5,8 +5,11 @@ Este módulo gestiona todas las consultas SQL desde archivos externos
 para mejorar la seguridad y mantenibilidad del código.
 """
 
+import logging
 from pathlib import Path
 from typing import Any, Dict
+
+logger = logging.getLogger(__name__)
 
 
 class SQLQueryManager:
@@ -115,7 +118,11 @@ class SQLQueryManager:
         self, cursor, module: str, query_name: str, params: tuple = None, **kwargs
     ):
         """
-        Ejecuta una consulta SQL usando el cursor proporcionado.
+        DEPRECATED: Direct query execution removed for security reasons.
+        
+        This method has been disabled to prevent arbitrary SQL code execution.
+        Use parameterized queries directly in your models instead of loading
+        external SQL files for execution.
 
         Args:
             cursor: Cursor de base de datos
@@ -125,14 +132,10 @@ class SQLQueryManager:
             **kwargs: Parámetros de formateo para la consulta
 
         Returns:
-            Resultado de la ejecución de la consulta
+            False - Method disabled for security
         """
-        query = self.get_query(module, query_name, **kwargs)
-
-        if params:
-            return cursor.execute(query, params)
-        else:
-            return cursor.execute(query)
+        logger.error(f"SECURITY: Direct query execution disabled for {module}/{query_name}. Use parameterized queries instead.")
+        return False
 
     def list_available_queries(self, module: str = None) -> Dict[str, list]:
         """
