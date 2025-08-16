@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
-Backup final: reporte_optimizacion_completa.py
+Backup original guardado: reporte_optimizacion_completa.py
 
-Contenido original guardado antes de limpiar la raíz.
+Contenido original (backup) del archivo movido desde la raíz.
 """
 print('Backup: reporte_optimizacion_completa.py')

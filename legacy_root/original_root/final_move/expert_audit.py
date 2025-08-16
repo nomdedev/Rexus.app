@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
-Backup final: expert_audit.py
+"""Root stub: expert_audit.py -> legacy_root/original_root/final_move/expert_audit.py"""
+def main():
+	print('expert_audit movido a legacy_root/original_root/final_move/expert_audit.py')
 
-Contenido original guardado antes de limpiar la raíz.
-"""
-print('Backup: expert_audit.py')
+if __name__ == '__main__':
+	main()
