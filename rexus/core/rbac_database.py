@@ -693,27 +693,43 @@ user_id: int,
         with self._get_db_connection() as conn:
             cursor = conn.cursor()
 
-            base_query = """
-                FROM rbac_access_log
-                WHERE timestamp > datetime('now', '-{} days')
-            """.format(days)
-
-            user_filter = ""
-            params = []
+            # Construir query segura con parámetros
             if user_id:
-                user_filter = " AND user_id = ?"
-                params.append(user_id)
+                count_query = """
+                    SELECT COUNT(*) FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                    AND user_id = ?
+                """.format(days)
+                params = [user_id]
+            else:
+                count_query = """
+                    SELECT COUNT(*) FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                """.format(days)
+                params = []
 
             # Total de accesos
-            cursor.execute(f"SELECT COUNT(*) {base_query} {user_filter}", params)
+            cursor.execute(count_query, params)
             total_accesses = cursor.fetchone()[0]
 
             # Accesos por resultado
-            cursor.execute(f"""
-                SELECT result, COUNT(*)
-                {base_query} {user_filter}
-                GROUP BY result
-            """, params)
+            if user_id:
+                result_query = """
+                    SELECT result, COUNT(*)
+                    FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                    AND user_id = ?
+                    GROUP BY result
+                """.format(days)
+            else:
+                result_query = """
+                    SELECT result, COUNT(*)
+                    FROM rbac_access_log
+                    WHERE timestamp > datetime('now', '-{} days')
+                    GROUP BY result
+                """.format(days)
+            
+            cursor.execute(result_query, params)
 
             access_by_result = dict(cursor.fetchall())
 

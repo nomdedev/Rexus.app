@@ -10,6 +10,18 @@ from rexus.core.auth_decorators import auth_required, admin_required
 # Importar sistema moderno de mensajes
 from rexus.utils.message_system import show_success, show_error, show_warning, ask_question
 
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("obras.controller")
+except ImportError:
+    class DummyLogger:
+        def info(self, msg): print(f"[INFO] {msg}")
+        def warning(self, msg): print(f"[WARNING] {msg}")
+        def error(self, msg): print(f"[ERROR] {msg}")
+        def debug(self, msg): print(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+
 class ObrasController(QObject):
     # Señales para comunicación con otros módulos
     obra_creada = pyqtSignal(dict)  # Emitida cuando se crea una nueva obra
@@ -35,10 +47,66 @@ class ObrasController(QObject):
         # Inicializar current_user para compatibilidad con @auth_required
         self.current_user = self._get_current_auth_user()
 
+        # Validar y conectar componentes de forma segura
+        self._validate_components()
+        
         # Asegurar que la vista tiene referencia al controller
         if self.view:
             self.view.controller = self
             self.conectar_señales()
+        else:
+            logger.warning("Vista no disponible durante inicialización del controlador de obras")
+
+    def _validate_components(self):
+        """
+        Valida que los componentes críticos estén disponibles.
+        """
+        logger.debug("Validando componentes del controlador de obras")
+        
+        if not self.model:
+            logger.error("CRITICO: Modelo de obras no disponible")
+            
+        if not self.view:
+            logger.warning("Vista de obras no disponible")
+            
+        if not self.db_connection:
+            logger.warning("Conexión de base de datos no disponible")
+            
+        logger.info("Validación de componentes completada")
+    
+    def _ensure_model_available(self, operation_name="operación"):
+        """
+        Asegura que el modelo esté disponible para una operación.
+        
+        Args:
+            operation_name: Nombre de la operación para logging
+            
+        Returns:
+            bool: True si el modelo está disponible
+        """
+        if not self.model:
+            error_msg = f"Modelo no disponible para {operation_name}"
+            logger.error(error_msg)
+            if self.view:
+                show_error(self.view, "Error del Sistema", error_msg)
+            return False
+        return True
+    
+    def _ensure_view_available(self, operation_name="operación"):
+        """
+        Asegura que la vista esté disponible para una operación.
+        
+        Args:
+            operation_name: Nombre de la operación para logging
+            
+        Returns:
+            bool: True si la vista está disponible
+        """
+        if not self.view:
+            error_msg = f"Vista no disponible para {operation_name}"
+            logger.error(error_msg)
+            return False
+        return True
 
     def _get_current_auth_user(self):
         """Obtiene el usuario autenticado actual desde AuthManager."""
@@ -88,13 +156,30 @@ class ObrasController(QObject):
     def cargar_obras(self):
         """Carga todas las obras en la tabla."""
         try:
+            logger.debug("Iniciando carga de obras")
+            
+            # CRITICO: Verificar componentes
+            if not self._ensure_model_available("cargar obras"):
+                return
+                
+            if not self._ensure_view_available("cargar obras"):
+                logger.warning("Vista no disponible, cargando datos solo en modelo")
+            
             obras = self.model.obtener_todas_obras()
-            self.view.cargar_obras_en_tabla(obras)
+            
+            # Solo actualizar vista si está disponible
+            if self.view and hasattr(self.view, 'cargar_obras_en_tabla'):
+                self.view.cargar_obras_en_tabla(obras)
+            else:
+                logger.warning("Vista no tiene método cargar_obras_en_tabla")
+            
             self.actualizar_estadisticas()
-            print(f"[OBRAS CONTROLLER] Cargadas {len(obras)} obras")
+            logger.info(f"Cargadas {len(obras)} obras exitosamente")
+            
         except Exception as e:
-            print(f"[ERROR OBRAS CONTROLLER] Error cargando obras: {e}")
-            self.mostrar_mensaje_error(f"Error cargando obras: {str(e)}")
+            logger.error(f"Error cargando obras: {e}", exc_info=True)
+            if self.view:
+                show_error(self.view, "Error", f"Error cargando obras: {str(e)}")
 
     def mostrar_formulario_nueva_obra(self):
         """Muestra el formulario para crear una nueva obra."""
@@ -125,8 +210,15 @@ class ObrasController(QObject):
             bool: True si se creó exitosamente
         """
         try:
+            logger.info(f"Iniciando creación de obra para usuario: {self.usuario_actual}")
+            
+            # CRITICO: Verificar que el modelo esté disponible
+            if not self._ensure_model_available("crear obra"):
+                return False
+            
             # Validar datos requeridos
             if not self.validar_datos_obra(datos_obra):
+                logger.warning("Validación de datos fallida para nueva obra")
                 return False
 
             # Asignar usuario actual

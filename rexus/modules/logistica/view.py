@@ -1772,9 +1772,9 @@ nombre: str,
                         mapa.save(temp_file.name)
                         temp_file.close()
                         self.mapa_web_view.setUrl(QUrl.fromLocalFile(temp_file.name))
-                except Exception:
+                except (ImportError, AttributeError, IOError, OSError, RuntimeError):
                     pass
-        except Exception:
+        except (AttributeError, ImportError, RuntimeError):
             pass
 
 

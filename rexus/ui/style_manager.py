@@ -42,9 +42,9 @@ class StyleManager:
     # Mapa de temas disponibles a archivos QSS
     AVAILABLE_THEMES = {
         'professional': 'professional_theme_clean.qss',
-        'light': 'theme_light_improved.qss',  # MEJORADO: Tema claro con contraste optimizado
+        'light': 'theme_light_contrast_fixed.qss',  # CORREGIDO: Contraste alto optimizado
         'light_original': 'theme_light_clean.qss',  # Respaldo del original
-        'dark': 'theme_dark_improved.qss',  # MEJORADO: Tema oscuro con contraste forzado
+        'dark': 'theme_dark_contrast_fixed.qss',  # CORREGIDO: Contraste forzado para legibilidad
         'dark_original': 'theme_dark_clean.qss',  # Respaldo del original
         'minimal': 'theme_light_minimal_clean.qss',
         'optimized': 'theme_optimized_clean.qss',
@@ -95,8 +95,8 @@ class StyleManager:
             else:  # Linux y otros
                 self._detect_linux_theme()
 
-        except Exception as e:
-            print(f"[WARNING] Error detectando tema del sistema: {e}")
+        except (OSError, ImportError, AttributeError, RuntimeError) as e:
+            logger.warning(f"Error detectando tema del sistema: {e}")
             self._current_theme = 'professional'
             print("[STYLE] Usando tema por defecto 'professional' por error")
 
@@ -115,11 +115,13 @@ class StyleManager:
             if apps_light_theme == 0:  # Dark mode
                 self._current_theme = 'dark'
                 print("[STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas")
+                print("[STYLE] Aplicando correcciones criticas automaticas para tema oscuro")
                 # APLICAR INMEDIATAMENTE las correcciones críticas para tema oscuro
                 self._auto_apply_dark_fixes = True
+                self._apply_critical_dark_theme_fixes()
             else:  # Light mode
                 self._current_theme = 'light'
-                print("[STYLE] Tema claro detectado en Windows - aplicando 'light'")
+                print("[STYLE] Tema claro detectado en Windows - aplicando tema optimizado")
                 self._auto_apply_dark_fixes = False
 
         except (FileNotFoundError, OSError, ImportError):
@@ -182,7 +184,7 @@ class StyleManager:
             self._auto_apply_dark_fixes = False
             print("[STYLE] [LIGHT] Usando tema claro por defecto en Linux")
 
-        except Exception:
+        except (OSError, ImportError, AttributeError, RuntimeError):
             self._current_theme = 'professional'
             self._auto_apply_dark_fixes = False
             print("[STYLE] [WARNING] No se pudo detectar tema de Linux - usando 'professional'")
@@ -197,7 +199,7 @@ class StyleManager:
                     with open(theme_path, 'r', encoding='utf-8') as f:
                         self._loaded_themes[theme_name] = f.read()
                     logging.debug(f"Tema '{theme_name}' cargado exitosamente")
-                except Exception as e:
+                except (IOError, OSError, FileNotFoundError, UnicodeDecodeError) as e:
                     logging.error(f"Error cargando tema '{theme_name}': {e}")
             else:
                 logging.warning(f"Archivo de tema no encontrado: {theme_path}")
@@ -240,7 +242,7 @@ class StyleManager:
                 logging.error("No se pudo obtener instancia de QApplication")
                 return False
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, OSError) as e:
             logging.error(f"Error aplicando tema global '{theme_name}': {e}")
             return False
 
@@ -264,7 +266,7 @@ class StyleManager:
                 logging.warning("Archivo de estilos unificados no encontrado")
                 return False
 
-        except Exception as e:
+        except (IOError, OSError, FileNotFoundError, UnicodeDecodeError, AttributeError) as e:
             logging.error(f"Error aplicando estilos unificados: {e}")
             return False
 
@@ -416,7 +418,7 @@ class StyleManager:
             logging.debug(f"Tema de módulo aplicado a {widget.__class__.__name__} ({module_name})")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, OSError, IOError) as e:
             logging.error(f"Error aplicando tema a módulo: {e}")
             return False
 
@@ -445,7 +447,7 @@ class StyleManager:
 
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, OSError, IOError) as e:
             print(f"[WARNING] Error aplicando tema '{theme_name}': {e}")
             return False
 
@@ -527,8 +529,8 @@ class StyleManager:
 
             return True
 
-        except Exception as e:
-            print(f"[ERROR] Error aplicando correcciones críticas: {e}")
+        except (AttributeError, RuntimeError, OSError) as e:
+            logger.error(f"Error aplicando correcciones críticas: {e}")
             return False
 
     def load_module_stylesheet(self, module_name: str) -> str:
@@ -546,7 +548,7 @@ class StyleManager:
                 logging.warning(f"Archivo de estilos no encontrado: {stylesheet_path}")
                 return ""
 
-        except Exception as e:
+        except (IOError, OSError, FileNotFoundError, UnicodeDecodeError) as e:
             logging.error(f"Error cargando estilos del módulo {module_name}: {e}")
             return ""
 
@@ -609,7 +611,7 @@ class StyleManager:
         except ImportError as e:
             print(f"[STYLE] Error importando estilos unificados: {e}")
             return False
-        except Exception as e:
+        except (AttributeError, RuntimeError, OSError, IOError) as e:
             print(f"[STYLE] Error aplicando estilos unificados: {e}")
             return False
 
@@ -659,8 +661,8 @@ class StyleManager:
                 print(f"[STYLE] Correcciones criticas aplicadas a {widget.__class__.__name__}")
                 return True
 
-        except Exception as e:
-            print(f"[ERROR] Error aplicando correcciones críticas: {e}")
+        except (AttributeError, RuntimeError, OSError) as e:
+            logger.error(f"Error aplicando correcciones críticas: {e}")
             return False
 
         return False
@@ -729,8 +731,8 @@ class StyleManager:
                 app.setStyleSheet(new_styles)
                 print("[STYLE] Tema de emergencia claro aplicado para formularios")
                 return True
-        except Exception as e:
-            print(f"[ERROR] Error aplicando tema de emergencia: {e}")
+        except (AttributeError, RuntimeError, OSError) as e:
+            logger.error(f"Error aplicando tema de emergencia: {e}")
 
         return False
 
@@ -768,7 +770,7 @@ class StyleManager:
                 print("[STYLE] [WARNING] Advertencia: No se pudieron aplicar todas las correcciones")
                 return False
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, OSError, IOError) as e:
             print(f"[STYLE] [ERROR] Error aplicando correcciones automáticas: {e}")
             return False
 
@@ -797,6 +799,75 @@ class StyleManager:
             'large': 20,
             'xlarge': 30
         }
+    
+    def _apply_critical_dark_theme_fixes(self):
+        """
+        Aplica correcciones críticas automáticamente cuando se detecta tema oscuro.
+        Soluciona problemas de legibilidad inmediatamente.
+        """
+        try:
+            print("[STYLE] [ART] Aplicando tema oscuro mejorado")
+            
+            # Cargar y aplicar el tema oscuro corregido
+            dark_theme_path = self._themes_path / 'theme_dark_contrast_fixed.qss'
+            
+            if dark_theme_path.exists():
+                with open(dark_theme_path, 'r', encoding='utf-8') as file:
+                    dark_styles = file.read()
+                
+                # Aplicar estilos globalmente
+                app = QApplication.instance()
+                if app:
+                    app.setStyleSheet(dark_styles)
+                    print("[STYLE]  Aplicando correcciones críticas de contraste")
+                    print("[STYLE] [OK] Correcciones automáticas aplicadas exitosamente")
+                else:
+                    print("[STYLE] [WARNING] No se pudo obtener instancia de QApplication")
+            else:
+                print("[STYLE] [ERROR] Archivo de tema oscuro corregido no encontrado")
+                # Fallback: aplicar estilos críticos inline
+                self._apply_inline_dark_fixes()
+                
+        except (IOError, OSError, FileNotFoundError, AttributeError, RuntimeError) as e:
+            print(f"[STYLE] [ERROR] Error aplicando correcciones de tema oscuro: {e}")
+            self._apply_inline_dark_fixes()
+    
+    def _apply_inline_dark_fixes(self):
+        """Aplica correcciones críticas inline como fallback."""
+        critical_fixes = """
+        QLineEdit { 
+            background-color: #404040 !important; 
+            color: #ffffff !important; 
+            border: 2px solid #555555; 
+        }
+        QTextEdit { 
+            background-color: #404040 !important; 
+            color: #ffffff !important; 
+            border: 2px solid #555555; 
+        }
+        QComboBox { 
+            background-color: #404040 !important; 
+            color: #ffffff !important; 
+            border: 2px solid #555555; 
+        }
+        QPushButton { 
+            background-color: #0078d4 !important; 
+            color: #ffffff !important; 
+            border: none; 
+            padding: 8px 16px; 
+        }
+        QLabel { 
+            color: #ffffff !important; 
+        }
+        """
+        
+        try:
+            app = QApplication.instance()
+            if app:
+                app.setStyleSheet(critical_fixes)
+                print("[STYLE] [OK] Correcciones críticas inline aplicadas")
+        except (AttributeError, RuntimeError, OSError) as e:
+            print(f"[STYLE] [ERROR] Error aplicando correcciones inline: {e}")
 
 
 # Instancia global del gestor de estilos

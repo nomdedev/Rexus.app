@@ -36,7 +36,7 @@ except ImportError:
         SANITIZER_AVAILABLE = True
         print("OK [VIDRIOS] DataSanitizer legacy cargado")
     except ImportError:
-        print("ERROR [VIDRIOS] No se pudo cargar ningún sistema de sanitización")
+        logger.error(f"Error [VIDRIOS] No se pudo cargar ningún sistema de sanitización"))
         SANITIZER_AVAILABLE = False
         data_sanitizer = None
 

@@ -5,14 +5,15 @@ Maneja la lógica de negocio entre la vista y el modelo de usuarios.
 """
 
 from typing import Any, Dict, List, Optional
-from PyQt6.QtCore import QObject, pyqtSignal
+from PyQt6.QtCore import pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
+from rexus.core.base_controller import BaseController
 from rexus.utils.message_system import show_success, show_error
 from rexus.utils.security import SecurityUtils
 from rexus.core.auth_decorators import auth_required, admin_required
 
-class UsuariosController(QObject):
+class UsuariosController(BaseController):
     """Controlador para el módulo de usuarios."""
 
     # Señales para comunicación con otros módulos
@@ -23,13 +24,13 @@ class UsuariosController(QObject):
     sesion_terminada = pyqtSignal(str)
 
     def __init__(self, model, view, db_connection=None, usuario_actual=None):
-        super().__init__()
-        self.model = model
-        self.view = view
-        self.db_connection = db_connection or getattr(model, 'db_connection', None)
+        # BaseController inicializa los componentes básicos
+        super().__init__("usuarios", model, view, db_connection)
+        
+        # Configuración específica del controlador de usuarios
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
 
-        # Conectar señales si hay vista
+        # Conectar señales si hay vista disponible
         if self.view:
             self.conectar_senales()
             self.cargar_usuarios()
@@ -92,7 +93,7 @@ datos: Dict[str,
             if '@' in email and '.' in email:
                 datos_sanitizados['email'] = email
             else:
-                print(f"[WARN] [SECURITY] Email con formato inválido: {email}")
+                logger.warning([SECURITY] Email con formato inválido: {email})
 
         # Log de sanitización exitosa
         print(f"[CHECK] [SECURITY] Datos de usuario sanitizados correctamente")
@@ -129,7 +130,7 @@ datos: Dict[str,
             termino_sanitizado = SecurityUtils.sanitize_html_input(termino_sanitizado)
 
             if not SecurityUtils.is_safe_input(termino_sanitizado):
-                print(f"[WARN] [SECURITY] Término de búsqueda malicioso: {termino_busqueda}")
+                logger.warning([SECURITY] Término de búsqueda malicioso: {termino_busqueda})
                 return None
 
             # Buscar usuarios usando el modelo
@@ -387,7 +388,7 @@ username: str,
 
             # Verificar que el input sanitizado sea seguro
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                print(f"[WARN] [SECURITY] Intento de login con username malicioso: {username}")
+                logger.warning([SECURITY] Intento de login con username malicioso: {username})
                 return None
 
             # [LOCK] VERIFICAR SI EL USUARIO ESTÁ BLOQUEADO
@@ -415,7 +416,7 @@ username: str,
 
             if not usuario:
                 # Usuario no existe - también incrementar contador para prevenir ataques de enumeración
-                print(f"[WARN] [SECURITY] Intento de login con usuario inexistente: {username}")
+                logger.warning([SECURITY] Intento de login con usuario inexistente: {username})
 
                 # Registrar intento malicioso
                 self.registrar_auditoria(
@@ -505,7 +506,7 @@ username: str,
             username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
 
             if not SecurityUtils.is_safe_input(username_sanitizado):
-                print(f"[WARN] [SECURITY] Intento de desbloqueo con username malicioso: {username}")
+                logger.warning([SECURITY] Intento de desbloqueo con username malicioso: {username})
                 return False
 
             # Desbloquear usuario
@@ -630,7 +631,7 @@ accion: str,
                         )
 
         except Exception as e:
-            print(f"[ERROR] Error cargando página: {e}")
+            logger.error(Error cargando página: {e})
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error("Error", f"Error cargando página: {str(e)}")
 
@@ -646,7 +647,7 @@ accion: str,
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
-            print(f"[ERROR] Error obteniendo total de registros: {e}")
+            logger.error(Error obteniendo total de registros: {e})
             return 0
 
     def mostrar_error(self, mensaje: str):

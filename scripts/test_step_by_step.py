@@ -40,7 +40,8 @@ def main():
         modules_to_test = ['obras', 'usuarios', 'compras', 'pedidos']
         for module in modules_to_test:
             try:
-                exec(f"from rexus.modules.{module}.view import *")
+                import importlib
+                module_obj = importlib.import_module(f"rexus.modules.{module}.view")
                 print(f"   {module}: Import OK")
             except Exception as e:
                 print(f"   {module}: Import ERROR - {str(e)}")

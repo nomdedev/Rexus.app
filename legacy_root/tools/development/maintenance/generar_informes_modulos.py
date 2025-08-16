@@ -43,12 +43,21 @@ def ejecutar_analisis():
         # Cambiar al directorio raíz para asegurar rutas relativas correctas
         os.chdir(root_dir)
 
-        # Usar exec para ejecutar el script en el mismo proceso
-        with open(analisis_script, 'r', encoding='utf-8') as f:
-            script_content = f.read()
-
-        # Ejecutar el script
-        exec(script_content, {'__name__': '__main__'})
+        # Ejecutar el script de forma segura usando subprocess
+        import subprocess
+        import sys
+        try:
+            result = subprocess.run([sys.executable, str(analisis_script)], 
+                                  capture_output=True, text=True, timeout=60)
+            if result.returncode != 0:
+                print(f"Error ejecutando {analisis_script}:")
+                print(result.stderr)
+            else:
+                print(result.stdout)
+        except subprocess.TimeoutExpired:
+            print(f"Timeout ejecutando {analisis_script} (>60s)")
+        except Exception as e:
+            print(f"Error ejecutando script: {e}")
 
         print("-" * 80)
         print("Análisis completado exitosamente.")

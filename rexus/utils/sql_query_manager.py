@@ -211,7 +211,7 @@ class SQLQueryManager:
 
             return True
 
-        except Exception:
+        except (AttributeError, TypeError, ValueError):
             return False
 
     def clear_cache(self):

@@ -43,8 +43,13 @@ def apply_premium_styles():
             try:
                 print(f"Estilizando módulo: {module_name.upper()}")
 
-                # Importar el módulo
-                exec(f"from rexus.modules.{module_name}.view import *")
+                # Importar el módulo de forma segura
+                import importlib
+                try:
+                    module = importlib.import_module(f"rexus.modules.{module_name}.view")
+                except ImportError as e:
+                    print(f"Error importando {module_name}: {e}")
+                    continue
 
                 # Aplicar estilos premium al módulo
                 premium_css = premium_manager.get_premium_dialog_style()

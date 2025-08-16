@@ -11,6 +11,7 @@ Maneja la lógica de negocio para:
 
 from datetime import datetime
 import calendar
+from sqlite3 import IntegrityError
 from rexus.utils.sql_query_manager import get_sql_manager
 
 
@@ -60,8 +61,27 @@ class RecursosHumanosModel:
                 else:
                     print(f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos.")
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error verificando tablas: {e}")
+
+    def _validate_table_name(self, table_name: str) -> str:
+        """Valida el nombre de tabla para prevenir SQL injection."""
+        import re
+        
+        # Solo permitir nombres alfanuméricos y underscore
+        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")
+        
+        # Lista blanca de tablas permitidas
+        allowed_tables = {
+            "empleados", "nomina", "recursos_humanos", "empleados_tmp",
+            "nomina_tmp", "departamentos", "puestos"
+        }
+        
+        if table_name not in allowed_tables:
+            raise ValueError(f"Tabla no permitida: {table_name}")
+        
+        return table_name
 
     # MÉTODOS PARA EMPLEADOS
 
@@ -130,7 +150,7 @@ class RecursosHumanosModel:
 
             return empleados
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error obteniendo empleados: {e}")
             return []
 
@@ -179,7 +199,7 @@ class RecursosHumanosModel:
             print(f"[RRHH] Empleado creado con ID: {empleado_id}")
             return empleado_id
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error creando empleado: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -237,7 +257,7 @@ class RecursosHumanosModel:
             print(f"[RRHH] Empleado {empleado_id} actualizado exitosamente")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error actualizando empleado: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -269,7 +289,7 @@ class RecursosHumanosModel:
             print(f"[RRHH] Empleado {empleado_id} eliminado exitosamente")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error eliminando empleado: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -361,7 +381,7 @@ class RecursosHumanosModel:
 
             return resultados_nomina
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error calculando nómina: {e}")
             return []
 
@@ -383,15 +403,17 @@ class RecursosHumanosModel:
 
             for nomina in nomina_data:
                 # Verificar si ya existe registro para ese empleado/período
-                cursor.execute("""
-                    SELECT id FROM """ + self.tabla_nomina + """
+                # Usar tabla validada por seguridad
+                tabla_segura = self._validate_table_name(self.tabla_nomina)
+                cursor.execute(f"""
+                    SELECT id FROM [{tabla_segura}]
                     WHERE empleado_id = ? AND mes = ? AND anio = ?
                 """, (nomina['empleado_id'], nomina['mes'], nomina['anio']))
 
                 if cursor.fetchone():
                     # Actualizar registro existente
-                    query = """
-                        UPDATE """ + self.tabla_nomina + """
+                    query = f"""
+                        UPDATE [{tabla_segura}]
                         SET salario_base = ?, dias_trabajados = ?, horas_extra = ?,
                             bonos = ?, descuentos = ?, faltas = ?, bruto = ?,
                             total_descuentos = ?, neto = ?, fecha_calculo = GETDATE()
@@ -422,7 +444,7 @@ class RecursosHumanosModel:
             print(f"[RRHH] Nómina guardada exitosamente para {len(nomina_data)} empleados")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error guardando nómina: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -468,7 +490,7 @@ class RecursosHumanosModel:
             print(f"[RRHH] Asistencia registrada para empleado {datos_asistencia.get('empleado_id')}")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error registrando asistencia: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -535,7 +557,7 @@ a.empleado_id,
 
             return asistencias
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error obteniendo asistencias: {e}")
             return []
 
@@ -580,7 +602,7 @@ a.empleado_id,
             print(f"[RRHH] {datos_bono.get('tipo')} creado exitosamente")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error creando bono/descuento: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
@@ -644,7 +666,7 @@ b.empleado_id,
 
             return bonos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error obteniendo bonos/descuentos: {e}")
             return []
 
@@ -703,7 +725,7 @@ h.empleado_id,
 
             return historial
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error obteniendo historial: {e}")
             return []
 
@@ -747,7 +769,7 @@ h.empleado_id,
 
             return estadisticas
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR RRHH] Error obteniendo estadísticas: {e}")
             return {}
 
@@ -783,7 +805,7 @@ empleado_id,
                 valor_anterior,
                 valor_nuevo))
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR RRHH] Error registrando historial: {e}")
 
     def _calcular_dias_trabajados(self, empleado_id, mes, anio):
@@ -804,7 +826,7 @@ empleado_id,
             resultado = cursor.fetchone()
             return resultado[0] if resultado else 0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error calculando días trabajados: {e}")
             return 0
 
@@ -825,7 +847,7 @@ empleado_id,
             resultado = cursor.fetchone()
             return float(resultado[0]) if resultado and resultado[0] else 0.0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error calculando horas extra: {e}")
             return 0.0
 
@@ -847,7 +869,7 @@ empleado_id,
             resultado = cursor.fetchone()
             return float(resultado[0]) if resultado and resultado[0] else 0.0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error obteniendo bonos: {e}")
             return 0.0
 
@@ -869,7 +891,7 @@ empleado_id,
             resultado = cursor.fetchone()
             return float(resultado[0]) if resultado and resultado[0] else 0.0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error obteniendo descuentos: {e}")
             return 0.0
 
@@ -891,6 +913,6 @@ empleado_id,
             resultado = cursor.fetchone()
             return resultado[0] if resultado else 0
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR RRHH] Error calculando faltas: {e}")
             return 0

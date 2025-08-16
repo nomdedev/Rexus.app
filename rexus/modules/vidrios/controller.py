@@ -1,8 +1,34 @@
 """Controlador de Vidrios"""
 
 from PyQt6.QtCore import QObject, pyqtSignal
-from PyQt6.QtWidgets import QMessageBox
 from rexus.core.auth_decorators import auth_required, admin_required
+
+# Importar sistema de mensajería centralizado y logging
+try:
+    from rexus.utils.message_system import show_success, show_error, show_warning, show_info
+    MESSAGING_AVAILABLE = True
+except ImportError:
+    # Fallback temporal con QMessageBox
+    from PyQt6.QtWidgets import QMessageBox
+    def show_success(parent, title, message): QMessageBox.information(parent, title, message)
+    def show_error(parent, title, message): QMessageBox.critical(parent, title, message)
+    def show_warning(parent, title, message): QMessageBox.warning(parent, title, message)
+    def show_info(parent, title, message): QMessageBox.information(parent, title, message)
+    MESSAGING_AVAILABLE = False
+
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("vidrios.controller")
+    LOGGING_AVAILABLE = True
+except ImportError:
+    # Fallback para logging
+    class DummyLogger:
+        def info(self, msg): print(f"[INFO] {msg}")
+        def warning(self, msg): print(f"[WARNING] {msg}")
+        def error(self, msg): print(f"[ERROR] {msg}")
+        def debug(self, msg): print(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+    LOGGING_AVAILABLE = False
 
 class VidriosController(QObject):
 
@@ -29,6 +55,56 @@ class VidriosController(QObject):
             self.view.asignar_obra_requested.connect(self.asignar_vidrio_obra)
             self.view.crear_pedido_requested.connect(self.crear_pedido)
             self.view.filtrar_requested.connect(self.filtrar_vidrios)
+
+    def _validar_datos_vidrio(self, datos_vidrio):
+        """
+        Valida y sanitiza los datos de vidrio antes de enviar al modelo.
+        
+        Args:
+            datos_vidrio: Dict con datos del vidrio
+            
+        Returns:
+            tuple: (es_valido, datos_sanitizados, mensaje_error)
+        """
+        if not isinstance(datos_vidrio, dict):
+            return False, {}, "Los datos del vidrio deben ser un diccionario"
+        
+        # Campos requeridos
+        campos_requeridos = ['tipo', 'ancho', 'alto']
+        for campo in campos_requeridos:
+            if campo not in datos_vidrio or not datos_vidrio[campo]:
+                return False, {}, f"El campo '{campo}' es requerido"
+        
+        # Sanitizar datos usando el sistema unificado si está disponible
+        try:
+            from rexus.utils.unified_sanitizer import unified_sanitizer
+            datos_sanitizados = unified_sanitizer.sanitize_dict(datos_vidrio)
+        except ImportError:
+            # Fallback: sanitización básica
+            datos_sanitizados = {}
+            for key, value in datos_vidrio.items():
+                if isinstance(value, str):
+                    datos_sanitizados[key] = str(value).strip()
+                else:
+                    datos_sanitizados[key] = value
+        
+        # Validaciones específicas
+        try:
+            ancho = float(datos_sanitizados.get('ancho', 0))
+            alto = float(datos_sanitizados.get('alto', 0))
+            
+            if ancho <= 0 or alto <= 0:
+                return False, {}, "Las dimensiones deben ser mayores a 0"
+                
+            # Actualizar con valores validados
+            datos_sanitizados['ancho'] = ancho
+            datos_sanitizados['alto'] = alto
+            
+        except (ValueError, TypeError):
+            return False, {}, "Las dimensiones deben ser números válidos"
+        
+        logger.debug(f"Datos de vidrio validados: {datos_sanitizados}")
+        return True, datos_sanitizados, ""
 
     def cargar_datos(self, filtros=None):
         """Carga los datos de vidrios en la vista."""
@@ -64,52 +140,167 @@ class VidriosController(QObject):
         except Exception as e:
             self.mostrar_error(f"Error en búsqueda: {e}")
 
+    @auth_required
     def agregar_vidrio(self, datos_vidrio):
-        """Agrega un nuevo vidrio."""
+        """
+        Agrega un nuevo vidrio con validación completa.
+        
+        Args:
+            datos_vidrio: Dict con datos del vidrio
+            
+        Returns:
+            tuple: (exito, mensaje, vidrio_id)
+        """
+        logger.info(f"Iniciando creación de vidrio para usuario: {self.usuario_actual}")
+        
         if not self.model:
-            return
+            error_msg = "Modelo de vidrios no disponible"
+            logger.error(error_msg)
+            self.mostrar_error(error_msg)
+            return False, error_msg, None
+
+        # Validar datos de entrada
+        es_valido, datos_sanitizados, mensaje_error = self._validar_datos_vidrio(datos_vidrio)
+        if not es_valido:
+            logger.warning(f"Validación fallida: {mensaje_error}")
+            self.mostrar_error(f"Error de validación: {mensaje_error}")
+            return False, mensaje_error, None
 
         try:
-            vidrio_id = self.model.crear_vidrio(datos_vidrio)
+            # Agregar información de auditoría
+            datos_sanitizados['usuario_creacion'] = self.usuario_actual
+            
+            vidrio_id = self.model.crear_vidrio(datos_sanitizados)
             if vidrio_id:
-                self.mostrar_mensaje("Vidrio agregado exitosamente")
+                success_msg = "Vidrio agregado exitosamente"
+                logger.info(f"Vidrio creado con ID: {vidrio_id}")
+                
+                self.mostrar_mensaje(success_msg, tipo="success")
                 self.cargar_datos()
-                self.vidrio_agregado.emit(datos_vidrio)
+                self.vidrio_agregado.emit(datos_sanitizados)
+                
+                return True, success_msg, vidrio_id
             else:
-                self.mostrar_error("Error al agregar vidrio")
+                error_msg = "No se pudo crear el vidrio en la base de datos"
+                logger.error(error_msg)
+                self.mostrar_error(error_msg)
+                return False, error_msg, None
+                
         except Exception as e:
-            self.mostrar_error(f"Error agregando vidrio: {e}")
+            error_msg = f"Error agregando vidrio: {str(e)}"
+            logger.error(error_msg, exc_info=True)
+            self.mostrar_error(error_msg)
+            return False, error_msg, None
 
+    @auth_required
     def editar_vidrio(self, vidrio_id, datos_vidrio):
-        """Edita un vidrio existente."""
+        """
+        Edita un vidrio existente con validación completa.
+        
+        Args:
+            vidrio_id: ID del vidrio a editar
+            datos_vidrio: Dict con nuevos datos del vidrio
+            
+        Returns:
+            tuple: (exito, mensaje)
+        """
+        logger.info(f"Iniciando edición de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual}")
+        
         if not self.model:
-            return
+            error_msg = "Modelo de vidrios no disponible"
+            logger.error(error_msg)
+            self.mostrar_error(error_msg)
+            return False, error_msg
+
+        # Validar ID
+        if not vidrio_id or not isinstance(vidrio_id, (int, str)):
+            error_msg = "ID de vidrio inválido"
+            logger.warning(error_msg)
+            self.mostrar_error(error_msg)
+            return False, error_msg
+
+        # Validar datos de entrada
+        es_valido, datos_sanitizados, mensaje_error = self._validar_datos_vidrio(datos_vidrio)
+        if not es_valido:
+            logger.warning(f"Validación fallida para ID {vidrio_id}: {mensaje_error}")
+            self.mostrar_error(f"Error de validación: {mensaje_error}")
+            return False, mensaje_error
 
         try:
-            if self.model.actualizar_vidrio(vidrio_id, datos_vidrio):
-                self.mostrar_mensaje("Vidrio actualizado exitosamente")
+            # Agregar información de auditoría
+            datos_sanitizados['usuario_modificacion'] = self.usuario_actual
+            
+            if self.model.actualizar_vidrio(vidrio_id, datos_sanitizados):
+                success_msg = "Vidrio actualizado exitosamente"
+                logger.info(f"Vidrio ID: {vidrio_id} actualizado exitosamente")
+                
+                self.mostrar_mensaje(success_msg, tipo="success")
                 self.cargar_datos()
-                self.vidrio_actualizado.emit(datos_vidrio)
+                self.vidrio_actualizado.emit(datos_sanitizados)
+                
+                return True, success_msg
             else:
-                self.mostrar_error("Error al actualizar vidrio")
+                error_msg = "No se pudo actualizar el vidrio en la base de datos"
+                logger.error(f"Fallo al actualizar vidrio ID: {vidrio_id}")
+                self.mostrar_error(error_msg)
+                return False, error_msg
+                
         except Exception as e:
-            self.mostrar_error(f"Error editando vidrio: {e}")
+            error_msg = f"Error editando vidrio: {str(e)}"
+            logger.error(f"Error editando vidrio ID: {vidrio_id}: {str(e)}", exc_info=True)
+            self.mostrar_error(error_msg)
+            return False, error_msg
 
     @admin_required
     def eliminar_vidrio(self, vidrio_id):
-        """Elimina un vidrio."""
+        """
+        Elimina un vidrio (requiere permisos de administrador).
+        
+        Args:
+            vidrio_id: ID del vidrio a eliminar
+            
+        Returns:
+            tuple: (exito, mensaje)
+        """
+        logger.info(f"Iniciando eliminación de vidrio ID: {vidrio_id} por usuario: {self.usuario_actual}")
+        
         if not self.model:
-            return
+            error_msg = "Modelo de vidrios no disponible"
+            logger.error(error_msg)
+            self.mostrar_error(error_msg)
+            return False, error_msg
+
+        # Validar ID
+        if not vidrio_id or not isinstance(vidrio_id, (int, str)):
+            error_msg = "ID de vidrio inválido"
+            logger.warning(error_msg)
+            self.mostrar_error(error_msg)
+            return False, error_msg
 
         try:
+            # Verificar si el vidrio está en uso antes de eliminar
+            # (esta lógica puede estar en el modelo, pero es buena práctica verificar aquí también)
+            
             if self.model.eliminar_vidrio(vidrio_id):
-                self.mostrar_mensaje("Vidrio eliminado exitosamente")
+                success_msg = "Vidrio eliminado exitosamente"
+                logger.info(f"Vidrio ID: {vidrio_id} eliminado por administrador: {self.usuario_actual}")
+                
+                self.mostrar_mensaje(success_msg, tipo="success")
                 self.cargar_datos()
                 self.vidrio_eliminado.emit(vidrio_id)
+                
+                return True, success_msg
             else:
-                self.mostrar_error("Error al eliminar vidrio")
+                error_msg = "No se pudo eliminar el vidrio (puede estar en uso)"
+                logger.warning(f"Fallo al eliminar vidrio ID: {vidrio_id}")
+                self.mostrar_error(error_msg)
+                return False, error_msg
+                
         except Exception as e:
-            self.mostrar_error(f"Error eliminando vidrio: {e}")
+            error_msg = f"Error eliminando vidrio: {str(e)}"
+            logger.error(f"Error eliminando vidrio ID: {vidrio_id}: {str(e)}", exc_info=True)
+            self.mostrar_error(error_msg)
+            return False, error_msg
 
     def asignar_vidrio_obra(self,
 vidrio_id,
@@ -163,29 +354,60 @@ obra_id,
             return []
 
     def crear_vidrio(self, datos_vidrio):
-        """Crea un nuevo vidrio usando el modelo."""
-        if not self.model:
-            return False, "Modelo no disponible"
-
-        try:
-            resultado = self.model.crear_vidrio(datos_vidrio)
-            if resultado[0]:  # Éxito
-                self.vidrio_agregado.emit(datos_vidrio)
-            return resultado
-        except Exception as e:
-            return False, f"Error creando vidrio: {str(e)}"
+        """
+        Método de compatibilidad que delega al método principal agregar_vidrio.
+        
+        Returns:
+            tuple: (exito, mensaje, vidrio_id) - Formato consistente
+        """
+        logger.debug("Método crear_vidrio llamado - delegando a agregar_vidrio")
+        return self.agregar_vidrio(datos_vidrio)
 
     def actualizar_por_obra(self, obra_data):
-        """Actualiza vidrios cuando se crea una obra."""
-        print(f"[VIDRIOS] Actualizando por obra: {obra_data}")
+        """
+        Actualiza vidrios cuando se crea una obra.
+        
+        Args:
+            obra_data: Datos de la obra que afecta a los vidrios
+        """
+        logger.info(f"Actualizando vidrios por cambio en obra: {obra_data.get('id', 'N/A')}")
+        
+        try:
+            # Aquí iría la lógica de actualización específica
+            # Por ejemplo, recalcular asignaciones, stock, etc.
+            if self.view:
+                self.cargar_datos()  # Recargar vista si existe
+                
+        except Exception as e:
+            logger.error(f"Error actualizando vidrios por obra: {str(e)}", exc_info=True)
+            self.mostrar_error("Error actualizando vidrios por cambio en obra")
 
-    def mostrar_mensaje(self, mensaje):
-        """Muestra un mensaje informativo."""
+    def mostrar_mensaje(self, mensaje, tipo="info"):
+        """
+        Muestra un mensaje usando el sistema centralizado.
+        
+        Args:
+            mensaje: Mensaje a mostrar
+            tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
+        """
+        logger.info(f"Mensaje mostrado: {mensaje}")
+        
         if self.view:
-            QMessageBox.information(self.view, "Vidrios", mensaje)
+            if tipo == "success":
+                show_success(self.view, "Vidrios", mensaje)
+            elif tipo == "warning":
+                show_warning(self.view, "Vidrios", mensaje)
+            elif tipo == "error":
+                show_error(self.view, "Error - Vidrios", mensaje)
+            else:
+                show_info(self.view, "Vidrios", mensaje)
 
     def mostrar_error(self, mensaje):
-        """Muestra un mensaje de error."""
+        """Muestra un mensaje de error con logging."""
+        logger.error(f"Error en vidrios: {mensaje}")
+        
         if self.view:
-            QMessageBox.critical(self.view, "Error - Vidrios", mensaje)
-        print(f"[ERROR VIDRIOS] {mensaje}")
+            show_error(self.view, "Error - Vidrios", mensaje)
+        else:
+            # Fallback si no hay vista
+            logger.error(f"[NO VIEW] Error: {mensaje}")

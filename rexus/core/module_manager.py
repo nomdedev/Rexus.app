@@ -142,7 +142,7 @@ class ModuleManager:
             return view
 
         except Exception as e:
-            print(f"[ERROR] [{module_name}] Error cargando módulo: {e}")
+            logger.error([{module_name}] Error cargando módulo: {e})
 
             # Mostrar traceback completo para debugging
             import traceback
@@ -265,9 +265,7 @@ controller_class,
                     )
                     return
                 else:
-                    print(
-                        f"[WARN]  [{module_name}] Método {specific_method} no encontrado en controlador"
-                    )
+                    logger.warning([{module_name}] Método {specific_method} no encontrado en controlador)
 
             # 2. Intentar métodos genéricos de fallback
             for method_name in fallback_methods:
@@ -283,12 +281,12 @@ controller_class,
 
         except Exception as e:
             # No fallar completamente por error de datos iniciales
-            print(f"[ERROR] [{module_name}] Error cargando datos iniciales: {e}")
+            logger.error([{module_name}] Error cargando datos iniciales: {e})
             # Log más detallado para debugging
             import traceback
 
-            print(f"[DEBUG] Stack trace para {module_name}:")
-            print(f"[DEBUG] {traceback.format_exc()}")
+            logger.debug(Stack trace para {module_name}:)
+            logger.debug({traceback.format_exc()})
 
             # Intentar mostrar error en UI si es posible
             self._show_data_loading_error(module_name, str(e))
@@ -315,7 +313,7 @@ controller_class,
             QTimer.singleShot(1000, show_error)
 
         except Exception as ui_error:
-            print(f"[ERROR] No se pudo mostrar error de UI: {ui_error}")
+            logger.error(No se pudo mostrar error de UI: {ui_error})
 
     def _create_error_widget(self, module_name: str, error_message: str) -> QWidget:
         """Crea widget de diagnóstico avanzado para errores de módulos."""

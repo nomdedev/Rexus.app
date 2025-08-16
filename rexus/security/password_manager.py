@@ -68,7 +68,7 @@ class PasswordManager:
                 password_bytes = password.encode('utf-8')
                 hashed_bytes = hashed.encode('utf-8')
                 return self.bcrypt.checkpw(password_bytes, hashed_bytes)
-            except Exception:
+            except (ValueError, TypeError, UnicodeDecodeError, AttributeError):
                 return False
         else:
             # Fallback hash
@@ -79,7 +79,7 @@ class PasswordManager:
                 salt, stored_hash = hashed.split(':', 1)
                 computed_hash = self._fallback_hash(password, salt)
                 return computed_hash == hashed
-            except Exception:
+            except (ValueError, TypeError, UnicodeDecodeError, IndexError):
                 return False
 
     def _fallback_hash(self, password: str, salt: str) -> str:

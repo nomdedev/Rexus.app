@@ -289,7 +289,7 @@ class RexusAPI:
                                 algorithms=["HS256"]
                             )
                             user_id = payload.get("sub", "anonymous")
-                        except Exception:
+                        except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, jwt.DecodeError, KeyError, ValueError):
                             pass  # Mantener user_id como anonymous si falla
 
                     # Validar token CSRF

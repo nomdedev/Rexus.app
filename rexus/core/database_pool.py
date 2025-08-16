@@ -495,7 +495,7 @@ def database_transaction(database_name: str):
             # Commit automático si no hay excepciones
             conn._connection.commit()
 
-        except Exception:
+        except (sqlite3.Error, AttributeError, RuntimeError):
             # Rollback en caso de error
             try:
                 conn._connection.rollback()

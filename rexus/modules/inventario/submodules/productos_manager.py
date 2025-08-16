@@ -277,7 +277,7 @@ class ProductosManager:
             categorias = [row[0] for row in cursor.fetchall() if row[0]]
             return categorias if categorias else ["GENERAL"]
 
-        except Exception:
+        except (sqlite3.Error, AttributeError, TypeError):
             return ["GENERAL", "HERRAMIENTAS", "MATERIALES", "SERVICIOS"]
 
     def _generar_qr_code(self, codigo: str) -> str:

@@ -104,7 +104,7 @@ class DatabasePool:
                     # Verificar que la conexión siga siendo válida
                     connection.execute("SELECT 1")
                     self.connections.put(connection)
-                except:
+                except (sqlite3.Error, OSError):
                     # Conexión dañada, cerrarla y decrementar contador
                     connection.close()
                     with self.lock:
@@ -117,7 +117,7 @@ class DatabasePool:
                 try:
                     conn = self.connections.get_nowait()
                     conn.close()
-                except:
+                except (sqlite3.Error, OSError, AttributeError):
                     pass
             self.active_connections = 0
 

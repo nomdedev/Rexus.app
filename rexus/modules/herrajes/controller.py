@@ -7,13 +7,13 @@ Maneja la lógica entre el modelo y la vista para herrajes.
 
 import logging
 from typing import Dict, List
-from PyQt6.QtCore import QObject, pyqtSignal
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
+from PyQt6.QtCore import pyqtSignal
+from rexus.core.base_controller import BaseController
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 from .model import HerrajesModel
 
-class HerrajesController(QObject):
+class HerrajesController(BaseController):
     """Controlador simplificado para la gestión de herrajes."""
 
     # Señales para comunicación con otros módulos

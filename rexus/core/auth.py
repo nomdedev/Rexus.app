@@ -328,68 +328,58 @@ password_hash,
             return False
 
         try:
-            # Construir query dinámico
-            updates = []
-            params = []
-
-            if username:
-                updates.append("usuario = ?")
-                params.append(username)
-            if role:
-                updates.append("rol = ?")
-                params.append(role)
-            if nombre:
-                updates.append("nombre = ?")
-                params.append(nombre)
-            if apellido:
-                updates.append("apellido = ?")
-                params.append(apellido)
-            if email:
-                updates.append("email = ?")
-                params.append(email)
-            if status:
-                updates.append("estado = ?")
-                params.append(status)
-
-            if not updates:
+            updates_data = self._build_update_data(username, role, nombre, apellido, email, status)
+            if not updates_data:
                 return False
 
-            params.append(user_id)
-
-            # SEGURIDAD: Usar queries predefinidas para evitar construcción dinámica
-            if not updates:
-                return False
-
-            # Mapear campos permitidos a queries seguras predefinidas
-            allowed_fields = {
-                'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
-                'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',
-                'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
-                'estado': 'UPDATE usuarios SET estado = ? WHERE id = ?'
-            }
-
-            # Procesar cada update de forma segura
-            success = True
-            for update in updates:
-                field_name = update.split(' = ?')[0].strip()
-                if field_name in allowed_fields and \
-                    field_name in [u.split(' = ?')[0].strip() for u in updates]:
-                    # Encontrar el valor correspondiente
-                    field_index = [u.split(' = ?')[0].strip() for u in updates].index(field_name)
-                    field_value = params[field_index]
-                    query = allowed_fields[field_name]
-                    result = self.db_connection.execute_non_query(query, (field_value, params[-1]))
-                    if not result:
-                        success = False
-                        break
-
-            result = success
-
-            return result
+            return self._execute_secure_updates(user_id, updates_data)
 
         except Exception as e:
             print(f"Error actualizando usuario: {e}")
             return False
+
+    def _build_update_data(self, username: str = None, role: str = None,
+                          nombre: str = None, apellido: str = None, 
+                          email: str = None, status: str = None) -> dict:
+        """Construye los datos de actualización de forma segura."""
+        update_data = {}
+        
+        if username:
+            update_data['usuario'] = username
+        if role:
+            update_data['rol'] = role
+        if nombre:
+            update_data['nombre'] = nombre
+        if apellido:
+            update_data['apellido'] = apellido
+        if email:
+            update_data['email'] = email
+        if status:
+            update_data['estado'] = status
+            
+        return update_data
+
+    def _execute_secure_updates(self, user_id: int, updates_data: dict) -> bool:
+        """Ejecuta las actualizaciones de forma segura usando queries predefinidas."""
+        allowed_fields = {
+            'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',
+            'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',
+            'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
+            'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',
+            'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
+            'estado': 'UPDATE usuarios SET estado = ? WHERE id = ?'
+        }
+
+        for field_name, field_value in updates_data.items():
+            if field_name not in allowed_fields:
+                continue
+                
+            query = allowed_fields[field_name]
+            result = self.db_connection.execute_non_query(query, (field_value, user_id))
+            if not result:
+                return False
+
+        return True
 
 # Instancia global del gestor de autenticación
 _auth_manager = None

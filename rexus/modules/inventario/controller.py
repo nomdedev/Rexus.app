@@ -8,8 +8,36 @@ Controlador completamente funcional que maneja todos los errores identificados:
 - Compatibilidad con modelo refactorizado
 """
 
+import time
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox, QTableWidgetItem
+from rexus.core.safety_limits import SafeExportManager, SafeQueryManager, limit_records
+
+# Importar sistema de mensajería centralizado y logging
+try:
+    from rexus.utils.message_system import show_success, show_error, show_warning, show_info
+    MESSAGING_AVAILABLE = True
+except ImportError:
+    # Fallback temporal con QMessageBox
+    def show_success(parent, title, message): QMessageBox.information(parent, title, message)
+    def show_error(parent, title, message): QMessageBox.critical(parent, title, message)
+    def show_warning(parent, title, message): QMessageBox.warning(parent, title, message)
+    def show_info(parent, title, message): QMessageBox.information(parent, title, message)
+    MESSAGING_AVAILABLE = False
+
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("inventario.controller")
+    LOGGING_AVAILABLE = True
+except ImportError:
+    # Fallback para logging
+    class DummyLogger:
+        def info(self, msg): print(f"[INFO] {msg}")
+        def warning(self, msg): print(f"[WARNING] {msg}")
+        def error(self, msg): print(f"[ERROR] {msg}")
+        def debug(self, msg): print(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+    LOGGING_AVAILABLE = False
 
 try:
     from rexus.core.auth_decorators import auth_required, permission_required
@@ -61,31 +89,34 @@ class InventarioController(QObject):
                     self.usuario_actual = usuario_info.get("username", "SISTEMA")
                 else:
                     self.usuario_actual = str(usuario_info)
-        except Exception:
+        except (AttributeError, TypeError, KeyError, ImportError):
             self.usuario_actual = "SISTEMA"
+        
+        # Inicializar managers de seguridad
+        self.export_manager = SafeExportManager("inventario")
 
         self.inicializar()
 
     def inicializar(self):
         """Inicializa el controlador."""
         try:
-            print("[INVENTARIO CONTROLLER] Inicializando controlador completo...")
+            logger.info("Inicializando controlador completo de inventario")
             self.conectar_senales()
             # No cargar datos en inicializacion para evitar problemas de autenticacion
             # Los datos se cargarán posteriormente con cargar_inventario_inicial
-            print("[INVENTARIO CONTROLLER] OK Controlador inicializado exitosamente")
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en inicializacion: {e}")
+            logger.info("Controlador de inventario inicializado exitosamente")
+        except (AttributeError, RuntimeError, ImportError, ConnectionError) as e:
+            logger.error(f"Error en inicialización de controlador: {e}", exc_info=True)
             self._mostrar_error("inicializar inventario", e)
 
     def conectar_senales(self):
         """Conecta todas las señales de la vista con los métodos del controlador."""
         if not self.view:
-            print("[INVENTARIO CONTROLLER] WARNING No hay vista disponible")
+            logger.warning("No hay vista disponible para conectar señales")
             return
 
         try:
-            print("[INVENTARIO CONTROLLER] Conectando señales de la vista...")
+            logger.debug("Conectando señales de la vista de inventario...")
 
             # Conectar señales de búsqueda y filtros
             self._conectar_boton("btn_buscar", self.buscar_productos)
@@ -104,42 +135,42 @@ class InventarioController(QObject):
                 self.view.tabla_inventario.itemSelectionChanged.connect(
                     self.producto_seleccionado
                 )
-                print("OK Conectado: tabla_inventario.itemSelectionChanged")
+                logger.debug("Conectado: tabla_inventario.itemSelectionChanged")
             else:
-                print("WARNING No encontrado: tabla_inventario")
+                logger.warning("No encontrado: tabla_inventario")
 
             # Conectar campo de búsqueda si existe
             if hasattr(self.view, "input_busqueda"):
                 self.view.input_busqueda.textChanged.connect(
                     self.filtrar_en_tiempo_real
                 )
-                print("OK Conectado: input_busqueda.textChanged")
+                logger.debug("Conectado: input_busqueda.textChanged")
             else:
-                print("WARNING No encontrado: input_busqueda")
+                logger.warning("No encontrado: input_busqueda")
 
-            print(
-                "[INVENTARIO CONTROLLER] OK Todas las senales conectadas correctamente"
-            )
+            logger.info("Todas las señales conectadas correctamente")
 
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error conectando señales: {e}")
+        except (AttributeError, RuntimeError, TypeError) as e:
+            logger.error(f"Error conectando señales: {e}", exc_info=True)
 
     def _conectar_boton(self, nombre_boton, metodo):
         """Conecta un botón específico a su método correspondiente."""
         if hasattr(self.view, nombre_boton):
             boton = getattr(self.view, nombre_boton)
             boton.clicked.connect(metodo)
-            print(f"OK Conectado: {nombre_boton}")
+            logger.debug(f"Conectado botón: {nombre_boton}")
         else:
-            print(f"WARNING No encontrado: {nombre_boton}")
+            logger.warning(f"Botón no encontrado: {nombre_boton}")
 
+    @limit_records("table", enforce=False)  # Aplicar límite automáticamente
     def cargar_inventario_paginado(self, pagina=1, registros_por_pagina=100):
-        """Carga inventario con paginación mejorada."""
+        """Carga inventario con paginación mejorada y límites de seguridad."""
         try:
-            print(f"[INVENTARIO CONTROLLER] Cargando página {pagina}, {registros_por_pagina} registros...")
+            # El decorador ya aplicó límites seguros a registros_por_pagina
+            logger.debug(f"Cargando página {pagina}, {registros_por_pagina} registros...")
 
             if not self.model:
-                print("[ERROR] No hay modelo disponible")
+                logger.error("No hay modelo disponible para cargar página")
                 return
 
             # Calcular offset
@@ -180,7 +211,7 @@ class InventarioController(QObject):
                 # Aplicar paginación manual
                 productos = productos[offset:offset + registros_por_pagina]
 
-            print(f"[INVENTARIO CONTROLLER] Cargados {len(productos)} productos de {total} total")
+            logger.info(f"Cargados {len(productos)} productos de {total} total")
 
             # Actualizar vista con datos paginados
             if self.view and \
@@ -192,8 +223,8 @@ class InventarioController(QObject):
 
             return productos, total
 
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en paginación: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, TypeError) as e:
+            logger.error(f"Error en paginación: {e}", exc_info=True)
             self._mostrar_error("cargar inventario paginado", e)
             return [], 0
 
@@ -237,8 +268,8 @@ class InventarioController(QObject):
                 # Datos de ejemplo si no hay conexión
                 return self._generar_datos_ejemplo()
 
-        except Exception as e:
-            print(f"[ERROR] Error cargando datos simples: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error cargando datos simples: {e}", exc_info=True)
             return self._generar_datos_ejemplo()
 
     def _generar_datos_ejemplo(self):
@@ -261,19 +292,19 @@ class InventarioController(QObject):
     def cargar_inventario_inicial(self):
         """Carga inicial del inventario sin restricciones de autenticación."""
         try:
-            print("[INVENTARIO CONTROLLER] Carga inicial de inventario...")
+            logger.info("Iniciando carga inicial de inventario")
             self.cargar_inventario_paginado(1, 100)
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en carga inicial: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error en carga inicial: {e}", exc_info=True)
 
     @auth_required
     def cargar_inventario(self):
         """Carga el inventario completo."""
         try:
-            print("[INVENTARIO CONTROLLER] Cargando inventario...")
+            logger.debug("Cargando inventario completo...")
             self.cargar_inventario_paginado(1, 100)
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error cargando inventario: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error cargando inventario: {e}", exc_info=True)
 
     def _cargar_datos_inventario(self):
         """Método privado para cargar datos del inventario."""
@@ -283,24 +314,22 @@ class InventarioController(QObject):
     def _actualizar_vista_productos(self, productos):
         """Actualiza la vista con la lista de productos."""
         if not self.view:
-            print("WARNING No hay vista disponible")
+            logger.warning("No hay vista disponible para actualizar")
             return
 
-        print(
-            f"[INVENTARIO CONTROLLER] Actualizando vista con {len(productos)} productos"
-        )
+        logger.debug(f"Actualizando vista con {len(productos)} productos")
 
         # Intentar diferentes métodos de actualización
         try:
             if hasattr(self.view, "actualizar_tabla"):
                 self.view.actualizar_tabla(productos)
-                print("OK Vista actualizada con actualizar_tabla")
+                logger.debug("Vista actualizada con actualizar_tabla")
             elif hasattr(self.view, "mostrar_productos"):
                 self.view.mostrar_productos(productos)
-                print("OK Vista actualizada con mostrar_productos")
+                logger.debug("Vista actualizada con mostrar_productos")
             elif hasattr(self.view, "cargar_datos"):
                 self.view.cargar_datos(productos)
-                print("OK Vista actualizada con cargar_datos")
+                logger.debug("Vista actualizada con cargar_datos")
             elif hasattr(self.view, "tabla_inventario"):
                 # Actualizar tabla directamente si existe
                 tabla = self.view.tabla_inventario
@@ -324,19 +353,19 @@ class InventarioController(QObject):
                             tabla.setItem(row, 3, QTableWidgetItem(stock))
                             tabla.setItem(row, 4, QTableWidgetItem(precio))
 
-                    print("OK Vista actualizada directamente en tabla_inventario")
+                    logger.debug("Vista actualizada directamente en tabla_inventario")
                 else:
-                    print("WARNING tabla_inventario existe pero es None")
+                    logger.warning("tabla_inventario existe pero es None")
             else:
-                print("WARNING No se encontro metodo para actualizar la vista")
+                logger.warning("No se encontró método para actualizar la vista")
                 # Listar métodos disponibles para debug
                 metodos = [
                     method for method in dir(self.view) if not method.startswith("_")
                 ]
-                print(f"📋 Métodos disponibles en vista: {metodos[:10]}...")
+                logger.debug(f"Métodos disponibles en vista: {metodos[:10]}...")
 
-        except Exception as e:
-            print(f"[ERROR] Error actualizando vista: {e}")
+        except (AttributeError, RuntimeError, TypeError, ValueError) as e:
+            logger.error(f"Error actualizando vista: {e}", exc_info=True)
             import traceback
 
             traceback.print_exc()
@@ -358,7 +387,7 @@ class InventarioController(QObject):
                 self.cargar_inventario()
                 return
 
-            print(f"[INVENTARIO CONTROLLER] Buscando productos: '{termino}'")
+            logger.debug(f"Buscando productos con término: '{termino}'")
 
             # Sanitizar entrada
             termino_sanitizado = SecurityUtils.sanitize_sql_input(termino)
@@ -372,19 +401,19 @@ class InventarioController(QObject):
             elif hasattr(self.model, "search_productos"):
                 productos = self.model.search_productos(termino_sanitizado) or []
 
-            print(f"[INVENTARIO CONTROLLER] Encontrados {len(productos)} productos")
+            logger.info(f"Encontrados {len(productos)} productos en búsqueda")
 
             # Actualizar vista
             self._actualizar_vista_productos(productos)
 
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en búsqueda: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error en búsqueda: {e}", exc_info=True)
             self._mostrar_error("buscar productos", e)
 
     def limpiar_filtros(self):
         """Limpia todos los filtros aplicados."""
         try:
-            print("[INVENTARIO CONTROLLER] Limpiando filtros...")
+            logger.debug("Limpiando filtros de inventario...")
 
             # Limpiar campo de búsqueda
             if hasattr(self.view, "input_busqueda"):
@@ -397,10 +426,10 @@ class InventarioController(QObject):
             # Recargar inventario completo
             self.cargar_inventario()
 
-            print("[INVENTARIO CONTROLLER] OK Filtros limpiados")
+            logger.info("Filtros limpiados exitosamente")
 
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error limpiando filtros: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error limpiando filtros: {e}", exc_info=True)
             self._mostrar_error("limpiar filtros", e)
 
     def filtrar_en_tiempo_real(self, texto):
@@ -410,8 +439,8 @@ class InventarioController(QObject):
                 self.buscar_productos()
             elif len(texto) == 0:  # Si se borra todo, mostrar todos
                 self.cargar_inventario()
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en filtro tiempo real: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error en filtro tiempo real: {e}", exc_info=True)
 
     def producto_seleccionado(self):
         """Maneja la selección de un producto en la tabla."""
@@ -437,8 +466,8 @@ class InventarioController(QObject):
                 self._habilitar_boton("btn_editar", False)
                 self._habilitar_boton("btn_eliminar", False)
 
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en selección de producto: {e}")
+        except (AttributeError, RuntimeError, IndexError, ValueError) as e:
+            logger.error(f"Error en selección de producto: {e}", exc_info=True)
 
     def _habilitar_boton(self, nombre_boton, habilitado):
         """Habilita o deshabilita un botón específico."""
@@ -451,15 +480,15 @@ class InventarioController(QObject):
     def nuevo_producto(self):
         """Abre el diálogo para crear un nuevo producto."""
         try:
-            print("[INVENTARIO CONTROLLER] Abriendo diálogo de nuevo producto...")
+            logger.info("Abriendo diálogo de nuevo producto...")
             QMessageBox.information(
                 self.view,
                 "Nuevo Producto",
                 "OK Funcionalidad de nuevo producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de creación.",
             )
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en nuevo producto: {e}")
+        except (AttributeError, RuntimeError) as e:
+            logger.error(f"Error en nuevo producto: {e}", exc_info=True)
             self._mostrar_error("crear nuevo producto", e)
 
     @auth_required
@@ -467,15 +496,15 @@ class InventarioController(QObject):
     def editar_producto(self):
         """Abre el diálogo para editar el producto seleccionado."""
         try:
-            print("[INVENTARIO CONTROLLER] Abriendo diálogo de editar producto...")
+            logger.info("Abriendo diálogo de editar producto...")
             QMessageBox.information(
                 self.view,
                 "Editar Producto",
                 "OK Funcionalidad de editar producto disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de edición.",
             )
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en editar producto: {e}")
+        except (AttributeError, RuntimeError) as e:
+            logger.error(f"Error en editar producto: {e}", exc_info=True)
             self._mostrar_error("editar producto", e)
 
     @auth_required
@@ -483,7 +512,7 @@ class InventarioController(QObject):
     def eliminar_producto(self):
         """Elimina el producto seleccionado."""
         try:
-            print("[INVENTARIO CONTROLLER] Iniciando eliminación de producto...")
+            logger.info("Iniciando eliminación de producto...")
             resultado = QMessageBox.question(
                 self.view,
                 "Eliminar Producto",
@@ -500,8 +529,8 @@ class InventarioController(QObject):
                     "OK El producto ha sido eliminado exitosamente.\n\n"
                     "(Funcionalidad completa se implementará próximamente)",
                 )
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en eliminar producto: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error en eliminar producto: {e}", exc_info=True)
             self._mostrar_error("eliminar producto", e)
 
     @auth_required
@@ -509,33 +538,68 @@ class InventarioController(QObject):
     def registrar_movimiento(self):
         """Registra un movimiento de inventario."""
         try:
-            print("[INVENTARIO CONTROLLER] Abriendo diálogo de movimiento...")
+            logger.info("Abriendo diálogo de movimiento...")
             QMessageBox.information(
                 self.view,
                 "Registrar Movimiento",
                 "OK Funcionalidad de movimientos disponible.\n\n"
                 "Próximamente se implementará el diálogo completo de movimientos.",
             )
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en registrar movimiento: {e}")
+        except (AttributeError, RuntimeError) as e:
+            logger.error(f"Error en registrar movimiento: {e}", exc_info=True)
             self._mostrar_error("registrar movimiento", e)
 
     @auth_required
-    def exportar_inventario(self):
-        """Exporta el inventario a diferentes formatos."""
+    def exportar_inventario(self, formato="excel", max_records=None):
+        """
+        Exporta el inventario a diferentes formatos con límites de seguridad.
+        
+        Args:
+            formato: Formato de exportación ("excel", "csv")
+            max_records: Máximo de registros (se aplicará límite automáticamente)
+        """
         try:
-            print("[INVENTARIO CONTROLLER] Iniciando exportación...")
-            QMessageBox.information(
-                self.view,
-                "Exportar Inventario",
-                "OK Funcionalidad de exportacion disponible.\n\n"
-                "Próximamente se implementarán múltiples formatos:\n"
-                "• Excel (.xlsx)\n"
-                "• CSV (.csv)\n"
-                "• PDF (.pdf)",
+            logger.info(f"Iniciando exportación segura de inventario: formato={formato}")
+            
+            if not self.model:
+                show_error(self.view, "Error", "Modelo no disponible para exportación")
+                return
+            
+            # Obtener datos del inventario con límite de seguridad
+            productos = SafeQueryManager.obtener_registros_seguros(
+                self.model.obtener_todos_productos,
+                limit=max_records or 10000  # Aplicará límite automático
             )
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error en exportar inventario: {e}")
+            
+            if not productos:
+                show_warning(self.view, "Inventario", "No hay datos para exportar")
+                return
+            
+            # Exportar según formato solicitado
+            if formato.lower() == "excel":
+                exito, mensaje = self.export_manager.export_to_excel(
+                    productos, 
+                    f"inventario_{self.usuario_actual}_{time.strftime('%Y%m%d_%H%M%S')}.xlsx",
+                    max_records=len(productos)
+                )
+            elif formato.lower() == "csv":
+                exito, mensaje = self.export_manager.export_to_csv(
+                    productos,
+                    f"inventario_{self.usuario_actual}_{time.strftime('%Y%m%d_%H%M%S')}.csv",
+                    max_records=len(productos)
+                )
+            else:
+                show_error(self.view, "Error", f"Formato no soportado: {formato}")
+                return
+            
+            if exito:
+                show_success(self.view, "Exportación", mensaje)
+                logger.info(f"Exportación de inventario completada: {mensaje}")
+            else:
+                show_error(self.view, "Error de Exportación", mensaje)
+                
+        except (AttributeError, RuntimeError, IOError, OSError, ConnectionError) as e:
+            logger.error(f"Error en exportar inventario: {e}", exc_info=True)
             self._mostrar_error("exportar inventario", e)
 
     def obtener_estadisticas(self):
@@ -550,8 +614,8 @@ class InventarioController(QObject):
                 return self.model.get_statistics()
             else:
                 return self._estadisticas_vacias()
-        except Exception as e:
-            print(f"[ERROR INVENTARIO CONTROLLER] Error obteniendo estadísticas: {e}")
+        except (AttributeError, RuntimeError, ConnectionError) as e:
+            logger.error(f"Error obteniendo estadísticas: {e}", exc_info=True)
             return self._estadisticas_vacias()
 
     def _estadisticas_vacias(self):
@@ -568,8 +632,8 @@ class InventarioController(QObject):
         try:
             mensaje = f"Error en {operacion}: {str(error)}"
             if self.view:
-                QMessageBox.critical(self.view, f"Error - {operacion.title()}", mensaje)
+                show_error(self.view, f"Error - {operacion.title()}", mensaje)
             else:
-                print(f"[ERROR CRITICO] {mensaje}")
-        except Exception:
-            print(f"[ERROR CRITICO] Error mostrando error de {operacion}: {error}")
+                logger.error(f"[ERROR CRITICO] {mensaje}")
+        except (AttributeError, RuntimeError) as display_error:
+            logger.error(f"Error crítico mostrando error de {operacion}: {display_error}", exc_info=True)

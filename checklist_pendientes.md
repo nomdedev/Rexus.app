@@ -61,6 +61,40 @@
 - [x] **Vidrios** - ✅ 100% migrado
 - [x] **SQLQueryManager** - ✅ Funcionando
 
+### 🛠️ CORRECCIONES IDENTIFICADAS (AUDITORÍA_EXPERTA_2025)
+
+> Esta sección resume todas las problemas y correcciones detectadas por la auditoría automática y manual (patrones de riesgo: exec/eval, excepciones amplias, uso inseguro de cursor.execute, print sin logging, uso de threading y diálogos bloqueantes). Las tareas están priorizadas P0 (críticas), P1 (urgentes) y P2 (mejoras / hardening).
+
+#### P0 - Seguridad y estabilidad (arreglar antes de producción)
+- [ ] Revisar y eliminar cualquier uso de exec/eval; sustituir por parsing/funciones seguras o whitelist de comandos.
+- [ ] Reemplazar todos los `except Exception:` amplios por excepciones concretas y añadir logging contextual y re-raise cuando corresponda.
+- [ ] Forzar parametrización de todas las llamadas `cursor.execute(...)` que concatenen strings; usar consultas parametrizadas o SQL externos y revisarlos con SQLQueryManager.
+- [ ] Revisar transacciones: asegurar BEGIN/COMMIT/ROLLBACK donde haya series de operaciones SQL (detectar y arreglar posibles inconsistencias/partial commits).
+- [ ] Sustituir usos de APIs bloqueantes críticos (por ejemplo, `QDialog.exec()` usado en hilo principal) por alternativas no bloqueantes o flujos que no paralicen la UI.
+- [ ] Reemplazar `print()` por llamadas a `logging` configurado (migrar con `tools/migrate_prints_dryrun.py` y aplicar `tools/migrate_prints_to_logging.py`). Ejemplo detectado en: `notificaciones/controller.py` (propuesta: añadir logger y cambiar print por logger.debug/info).
+
+#### P1 - Mantenibilidad y prevención de errores
+- [ ] Revisar usos de `threading` y usar `concurrent.futures` o `QThread`/async según corresponda; asegurarse de manejo seguro de estados compartidos y cierres.
+- [ ] Añadir validación y sanitización de entradas antes de pasarlas a consultas SQL, APIs externas o evaluación dinámica.
+- [ ] Añadir tests unitarios que cubran los paths corregidos (happy path + 1 caso de fallo) para: manejo de transacciones, SQL parametrizado, y tratamiento de excepciones.
+- [ ] Auditar y documentar todos los puntos donde se usan recursos externos (archivos, sockets, DB) para asegurar cierres en finally/with.
+
+#### P2 - Hardening, observabilidad y limpieza
+- [ ] Añadir métricas/telemetría básica (contadores de errores críticos, tiempos de respuesta de queries largas).
+- [ ] Reemplazar prints de debugging remanentes por logger y aplicar niveles adecuados (DEBUG/INFO/WARNING/ERROR).
+- [ ] Eliminar código muerto y backups antiguos innecesarios del repo (mover a backup offline) según lista de auditoría.
+- [ ] Normalizar formato de logs y añadir rotación/size limit en la configuración de logging.
+
+#### Acciones rápidas (tareas de bajo riesgo y alto impacto)
+- [ ] Ejecutar y revisar `tools/migrate_prints_dryrun.py` en todo el repo y aplicar cambios verificados.
+- [ ] Crear ticket/issue por cada `exec/eval` encontrado con contexto y propuesta de sustitución.
+- [ ] Generar lista concreta de todos los `cursor.execute` inseguros y priorizar por criticidad (P0 primero).
+
+#### Estado / Responsables
+- [ ] Asignar responsables para P0 (seguridad) y marcar fecha límite corta (48-72h) para fixes críticos.
+- [ ] Incluir una verificación de pre-despliegue que corra linters de seguridad (bandit o similar) y el script de migración de prints.
+
+
 ### 2. **Funcionalidades CRUD Pendientes** 🟡 ÚNICO PENDIENTE
 - [ ] **PEDIDOS** - CRUD completo, integración con inventario
 - [ ] **COMPRAS** - CRUD completo, gestión de proveedores

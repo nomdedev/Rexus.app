@@ -19,8 +19,17 @@ import sys
 from io import BytesIO
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple, Union
+from sqlite3 import IntegrityError
 
 import qrcode
+
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("inventario.model")
+except ImportError:
+    import logging
+    logger = logging.getLogger("inventario.model")
 
 # Importar sistema de paginación
 from rexus.utils.pagination import PaginatedTableMixin
@@ -35,7 +44,7 @@ try:
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] Security utilities not available in inventario: {e}")
+    logger.warning(Security utilities not available in inventario: {e})
     SECURITY_AVAILABLE = False
 
 # Importar nueva utilidad de seguridad SQL
@@ -45,7 +54,7 @@ try:
 
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    print("[WARNING] SQL security utilities not available in inventario")
+    logger.warning(SQL security utilities not available in inventario)
     SQL_SECURITY_AVAILABLE = False
     sql_script_loader = None
 
@@ -61,7 +70,7 @@ try:
     SUBMODULES_AVAILABLE = True
     print("OK [INVENTARIO] Submódulos especializados cargados")
 except ImportError as e:
-    print(f"[WARNING] Submódulos especializados no disponibles en inventario: {e}")
+    logger.warning(Submódulos especializados no disponibles en inventario: {e})
     SUBMODULES_AVAILABLE = False
     BaseUtilities = None
     ProductosManager = None
@@ -78,7 +87,7 @@ try:
 
     CONSULTAS_MANAGER_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] ConsultasManager not available in inventario: {e}")
+    logger.warning(ConsultasManager not available in inventario: {e})
     CONSULTAS_MANAGER_AVAILABLE = False
     ConsultasManager = None
 
@@ -141,7 +150,7 @@ class InventarioModel(PaginatedTableMixin):
                 self.categorias_manager = CategoriasManager(db_connection=self.db_connection)
                 print("OK [INVENTARIO] Managers especializados inicializados")
                 self.managers_available = True
-            except Exception as e:
+            except (ImportError, AttributeError, RuntimeError) as e:
                 print(f"[ERROR INVENTARIO] Error inicializando managers especializados: {e}")
                 self.managers_available = False
                 self._init_fallback_managers()
@@ -291,8 +300,8 @@ datos_reserva: Dict[str,
                     if script_content:
                         cursor.execute(script_content, params or [])
                         return cursor.fetchall()
-                except Exception as e:
-                    print(f"[ERROR] Error ejecutando script {script_name}: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error ejecutando script {script_name}: {e})
 
             # Usar query de respaldo si está disponible
             if fallback_query:
@@ -301,8 +310,8 @@ datos_reserva: Dict[str,
 
             return None
 
-        except Exception as e:
-            print(f"[ERROR] Error ejecutando consulta segura: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(Error ejecutando consulta segura: {e})
             return None
 
     def _validate_table_name(self, table_name: str) -> str:
@@ -439,8 +448,8 @@ datos_reserva: Dict[str,
 
             return productos, total_items
 
-        except Exception as e:
-            print(f"Error obteniendo datos paginados de inventario: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error obteniendo datos paginados de inventario: {e}"))
             return [], 0
 
     def obtener_productos_paginados(
@@ -511,7 +520,7 @@ datos_reserva: Dict[str,
                     )
 
             print(f"[INVENTARIO] Verificación de tablas completada.")
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError) as e:
             print(f"[ERROR INVENTARIO] Error verificando tablas: {e}")
             raise
 
@@ -590,7 +599,7 @@ datos_reserva: Dict[str,
 
             return productos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo productos: {e}")
             return []
 
@@ -661,8 +670,8 @@ datos_reserva: Dict[str,
                 "stock_disponible": int(cantidad_nueva),
             }
 
-        except Exception as e:
-            print(f"[ERROR] Error validando stock: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(Error validando stock: {e})
             return {
                 "valido": False,
                 "mensaje": "Error en validación de stock",
@@ -688,7 +697,7 @@ datos_reserva: Dict[str,
 
             return None
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo producto {producto_id}: {e}")
             return None
 
@@ -711,7 +720,7 @@ datos_reserva: Dict[str,
 
             return None
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo producto por código: {e}")
             return None
 
@@ -790,7 +799,7 @@ datos_reserva: Dict[str,
             print(f"[INVENTARIO] Producto creado: {datos_producto.get('codigo')}")
             return producto_id
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
             print(f"[ERROR INVENTARIO] Error creando producto: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -852,7 +861,7 @@ producto_id,
             print(f"[INVENTARIO] Producto actualizado: {producto_id}")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error actualizando producto: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -937,7 +946,7 @@ producto_id,
             print(f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}")
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error registrando movimiento: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -998,7 +1007,7 @@ producto_id,
 
             return movimientos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo movimientos: {e}")
             return []
 
@@ -1039,7 +1048,7 @@ producto_id,
 
             return filename
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error generando QR: {e}")
             return ""
 
@@ -1072,7 +1081,7 @@ producto_id,
 
             return [row[0] for row in rows]
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo categorías: {e}")
             return []
 
@@ -1098,7 +1107,7 @@ producto_id,
             self.db_connection.commit()
             print("[INVENTARIO] QRs actualizados")
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error actualizando QRs: {e}")
 
     def obtener_estadisticas_inventario(self):
@@ -1136,7 +1145,7 @@ producto_id,
                 "movimientos_mes": movimientos_mes,
             }
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo estadísticas: {e}")
             return {}
 
@@ -1170,7 +1179,7 @@ producto_id,
 
             return productos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo productos por obra: {e}")
             return []
 
@@ -1250,7 +1259,7 @@ producto_id,
             self.db_connection.commit()
             return True, f"Producto asignado correctamente a la obra"
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error asignando producto a obra: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -1321,7 +1330,7 @@ producto_id,
             self.db_connection.commit()
             return True
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error gestionando lote: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -1385,7 +1394,7 @@ producto_id,
 
             return lotes
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo lotes: {e}")
             return []
 
@@ -1481,7 +1490,7 @@ fecha_fin,
 
             return movimientos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error generando reporte: {e}")
             return []
 
@@ -1536,7 +1545,7 @@ fecha_fin,
 
             return productos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(
                 f"[ERROR INVENTARIO] Error obteniendo productos próximos a vencer: {e}"
             )
@@ -1632,7 +1641,7 @@ fecha_fin,
 
             return valoracion
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error generando valoración: {e}")
             return {}
 
@@ -1671,8 +1680,8 @@ fecha_fin,
                     ]
                     base_query = " ".join(lines)
 
-                except Exception as e:
-                    print(f"[ERROR] Error con script loader: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error con script loader: {e})
                     # Query base de respaldo segura
                     base_query = """
                     SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
@@ -1784,7 +1793,7 @@ fecha_fin,
 
             return productos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error en filtrado avanzado: {e}")
             return []
 
@@ -1808,7 +1817,7 @@ fecha_fin,
                 import barcode
                 from barcode.writer import ImageWriter
             except ImportError:
-                print("[ERROR] Se requiere la librería python-barcode")
+                logger.error(Se requiere la librería python-barcode)
                 return None
 
             # Generar código EAN13 o CODE128 según el formato del código
@@ -1828,7 +1837,7 @@ fecha_fin,
 
             return fp.getvalue()
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error generando código de barras: {e}")
             return None
 
@@ -1909,7 +1918,7 @@ fecha_fin,
 
                     exitosos += 1
 
-                except Exception as e:
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
                     print(
                         f"[ERROR] Fallo en producto {item.get('id', 'desconocido')}: {e}"
                     )
@@ -1918,7 +1927,7 @@ fecha_fin,
             self.db_connection.commit()
             return exitosos, fallidos
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error actualizando precios masivamente: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
@@ -2084,8 +2093,8 @@ descripcion,
                         movimiento_params,
                     )
 
-            except Exception as e:
-                print(f"[ERROR] Error usando scripts: {e}")
+            except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                logger.error(Error usando scripts: {e})
                 # Fallback completo con queries seguras fijas
                 cursor.execute(
                     """
@@ -2120,7 +2129,7 @@ descripcion,
                 f"Material '{descripcion}' reservado correctamente para la obra",
             )
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             if self.db_connection:
                 self.db_connection.connection.rollback()
             print(f"[ERROR INVENTARIO] Error reservando material: {e}")
@@ -2185,7 +2194,7 @@ descripcion,
 
             return reservas
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo reservas por obra: {e}")
             return []
 
@@ -2244,7 +2253,7 @@ descripcion,
 
             return reservas
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo reservas por producto: {e}")
             return []
 
@@ -2297,8 +2306,8 @@ descripcion,
                         )
                     else:
                         raise Exception("Script no disponible")
-                except Exception as e:
-                    print(f"[ERROR] Error usando script: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error usando script: {e})
                     # Fallback con query segura
                     cursor.execute(
                         """
@@ -2348,8 +2357,8 @@ descripcion,
                         """,
                             movimiento_params,
                         )
-                except Exception as e:
-                    print(f"[ERROR] Error usando script movimiento: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error usando script movimiento: {e})
                     cursor.execute(
                         """
                         INSERT INTO historial (accion,
@@ -2379,7 +2388,7 @@ descripcion,
 
             return True, "Reserva liberada correctamente"
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             if self.db_connection:
                 self.db_connection.connection.rollback()
             print(f"[ERROR INVENTARIO] Error liberando reserva: {e}")
@@ -2421,7 +2430,7 @@ descripcion,
             # SQLQueryManager ya devuelve diccionarios, no necesitamos conversión
             return resultados
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo disponibilidad: {e}")
             return []
 
@@ -2479,7 +2488,7 @@ descripcion,
 
             return reporte
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error generando reporte: {e}")
             return {}
 
@@ -2522,7 +2531,7 @@ descripcion,
 
             return estadisticas
 
-        except Exception as e:
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             print(f"[ERROR INVENTARIO] Error obteniendo estadísticas: {e}")
             return {}
 
@@ -2552,8 +2561,8 @@ descripcion,
 
             return obras
 
-        except Exception as e:
-            print(f"Error al obtener obras activas: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener obras activas: {str(e)}"))
             return []
 
     def obtener_categorias(self):
@@ -2573,8 +2582,8 @@ descripcion,
 
             return categorias
 
-        except Exception as e:
-            print(f"Error al obtener categorías: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener categorías: {str(e)}"))
             return []
 
     def obtener_estadisticas_generales(self):
@@ -2615,8 +2624,8 @@ descripcion,
                 "productos_activos": productos_activos,
             }
 
-        except Exception as e:
-            print(f"Error al obtener estadísticas generales: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener estadísticas generales: {str(e)}"))
             return {
                 "total_productos": 0,
                 "valor_total": 0.0,
@@ -2659,8 +2668,8 @@ descripcion,
 
             return productos
 
-        except Exception as e:
-            print(f"Error al buscar productos: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al buscar productos: {str(e)}"))
             return []
 
     def obtener_estadisticas_reservas(self, obra_id):
@@ -2723,8 +2732,8 @@ descripcion,
                 "stock_disponible": stock_disponible,
             }
 
-        except Exception as e:
-            print(f"Error al obtener estadísticas de reservas: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener estadísticas de reservas: {str(e)}"))
             return {
                 "total_reservas": 0,
                 "valor_reservado": 0.0,
@@ -2743,9 +2752,7 @@ descripcion,
         """
         # Verificar conexión a base de datos
         if not self.db_connection:
-            print(
-                "[ERROR] Sin conexión a base de datos en obtener_productos_disponibles_para_reserva"
-            )
+            logger.error(Sin conexión a base de datos en obtener_productos_disponibles_para_reserva)
             return []
 
         try:
@@ -2760,9 +2767,7 @@ descripcion,
                     if script_content:
                         cursor.execute(script_content)
                     else:
-                        print(
-                            "[WARNING] No se pudo cargar script, usando consulta de respaldo"
-                        )
+                        logger.warning(No se pudo cargar script, usando consulta de respaldo)
                         # Consulta de respaldo parameterizada
                         cursor.execute("""
                             SELECT
@@ -2781,8 +2786,8 @@ descripcion,
                                 AND (i.stock - COALESCE(r.stock_reservado, 0)) > 0
                             ORDER BY i.codigo
                         """)
-                except Exception as e:
-                    print(f"[ERROR] Error con script loader: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error con script loader: {e})
                     # Consulta de respaldo parameterizada
                     cursor.execute("""
                         SELECT
@@ -2838,8 +2843,8 @@ descripcion,
                 productos.append(producto)
 
             return productos
-        except Exception as e:
-            print(f"[ERROR] Error en obtener_productos_disponibles_para_reserva: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(Error en obtener_productos_disponibles_para_reserva: {e})
             return []
 
     def obtener_info_obra(self, obra_id):
@@ -2872,8 +2877,8 @@ descripcion,
 
             return None
 
-        except Exception as e:
-            print(f"Error al obtener información de obra: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener información de obra: {str(e)}"))
             return None
 
     def obtener_detalle_disponibilidad(self, producto_id):
@@ -2914,8 +2919,8 @@ descripcion,
                 "valor_reservado": reservas[2] or 0.0,
             }
 
-        except Exception as e:
-            print(f"Error al obtener detalle de disponibilidad: {str(e)}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(f"Error al obtener detalle de disponibilidad: {str(e)}"))
             return None
 
     def _get_productos_demo(self):
@@ -3052,8 +3057,8 @@ descripcion,
                         base_paginated_query = " ".join(lines)
                     else:
                         raise Exception("No se pudo cargar script de paginación")
-                except Exception as e:
-                    print(f"[ERROR] Error cargando script paginados: {e}")
+                except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                    logger.error(Error cargando script paginados: {e})
                     # Query de respaldo
                     base_paginated_query = """
                         SELECT id, codigo, descripcion, tipo as categoria, acabado as subcategoria,
@@ -3139,8 +3144,8 @@ descripcion,
 
             return datos, total_registros
 
-        except Exception as e:
-            print(f"[ERROR] Error obteniendo datos paginados: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(Error obteniendo datos paginados: {e})
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
@@ -3150,8 +3155,8 @@ descripcion,
                                                    limit=1,
                                                    filtros=filtros)
             return total
-        except Exception as e:
-            print(f"[ERROR] Error obteniendo total de registros: {e}")
+        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+            logger.error(Error obteniendo total de registros: {e})
             return 0
 
     def _get_base_query(self):
@@ -3163,8 +3168,8 @@ descripcion,
                 )
                 if script_content:
                     return script_content.strip()
-            except Exception as e:
-                print(f"[ERROR] Error cargando script base: {e}")
+            except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                logger.error(Error cargando script base: {e})
 
         # Query de respaldo segura usando tabla fija
         return self.sql_manager.get_query('inventario', 'obtener_reportes_inventario')
@@ -3178,8 +3183,8 @@ descripcion,
                 )
                 if script_content:
                     return script_content.strip()
-            except Exception as e:
-                print(f"[ERROR] Error cargando script count: {e}")
+            except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
+                logger.error(Error cargando script count: {e})
 
         # Query de respaldo segura usando tabla fija
         return self.sql_manager.get_query('inventario', 'contar_perfiles_activos')
@@ -3206,7 +3211,7 @@ descripcion,
             )
         else:
             # Fallback si no hay ConsultasManager
-            print("[WARNING] ConsultasManager no disponible, usando datos de ejemplo")
+            logger.warning(ConsultasManager no disponible, usando datos de ejemplo)
             return {
                 "items": [
                     {
@@ -3248,7 +3253,7 @@ datos_producto: Dict[str,
 
     def _obtener_producto_por_codigo_fallback(self, codigo: str) -> Optional[Dict[str, Any]]:
         """Método fallback para obtener producto por código."""
-        print(f"[WARNING] Función obtener_producto_por_codigo no disponible para código: {codigo}")
+        logger.warning(Función obtener_producto_por_codigo no disponible para código: {codigo})
         return None
 
     def _actualizar_stock_fallback(self, producto_id: int, nuevo_stock: Union[int, float],

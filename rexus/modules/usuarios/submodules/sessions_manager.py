@@ -114,7 +114,7 @@ class SessionsManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (sqlite3.Error, AttributeError):
                     pass
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
@@ -219,7 +219,7 @@ class SessionsManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (sqlite3.Error, AttributeError):
                     pass
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
@@ -265,7 +265,7 @@ class SessionsManager:
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
+                except (sqlite3.Error, AttributeError):
                     pass
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:

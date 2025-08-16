@@ -13,6 +13,19 @@ from datetime import datetime
 
 from PyQt6.QtCore import QObject, QTimer, pyqtSlot
 
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("administracion.controller")
+except ImportError:
+    class DummyLogger:
+        def info(self, msg): logger.debug(f"[INFO] {msg}")
+        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
+        def error(self, msg): logger.error(f"[ERROR] {msg}")
+        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+
+
 from rexus.core.security import get_security_manager
 
 # Importar submódulos
@@ -101,10 +114,10 @@ model=None,
             # Conectar señales entre submódulos
             self.conectar_senales_submodulos()
 
-            print("[ADMINISTRACIÓN] Submódulos inicializados correctamente")
+            logger.info("[ADMINISTRACIÓN] Submódulos inicializados correctamente")
 
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error inicializando submódulos: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error inicializando submódulos: {e}")
 
     def conectar_senales_submodulos(self):
         """Conecta las señales entre los submódulos."""
@@ -128,7 +141,7 @@ model=None,
                 )
 
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
 
     def actualizar_estadisticas_generales(self, estadisticas):
         """Actualiza las estadísticas generales con datos de los submódulos."""
@@ -136,7 +149,7 @@ model=None,
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
 
     def manejar_reporte_generado(self, archivo_reporte):
         """Maneja la generación de reportes de los submódulos."""
@@ -144,7 +157,7 @@ model=None,
             if self.view:
                 self.view.mostrar_mensaje("Reporte", f"Reporte generado: {archivo_reporte}", "info")
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
 
     def manejar_nomina_calculada(self, nomina_data):
         """Maneja el cálculo de nómina del submódulo de RRHH."""
@@ -152,7 +165,7 @@ model=None,
             if self.view:
                 self.view.mostrar_mensaje("Nómina", f"Nómina calculada para {len(nomina_data)} empleados", "info")
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
 
     def manejar_empleado_agregado(self, empleado_data):
         """Maneja la adición de empleados del submódulo de RRHH."""
@@ -160,7 +173,7 @@ model=None,
             # Actualizar estadísticas y datos relacionados
             self.actualizar_datos()
         except Exception as e:
-            print(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
 
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
@@ -169,7 +182,7 @@ model=None,
             if self.view:
                 self.view.actualizar_status("[CHECK] Datos cargados exitosamente")
         except Exception as e:
-            print(f"Error cargando datos iniciales: {e}")
+            logger.debug(f"Error cargando datos iniciales: {e}")
             if self.view:
                 self.view.actualizar_status(f"[ERROR] Error cargando datos: {str(e)}")
 
@@ -196,7 +209,7 @@ model=None,
                 self.view.actualizar_status("🔄 Datos actualizados")
 
         except Exception as e:
-            print(f"Error actualizando datos: {e}")
+            logger.debug(f"Error actualizando datos: {e}")
             if self.view:
                 self.view.actualizar_status(f"[ERROR] Error actualizando: {str(e)}")
 
@@ -204,7 +217,7 @@ model=None,
         """Actualiza el dashboard con resumen de datos."""
         try:
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_dashboard")
+                logger.info("[ERROR] self.model es None en actualizar_dashboard")
                 return
 
             # Obtener resumen contable
@@ -214,7 +227,7 @@ model=None,
                 self.view.actualizar_dashboard({"resumen": resumen})
 
         except Exception as e:
-            print(f"Error actualizando dashboard: {e}")
+            logger.debug(f"Error actualizando dashboard: {e}")
 
     def actualizar_libro_contable(self):
         """Actualiza la tabla del libro contable."""
@@ -223,7 +236,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_libro_contable")
+                logger.info("[ERROR] self.model es None en actualizar_libro_contable")
                 return
 
             # Obtener fechas de filtro
@@ -245,7 +258,7 @@ model=None,
             self.view.actualizar_tabla_libro(asientos)
 
         except Exception as e:
-            print(f"Error actualizando libro contable: {e}")
+            logger.debug(f"Error actualizando libro contable: {e}")
 
     def actualizar_recibos(self):
         """Actualiza la tabla de recibos."""
@@ -254,7 +267,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_recibos")
+                logger.info("[ERROR] self.model es None en actualizar_recibos")
                 return
 
             # Obtener fechas de filtro
@@ -276,7 +289,7 @@ model=None,
             self.view.actualizar_tabla_recibos(recibos)
 
         except Exception as e:
-            print(f"Error actualizando recibos: {e}")
+            logger.debug(f"Error actualizando recibos: {e}")
 
     def actualizar_pagos_obra(self):
         """Actualiza la tabla de pagos por obra."""
@@ -285,7 +298,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_pagos_obra")
+                logger.info("[ERROR] self.model es None en actualizar_pagos_obra")
                 return
 
             # Obtener filtros
@@ -299,7 +312,7 @@ model=None,
             # self.view.actualizar_tabla_pagos_obra(pagos)
 
         except Exception as e:
-            print(f"Error actualizando pagos por obra: {e}")
+            logger.debug(f"Error actualizando pagos por obra: {e}")
 
     def actualizar_materiales(self):
         """Actualiza la tabla de materiales."""
@@ -318,7 +331,7 @@ model=None,
             # self.view.actualizar_tabla_materiales(materiales)
 
         except Exception as e:
-            print(f"Error actualizando materiales: {e}")
+            logger.debug(f"Error actualizando materiales: {e}")
 
     def actualizar_departamentos(self):
         """Actualiza la tabla de departamentos."""
@@ -327,7 +340,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_departamentos")
+                logger.info("[ERROR] self.model es None en actualizar_departamentos")
                 return
 
             # Obtener departamentos
@@ -337,7 +350,7 @@ model=None,
             # self.view.actualizar_tabla_departamentos(departamentos)
 
         except Exception as e:
-            print(f"Error actualizando departamentos: {e}")
+            logger.debug(f"Error actualizando departamentos: {e}")
 
     def actualizar_empleados(self):
         """Actualiza la tabla de empleados."""
@@ -346,7 +359,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_empleados")
+                logger.info("[ERROR] self.model es None en actualizar_empleados")
                 return
 
             # Obtener filtros
@@ -364,7 +377,7 @@ model=None,
             # self.view.actualizar_tabla_empleados(empleados)
 
         except Exception as e:
-            print(f"Error actualizando empleados: {e}")
+            logger.debug(f"Error actualizando empleados: {e}")
 
     def actualizar_auditoria(self):
         """Actualiza la tabla de auditoría."""
@@ -373,7 +386,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en actualizar_auditoria")
+                logger.info("[ERROR] self.model es None en actualizar_auditoria")
                 return
 
             # Obtener filtros
@@ -390,7 +403,7 @@ model=None,
             # self.view.actualizar_tabla_auditoria(auditoria)
 
         except Exception as e:
-            print(f"Error actualizando auditoría: {e}")
+            logger.debug(f"Error actualizando auditoría: {e}")
 
     # MÉTODOS PARA CREAR REGISTROS
     @pyqtSlot(dict)
@@ -401,7 +414,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en crear_departamento")
+                logger.info("[ERROR] self.model es None en crear_departamento")
                 if self.view:
                     self.view.mostrar_mensaje(
                         "Error", "Modelo no disponible", "error"
@@ -431,7 +444,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error creando departamento: {e}")
+            logger.debug(f"Error creando departamento: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error creando departamento: {str(e)}", "error"
@@ -445,7 +458,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en crear_empleado")
+                logger.info("[ERROR] self.model es None en crear_empleado")
                 if self.view:
                     self.view.mostrar_mensaje(
                         "Error", "Modelo no disponible", "error"
@@ -480,7 +493,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error creando empleado: {e}")
+            logger.debug(f"Error creando empleado: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error creando empleado: {str(e)}", "error"
@@ -494,7 +507,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en crear_asiento_contable")
+                logger.info("[ERROR] self.model es None en crear_asiento_contable")
                 if self.view:
                     self.view.mostrar_mensaje(
                         "Error", "Modelo no disponible", "error"
@@ -529,7 +542,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error creando asiento contable: {e}")
+            logger.debug(f"Error creando asiento contable: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error creando asiento: {str(e)}", "error"
@@ -543,7 +556,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en crear_recibo")
+                logger.info("[ERROR] self.model es None en crear_recibo")
                 if self.view:
                     self.view.mostrar_mensaje(
                         "Error", "Modelo no disponible", "error"
@@ -578,7 +591,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error creando recibo: {e}")
+            logger.debug(f"Error creando recibo: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error creando recibo: {str(e)}", "error"
@@ -592,7 +605,7 @@ model=None,
                 return
 
             if not self.model:
-                print("[ERROR] self.model es None en imprimir_recibo")
+                logger.info("[ERROR] self.model es None en imprimir_recibo")
                 if self.view:
                     self.view.mostrar_mensaje(
                         "Error", "Modelo no disponible", "error"
@@ -624,7 +637,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error imprimiendo recibo: {e}")
+            logger.debug(f"Error imprimiendo recibo: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error imprimiendo recibo: {str(e)}", "error"
@@ -634,7 +647,7 @@ model=None,
         """Genera un archivo PDF del recibo."""
         try:
             if not self.model:
-                print("[ERROR] self.model es None en generar_pdf_recibo")
+                logger.info("[ERROR] self.model es None en generar_pdf_recibo")
                 return None
 
             # Obtener datos del recibo
@@ -671,7 +684,7 @@ model=None,
             return archivo_pdf
 
         except Exception as e:
-            print(f"Error generando PDF: {e}")
+            logger.debug(f"Error generando PDF: {e}")
             return None
 
     @pyqtSlot(dict)
@@ -716,7 +729,7 @@ model=None,
                     )
 
         except Exception as e:
-            print(f"Error generando reporte: {e}")
+            logger.debug(f"Error generando reporte: {e}")
             if self.view:
                 self.view.mostrar_mensaje(
                     "Error", f"Error generando reporte: {str(e)}", "error"
@@ -726,7 +739,7 @@ model=None,
         """Obtiene los datos para el reporte especificado."""
         try:
             if not self.model:
-                print("[ERROR] self.model es None en obtener_datos_reporte")
+                logger.info("[ERROR] self.model es None en obtener_datos_reporte")
                 return None
 
             if tipo_reporte == "libro_contable":
@@ -751,7 +764,7 @@ model=None,
                 return None
 
         except Exception as e:
-            print(f"Error obteniendo datos del reporte: {e}")
+            logger.debug(f"Error obteniendo datos del reporte: {e}")
             return None
 
     def generar_archivo_reporte(self, datos, tipo_reporte, formato):
@@ -779,7 +792,7 @@ model=None,
                 return None
 
         except Exception as e:
-            print(f"Error generando archivo del reporte: {e}")
+            logger.debug(f"Error generando archivo del reporte: {e}")
             return None
 
     def generar_pdf_reporte(self, datos, archivo, tipo_reporte):
@@ -794,7 +807,7 @@ model=None,
             return archivo
 
         except Exception as e:
-            print(f"Error generando PDF: {e}")
+            logger.debug(f"Error generando PDF: {e}")
             return None
 
     def generar_excel_reporte(self, datos, archivo, tipo_reporte):
@@ -810,7 +823,7 @@ model=None,
             return archivo_txt
 
         except Exception as e:
-            print(f"Error generando Excel: {e}")
+            logger.debug(f"Error generando Excel: {e}")
             return None
 
     def generar_csv_reporte(self, datos, archivo, tipo_reporte):
@@ -826,7 +839,7 @@ model=None,
             return archivo_csv
 
         except Exception as e:
-            print(f"Error generando CSV: {e}")
+            logger.debug(f"Error generando CSV: {e}")
             return None
 
     def verificar_permisos(self, accion):
@@ -862,7 +875,7 @@ model=None,
                 return False
 
         except Exception as e:
-            print(f"Error verificando permisos: {e}")
+            logger.debug(f"Error verificando permisos: {e}")
             return False
 
     def establecer_usuario(self, usuario, rol):
@@ -881,11 +894,11 @@ model=None,
         """Obtiene estadísticas de un departamento específico."""
         try:
             if not self.model:
-                print("[ERROR] self.model es None en obtener_estadisticas_departamento")
+                logger.info("[ERROR] self.model es None en obtener_estadisticas_departamento")
                 return None
             return self.model.obtener_estadisticas_departamento(departamento_id)
         except Exception as e:
-            print(f"Error obteniendo estadísticas de departamento: {e}")
+            logger.debug(f"Error obteniendo estadísticas de departamento: {e}")
             return None
 
     def exportar_datos(self, tipo_datos, formato="JSON"):
@@ -896,7 +909,7 @@ model=None,
             if not self.verificar_permisos("exportar_datos"):
                 return None
             if not self.model:
-                print("[ERROR] self.model es None en exportar_datos")
+                logger.info("[ERROR] self.model es None en exportar_datos")
                 return None
             # Obtener datos según el tipo
             if tipo_datos == "completo":
@@ -931,5 +944,5 @@ f,
             return archivo
 
         except Exception as e:
-            print(f"Error exportando datos: {e}")
+            logger.debug(f"Error exportando datos: {e}")
             return None

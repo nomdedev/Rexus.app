@@ -10,6 +10,39 @@ from typing import Any, Dict, List, Optional
 from PyQt6.QtCore import QObject, pyqtSignal
 from PyQt6.QtWidgets import QMessageBox
 
+# Importar sistema de mensajería centralizado y logging
+try:
+    from rexus.utils.message_system import show_success, show_error, show_warning, show_info
+    MESSAGING_AVAILABLE = True
+except ImportError:
+    # Fallback temporal con QMessageBox
+    def show_success(parent, title, message): QMessageBox.information(parent, title, message)
+    def show_error(parent, title, message): QMessageBox.critical(parent, title, message)
+    def show_warning(parent, title, message): QMessageBox.warning(parent, title, message)
+    def show_info(parent, title, message): QMessageBox.information(parent, title, message)
+    MESSAGING_AVAILABLE = False
+
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("pedidos.controller")
+    LOGGING_AVAILABLE = True
+except ImportError:
+    # Fallback para logging
+    class DummyLogger:
+        def info(self, msg): print(f"[INFO] {msg}")
+        def warning(self, msg): print(f"[WARNING] {msg}")
+        def error(self, msg): print(f"[ERROR] {msg}")
+        def debug(self, msg): print(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+    LOGGING_AVAILABLE = False
+
+# Importar decoradores de autenticación
+try:
+    from rexus.core.auth_decorators import auth_required, admin_required
+except ImportError:
+    def auth_required(func): return func
+    def admin_required(func): return func
+
 
 class PedidosController(QObject):
     """Controlador para el módulo de pedidos."""
@@ -103,6 +136,7 @@ class PedidosController(QObject):
             print(f"[ERROR PEDIDOS CONTROLLER] Error creando pedido: {e}")
             self.mostrar_error(f"Error creando pedido: {str(e)}")
 
+    @auth_required
     def actualizar_pedido(self, datos_pedido:Dict[str, Any]):
         """Actualiza un pedido existente."""
         try:
@@ -114,13 +148,30 @@ class PedidosController(QObject):
             if not self.validar_datos_pedido(datos_pedido, es_actualizacion=True):
                 return
 
-            # TODO: Implementar actualización de pedidos
-            self.mostrar_info("Actualización de pedidos próximamente...")
+            # Implementar actualización de pedidos
+            logger.info(f"Actualizando pedido ID: {pedido_id}")
+            
+            # Agregar información de auditoría
+            datos_pedido['usuario_modificacion'] = self.usuario_actual.get('id', 1)
+            datos_pedido['fecha_modificacion'] = datetime.datetime.now()
+            
+            if self.model.actualizar_pedido(pedido_id, datos_pedido):
+                success_msg = "Pedido actualizado exitosamente"
+                logger.info(f"Pedido {pedido_id} actualizado correctamente")
+                
+                self.mostrar_mensaje(success_msg, "success")
+                self.pedido_actualizado.emit({"id": pedido_id, **datos_pedido})
+                self.cargar_pedidos()  # Recargar vista
+            else:
+                error_msg = "No se pudo actualizar el pedido"
+                logger.error(f"Fallo al actualizar pedido {pedido_id}")
+                self.mostrar_error(error_msg)
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS CONTROLLER] Error actualizando pedido: {e}")
+            logger.error(f"Error actualizando pedido: {e}", exc_info=True)
             self.mostrar_error(f"Error actualizando pedido: {str(e)}")
 
+    @admin_required
     def eliminar_pedido(self, pedido_id:str):
         """Elimina un pedido."""
         try:
@@ -136,11 +187,23 @@ class PedidosController(QObject):
                 )
 
                 if respuesta == QMessageBox.StandardButton.Yes:
-                    # TODO: Implementar eliminación de pedidos
-                    self.mostrar_info("Eliminación de pedidos próximamente...")
+                    # Implementar eliminación de pedidos
+                    logger.info(f"Eliminando pedido ID: {pedido_id}")
+                    
+                    if self.model.eliminar_pedido(pedido_id):
+                        success_msg = f"Pedido {pedido_id} eliminado exitosamente"
+                        logger.info(f"Pedido {pedido_id} eliminado correctamente")
+                        
+                        self.mostrar_mensaje(success_msg, "success")
+                        self.pedido_eliminado.emit(int(pedido_id))
+                        self.cargar_pedidos()  # Recargar vista
+                    else:
+                        error_msg = f"No se pudo eliminar el pedido {pedido_id}"
+                        logger.error(f"Fallo al eliminar pedido {pedido_id}")
+                        self.mostrar_error(error_msg)
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS CONTROLLER] Error eliminando pedido: {e}")
+            logger.error(f"Error eliminando pedido: {e}", exc_info=True)
             self.mostrar_error(f"Error eliminando pedido: {str(e)}")
 
     def cambiar_estado(self, pedido_id:str, nuevo_estado: str):
@@ -270,8 +333,8 @@ class PedidosController(QObject):
 
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito."""
-        if self.view:
-            QMessageBox.information(self.view, "Éxito", mensaje)
+        logger.info(f"Éxito en pedidos: {mensaje}")
+        self.mostrar_mensaje(mensaje, "success")
 
 
     def cargar_pagina(self, pagina, registros_por_pagina=50):
@@ -319,23 +382,48 @@ class PedidosController(QObject):
             return 0
 
     def mostrar_error(self, mensaje: str):
-        """Muestra un mensaje de error."""
+        """Muestra un mensaje de error con logging."""
+        logger.error(f"Error en pedidos: {mensaje}")
+        
         if self.view:
-            QMessageBox.critical(self.view, "Error", mensaje)
+            show_error(self.view, "Error - Pedidos", mensaje)
+        else:
+            # Fallback si no hay vista
+            logger.error(f"[NO VIEW] Error: {mensaje}")
 
     def mostrar_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia."""
-        if self.view:
-            QMessageBox.warning(self.view, "Advertencia", mensaje)
+        logger.warning(f"Advertencia en pedidos: {mensaje}")
+        self.mostrar_mensaje(mensaje, "warning")
 
     def mostrar_info(self, mensaje: str):
         """Muestra un mensaje informativo."""
-        if self.view:
-            QMessageBox.information(self.view, "Información", mensaje)
+        logger.info(f"Info en pedidos: {mensaje}")
+        self.mostrar_mensaje(mensaje, "info")
 
     def get_view(self):
         """Retorna la vista del módulo."""
         return self.view
+
+    def mostrar_mensaje(self, mensaje, tipo="info"):
+        """
+        Muestra un mensaje usando el sistema centralizado.
+        
+        Args:
+            mensaje: Mensaje a mostrar
+            tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
+        """
+        logger.info(f"Mensaje mostrado: {mensaje}")
+        
+        if self.view:
+            if tipo == "success":
+                show_success(self.view, "Pedidos", mensaje)
+            elif tipo == "warning":
+                show_warning(self.view, "Pedidos", mensaje)
+            elif tipo == "error":
+                show_error(self.view, "Error - Pedidos", mensaje)
+            else:
+                show_info(self.view, "Pedidos", mensaje)
 
     def cleanup(self):
         """Limpia recursos al cerrar el módulo."""

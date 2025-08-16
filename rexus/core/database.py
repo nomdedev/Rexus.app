@@ -338,5 +338,5 @@ class AuditoriaDatabaseConnection(DatabaseConnection):
         )
         try:
             return int(result[0][0]) if result else 0
-        except Exception:
+        except (ValueError, TypeError, IndexError, AttributeError):
             return 0

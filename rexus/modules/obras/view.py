@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
 from PyQt6.QtGui import QColor
 
 from rexus.ui.standard_components import StandardComponents
+from rexus.ui.components.base_components import RexusLabel
 from rexus.utils.unified_sanitizer import sanitize_string
 from rexus.utils.message_system import show_error, show_warning, show_success
 from rexus.utils.xss_protection import FormProtector
@@ -601,8 +602,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         filtros_layout = QHBoxLayout(filtros_frame)
 
         # Vista temporal
-        vista_label = QLabel("🗓️ Vista:")
-        vista_label.setStyleSheet("font-weight: 600; color: #2563eb;")
+        vista_label = RexusLabel("🗓️ Vista:", "subtitle")
         filtros_layout.addWidget(vista_label)
 
         self.combo_vista_cronograma = QComboBox()
@@ -631,8 +631,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         filtros_layout.addWidget(separador1)
 
         # Año
-        año_label = QLabel("📅 Año:")
-        año_label.setStyleSheet("font-weight: 600; color: #2563eb;")
+        año_label = RexusLabel("📅 Año:", "subtitle")
         filtros_layout.addWidget(año_label)
 
         self.combo_año = QComboBox()
@@ -649,8 +648,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         separador2.setStyleSheet("color: #e2e8f0;")
         filtros_layout.addWidget(separador2)
 
-        estado_label = QLabel("🏗️ Estado:")
-        estado_label.setStyleSheet("font-weight: 600; color: #2563eb;")
+        estado_label = RexusLabel("🏗️ Estado:", "subtitle")
         filtros_layout.addWidget(estado_label)
 
         self.combo_estado_cronograma = QComboBox()
@@ -684,8 +682,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         acciones_layout.addStretch()
 
         # Navegación temporal mejorada
-        navegacion_label = QLabel("🔄 Navegación:")
-        navegacion_label.setStyleSheet("font-weight: 600; color: #2563eb;")
+        navegacion_label = RexusLabel("🔄 Navegación:", "subtitle")
         acciones_layout.addWidget(navegacion_label)
 
         btn_anterior = StandardComponents.create_secondary_button("◀ Anterior")
@@ -723,7 +720,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Ícono grande
-        icon_label = QLabel("📅")
+        icon_label = RexusLabel("📅", "title")
         icon_label.setStyleSheet("""
             QLabel {
                 font-size: 48px;
@@ -734,7 +731,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         icon_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Texto principal
-        main_text = QLabel("Cronograma de Obras")
+        main_text = RexusLabel("Cronograma de Obras", "title")
         main_text.setStyleSheet("""
             QLabel {
                 font-size: 18px;
@@ -747,7 +744,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         main_text.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
         # Texto secundario
-        sub_text = QLabel("Vista temporal de obras con fechas de inicio y fin")
+        sub_text = RexusLabel("Vista temporal de obras con fechas de inicio y fin", "caption")
         sub_text.setStyleSheet("""
             QLabel {
                 font-size: 12px;

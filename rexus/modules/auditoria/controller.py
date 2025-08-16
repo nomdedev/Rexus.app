@@ -8,6 +8,19 @@ import csv
 from datetime import datetime
 
 from PyQt6.QtCore import QObject
+
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("auditoria.controller")
+except ImportError:
+    class DummyLogger:
+        def info(self, msg): logger.debug(f"[INFO] {msg}")
+        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
+        def error(self, msg): logger.error(f"[ERROR] {msg}")
+        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+
 from PyQt6.QtWidgets import QFileDialog, QMessageBox
 
 class AuditoriaController(QObject):
@@ -57,7 +70,7 @@ class AuditoriaController(QObject):
             self.view.actualizar_estadisticas(estadisticas)
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
             if self.view:
                 self.view.mostrar_error(
                     f"Error cargando datos de auditoría: {e}"
@@ -101,7 +114,7 @@ class AuditoriaController(QObject):
             )
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
             self.view.mostrar_error(f"Error aplicando filtros: {e}")
 
     def exportar_datos(self, formato="csv"):
@@ -155,7 +168,7 @@ class AuditoriaController(QObject):
             )
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error exportando: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error exportando: {e}")
             self.view.mostrar_error(f"Error exportando datos: {e}")
 
     def _exportar_csv(self, registros, archivo):
@@ -269,7 +282,7 @@ class AuditoriaController(QObject):
                 )
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
             self.view.mostrar_error(f"Error limpiando registros: {e}")
 
     def registrar_accion(
@@ -313,7 +326,7 @@ class AuditoriaController(QObject):
                 resultado=resultado,
             )
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
             return False
 
     def actualizar_estadisticas(self):
@@ -325,7 +338,7 @@ class AuditoriaController(QObject):
             estadisticas = self.model.obtener_estadisticas()
             self.view.actualizar_estadisticas(estadisticas)
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
 
     def buscar_por_tabla(self, tabla, registro_id=None):
         """
@@ -362,7 +375,7 @@ class AuditoriaController(QObject):
             return registros_filtrados
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error buscando por tabla: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error buscando por tabla: {e}")
             return []
 
     def obtener_resumen_usuario(self, usuario, dias=30):
@@ -408,5 +421,5 @@ class AuditoriaController(QObject):
             }
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error obteniendo resumen usuario: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error obteniendo resumen usuario: {e}")
             return {}

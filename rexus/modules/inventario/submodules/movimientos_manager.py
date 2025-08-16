@@ -138,7 +138,7 @@ class MovimientosManager:
                             usuario,
                         ),
                     )
-            except Exception:
+            except (sqlite3.Error, AttributeError, TypeError):
                 # Fallback final con query parametrizada
                 cursor.execute(
                     """INSERT INTO movimientos_inventario (
@@ -168,7 +168,7 @@ class MovimientosManager:
                         "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
                         (nuevo_stock, producto_id)
                     )
-            except Exception:
+            except (sqlite3.Error, AttributeError, TypeError):
                 # Fallback final con query parametrizada
                 cursor.execute(
                     "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
@@ -325,7 +325,7 @@ class MovimientosManager:
             row = cursor.fetchone()
             return float(row[0]) if row else None
 
-        except Exception:
+        except (sqlite3.Error, ValueError, TypeError, AttributeError):
             return None
 
     @auth_required

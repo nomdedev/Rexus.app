@@ -40,7 +40,7 @@ widget: QWidget,
                 try:
                     context = context_func()
                     return f"{base_text}\n{context}" if context else base_text
-                except Exception:
+                except (AttributeError, RuntimeError, TypeError, ValueError):
                     return base_text
             return base_text
 

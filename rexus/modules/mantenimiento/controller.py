@@ -6,6 +6,19 @@ from typing import Dict, List
 
 from PyQt6.QtCore import QObject, pyqtSignal
 
+# Importar logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("mantenimiento.controller")
+except ImportError:
+    class DummyLogger:
+        def info(self, msg): logger.debug(f"[INFO] {msg}")
+        def warning(self, msg): logger.warning(f"[WARNING] {msg}")
+        def error(self, msg): logger.error(f"[ERROR] {msg}")
+        def debug(self, msg): logger.debug(f"[DEBUG] {msg}")
+    logger = DummyLogger()
+
+
 from rexus.core.auth_decorators import auth_required
 from rexus.utils.message_system import show_success, show_error
 from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
