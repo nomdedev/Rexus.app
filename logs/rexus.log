@@ -108,3 +108,9 @@ Traceback (most recent call last):
   File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
 UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in position 0: character maps to <undefined>
+2025-08-16 18:44:04 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:44:04 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:44:04 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 18:44:04 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 18:44:05 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 18:44:05 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
