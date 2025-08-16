@@ -1,3 +1,30 @@
+# Rexus.app - resumen rápido
+
+Este repositorio contiene la aplicación Rexus.app.
+
+- Documentación principal y reglas de organización: `CLAUDE.md`
+- Guía de desarrollo y comandos: `project_scripts/README-DEV.md` (ver `project_scripts/`)
+
+Archivos importantes en la raíz:
+- `main.py` — punto de entrada
+- `requirements.txt` — dependencias
+- `CLAUDE.md` — guía y reglas del proyecto
+
+Para desarrollo local:
+1. Copiar `.env.example` a `.env` y completar variables.
+2. Crear un entorno virtual e instalar dependencias:
+
+```powershell
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+```
+
+3. Ejecutar en modo desarrollo:
+
+```powershell
+python main.py
+```
 # Rexus.app (breve)
 
 Este repositorio contiene la aplicación Rexus.app.
