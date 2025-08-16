@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
-Backup final: verify_fixes.py
+"""Stub: archivo movido de la raíz.
 
-Contenido original guardado antes de limpiar la raíz.
+La versión activa se encuentra en `scripts/tools/verify_fixes.py`.
+Backup en `legacy_root/original_root/verify_fixes.py`.
 """
-print('Backup: verify_fixes.py')
+print('Este archivo fue movido a scripts/tools/verify_fixes.py')

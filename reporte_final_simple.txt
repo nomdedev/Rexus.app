@@ -1,5 +1,0 @@
-REPORTE FINAL DE OPTIMIZACION COMPLETA (BACKUP)
-
-Este archivo ha sido movido a `legacy_root/original_root/` como respaldo.
-
-Para ver la versión completa, revisa `legacy_root/original_root/reporte_final_simple.txt`.

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
-"""
-Backup final: migrate_prints_batch.py
+"""Root stub: migrate_prints_batch.py -> legacy_root/original_root/final_move/migrate_prints_batch.py"""
+def main():
+	print('migrate_prints_batch movido a legacy_root/original_root/final_move/migrate_prints_batch.py')
 
-Contenido original guardado antes de limpiar la raíz.
-"""
-print('Backup: migrate_prints_batch.py')
+if __name__ == '__main__':
+	main()
