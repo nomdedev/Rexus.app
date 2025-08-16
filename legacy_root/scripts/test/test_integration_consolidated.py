@@ -252,8 +252,7 @@ def test_legacy_fallback_compatibility():
     """Test legacy fallback compatibility."""
     print("\n[TEST] Legacy Fallback Compatibility...")
     try:
-        # Initialize models (they should detect no consolidated tables and \
-            use fallback)
+        # Initialize models (they should detect no consolidated tables and use fallback)
         inventario = InventarioModel(db_connection=None)
         herrajes = HerrajesModel(db_connection=None)
         vidrios = VidriosModel(db_connection=None)
