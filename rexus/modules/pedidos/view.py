@@ -128,6 +128,13 @@ class PedidosView(QWidget):
         self.btn_actualizar.clicked.connect(self.actualizar_datos)
         layout.addWidget(self.btn_actualizar)
 
+        # Botón exportar
+        self.btn_exportar = RexusButton("Exportar Excel")
+        self.btn_exportar.clicked.connect(self.exportar_pedidos)
+        layout.addWidget(self.btn_exportar)
+
+        layout.addStretch()  # Empujar botones hacia la izquierda
+
         return panel
 
     def configurar_tabla(self):
@@ -555,6 +562,55 @@ pagina_actual,
         """Cambia la cantidad de registros por página"""
         if hasattr(self.controller, 'cambiar_registros_por_pagina'):
             self.controller.cambiar_registros_por_pagina(int(registros))
+
+    def exportar_pedidos(self):
+        """Exporta los pedidos actuales a Excel."""
+        try:
+            if not hasattr(self, 'controller') or not self.controller:
+                show_error(self, "Error", "No hay controlador disponible para exportar")
+                return
+            
+            # Obtener datos de la tabla
+            datos_tabla = []
+            for row in range(self.tabla_principal.rowCount()):
+                fila = {}
+                for col in range(self.tabla_principal.columnCount()):
+                    item = self.tabla_principal.item(row, col)
+                    header = self.tabla_principal.horizontalHeaderItem(col)
+                    header_text = header.text() if header else f"Columna {col + 1}"
+                    fila[header_text] = item.text() if item else ""
+                datos_tabla.append(fila)
+            
+            if not datos_tabla:
+                show_warning(self, "Sin datos", "No hay pedidos para exportar")
+                return
+            
+            # Importar pandas para exportación
+            try:
+                import pandas as pd
+                from PyQt6.QtWidgets import QFileDialog
+                
+                # Solicitar ubicación de archivo
+                archivo, _ = QFileDialog.getSaveFileName(
+                    self,
+                    "Guardar archivo Excel",
+                    "pedidos_export.xlsx",
+                    "Excel Files (*.xlsx);;All Files (*)"
+                )
+                
+                if archivo:
+                    # Crear DataFrame y exportar
+                    df = pd.DataFrame(datos_tabla)
+                    df.to_excel(archivo, index=False, sheet_name='Pedidos')
+                    show_success(self, "Exportación exitosa", f"Datos exportados a: {archivo}")
+                    
+            except ImportError:
+                show_error(self, "Error", "La librería pandas no está disponible para exportación")
+            except Exception as e:
+                show_error(self, "Error", f"Error durante la exportación: {str(e)}")
+                
+        except Exception as e:
+            show_error(self, "Error", f"Error inesperado durante la exportación: {str(e)}")
 
     def set_controller(self, controller):
         """Establece el controlador para la vista."""

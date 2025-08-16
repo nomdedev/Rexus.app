@@ -1,0 +1,6 @@
+{
+    "sonarlint.connectedMode.project": {
+        "connectionId": "nomdedev",
+        "projectKey": "RexusApp"
+    }
+}
