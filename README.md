@@ -1,3 +1,17 @@
+# Rexus.app — breve guía
+
+Este repositorio contiene la aplicación Rexus.app.
+
+- Documentación de referencia: `CLAUDE.md` (fuente única de verdad).
+- Documentación de desarrollo: `project_scripts/README-DEV.md` y `README-DEV.md`.
+- Arranque rápido: `python main.py` (ver `project_scripts/` para comandos Docker/Makefile).
+
+Estructura principal:
+
+- `main.py` — punto de entrada de la aplicación.
+- `rexus/` — código principal (modules, core, ui, utils).
+- `project_scripts/` — scripts y tooling para desarrollo y despliegue.
+- `legacy_root/` — backups y archivos históricos (no tocar salvo necesidad).
 # Rexus.app - resumen rápido
 
 Este repositorio contiene la aplicación Rexus.app.
