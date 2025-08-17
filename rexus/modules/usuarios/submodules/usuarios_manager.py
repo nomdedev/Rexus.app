@@ -16,6 +16,9 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -70,6 +73,7 @@ class UsuariosManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/usuarios/gestion"
+        self.logger = get_logger("usuarios.usuarios_manager")
 
     def _validate_table_name(self, table_name: str) -> str:
         """Valida nombre de tabla contra lista blanca."""
@@ -196,7 +200,7 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error creando usuario: {str(e)}")
+            self.logger.error(f"Error creando usuario: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
 
     @auth_required
@@ -234,7 +238,7 @@ class UsuariosManager:
             return usuario
 
         except Exception as e:
-            print(f"Error obteniendo usuario: {str(e)}")
+            self.logger.error(f"Error obteniendo usuario: {str(e)}", exc_info=True)
             return None
 
     @auth_required
@@ -269,7 +273,7 @@ class UsuariosManager:
             return usuario
 
         except Exception as e:
-            print(f"Error obteniendo usuario por nombre: {str(e)}")
+            self.logger.error(f"Error obteniendo usuario por nombre: {str(e)}", exc_info=True)
             return None
 
     @auth_required
@@ -360,7 +364,7 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando usuario: {str(e)}")
+            self.logger.error(f"Error actualizando usuario: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
 
     @auth_required
@@ -406,7 +410,7 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error eliminando usuario: {str(e)}")
+            self.logger.error(f"Error eliminando usuario: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
 
     def verificar_unicidad_username(
@@ -435,7 +439,7 @@ class UsuariosManager:
             return (result[0] if result else 0) == 0
 
         except Exception as e:
-            print(f"Error verificando unicidad username: {str(e)}")
+            self.logger.error(f"Error verificando unicidad username: {str(e)}", exc_info=True)
             return False
 
     def verificar_unicidad_email(
@@ -467,7 +471,7 @@ class UsuariosManager:
             return (result[0] if result else 0) == 0
 
         except Exception as e:
-            print(f"Error verificando unicidad email: {str(e)}")
+            self.logger.error(f"Error verificando unicidad email: {str(e)}", exc_info=True)
             return False
 
     @auth_required
@@ -495,7 +499,7 @@ class UsuariosManager:
             return permisos
 
         except Exception as e:
-            print(f"Error obteniendo permisos: {str(e)}")
+            self.logger.error(f"Error obteniendo permisos: {str(e)}", exc_info=True)
             return []
 
     @auth_required
@@ -527,7 +531,7 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error asignando permiso: {str(e)}")
+            self.logger.error(f"Error asignando permiso: {str(e)}", exc_info=True)
             return False
 
     def _hash_password(self, password: str, salt: str) -> str:
