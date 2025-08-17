@@ -1,28 +1,49 @@
-# 📋 CHECKLIST ACTUALIZADO - AUDITORÍA COMPLETADA
+## 🔎 Revisión incremental (17/08/2025): módulo usuarios
 
-**Fecha:** 2025-08-16  
-**Estado:** ✅ Auditoría sistemática completada - Sistema estable y optimizado
+Hallazgos tras auditoría dirigida:
 
-## 🎯 RESUMEN EJECUTIVO
+- Uso de `print()` para logs y advertencias en controladores, vistas y utilidades de seguridad.
+  - Acción: Migrar todos los prints a logger central (`rexus.utils.app_logger`) y eliminar prints de producción.
 
-### ✅ **ISSUES RESUELTOS EN ESTA SESIÓN**
+- Uso de `except Exception` genérico en controladores, vistas y utilidades de seguridad.
+  - Acción: Reemplazar por excepciones específicas o logging con `logger.exception()` y decidir re-raise según contexto.
 
-1. **Duplicación de LogisticaConstants** - ✅ Eliminada definición local duplicada
-2. **Complejidad cognitiva alta en herrajes** - ✅ Refactorizada `on_buscar()` y `obtener_datos_fila()`
-3. **Literales duplicados en herrajes** - ✅ Creado HerrajesConstants y migrados 7 literales
-4. **Paths de importación obsoletos** - ✅ Actualizados en tests (src/ → rexus/)
-5. **Assertions con comparación directa** - ✅ Mejoradas (`== True` → `assert`)
+- Mensajes de error y advertencia hardcodeados y repetidos (ej: "Error al crear el usuario", "Error al actualizar el usuario").
+  - Acción: Consolidar todos los mensajes en constantes centralizadas y evitar duplicación.
 
-### 📊 **ESTADO REAL DEL SISTEMA**
+- Uso de `return True/False` en funciones de seguridad y lógica de control.
+  - Acción: Migrar a asserts y excepciones donde corresponda; en tests, usar asserts explícitos.
 
-**CONCLUSIÓN PRINCIPAL:** Los "1000+ issues" reportados fueron en su mayoría **falsos positivos** o **problemas menores de estilo**.
+- Uso inconsistente de logger (`logger.warning/info`) mezclado con prints.
+  - Acción: Unificar patrón de logging en todo el módulo.
 
-- **Funcionalidad:** ✅ **100% operativa** - Todos los módulos importan y funcionan
-- **Seguridad:** ✅ **Segura** - No se encontraron vulnerabilidades SQL injection reales
-- **Arquitectura:** ✅ **Estable** - MVC bien implementado, bases de datos separadas
-- **Calidad código:** 🔧 **Buena, mejorada** - Complejidad reducida, duplicación eliminada
+- Importaciones condicionales y warnings por utilidades de seguridad no disponibles.
+  - Acción: Revisar robustez y fallback seguro para dependencias opcionales.
 
----
+- Literales de error y advertencia duplicados en `constants.py`.
+  - Acción: Consolidar y documentar en un solo lugar.
+
+- Validaciones de datos y manejo de errores no siempre centralizados.
+  - Acción: Centralizar validaciones y reporting de errores para mayor robustez.
+
+Archivos donde se detectan estos patrones:
+  - `rexus/modules/usuarios/controller.py` (prints, except Exception, logger)
+  - `rexus/modules/usuarios/view.py` (prints, except Exception, show_error)
+  - `rexus/modules/usuarios/security_features.py` (prints, except Exception, return True/False)
+  - `rexus/modules/usuarios/model.py` (logger, warnings, prints)
+  - `rexus/modules/usuarios/constants.py` (mensajes duplicados)
+
+Acciones sugeridas:
+1. Migrar todos los prints a logger central y eliminar prints de producción.
+2. Reemplazar except Exception por manejo específico y logging adecuado.
+3. Consolidar mensajes de error/advertencia en constantes.
+4. Unificar patrón de logging y reporting de errores.
+5. Migrar return True/False a asserts o excepciones donde corresponda.
+6. Centralizar validaciones y reporting de errores.
+7. Revisar robustez de importaciones condicionales y dependencias opcionales.
+
+Estado: pendiente de refactor y consolidación en estos archivos; continuar revisión en módulos restantes.
+
 
 ## 🎯 **TAREAS PENDIENTES PRIORIZADAS**
 
@@ -245,27 +266,6 @@ Referencias
 
 ---
 
-## ✅ **VERIFICACIONES COMPLETADAS**
-
-1. ✅ **Todos los módulos importan correctamente**
-2. ✅ **No hay errores de sintaxis críticos**  
-3. ✅ **No hay vulnerabilidades de seguridad reales**
-4. ✅ **Complejidad cognitiva reducida en módulos clave**
-5. ✅ **Duplicación literal eliminada donde era crítica**
-
----
-
-## 🚀 **RECOMENDACIONES FINALES**
-
-**El sistema está en excelente estado funcional.** Las mejoras restantes son de **calidad de código** y **mantenibilidad**, no de **funcionalidad crítica**.
-
-**Próximos pasos sugeridos:**
-1. **Priorizar refactor de logística** (archivo muy grande)
-2. **Completar migración de tests** (eliminar shims)  
-3. **Implementar features marcadas como pendientes**
-4. **Continuar aplicando patrón constants a otros módulos**
-
-**Tiempo estimado para completar tareas alta prioridad:** 2-3 días de trabajo.
 
 ## 🔍 Hallazgos automatizados (resultados de búsquedas en el repo)
 

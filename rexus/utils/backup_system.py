@@ -511,22 +511,22 @@ if __name__ == "__main__":
     backup_manager, scheduler = create_backup_system()
 
     # Realizar backup inmediato
-    print("Realizando backup inmediato...")
+    logging.info("Realizando backup inmediato...")
     results = backup_manager.backup_all_databases()
 
     for result in results:
         if result.success:
-            print(f"[CHECK] Backup exitoso: {result.backup_path} ({result.size_mb:.2f} MB)")
+            logging.info(f"[CHECK] Backup exitoso: {result.backup_path} ({result.size_mb:.2f} MB)")
         else:
-            print(f"[ERROR] Error en backup: {result.message}")
+            logging.error(f"[ERROR] Error en backup: {result.message}")
 
     # Mostrar estadísticas
     stats = backup_manager.get_backup_statistics()
-    print(f"\nEstadísticas de backups:")
-    print(f"Total de backups: {stats['total_backups']}")
-    print(f"Tamaño total: {stats['total_size_mb']:.2f} MB")
-    print(f"Bases de datos: {', '.join(stats['databases_backed_up'])}")
+    logging.info(f"\nEstadísticas de backups:")
+    logging.info(f"Total de backups: {stats['total_backups']}")
+    logging.info(f"Tamaño total: {stats['total_size_mb']:.2f} MB")
+    logging.info(f"Bases de datos: {', '.join(stats['databases_backed_up'])}")
 
     # Iniciar programador automático
-    print("\nIniciando programador automático...")
+    logging.info("\nIniciando programador automático...")
     scheduler.start_scheduler()

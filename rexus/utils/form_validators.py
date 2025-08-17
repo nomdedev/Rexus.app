@@ -62,6 +62,12 @@ valor: str,
     @staticmethod
     def validar_email(campo, email: str) -> Tuple[bool, str]:
         """Valida formato de email."""
+        # Manejar None y convertir a string si es necesario
+        if email is None:
+            email = ""
+        elif not isinstance(email, str):
+            email = str(email)
+            
         if not email.strip():
             FormValidator._aplicar_estilo_error(campo)
             return False, "Email es obligatorio"
@@ -77,6 +83,12 @@ valor: str,
     @staticmethod
     def validar_telefono(campo, telefono: str) -> Tuple[bool, str]:
         """Valida formato de teléfono argentino."""
+        # Manejar None y convertir a string si es necesario
+        if telefono is None:
+            telefono = ""
+        elif not isinstance(telefono, str):
+            telefono = str(telefono)
+            
         if not telefono.strip():
             return True, ""  # Campo opcional
 
@@ -101,6 +113,12 @@ valor: str,
     @staticmethod
     def validar_numero(campo, valor: str, min_val: Optional[float] = None, max_val: Optional[float] = None) -> Tuple[bool, str]:
         """Valida que el valor sea un número válido."""
+        # Manejar None y convertir a string si es necesario
+        if valor is None:
+            valor = ""
+        elif not isinstance(valor, str):
+            valor = str(valor)
+            
         if not valor.strip():
             FormValidator._aplicar_estilo_error(campo)
             return False, "Valor numérico requerido"
@@ -147,6 +165,12 @@ texto: str,
         max_len: int = 1000) -> Tuple[bool,
         str]:
         """Valida la longitud de un texto."""
+        # Manejar None y convertir a string si es necesario
+        if texto is None:
+            texto = ""
+        elif not isinstance(texto, str):
+            texto = str(texto)
+            
         longitud = len(texto.strip())
 
         if longitud < min_len:
@@ -263,6 +287,12 @@ class FormValidatorManager:
 # Validaciones predefinidas comunes
 def validacion_direccion(campo, direccion: str) -> Tuple[bool, str]:
     """Validación específica para direcciones."""
+    # Manejar None y convertir a string si es necesario
+    if direccion is None:
+        direccion = ""
+    elif not isinstance(direccion, str):
+        direccion = str(direccion)
+        
     if not direccion.strip():
         FormValidator._aplicar_estilo_error(campo)
         return False, "La dirección es obligatoria"
