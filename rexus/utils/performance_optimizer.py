@@ -7,10 +7,14 @@ Optimizador de Rendimiento
 Sistema de optimizaciones automáticas para mejorar el rendimiento de la aplicación
 """
 
+import logging
 import time
 from typing import Dict, List, Any
 from datetime import datetime
 from dataclasses import dataclass
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 @dataclass
@@ -156,7 +160,7 @@ class PerformanceOptimizer:
 
     def run_comprehensive_optimization(self) -> List[OptimizationResult]:
         """Ejecuta optimización comprehensiva."""
-        print("[OPTIMIZER] Iniciando optimización comprehensiva...")
+        logger.info("[OPTIMIZER] Iniciando optimización comprehensiva...")
 
         optimizations = [
             self.optimize_cache_usage,
@@ -170,9 +174,9 @@ class PerformanceOptimizer:
             try:
                 result = optimization()
                 results.append(result)
-                print(f"[OPTIMIZER] {result.optimization_type}: {result.description}")
+                logger.info(f"[OPTIMIZER] {result.optimization_type}: {result.description}")
             except Exception as e:
-                print(f"[OPTIMIZER] Error en optimización: {e}")
+                logger.error(f"[OPTIMIZER] Error en optimización: {e}", exc_info=True)
 
         return results
 
@@ -229,7 +233,7 @@ def performance_optimization_decorator(func):
 
         # Si la función es lenta, aplicar optimizaciones
         if execution_time > 1.0:  # Más de 1 segundo
-            print(f"[OPTIMIZER] Función lenta detectada: {func.__name__} ({execution_time:.2f}s)")
+            logger.warning(f"[OPTIMIZER] Función lenta detectada: {func.__name__} ({execution_time:.2f}s)")
             # Aquí se podrían aplicar optimizaciones específicas
 
         return result
@@ -244,14 +248,14 @@ if __name__ == "__main__":
     # Ejecutar optimizaciones
     results = optimizer.run_comprehensive_optimization()
 
-    print("\nResultados de optimización:")
+    logger.info("\nResultados de optimización:")
     for result in results:
         status = "[OK]" if result.success else "✗"
-        print(f"{status} {result.optimization_type}: {result.improvement_percent:.1f}% - {result.description}")
+        logger.info(f"{status} {result.optimization_type}: {result.improvement_percent:.1f}% - {result.description}")
 
     # Mostrar reporte
     report = optimizer.get_optimization_report()
-    print(f"\nReporte final:")
-    print(f"Total optimizaciones: {report['total_optimizations']}")
-    print(f"Exitosas: {report['successful_optimizations']}")
-    print(f"Mejora total: {report['total_improvement_percent']:.1f}%")
+    logger.info(f"\nReporte final:")
+    logger.info(f"Total optimizaciones: {report['total_optimizations']}")
+    logger.info(f"Exitosas: {report['successful_optimizations']}")
+    logger.info(f"Mejora total: {report['total_improvement_percent']:.1f}%")

@@ -29,7 +29,11 @@ Proporciona funciones de utilidad para mostrar diálogos
 de información, advertencias y errores de forma consistente.
 """
 
+import logging
 from PyQt6.QtWidgets import QMessageBox, QWidget
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 def show_info(title: str, message: str, parent: QWidget = None):
@@ -42,9 +46,9 @@ def show_info(title: str, message: str, parent: QWidget = None):
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.exec()
     except Exception as e:
-        print(f"Error mostrando diálogo de información: {e}")
-        print(f"Título: {title}")
-        print(f"Mensaje: {message}")
+        logger.error(f"Error mostrando diálogo de información: {e}", exc_info=True)
+        logger.info(f"Título: {title}")
+        logger.info(f"Mensaje: {message}")
 
 
 def show_warning(title: str, message: str, parent: QWidget = None):
@@ -57,9 +61,9 @@ def show_warning(title: str, message: str, parent: QWidget = None):
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.exec()
     except Exception as e:
-        print(f"Error mostrando diálogo de advertencia: {e}")
-        print(f"Título: {title}")
-        print(f"Mensaje: {message}")
+        logger.error(f"Error mostrando diálogo de advertencia: {e}", exc_info=True)
+        logger.info(f"Título: {title}")
+        logger.info(f"Mensaje: {message}")
 
 
 def show_error(title: str, message: str, parent: QWidget = None):
@@ -72,9 +76,9 @@ def show_error(title: str, message: str, parent: QWidget = None):
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.exec()
     except Exception as e:
-        print(f"Error mostrando diálogo de error: {e}")
-        print(f"Título: {title}")
-        print(f"Mensaje: {message}")
+        logger.error(f"Error mostrando diálogo de error: {e}", exc_info=True)
+        logger.info(f"Título: {title}")
+        logger.info(f"Mensaje: {message}")
 
 
 def show_success(title: str, message: str, parent: QWidget = None):
@@ -87,9 +91,9 @@ def show_success(title: str, message: str, parent: QWidget = None):
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg_box.exec()
     except Exception as e:
-        print(f"Error mostrando diálogo de éxito: {e}")
-        print(f"Título: {title}")
-        print(f"Mensaje: {message}")
+        logger.error(f"Error mostrando diálogo de éxito: {e}", exc_info=True)
+        logger.info(f"Título: {title}")
+        logger.info(f"Mensaje: {message}")
 
 
 def show_question(title: str, message: str, parent: QWidget = None) -> bool:
@@ -107,9 +111,9 @@ def show_question(title: str, message: str, parent: QWidget = None) -> bool:
         result = msg_box.exec()
         return result == QMessageBox.StandardButton.Yes
     except Exception as e:
-        print(f"Error mostrando diálogo de pregunta: {e}")
-        print(f"Título: {title}")
-        print(f"Mensaje: {message}")
+        logger.error(f"Error mostrando diálogo de pregunta: {e}", exc_info=True)
+        logger.info(f"Título: {title}")
+        logger.info(f"Mensaje: {message}")
         return False
 
 

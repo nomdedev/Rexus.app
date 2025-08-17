@@ -68,3 +68,39 @@
 2025-08-16 20:41:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-16 20:44:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-16 20:44:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-16 22:04:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-16 22:04:21 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-16 22:04:21 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-16 22:04:21 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-16 22:04:21 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-16 22:04:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:25 | ERROR    | rexus.modules.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-16 22:04:25 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-16 22:04:25 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-16 22:04:25 | INFO     | rexus.core.database | Base de datos: None
+2025-08-16 22:04:25 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-16 22:04:25 | INFO     | rexus.core.database | Usuario: sa
+2025-08-16 22:04:25 | ERROR    | rexus.core.database | Database connection failed: ('28000', '[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060)')
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\core\database.py", line 183, in connect
+    self._connection = pyodbc.connect(real_connection_string)
+pyodbc.InterfaceError: ('28000', '[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060)')
+2025-08-16 22:04:25 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:25 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-16 22:04:25 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-16 22:04:25 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-16 22:04:25 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:25 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:25 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-16 22:04:25 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities

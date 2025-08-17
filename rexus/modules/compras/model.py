@@ -9,9 +9,13 @@ Maneja la lógica de negocio y acceso a datos para el sistema de compras.
 """
 
 import datetime
+import logging
 from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance
 from rexus.utils.sql_query_manager import SQLQueryManager
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 class ComprasModel:
@@ -38,36 +42,24 @@ class ComprasModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Verificar tabla compras
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_compras,),
-            )
+            # Verificar tabla compras usando SQL externo
+            query = self.sql_manager.get_query('compras', 'verificar_tabla')
+            cursor.execute(query, (self.tabla_compras,))
             if cursor.fetchone():
-                print(
-                    f"[COMPRAS] Tabla '{self.tabla_compras}' verificada correctamente."
-                )
+                logger.info(f"[COMPRAS] Tabla '{self.tabla_compras}' verificada correctamente.")
             else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_compras}' no existe en la base de datos."
-                )
+                logger.warning(f"[ADVERTENCIA] La tabla '{self.tabla_compras}' no existe en la base de datos.")
 
-            # Verificar tabla detalle_compras
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_detalle_compras,),
-            )
+            # Verificar tabla detalle_compras usando SQL externo
+            query = self.sql_manager.get_query('compras', 'verificar_tabla')
+            cursor.execute(query, (self.tabla_detalle_compras,))
             if cursor.fetchone():
-                print(
-                    f"[COMPRAS] Tabla '{self.tabla_detalle_compras}' verificada correctamente."
-                )
+                logger.info(f"[COMPRAS] Tabla '{self.tabla_detalle_compras}' verificada correctamente.")
             else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_detalle_compras}' no existe en la base de datos."
-                )
+                logger.warning(f"[ADVERTENCIA] La tabla '{self.tabla_detalle_compras}' no existe en la base de datos.")
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error verificando tablas: {e}")
+            logger.error(f"[ERROR COMPRAS] Error verificando tablas: {e}", exc_info=True)
 
     def crear_compra(
         self,
@@ -107,20 +99,14 @@ APROBADA,
             bool: True si se creó exitosamente
         """
         if not self.db_connection:
-            print("[WARN COMPRAS] Sin conexión BD")
+            logger.warning("[WARN COMPRAS] Sin conexión BD")
             return False
 
         try:
             cursor = self.db_connection.cursor()
 
-            sql_insert = """
-            INSERT INTO compras
-            (proveedor, numero_orden, fecha_pedido, fecha_entrega_estimada,
-             estado, observaciones, usuario_creacion, descuento, impuestos,
-             fecha_creacion, fecha_actualizacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
-            """
-
+            # Usar consulta SQL externa
+            sql_insert = self.sql_manager.get_query('compras', 'crear_compra')
             cursor.execute(
                 sql_insert,
                 (
@@ -137,11 +123,11 @@ APROBADA,
             )
 
             self.db_connection.commit()
-            print(f"[COMPRAS] Orden creada: {numero_orden}")
+            logger.info(f"[COMPRAS] Orden creada: {numero_orden}")
             return True
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error creando orden: {e}")
+            logger.error(f"[ERROR COMPRAS] Error creando orden: {e}", exc_info=True)
             return False
 
     def obtener_todas_compras(self) -> List[Dict]:
@@ -157,23 +143,8 @@ APROBADA,
         try:
             cursor = self.db_connection.cursor()
 
-            sql_select = """
-            SELECT
-                c.id, c.proveedor, c.numero_orden, c.fecha_pedido,
-                c.fecha_entrega_estimada, c.estado, c.observaciones,
-                c.usuario_creacion, c.descuento, c.impuestos,
-                c.fecha_creacion, c.fecha_actualizacion,
-                ISNULL(SUM(dc.cantidad * dc.precio_unitario), 0) as total_sin_descuento,
-                ISNULL(SUM(dc.cantidad * dc.precio_unitario), 0) - c.descuento + c.impuestos as total_final
-            FROM compras c
-            LEFT JOIN detalle_compras dc ON c.id = dc.compra_id
-            GROUP BY c.id, c.proveedor, c.numero_orden, c.fecha_pedido,
-                     c.fecha_entrega_estimada, c.estado, c.observaciones,
-                     c.usuario_creacion, c.descuento, c.impuestos,
-                     c.fecha_creacion, c.fecha_actualizacion
-            ORDER BY c.fecha_creacion DESC
-            """
-
+            # Usar consulta SQL externa
+            sql_select = self.sql_manager.get_query('compras', 'obtener_todas_compras')
             cursor.execute(sql_select)
             rows = cursor.fetchall()
 
@@ -185,11 +156,11 @@ APROBADA,
                 compra = dict(zip(columns, row))
                 compras.append(compra)
 
-            print(f"[COMPRAS] Obtenidas {len(compras)} órdenes de compra")
+            logger.info(f"[COMPRAS] Obtenidas {len(compras)} órdenes de compra")
             return compras
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error obteniendo compras: {e}")
+            logger.error(f"[ERROR COMPRAS] Error obteniendo compras: {e}", exc_info=True)
             return []
 
     def actualizar_estado_compra(
@@ -217,22 +188,16 @@ APROBADA,
         try:
             cursor = self.db_connection.cursor()
 
-            sql_update = """
-            UPDATE compras
-            SET estado = ?, fecha_actualizacion = GETDATE()
-            WHERE id = ?
-            """
-
+            # Usar consulta SQL externa
+            sql_update = self.sql_manager.get_query('compras', 'actualizar_estado_compra')
             cursor.execute(sql_update, (nuevo_estado, compra_id))
             self.db_connection.commit()
 
-            print(
-                f"[COMPRAS] Estado actualizado para compra {compra_id}: {nuevo_estado}"
-            )
+            logger.info(f"[COMPRAS] Estado actualizado para compra {compra_id}: {nuevo_estado}")
             return True
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error actualizando estado: {e}")
+            logger.error(f"[ERROR COMPRAS] Error actualizando estado: {e}", exc_info=True)
             return False
 
     @cached_query(cache_key="productos_disponibles_compra", ttl=300)

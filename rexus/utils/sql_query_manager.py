@@ -112,7 +112,7 @@ class SQLQueryManager:
         cache_key = f"{module}.{query_name}"
         self._query_cache[cache_key] = query_content
 
-        print(f"[SQL_MANAGER] Consulta cargada: {cache_key} desde {used_path}")
+        logger.debug(f"[SQL_MANAGER] Consulta cargada: {cache_key} desde {used_path}")
 
     def execute_query(
         self, cursor, module: str, query_name: str, params: tuple = None, **kwargs
@@ -220,7 +220,7 @@ class SQLQueryManager:
     def clear_cache(self):
         """Limpia el cache de consultas."""
         self._query_cache.clear()
-        print("[SQL_MANAGER] Cache de consultas limpiado")
+        logger.info("[SQL_MANAGER] Cache de consultas limpiado")
 
     def get_cache_info(self) -> Dict[str, Any]:
         """

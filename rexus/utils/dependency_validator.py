@@ -8,9 +8,13 @@ Objetivo: Validar dependencias críticas para evitar fallos en runtime
 
 import importlib
 import inspect
+import logging
 import sys
 from typing import Dict, List, Optional, Tuple, Any
 from pathlib import Path
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 class DependencyValidationError(Exception):
@@ -364,26 +368,26 @@ class DependencyValidator:
             return False
     
     def print_validation_summary(self, report: Dict[str, Any]):
-        """Imprime resumen de validación en consola."""
-        print("\n" + "="*60)
-        print("REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP")
-        print("="*60)
-        print(f"Estado: {report['status']}")
-        print(f"Errores Críticos: {report['critical_errors_count']}")
-        print(f"Advertencias: {report['warnings_count']}")
-        print(f"Puede Iniciar Aplicación: {'SÍ' if report['can_start_application'] else 'NO'}")
+        """Imprime resumen de validación usando logger."""
+        logger.info("\n" + "="*60)
+        logger.info("REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP")
+        logger.info("="*60)
+        logger.info(f"Estado: {report['status']}")
+        logger.info(f"Errores Críticos: {report['critical_errors_count']}")
+        logger.info(f"Advertencias: {report['warnings_count']}")
+        logger.info(f"Puede Iniciar Aplicación: {'SÍ' if report['can_start_application'] else 'NO'}")
         
         if report['critical_errors']:
-            print("\nERRORES CRÍTICOS:")
+            logger.error("\nERRORES CRÍTICOS:")
             for error in report['critical_errors']:
-                print(f"  ❌ {error}")
+                logger.error(f"  ❌ {error}")
         
         if report['warnings']:
-            print("\nADVERTENCIAS:")
+            logger.warning("\nADVERTENCIAS:")
             for warning in report['warnings']:
-                print(f"  ⚠️  {warning}")
+                logger.warning(f"  ⚠️  {warning}")
         
-        print("\n" + "="*60)
+        logger.info("\n" + "="*60)
 
 
 # Función de conveniencia para validación rápida
@@ -423,10 +427,10 @@ from rexus.utils.dependency_validator import validate_system_dependencies
 
 can_start, report = validate_system_dependencies()
 if not can_start:
-    print("No se puede iniciar la aplicación debido a dependencias faltantes:")
+    logger.critical("No se puede iniciar la aplicación debido a dependencias faltantes:")
     for error in report['critical_errors']:
-        print(f"- {error}")
+        logger.critical(f"- {error}")
     sys.exit(1)
 else:
-    print("Todas las dependencias críticas están disponibles")
+    logger.info("Todas las dependencias críticas están disponibles")
 """

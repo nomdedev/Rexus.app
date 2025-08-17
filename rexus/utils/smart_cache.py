@@ -8,10 +8,14 @@ Objetivo: Optimizar rendimiento con cache selectivo por módulo
 
 import time
 import functools
+import logging
 import threading
 from typing import Any, Dict, Optional, Callable, Tuple, List
 import json
 import hashlib
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 
 class SmartCache:
@@ -377,7 +381,7 @@ def setup_cache_preloading(preload_functions: List[Callable]):
         try:
             func()
         except Exception as e:
-            print(f"Error en preloading de cache: {e}")
+            logger.error(f"Error en preloading de cache: {e}", exc_info=True)
 
 
 # ============================================================================
@@ -423,11 +427,11 @@ def cached_function(ttl: int = 300, cache_key_prefix: str = None):
             # Intentar obtener del cache
             cached_result = _global_cache.get(cache_key)
             if cached_result is not None:
-                print(f"[CACHE HIT] {func.__name__}")
+                logger.debug(f"[CACHE HIT] {func.__name__}")
                 return cached_result
 
             # Ejecutar función y guardar resultado
-            print(f"[CACHE MISS] {func.__name__}")
+            logger.debug(f"[CACHE MISS] {func.__name__}")
             result = func(*args, **kwargs)
             _global_cache.set(cache_key, result, ttl)
 
@@ -498,7 +502,7 @@ def invalidate_module_cache(module_name: str) -> int:
     for pattern in patterns:
         total_invalidated += invalidate_cache_pattern(pattern)
 
-    print(f"[CACHE] Invalidadas {total_invalidated} entradas para módulo '{module_name}'")
+    logger.info(f"[CACHE] Invalidadas {total_invalidated} entradas para módulo '{module_name}'")
     return total_invalidated
 
 
@@ -516,7 +520,7 @@ def preload_module_cache(module_name: str, data_loaders: Dict[str, Callable]):
             'categorias': lambda: obtener_categorias()
         })
     """
-    print(f"[CACHE] Precargando cache para módulo '{module_name}'")
+    logger.info(f"[CACHE] Precargando cache para módulo '{module_name}'")
 
     for cache_key, loader_func in data_loaders.items():
         try:
