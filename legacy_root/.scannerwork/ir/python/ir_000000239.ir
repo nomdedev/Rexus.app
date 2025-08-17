@@ -1,37 +1,0 @@
-
-2)"M√©todo fallback para actualizar stock."str
-	"success"str
-"diferencia"str
-D;"Subm√≥dulos no disponibles. No se puede actualizar stock."str
-"stock_anterior"str
-falsebool
-
-"error"str
-"stock_nuevo"str
-
-0intself
-≈# ≈('producto_id
-≈) ≈(9nuevo_stock
-≈; ≈(Yrazon
-∆! ∆(="Ó&
-$
-
-» Œ(	"#new-object#Bdict"
- 
-
-… …(	"	#map-set#:"
- 
-
-   (O"	#map-set#:
-"
- 
-
-À À("	#map-set#:"
- 
-
-Ã Ã(&"	#map-set#:"
- 
-
-Õ Õ("	#map-set#:
-
-» Œ(	*JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\model.py

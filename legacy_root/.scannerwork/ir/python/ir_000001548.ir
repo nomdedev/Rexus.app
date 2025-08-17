@@ -1,145 +1,0 @@
-
-
-"categoria"str
- ("Perfil Aluminio 20x20"str
- 1"Perfil Aluminio 30x30"str
-
-3int
-
-5int
- 8"Perfil Aluminio 40x40"str
-<25.00float
-'"descripcion"str
--"precio_promedio"str
-"proveedor_id"str
-""promedio_orden"str
-%"productos_top"str
-+500int
-&"Materiales de ConstrucciÃ³n"str
-"total_ordenes"str
-3250int
-#6271.58float
-
-B0int
-.12.50float
-"ACTIVO"str
-"nombre"str
-518.75float
-"ordenes_aprobadas"str
-"estado"str
-"ordenes_pendientes"str
- 	156789.50float
-"ordenes_recibidas"str
-
-2int
-25int
-+""EstadÃ­sticas demo de proveedor."str
-*"cantidad_total"str
-15int
-:150int
-"ordenes_canceladas"str
-"monto_total"str
-"Materiales del Sur"strself
-Ê) Ê(-proveedor_id
-Ê/ Ê(@?list"Ö	&
-$
-
-Ì Ý(	"#new-object#Bdict"
- 
-
-Í Í(("	#map-set#:"
- 
-
-Î Î(*	"	#map-set#:"
- 
-
-Ï Ï(5"	#map-set#:
-"
- 
-
-Ð Ð("	#map-set#:"
- 
-
-Ñ Ñ("	#map-set#:"
- 
-
-Ò Ò(#"	#map-set#:"
- 
-
-Ó Ó(""	#map-set#:"
- 
-
-Ô Ô(#"	#map-set#:"
- 
-
-Õ Õ(#"	#map-set#:"
- 
-
-Ö Ö($!"	#map-set#: "
- 
-
-× ×(%$"	#map-set#:"#&
-$
-
-Ù Ù(i&"#new-object#Bdict"
- 
-
-Ù Ù(7)"	#map-set#:&'("
- 
-
-Ù9 Ù(N,"	#map-set#:&*+"
- 
-
-ÙP Ù(h/"	#map-set#:&-.&
-$
-
-Ú Ú(i0"#new-object#Bdict"
- 
-
-Ú Ú(72"	#map-set#:0'1"
- 
-
-Ú9 Ú(N4"	#map-set#:0*3"
- 
-
-ÚP Ú(h6"	#map-set#:0-5&
-$
-
-Û Û(i7"#new-object#Bdict"
- 
-
-Û Û(79"	#map-set#:7'8"
- 
-
-Û9 Û(N;"	#map-set#:7*:"
- 
-
-ÛP Û(h="	#map-set#:7-<)
-'
-
-Ø Ü(>"#unknown-value#Blist(
-&
-
-Ø Ü(@"
-#is-exact#:>?Bbool
-
-
-Ø Ü(A"
-#assume#:@:
-8
-
-Ø Ü(C"#set-field# __collection_size:>BBint(
-&
-
-Ø Ü(D"#array-add-last#:>&(
-&
-
-Ø Ü(E"#array-add-last#:>0(
-&
-
-Ø Ü(F"#array-add-last#:>7"
- 
-
-Ø Ü(G"	#map-set#:%>
-
-Ì Ý(	*SC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\proveedores_model.py

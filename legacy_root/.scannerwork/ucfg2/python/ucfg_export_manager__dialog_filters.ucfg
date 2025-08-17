@@ -1,68 +1,0 @@
-
-Brexus.utils.export_manager.ExportManager.get_export_dialog_filtersR
-FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\export_manager.pyÛ Û(!"2*x
-2
-Ü Ü(?
-
-Ý Ý(
-%5"listC
-A
-
-Ý Ý(	
-filters"__id*"
-
-__unknown_file (
-
-%5*
-4
-5*§
-4
-à à(%}
-
-à à(%
-%1"list.append*'
-
-__unknown_file (
-	
-filters*+
-
-__unknown_file (
-CSV (*.csv)2append‹ˆ
-
-á á(0
-%2"list.append*'
-
-__unknown_file (
-	
-filters*6
-
-__unknown_file (
-Todos los archivos (*)2appendqo
-
-â â(!
-%3"str.join*"
-
-__unknown_file (
-;;*'
-
-__unknown_file (
-	
-filters2join"
-
-â â(!
-
-%3*š
-5
-ß ß(,ƒ€
-
-ß ß(,
-%4"list.append*'
-
-__unknown_file (
-	
-filters*.
-
-__unknown_file (
-Excel (*.xlsx)2append*
-4B,*
-(rexus.utils.export_manager.ExportManagerH

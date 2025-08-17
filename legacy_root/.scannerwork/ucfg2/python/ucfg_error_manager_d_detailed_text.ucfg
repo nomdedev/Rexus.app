@@ -1,310 +1,0 @@
-
-;rexus.utils.error_manager.ErrorManager._build_detailed_textQ
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyÅ Å("2*Ó
-13
-Ô Ô(NY
-W
-
-Ô4 Ô(K
-%13"__id*<
-
-__unknown_file ( *
-
-error"
-technical_detailsc
-a
-
-Ô Ô(M
-%14"__concat*+
-
-Ô Ô(3
-ðŸ”§ Detalles tÃ©cnicos: *
-
-Ô4 Ô(K
-
-%13xv
-
-Ô Ô(N
-%15"list.append*'
-
-__unknown_file (
-	
-details*#
-
-__unknown_file (
-
-%142append*
-6
-11*Ð
-2
-È È(5
-
-É É(
-%23"listD
-B
-
-É É(	
-details"__id*#
-
-__unknown_file (
-
-%23R
-P
-
-Ì Ì(
-%24"__id*5
-
-__unknown_file (*
-
-error"
-
-suggestion*
-14
-15*š
-14
-Ð Ð(2L
-J
-
-Ð% Ð(/
-%16"__id*/
-
-__unknown_file (*
-
-error"
-codeX
-V
-
-Ð Ð(1
-%17"__concat* 
-
-Ð Ð($
-ðŸ” CÃ³digo: *
-
-Ð% Ð(/
-
-%16xv
-
-Ð Ð(2
-%18"list.append*'
-
-__unknown_file (
-	
-details*#
-
-__unknown_file (
-
-%172appendY
-W
-
-Ó Ó("
-%19"__id*<
-
-__unknown_file ( *
-
-error"
-technical_details*
-13
-6
-11*Á
-15
-Í Í(@R
-P
-
-Í- Í(=
-%20"__id*5
-
-__unknown_file (*
-
-error"
-
-suggestion[
-Y
-
-Í Í(?
-%21"__concat*#
-
-Í Í(,
-ðŸ’¡ Sugerencia: *
-
-Í- Í(=
-
-%20xv
-
-Í Í(@
-%22"list.append*'
-
-__unknown_file (
-	
-details*#
-
-__unknown_file (
-
-%212append*
-14*š
-4
-â â(#sq
-
-â â(#
-%1"str.join*$
-
-__unknown_file (
-\n\n*'
-
-__unknown_file (
-	
-details2join"
-
-â â(#
-
-%1*¿
-5
-à à(CO
-M
-
-à2 à(@
-%2"__id*3
-
-__unknown_file (*
-
-error"
-
-help_url`
-^
-
-à à(B
-%3"__concat**
-
-à à(1
-ðŸ“– MÃ¡s informaciÃ³n: *
-
-à2 à(@
-
-%2vt
-
-à à(C
-%4"list.append*'
-
-__unknown_file (
-	
-details*"
-
-__unknown_file (
-
-%32append*
-4*h
-6
-ß ß(O
-M
-
-ß ß(
-%5"__id*3
-
-__unknown_file (*
-
-error"
-
-help_url*
-4
-5*ì
-7
-Ü Ü(Wvt
-
-Ü? Ü(V
-%6"str.join*"
-
-__unknown_file (
-\n*,
-
-__unknown_file (
-
-context_info2joinf
-d
-
-Ü Ü(V
-%7"__concat*0
-
-Ü Ü(<" 
-ðŸ“‹ InformaciÃ³n adicional:\n*
-
-Ü? Ü(V
-
-%6vt
-
-Ü Ü(W
-%8"list.append*'
-
-__unknown_file (
-	
-details*"
-
-__unknown_file (
-
-%72append*
-6*–
-10
-Ú Ú(8z
-x
-
-Ú$ Ú(7
-%9"__concat*
-
-Ú& Ú((
-  *
-
-Ú) Ú(,
-
-key*
-
-Ú- Ú(/
-: *
-
-Ú0 Ú(5	
-
-value|z
-
-Ú Ú(8
-%10"list.append*,
-
-__unknown_file (
-
-context_info*"
-
-__unknown_file (
-
-%92append*
-
-6
-7
-10*Ü
-11
-Ø Ø(
-
-Ø Ø(
-%11"listI
-G
-
-Ø Ø(
-context_info"__id*#
-
-__unknown_file (
-
-%11VT
-
-Ù Ù(2
-%12"
-dict.items*,
-
-__unknown_file (
-
-context_data2items*
-
-6
-7
-10:
-
-Æ Æ(!
-error:
-
-Æ# Æ(?
-context_dataB*(
-&rexus.utils.error_manager.ErrorManagerH

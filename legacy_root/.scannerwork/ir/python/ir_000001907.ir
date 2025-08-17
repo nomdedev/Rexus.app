@@ -1,6 +1,0 @@
-
-ƒù"DRIVER={{{DATABASE_CONFIG['driver']}}};SERVER={DATABASE_CONFIG['server']};DATABASE={self.database_name};UID={DATABASE_CONFIG['username']};PWD={DATABASE_CONFIG['password']};TrustServerCertificate=yes;Connection Timeout={DATABASE_CONFIG['timeout']};"str
-("Construir string de conexiÃ³n"strself
-½! ½(%"
-
-¿ Ç(	*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\database_pool.py

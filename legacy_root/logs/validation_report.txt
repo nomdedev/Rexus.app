@@ -1,4 +1,0 @@
-Reporte de Validación - EXCELLENT
-Fecha: 1754347239.1952384
-Éxito: 96.2%
-Total verificaciones: 25/26

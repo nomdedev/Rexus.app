@@ -1,28 +1,0 @@
-
-–∆"
-    Decorador para cachear autom√°ticamente resultados de funciones
-    
-    Args:
-        timeout: Tiempo de expiraci√≥n en segundos
-        key_prefix: Prefijo para la clave de cache
-    "strtimeout
-Ö Ö((
-key_prefix
-Ö* Ö(B"Ô#
-!
-
-≠ ≠("#unknown-value#*
-(
-
-ç ≠(%closure"#new-object#.
-,
-
-ç ≠("#set-field# key_prefix:+
-)
-
-ç ≠("#set-field# timeout:-
-+
-
-ç ≠("?python-partial-apply?:
-
-≠ ≠(*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\cache_manager.py

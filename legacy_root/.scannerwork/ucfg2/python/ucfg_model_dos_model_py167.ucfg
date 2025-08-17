@@ -1,521 +1,0 @@
-
-Rfile:///C:/Users/itachi/Desktop/martin/Rexus.app/rexus/modules/pedidos/model.py167
-__unknown_file ("2*Ò
-2Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py (?ê
-ç
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py (%
-DataSanitizer"__id*!
- (
-
-unified_sanitizer*
-3
-4*y
-3
-
-model.py"h
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyˇ ˇ(
-implicit return*óA
-4N
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py. ˇa_
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py2 <(
-%1"dictÆ
-´
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py3 3(
-%2"__mapSet*
- (
-
-%1*
- (
-
-BORRADOR*
- (
-
-Borradorø
-º
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py4 4(.
-%3"__mapSet*
- (
-
-%1*
- (
-	PENDIENTE*(
- (
-Pendiente de Aprobaci√≥nÆ
-´
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py5 5(
-%4"__mapSet*
- (
-
-%1*
- (
-
-APROBADO*
- (
-
-Aprobadoª
-∏
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py6 6(*
-%5"__mapSet*
- (
-
-%1*
- (
-EN_PREPARACION*
- (
-En Preparaci√≥nΩ
-∫
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py7 7(-
-%6"__mapSet*
- (
-
-%1*
- (
-LISTO_ENTREGA*"
- (
-Listo para Entregaµ
-≤
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py8 8($
-%7"__mapSet*
- (
-
-%1*
- (
-EN_TRANSITO*
- (
-En Tr√°nsito∞
-≠
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py9 9( 
-%8"__mapSet*
- (
-
-%1*
- (
-	ENTREGADO*
- (
-	Entregado∞
-≠
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py: :( 
-%9"__mapSet*
- (
-
-%1*
- (
-	CANCELADO*
- (
-	Cancelado±
-Æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py; ;( 
-%10"__mapSet*
- (
-
-%1*
- (
-	FACTURADO*
- (
-	Facturadoz
-x
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py2 <(	
-ESTADOS"__id*
- (
-
-%1b`
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py? F(
-%11"dict¡
-æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py@ @(.
-%12"__mapSet*
- (
-
-%11*
- (
-
-MATERIAL*)
- (
-Material de Construcci√≥n∑
-¥
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyA A(%
-%13"__mapSet*
- (
-
-%11*
- (
-HERRAMIENTA*
- (
-Herramientas±
-Æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyB B(
-%14"__mapSet*
- (
-
-%11*
- (
-
-SERVICIO*
- (
-	Servicios≠
-™
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyC C(
-%15"__mapSet*
- (
-
-%11*
- (
-
-VIDRIO*
- (	
-VidriosØ
-¨
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyD D(
-%16"__mapSet*
- (
-
-%11*
- (	
-HERRAJE*
- (
-
-Herrajes™
-ß
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyE E(
-%17"__mapSet*
- (
-
-%11*
- (	
-MIXTO*
- (	
-MixtoÄ
-~
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py? F(
-TIPOS_PEDIDO"__id*
- (
-
-%11b`
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyI N(
-%18"dict®
-•
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyJ J(
-%19"__mapSet*
- (
-
-%18*
- (
-BAJA*
- (
-Baja¨
-©
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyK K(
-%20"__mapSet*
- (
-
-%18*
- (
-
-NORMAL*
- (
-
-Normal®
-•
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyL L(
-%21"__mapSet*
- (
-
-%18*
- (
-ALTA*
- (
-AltaÆ
-´
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyM M(
-%22"__mapSet*
- (
-
-%18*
- (	
-URGENTE*
- (	
-Urgente
-}
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyI N(
-PRIORIDADES"__id*
- (
-
-%18b`
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py2 <(
-%23"dict∞
-≠
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py3 3(
-%24"__mapSet*
- (
-
-%23*
- (
-
-BORRADOR*
- (
-
-Borrador¡
-æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py4 4(.
-%25"__mapSet*
- (
-
-%23*
- (
-	PENDIENTE*(
- (
-Pendiente de Aprobaci√≥n∞
-≠
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py5 5(
-%26"__mapSet*
- (
-
-%23*
- (
-
-APROBADO*
- (
-
-AprobadoΩ
-∫
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py6 6(*
-%27"__mapSet*
- (
-
-%23*
- (
-EN_PREPARACION*
- (
-En Preparaci√≥nø
-º
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py7 7(-
-%28"__mapSet*
- (
-
-%23*
- (
-LISTO_ENTREGA*"
- (
-Listo para Entrega∑
-¥
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py8 8($
-%29"__mapSet*
- (
-
-%23*
- (
-EN_TRANSITO*
- (
-En Tr√°nsito≤
-Ø
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py9 9( 
-%30"__mapSet*
- (
-
-%23*
- (
-	ENTREGADO*
- (
-	Entregado≤
-Ø
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py: :( 
-%31"__mapSet*
- (
-
-%23*
- (
-	CANCELADO*
- (
-	Cancelado≤
-Ø
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py; ;( 
-%32"__mapSet*
- (
-
-%23*
- (
-	FACTURADO*
- (
-	Facturado{
-y
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py2 <(	
-ESTADOS"__id*
- (
-
-%23b`
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py? F(
-%33"dict¡
-æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py@ @(.
-%34"__mapSet*
- (
-
-%33*
- (
-
-MATERIAL*)
- (
-Material de Construcci√≥n∑
-¥
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyA A(%
-%35"__mapSet*
- (
-
-%33*
- (
-HERRAMIENTA*
- (
-Herramientas±
-Æ
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyB B(
-%36"__mapSet*
- (
-
-%33*
- (
-
-SERVICIO*
- (
-	Servicios≠
-™
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyC C(
-%37"__mapSet*
- (
-
-%33*
- (
-
-VIDRIO*
- (	
-VidriosØ
-¨
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyD D(
-%38"__mapSet*
- (
-
-%33*
- (	
-HERRAJE*
- (
-
-Herrajes™
-ß
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyE E(
-%39"__mapSet*
- (
-
-%33*
- (	
-MIXTO*
- (	
-MixtoÄ
-~
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py? F(
-TIPOS_PEDIDO"__id*
- (
-
-%33b`
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyI N(
-%40"dict®
-•
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyJ J(
-%41"__mapSet*
- (
-
-%40*
- (
-BAJA*
- (
-Baja¨
-©
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyK K(
-%42"__mapSet*
- (
-
-%40*
- (
-
-NORMAL*
- (
-
-Normal®
-•
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyL L(
-%43"__mapSet*
- (
-
-%40*
- (
-ALTA*
- (
-AltaÆ
-´
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyM M(
-%44"__mapSet*
- (
-
-%40*
- (	
-URGENTE*
- (	
-Urgente
-}
-Q
-GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.pyI N(
-PRIORIDADES"__id*
- (
-
-%40*
-3B H

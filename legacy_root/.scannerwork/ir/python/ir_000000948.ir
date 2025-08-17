@@ -1,7 +1,0 @@
-
-"rexus.{name}"str
-("Obtiene un logger configurado"strname\ \("I7
-5
-^ ^(-"
-logging	getLogger:Blogging.Logger
-^ ^(-*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\logging_config.py

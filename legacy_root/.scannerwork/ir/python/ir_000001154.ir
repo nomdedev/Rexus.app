@@ -1,186 +1,0 @@
-
-+"requisitos"str
-!"Inspeccionar mangueras"str
-"tareas"str
-&"Verificar niveles de aceite"str
-;"Revisar ventilaci√≥n"str
-"Limpiar serpentines"str
-0,'"Herramientas b√°sicas, filtros nuevos"str
-"id"str
-)8 "Medir resistencia de bobinados"str
-("Plantillas demo para testing."str
-#K"Mult√≠metro, lubricantes"str
-4+"Mantenimiento preventivo para compresores"str
-"nombre"str
-<"Probar arranque"str
-"PREVENTIVO"str
-90int
- 9"Verificar rodamientos"str
-I180.00float
-"descripcion"str
-)250.00float
-:"Limpiar contactos"str
-
-0int
-
-"tipo_mantenimiento"str
-("costo_estimado"str
-""Mantenimiento Compresor"str
-<43"Mantenimiento preventivo para motores el√©ctricos"str
-
-&4int
-&"Revisar presi√≥n de trabajo"str
-
-G3int
-
-1int
-)1 "Mantenimiento Motor El√©ctrico"str
-""Cambiar filtros de aire"str
-"frecuencia_sugerida"str
-6180int
-
-/2int
-%"tiempo_estimado"strself
-Ù Ù(!list"¯&
-$
-
-˜ á("#new-object#Bdict"
- 
-
-¯ ¯("	#map-set#:"
- 
-
-˘ ˘(3	"	#map-set#:"
- 
-
-˙ ˙(2"	#map-set#:
-"
- 
-
-˚ ˚(J"	#map-set#:"
- 
-
-¸ ¸()"	#map-set#:)
-'
-
-˝ É("#unknown-value#Blist(
-&
-
-˝ É("
-#is-exact#:Bbool
-
-
-˝ É("
-#assume#::
-8
-
-˝ É("#set-field# __collection_size:Bint(
-&
-
-˝ É("#array-add-last#:(
-&
-
-˝ É( "#array-add-last#:(
-&
-
-˝ É(!"#array-add-last#:(
-&
-
-˝ É(""#array-add-last#:(
-&
-
-˝ É(#"#array-add-last#:"
- 
-
-˝ É($"	#map-set#:"
- 
-
-Ñ Ñ($'"	#map-set#:%&"
- 
-
-Ö Ö((*"	#map-set#:()"
- 
-
-Ü Ü(D-"	#map-set#:+,&
-$
-
-à ò(."#new-object#Bdict"
- 
-
-â â(0"	#map-set#:./"
- 
-
-ä ä(92"	#map-set#:.1"
- 
-
-ã ã(23"	#map-set#:.
-"
- 
-
-å å(Q5"	#map-set#:.4"
- 
-
-ç ç(*7"	#map-set#:.6)
-'
-
-é î(="#unknown-value#Blist(
-&
-
-é î(>"
-#is-exact#:=Bbool
-
-
-é î(?"
-#assume#:>:
-8
-
-é î(@"#set-field# __collection_size:=Bint(
-&
-
-é î(A"#array-add-last#:=8(
-&
-
-é î(B"#array-add-last#:=9(
-&
-
-é î(C"#array-add-last#:=:(
-&
-
-é î(D"#array-add-last#:=;(
-&
-
-é î(E"#array-add-last#:=<"
- 
-
-é î(F"	#map-set#:.="
- 
-
-ï ï($H"	#map-set#:.%G"
- 
-
-ñ ñ((J"	#map-set#:.(I"
- 
-
-ó ó(7L"	#map-set#:.+K)
-'
-
-ˆ ô(	M"#unknown-value#Blist(
-&
-
-ˆ ô(	N"
-#is-exact#:MBbool
-
-
-ˆ ô(	O"
-#assume#:N:
-8
-
-ˆ ô(	P"#set-field# __collection_size:MBint(
-&
-
-ˆ ô(	Q"#array-add-last#:M(
-&
-
-ˆ ô(	R"#array-add-last#:M.
-
-ˆ ô(	M*ZC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\programacion_model.py

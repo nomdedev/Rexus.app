@@ -1,38 +1,0 @@
-
-öê"
-    Decorador que combina m√∫ltiples optimizaciones.
-    
-    Args:
-        cache_key: Clave de cache personalizada
-        ttl: Time to live para cache
-        batch_key: Clave para batching (previene N+1)
-        page_size: Tama√±o de p√°gina por defecto
-    "str	cache_key
-ö ö()ttl
-ö+ ö(9	batch_key
-õ õ((	page_size
-õ* õ(="»#
-!
-
-¥ ¥("#unknown-value#*
-(
-
-• ¥(%closure"#new-object#-
-+
-
-• ¥("#set-field# cache_key:'
-%
-
-• ¥("#set-field# ttl:-
-+
-
-• ¥(	"#set-field# batch_key:-
-+
-
-• ¥(
-"#set-field# page_size:-
-+
-
-• ¥("?python-partial-apply?:
-
-¥ ¥(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\query_optimizer.py

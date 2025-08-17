@@ -1,39 +1,0 @@
-
-"Cerraduras"str
-1("Obtiene tipos de herrajes disponibles."str
-	"Manijas"str
-"Otros herrajes"str
-
-0int
-
-"Bisagras"strself
-Ó Ó(#list"ì)
-'
-
-Õ Õ(F"#unknown-value#Blist(
-&
-
-Õ Õ(F	"
-#is-exact#:Bbool
-
-
-Õ Õ(F
-"
-#assume#:	:
-8
-
-Õ Õ(F"#set-field# __collection_size:Bint(
-&
-
-Õ Õ(F"#array-add-last#:(
-&
-
-Õ Õ(F"#array-add-last#:(
-&
-
-Õ Õ(F"#array-add-last#:(
-&
-
-Õ Õ(F"#array-add-last#:
-
-Õ Õ(F*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\controller.py

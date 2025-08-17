@@ -205,7 +205,7 @@ class ProductionDeployment:
             'rexus/modules',
             'rexus/utils',
             'rexus/ui',
-            'legacy_root/resources/qss',
+            'ui/resources/qss',
         ]
         
         required_files = [
@@ -317,7 +317,7 @@ class ProductionDeployment:
                 ('logs/', 'Logs del sistema'),
                 ('.env', 'Configuración de entorno'),
                 ('.claude/', 'Configuración Claude'),
-                ('legacy_root/resources/', 'Recursos del sistema'),
+                ('ui/resources/', 'Recursos del sistema'),
             ]
             
             for item, description in backup_items:
@@ -446,7 +446,7 @@ class ProductionDeployment:
 
         try:
             # Verificar si hay migraciones pendientes
-            migrations_dir = self.project_root / 'legacy_root' / 'scripts' / 'sql'
+            migrations_dir = self.project_root / 'sql'
             
             if migrations_dir.exists():
                 print("✅ Estructura SQL verificada")

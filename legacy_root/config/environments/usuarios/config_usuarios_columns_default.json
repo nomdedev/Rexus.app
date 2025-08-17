@@ -1,8 +1,0 @@
-{
-  "id": true,
-  "usuario": true,
-  "nombre": true,
-  "rol": true,
-  "email": true,
-  "estado": true
-}

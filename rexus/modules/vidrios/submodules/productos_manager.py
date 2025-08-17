@@ -14,6 +14,10 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("vidrios.productos_manager")
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -122,7 +126,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error creando vidrio: {str(e)}")
+            logger.error(f"Error creando vidrio: {str(e)}")
             return False
 
     @auth_required
@@ -152,7 +156,7 @@ vidrio_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando vidrio: {str(e)}")
+            logger.error(f"Error actualizando vidrio: {str(e)}")
             return False
 
     @auth_required
@@ -175,7 +179,7 @@ vidrio_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error eliminando vidrio: {str(e)}")
+            logger.error(f"Error eliminando vidrio: {str(e)}")
             return False
 
     def _validar_datos_vidrio(self, datos: Dict[str, Any]) -> Dict[str, Any]:
@@ -255,7 +259,7 @@ vidrio_id: int,
             return tipos
 
         except Exception as e:
-            print(f"Error obteniendo tipos de vidrio: {str(e)}")
+            logger.error(f"Error obteniendo tipos de vidrio: {str(e)}")
             return []
 
     @auth_required
@@ -290,7 +294,7 @@ vidrio_id: int,
             return cursor.fetchone() is None
 
         except Exception as e:
-            print(f"Error validando código: {str(e)}")
+            logger.error(f"Error validando código: {str(e)}")
             return False
 
     def calcular_area_vidrio(self, largo: float, ancho: float) -> float:
@@ -304,7 +308,9 @@ vidrio_id: int,
 
             return largo_sanitizado * ancho_sanitizado
 
-        except Exception:
+        except (ValueError, TypeError) as e:
+            # ValueError: conversión numérica falló
+            # TypeError: tipos incompatibles para operaciones matemáticas
             return 0.0
 
     def calcular_precio_area(
@@ -352,7 +358,7 @@ vidrio_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando stock: {str(e)}")
+            logger.error(f"Error actualizando stock: {str(e)}")
             return False
 
     @auth_required
@@ -388,7 +394,7 @@ vidrio_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando precio: {str(e)}")
+            logger.error(f"Error actualizando precio: {str(e)}")
             return False
 
     @auth_required
@@ -422,5 +428,5 @@ vidrio_id: int,
             return stock_actual >= cantidad_sanitizada
 
         except Exception as e:
-            print(f"Error validando disponibilidad: {str(e)}")
+            logger.error(f"Error validando disponibilidad: {str(e)}")
             return False

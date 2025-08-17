@@ -1,57 +1,0 @@
-
-"text"str
-	"primary"str
-	"surface"str
-"background"str
-<3"Obtener colores principales para preview del tema"str
-theme_name
-ª ª(,"¸:
-8
-
-¬ ¬(!theme"
-rexus.core.themes	get_theme:+
-)
-
-­ ­("
-__bool__*:BboolH+
-)
-
-­ ­("#unaryop !#2!:Bbool "
-
-­ ­( *
-­ ­("<&
-$
-
-® ®("#new-object#Bdict
-
-® ®("…&
-$
-
-° µ("#new-object#Bdict*
-(
-
-± ±( 	"#get-field# primary:"
- 
-
-± ±( 
-"	#map-set#:	-
-+
-
-² ²(&"#get-field# background:"
- 
-
-² ²(&"	#map-set#:*
-(
-
-³ ³( "#get-field# surface:"
- 
-
-³ ³( "	#map-set#:0
-.
-
-´ ´(#"#get-field# on_background:"
- 
-
-´ ´(#"	#map-set#:
-
-° µ(*=C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\themes.py

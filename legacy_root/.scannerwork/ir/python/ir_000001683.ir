@@ -1,52 +1,0 @@
-
-+""Tabla no permitida: {table_name}"str
-2)"Nombre de tabla inv√°lido: {table_name}"str
-6-"Valida nombre de tabla contra lista blanca."str
-
-"usuarios"str
-"roles_usuario"str
-#"^[a-zA-Z_][a-zA-Z0-9_]*$"str
-"permisos_usuario"str
-"modulos_usuario"strselfJ J(!
-table_nameJ# J(2"ï
-
-N N(@"
-rematch:)
-'
-N N(@"
-__bool__*:BboolH)
-'
-N N(@"#unaryop !#2!:Bbool"
-N N(@ *N N(
-"B.
-,
-O O(G	"
-ValueError*:B
-ValueError2
-O O(G	"¨6
-4
-Q V(	
-tablas_permitidas"#new-object#Bset&
-$
-Q V(	"#array-add-last#:
-&
-$
-Q V(	"#array-add-last#:
-&
-$
-Q V(	"#array-add-last#:
-&
-$
-Q V(	"#array-add-last#:
-2
-0
-W W(."#binop not in#2not in:
-Bbool"
-W W(. *W W(
-"B.
-,
-X X(A"
-ValueError*:B
-ValueError2
-X X(A"
-Y Y(*^C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\submodules\usuarios_manager.py

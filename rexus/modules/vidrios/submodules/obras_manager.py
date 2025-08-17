@@ -14,6 +14,10 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("vidrios.obras_manager")
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -106,7 +110,7 @@ class ObrasManager:
             return vidrios
 
         except Exception as e:
-            print(f"Error obteniendo vidrios por obra: {str(e)}")
+            logger.error(f"Error obteniendo vidrios por obra: {str(e)}")
             return []
 
     @auth_required
@@ -162,7 +166,7 @@ class ObrasManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error asignando vidrio a obra: {str(e)}")
+            logger.error(f"Error asignando vidrio a obra: {str(e)}")
             return False
 
     @auth_required
@@ -238,7 +242,7 @@ class ObrasManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error creando pedido de obra: {str(e)}")
+            logger.error(f"Error creando pedido de obra: {str(e)}")
             return None
 
     @auth_required
@@ -268,7 +272,7 @@ class ObrasManager:
             return pedidos
 
         except Exception as e:
-            print(f"Error obteniendo pedidos de obra: {str(e)}")
+            logger.error(f"Error obteniendo pedidos de obra: {str(e)}")
             return []
 
     @auth_required
@@ -313,7 +317,7 @@ class ObrasManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando estado de pedido: {str(e)}")
+            logger.error(f"Error actualizando estado de pedido: {str(e)}")
             return False
 
     def _validar_datos_asignacion(self,
@@ -395,7 +399,7 @@ datos: Dict[str,
             return resumen
 
         except Exception as e:
-            print(f"Error obteniendo resumen de obra: {str(e)}")
+            logger.error(f"Error obteniendo resumen de obra: {str(e)}")
             return {}
 
     @auth_required
@@ -436,5 +440,5 @@ datos: Dict[str,
             return vidrios
 
         except Exception as e:
-            print(f"Error obteniendo vidrios de obra: {str(e)}")
+            logger.error(f"Error obteniendo vidrios de obra: {str(e)}")
             return []

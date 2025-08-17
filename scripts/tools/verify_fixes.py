@@ -10,10 +10,10 @@ def main():
     print('VERIFICANDO CORRECCIONES DE EXEC/EVAL CRITICOS')
     print('=' * 50)
 
-    # Los tres archivos más críticos que acabamos de corregir
+    # Los archivos críticos que corregimos
     critical_files = [
         'scripts/tools/aplicar_estilos_premium.py',
-        'legacy_root/tools/development/maintenance/generar_informes_modulos.py', 
+        'tools/generar_informes_modulos.py', 
         'scripts/test_step_by_step.py'
     ]
 

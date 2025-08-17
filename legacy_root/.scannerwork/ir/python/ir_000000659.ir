@@ -1,21 +1,0 @@
-
-1("Obtener instancia singleton del logger"strcls. .(name. .(+"+
-)
-0 0(%"#get-field# _instances:2
-0
-0 0(%"#binop not in#2not in:Bbool"
-0 0(% *0 0(
-"v
-
-1# 1(,"cls:+
-)
-1 1("#get-field# _instances:$
-"
-1 1(,"#array-write#:"c+
-)
-2 2(	"#get-field# _instances:"
- 
-2 2(#
-"#array-read#:	
-2 2(#
-*=C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\logger.py

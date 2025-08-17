@@ -16,13 +16,9 @@ try:
     # Intentar importar desde la estructura nueva
     from rexus.core.database import get_inventario_connection
 except ImportError:
-    try:
-        # Fallback a estructura legacy
-        from legacy_root.rexus.core.database import get_inventario_connection
-    except ImportError:
-        print("[ERROR] No se puede importar get_inventario_connection")
-        print("Verificar estructura de proyecto")
-        sys.exit(1)
+    print("[ERROR] No se puede importar get_inventario_connection")
+    print("Verificar estructura de proyecto")
+    sys.exit(1)
 
 
 def execute_sql_file(sql_file_path):
@@ -81,7 +77,7 @@ def main():
 
     # Buscar el archivo SQL
     sql_paths = [
-        project_root / "legacy_root" / "scripts" / "database" / "compras_simple.sql",
+        project_root / "sql" / "compras_simple.sql",
         project_root / "scripts" / "database" / "compras_simple.sql",
     ]
 

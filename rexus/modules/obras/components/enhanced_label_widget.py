@@ -364,7 +364,10 @@ text: str = "",
                 self.setText(f"[WARNING] Vencida hace {abs(diff.days)} días")
                 self.set_obra_status('VENCIDA')
 
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: fecha mal formateada
+            # TypeError: tipo de dato incorrecto
+            # AttributeError: objeto sin atributos de fecha
             self.setText("📅 Fecha inválida")
 
     def _update_progress_display(self, current: float, total: float):

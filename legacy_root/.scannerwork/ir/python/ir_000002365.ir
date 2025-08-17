@@ -1,30 +1,0 @@
-
-çÉ"
-    Decorador que registra acciones para auditor√≠a.
-    
-    Args:
-        action: Acci√≥n realizada (create, read, update, delete)
-        resource: Recurso afectado (opcional)
-        
-    Returns:
-        Decorador que registra la acci√≥n
-    "straction
-Í Í(resource
-Í Í(2"Ï#
-!
-
-î î("#unknown-value#*
-(
-
-ı î(%closure"#new-object#*
-(
-
-ı î("#set-field# action:,
-*
-
-ı î("#set-field# resource:-
-+
-
-ı î("?python-partial-apply?:
-
-î î(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

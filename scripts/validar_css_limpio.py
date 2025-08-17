@@ -29,7 +29,7 @@ def validar_css_limpio():
     total_errores = 0
 
     # Buscar en archivos QSS
-    qss_dirs = ['legacy_root/resources/qss', 'resources/qss']
+    qss_dirs = ['ui/resources/qss', 'resources/qss']
 
     for qss_dir in qss_dirs:
         if not os.path.exists(qss_dir):

@@ -1,95 +1,0 @@
-
-=rexus.modules.logistica.view.LogisticaView.buscar_transportesT
-HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\logistica\view.pyà à("2*•
-2
-á á(2z
-x
-
-â â(%
-%3"__id*^
-
-__unknown_file (B*@,
-*rexus.modules.logistica.view.LogisticaView"
-input_busqueda><
-
-â â(,
-%4*"
-
-__unknown_file (
-
-%32textC
-A
-
-â â(,	
-termino"__id*"
-
-__unknown_file (
-
-%4x
-v
-
-ã ã("
-%5"__id*\
-
-__unknown_file (@*>,
-*rexus.modules.logistica.view.LogisticaView"
-combo_estadoEC
-
-ã ã(0
-%6*"
-
-__unknown_file (
-
-%52currentTextB
-@
-
-ã ã(0
-estado"__id*"
-
-__unknown_file (
-
-%6v
-t
-
-å å(
-%7"__id*Z
-
-__unknown_file (>*<,
-*rexus.modules.logistica.view.LogisticaView"
-
-controller*
-3
-4*/
-3	
-view.py"
-è è(
-implicit return*­
-4
-æ æ(?v
-t
-
-æ æ(
-%1"__id*Z
-
-__unknown_file (>*<,
-*rexus.modules.logistica.view.LogisticaView"
-
-controllerž›
-
-æ æ(?
-%2*"
-
-__unknown_file (
-
-%1*'
-
-__unknown_file (
-	
-termino*&
-
-__unknown_file (
-
-
-estado2buscar_transportes*
-3B.,
-*rexus.modules.logistica.view.LogisticaViewH

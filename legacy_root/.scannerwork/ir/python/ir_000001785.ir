@@ -1,16 +1,0 @@
-
-=4"Número del último elemento en la página actual."strself7 7("�'
-%
-9 9("#get-field# offset:,
-*
-9 9("?python-partial-apply?:*
-(
-9 9(*"#get-field# page_size:'
-%
-9 9(*end"	#binop +#2+:,
-*
-: :(("#get-field# total_items:&
-$
-: :()"
-builtinsmin*:
-: :()*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\pagination.py

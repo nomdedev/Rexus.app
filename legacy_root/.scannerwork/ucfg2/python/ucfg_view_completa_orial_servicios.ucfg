@@ -1,74 +1,0 @@
-
-_rexus.modules.mantenimiento.view_completa.MantenimientoCompletaView.generar_historial_serviciosa
-UC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\view_completa.py” ”(#"2*ƒ	
-2
-‘ ‘(+ß
-§
-
-’ ˙(	
-reporte"__id*Ñ
-
-__unknown_file (Á‰
-·
-HISTORIAL DE SERVICIOS - ENERO 2024
-===================================
-
-SERVICIOS REALIZADOS:
-
-1. MAQ-001 - Cortadora Plasma
-   - Fecha: 15/01/2024
-   - Tipo: Mantenimiento Preventivo
-   - T√©cnico: Juan P√©rez
-   - Duraci√≥n: 2.5 hrs
-   - Costo: $150,000
-
-2. MAQ-002 - Soldadora MIG
-   - Fecha: 10/01/2024
-   - Tipo: Mantenimiento Correctivo
-   - T√©cnico: Mar√≠a Garc√≠a
-   - Duraci√≥n: 4.0 hrs
-   - Costo: $250,000
-
-3. MAQ-003 - Pulidora Angular
-   - Fecha: 20/01/2024
-   - Tipo: Mantenimiento Preventivo
-   - T√©cnico: Carlos L√≥pez
-   - Duraci√≥n: 1.5 hrs
-   - Costo: $80,000
-
-ESTAD√çSTICAS:
-- Total servicios: 3
-- Horas invertidas: 8.0 hrs
-- Costo total: $480,000
-- Promedio por servicio: $160,000
-
-T√âCNICOS M√ÅS ACTIVOS:
-1. Juan P√©rez - 1 servicio
-2. Mar√≠a Garc√≠a - 1 servicio
-3. Carlos L√≥pez - 1 servicio
-        í
-è
-
-˚ ˚(
-%1"__id*u
-
-__unknown_file (Y*WE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView"
-preview_textom
-
-˚ ˚(/
-%2*"
-
-__unknown_file (
-
-%1*'
-
-__unknown_file (
-	
-reporte2setPlainText*
-3*8
-3
-view_completa.py"
-˝ ˝(
-implicit returnBGE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaViewH

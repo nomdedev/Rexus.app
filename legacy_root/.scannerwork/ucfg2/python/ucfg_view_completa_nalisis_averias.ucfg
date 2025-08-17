@@ -1,80 +1,0 @@
-
-\rexus.modules.mantenimiento.view_completa.MantenimientoCompletaView.generar_analisis_averiasa
-UC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\view_completa.pyÚ Ú( "2*Ñ
-
-2
-Û Û((Á
-‰
-
-Ù û(	
-reporte"__id*ƒ
-
-__unknown_file (ß§
-°
-AN√ÅLISIS DE AVER√çAS - ENERO 2024
-================================
-
-TIPOS DE AVER√çAS M√ÅS FRECUENTES:
-1. Fallas el√©ctricas: 40%
-2. Desgaste de componentes: 30%
-3. Falta de lubricaci√≥n: 15%
-4. Problemas de calibraci√≥n: 10%
-5. Otros: 5%
-
-M√ÅQUINAS CON M√ÅS AVER√çAS:
-1. MAQ-002 - 3 aver√≠as
-2. MAQ-004 - 2 aver√≠as
-3. MAQ-001 - 1 aver√≠a
-4. MAQ-003 - 1 aver√≠a
-5. MAQ-005 - 0 aver√≠as
-
-CAUSAS PRINCIPALES:
-- Falta de mantenimiento preventivo: 45%
-- Uso inadecuado: 25%
-- Desgaste normal: 20%
-- Defectos de fabricaci√≥n: 10%
-
-HORARIOS DE MAYOR INCIDENCIA:
-- Ma√±ana (6-12): 20%
-- Tarde (12-18): 60%
-- Noche (18-24): 20%
-
-D√çAS DE LA SEMANA:
-- Lunes: 25%
-- Martes: 20%
-- Mi√©rcoles: 15%
-- Jueves: 20%
-- Viernes: 15%
-- S√°bado: 5%
-
-RECOMENDACIONES:
-- Incrementar mantenimiento preventivo
-- Capacitar operadores
-- Revisar procedimientos de uso
-- Implementar sistema de monitoreo
-        í
-è
-
-ü ü(
-%1"__id*u
-
-__unknown_file (Y*WE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView"
-preview_textom
-
-ü ü(/
-%2*"
-
-__unknown_file (
-
-%1*'
-
-__unknown_file (
-	
-reporte2setPlainText*
-3*6
-3
-view_completa.py"
-£ £
-implicit returnBGE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaViewH

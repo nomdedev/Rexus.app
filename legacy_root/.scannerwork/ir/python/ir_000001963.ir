@@ -1,44 +1,0 @@
-
-"id"str
-	
-"username"str
-
-0int
-
-"guest"str
-"rol"str
-	"USUARIO"strself
-Þ Þ("‘4
-2
-
-á á(%"#get-field# current_user_data:+
-)
-
-á á(%"
-__bool__*:BboolH,"*
-
-á á(% *
-á á(2
-â â("J4
-2
-
-à à(""#get-field# current_user_data:
-
-à â(A"¨&
-$
-
-â â(A"#new-object#Bdict"
- 
-
-â â("	#map-set#:"
- 
-
-â â(."	#map-set#:	
-"
- 
-
-â0 â(@"	#map-set#:
-
-à â(A"&*
-
-ß ã(	*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app_collapsible.py

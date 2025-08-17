@@ -1,14 +1,14 @@
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.sql_query_manager import SQLQueryManager
 
-# [LOCK] DB Authorization Check - Verify user permissions before DB operations
-# Ensure all database operations are properly authorized
-# DB Authorization Check
 """
 Modelo de Administración - Rexus.app v2.0.0
 
 Sistema completo de administración y contabilidad.
 Incluye utilidades de seguridad para prevenir SQL injection y XSS.
+
+[LOCK] DB Authorization Check - Verify user permissions before DB operations
+Ensure all database operations are properly authorized
 """
 
 import sys

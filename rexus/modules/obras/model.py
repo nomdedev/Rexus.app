@@ -160,15 +160,13 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # FIXED: Usar consultas parametrizadas seguras en lugar de script_content
+            # Usar SQLQueryManager para consultas seguras
             if id_obra_actual:
-                cursor.execute("""
-                    SELECT COUNT(*) FROM obras WHERE codigo = ? AND id != ?
-                """, (codigo_limpio, id_obra_actual))
+                sql_query = self.sql_manager.get_query('obras', 'count_duplicados_codigo_exclude')
+                cursor.execute(sql_query, (codigo_limpio, id_obra_actual))
             else:
-                cursor.execute("""
-                    SELECT COUNT(*) FROM obras WHERE codigo = ?
-                """, (codigo_limpio,))
+                sql_query = self.sql_manager.get_query('obras', 'count_duplicados_codigo')
+                cursor.execute(sql_query, (codigo_limpio,))
 
             result = cursor.fetchone()
             if result is None:
@@ -233,10 +231,9 @@ class ObrasModel:
 
             cursor = self.db_connection.cursor()
 
-            # FIXED: Verificar que no existe una obra con el mismo código usando consulta parametrizada segura
-            cursor.execute("""
-                SELECT COUNT(*) FROM obras WHERE codigo = ?
-            """, (datos_limpios.get("codigo"),))
+            # Verificar que no existe una obra con el mismo código usando SQLQueryManager
+            sql_duplicados = self.sql_manager.get_query('obras', 'count_duplicados_codigo')
+            cursor.execute(sql_duplicados, (datos_limpios.get("codigo"),))
             result = cursor.fetchone()
             if result and result[0] > 0:
                 return (
@@ -244,15 +241,9 @@ class ObrasModel:
                     f"Ya existe una obra con el código {datos_limpios.get('codigo')}",
                 )
 
-            # FIXED: Insertar obra con consulta parametrizada segura
-            cursor.execute("""
-                INSERT INTO obras 
-                (codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
-                 fecha_inicio, fecha_fin_estimada, presupuesto_total, estado,
-                 tipo_obra, prioridad, responsable, observaciones, usuario_creacion,
-                 fecha_creacion, fecha_modificacion, activo)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE(), 1)
-            """, (
+            # Insertar obra usando SQLQueryManager
+            sql_insert = self.sql_manager.get_query('obras', 'insert_obra')
+            cursor.execute(sql_insert, (
                 datos_limpios.get("codigo"),
                 datos_limpios.get("nombre"),
                 datos_limpios.get("descripcion", ""),
@@ -306,15 +297,9 @@ class ObrasModel:
         cursor = None
         try:
             cursor = self.db_connection.cursor()
-            # FIXED: Usar consulta parametrizada segura en lugar de script_content
-            cursor.execute("""
-                SELECT id, codigo, nombre, descripcion, cliente, direccion, telefono_contacto,
-                       fecha_inicio, fecha_fin_estimada, presupuesto_total, estado,
-                       tipo_obra, prioridad, responsable, observaciones, 
-                       fecha_creacion, fecha_modificacion, activo
-                FROM obras 
-                WHERE codigo = ? AND activo = 1
-            """, (codigo,))
+            # Usar SQLQueryManager para consulta segura
+            sql_obra_codigo = self.sql_manager.get_query('obras', 'select_obra_por_codigo')
+            cursor.execute(sql_obra_codigo, (codigo,))
 
             row = cursor.fetchone()
             if row:
@@ -431,13 +416,8 @@ page=1,
                     page_size, offset
                 ))
 
-                # Contar total de búsqueda
-                sql_count = """
-                    SELECT COUNT(*) FROM obras
-                    WHERE activo = 1
-                    AND (codigo_obra LIKE ? OR nombre_obra LIKE ? OR cliente LIKE ?
-                         OR direccion LIKE ? OR descripcion LIKE ? OR responsable LIKE ?)
-                """
+                # Contar total de búsqueda usando SQLQueryManager
+                sql_count = self.sql_manager.get_query('obras', 'count_obras_activas')
                 cursor.execute(sql_count, (search_param, search_param, search_param,
                                          search_param, search_param, search_param))
                 total_count = cursor.fetchone()[0]
@@ -512,15 +492,8 @@ page=1,
         try:
             cursor = self.db_connection.cursor()
 
-            # Query optimizada con paginación para SQL Server
-            query = """
-            SELECT id, codigo_obra, nombre_obra, cliente, estado,
-                   fecha_creacion, fecha_actualizacion, presupuesto_total
-            FROM obras
-            WHERE activo = 1
-            ORDER BY fecha_creacion DESC
-            OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-            """
+            # Query optimizada con paginación usando SQLQueryManager
+            query = self.sql_manager.get_query('obras', 'select_obras_activas')
 
             cursor.execute(query, (offset, limit or 50))
             obras = cursor.fetchall()
@@ -554,14 +527,8 @@ page=1,
         try:
             cursor = self.db_connection.cursor()
 
-            # Query optimizada sin SELECT *
-            query = """
-            SELECT id, codigo_obra, nombre_obra, cliente, estado,
-                   fecha_creacion, fecha_actualizacion, presupuesto_total,
-                   descripcion, ubicacion, activo
-            FROM obras
-            WHERE id = ? AND activo = 1
-            """
+            # Query optimizada usando SQLQueryManager
+            query = self.sql_manager.get_query('obras', 'select_obra_por_id')
 
             cursor.execute(query, (obra_id,))
             row = cursor.fetchone()
@@ -620,14 +587,8 @@ obra_id: int,
             if not cursor.fetchone():
                 return False, "La obra no existe o está inactiva"
 
-            # Actualizar obra completa
-            sql = """
-                UPDATE obras SET
-                    nombre = ?, descripcion = ?, direccion = ?, cliente = ?,
-                    estado = ?, fecha_inicio = ?, fecha_fin_estimada = ?,
-                    presupuesto_total = ?, presupuesto_utilizado = ?, observaciones = ?
-                WHERE id = ?
-            """
+            # Actualizar obra usando SQLQueryManager
+            sql = self.sql_manager.get_query('obras', 'update_obra')
             params = (
                 datos_limpios.get('nombre'),
                 datos_limpios.get('descripcion'),

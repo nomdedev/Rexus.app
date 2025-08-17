@@ -5,11 +5,16 @@ Sistema centralizado de autenticación, autorización y control de acceso
 para toda la aplicación.
 """
 
+import logging
 import uuid
 from datetime import datetime, timedelta
 from typing import Any, Dict, List, Optional, Set
 
 from PyQt6.QtCore import QObject, pyqtSignal
+
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("core.security")
 
 
 class SecurityManager(QObject):
@@ -136,10 +141,10 @@ class SecurityManager(QObject):
             """)
 
             self.db_connection.commit()
-            print("[CHECK] Tablas de seguridad creadas exitosamente")
+            logger.info("Tablas de seguridad creadas exitosamente")
 
         except Exception as e:
-            logger.error(Error creando tablas de seguridad: {e})
+            logger.error(f"Error creando tablas de seguridad: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -246,7 +251,7 @@ modulo,
             self.assign_default_role_permissions()
 
         except Exception as e:
-            logger.error(Error cargando permisos por defecto: {e})
+            logger.error(f"Error cargando permisos por defecto: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -435,14 +440,14 @@ modulo,
             self.db_connection.commit()
 
         except Exception as e:
-            logger.error(Error asignando permisos por defecto: {e})
+            logger.error(f"Error asignando permisos por defecto: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
     def create_default_admin(self):
         """ELIMINADO: No crear usuarios por defecto - RIESGO DE SEGURIDAD"""
-        logger.error(SEGURIDAD: No se crean usuarios por defecto automáticamente)
-        print("   Los usuarios deben ser creados manualmente por el administrador del sistema")
+        logger.error("SEGURIDAD: No se crean usuarios por defecto automáticamente")
+        logger.info("Los usuarios deben ser creados manualmente por el administrador del sistema")
 
     def hash_password(self, password: str) -> str:
         """
@@ -468,11 +473,11 @@ modulo,
 
             # Si es válida y el hash necesita actualización, loggear para migración
             if is_valid and check_password_needs_rehash(password_hash):
-                print(f"[SECURITY] Hash de contraseña necesita migración a formato seguro")
+                logger.warning("Hash de contraseña necesita migración a formato seguro")
 
             return is_valid
         except Exception as e:
-            logger.error(Error verificando contraseña: {e})
+            logger.error(f"Error verificando contraseña: {e}")
             return False
 
     def login(self, username: str, password: str) -> bool:
@@ -508,7 +513,7 @@ modulo,
             return True
 
         except Exception as e:
-            logger.error(Error en login: {e})
+            logger.error(f"Error en login: {e}")
             return False
 
     def logout(self) -> bool:
@@ -548,7 +553,7 @@ modulo,
                 return True
 
         except Exception as e:
-            logger.error(Error en logout: {e})
+            logger.error(f"Error en logout: {e}")
 
         return False
 
@@ -579,7 +584,7 @@ modulo,
                 self.permissions_cache[module].add(perm_name)
 
         except Exception as e:
-            logger.error(Error cargando permisos: {e})
+            logger.error(f"Error cargando permisos: {e}")
             self.permissions_cache = {}
 
     def has_permission(self, permission: str, module: str = None) -> bool:
@@ -643,7 +648,7 @@ modulo,
             return cursor.fetchone() is not None
 
         except Exception as e:
-            logger.error(Error verificando sesión: {e})
+            logger.error(f"Error verificando sesión: {e}")
             return False
 
     def log_security_event(
@@ -652,9 +657,9 @@ modulo,
         """Registra un evento de seguridad."""
         try:
             # Solo registrar en consola por ahora (sin BD)
-            print(f"[SECURITY] Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
+            logger.info(f"Usuario:{usuario_id} | {accion} | {modulo} | {detalles}")
         except Exception as e:
-            logger.error(Error logging evento de seguridad: {e})
+            logger.error(f"Error logging evento de seguridad: {e}")
 
     def get_current_user(self) -> Optional[Dict]:
         """Obtiene los datos completos del usuario actual."""
@@ -666,9 +671,9 @@ modulo,
         """Obtiene los módulos a los que tiene acceso un usuario."""
         try:
             # [SEARCH] DIAGNÓSTICO: Logging detallado para debug
-            print(f"[SECURITY DEBUG] get_user_modules llamado con user_id: {user_id}")
-            print(f"[SECURITY DEBUG] current_role: '{self.current_role}'")
-            print(f"[SECURITY DEBUG] current_user: {self.current_user}")
+            logger.debug(f"get_user_modules llamado con user_id: {user_id}")
+            logger.debug(f"current_role: '{self.current_role}'")
+            logger.debug(f"current_user: {self.current_user}")
 
             # Basado en el rol del usuario actual, devolver módulos permitidos
             if self.current_role in ['admin', 'ADMIN']:
@@ -687,7 +692,7 @@ modulo,
                     "Compras",
                     "Mantenimiento"
                 ]
-                print(f"[SECURITY DEBUG] Admin detectado, devolviendo {len(modules)} módulos")
+                logger.debug(f"Admin detectado, devolviendo {len(modules)} módulos")
                 return modules
             elif self.current_role in ['supervisor', 'SUPERVISOR']:
                 # Supervisor tiene acceso a gestión general
@@ -741,12 +746,12 @@ modulo,
                     "Obras",
                     "Pedidos"
                 ]
-                print(f"[SECURITY DEBUG] Rol no reconocido o usuario básico ('{self.current_role}'), devolviendo {len(basic_modules)} módulos básicos")
+                logger.debug(f"Rol no reconocido o usuario básico ('{self.current_role}'), devolviendo {len(basic_modules)} módulos básicos")
                 return basic_modules
 
         except Exception as e:
-            print(f"[SECURITY ERROR] Error obteniendo módulos del usuario: {e}")
-            print(f"[SECURITY ERROR] current_role en momento del error: '{self.current_role}'")
+            logger.error(f"Error obteniendo módulos del usuario: {e}")
+            logger.error(f"current_role en momento del error: '{self.current_role}'")
             return ["Inventario", "Obras"]  # Módulos mínimos
 
     def get_current_user_string(self) -> Optional[str]:
@@ -789,9 +794,9 @@ modulo,
             diagnosis["modules_count"] = 0
             diagnosis["has_admin_access"] = False
 
-        print(f"[SECURITY DIAGNOSIS] Estado del sistema de permisos:")
+        logger.info("Estado del sistema de permisos:")
         for key, value in diagnosis.items():
-            print(f"  {key}: {value}")
+            logger.info(f"  {key}: {value}")
 
         return diagnosis
 
@@ -830,7 +835,7 @@ modulo,
             return users
 
         except Exception as e:
-            logger.error(Error obteniendo usuarios: {e})
+            logger.error(f"Error obteniendo usuarios: {e}")
             return []
 
     def create_user(
@@ -856,7 +861,7 @@ modulo,
             # SEGURIDAD: Validar que no se permita creación no autorizada
             # Solo permitir crear usuarios si el usuario actual es admin
             if not hasattr(self, 'current_user') or self.current_role != 'ADMIN':
-                logger.error(SEGURIDAD: Solo admins pueden crear usuarios)
+                logger.error("SEGURIDAD: Solo admins pueden crear usuarios")
                 return False
 
             # Crear usuario con validaciones adicionales
@@ -885,7 +890,7 @@ password_hash,
             return True
 
         except Exception as e:
-            logger.error(Error creando usuario: {e})
+            logger.error(f"Error creando usuario: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -952,7 +957,7 @@ password_hash,
             return True
 
         except Exception as e:
-            logger.error(Error actualizando usuario: {e})
+            logger.error(f"Error actualizando usuario: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -990,7 +995,7 @@ password_hash,
             return logs
 
         except Exception as e:
-            logger.error(Error obteniendo logs de seguridad: {e})
+            logger.error(f"Error obteniendo logs de seguridad: {e}")
             return []
 
 

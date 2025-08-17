@@ -1,398 +1,0 @@
-
-›8.50float
-*"estado"str
-D"VID001"str
-"categoria"str
-–
-"Silicona"str
->"estado_stock"str
-""Bodega A-1"str
-6"QR001"str
-$"proveedor"str
-"precio_unitario"str
-N10int
-"id"str
-w15.75float
-$¨"Agotado - pedido urgente"str
-
-h3int
-8"stock_disponible"str
-T"Bodega B-2"str
-#"Perfil de Aluminio 20x20"str
-C:"Datos demo para cuando no hay conexiÃ³n a base de datos."str
-"stock_maximo"str
-150int
-?"NORMAL"str
-F"Vidrio Templado 6mm"str
-`"QR002"str
- „"Stock bajo - reponer"str
-)3 "Perfil estÃ¡ndar para ventanas"str
-”"Sellantes"str
-%"Aluminios del Valle"str
- |"Herrajes Industriales"str
-u100int
-!"ubicacion"str
--"fecha_creacion"str
-*’ "Sellante Silicona Transparente"str
-."2024-01-15"str
-¢"tubos"str
-
-r8int
-"codigo"str
-n
-"Herrajes"str
-
-"Aluminio"str
-200int
-  "QuÃ­micos Especiales"str
-'"unidad_medida"str
-"subcategoria"str
-
-"Perfiles"str
-z"Bodega C-1"str
-5"codigo_qr"str
-^"Vidrio para puertas"str
-"2024-01-17"str
-
-d5int
-V"Cristales Modernos"str
-
-B2int
-"SEL001"str
-Q45.00float
-["2024-01-16"str
-‰0int
-4int
-J
-"Templado"str
-~
-"unidades"str
-0"fecha_modificacion"str
-("metros"str
-50int
-2"observaciones"str
-†"QR003"str
-H	"Vidrios"str
-¥"2024-01-18"str
-b20int
-
-"descripcion"str
-X
-"metrosÂ²"str
-25.50float
-‹"BAJO"str
-j"HER001"str
-®	"AGOTADO"str
-L25int
-"stock_minimo"str
-ª"QR004"str
-+"ACTIVO"str
-
-1int
-"stock_actual"str
-"precio_promedio"str
-l"Bisagra Pesada 4x4"str
-"PER001"str
-p
-"Bisagras"str
-;"stock_reservado"str
-9120int
-"Bodega D-1"str
-<30intself
-ù ù( 	±list"º&
-$
-
-ü ’("#new-object#Bdict"
- 
-
-ı ı("	#map-set#:"
- 
-
-ş ş("	"	#map-set#:"
- 
-
-ÿ ÿ(9"	#map-set#:
-"
- 
-
-€ €('"	#map-set#:"
- 
-
- (*"	#map-set#:"
- 
-
-‚ ‚(#"	#map-set#:"
- 
-
-ƒ ƒ(""	#map-set#:"
- 
-
-„ „(#"	#map-set#:"
- 
-
-… …(("	#map-set#:"
- 
-
-† †(( "	#map-set#:"
- 
-
-‡ ‡()#"	#map-set#:!""
- 
-
-ˆ ˆ(2&"	#map-set#:$%"
- 
-
-‰ ‰())"	#map-set#:'("
- 
-
-Š Š(","	#map-set#:*+"
- 
-
-‹ ‹(./"	#map-set#:-."
- 
-
-Œ Œ(21"	#map-set#:0."
- 
-
- (@4"	#map-set#:23"
- 
-
- ($7"	#map-set#:56"
- 
-
- (':"	#map-set#:89"
- 
-
- (%="	#map-set#:;<"
- 
-
-‘ ‘((@"	#map-set#:>?&
-$
-
-“ ©(A"#new-object#Bdict"
- 
-
-” ”(C"	#map-set#:AB"
- 
-
-• •("E"	#map-set#:AD"
- 
-
-– –(4G"	#map-set#:A
-F"
- 
-
-— —(&I"	#map-set#:AH"
- 
-
-˜ ˜(*K"	#map-set#:AJ"
- 
-
-™ ™("M"	#map-set#:AL"
- 
-
-š š("O"	#map-set#:AN"
- 
-
-› ›("P"	#map-set#:A"
- 
-
-œ œ((R"	#map-set#:AQ"
- 
-
- ((S"	#map-set#:AQ"
- 
-
- ()U"	#map-set#:A!T"
- 
-
-Ÿ Ÿ(1W"	#map-set#:A$V"
- 
-
-   (*Y"	#map-set#:A'X"
- 
-
-¡ ¡("Z"	#map-set#:A*+"
- 
-
-¢ ¢(.\"	#map-set#:A-["
- 
-
-£ £(2]"	#map-set#:A0["
- 
-
-¤ ¤(6_"	#map-set#:A2^"
- 
-
-¥ ¥($a"	#map-set#:A5`"
- 
-
-¦ ¦(&c"	#map-set#:A8b"
- 
-
-§ §($e"	#map-set#:A;d"
- 
-
-¨ ¨((f"	#map-set#:A>?&
-$
-
-ª À(g"#new-object#Bdict"
- 
-
-« «(i"	#map-set#:gh"
- 
-
-¬ ¬("k"	#map-set#:gj"
- 
-
-­ ­(3m"	#map-set#:g
-l"
- 
-
-® ®('o"	#map-set#:gn"
- 
-
-¯ ¯(*q"	#map-set#:gp"
- 
-
-° °(!s"	#map-set#:gr"
- 
-
-± ±("t"	#map-set#:gb"
- 
-
-² ²(#v"	#map-set#:gu"
- 
-
-³ ³((x"	#map-set#:gw"
- 
-
-´ ´((y"	#map-set#:gw"
- 
-
-µ µ(){"	#map-set#:g!z"
- 
-
-¶ ¶(4}"	#map-set#:g$|"
- 
-
-· ·(+"	#map-set#:g'~#
-!
-
-¸ ¸("€"	#map-set#:g*+$
-"
-
-¹ ¹(.‚"	#map-set#:g-$
-"
-
-º º(2ƒ"	#map-set#:g0$
-"
-
-» »(7…"	#map-set#:g2„$
-"
-
-¼ ¼($‡"	#map-set#:g5†#
-!
-
-½ ½(%ˆ"	#map-set#:g8r$
-"
-
-¾ ¾($Š"	#map-set#:g;‰$
-"
-
-¿ ¿(&Œ"	#map-set#:g>‹'
-%
-
-Á ×("#new-object#Bdict%
-#
-
-Â Â("	#map-set#:%
-#
-
-Ã Ã("‘"	#map-set#:%
-#
-
-Ä Ä(?“"	#map-set#:
-’%
-#
-
-Å Å((•"	#map-set#:”%
-#
-
-Æ Æ(*—"	#map-set#:–%
-#
-
-Ç Ç(!˜"	#map-set#:‰$
-"
-
-È È(!™"	#map-set#:d$
-"
-
-É É("š"	#map-set#:<%
-#
-
-Ê Ê('œ"	#map-set#:›%
-#
-
-Ë Ë('"	#map-set#:›%
-#
-
-Ì Ì()Ÿ"	#map-set#:!%
-#
-
-Í Í(2¡"	#map-set#:$ %
-#
-
-Î Î((£"	#map-set#:'¢$
-"
-
-Ï Ï("¤"	#map-set#:*+%
-#
-
-Ğ Ğ(.¦"	#map-set#:-¥%
-#
-
-Ñ Ñ(2§"	#map-set#:0¥%
-#
-
-Ò Ò(;©"	#map-set#:2¨%
-#
-
-Ó Ó($«"	#map-set#:5ª%
-#
-
-Ô Ô(%¬"	#map-set#:8‰%
-#
-
-Õ Õ($­"	#map-set#:;‰%
-#
-
-Ö Ö()¯"	#map-set#:>®*
-(
-
-û Ø(	°"#unknown-value#Blist+
-)
-
-û Ø(	²"
-#is-exact#:°±Bbool!
-
-
-û Ø(	³"
-#assume#:²=
-;
-
-û Ø(	´"#set-field# __collection_size:°‰Bint*
-(
-
-û Ø(	µ"#array-add-last#:°*
-(
-
-û Ø(	¶"#array-add-last#:°A*
-(
-
-û Ø(	·"#array-add-last#:°g+
-)
-
-û Ø(	¸"#array-add-last#:°
-
-û Ø(	°*JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\model.py

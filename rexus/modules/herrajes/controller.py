@@ -23,11 +23,11 @@ class HerrajesController(BaseController):
     stock_actualizado = pyqtSignal(int, int)
 
     def __init__(self,
-model=None,
+        model=None,
         view=None,
         db_connection=None,
         usuario_actual=None):
-        super().__init__()
+        super().__init__(module_name="herrajes", model=model, view=view, db_connection=db_connection)
 
         # Configurar modelo y vista
         if model is not None:
@@ -434,6 +434,9 @@ model=None,
             from .inventario_integration import HerrajesInventarioIntegration
 
             return HerrajesInventarioIntegration(db_connection=db_connection)
-        except Exception:
+        except (ImportError, AttributeError, TypeError) as e:
             # Retornar None si no puede construirse (evita lanzar en pruebas)
+            # ImportError: módulo no encontrado
+            # AttributeError: clase no encontrada en módulo
+            # TypeError: error en inicialización
             return None

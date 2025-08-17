@@ -1,129 +1,0 @@
-
-krexus.modules.administracion.contabilidad.controller.ContabilidadController.cargar_estadisticas_financierasl
-`C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\contabilidad\controller.py± ±('"2*Æ
-2
-≤ ≤(=î
-ë
-
-≥ ≥(
-%10"__id*v
-
-__unknown_file (Z*XM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-model*
-8
-9*5
-3
-controller.py"
-¡ ¡(
-implicit return*≥
-4
-ø ø(Ce
-c
-
-ø ø(B
-%1"__concat*0
-
-ø! ø(>" 
-Error cargando estad√≠sticas: *
-
-ø? ø(@
-
-eµ≤
-
-ø ø(C
-%2*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController*"
-
-__unknown_file (
-
-%12mostrar_error*
-3*∞
-6
-º º(=®
-•
-
-º º(*
-%3"__id*ä
-
-__unknown_file (n*lM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-estadisticas_actualizadaslj
-
-º º(=
-%4*"
-
-__unknown_file (
-
-%3*,
-
-__unknown_file (
-
-estadisticas2emit*
-3
-4*∏
-7
-∫ ∫(Kí
-è
-
-∫ ∫(
-%5"__id*u
-
-__unknown_file (Y*WM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-viewåâ
-
-∫ ∫(K
-%6*"
-
-__unknown_file (
-
-%5*,
-
-__unknown_file (
-
-estadisticas2#actualizar_estadisticas_financieras*
-6*Ë
-8
-∑ ∑(Hì
-ê
-
-∑ ∑(%
-%7"__id*v
-
-__unknown_file (Z*XM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-modelZX
-
-∑ ∑(H
-%8*"
-
-__unknown_file (
-
-%72 obtener_estadisticas_financierasH
-F
-
-∑ ∑(H
-estadisticas"__id*"
-
-__unknown_file (
-
-%8í
-è
-
-π π(
-%9"__id*u
-
-__unknown_file (Y*WM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-view*
-6
-7*'
-9
-¥ ¥("
-
-¥ ¥(
-voidBOM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadControllerH

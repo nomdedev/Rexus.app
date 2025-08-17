@@ -10,6 +10,15 @@ import re
 from typing import Optional
 import logging
 
+# Re-exportar desde core para compatibilidad
+try:
+    from ..core.security import SecurityManager, init_security_manager, get_security_manager
+except ImportError:
+    # Fallback si core no está disponible
+    SecurityManager = None
+    init_security_manager = None
+    get_security_manager = None
+
 # Configuración de logging para seguridad
 logging.basicConfig(level=logging.INFO)
 

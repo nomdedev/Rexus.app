@@ -1,41 +1,0 @@
-
-"color"str
-90"Obtiene el estilo CSS para el tipo de mensaje."str
-Â¸"
-        QMessageBox {{
-            background-color: white;
-            border: 2px solid {color};
-            border-radius: 8px;
-            font-family: 'Segoe UI', sans-serif;
-            font-size: 14px;
-        }}
-        QMessageBox QLabel {{
-            color: #2c3e50;
-            padding: 10px;
-            font-size: 14px;
-            line-height: 1.4;
-        }}
-        QMessageBox QPushButton {{
-            background-color: {color};
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 4px;
-            font-weight: bold;
-            font-size: 12px;
-            min-width: 80px;
-        }}
-        QMessageBox QPushButton:hover {{
-            background-color: {MessageSystem._darken_color(color)};
-        }}
-        QMessageBox QPushButton:pressed {{
-            background-color: {MessageSystem._darken_color(color, 0.8)};
-        }}
-        "strmessage_type> >(4,(rexus.utils.message_system.MessageSystem"˜/
--
-@ @(-"#get-field# MESSAGE_CONFIG:*
-(
-@ @(;config"#array-read#:)
-'
-A A(color"#array-read#:
-C a(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\message_system.py

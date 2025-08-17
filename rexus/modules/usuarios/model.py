@@ -114,6 +114,10 @@ class UsuariosModel:
     ]
 
     def __init__(self, db_connection=None):
+        # Validar conexión de base de datos
+        if db_connection is None:
+            logger.warning("UsuariosModel inicializado sin conexión a BD - usando modo limitado")
+            
         self.db_connection = db_connection
         self.tabla_usuarios = "usuarios"
         self.tabla_roles = "roles"
@@ -217,6 +221,11 @@ class UsuariosModel:
             # Validar tabla
             self._validate_table_name(self.tabla_usuarios)
 
+            # Validar conexión BD antes de crear cursor
+            if not self.db_connection or not hasattr(self.db_connection, 'connection'):
+                logger.error("Conexión BD no disponible en validar_usuario_duplicado")
+                return resultado
+                
             cursor = self.db_connection.connection.cursor()
 
 

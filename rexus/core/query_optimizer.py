@@ -202,7 +202,8 @@ func: Callable,
 
                 # Intentar obtener del cache
                 try:
-                    from .cache_manager import cache_manager
+                    from ..utils.cache_manager import get_cache_manager
+                    cache_manager = get_cache_manager()
 
                     cached_result = cache_manager.get(key)
                     if cached_result is not None:

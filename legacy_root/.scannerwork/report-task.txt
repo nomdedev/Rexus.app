@@ -1,7 +1,0 @@
-organization=nomdedev
-projectKey=RexusApp
-serverUrl=https://sonarcloud.io
-serverVersion=8.0.0.66154
-dashboardUrl=https://sonarcloud.io/dashboard?id=RexusApp
-ceTaskId=AZiegOCPeW5xg8mdciLr
-ceTaskUrl=https://sonarcloud.io/api/ce/task?id=AZiegOCPeW5xg8mdciLr

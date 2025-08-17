@@ -26,7 +26,7 @@ def extract_sql_queries(file_path, module_name):
         f.write(content)
     
     # Crear directorio para archivos SQL
-    sql_dir = Path(f'legacy_root/scripts/sql/{module_name}')
+    sql_dir = Path(f'sql/{module_name}')
     sql_dir.mkdir(parents=True, exist_ok=True)
     
     new_content = content
@@ -109,7 +109,7 @@ except ImportError:
 
 def create_sql_index_file(module_name, queries):
     """Crea un archivo índice con todas las queries del módulo."""
-    sql_dir = Path(f'legacy_root/scripts/sql/{module_name}')
+    sql_dir = Path(f'sql/{module_name}')
     index_file = sql_dir / 'README.md'
     
     with open(index_file, 'w', encoding='utf-8') as f:
@@ -158,7 +158,7 @@ def main():
     
     print(f"\nMigración SQL completada! {total_queries} queries extraídas.")
     print("Se crearon archivos .sql_backup para seguridad")
-    print("Archivos SQL creados en legacy_root/scripts/sql/")
+    print("Archivos SQL creados en sql/")
 
 if __name__ == "__main__":
     main()

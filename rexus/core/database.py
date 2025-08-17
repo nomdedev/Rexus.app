@@ -31,15 +31,16 @@ from typing import Optional
 
 import pyodbc
 
-# Configurar logger específico para el módulo de database
-logger = logging.getLogger(__name__)
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("core.database")
 
 # Cargar variables de entorno
 try:
     from dotenv import load_dotenv
     load_dotenv()
 except ImportError:
-    print("[WARNING] python-dotenv no disponible. Usando variables de sistema únicamente.")
+    logger.warning("python-dotenv no disponible. Usando variables de sistema únicamente")
 
 # Configuración desde variables de entorno (sin valores por defecto)
 DB_SERVER = os.getenv("DB_SERVER")
@@ -67,7 +68,7 @@ def validate_environment():
 
     missing = [var for var, value in required_vars.items() if not value]
     if missing:
-        print(f"[WARNING] Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo.")
+        logger.warning(f"Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo")
         return False
     return True
 
@@ -110,13 +111,13 @@ class DatabaseConnection:
         """
         # Validate database name to prevent SQL injection
         if not new_database or not isinstance(new_database, str):
-            print(f"[DB ERROR] Invalid database name: {new_database}")
+            logger.error(f"Invalid database name: {new_database}")
             return False
 
         # Sanitize database name - only allow alphanumeric, underscore, and hyphen
         import re
         if not re.match(r'^[a-zA-Z0-9_-]+$', new_database):
-            print(f"[DB ERROR] Database name contains invalid characters: {new_database}")
+            logger.error(f"Database name contains invalid characters: {new_database}")
             return False
 
         if not self._connection:
@@ -130,7 +131,7 @@ class DatabaseConnection:
             cursor.execute(query)
             self.database = new_database
             cursor.close()
-            print(f"[DB] Cambiado a base de datos: {new_database}")
+            logger.info(f"Cambiado a base de datos: {new_database}")
             return True
         except (pyodbc.Error, pyodbc.DatabaseError) as e:
             logger.error(f"No se pudo cambiar a la base de datos {new_database}: {e}")
@@ -176,18 +177,18 @@ class DatabaseConnection:
                     f"TrustServerCertificate=yes;"
                 )
             if self.trusted:
-                print(f"[DB] String de conexión: {connection_string}")
+                logger.debug(f"String de conexión: {connection_string}")
                 self._connection = pyodbc.connect(connection_string)
             else:
-                print(f"[DB] String de conexión: {display_connection_string}")
+                logger.debug(f"String de conexión: {display_connection_string}")
                 self._connection = pyodbc.connect(real_connection_string)
-            print("[DB] Conexión exitosa OK\n")
+            logger.info("Conexión exitosa OK")
             return True
         except (pyodbc.Error, pyodbc.InterfaceError, pyodbc.OperationalError) as e:
-            print(f"[DB ERROR] No se pudo conectar: {e}")
+            logger.error(f"No se pudo conectar: {e}")
             logger.error(f"Database connection failed: {e}", exc_info=True)
             self._connection = None
-            print("[DB] ERROR: Error al intentar conectar.\n")
+            logger.error("Error al intentar conectar")
             return False
 
     def disconnect(self):
@@ -196,7 +197,7 @@ class DatabaseConnection:
             try:
                 self._connection.close()
             except (pyodbc.Error, AttributeError) as e:
-                print(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
+                logger.error(f"No se pudo cerrar la conexión: {e}")
                 logger.error(f"Database disconnect failed: {e}", exc_info=True)
             self._connection = None
 
@@ -233,7 +234,7 @@ class DatabaseConnection:
             cursor.close()
             return result
         except Exception as e:
-            print(f"[DB ERROR] Consulta fallida: {e}\nQuery: {query}\nParams: {params}")
+            logger.error(f"Consulta fallida: {e}\nQuery: {query}\nParams: {params}")
             return []
 
     def execute_non_query(self, query: str, params: tuple = ()) -> bool:
@@ -248,7 +249,7 @@ class DatabaseConnection:
             cursor.close()
             return True
         except Exception as e:
-            print(f"[DB ERROR] Comando fallido: {e}\nQuery: {query}\nParams: {params}")
+            logger.error(f"Comando fallido: {e}\nQuery: {query}\nParams: {params}")
             return False
 
 

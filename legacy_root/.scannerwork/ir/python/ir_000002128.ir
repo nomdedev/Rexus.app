@@ -1,43 +1,0 @@
-
-	"..."str
-""strtext
-¤ ¤($"|+
-)
-
-¥ ¥("
-__bool__*:BboolH+
-)
-
-¥ ¥("#unaryop !#2!:Bbool "
-
-¥ ¥( *
-¥ ¥("
-
-¦ ¦("£,
-*
-
-© ©("
-builtinslen*:Bint#
-!
-
-© ©(%"#unknown-value#*
-(
-
-© ©(%"	#binop >#2>:Bbool "
-
-© ©(% *
-© ©("Y#
-!
-
-ª ª(("#unknown-value#*
-(
-
-ª ª(0
-text"	#binop +#2+:	"|*text
-N
-L
-
-­ ­(4"9
-(rexus.utils.xss_protection.XSSProtectionsanitize_text:
-
-­ ­(4*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py

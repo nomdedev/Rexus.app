@@ -1,43 +1,0 @@
-
-C:"Acceso denegado: se requiere rol {role.value} o superior"strargs
-õ õ(kwargs
-õ õ('"dict"ï)
-'
-
-ú ú(+"#unknown-value#Btype#
-!
-
-ú& ú(*"#unknown-value#G
-E
-
-ú ú(+"1
-#rexus.core.auth_manager.AuthManager
-check_role:+
-)
-
-ú ú(+"
-__bool__*:BboolH+
-)
-
-ú ú(+"#unaryop !#2!:Bbool "
-
-ú ú(+ *
-ú ú("P:
-8
-
-ù ü(	"PermissionError*:BPermissionError2
-
-ù ü(	"Ç%
-#
-
-† †(!
-"#unaryop *#2*:'
-%
-
-†# †(+"#unaryop **#2**:
-
-
-† †(,"func:
-
-
-† †(,*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_manager.py

@@ -1,117 +1,0 @@
-
-Srexus.modules.administracion.controller.AdministracionController.establecer_usuario_
-SC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\controller.pyå å("2*Ì
-2
-æ æ(0–
-“
-
-ç ç(%VB
-@rexus.modules.administracion.controller.AdministracionController"
-usuario_actual"__id*'
-
-__unknown_file (
-	
-usuarioŽ
-‹
-
-è è(RB
-@rexus.modules.administracion.controller.AdministracionController"
-
-rol_actual"__id*#
-
-__unknown_file (
-
-rolˆ
-…
-
-ê ê(
-%5"__id*k
-
-__unknown_file (O*MB
-@rexus.modules.administracion.controller.AdministracionController"
-model*
-5
-6*5
-3
-controller.py"
-ñ ñ(
-implicit return*Ò
-4
-î î(,‡
-„
-
-î î(
-%1"__id*j
-
-__unknown_file (N*LB
-@rexus.modules.administracion.controller.AdministracionController"
-viewU
-S
-
-î î(,
-
-%1"
-current_user"__id*'
-
-__unknown_file (
-	
-usuario‡
-„
-
-ï ï(
-%2"__id*j
-
-__unknown_file (N*LB
-@rexus.modules.administracion.controller.AdministracionController"
-viewQ
-O
-
-ï ï((
-
-%2"
-current_role"__id*#
-
-__unknown_file (
-
-rol*
-3*¡
-5
-í í(‡
-„
-
-í í(
-%3"__id*j
-
-__unknown_file (N*LB
-@rexus.modules.administracion.controller.AdministracionController"
-view*
-3
-4*ø
-6
-ë ë(/ˆ
-…
-
-ë ë(
-%4"__id*k
-
-__unknown_file (O*MB
-@rexus.modules.administracion.controller.AdministracionController"
-modelW
-U
-
-ë ë(/
-
-%4"
-usuario_actual"__id*'
-
-__unknown_file (
-	
-usuario*
-5:
-
-å! å((	
-usuario:
-
-å* å(-
-rolBDB
-@rexus.modules.administracion.controller.AdministracionControllerH

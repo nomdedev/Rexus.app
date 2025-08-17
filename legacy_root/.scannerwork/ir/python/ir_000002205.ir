@@ -1,22 +1,0 @@
-
-90"Decorador para requerir un permiso espec√≠fico"strcls
-á á(
-permission
-á  á(6"Î#
-!
-
-î î("#unknown-value#*
-(
-
-ä î(%closure"#new-object#'
-%
-
-ä î("#set-field# cls:.
-,
-
-ä î("#set-field# permission:-
-+
-
-ä î("?python-partial-apply?:
-
-î î(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_manager.py

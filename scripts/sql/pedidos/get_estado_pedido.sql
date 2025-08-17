@@ -1,0 +1,1 @@
+SELECT estado FROM pedidos WHERE id = ?

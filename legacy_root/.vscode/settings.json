@@ -1,8 +1,0 @@
-{
-    "python-envs.defaultEnvManager": "ms-python.python:system",
-    "python-envs.pythonProjects": [],
-    "sonarlint.connectedMode.project": {
-        "connectionId": "nomdedev",
-        "projectKey": "nomdedev_rexus-app"
-    }
-}

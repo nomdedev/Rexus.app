@@ -1,36 +1,0 @@
-
-!	"configuracion_personal"str
-"2024-12-01"str
-
-"{}"str
-
-1int
-"2025-01-01 10:00:00"str
-
-"username"str
-"ultimo_login"str
-"fecha_creacion"str
-"id"strself
-ì' ì(+username
-ì- ì(5"î&
-$
-
-í ó("#new-object#Bdict"
- 
-
-î î("	#map-set#:"
- 
-
-ï ï($"	#map-set#:"
- 
-
-ð ð(."	#map-set#:	
-"
- 
-
-ñ ñ(5"	#map-set#:"
- 
-
-ò ò(."	#map-set#:
-
-í ó(*RC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\security_dialog.py

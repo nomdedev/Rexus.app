@@ -1,477 +1,0 @@
-
-Pfile:///C:/Users/itachi/Desktop/martin/Rexus.app/rexus/utils/error_manager.py181
-__unknown_file ("1*
-2
-error_manager.py"f
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py£ £(
-implicit return*‡Q
-1M
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (Ñ
-Å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-VALIDATION"__id*
- (
-
-validation
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-DATABASE"__id*
- (
-
-database}
-{
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (	
-NETWORK"__id*
- (	
-network
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-SECURITY"__id*
- (
-
-securityÑ
-Å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-PERMISSION"__id*
- (
-
-permissionä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (#
-BUSINESS_RULE"__id*
- (
-business_rule{
-y
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-SYSTEM"__id*
- (
-
-systemÑ
-Å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-VALIDATION"__id*
- (
-
-validation
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-DATABASE"__id*
- (
-
-database}
-{
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (	
-NETWORK"__id*
- (	
-network
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-SECURITY"__id*
- (
-
-securityÑ
-Å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-PERMISSION"__id*
- (
-
-permissionä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (#
-BUSINESS_RULE"__id*
- (
-business_rule{
-y
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-SYSTEM"__id*
- (
-
-systemw
-u
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-INFO"__id*
- (
-info}
-{
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (	
-WARNING"__id*
- (	
-warningy
-w
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-ERROR"__id*
- (	
-error
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-CRITICAL"__id*
- (
-
-criticalw
-u
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-INFO"__id*
- (
-info}
-{
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (	
-WARNING"__id*
- (	
-warningy
-w
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-ERROR"__id*
- (	
-error
-}
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py (
-
-CRITICAL"__id*
- (
-
-criticalé
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py% %('
-VALIDATION_REQUIRED_FIELD"__id*
- (	
-E1001é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py& &('
-VALIDATION_INVALID_FORMAT"__id*
- (	
-E1002é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py' '('
-VALIDATION_INVALID_LENGTH"__id*
- (	
-E1003ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py( ((&
-VALIDATION_INVALID_RANGE"__id*
- (	
-E1004è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py) )((
-VALIDATION_DUPLICATE_VALUE"__id*
- (	
-E1005è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py, ,((
-DATABASE_CONNECTION_FAILED"__id*
- (	
-E2001ä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py- -(#
-DATABASE_QUERY_FAILED"__id*
- (	
-E2002ê
-ç
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py. .()
-DATABASE_TRANSACTION_FAILED"__id*
- (	
-E2003é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py/ /('
-DATABASE_RECORD_NOT_FOUND"__id*
- (	
-E2004í
-è
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py0 0(+
-DATABASE_CONSTRAINT_VIOLATION"__id*
- (	
-E2005è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py3 3((
-NETWORK_CONNECTION_TIMEOUT"__id*
- (	
-E3001è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py4 4((
-NETWORK_SERVER_UNAVAILABLE"__id*
- (	
-E3002ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py5 5(&
-NETWORK_INVALID_RESPONSE"__id*
- (	
-E3003ä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py8 8(#
-SECURITY_UNAUTHORIZED"__id*
- (	
-E4001ë
-é
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py9 9(*
-SECURITY_INVALID_CREDENTIALS"__id*
- (	
-E4002ã
-à
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py: :($
-SECURITY_TOKEN_EXPIRED"__id*
- (	
-E4003è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py; ;((
-SECURITY_PERMISSION_DENIED"__id*
- (	
-E4004ë
-é
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py< <(*
-SECURITY_SUSPICIOUS_ACTIVITY"__id*
- (	
-E4005ê
-ç
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py? ?()
-BUSINESS_INSUFFICIENT_STOCK"__id*
- (	
-E5001ã
-à
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py@ @($
-BUSINESS_INVALID_STATE"__id*
- (	
-E5002è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyA A((
-BUSINESS_DEADLINE_EXCEEDED"__id*
- (	
-E5003ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyB B(&
-BUSINESS_BUDGET_EXCEEDED"__id*
- (	
-E5004å
-â
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyE E(%
-SYSTEM_UNEXPECTED_ERROR"__id*
- (	
-E9001è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyF F((
-SYSTEM_SERVICE_UNAVAILABLE"__id*
- (	
-E9002è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyG G((
-SYSTEM_CONFIGURATION_ERROR"__id*
- (	
-E9003é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py% %('
-VALIDATION_REQUIRED_FIELD"__id*
- (	
-E1001é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py& &('
-VALIDATION_INVALID_FORMAT"__id*
- (	
-E1002é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py' '('
-VALIDATION_INVALID_LENGTH"__id*
- (	
-E1003ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py( ((&
-VALIDATION_INVALID_RANGE"__id*
- (	
-E1004è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py) )((
-VALIDATION_DUPLICATE_VALUE"__id*
- (	
-E1005è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py, ,((
-DATABASE_CONNECTION_FAILED"__id*
- (	
-E2001ä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py- -(#
-DATABASE_QUERY_FAILED"__id*
- (	
-E2002ê
-ç
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py. .()
-DATABASE_TRANSACTION_FAILED"__id*
- (	
-E2003é
-ã
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py/ /('
-DATABASE_RECORD_NOT_FOUND"__id*
- (	
-E2004í
-è
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py0 0(+
-DATABASE_CONSTRAINT_VIOLATION"__id*
- (	
-E2005è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py3 3((
-NETWORK_CONNECTION_TIMEOUT"__id*
- (	
-E3001è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py4 4((
-NETWORK_SERVER_UNAVAILABLE"__id*
- (	
-E3002ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py5 5(&
-NETWORK_INVALID_RESPONSE"__id*
- (	
-E3003ä
-á
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py8 8(#
-SECURITY_UNAUTHORIZED"__id*
- (	
-E4001ë
-é
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py9 9(*
-SECURITY_INVALID_CREDENTIALS"__id*
- (	
-E4002ã
-à
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py: :($
-SECURITY_TOKEN_EXPIRED"__id*
- (	
-E4003è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py; ;((
-SECURITY_PERMISSION_DENIED"__id*
- (	
-E4004ë
-é
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py< <(*
-SECURITY_SUSPICIOUS_ACTIVITY"__id*
- (	
-E4005ê
-ç
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py? ?()
-BUSINESS_INSUFFICIENT_STOCK"__id*
- (	
-E5001ã
-à
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.py@ @($
-BUSINESS_INVALID_STATE"__id*
- (	
-E5002è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyA A((
-BUSINESS_DEADLINE_EXCEEDED"__id*
- (	
-E5003ç
-ä
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyB B(&
-BUSINESS_BUDGET_EXCEEDED"__id*
- (	
-E5004å
-â
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyE E(%
-SYSTEM_UNEXPECTED_ERROR"__id*
- (	
-E9001è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyF F((
-SYSTEM_SERVICE_UNAVAILABLE"__id*
- (	
-E9002è
-å
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyG G((
-SYSTEM_CONFIGURATION_ERROR"__id*
- (	
-E9003î
-ë
-Q
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyá á(
-%1"&rexus.utils.error_manager.ErrorManager*
- ( ~
-|
-O
-EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_manager.pyá á(
-error_manager"__id*
- (
-
-%1*
-2B H

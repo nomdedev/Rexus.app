@@ -1,48 +1,0 @@
-
-®û"
-        Obtener el rango de items para la p√°gina actual.
-        
-        Returns:
-            Tupla (inicio, fin) con √≠ndices basados en 0
-        "str
-
-1intself
-é é(!"ç0
-.
-
-ï ï($"#get-field# pagina_actual:'
-%
-
-ï ï(("	#binop -#*2-:3
-1
-
-ï, ï(A"#get-field# items_por_pagina:/
--
-
-ï ï(Ainicio"	#binop *#*2*:3
-1
-
-ñ ñ(0"#get-field# items_por_pagina:$
-"
-
-ñ ñ(0	"	#binop +#2+:.
-,
-
-ñ2 ñ(B
-"#get-field# total_items:-
-+
-
-ñ ñ(Cfin"
-builtinsmin*:	
-*
-(
-
-ó ó("#unknown-value#Btuple(
-&
-
-ó ó("#array-add-last#:(
-&
-
-ó ó("#array-add-last#:
-
-ó ó(*PC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\widgets_advanced.py

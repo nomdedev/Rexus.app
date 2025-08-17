@@ -1,7 +1,0 @@
-============================= test session starts =============================
-platform win32 -- Python 3.10.5, pytest-8.2.0, pluggy-1.6.0 -- C:\Python310\python.exe
-cachedir: .pytest_cache
-rootdir: C:\Users\itachi\Desktop\martin\Rexus.app\tests
-configfile: pytest.ini
-plugins: cov-6.1.1
-collecting ... 

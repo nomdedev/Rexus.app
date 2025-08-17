@@ -1,81 +1,0 @@
-
->rexus.utils.smart_tooltips.SmartTooltipsManager.update_tooltipP
-FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\smart_tooltips.py@ @("2*€
-2A A(:{
-y
-B B(&
-%5"__id*a
-
-__unknown_file (E*C1
-/rexus.utils.smart_tooltips.SmartTooltipsManager"
-tooltip_datalj
-B B(&
-%6*"
-
-__unknown_file (
-
-%5*&
-
-__unknown_file (
-
-
-widget2__contains__*
-3
-4*5
-3
-smart_tooltips.py"
-H H
-implicit return*¡
-4C C(8{
-y
-C C(
-%2"__id*a
-
-__unknown_file (E*C1
-/rexus.utils.smart_tooltips.SmartTooltipsManager"
-tooltip_dataus
-C C(%
-%3"__mapGet*"
-
-__unknown_file (
-
-%2*&
-
-__unknown_file (
-
-
-widget2__getitem__¦£
-C C(8
-%1"dict.__setitem__*"
-
-__unknown_file (
-
-%3*$
-
-__unknown_file (
-text*(
-
-__unknown_file (
-
-
-new_text2__setitem__pn
-D D('
-%4*&
-
-__unknown_file (
-
-
-widget*(
-
-__unknown_file (
-
-
-new_text2
-setToolTip*
-3:
-@ @(,
-widget:
-@. @(;
-
-new_textB31
-/rexus.utils.smart_tooltips.SmartTooltipsManagerH

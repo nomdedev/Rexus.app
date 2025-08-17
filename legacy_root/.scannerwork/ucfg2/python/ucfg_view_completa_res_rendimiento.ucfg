@@ -1,71 +1,0 @@
-
-crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView.generar_indicadores_rendimientoa
-UC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\view_completa.pyÀ À('"2*Ã	
-2
-Ã Ã(/Ø
-¨
-
-Õ Ô(	
-reporte"__id*å
-
-__unknown_file (ÔÏ
-È
-INDICADORES DE RENDIMIENTO - ENERO 2024
-=======================================
-
-DISPONIBILIDAD:
-- MAQ-001: 98% (Excelente)
-- MAQ-002: 85% (Bueno)
-- MAQ-003: 95% (Muy Bueno)
-- MAQ-004: 60% (Deficiente)
-- MAQ-005: 92% (Muy Bueno)
-
-PROMEDIO GENERAL: 86%
-
-EFICIENCIA:
-- Tiempo promedio de reparaci√≥n: 2.7 hrs
-- Tiempo promedio entre fallas: 240 hrs
-- Costo promedio por servicio: $160,000
-
-TENDENCIAS:
-- Disponibilidad: +2% vs mes anterior
-- Costos: +5% vs mes anterior
-- Tiempo de reparaci√≥n: -10% vs mes anterior
-
-RANKING DE M√ÅQUINAS:
-1. MAQ-001 - 98% disponibilidad
-2. MAQ-003 - 95% disponibilidad
-3. MAQ-005 - 92% disponibilidad
-4. MAQ-002 - 85% disponibilidad
-5. MAQ-004 - 60% disponibilidad
-
-ACCIONES RECOMENDADAS:
-- Revisar MAQ-004 urgentemente
-- Mantener protocolo actual para MAQ-001
-- Optimizar mantenimiento de MAQ-002
-        í
-è
-
- (
-%1"__id*u
-
-__unknown_file (Y*WE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView"
-preview_textom
-
- (/
-%2*"
-
-__unknown_file (
-
-%1*'
-
-__unknown_file (
-	
-reporte2setPlainText*
-3*8
-3
-view_completa.py"
-Ú Ú(
-implicit returnBGE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaViewH

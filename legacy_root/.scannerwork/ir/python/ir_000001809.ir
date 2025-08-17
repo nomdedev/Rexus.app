@@ -1,32 +1,0 @@
-
-"obras"str
-+
-""Tabla no permitida: {table_name}"str
-"detalles_obra"str
-ÜÒ"
-        Valida el nombre de tabla para prevenir SQL injection.
-
-        Args:
-            table_name: Nombre de la tabla a validar
-
-        Returns:
-            str: Nombre de tabla validado
-        "strselfk k(!
-table_namek# k(2"×3
-1
-v v(3allowed_tables"#new-object#Bset&
-$
-v v(3"#array-add-last#:&
-$
-v v(3"#array-add-last#:2
-0
-w w(+	"#binop not in#2not in:Bbool"
-w w(+	 *w w(
-"B.
-,
-x x(A"
-ValueError*:
-B
-ValueError2
-x x(A"
-y y(*KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\model_clean.py

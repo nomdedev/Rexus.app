@@ -1,26 +1,0 @@
-
-ÛÈ"
-        Formatea un mensaje t√©cnico para logs o debugging.
-
-        Args:
-            error_code: C√≥digo del error
-            context: Contexto adicional
-
-        Returns:
-            Mensaje t√©cnico completo
-        "str
-Çy"[{error_info['timestamp']}] ERROR {error_info['error_code']}: {error_info['title']} - {error_info['technical_details']}"strcls
-® ®(
-error_code
-® ®("context
-®$ ®(B"Ø)
-'
-
-¥ ¥(<"#unknown-value#Btypep
-n
-
-¥ ¥(<
-error_info"M
-;rexus.utils.contextual_error_manager.ContextualErrorManagerget_error_info:
-
-∂ π(	*PC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\contextual_error_manager.py

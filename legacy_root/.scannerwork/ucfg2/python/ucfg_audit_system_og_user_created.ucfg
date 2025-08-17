@@ -1,87 +1,0 @@
-
-4rexus.core.audit_system.AuditSystem.log_user_createdO
-CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_system.pyÜ Ü("2*©
-2
-à à(1p
-n
-
-ä ä(.
-%1"__id*T
-
-__unknown_file (8*6$
-"rexus.core.audit_system.AuditEvent"
-USER_CREATEDl
-j
-
-ã ã(%
-%2"__id*P
-
-__unknown_file (4*2$
-"rexus.core.audit_system.AuditLevel"
-
-CRITICALc
-a
-
-ç ç(5
-%3"__concat*"
-
-ç ç(%
-Usuario creado: *
-
-ç& ç(3
-
-nuevo_usuarioÕ 
-
-â ì(	
-%4*C
-
-__unknown_file ('%
-#rexus.core.audit_system.AuditSystem2	log_event:
-
-event_type
-
-%1:
-level
-
-%2:
-modulo
-
-USUARIOS:
-accion
-
-%3:
-	resultado	
-SUCCESS:
-
-usuario_id
-
-
-admin_id:"
-usuario_nombre
-
-admin_nombre:"
-nuevo_usuario
-
-nuevo_usuario:
-rol_asignado
-
-rol*
-3*7
-3
-audit_system.py"
-ï ï(
-implicit return:
-
-Ü Ü(,
-
-admin_id:
-
-Ü. Ü(?
-admin_nombre:
-
-á á(+
-nuevo_usuario:
-
-á- á(5
-rolB'%
-#rexus.core.audit_system.AuditSystemH

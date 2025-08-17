@@ -1,56 +1,0 @@
-
-ri"[WARNING] Variables de entorno faltantes: {', '.join(missing)}. Los módulos funcionarán en modo demo."str
-falsebool
-"DB_INVENTARIO"str
-"DB_AUDITORIA"str
-"DB_DRIVER"str
-"DB_SERVER"str
-truebool
-"DB_PASSWORD"str
-
-"DB_USERS"str
-SJ"Valida que todas las variables de entorno necesarias estén configuradas"str
-	"DB_USERNAME"str"�3
-1
-1 9(required_vars"#new-object#Bdict!
-
-2 2("#unknown-value# 
-
-2 2("	#map-set#:!
-
-3 3("#unknown-value# 
-
-3 3("	#map-set#:!
-
-4 4("
-"#unknown-value# 
-
-4 4(""	#map-set#:	
-!
-
-5 5(""#unknown-value# 
-
-5 5(""	#map-set#:!
-
-6 6("#unknown-value# 
-
-6 6("	#map-set#:!
-
-7 7(&"#unknown-value# 
-
-7 7(&"	#map-set#:!
-
-8 8($"#unknown-value# 
-
-8 8($"	#map-set#:4
-2
-; ;(Hmissing"?python-unknown?:Blist)
-'
-< <("
-__bool__*:BboolH"
-< <( *< <("E1
-/
-= =(w"
-builtinsprint*:BNoneType
-> >("
-? ?(*?C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\database.py

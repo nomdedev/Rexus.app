@@ -1,26 +1,0 @@
-
-á×"
-        Crea un filtro de contenido personalizado.
-        
-        Args:
-            max_length: Longitud mÃ¡xima permitida
-            
-        Returns:
-            Callable: FunciÃ³n de filtro
-        "str
-max_length
-š š(4"Â#
-!
-
-¯ ¯("#unknown-value#*
-(
-
-¤ ¯(%closure"#new-object#.
-,
-
-¤ ¯("#set-field# max_length:-
-+
-
-¤ ¯("?python-partial-apply?:
-
-¯ ¯(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py

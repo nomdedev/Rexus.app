@@ -1,39 +1,0 @@
-
-"inventario"str
-
-0int
-"logistica"str
-
-"auditoria"str
-"mantenimiento"str
-	"compras"str
-"configuracion"str
-	"vidrios"str
-	"pedidos"str
-
-"herrajes"str
-	
-"usuarios"str
-"obras"str
-"administracion"strself
-å å(user_id
-å å(+list"ó)
-'
-
-æ ó(	"#unknown-value#Blist(
-&
-
-æ ó(	"
-#is-exact#:Bbool
-
-
-æ ó(	"
-#assume#::
-8
-
-æ ó(	"#set-field# __collection_size:Bint-
-+
-
-æ ó(	"?python-unknown?*Blist
-
-æ ó(	*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\main\app_collapsible.py

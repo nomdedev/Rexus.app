@@ -1,43 +1,0 @@
-
-"caja"str
-2)"Obtiene unidades de medida disponibles."str
-"unidad"str
-"metro"str
-"kilogramo"str
-"litro"str
-
-0intself
-Û  Û($	list"–)
-'
-
-Ý Ý(@"#unknown-value#Blist(
-&
-
-Ý Ý(@
-"
-#is-exact#:	Bbool
-
-
-Ý Ý(@"
-#assume#:
-:
-8
-
-Ý Ý(@"#set-field# __collection_size:Bint(
-&
-
-Ý Ý(@"#array-add-last#:(
-&
-
-Ý Ý(@"#array-add-last#:(
-&
-
-Ý Ý(@"#array-add-last#:(
-&
-
-Ý Ý(@"#array-add-last#:(
-&
-
-Ý Ý(@"#array-add-last#:
-
-Ý Ý(@*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\controller.py

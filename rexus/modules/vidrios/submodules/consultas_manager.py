@@ -15,6 +15,10 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("vidrios.consultas_manager")
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -99,7 +103,7 @@ class ConsultasManager:
             return vidrios
 
         except Exception as e:
-            print(f"Error obteniendo vidrios: {str(e)}")
+            logger.error(f"Error obteniendo vidrios: {str(e)}")
             return []
 
     @auth_required
@@ -144,7 +148,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"Error en búsqueda de vidrios: {str(e)}")
+            logger.error(f"Error en búsqueda de vidrios: {str(e)}")
             return []
 
     @auth_required
@@ -200,7 +204,7 @@ class ConsultasManager:
             return estadisticas
 
         except Exception as e:
-            print(f"Error obteniendo estadísticas: {str(e)}")
+            logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
 
     @auth_required
@@ -273,7 +277,7 @@ min(100,
             }
 
         except Exception as e:
-            print(f"Error obteniendo vidrios paginados: {str(e)}")
+            logger.error(f"Error obteniendo vidrios paginados: {str(e)}")
             return {"vidrios": [], "total": 0, "page": page, "per_page": per_page}
 
     @auth_required
@@ -307,7 +311,7 @@ min(100,
             return vidrios
 
         except Exception as e:
-            print(f"Error obteniendo vidrios con stock bajo: {str(e)}")
+            logger.error(f"Error obteniendo vidrios con stock bajo: {str(e)}")
             return []
 
     def _sanitizar_filtros(self, filtros: Dict[str, Any]) -> Dict[str, Any]:
@@ -396,5 +400,5 @@ vidrio: Dict[str,
             return proveedores
 
         except Exception as e:
-            print(f"Error generando reporte de proveedores: {str(e)}")
+            logger.error(f"Error generando reporte de proveedores: {str(e)}")
             return []

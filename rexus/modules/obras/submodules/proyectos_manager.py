@@ -9,6 +9,7 @@ Responsabilidades:
 - Control de fechas y presupuestos
 """
 
+import sqlite3
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 
@@ -348,7 +349,10 @@ obra_id: int,
             diferencia = fecha_fin - fecha_inicio
             return diferencia.days
 
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: fecha mal formateada en strptime
+            # TypeError: tipos incompatibles para operaciones de fecha
+            # AttributeError: objeto sin atributos de fecha
             return 0
 
     def _crear_fase_inicial(self, obra_id: int, cursor) -> None:
@@ -383,7 +387,10 @@ obra_id: int,
             result = cursor.fetchone()
             return (result[0] if result else 0) > 0
 
-        except Exception:
+        except (sqlite3.Error, AttributeError, TypeError) as e:
+            # sqlite3.Error: errores de base de datos
+            # AttributeError: cursor o conexión no válidos
+            # TypeError: parámetros incorrectos
             return True  # Por seguridad, asumir que tiene recursos
 
     def _validar_estado_obra(self, estado: str) -> bool:

@@ -1,127 +1,0 @@
-
-¼²"
-        Sanitiza los datos de usuario.
-        
-        Args:
-            datos: Datos a sanitizar
-            
-        Returns:
-            Datos sanitizados
-        "str
-
-0int
-
-"username"str
-	"nombre_completo"str
-
-"telefono"str
-"rol"str
-
-"email"str
-$"password_hash"str
- 200int
-"direccion"strself
-…! …(%datos
-…' …(<list"ª,
-*
-
- ("#get-field# sanitizer:+
-)
-
- ("
-__bool__*:BboolH+
-)
-
- ("#unaryop !#2!:Bbool "
-
- ( *
- (
-"
-
- ("Â5
-3
-
-’ ’(datos_limpios"#new-object#Bdict7
-5
-
-• •(_campos_texto"#unknown-value#Blist(
-&
-
-• •(_"
-#is-exact#:Bbool
-
-
-• •(_"
-#assume#::
-8
-
-• •(_"#set-field# __collection_size:Bint(
-&
-
-• •(_"#array-add-last#:(
-&
-
-• •(_"#array-add-last#:	(
-&
-
-• •(_"#array-add-last#:
-(
-&
-
-• •(_"#array-add-last#:(
-&
-
-• •(_"#array-add-last#:(
-&
-
-• •(_"#array-add-last#:9
-7
-
-– –(!"
-builtinsiter*:Btyping.Iterator
-
-– –(!"–*"datos_limpios"*datos4
-2
-
-– –(!"
-builtins
-__has_next*:Bbool"" 
-
-– –(! *
-– –(H"ƒ/
--
-
-— ›(campo"
-builtinsnext*:,
-*
-
-— —("
-#binop in#2in:Bbool "
-
-— —( *
-— —("R,
-*
-
-› ›(#%"
-#binop in#2in:$Bbool "
-
-› ›(#% 	*
-› ›(
-"$
-"
-
-˜7 ˜(C"#array-read#:'
-%
-
-˜' ˜(I!"#unknown-value#: &
-$
-
-˜ ˜(I#"#array-write#:"!""V$
-"
-
-œ- œ(C&"#array-read#:$&
-$
-
-œ œ(C'"#array-write#:"$&	"	
-
-ž ž("*^C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\submodules\profiles_manager.py

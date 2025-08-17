@@ -1,32 +1,0 @@
-
-2rexus.core.audit_trail.AuditTrail.set_current_userL
-BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_trail.py ("2*‚
-2 (8u
-s
-   (&8#
-!rexus.core.audit_trail.AuditTrail"
-current_user_id"__id*'
-
-__unknown_file (
-	
-user_idw
-u
-! !((9#
-!rexus.core.audit_trail.AuditTrail"
-current_username"__id*(
-
-__unknown_file (
-
-
-username*
-3*4
-3
-audit_trail.py"
-# #(
-implicit return:
- (+	
-user_id:
-- (:
-
-usernameB%#
-!rexus.core.audit_trail.AuditTrailH

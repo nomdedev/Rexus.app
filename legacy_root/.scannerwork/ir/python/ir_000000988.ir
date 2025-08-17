@@ -1,51 +1,0 @@
-
-	"cliente"str
-"descripcion"str
-""str
-"estado"str
-"responsable"str
-"id"str
-D;"Retorna un diccionario vac√≠o con la estructura correcta."str
-0.0float
-	"nombre"str
-"fecha_inicio"str
-"codigo"str
-"fecha_fin_estimada"str
-"presupuesto_inicial"strcls
-ú ú("¢&
-$
-
-û ©(	"#new-object#Bdict"
- 
-
-ü ü("	#map-set#:"
- 
-
-† †("	#map-set#:"
- 
-
-° °(
-"	#map-set#:	"
- 
-
-¢ ¢("	#map-set#:"
- 
-
-£ £("	#map-set#:"
- 
-
-§ §("	#map-set#:"
- 
-
-• •($"	#map-set#:"
- 
-
-¶ ¶("	#map-set#:"
- 
-
-ß ß(&"	#map-set#:"
- 
-
-® ®("	#map-set#:
-
-û ©(	*KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\data_mapper.py

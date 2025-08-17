@@ -5,11 +5,15 @@ Proporciona una solución sistemática para la carga de módulos,
 manejo de errores y prevención de vulnerabilidades SQL injection.
 """
 
+import logging
+import traceback
 from typing import Any, Dict
 
 from PyQt6.QtWidgets import QWidget
 
 from rexus.utils.module_utils import module_registry, normalize_module_name
+
+logger = logging.getLogger(__name__)
 
 
 class ModuleManager:
@@ -271,7 +275,7 @@ controller_class,
                     )
                     return
                 else:
-                    logger.warning([{module_name}] Método {specific_method} no encontrado en controlador)
+                    logger.warning(f"[{module_name}] Método {specific_method} no encontrado en controlador")
 
             # 2. Intentar métodos genéricos de fallback
             for method_name in fallback_methods:
@@ -287,12 +291,10 @@ controller_class,
 
         except Exception as e:
             # No fallar completamente por error de datos iniciales
-            logger.error([{module_name}] Error cargando datos iniciales: {e})
+            logger.error(f"[{module_name}] Error cargando datos iniciales: {e}")
             # Log más detallado para debugging
-            import traceback
-
-            logger.debug(Stack trace para {module_name}:)
-            logger.debug({traceback.format_exc()})
+            logger.debug(f"Stack trace para {module_name}:")
+            logger.debug(f"{traceback.format_exc()}")
 
             # Intentar mostrar error en UI si es posible
             self._show_data_loading_error(module_name, str(e))
@@ -319,7 +321,7 @@ controller_class,
             QTimer.singleShot(1000, show_error)
 
         except Exception as ui_error:
-            logger.error(No se pudo mostrar error de UI: {ui_error})
+            logger.error(f"No se pudo mostrar error de UI: {ui_error}")
 
     def _create_error_widget(self, module_name: str, error_message: str) -> QWidget:
         """Crea widget de diagnóstico avanzado para errores de módulos."""

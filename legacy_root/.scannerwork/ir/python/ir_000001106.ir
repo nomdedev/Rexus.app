@@ -1,20 +1,0 @@
-
-Æ§"
-        Genera hash seguro de contrase√±a usando bcrypt/PBKDF2.
-        
-        ACTUALIZADO: Migrado de SHA-256 inseguro a hashing seguro con salt.
-        "strself
-¡ ¡(password
-¡ ¡()"¿:
-8
-
-» »(Fhash_password_secure"?python-unknown?#
-!
-
-… …(-"#unknown-value#K
-I
-
-… …(-"5
-rexus.utils.password_securityhash_password_secure:
-
-… …(-*?C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\security.py

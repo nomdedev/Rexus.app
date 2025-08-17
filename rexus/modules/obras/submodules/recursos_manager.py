@@ -9,6 +9,7 @@ Responsabilidades:
 - Seguimiento de costos de recursos
 """
 
+import sqlite3
 from datetime import datetime
 from typing import Any, Dict, List
 
@@ -362,7 +363,10 @@ material_id: int,
             result = cursor.fetchone()
             return (result[0] if result else 0) > 0
 
-        except Exception:
+        except (sqlite3.Error, AttributeError, TypeError) as e:
+            # sqlite3.Error: errores de base de datos
+            # AttributeError: cursor no válido
+            # TypeError: parámetros incorrectos
             return False
 
     def _calcular_costo_material(self, material: Dict[str, Any]) -> float:
@@ -371,7 +375,9 @@ material_id: int,
             cantidad = material.get("cantidad_asignada", 0)
             precio = material.get("precio", 0)
             return float(cantidad) * float(precio)
-        except Exception:
+        except (ValueError, TypeError) as e:
+            # ValueError: conversión a float falló
+            # TypeError: tipos incompatibles para operaciones matemáticas
             return 0.0
 
     def _calcular_costo_total_obra(self, obra_id: int) -> float:

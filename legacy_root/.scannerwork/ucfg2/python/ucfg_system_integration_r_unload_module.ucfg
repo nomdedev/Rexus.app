@@ -1,123 +1,0 @@
-
-Erexus.utils.system_integration.SystemIntegrationManager.unload_moduleV
-JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\system_integration.pyÉ É("2*˜
-2
-Ê Ê(,ˆ
-…
-
-Ë Ë(-
-%9"__id*k
-
-__unknown_file (O*M9
-7rexus.utils.system_integration.SystemIntegrationManager"
-active_modulestr
-
-Ë Ë(-
-%10*"
-
-__unknown_file (
-
-%9*+
-
-__unknown_file (
-
-module_name2__contains__*
-3
-4*=
-3
-system_integration.py"
-Ø Ø(
-implicit return*Ï	
-4
-Ì Ì(5ˆ
-…
-
-Ì Ì((
-%1"__id*k
-
-__unknown_file (O*M9
-7rexus.utils.system_integration.SystemIntegrationManager"
-active_modules|z
-
-Ì Ì(5
-%2"__mapGet*"
-
-__unknown_file (
-
-%1*+
-
-__unknown_file (
-
-module_name2__getitem__B
-@
-
-Ì Ì(5
-widget"__id*"
-
-__unknown_file (
-
-%2§¤
-
-Ï Ï((
-%3*W
-
-__unknown_file (;9
-7rexus.utils.system_integration.SystemIntegrationManager*&
-
-__unknown_file (
-
-
-widget2_cleanup_moduleˆ
-…
-
-Ò Ò(#
-%4"__id*k
-
-__unknown_file (O*M9
-7rexus.utils.system_integration.SystemIntegrationManager"
-active_modules‰
-†
-
-Õ Õ( 
-%5"__id*l
-
-__unknown_file (P*N9
-7rexus.utils.system_integration.SystemIntegrationManager"
-module_unloadedki
-
-Õ Õ(2
-%6*"
-
-__unknown_file (
-
-%5*+
-
-__unknown_file (
-
-module_name2emit{
-y
-
-Ö# Ö(>
-%7"__id*_
-
-__unknown_file (C*A,
-*rexus.utils.system_integration.SystemEvent"
-MODULE_UNLOADEDÀ½
-
-Ö Ö(S
-%8*W
-
-__unknown_file (;9
-7rexus.utils.system_integration.SystemIntegrationManager*"
-
-__unknown_file (
-
-%72emit_system_event:
-module
-
-module_name*
-3:
-
-É É(,
-module_nameB;9
-7rexus.utils.system_integration.SystemIntegrationManagerH

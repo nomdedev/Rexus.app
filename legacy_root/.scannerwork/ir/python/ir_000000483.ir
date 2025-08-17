@@ -1,31 +1,0 @@
-
-
-0int
-) "Verificar si un tema es oscuro"str
-"dark"str
-theme_name
-¥ ¥(!list"©6
-4
-
-§ §(dark_themes"#unknown-value#Blist(
-&
-
-§ §("
-#is-exact#:Bbool
-
-
-§ §("
-#assume#::
-8
-
-§ §(	"#set-field# __collection_size:Bint(
-&
-
-§ §(
-"#array-add-last#:,
-*
-
-¨ ¨($"
-#binop in#2in:Bbool
-
-¨ ¨($*=C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\themes.py

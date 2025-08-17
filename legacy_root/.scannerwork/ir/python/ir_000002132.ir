@@ -1,22 +1,0 @@
-
-¢ò"
-    Decorador para proteger m√©todos que manejan datos de formulario.
-    
-    Args:
-        *field_names: Nombres de los campos a proteger
-    "strfield_names
-ò ò("√#
-!
-
-∏ ∏("#unknown-value#*
-(
-
-ü ∏(%closure"#new-object#/
--
-
-ü ∏("#set-field# field_names:-
-+
-
-ü ∏("?python-partial-apply?:
-
-∏ ∏(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\xss_protection.py
