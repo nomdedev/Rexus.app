@@ -26,6 +26,7 @@ Interfaz para 2FA, cambio de contraseñas y configuraciones de seguridad
 """
 
 import base64
+from .constants import UsuariosConstants
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, QPushButton,
     QTabWidget, QWidget, QTextEdit, QCheckBox, QSpinBox, QGroupBox,
@@ -475,13 +476,13 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
                     f"Error generando 2FA: {result.get('error', 'Error desconocido')}")
 
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Error generando 2FA: {e}")
+            QMessageBox.critical(self, UsuariosConstants.TITULO_ERROR, f"{UsuariosConstants.MSG_ERROR_2FA_GENERAR}: {e}")
 
     def verify_2fa(self):
         """Verifica la configuración 2FA."""
         code = self.tfa_code_input.text().strip()
         if len(code) != 6:
-            QMessageBox.warning(self, "Error", "Ingrese un código de 6 dígitos")
+            QMessageBox.warning(self, UsuariosConstants.TITULO_ERROR, UsuariosConstants.MSG_ERROR_2FA_CODIGO_FORMATO)
             return
 
         try:
@@ -496,10 +497,10 @@ Intentos fallidos recientes: {dashboard.get('recent_failed_attempts', 0)}
                 self.security_updated.emit(self.current_username, "2FA_ENABLED")
                 self.load_user_security_status()  # Recargar estado
             else:
-                QMessageBox.warning(self, "Error", "Código incorrecto. Verifique e intente nuevamente.")
+                QMessageBox.warning(self, UsuariosConstants.TITULO_ERROR, UsuariosConstants.MSG_ERROR_2FA_CODIGO_INVALIDO)
 
         except Exception as e:
-            QMessageBox.critical(self, "Error", f"Error verificando 2FA: {e}")
+            QMessageBox.critical(self, UsuariosConstants.TITULO_ERROR, f"{UsuariosConstants.MSG_ERROR_2FA_VERIFICAR}: {e}")
 
     def disable_2fa(self):
         """Deshabilita 2FA."""

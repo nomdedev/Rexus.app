@@ -16,6 +16,9 @@ from typing import Any, Dict, List, Optional
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -61,6 +64,7 @@ class ConsultasManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/usuarios/consultas"
+        self.logger = get_logger("usuarios.consultas_manager")
 
     def _validate_table_name(self, table_name: str) -> str:
         """Valida nombre de tabla contra lista blanca."""
@@ -117,7 +121,7 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            print(f"Error obteniendo usuarios: {str(e)}")
+            self.logger.error(f"Error obteniendo usuarios: {str(e)}", exc_info=True)
             return []
 
     @auth_required
@@ -159,7 +163,7 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            print(f"Error en búsqueda: {str(e)}")
+            self.logger.error(f"Error en búsqueda: {str(e)}", exc_info=True)
             return []
 
     @auth_required
@@ -251,7 +255,7 @@ min(100,
             }
 
         except Exception as e:
-            print(f"Error en paginación: {str(e)}")
+            self.logger.error(f"Error en paginación: {str(e)}", exc_info=True)
             return {"usuarios": [], "total": 0, "pages": 0}
 
     @auth_required
@@ -335,7 +339,7 @@ min(100,
             return estadisticas
 
         except Exception as e:
-            print(f"Error obteniendo estadísticas: {str(e)}")
+            self.logger.error(f"Error obteniendo estadísticas: {str(e)}", exc_info=True)
             return {}
 
     @auth_required
@@ -369,7 +373,7 @@ min(100,
             return usuarios
 
         except Exception as e:
-            print(f"Error obteniendo usuarios por rol: {str(e)}")
+            self.logger.error(f"Error obteniendo usuarios por rol: {str(e)}", exc_info=True)
             return []
 
     @auth_required
@@ -429,7 +433,7 @@ min(100,
             return {"intentos_login": intentos, "estadisticas": estadisticas}
 
         except Exception as e:
-            print(f"Error obteniendo actividad de usuario: {str(e)}")
+            self.logger.error(f"Error obteniendo actividad de usuario: {str(e)}", exc_info=True)
             return {"intentos_login": [], "estadisticas": {}}
 
     @auth_required
@@ -509,7 +513,7 @@ min(100,
             return reporte
 
         except Exception as e:
-            print(f"Error generando reporte de seguridad: {str(e)}")
+            self.logger.error(f"Error generando reporte de seguridad: {str(e)}", exc_info=True)
             return {}
 
     def _calcular_nivel_alerta(self, reporte: Dict[str, Any]) -> str:

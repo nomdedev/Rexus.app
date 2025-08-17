@@ -14,7 +14,9 @@
       "Bash(del analyze_functions.py analyze_core_functions.py)",
       "Bash(del fix_logger_syntax.py)",
       "Bash(del:*)",
-      "Bash(rg:*)"
+      "Bash(rg:*)",
+      "Bash(touch:*)",
+      "Bash(mv:*)"
     ],
     "deny": [],
     "ask": [],

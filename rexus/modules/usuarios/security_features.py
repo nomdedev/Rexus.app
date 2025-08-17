@@ -13,6 +13,7 @@ from typing import Dict, Optional, Any
 
 from rexus.utils.unified_sanitizer import sanitize_string
 from rexus.utils.two_factor_auth import TwoFactorAuth
+from rexus.utils.app_logger import get_logger, log_security, log_error
 
 
 class UserSecurityManager:
@@ -28,6 +29,7 @@ class UserSecurityManager:
         self.usuarios_model = usuarios_model
         self.two_factor = TwoFactorAuth()
         self.failed_attempts = {}  # Cache en memoria para intentos fallidos
+        self.logger = get_logger("usuarios.security")
 
     def validate_password_strength(self, password: str) -> Dict[str, Any]:
         """
@@ -225,7 +227,7 @@ username: str,
 
             return True
         except Exception as e:
-            print(f"[ERROR] Error desbloqueando usuario: {e}")
+            self.logger.error(f"Error desbloqueando usuario: {e}", exc_info=True)
             return False
 
     def requires_2fa(self, username: str) -> bool:
@@ -275,7 +277,7 @@ user_id: int,
         except ImportError:
             # Fallback a print si no está disponible
             timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            print(f"[SECURITY {timestamp}] User {user_id}: {event_type} - {description}")
+            log_security("INFO", f"User {user_id}: {event_type} - {description}")
 
     def update_last_login(self,
 user_id: int,
@@ -286,7 +288,7 @@ user_id: int,
             if hasattr(self.usuarios_model, 'actualizar_ultimo_login'):
                 self.usuarios_model.actualizar_ultimo_login(user_id, login_time, ip_address)
         except Exception as e:
-            print(f"[ERROR] Error actualizando último login: {e}")
+            self.logger.error(f"Error actualizando último login: {e}", exc_info=True)
 
     def get_user_security_status(self, username: str) -> Dict[str, Any]:
         """Obtiene el estado de seguridad completo de un usuario."""
@@ -348,7 +350,7 @@ user_id: int,
                 }
             }
         except Exception as e:
-            print(f"[ERROR] Error generando dashboard de seguridad: {e}")
+            self.logger.error(f"Error generando dashboard de seguridad: {e}", exc_info=True)
             return {'error': str(e)}
 
 
@@ -380,7 +382,8 @@ def validate_login_with_security(usuarios_model, username: str, password: str, i
 
 if __name__ == "__main__":
     # Test básico del sistema de seguridad
-    print("Sistema de seguridad avanzada para usuarios inicializado")
+    logger = get_logger("usuarios.security")
+    logger.info("Sistema de seguridad avanzada para usuarios inicializado")
 
     # Ejemplo de validación de contraseña
     security = UserSecurityManager(None)
@@ -394,4 +397,5 @@ if __name__ == "__main__":
 
     for pwd in test_passwords:
         result = security.validate_password_strength(pwd)
-        print(f"Contraseña '{pwd}': {result['strength']} - {result['issues']}")
+        logger = get_logger("usuarios.security")
+        logger.info(f"Contraseña '{pwd}': {result['strength']} - {result['issues']}")

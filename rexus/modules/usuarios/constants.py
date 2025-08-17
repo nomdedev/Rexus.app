@@ -43,7 +43,7 @@ class UsuariosConstants:
     PERMISOS_ADMIN = "ADMINISTRADOR"
     PERMISOS_SUPER_ADMIN = "SUPER_ADMINISTRADOR"
     
-    # Mensajes
+    # Mensajes de éxito
     MSG_USUARIO_CREADO = "Usuario creado exitosamente"
     MSG_USUARIO_ACTUALIZADO = "Usuario actualizado exitosamente"
     MSG_USUARIO_ELIMINADO = "Usuario eliminado exitosamente"
@@ -51,14 +51,52 @@ class UsuariosConstants:
     MSG_USUARIO_BLOQUEADO = "Usuario bloqueado exitosamente"
     MSG_USUARIO_DESBLOQUEADO = "Usuario desbloqueado exitosamente"
     
+    # Mensajes de error generales
     MSG_ERROR_CREAR_USUARIO = "Error al crear el usuario"
     MSG_ERROR_ACTUALIZAR_USUARIO = "Error al actualizar el usuario"
     MSG_ERROR_ELIMINAR_USUARIO = "Error al eliminar el usuario"
     MSG_ERROR_CAMBIAR_PASSWORD = "Error al cambiar la contraseña"
+    MSG_ERROR_CARGAR_USUARIOS = "Error cargando usuarios"
+    MSG_ERROR_BUSCAR_USUARIOS = "Error al buscar usuarios"
+    MSG_ERROR_AUTENTICAR = "Error autenticando usuario"
+    MSG_ERROR_BLOQUEAR = "Error bloqueando usuario"
+    MSG_ERROR_DESBLOQUEAR = "Error desbloqueando usuario"
+    MSG_ERROR_OBTENER_PERMISOS = "Error obteniendo permisos"
+    MSG_ERROR_OBTENER_ESTADISTICAS = "Error obteniendo estadísticas"
     
+    # Mensajes de error específicos de base de datos
+    MSG_ERROR_BD_CONEXION = "Error de conexión a la base de datos"
+    MSG_ERROR_BD_CONSULTA = "Error ejecutando consulta de base de datos"
+    MSG_ERROR_BD_TRANSACCION = "Error en transacción de base de datos"
+    
+    # Mensajes de error de seguridad
+    MSG_ERROR_SEGURIDAD_CRITICA = "Error crítico de seguridad"
+    MSG_ERROR_SEGURIDAD_INPUT = "Input malicioso detectado"
+    MSG_ERROR_SEGURIDAD_AUTH = "Error de autenticación"
+    MSG_ERROR_SEGURIDAD_PERMISOS = "Error de permisos"
+    
+    # Mensajes de error de 2FA
+    MSG_ERROR_2FA_GENERAR = "Error generando 2FA"
+    MSG_ERROR_2FA_VERIFICAR = "Error verificando 2FA"
+    MSG_ERROR_2FA_DESHABILITAR = "Error deshabilitando 2FA"
+    MSG_ERROR_2FA_CODIGO_INVALIDO = "Código incorrecto. Verifique e intente nuevamente"
+    MSG_ERROR_2FA_CODIGO_FORMATO = "Ingrese un código de 6 dígitos"
+    
+    # Mensajes de validación
+    MSG_ERROR_PASSWORD_ACTUAL = "Ingrese su contraseña actual"
+    MSG_ERROR_PASSWORD_NO_COINCIDEN = "Las contraseñas no coinciden"
+    MSG_ERROR_PASSWORD_INCORRECTA = "Contraseña actual incorrecta"
+    
+    # Mensajes de UI
     MSG_SELECCIONAR_USUARIO = "Seleccione un usuario"
     MSG_CONFIRMAR_ELIMINACION = "¿Está seguro de eliminar este usuario?"
     MSG_CONFIRMAR_BLOQUEO = "¿Está seguro de bloquear este usuario?"
+    
+    # Títulos de ventanas de error
+    TITULO_ERROR = "Error"
+    TITULO_ADVERTENCIA = "Advertencia"
+    TITULO_CONFIRMACION = "Confirmación"
+    TITULO_EXITO = "Éxito"
     
     # Validaciones de contraseña
     MIN_PASSWORD_LENGTH = 8

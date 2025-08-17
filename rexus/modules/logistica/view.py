@@ -45,6 +45,13 @@ from rexus.modules.logistica.dialogo_servicios import DialogoGenerarServicio, Di
 # Importar constantes
 from rexus.modules.logistica.constants import LogisticaConstants
 
+# Importar managers de componentes
+from rexus.modules.logistica.components import (
+    LogisticaTableManager,
+    LogisticaPanelManager,
+    LogisticaTransportManager
+)
+
 
 class LogisticaView(QWidget, ModuleExportMixin):
     # Señales para comunicación con el controlador
@@ -56,6 +63,12 @@ class LogisticaView(QWidget, ModuleExportMixin):
         QWidget.__init__(self, parent)
         ModuleExportMixin.__init__(self)
         self.controller = None
+        
+        # Inicializar managers de componentes
+        self.table_manager = LogisticaTableManager(self)
+        self.panel_manager = LogisticaPanelManager(self)
+        self.transport_manager = LogisticaTransportManager(self)
+        
         self.setup_ui()
         self.cargar_datos_ejemplo()
         self.aplicar_estilo_botones_compactos()
@@ -102,43 +115,12 @@ class LogisticaView(QWidget, ModuleExportMixin):
 
     # --- STUBS Y MÉTODOS FALTANTES PARA EVITAR ERRORES ---
     def cargar_entregas_en_tabla(self, entregas=None):
-        """Carga entregas en la tabla principal."""
-        if not hasattr(self, 'tabla_transportes'):
-            return
-
-        if entregas is None:
-            entregas = []
-
-        self.tabla_transportes.setRowCount(len(entregas))
-        for row, entrega in enumerate(entregas):
-            self.tabla_transportes.setItem(row,
-0,
-                QTableWidgetItem(str(entrega.get('id',
-                ''))))
-            self.tabla_transportes.setItem(row,
-1,
-                QTableWidgetItem(str(entrega.get('origen',
-                ''))))
-            self.tabla_transportes.setItem(row,
-2,
-                QTableWidgetItem(str(entrega.get('destino',
-                ''))))
-            self.tabla_transportes.setItem(row,
-3,
-                QTableWidgetItem(str(entrega.get('estado',
-                ''))))
-            self.tabla_transportes.setItem(row,
-4,
-                QTableWidgetItem(str(entrega.get('conductor',
-                ''))))
-            self.tabla_transportes.setItem(row,
-5,
-                QTableWidgetItem(str(entrega.get('fecha',
-                ''))))
+        """Carga entregas en la tabla principal. Delegado al table_manager."""
+        return self.table_manager.cargar_entregas_en_tabla(entregas)
 
     def configurar_tabla_transportes(self):
-        """Configura la tabla de transportes."""
-        headers = ["ID", "Origen", "Destino", "Estado", "Conductor", "Fecha"]
+        """Configura la tabla de transportes. Delegado al table_manager."""
+        return self.table_manager.configurar_tabla_transportes()
         self.tabla_transportes.setColumnCount(len(headers))
         self.tabla_transportes.setHorizontalHeaderLabels(headers)
 

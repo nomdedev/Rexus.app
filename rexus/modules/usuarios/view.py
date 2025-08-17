@@ -344,7 +344,9 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                     }
                 """)
         except Exception as e:
-            print(f"[WARNING] Error aplicando estilos específicos de usuarios: {e}")
+            from rexus.utils.app_logger import get_logger
+            logger = get_logger("usuarios.view")
+            logger.warning(f"Error aplicando estilos específicos de usuarios: {e}")
 
     def nuevo_usuario(self):
         """Abre el diálogo para crear un nuevo usuario."""
@@ -388,9 +390,11 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                     self.actualizar_tabla(usuarios)
                     self.lbl_info.setText(f"Encontrados {len(usuarios)} usuarios")
                 else:
-                    show_error(self, "Error", "Error al buscar usuarios")
+                    from .constants import UsuariosConstants
+                    show_error(self, UsuariosConstants.TITULO_ERROR, UsuariosConstants.MSG_ERROR_BUSCAR_USUARIOS)
             except Exception as e:
-                show_error(self, "Error", f"Error en la búsqueda: {str(e)}")
+                from .constants import UsuariosConstants
+                show_error(self, UsuariosConstants.TITULO_ERROR, f"Error en la búsqueda: {str(e)}")
         else:
             show_warning(self, "Sin Controlador", "No hay controlador disponible para realizar la búsqueda")
 
