@@ -1,184 +1,0 @@
-
-8"Supervisor"str
-
-"nombre_completo"str
-D"Dashboard"str
-6"SUPERVISOR"str
- "2025-01-01"str
->"2025-01-14"str
-""ultimo_acceso"str
-"id"str
-4"+1234567891"str
-	"usuario"str
-<"2025-01-02"str
-"admin@rexus.app"str
-
-"telefono"str
-"email"str
-2"supervisor@rexus.app"str
-"rol"str
- "Administrador Sistema"str
-"ACTIVO"str
-0"Supervisor General"str
-."supervisor"str
-(
-"permisos"str
-C	"Pedidos"str
-"admin"str
-3*"Datos demo cuando no hay conexi√≥n a BD."str
-#"2025-01-15"str
-B"Inventario"str
-"estado"str
-A"Obras"str
-%"intentos_fallidos"str
-"+1234567890"str
-"Activo"str
-
-1int
-"estado_texto"str
-
-&0int
-"rol_texto"str
-"Administrador"str
-"fecha_creacion"str
-"ADMIN"str
-
-,2intself
-‚ ‚(Flist"û&
-$
-
-Â Û("#new-object#Bdict"
- 
-
-Ê Ê("	#map-set#:"
- 
-
-Á Á("	"	#map-set#:"
- 
-
-Ë Ë(:"	#map-set#:
-"
- 
-
-È È(*"	#map-set#:"
- 
-
-Í Í()"	#map-set#:"
- 
-
-Î Î("	#map-set#:"
- 
-
-Ï Ï(,"	#map-set#:"
- 
-
-Ì Ì(""	#map-set#:"
- 
-
-Ó Ó(("	#map-set#:"
- 
-
-Ô Ô(.!"	#map-set#: "
- 
-
- (-$"	#map-set#:"#"
- 
-
-Ò Ò(&'"	#map-set#:%&2
-0
-
-Ú Ú(0)"#get-field# MODULOS_SISTEMA:"
- 
-
-Ú Ú(0*"	#map-set#:()&
-$
-
-Ù Ç(+"#new-object#Bdict"
- 
-
-ı ı(-"	#map-set#:+,"
- 
-
-ˆ ˆ('/"	#map-set#:+."
- 
-
-˜ ˜(71"	#map-set#:+
-0"
- 
-
-¯ ¯(/3"	#map-set#:+2"
- 
-
-˘ ˘()5"	#map-set#:+4"
- 
-
-˙ ˙(#7"	#map-set#:+6"
- 
-
-˚ ˚()9"	#map-set#:+8"
- 
-
-¸ ¸(":"	#map-set#:+"
- 
-
-˝ ˝((;"	#map-set#:+"
- 
-
-˛ ˛(.="	#map-set#:+<"
- 
-
-ˇ ˇ(-?"	#map-set#:+">"
- 
-
-Ä Ä(&@"	#map-set#:+%&)
-'
-
-Å Å(KE"#unknown-value#Blist(
-&
-
-Å Å(KG"
-#is-exact#:EFBbool
-
-
-Å Å(KH"
-#assume#:G:
-8
-
-Å Å(KI"#set-field# __collection_size:E&Bint(
-&
-
-Å Å(KJ"#array-add-last#:EA(
-&
-
-Å Å(KK"#array-add-last#:EB(
-&
-
-Å Å(KL"#array-add-last#:EC(
-&
-
-Å Å(KM"#array-add-last#:ED"
- 
-
-Å Å(KN"	#map-set#:+(E)
-'
-
-‰ É(	O"#unknown-value#Blist(
-&
-
-‰ É(	P"
-#is-exact#:OFBbool
-
-
-‰ É(	Q"
-#assume#:P:
-8
-
-‰ É(	R"#set-field# __collection_size:O&Bint(
-&
-
-‰ É(	S"#array-add-last#:O(
-&
-
-‰ É(	T"#array-add-last#:O+
-
-‰ É(	O*HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\model.py

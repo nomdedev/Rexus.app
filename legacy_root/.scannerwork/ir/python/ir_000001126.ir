@@ -1,60 +1,0 @@
-
-	"#1e40af"str
-	"#d97706"str
-"dark"str
-	"#dc2626"str
-"danger"str
-	"#e2e8f0"str
-G>"Retorna diccionario con colores estรกndar de la aplicaciรณn."str
-"muted"str
-
-	"success"str
-	"primary"str
-"secondary"str
-"border"str
-"background"str
- 	"#64748b"str
-"light"str
-	"#ffffff"str
-	"#1e293b"str
-	"#3b82f6"str
-	"#059669"str
-	"#f8fafc"str
-	"warning"strcls
-ท ท("ข&
-$
-
-น ฤ(	"#new-object#Bdict"
- 
-
-บ บ( "	#map-set#:"
- 
-
-ป ป("	"	#map-set#:"
- 
-
-ผ ผ( "	#map-set#:
-"
- 
-
-ฝ ฝ( "	#map-set#:"
- 
-
-พ พ("	#map-set#:"
- 
-
-ฟ ฟ("	#map-set#:"
- 
-
-ภ ภ("	#map-set#:"
- 
-
-ม ม("	#map-set#:"
- 
-
-ย ย(#"	#map-set#:"
- 
-
-ร ร(!"	#map-set#: 
-
-น ฤ(	*BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\style_manager.py

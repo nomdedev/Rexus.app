@@ -9,6 +9,10 @@ from datetime import datetime
 
 from PyQt6.QtCore import QObject, pyqtSignal
 from rexus.core.base_controller import BaseController
+
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("compras.controller")
 from rexus.utils.message_system import show_success, show_error, show_warning
 from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
@@ -31,7 +35,7 @@ class ComprasController(BaseController):
             view: Vista de compras
             db_connection: Conexión a la base de datos
         """
-        super().__init__()
+        super().__init__(module_name="compras", model=model, view=view, db_connection=db_connection)
         self.model = model
         self.view = view
         self.db_connection = db_connection
@@ -46,7 +50,7 @@ class ComprasController(BaseController):
             inventario_db = get_inventario_connection()
             self.inventory_integration = InventoryIntegration(db_connection, inventario_db)
         except Exception as e:
-            print(f"[WARNING] No se pudo inicializar integración de inventario: {e}")
+            logger.warning(f"No se pudo inicializar integración de inventario: {e}")
             self.inventory_integration = None
 
         # Conectar señales
@@ -76,12 +80,10 @@ class ComprasController(BaseController):
             stats = self.model.obtener_estadisticas_compras()
             self.view.actualizar_estadisticas(stats)
 
-            print(
-                f"[COMPRAS CONTROLLER] Datos iniciales cargados: {len(compras)} compras"
-            )
+            logger.info(f"Datos iniciales cargados: {len(compras)} compras")
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error cargando datos iniciales: {e}")
+            logger.error(f"Error cargando datos iniciales: {e}")
             self.mostrar_error("Error cargando datos iniciales", str(e))
 
     @auth_required
@@ -117,7 +119,7 @@ class ComprasController(BaseController):
                 self.mostrar_error("Error", "No se pudo crear la orden")
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error creando orden: {e}")
+            logger.error(f"Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
 
     @auth_required
@@ -144,7 +146,7 @@ class ComprasController(BaseController):
                 self.mostrar_error("Error", "No se pudo actualizar el estado")
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error actualizando estado: {e}")
+            logger.error(f"Error actualizando estado: {e}")
             self.mostrar_error("Error actualizando estado", str(e))
 
     def buscar_compras(self, filtros):
@@ -175,12 +177,10 @@ class ComprasController(BaseController):
             stats = self.calcular_estadisticas_filtradas(compras)
             self.view.actualizar_estadisticas(stats)
 
-            print(
-                f"[COMPRAS CONTROLLER] Búsqueda completada: {len(compras)} resultados"
-            )
+            logger.info(f"Búsqueda completada: {len(compras)} resultados")
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error en búsqueda: {e}")
+            logger.error(f"Error en búsqueda: {e}")
             self.mostrar_error("Error en búsqueda", str(e))
 
     def calcular_estadisticas_filtradas(self, compras):
@@ -217,7 +217,7 @@ class ComprasController(BaseController):
             }
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error calculando estadísticas: {e}")
+            logger.error(f"Error calculando estadísticas: {e}")
             return {
                 "total_ordenes": 0,
                 "ordenes_por_estado": [],
@@ -247,7 +247,7 @@ class ComprasController(BaseController):
             self.buscar_compras(filtros)
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error actualizando vista: {e}")
+            logger.error(f"Error actualizando vista: {e}")
 
     @admin_required
     def validar_datos_orden(self, datos):
@@ -347,7 +347,7 @@ orden_id,
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error procesando recepción de orden: {e}")
+            logger.error(f"Error procesando recepción de orden: {e}")
             self.mostrar_error("Error", f"Error procesando recepción: {str(e)}")
             return False
 
@@ -356,10 +356,10 @@ orden_id,
         try:
             # Aquí se registrarían los datos de seguimiento en la base de datos
             # Por ahora solo log para demostrar la funcionalidad
-            print(f"[INFO] Seguimiento registrado para orden {orden_id}: {datos_seguimiento}")
+            logger.info(f"Seguimiento registrado para orden {orden_id}: {datos_seguimiento}")
 
         except Exception as e:
-            print(f"[ERROR] Error registrando seguimiento: {e}")
+            logger.error(f"Error registrando seguimiento: {e}")
 
     @auth_required
     def verificar_disponibilidad_antes_orden(self, items_solicitud):
@@ -392,7 +392,7 @@ orden_id,
             return resultado
 
         except Exception as e:
-            print(f"[ERROR] Error verificando disponibilidad: {e}")
+            logger.error(f"Error verificando disponibilidad: {e}")
             return {'disponible_completo': False, 'error': str(e)}
 
 
@@ -523,7 +523,7 @@ fecha_inicio,
                         )
 
         except Exception as e:
-            print(f"[ERROR] Error cargando página: {e}")
+            logger.error(f"Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error("Error", f"Error cargando página: {str(e)}")
 
@@ -539,7 +539,7 @@ fecha_inicio,
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
-            print(f"[ERROR] Error obteniendo total de registros: {e}")
+            logger.error(f"Error obteniendo total de registros: {e}")
             return 0
 
     def mostrar_error(self, titulo, mensaje):
@@ -564,7 +564,7 @@ fecha_inicio,
             }
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo resumen: {e}")
+            logger.error(f"Error obteniendo resumen: {e}")
             return {
                 "estadisticas": {},
                 "compras_recientes": [],
@@ -603,7 +603,7 @@ fecha_inicio,
                 return False
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error creando proveedor: {e}")
+            logger.error(f"Error creando proveedor: {e}")
             show_error(self.view, "Error creando proveedor", str(e))
             return False
 
@@ -617,7 +617,7 @@ fecha_inicio,
         try:
             return self.proveedores_model.obtener_todos_proveedores()
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo proveedores: {e}")
+            logger.error(f"Error obteniendo proveedores: {e}")
             return []
 
     def buscar_proveedores(self, filtros):
@@ -638,7 +638,7 @@ fecha_inicio,
                 ruc=filtros.get("ruc", "")
             )
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error buscando proveedores: {e}")
+            logger.error(f"Error buscando proveedores: {e}")
             return []
 
     def obtener_estadisticas_proveedor(self, proveedor_id):
@@ -654,7 +654,7 @@ fecha_inicio,
         try:
             return self.proveedores_model.obtener_estadisticas_proveedor(proveedor_id)
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo estadísticas proveedor: {e}")
+            logger.error(f"Error obteniendo estadísticas proveedor: {e}")
             return {}
 
     # === MÉTODOS PARA GESTIÓN DE DETALLES DE COMPRAS ===
@@ -672,7 +672,7 @@ fecha_inicio,
         try:
             return self.detalle_model.obtener_items_compra(compra_id)
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo items: {e}")
+            logger.error(f"Error obteniendo items: {e}")
             return []
 
     @auth_required
@@ -703,7 +703,7 @@ fecha_inicio,
                 return False
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error agregando item: {e}")
+            logger.error(f"Error agregando item: {e}")
             show_error(self.view, "Error agregando item", str(e))
             return False
 
@@ -720,7 +720,7 @@ fecha_inicio,
         try:
             return self.detalle_model.obtener_resumen_compra(compra_id)
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo resumen: {e}")
+            logger.error(f"Error obteniendo resumen: {e}")
             return {}
 
     def obtener_productos_por_categoria(self):
@@ -733,7 +733,7 @@ fecha_inicio,
         try:
             return self.detalle_model.obtener_productos_por_categoria()
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error obteniendo productos por categoría: {e}")
+            logger.error(f"Error obteniendo productos por categoría: {e}")
             return {}
 
     def buscar_productos_similares(self, descripcion, limite=10):
@@ -750,7 +750,7 @@ fecha_inicio,
         try:
             return self.detalle_model.buscar_productos_similares(descripcion, limite)
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error buscando productos similares: {e}")
+            logger.error(f"Error buscando productos similares: {e}")
             return []
 
     # === MÉTODOS DE UTILIDAD ===
@@ -792,7 +792,7 @@ fecha_inicio,
             }
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error generando reporte: {e}")
+            logger.error(f"Error generando reporte: {e}")
             return {
                 "fecha_reporte": datetime.now().isoformat(),
                 "error": str(e),
@@ -839,7 +839,7 @@ fecha_inicio,
                 return False
 
         except Exception as e:
-            print(f"[ERROR COMPRAS CONTROLLER] Error eliminando orden: {e}")
+            logger.error(f"Error eliminando orden: {e}")
             self.mostrar_error("Error eliminando orden", str(e))
             return False
 

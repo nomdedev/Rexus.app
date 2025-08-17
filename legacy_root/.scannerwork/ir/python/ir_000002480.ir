@@ -1,22 +1,0 @@
-
-=4"Funci√≥n de conveniencia para almacenar en cach√©."strkey
-£ £(value
-£ £("resource_type
-£$ £(6#required_permission
-£8 £(Puser_id
-§ §(kwargs
-§ §($"dict"∑K
-I
-
-¶ ¶(!cache"2
-rexus.utils.encrypted_cacheget_encrypted_cache'
-%
-
-ßV ß(^	"#unaryop **#2**:-
-+
-
-ß ß(_
-"?python-unknown?:	
-
-ß ß(_
-*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\encrypted_cache.py

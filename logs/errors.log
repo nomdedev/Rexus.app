@@ -56,3 +56,29 @@ Traceback (most recent call last):
   File "D:\martin\Rexus.app\rexus\core\database.py", line 183, in connect
     self._connection = pyodbc.connect(real_connection_string)
 pyodbc.InterfaceError: ('28000', '[28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456) (SQLDriverConnect); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Login failed for user \'sa\'. (18456); [28000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot open database "None" requested by the login. The login failed. (4060)')
+2025-08-17 14:58:06 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 14:58:06 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 14:58:06 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: invalid syntax. Perhaps you forgot a comma? (security.py, line 142)
+2025-08-17 15:01:21 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 15:01:21 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 15:01:21 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: Directorio SQL no encontrado: D:\martin\Rexus.app\legacy_root\scripts\sql
+2025-08-17 15:05:58 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 15:05:58 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 15:05:58 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: Directorio SQL no encontrado: D:\martin\Rexus.app\legacy_root\scripts\sql
+2025-08-17 15:07:20 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']
+2025-08-17 15:07:21 | ERROR    | rexus.main      | Error crítico creando inventario: Archivo SQL no encontrado: verificar_tabla_existe.sql en módulo inventario. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\inventario\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_existe.sql']
+2025-08-17 15:07:21 | ERROR    | rexus.main      | Error crítico creando herrajes: Error creando controlador: BaseController.__init__() missing 1 required positional argument: 'module_name'
+2025-08-17 15:07:22 | ERROR    | rexus.modules.vidrios.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:07:22 | ERROR    | rexus.main      | Error crítico creando vidrios: Error creando vista: 'VidriosModernView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:07:26 | ERROR    | rexus.main      | Error crítico creando compras: Error creando vista: 'NoneType' object has no attribute 'upper'
+2025-08-17 15:07:27 | ERROR    | rexus.main      | Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
+2025-08-17 15:07:27 | ERROR    | rexus.main      | Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:07:29 | ERROR    | rexus.usuarios.model | Error obteniendo usuarios optimizado: 'NoneType' object has no attribute 'cursor'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\model.py", line 1147, in obtener_todos_usuarios
+    cursor = self.db_connection.connection.cursor()
+AttributeError: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:07:32 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']

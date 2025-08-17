@@ -1,27 +1,0 @@
-
-É¿"
-    Decorador para cachear resultados de funciones.
-    
-    Args:
-        ttl: Tiempo de vida del cachÃ© en segundos
-        key_func: FunciÃ³n para generar clave personalizada
-    "strttl
-‰ ‰(&key_func
-‰( ‰(K"é#
-!
-
-« «("#unknown-value#*
-(
-
-‘ «(%closure"#new-object#,
-*
-
-‘ «("#set-field# key_func:'
-%
-
-‘ «("#set-field# ttl:-
-+
-
-‘ «("?python-partial-apply?:
-
-« «(*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\cache_manager.py

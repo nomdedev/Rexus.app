@@ -1,58 +1,0 @@
-
-"inventario"str
-	"compras"str
-"obras"str
-		"pedidos"str
-@7"Obtiene todos los datos demo para todos los mÃ³dulos."str
-
-"usuarios"str
-"logistica"str"Ä&
-$
-
-å ì(	"#new-object#Bdict^
-\
-
-æ æ(E"L
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_inventario_demo"
- 
-
-æ æ(E"	#map-set#:Y
-W
-
-ç ç(;"G
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_obras_demo"
- 
-
-ç ç(;"	#map-set#:[
-Y
-
-è è(?
-"I
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_pedidos_demo"
- 
-
-è è(?"	#map-set#:	
-]
-[
-
-é é(C"K
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_logistica_demo"
- 
-
-é é(C"	#map-set#:\
-Z
-
-ê ê(A"J
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_usuarios_demo"
- 
-
-ê ê(A"	#map-set#:[
-Y
-
-ë ë(?"I
-1rexus.utils.demo_data_generator.DemoDataGeneratorgenerar_compras_demo"
- 
-
-ë ë(?"	#map-set#:
-
-å ì(	*KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\demo_data_generator.py

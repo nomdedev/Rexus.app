@@ -1,306 +1,0 @@
-
-f
-"Espejado"str
-"tipo"str
-}"3.0x4.0m, 2.5x3.0m"str
-y"Azul"str
-Z"Espejo 5mm Plata"str
-"Cristales Modernos"str
-*%!"Vidrio para puertas principales"str
-"id"str
-"tratamiento"str
-E"ComÃºn"str
-
-G4int
-2"Vidrios Industriales"str
-"estado"str
-45.00float
-C:"Datos demo para cuando no hay conexiÃ³n a base de datos."str
-"proveedor"str
-o"VT-005"str
-(k"Espejo decorativo para baÃ±os"str
-	"espesor"str
-
-6int
-)S "Vidrio estÃ¡ndar para ventanas"str
-,<#"Vidrio de seguridad para fachadas"str
-d"Plata"str
-"VT-001"str
-i"1.0x2.0m, 0.8x1.5m"str
-"!"dimensiones_disponibles"str
- I"Distribuidora Central"str
-K18.75float
-"Transparente"str
-t10int
-
-(2int
-.
-"Laminado"str
-"codigo"str
-462.50float
-:"2.5x3.5m, 2.0x3.0m"str
-)C "Vidrio ComÃºn 4mm Transparente"str
-$q"Vidrio Templado 10mm Azul"str
-
-^5int
-$"observaciones"str
-b35.00float
-…0int
-A"VC-003"str
-*!"Vidrio especial para divisiones"str
-%,"Vidrio Laminado 8mm Bronce"str
-""2.0x3.0m, 1.5x2.5m"str
-*"VL-002"str
-`"Espejos Decorativos"str
-W"VE-004"str
-"precio_m2"str
-
-"descripcion"str
-
-"Templado"str
-"ACTIVO"str
-N	"Ninguno"str
-
-?3int
-Y"descripciÃ³n"str
-w78.00float
-\"Espejo"str
-
-1int
-6"Bronce"str
-+""Vidrio Templado 6mm Transparente"str
-"color"str
-
-08int
-Q"1.5x2.0m, 1.0x1.5m"strself
-ô ô(	‚list"ã&
-$
-
-÷ „("#new-object#Bdict"
- 
-
-ø ø("	#map-set#:"
- 
-
-ù ù("	"	#map-set#:"
- 
-
-ú ú(A"	#map-set#:
-"
- 
-
-û û(""	#map-set#:"
- 
-
-ü ü("	#map-set#:"
- 
-
-ı ı(1"	#map-set#:"
- 
-
-ş ş(""	#map-set#:"
- 
-
-ÿ ÿ('"	#map-set#:"
- 
-
-€ €()"	#map-set#:"
- 
-
- (" "	#map-set#:"
- 
-
-‚ ‚(?#"	#map-set#:!""
- 
-
-ƒ ƒ(B&"	#map-set#:$%&
-$
-
-… ’('"#new-object#Bdict"
- 
-
-† †()"	#map-set#:'("
- 
-
-‡ ‡("+"	#map-set#:'*"
- 
-
-ˆ ˆ(;-"	#map-set#:'
-,"
- 
-
-‰ ‰("/"	#map-set#:'."
- 
-
-Š Š(1"	#map-set#:'0"
- 
-
-‹ ‹(33"	#map-set#:'2"
- 
-
-Œ Œ("5"	#map-set#:'4"
- 
-
- (!7"	#map-set#:'6"
- 
-
- ()8"	#map-set#:'."
- 
-
- ("9"	#map-set#:'"
- 
-
- (?;"	#map-set#:'!:"
- 
-
-‘ ‘(D="	#map-set#:'$<&
-$
-
-“  (>"#new-object#Bdict"
- 
-
-” ”(@"	#map-set#:>?"
- 
-
-• •("B"	#map-set#:>A"
- 
-
-– –(>D"	#map-set#:>
-C"
- 
-
-— —(F"	#map-set#:>E"
- 
-
-˜ ˜(H"	#map-set#:>G"
- 
-
-™ ™(4J"	#map-set#:>I"
- 
-
-š š("L"	#map-set#:>K"
- 
-
-› ›('M"	#map-set#:>"
- 
-
-œ œ((O"	#map-set#:>N"
- 
-
- ("P"	#map-set#:>"
- 
-
- (?R"	#map-set#:>!Q"
- 
-
-Ÿ Ÿ(@T"	#map-set#:>$S&
-$
-
-¡ ®(U"#new-object#Bdict"
- 
-
-¢ ¢(V"	#map-set#:UG"
- 
-
-£ £("X"	#map-set#:UW"
- 
-
-¤ ¤(1["	#map-set#:UYZ"
- 
-
-¥ ¥( ]"	#map-set#:U\"
- 
-
-¦ ¦(_"	#map-set#:U^"
- 
-
-§ §(2a"	#map-set#:U`"
- 
-
-¨ ¨("c"	#map-set#:Ub"
- 
-
-© ©( e"	#map-set#:Ud"
- 
-
-ª ª()g"	#map-set#:Uf"
- 
-
-« «("h"	#map-set#:U"
- 
-
-¬ ¬(?j"	#map-set#:U!i"
- 
-
-­ ­(?l"	#map-set#:U$k&
-$
-
-¯ ¼(m"#new-object#Bdict"
- 
-
-° °(n"	#map-set#:m^"
- 
-
-± ±("p"	#map-set#:mo"
- 
-
-² ²(:r"	#map-set#:m
-q"
- 
-
-³ ³("s"	#map-set#:m"
- 
-
-´ ´(u"	#map-set#:mt"
- 
-
-µ µ(1v"	#map-set#:m"
- 
-
-¶ ¶("x"	#map-set#:mw"
- 
-
-· ·(z"	#map-set#:my"
- 
-
-¸ ¸(){"	#map-set#:m"
- 
-
-¹ ¹("|"	#map-set#:m"
- 
-
-º º(?~"	#map-set#:m!}#
-!
-
-» »(B€"	#map-set#:m$*
-(
-
-ö ½(	"#unknown-value#Blist+
-)
-
-ö ½(	ƒ"
-#is-exact#:‚Bbool!
-
-
-ö ½(	„"
-#assume#:ƒ=
-;
-
-ö ½(	†"#set-field# __collection_size:…Bint*
-(
-
-ö ½(	‡"#array-add-last#:*
-(
-
-ö ½(	ˆ"#array-add-last#:'*
-(
-
-ö ½(	‰"#array-add-last#:>*
-(
-
-ö ½(	Š"#array-add-last#:U*
-(
-
-ö ½(	‹"#array-add-last#:m
-
-ö ½(	*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\model.py

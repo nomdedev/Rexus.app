@@ -1,28 +1,0 @@
-
-	"sin_stock"str
-"stock_bajo"str
-"valor_total"str
-
-0int
-5,"Retorna estad√≠sticas vac√≠as por defecto."str
-"total_productos"str
-0.0floatself
-≠ ≠(!" &
-$
-
-Ø ¥(	"#new-object#Bdict"
- 
-
-∞ ∞( "	#map-set#:"
- 
-
-± ±("	#map-set#:"
- 
-
-≤ ≤(
-"	#map-set#:	"
- 
-
-≥ ≥("	#map-set#:
-
-Ø ¥(	*OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\controller.py

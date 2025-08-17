@@ -57,7 +57,10 @@ except ImportError:
 from ..core.config import get_env_var, SECURITY_CONFIG
 from ..core.logger import get_logger
 from ..core.database_pool import database_transaction
-from ..core.cache_manager import cache_manager
+from ..utils.cache_manager import get_cache_manager
+
+# Obtener instancia del cache manager
+cache_manager = get_cache_manager()
 from ..core.backup_manager import backup_manager
 from ..security.csrf_protection import init_csrf_protection, get_csrf_protection
 from ..security.user_enumeration_protection import (

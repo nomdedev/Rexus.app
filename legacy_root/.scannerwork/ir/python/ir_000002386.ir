@@ -1,703 +1,0 @@
-
-¨"estado"str
-
-10int
-ê"Stock Actual"str
-å
-"textarea"str
-È"Dimensiones"str
-ì"especificaciones"str
-Õ"Marca"str
-Ó"peso"str
-±"ACTIVO"str
-l"unidad_medida"str
-´700int
-"Gesti√≥n de Herraje"str
-"tipo"str
-¢1int
-‘"Modelo"str
-A"Categor√≠a"str
-Ü"Observaciones"str
-è60int
-"Informaci√≥n B√°sica"str
-"descripcion"str
-Dfalsebool
-\"Precio Unitario"str
-?6"Obtiene la configuraci√≥n del formulario de herraje."str
-»"Detalles T√©cnicos"str
-"label"str
-'"CERRADURA"str
-s"JUEGO"str
-ã"Inventario"str
-≥"DESCONTINUADO"str
-€"Color"str
-˜3int
-b0.0float
-("MANIJA"str
-À"marca"str
-"Descripci√≥n"str
-*"RIEL"str
-ß"Ubicaci√≥n"str
-+	"SOPORTE"str
-d"max"str
-Ÿ"color"str
-≤
-"INACTIVO"str
-P"Proveedor y Precios"str
-"codigo"str
-ñ99999int
-%	"options"str
-<	"default"str
-	"herraje"str
-)
-"TORNILLO"str
-"name"str
-t"METRO"str
-•"ubicacion"str
-Á"dimensiones"str
-Z"precio_unitario"str
-“"modelo"str
-e	999999.99float
-^"float"str
-U"Proveedor"str
-ú"Stock M√≠nimo"str
-!"Tipo"str
-?"categoria"str
-Æ"Estado"str
-S"proveedor"str
-a"min"str
-&	"BISAGRA"str
-é"height"str
-&ï"Especificaciones T√©cnicas"str
-u"KILOGRAMO"str
-truebool
-ı9999.999float
-	"C√≥digo"str
-r"PAR"str
-#"combo"str
-"Peso (kg)"str
-"title"str
-,"OTRO"str
-
-"required"str
-q"UNIDAD"str
-™800int
-"type"str
-‡
-"material"str
-‚
-"Material"str
-ö"stock_minimo"str
-"text"str
-n"Unidad de Medida"str
-g
-"decimals"str
-	"fields"str
-â"observaciones"str
-
-h2int
-é"stock_actual"str
-í"int"strselfT T(
-≠tuple.list"—C$
-"
-Z x("#new-object#Bdict 
-
-[ [(1"	#map-set#:$
-"
-] b(
-"#new-object#Bdict 
-
-^ ^(,"	#map-set#:
- 
-
-_ _(-"	#map-set#:
- 
-
-` `(*"	#map-set#:
- 
-
-a a(,"	#map-set#:
-$
-"
-c h("#new-object#Bdict 
-
-d d(1"	#map-set#: 
-
-e e(2"	#map-set#: 
-
-f f(*"	#map-set#: 
-
-g g(,"	#map-set#:$
-"
-i p("#new-object#Bdict 
-
-j j(* "	#map-set#: 
-
-k k(+""	#map-set#:! 
-
-l l(+$"	#map-set#:#'
-%
-m' m(p-"#unknown-value#Blist&
-$
-m' m(p/"
-#is-exact#:-.Bbool
-
-m' m(p0"
-#assume#:/8
-6
-m' m(p2"#set-field# __collection_size:-1Bint&
-$
-m' m(p3"#array-add-last#:-&&
-$
-m' m(p4"#array-add-last#:-'&
-$
-m' m(p5"#array-add-last#:-(&
-$
-m' m(p6"#array-add-last#:-)&
-$
-m' m(p7"#array-add-last#:-*&
-$
-m' m(p8"#array-add-last#:-+&
-$
-m' m(p9"#array-add-last#:-, 
-
-m m(p:"	#map-set#:%- 
-
-n n(,;"	#map-set#: 
-
-o o(-="	#map-set#:<,$
-"
-q v(>"#new-object#Bdict 
-
-r r(/@"	#map-set#:>? 
-
-s s(0B"	#map-set#:>A 
-
-t t(*C"	#map-set#:> 
-
-u u(-E"	#map-set#:>D'
-%
-\ w(F"#unknown-value#Blist&
-$
-\ w(G"
-#is-exact#:F.Bbool
-
-\ w(H"
-#assume#:G8
-6
-\ w(I"#set-field# __collection_size:F1Bint&
-$
-\ w(J"#array-add-last#:F
-&
-$
-\ w(K"#array-add-last#:F&
-$
-\ w(L"#array-add-last#:F&
-$
-\ w(M"#array-add-last#:F> 
-
-\ w(N"	#map-set#:	F%
-#
-	y ï(O"#new-object#Bdict 
-
-z z(2Q"	#map-set#:OP%
-#
-	| Å(R"#new-object#Bdict 
-
-} }(/T"	#map-set#:RS 
-
-~ ~(0V"	#map-set#:RU 
-
- (*W"	#map-set#:R"
- 
-
-Ä Ä(,X"	#map-set#:R&
-$
-
-Ç ã(Y"#new-object#Bdict"
- 
-
-É É(5["	#map-set#:YZ"
- 
-
-Ñ Ñ(6]"	#map-set#:Y\"
- 
-
-Ö Ö(+_"	#map-set#:Y^"
- 
-
-Ü Ü(,`"	#map-set#:Y"
- 
-
-á á(&c"	#map-set#:Yab"
- 
-
-à à(,f"	#map-set#:Yde"
- 
-
-â â()i"	#map-set#:Ygh"
- 
-
-ä ä(*j"	#map-set#:Y<b&
-$
-
-å ì(k"#new-object#Bdict"
- 
-
-ç ç(3m"	#map-set#:kl"
- 
-
-é é(7o"	#map-set#:kn"
- 
-
-è è(+p"	#map-set#:k#)
-'
-
-ê' ê(Wv"#unknown-value#Blist(
-&
-
-ê' ê(Ww"
-#is-exact#:v.Bbool
-
-
-ê' ê(Wx"
-#assume#:w:
-8
-
-ê' ê(Wy"#set-field# __collection_size:v1Bint(
-&
-
-ê' ê(Wz"#array-add-last#:vq(
-&
-
-ê' ê(W{"#array-add-last#:vr(
-&
-
-ê' ê(W|"#array-add-last#:vs(
-&
-
-ê' ê(W}"#array-add-last#:vt(
-&
-
-ê' ê(W~"#array-add-last#:vu"
- 
-
-ê ê(W"	#map-set#:k%v#
-!
-
-ë ë(,Ä"	#map-set#:k#
-!
-
-í í(/Å"	#map-set#:k<q)
-'
-	{ î(Ç"#unknown-value#Blist)
-'
-	{ î(É"
-#is-exact#:Ç.Bbool 
-
-	{ î(Ñ"
-#assume#:É;
-9
-	{ î(Ö"#set-field# __collection_size:Ç1Bint)
-'
-	{ î(Ü"#array-add-last#:ÇR)
-'
-	{ î(á"#array-add-last#:ÇY)
-'
-	{ î(à"#array-add-last#:Çk#
-!
-	{ î(â"	#map-set#:O	Ç'
-%
-
-ñ ∫(ä"#new-object#Bdict%
-#
-
-ó ó()å"	#map-set#:äã'
-%
-
-ô °(ç"#new-object#Bdict%
-#
-
-ö ö(2è"	#map-set#:çé%
-#
-
-õ õ(3ë"	#map-set#:çê%
-#
-
-ú ú()ì"	#map-set#:çí$
-"
-
-ù ù(,î"	#map-set#:ç$
-"
-
-û û($ï"	#map-set#:ça1%
-#
-
-ü ü((ó"	#map-set#:çdñ$
-"
-
-† †((ò"	#map-set#:ç<1'
-%
-
-¢ ™(ô"#new-object#Bdict%
-#
-
-£ £(2õ"	#map-set#:ôö%
-#
-
-§ §(3ù"	#map-set#:ôú%
-#
-
-• •()û"	#map-set#:ôí$
-"
-
-¶ ¶(,ü"	#map-set#:ô$
-"
-
-ß ß($†"	#map-set#:ôa1%
-#
-
-® ®((°"	#map-set#:ôdñ%
-#
-
-© ©((£"	#map-set#:ô<¢'
-%
-
-´ ∞(§"#new-object#Bdict%
-#
-
-¨ ¨(/¶"	#map-set#:§•%
-#
-
-≠ ≠(0®"	#map-set#:§ß$
-"
-
-Æ Æ(*©"	#map-set#:§$
-"
-
-Ø Ø(-™"	#map-set#:§D'
-%
-
-± ∏(´"#new-object#Bdict%
-#
-
-≤ ≤(,≠"	#map-set#:´¨%
-#
-
-≥ ≥(-Ø"	#map-set#:´Æ$
-"
-
-¥ ¥(+∞"	#map-set#:´#*
-(
-
-µ' µ(N¥"#unknown-value#Blist*
-(
-
-µ' µ(Nµ"
-#is-exact#:¥.Bbool!
-
-
-µ' µ(N∂"
-#assume#:µ<
-:
-
-µ' µ(N∑"#set-field# __collection_size:¥1Bint+
-)
-
-µ' µ(N∏"#array-add-last#:¥±+
-)
-
-µ' µ(Nπ"#array-add-last#:¥≤+
-)
-
-µ' µ(N∫"#array-add-last#:¥≥%
-#
-
-µ µ(Nª"	#map-set#:´%¥$
-"
-
-∂ ∂(,º"	#map-set#:´%
-#
-
-∑ ∑(/Ω"	#map-set#:´<±*
-(
-
-ò π(æ"#unknown-value#Blist*
-(
-
-ò π(ø"
-#is-exact#:æ.Bbool!
-
-
-ò π(¿"
-#assume#:ø<
-:
-
-ò π(¡"#set-field# __collection_size:æ1Bint+
-)
-
-ò π(¬"#array-add-last#:æç+
-)
-
-ò π(√"#array-add-last#:æô+
-)
-
-ò π(ƒ"#array-add-last#:æ§+
-)
-
-ò π(≈"#array-add-last#:æ´%
-#
-
-ò π(∆"	#map-set#:ä	æ'
-%
-
-ª Á(«"#new-object#Bdict%
-#
-
-º º(0…"	#map-set#:«»'
-%
-
-æ √( "#new-object#Bdict%
-#
-
-ø ø(+Ã"	#map-set#: À%
-#
-
-¿ ¿(,Œ"	#map-set#: Õ$
-"
-
-¡ ¡(*œ"	#map-set#: $
-"
-
-¬ ¬(-–"	#map-set#: D'
-%
-
-ƒ …(—"#new-object#Bdict%
-#
-
-≈ ≈(,”"	#map-set#:—“%
-#
-
-∆ ∆(-’"	#map-set#:—‘$
-"
-
-« «(*÷"	#map-set#:—$
-"
-
-» »(-◊"	#map-set#:—D'
-%
-
-  œ(ÿ"#new-object#Bdict%
-#
-
-À À(+⁄"	#map-set#:ÿŸ%
-#
-
-Ã Ã(,‹"	#map-set#:ÿ€$
-"
-
-Õ Õ(*›"	#map-set#:ÿ$
-"
-
-Œ Œ(-ﬁ"	#map-set#:ÿD'
-%
-
-– ’(ﬂ"#new-object#Bdict%
-#
-
-— —(.·"	#map-set#:ﬂ‡%
-#
-
-“ “(/„"	#map-set#:ﬂ‚$
-"
-
-” ”(*‰"	#map-set#:ﬂ$
-"
-
-‘ ‘(-Â"	#map-set#:ﬂD'
-%
-
-÷ €(Ê"#new-object#Bdict%
-#
-
-◊ ◊(1Ë"	#map-set#:ÊÁ%
-#
-
-ÿ ÿ(2Í"	#map-set#:ÊÈ$
-"
-
-Ÿ Ÿ(*Î"	#map-set#:Ê$
-"
-
-⁄ ⁄(-Ï"	#map-set#:ÊD'
-%
-
-‹ Â(Ì"#new-object#Bdict%
-#
-
-› ›(*Ô"	#map-set#:ÌÓ%
-#
-
-ﬁ ﬁ(0Ò"	#map-set#:Ì$
-"
-
-ﬂ ﬂ(+Ú"	#map-set#:Ì^$
-"
-
-‡ ‡(-Û"	#map-set#:ÌD$
-"
-
-· ·(&Ù"	#map-set#:Ìab%
-#
-
-‚ ‚(+ˆ"	#map-set#:Ìdı%
-#
-
-„ „()¯"	#map-set#:Ìg˜$
-"
-
-‰ ‰(*˘"	#map-set#:Ì<b*
-(
-
-Ω Ê(˙"#unknown-value#Blist*
-(
-
-Ω Ê(˚"
-#is-exact#:˙.Bbool!
-
-
-Ω Ê(¸"
-#assume#:˚<
-:
-
-Ω Ê(˝"#set-field# __collection_size:˙1Bint+
-)
-
-Ω Ê(˛"#array-add-last#:˙ +
-)
-
-Ω Ê(ˇ"#array-add-last#:˙—+
-)
-
-Ω Ê(Ä"#array-add-last#:˙ÿ+
-)
-
-Ω Ê(Å"#array-add-last#:˙ﬂ+
-)
-
-Ω Ê(Ç"#array-add-last#:˙Ê+
-)
-
-Ω Ê(É"#array-add-last#:˙Ì%
-#
-
-Ω Ê(Ñ"	#map-set#:«	˙'
-%
-
-Ë ˙(Ö"#new-object#Bdict%
-#
-
-È È(,á"	#map-set#:ÖÜ'
-%
-
-Î Ò(à"#new-object#Bdict%
-#
-
-Ï Ï(3ä"	#map-set#:àâ%
-#
-
-Ì Ì(4ã"	#map-set#:àÜ%
-#
-
-Ó Ó(.ç"	#map-set#:àå&
-$
-
-Ô Ô((ê"	#map-set#:àéè$
-"
-
- (-ë"	#map-set#:àD'
-%
-
-Ú ¯(í"#new-object#Bdict%
-#
-
-Û Û(6î"	#map-set#:íì%
-#
-
-Ù Ù(@ñ"	#map-set#:íï%
-#
-
-ı ı(.ó"	#map-set#:íå&
-$
-
-ˆ ˆ((ò"	#map-set#:íéè$
-"
-
-˜ ˜(-ô"	#map-set#:íD*
-(
-
-Í ˘(ö"#unknown-value#Blist*
-(
-
-Í ˘(õ"
-#is-exact#:ö.Bbool!
-
-
-Í ˘(ú"
-#assume#:õ<
-:
-
-Í ˘(ù"#set-field# __collection_size:ö1Bint+
-)
-
-Í ˘(û"#array-add-last#:öà+
-)
-
-Í ˘(ü"#array-add-last#:öí%
-#
-
-Í ˘(†"	#map-set#:Ö	ö)
-'
-	Y ˚(°"#unknown-value#Blist)
-'
-	Y ˚(¢"
-#is-exact#:°.Bbool 
-
-	Y ˚(£"
-#assume#:¢;
-9
-	Y ˚(§"#set-field# __collection_size:°1Bint)
-'
-	Y ˚(•"#array-add-last#:°)
-'
-	Y ˚(¶"#array-add-last#:°O*
-(
-	Y ˚(ß"#array-add-last#:°ä*
-(
-	Y ˚(®"#array-add-last#:°«*
-(
-	Y ˚(©"#array-add-last#:°Ö+
-)
-
-¸ ¸(¨"#unknown-value#Btuple+
-)
-
-¸ ¸(Æ"
-#is-exact#:¨≠Bbool!
-
-
-¸ ¸(Ø"
-#assume#:Æ<
-:
-
-¸ ¸(∞"#set-field# __collection_size:¨1Bint+
-)
-
-¸ ¸(±"#array-add-last#:¨™+
-)
-
-¸ ¸(≤"#array-add-last#:¨´Q
-O
-	V ˝(	≥"7
-rexus.utils.dialog_utilscreate_standard_form_config:°¨
-	V ˝(	≥*SC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\improved_dialogs.py

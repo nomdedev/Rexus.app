@@ -1,72 +1,0 @@
-
-`rexus.modules.mantenimiento.view_completa.MantenimientoCompletaView.generar_costos_mantenimientoa
-UC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\mantenimiento\view_completa.py˝ ˝($"2*˜
-2
-˛ ˛(&⁄
-◊
-
-ˇ ¢(	
-reporte"__id*∑
-
-__unknown_file (öó
-î
-COSTOS DE MANTENIMIENTO - ENERO 2024
-====================================
-
-COSTOS POR TIPO:
-- Mantenimiento Preventivo: $230,000 (47.9%)
-- Mantenimiento Correctivo: $250,000 (52.1%)
-- Reparaciones: $0 (0%)
-
-COSTOS POR M√ÅQUINA:
-- MAQ-001: $150,000
-- MAQ-002: $250,000
-- MAQ-003: $80,000
-- MAQ-004: $0
-- MAQ-005: $0
-
-COSTOS POR T√âCNICO:
-- Juan P√©rez: $150,000
-- Mar√≠a Garc√≠a: $250,000
-- Carlos L√≥pez: $80,000
-
-AN√ÅLISIS MENSUAL:
-- Enero: $480,000
-- Promedio mensual: $480,000
-- Proyecci√≥n anual: $5,760,000
-
-INDICADORES:
-- Costo por hora de servicio: $60,000
-- Costo por m√°quina: $96,000
-- Eficiencia: 85%
-
-RECOMENDACIONES:
-- Incrementar mantenimiento preventivo
-- Evaluar costos de t√©cnicos externos
-- Optimizar inventario de repuestos
-        í
-è
-
-£ £(
-%1"__id*u
-
-__unknown_file (Y*WE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaView"
-preview_textom
-
-£ £(/
-%2*"
-
-__unknown_file (
-
-%1*'
-
-__unknown_file (
-	
-reporte2setPlainText*
-3*8
-3
-view_completa.py"
-• •(
-implicit returnBGE
-Crexus.modules.mantenimiento.view_completa.MantenimientoCompletaViewH

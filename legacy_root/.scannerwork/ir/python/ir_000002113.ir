@@ -1,45 +1,0 @@
-
-	1.0float
-XO"[OPTIMIZER] Funci√≥n lenta detectada: {func.__name__} ({execution_time:.2f}s)"strargs
-ﬁ ﬁ(kwargs
-ﬁ ﬁ("dict"ë1
-/
-
-ﬂ ﬂ( 
-start_time"
-timetimeBfloat%
-#
-
-‚ ‚("#unaryop *#2*:'
-%
-
-‚ ‚(%"#unaryop **#2**:$
-"
-
-‚ ‚(&result"func:%
-#
-
-Â Â($"
-timetimeBfloatC
-A
-
-Â Â(1execution_time"#dependent-value#*:Bfloat+
-)
-
-Ë Ë(
-"?python-unknown?*:	+
-)
-
-Ë Ë("
-__bool__*:
-BboolH "
-
-Ë Ë( *
-Ë Ë(
-"=3
-1
-
-È È(b"
-builtinsprint*:BNoneType"
-
-Ï Ï(*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\performance_optimizer.py

@@ -1,256 +1,0 @@
-
-2)"(passwd[\'"\s]*[:=][\'"\s]*)([^\s\'"]+)"str
-
-"password"str
-4+"(password[\'"\s]*[:=][\'"\s]*)([^\s\'"]+)"str
-;2"(token[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})"str
-$	"api_key"str
-a"json_password"str
-X"url_params"str
-t"id_document"str
-M"***-***-****"str
-"passwd"str
-9R0"\b(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})\b"str
-
-0int
-7."Compila patrones regex para datos sensibles."str
-A&8"(api[_-]?key[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})"str
-)c "("password"\s*:\s*")([^"]+)(")"str
-"replacement"str
-AB8"\b([a-zA-Z0-9._%+-]+)@([a-zA-Z0-9.-]+\.[a-zA-Z]{2,})\b"str
-5m,"("(?:token|key|secret)"\s*:\s*")([^"]+)(")"str
-h"\1***MASKED***\3"str
-:Z1"([?&](?:password|token|key|secret)[=])([^&\s]+)"str
-v"\b(\d{7,12})\b"str
-H"phone"str
-k"json_token"str
-@"email"str
-"name"str
-	"pattern"str
- 5"\1***SECRET_MASKED***"str
-P"ip_address"str
-&:"\b(?:\d{4}[-\s]?){3}\d{4}\b"str
-#J"(\+?[\d\s\-\(\)]{10,15})"str
-8"credit_card"str
-."secret"str
-<03"(secret[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})"str
-"\1***MASKED***"str
-="****-****-****-****"str
-!"\1***TOKEN_MASKED***"str
-"token"str
-+"\1***KEY_MASKED***"strself3 3(|list"‡$
-"
-7 ;("#new-object#Bdict 
-
-8 8(""	#map-set#:!
-
-9T 9(V	"#unknown-value#+
-)
-9T 9(a
-"#get-field# IGNORECASE:	-
-+
-9 9(b"
-recompile:
-B
-re.Pattern 
-
-9 9(b"	#map-set#: 
-
-: :(0"	#map-set#:$
-"
-< @("#new-object#Bdict 
-
-= =( "	#map-set#:!
-
->R >(T"#unknown-value#+
-)
->R >(_"#get-field# IGNORECASE:-
-+
-> >(`"
-recompile:B
-re.Pattern 
-
-> >(`"	#map-set#: 
-
-? ?(0"	#map-set#:$
-"
-C G("#new-object#Bdict 
-
-D D("	#map-set#:!
-
-E[ E(]"#unknown-value#+
-)
-E[ E(h"#get-field# IGNORECASE:-
-+
-E E(i"
-recompile:B
-re.Pattern 
-
-E E(i "	#map-set#: 
-
-F F(6""	#map-set#:!$
-"
-H L(#"#new-object#Bdict 
-
-I I(!%"	#map-set#:#$!
-
-Ja J(c'"#unknown-value#+
-)
-Ja J(n("#get-field# IGNORECASE:'-
-+
-J J(o)"
-recompile:&(B
-re.Pattern 
-
-J J(o*"	#map-set#:#) 
-
-K K(4,"	#map-set#:#+$
-"
-M Q(-"#new-object#Bdict 
-
-N N( /"	#map-set#:-.!
-
-O\ O(^1"#unknown-value#+
-)
-O\ O(i2"#get-field# IGNORECASE:1-
-+
-O O(j3"
-recompile:02B
-re.Pattern 
-
-O O(j4"	#map-set#:-3 
-
-P P(76"	#map-set#:-5$
-"
-T X(7"#new-object#Bdict 
-
-U U(%9"	#map-set#:78,
-*
-V V(E;"
-recompile::B
-re.Pattern 
-
-V V(E<"	#map-set#:7; 
-
-W W(4>"	#map-set#:7=$
-"
-[ _(?"#new-object#Bdict 
-
-\ \(A"	#map-set#:?@,
-*
-] ](`C"
-recompile:BB
-re.Pattern 
-
-] ](`D"	#map-set#:?C!
-
-^ ^(WE"#unknown-value# 
-
-^ ^(WF"	#map-set#:?E$
-"
-b f(G"#new-object#Bdict 
-
-c c(I"	#map-set#:GH,
-*
-d d(BK"
-recompile:JB
-re.Pattern 
-
-d d(BL"	#map-set#:GK 
-
-e e(-N"	#map-set#:GM$
-"
-i m(O"#new-object#Bdict 
-
-j j($Q"	#map-set#:OP,
-*
-k k(XS"
-recompile:RB
-re.Pattern 
-
-k k(XT"	#map-set#:OS!
-
-l l(MU"#unknown-value# 
-
-l l(MV"	#map-set#:OU$
-"
-p t(W"#new-object#Bdict 
-
-q q($Y"	#map-set#:WX!
-
-rZ r(\["#unknown-value#+
-)
-rZ r(g\"#get-field# IGNORECASE:[-
-+
-r r(h]"
-recompile:Z\B
-re.Pattern 
-
-r r(h^"	#map-set#:W] 
-
-s s(0_"	#map-set#:W$
-"
-w {(`"#new-object#Bdict 
-
-x x('b"	#map-set#:`a!
-
-yI y(Kd"#unknown-value#+
-)
-yI y(Ve"#get-field# IGNORECASE:d-
-+
-y y(Wf"
-recompile:ceB
-re.Pattern 
-
-y y(Wg"	#map-set#:`f 
-
-z z(2i"	#map-set#:`h%
-#
-	| Ä(j"#new-object#Bdict 
-
-} }($l"	#map-set#:jk!
-
-~U ~(Wn"#unknown-value#+
-)
-~U ~(bo"#get-field# IGNORECASE:n-
-+
-~ ~(cp"
-recompile:moB
-re.Pattern 
-
-~ ~(cq"	#map-set#:jp 
-
- (2r"	#map-set#:jh&
-$
-
-É á(s"#new-object#Bdict"
- 
-
-Ñ Ñ(%u"	#map-set#:st.
-,
-
-Ö Ö(8w"
-recompile:vB
-re.Pattern"
- 
-
-Ö Ö(8x"	#map-set#:sw#
-!
-
-Ü Ü(Oy"#unknown-value#"
- 
-
-Ü Ü(Oz"	#map-set#:sy(
-&
-	5 à(	{"#unknown-value#Blist'
-%
-	5 à(	}"
-#is-exact#:{|Bbool
-
-	5 à(	~"
-#assume#:}:
-8
-	5 à(	Ä"#set-field# __collection_size:{Bint-
-+
-	5 à(	Å"?python-unknown?*Blist
-	5 à(	Å*EC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\secure_logger.py

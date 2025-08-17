@@ -16,6 +16,9 @@ from typing import Any, Dict
 # Imports de seguridad unificados
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
+
 # SQLQueryManager unificado
 try:
     from rexus.core.sql_query_manager import SQLQueryManager
@@ -61,6 +64,7 @@ class AutenticacionManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/usuarios/autenticacion"
+        self.logger = get_logger("usuarios.autenticacion_manager")
 
         # Configuración de seguridad
         self.max_intentos_fallidos = 5
@@ -156,7 +160,7 @@ username: str,
             }
 
         except Exception as e:
-            print(f"Error en autenticación: {str(e)}")
+            self.logger.error(f"Error en autenticación: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
 
     def verificar_cuenta_bloqueada(self, username: str) -> bool:
@@ -177,7 +181,7 @@ username: str,
             return (result[0] if result else 0) > 0
 
         except Exception as e:
-            print(f"Error verificando bloqueo: {str(e)}")
+            self.logger.error(f"Error verificando bloqueo: {str(e)}", exc_info=True)
             return True  # Por seguridad, asumir bloqueado
 
     def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
@@ -207,7 +211,7 @@ username: str,
                 self._incrementar_intentos_fallidos(username_safe)
 
         except Exception as e:
-            print(f"Error registrando intento: {str(e)}")
+            self.logger.error(f"Error registrando intento: {str(e)}", exc_info=True)
 
     def reset_intentos_login(self, username: str) -> bool:
         """Resetea los intentos fallidos de un usuario."""
@@ -225,7 +229,7 @@ username: str,
             return cursor.rowcount > 0
 
         except Exception as e:
-            print(f"Error reseteando intentos: {str(e)}")
+            self.logger.error(f"Error reseteando intentos: {str(e)}", exc_info=True)
             return False
 
     def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
@@ -337,7 +341,7 @@ username: str,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error cambiando contraseña: {str(e)}")
+            self.logger.error(f"Error cambiando contraseña: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
 
     def _incrementar_intentos_fallidos(self, username: str) -> None:
@@ -372,7 +376,7 @@ username: str,
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"Error incrementando intentos: {str(e)}")
+            self.logger.error(f"Error incrementando intentos: {str(e)}", exc_info=True)
 
     def _bloquear_usuario(self, username: str) -> None:
         """Bloquea temporalmente un usuario."""
@@ -391,7 +395,7 @@ username: str,
             )
 
         except Exception as e:
-            print(f"Error bloqueando usuario: {str(e)}")
+            self.logger.error(f"Error bloqueando usuario: {str(e)}", exc_info=True)
 
     def _hash_password(self, password: str, salt: str) -> str:
         """Genera hash de contraseña con salt."""

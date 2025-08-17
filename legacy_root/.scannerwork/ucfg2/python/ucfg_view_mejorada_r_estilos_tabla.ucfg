@@ -1,69 +1,0 @@
-
-Krexus.modules.inventario.view_mejorada.InventarioView.aplicar_estilos_tabla^
-RC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\view_mejorada.pyÂ Â("2*õ
-2
-Ã Ã(:Ü	
-Ù	
-
-Ä ä(
-estilo_tabla"__id*´	
-
-__unknown_file (—	”	
-‘	
-        QTableWidget {
-            gridline-color: #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            border: 2px solid #cccccc !important;
-            border-radius: 4px !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item {
-            padding: 8px !important;
-            border: 1px solid #dddddd !important;
-            background-color: #ffffff !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        QTableWidget::item:selected {
-            background-color: #0078d4 !important;
-            color: #ffffff !important;
-        }
-        QTableWidget::item:hover {
-            background-color: #f0f0f0 !important;
-            color: #000000 !important;
-        }
-        QHeaderView::section {
-            background-color: #f8f9fa !important;
-            padding: 8px !important;
-            border: 1px solid #cccccc !important;
-            font-weight: bold !important;
-            color: #000000 !important;
-            font-size: 13px !important;
-        }
-        ˆ
-…
-
-å å(
-%1"__id*k
-
-__unknown_file (O*M7
-5rexus.modules.inventario.view_mejorada.InventarioView"
-tabla_inventarious
-
-å å(9
-%2*"
-
-__unknown_file (
-
-%1*,
-
-__unknown_file (
-
-estilo_tabla2setStyleSheet*
-3*8
-3
-view_mejorada.py"
-ç ç(
-implicit returnB97
-5rexus.modules.inventario.view_mejorada.InventarioViewH

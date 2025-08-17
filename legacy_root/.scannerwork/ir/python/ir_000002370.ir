@@ -1,22 +1,0 @@
-
-∂¨"
-            QDialog {{
-                background-color: {FormStyleManager.COLORS["background"]};
-                border-radius: 12px;
-                color: {FormStyleManager.COLORS["text"]};
-                font-family: 'Segoe UI', 'Arial', sans-serif;
-                font-size: 14px;
-            }}
-            
-            QDialog::title {{
-                background-color: {FormStyleManager.COLORS["primary"]};
-                color: white;
-                padding: 15px;
-                border-top-left-radius: 12px;
-                border-top-right-radius: 12px;
-                font-weight: bold;
-                font-size: 16px;
-            }}
-        "str
-&"Estilo base para di√°logos."str"
-- ?(*CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\form_styles.py

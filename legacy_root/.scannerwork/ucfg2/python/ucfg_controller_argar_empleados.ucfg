@@ -1,146 +1,0 @@
-
-crexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController.cargar_empleadosn
-dC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\controller.pyD D("2*³
-2E E(6™
-–
-F F(
-%13"__id*}
-
-__unknown_file (a*_T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-model*
-10
-11*3
-3
-controller.py"
-V V(
-implicit return*¬
-4T T(@[
-Y
-T T(?
-%1"__concat**
-T! T(;
-Error cargando empleados: *
-T< T(=
-
-eº·
-T T(@
-%2*r
-
-__unknown_file (VT
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController*"
-
-__unknown_file (
-
-%12mostrar_error*
-3*º
-7Q Q(I—
-”
-Q Q(
-%3"__id*|
-
-__unknown_file (`*^T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-viewˆ…
-Q Q(I
-%4*"
-
-__unknown_file (
-
-%3*,
-
-__unknown_file (
-
-estadisticas2!actualizar_estadisticas_empleados*
-3
-4*í
-8O O(F˜
-•
-O O(%
-%5"__id*}
-
-__unknown_file (a*_T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-modelVT
-O O(F
-%6*"
-
-__unknown_file (
-
-%52obtener_estadisticas_empleadosF
-D
-O O(F
-estadisticas"__id*"
-
-__unknown_file (
-
-%6—
-”
-P P(
-%7"__id*|
-
-__unknown_file (`*^T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-view*	
-3
-4
-7*«
-9L L(?—
-”
-L L(
-%8"__id*|
-
-__unknown_file (`*^T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-view}{
-L L(?
-%9*"
-
-__unknown_file (
-
-%8*)
-
-__unknown_file (
-
-	empleados2actualizar_tabla_empleados*
-8*
-10J J(C™
-–
-J J("
-%10"__id*}
-
-__unknown_file (a*_T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-modelzx
-J J(C
-%11*#
-
-__unknown_file (
-
-%10*'
-
-__unknown_file (
-	
-filtros2obtener_todos_empleadosD
-B
-J J(C
-	empleados"__id*#
-
-__unknown_file (
-
-%11˜
-•
-K K(
-%12"__id*|
-
-__unknown_file (`*^T
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosController"
-view*
-8
-9*$
-11G G("
-G G(
-void:
-D D(+	
-filtrosBVT
-Rrexus.modules.administracion.recursos_humanos.controller.RecursosHumanosControllerH

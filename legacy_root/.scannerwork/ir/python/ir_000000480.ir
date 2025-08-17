@@ -1,138 +1,0 @@
-
-O	"card_bg"str
-I"button_hover"str
-
-"background"str
-"	"success"str
-."border"str
-5,"Convertir a diccionario para f√°cil acceso"str
-:"sidebar_bg"str
-"on_primary"str
-C"header_bg"str
-4"shadow"str
-"on_surface"str
-F
-"input_bg"str
-"on_secondary"str
-"on_surface_variant"str
-@"sidebar_hover"str
-%	"warning"str
-"surface_variant"str
-"on_background"str
-+"info"str
-1"border_focus"str
-("error"str
-	"primary"str
-="sidebar_active"str
-"secondary"str
-	"surface"str
-7	"overlay"str
-L"button_active"strself5 5("≥$
-"
-7 R(	"#new-object#Bdict(
-&
-8 8(#"#get-field# primary: 
-
-8 8(#"	#map-set#:*
-(
-9 9('"#get-field# secondary: 
-
-9 9('	"	#map-set#:+
-)
-: :()"#get-field# background: 
-
-: :()"	#map-set#:
-(
-&
-; ;(#"#get-field# surface: 
-
-; ;(#"	#map-set#:0
-.
-< <(3"#get-field# surface_variant: 
-
-< <(3"	#map-set#:+
-)
-= =()"#get-field# on_primary: 
-
-= =()"	#map-set#:-
-+
-> >(-"#get-field# on_secondary: 
-
-> >(-"	#map-set#:.
-,
-? ?(/"#get-field# on_background: 
-
-? ?(/"	#map-set#:+
-)
-@ @()"#get-field# on_surface: 
-
-@ @()"	#map-set#:3
-1
-A" A(9 " #get-field# on_surface_variant: 
-
-A A(9!"	#map-set#: (
-&
-B B(##"#get-field# success: 
-
-B B(#$"	#map-set#:"#(
-&
-C C(#&"#get-field# warning: 
-
-C C(#'"	#map-set#:%&&
-$
-D D()"#get-field# error: 
-
-D D(*"	#map-set#:()%
-#
-E E(,"#get-field# info: 
-
-E E(-"	#map-set#:+,'
-%
-F F(!/"#get-field# border: 
-
-F F(!0"	#map-set#:./-
-+
-G G(-2"#get-field# border_focus: 
-
-G G(-3"	#map-set#:12'
-%
-H H(!5"#get-field# shadow: 
-
-H H(!6"	#map-set#:45(
-&
-I I(#8"#get-field# overlay: 
-
-I I(#9"	#map-set#:78+
-)
-J J();"#get-field# sidebar_bg: 
-
-J J()<"	#map-set#::;/
--
-K K(1>"#get-field# sidebar_active: 
-
-K K(1?"	#map-set#:=>.
-,
-L L(/A"#get-field# sidebar_hover: 
-
-L L(/B"	#map-set#:@A*
-(
-M M('D"#get-field# header_bg: 
-
-M M('E"	#map-set#:CD)
-'
-N N(%G"#get-field# input_bg: 
-
-N N(%H"	#map-set#:FG-
-+
-O O(-J"#get-field# button_hover: 
-
-O O(-K"	#map-set#:IJ.
-,
-P P(/M"#get-field# button_active: 
-
-P P(/N"	#map-set#:LM(
-&
-Q Q(#P"#get-field# card_bg: 
-
-Q Q(#Q"	#map-set#:OP
-7 R(	*=C:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\themes.py

@@ -1,206 +1,0 @@
-
-&"Vidrio Templado 6mm"str
-D15.75float
-) "Productos por categorÃ­a demo."str
-I"Cerradura Multipunto"str
-K10int
-O40int
-"cantidad_total"str
-	"veces_comprado"str
-
-8int
-320int
-B25int
-$	"Vidrios"str
- "Perfil Aluminio 20x20"str
-395.50float
-
-15int
-750int
-(12int
-F500int
-,240int
-"precio_promedio"str
->
-"Herrajes"str
- "Perfil Aluminio 30x30"str
-
-0int
-/"Vidrio Laminado 8mm"str
-5120int
-@"Bisagra Acero Inox"str
-*85.00float
-12.50float
-M125.00float
-"descripcion"str
-18.75float
-
-16int
-
-"Perfiles"strself
-í* í(.list"ˆ&
-$
-
-ï ü(	"#new-object#Bdict&
-$
-
-ñ ñ("#new-object#Bdict"
- 
-
-ñ ñ(7"	#map-set#:"
- 
-
-ñ9 ñ(M"	#map-set#:	
-"
- 
-
-ñO ñ(g"	#map-set#:"
- 
-
-ñi ñ(~"	#map-set#:&
-$
-
-ò ò(~"#new-object#Bdict"
- 
-
-ò ò(7"	#map-set#:"
- 
-
-ò9 ò(L"	#map-set#:	"
- 
-
-òN ò(f"	#map-set#:"
- 
-
-òh ò(}"	#map-set#:)
-'
-
-ð ó("#unknown-value#Blist(
-&
-
-ð ó("
-#is-exact#:Bbool
-
-
-ð ó("
-#assume#::
-8
-
-ð ó( "#set-field# __collection_size:Bint(
-&
-
-ð ó(!"#array-add-last#:(
-&
-
-ð ó(""#array-add-last#:"
- 
-
-ð ó(#"	#map-set#:&
-$
-
-õ õ(}%"#new-object#Bdict"
- 
-
-õ õ(5'"	#map-set#:%&"
- 
-
-õ7 õ(K)"	#map-set#:%	("
- 
-
-õM õ(e+"	#map-set#:%*"
- 
-
-õg õ(|-"	#map-set#:%,&
-$
-
-ö ö(|."#new-object#Bdict"
- 
-
-ö ö(50"	#map-set#:./"
- 
-
-ö7 ö(J2"	#map-set#:.	1"
- 
-
-öL ö(d4"	#map-set#:.3"
- 
-
-öf ö({6"	#map-set#:.5)
-'
-
-ô ÷(7"#unknown-value#Blist(
-&
-
-ô ÷(8"
-#is-exact#:7Bbool
-
-
-ô ÷(9"
-#assume#:8:
-8
-
-ô ÷(:"#set-field# __collection_size:7Bint(
-&
-
-ô ÷(;"#array-add-last#:7%(
-&
-
-ô ÷(<"#array-add-last#:7."
- 
-
-ô ÷(="	#map-set#:$7&
-$
-
-ù ù(|?"#new-object#Bdict"
- 
-
-ù ù(4A"	#map-set#:?@"
- 
-
-ù6 ù(JC"	#map-set#:?	B"
- 
-
-ùL ù(dE"	#map-set#:?D"
- 
-
-ùf ù({G"	#map-set#:?F&
-$
-
-ú ú(~H"#new-object#Bdict"
- 
-
-ú ú(6J"	#map-set#:HI"
- 
-
-ú8 ú(LL"	#map-set#:H	K"
- 
-
-úN ú(gN"	#map-set#:HM"
- 
-
-úi ú(}P"	#map-set#:HO)
-'
-
-ø û(Q"#unknown-value#Blist(
-&
-
-ø û(R"
-#is-exact#:QBbool
-
-
-ø û(S"
-#assume#:R:
-8
-
-ø û(T"#set-field# __collection_size:QBint(
-&
-
-ø û(U"#array-add-last#:Q?(
-&
-
-ø û(V"#array-add-last#:QH"
- 
-
-ø û(W"	#map-set#:>Q
-
-ï ü(	*OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\detalle_model.py

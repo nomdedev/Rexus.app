@@ -1,2 +1,285 @@
 2025-08-17 09:51:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-17 13:49:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:39:29 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:39:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:39:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:38 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:47 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:40:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:42:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:42:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:44:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:45:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:45:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:47:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:48:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:49:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:49:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:49:37 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:50:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:53:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:54:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:54:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:54:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:54:35 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 14:54:47 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:55:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:55:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:55:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:56:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:58:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:58:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 14:58:02 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 14:58:02 | INFO     | rexus.startup   | ============================================================
+2025-08-17 14:58:02 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 14:58:02 | INFO     | rexus.startup   | ============================================================
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 14:58:02 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 14:58:06 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | ============================================================
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | Estado: ERROR
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | Errores Críticos: 1
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | Advertencias: 0
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | Puede Iniciar Aplicación: NO
+2025-08-17 14:58:06 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 14:58:06 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: invalid syntax. Perhaps you forgot a comma? (security.py, line 142)
+2025-08-17 14:58:06 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 14:58:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:58:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:59:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 14:59:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:00:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:00:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:00:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:01:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 15:01:20 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 15:01:20 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:01:20 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 15:01:20 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 15:01:20 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 15:01:21 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | ============================================================
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | Estado: ERROR
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | Errores Críticos: 1
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | Advertencias: 0
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | Puede Iniciar Aplicación: NO
+2025-08-17 15:01:21 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 15:01:21 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: Directorio SQL no encontrado: D:\martin\Rexus.app\legacy_root\scripts\sql
+2025-08-17 15:01:21 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 15:05:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 15:05:57 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 15:05:57 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:05:57 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 15:05:57 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 15:05:57 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 15:05:58 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | ============================================================
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | Estado: ERROR
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | Errores Críticos: 1
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | Advertencias: 1
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | Puede Iniciar Aplicación: NO
+2025-08-17 15:05:58 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-17 15:05:58 | ERROR    | rexus.utils.dependency_validator |   ❌ Error durante validación: Directorio SQL no encontrado: D:\martin\Rexus.app\legacy_root\scripts\sql
+2025-08-17 15:05:58 | WARNING  | rexus.utils.dependency_validator | 
+ADVERTENCIAS:
+2025-08-17 15:05:58 | WARNING  | rexus.utils.dependency_validator |   ⚠️  Módulo de negocio no disponible: rexus.modules.inventario
+2025-08-17 15:05:58 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-17 15:07:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 15:07:06 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 15:07:06 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:07:06 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 15:07:06 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 15:07:06 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 15:07:07 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-17 15:07:07 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-17 15:07:07 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-17 15:07:07 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-17 15:07:07 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-17 15:07:07 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-17 15:07:12 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:12 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:12 | INFO     | rexus.core.database | Base de datos: users
+2025-08-17 15:07:12 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:12 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:12 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-17 15:07:12 | DEBUG    | rexus.main      | Módulos permitidos: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-17 15:07:14 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-17 15:07:19 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:19 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:19 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:19 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:19 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:20 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']
+2025-08-17 15:07:20 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:07:20 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:07:20 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:07:20 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:21 | ERROR    | rexus.main      | Error crítico creando inventario: Archivo SQL no encontrado: verificar_tabla_existe.sql en módulo inventario. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\inventario\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_existe.sql']
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:21 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:21 | ERROR    | rexus.main      | Error crítico creando herrajes: Error creando controlador: BaseController.__init__() missing 1 required positional argument: 'module_name'
+2025-08-17 15:07:22 | ERROR    | rexus.modules.vidrios.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:07:22 | ERROR    | rexus.main      | Error crítico creando vidrios: Error creando vista: 'VidriosModernView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:07:23 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:23 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:23 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:23 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:23 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:24 | WARNING  | rexus.core.module_manager | [Logistica] Método cargar_logistica no encontrado en controlador
+2025-08-17 15:07:24 | INFO     | rexus.logistica.controller | Iniciando carga de datos iniciales de logística
+2025-08-17 15:07:24 | DEBUG    | rexus.logistica.controller | Cargando entregas desde el modelo
+2025-08-17 15:07:24 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: logistica.obtener_entregas_base desde D:\martin\Rexus.app\legacy_root\scripts\sql\logistica\obtener_entregas_base.sql
+2025-08-17 15:07:24 | INFO     | rexus.logistica.controller | Cargadas 0 entregas
+2025-08-17 15:07:24 | DEBUG    | rexus.logistica.controller | Método obtener_services no disponible en el modelo
+2025-08-17 15:07:25 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:25 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:25 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:25 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:25 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\create_pedidos_table.sql
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\obtener_pedidos_base.sql
+2025-08-17 15:07:25 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.count_pedidos_activos desde D:\martin\Rexus.app\legacy_root\scripts\sql\pedidos\count_pedidos_activos.sql
+2025-08-17 15:07:26 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:26 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:26 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:26 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:26 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:26 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.verificar_tabla desde D:\martin\Rexus.app\legacy_root\scripts\sql\compras\verificar_tabla.sql
+2025-08-17 15:07:26 | INFO     | rexus.modules.compras.model | [COMPRAS] Tabla 'compras' verificada correctamente.
+2025-08-17 15:07:26 | INFO     | rexus.modules.compras.model | [COMPRAS] Tabla 'detalle_compras' verificada correctamente.
+2025-08-17 15:07:26 | ERROR    | rexus.main      | Error crítico creando compras: Error creando vista: 'NoneType' object has no attribute 'upper'
+2025-08-17 15:07:27 | ERROR    | rexus.main      | Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
+2025-08-17 15:07:27 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:27 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:27 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:27 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:27 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:27 | ERROR    | rexus.main      | Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:07:28 | WARNING  | rexus.core.module_manager | [Auditoria] Método cargar_auditoria no encontrado en controlador
+2025-08-17 15:07:29 | INFO     | rexus.usuarios.model | OK [USUARIOS] Utilidades de seguridad cargadas
+2025-08-17 15:07:29 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-17 15:07:29 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-17 15:07:29 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-17 15:07:29 | ERROR    | rexus.usuarios.model | Error obteniendo usuarios optimizado: 'NoneType' object has no attribute 'cursor'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\model.py", line 1147, in obtener_todos_usuarios
+    cursor = self.db_connection.connection.cursor()
+AttributeError: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:07:29 | INFO     | rexus.usuarios.controller | Cargados 2 usuarios
+2025-08-17 15:07:29 | INFO     | rexus.usuarios.controller | Cargados 2 usuarios
+2025-08-17 15:07:32 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-17 15:07:32 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-17 15:07:32 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-17 15:07:32 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-17 15:07:32 | INFO     | rexus.core.database | Usuario: sa
+2025-08-17 15:07:32 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']
+2025-08-17 15:07:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 15:07:37 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 15:07:37 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:07:37 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 15:07:37 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 15:07:37 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 15:07:38 | INFO     | rexus.startup   | Validación de dependencias exitosa - 1 advertencias
+2025-08-17 15:07:38 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-17 15:07:38 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-17 15:07:38 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-17 15:07:38 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-17 15:07:38 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-17 15:07:38 | WARNING  | rexus.main      | Error inicializando sistema de backup: No module named 'schedule'
+2025-08-17 15:13:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:14:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:15:29 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:15:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:15:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:16:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:16:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:16:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:17:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:17:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:17:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:19:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:19:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:19:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:19:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:19:30 | WARNING  | rexus.usuarios.model | UsuariosModel inicializado sin conexión a BD - usando modo limitado
+2025-08-17 15:19:30 | INFO     | rexus.usuarios.model | OK [USUARIOS] Utilidades de seguridad cargadas
+2025-08-17 15:21:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 15:21:30 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 15:21:30 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:21:30 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-17 15:21:30 | INFO     | rexus.startup   | ============================================================
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 15:21:30 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 15:21:32 | INFO     | rexus.startup   | Validación de dependencias exitosa - 1 advertencias
+2025-08-17 15:21:32 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-17 15:21:32 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-17 15:21:32 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-17 15:21:32 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-17 15:21:32 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-17 15:21:32 | WARNING  | rexus.main      | Error inicializando sistema de backup: No module named 'schedule'
+2025-08-17 15:23:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:24:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:27:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:27:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:27:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:28:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:35:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:36:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 15:46:15 | INFO     | rexus           | Sistema de logging Rexus inicializado

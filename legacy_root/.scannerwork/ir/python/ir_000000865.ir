@@ -1,77 +1,0 @@
-
-2)"Nombre de tabla inv√°lido: {table_name}"str
-"pedidos_vidrios"str
-+""Tabla no permitida: {table_name}"str
-§ö"
-        Valida el nombre de tabla para prevenir SQL injection.
-
-        Args:
-            table_name: Nombre de tabla a validar
-
-        Returns:
-            Nombre de tabla validado
-
-        Raises:
-            ValueError: Si el nombre de tabla no es v√°lido
-        "str
-"^[a-zA-Z_]\w*$"str
-	"vidrios"str
-"vidrios_obra"strself
-» »(!
-table_name
-»# »(2"ü!
-
-
-ÿ ÿ(6"
-rematch:+
-)
-
-ÿ ÿ(6"
-__bool__*:BboolH+
-)
-
-ÿ ÿ(6"#unaryop !#2!:Bbool "
-
-ÿ ÿ(6 *
-ÿ ÿ(
-"F0
-.
-
-Ÿ Ÿ(G	"
-ValueError*:B
-ValueError2
-
-Ÿ Ÿ(G	"è5
-3
-
-‹ ‹(G
-allowed_tables"#new-object#Bset(
-&
-
-‹ ‹(G"#array-add-last#:
-(
-&
-
-‹ ‹(G"#array-add-last#:
-(
-&
-
-‹ ‹(G"#array-add-last#:
-4
-2
-
-› ›(+"#binop not in#2not in:
-Bbool "
-
-› ›(+ *
-› ›(
-"F0
-.
-
-ﬁ ﬁ(A"
-ValueError*:B
-ValueError2
-
-ﬁ ﬁ(A"
-
-‡ ‡(*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\model.py

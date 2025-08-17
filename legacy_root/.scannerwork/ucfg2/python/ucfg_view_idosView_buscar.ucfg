@@ -1,86 +1,0 @@
-
--rexus.modules.pedidos.view.PedidosView.buscarR
-FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\view.pyÇ Ç("2*‹
-2
-È È(@r
-p
-
-É É(
-%7"__id*V
-
-__unknown_file (:*8(
-&rexus.modules.pedidos.view.PedidosView"
-
-controller*
-3
-4*/
-3	
-view.py"
-Í Í(
-implicit return* 
-4
-Ê Ê(>
-
-Ê Ê(>
-%1"dictv
-t
-
-Ê# Ê(6
-%2"__id*Z
-
-__unknown_file (>*<(
-&rexus.modules.pedidos.view.PedidosView"
-input_busqueda><
-
-Ê# Ê(=
-%3*"
-
-__unknown_file (
-
-%22text‘
-Ž
-
-Ê Ê(=
-%4"__mapSet*"
-
-__unknown_file (
-
-%1*(
-
-__unknown_file (
-
-busqueda*"
-
-__unknown_file (
-
-%3C
-A
-
-Ê Ê(>	
-filtros"__id*"
-
-__unknown_file (
-
-%1r
-p
-
-Ë Ë(
-%5"__id*V
-
-__unknown_file (:*8(
-&rexus.modules.pedidos.view.PedidosView"
-
-controllerig
-
-Ë Ë(+
-%6*"
-
-__unknown_file (
-
-%5*'
-
-__unknown_file (
-	
-filtros2buscar*
-3B*(
-&rexus.modules.pedidos.view.PedidosViewH

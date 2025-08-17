@@ -1,91 +1,0 @@
-
-Qrexus.modules.compras.controller.ComprasController.obtener_estadisticas_proveedorX
-LC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\controller.pyå å(&"9*5
-3
-controller.py"
-ð ð(
-implicit return*A
-4
-í í(
-
-í í(
-%1"dict"
-
-í í(
-
-%1*œ
-5
-ì ì(Eg
-e
-
-ì ì(D
-%2"__concat*2
-
-ì! ì(@$"
- Error obteniendo estadÃ­sticas: *
-
-ìA ì(B
-
-eœ™
-
-ì ì(E
-%3*R
-
-__unknown_file (64
-2rexus.modules.compras.controller.ComprasController*"
-
-__unknown_file (
-
-%22mostrar_error*
-4*þ
-8
-é é([†
-ƒ
-
-é é(.
-%4"__id*i
-
-__unknown_file (M*K4
-2rexus.modules.compras.controller.ComprasController"
-proveedores_model‡„
-
-é é([
-%5*"
-
-__unknown_file (
-
-%4*,
-
-__unknown_file (
-
-proveedor_id2obtener_estadisticas_proveedorA
-?
-
-é é([
-stats"__id*"
-
-__unknown_file (
-
-%5"
-
-ê ê(	
-
-stats*¦
-9
-è è(%†
-ƒ
-
-è è(%
-%6"__id*i
-
-__unknown_file (M*K4
-2rexus.modules.compras.controller.ComprasController"
-proveedores_model*
-3
-4
-5
-8:
-
-å- å(9
-proveedor_idB64
-2rexus.modules.compras.controller.ComprasControllerH

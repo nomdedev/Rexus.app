@@ -24,6 +24,10 @@ from rexus.utils.sql_query_manager import SQLQueryManager
 from rexus.core.auth_decorators import auth_required
 from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("logistica.model")
+
 class LogisticaModel:
     """
     Modelo para gestionar logística y distribución.
@@ -163,8 +167,18 @@ proveedor,
                     params.extend([busqueda, busqueda])
 
             # Construir query final con filtros seguros
-            filter_clause = " ".join(conditions) if conditions else ""
-            query = f"{base_query} {filter_clause} ORDER BY t.tipo, t.proveedor"
+            if conditions:
+                # Verificar si base_query ya tiene WHERE
+                if "WHERE" in base_query.upper():
+                    filter_clause = " " + " ".join(conditions)
+                else:
+                    # Reemplazar el primer AND por WHERE
+                    first_condition = conditions[0].replace("AND ", "WHERE ", 1)
+                    remaining_conditions = conditions[1:] if len(conditions) > 1 else []
+                    filter_clause = " " + first_condition + " " + " ".join(remaining_conditions)
+            else:
+                filter_clause = ""
+            query = f"{base_query}{filter_clause} ORDER BY t.tipo, t.proveedor"
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -329,8 +343,18 @@ proveedor,
                     params.append(filtros["transporte_id"])
 
             # Construir query final con filtros seguros
-            filter_clause = " ".join(conditions) if conditions else ""
-            query = f"{base_query} {filter_clause} ORDER BY e.fecha_entrega DESC"
+            if conditions:
+                # Verificar si base_query ya tiene WHERE
+                if "WHERE" in base_query.upper():
+                    filter_clause = " " + " ".join(conditions)
+                else:
+                    # Reemplazar el primer AND por WHERE
+                    first_condition = conditions[0].replace("AND ", "WHERE ", 1)
+                    remaining_conditions = conditions[1:] if len(conditions) > 1 else []
+                    filter_clause = " " + first_condition + " " + " ".join(remaining_conditions)
+            else:
+                filter_clause = ""
+            query = f"{base_query}{filter_clause} ORDER BY e.fecha_entrega DESC"
 
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]

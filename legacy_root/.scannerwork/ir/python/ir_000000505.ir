@@ -1,186 +1,0 @@
-
-="H003"str
-"precio_unitario"str
-218.75float
-"categoria"str
-G145.00float
-*"Manija Cromada"str
-K10int
-#truebool
-"id"str
-""activo"str
-?"Cerradura Multipunto"str
-
-"nombre"str
-"proveedor"str
-
-"Bisagras"str
-150int
-"H001"str
-C"Cerraduras"str
-"descripcion"str
-2)"Datos de demostraci√≥n para desarrollo."str
-50int
-"Bisagra de Puerta"str
-25.50float
-
-S0int
-0"Cromados del Norte"str
-"MetalTech SA"str
-I25int
-
-;3int
-5,"Bisagra est√°ndar para puertas de aluminio"str
-',"Manija cromada para ventanas"str
-"stock_minimo"str
-1A("Sistema de cerradura de alta seguridad"str
-"stock_actual"str
-.	"Manijas"str
-
-1int
-
-&2int
-630int
-("H002"str
-"codigo"str
-480int
- "unidad"str
-"unidad_medida"str
-E"Seguridad Total"strself
-â â(Plist"ﬁ&
-$
-
-å ò("#new-object#Bdict"
- 
-
-ç ç("	#map-set#:"
- 
-
-é é( 	"	#map-set#:"
- 
-
-è è(-"	#map-set#:
-"
- 
-
-ê ê(J"	#map-set#:"
- 
-
-ë ë('"	#map-set#:"
- 
-
-í í(+"	#map-set#:"
- 
-
-ì ì(("	#map-set#:"
- 
-
-î î(#"	#map-set#:"
- 
-
-ï ï(""	#map-set#:"
- 
-
-ñ ñ()!"	#map-set#: "
- 
-
-ó ó($"	#map-set#:"#&
-$
-
-ô •(%"#new-object#Bdict"
- 
-
-ö ö('"	#map-set#:%&"
- 
-
-õ õ( )"	#map-set#:%("
- 
-
-ú ú(*+"	#map-set#:%
-*"
- 
-
-ù ù(=-"	#map-set#:%,"
- 
-
-û û(&/"	#map-set#:%."
- 
-
-ü ü(11"	#map-set#:%0"
- 
-
-† †((3"	#map-set#:%2"
- 
-
-° °("5"	#map-set#:%4"
- 
-
-¢ ¢("7"	#map-set#:%6"
- 
-
-£ £()8"	#map-set#:% "
- 
-
-§ §(9"	#map-set#:%"#&
-$
-
-¶ ≤(:"#new-object#Bdict"
- 
-
-ß ß(<"	#map-set#::;"
- 
-
-® ®( >"	#map-set#::="
- 
-
-© ©(0@"	#map-set#::
-?"
- 
-
-™ ™(GB"	#map-set#::A"
- 
-
-´ ´()D"	#map-set#::C"
- 
-
-¨ ¨(.F"	#map-set#::E"
- 
-
-≠ ≠()H"	#map-set#::G"
- 
-
-Æ Æ("J"	#map-set#::I"
- 
-
-Ø Ø("L"	#map-set#::K"
- 
-
-∞ ∞()M"	#map-set#:: "
- 
-
-± ±(N"	#map-set#::"#)
-'
-
-ã ≥(	O"#unknown-value#Blist(
-&
-
-ã ≥(	Q"
-#is-exact#:OPBbool
-
-
-ã ≥(	R"
-#assume#:Q:
-8
-
-ã ≥(	T"#set-field# __collection_size:OSBint(
-&
-
-ã ≥(	U"#array-add-last#:O(
-&
-
-ã ≥(	V"#array-add-last#:O%(
-&
-
-ã ≥(	W"#array-add-last#:O:
-
-ã ≥(	O*HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\herrajes\model.py

@@ -1,60 +1,0 @@
-
-7rexus.core.sql_manager.SQLManager.validate_query_paramsN
-BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\sql_manager.pyÇ Ç("4"6*'
-4
-ê ê("
-
-ê ê(
-
-True*≠
-6
-é é(*c
-a
-
-é é(
-%1"__concat*
-
-é é(
-{{*
-
-é é(	
-
-param*
-
-é é(
-}}mk
-
-é é(*
-%2*%
-
-__unknown_file (	
-
-query*"
-
-__unknown_file (
-
-%12__contains__=
-;
-
-é é(*
-%3"not*"
-
-__unknown_file (
-
-%2*	
-4
-6
-7*(
-7
-è è("
-
-è è(	
-
-False:
-
-Ç$ Ç(.
-query:
-
-Ç0 Ç(E
-required_paramsB%#
-!rexus.core.sql_manager.SQLManagerH

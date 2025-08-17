@@ -1,0 +1,4 @@
+2025-08-17 15:07:26,279 - rexus.main - ERROR - Error crítico creando compras: Error creando vista: 'NoneType' object has no attribute 'upper'
+2025-08-17 15:07:27,041 - rexus.main - ERROR - Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
+2025-08-17 15:07:27,975 - rexus.main - ERROR - Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:07:32,139 - rexus.main - ERROR - Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']

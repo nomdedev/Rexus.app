@@ -1,90 +1,0 @@
-
-Hrexus.modules.inventario.model.InventarioModel.actualizar_stock_productoV
-JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\model.pyÀ À(!"2*°
-2
-Õ Õ(6É
-Ä
-
-Œ Œ("
-%4"__id*f
-
-__unknown_file (J*H0
-.rexus.modules.inventario.model.InventarioModel"
-managers_availableÅ
-
-
-Œ' Œ(=
-%5"__id*e
-
-__unknown_file (I*G0
-.rexus.modules.inventario.model.InventarioModel"
-productos_manager*
-4
-5*¯
-4
-œ œ([Å
-
-
-œ œ()
-%1"__id*e
-
-__unknown_file (I*G0
-.rexus.modules.inventario.model.InventarioModel"
-productos_managerÃ…
-
-œ œ([
-%2*"
-
-__unknown_file (
-
-%1*+
-
-__unknown_file (
-
-producto_id*+
-
-__unknown_file (
-
-nuevo_stock*%
-
-__unknown_file (	
-
-razon2actualizar_stock"
-
-œ œ([
-
-%2*™
-5
-— —(SÇˇ
-
-— —(S
-%3*N
-
-__unknown_file (20
-.rexus.modules.inventario.model.InventarioModel*+
-
-__unknown_file (
-
-producto_id*+
-
-__unknown_file (
-
-nuevo_stock*%
-
-__unknown_file (	
-
-razon2_actualizar_stock_fallback"
-
-— —(S
-
-%3:
-
-À( À(8
-producto_id:
-
-À: À(X
-nuevo_stock:
-
-Ã  Ã(<
-razonB20
-.rexus.modules.inventario.model.InventarioModelH

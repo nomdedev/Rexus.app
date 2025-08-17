@@ -1,56 +1,0 @@
-
-8rexus.core.sql_query_manager.SQLQueryManager.transactionT
-HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\sql_query_manager.pyซ ซ("6*:
-3
-sql_query_manager.py"
-บ บ
-implicit return*็
-4
-ต ต('xv
-
-ต ต('
-%1*L
-
-__unknown_file (0.
-,rexus.core.sql_query_manager.SQLQueryManager2rollback_transactionn
-l
-
-ถ ถ(E
-%2"__concat*9
-
-ถ ถ(A+)
-'Transacciรณn revertida debido a error: *
-
-ถB ถ(C
-
-ege
-
-ถ ถ(F
-%3*&
-
-__unknown_file (
-
-
-logger*"
-
-__unknown_file (
-
-%22error*
-3*
-6
-ฑ ฑ($us
-
-ฑ ฑ($
-%4*L
-
-__unknown_file (0.
-,rexus.core.sql_query_manager.SQLQueryManager2begin_transactionvt
-
-ณ ณ(%
-%5*L
-
-__unknown_file (0.
-,rexus.core.sql_query_manager.SQLQueryManager2commit_transaction*
-3
-4B0.
-,rexus.core.sql_query_manager.SQLQueryManagerH

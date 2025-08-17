@@ -1,185 +1,0 @@
-
-
-32int
-"NORMAL"str
-=
-"Aprobado"str
-(	"obra_id"str
-P0.0float
-G850.75float
-#1250.50float
-"estado_texto"str
-9"2025-01-18"str
-5"PED-2025-00002"str
-?	"HERRAJE"str
-C"ALTA"str
-"id"str
-"prioridad"str
-.25.0float
-$"Material de ConstrucciÃ³n"str
-
-+5int
-""total"str
-;
-"APROBADO"str
-7"2025-01-14 15:45"str
-E"Alta"str
- "Normal"str
-"2025-01-20"str
-"2025-01-15 10:30"str
-N15.0float
-"estado"str
-&"Juan PÃ©rez"str
-
-"MATERIAL"str
-"numero_pedido"str
-
-V0int
-A
-"Herrajes"str
-I"MarÃ­a GonzÃ¡lez"str
-3*"Datos demo cuando no hay conexiÃ³n a BD."str
-
-"fecha_pedido"str
-#"Pendiente de AprobaciÃ³n"str
-%"responsable_entrega"str
--"total_cantidad"str
-"prioridad_texto"str
-"tipo_pedido"str
-
-1int
-*"cantidad_items"str
-0"cantidad_pendiente"str
-"PENDIENTE"str
-
-L3int
-#"fecha_entrega_solicitada"str
-"tipo_texto"str
-"PED-2025-00001"strself
-â â(Slist"è&
-$
-
-å ö("#new-object#Bdict"
- 
-
-æ æ("	#map-set#:"
- 
-
-ç ç(1	"	#map-set#:"
- 
-
-è è(2"	#map-set#:
-"
- 
-
-é é(8"	#map-set#:"
- 
-
-ê ê(%"	#map-set#:"
- 
-
-ë ë(9"	#map-set#:"
- 
-
-ì ì()"	#map-set#:"
- 
-
-í í(8"	#map-set#:"
- 
-
-î î(%"	#map-set#:"
- 
-
-ï ï(+!"	#map-set#: "
- 
-
-ğ ğ( $"	#map-set#:"#"
- 
-
-ñ ñ(3'"	#map-set#:%&"
- 
-
-ò ò()"	#map-set#:("
- 
-
-ó ó(#,"	#map-set#:*+"
- 
-
-ô ô(&/"	#map-set#:-."
- 
-
-õ õ(*1"	#map-set#:0.&
-$
-
-÷ ˆ(2"#new-object#Bdict"
- 
-
-ø ø(4"	#map-set#:23"
- 
-
-ù ù(16"	#map-set#:25"
- 
-
-ú ú(28"	#map-set#:2
-7"
- 
-
-û û(8:"	#map-set#:29"
- 
-
-ü ü($<"	#map-set#:2;"
- 
-
-ı ı(*>"	#map-set#:2="
- 
-
-ş ş((@"	#map-set#:2?"
- 
-
-ÿ ÿ((B"	#map-set#:2A"
- 
-
-€ €(#D"	#map-set#:2C"
- 
-
- ()F"	#map-set#:2E"
- 
-
-‚ ‚(H"	#map-set#:2"G"
- 
-
-ƒ ƒ(7J"	#map-set#:2%I"
- 
-
-„ „(K"	#map-set#:2(3"
- 
-
-… …(#M"	#map-set#:2*L"
- 
-
-† †(&O"	#map-set#:2-N"
- 
-
-‡ ‡()Q"	#map-set#:20P)
-'
-
-ä ‰(	R"#unknown-value#Blist(
-&
-
-ä ‰(	T"
-#is-exact#:RSBbool
-
-
-ä ‰(	U"
-#assume#:T:
-8
-
-ä ‰(	W"#set-field# __collection_size:RVBint(
-&
-
-ä ‰(	X"#array-add-last#:R(
-&
-
-ä ‰(	Y"#array-add-last#:R2
-
-ä ‰(	R*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py

@@ -1,11 +1,0 @@
-
-4+"Obtiene la lista de m√≥dulos del sistema."strself
-≈  ≈($"p(
-&
-
-« «("#get-field# model:2
-0
-
-« «()"#get-field# MODULOS_SISTEMA:
-
-« «()*MC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\controller.py

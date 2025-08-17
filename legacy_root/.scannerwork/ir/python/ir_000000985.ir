@@ -1,27 +1,0 @@
-
-
-
-0int
-A8"Convierte una lista de tuplas a lista de diccionarios."strclsA A( tuplas_obrasA" A(;list"t)
-'
-C C("
-__bool__*:BboolH)
-'
-C C("#unaryop !#2!:Bbool"
-C C( *C C(
-"¼'
-%
-D D("#unknown-value#Blist&
-$
-D D("
-#is-exact#:Bbool
-
-D D(	"
-#assume#:8
-6
-D D("#set-field# __collection_size:
-Bint
-D D("@,
-*
-F F(B"?python-unknown?:Blist
-F F(B*KC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\obras\data_mapper.py

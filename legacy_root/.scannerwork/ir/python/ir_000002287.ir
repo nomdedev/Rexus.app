@@ -1,26 +1,0 @@
-
-"inventario"str
-6-"Valida nombre de tabla contra lista blanca."str
-+""Tabla no permitida: {table_name}"str
-	"categorias"str
-"productos"strself9 9(!
-table_name9# 9(2"‚6
-4
-; ;(Etablas_permitidas"#new-object#Bset&
-$
-; ;(E"#array-add-last#:&
-$
-; ;(E"#array-add-last#:&
-$
-; ;(E
-"#array-add-last#:	2
-0
-< <(."#binop not in#2not in:Bbool"
-< <(. *< <(
-"B.
-,
-= =(A"
-ValueError*:B
-ValueError2
-= =(A"
-> >(*aC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\submodules\productos_manager.py

@@ -1,383 +1,0 @@
-
-Orexus.modules.vidrios.submodules.obras_manager.ObrasManager.asignar_vidrio_obrad
-ZC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\vidrios\submodules\obras_manager.pyr r("2*§
-2u u(5ä
-á
-v v(!
-%35"__id*n
-
-__unknown_file (R*P=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-db_connection*
-13
-12*%
-13w w("
-w w(	
-
-False*˜
-9
-ü ü('ã
-à
-
-ü ü(
-%7"__id*n
-
-__unknown_file (R*P=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-db_connection@>
-
-ü ü('
-%8*"
-
-__unknown_file (
-
-%72commit"
-
-† †(
-
-True*Ω
-10
-î ñ(â
-Ü
-
-î î((
-%9"__id*l
-
-__unknown_file (P*N=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-sql_managerá
-Ñ
-
-ï ï(!
-%10"__id*i
-
-__unknown_file (M*K=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-
-sql_path®•
-
-î ñ(
-%11*"
-
-__unknown_file (
-
-%9*#
-
-__unknown_file (
-
-%10*<
-
-__unknown_file ( 
-actualizar_asignacion_vidrio2	get_queryB
-@
-
-î ñ(
-query"__id*#
-
-__unknown_file (
-
-%11†ù
-
-ó ó(7
-%12*&
-
-__unknown_file (
-
-
-cursor*%
-
-__unknown_file (	
-
-query*0
-
-__unknown_file (
-
-datos_asignacion2execute*
-9*Ω
-11
-ö ú(ä
-á
-
-ö ö((
-%13"__id*l
-
-__unknown_file (P*N=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-sql_managerá
-Ñ
-
-õ õ(!
-%14"__id*i
-
-__unknown_file (M*K=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-
-sql_pathß§
-
-ö ú(
-%15*#
-
-__unknown_file (
-
-%13*#
-
-__unknown_file (
-
-%14*:
-
-__unknown_file (
-insertar_asignacion_vidrio2	get_queryB
-@
-
-ö ú(
-query"__id*#
-
-__unknown_file (
-
-%15†ù
-
-ù ù(7
-%16*&
-
-__unknown_file (
-
-
-cursor*%
-
-__unknown_file (	
-
-query*0
-
-__unknown_file (
-
-datos_asignacion2execute*
-9*£
-12	{ Ç(
-	| Å(
-%17"dictï
-í
-} }(&
-%18"__mapSet*#
-
-__unknown_file (
-
-%17*'
-
-__unknown_file (	
-obra_id*'
-
-__unknown_file (
-	
-obra_idô
-ñ
-~ ~(*
-%19"__mapSet*#
-
-__unknown_file (
-
-%17*)
-
-__unknown_file (
-	vidrio_id*)
-
-__unknown_file (
-
-	vidrio_idó
-î
- ((
-%20"__mapSet*#
-
-__unknown_file (
-
-%17*(
-
-__unknown_file (
-
-cantidad*(
-
-__unknown_file (
-
-
-cantidad£
-†
-
-Ä Ä(2
-%21"__mapSet*#
-
-__unknown_file (
-
-%17*-
-
-__unknown_file (
-observaciones*-
-
-__unknown_file (
-
-observaciones≤Ø
-	{ Ç(
-%22*[
-
-__unknown_file (?=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager*#
-
-__unknown_file (
-
-%172_validar_datos_asignacionL
-J
-	{ Ç(
-datos_asignacion"__id*#
-
-__unknown_file (
-
-%22å
-â
-
-Ñ Ñ('
-%23"__id*n
-
-__unknown_file (R*P=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-db_connectionB@
-
-Ñ Ñ(0
-%24*#
-
-__unknown_file (
-
-%232cursorC
-A
-
-Ñ Ñ(0
-cursor"__id*#
-
-__unknown_file (
-
-%24ä
-á
-
-á á(.
-%25"__id*l
-
-__unknown_file (P*N=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-sql_managerá
-Ñ
-
-à à(
-%26"__id*i
-
-__unknown_file (M*K=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManager"
-
-sql_path´®
-
-á â(
-%27*#
-
-__unknown_file (
-
-%25*#
-
-__unknown_file (
-
-%26*>
-
-__unknown_file (" 
-verificar_asignacion_existente2	get_queryL
-J
-
-á â(
-query_verificar"__id*#
-
-__unknown_file (
-
-%27
-
-å è(
-%28"dictàÖ
-
-ç ç(:
-%29"__mapGet*0
-
-__unknown_file (
-
-datos_asignacion*'
-
-__unknown_file (	
-obra_id2__getitem__ì
-ê
-
-ç ç(:
-%30"__mapSet*#
-
-__unknown_file (
-
-%28*'
-
-__unknown_file (	
-obra_id*#
-
-__unknown_file (
-
-%29äá
-
-é! é(>
-%31"__mapGet*0
-
-__unknown_file (
-
-datos_asignacion*)
-
-__unknown_file (
-	vidrio_id2__getitem__ï
-í
-
-é é(>
-%32"__mapSet*#
-
-__unknown_file (
-
-%28*)
-
-__unknown_file (
-	vidrio_id*#
-
-__unknown_file (
-
-%31ùö
-
-ä ê(
-%33*&
-
-__unknown_file (
-
-
-cursor*/
-
-__unknown_file (
-
-query_verificar*#
-
-__unknown_file (
-
-%282executeGE
-
-í í( 
-%34*&
-
-__unknown_file (
-
-
-cursor2fetchone*
-10
-11:
-s s(	
-obra_id:
-s s(*
-	vidrio_id:
-s, s(9
-
-cantidad:
-s; s(R
-observacionesB?=
-;rexus.modules.vidrios.submodules.obras_manager.ObrasManagerH

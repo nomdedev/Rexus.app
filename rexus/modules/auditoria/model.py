@@ -114,8 +114,13 @@ class AuditoriaModel:
             cursor = self.db_connection.connection.cursor()
 
             # Verificar si la tabla de auditoría existe usando SQL externo
-            query_verificar = self.sql_manager.get_query('auditoria/verificar_tabla_existe')
-            cursor.execute(query_verificar, (self.tabla_auditoria,))
+            try:
+                query_verificar = self.sql_manager.get_query('auditoria', 'verificar_tabla_existe')
+                cursor.execute(query_verificar, (self.tabla_auditoria,))
+            except Exception as e:
+                print(f"[ERROR AUDITORÍA] Error cargando query verificar_tabla_existe: {e}")
+                # Fallback query directo
+                cursor.execute("SELECT * FROM sysobjects WHERE name=? AND xtype='U'", (self.tabla_auditoria,))
 
             if cursor.fetchone():
                 print(f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente.")

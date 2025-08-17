@@ -1,84 +1,0 @@
-
-
-0int
-"SUSPENDIDO"str
-"BLOQUEADO"str
-12int
-"por_estado"str
-	"por_rol"str
-"ADMIN"str
-
-1int
-
-5int
-;2"Estad√≠sticas demo cuando no hay conexi√≥n a BD."str
-
-10int
-
-$8int
-
- 4int
-#"activos_mes"str
-	"ACTIVO"str
-	"USUARIO"str
-"SUPERVISOR"str
-
-"OPERADOR"str
-&"creados_mes"str
-
-2int
-"total_usuarios"str
-
-"INACTIVO"strself
-Ö Ö(#"ﬁ&
-$
-
-á í(	"#new-object#Bdict"
- 
-
-à à( "	#map-set#:&
-$
-
-â é("#new-object#Bdict"
- 
-
-ä ä("	#map-set#:	
-"
- 
-
-ã ã("	#map-set#:"
- 
-
-å å("	#map-set#:"
- 
-
-ç ç("	#map-set#:"
- 
-
-â é("	#map-set#:&
-$
-
-è è(Q"#new-object#Bdict"
- 
-
-è è(""	#map-set#:"
- 
-
-è$ è(3"	#map-set#:"
- 
-
-è5 è(B"	#map-set#:"
- 
-
-èD è(P!"	#map-set#: "
- 
-
-è è(Q""	#map-set#:"
- 
-
-ê ê(%"	#map-set#:#$"
- 
-
-ë ë('"	#map-set#:&
-
-á í(	*HC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\usuarios\model.py

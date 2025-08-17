@@ -1,100 +1,0 @@
-
-5rexus.core.audit_system.AuditSystem.log_login_successO
-CC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\audit_system.py× ×("2*Ö
-2
-Ú Ú((q
-o
-
-Ü Ü(/
-%1"__id*U
-
-__unknown_file (9*7$
-"rexus.core.audit_system.AuditEvent"
-LOGIN_SUCCESSh
-f
-
-Ý Ý(!
-%2"__id*L
-
-__unknown_file (0*.$
-"rexus.core.audit_system.AuditLevel"
-INFOm
-k
-
-ß ß(?
-%3"__concat*+
-
-ß ß(.
-Login exitoso de usuario * 
-
-ß/ ß(=
-
-usuario_nombreóð
-
-Û æ(	
-%4*C
-
-__unknown_file ('%
-#rexus.core.audit_system.AuditSystem2	log_event:
-
-event_type
-
-%1:
-level
-
-%2:
-modulo
-AUTENTICACION:
-accion
-
-%3:
-	resultado	
-SUCCESS:
-
-usuario_id
-
-
-usuario_id:$
-usuario_nombre
-
-usuario_nombre:
-
-ip_address
-
-
-ip_address:
-
-user_agent
-
-
-user_agent:
-
-session_id
-
-
-session_id*
-3*7
-3
-audit_system.py"
-è è(
-implicit return:
-
-×  ×(/
-
-usuario_id:
-
-×1 ×(D
-usuario_nombre:
-
-Ø Ø(0
-
-ip_address:
-
-Ø2 Ø(H
-
-user_agent:
-
-Ù Ù(0
-
-session_idB'%
-#rexus.core.audit_system.AuditSystemH

@@ -1,21 +1,0 @@
-
-SJ"Decorador que requiere permisos espec√≠ficos para ejecutar una funci√≥n."strresource
-ç ç($action
-ç& ç(1"Ï#
-!
-
-ú ú("#unknown-value#*
-(
-
-è ú(%closure"#new-object#,
-*
-
-è ú("#set-field# resource:*
-(
-
-è ú("#set-field# action:-
-+
-
-è ú("?python-partial-apply?:
-
-ú ú(*DC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\rbac_database.py

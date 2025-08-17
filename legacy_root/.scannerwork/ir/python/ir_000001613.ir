@@ -1,650 +1,0 @@
-
-À
-"Contable"str
-3¢)"Usuario b√°sico con permisos de lectura"str
-Ø"Especialista"str
-0⁄&"Gesti√≥n completa de obras/proyectos"str
-®
-"Operador"str
-/∑%"Supervisor con permisos de gesti√≥n"str
-/∞%"Especialista con permisos avanzados"str
-NoneNoneType
-Ω"Administrador"str
-+”!"Gesti√≥n completa de inventario"str
-7õ-"Acceso muy limitado solo para demostraci√≥n"str
-ö
-"Invitado"str
-Ÿ"Gestor de Proyectos"str
- ‡"Gestor de Log√≠stica"str
-%≈"Control total del sistema"str
-ƒ"Super Administrador"str
-;2"Inicializa las definiciones de roles y permisos."str
-°	"Usuario"str
-7©-"Operador con permisos b√°sicos de creaci√≥n"str
-%æ"Administrador del sistema"str
-+·!"Gesti√≥n completa de log√≠stica"str
- “"Gestor de Inventario"str
-(Ã"Especialista en contabilidad"str
-∂"Supervisor"strself
-â â( ñrexus.core.rbac_system.Role%!rexus.core.rbac_system.Permission"ÉQ8
-6
-
-ç ë(	basic_permissions"#new-object#Bset(
-&
-
-é é("#get-field# LOGIN:(
-&
-
-ç ë(	"#array-add-last#:)
-'
-
-è è("#get-field# LOGOUT:(
-&
-
-ç ë(	"#array-add-last#:1
-/
-
-ê ê(%	"#get-field# VIEW_DASHBOARD:(
-&
-
-ç ë(	
-"#array-add-last#:	%
-#
-
-î/ õ(	"#new-object#Bset1
-/
-
-ï ï(%"#get-field# VIEW_INVENTORY:(
-&
-
-î/ õ(	"#array-add-last#:4
-2
-
-ñ ñ(("#get-field# VIEW_AVAILABILITY:(
-&
-
-î/ õ(	"#array-add-last#:0
-.
-
-ó ó($"#get-field# VIEW_PROJECTS:(
-&
-
-î/ õ(	"#array-add-last#:2
-0
-
-ò ò(&"#get-field# VIEW_PRODUCTION:(
-&
-
-î/ õ(	"#array-add-last#:1
-/
-
-ô ô(%"#get-field# VIEW_PURCHASES:(
-&
-
-î/ õ(	"#array-add-last#:1
-/
-
-ö ö(%"#get-field# VIEW_LOGISTICS:(
-&
-
-î/ õ(	"#array-add-last#:5
-3
-
-î õ(	read_permissions"#unknown-value#%
-#
-
-û2 •(	"#new-object#Bset3
-1
-
-ü ü('"#get-field# CREATE_INVENTORY:(
-&
-
-û2 •(	"#array-add-last#:3
-1
-
-† †('"#get-field# UPDATE_INVENTORY:(
-&
-
-û2 •(	"#array-add-last#:6
-4
-
-° °(*"!#get-field# MANAGE_RESERVATIONS:(
-&
-
-û2 •(	"#array-add-last#:1
-/
-
-¢ ¢(% "#get-field# CREATE_PROJECT:(
-&
-
-û2 •(	!"#array-add-last#: 1
-/
-
-£ £(%""#get-field# UPDATE_PROJECT:(
-&
-
-û2 •(	#"#array-add-last#:"/
--
-
-§ §(#$"#get-field# CREATE_ORDER:(
-&
-
-û2 •(	%"#array-add-last#:$9
-7
-
-û •(	&operator_permissions"#unknown-value#%
-#
-
-®8 Ø(	'"#new-object#Bset3
-1
-
-© ©('("#get-field# DELETE_INVENTORY:(
-&
-
-®8 Ø(	)"#array-add-last#:'(1
-/
-
-™ ™(%*"#get-field# DELETE_PROJECT:(
-&
-
-®8 Ø(	+"#array-add-last#:'*0
-.
-
-´ ´($,"#get-field# APPROVE_ORDER:(
-&
-
-®8 Ø(	-"#array-add-last#:',3
-1
-
-¨ ¨('."#get-field# MANAGE_SUPPLIERS:(
-&
-
-®8 Ø(	/"#array-add-last#:'.3
-1
-
-≠ ≠('0"#get-field# MANAGE_TRANSPORT:(
-&
-
-®8 Ø(	1"#array-add-last#:'02
-0
-
-Æ Æ(&2"#get-field# GENERATE_REPORT:(
-&
-
-®8 Ø(	3"#array-add-last#:'2;
-9
-
-®! Ø(	4specialist_permissions"#unknown-value#%
-#
-
-≤: ª(	5"#new-object#Bset-
-+
-
-≥ ≥(!6"#get-field# VIEW_USERS:(
-&
-
-≤: ª(	7"#array-add-last#:562
-0
-
-¥ ¥(&8"#get-field# APPROVE_PROJECT:(
-&
-
-≤: ª(	9"#array-add-last#:587
-5
-
-µ µ(+:"" #get-field# APPROVE_TRANSACTIONS:(
-&
-
-≤: ª(	;"#array-add-last#:5:2
-0
-
-∂ ∂(&<"#get-field# MANAGE_HARDWARE:(
-&
-
-≤: ª(	="#array-add-last#:5</
--
-
-∑ ∑(#>"#get-field# MANAGE_GLASS:(
-&
-
-≤: ª(	?"#array-add-last#:5>5
-3
-
-∏ ∏()@" #get-field# MANAGE_MAINTENANCE:(
-&
-
-≤: ª(	A"#array-add-last#:5@3
-1
-
-π π('B"#get-field# EXPORT_INVENTORY:(
-&
-
-≤: ª(	C"#array-add-last#:5B-
-+
-
-∫ ∫(!D"#get-field# VIEW_AUDIT:(
-&
-
-≤: ª(	E"#array-add-last#:5D;
-9
-
-≤! ª(	Fsupervisor_permissions"#unknown-value#%
-#
-
-æ5 …(	G"#new-object#Bset.
-,
-
-ø ø("H"#get-field# CREATE_USER:(
-&
-
-æ5 …(	I"#array-add-last#:GH.
-,
-
-¿ ¿("J"#get-field# UPDATE_USER:(
-&
-
-æ5 …(	K"#array-add-last#:GJ1
-/
-
-¡ ¡(%L"#get-field# RESET_PASSWORD:(
-&
-
-æ5 …(	M"#array-add-last#:GL,
-*
-
-¬ ¬( N"#get-field# LOCK_USER:(
-&
-
-æ5 …(	O"#array-add-last#:GN.
-,
-
-√ √("P"#get-field# UNLOCK_USER:(
-&
-
-æ5 …(	Q"#array-add-last#:GP.
-,
-
-ƒ ƒ("R"#get-field# VIEW_CONFIG:(
-&
-
-æ5 …(	S"#array-add-last#:GR0
-.
-
-≈ ≈($T"#get-field# UPDATE_CONFIG:(
-&
-
-æ5 …(	U"#array-add-last#:GT2
-0
-
-∆ ∆(&V"#get-field# VIEW_AUDIT_LOGS:(
-&
-
-æ5 …(	W"#array-add-last#:GV/
--
-
-« «(#X"#get-field# EXPORT_AUDIT:(
-&
-
-æ5 …(	Y"#array-add-last#:GX0
-.
-
-» »($Z"#get-field# BACKUP_SYSTEM:(
-&
-
-æ5 …(	["#array-add-last#:GZ6
-4
-
-æ …(	\admin_permissions"#unknown-value#%
-#
-
-Ã6 ”(	]"#new-object#Bset.
-,
-
-Õ Õ("^"#get-field# DELETE_USER:(
-&
-
-Ã6 ”(	_"#array-add-last#:]^/
--
-
-Œ Œ(#`"#get-field# ASSIGN_ROLES:(
-&
-
-Ã6 ”(	a"#array-add-last#:]`0
-.
-
-œ œ($b"#get-field# MANAGE_SYSTEM:(
-&
-
-Ã6 ”(	c"#array-add-last#:]b1
-/
-
-– –(%d"#get-field# RESTORE_SYSTEM:(
-&
-
-Ã6 ”(	e"#array-add-last#:]d2
-0
-
-— —(&f"#get-field# MANAGE_SECURITY:(
-&
-
-Ã6 ”(	g"#array-add-last#:]f6
-4
-
-“ “(*h"!#get-field# VIEW_SENSITIVE_DATA:(
-&
-
-Ã6 ”(	i"#array-add-last#:]h<
-:
-
-Ã" ”(	jsuper_admin_permissions"#unknown-value#%
-#
-
-÷4 ﬂ(	k"#new-object#Bset2
-0
-
-◊ ◊(&l"#get-field# VIEW_ACCOUNTING:(
-&
-
-÷4 ﬂ(	m"#array-add-last#:kl/
--
-
-ÿ ÿ(#n"#get-field# CREATE_ENTRY:(
-&
-
-÷4 ﬂ(	o"#array-add-last#:kn1
-/
-
-Ÿ Ÿ(%p"#get-field# CREATE_RECEIPT:(
-&
-
-÷4 ﬂ(	q"#array-add-last#:kp0
-.
-
-⁄ ⁄($r"#get-field# PRINT_RECEIPT:(
-&
-
-÷4 ﬂ(	s"#array-add-last#:kr4
-2
-
-€ €((t"#get-field# CREATE_DEPARTMENT:(
-&
-
-÷4 ﬂ(	u"#array-add-last#:kt2
-0
-
-‹ ‹(&v"#get-field# CREATE_EMPLOYEE:(
-&
-
-÷4 ﬂ(	w"#array-add-last#:kv2
-0
-
-› ›(&x"#get-field# GENERATE_REPORT:(
-&
-
-÷4 ﬂ(	y"#array-add-last#:kx-
-+
-
-ﬁ ﬁ(!z"#get-field# VIEW_AUDIT:(
-&
-
-÷4 ﬂ(	{"#array-add-last#:kz;
-9
-
-÷! ﬂ(	|accountant_permissions"#unknown-value#%
-#
-
-·? Â(	}"#new-object#Bset3
-1
-
-‚ ‚('~"#get-field# DELETE_INVENTORY:(
-&
-
-·? Â(	"#array-add-last#:}~4
-2
-
-„ „('Ä"#get-field# EXPORT_INVENTORY:*
-(
-
-·? Â(	Å"#array-add-last#:}Ä4
-2
-
-‰ ‰('Ç"#get-field# MANAGE_SUPPLIERS:*
-(
-
-·? Â(	É"#array-add-last#:}ÇC
-A
-
-·( Â(	Ñinventory_manager_permissions"#unknown-value#&
-$
-
-Á? Î(	Ö"#new-object#Bset3
-1
-
-Ë Ë(&Ü"#get-field# APPROVE_PROJECT:+
-)
-
-Á? Î(	á"#array-add-last#:ÖÜ3
-1
-
-È È(&à"#get-field# MANAGE_SCHEDULE:+
-)
-
-Á? Î(	â"#array-add-last#:Öà2
-0
-
-Í Í(%ä"#get-field# DELETE_PROJECT:+
-)
-
-Á? Î(	ã"#array-add-last#:ÖäA
-?
-
-Á& Î(	åproject_manager_permissions"#unknown-value#&
-$
-
-ÌA Ò(	ç"#new-object#Bset5
-3
-
-Ó Ó((é"#get-field# SCHEDULE_DELIVERY:+
-)
-
-ÌA Ò(	è"#array-add-last#:çé3
-1
-
-Ô Ô(&ê"#get-field# TRACK_SHIPMENTS:+
-)
-
-ÌA Ò(	ë"#array-add-last#:çê4
-2
-
- ('í"#get-field# MANAGE_TRANSPORT:+
-)
-
-ÌA Ò(	ì"#array-add-last#:çíC
-A
-
-Ì( Ò(	îlogistics_manager_permissions"#unknown-value#'
-%
-
-Ù  £(	ï"#new-object#Bdict*
-(
-
-ı ı(ó"#get-field# GUEST:ñH
-F
-
-ı ¯(ò"#new-object#B%rexus.core.rbac_system.RoleDefinition*
-(
-
-ˆ ˆ(ô"#get-field# GUEST:ñ_
-]
-
-ı ¯(ú"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	òôöõBNoneTypeH&
-$
-
-ı ¯(ù"	#map-set#:ïóò)
-'
-
-˘ ˘(û"#get-field# USER:ñH
-F
-
-˘ ¸(ü"#new-object#B%rexus.core.rbac_system.RoleDefinition)
-'
-
-˙ ˙(†"#get-field# USER:ñ_
-]
-
-˘ ¸(£"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	ü†°¢BNoneTypeH&
-$
-
-˘ ¸(§"	#map-set#:ïûü-
-+
-
-˝ ˝(•"#get-field# OPERATOR:ñH
-F
-
-˝ Ä(¶"#new-object#B%rexus.core.rbac_system.RoleDefinition-
-+
-
-˛ ˛(ß"#get-field# OPERATOR:ñ_
-]
-
-˝ Ä(™"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	¶ß®©&BNoneTypeH&
-$
-
-˝ Ä(´"	#map-set#:ï•¶/
--
-
-Å Å(¨"#get-field# SPECIALIST:ñH
-F
-
-Å Ñ(≠"#new-object#B%rexus.core.rbac_system.RoleDefinition/
--
-
-Ç Ç(Æ"#get-field# SPECIALIST:ñ_
-]
-
-Å Ñ(±"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	≠ÆØ∞4BNoneTypeH&
-$
-
-Å Ñ(≤"	#map-set#:ï¨≠/
--
-
-Ö Ö(≥"#get-field# SUPERVISOR:ñH
-F
-
-Ö à(¥"#new-object#B%rexus.core.rbac_system.RoleDefinition/
--
-
-Ü Ü(µ"#get-field# SUPERVISOR:ñ_
-]
-
-Ö à(∏"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	¥µ∂∑FBNoneTypeH&
-$
-
-Ö à(π"	#map-set#:ï≥¥*
-(
-
-â â(∫"#get-field# ADMIN:ñH
-F
-
-â å(ª"#new-object#B%rexus.core.rbac_system.RoleDefinition*
-(
-
-ä ä(º"#get-field# ADMIN:ñ_
-]
-
-â å(ø"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	ªºΩæ\BNoneTypeH&
-$
-
-â å(¿"	#map-set#:ï∫ª0
-.
-
-ç ç(¡"#get-field# SUPER_ADMIN:ñH
-F
-
-ç ê(¬"#new-object#B%rexus.core.rbac_system.RoleDefinition0
-.
-
-é é( √"#get-field# SUPER_ADMIN:ñ_
-]
-
-ç ê(∆"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	¬√ƒ≈jBNoneTypeH&
-$
-
-ç ê(«"	#map-set#:ï¡¬/
--
-
-ì ì(»"#get-field# ACCOUNTANT:ñH
-F
-
-ì ñ(…"#new-object#B%rexus.core.rbac_system.RoleDefinition/
--
-
-î î( "#get-field# ACCOUNTANT:ñ_
-]
-
-ì ñ(Õ"1
-%rexus.core.rbac_system.RoleDefinition__init__* :	… ÀÃ|BNoneTypeH&
-$
-
-ì ñ(Œ"	#map-set#:ï»…6
-4
-
-ó ó("œ"#get-field# INVENTORY_MANAGER:ñH
-F
-
-ó$ ö(–"#new-object#B%rexus.core.rbac_system.RoleDefinition6
-4
-
-ò ò(&—"#get-field# INVENTORY_MANAGER:ñ`
-^
-
-ó$ ö(‘"1
-%rexus.core.rbac_system.RoleDefinition__init__* :
-–—“”ÑBNoneTypeH&
-$
-
-ó ö(’"	#map-set#:ïœ–4
-2
-
-õ õ( ÷"#get-field# PROJECT_MANAGER:ñH
-F
-
-õ" û(◊"#new-object#B%rexus.core.rbac_system.RoleDefinition4
-2
-
-ú ú($ÿ"#get-field# PROJECT_MANAGER:ñ`
-^
-
-õ" û(€"1
-%rexus.core.rbac_system.RoleDefinition__init__* :
-◊ÿŸ⁄åBNoneTypeH&
-$
-
-õ û(‹"	#map-set#:ï÷◊6
-4
-
-ü ü("›"#get-field# LOGISTICS_MANAGER:ñH
-F
-
-ü$ ¢(ﬁ"#new-object#B%rexus.core.rbac_system.RoleDefinition6
-4
-
-† †(&ﬂ"#get-field# LOGISTICS_MANAGER:ñ`
-^
-
-ü$ ¢(‚"1
-%rexus.core.rbac_system.RoleDefinition__init__* :
-ﬁﬂ‡·îBNoneTypeH&
-$
-
-ü ¢(„"	#map-set#:ï›ﬁ6
-4
-
-Ù Ù(‰"#set-field# role_definitions:ï *BC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\rbac_system.py

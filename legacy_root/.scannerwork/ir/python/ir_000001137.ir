@@ -1,5 +1,0 @@
-
-0'"Retorna si el modo demo está activo."strself, ,("D2
-0
-. .(%"#get-field# demo_mode_enabled:
-. .(%*AC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\demo_mode.py

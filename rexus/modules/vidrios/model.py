@@ -21,24 +21,26 @@ INVALID_DATA_MSG = "Datos inválidos"
 
 
 # Importar utilidades requeridas
-import logging
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.unified_sanitizer import sanitize_string
 
+# Importar sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+
 # Configurar logger específico para el módulo
-logger = logging.getLogger(__name__)
+logger = get_logger("vidrios.model")
 
 # Importar sistema unificado de sanitización
 try:
     from rexus.utils.unified_sanitizer import unified_sanitizer as data_sanitizer
     SANITIZER_AVAILABLE = True
-    print("OK [VIDRIOS] Sistema unificado de sanitización cargado")
+    logger.info("Sistema unificado de sanitización cargado")
 except ImportError:
     try:
         from rexus.utils.data_sanitizer import DataSanitizer
         data_sanitizer = DataSanitizer()
         SANITIZER_AVAILABLE = True
-        print("OK [VIDRIOS] DataSanitizer legacy cargado")
+        logger.info("DataSanitizer legacy cargado")
     except ImportError:
         logger.error(f"Error [VIDRIOS] No se pudo cargar ningún sistema de sanitización")
         SANITIZER_AVAILABLE = False
@@ -67,15 +69,13 @@ class VidriosModel:
         self.sanitizer_available = SANITIZER_AVAILABLE
         if self.sanitizer_available:
             self.data_sanitizer = data_sanitizer
-            print("OK [VIDRIOS] Sanitizador inicializado correctamente")
+            logger.info("Sanitizador inicializado correctamente")
         else:
             self.data_sanitizer = None
-            print("WARNING [VIDRIOS] Sin sistema de sanitización - funcionalidad limitada")
+            logger.warning("Sin sistema de sanitización - funcionalidad limitada")
 
         if not self.db_connection:
-            print(
-                "[ERROR VIDRIOS] No hay conexión a la base de datos. El módulo no funcionará correctamente."
-            )
+            logger.error("No hay conexión a la base de datos. El módulo no funcionará correctamente")
         self._verificar_tablas()
 
     def _sanitizar_entrada_segura(self, value, tipo='string', **kwargs):
@@ -241,9 +241,7 @@ class VidriosModel:
                 (self.tabla_vidrios,),
             )
             if cursor.fetchone():
-                print(
-                    f"[VIDRIOS] Tabla '{self.tabla_vidrios}' verificada correctamente."
-                )
+                logger.info(f"Tabla '{self.tabla_vidrios}' verificada correctamente")
 
                 # Obtener estructura de la tabla
                 cursor.execute(
@@ -251,13 +249,11 @@ class VidriosModel:
                     (self.tabla_vidrios,),
                 )
                 columnas = cursor.fetchall()
-                print(f"[VIDRIOS] Estructura de tabla '{self.tabla_vidrios}':")
+                logger.info(f"Estructura de tabla '{self.tabla_vidrios}':")
                 for columna in columnas:
-                    print(f"  - {columna[0]}: {columna[1]}")
+                    logger.info(f"  - {columna[0]}: {columna[1]}")
             else:
-                print(
-                    f"[ADVERTENCIA] La tabla '{self.tabla_vidrios}' no existe en la base de datos."
-                )
+                logger.warning(f"La tabla '{self.tabla_vidrios}' no existe en la base de datos")
 
             # Verificar tabla de vidrios por obra
             cursor.execute(
@@ -265,9 +261,7 @@ class VidriosModel:
                 (self.tabla_vidrios_obra,),
             )
             if cursor.fetchone():
-                print(
-                    f"[VIDRIOS] Tabla '{self.tabla_vidrios_obra}' verificada correctamente."
-                )
+                logger.info(f"Tabla '{self.tabla_vidrios_obra}' verificada correctamente")
             else:
                 logger.warning(
                     f"La tabla '{self.tabla_vidrios_obra}' no existe en la base de datos."
@@ -420,11 +414,11 @@ class VidriosModel:
             )
             self.db_connection.connection.commit()
 
-            print(f"[VIDRIOS] Vidrio {vidrio_id} asignado a obra {obra_id}")
+            logger.info(f"Vidrio {vidrio_id} asignado a obra {obra_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error asignando vidrio a obra: {e}")
+            logger.error(f"Error asignando vidrio a obra: {e}")
             return False
 
     @auth_required
@@ -472,11 +466,11 @@ class VidriosModel:
                 """, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Pedido {pedido_id} creado para obra {obra_id}")
+            logger.info(f"Pedido {pedido_id} creado para obra {obra_id}")
             return pedido_id
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error creando pedido: {e}")
+            logger.error(f"Error creando pedido: {e}")
             return None
 
     def obtener_estadisticas(self):
@@ -536,7 +530,7 @@ class VidriosModel:
             return estadisticas
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo estadísticas: {e}")
+            logger.error(f"Error obteniendo estadísticas: {e}")
             return {
                 "total_vidrios": 0,
                 "tipos_disponibles": 0,
@@ -567,7 +561,7 @@ class VidriosModel:
             if not termino_limpio:
                 return False, []
 
-            print(f"[VIDRIOS] Búsqueda sanitizada: '{termino_limpio}'")
+            logger.info(f"Búsqueda sanitizada: '{termino_limpio}'")
 
             cursor = self.db_connection.connection.cursor()
 
@@ -591,13 +585,11 @@ class VidriosModel:
                 vidrio = dict(zip(columnas, fila))
                 vidrios.append(vidrio)
 
-            print(
-                f"[VIDRIOS] Encontrados {len(vidrios)} vidrios para '{termino_limpio}'"
-            )
+            logger.info(f"Encontrados {len(vidrios)} vidrios para '{termino_limpio}'")
             return True, vidrios
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error buscando vidrios: {e}")
+            logger.error(f"Error buscando vidrios: {e}")
             return False, []
 
     @auth_required
@@ -640,9 +632,7 @@ class VidriosModel:
             if not datos_limpios["proveedor"]:
                 return False, "El proveedor es obligatorio", None
 
-            print(
-                f"[VIDRIOS] Creando vidrio: {datos_limpios['codigo']} - {datos_limpios['descripcion']}"
-            )
+            logger.info(f"Creando vidrio: {datos_limpios['codigo']} - {datos_limpios['descripcion']}")
 
             cursor = self.db_connection.connection.cursor()
 
@@ -673,7 +663,7 @@ class VidriosModel:
             vidrio_id = cursor.fetchone()[0]
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Vidrio creado exitosamente con ID: {vidrio_id}")
+            logger.info(f"Vidrio creado exitosamente con ID: {vidrio_id}")
             return (
                 True,
                 f"Vidrio '{datos_limpios['codigo']}' creado exitosamente",
@@ -681,7 +671,7 @@ class VidriosModel:
             )
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error creando vidrio: {e}")
+            logger.error(f"Error creando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error creando vidrio: {str(e)}", None
@@ -764,9 +754,7 @@ class VidriosModel:
             if not datos_limpios["descripcion"]:
                 return False, "La descripción del vidrio es obligatoria"
 
-            print(
-                f"[VIDRIOS] Actualizando vidrio ID {vidrio_id_limpio}: {datos_limpios['codigo']}"
-            )
+            logger.info(f"Actualizando vidrio ID {vidrio_id_limpio}: {datos_limpios['codigo']}")
 
             cursor = self.db_connection.connection.cursor()
 
@@ -794,11 +782,11 @@ class VidriosModel:
                 ))
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] Vidrio {vidrio_id_limpio} actualizado exitosamente")
+            logger.info(f"Vidrio {vidrio_id_limpio} actualizado exitosamente")
             return True, f"Vidrio '{datos_limpios['codigo']}' actualizado exitosamente"
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error actualizando vidrio: {e}")
+            logger.error(f"Error actualizando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error actualizando vidrio: {str(e)}"
@@ -844,9 +832,7 @@ class VidriosModel:
             """, (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:
-                print(
-                    f"[ADVERTENCIA] El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo"
-                )
+                logger.warning(f"El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo")
                 # FIXED: Marcar como inactivo en lugar de eliminar usando consulta parametrizada segura
                 cursor.execute("""
                     UPDATE vidrios SET estado = 'INACTIVO', fecha_modificacion = GETDATE() 
@@ -863,11 +849,11 @@ class VidriosModel:
                 mensaje = f"Vidrio '{codigo}' eliminado completamente"
 
             self.db_connection.connection.commit()
-            print(f"[VIDRIOS] {mensaje}")
+            logger.info(mensaje)
             return True, mensaje
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error eliminando vidrio: {e}")
+            logger.error(f"Error eliminando vidrio: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error eliminando vidrio: {str(e)}"
@@ -912,7 +898,7 @@ class VidriosModel:
             return False, None
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo vidrio por ID: {e}")
+            logger.error(f"Error obteniendo vidrio por ID: {e}")
             return False, None
 
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
@@ -980,7 +966,7 @@ class VidriosModel:
             return datos, total_registros
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo datos paginados: {e}")
+            logger.error(f"Error obteniendo datos paginados: {e}")
             # Fallback con datos demo en caso de error
             datos_demo = self._get_vidrios_demo()
             return datos_demo[offset:offset+limit], len(datos_demo)
@@ -1019,7 +1005,7 @@ class VidriosModel:
             return cursor.fetchone()[0]
 
         except Exception as e:
-            print(f"[ERROR VIDRIOS] Error obteniendo total de registros: {e}")
+            logger.error(f"Error obteniendo total de registros: {e}")
             return len(self._get_vidrios_demo())
 
     def _get_vidrios_demo(self):

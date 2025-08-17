@@ -1,28 +1,0 @@
-
-ìâ"
-        Decorador para agregar paginaciÃ³n automÃ¡tica a consultas.
-        
-        Args:
-            page_size: TamaÃ±o de pÃ¡gina por defecto
-            max_page_size: TamaÃ±o mÃ¡ximo de pÃ¡gina permitido
-        "strself
-ï ï(	page_size
-ï ï(1max_page_size
-ï3 ï(K"ô#
-!
-
-” ”(	"#unknown-value#*
-(
-
-÷ ”(%closure"#new-object#-
-+
-
-÷ ”("#set-field# page_size:1
-/
-
-÷ ”("#set-field# max_page_size:-
-+
-
-÷ ”("?python-partial-apply?:
-
-” ”(	*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\query_optimizer.py

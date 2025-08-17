@@ -1,48 +1,0 @@
-
-?rexus.ui.templates.base_module_view.BaseModuleView.apply_styles[
-OC:\Users\itachi\Desktop\martin\Rexus.app\rexus\ui\templates\base_module_view.pyƒ ƒ("2*ç
-2
-„ „(3{
-y
-
-‡# ‡(9
-%1"__id*_
-
-__unknown_file (C*A1
-/rexus.ui.components.base_components.RexusColors"
-
-BACKGROUND´
-±
-
-… ‰(
-%2"__concat*N
-
-… ‡("@>
-<
-            QWidget {{
-                background-color: *
-
-‡# ‡(9
-
-%1*-
-
-‡: ‰(
-;
-            }}
-        œ™
-
-… ‰(
-%3*R
-
-__unknown_file (64
-2rexus.ui.templates.base_module_view.BaseModuleView*"
-
-__unknown_file (
-
-%22setStyleSheet*
-3*;
-3
-base_module_view.py"
- (
-implicit returnB64
-2rexus.ui.templates.base_module_view.BaseModuleViewH

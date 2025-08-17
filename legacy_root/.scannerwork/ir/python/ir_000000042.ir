@@ -1,21 +1,0 @@
-
-
-"password"str
-	"usuario"str
-∫∞"
-        Obtiene las credenciales de desarrollo desde variables de entorno.
-        
-        Returns:
-            Dict con usuario y contrase√±a para desarrollo
-        "strself. .( "‘$
-"
-5 8(	"#new-object#Bdict)
-'
-6 6($"#get-field# dev_user: 
-
-6 6($"	#map-set#:-
-+
-7 7()"#get-field# dev_password: 
-
-7 7()	"	#map-set#:
-5 8(	*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\dev_auth_manager.py

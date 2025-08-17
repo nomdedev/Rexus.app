@@ -1,26 +1,0 @@
-
-ãÅ"
-    Decorador que maneja errores de autenticaci√≥n y autorizaci√≥n
-    mostrando mensajes de error apropiados al usuario.
-    
-    Args:
-        func: Funci√≥n a proteger
-        
-    Returns:
-        Funci√≥n decorada con manejo de errores
-    "strfunc
-º º($"º#
-!
-
-Á Á("#unknown-value#*
-(
-
-« Á(%closure"#new-object#(
-&
-
-« Á("#set-field# func:-
-+
-
-« Á("?python-partial-apply?:
-
-Á Á(*FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\core\auth_decorators.py

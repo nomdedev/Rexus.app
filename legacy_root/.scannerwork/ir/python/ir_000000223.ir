@@ -1,17 +1,0 @@
-
-«Ω"
-    Genera un salt criptogr√°ficamente seguro.
-    
-    Args:
-        length (int): Longitud del salt en bytes
-        
-    Returns:
-        str: Salt en formato hexadecimal
-    "strlength
-Ω Ω()"B.
-,
-
-« «($"
-secrets	token_hex:Bstr
-
-« «($*IC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\password_security.py

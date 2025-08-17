@@ -1,269 +1,0 @@
-
-[rexus.modules.administracion.contabilidad.controller.ContabilidadController.generar_reportel
-`C:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\administracion\contabilidad\controller.pyม ม("2*ใ
-13
-ฮ ฮ(9ศล
-
-ฮ ฮ(9
-%9*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2_generar_reporte_recibos*
-3
-4*น
-14
-อ อ(*
-
-
-อ อ(*
-%10"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte*'
-
-__unknown_file (	
-RECIBOS*
-13
-12*๋
-15
-ฬ ฬ(@ะอ
-
-ฬ ฬ(@
-%11*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2_generar_reporte_libro_contable*
-3
-4*ภ
-16
-ห ห(1ฃ
- 
-
-ห ห(1
-%12"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte*.
-
-__unknown_file (
-LIBRO_CONTABLE*
-14
-15*็
-17
-ส ส(<ฬษ
-
-ส ส(<
-%13*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2_generar_reporte_flujo_caja*
-3
-4*ผ
-18
-ษ ษ(-
-
-
-ษ ษ(-
-%14"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte**
-
-__unknown_file (
-
-FLUJO_CAJA*
-16
-17*ภ
-19
-ว ว(0ค
-ก
-
-ว ว(0
-%15"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte*/
-
-__unknown_file (
-BALANCE_GENERAL*
-7
-18*ฐ
-2
-ย ย(+”
-‘
-
-ร ร(
-%16"__id*v
-
-__unknown_file (Z*XM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController"
-model*
-19
-20*5
-3
-controller.py"
-ู ู(
-implicit return*ฎ
-4
-ื ื(?`
-^
-
-ื ื(>
-%1"__concat*+
-
-ื! ื(:
-Error generando reporte: *
-
-ื; ื(<
-
-eตฒ
-
-ื ื(?
-%2*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController*"
-
-__unknown_file (
-
-%12mostrar_error*
-3*โ
-7
-ศ ศ(9ศล
-
-ศ ศ(9
-%3*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2_generar_reporte_balance*
-3
-4*็
-8
-ิ ิ(?อส
-
-ิ ิ(?
-%4*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController*:
-
-__unknown_file (
-Tipo de reporte no vรกlido2mostrar_error*
-3
-4*๋
-9
-า า(Bัฮ
-
-า า(B
-%5*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2!_generar_reporte_pagos_materiales*
-3
-4*(
-20
-ฤ ฤ("
-
-ฤ ฤ(
-void*ฟ
-10
-ั ั(3ค
-ก
-
-ั ั(3
-%6"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte*0
-
-__unknown_file (
-PAGOS_MATERIALES*
-8
-9*ๆ
-11
-ะ ะ(<หศ
-
-ะ ะ(<
-%7*k
-
-__unknown_file (OM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadController**
-
-__unknown_file (
-
-
-parametros2_generar_reporte_pagos_obra*
-3
-4*ป
-12
-ฯ ฯ(-
-
-
-ฯ ฯ(-
-%8"	__compare*"
-
-__unknown_file (
-==*,
-
-__unknown_file (
-
-tipo_reporte**
-
-__unknown_file (
-
-PAGOS_OBRA*
-10
-11:
-
-ม ม(*
-tipo_reporte:
-
-ม, ม(;
-
-parametrosBOM
-Krexus.modules.administracion.contabilidad.controller.ContabilidadControllerH

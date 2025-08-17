@@ -1,74 +1,0 @@
-
-
-6int
-
-3int
-25int
-"por_estado"str
-	
-"BORRADOR"str
-
-1int
-"EN_PREPARACION"str
-;2"Estad√≠sticas demo cuando no hay conexi√≥n a BD."str
-"total_pedidos"str
-
-"APROBADO"str
-!"pedidos_mes"str
-"ENTREGADO"str
-"valor_total"str
-"urgentes_pendientes"str
-"CANCELADO"str
-
-8int
-
-5int
-
-
-2int
-45750.25float
-"PENDIENTE"str
-"15intself
-ã ã(#"Ó&
-$
-
-ç ö(	"#new-object#Bdict"
- 
-
-é é("	#map-set#:&
-$
-
-è ñ("#new-object#Bdict"
- 
-
-ê ê("	#map-set#:	
-"
- 
-
-ë ë("	#map-set#:"
- 
-
-í í("	#map-set#:"
- 
-
-ì ì(#"	#map-set#:"
- 
-
-î î("	#map-set#:"
- 
-
-ï ï("	#map-set#:"
- 
-
-è ñ("	#map-set#:"
- 
-
-ó ó(#"	#map-set#:"
- 
-
-ò ò($ "	#map-set#:"
- 
-
-ô ô(#"	#map-set#:!"
-
-ç ö(	*GC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\pedidos\model.py

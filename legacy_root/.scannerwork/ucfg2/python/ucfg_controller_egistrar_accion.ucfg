@@ -1,106 +1,0 @@
-
-Grexus.modules.auditoria.controller.AuditoriaController.registrar_accionZ
-NC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\auditoria\controller.pyò ò("2*ñ
-2
-£ Ø(}
-{
-
-∞ ∞(
-%6"__id*a
-
-__unknown_file (E*C8
-6rexus.modules.auditoria.controller.AuditoriaController"
-model*
-7
-8*ø
-7
-¥ ø(}
-{
-
-¥ ¥(
-%3"__id*a
-
-__unknown_file (E*C8
-6rexus.modules.auditoria.controller.AuditoriaController"
-modelá
-Ñ
-
-µ µ(+
-%4"__id*j
-
-__unknown_file (N*L8
-6rexus.modules.auditoria.controller.AuditoriaController"
-usuario_actualéã
-
-¥ ø(
-%5*"
-
-__unknown_file (
-
-%32registrar_accion:
-usuario
-
-%4:
-modulo
-
-AUDITOR√çA:
-accion
-
-
-accion:
-descripcion
-
-descripcion:$
-tabla_afectada
-
-tabla_afectada:
-registro_id
-
-registro_id:,
-valores_anteriores
-
-valores_anteriores:$
-valores_nuevos
-
-valores_nuevos:(
-nivel_criticidad
-
-nivel_criticidad:
-	resultado
-
-	resultado"
-
-¥ ø(
-
-%5*(
-8
-± ±("
-
-± ±(	
-
-False:
-
-ö ö(
-accion:
-
-õ õ(
-descripcion:
-
-ú ú(
-tabla_afectada:
-
-ù ù(
-registro_id:"
-
-û û(
-valores_anteriores:
-
-ü ü(
-valores_nuevos: 
-
-† †( 
-nivel_criticidad:
-
-° °(
-	resultadoB:8
-6rexus.modules.auditoria.controller.AuditoriaControllerH

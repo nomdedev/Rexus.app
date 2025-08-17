@@ -15,7 +15,9 @@ SELECT
     p.obra_id,
     COUNT(pd.id) as cantidad_items,
     SUM(pd.cantidad) as total_cantidad,
-    SUM(CASE WHEN pd.cantidad_pendiente > 0 THEN pd.cantidad_pendiente ELSE 0 END) as cantidad_pendiente
+    SUM(CASE WHEN (pd.cantidad - COALESCE(pd.cantidad_entregada, 0)) > 0 
+         THEN (pd.cantidad - COALESCE(pd.cantidad_entregada, 0)) 
+         ELSE 0 END) as cantidad_pendiente
 FROM pedidos p
 LEFT JOIN pedidos_detalle pd ON p.id = pd.pedido_id
 WHERE p.activo = 1

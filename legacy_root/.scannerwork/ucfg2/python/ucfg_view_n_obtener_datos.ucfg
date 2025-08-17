@@ -1,289 +1,0 @@
-
-9rexus.modules.compras.view.DialogNuevaOrden.obtener_datosR
-FC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\compras\view.pyÝ Ý("2*¼
-2
-Þ Þ(/
-
-ß é(	
-%1"dict|
-z
-
-à à(-
-%2"__id*`
-
-__unknown_file (D*B-
-+rexus.modules.compras.view.DialogNuevaOrden"
-input_proveedor><
-
-à à(4
-%3*"
-
-__unknown_file (
-
-%22text’
-
-
-à à(4
-%4"__mapSet*"
-
-__unknown_file (
-
-%1*)
-
-__unknown_file (
-	proveedor*"
-
-__unknown_file (
-
-%3
-}
-
-á á(3
-%5"__id*c
-
-__unknown_file (G*E-
-+rexus.modules.compras.view.DialogNuevaOrden"
-input_numero_orden><
-
-á á(:
-%6*"
-
-__unknown_file (
-
-%52text•
-’
-
-á á(:
-%7"__mapSet*"
-
-__unknown_file (
-
-%1*,
-
-__unknown_file (
-numero_orden*"
-
-__unknown_file (
-
-%6x
-v
-
-â â(,
-%8"__id*\
-
-__unknown_file (@*>-
-+rexus.modules.compras.view.DialogNuevaOrden"
-date_pedido><
-
-â â(3
-%9*"
-
-__unknown_file (
-
-%82dateCA
-
-â â(>
-%10*"
-
-__unknown_file (
-
-%92toPython—
-”
-
-â â(>
-%11"__mapSet*"
-
-__unknown_file (
-
-%1*,
-
-__unknown_file (
-fecha_pedido*#
-
-__unknown_file (
-
-%10z
-x
-
-ã& ã(7
-%12"__id*]
-
-__unknown_file (A*?-
-+rexus.modules.compras.view.DialogNuevaOrden"
-date_entrega@>
-
-ã& ã(>
-%13*#
-
-__unknown_file (
-
-%122dateDB
-
-ã& ã(I
-%14*#
-
-__unknown_file (
-
-%132toPython¡
-ž
-
-ã ã(I
-%15"__mapSet*"
-
-__unknown_file (
-
-%1*6
-
-__unknown_file (
-fecha_entrega_estimada*#
-
-__unknown_file (
-
-%14z
-x
-
-ä ä('
-%16"__id*]
-
-__unknown_file (A*?-
-+rexus.modules.compras.view.DialogNuevaOrden"
-combo_estadoGE
-
-ä ä(5
-%17*#
-
-__unknown_file (
-
-%162currentText‘
-Ž
-
-ä ä(5
-%18"__mapSet*"
-
-__unknown_file (
-
-%1*&
-
-__unknown_file (
-
-estado*#
-
-__unknown_file (
-
-%17}
-{
-
-å å(-
-%19"__id*`
-
-__unknown_file (D*B-
-+rexus.modules.compras.view.DialogNuevaOrden"
-input_descuentoA?
-
-å å(5
-%20*#
-
-__unknown_file (
-
-%192value”
-‘
-
-å å(5
-%21"__mapSet*"
-
-__unknown_file (
-
-%1*)
-
-__unknown_file (
-	descuento*#
-
-__unknown_file (
-
-%20}
-{
-
-æ æ(-
-%22"__id*`
-
-__unknown_file (D*B-
-+rexus.modules.compras.view.DialogNuevaOrden"
-input_impuestosA?
-
-æ æ(5
-%23*#
-
-__unknown_file (
-
-%222value”
-‘
-
-æ æ(5
-%24"__mapSet*"
-
-__unknown_file (
-
-%1*)
-
-__unknown_file (
-	impuestos*#
-
-__unknown_file (
-
-%23
-
-
-ç ç(5
-%25"__id*d
-
-__unknown_file (H*F-
-+rexus.modules.compras.view.DialogNuevaOrden"
-input_observacionesGE
-
-ç ç(C
-%26*#
-
-__unknown_file (
-
-%252toPlainText˜
-•
-
-ç ç(C
-%27"__mapSet*"
-
-__unknown_file (
-
-%1*-
-
-__unknown_file (
-observaciones*#
-
-__unknown_file (
-
-%26{y
-
-è  è(>
-%28*K
-
-__unknown_file (/-
-+rexus.modules.compras.view.DialogNuevaOrden2_obtener_usuario_actual›
-˜
-
-è è(>
-%29"__mapSet*"
-
-__unknown_file (
-
-%1*0
-
-__unknown_file (
-usuario_creacion*#
-
-__unknown_file (
-
-%28"
-
-ß é(	
-
-%1B/-
-+rexus.modules.compras.view.DialogNuevaOrdenH

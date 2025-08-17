@@ -1,20 +1,0 @@
-
-	"success"str
-H	?"Subm√≥dulos no disponibles. No se puede registrar movimiento."str
-falsebool
-"error"str
-6-"M√©todo fallback para registrar movimiento."strself
-–' –(+ datos_movimiento
-–- –(M"Ç&
-$
-
-“ ’(	"#new-object#Bdict"
- 
-
-” ”("	#map-set#:"
- 
-
-‘ ‘(S
-"	#map-set#:	
-
-“ ’(	*JC:\Users\itachi\Desktop\martin\Rexus.app\rexus\modules\inventario\model.py

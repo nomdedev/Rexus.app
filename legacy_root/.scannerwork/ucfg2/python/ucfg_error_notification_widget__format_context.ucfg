@@ -1,112 +1,0 @@
-
-Lrexus.utils.error_notification_widget.TechnicalDetailsDialog._format_context]
-QC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\error_notification_widget.py² ²("2*£
-2
-³ ³(0‰
-†
-
-´ ´(
-%8"__id*l
-
-__unknown_file (P*N>
-<rexus.utils.error_notification_widget.TechnicalDetailsDialog"
-
-error_info*
-7
-8*–
-4
-º º(om
-
-º º(
-%1"str.join*"
-
-__unknown_file (
-\n*%
-
-__unknown_file (	
-
-lines2join"
-
-º º(
-
-%1*‰
-6
-¹ ¹(-z
-x
-
-¹ ¹(,
-%2"__concat*
-
-¹ ¹(
-  *
-
-¹ ¹(!
-
-key*
-
-¹" ¹($
-: *
-
-¹% ¹(*	
-
-valuetr
-
-¹ ¹(-
-%3"list.append*%
-
-__unknown_file (	
-
-lines*"
-
-__unknown_file (
-
-%22append*
-4
-6*½
-7
-· ·(
-
-· ·(
-%4"listA
-?
-
-· ·(
-lines"__id*"
-
-__unknown_file (
-
-%4‰
-†
-
-¸ ¸()
-%5"__id*l
-
-__unknown_file (P*N>
-<rexus.utils.error_notification_widget.TechnicalDetailsDialog"
-
-error_infoxv
-
-¸ ¸(4
-%6"__mapGet*"
-
-__unknown_file (
-
-%5*'
-
-__unknown_file (	
-context2__getitem__?=
-
-¸ ¸(<
-%7*"
-
-__unknown_file (
-
-%62items*
-4
-6*7
-8
-µ µ()"&
-
-µ µ()
-No context availableB@>
-<rexus.utils.error_notification_widget.TechnicalDetailsDialogH

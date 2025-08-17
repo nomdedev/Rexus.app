@@ -14,8 +14,9 @@ from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance
 from rexus.utils.sql_query_manager import SQLQueryManager
 
-# Configurar logger
-logger = logging.getLogger(__name__)
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger("compras.model")
 
 
 class ComprasModel:
@@ -240,7 +241,7 @@ APROBADA,
             return productos_compra
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error obteniendo productos para compra: {e}")
+            logger.error(f"Error obteniendo productos para compra: {e}")
             return []
 
     @track_performance
@@ -286,12 +287,12 @@ APROBADA,
                 if hasattr(inventario_model, 'registrar_movimiento_inventario'):
                     inventario_model.registrar_movimiento_inventario(movimiento_data)
 
-                print(f"[INTEGRACIÓN] Stock actualizado para producto {producto_id}: +{cantidad_recibida}")
+                logger.info(f"Stock actualizado para producto {producto_id}: +{cantidad_recibida}")
 
             return True
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error actualizando stock por compra: {e}")
+            logger.error(f"Error actualizando stock por compra: {e}")
             return False
 
     @cached_query(ttl=600)
@@ -331,7 +332,7 @@ APROBADA,
             return {'disponible': False, 'stock_actual': 0}
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error verificando disponibilidad: {e}")
+            logger.error(f"Error verificando disponibilidad: {e}")
             return {'disponible': False, 'stock_actual': 0, 'error': str(e)}
 
     def obtener_estadisticas_compras(self, dias: int = 30) -> Dict[str, Any]:
@@ -550,7 +551,7 @@ APROBADA,
             }
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error obteniendo estadísticas: {e}")
+            logger.error(f"Error obteniendo estadísticas: {e}")
             return self._get_estadisticas_demo()
 
     def _get_estadisticas_demo(self) -> Dict[str, Any]:
@@ -688,11 +689,11 @@ APROBADA,
                 compra = dict(zip(columns, row))
                 compras.append(compra)
 
-            print(f"[COMPRAS] Búsqueda retornó {len(compras)} órdenes")
+            logger.info(f"Búsqueda retornó {len(compras)} órdenes")
             return compras
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error en búsqueda: {e}")
+            logger.error(f"Error en búsqueda: {e}")
             return []
 
     def cancelar_orden(self, orden_id: int, motivo: str) -> bool:
@@ -713,7 +714,7 @@ APROBADA,
             return cursor.rowcount > 0
 
         except Exception as e:
-            print(f"Error cancelando orden: {e}")
+            logger.error(f"Error cancelando orden: {e}")
             return False
 
     def aprobar_orden(self, orden_id: int, usuario_aprobacion: str) -> bool:
@@ -734,7 +735,7 @@ APROBADA,
             return cursor.rowcount > 0
 
         except Exception as e:
-            print(f"Error aprobando orden: {e}")
+            logger.error(f"Error aprobando orden: {e}")
             return False
 
     def obtener_datos_paginados(self, offset=0, limit=50, filtros=None):
@@ -789,7 +790,7 @@ APROBADA,
             return datos, total_registros
 
         except Exception as e:
-            print(f"[ERROR] Error obteniendo datos paginados: {e}")
+            logger.error(f"Error obteniendo datos paginados: {e}")
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
@@ -800,7 +801,7 @@ APROBADA,
                                                    filtros=filtros)
             return total
         except Exception as e:
-            print(f"[ERROR] Error obteniendo total de registros: {e}")
+            logger.error(f"Error obteniendo total de registros: {e}")
             return 0
 
     def _get_base_query(self):
@@ -824,7 +825,7 @@ APROBADA,
             Dict con datos de la compra o None si no existe
         """
         if not self.db_connection:
-            print("[ERROR COMPRAS] No hay conexión a base de datos")
+            logger.error("No hay conexión a base de datos")
             return None
 
         try:
@@ -862,7 +863,7 @@ APROBADA,
             return None
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error obteniendo compra por ID: {e}")
+            logger.error(f"Error obteniendo compra por ID: {e}")
             return None
 
     def eliminar_compra(self, compra_id: int) -> bool:
@@ -876,7 +877,7 @@ APROBADA,
             bool: True si se eliminó exitosamente
         """
         if not self.db_connection:
-            print("[ERROR COMPRAS] No hay conexión a base de datos")
+            logger.error("No hay conexión a base de datos")
             return False
 
         try:
@@ -885,7 +886,7 @@ APROBADA,
             # Verificar que existe la compra
             compra = self.obtener_compra_por_id(compra_id)
             if not compra:
-                print(f"[ERROR COMPRAS] No se encontró la compra {compra_id}")
+                logger.error(f"No se encontró la compra {compra_id}")
                 return False
 
             # Eliminar primero los detalles de la compra (foreign key constraint)
@@ -902,14 +903,14 @@ APROBADA,
             # Verificar que se eliminó
             rows_affected = result.rowcount
             if rows_affected > 0:
-                print(f"[COMPRAS] Compra {compra_id} eliminada exitosamente")
+                logger.info(f"Compra {compra_id} eliminada exitosamente")
                 return True
             else:
-                print(f"[ERROR COMPRAS] No se pudo eliminar la compra {compra_id}")
+                logger.error(f"No se pudo eliminar la compra {compra_id}")
                 return False
 
         except Exception as e:
-            print(f"[ERROR COMPRAS] Error eliminando compra: {e}")
+            logger.error(f"Error eliminando compra: {e}")
             # Rollback en caso de error
             try:
                 self.db_connection.rollback()

@@ -1,38 +1,0 @@
-
-Hrexus.utils.modern_form_components.ModernFormDialog.apply_modern_stylingZ
-NC:\Users\itachi\Desktop\martin\Rexus.app\rexus\utils\modern_form_components.pyž ž("2*³
-2
-Ÿ Ÿ(0œ™
-
-  ²(
-%1*S
-
-__unknown_file (75
-3rexus.utils.modern_form_components.ModernFormDialog* 
-
-__unknown_file (ƒ€
-ý
-            QDialog {
-                background-color: #f8f9fa;
-            }
-            QScrollArea {
-                border: none;
-                background-color: transparent;
-            }
-            QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit {
-                font-size: 13px;
-                padding: 8px;
-                border: none;
-                background-color: transparent;
-            }
-            QLineEdit:focus, QTextEdit:focus, QComboBox:focus, 
-            QSpinBox:focus, QDoubleSpinBox:focus, QDateEdit:focus {
-                outline: none;
-            }
-        2setStyleSheet*
-3*?
-3
-modern_form_components.py"
-¶ ¶
-implicit returnB75
-3rexus.utils.modern_form_components.ModernFormDialogH
