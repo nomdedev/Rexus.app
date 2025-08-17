@@ -148,3 +148,88 @@ UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f527' in posit
 2025-08-16 19:22:41 - cache - [32mINFO[0m - Sistema de logging inicializado
 2025-08-16 19:22:41 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
 2025-08-16 19:22:41 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:22:50 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:50 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:50 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:22:50 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:22:51 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:22:51 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:23:06 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:23:06 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:23:06 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:23:06 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:23:06 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:24:19 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:19 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:19 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:19 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:24:19 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:24:19 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:24:43 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:43 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:43 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:24:43 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:25:03 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:03 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:03 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:03 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:25:04 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:25:04 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:25:39 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:39 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:39 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:25:39 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:25:39 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:25:39 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:26:11 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:26:11 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:26:11 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:26:11 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:26:11 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:26:11 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:27:08 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:27:08 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:27:08 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:27:08 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:27:08 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:27:08 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:29:24 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:29:24 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:29:24 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:29:24 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:29:24 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:29:24 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:37:46 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:37:46 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:37:46 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:37:46 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:37:47 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:37:47 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:42:51 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:42:51 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:42:51 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:42:51 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:42:51 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:42:51 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:43:08 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:43:08 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:43:08 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:43:08 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:43:08 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:43:08 - rexus.modules.herrajes.inventario_integration - [33mWARNING[0m - Sin conexión a BD - funciones limitadas
+2025-08-16 19:46:25 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:46:25 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:46:25 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:46:25 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:49:12 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:49:12 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:49:12 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:49:12 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:52:55 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:52:55 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:52:55 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:52:55 - cache_manager - [32mINFO[0m - CacheManager inicializado
+2025-08-16 19:53:49 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:53:49 - cache - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:53:49 - cache_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-16 19:53:49 - cache_manager - [32mINFO[0m - CacheManager inicializado

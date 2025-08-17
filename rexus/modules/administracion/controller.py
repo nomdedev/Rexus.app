@@ -116,8 +116,12 @@ model=None,
 
             logger.info("[ADMINISTRACIÓN] Submódulos inicializados correctamente")
 
+        except ImportError as e:
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error importando submódulos: {e}")
+        except AttributeError as e:
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error configurando submódulos: {e}")
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error inicializando submódulos: {e}")
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error inesperado inicializando submódulos: {e}")
 
     def conectar_senales_submodulos(self):
         """Conecta las señales entre los submódulos."""

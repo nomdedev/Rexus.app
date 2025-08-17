@@ -46,6 +46,12 @@ valor: str,
         Returns:
             Tuple[bool, str]: (es_valido, mensaje_error)
         """
+        # Manejar None y convertir a string si es necesario
+        if valor is None:
+            valor = ""
+        elif not isinstance(valor, str):
+            valor = str(valor)
+            
         if not valor or not valor.strip():
             FormValidator._aplicar_estilo_error(campo)
             return False, f"{nombre_campo} es obligatorio"
@@ -271,12 +277,20 @@ def validacion_direccion(campo, direccion: str) -> Tuple[bool, str]:
 
 def validacion_codigo_producto(campo, codigo: str) -> Tuple[bool, str]:
     """Validación para códigos de producto."""
-    if not codigo.strip():
+    # Manejar None y convertir a string si es necesario
+    if codigo is None:
+        codigo = ""
+    elif not isinstance(codigo, str):
+        codigo = str(codigo)
+    
+    # Validar que no esté vacío después de limpiar espacios
+    codigo_limpio = codigo.strip()
+    if not codigo_limpio:
         FormValidator._aplicar_estilo_error(campo)
         return False, "El código es obligatorio"
 
     # Formato esperado: ABC-1234 o similar
-    if not re.match(r'^[A-Z]{2,4}-\d{3,6}$', codigo.upper()):
+    if not re.match(r'^[A-Z]{2,4}-\d{3,6}$', codigo_limpio.upper()):
         FormValidator._aplicar_estilo_error(campo)
         return False, "Formato de código inválido (ej: VID-1234, HER-5678)"
 

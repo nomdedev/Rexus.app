@@ -230,12 +230,8 @@ modulo,
                 else:
                     valores_new_str = str(valores_nuevos)
 
-            sql_insert = f"""
-            INSERT INTO [{tabla_validada}]
-            (usuario, modulo, accion, descripcion, tabla_afectada, registro_id,
-             valores_anteriores, valores_nuevos, nivel_criticidad, resultado, error_mensaje)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """
+            # Usar SQL query manager para inserción segura
+            sql_insert = self.sql_manager.get_query('auditoria', 'insert_audit_log')
 
             cursor.execute(
                 sql_insert,
@@ -373,14 +369,19 @@ modulo,
             if conditions:
                 where_clause = "WHERE " + " AND ".join(conditions)
 
-            sql_select = f"""
-            SELECT TOP {limite_seguro}
-                id, fecha_hora, usuario, modulo, accion, descripcion,
-                tabla_afectada, registro_id, nivel_criticidad, resultado
-            FROM [{tabla_validada}]
-            {where_clause}
-            ORDER BY fecha_hora DESC
-            """
+            # Usar SQL query manager (sin where_clause aún para simplicidad)
+            if not where_clause:
+                sql_select = self.sql_manager.get_query('auditoria', 'select_logs_recientes', limite=limite_seguro)
+            else:
+                # Fallback para queries con filtros complejos
+                sql_select = f"""
+                SELECT TOP {limite_seguro}
+                    id, fecha_hora, usuario, modulo, accion, descripcion,
+                    tabla_afectada, registro_id, nivel_criticidad, resultado
+                FROM [{tabla_validada}]
+                {where_clause}
+                ORDER BY fecha_hora DESC
+                """
 
             cursor.execute(sql_select, params)
             rows = cursor.fetchall()
@@ -418,34 +419,13 @@ modulo,
             cursor = self.db_connection.connection.cursor()
             fecha_limite = datetime.datetime.now() - datetime.timedelta(days=dias)
 
-            # Consultas de estadísticas
+            # Usar SQL query manager para estadísticas
             queries = {
-                "total_acciones": """
-                    SELECT COUNT(*) FROM auditoria_log
-                    WHERE fecha_hora >= ?
-                """,
-                "acciones_por_modulo": """
-                    SELECT modulo, COUNT(*) as cantidad
-                    FROM auditoria_log
-                    WHERE fecha_hora >= ?
-                    GROUP BY modulo
-                    ORDER BY cantidad DESC
-                """,
-                "acciones_por_usuario": """
-                    SELECT usuario, COUNT(*) as cantidad
-                    FROM auditoria_log
-                    WHERE fecha_hora >= ?
-                    GROUP BY usuario
-                    ORDER BY cantidad DESC
-                """,
-                "acciones_criticas": """
-                    SELECT COUNT(*) FROM auditoria_log
-                    WHERE fecha_hora >= ? AND nivel_criticidad IN ('ALTA', 'CRÍTICA')
-                """,
-                "acciones_fallidas": """
-                    SELECT COUNT(*) FROM auditoria_log
-                    WHERE fecha_hora >= ? AND resultado = 'FALLIDO'
-                """,
+                "total_acciones": self.sql_manager.get_query('auditoria', 'count_total_acciones'),
+                "acciones_por_modulo": self.sql_manager.get_query('auditoria', 'count_acciones_por_modulo'),
+                "acciones_por_usuario": self.sql_manager.get_query('auditoria', 'count_acciones_por_usuario'),
+                "acciones_criticas": self.sql_manager.get_query('auditoria', 'count_acciones_criticas'),
+                "acciones_fallidas": self.sql_manager.get_query('auditoria', 'count_acciones_fallidas'),
             }
 
             estadisticas = {}
@@ -488,10 +468,8 @@ modulo,
                 days=dias_conservar
             )
 
-            sql_delete = """
-            DELETE FROM auditoria_log
-            WHERE fecha_hora < ? AND nivel_criticidad NOT IN ('CRÍTICA')
-            """
+            # Usar SQL query manager para eliminación segura
+            sql_delete = self.sql_manager.get_query('auditoria', 'delete_logs_antiguos')
 
             cursor.execute(sql_delete, (fecha_limite,))
             registros_eliminados = cursor.rowcount

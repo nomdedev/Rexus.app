@@ -72,11 +72,11 @@ class ProductionDeployment:
         Returns:
             bool: True si el deployment fue exitoso
         """
-        print("🚀 INICIANDO DEPLOYMENT REXUS.APP V2.0.0")
-        print("=" * 60)
-        print(f"Timestamp: {self.timestamp}")
-        print(f"Directorio: {self.project_root}")
-        print("=" * 60)
+        logger.info("🚀 INICIANDO DEPLOYMENT REXUS.APP V2.0.0")
+        logger.info("=" * 60)
+        logger.info(f"Timestamp: {self.timestamp}")
+        logger.info(f"Directorio: {self.project_root}")
+        logger.info("=" * 60)
 
         try:
             # 1. Verificaciones pre-deployment

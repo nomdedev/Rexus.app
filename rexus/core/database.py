@@ -135,8 +135,8 @@ class DatabaseConnection:
         except (pyodbc.Error, pyodbc.DatabaseError) as e:
             logger.error(f"No se pudo cambiar a la base de datos {new_database}: {e}")
             return False
-        except Exception as e:
-            logger.error(f"Error inesperado cambiando a base de datos {new_database}: {e}")
+        except (AttributeError, OSError) as e:
+            logger.error(f"Error inesperado cambiando a base de datos {new_database}: {e}", exc_info=True)
             return False
 
     def connect(self):
@@ -183,8 +183,9 @@ class DatabaseConnection:
                 self._connection = pyodbc.connect(real_connection_string)
             print("[DB] Conexión exitosa OK\n")
             return True
-        except Exception as e:
+        except (pyodbc.Error, pyodbc.InterfaceError, pyodbc.OperationalError) as e:
             print(f"[DB ERROR] No se pudo conectar: {e}")
+            logger.error(f"Database connection failed: {e}", exc_info=True)
             self._connection = None
             print("[DB] ERROR: Error al intentar conectar.\n")
             return False
@@ -194,8 +195,9 @@ class DatabaseConnection:
         if self._connection:
             try:
                 self._connection.close()
-            except Exception as e:
+            except (pyodbc.Error, AttributeError) as e:
                 print(f"[DB ERROR] No se pudo cerrar la conexión: {e}")
+                logger.error(f"Database disconnect failed: {e}", exc_info=True)
             self._connection = None
 
     def close(self):

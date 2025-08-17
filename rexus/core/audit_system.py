@@ -11,9 +11,14 @@ FUNCIONALIDADES DE SEGURIDAD:
 
 import datetime
 import json
+import logging
+import sqlite3
 from enum import Enum
 from typing import Any, Dict, List, Optional
 from dataclasses import dataclass
+
+# Configure audit logger
+audit_logger = logging.getLogger("audit_system")
 
 
 class AuditLevel(Enum):
@@ -132,12 +137,15 @@ class AuditSystem:
             """)
 
             self.db_connection.connection.commit()
-            print("[CHECK] [AUDIT] Tabla de auditoría creada/verificada")
+            audit_logger.info("[CHECK] [AUDIT] Tabla de auditoría creada/verificada")
 
-        except Exception as e:
-            print(f"[ERROR] [AUDIT] Error creando tabla de auditoría: {e}")
+        except (sqlite3.Error, sqlite3.OperationalError, AttributeError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error creando tabla de auditoría: {e}", exc_info=True)
             if self.db_connection:
-                self.db_connection.connection.rollback()
+                try:
+                    self.db_connection.connection.rollback()
+                except Exception:
+                    pass  # Rollback could fail if connection is broken
 
     def log_event(self,
                   event_type: AuditEvent,
@@ -172,12 +180,12 @@ class AuditSystem:
             timestamp = datetime.datetime.now()
             detalles_json = json.dumps(detalles, default=str, ensure_ascii=False)
 
-            print(f"[SEARCH] [AUDIT {level.value}] {timestamp} | {event_type.value} | "
+            audit_logger.info(f"[SEARCH] [AUDIT {level.value}] {timestamp} | {event_type.value} | "
                   f"Usuario: {usuario_nombre or 'Sistema'} | Módulo: {modulo} | "
                   f"Acción: {accion} | Resultado: {resultado}")
 
             if level in [AuditLevel.CRITICAL, AuditLevel.SECURITY]:
-                print(f"[WARN] [AUDIT CRÍTICO] Detalles: {detalles_json}")
+                audit_logger.warning(f"[WARN] [AUDIT CRÍTICO] Detalles: {detalles_json}")
 
             # Guardar en base de datos si está disponible
             if self.db_connection:
@@ -207,8 +215,8 @@ class AuditSystem:
 
             return True
 
-        except Exception as e:
-            print(f"[ERROR] [AUDIT] Error registrando evento de auditoría: {e}")
+        except (sqlite3.Error, AttributeError, ValueError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error registrando evento de auditoría: {e}", exc_info=True)
             return False
 
     def log_login_success(self, usuario_id: int, usuario_nombre: str,
@@ -405,14 +413,14 @@ class AuditSystem:
                     try:
                         log_entry['detalles'] = json.loads(log_entry['detalles'])
                     except (json.JSONDecodeError, TypeError) as e:
-                        print(f"[WARNING AUDIT] Error parsing JSON details: {e}")
+                        audit_logger.warning(f"[WARNING AUDIT] Error parsing JSON details: {e}")
                         log_entry['detalles'] = str(log_entry['detalles'])
                 logs.append(log_entry)
 
             return logs
 
-        except Exception as e:
-            print(f"[ERROR] [AUDIT] Error obteniendo logs de auditoría: {e}")
+        except (sqlite3.Error, AttributeError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error obteniendo logs de auditoría: {e}", exc_info=True)
             return []
 
     def get_security_summary(self, dias: int = 30) -> Dict[str, Any]:
@@ -477,8 +485,8 @@ class AuditSystem:
                 "fecha_fin": datetime.datetime.now()
             }
 
-        except Exception as e:
-            print(f"[ERROR] [AUDIT] Error obteniendo resumen de seguridad: {e}")
+        except (sqlite3.Error, AttributeError, ValueError) as e:
+            audit_logger.error(f"[ERROR] [AUDIT] Error obteniendo resumen de seguridad: {e}", exc_info=True)
             return {}
 
 

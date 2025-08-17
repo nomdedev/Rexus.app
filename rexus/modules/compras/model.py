@@ -740,8 +740,7 @@ APROBADA,
             cursor.execute("""
             UPDATE compras
             SET estado = 'CANCELADA',
-                fecha_cancelacion = GETDATE(),
-                motivo_cancelacion = ?
+                observaciones = CONCAT(ISNULL(observaciones, ''), ' [CANCELADA: ', ?, ']')
             WHERE id = ?
             """, (motivo, orden_id))
 
@@ -762,8 +761,7 @@ APROBADA,
             cursor.execute("""
             UPDATE compras
             SET estado = 'APROBADA',
-                fecha_aprobacion = GETDATE(),
-                usuario_aprobacion = ?
+                observaciones = CONCAT(ISNULL(observaciones, ''), ' [APROBADA POR: ', ?, ']')
             WHERE id = ?
             """, (usuario_aprobacion, orden_id))
 
@@ -842,16 +840,13 @@ APROBADA,
 
     def _get_base_query(self):
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
-        # Esta es una implementación genérica
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        # FIXED: SQL Injection vulnerability
-        return "SELECT * FROM ?", (tabla_principal,)
+        # Esta es una implementación genérica - tabla fija para evitar SQL injection
+        return "SELECT * FROM compras"
 
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
-        tabla_principal = getattr(self, 'tabla_principal', 'tabla_principal')
-        # FIXED: SQL Injection vulnerability
-        return "SELECT COUNT(*) FROM ?", (tabla_principal,)
+        # Esta es una implementación genérica - tabla fija para evitar SQL injection
+        return "SELECT COUNT(*) FROM compras"
 
     def obtener_compra_por_id(self, compra_id: int) -> Dict[str, Any]:
         """
@@ -870,13 +865,14 @@ APROBADA,
         try:
             cursor = self.db_connection.cursor()
             
-            query = f"""
+            # Usar tabla fija para evitar SQL injection
+            query = """
                 SELECT TOP 1 
                     id, proveedor, numero_orden, fecha_pedido, 
                     fecha_entrega_estimada, estado, observaciones,
                     usuario_creacion, fecha_creacion, descuento, 
-                    impuestos, total_final
-                FROM {self.tabla_compras}
+                    impuestos
+                FROM compras
                 WHERE id = ?
             """
             
@@ -895,8 +891,7 @@ APROBADA,
                     'usuario_creacion': row[7],
                     'fecha_creacion': row[8],
                     'descuento': row[9],
-                    'impuestos': row[10],
-                    'total_final': row[11]
+                    'impuestos': row[10]
                 }
             
             return None
@@ -929,11 +924,11 @@ APROBADA,
                 return False
 
             # Eliminar primero los detalles de la compra (foreign key constraint)
-            delete_details_query = f"DELETE FROM {self.tabla_detalle_compras} WHERE compra_id = ?"
+            delete_details_query = "DELETE FROM detalle_compras WHERE compra_id = ?"
             cursor.execute(delete_details_query, (compra_id,))
             
             # Eliminar la compra principal
-            delete_query = f"DELETE FROM {self.tabla_compras} WHERE id = ?"
+            delete_query = "DELETE FROM compras WHERE id = ?"
             result = cursor.execute(delete_query, (compra_id,))
             
             # Confirmar transacción

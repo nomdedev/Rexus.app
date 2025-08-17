@@ -77,10 +77,12 @@ class ModuleManager:
             print(f"[{module_name}] Módulo cargado exitosamente")
             return controller
 
-        except Exception as e:
+        except (ImportError, AttributeError, ModuleNotFoundError) as e:
             print(f"[{module_name}] Error cargando módulo: {e}")
             import traceback
-
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Module loading failed for {module_name}: {e}", exc_info=True)
             traceback.print_exc()
             return None
 
@@ -141,8 +143,10 @@ class ModuleManager:
             print(f"[CHECK] [{module_name}] Módulo cargado exitosamente")
             return view
 
-        except Exception as e:
-            logger.error([{module_name}] Error cargando módulo: {e})
+        except (ImportError, AttributeError, ModuleNotFoundError) as e:
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"[{module_name}] Error cargando módulo: {e}", exc_info=True)
 
             # Mostrar traceback completo para debugging
             import traceback
@@ -171,12 +175,14 @@ class ModuleManager:
                 model = model_class()
                 print(f"[{module_name}] Modelo creado sin conexión BD (modo demo)")
             return model
-        except Exception as e:
+        except (ImportError, TypeError, AttributeError) as e:
             print(f"[{module_name}] Error específico en modelo: {e}")
             import traceback
-
+            import logging
+            logger = logging.getLogger(__name__)
+            logger.error(f"Model creation failed for {module_name}: {e}", exc_info=True)
             traceback.print_exc()
-            raise Exception(f"Error creando modelo: {e}")
+            raise ImportError(f"Error creando modelo: {e}") from e
 
     def _create_view_safely(self, view_class, module_name):
         """Crea vista con validación de UI."""

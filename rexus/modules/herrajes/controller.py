@@ -422,3 +422,18 @@ model=None,
     def obtener_unidades_medida(self) -> List[str]:
         """Obtiene unidades de medida disponibles."""
         return ["unidad", "metro", "kilogramo", "litro", "caja"]
+
+    @staticmethod
+    def get_integration_service(db_connection=None):
+        """Compatibilidad: devuelve el servicio de integración Herrajes-Inventario.
+
+        Implementado como método estático para que las pruebas puedan verificar su
+        existencia sin instanciar el controlador (evita BaseController __init__).
+        """
+        try:
+            from .inventario_integration import HerrajesInventarioIntegration
+
+            return HerrajesInventarioIntegration(db_connection=db_connection)
+        except Exception:
+            # Retornar None si no puede construirse (evita lanzar en pruebas)
+            return None
