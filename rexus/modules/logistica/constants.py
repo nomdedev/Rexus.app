@@ -4,27 +4,39 @@
 class LogisticaConstants:
     """Constantes para el módulo de Logística"""
 
-    # Mensajes
+    # Mensajes de estado
     TABLA_NO_DISPONIBLE = "Tabla de transportes no disponible"
-    EDITAR_ICON = "✏️ Editar"
-    ESTADO_EN_TRANSITO = "En tránsito"
-    ESTADO_LABEL = "Estado:"
-    VALIDACION_LABEL = "Validación"
-    HTML_EXTENSION = ".html"
+    ESTADO_TRANSITO = "En tránsito"
+    ETIQUETA_ESTADO = "Estado:"
+    VALIDACION = "Validación"
 
     # Ubicaciones
     ALMACEN_CENTRAL = "Almacén Central"
-    ALMACEN_CENTRAL_DIRECCION = "Calle 7 entre 47 y 48, La Plata"
     SUCURSAL_NORTE = "Sucursal Norte"
-    SUCURSAL_NORTE_DIRECCION = "Av. 13 y 44, La Plata"
     DEPOSITO_SUR = "Depósito Sur"
-    DEPOSITO_SUR_DIRECCION = "Calle 120 y 610, La Plata"
     CENTRO_DISTRIBUCION = "Centro Distribución"
-    CENTRO_DISTRIBUCION_DIRECCION = "Av. 1 y 60, La Plata"
+
+    # Direcciones
+    DIRECCION_ALMACEN_CENTRAL = "Calle 7 entre 47 y 48, La Plata"
+    DIRECCION_SUCURSAL_NORTE = "Av. 13 y 44, La Plata"
+    DIRECCION_DEPOSITO_SUR = "Calle 120 y 610, La Plata"
+    DIRECCION_CENTRO = "Av. 1 y 60, La Plata"
 
     # Ciudades
-    BUENOS_AIRES = "Buenos Aires"
-    LA_PLATA = "La Plata"
+    CIUDAD_BUENOS_AIRES = "Buenos Aires"
+    CIUDAD_LA_PLATA = "La Plata"
+
+    # Archivos
+    EXTENSION_HTML = ".html"
+
+    # Botones
+    BOTON_EDITAR = "✏️ Editar"
+
+    # UI Constants
+    MIN_WEBVIEW_HEIGHT = 400
+    DIALOG_MIN_WIDTH = 400
+    FONT_SIZE_SMALL = "10px"
+    PADDING_SMALL = "4px"
 
     # Estilos repetidos
     CARD_STYLE = """

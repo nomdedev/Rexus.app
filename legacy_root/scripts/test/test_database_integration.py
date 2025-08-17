@@ -8,6 +8,7 @@ the migration was successful and models work with real data.
 import sys
 import os
 import pyodbc
+import pytest
 from datetime import datetime
 
 # Add project root to path
@@ -70,12 +71,10 @@ class MockConnection:
 def test_database_connection():
     """Test basic database connectivity."""
     print("\n[TEST] Database Connection...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [FAIL] Could not connect to database")
-            return False
+            pytest.skip("Could not connect to database")
 
         cursor = mock_conn.cursor()
 
@@ -92,23 +91,22 @@ def test_database_connection():
         print(f"  [OK] Products in database: {productos_count}")
         print(f"  [OK] Product assignments: {obras_count}")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] Database connection test failed: {e}")
-        return False
+        pytest.fail(f"Database connection test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_inventario_with_database():
     """Test InventarioModel with database connection."""
     print("\n[TEST] InventarioModel with Database...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True  # Don't fail the test, just skip
+            pytest.skip("No database connection available")
 
         # Initialize model with database connection
         inventario = InventarioModel(db_connection=mock_conn.connection)
@@ -136,23 +134,22 @@ def test_inventario_with_database():
         stats = inventario.obtener_estadisticas_inventario()
         print(f"  [OK] Statistics: {stats.get('total_productos', 0)} products total")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] InventarioModel database test failed: {e}")
-        return False
+        pytest.fail(f"InventarioModel database test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_herrajes_with_database():
     """Test HerrajesModel with database connection."""
     print("\n[TEST] HerrajesModel with Database...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True
+            pytest.skip("No database connection available")
 
         # Initialize model with database connection
         herrajes = HerrajesModel(db_connection=mock_conn.connection)
@@ -175,23 +172,22 @@ def test_herrajes_with_database():
         stats = herrajes.obtener_estadisticas()
         print(f"  [OK] Statistics: {stats.get('total_herrajes', 0)} herrajes")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] HerrajesModel database test failed: {e}")
-        return False
+        pytest.fail(f"HerrajesModel database test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_vidrios_with_database():
     """Test VidriosModel with database connection."""
     print("\n[TEST] VidriosModel with Database...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True
+            pytest.skip("No database connection available")
 
         # Initialize model with database connection
         vidrios = VidriosModel(db_connection=mock_conn.connection)
@@ -210,23 +206,22 @@ def test_vidrios_with_database():
         stats = vidrios.obtener_estadisticas()
         print(f"  [OK] Statistics: {stats.get('total_vidrios', 0)} vidrios")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] VidriosModel database test failed: {e}")
-        return False
+        pytest.fail(f"VidriosModel database test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_pedidos_with_database():
     """Test PedidosModel with database connection."""
     print("\n[TEST] PedidosModel with Database...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True
+            pytest.skip("No database connection available")
 
         # Initialize model with database connection
         pedidos = PedidosModel(db_connection=mock_conn.connection)
@@ -244,23 +239,22 @@ def test_pedidos_with_database():
         stats = pedidos.obtener_estadisticas()
         print(f"  [OK] Statistics: {stats.get('total_pedidos', 0)} pedidos")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] PedidosModel database test failed: {e}")
-        return False
+        pytest.fail(f"PedidosModel database test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_obras_with_database():
     """Test ObrasModel with database connection."""
     print("\n[TEST] ObrasModel with Database...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True
+            pytest.skip("No database connection available")
 
         # Initialize model with database connection
         obras = ObrasModel(db_connection=mock_conn.connection)
@@ -279,23 +273,22 @@ def test_obras_with_database():
         stats = obras.obtener_estadisticas_obras()
         print(f"  [OK] Statistics: {stats.get('total_obras', 0)} obras")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] ObrasModel database test failed: {e}")
-        return False
+        pytest.fail(f"ObrasModel database test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def test_cross_model_integration():
     """Test integration between models using database."""
     print("\n[TEST] Cross-Model Integration...")
-
     try:
         mock_conn = MockConnection()
         if not mock_conn.connected:
-            print("  [SKIP] No database connection available")
-            return True
+            pytest.skip("No database connection available")
 
         # Initialize all models
         inventario = InventarioModel(db_connection=mock_conn.connection)
@@ -315,12 +308,13 @@ def test_cross_model_integration():
             productos_asignados = obras.obtener_productos_obra(obra_id)
             print(f"  [OK] Integration check: Obra {obra_id} has {len(productos_asignados)} products assigned")
 
-        mock_conn.close()
-        return True
-
     except Exception as e:
-        print(f"  [FAIL] Cross-model integration test failed: {e}")
-        return False
+        pytest.fail(f"Cross-model integration test failed: {e}")
+    finally:
+        try:
+            mock_conn.close()
+        except Exception:
+            pass
 
 
 def main():

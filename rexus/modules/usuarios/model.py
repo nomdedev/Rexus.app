@@ -31,9 +31,13 @@ MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
 para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
+import logging
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Configurar logger
+logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
@@ -120,10 +124,10 @@ class UsuariosModel:
         self.security_available = SECURITY_AVAILABLE
         if self.security_available and data_sanitizer:
             self.data_sanitizer = data_sanitizer
-            print("OK [USUARIOS] Utilidades de seguridad cargadas")
+            logger.info("OK [USUARIOS] Utilidades de seguridad cargadas")
         else:
             self.data_sanitizer = None
-            print("WARNING [USUARIOS] Utilidades de seguridad no disponibles")
+            logger.warning("WARNING [USUARIOS] Utilidades de seguridad no disponibles")
 
         # Inicializar gestores de submódulos (opcional)
         try:

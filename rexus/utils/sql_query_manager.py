@@ -23,9 +23,9 @@ class SQLQueryManager:
             sql_base_path: Ruta base donde se encuentran los archivos SQL
         """
         if sql_base_path is None:
-            # Usar la estructura existente en scripts/sql
+            # Usar la estructura definida en CLAUDE.md: legacy_root/scripts/sql/
             current_dir = Path(__file__).parent.parent.parent
-            self.sql_base_path = current_dir / "scripts" / "sql"
+            self.sql_base_path = current_dir / "legacy_root" / "scripts" / "sql"
         else:
             self.sql_base_path = Path(sql_base_path)
 

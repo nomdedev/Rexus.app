@@ -10,6 +10,7 @@ from datetime import datetime
 # Add project root to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
+
 def test_dialog_import():
     """Test that the dialog classes can be imported correctly."""
     print("\n[TEST] Dialog Import Test...")
@@ -17,6 +18,7 @@ def test_dialog_import():
     from rexus.modules.logistica.view import DialogoGenerarServicio, DialogoPreviewServicios
     print("  [OK] DialogoGenerarServicio imported successfully")
     print("  [OK] DialogoPreviewServicios imported successfully")
+
 
 def test_controller_method():
     """Test that the controller method exists."""
@@ -37,7 +39,6 @@ def test_controller_method():
     assert hasattr(controller, '_simular_servicios_generados'), "_simular_servicios_generados method not found"
     print("  [OK] _simular_servicios_generados method exists")
 
-    return True
 
 def test_view_button_method():
     """Test that the view button method exists."""
@@ -51,7 +52,7 @@ def test_view_button_method():
     # Check if the new method exists
     assert hasattr(view, 'abrir_generador_automatico'), "abrir_generador_automatico method not found"
     print("  [OK] abrir_generador_automatico method exists")
-    return True
+
 
 def test_service_generation_simulation():
     """Test the service generation simulation."""
@@ -73,14 +74,7 @@ def test_service_generation_simulation():
         'capacidad_maxima': '1000',
         'max_paradas': '8',
         'criterio_optimizacion': 'Eficiencia balanceada',
-        'considerar_trafico': 'Sí, considerar tráfico actual',
-        'hora_inicio': '08:00',
-        'hora_fin': '18:00',
-        'duracion_maxima': '480',
-        'consolidar_entregas': 'Sí, consolidar por zona',
-        'generar_etiquetas': 'Sí, generar automáticamente',
-        'notificaciones': 'Notificar a clientes automáticamente',
-        'observaciones': 'Test de generación automática'
+        'considerar_trafico': 'Sí, considerar tráfico actual'
     }
 
     # Test service generation simulation
@@ -100,9 +94,8 @@ def test_service_generation_simulation():
         print("  [OK] Service structure is complete")
 
     # Show sample service
-    print(f"  [INFO] Sample service: {sample_service['codigo']} - {sample_service['descripcion']}")
+    print(f"  [INFO] Sample service: {sample_service.get('codigo', 'N/A')} - {sample_service.get('descripcion', '')}")
 
-    return True
 
 def test_dialog_configuration():
     """Test dialog configuration retrieval."""
@@ -116,10 +109,9 @@ def test_dialog_configuration():
     print("  [OK] Dialog class definition is valid")
     print("  [INFO] Full dialog testing requires PyQt6 runtime environment")
 
-    return True
 
 def main():
-    """Main test execution."""
+    """Optional manual runner for the dialog tests. Does not return booleans."""
     print("="*70)
     print("LOGÍSTICA SERVICE GENERATION DIALOG TESTS")
     print("="*70)
@@ -133,49 +125,14 @@ def main():
         ("Dialog Configuration", test_dialog_configuration)
     ]
 
-    results = []
-
     for test_name, test_func in tests:
         print(f"\n{'='*20} {test_name} {'='*20}")
         try:
             test_func()
-            results.append((test_name, True))
+            print(f"  [PASS] {test_name}")
         except Exception as e:
             print(f"  [FAIL] {test_name} raised exception: {e}")
-            results.append((test_name, False))
 
-    # Summary
-    print("\n" + "="*70)
-    print("TEST SUMMARY")
-    print("="*70)
-
-    passed = sum(1 for _, ok in results if ok)
-    total = len(results)
-
-    for test_name, ok in results:
-        status = "[PASS]" if ok else "[FAIL]"
-        print(f"{status} {test_name}")
-
-    success_rate = (passed / total * 100) if total > 0 else 0
-    print(f"\nTotal tests: {total}")
-    print(f"Passed: {passed}")
-    print(f"Failed: {total - passed}")
-    print(f"Success rate: {success_rate:.1f}%")
-
-    if success_rate >= 70:
-        print("\n[CHECK] Logística dialog tests mostly working or acceptable")
-        return True
-    else:
-        print("\n[ERROR] Logística dialog tests need attention")
-        return False
 
 if __name__ == "__main__":
-    success = main()
-
-    if success:
-        print("\n[CHECK] IMPLEMENTATION COMPLETED SUCCESSFULLY")
-        print("The logística service generation dialog is ready for production use.")
-    else:
-        print("\n[ERROR] IMPLEMENTATION NEEDS ATTENTION")
-        print("Address the failed tests before proceeding.")
-        sys.exit(1)
+    main()

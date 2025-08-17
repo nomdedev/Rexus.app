@@ -13,13 +13,13 @@ from datetime import datetime, date
 # Add project root to path
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
-# Import consolidated models
+# Import consolidated models  
 try:
-    from src.modules.inventario.model_consolidado import InventarioModel
-    from src.modules.herrajes.model_consolidado import HerrajesModel
-    from src.modules.vidrios.model_consolidado import VidriosModel
-    from src.modules.pedidos.model_consolidado import PedidosModel
-    from src.modules.obras.model_consolidado import ObrasModel
+    from rexus.modules.inventario.model_consolidado import InventarioModel
+    from rexus.modules.herrajes.model_consolidado import HerrajesModel
+    from rexus.modules.vidrios.model_consolidado import VidriosModel
+    from rexus.modules.pedidos.model_consolidado import PedidosModel
+    from rexus.modules.obras.model_consolidado import ObrasModel
     print("[CHECK] All consolidated models imported successfully")
 except ImportError as e:
     print(f"[ERROR] Error importing consolidated models: {e}")
@@ -302,10 +302,10 @@ class ModelTester:
 
             # Test state validation
             valida = pedidos._validar_transicion_estado("BORRADOR", "PENDIENTE")
-            assert valida == True, "Valid state transition should return True"
+            assert valida, "Valid state transition should return True"
 
             invalida = pedidos._validar_transicion_estado("ENTREGADO", "BORRADOR")
-            assert invalida == False, "Invalid state transition should return False"
+            assert not invalida, "Invalid state transition should return False"
 
             self.results["pedidos"]["business_logic"] = "[CHECK] PASS"
             print("  [CHECK] PedidosModel business logic: PASS")

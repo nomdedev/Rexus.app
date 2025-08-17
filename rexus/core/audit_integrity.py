@@ -41,8 +41,11 @@ except ImportError:
 try:
     from rexus.utils.secure_logger import log_security_event
 except ImportError:
+    import logging
+    audit_logger = logging.getLogger("audit_integrity")
     def log_security_event(event_type: str, details: dict, severity: str = "INFO"):
-        print(f"AUDIT LOG [{severity}] {event_type}: {details}")
+        level = getattr(logging, severity.upper(), logging.INFO)
+        audit_logger.log(level, f"AUDIT LOG [{severity}] {event_type}: {details}")
 
 
 class IntegrityStatus(Enum):

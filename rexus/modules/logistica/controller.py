@@ -1,5 +1,7 @@
 """Controlador de Logística"""
 
+import time
+from datetime import datetime, timedelta
 from PyQt6.QtCore import QObject, pyqtSignal
 from rexus.utils.error_handler import error_boundary as safe_method_decorator
 from rexus.core.auth_decorators import auth_required, admin_required
@@ -303,6 +305,288 @@ model=None,
             self.mostrar_error(error_msg)
             return False, error_msg, None
 
+    @safe_method_decorator
+    def generar_servicios_automaticos(self, criterios=None):
+        """Genera servicios automáticamente según criterios especificados.
+        
+        Args:
+            criterios (dict): Criterios para la generación automática
+                - tipo_servicio: 'entrega', 'recoleccion', 'mixto'
+                - zona_geografica: área de cobertura  
+                - prioridad: 'alta', 'media', 'baja'
+                - fecha_limite: fecha máxima para completar servicios
+                - cantidad_maxima: número máximo de servicios a generar
+                
+        Returns:
+            tuple: (exito: bool, resultado: dict|str)
+        """
+        try:
+            # Validar criterios de entrada
+            criterios_validados = self._validar_criterios_generacion(criterios)
+            if not criterios_validados:
+                return False, "Criterios de generación inválidos"
+            
+            logger.info(f"Iniciando generación automática de servicios con criterios: {criterios_validados}")
+            
+            # Delegar al modelo si tiene implementación específica
+            if self.model and hasattr(self.model, 'generar_servicios_automaticos'):
+                result = self.model.generar_servicios_automaticos(criterios_validados)
+                logger.info(f"Generación delegada al modelo, resultado: {result}")
+                return True, result
+            
+            # Implementación básica usando procesamiento interno
+            servicios_generados = self._procesar_generacion_servicios(criterios_validados)
+            
+            # Registrar en auditoría si está disponible
+            try:
+                self._registrar_generacion_auditoria(criterios_validados, servicios_generados)
+            except Exception as audit_error:
+                logger.warning(f"No se pudo registrar en auditoría: {audit_error}")
+            
+            resultado = {
+                'servicios_generados': servicios_generados,
+                'criterios_aplicados': criterios_validados,
+                'timestamp': time.time(),
+                'cantidad': len(servicios_generados.get('servicios', []))
+            }
+            
+            logger.info(f"Generación automática completada: {resultado['cantidad']} servicios generados")
+            return True, resultado
+            
+        except ValueError as e:
+            logger.error(f"Error de validación en generación de servicios: {e}")
+            return False, f"Error de validación: {str(e)}"
+        except Exception as e:
+            logger.error(f"Error inesperado generando servicios automáticos: {e}", exc_info=True)
+            return False, f"Error interno: {str(e)}"
+    
+    def _validar_criterios_generacion(self, criterios):
+        """Valida y normaliza criterios de generación."""
+        if not criterios:
+            criterios = {}
+        
+        # Validar y normalizar tipo de servicio
+        tipos_validos = ['entrega', 'recoleccion', 'mixto']
+        tipo = criterios.get('tipo_servicio', 'mixto')
+        if tipo not in tipos_validos:
+            logger.warning(f"Tipo de servicio inválido '{tipo}', usando 'mixto'")
+            tipo = 'mixto'
+            
+        # Validar prioridad
+        prioridades_validas = ['alta', 'media', 'baja']
+        prioridad = criterios.get('prioridad', 'media')
+        if prioridad not in prioridades_validas:
+            logger.warning(f"Prioridad inválida '{prioridad}', usando 'media'")
+            prioridad = 'media'
+        
+        # Validar cantidad máxima (límite de seguridad)
+        cantidad_maxima = criterios.get('cantidad_maxima', 10)
+        try:
+            cantidad_maxima = min(int(cantidad_maxima), 50)  # Límite de 50 servicios
+        except (ValueError, TypeError):
+            cantidad_maxima = 10
+        
+        criterios_validados = {
+            'tipo_servicio': tipo,
+            'zona_geografica': criterios.get('zona_geografica', 'metropolitana'),
+            'prioridad': prioridad,
+            'cantidad_maxima': cantidad_maxima,
+            'fecha_limite': criterios.get('fecha_limite'),
+            'cliente_id': criterios.get('cliente_id'),
+            'obra_id': criterios.get('obra_id')
+        }
+        
+        return criterios_validados
+
+    def _procesar_generacion_servicios(self, criterios=None):
+        """Procesamiento interno para generación de servicios.
+        
+        Genera servicios logísticos basado en criterios específicos,
+        incluyendo rutas optimizadas y asignación de recursos.
+        
+        Args:
+            criterios (dict): Criterios validados de generación
+            
+        Returns:
+            dict: Resumen de servicios generados
+        """
+        try:
+            # Si el modelo provee la lógica, delegar
+            if self.model and hasattr(self.model, 'procesar_generacion_servicios'):
+                return self.model.procesar_generacion_servicios(criterios)
+
+            # Implementación básica de generación de servicios
+            servicios_generados = []
+            cantidad_objetivo = criterios.get('cantidad_maxima', 10)
+            tipo_servicio = criterios.get('tipo_servicio', 'mixto')
+            zona = criterios.get('zona_geografica', 'metropolitana')
+            prioridad = criterios.get('prioridad', 'media')
+            
+            logger.debug(f"Procesando generación: {cantidad_objetivo} servicios tipo '{tipo_servicio}' en zona '{zona}'")
+            
+            # Generar servicios según tipo
+            for i in range(cantidad_objetivo):
+                servicio = self._crear_servicio_automatico(i + 1, tipo_servicio, zona, prioridad, criterios)
+                servicios_generados.append(servicio)
+            
+            # Optimizar rutas si es posible
+            servicios_optimizados = self._optimizar_rutas_servicios(servicios_generados, zona)
+            
+            resultado = {
+                "generados": len(servicios_optimizados),
+                "servicios": servicios_optimizados,
+                "zona_cobertura": zona,
+                "tipo_predominante": tipo_servicio,
+                "prioridad_general": prioridad,
+                "rutas_optimizadas": len(set(s.get('ruta_id') for s in servicios_optimizados))
+            }
+            
+            logger.info(f"Procesamiento completado: {resultado['generados']} servicios, {resultado['rutas_optimizadas']} rutas")
+            return resultado
+            
+        except Exception as e:
+            logger.error(f"Error en _procesar_generacion_servicios: {e}", exc_info=True)
+            return {"generados": 0, "error": str(e)}
+    
+    def _crear_servicio_automatico(self, numero, tipo_servicio, zona, prioridad, criterios):
+        """Crea un servicio individual con datos realistas."""
+        base_time = datetime.now()
+        
+        # Determinar tipo específico si es mixto
+        if tipo_servicio == 'mixto':
+            tipo_especifico = 'entrega' if numero % 2 == 0 else 'recoleccion'
+        else:
+            tipo_especifico = tipo_servicio
+        
+        # Generar ubicaciones realistas según zona
+        ubicaciones = self._generar_ubicaciones_zona(zona)
+        origen, destino = ubicaciones
+        
+        # Calcular tiempos estimados
+        tiempo_estimado = self._calcular_tiempo_estimado(origen, destino, prioridad)
+        fecha_programada = base_time + timedelta(hours=numero * 2)  # Distribuir en el tiempo
+        
+        servicio = {
+            'id': f'SRV_{zona.upper()[:3]}_{numero:03d}_{int(time.time() % 10000)}',
+            'tipo': tipo_especifico,
+            'descripcion': f'Servicio de {tipo_especifico} automático #{numero}',
+            'origen': origen,
+            'destino': destino,
+            'zona_geografica': zona,
+            'prioridad': prioridad,
+            'estado': 'PROGRAMADO',
+            'fecha_creacion': base_time.isoformat(),
+            'fecha_programada': fecha_programada.isoformat(),
+            'tiempo_estimado_minutos': tiempo_estimado,
+            'ruta_id': f'R_{zona[:3].upper()}_{(numero - 1) // 3 + 1}',  # Agrupar de 3 en 3
+            'cliente_id': criterios.get('cliente_id'),
+            'obra_id': criterios.get('obra_id'),
+            'recursos_necesarios': self._determinar_recursos_necesarios(tipo_especifico, prioridad)
+        }
+        
+        return servicio
+    
+    def _generar_ubicaciones_zona(self, zona):
+        """Genera ubicaciones realistas para una zona específica."""
+        ubicaciones_por_zona = {
+            'metropolitana': [
+                ('Centro', 'Zona Norte'), ('Zona Sur', 'Centro'), 
+                ('Zona Oeste', 'Zona Este'), ('Puerto', 'Centro')
+            ],
+            'interior': [
+                ('Planta Industrial', 'Ciudad'), ('Campo', 'Planta'),
+                ('Depósito Regional', 'Ciudad'), ('Centro Logístico', 'Sucursal')
+            ],
+            'costa': [
+                ('Puerto', 'Centro'), ('Terminal', 'Zona Residencial'),
+                ('Depósito Costero', 'Ciudad'), ('Muelle', 'Zona Comercial')
+            ]
+        }
+        
+        opciones = ubicaciones_por_zona.get(zona, ubicaciones_por_zona['metropolitana'])
+        import random
+        return random.choice(opciones)
+    
+    def _calcular_tiempo_estimado(self, origen, destino, prioridad):
+        """Calcula tiempo estimado en minutos según origen, destino y prioridad."""
+        # Tiempo base según distancia estimada (simulado)
+        tiempo_base = 45  # minutos
+        
+        # Ajustes por prioridad
+        multiplicadores = {'alta': 0.8, 'media': 1.0, 'baja': 1.3}
+        tiempo_estimado = int(tiempo_base * multiplicadores.get(prioridad, 1.0))
+        
+        return tiempo_estimado
+    
+    def _determinar_recursos_necesarios(self, tipo_servicio, prioridad):
+        """Determina recursos necesarios para el servicio."""
+        recursos_base = {
+            'vehiculo': 'estándar',
+            'conductor': 1,
+            'ayudantes': 0
+        }
+        
+        # Ajustes por tipo
+        if tipo_servicio == 'recoleccion':
+            recursos_base['ayudantes'] = 1
+        
+        # Ajustes por prioridad
+        if prioridad == 'alta':
+            recursos_base['vehiculo'] = 'express'
+            recursos_base['ayudantes'] += 1
+        
+        return recursos_base
+    
+    def _optimizar_rutas_servicios(self, servicios, zona):
+        """Optimiza las rutas de los servicios generados."""
+        # Implementación básica: agrupar por proximidad geográfica
+        try:
+            # Asignar rutas optimizadas agrupando servicios cercanos
+            for i, servicio in enumerate(servicios):
+                # Agrupar servicios en rutas de máximo 4 servicios
+                ruta_numero = (i // 4) + 1
+                servicio['ruta_id'] = f'R_{zona[:3].upper()}_{ruta_numero:02d}'
+                servicio['orden_en_ruta'] = (i % 4) + 1
+                
+                # Calcular tiempo total de ruta
+                servicio['tiempo_total_ruta'] = servicio['tiempo_estimado_minutos'] * (servicio['orden_en_ruta'] + 1)
+            
+            logger.debug(f"Rutas optimizadas: {len(set(s['ruta_id'] for s in servicios))} rutas creadas")
+            return servicios
+            
+        except Exception as e:
+            logger.warning(f"Error optimizando rutas: {e}, devolviendo servicios sin optimizar")
+            return servicios
+
+    def _simular_servicios_generados(self, cantidad=0):
+        """Simula la generación de servicios para pruebas con datos realistas.
+
+        Retorna servicios simulados con estructura completa para testing.
+        """
+        servicios = []
+        tipos_servicio = ['entrega', 'recoleccion', 'transferencia']
+        estados = ['PROGRAMADO', 'EN_TRANSITO', 'PENDIENTE']
+        zonas = ['NORTE', 'SUR', 'ESTE', 'OESTE', 'CENTRO']
+        
+        for i in range(int(cantidad or 0)):
+            fecha_base = datetime.now() + timedelta(hours=i*2)
+            servicios.append({
+                'id': f'SIM_{i+1:03d}',
+                'descripcion': f'Servicio simulado {i+1}',
+                'estado': estados[i % len(estados)],
+                'tipo_servicio': tipos_servicio[i % len(tipos_servicio)],
+                'zona': zonas[i % len(zonas)],
+                'fecha_programada': fecha_base.isoformat(),
+                'origen': f'Origen {i+1}',
+                'destino': f'Destino {i+1}',
+                'prioridad': 'ALTA' if i % 3 == 0 else 'MEDIA',
+                'observaciones': f'Servicio de prueba generado automáticamente #{i+1}',
+                'es_simulacion': True
+            })
+        
+        logger.info(f"Simulación generada: {len(servicios)} servicios de prueba")
+        return servicios
+
     # Nuevos métodos para manejo de transportes
     @auth_required
     def crear_transporte(self, datos):
@@ -588,6 +872,29 @@ model=None,
                 show_error(self.view, "Error - Logística", mensaje)
             else:
                 show_info(self.view, "Logística", mensaje)
+
+    def _registrar_generacion_auditoria(self, criterios, servicios_generados):
+        """Registra la generación de servicios en el sistema de auditoría."""
+        try:
+            from rexus.core.audit_system import AuditSystem, AuditEventType
+            audit = AuditSystem()
+            
+            audit.log_event(
+                event_type=AuditEventType.SYSTEM_OPERATION,
+                modulo="logistica",
+                accion="generar_servicios_automaticos",
+                detalles={
+                    "criterios": criterios,
+                    "servicios_generados": servicios_generados.get('generados', 0),
+                    "zona": criterios.get('zona_geografica'),
+                    "tipo": criterios.get('tipo_servicio')
+                },
+                resultado="EXITOSO"
+            )
+        except ImportError:
+            logger.debug("Sistema de auditoría no disponible")
+        except Exception as e:
+            logger.warning(f"Error registrando en auditoría: {e}")
 
     def mostrar_error(self, mensaje):
         """Muestra un mensaje de error con logging."""

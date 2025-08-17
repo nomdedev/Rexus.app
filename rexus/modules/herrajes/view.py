@@ -32,6 +32,7 @@ from rexus.utils.loading_manager import LoadingManager
 from rexus.utils.message_system import ask_question, show_error, show_warning
 from rexus.utils.xss_protection import FormProtector
 from rexus.utils.export_manager import ModuleExportMixin
+from rexus.modules.herrajes.constants import HerrajesConstants
 
 
 class HerrajesView(QWidget, ModuleExportMixin):
@@ -730,8 +731,8 @@ icon: str,
                 hasattr(self.controller, 'mostrar_dialogo_herraje'):
                 self.controller.mostrar_dialogo_herraje()
             else:
-                show_warning(self, "Funcionalidad no disponible",
-                           "La creación de herrajes aún no está implementada.")
+                show_warning(self, HerrajesConstants.FUNCIONALIDAD_NO_DISPONIBLE,
+                           HerrajesConstants.MENSAJE_CREACION_PENDIENTE)
         except Exception as e:
             logging.error(f"Error al abrir diálogo de nuevo herraje: {e}")
             show_error(self, "Error", f"No se pudo abrir el formulario: {e}")
@@ -744,8 +745,8 @@ icon: str,
 
             selected_items = self.tabla_herrajes.selectedItems()
             if not selected_items:
-                show_warning(self, "Selección requerida",
-                           "Por favor seleccione un herraje para editar.")
+                show_warning(self, HerrajesConstants.SELECCION_REQUERIDA,
+                           HerrajesConstants.SELECCIONAR_HERRAJE_EDITAR)
                 return
 
             if self.controller and \
@@ -757,8 +758,8 @@ icon: str,
                 else:
                     show_warning(self, "Error", "No se pudieron obtener los datos del herraje.")
             else:
-                show_warning(self, "Funcionalidad no disponible",
-                           "La edición de herrajes aún no está implementada.")
+                show_warning(self, HerrajesConstants.FUNCIONALIDAD_NO_DISPONIBLE,
+                           HerrajesConstants.MENSAJE_EDICION_PENDIENTE)
         except Exception as e:
             logging.error(f"Error al editar herraje: {e}")
             show_error(self, "Error", f"No se pudo editar el herraje: {e}")
@@ -771,8 +772,8 @@ icon: str,
 
             selected_items = self.tabla_herrajes.selectedItems()
             if not selected_items:
-                show_warning(self, "Selección requerida",
-                           "Por favor seleccione un herraje para eliminar.")
+                show_warning(self, HerrajesConstants.SELECCION_REQUERIDA,
+                           HerrajesConstants.SELECCIONAR_HERRAJE_ELIMINAR)
                 return
 
             row = selected_items[0].row()
@@ -794,8 +795,8 @@ icon: str,
                     if success:
                         self.on_actualizar_datos()  # Recargar tabla
                 else:
-                    show_warning(self, "Funcionalidad no disponible",
-                               "La eliminación de herrajes aún no está implementada.")
+                    show_warning(self, HerrajesConstants.FUNCIONALIDAD_NO_DISPONIBLE,
+                               HerrajesConstants.MENSAJE_ELIMINACION_PENDIENTE)
         except Exception as e:
             logging.error(f"Error al eliminar herraje: {e}")
             show_error(self, "Error", f"No se pudo eliminar el herraje: {e}")
@@ -829,8 +830,8 @@ icon: str,
                 self.controller.exportar_herrajes("excel")
                 self.ocultar_loading()
             else:
-                show_warning(self, "Funcionalidad no disponible",
-                           "La exportación de herrajes aún no está implementada.")
+                show_warning(self, HerrajesConstants.FUNCIONALIDAD_NO_DISPONIBLE,
+                           HerrajesConstants.MENSAJE_EXPORTACION_PENDIENTE)
         except Exception as e:
             logging.error(f"Error al exportar datos: {e}")
             show_error(self, "Error", f"No se pudieron exportar los datos: {e}")
@@ -838,27 +839,48 @@ icon: str,
 
     def on_buscar(self, texto: str):
         """Maneja la búsqueda de herrajes con debounce."""
-        if len(texto.strip()) == 0:
-            # Si el texto está vacío, mostrar todos los herrajes
-            if self.controller and \
-                hasattr(self.controller, 'cargar_herrajes'):
-                self.controller.cargar_herrajes()
+        texto_limpio = texto.strip()
+        
+        if not texto_limpio:
+            self._cargar_todos_herrajes()
             return
-
-        if len(texto.strip()) >= 2:  # Buscar con mínimo 2 caracteres
-            try:
-                if self.controller and \
-                    hasattr(self.controller, 'buscar_herrajes'):
-                    categoria = self.combo_categoria.currentText() if self.combo_categoria else ""
-                    # Limpiar categoria si es "Todas las categorías"
-                    if categoria.startswith("📂"):
-                        categoria = ""
-                    self.controller.buscar_herrajes(texto.strip(), categoria)
-                else:
-                    # Búsqueda local en la tabla si no hay controlador
-                    self._filtrar_tabla_local(texto.strip())
-            except Exception as e:
-                logging.error(f"Error en búsqueda: {e}")
+            
+        if len(texto_limpio) >= 2:
+            self._ejecutar_busqueda(texto_limpio)
+    
+    def _cargar_todos_herrajes(self):
+        """Carga todos los herrajes cuando no hay filtro."""
+        if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+            self.controller.cargar_herrajes()
+    
+    def _ejecutar_busqueda(self, texto: str):
+        """Ejecuta la búsqueda con el controlador o localmente."""
+        try:
+            if self._tiene_controlador_busqueda():
+                self._buscar_con_controlador(texto)
+            else:
+                self._filtrar_tabla_local(texto)
+        except Exception as e:
+            logging.error(f"Error en búsqueda: {e}")
+    
+    def _tiene_controlador_busqueda(self) -> bool:
+        """Verifica si el controlador tiene capacidad de búsqueda."""
+        return (self.controller and 
+                hasattr(self.controller, 'buscar_herrajes'))
+    
+    def _buscar_con_controlador(self, texto: str):
+        """Realiza búsqueda usando el controlador."""
+        categoria = self._obtener_categoria_filtro()
+        self.controller.buscar_herrajes(texto, categoria)
+    
+    def _obtener_categoria_filtro(self) -> str:
+        """Obtiene la categoría seleccionada para filtrado."""
+        if not self.combo_categoria:
+            return ""
+        
+        categoria = self.combo_categoria.currentText()
+        # Limpiar categoria si es "Todas las categorías"
+        return "" if categoria.startswith("📂") else categoria
 
     def on_filtrar_categoria(self, categoria: str):
         """Maneja el filtro por categoría."""
@@ -924,7 +946,7 @@ icon: str,
 
         obra_text = self.combo_obras.currentText()
         if not obra_text or obra_text == "Seleccione una obra...":
-            show_warning(self, "Selección requerida", "Por favor seleccione una obra.")
+            show_warning(self, HerrajesConstants.SELECCION_REQUERIDA, HerrajesConstants.SELECCIONAR_OBRA)
             return
 
         # Extraer ID de obra del texto (formato: "ID - Nombre")
@@ -936,8 +958,8 @@ icon: str,
                 self.cargar_herrajes_en_tabla_obra(herrajes_obra)
                 self.ocultar_loading()
             else:
-                show_warning(self, "Funcionalidad no disponible",
-                           "La carga de herrajes por obra aún no está implementada.")
+                show_warning(self, HerrajesConstants.FUNCIONALIDAD_NO_DISPONIBLE,
+                           HerrajesConstants.MENSAJE_CARGA_OBRA_PENDIENTE)
         except (ValueError, IndexError):
             show_warning(self, "Error", "Formato de obra no válido.")
 
@@ -1122,35 +1144,58 @@ icon: str,
 
     def obtener_datos_fila(self, row: int) -> Dict:
         """Obtiene los datos de una fila específica de forma robusta."""
-        if not self.tabla_herrajes or row < 0:
+        if not self._es_fila_valida(row):
             return {}
-        data = {}
+        
         try:
-            for col, key in enumerate(["codigo", "nombre", "tipo", "stock", "precio_unitario", "proveedor", "activo"]):
-                item = self.tabla_herrajes.item(row, col)
-                if item is None:
-                    continue
-                text = item.text()
-                if key == "stock":
-                    try:
-                        data[key] = int(text)
-                    except (ValueError, TypeError) as e:
-                        logger.warning(f"Error convirtiendo stock a entero: {e}")
-                        data[key] = 0
-                elif key == "precio_unitario":
-                    try:
-                        data[key] = float(text.replace("$", "").replace(",", ""))
-                    except (ValueError, TypeError, AttributeError) as e:
-                        logger.warning(f"Error convirtiendo precio a float: {e}")
-                        data[key] = 0.0
-                elif key == "activo":
-                    data[key] = (text == "Activo")
-                else:
-                    data[key] = text
-            return data
+            return self._extraer_datos_fila(row)
         except Exception as e:
             logging.error(f"Error obteniendo datos de fila {row}: {e}")
             return {}
+    
+    def _es_fila_valida(self, row: int) -> bool:
+        """Verifica si la fila es válida para extracción de datos."""
+        return self.tabla_herrajes is not None and row >= 0
+    
+    def _extraer_datos_fila(self, row: int) -> Dict:
+        """Extrae los datos de una fila específica."""
+        columnas = ["codigo", "nombre", "tipo", "stock", "precio_unitario", "proveedor", "activo"]
+        data = {}
+        
+        for col, key in enumerate(columnas):
+            item = self.tabla_herrajes.item(row, col)
+            if item is not None:
+                data[key] = self._convertir_valor_columna(key, item.text())
+        
+        return data
+    
+    def _convertir_valor_columna(self, key: str, text: str):
+        """Convierte el valor de una columna al tipo apropiado."""
+        converters = {
+            "stock": self._convertir_a_entero,
+            "precio_unitario": self._convertir_a_precio,
+            "activo": lambda t: t == "Activo"
+        }
+        
+        converter = converters.get(key, lambda t: t)
+        return converter(text)
+    
+    def _convertir_a_entero(self, text: str) -> int:
+        """Convierte texto a entero de forma segura."""
+        try:
+            return int(text)
+        except (ValueError, TypeError) as e:
+            logger.warning(f"Error convirtiendo stock a entero: {e}")
+            return 0
+    
+    def _convertir_a_precio(self, text: str) -> float:
+        """Convierte texto a precio de forma segura."""
+        try:
+            precio_limpio = text.replace("$", "").replace(",", "")
+            return float(precio_limpio)
+        except (ValueError, TypeError, AttributeError) as e:
+            logger.warning(f"Error convirtiendo precio a float: {e}")
+            return 0.0
 
     # Método on_seleccion_cambiada ya existe más abajo, no duplicar
 

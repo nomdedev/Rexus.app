@@ -43,6 +43,108 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         self.setup_ui()
         self.cargar_datos_ejemplo()
 
+    def aplicar_estilos_minimalistas(self):
+        """Aplica estilos ultra minimalistas y compactos al módulo de vidrios."""
+        self.setStyleSheet("""
+            /* Estilo general ultra compacto */
+            QWidget {
+                background-color: #ffffff;
+                font-family: 'Segoe UI', Arial, sans-serif;
+                font-size: 10px;
+            }
+
+            /* Pestañas ultra minimalistas */
+            QTabWidget::pane {
+                border: 1px solid #e5e7eb;
+                border-radius: 3px;
+                background-color: white;
+                margin-top: 1px;
+            }
+
+            QTabBar::tab {
+                background-color: #f8fafc;
+                border: 1px solid #e5e7eb;
+                border-bottom: none;
+                padding: 8px 12px;
+                margin-right: 1px;
+                border-top-left-radius: 3px;
+                border-top-right-radius: 3px;
+                font-size: 12px;
+                color: #6b7280;
+                min-width: 80px;
+                min-height: 24px;
+                max-height: 24px;
+            }
+
+            QTabBar::tab:selected {
+                background-color: white;
+                color: #1f2937;
+                font-weight: 600;
+                border-bottom: 2px solid #3b82f6;
+            }
+
+            /* Tablas ultra compactas */
+            QTableWidget {
+                gridline-color: #e5e7eb;
+                selection-background-color: #3b82f6;
+                selection-color: white;
+                alternate-background-color: transparent;
+                font-size: 9px;
+                border: 1px solid #e5e7eb;
+                border-radius: 2px;
+                background: transparent;
+            }
+
+            QTableWidget::item {
+                padding: 1px 4px;
+                border: none;
+                font-size: 9px;
+            }
+
+            QHeaderView::section {
+                background-color: transparent;
+                color: #374151;
+                font-weight: 500;
+                font-size: 8px;
+                border: none;
+                border-right: 1px solid #e5e7eb;
+                border-bottom: 1px solid #e5e7eb;
+                padding: 2px 4px;
+            }
+
+            /* Botones ultra compactos */
+            QPushButton {
+                padding: 2px 6px;
+                font-size: 9px;
+                font-weight: normal;
+                min-height: 16px;
+                max-height: 20px;
+                border-radius: 2px;
+            }
+
+            /* GroupBox minimalista */
+            QGroupBox {
+                font-weight: 500;
+                font-size: 9px;
+                color: #374151;
+                border: 1px solid #e5e7eb;
+                border-radius: 3px;
+                margin-top: 4px;
+                padding-top: 4px;
+                background-color: white;
+            }
+
+            QGroupBox::title {
+                subcontrol-origin: margin;
+                left: 8px;
+                padding: 2px 6px;
+                background: #3b82f6;
+                color: white;
+                border-radius: 2px;
+                font-size: 8px;
+            }
+        """)
+
     def setup_ui(self):
         """Configura la interfaz principal con pestañas."""
         layout = QVBoxLayout(self)
@@ -1138,108 +1240,6 @@ class DialogoVidrioModerno(QDialog):
                         item.setBackground(QColor("#dcfce7"))
                 
                 self.tabla_vidrios.setItem(row, col, item)
-
-    def aplicar_estilos_minimalistas(self):
-        """Aplica estilos ultra minimalistas y compactos al módulo de vidrios."""
-        self.setStyleSheet("""
-            /* Estilo general ultra compacto */
-            QWidget {
-                background-color: #ffffff;
-                font-family: 'Segoe UI', Arial, sans-serif;
-                font-size: 10px;
-            }
-
-            /* Pestañas ultra minimalistas */
-            QTabWidget::pane {
-                border: 1px solid #e5e7eb;
-                border-radius: 3px;
-                background-color: white;
-                margin-top: 1px;
-            }
-
-            QTabBar::tab {
-                background-color: #f8fafc;
-                border: 1px solid #e5e7eb;
-                border-bottom: none;
-                padding: 8px 12px;
-                margin-right: 1px;
-                border-top-left-radius: 3px;
-                border-top-right-radius: 3px;
-                font-size: 12px;
-                color: #6b7280;
-                min-width: 80px;
-                min-height: 24px;
-                max-height: 24px;
-            }
-
-            QTabBar::tab:selected {
-                background-color: white;
-                color: #1f2937;
-                font-weight: 600;
-                border-bottom: 2px solid #3b82f6;
-            }
-
-            /* Tablas ultra compactas */
-            QTableWidget {
-                gridline-color: #e5e7eb;
-                selection-background-color: #3b82f6;
-                selection-color: white;
-                alternate-background-color: transparent;
-                font-size: 9px;
-                border: 1px solid #e5e7eb;
-                border-radius: 2px;
-                background: transparent;
-            }
-
-            QTableWidget::item {
-                padding: 1px 4px;
-                border: none;
-                font-size: 9px;
-            }
-
-            QHeaderView::section {
-                background-color: transparent;
-                color: #374151;
-                font-weight: 500;
-                font-size: 8px;
-                border: none;
-                border-right: 1px solid #e5e7eb;
-                border-bottom: 1px solid #e5e7eb;
-                padding: 2px 4px;
-            }
-
-            /* Botones ultra compactos */
-            QPushButton {
-                padding: 2px 6px;
-                font-size: 9px;
-                font-weight: normal;
-                min-height: 16px;
-                max-height: 20px;
-                border-radius: 2px;
-            }
-
-            /* GroupBox minimalista */
-            QGroupBox {
-                font-weight: 500;
-                font-size: 9px;
-                color: #374151;
-                border: 1px solid #e5e7eb;
-                border-radius: 3px;
-                margin-top: 4px;
-                padding-top: 4px;
-                background-color: white;
-            }
-
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 8px;
-                padding: 2px 6px;
-                background: #3b82f6;
-                color: white;
-                border-radius: 2px;
-                font-size: 8px;
-            }
-        """)
 
 
 # Alias para compatibilidad con importaciones existentes

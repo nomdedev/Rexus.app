@@ -215,8 +215,14 @@ bool, str)  # database_name, success, message
 
             return True
 
+        except sqlite3.Error as e:
+            self.logger.error(f"Error de SQLite en backup: {e}")
+            return False
+        except (OSError, IOError) as e:
+            self.logger.error(f"Error de archivo en backup: {e}")
+            return False
         except Exception as e:
-            self.logger.error(f"Error en backup SQLite: {e}")
+            self.logger.exception(f"Error inesperado en backup SQLite: {e}")
             return False
 
     def _compress_backup(self, source_path: str, compressed_path: str) -> bool:

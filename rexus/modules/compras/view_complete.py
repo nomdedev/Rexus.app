@@ -11,7 +11,7 @@ from PyQt6.QtWidgets import (
     QPushButton, QTableWidget, QTableWidgetItem, QHeaderView,
     QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QTextEdit,
     QDateEdit, QDialog, QDialogButtonBox, QLabel, QFrame,
-    QTabWidget, QSplitter, QCheckBox
+    QTabWidget, QSplitter, QCheckBox, QMessageBox
 )
 
 from rexus.ui.templates.base_module_view import BaseModuleView
