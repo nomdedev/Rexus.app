@@ -95,6 +95,42 @@ from rexus.utils.app_logger import get_logger
 
 ---
 
+
+---
+
+## 🚨 ERRORES CRÍTICOS DETECTADOS EN LA ÚLTIMA EJECUCIÓN (18/08/2025)
+
+### 🔥 Resumen de problemas a corregir
+
+1. **Obras / Inventario**
+	- Error: `The SQL contains 0 parameter markers, but 1 parameters were supplied`
+	- Causa: Los scripts SQL `verificar_tabla_sqlite.sql` y `verificar_tabla_existe.sql` no aceptan parámetros, pero el código intenta pasar uno.
+
+2. **Vidrios**
+	- Error: `'VidriosModernView' object has no attribute 'buscar_requested'`
+	- Causa: Falta definir la señal `buscar_requested` en la clase `VidriosModernView`.
+
+3. **Logística**
+	- Error: `Invalid column name 'numero_entrega'`, `'nombre'`
+	- Causa: El SQL de `obtener_entregas_base.sql` hace referencia a columnas que no existen en la tabla.
+
+4. **Pedidos**
+	- Error: `Invalid column name 'cantidad_entregada'` y problemas con tipos `text`, `ntext`
+	- Causa: El SQL hace referencia a columnas inexistentes o tipos incompatibles.
+
+5. **Compras**
+	- Error: `Invalid column name 'proveedor', 'fecha_pedido', 'fecha_entrega_estimada', 'descuento', 'fecha_actualizacion'`
+	- Causa: El SQL hace referencia a columnas que no existen en la tabla de compras.
+	- Error adicional: `'ComprasViewComplete' object has no attribute 'cargar_compras_en_tabla'`
+
+6. **Usuarios**
+	- Error: `'NoneType' object has no attribute 'cursor'`
+	- Causa: No se pudo obtener la conexión a la base de datos para usuarios.
+
+---
+
+> **Acción:** Resolver estos errores críticos uno por uno, priorizando los módulos más afectados y asegurando que todos los scripts SQL y señales de UI estén correctamente definidos y alineados con la base de datos y la arquitectura actual.
+
 ## 🎯 **PRIORIDADES INMEDIATAS POST-REESTRUCTURACIÓN**
 
 ### 🔴 **ALTA PRIORIDAD**
@@ -446,3 +482,4 @@ D:\martin\Rexus.app/
 3. Tests de validación
 
 **Estimación Total**: 4 semanas de trabajo sistemático
+

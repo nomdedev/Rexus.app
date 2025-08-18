@@ -21,3 +21,17 @@ Recomendaciones
 3. Añadir tests unitarios para validaciones de fechas y presupuesto.
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: EN PROGRESO
+- No se detectaron señales faltantes críticas.
+- Dependencia global a AuthManager sigue presente, pendiente refactor.
+
+Recomendaciones adicionales:
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Unificar uso de `message_system` y logger centralizado.
+- Inyectar dependencias (auth_manager/current_user) para facilitar testing.
+- Documentar contratos de métodos y señales.
+- Añadir tests unitarios para validaciones y flujos críticos.

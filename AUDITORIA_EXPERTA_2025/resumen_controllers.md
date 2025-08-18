@@ -8,7 +8,8 @@ Objetivo
 
 Estado general
 - Todos los controllers han sido auditados (mix de auditorías iniciales y re-auditorías profundas). Informes individuales generados en `AUDITORIA_EXPERTA_2025/modulos/` (IDs 001–027 y variantes).
-- Patrones comunes detectados y priorizados abajo.
+- Migración de prints a logger y consolidación de mensajes hardcodeados en progreso. Migración SQL casi completa (restan Usuarios, Inventario, Obras).
+- Controllers de Vidrios y Herrajes ya corregidos y validados.
 
 Hallazgos comunes (ordenados por prioridad)
 
@@ -46,11 +47,13 @@ Hallazgos comunes (ordenados por prioridad)
 - Patrón: falta de tests unitarios/integración específicos para flows críticos (inventario paginado, creación de pedidos, import de configuración, integraciones inventario/compras).
 - Acción: añadir tests unitarios para controllers con mocks de `model` y `view`. Añadir tests de integración para `InventoryIntegration`, `ProgramacionMantenimientoModel` y `AuthManager`.
 
+8) Señales faltantes en vistas: Ejemplo reciente en Vidrios (`buscar_requested`). Acción: agregar y documentar todas las señales requeridas en las vistas.
+
 Acciones de alta prioridad (plan de trabajo recomendado)
 
 - P0 (seguridad/estabilidad, 1–2 semanas)
   1. Forzar consultas parametrizadas + cerrar cursores con context managers (modelo primero, controllers con fallback). (Inventario, Pedidos, Compras)
-  2. Reemplazar `print` por logger central y añadir logger.exception en excepts.
+  2. Reemplazar `print` por logger central y añadir logger.exception en excepts. Progreso: Vidrios y Herrajes completados, otros módulos en curso.
   3. Añadir validaciones de tipo y normalizar respuestas públicas (contrato API).
 
 - P1 (calidad/mantenibilidad, 2–4 semanas)

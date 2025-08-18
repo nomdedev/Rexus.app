@@ -21,3 +21,16 @@ Recomendaciones
 4. Escribir tests de integración para paginación y validación.
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: EN PROGRESO
+- No se detectaron señales faltantes críticas, pero se recomienda revisar consistencia de API de mensajes.
+- Pendiente completar TODOs y funciones no implementadas.
+
+Recomendaciones adicionales:
+- Unificar el sistema de mensajería usando `message_system` y logger centralizado.
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para paginación, validación y flujos críticos.

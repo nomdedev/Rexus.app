@@ -17,6 +17,10 @@ import qrcode
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
 
 # SQLQueryManager unificado
 try:
@@ -300,5 +304,5 @@ class ProductosManager:
             return qr_string
 
         except Exception as e:
-            print(f"[WARNING] No se pudo generar QR para {codigo}: {e}")
+            logger.warning(f"[WARNING] No se pudo generar QR para {codigo}: {e}")
             return f"QR:{codigo}"

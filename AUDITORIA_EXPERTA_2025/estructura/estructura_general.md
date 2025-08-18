@@ -16,7 +16,7 @@
 - config/: **Configuraciones y utilidades globales**
 - data/: **Datos de ejemplo, fixtures, migraciones**
 - docs/: **Documentación general y legacy**
-- legacy_root/: **Código y recursos legacy, migración pendiente**
+- legacy_root/: **(Eliminada/Migrada) - Ya no existe código legacy en producción**
 - logs/: **Logs de ejecución y auditoría**
 - project_scripts/: **Scripts de mantenimiento y automatización**
 - reports/: **Reportes de auditoría, UI, módulos, contrastes, etc.**
@@ -30,9 +30,9 @@
 ## 3. Observaciones
 
 - Estructura general es clara y modular, con separación adecuada entre código, datos, documentación y utilidades.
-- Existen carpetas legacy (legacy_root/) y scripts utilitarios que deben ser revisados para migración o eliminación.
+- Las carpetas legacy han sido eliminadas o migradas. Scripts utilitarios revisados y depurados.
 - No se detectan archivos huérfanos críticos en la raíz.
-- Se recomienda mantener CLAUDE.md y checklist_pendientes.md siempre actualizados como fuente de verdad.
+- CLAUDE.md y Checklist pendientes.md están actualizados y son la fuente de verdad para arquitectura y auditoría.
 
 ---
 

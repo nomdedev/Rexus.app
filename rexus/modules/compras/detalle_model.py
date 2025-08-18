@@ -6,6 +6,10 @@ Maneja los detalles de productos/items en las órdenes de compra.
 
 from typing import Any, Dict, List
 from rexus.utils.security import SecurityUtils
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
 
 
 class DetalleComprasModel:
@@ -34,12 +38,12 @@ class DetalleComprasModel:
                 (self.tabla_detalle,),
             )
             if cursor.fetchone():
-                print(f"[DETALLE COMPRAS] Tabla '{self.tabla_detalle}' verificada.")
+                logger.info(f"[DETALLE COMPRAS] Tabla '{self.tabla_detalle}' verificada.")
             else:
-                print(f"[ADVERTENCIA] La tabla '{self.tabla_detalle}' no existe.")
+                logger.warning(f"[ADVERTENCIA] La tabla '{self.tabla_detalle}' no existe.")
 
-        except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error verificando tabla: {e}")
+        except (ConnectionError, AttributeError, TypeError) as e:
+            logger.error(f"[ERROR DETALLE COMPRAS] Error verificando tabla: {e}")
 
     def agregar_item_compra(
         self,
@@ -69,7 +73,7 @@ class DetalleComprasModel:
             bool: True si se agregó exitosamente
         """
         if not self.db_connection:
-            print("[WARN DETALLE COMPRAS] Sin conexión BD")
+            logger.warning("[WARN DETALLE COMPRAS] Sin conexión BD")
             return False
 
         try:
@@ -104,11 +108,11 @@ class DetalleComprasModel:
             )
 
             self.db_connection.commit()
-            print(f"[DETALLE COMPRAS] Item agregado a compra {compra_id}: {descripcion}")
+            logger.info(f"[DETALLE COMPRAS] Item agregado a compra {compra_id}: {descripcion}")
             return True
 
-        except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error agregando item: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.error(f"[ERROR DETALLE COMPRAS] Error agregando item: {e}")
             return False
 
     def obtener_items_compra(self, compra_id: int) -> List[Dict]:
@@ -149,11 +153,11 @@ class DetalleComprasModel:
                 item = dict(zip(columns, row))
                 items.append(item)
 
-            print(f"[DETALLE COMPRAS] Obtenidos {len(items)} items para compra {compra_id}")
+            logger.info(f"[DETALLE COMPRAS] Obtenidos {len(items)} items para compra {compra_id}")
             return items
 
-        except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error obteniendo items: {e}")
+        except (ConnectionError, ValueError, AttributeError) as e:
+            logger.error(f"[ERROR DETALLE COMPRAS] Error obteniendo items: {e}")
             return self._get_items_demo(compra_id)
 
     def actualizar_item_compra(
@@ -230,11 +234,11 @@ class DetalleComprasModel:
             cursor.execute(sql_update, params)
             self.db_connection.commit()
 
-            print(f"[DETALLE COMPRAS] Item {item_id} actualizado")
+            logger.info(f"[DETALLE COMPRAS] Item {item_id} actualizado")
             return True
 
-        except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error actualizando item: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.error(f"[ERROR DETALLE COMPRAS] Error actualizando item: {e}")
             return False
 
     def eliminar_item_compra(self, item_id: int) -> bool:
@@ -257,11 +261,11 @@ class DetalleComprasModel:
             cursor.execute(sql_delete, (item_id,))
             self.db_connection.commit()
 
-            print(f"[DETALLE COMPRAS] Item {item_id} eliminado")
+            logger.info(f"Item {item_id} eliminado")
             return True
 
         except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error eliminando item: {e}")
+            logger.error(f"Error eliminando item: {e}")
             return False
 
     def obtener_resumen_compra(self, compra_id: int) -> Dict[str, Any]:
@@ -328,7 +332,7 @@ class DetalleComprasModel:
             return self._get_resumen_demo(compra_id)
 
         except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error obteniendo resumen: {e}")
+            logger.error(f"Error obteniendo resumen: {e}")
             return self._get_resumen_demo(compra_id)
 
     def obtener_productos_por_categoria(self) -> Dict[str, List[Dict]]:
@@ -375,11 +379,11 @@ class DetalleComprasModel:
                     "cantidad_total": row[4]
                 })
 
-            print(f"[DETALLE COMPRAS] Obtenidas {len(productos_por_categoria)} categorías")
+            logger.info(f"Obtenidas {len(productos_por_categoria)} categorías")
             return productos_por_categoria
 
         except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error obteniendo productos por categoría: {e}")
+            logger.error(f"Error obteniendo productos por categoría: {e}")
             return self._get_productos_por_categoria_demo()
 
     def buscar_productos_similares(self, descripcion: str, limite: int = 10) -> List[Dict]:
@@ -428,11 +432,11 @@ class DetalleComprasModel:
                     "frecuencia_compra": row[3]
                 })
 
-            print(f"[DETALLE COMPRAS] Encontrados {len(productos)} productos similares")
+            logger.info(f"Encontrados {len(productos)} productos similares")
             return productos
 
         except Exception as e:
-            print(f"[ERROR DETALLE COMPRAS] Error buscando productos similares: {e}")
+            logger.error(f"Error buscando productos similares: {e}")
             return []
 
     def _get_items_demo(self, compra_id: int) -> List[Dict]:

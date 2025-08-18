@@ -168,7 +168,7 @@ class InventarioModel(PaginatedTableMixin):
             logger.warning("ConsultasManager no disponible")
 
         if not self.db_connection:
-            print(
+            logger.error(
                 "[ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente."
             )
         self._verificar_tablas()
@@ -490,7 +490,7 @@ datos_reserva: Dict[str,
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
             cursor.execute(sql_verificar, (self.tabla_inventario,))
             if cursor.fetchone():
-                print(
+                logger.error(
                     f"[INVENTARIO] Tabla principal '{self.tabla_inventario}' verificada correctamente."
                 )
             else:
@@ -507,7 +507,7 @@ datos_reserva: Dict[str,
                 if cursor.fetchone():
                     logger.info(f"Tabla '{tabla}' verificada correctamente")
                 else:
-                    print(
+                    logger.error(
                         f"[ADVERTENCIA] Tabla secundaria '{tabla}' no existe. Algunas funciones estarán limitadas."
                     )
 
@@ -960,7 +960,7 @@ producto_id,
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
             cursor.execute(sql_verificar, ('historial',))
             if not cursor.fetchone():
-                print(
+                logger.error(
                     "[ADVERTENCIA] Tabla historial no existe. No se pueden obtener movimientos."
                 )
                 return []
@@ -1160,7 +1160,7 @@ producto_id,
             return productos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo productos por obra: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error obteniendo productos por obra: {e}")
             return []
 
     def asignar_producto_obra(self, datos_asignacion, usuario="SISTEMA"):
@@ -1236,7 +1236,7 @@ producto_id,
             return True, f"Producto asignado correctamente a la obra"
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error asignando producto a obra: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error asignando producto a obra: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error al asignar producto: {str(e)}"
@@ -1263,7 +1263,7 @@ producto_id,
             sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_lotes')
             cursor.execute(sql_verificar)
             if not cursor.fetchone():
-                print("[ADVERTENCIA] Tabla 'lotes_inventario' no existe")
+                logger.error("[ADVERTENCIA] Tabla 'lotes_inventario' no existe")
                 return False
 
             # Validar producto
@@ -1302,7 +1302,7 @@ producto_id,
             return True
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error gestionando lote: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error gestionando lote: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False
@@ -1361,7 +1361,7 @@ producto_id,
             return lotes
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo lotes: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error obteniendo lotes: {e}")
             return []
 
     def generar_reporte_movimientos(self, filtros=None):
@@ -1457,7 +1457,7 @@ fecha_fin,
             return movimientos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error generando reporte: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error generando reporte: {e}")
             return []
 
     def obtener_productos_proximos_vencer(self, dias_limite=30):
@@ -1503,7 +1503,7 @@ fecha_fin,
             return productos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(
+            logger.error(
                 f"[ERROR INVENTARIO] Error obteniendo productos próximos a vencer: {e}"
             )
             return []
@@ -1599,7 +1599,7 @@ fecha_fin,
             return valoracion
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error generando valoración: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error generando valoración: {e}")
             return {}
 
     def obtener_productos_filtrado_avanzado(self, filtros=None):
@@ -1751,7 +1751,7 @@ fecha_fin,
             return productos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error en filtrado avanzado: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error en filtrado avanzado: {e}")
             return []
 
     def generar_codigo_barra(self, producto_id):
@@ -1795,7 +1795,7 @@ fecha_fin,
             return fp.getvalue()
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error generando código de barras: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error generando código de barras: {e}")
             return None
 
     def actualizar_precios_masivo(self, actualizaciones, usuario="SISTEMA"):
@@ -1876,7 +1876,7 @@ fecha_fin,
                     exitosos += 1
 
                 except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-                    print(
+                    logger.error(
                         f"[ERROR] Fallo en producto {item.get('id', 'desconocido')}: {e}"
                     )
                     fallidos += 1
@@ -1885,7 +1885,7 @@ fecha_fin,
             return exitosos, fallidos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error actualizando precios masivamente: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error actualizando precios masivamente: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return exitosos, fallidos
@@ -2089,7 +2089,7 @@ descripcion,
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            print(f"[ERROR INVENTARIO] Error reservando material: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error reservando material: {e}")
             return False, f"Error reservando material: {e}"
 
     def obtener_reservas_por_obra(self, obra_id):
@@ -2152,7 +2152,7 @@ descripcion,
             return reservas
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo reservas por obra: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error obteniendo reservas por obra: {e}")
             return []
 
     def obtener_reservas_por_producto(self, producto_id):
@@ -2211,7 +2211,7 @@ descripcion,
             return reservas
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo reservas por producto: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error obteniendo reservas por producto: {e}")
             return []
 
     def liberar_reserva(self, reserva_id, usuario_id, motivo=None):
@@ -2348,7 +2348,7 @@ descripcion,
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             if self.db_connection:
                 self.db_connection.connection.rollback()
-            print(f"[ERROR INVENTARIO] Error liberando reserva: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error liberando reserva: {e}")
             return False, f"Error liberando reserva: {e}"
 
     def obtener_disponibilidad_material(self, producto_id=None):
@@ -2388,7 +2388,7 @@ descripcion,
             return resultados
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo disponibilidad: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error obteniendo disponibilidad: {e}")
             return []
 
     def generar_reporte_reservas_obra(self, obra_id):
@@ -2446,7 +2446,7 @@ descripcion,
             return reporte
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error generando reporte: {e}")
+            logger.error(f"[ERROR INVENTARIO] Error generando reporte: {e}")
             return {}
 
     def obtener_estadisticas_reservas(self):

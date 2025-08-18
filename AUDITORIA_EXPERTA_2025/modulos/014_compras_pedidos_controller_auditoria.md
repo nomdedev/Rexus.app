@@ -19,3 +19,17 @@ Recomendaciones
 3. Documentar contrato de `PedidosModel`.
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: EN PROGRESO
+- Se detectaron errores recientes de columnas inexistentes y métodos faltantes en la vista.
+
+Recomendaciones adicionales:
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Unificar uso de logger centralizado y message_system.
+- Implementar y documentar métodos faltantes en la vista.
+- Añadir tests unitarios para flujos de compras/pedidos y validación de errores.
+
+Estado: informe creado.

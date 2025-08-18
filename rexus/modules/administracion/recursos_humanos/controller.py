@@ -15,6 +15,11 @@ from datetime import datetime
 import csv
 import os
 
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
+
 
 class RecursosHumanosController(QObject):
 
@@ -185,7 +190,7 @@ class RecursosHumanosController(QObject):
 
                     except Exception as e:
                         empleados_error += 1
-                        print(f"Error importando empleado {row}: {e}")
+                        logger.error(f"Error importando empleado {row}: {e}")
 
             self.mostrar_mensaje(f"Importación completada: {empleados_importados} empleados importados, {empleados_error} errores")
             self.cargar_empleados()
@@ -260,7 +265,7 @@ class RecursosHumanosController(QObject):
                     recibos_generados += 1
 
                 except Exception as e:
-                    print(f"Error generando recibo para empleado {empleado_nomina['empleado_id']}: {e}")
+                    logger.error(f"Error generando recibo para empleado {empleado_nomina['empleado_id']}: {e}")
 
             self.mostrar_mensaje(f"Se generaron {recibos_generados} recibos de sueldo")
 
@@ -564,7 +569,7 @@ class RecursosHumanosController(QObject):
         """Muestra un mensaje de error."""
         if self.view:
             QMessageBox.critical(self.view, "Error - Recursos Humanos", mensaje)
-        print(f"[ERROR RRHH] {mensaje}")
+        logger.error(f"RRHH: {mensaje}")
 
     def actualizar_datos(self):
         """Actualiza todos los datos de la interfaz."""

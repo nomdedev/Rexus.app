@@ -29,7 +29,7 @@ try:
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] Security utilities not available in administracion: {e}")
+    logger.warning(f"Security utilities not available in administracion: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -39,7 +39,7 @@ try:
 
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    print("[WARNING] SQL security utilities not available in administracion")
+    logger.warning("SQL security utilities not available in administracion")
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -70,7 +70,7 @@ class AdministracionModel(ContabilidadModel):
         # Inicializar utilidades de seguridad
         self.security_available = SECURITY_AVAILABLE
         self.sanitizer = unified_sanitizer
-        print("OK [ADMINISTRACION] Sistema unificado de sanitización cargado")
+        logger.info("Sistema unificado de sanitización cargado")
 
         # Crear tablas si no existen
         self.crear_tablas()
@@ -412,7 +412,7 @@ registro_id,
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"Error registrando auditoría: {e}")
+            logger.error(f"Error registrando auditoría: {e}")
 
     # GESTIÓN DE DEPARTAMENTOS
     def crear_departamento(
@@ -481,7 +481,7 @@ registro_id,
             return departamento_id
 
         except Exception as e:
-            print(f"Error creando departamento: {e}")
+            logger.error(f"Error creando departamento: {e}")
             self.db_connection.rollback()
             return None
 
@@ -522,7 +522,7 @@ registro_id,
             return departamentos
 
         except Exception as e:
-            print(f"Error obteniendo departamentos: {e}")
+            logger.error(f"Error obteniendo departamentos: {e}")
             return []
 
     # GESTIÓN DE EMPLEADOS
@@ -584,7 +584,7 @@ registro_id,
             return empleado_id
 
         except Exception as e:
-            print(f"Error creando empleado: {e}")
+            logger.error(f"Error creando empleado: {e}")
             self.db_connection.rollback()
             return None
 
@@ -641,7 +641,7 @@ registro_id,
             return empleados
 
         except Exception as e:
-            print(f"Error obteniendo empleados: {e}")
+            logger.error(f"Error obteniendo empleados: {e}")
             return []
 
     # GESTIÓN DE LIBRO CONTABLE
@@ -722,7 +722,7 @@ registro_id,
             return asiento_id
 
         except Exception as e:
-            print(f"Error creando asiento contable: {e}")
+            logger.error(f"Error creando asiento contable: {e}")
             self.db_connection.rollback()
             return None
 

@@ -21,3 +21,14 @@ Recomendaciones
 4. Añadir tests para exportación y diálogos (mock QFileDialog).
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: COMPLETA
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: COMPLETA
+- No se detectaron señales faltantes críticas.
+
+Recomendaciones adicionales:
+- Finalizar consolidación de mensajes hardcodeados.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para flujos de herrajes y simulaciones.

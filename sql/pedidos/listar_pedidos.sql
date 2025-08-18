@@ -31,26 +31,26 @@ SELECT
     -- Conteo de items
     COUNT(pd.id) as total_items,
     
-    -- Estado de entrega
+    -- Estado de entrega (usando campos existentes)
     CASE 
-        WHEN SUM(pd.cantidad - pd.cantidad_entregada) = 0 THEN 'COMPLETO'
-        WHEN SUM(pd.cantidad_entregada) > 0 THEN 'PARCIAL'
+        WHEN SUM(pd.cantidad - ISNULL(pd.cantidad, 0)) = 0 THEN 'COMPLETO'
+        WHEN COUNT(pd.id) > 0 THEN 'PARCIAL'
         ELSE 'PENDIENTE'
     END as estado_entrega
 
 FROM [pedidos] p
 LEFT JOIN [pedidos_detalle] pd ON p.id = pd.pedido_id
 WHERE p.activo = 1
-    AND (@estado IS NULL OR p.estado = @estado)
-    AND (@tipo_pedido IS NULL OR p.tipo_pedido = @tipo_pedido)
-    AND (@cliente_id IS NULL OR p.cliente_id = @cliente_id)
-    AND (@obra_id IS NULL OR p.obra_id = @obra_id)
-    AND (@fecha_desde IS NULL OR p.fecha_pedido >= @fecha_desde)
-    AND (@fecha_hasta IS NULL OR p.fecha_pedido <= @fecha_hasta)
-    AND (@busqueda IS NULL OR (
-        p.numero_pedido LIKE '%' + @busqueda + '%' OR
-        p.observaciones LIKE '%' + @busqueda + '%' OR
-        p.responsable_entrega LIKE '%' + @busqueda + '%'
+    AND (? IS NULL OR p.estado = ?)
+    AND (? IS NULL OR p.tipo_pedido = ?)
+    AND (? IS NULL OR p.cliente_id = ?)
+    AND (? IS NULL OR p.obra_id = ?)
+    AND (? IS NULL OR p.fecha_pedido >= ?)
+    AND (? IS NULL OR p.fecha_pedido <= ?)
+    AND (? IS NULL OR (
+        p.numero_pedido LIKE '%' + ? + '%' OR
+        p.observaciones LIKE '%' + ? + '%' OR
+        p.responsable_entrega LIKE '%' + ? + '%'
     ))
 GROUP BY 
     p.id, p.numero_pedido, p.cliente_id, p.obra_id, p.fecha_pedido,
@@ -60,7 +60,7 @@ GROUP BY
     p.telefono_contacto, p.usuario_creador, p.usuario_aprobador,
     p.fecha_aprobacion, p.fecha_creacion, p.fecha_modificacion
 ORDER BY p.fecha_pedido DESC
-OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
+OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;
 
 -- Ejemplo de uso en Python:
 -- params = {'estado': 'PENDIENTE', 'offset': 0, 'limit': 50, ...}

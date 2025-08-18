@@ -20,7 +20,7 @@ SELECT
     o.updated_at
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
-WHERE o.id = %s;
+WHERE o.id = ?;
 
 -- Consulta para obtener todas las obras con información básica
 SELECT 
@@ -51,49 +51,49 @@ INSERT INTO obras (
     notas,
     created_at,
     updated_at
-) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW());
+) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE());
 
 -- Consulta para actualizar obra
 UPDATE obras 
 SET 
-    nombre = %s,
-    descripcion = %s,
-    cliente_id = %s,
-    estado = %s,
-    fecha_inicio = %s,
-    fecha_fin_estimada = %s,
-    fecha_fin_real = %s,
-    presupuesto = %s,
-    costo_real = %s,
-    direccion = %s,
-    notas = %s,
-    updated_at = NOW()
-WHERE id = %s;
+    nombre = ?,
+    descripcion = ?,
+    cliente_id = ?,
+    estado = ?,
+    fecha_inicio = ?,
+    fecha_fin_estimada = ?,
+    fecha_fin_real = ?,
+    presupuesto = ?,
+    costo_real = ?,
+    direccion = ?,
+    notas = ?,
+    updated_at = GETDATE()
+WHERE id = ?;
 
 -- Consulta para cambiar estado de obra
 UPDATE obras 
 SET 
-    estado = %s,
-    updated_at = NOW()
-WHERE id = %s;
+    estado = ?,
+    updated_at = GETDATE()
+WHERE id = ?;
 
 -- Consulta para actualizar fecha fin real (cuando se completa)
 UPDATE obras 
 SET 
-    fecha_fin_real = %s,
+    fecha_fin_real = ?,
     estado = 'completada',
-    updated_at = NOW()
-WHERE id = %s;
+    updated_at = GETDATE()
+WHERE id = ?;
 
 -- Consulta para eliminar obra (soft delete si existe campo deleted_at)
 UPDATE obras 
 SET 
-    deleted_at = NOW(),
-    updated_at = NOW()
-WHERE id = %s;
+    deleted_at = GETDATE(),
+    updated_at = GETDATE()
+WHERE id = ?;
 
 -- Consulta alternativa para eliminar obra (hard delete)
-DELETE FROM obras WHERE id = %s;
+DELETE FROM obras WHERE id = ?;
 
 -- Consulta para obtener estados disponibles
 SELECT DISTINCT estado 
@@ -114,23 +114,23 @@ SELECT
     END AS porcentaje_progreso
 FROM obras o
 LEFT JOIN tareas_obra t ON o.id = t.obra_id
-WHERE o.id = %s
+WHERE o.id = ?
 GROUP BY o.id, o.nombre;
 
 -- Consulta para validar cliente antes de asignar obra
 SELECT id, nombre, activo 
 FROM clientes 
-WHERE id = %s AND activo = TRUE;
+WHERE id = ? AND activo = 1;
 
 -- Consulta para verificar conflictos de fechas
 SELECT id, nombre, fecha_inicio, fecha_fin_estimada
 FROM obras 
-WHERE cliente_id = %s 
+WHERE cliente_id = ? 
   AND estado IN ('activa', 'en_progreso', 'planificada')
   AND (
-    (fecha_inicio BETWEEN %s AND %s) OR
-    (fecha_fin_estimada BETWEEN %s AND %s) OR
-    (fecha_inicio <= %s AND fecha_fin_estimada >= %s)
+    (fecha_inicio BETWEEN ? AND ?) OR
+    (fecha_fin_estimada BETWEEN ? AND ?) OR
+    (fecha_inicio <= ? AND fecha_fin_estimada >= ?)
   );
 
 -- Consulta para obtener obras por estado
@@ -146,7 +146,7 @@ SELECT
     o.presupuesto
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
-WHERE o.estado = %s
+WHERE o.estado = ?
 ORDER BY o.fecha_inicio DESC;
 
 -- Consulta para obtener última obra creada
@@ -156,5 +156,4 @@ SELECT
     estado,
     created_at
 FROM obras 
-ORDER BY created_at DESC 
-LIMIT 1;
+ORDER BY created_at DESC;

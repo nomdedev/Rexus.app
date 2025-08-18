@@ -18,6 +18,7 @@ from rexus.core.auth_decorators import auth_required, admin_required
 from rexus.modules.compras.detalle_model import DetalleComprasModel
 from rexus.modules.compras.proveedores_model import ProveedoresModel
 from rexus.modules.compras.inventory_integration import InventoryIntegration
+from rexus.modules.compras.constants import ErrorMessages, SuccessMessages, InfoMessages
 
 
 class ComprasController(BaseController):
@@ -84,7 +85,7 @@ class ComprasController(BaseController):
 
         except Exception as e:
             logger.error(f"Error cargando datos iniciales: {e}")
-            self.mostrar_error("Error cargando datos iniciales", str(e))
+            self.mostrar_error(ErrorMessages.FETCH_FAILED, str(e))
 
     @auth_required
     def crear_orden(self, datos_orden):
@@ -113,10 +114,10 @@ class ComprasController(BaseController):
             )
 
             if exito:
-                self.mostrar_mensaje("Éxito", "Orden creada exitosamente")
+                self.mostrar_mensaje("Éxito", SuccessMessages.ORDEN_CREATED)
                 self.datos_actualizados.emit()
             else:
-                self.mostrar_error("Error", "No se pudo crear la orden")
+                self.mostrar_error("Error", ErrorMessages.CREATE_FAILED)
 
         except Exception as e:
             logger.error(f"Error creando orden: {e}")

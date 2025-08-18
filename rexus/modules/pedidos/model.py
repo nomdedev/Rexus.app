@@ -16,6 +16,10 @@ para prevenir inyección SQL y mejorar mantenibilidad.
 import uuid
 from datetime import datetime
 from typing import Any, Dict, List, Optional
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
 
 # DataSanitizer unificado
 try:
@@ -85,7 +89,7 @@ class PedidosModel:
         # Modo sin conexión para testing/demo
         if not self.db_connection:
             self.demo_mode = True
-            print("[PEDIDOS] Inicializado en modo demo - funcionalidad limitada")
+            logger.info("[PEDIDOS] Inicializado en modo demo - funcionalidad limitada")
         else:
             self.demo_mode = False
             # Inicializar tablas solo si hay conexión
@@ -111,10 +115,10 @@ class PedidosModel:
                     cursor.execute(sql)
 
             self.db_connection.commit()
-            print("[PEDIDOS] Tablas verificadas/creadas exitosamente")
+            logger.info("[PEDIDOS] Tablas verificadas/creadas exitosamente")
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error creando tablas: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error creando tablas: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
 
@@ -198,8 +202,8 @@ class PedidosModel:
             finally:
                 cursor.close()
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error validando pedido duplicado: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error validando pedido duplicado: {e}")
             return False  # En caso de error, permitir la operación
 
     def generar_numero_pedido(self) -> str:
@@ -229,8 +233,8 @@ class PedidosModel:
                 timestamp = datetime.now().strftime("%m%d%H%M")
                 return f"PED-{año_actual}-{timestamp}"
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error generando número: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error generando número: {e}")
             # Fallback con UUID
             return f"PED-{datetime.now().year}-{str(uuid.uuid4())[:8].upper()}"
 
@@ -247,8 +251,8 @@ class PedidosModel:
             )
             count = cursor.fetchone()[0]
             return count > 0
-        except Exception as e:
-            print(f"[ERROR PEDIDOS] Error validando cliente: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[ERROR PEDIDOS] Error validando cliente: {e}")
             return False
 
     def validar_obra_existe(self, obra_id: int) -> bool:
@@ -263,8 +267,8 @@ class PedidosModel:
             )
             count = cursor.fetchone()[0]
             return count > 0
-        except Exception as e:
-            print(f"[ERROR PEDIDOS] Error validando obra: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[ERROR PEDIDOS] Error validando obra: {e}")
             return False
 
     def crear_pedido(self, datos_pedido: Dict[str, Any]) -> Optional[int]:
@@ -400,11 +404,11 @@ None,
             )
 
             self.db_connection.commit()
-            print(f"[PEDIDOS] Pedido {numero_pedido} creado exitosamente")
+            logger.info(f"[PEDIDOS] Pedido {numero_pedido} creado exitosamente")
             return pedido_id
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error creando pedido: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error creando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -488,8 +492,8 @@ None,
 
             return pedidos
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error obteniendo pedidos: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error obteniendo pedidos: {e}")
             return self._get_datos_demo()
 
     def obtener_pedido_por_id(self, pedido_id: int) -> Optional[Dict[str, Any]]:
@@ -550,8 +554,8 @@ None,
 
             return pedido
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error obteniendo pedido {pedido_id}: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error obteniendo pedido {pedido_id}: {e}")
             return None
 
     def actualizar_estado_pedido(
@@ -579,7 +583,7 @@ None,
 
             # Validar transición de estado
             if not self._validar_transicion_estado(estado_anterior, nuevo_estado):
-                print(
+                logger.info(
                     f"[PEDIDOS] Transición inválida: {estado_anterior} -> {nuevo_estado}"
                 )
                 return False
@@ -605,8 +609,8 @@ None,
             self.db_connection.commit()
             return True
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error actualizando estado: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error actualizando estado: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -638,8 +642,8 @@ estado_anterior,
                     observaciones),
             )
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error registrando historial: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error registrando historial: {e}")
 
     def _validar_transicion_estado(self, estado_actual: str, estado_nuevo: str) -> bool:
         """Valida si la transición de estado es válida."""
@@ -704,8 +708,8 @@ estado_anterior,
 
             return stats
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error obteniendo estadísticas: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error obteniendo estadísticas: {e}")
             return self._get_estadisticas_demo()
 
     def buscar_productos_inventario(self, busqueda: str) -> List[Dict[str, Any]]:
@@ -737,8 +741,8 @@ estado_anterior,
 
             return productos
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error buscando productos: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error buscando productos: {e}")
             return []
 
     def _get_datos_demo(self) -> List[Dict[str, Any]]:
@@ -861,8 +865,8 @@ estado_anterior,
 
             return datos, total_registros
 
-        except Exception as e:
-            print(f"[ERROR] Error obteniendo datos paginados: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[ERROR] Error obteniendo datos paginados: {e}")
             return [], 0
 
     def obtener_total_registros(self, filtros=None):
@@ -872,8 +876,8 @@ estado_anterior,
                                                    limit=1,
                                                    filtros=filtros)
             return total
-        except Exception as e:
-            print(f"[ERROR] Error obteniendo total de registros: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
 
     def _get_base_query(self):
@@ -920,7 +924,7 @@ estado_anterior,
         try:
             pedido_id = datos.get('id')
             if not pedido_id:
-                print("[PEDIDOS] Error: ID de pedido requerido para actualización")
+                logger.info("[PEDIDOS] Error: ID de pedido requerido para actualización")
                 return False
 
             # Sanitizar datos de entrada
@@ -958,15 +962,15 @@ estado_anterior,
             ))
 
             if cursor.rowcount == 0:
-                print(f"[PEDIDOS] No se pudo actualizar el pedido {pedido_id}")
+                logger.info(f"[PEDIDOS] No se pudo actualizar el pedido {pedido_id}")
                 return False
 
             self.db_connection.commit()
-            print(f"[PEDIDOS] Pedido {pedido_id} actualizado exitosamente")
+            logger.info(f"[PEDIDOS] Pedido {pedido_id} actualizado exitosamente")
             return True
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error actualizando pedido: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error actualizando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -987,14 +991,14 @@ estado_anterior,
             
             resultado = cursor.fetchone()
             if not resultado:
-                print(f"[PEDIDOS] Pedido {pedido_id} no encontrado")
+                logger.info(f"[PEDIDOS] Pedido {pedido_id} no encontrado")
                 return False
 
             estado_actual = resultado[0]
             
             # No permitir eliminar pedidos entregados o facturados
             if estado_actual in ['ENTREGADO', 'FACTURADO']:
-                print(f"[PEDIDOS] No se puede eliminar pedido en estado {estado_actual}")
+                logger.info(f"[PEDIDOS] No se puede eliminar pedido en estado {estado_actual}")
                 return False
 
             # Realizar borrado lógico
@@ -1006,7 +1010,7 @@ estado_anterior,
             """, (pedido_id,))
 
             if cursor.rowcount == 0:
-                print(f"[PEDIDOS] No se pudo eliminar el pedido {pedido_id}")
+                logger.info(f"[PEDIDOS] No se pudo eliminar el pedido {pedido_id}")
                 return False
 
             # También marcar como inactivos los detalles del pedido
@@ -1017,11 +1021,11 @@ estado_anterior,
             """, (pedido_id,))
 
             self.db_connection.commit()
-            print(f"[PEDIDOS] Pedido {pedido_id} eliminado exitosamente")
+            logger.info(f"[PEDIDOS] Pedido {pedido_id} eliminado exitosamente")
             return True
 
-        except Exception as e:
-            print(f"[PEDIDOS] Error eliminando pedido: {e}")
+        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
+            logger.info(f"[PEDIDOS] Error eliminando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False

@@ -16,4 +16,15 @@ Recomendaciones
 3. Añadir logging en lugar de prints y `mostrar_error`.
 4. Añadir pruebas unitarias para cada método que mockee el modelo y la vista.
 
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: COMPLETA
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: COMPLETA
+- Se detectó y corrigió señal faltante `buscar_requested` en la vista.
+
+Recomendaciones adicionales:
+- Finalizar consolidación de mensajes hardcodeados.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para señales y flujos de error.
+
 Estado: listo.
