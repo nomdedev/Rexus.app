@@ -34,6 +34,15 @@ class VidriosModernView(QWidget, ModuleExportMixin):
     solicitud_editar = pyqtSignal(int, dict)
     solicitud_eliminar = pyqtSignal(int)
     solicitud_exportar = pyqtSignal(str)  # formato: 'excel' o 'pdf'
+    
+    # Señales adicionales requeridas por el controlador
+    buscar_requested = pyqtSignal(dict)
+    agregar_requested = pyqtSignal(dict)
+    editar_requested = pyqtSignal(int, dict)
+    eliminar_requested = pyqtSignal(int)
+    asignar_obra_requested = pyqtSignal(int, int)  # id_vidrio, id_obra
+    crear_pedido_requested = pyqtSignal(dict)
+    filtrar_requested = pyqtSignal(dict)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -1048,6 +1057,59 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.addWidget(self.btn_ultima)
 
         return panel
+
+    def actualizar_tabla(self, vidrios):
+        """Actualiza la tabla principal con datos de vidrios."""
+        if not vidrios:
+            self.tabla_vidrios.setRowCount(0)
+            return
+        
+        self.tabla_vidrios.setRowCount(len(vidrios))
+        
+        for row, vidrio in enumerate(vidrios):
+            # ID
+            self.tabla_vidrios.setItem(row, 0, QTableWidgetItem(str(vidrio.get('id', ''))))
+            # Código
+            self.tabla_vidrios.setItem(row, 1, QTableWidgetItem(str(vidrio.get('codigo', ''))))
+            # Tipo
+            self.tabla_vidrios.setItem(row, 2, QTableWidgetItem(str(vidrio.get('tipo', ''))))
+            # Espesor
+            self.tabla_vidrios.setItem(row, 3, QTableWidgetItem(f"{vidrio.get('espesor', 0)} mm"))
+            # Ancho
+            self.tabla_vidrios.setItem(row, 4, QTableWidgetItem(f"{vidrio.get('ancho', 0)} mm"))
+            # Alto  
+            self.tabla_vidrios.setItem(row, 5, QTableWidgetItem(f"{vidrio.get('alto', 0)} mm"))
+            # M²
+            area = (vidrio.get('ancho', 0) * vidrio.get('alto', 0)) / 1000000
+            self.tabla_vidrios.setItem(row, 6, QTableWidgetItem(f"{area:.2f}"))
+            # Stock
+            self.tabla_vidrios.setItem(row, 7, QTableWidgetItem(str(vidrio.get('stock', 0))))
+            # Precio/M²
+            self.tabla_vidrios.setItem(row, 8, QTableWidgetItem(f"${vidrio.get('precio', 0):.2f}"))
+            # Estado
+            estado = "Disponible" if vidrio.get('stock', 0) > 0 else "Agotado"
+            self.tabla_vidrios.setItem(row, 9, QTableWidgetItem(estado))
+            # Ubicación
+            self.tabla_vidrios.setItem(row, 10, QTableWidgetItem(str(vidrio.get('ubicacion', ''))))
+
+    def actualizar_estadisticas(self, estadisticas):
+        """Actualiza las estadísticas en la vista."""
+        if not hasattr(self, 'panel_estadisticas') or not estadisticas:
+            return
+        
+        try:
+            # Actualizar etiquetas de estadísticas si existen
+            if hasattr(self, 'lbl_total_vidrios'):
+                self.lbl_total_vidrios.setText(f"Total: {estadisticas.get('total_vidrios', 0)}")
+            
+            if hasattr(self, 'lbl_total_m2'):
+                self.lbl_total_m2.setText(f"M²: {estadisticas.get('total_m2', 0):.2f}")
+                
+            if hasattr(self, 'lbl_valor_inventario'):
+                self.lbl_valor_inventario.setText(f"Valor: ${estadisticas.get('valor_inventario', 0):,.2f}")
+                
+        except Exception as e:
+            print(f"[ERROR] Error actualizando estadísticas en vista: {e}")
 
 
 class DialogoVidrioModerno(QDialog):

@@ -1,5 +1,5 @@
 -- Autenticación de usuario con validación de seguridad
-SELECT 
+SELECT TOP 1
     u.id,
     u.username,
     u.password_hash,
@@ -13,7 +13,6 @@ SELECT
     u.fecha_registro,
     u.fecha_modificacion
 FROM usuarios u 
-WHERE u.username = %(username)s 
+WHERE u.username = ? 
     AND u.activo = 1 
-    AND u.cuenta_bloqueada = 0
-LIMIT 1;
+    AND u.cuenta_bloqueada = 0;

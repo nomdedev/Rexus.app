@@ -18,7 +18,7 @@ SELECT
     fecha_creacion,
     fecha_modificacion
 FROM [usuarios] 
-WHERE LOWER(usuario) = LOWER(@username) 
+WHERE LOWER(usuario) = LOWER(?) 
     AND activo = 1
     AND estado IN ('ACTIVO', 'PRIMERA_VEZ');
 

@@ -1,4 +1,5 @@
--- Obtener todas las órdenes de compra - Compatible con estructura actual
+-- Obtener todas las órdenes de compra - Versión simplificada
+-- Compatible con estructura básica de tabla compras
 SELECT
     c.id, 
     ISNULL(c.numero_orden, CAST(c.id AS VARCHAR(10))) as numero_orden,

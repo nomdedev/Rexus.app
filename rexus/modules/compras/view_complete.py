@@ -988,6 +988,10 @@ class ComprasViewComplete(BaseModuleView):
 
     def llenar_tabla(self, compras):
         """Llena la tabla con datos de compras."""
+        return self.cargar_compras_en_tabla(compras)
+    
+    def cargar_compras_en_tabla(self, compras):
+        """Carga datos de compras en la tabla principal."""
         self.tabla_compras.setRowCount(len(compras))
 
         for row, compra in enumerate(compras):
@@ -1058,9 +1062,11 @@ class ComprasViewComplete(BaseModuleView):
             if key in self.labels_estadisticas:
                 self.labels_estadisticas[key].setText(value)
 
-    def actualizar_estadisticas(self):
+    def actualizar_estadisticas(self, estadisticas=None):
         """Actualiza las estadísticas del panel."""
-        # TODO: Implementar cálculos reales
+        if not estadisticas:
+            estadisticas = {}
+        # TODO: Implementar cálculos reales basados en estadisticas parameter
 
     def ver_detalle_orden_tabla(self, row):
         """Ve el detalle desde botón de tabla."""
@@ -1107,3 +1113,28 @@ class ComprasViewComplete(BaseModuleView):
     def set_controller(self, controller):
         """Establece el controlador."""
         self.controller = controller
+
+    def actualizar_tabla(self, compras):
+        """Actualiza la tabla principal con datos de compras."""
+        if not compras:
+            self.tabla_compras.setRowCount(0)
+            return
+        
+        self.tabla_compras.setRowCount(len(compras))
+        
+        for row, compra in enumerate(compras):
+            self.tabla_compras.setItem(row, 0, QTableWidgetItem(str(compra.get('numero_orden', compra.get('id', '')))))
+            self.tabla_compras.setItem(row, 1, QTableWidgetItem(str(compra.get('fecha_pedido', compra.get('fecha_creacion', '')))))
+            self.tabla_compras.setItem(row, 2, QTableWidgetItem(str(compra.get('proveedor', 'N/A'))))
+            self.tabla_compras.setItem(row, 3, QTableWidgetItem(str(compra.get('estado', 'PENDIENTE'))))
+            self.tabla_compras.setItem(row, 4, QTableWidgetItem(str(compra.get('prioridad', 'NORMAL'))))
+            self.tabla_compras.setItem(row, 5, QTableWidgetItem(f"$ {float(compra.get('total_final', 0)):.2f}"))
+            self.tabla_compras.setItem(row, 6, QTableWidgetItem(str(compra.get('total_items', 0))))
+            self.tabla_compras.setItem(row, 7, QTableWidgetItem(str(compra.get('fecha_entrega_estimada', 'N/A'))))
+            self.tabla_compras.setItem(row, 8, QTableWidgetItem(str(compra.get('metodo_pago', 'CONTADO'))))
+            self.tabla_compras.setItem(row, 9, QTableWidgetItem(str(compra.get('observaciones', ''))))
+            
+            # Botón de acciones
+            btn_acciones = QPushButton("Ver Detalle")
+            btn_acciones.clicked.connect(lambda checked, r=row: self.ver_detalle_orden_tabla(r))
+            self.tabla_compras.setCellWidget(row, 10, btn_acciones)

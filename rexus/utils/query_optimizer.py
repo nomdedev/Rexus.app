@@ -517,7 +517,7 @@ class QueryOptimizer:
             
             # Almacenar en cache
             if use_cache and result is not None:
-                self.cache.set(cache_key, result, ttl)
+                self.cache.put(cache_key, result, ttl)
             
             self._stats['individual_queries'] += 1
             return result
@@ -664,7 +664,7 @@ def optimize_query(use_cache: bool = True, ttl: Optional[int] = None,
             
             # Almacenar en cache
             if use_cache and result is not None:
-                optimizer.cache.set(cache_key, result, ttl)
+                optimizer.cache.put(cache_key, result, ttl)
             
             return result
         

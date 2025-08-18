@@ -216,7 +216,7 @@ func: Callable,
 
                     # Ejecutar consulta y cachear resultado
                     result = func(*args, **kwargs)
-                    cache_manager.set(key, result, ttl)
+                    cache_manager.put(key, result, ttl)
                     return result
 
                 except ImportError:

@@ -53,7 +53,7 @@ FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE 1=1
 ORDER BY o.fecha_inicio DESC
-LIMIT ? OFFSET ?;
+OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;
 
 -- Consulta para contar total de obras (para paginación)
 SELECT COUNT(*) AS total_count
@@ -71,20 +71,20 @@ SELECT
     o.estado,
     o.fecha_inicio,
     o.fecha_fin_estimada,
-    DATEDIFF(NOW(), o.fecha_fin_estimada) AS dias_vencidos,
+    DATEDIFF(day, o.fecha_fin_estimada, GETDATE()) AS dias_vencidos,
     o.presupuesto
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
-WHERE o.fecha_fin_estimada < NOW() 
+WHERE o.fecha_fin_estimada < GETDATE() 
   AND o.estado NOT IN ('completada', 'cancelada')
 ORDER BY o.fecha_fin_estimada ASC;
 
 -- Consulta para reporte de productividad por periodo
 SELECT 
-    DATE_FORMAT(o.fecha_inicio, '%Y-%m') AS periodo,
+    FORMAT(o.fecha_inicio, 'yyyy-MM') AS periodo,
     COUNT(*) AS obras_iniciadas,
     COUNT(CASE WHEN o.fecha_fin_real IS NOT NULL THEN 1 END) AS obras_completadas,
-    AVG(DATEDIFF(COALESCE(o.fecha_fin_real, NOW()), o.fecha_inicio)) AS duracion_promedio_dias,
+    AVG(DATEDIFF(day, o.fecha_inicio, ISNULL(o.fecha_fin_real, GETDATE()))) AS duracion_promedio_dias,
     SUM(o.presupuesto) AS presupuesto_total,
     SUM(o.costo_real) AS costo_real_total,
     CASE 

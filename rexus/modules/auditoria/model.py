@@ -13,16 +13,21 @@ import sys
 from pathlib import Path
 from typing import Any, Dict, List
 
+# Importar sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
+
 # Importar utilidades de seguridad
 try:
     # Agregar ruta src al path para imports de seguridad
     root_dir = Path(__file__).parent.parent.parent.parent
     sys.path.insert(0, str(root_dir))
 
-
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    print(f"[WARNING] Security utilities not available in auditoria: {e}")
+    logger.warning(f"Security utilities not available in auditoria: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -35,7 +40,7 @@ try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    print("[WARNING] SQL security utilities not available in auditoria")
+    logger.warning("SQL security utilities not available in auditoria")
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -61,7 +66,7 @@ class AuditoriaModel:
         self.security_available = SECURITY_AVAILABLE
         self.sanitizer = unified_sanitizer
         self.data_sanitizer = unified_sanitizer  # Alias for compatibility
-        print("OK [AUDITORIA] Sistema unificado de sanitización cargado")
+        logger.info("OK [AUDITORIA] Sistema unificado de sanitización cargado")
 
         self._crear_tabla_si_no_existe()
 
@@ -82,7 +87,7 @@ class AuditoriaModel:
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                print(f"[ERROR SEGURIDAD AUDITORIA] {str(e)}")
+                logger.error(f"[ERROR SEGURIDAD AUDITORIA] {str(e)}")
                 # Fallback a verificación básica
 
         # Verificación básica si la utilidad no está disponible
@@ -107,7 +112,7 @@ class AuditoriaModel:
     def _crear_tabla_si_no_existe(self):
         """Verifica que la tabla de auditoría exista en la base de datos."""
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
-            print("[ERROR AUDITORÍA] Conexión a base de datos no disponible")
+            logger.error("[ERROR AUDITORÍA] Conexión a base de datos no disponible")
             return
 
         try:
@@ -118,26 +123,26 @@ class AuditoriaModel:
                 query_verificar = self.sql_manager.get_query('auditoria', 'verificar_tabla_existe')
                 cursor.execute(query_verificar, (self.tabla_auditoria,))
             except Exception as e:
-                print(f"[ERROR AUDITORÍA] Error cargando query verificar_tabla_existe: {e}")
+                logger.error(f"[ERROR AUDITORÍA] Error cargando query verificar_tabla_existe: {e}")
                 # Fallback query directo
                 cursor.execute("SELECT * FROM sysobjects WHERE name=? AND xtype='U'", (self.tabla_auditoria,))
 
             if cursor.fetchone():
-                print(f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente.")
+                logger.info(f"[AUDITORÍA] Tabla '{self.tabla_auditoria}' verificada correctamente.")
 
                 # Mostrar la estructura de la tabla usando SQL externo
                 query_estructura = self.sql_manager.get_query('auditoria/obtener_estructura_tabla')
                 cursor.execute(query_estructura, (self.tabla_auditoria,))
                 columnas = cursor.fetchall()
-                print(f"[AUDITORÍA] Estructura de tabla '{self.tabla_auditoria}':")
+                logger.info(f"[AUDITORÍA] Estructura de tabla '{self.tabla_auditoria}':")
                 for columna in columnas:
-                    print(f"  - {columna[0]}: {columna[1]}")
+                    logger.info(f"  - {columna[0]}: {columna[1]}")
             else:
-                print(
+                logger.warning(
                     f"[ADVERTENCIA] La tabla '{self.tabla_auditoria}' no existe en la base de datos."
                 )
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error creando tabla: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error creando tabla: {e}")
 
     def registrar_accion(
         self,
@@ -173,7 +178,7 @@ class AuditoriaModel:
             bool: True si se registró exitosamente
         """
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
-            print("[WARN AUDITORÍA] Sin conexión BD - guardando en log local")
+            logger.warning("[WARN AUDITORÍA] Sin conexión BD - guardando en log local")
             return self._guardar_log_local(usuario,
 modulo,
                 accion,
@@ -256,11 +261,11 @@ modulo,
             )
 
             self.db_connection.connection.commit()
-            print(f"[AUDITORÍA] Registrado: {usuario} - {modulo} - {accion}")
+            logger.info(f"[AUDITORÍA] Registrado: {usuario} - {modulo} - {accion}")
             return True
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
             # Fallback a log local
             return self._guardar_log_local(usuario,
 modulo,
@@ -287,7 +292,7 @@ modulo,
 
             return True
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error guardando log local: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error guardando log local: {e}")
             return False
 
     def obtener_registros(
@@ -314,7 +319,7 @@ modulo,
             List[Dict]: Lista de registros de auditoría
         """
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
-            print("[ERROR AUDITORÍA] Sin conexión a BD para obtener registros")
+            logger.error("[ERROR AUDITORÍA] Sin conexión a BD para obtener registros")
             return []
 
         try:
@@ -399,11 +404,11 @@ modulo,
                 registro = dict(zip(columns, row))
                 registros.append(registro)
 
-            print(f"[AUDITORÍA] Obtenidos {len(registros)} registros")
+            logger.info(f"[AUDITORÍA] Obtenidos {len(registros)} registros")
             return registros
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error obteniendo registros: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error obteniendo registros: {e}")
             return []
 
     def obtener_estadisticas(self, dias: int = 30) -> Dict[str, Any]:
@@ -417,7 +422,7 @@ modulo,
             Dict: Estadísticas de auditoría
         """
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
-            print("[ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas")
+            logger.error("[ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas")
             return {}
 
         try:
@@ -450,7 +455,7 @@ modulo,
             return estadisticas
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error obteniendo estadísticas: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error obteniendo estadísticas: {e}")
             return {}
 
     def limpiar_registros_antiguos(self, dias_conservar: int = 365) -> bool:
@@ -464,7 +469,7 @@ modulo,
             bool: True si se realizó la limpieza exitosamente
         """
         if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
-            print("[ERROR AUDITORÍA] Sin conexión a BD para limpiar registros")
+            logger.error("[ERROR AUDITORÍA] Sin conexión a BD para limpiar registros")
             return False
 
         try:
@@ -480,7 +485,7 @@ modulo,
             registros_eliminados = cursor.rowcount
             self.db_connection.connection.commit()
 
-            print(f"[AUDITORÍA] Eliminados {registros_eliminados} registros antiguos")
+            logger.info(f"[AUDITORÍA] Eliminados {registros_eliminados} registros antiguos")
 
             # Registrar la limpieza
             self.registrar_accion(
@@ -494,5 +499,5 @@ modulo,
             return True
 
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
+            logger.error(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
             return False

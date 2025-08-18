@@ -11,7 +11,7 @@ INSERT INTO obra_materiales (
     fecha_asignacion,
     created_at,
     updated_at
-) VALUES (?, ?, ?, ?, 0, NOW(), NOW(), NOW());
+) VALUES (?, ?, ?, ?, 0, GETDATE(), GETDATE(), GETDATE());
 
 -- Consulta para obtener materiales de una obra
 SELECT 
@@ -41,7 +41,7 @@ WHERE om.obra_id = ?;
 UPDATE obra_materiales 
 SET 
     cantidad = cantidad - ?,
-    updated_at = NOW()
+    updated_at = GETDATE()
 WHERE obra_id = ? AND material_id = ? AND cantidad >= ?;
 
 -- Consulta para eliminar asignación de material (cuando cantidad llega a 0)
@@ -58,7 +58,7 @@ INSERT INTO obra_personal (
     activo,
     created_at,
     updated_at
-) VALUES (?, ?, ?, ?, NULL, TRUE, NOW(), NOW());
+) VALUES (?, ?, ?, ?, NULL, 1, GETDATE(), GETDATE());
 
 -- Consulta para obtener personal de una obra
 SELECT 
@@ -81,8 +81,8 @@ WHERE op.obra_id = ? AND op.activo = TRUE;
 UPDATE obra_personal 
 SET 
     activo = FALSE,
-    fecha_fin = NOW(),
-    updated_at = NOW()
+    fecha_fin = GETDATE(),
+    updated_at = GETDATE()
 WHERE obra_id = ? AND personal_id = ?;
 
 -- Consulta para obtener resumen de recursos de obra
@@ -147,7 +147,7 @@ LEFT JOIN (
                 WHEN op.fecha_fin IS NOT NULL THEN 
                     DATEDIFF(op.fecha_fin, op.fecha_inicio) * p.costo_hora * 8
                 WHEN op.activo = TRUE THEN 
-                    DATEDIFF(NOW(), op.fecha_inicio) * p.costo_hora * 8
+                    DATEDIFF(day, op.fecha_inicio, GETDATE()) * p.costo_hora * 8
                 ELSE 0
             END
         ) AS total_personal
@@ -184,7 +184,7 @@ GROUP BY p.id, p.nombre, p.apellido, p.especialidad;
 UPDATE obra_materiales 
 SET 
     cantidad_utilizada = cantidad_utilizada + ?,
-    updated_at = NOW()
+    updated_at = GETDATE()
 WHERE obra_id = ? AND material_id = ?;
 
 -- Consulta para obtener historial de asignaciones de material

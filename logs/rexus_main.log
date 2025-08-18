@@ -7,3 +7,6 @@
 2025-08-17 15:57:29,971 - rexus.main - ERROR - Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
 2025-08-17 15:57:31,192 - rexus.main - ERROR - Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
 2025-08-17 15:57:32,744 - rexus.main - ERROR - Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-18 13:51:31,598 - rexus.main - ERROR - Error crítico creando inventario: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+2025-08-18 13:51:31,604 - rexus.main - ERROR - Error crítico creando obras: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+2025-08-18 13:51:32,320 - rexus.main - ERROR - Error crítico creando vidrios: Error creando controlador: 'VidriosModernView' object has no attribute 'buscar_requested'

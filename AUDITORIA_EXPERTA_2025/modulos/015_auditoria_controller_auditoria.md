@@ -19,3 +19,14 @@ Recomendaciones
 3. Añadir logging de exportaciones (quién, cuándo, cuántos registros).
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: COMPLETA
+- No se detectaron señales faltantes críticas.
+
+Recomendaciones adicionales:
+- Unificar uso de logger centralizado y message_system.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para flujos de auditoría y validación de errores.

@@ -100,7 +100,7 @@ class DashboardWidget(QWidget):
                 self.valor_1_1.setText(str(alertas))
 
         except Exception as e:
-            print(f"Error actualizando métricas: {e}")
+            logging.getLogger(__name__).error(f"Error actualizando métricas: {e}")
 
 
 class ContabilidadWidget(QWidget):

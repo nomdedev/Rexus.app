@@ -31,6 +31,18 @@ Recomendaciones concretas (acciones)
 4. Cambiar `except Exception` por excepciones concretas (DatabaseError, ValueError, etc.) y registrar stacktrace usando `logger.exception`.
 5. Añadir un test unitario que ejecute `cargar_inventario_paginado` con `model` simulado (mock) para verificar comportamientos de paginación y fallback.
 
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: PENDIENTE (prioridad alta)
+- No se detectaron señales faltantes críticas.
+
+Recomendaciones adicionales:
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Unificar uso de logger centralizado y message_system.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para flujos de inventario y validación de errores.
+
 Notas adicionales
 - La query usa `SELECT TOP 1000` (SQL Server). Verificar compatibilidad de DB si se planea soporte multi-DB.
 - Buen diseño: múltiples fallbacks para distintas versiones del modelo y vista.

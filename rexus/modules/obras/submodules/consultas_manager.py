@@ -15,6 +15,10 @@ from typing import Any, Dict, List, Optional
 # Imports de seguridad unificados
 from rexus.core.auth_decorators import auth_required, permission_required
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger
+logger = get_logger(__name__)
 
 # SQLQueryManager unificado
 try:
@@ -101,7 +105,7 @@ class ConsultasManager:
             return obras
 
         except Exception as e:
-            print(f"Error obteniendo obras: {str(e)}")
+            logger.error(f"Error obteniendo obras: {str(e)}")
             return []
 
     @auth_required
@@ -143,7 +147,7 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            print(f"Error en búsqueda de obras: {str(e)}")
+            logger.error(f"Error en búsqueda de obras: {str(e)}")
             return []
 
     @auth_required
@@ -201,7 +205,7 @@ class ConsultasManager:
             return estadisticas
 
         except Exception as e:
-            print(f"Error obteniendo estadísticas: {str(e)}")
+            logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
 
     @auth_required
@@ -274,7 +278,7 @@ min(100,
             }
 
         except Exception as e:
-            print(f"Error obteniendo obras paginadas: {str(e)}")
+            logger.error(f"Error obteniendo obras paginadas: {str(e)}")
             return {"obras": [], "total": 0, "page": page, "per_page": per_page}
 
     @auth_required
@@ -304,7 +308,7 @@ min(100,
             return obras
 
         except Exception as e:
-            print(f"Error obteniendo obras vencidas: {str(e)}")
+            logger.error(f"Error obteniendo obras vencidas: {str(e)}")
             return []
 
     @auth_required
@@ -346,7 +350,7 @@ min(100,
             return reporte
 
         except Exception as e:
-            print(f"Error generando reporte de productividad: {str(e)}")
+            logger.error(f"Error generando reporte de productividad: {str(e)}")
             return {}
 
     def _sanitizar_filtros(self, filtros: Dict[str, Any]) -> Dict[str, Any]:

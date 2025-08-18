@@ -22,3 +22,29 @@
 2025-08-18 13:46:15 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
 2025-08-18 13:46:21 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
 2025-08-18 13:46:22 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 15:23:37 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 15:23:37 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 15:26:45 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 15:26:45 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 15:26:51 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 15:26:52 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 20:21:10 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 20:21:10 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 20:21:14 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 20:21:17 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 20:22:39 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 20:22:39 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 20:22:43 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 20:22:44 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 20:29:06 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 20:29:06 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 20:29:11 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 20:29:12 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 20:29:41 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 20:29:41 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 20:29:47 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 20:29:48 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-18 20:30:12 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-18 20:30:12 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-18 20:30:30 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-18 20:30:31 | INFO     | rexus.security  | Aplicación iniciada para admin

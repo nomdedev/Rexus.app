@@ -117,6 +117,17 @@ class UsuariosModel:
         # Validar conexión de base de datos
         if db_connection is None:
             logger.warning("UsuariosModel inicializado sin conexión a BD - usando modo limitado")
+        else:
+            # Validar que la conexión tenga los métodos necesarios
+            try:
+                if hasattr(db_connection, 'cursor') and hasattr(db_connection, 'commit'):
+                    logger.info("Conexión BD válida en UsuariosModel")
+                else:
+                    logger.error("Conexión BD inválida - no tiene métodos cursor/commit")
+                    db_connection = None
+            except (AttributeError, TypeError, ConnectionError) as e:
+                logger.error(f"Error validando conexión BD: {e}")
+                db_connection = None
             
         self.db_connection = db_connection
         self.tabla_usuarios = "usuarios"
@@ -222,11 +233,11 @@ class UsuariosModel:
             self._validate_table_name(self.tabla_usuarios)
 
             # Validar conexión BD antes de crear cursor
-            if not self.db_connection or not hasattr(self.db_connection, 'connection'):
+            if not self.db_connection:
                 logger.error("Conexión BD no disponible en validar_usuario_duplicado")
                 return resultado
                 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
 
             # Usar SQL externo para verificar username duplicado
@@ -271,7 +282,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
 
             if exitoso:
@@ -308,7 +319,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
 
             # Verificar intentos fallidos y tiempo transcurrido
@@ -354,7 +365,7 @@ class UsuariosModel:
             else:
                 username_limpio = username.strip()
 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             self._validate_table_name(self.tabla_usuarios)
 
             query = self.sql_manager.get_query('usuarios', 'resetear_intentos_fallidos')
@@ -484,7 +495,7 @@ class UsuariosModel:
             nombre_limpio = nombre_usuario.strip() if nombre_usuario else ""
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_nombre')
             cursor.execute(sql_select, (nombre_limpio,))
             row = cursor.fetchone()
@@ -565,7 +576,7 @@ class UsuariosModel:
             email_limpio = email.strip() if email else ""
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_email')
             cursor.execute(sql_select, (email_limpio,))
             row = cursor.fetchone()
@@ -635,7 +646,7 @@ class UsuariosModel:
             username_limpio = username.strip() if username else ""
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             if excluir_usuario_id:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_username_duplicate_exclude')
@@ -677,7 +688,7 @@ class UsuariosModel:
             email_limpio = email.strip() if email else ""
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             if excluir_usuario_id:
                 sql_select = self.sql_manager.get_query('usuarios', 'count_email_duplicate_exclude')
@@ -720,7 +731,7 @@ class UsuariosModel:
             username_limpio = username
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_select = self.sql_manager.get_query('usuarios', 'verificar_bloqueo_cuenta_detallado')
             cursor.execute(sql_select, (username_limpio,))
             row = cursor.fetchone()
@@ -791,7 +802,7 @@ class UsuariosModel:
         TIEMPO_BLOQUEO_MINUTOS = 15  # Tiempo de bloqueo en minutos
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Obtener intentos actuales
             sql_select = self.sql_manager.get_query('usuarios', 'obtener_intentos_fallidos')
@@ -819,7 +830,7 @@ class UsuariosModel:
                         bloqueado_hasta,
                         username_limpio)
                 )
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
 
                 log_security("WARNING", f"Usuario '{username}' BLOQUEADO después de {intentos_nuevos} intentos fallidos", username)
                 log_security("WARNING", f"Usuario bloqueado hasta: {bloqueado_hasta}")
@@ -829,7 +840,7 @@ class UsuariosModel:
                 # Solo incrementar contador
                 sql_update = self.sql_manager.get_query('usuarios', 'actualizar_intentos_fallidos')
                 cursor.execute(sql_update, (intentos_nuevos, username_limpio))
-                self.db_connection.connection.commit()
+                self.db_connection.commit()
 
                 log_security("WARNING", f"Intento fallido #{intentos_nuevos} para usuario '{username}'", username)
 
@@ -860,10 +871,10 @@ class UsuariosModel:
             username_limpio = username
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username_limpio,))
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             log_security("INFO", f"Intentos fallidos limpiados para usuario '{username}'", username)
 
@@ -881,10 +892,10 @@ class UsuariosModel:
             return
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_update = self.sql_manager.get_query('usuarios', 'limpiar_intentos_bloqueo')
             cursor.execute(sql_update, (username,))
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
 
             log_security("INFO", f"Bloqueo expirado limpiado para usuario '{username}'", username)
 
@@ -1083,7 +1094,7 @@ username: str,
                 datos_limpios = datos_usuario.copy()
                 logger.warning("Creando usuario sin sanitización de seguridad")
 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar que el usuario no exista
             sql_count_usuario = self.sql_manager.get_query('usuarios', 'count_usuario_by_name')
@@ -1133,7 +1144,7 @@ username: str,
                     (usuario_id, modulo, "leer"),
                 )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             # Invalidar cache después de crear usuario
             self._invalidar_cache_usuarios()
 
@@ -1153,7 +1164,7 @@ username: str,
             return self._get_usuarios_demo()
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Query optimizada con JOIN para eliminar consultas N+1
             sql = self.sql_manager.get_query('usuarios', 'obtener_usuarios_con_permisos')
@@ -1219,7 +1230,7 @@ username: str,
             ]
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Sanitizar término de búsqueda antes de usarlo
             termino_limpio = termino_busqueda.strip()[:50]  # Limitar longitud
@@ -1273,7 +1284,7 @@ username: str,
             return None
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_query = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_id')
             cursor.execute(sql_query, (usuario_id,))
 
@@ -1309,7 +1320,7 @@ username: str,
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar que el usuario exista
             sql_count_id = self.sql_manager.get_query('usuarios', 'count_usuario_by_id')
@@ -1345,7 +1356,7 @@ username: str,
                         (usuario_id, modulo, "leer,escribir"),
                     )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return True, "Usuario actualizado exitosamente"
 
         except Exception as e:
@@ -1371,7 +1382,7 @@ username: str,
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar que el usuario exista
             sql_get_usuario = self.sql_manager.get_query('usuarios', 'obtener_usuario_by_id')
@@ -1400,7 +1411,7 @@ username: str,
             sql_cerrar_sesiones = self.sql_manager.get_query('usuarios', 'cerrar_sesiones_usuario')
             cursor.execute(sql_cerrar_sesiones, (usuario_id,))
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return True, f"Usuario '{nombre_usuario}' eliminado exitosamente"
 
         except Exception as e:
@@ -1416,7 +1427,7 @@ username: str,
             return ["Configuración"]
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
             sql_permisos = self.sql_manager.get_query('usuarios', 'obtener_permisos_usuario')
             cursor.execute(sql_permisos, (usuario_id,))
 
@@ -1447,7 +1458,7 @@ username: str,
             return False, "Sin conexión a la base de datos"
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Verificar contraseña actual
             sql_get_password = self.sql_manager.get_query('usuarios', 'obtener_password_hash')
@@ -1471,7 +1482,7 @@ username: str,
                 (nueva_hash, usuario_id),
             )
 
-            self.db_connection.connection.commit()
+            self.db_connection.commit()
             return True, "Contraseña cambiada exitosamente"
 
         except Exception as e:
@@ -1486,7 +1497,7 @@ username: str,
             return self._get_estadisticas_demo()
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             stats = {}
 
@@ -1599,7 +1610,7 @@ username: str,
             if not self.db_connection:
                 return [], 0
 
-            cursor = self.db_connection.connection.cursor()
+            cursor = self.db_connection.cursor()
 
             # Query base
             base_query = self._get_base_query()

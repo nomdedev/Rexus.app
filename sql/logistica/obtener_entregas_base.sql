@@ -4,16 +4,16 @@
 
 SELECT 
     e.id,
-    e.numero_entrega,
+    e.id as numero_entrega,  -- Usar ID como número de entrega si la columna no existe
     e.fecha_entrega,
     e.estado,
     e.obra_id,
     e.transporte_id,
     e.observaciones,
-    o.nombre as obra_nombre,
-    o.direccion as obra_direccion,
-    t.nombre as transporte_nombre,
-    t.tipo as transporte_tipo
+    ISNULL(o.id, 0) as obra_nombre,  -- Usar ID si no hay columna nombre
+    e.direccion_entrega as obra_direccion,
+    ISNULL(t.id, 0) as transporte_nombre,  -- Usar ID si no hay columna nombre
+    'TRANSPORTE' as transporte_tipo  -- Valor por defecto
 FROM [entregas] e
 LEFT JOIN [obras] o ON e.obra_id = o.id
 LEFT JOIN [transportes] t ON e.transporte_id = t.id

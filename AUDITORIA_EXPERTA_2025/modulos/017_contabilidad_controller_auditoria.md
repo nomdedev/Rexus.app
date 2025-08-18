@@ -19,3 +19,15 @@ Recomendaciones
 3. Manejar errores de IO al escribir archivos y usar ubicaciones configurables.
 
 Estado: informe creado.
+
+### Estado de migración y mejoras (2025-08-18)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: EN PROGRESO
+- No se detectaron señales faltantes críticas.
+
+Recomendaciones adicionales:
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Unificar uso de logger centralizado y message_system.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para flujos de contabilidad y validación de errores.
