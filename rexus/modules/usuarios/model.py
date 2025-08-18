@@ -1274,16 +1274,8 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute(
-                """
-                SELECT id, usuario, nombre_completo, email, telefono, rol, estado,
-                       fecha_creacion, fecha_modificacion, ultimo_acceso, intentos_fallidos,
-                       bloqueado_hasta, avatar, configuracion_personal
-                FROM usuarios
-                WHERE id = ? AND activo = 1
-            """,
-                (usuario_id,),
-            )
+            sql_query = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_id')
+            cursor.execute(sql_query, (usuario_id,))
 
             row = cursor.fetchone()
             if row:
@@ -1325,35 +1317,22 @@ username: str,
             if cursor.fetchone()[0] == 0:
                 return False, "Usuario no encontrado"
 
-            # Actualizar datos básicos
-            cursor.execute(
-                """
-                UPDATE usuarios
-                SET nombre_completo = ?, email = ?, telefono = ?, rol = ?, estado = ?,
-                    fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """,
-                (
-                    datos_usuario["nombre_completo"],
-                    datos_usuario.get("email", ""),
-                    datos_usuario.get("telefono", ""),
-                    datos_usuario.get("rol", "USUARIO"),
-                    datos_usuario.get("estado", "ACTIVO"),
-                    usuario_id,
-                ),
-            )
+            # Actualizar datos básicos usando SQLQueryManager
+            sql_update = self.sql_manager.get_query('usuarios', 'actualizar_datos_usuario')
+            cursor.execute(sql_update, (
+                datos_usuario["nombre_completo"],
+                datos_usuario.get("email", ""),
+                datos_usuario.get("telefono", ""),
+                datos_usuario.get("rol", "USUARIO"),
+                datos_usuario.get("estado", "ACTIVO"),
+                usuario_id,
+            ))
 
             # Actualizar contraseña si se proporciona
             if datos_usuario.get("password"):
                 password_hash = self._hashear_password(datos_usuario["password"])
-                cursor.execute(
-                    """
-                    UPDATE usuarios
-                    SET password_hash = ?, intentos_fallidos = 0, bloqueado_hasta = NULL
-                    WHERE id = ?
-                """,
-                    (password_hash, usuario_id),
-                )
+                sql_password = self.sql_manager.get_query('usuarios', 'actualizar_password_usuario')
+                cursor.execute(sql_password, (password_hash, usuario_id))
 
             # Actualizar permisos
             if "permisos" in datos_usuario:
@@ -1417,15 +1396,9 @@ username: str,
                 (usuario_id,),
             )
 
-            # Cerrar sesiones activas
-            cursor.execute(
-                """
-                UPDATE sesiones_usuario
-                SET activa = 0, fecha_fin = GETDATE()
-                WHERE usuario_id = ? AND activa = 1
-            """,
-                (usuario_id,),
-            )
+            # Cerrar sesiones activas usando SQLQueryManager
+            sql_cerrar_sesiones = self.sql_manager.get_query('usuarios', 'cerrar_sesiones_usuario')
+            cursor.execute(sql_cerrar_sesiones, (usuario_id,))
 
             self.db_connection.connection.commit()
             return True, f"Usuario '{nombre_usuario}' eliminado exitosamente"
@@ -1444,13 +1417,8 @@ username: str,
 
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute(
-                """
-                SELECT modulo FROM permisos_usuario
-                WHERE usuario_id = ?
-            """,
-                (usuario_id,),
-            )
+            sql_permisos = self.sql_manager.get_query('usuarios', 'obtener_permisos_usuario')
+            cursor.execute(sql_permisos, (usuario_id,))
 
             return [row[0] for row in cursor.fetchall()]
 
@@ -1527,37 +1495,24 @@ username: str,
             cursor.execute(sql_count_activos)
             stats["total_usuarios"] = cursor.fetchone()[0]
 
-            # Usuarios por estado
-            cursor.execute("""
-                SELECT estado, COUNT(*)
-                FROM usuarios
-                WHERE activo = 1
-                GROUP BY estado
-            """)
+            # Usuarios por estado usando SQLQueryManager
+            sql_estado = self.sql_manager.get_query('usuarios', 'estadisticas_por_estado')
+            cursor.execute(sql_estado)
             stats["por_estado"] = {row[0]: row[1] for row in cursor.fetchall()}
 
-            # Usuarios por rol
-            cursor.execute("""
-                SELECT rol, COUNT(*)
-                FROM usuarios
-                WHERE activo = 1
-                GROUP BY rol
-            """)
+            # Usuarios por rol usando SQLQueryManager
+            sql_rol = self.sql_manager.get_query('usuarios', 'estadisticas_por_rol')
+            cursor.execute(sql_rol)
             stats["por_rol"] = {row[0]: row[1] for row in cursor.fetchall()}
 
-            # Usuarios activos en el último mes
-            cursor.execute("""
-                SELECT COUNT(*) FROM usuarios
-                WHERE activo = 1 AND ultimo_acceso >= DATEADD(MONTH, -1, GETDATE())
-            """)
+            # Usuarios activos en el último mes usando SQLQueryManager
+            sql_activos_mes = self.sql_manager.get_query('usuarios', 'usuarios_activos_ultimo_mes')
+            cursor.execute(sql_activos_mes)
             stats["activos_mes"] = cursor.fetchone()[0]
 
-            # Usuarios creados este mes
-            cursor.execute("""
-                SELECT COUNT(*) FROM usuarios
-                WHERE activo = 1 AND MONTH(fecha_creacion) = MONTH(GETDATE())
-                AND YEAR(fecha_creacion) = YEAR(GETDATE())
-            """)
+            # Usuarios creados este mes usando SQLQueryManager
+            sql_creados_mes = self.sql_manager.get_query('usuarios', 'usuarios_creados_este_mes')
+            cursor.execute(sql_creados_mes)
             stats["creados_mes"] = cursor.fetchone()[0]
 
             return stats

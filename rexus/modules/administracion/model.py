@@ -1,6 +1,3 @@
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-from rexus.utils.sql_query_manager import SQLQueryManager
-
 """
 Modelo de Administración - Rexus.app v2.0.0
 
@@ -16,6 +13,9 @@ import logging
 from datetime import date
 from pathlib import Path
 from typing import Dict, Optional
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # Configurar logger específico para el módulo
 logger = logging.getLogger(__name__)

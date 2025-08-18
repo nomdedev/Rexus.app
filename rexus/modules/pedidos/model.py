@@ -501,7 +501,7 @@ None,
             # Obtener datos del pedido
             cursor.execute(
                 """
-                SELECT * FROM pedidos WHERE id = ? AND activo = 1
+                self.sql_manager.get_query('pedidos', 'obtener_pedido_completo')
             """,
                 (pedido_id,),
             )
@@ -516,7 +516,7 @@ None,
             # Obtener detalles del pedido
             cursor.execute(
                 """
-                SELECT * FROM pedidos_detalle WHERE pedido_id = ?
+                self.sql_manager.get_query('pedidos', 'obtener_detalles_pedido')
                 ORDER BY id
             """,
                 (pedido_id,),
@@ -533,9 +533,7 @@ None,
             # Obtener historial
             cursor.execute(
                 """
-                SELECT * FROM pedidos_historial
-                WHERE pedido_id = ?
-                ORDER BY fecha_cambio DESC
+                self.sql_manager.get_query('pedidos', 'obtener_historial_completo')
             """,
                 (pedido_id,),
             )
@@ -586,22 +584,14 @@ None,
 
             # Actualizar estado
             cursor.execute(
-                """
-                UPDATE pedidos
-                SET estado = ?, fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """,
+                self.sql_manager.get_query('pedidos', 'actualizar_estado_fecha'),
                 (nuevo_estado, pedido_id),
             )
 
             # Si se aprueba, registrar fecha y usuario
             if nuevo_estado == "APROBADO":
                 cursor.execute(
-                    """
-                    UPDATE pedidos
-                    SET usuario_aprobador = ?, fecha_aprobacion = GETDATE()
-                    WHERE id = ?
-                """,
+                    self.sql_manager.get_query('pedidos', 'actualizar_aprobacion'),
                     (usuario_id, pedido_id),
                 )
 

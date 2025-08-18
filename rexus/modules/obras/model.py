@@ -737,18 +737,9 @@ obra_id: int,
 
             estadisticas = {}
 
-            # Query optimizada que obtiene todas las estadísticas en una consulta
-            cursor.execute("""
-                SELECT
-                    COUNT(*) as total_obras,
-                    SUM(CASE WHEN estado = 'EN_PROCESO' THEN 1 ELSE 0 END) as obras_activas,
-                    SUM(CASE WHEN estado = 'FINALIZADA' THEN 1 ELSE 0 END) as obras_finalizadas,
-                    SUM(CASE WHEN estado = 'PENDIENTE' THEN 1 ELSE 0 END) as obras_pendientes,
-                    AVG(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE NULL END) as presupuesto_promedio,
-                    SUM(CASE WHEN presupuesto_total > 0 THEN presupuesto_total ELSE 0 END) as presupuesto_total_acumulado
-                FROM obras
-                WHERE activo = 1
-            """)
+            # Query optimizada usando SQLQueryManager
+            sql_stats = self.sql_manager.get_query('obras', 'select_estadisticas_completas_obras')
+            cursor.execute(sql_stats)
 
             row = cursor.fetchone()
             if row:

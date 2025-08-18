@@ -498,7 +498,7 @@ class ComprasViewComplete(BaseModuleView):
     compra_actualizada = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__(parent)
+        super().__init__(module_name="compras", parent=parent)
 
         self.model = None
         self.controller = None

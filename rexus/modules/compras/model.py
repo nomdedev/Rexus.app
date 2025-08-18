@@ -703,12 +703,8 @@ APROBADA,
                 return False
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            UPDATE compras
-            SET estado = 'CANCELADA',
-                observaciones = CONCAT(ISNULL(observaciones, ''), ' [CANCELADA: ', ?, ']')
-            WHERE id = ?
-            """, (motivo, orden_id))
+            sql_cancelar = self.sql_manager.get_query('compras', 'cancelar_compra')
+            cursor.execute(sql_cancelar, (motivo, orden_id))
 
             self.db_connection.commit()
             return cursor.rowcount > 0
@@ -724,12 +720,8 @@ APROBADA,
                 return False
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            UPDATE compras
-            SET estado = 'APROBADA',
-                observaciones = CONCAT(ISNULL(observaciones, ''), ' [APROBADA POR: ', ?, ']')
-            WHERE id = ?
-            """, (usuario_aprobacion, orden_id))
+            sql_aprobar = self.sql_manager.get_query('compras', 'aprobar_compra')
+            cursor.execute(sql_aprobar, (usuario_aprobacion, orden_id))
 
             self.db_connection.commit()
             return cursor.rowcount > 0
@@ -807,7 +799,7 @@ APROBADA,
     def _get_base_query(self):
         """Obtiene la query base para paginación (debe ser implementado por cada modelo)"""
         # Esta es una implementación genérica - tabla fija para evitar SQL injection
-        return "SELECT * FROM compras"
+        return self.sql_manager.get_query('compras', 'select_todas_compras')
 
     def _get_count_query(self):
         """Obtiene la query de conteo (debe ser implementado por cada modelo)"""
@@ -890,11 +882,11 @@ APROBADA,
                 return False
 
             # Eliminar primero los detalles de la compra (foreign key constraint)
-            delete_details_query = "DELETE FROM detalle_compras WHERE compra_id = ?"
+            delete_details_query = self.sql_manager.get_query('compras', 'eliminar_detalles_compra')
             cursor.execute(delete_details_query, (compra_id,))
             
             # Eliminar la compra principal
-            delete_query = "DELETE FROM compras WHERE id = ?"
+            delete_query = self.sql_manager.get_query('compras', 'eliminar_compra')
             result = cursor.execute(delete_query, (compra_id,))
             
             # Confirmar transacción

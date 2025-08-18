@@ -16,7 +16,8 @@
       "Bash(del:*)",
       "Bash(rg:*)",
       "Bash(touch:*)",
-      "Bash(mv:*)"
+      "Bash(mv:*)",
+      "Bash(pip install:*)"
     ],
     "deny": [],
     "ask": [],

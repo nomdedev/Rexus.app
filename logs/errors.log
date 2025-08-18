@@ -82,3 +82,30 @@ Traceback (most recent call last):
     cursor = self.db_connection.connection.cursor()
 AttributeError: 'NoneType' object has no attribute 'cursor'
 2025-08-17 15:07:32 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\legacy_root\\scripts\\sql\\common\\verificar_tabla_sqlite.sql']
+2025-08-17 15:57:11 | ERROR    | rexus.main      | Error crítico creando obras: Archivo SQL no encontrado: verificar_tabla_sqlite.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\obras\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\sql\\verificar_tabla_sqlite.sql', 'D:\\martin\\Rexus.app\\sql\\common\\verificar_tabla_sqlite.sql']
+2025-08-17 15:57:13 | ERROR    | rexus.main      | Error crítico creando inventario: Archivo SQL no encontrado: verificar_tabla_existe.sql en módulo inventario. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\inventario\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\sql\\verificar_tabla_existe.sql', 'D:\\martin\\Rexus.app\\sql\\common\\verificar_tabla_existe.sql']
+2025-08-17 15:57:17 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:57:17 | ERROR    | rexus.main      | Error crítico creando vidrios: Error creando vista: 'VidriosModernView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:57:18 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor'
+2025-08-17 15:57:18 | ERROR    | rexus.main      | Error crítico creando vidrios: Error creando vista: 'VidriosModernView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:57:27 | ERROR    | rexus.main      | Error crítico creando compras: Error creando vista: 'NoneType' object has no attribute 'upper'
+2025-08-17 15:57:28 | ERROR    | rexus.main      | Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
+2025-08-17 15:57:29 | ERROR    | rexus.main      | Error creando administración real: invalid syntax. Perhaps you forgot a comma? (model.py, line 17)
+2025-08-17 15:57:31 | ERROR    | rexus.main      | Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 15:57:32 | ERROR    | rexus.main      | Error crítico creando mantenimiento: Error creando vista: 'MantenimientoView' object has no attribute 'crear_controles_paginacion'
+2025-08-17 16:09:58,055 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+File: D:\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "<string>", line 22, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+2025-08-17 16:09:58 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 22, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
