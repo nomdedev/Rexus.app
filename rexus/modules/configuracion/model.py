@@ -14,8 +14,16 @@ Gestiona todas las configuraciones del sistema incluyendo:
 """
 
 import json
+import logging
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
+
+# Importar sistema de logging centralizado
+try:
+    from rexus.utils.app_logger import get_logger
+    logger = get_logger("configuracion.model")
+except ImportError:
+    logger = logging.getLogger("configuracion.model")
 
 # Importar SQL loader para queries externas
 from rexus.utils.sql_script_loader import sql_script_loader
@@ -190,7 +198,7 @@ class ConfiguracionModel:
             count = result[0] if result else 0
 
             if count == 0:
-                print("[CONFIGURACION] Insertando configuraciones por defecto...")
+                logger.info("Insertando configuraciones por defecto")
                 # Insertar configuraciones por defecto
                 query_insert = sql_manager.get_query(
                     "configuracion", "insert_config_default"
@@ -208,22 +216,20 @@ class ConfiguracionModel:
                             categoria)
                     )
                 self.db_connection.commit()
-                print("[CONFIGURACION] Configuración inicial cargada en BD")
+                logger.info("Configuración inicial cargada en BD")
             else:
-                print(f"[CONFIGURACION] {count} configuraciones ya existentes en BD")
+                logger.info(f"{count} configuraciones ya existentes en BD")
 
             cursor.close()
             # Cargar configuración en cache
             self._cargar_cache()
         except Exception as e:
-            print(
-                f"[CONFIGURACION] Error cargando configuración inicial: {e} - usando archivo"
-            )
+            logger.error(f"Error cargando configuración inicial: {e} - usando archivo")
             if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except (AttributeError, ConnectionError) as e:
-                    print(f"[WARNING] No se pudo hacer rollback: {e}")
+                    logger.warning(f"No se pudo hacer rollback: {e}")
             # Fallback a archivo
             self.db_connection = None
             self._cargar_desde_archivo()
@@ -237,19 +243,13 @@ class ConfiguracionModel:
             cursor.execute(query, (self.tabla_configuracion,))
             result = cursor.fetchone()
             if result and result[0] > 0:
-                print(
-                    f"[CONFIGURACION] Tabla '{self.tabla_configuracion}' verificada correctamente."
-                )
+                logger.info(f"Tabla '{self.tabla_configuracion}' verificada correctamente")
             else:
-                print(
-                    f"[CONFIGURACION] AVISO: Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos"
-                )
+                logger.warning(f"Tabla '{self.tabla_configuracion}' no existe - usando configuración de archivos")
                 self.db_connection = None  # Deshabilitar BD y usar archivo
             cursor.close()
         except Exception as e:
-            print(
-                f"[CONFIGURACION] Error verificando tablas: {e} - usando configuración de archivos"
-            )
+            logger.error(f"Error verificando tablas: {e} - usando configuración de archivos")
             self.db_connection = None  # Fallback a archivo
 
     def validar_configuracion_duplicada(
@@ -300,7 +300,7 @@ class ConfiguracionModel:
             finally:
                 cursor.close()
         except Exception as e:
-            print(f"[CONFIGURACION] Error validando configuración duplicada: {e}")
+            logger.error(f"Error validando configuración duplicada: {e}")
             return False  # En caso de error, permitir la operación
         # Código duplicado y SQL embebido eliminado tras migración a SQL externo
 
@@ -314,7 +314,7 @@ class ConfiguracionModel:
                 self.config_cache = self.CONFIG_DEFAULTS.copy()
                 self._guardar_en_archivo()
         except Exception as e:
-            print(f"[ERROR CONFIGURACION] Error cargando desde archivo: {e}")
+            logger.error(f"Error cargando desde archivo: {e}")
             self.config_cache = self.CONFIG_DEFAULTS.copy()
 
     def _guardar_en_archivo(self):

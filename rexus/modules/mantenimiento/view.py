@@ -38,6 +38,8 @@ from PyQt6.QtWidgets import (
     QWidget,
     QDialog,
     QFormLayout,
+    QLabel,
+    QFrame,
     QSpinBox,
     QDoubleSpinBox,
     QDateEdit,
@@ -1098,6 +1100,63 @@ class MantenimientoView(QWidget):
         except Exception as e:
             print(f"Error cargando equipos en vista: {e}")
 
+    def crear_controles_paginacion(self):
+        """Crea los controles de paginación para las tablas."""
+        panel = QFrame()
+        panel.setStyleSheet("""
+            QFrame {
+                background: #f8fafc;
+                border: 1px solid #e2e8f0;
+                border-radius: 6px;
+                max-height: 40px;
+            }
+        """)
+
+        layout = QHBoxLayout(panel)
+        layout.setContentsMargins(12, 4, 12, 4)
+        layout.setSpacing(8)
+
+        # Información de registros
+        self.info_label = QLabel("Mostrando registros")
+        self.info_label.setStyleSheet("color: #64748b; font-size: 12px;")
+        layout.addWidget(self.info_label)
+
+        layout.addStretch()
+
+        # Botones de navegación
+        self.btn_primera = QPushButton("⟪")
+        self.btn_anterior = QPushButton("‹")
+        self.btn_siguiente = QPushButton("›")
+        self.btn_ultima = QPushButton("⟫")
+
+        for btn in [self.btn_primera, self.btn_anterior, self.btn_siguiente, self.btn_ultima]:
+            btn.setFixedSize(32, 32)
+            btn.setStyleSheet("""
+                QPushButton {
+                    background: white;
+                    border: 1px solid #cbd5e1;
+                    border-radius: 4px;
+                    font-weight: bold;
+                    color: #475569;
+                }
+                QPushButton:hover {
+                    background: #f1f5f9;
+                    border-color: #3b82f6;
+                }
+                QPushButton:disabled {
+                    background: #f8fafc;
+                    color: #cbd5e1;
+                    border-color: #e2e8f0;
+                }
+            """)
+
+        layout.addWidget(self.btn_primera)
+        layout.addWidget(self.btn_anterior)
+        layout.addWidget(self.btn_siguiente)
+        layout.addWidget(self.btn_ultima)
+
+        return panel
+
 
 class NuevoMantenimientoDialog(QDialog):
     """Diálogo para crear un nuevo mantenimiento."""
@@ -1252,183 +1311,3 @@ class NuevoMantenimientoDialog(QDialog):
         show_success(self, "Ver Detalle", f"Mostrando detalle para fila {row + 1}")
 
     # === MÉTODOS DE PAGINACIÓN ===
-
-    def crear_controles_paginacion(self):
-        """Crea los controles de paginación."""
-        from PyQt6.QtWidgets import QFrame, QSpinBox
-        
-        panel = QFrame()
-        panel.setStyleSheet("""
-            QFrame {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 6px;
-                max-height: 40px;
-            }
-        """)
-
-        layout = QHBoxLayout(panel)
-        layout.setContentsMargins(12, 4, 12, 4)
-        layout.setSpacing(8)
-
-        # Información de registros
-        self.info_label = RexusButton("Mostrando 1-50 de 0 órdenes")
-        self.info_label.setStyleSheet("QPushButton { color: #6b7280; font-size: 11px; border: none; background: transparent; }")
-        self.info_label.setEnabled(False)
-        layout.addWidget(self.info_label)
-
-        layout.addStretch()
-
-        # Botones de navegación
-        self.btn_primera = RexusButton("⏮")
-        self.btn_primera.setMaximumWidth(30)
-        self.btn_primera.clicked.connect(lambda: self.ir_a_pagina(1))
-        layout.addWidget(self.btn_primera)
-
-        self.btn_anterior = RexusButton("⏪")
-        self.btn_anterior.setMaximumWidth(30)
-        self.btn_anterior.clicked.connect(self.pagina_anterior)
-        layout.addWidget(self.btn_anterior)
-
-        # Control de página actual
-        from PyQt6.QtWidgets import QSpinBox
-        self.pagina_actual_spin = QSpinBox()
-        self.pagina_actual_spin.setMinimum(1)
-        self.pagina_actual_spin.setMaximum(1)
-        self.pagina_actual_spin.valueChanged.connect(self.cambiar_pagina)
-        self.pagina_actual_spin.setMaximumWidth(60)
-        self.pagina_actual_spin.setStyleSheet("""
-            QSpinBox {
-                padding: 4px;
-                border: 1px solid #d1d5db;
-                border-radius: 4px;
-                font-size: 11px;
-            }
-        """)
-        layout.addWidget(RexusButton("Pág."))
-        layout.addWidget(self.pagina_actual_spin)
-
-        self.total_paginas_label = RexusButton("de 1")
-        self.total_paginas_label.setStyleSheet("QPushButton { color: #6b7280; font-size: 11px; border: none; background: transparent; }")
-        self.total_paginas_label.setEnabled(False)
-        layout.addWidget(self.total_paginas_label)
-
-        self.btn_siguiente = RexusButton("⏩")
-        self.btn_siguiente.setMaximumWidth(30)
-        self.btn_siguiente.clicked.connect(self.pagina_siguiente)
-        layout.addWidget(self.btn_siguiente)
-
-        self.btn_ultima = RexusButton("⏭")
-        self.btn_ultima.setMaximumWidth(30)
-        self.btn_ultima.clicked.connect(self.ultima_pagina)
-        layout.addWidget(self.btn_ultima)
-
-        # Selector de registros por página
-        layout.addWidget(RexusButton("Items:"))
-        self.registros_por_pagina_combo = RexusComboBox()
-        self.registros_por_pagina_combo.addItems(["25", "50", "100", "200"])
-        self.registros_por_pagina_combo.setCurrentText("50")
-        self.registros_por_pagina_combo.currentTextChanged.connect(self.cambiar_registros_por_pagina)
-        self.registros_por_pagina_combo.setMaximumWidth(70)
-        layout.addWidget(self.registros_por_pagina_combo)
-
-        return panel
-
-    def actualizar_controles_paginacion(self, pagina_actual, total_paginas, total_registros, registros_mostrados):
-        """Actualiza los controles de paginación."""
-        if hasattr(self, 'info_label'):
-            inicio = ((pagina_actual - 1) * int(self.registros_por_pagina_combo.currentText())) + 1
-            fin = min(inicio + registros_mostrados - 1, total_registros)
-            self.info_label.setText(f"Mostrando {inicio}-{fin} de {total_registros} órdenes")
-
-        if hasattr(self, 'pagina_actual_spin'):
-            self.pagina_actual_spin.blockSignals(True)
-            self.pagina_actual_spin.setValue(pagina_actual)
-            self.pagina_actual_spin.setMaximum(max(1, total_paginas))
-            self.pagina_actual_spin.blockSignals(False)
-
-        if hasattr(self, 'total_paginas_label'):
-            self.total_paginas_label.setText(f"de {total_paginas}")
-
-        # Habilitar/deshabilitar botones
-        if hasattr(self, 'btn_primera'):
-            self.btn_primera.setEnabled(pagina_actual > 1)
-            self.btn_anterior.setEnabled(pagina_actual > 1)
-            self.btn_siguiente.setEnabled(pagina_actual < total_paginas)
-            self.btn_ultima.setEnabled(pagina_actual < total_paginas)
-
-    def ir_a_pagina(self, pagina):
-        """Va a una página específica."""
-        if hasattr(self.controller, 'cargar_pagina'):
-            self.controller.cargar_pagina(pagina)
-
-    def pagina_anterior(self):
-        """Va a la página anterior."""
-        if hasattr(self, 'pagina_actual_spin'):
-            pagina_actual = self.pagina_actual_spin.value()
-            if pagina_actual > 1:
-                self.ir_a_pagina(pagina_actual - 1)
-
-    def pagina_siguiente(self):
-        """Va a la página siguiente."""
-        if hasattr(self, 'pagina_actual_spin'):
-            pagina_actual = self.pagina_actual_spin.value()
-            total_paginas = self.pagina_actual_spin.maximum()
-            if pagina_actual < total_paginas:
-                self.ir_a_pagina(pagina_actual + 1)
-
-    def ultima_pagina(self):
-        """Va a la última página."""
-        if hasattr(self, 'pagina_actual_spin'):
-            total_paginas = self.pagina_actual_spin.maximum()
-            self.ir_a_pagina(total_paginas)
-
-    def cambiar_pagina(self, pagina):
-        """Cambia a la página seleccionada."""
-        self.ir_a_pagina(pagina)
-
-    def cambiar_registros_por_pagina(self, registros):
-        """Cambia la cantidad de registros por página."""
-        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
-            self.controller.cambiar_registros_por_pagina(int(registros))
-
-    def cargar_datos_en_tabla(self, datos):
-        """Carga los datos en la tabla principal con colores por prioridad."""
-        if hasattr(self, 'tabla_ordenes'):
-            tabla = self.tabla_ordenes
-        else:
-            tabla = self.tabla_principal
-
-        tabla.setRowCount(len(datos))
-
-        for row, registro in enumerate(datos):
-            # Columnas: ID, Título, Equipo, Prioridad, Estado, Asignado, Fecha, Acciones
-            columnas = ['id', 'titulo', 'equipo', 'prioridad', 'estado', 'asignado', 'fecha']
-            
-            for col, campo in enumerate(columnas):
-                if col < tabla.columnCount() - 1:  # -1 para excluir columna de acciones
-                    valor = str(registro.get(campo, ""))
-                    item = QTableWidgetItem(valor)
-                    
-                    # Aplicar colores por prioridad y estado
-                    if campo == 'prioridad':
-                        if valor == "Crítica":
-                            item.setBackground(QColor(220, 38, 38, 50))
-                        elif valor == "Alta":
-                            item.setBackground(QColor(245, 101, 101, 50))
-                        elif valor == "Media":
-                            item.setBackground(QColor(251, 191, 36, 50))
-                    elif campo == 'estado':
-                        if valor == "Completada":
-                            item.setBackground(QColor(34, 197, 94, 50))
-                        elif valor == "En Progreso":
-                            item.setBackground(QColor(59, 130, 246, 50))
-                        elif valor == "Pendiente":
-                            item.setBackground(QColor(156, 163, 175, 50))
-                    
-                    tabla.setItem(row, col, item)
-
-            # Botón de acciones en la última columna
-            if tabla.columnCount() > len(columnas):
-                btn_acciones = self.create_actions_button(row)
-                tabla.setCellWidget(row, len(columnas), btn_acciones)

@@ -67,3 +67,7 @@
 2025-08-17 15:07:22 | ERROR    | rexus.modules.vidrios.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor'
 2025-08-17 15:07:26 | INFO     | rexus.modules.compras.model | [COMPRAS] Tabla 'compras' verificada correctamente.
 2025-08-17 15:07:26 | INFO     | rexus.modules.compras.model | [COMPRAS] Tabla 'detalle_compras' verificada correctamente.
+2025-08-17 15:57:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:57:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:57:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-17 15:57:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities

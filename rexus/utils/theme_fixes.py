@@ -137,7 +137,10 @@ def is_dark_theme_active():
 
         return 'dark' in current_theme.lower()
 
-    except Exception:
+    except (ImportError, AttributeError, TypeError) as e:
+        # ImportError: StyleManager no disponible
+        # AttributeError: objeto sin atributos necesarios  
+        # TypeError: tipo de dato incorrecto
         return False
 
 

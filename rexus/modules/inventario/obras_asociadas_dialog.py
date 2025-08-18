@@ -3,6 +3,8 @@
 Ventana de diálogo para mostrar las obras asociadas a un ítem del inventario
 """
 
+import sqlite3
+
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
                             QTableWidget, QTableWidgetItem, QPushButton,
                             QHeaderView, QMessageBox, QFrame)
@@ -215,7 +217,11 @@ class ObrasAsociadasDialog(QDialog):
 
             conn.close()
 
-        except Exception as e:
+        except (sqlite3.Error, AttributeError, ValueError, TypeError) as e:
+            # sqlite3.Error: errores de base de datos
+            # AttributeError: objeto None o sin atributos  
+            # ValueError: conversión de tipos incorrecta
+            # TypeError: tipo de dato incorrecto
             QMessageBox.critical(self, "Error", f"Error al cargar obras asociadas: {str(e)}")
             print(f"[ERROR] Error cargando obras asociadas: {e}")
             import traceback

@@ -57,7 +57,10 @@ class SimpleValidator:
             precio = float(data.get("precio_unitario", 0))
             if precio < 0:
                 errores["precio_unitario"] = "Precio unitario no puede ser negativo"
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: conversión a float falló
+            # TypeError: tipo de dato incorrecto
+            # AttributeError: objeto None o sin atributos
             errores["precio_unitario"] = "Precio unitario inválido"
 
         # Stock actual debe ser entero no negativo
@@ -68,7 +71,10 @@ class SimpleValidator:
             stock_val = int(stock)
             if stock_val < 0:
                 errores["stock_actual"] = "Stock no puede ser negativo"
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: conversión a int falló o stock faltante
+            # TypeError: tipo de dato incorrecto  
+            # AttributeError: objeto None o sin atributos
             errores["stock_actual"] = "Stock inválido"
 
         return (len(errores) == 0), errores
@@ -100,7 +106,10 @@ class SimpleValidator:
             alto = float(data.get("alto", 0))
             if espesor <= 0 or ancho <= 0 or alto <= 0:
                 errores["dimensiones"] = "Dimensiones deben ser positivas"
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: conversión a float falló
+            # TypeError: tipo de dato incorrecto
+            # AttributeError: objeto None o sin atributos
             errores["dimensiones"] = "Dimensiones inválidas"
 
         return (len(errores) == 0), errores
@@ -117,7 +126,10 @@ class SimpleValidator:
             total = float(data.get("total", 0))
             if subtotal < 0 or total < 0:
                 errores["importe"] = "Importes no pueden ser negativos"
-        except Exception:
+        except (ValueError, TypeError, AttributeError) as e:
+            # ValueError: conversión a float falló
+            # TypeError: tipo de dato incorrecto
+            # AttributeError: objeto None o sin atributos
             errores["importe"] = "Importes inválidos"
 
         return (len(errores) == 0), errores

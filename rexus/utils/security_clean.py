@@ -39,7 +39,11 @@ password.encode("utf-8"),
                     100000
             )
             return pwdhash.hex() == stored_hash
-        except Exception:
+        except (ValueError, TypeError, AttributeError, UnicodeDecodeError) as e:
+            # ValueError: hash mal formateado
+            # TypeError: tipo de dato incorrecto
+            # AttributeError: objeto None o sin atributos
+            # UnicodeDecodeError: error de codificación
             return False
 
     @staticmethod

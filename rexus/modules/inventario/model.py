@@ -68,7 +68,7 @@ try:
     from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
 
     SUBMODULES_AVAILABLE = True
-    print("OK [INVENTARIO] Submódulos especializados cargados")
+    logger.info("Submódulos especializados cargados")
 except ImportError as e:
     logger.warning(f"Submódulos especializados no disponibles en inventario: {e}")
     SUBMODULES_AVAILABLE = False
@@ -122,11 +122,11 @@ class InventarioModel(PaginatedTableMixin):
         if self.security_available:
             self.data_sanitizer = unified_sanitizer
             self.sql_validator = SQLSecurityValidator()
-            print("OK [INVENTARIO] Utilidades de seguridad cargadas")
+            logger.info("Utilidades de seguridad cargadas")
         else:
             self.data_sanitizer = unified_sanitizer  # Usar sanitizer por defecto
             self.sql_validator = None
-            print("WARNING [INVENTARIO] Utilidades de seguridad no disponibles")
+            logger.warning("Utilidades de seguridad no disponibles")
 
         # Inicializar SQL script loader
         self.sql_loader_available = (
@@ -134,10 +134,10 @@ class InventarioModel(PaginatedTableMixin):
         )
         if self.sql_loader_available:
             self.script_loader = sql_script_loader
-            print("OK [INVENTARIO] SQL script loader disponible")
+            logger.info("SQL script loader disponible")
         else:
             self.script_loader = None
-            print("WARNING [INVENTARIO] SQL script loader no disponible")
+            logger.warning("SQL script loader no disponible")
 
         # Inicializar managers especializados
         if SUBMODULES_AVAILABLE:
@@ -148,24 +148,24 @@ class InventarioModel(PaginatedTableMixin):
                 self.reservas_manager = ReservasManager(db_connection=self.db_connection)
                 self.reportes_manager = ReportesManager(db_connection=self.db_connection)
                 self.categorias_manager = CategoriasManager(db_connection=self.db_connection)
-                print("OK [INVENTARIO] Managers especializados inicializados")
+                logger.info("Managers especializados inicializados")
                 self.managers_available = True
             except (ImportError, AttributeError, RuntimeError) as e:
-                print(f"[ERROR INVENTARIO] Error inicializando managers especializados: {e}")
+                logger.error(f"Error inicializando managers especializados: {e}")
                 self.managers_available = False
                 self._init_fallback_managers()
         else:
-            print("WARNING [INVENTARIO] Submódulos no disponibles, usando modo de compatibilidad")
+            logger.warning("Submódulos no disponibles, usando modo de compatibilidad")
             self.managers_available = False
             self._init_fallback_managers()
 
         # Inicializar ConsultasManager (mantener compatibilidad)
         if CONSULTAS_MANAGER_AVAILABLE and ConsultasManager:
             self.consultas_manager = ConsultasManager(db_connection=self.db_connection)
-            print("OK [INVENTARIO] ConsultasManager inicializado")
+            logger.info("ConsultasManager inicializado")
         else:
             self.consultas_manager = None
-            print("WARNING [INVENTARIO] ConsultasManager no disponible")
+            logger.warning("ConsultasManager no disponible")
 
         if not self.db_connection:
             print(
@@ -181,7 +181,7 @@ class InventarioModel(PaginatedTableMixin):
         self.reservas_manager = None
         self.reportes_manager = None
         self.categorias_manager = None
-        print("INFO [INVENTARIO] Usando funciones integradas como fallback")
+        logger.info("Usando funciones integradas como fallback")
 
     # ===========================================
     # MÉTODOS DE PROXY PARA COMPATIBILIDAD
@@ -331,7 +331,7 @@ datos_reserva: Dict[str,
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                print(f"[ERROR SEGURIDAD] {str(e)}")
+                logger.error(f"Error de seguridad: {str(e)}")
                 # Fallback a verificación básica
 
         # Verificación básica si la utilidad no está disponible
@@ -372,17 +372,10 @@ datos_reserva: Dict[str,
             return [], 0
 
         try:
-            # FIXED: Usar consulta parametrizada segura en lugar de script_content
+            # Usar SQLQueryManager para consulta segura
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                SELECT 
-                    id, codigo, descripcion, tipo, proveedor, stock, precio, 
-                    stock_minimo, stock_maximo, ubicacion, observaciones, 
-                    fecha_creacion
-                FROM inventario_perfiles 
-                WHERE activo = 1
-                ORDER BY codigo
-            """)
+            sql_query = self.sql_manager.get_query('inventario', 'obtener_todos_perfiles_activos')
+            cursor.execute(sql_query)
             productos = []
 
             for row in cursor.fetchall():
@@ -512,15 +505,15 @@ datos_reserva: Dict[str,
                 sql_verificar = self.sql_manager.get_query('inventario', 'verificar_tabla_existe')
                 cursor.execute(sql_verificar, (tabla,))
                 if cursor.fetchone():
-                    print(f"[INVENTARIO] Tabla '{tabla}' verificada correctamente.")
+                    logger.info(f"Tabla '{tabla}' verificada correctamente")
                 else:
                     print(
                         f"[ADVERTENCIA] Tabla secundaria '{tabla}' no existe. Algunas funciones estarán limitadas."
                     )
 
-            print(f"[INVENTARIO] Verificación de tablas completada.")
+            logger.info("Verificación de tablas completada")
         except (AttributeError, RuntimeError, ConnectionError) as e:
-            print(f"[ERROR INVENTARIO] Error verificando tablas: {e}")
+            logger.error(f"Error verificando tablas: {e}")
             raise
 
     def obtener_todos_productos(self, filtros=None):
@@ -574,7 +567,7 @@ datos_reserva: Dict[str,
                         sql_validator.add_allowed_table(tabla_segura)
                     validate_table_name(tabla_segura)
                 except SQLSecurityError as e:
-                    print(f"[SECURITY ERROR] Tabla no válida: {e}")
+                    logger.error(f"Tabla no válida: {e}")
                     return []
             else:
                 pass
@@ -599,7 +592,7 @@ datos_reserva: Dict[str,
             return productos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo productos: {e}")
+            logger.error(f"Error obteniendo productos: {e}")
             return []
 
     def _determinar_estado_stock(self, producto):
@@ -697,7 +690,7 @@ datos_reserva: Dict[str,
             return None
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo producto {producto_id}: {e}")
+            logger.error(f"Error obteniendo producto {producto_id}: {e}")
             return None
 
     def obtener_producto_por_codigo(self, codigo):
@@ -720,7 +713,7 @@ datos_reserva: Dict[str,
             return None
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo producto por código: {e}")
+            logger.error(f"Error obteniendo producto por código: {e}")
             return None
 
     def crear_producto(self, datos_producto, usuario="SISTEMA"):
@@ -749,13 +742,8 @@ datos_reserva: Dict[str,
             # Generar código QR
             codigo_qr = self._generar_codigo_qr(datos_producto.get("codigo"))
 
-            sql_insert = """
-            INSERT INTO inventario_perfiles
-            (codigo, descripcion, tipo, acabado, stock_actual, stock_minimo,
-             stock_maximo, importe, ubicacion, proveedor, unidad,
-             activo, usuario_creacion, observaciones, qr)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?, ?)
-            """
+            # MIGRADO: Usar consulta SQL externa para insertar perfil completo
+            sql_insert = self.sql_manager.get_query('inventario', 'insert_perfil_completo')
 
             cursor.execute(
                 sql_insert,
@@ -795,11 +783,11 @@ datos_reserva: Dict[str,
                     usuario=usuario,
                 )
 
-            print(f"[INVENTARIO] Producto creado: {datos_producto.get('codigo')}")
+            logger.info(f"Producto creado: {datos_producto.get('codigo')}")
             return producto_id
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            print(f"[ERROR INVENTARIO] Error creando producto: {e}")
+            logger.error(f"Error creando producto: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return None
@@ -857,11 +845,11 @@ producto_id,
             )
 
             self.db_connection.commit()
-            print(f"[INVENTARIO] Producto actualizado: {producto_id}")
+            logger.info(f"Producto actualizado: {producto_id}")
             return True
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error actualizando producto: {e}")
+            logger.error(f"Error actualizando producto: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False
@@ -942,11 +930,11 @@ producto_id,
                 producto_id))
 
             self.db_connection.commit()
-            print(f"[INVENTARIO] Movimiento registrado: {tipo_movimiento} - {cantidad}")
+            logger.info(f"Movimiento registrado: {tipo_movimiento} - {cantidad}")
             return True
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error registrando movimiento: {e}")
+            logger.error(f"Error registrando movimiento: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False
@@ -1007,7 +995,7 @@ producto_id,
             return movimientos
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo movimientos: {e}")
+            logger.error(f"Error obteniendo movimientos: {e}")
             return []
 
     def _generar_codigo_qr(self, codigo):
@@ -1048,7 +1036,7 @@ producto_id,
             return filename
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error generando QR: {e}")
+            logger.error(f"Error generando QR: {e}")
             return ""
 
     @cached_query(cache_key="productos_stock_bajo", ttl=300)
@@ -1067,13 +1055,8 @@ producto_id,
         try:
             cursor = self.db_connection.cursor()
 
-            # Query optimizada con índice en tipo
-            sql_select = """
-            SELECT DISTINCT tipo
-            FROM inventario_perfiles
-            WHERE tipo IS NOT NULL AND tipo != ''
-            ORDER BY tipo
-            """
+            # MIGRADO: Usar consulta SQL externa para obtener tipos distintos
+            sql_select = self.sql_manager.get_query('inventario', 'obtener_tipos_distintos')
 
             cursor.execute(sql_select)
             rows = cursor.fetchall()
@@ -1081,7 +1064,7 @@ producto_id,
             return [row[0] for row in rows]
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo categorías: {e}")
+            logger.error(f"Error obteniendo categorías: {e}")
             return []
 
     def actualizar_qr_y_campos_por_descripcion(self):
@@ -1097,17 +1080,15 @@ producto_id,
                     codigo_qr = self._generar_codigo_qr(producto["codigo"])
                     if codigo_qr:
                         cursor = self.db_connection.cursor()
-                        sql_update = """
-                        UPDATE inventario_perfiles
-                        SET codigo_qr = ? WHERE id = ?
-                        """
+                        # MIGRADO: Usar consulta SQL externa para actualizar código QR
+                        sql_update = self.sql_manager.get_query('inventario', 'update_codigo_qr')
                         cursor.execute(sql_update, (codigo_qr, producto["id"]))
 
             self.db_connection.commit()
-            print("[INVENTARIO] QRs actualizados")
+            logger.info("QRs actualizados exitosamente")
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error actualizando QRs: {e}")
+            logger.error(f"Error actualizando QRs: {e}")
 
     def obtener_estadisticas_inventario(self):
         """Obtiene estadísticas generales del inventario."""
@@ -1145,7 +1126,7 @@ producto_id,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo estadísticas: {e}")
+            logger.error(f"Error obteniendo estadísticas: {e}")
             return {}
 
     def obtener_productos_por_obra(self, obra_id):
@@ -1225,12 +1206,8 @@ producto_id,
             # Registrar en materiales_obra
             cursor = self.db_connection.cursor()
 
-            sql_insert = """
-            INSERT INTO materiales_obra
-            (obra_id, etapa_id, producto_id, cantidad, estado,
-             fecha_solicitud, observaciones, usuario_asignacion, fecha_asignacion)
-            VALUES (?, ?, ?, ?, ?, GETDATE(), ?, ?, GETDATE())
-            """
+            # MIGRADO: Usar consulta SQL externa para insertar material en obra
+            sql_insert = self.sql_manager.get_query('inventario', 'insert_material_obra')
 
             cursor.execute(
                 sql_insert,
@@ -1294,13 +1271,8 @@ producto_id,
             if not producto:
                 return False
 
-            # Insertar lote
-            sql_insert = """
-            INSERT INTO lotes_inventario
-            (producto_id, numero_lote, fecha_vencimiento, cantidad,
-             proveedor, fecha_recepcion, serie, usuario, observaciones)
-            VALUES (?, ?, ?, ?, ?, GETDATE(), ?, ?, ?)
-            """
+            # MIGRADO: Usar consulta SQL externa para insertar lote
+            sql_insert = self.sql_manager.get_query('inventario', 'insert_lote_inventario')
 
             cursor.execute(
                 sql_insert,
@@ -1357,13 +1329,8 @@ producto_id,
             if not cursor.fetchone():
                 return []
 
-            sql_select = """
-            SELECT id, producto_id, numero_lote, fecha_vencimiento, cantidad,
-                   proveedor, fecha_recepcion, serie, observaciones
-            FROM lotes_inventario
-            WHERE producto_id = ?
-            ORDER BY fecha_recepcion DESC, fecha_vencimiento
-            """
+            # MIGRADO: Usar consulta SQL externa para obtener lotes por producto
+            sql_select = self.sql_manager.get_query('inventario', 'select_lotes_por_producto')
 
             cursor.execute(sql_select, (producto_id,))
             rows = cursor.fetchall()
@@ -1519,17 +1486,8 @@ fecha_fin,
                 days=dias_limite
             )
 
-            sql_select = """
-            SELECT l.id, l.producto_id, l.numero_lote, l.fecha_vencimiento,
-                   l.cantidad, l.proveedor, i.codigo, i.descripcion, i.categoria,
-                   DATEDIFF(day, GETDATE(), l.fecha_vencimiento) as dias_restantes
-            FROM lotes_inventario l
-            INNER JOIN inventario_perfiles i ON l.producto_id = i.id
-            WHERE l.fecha_vencimiento IS NOT NULL
-              AND l.fecha_vencimiento <= ?
-              AND l.fecha_vencimiento >= GETDATE()
-            ORDER BY l.fecha_vencimiento
-            """
+            # MIGRADO: Usar consulta SQL externa para lotes próximos a vencer
+            sql_select = self.sql_manager.get_query('inventario', 'select_lotes_proximos_vencer')
 
             cursor.execute(sql_select, (fecha_limite,))
             rows = cursor.fetchall()
@@ -2531,7 +2489,7 @@ descripcion,
             return estadisticas
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            print(f"[ERROR INVENTARIO] Error obteniendo estadísticas: {e}")
+            logger.error(f"Error obteniendo estadísticas: {e}")
             return {}
 
     def obtener_obras_activas(self):
