@@ -188,7 +188,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.setContentsMargins(16, 8, 16, 8)
 
         # Título
-        titulo = QLabel("🪟 Gestión de Vidrios")
+        titulo = QLabel("[WINDOW] Gestión de Vidrios")
         titulo.setStyleSheet("""
             QLabel {
                 color: white;
@@ -296,7 +296,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         acciones_panel = self.crear_panel_acciones_inventario()
         layout.addWidget(acciones_panel)
 
-        self.tab_widget.addTab(tab_inventario, "📦 Inventario")
+        self.tab_widget.addTab(tab_inventario, "[PACKAGE] Inventario")
 
     def crear_panel_control_inventario(self) -> QFrame:
         """Crea el panel de control para la pestaña de inventario."""
@@ -418,7 +418,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         self.btn_nuevo_vidrio = StandardComponents.create_primary_button("➕ Nuevo Vidrio")
         self.btn_editar_vidrio = StandardComponents.create_secondary_button("✏️ Editar")
         self.btn_eliminar_vidrio = StandardComponents.create_danger_button("🗑️ Eliminar")
-        self.btn_duplicar_vidrio = StandardComponents.create_info_button("📋 Duplicar")
+        self.btn_duplicar_vidrio = StandardComponents.create_info_button("[CLIPBOARD] Duplicar")
 
         # Conectar eventos
         self.btn_nuevo_vidrio.clicked.connect(self.mostrar_dialogo_nuevo_vidrio)
@@ -468,7 +468,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         splitter.setSizes([400, 600])
 
         layout.addWidget(splitter)
-        self.tab_widget.addTab(tab_specs, "📋 Especificaciones")
+        self.tab_widget.addTab(tab_specs, "[CLIPBOARD] Especificaciones")
 
     def crear_widget_lista_vidrios(self) -> QWidget:
         """Crea el widget de lista de vidrios para especificaciones."""
@@ -485,7 +485,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.setContentsMargins(8, 8, 8, 8)
 
         # Header
-        header_label = QLabel("🪟 Catálogo de Vidrios")
+        header_label = QLabel("[WINDOW] Catálogo de Vidrios")
         header_label.setStyleSheet("""
             QLabel {
                 font-size: 14px;
@@ -536,7 +536,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         layout.setContentsMargins(12, 12, 12, 12)
 
         # Header
-        self.detalles_header = QLabel("📋 Seleccionar un vidrio para ver detalles")
+        self.detalles_header = QLabel("[CLIPBOARD] Seleccionar un vidrio para ver detalles")
         self.detalles_header.setStyleSheet("""
             QLabel {
                 font-size: 14px;
@@ -602,7 +602,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         acciones_pedidos = self.crear_panel_acciones_pedidos()
         layout.addWidget(acciones_pedidos)
 
-        self.tab_widget.addTab(tab_pedidos, "📋 Pedidos")
+        self.tab_widget.addTab(tab_pedidos, "[CLIPBOARD] Pedidos")
 
     def crear_panel_control_pedidos(self) -> QFrame:
         """Panel de control para pedidos."""
@@ -715,7 +715,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
     def crear_widget_resumen_inventario(self) -> QWidget:
         """Widget de resumen del inventario."""
         return self._crear_widget_estadistica(
-            "📦 Resumen Inventario",
+            "[PACKAGE] Resumen Inventario",
             [
                 ("Total Tipos", "47", "#3b82f6"),
                 ("En Stock", "42", "#10b981"),
@@ -739,7 +739,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
     def crear_widget_pedidos_mes(self) -> QWidget:
         """Widget de pedidos del mes."""
         return self._crear_widget_estadistica(
-            "📋 Pedidos Mes",
+            "[CLIPBOARD] Pedidos Mes",
             [
                 ("Procesados", "156", "#10b981"),
                 ("Pendientes", "23", "#f59e0b"),
@@ -878,7 +878,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
             codigo_item = self.lista_specs.item(row, 0)
             if codigo_item:
                 codigo = codigo_item.text()
-                self.detalles_header.setText(f"📋 Detalles: {codigo}")
+                self.detalles_header.setText(f"[CLIPBOARD] Detalles: {codigo}")
 
                 # Aquí deberías cargar los detalles reales del vidrio
                 self._mostrar_detalles_ejemplo(codigo)

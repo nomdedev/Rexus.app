@@ -58,7 +58,7 @@ class ReservaDialog(QDialog):
 
     def init_ui(self):
         """Inicializa la interfaz del diálogo."""
-        self.setWindowTitle("📋 Nueva Reserva de Material")
+        self.setWindowTitle("[CLIPBOARD] Nueva Reserva de Material")
         self.setModal(True)
         self.setMinimumSize(600, 500)
 
@@ -68,7 +68,7 @@ class ReservaDialog(QDialog):
         main_layout.setContentsMargins(20, 20, 20, 20)
 
         # Título
-        title_label = QLabel("📋 Nueva Reserva de Material")
+        title_label = QLabel("[CLIPBOARD] Nueva Reserva de Material")
         title_label.setFont(QFont("Arial", 16, QFont.Weight.Bold))
         title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         title_label.setStyleSheet("color: #2c3e50; margin-bottom: 20px;")
@@ -155,7 +155,7 @@ class ReservaDialog(QDialog):
 
     def create_obra_info(self):
         """Crea el grupo de información de la obra."""
-        self.obra_info_group = QGroupBox("🏗️ Información de la Obra")
+        self.obra_info_group = QGroupBox("[CONSTRUCTION] Información de la Obra")
         layout = QFormLayout(self.obra_info_group)
 
         # Nombre de la obra (solo lectura)
@@ -170,7 +170,7 @@ class ReservaDialog(QDialog):
 
     def create_producto_form(self):
         """Crea el formulario de selección de producto."""
-        self.producto_form_group = QGroupBox("📦 Selección de Producto")
+        self.producto_form_group = QGroupBox("[PACKAGE] Selección de Producto")
         layout = QFormLayout(self.producto_form_group)
 
         # Selector de producto
@@ -203,7 +203,7 @@ class ReservaDialog(QDialog):
 
     def create_reserva_form(self):
         """Crea el formulario de datos de la reserva."""
-        self.reserva_form_group = QGroupBox("📋 Datos de la Reserva")
+        self.reserva_form_group = QGroupBox("[CLIPBOARD] Datos de la Reserva")
         layout = QFormLayout(self.reserva_form_group)
 
         # Cantidad a reservar

@@ -126,7 +126,8 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.addWidget(control_panel)
 
         # Tabla de obras
-        self.tabla_obras = StandardComponents.create_standard_table()
+        from PyQt6.QtWidgets import QTableWidget
+        self.tabla_obras = QTableWidget()
         self.configurar_tabla_obras()
         layout.addWidget(self.tabla_obras)
 
@@ -141,7 +142,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         acciones_panel = self.crear_panel_acciones_obras()
         layout.addWidget(acciones_panel)
 
-        self.tab_widget.addTab(tab_obras, "🏗️ Obras")
+        self.tab_widget.addTab(tab_obras, "[CONSTRUCTION] Obras")
 
     def crear_panel_control_obras(self) -> QFrame:
         """Crea el panel de control para la pestaña de obras."""
@@ -164,7 +165,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         busqueda_layout.setSpacing(8)
 
         # Búsqueda
-        busqueda_layout.addWidget(StandardComponents.create_standard_label("[SEARCH] Buscar:"))
+        busqueda_layout.addWidget(QLabel("[SEARCH] Buscar:"))
         self.input_busqueda = QLineEdit()
         self.input_busqueda.setPlaceholderText("Buscar por código, nombre, cliente...")
         self.input_busqueda.setStyleSheet("""
@@ -183,7 +184,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         busqueda_layout.addWidget(self.input_busqueda)
 
         # Filtro por estado
-        busqueda_layout.addWidget(StandardComponents.create_standard_label("Estado:"))
+        busqueda_layout.addWidget(QLabel("Estado:"))
         self.combo_estado = QComboBox()
         self.combo_estado.addItems([
             "Todos", "Planificación", "En Curso", "Pausada", "Finalizada", "Cancelada"
@@ -203,7 +204,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         busqueda_layout.addWidget(self.combo_estado)
 
         # Filtro por tipo
-        busqueda_layout.addWidget(StandardComponents.create_standard_label("Tipo:"))
+        busqueda_layout.addWidget(QLabel("Tipo:"))
         self.combo_tipo = QComboBox()
         self.combo_tipo.addItems(["Todos",
 "Residencial",
@@ -244,18 +245,20 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         return panel
 
     def configurar_tabla_obras(self):
-        """Configura la tabla principal de obras con componente optimizado."""
-        # Crear tabla optimizada
-        self.tabla_obras_container = EnhancedTableContainer()
-        self.tabla_obras = self.tabla_obras_container.table
+        """Configura la tabla principal de obras."""
+        # Configurar columnas
+        self.tabla_obras.setColumnCount(10)
+        self.tabla_obras.setHorizontalHeaderLabels([
+            "ID", "Código", "Nombre", "Cliente", "Estado", "Tipo", 
+            "Fecha Inicio", "Fecha Fin", "Progreso", "Presupuesto"
+        ])
+        
+        # Configurar propiedades
+        self.tabla_obras.setAlternatingRowColors(True)
+        self.tabla_obras.setSelectionBehavior(self.tabla_obras.SelectionBehavior.SelectRows)
+        self.tabla_obras.setSortingEnabled(True)
 
-        # Conectar señales del componente optimizado
-        self.tabla_obras.row_double_clicked.connect(self._on_obra_double_clicked)
-        self.tabla_obras.context_menu_requested.connect(self._on_obra_context_menu)
-        self.tabla_obras.data_export_requested.connect(self._on_export_requested)
-        self.tabla_obras.refresh_requested.connect(self._on_refresh_requested)
-
-        print("[OBRAS] Tabla optimizada configurada con componentes mejorados")
+        print("[OBRAS] Tabla configurada correctamente")
 
     def cargar_obras_en_tabla(self, obras_data=None):
         """Carga las obras en la tabla principal usando componente optimizado."""
@@ -468,7 +471,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         self.btn_nueva_obra = StandardComponents.create_primary_button("➕ Nueva Obra")
         self.btn_editar_obra = StandardComponents.create_secondary_button("✏️ Editar")
         self.btn_eliminar_obra = StandardComponents.create_danger_button("🗑️ Eliminar")
-        self.btn_duplicar_obra = StandardComponents.create_info_button("📋 Duplicar")
+        self.btn_duplicar_obra = StandardComponents.create_info_button("[CLIPBOARD] Duplicar")
 
         # Conectar eventos
         self.btn_nueva_obra.clicked.connect(self.mostrar_dialogo_nueva_obra)
@@ -652,7 +655,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         separador2.setStyleSheet("color: #e2e8f0;")
         filtros_layout.addWidget(separador2)
 
-        estado_label = RexusLabel("🏗️ Estado:", "subtitle")
+        estado_label = RexusLabel("[CONSTRUCTION] Estado:", "subtitle")
         filtros_layout.addWidget(estado_label)
 
         self.combo_estado_cronograma = QComboBox()
@@ -906,7 +909,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.setContentsMargins(8, 8, 8, 8)
 
         # Header
-        header_label = QLabel("🏗️ Obras para Presupuestar")
+        header_label = QLabel("[CONSTRUCTION] Obras para Presupuestar")
         header_label.setStyleSheet("""
             QLabel {
                 font-size: 14px;
@@ -1030,7 +1033,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
     def crear_widget_resumen_obras(self) -> QWidget:
         """Widget de resumen de obras."""
         return self._crear_widget_estadistica(
-            "🏗️ Resumen de Obras",
+            "[CONSTRUCTION] Resumen de Obras",
             [
                 ("Total Obras", "47", "#3b82f6"),
                 ("En Curso", "23", "#10b981"),
@@ -1042,7 +1045,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
     def crear_widget_obras_por_estado(self) -> QWidget:
         """Widget de obras por estado."""
         return self._crear_widget_estadistica(
-            "📈 Por Estado",
+            "[TRENDING] Por Estado",
             [
                 ("Planificación", "12", "#8b5cf6"),
                 ("En Progreso", "23", "#10b981"),

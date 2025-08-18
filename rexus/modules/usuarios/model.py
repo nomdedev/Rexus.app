@@ -1785,6 +1785,26 @@ usuario_id: int,
         except Exception as e:
             logger.warning(f"Error invalidando cache: {e}")
 
+    def obtener_usuarios_con_permisos(self) -> Optional[List[Dict]]:
+        """
+        Obtiene todos los usuarios activos con sus permisos.
+        
+        Returns:
+            Lista de usuarios con permisos o None en caso de error
+        """
+        try:
+            if not self.db_connection:
+                logger.warning("No hay conexión a BD - retornando datos demo")
+                return self._get_usuarios_demo()
+            
+            return self.sql_manager.ejecutar_consulta_archivo(
+                'sql/usuarios/obtener_usuarios_con_permisos.sql'
+            )
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo usuarios con permisos: {e}")
+            return None
+
     def obtener_usuarios_filtrados(self, filtros: Dict[str, Any]) -> Optional[List[Dict]]:
         """
         Obtiene usuarios aplicando filtros específicos.

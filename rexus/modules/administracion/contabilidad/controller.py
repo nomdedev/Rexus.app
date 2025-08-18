@@ -15,6 +15,12 @@ from datetime import datetime
 import csv
 import os
 
+# Importar logger centralizado
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger específico para el módulo
+logger = get_logger(__name__)
+
 
 class ContabilidadController(QObject):
 
@@ -81,7 +87,11 @@ class ContabilidadController(QObject):
             # Cargar estadísticas
             self.cargar_estadisticas_financieras()
 
+        except (AttributeError, TypeError) as e:
+            logger.error(f"Error de configuración cargando asientos: {e}")
+            self.mostrar_error(f"Error de configuración: {e}")
         except Exception as e:
+            logger.error(f"Error inesperado cargando asientos: {e}")
             self.mostrar_error(f"Error cargando asientos: {e}")
 
     def buscar_asientos(self, filtros):
@@ -110,7 +120,14 @@ class ContabilidadController(QObject):
             else:
                 self.mostrar_error("Error al crear asiento contable")
 
+        except ValueError as e:
+            logger.error(f"Error de validación creando asiento: {e}")
+            self.mostrar_error(f"Datos inválidos: {e}")
+        except (AttributeError, KeyError) as e:
+            logger.error(f"Error de configuración creando asiento: {e}")
+            self.mostrar_error(f"Error de configuración: {e}")
         except Exception as e:
+            logger.error(f"Error inesperado creando asiento: {e}")
             self.mostrar_error(f"Error creando asiento: {e}")
 
     def actualizar_asiento_contable(self, asiento_id, datos_asiento):
@@ -554,7 +571,7 @@ class ContabilidadController(QObject):
                 file.write("=" * 50 + "\n")
 
         except Exception as e:
-            print(f"Error generando archivo de recibo: {e}")
+            logger.error(f"Error generando archivo de recibo: {e}")
 
     def _escribir_reporte_balance(self, balance, nombre_archivo):
         """Escribe el reporte de balance en un archivo."""
@@ -605,7 +622,7 @@ class ContabilidadController(QObject):
         """Muestra un mensaje de error."""
         if self.view:
             QMessageBox.critical(self.view, "Error - Contabilidad", mensaje)
-        print(f"[ERROR CONTABILIDAD] {mensaje}")
+        logger.error(mensaje)
 
     def actualizar_datos(self):
         """Actualiza todos los datos de la interfaz."""

@@ -8,13 +8,18 @@ Maneja la lógica de negocio para:
 - Materiales y compras
 """
 
+# Importar logger centralizado
+from rexus.utils.app_logger import get_logger
+
+# Configurar logger específico para el módulo
+logger = get_logger(__name__)
 
 # Importar sistema SQL seguro
 try:
     from rexus.utils.sql_query_manager import SQLQueryManager
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    logger.warning(SQL System not available in contabilidad: {e})
+    logger.warning(f"SQL System not available in contabilidad: {e}")
     SQL_SYSTEM_AVAILABLE = False
 
 
@@ -38,10 +43,10 @@ class ContabilidadModel:
         # Configurar sistema SQL seguro
         if SQL_SYSTEM_AVAILABLE:
             self.sql_manager = SQLQueryManager()
-            print("[CONTABILIDAD] SQLQueryManager inicializado correctamente")
+            logger.info("SQLQueryManager inicializado correctamente")
         else:
             self.sql_manager = None
-            print("[WARNING CONTABILIDAD] SQL System no disponible - usando queries embebidas")
+            logger.warning("SQL System no disponible - usando queries embebidas")
 
         self._verificar_tablas()
 
@@ -95,12 +100,12 @@ class ContabilidadModel:
                     (tabla,),
                 )
                 if cursor.fetchone():
-                    print(f"[CONTABILIDAD] Tabla '{tabla}' verificada correctamente.")
+                    logger.info(f"Tabla '{tabla}' verificada correctamente")
                 else:
-                    print(f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos.")
+                    logger.warning(f"La tabla '{tabla}' no existe en la base de datos")
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error verificando tablas: {e}")
+            logger.error(f"Error verificando tablas: {e}")
 
     # MÉTODOS PARA LIBRO CONTABLE
 
@@ -155,7 +160,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
@@ -198,7 +203,7 @@ fecha_desde=None,
             return asientos
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo asientos: {e}")
+            logger.error(f"Error obteniendo asientos: {e}")
             return []
 
     def crear_asiento_contable(self, datos_asiento):
@@ -226,7 +231,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     # Usar query parametrizada segura
                     query = "SELECT MAX(numero_asiento) FROM libro_contable"
                     cursor.execute(query)
@@ -263,7 +268,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error(No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         INSERT INTO [{tabla_validada}]
@@ -332,11 +337,11 @@ fecha_desde=None,
             asiento_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Asiento contable creado con ID: {asiento_id}")
+            logger.info(f"Asiento contable creado con ID: {asiento_id}")
             return asiento_id
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error creando asiento: {e}")
+            logger.error(f"Error creando asiento: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -382,7 +387,7 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar script SQL")
                 except Exception as e:
-                    logger.error(No se pudo usar script SQL: {e}. Usando fallback seguro.)
+                    logger.error(f"No se pudo usar script SQL: {e}. Usando fallback seguro.")
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         UPDATE [{tabla_validada}]
@@ -430,11 +435,11 @@ haber = ?,
                 ))
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Asiento {asiento_id} actualizado exitosamente")
+            logger.info(f"Asiento {asiento_id} actualizado exitosamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error actualizando asiento: {e}")
+            logger.error(f"Error actualizando asiento: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False

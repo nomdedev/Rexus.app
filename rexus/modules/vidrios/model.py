@@ -76,7 +76,8 @@ class VidriosModel:
 
         if not self.db_connection:
             logger.error("No hay conexión a la base de datos. El módulo no funcionará correctamente")
-        self._verificar_tablas()
+        else:
+            self._verificar_tablas()
 
     def _sanitizar_entrada_segura(self, value, tipo='string', **kwargs):
         """
@@ -229,7 +230,8 @@ class VidriosModel:
 
     def _verificar_tablas(self):
         """Verifica que las tablas necesarias existan en la base de datos."""
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            logger.warning("No se puede verificar tablas: conexión no disponible")
             return
 
         try:
@@ -280,7 +282,8 @@ class VidriosModel:
         Returns:
             List[Dict]: Lista de vidrios
         """
-        if not self.db_connection:
+        if not self.db_connection or not hasattr(self.db_connection, 'connection') or not self.db_connection.connection:
+            logger.warning("No se puede obtener vidrios: conexión no disponible")
             return []
 
         try:
@@ -306,12 +309,12 @@ class VidriosModel:
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             where_clause = " AND ".join(conditions)
             query = f"""
-                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
-                       color, precio_m2, estado, ubicacion, observaciones, 
-                       fecha_creacion, fecha_modificacion
+                SELECT id, tipo, espesor, color, precio_m2, proveedor, 
+                       especificaciones, propiedades, activo, fecha_creacion, 
+                       fecha_actualizacion, dimensiones, color_acabado, stock, estado
                 FROM vidrios
                 WHERE {where_clause}
-                ORDER BY codigo
+                ORDER BY tipo
             """
             cursor.execute(query, params)
             columnas = [column[0] for column in cursor.description]
@@ -346,13 +349,13 @@ class VidriosModel:
 
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             cursor.execute("""
-                SELECT v.id, v.codigo, v.descripcion, v.tipo, v.proveedor,
-                       v.espesor, v.color, v.precio_m2, v.estado, v.ubicacion,
+                SELECT v.id, v.tipo as codigo, v.especificaciones as descripcion, v.tipo, v.proveedor,
+                       v.espesor, v.color, v.precio_m2, v.estado, v.dimensiones as ubicacion,
                        vo.cantidad_utilizada, vo.fecha_asignacion
                 FROM vidrios v
                 INNER JOIN vidrios_obra vo ON v.id = vo.vidrio_id
                 WHERE vo.obra_id = ?
-                ORDER BY v.codigo
+                ORDER BY v.tipo
             """, (obra_id,))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
@@ -385,7 +388,7 @@ class VidriosModel:
             obra_id (int): ID de la obra
             metros_cuadrados (float): Metros cuadrados requeridos
             medidas_especificas (str): Medidas específicas
-            observaciones (str): Observaciones opcionales
+            propiedades (str): Observaciones opcionales
 
         Returns:
             bool: True si fue exitoso
@@ -409,7 +412,7 @@ class VidriosModel:
                     obra_id,
                     metros_cuadrados,
                     medidas_especificas,
-                    observaciones,
+                    propiedades,
                 ),
             )
             self.db_connection.connection.commit()
@@ -569,14 +572,14 @@ class VidriosModel:
 
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             cursor.execute("""
-                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
-                       color, precio_m2, estado, ubicacion, observaciones,
-                       fecha_creacion, fecha_modificacion
+                SELECT id, tipo as codigo, especificaciones as descripcion, tipo, proveedor, espesor, 
+                       color, precio_m2, estado, dimensiones as ubicacion, propiedades as observaciones,
+                       fecha_creacion, fecha_actualizacion as fecha_modificacion
                 FROM vidrios
-                WHERE (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ? OR proveedor LIKE ?)
-                    AND estado = 'ACTIVO'
-                ORDER BY codigo
-            """, (termino, termino, termino, termino))
+                WHERE (tipo LIKE ? OR especificaciones LIKE ? OR proveedor LIKE ?)
+                    AND activo = 1
+                ORDER BY tipo
+            """, (termino, termino, termino))
             columnas = [column[0] for column in cursor.description]
             resultados = cursor.fetchall()
 
@@ -639,9 +642,9 @@ class VidriosModel:
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             cursor.execute("""
                 INSERT INTO vidrios 
-                (codigo, descripcion, tipo, espesor, proveedor, precio_m2, 
-                 color, tratamiento, dimensiones_disponibles, estado,
-                 ubicacion, observaciones, fecha_creacion, fecha_modificacion)
+                (tipo, especificaciones, tipo, espesor, proveedor, precio_m2, 
+                 color, propiedades as propiedades, dimensiones_disponibles, estado,
+                 dimensiones, propiedades, fecha_creacion, fecha_modificacion)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
             """, (
                     datos_limpios["codigo"],
@@ -761,10 +764,10 @@ class VidriosModel:
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             cursor.execute("""
                 UPDATE vidrios 
-                SET codigo = ?, descripcion = ?, tipo = ?, espesor = ?, 
-                    proveedor = ?, precio_m2 = ?, color = ?, tratamiento = ?,
-                    dimensiones_disponibles = ?, estado = ?, observaciones = ?,
-                    fecha_modificacion = GETDATE()
+                SET tipo = ?, especificaciones = ?, tipo = ?, espesor = ?, 
+                    proveedor = ?, precio_m2 = ?, color = ?, propiedades = ?,
+                    dimensiones_disponibles = ?, estado = ?, propiedades = ?,
+                    fecha_actualizacion = GETDATE()
                 WHERE id = ?
             """, (
                     datos_limpios["codigo"],
@@ -817,14 +820,14 @@ class VidriosModel:
 
             # FIXED: Verificar si el vidrio existe usando consulta parametrizada segura
             cursor.execute("""
-                SELECT id, codigo, descripcion FROM vidrios WHERE id = ?
+                SELECT id, tipo, especificaciones FROM vidrios WHERE id = ?
             """, (vidrio_id_limpio,))
 
             vidrio_info = cursor.fetchone()
             if not vidrio_info:
                 return False, f"Vidrio con ID {vidrio_id_limpio} no encontrado"
 
-            codigo, _ = vidrio_info
+            tipo, _ = vidrio_info
 
             # FIXED: Verificar si el vidrio está asignado a alguna obra usando consulta parametrizada segura
             cursor.execute("""
@@ -835,18 +838,18 @@ class VidriosModel:
                 logger.warning(f"El vidrio {vidrio_id_limpio} está asignado a obras, se marcará como inactivo")
                 # FIXED: Marcar como inactivo en lugar de eliminar usando consulta parametrizada segura
                 cursor.execute("""
-                    UPDATE vidrios SET estado = 'INACTIVO', fecha_modificacion = GETDATE() 
+                    UPDATE vidrios SET estado = 'INACTIVO', fecha_actualizacion = GETDATE() 
                     WHERE id = ?
                 """, (vidrio_id_limpio,))
                 mensaje = (
-                    f"Vidrio '{codigo}' marcado como inactivo (estaba asignado a obras)"
+                    f"Vidrio '{tipo}' marcado como inactivo (estaba asignado a obras)"
                 )
             else:
                 # FIXED: Eliminar completamente si no está asignado usando consulta parametrizada segura
                 cursor.execute("""
                     DELETE FROM vidrios WHERE id = ?
                 """, (vidrio_id_limpio,))
-                mensaje = f"Vidrio '{codigo}' eliminado completamente"
+                mensaje = f"Vidrio '{tipo}' eliminado completamente"
 
             self.db_connection.connection.commit()
             logger.info(mensaje)
@@ -883,9 +886,9 @@ class VidriosModel:
 
             # FIXED: Usar consulta parametrizada segura en lugar de script_content
             cursor.execute("""
-                SELECT id, codigo, descripcion, tipo, proveedor, espesor, 
-                       color, precio_m2, estado, ubicacion, observaciones,
-                       fecha_creacion, fecha_modificacion
+                SELECT id, tipo as tipo, especificaciones as especificaciones, tipo, proveedor, espesor, 
+                       color, precio_m2, estado, dimensiones as dimensiones, propiedades as propiedades,
+                       fecha_creacion, fecha_actualizacion as fecha_actualizacion
                 FROM vidrios 
                 WHERE id = ?
             """, (vidrio_id_limpio,))
@@ -923,9 +926,9 @@ class VidriosModel:
 
             # Query principal con paginación
             query = """
-                SELECT id, codigo, descripcion, tipo, espesor, 
-                       proveedor, precio_m2, color, tratamiento, estado,
-                       dimensiones_disponibles, observaciones
+                SELECT id, tipo as tipo, especificaciones as especificaciones, tipo, espesor, 
+                       proveedor, precio_m2, color, propiedades as propiedades, estado,
+                       dimensiones_disponibles, propiedades as propiedades
                 FROM vidrios
                 WHERE activo = 1
             """
@@ -939,13 +942,13 @@ class VidriosModel:
                     params.append(filtros['tipo'])
                 
                 if filtros.get('busqueda'):
-                    query += " AND (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ?)"
+                    query += " AND (tipo LIKE ? OR especificaciones LIKE ? OR tipo LIKE ?)"
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
 
             # Query de conteo
             count_query = query.replace(
-                "SELECT id, codigo, descripcion, tipo, espesor, proveedor, precio_m2, color, tratamiento, estado, dimensiones_disponibles, observaciones",
+                "SELECT id, tipo as tipo, especificaciones as especificaciones, tipo, espesor, proveedor, precio_m2, color, propiedades as propiedades, estado, dimensiones_disponibles, propiedades as observaciones",
                 "SELECT COUNT(*)"
             )
             
@@ -997,7 +1000,7 @@ class VidriosModel:
                     params.append(filtros['tipo'])
                 
                 if filtros.get('busqueda'):
-                    query += " AND (codigo LIKE ? OR descripcion LIKE ? OR tipo LIKE ?)"
+                    query += " AND (tipo LIKE ? OR especificaciones LIKE ? OR tipo LIKE ?)"
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda, busqueda])
             

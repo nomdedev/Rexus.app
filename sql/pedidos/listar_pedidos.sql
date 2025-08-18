@@ -33,7 +33,7 @@ SELECT
     
     -- Estado de entrega
     CASE 
-        WHEN SUM(pd.cantidad_pendiente) = 0 THEN 'COMPLETO'
+        WHEN SUM(pd.cantidad - pd.cantidad_entregada) = 0 THEN 'COMPLETO'
         WHEN SUM(pd.cantidad_entregada) > 0 THEN 'PARCIAL'
         ELSE 'PENDIENTE'
     END as estado_entrega

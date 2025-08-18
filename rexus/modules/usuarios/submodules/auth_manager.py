@@ -48,14 +48,14 @@ logger = logging.getLogger(__name__)
 
 # Importar utilidades de seguridad
 try:
-        from rexus.utils.sql_security import SQLSecurityValidator
+    from rexus.utils.sql_security import SQLSecurityValidator, DataSanitizer
 except ImportError:
     logger.warning("Security utilities not fully available")
     DataSanitizer = None
     SQLSecurityValidator = None
 
 from rexus.utils.unified_sanitizer import sanitize_string
-from rexus.utils.unified_sanitizer import sanitize_string
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 
 class AuthenticationManager:
@@ -64,6 +64,7 @@ class AuthenticationManager:
     def __init__(self, db_connection=None):
         self.db_connection = db_connection
         self.sanitizer = DataSanitizer() if DataSanitizer else None
+        self.sql_manager = SQLQueryManager()
 
         # Configuración de seguridad
         self.max_intentos_login = 3
@@ -186,7 +187,8 @@ usuario_id: int,
             cursor = self.db_connection.cursor()
 
             # Obtener datos actuales del usuario
-            cursor.execute("SELECT username, password FROM usuarios WHERE id = ? AND activo = 1", (usuario_id,))
+            query = self.sql_manager.get_query('usuarios', 'obtener_usuario_por_id')
+            cursor.execute(query, (usuario_id,))
             user_data = cursor.fetchone()
 
             if not user_data:
@@ -200,11 +202,8 @@ usuario_id: int,
             password_hash = self._hashear_password_segura(password_nueva)
 
             # Actualizar en base de datos
-            cursor.execute("""
-                UPDATE usuarios
-                SET password = ?, updated_at = GETDATE()
-                WHERE id = ? AND activo = 1
-            """, (password_hash, usuario_id))
+            query = self.sql_manager.get_query('usuarios', 'actualizar_password')
+            cursor.execute(query, (password_hash, usuario_id))
 
             if cursor.rowcount == 0:
                 return {'success': False, 'message': 'No se pudo actualizar la contraseña'}
@@ -294,10 +293,8 @@ usuario_id: int,
             # Verificar intentos fallidos recientes
             tiempo_limite = datetime.datetime.now() - datetime.timedelta(minutes=self.tiempo_bloqueo_minutos)
 
-            cursor.execute("""
-                SELECT COUNT(*) FROM intentos_login
-                WHERE username = ? AND exitoso = 0 AND fecha_intento > ?
-            """, (username, tiempo_limite))
+            query = self.sql_manager.get_query('usuarios', 'contar_intentos_fallidos')
+            cursor.execute(query, (username, tiempo_limite))
 
             intentos_recientes = cursor.fetchone()[0]
 
@@ -326,22 +323,12 @@ usuario_id: int,
             cursor = self.db_connection.cursor()
 
             # Crear tabla si no existe
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='intentos_login' AND xtype='U')
-                CREATE TABLE intentos_login (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    username NVARCHAR(50) NOT NULL,
-                    fecha_intento DATETIME DEFAULT GETDATE(),
-                    exitoso BIT NOT NULL,
-                    ip_address NVARCHAR(45) NULL
-                )
-            """)
+            query_create = self.sql_manager.get_query('usuarios', 'crear_tabla_intentos')
+            cursor.execute(query_create)
 
             # Insertar registro
-            cursor.execute("""
-                INSERT INTO intentos_login (username, exitoso, fecha_intento)
-                VALUES (?, ?, GETDATE())
-            """, (username, exitoso))
+            query_insert = self.sql_manager.get_query('usuarios', 'insertar_intento_login')
+            cursor.execute(query_insert, (username, exitoso))
 
             self.db_connection.commit()
 
@@ -369,11 +356,8 @@ usuario_id: int,
             cursor = self.db_connection.cursor()
 
             # Marcar intentos previos como obsoletos
-            cursor.execute("""
-                UPDATE intentos_login
-                SET exitoso = NULL
-                WHERE username = ? AND exitoso = 0
-            """, (username,))
+            query = self.sql_manager.get_query('usuarios', 'resetear_intentos_fallidos')
+            cursor.execute(query, (username,))
 
             self.db_connection.commit()
             return True
@@ -402,12 +386,8 @@ usuario_id: int,
 
             cursor = self.db_connection.cursor()
 
-            cursor.execute("""
-                SELECT id, username, password, nombre_completo, email,
-                       rol, activo, created_at, updated_at
-                FROM usuarios
-                WHERE username = ? AND activo = 1
-            """, (username,))
+            query = self.sql_manager.get_query('usuarios', 'obtener_usuario_login')
+            cursor.execute(query, (username,))
 
             row = cursor.fetchone()
             if not row:

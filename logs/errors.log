@@ -109,3 +109,56 @@ Traceback (most recent call last):
   File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
 UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
+2025-08-18 08:16:07 | ERROR    | rexus.utils.backup_recovery | Database backup failed: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform a backup or restore operation within a transaction. (3021) (SQLExecDirectW); [42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]BACKUP DATABASE is terminating abnormally. (3013)')
+2025-08-18 08:20:23,807 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+File: D:\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "<string>", line 50, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+2025-08-18 08:20:23 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 50, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 2: character maps to <undefined>
+2025-08-18 08:21:25 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'codigo'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descripcion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ubicacion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'observaciones'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_modificacion'. (207)")
+2025-08-18 08:21:25 | ERROR    | rexus.usuarios.model | Error obteniendo usuarios optimizado: Archivo SQL no encontrado: obtener_usuarios_con_permisos.sql en módulo usuarios. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\usuarios\\obtener_usuarios_con_permisos.sql', 'D:\\martin\\Rexus.app\\sql\\obtener_usuarios_con_permisos.sql', 'D:\\martin\\Rexus.app\\sql\\common\\obtener_usuarios_con_permisos.sql']
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\model.py", line 1159, in obtener_todos_usuarios
+    sql = self.sql_manager.get_query('usuarios', 'obtener_usuarios_con_permisos')
+  File "D:\martin\Rexus.app\rexus\utils\sql_query_manager.py", line 61, in get_query
+    self._load_query(module, query_name)
+  File "D:\martin\Rexus.app\rexus\utils\sql_query_manager.py", line 99, in _load_query
+    raise FileNotFoundError(
+FileNotFoundError: Archivo SQL no encontrado: obtener_usuarios_con_permisos.sql en módulo usuarios. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\usuarios\\obtener_usuarios_con_permisos.sql', 'D:\\martin\\Rexus.app\\sql\\obtener_usuarios_con_permisos.sql', 'D:\\martin\\Rexus.app\\sql\\common\\obtener_usuarios_con_permisos.sql']
+2025-08-18 08:22:03 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'codigo'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descripcion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'ubicacion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'observaciones'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_modificacion'. (207)")
+2025-08-18 08:22:03 | ERROR    | rexus.usuarios.model | Error obteniendo usuarios optimizado: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'username'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_actualizacion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_bloqueo'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'configuracion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'preferencias'. (207)")
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\model.py", line 1160, in obtener_todos_usuarios
+    cursor.execute(sql)
+pyodbc.ProgrammingError: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'username'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_actualizacion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'fecha_bloqueo'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'configuracion'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'preferencias'. (207)")
+2025-08-18 08:25:15 | ERROR    | rexus.modules.herrajes.model | [HERRAJES] Error obteniendo herrajes: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'herrajes'. (208) (SQLExecDirectW)")
+2025-08-18 08:26:51 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 08:27:39 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:32:23 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:32:24 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:33:24 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:33:24 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:34:08 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:34:09 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:34:25 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:34:25 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:35:54 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:35:54 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:36:39 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:36:39 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 12:37:36 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 12:37:36 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-18 13:46:25 | ERROR    | rexus.main      | Error crítico creando obras: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+2025-08-18 13:46:27 | ERROR    | rexus.main      | Error crítico creando inventario: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')
+2025-08-18 13:46:28 | ERROR    | rexus.main      | Error crítico creando obras: ('The SQL contains 0 parameter markers, but 1 parameters were supplied', 'HY000')

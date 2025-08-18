@@ -17,3 +17,4 @@ SELECT
 FROM [entregas] e
 LEFT JOIN [obras] o ON e.obra_id = o.id
 LEFT JOIN [transportes] t ON e.transporte_id = t.id
+WHERE 1=1

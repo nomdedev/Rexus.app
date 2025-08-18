@@ -59,7 +59,7 @@ class DatabaseConfigDialog(QDialog):
         main_layout.setContentsMargins(30, 30, 30, 30)
 
         # Título
-        title = QLabel("⚙️ Configuración de Base de Datos")
+        title = QLabel("[SETTINGS] Configuración de Base de Datos")
         title.setStyleSheet("""
             QLabel {
                 font-size: 24px;
@@ -243,27 +243,27 @@ class DatabaseConfigDialog(QDialog):
         layout.addWidget(advanced_group)
         layout.addStretch()
 
-        self.tab_widget.addTab(tab, "⚙️ General")
+        self.tab_widget.addTab(tab, "[SETTINGS] General")
 
     def create_users_db_tab(self):
         """Crea la pestaña para configurar la BD de usuarios"""
         tab = self.create_database_tab(
             "users",
-            "👥 Base de Datos de Usuarios",
+            "[USERS] Base de Datos de Usuarios",
             "Configuración para autenticación y permisos",
             ["usuarios", "roles", "permisos", "sesiones"]
         )
-        self.tab_widget.addTab(tab, "👥 Users DB")
+        self.tab_widget.addTab(tab, "[USERS] Users DB")
 
     def create_inventario_db_tab(self):
         """Crea la pestaña para configurar la BD de inventario"""
         tab = self.create_database_tab(
             "inventario",
-            "📦 Base de Datos de Inventario",
+            "[PACKAGE] Base de Datos de Inventario",
             "Configuración para módulos de negocio",
             ["inventario_perfiles", "obras", "pedidos", "herrajes", "vidrios"]
         )
-        self.tab_widget.addTab(tab, "📦 Inventario DB")
+        self.tab_widget.addTab(tab, "[PACKAGE] Inventario DB")
 
     def create_auditoria_db_tab(self):
         """Crea la pestaña para configurar la BD de auditoría"""
@@ -320,7 +320,7 @@ class DatabaseConfigDialog(QDialog):
         layout.addWidget(config_group)
 
         # Información de tablas
-        tables_group = QGroupBox("📋 Tablas Principales")
+        tables_group = QGroupBox("[CLIPBOARD] Tablas Principales")
         tables_group.setStyleSheet(self.get_group_style())
         tables_layout = QVBoxLayout(tables_group)
 

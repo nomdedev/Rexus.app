@@ -637,7 +637,7 @@ Para habilitar mapas interactivos:
         self.tab_widget.addTab(tab_servicios, "[TOOL] Servicios")
     def crear_widget_servicios_activos_con_detalle(self) -> QWidget:
         """Crea el widget de servicios activos con botón Detalle por fila."""
-        widget = RexusGroupBox("📋 Servicios Activos")
+        widget = RexusGroupBox("[CLIPBOARD] Servicios Activos")
         layout = QVBoxLayout(widget)
         layout.setSpacing(4)  # Espaciado más compacto
         layout.setContentsMargins(5, 5, 5, 5)  # Márgenes reducidos
@@ -833,7 +833,7 @@ Para habilitar mapas interactivos:
         fila_acciones = QHBoxLayout()
 
         # Botones de acción compactos
-        self.btn_nuevo_transporte = RexusButton("🚛 Nuevo")
+        self.btn_nuevo_transporte = RexusButton("[TRUCK] Nuevo")
         self.btn_nuevo_transporte.clicked.connect(self.mostrar_dialogo_nuevo_transporte)
         self.btn_nuevo_transporte.setToolTip("Crear un nuevo registro de transporte")
         self.btn_nuevo_transporte.setStyleSheet("""
@@ -967,7 +967,7 @@ Para habilitar mapas interactivos:
         layout = QHBoxLayout(panel)
 
         # Botones de acción con iconos y tooltips
-        self.btn_nuevo_transporte = RexusButton("🚛 Nuevo Transporte")
+        self.btn_nuevo_transporte = RexusButton("[TRUCK] Nuevo Transporte")
         self.btn_nuevo_transporte.clicked.connect(self.mostrar_dialogo_nuevo_transporte)
         self.btn_nuevo_transporte.setToolTip("Crear un nuevo registro de transporte")
         self.btn_nuevo_transporte.setStyleSheet("""
@@ -1064,7 +1064,7 @@ Para habilitar mapas interactivos:
 
     def crear_panel_graficos_mejorado(self) -> QWidget:
         """Crea el panel de gráficos con mejor presentación visual."""
-        panel = RexusGroupBox("📈 Gráficos y Tendencias")
+        panel = RexusGroupBox("[TRENDING] Gráficos y Tendencias")
         layout = QVBoxLayout(panel)
         layout.setSpacing(8)
 
@@ -1089,7 +1089,7 @@ Para habilitar mapas interactivos:
         grafico_layout.addWidget(titulo_grafico)
 
         # Placeholder visual mejorado
-        grafico_placeholder = QLabel("🔄 Cargando gráficos interactivos...\n\n📈 Próximamente:\n• Gráfico de entregas por día\n• Tendencias de tiempo de entrega\n• Análisis de rutas eficientes\n• Métricas de satisfacción")
+        grafico_placeholder = QLabel("🔄 Cargando gráficos interactivos...\n\n[TRENDING] Próximamente:\n• Gráfico de entregas por día\n• Tendencias de tiempo de entrega\n• Análisis de rutas eficientes\n• Métricas de satisfacción")
         grafico_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
         grafico_placeholder.setStyleSheet("""
             QLabel {
@@ -1111,7 +1111,7 @@ Para habilitar mapas interactivos:
 
     def crear_panel_metricas_compacto(self) -> QWidget:
         """Crea el panel de métricas detalladas de forma compacta."""
-        panel = RexusGroupBox("📋 Métricas Detalladas")
+        panel = RexusGroupBox("[CLIPBOARD] Métricas Detalladas")
         layout = QVBoxLayout(panel)
         layout.setSpacing(6)  # Espaciado compacto
 
@@ -1129,7 +1129,7 @@ Para habilitar mapas interactivos:
 92,
                 "#9b59b6",
                 "92% de clientes satisfechos"),
-            ("🚛 Utilización de flota",
+            ("[TRUCK] Utilización de flota",
 68,
                 "#f39c12",
                 "68% de capacidad utilizada")
@@ -1349,7 +1349,7 @@ delete=False,
         return self.mapa_placeholder
     def crear_widget_servicios_activos_mejorado(self) -> QWidget:
         """Crea el widget de servicios activos con mejor layout."""
-        widget = RexusGroupBox("📋 Servicios Activos")
+        widget = RexusGroupBox("[CLIPBOARD] Servicios Activos")
         layout = QVBoxLayout(widget)
         layout.setSpacing(6)  # Espaciado reducido
         layout.setContentsMargins(8, 8, 8, 8)
@@ -1528,7 +1528,7 @@ delete=False,
         layout.addWidget(info_rutas)
 
         # Información de vehículos
-        info_vehiculos = QLabel("🚛 Vehículos en ruta: 12\n⏱️ Tiempo promedio: 2.4 hrs")
+        info_vehiculos = QLabel("[TRUCK] Vehículos en ruta: 12\n⏱️ Tiempo promedio: 2.4 hrs")
         info_vehiculos.setStyleSheet("font-size: 12px; color: #34495e;")
         layout.addWidget(info_vehiculos)
 
@@ -1555,9 +1555,9 @@ delete=False,
 📍 Ruta 3: Berisso → Ensenada (8 km)
 📍 Ruta 4: Buenos Aires → San Isidro (32 km)
 
-🚛 Vehículos desplegados: 23
+[TRUCK] Vehículos desplegados: 23
 ⏱️ Tiempo total estimado: 6.2 hrs
-📦 Entregas programadas: 45""")
+[PACKAGE] Entregas programadas: 45""")
                         info_label.setStyleSheet("""
                         QLabel {
                             border: 3px solid #e67e22;

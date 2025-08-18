@@ -35,7 +35,7 @@ class DashboardWidget(QWidget):
         layout = QGridLayout(self)
 
         # Tarjetas de métricas
-        self.crear_tarjeta_metrica("👥 Empleados Activos", "0", 0, 0, layout)
+        self.crear_tarjeta_metrica("[USERS] Empleados Activos", "0", 0, 0, layout)
         self.crear_tarjeta_metrica("[MONEY] Balance General",
 "$0.00",
             0,
@@ -120,7 +120,7 @@ class ContabilidadWidget(QWidget):
         controles_frame = RexusGroupBox("Gestión Contable")
         controles_layout = QHBoxLayout(controles_frame)
 
-        self.btn_nuevo_asiento = RexusButton("💼 Nuevo Asiento", "primary")
+        self.btn_nuevo_asiento = RexusButton("[BRIEFCASE] Nuevo Asiento", "primary")
         self.btn_nuevo_asiento.clicked.connect(self.nuevo_asiento_contable)
         controles_layout.addWidget(self.btn_nuevo_asiento)
 
@@ -321,7 +321,7 @@ class AdministracionViewFuncional(QWidget):
         # Pestaña Recursos Humanos
         self.rrhh_widget = RecursosHumanosWidget()
         self.rrhh_widget.solicitud_crear_empleado.connect(self.solicitud_crear_empleado)
-        self.tabs.addTab(self.rrhh_widget, "👥 Recursos Humanos")
+        self.tabs.addTab(self.rrhh_widget, "[USERS] Recursos Humanos")
 
         layout.addWidget(self.tabs)
 

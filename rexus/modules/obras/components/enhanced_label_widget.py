@@ -137,7 +137,7 @@ text: str = "",
         # Estados específicos para obras
         self.obra_status_colors = {
             'EN_PROCESO': {'color': '#059669', 'bg': '#d1fae5', 'icon': '🚧'},
-            'PLANIFICACION': {'color': '#d97706', 'bg': '#fef3c7', 'icon': '📋'},
+            'PLANIFICACION': {'color': '#d97706', 'bg': '#fef3c7', 'icon': '[CLIPBOARD]'},
             'PAUSADA': {'color': '#dc2626', 'bg': '#fecaca', 'icon': '⏸️'},
             'FINALIZADA': {'color': '#3730a3', 'bg': '#e0e7ff', 'icon': '[OK]'},
             'CANCELADA': {'color': '#6b7280', 'bg': '#f3f4f6', 'icon': '[ERROR]'},
@@ -578,7 +578,7 @@ value: Union[int,
         # Calcular tendencia
         if self.previous_value is not None:
             if value > self.previous_value:
-                self.trend_indicator = "📈"
+                self.trend_indicator = "[TRENDING]"
             elif value < self.previous_value:
                 self.trend_indicator = "📉"
             else:

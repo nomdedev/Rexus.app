@@ -261,7 +261,7 @@ class SecurityConfigDialog(QDialog):
         self.failed_attempts = QLabel("Intentos fallidos: 0")
         self.lockout_time = QLabel("Bloqueado hasta: N/A")
 
-        self.btn_unlock = QPushButton("🔓 Desbloquear Cuenta")
+        self.btn_unlock = QPushButton("[UNLOCK] Desbloquear Cuenta")
         self.btn_unlock.clicked.connect(self.unlock_account)
 
         lockout_layout.addRow("Estado:", self.lockout_status)
@@ -380,7 +380,7 @@ class SecurityConfigDialog(QDialog):
                 if locked_until:
                     self.lockout_time.setText(f"Hasta: {locked_until.strftime('%H:%M:%S')}")
             else:
-                self.lockout_status.setText("🔓 Desbloqueado")
+                self.lockout_status.setText("[UNLOCK] Desbloqueado")
                 self.lockout_status.setStyleSheet("color: green; font-weight: bold;")
                 self.btn_unlock.setEnabled(False)
 

@@ -81,7 +81,7 @@ class BaseModuleView(QWidget):
         layout = QHBoxLayout(header_frame)
 
         # Título del módulo
-        title = RexusLabel(f"Gestión de {self.module_name}", "title")
+        title = RexusLabel(f"Gestión de {self.module_name or 'Módulo'}", "title")
         layout.addWidget(title)
 
         layout.addStretch()
@@ -98,7 +98,7 @@ class BaseModuleView(QWidget):
         controls_layout.setSpacing(8)
 
         # Campo de búsqueda
-        self.search_input = RexusLineEdit(f"Buscar {self.module_name.lower()}...")
+        self.search_input = RexusLineEdit(f"Buscar {(self.module_name or 'elementos').lower()}...")
         self.search_input.setMaximumWidth(250)
         controls_layout.addWidget(self.search_input)
 
@@ -127,7 +127,7 @@ class BaseModuleView(QWidget):
         layout = QVBoxLayout(panel_frame)
 
         # Título de la sección
-        list_title = RexusLabel(f"Lista de {self.module_name}", "subtitle")
+        list_title = RexusLabel(f"Lista de {self.module_name or 'elementos'}", "subtitle")
         layout.addWidget(list_title)
 
         # Área de filtros (opcional)
@@ -403,15 +403,15 @@ class BaseModuleView(QWidget):
                 # Aplicar correcciones críticas si es necesario
                 ensure_module_forms_readable(self)
 
-                print(f"[{self.module_name.upper()}] Estilos aplicados con correcciones de legibilidad")
+                print(f"[{(self.module_name or 'UNKNOWN').upper()}] Estilos aplicados con correcciones de legibilidad")
 
             except ImportError:
                 # Fallback si theme_fixes no está disponible
                 self.setStyleSheet(base_styles)
-                print(f"[{self.module_name.upper()}] Estilos básicos aplicados (sin correcciones)")
+                print(f"[{(self.module_name or 'UNKNOWN').upper()}] Estilos básicos aplicados (sin correcciones)")
 
         except Exception as e:
-            print(f"[ERROR {self.module_name.upper()}] Error aplicando estilos: {e}")
+            print(f"[ERROR {(self.module_name or 'UNKNOWN').upper()}] Error aplicando estilos: {e}")
             # Aplicar estilos mínimos en caso de error
             self.setStyleSheet("QWidget { background-color: #fafbfc; }")
 
@@ -427,7 +427,7 @@ class BaseModuleView(QWidget):
     def create_new_item(self):
         """Inicia creación de nuevo elemento"""
         self.selected_id = None
-        self.edit_title.setText(f"Nuevo {self.module_name}")
+        self.edit_title.setText(f"Nuevo {self.module_name or 'elemento'}")
         self.clear_edit_form()
         self.enter_edit_mode()
 
@@ -478,7 +478,7 @@ class BaseModuleView(QWidget):
             result = RexusMessageBox.question(
                 self,
                 "Confirmar eliminación",
-                f"¿Está seguro de eliminar este {self.module_name.lower()}?"
+                f"¿Está seguro de eliminar este {(self.module_name or 'elemento').lower()}?"
             )
             if result == RexusMessageBox.StandardButton.Yes:
                 self.item_deleted.emit(self.selected_id)

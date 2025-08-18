@@ -9,7 +9,7 @@ class UsuariosConstants:
     """Constantes del módulo de usuarios."""
 
     # Títulos y etiquetas
-    TITULO_MODULO = "👥 Gestión de Usuarios"
+    TITULO_MODULO = "[USERS] Gestión de Usuarios"
     
     # Botones
     BTN_NUEVO_USUARIO = "➕ Nuevo Usuario"
@@ -17,7 +17,7 @@ class UsuariosConstants:
     BTN_ELIMINAR_USUARIO = "🗑️ Eliminar"
     BTN_CAMBIAR_PASSWORD = "🔐 Cambiar Contraseña"
     BTN_BLOQUEAR_USUARIO = "🚫 Bloquear"
-    BTN_DESBLOQUEAR_USUARIO = "✅ Desbloquear"
+    BTN_DESBLOQUEAR_USUARIO = "[CHECK] Desbloquear"
     BTN_EXPORTAR = "📤 Exportar"
     BTN_IMPORTAR = "📥 Importar"
     BTN_ACTUALIZAR = "🔄 Actualizar"
@@ -124,7 +124,7 @@ class UsuariosConstants:
     PLACEHOLDER_NOMBRE = "Nombre completo"
     PLACEHOLDER_PASSWORD = "Contraseña segura"
     PLACEHOLDER_CONFIRMAR_PASSWORD = "Confirmar contraseña"
-    PLACEHOLDER_BUSCAR = "🔍 Buscar usuarios..."
+    PLACEHOLDER_BUSCAR = "[SEARCH] Buscar usuarios..."
     
     # Filtros
     FILTROS_ROL = ["Todos"] + ROLES

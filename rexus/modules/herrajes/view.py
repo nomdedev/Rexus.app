@@ -361,7 +361,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
             "🚪 Bisagras",
             "🔐 Cerraduras",
             "[TARGET] Manijas",
-            "⚙️ Otros herrajes"
+            "[SETTINGS] Otros herrajes"
         ])
         self.combo_categoria.setMinimumHeight(35)
         self.combo_categoria.setToolTip("Filtrar herrajes por categoría")
@@ -490,7 +490,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
 "Total Herrajes",
                 "total_herrajes",
                 RexusColors.PRIMARY),
-            ("📦", "En Stock", "en_stock", "#28a745"),
+            ("[PACKAGE]", "En Stock", "en_stock", "#28a745"),
             ("[WARN]", "Stock Bajo", "stock_bajo", "#ffc107"),
             ("🚫", "Sin Stock", "sin_stock", "#dc3545")
         ]
