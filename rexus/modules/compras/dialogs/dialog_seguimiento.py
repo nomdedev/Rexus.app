@@ -84,7 +84,7 @@ class DialogSeguimiento(QDialog):
 
     def crear_grupo_orden(self):
         """Crea el grupo de información de la orden."""
-        grupo = RexusGroupBox("📋 Información de la Orden")
+        grupo = RexusGroupBox("[CLIPBOARD] Información de la Orden")
         layout = QFormLayout(grupo)
 
         self.lbl_numero_orden = RexusLabel("N/A", "body")

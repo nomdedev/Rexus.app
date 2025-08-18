@@ -104,7 +104,7 @@ class MantenimientoView(QWidget):
         """Crea todas las pestañas del módulo."""
         # Pestaña 1: Órdenes de Trabajo
         ordenes_tab = self.create_ordenes_trabajo_tab()
-        self.tab_widget.addTab(ordenes_tab, "📋 Órdenes de Trabajo")
+        self.tab_widget.addTab(ordenes_tab, "[CLIPBOARD] Órdenes de Trabajo")
 
         # Pestaña 2: Mantenimiento Preventivo
         preventivo_tab = self.create_mantenimiento_preventivo_tab()
@@ -112,11 +112,11 @@ class MantenimientoView(QWidget):
 
         # Pestaña 3: Inventario de Repuestos
         inventario_tab = self.create_inventario_repuestos_tab()
-        self.tab_widget.addTab(inventario_tab, "📦 Inventario Repuestos")
+        self.tab_widget.addTab(inventario_tab, "[PACKAGE] Inventario Repuestos")
 
         # Pestaña 4: Equipos y Activos
         equipos_tab = self.create_equipos_activos_tab()
-        self.tab_widget.addTab(equipos_tab, "⚙️ Equipos y Activos")
+        self.tab_widget.addTab(equipos_tab, "[SETTINGS] Equipos y Activos")
 
         # Pestaña 5: Reportes y Análisis
         reportes_tab = self.create_reportes_analisis_tab()
@@ -124,7 +124,7 @@ class MantenimientoView(QWidget):
 
         # Pestaña 6: Configuración
         config_tab = self.create_configuracion_tab()
-        self.tab_widget.addTab(config_tab, "⚙️ Configuración")
+        self.tab_widget.addTab(config_tab, "[SETTINGS] Configuración")
 
     def create_ordenes_trabajo_tab(self):
         """Crea la pestaña de órdenes de trabajo."""
@@ -452,7 +452,7 @@ class MantenimientoView(QWidget):
         btn_nuevo_equipo = StandardComponents.create_primary_button("➕ Nuevo Equipo")
         layout.addWidget(btn_nuevo_equipo)
 
-        btn_historial = StandardComponents.create_secondary_button("📋 Historial")
+        btn_historial = StandardComponents.create_secondary_button("[CLIPBOARD] Historial")
         layout.addWidget(btn_historial)
 
         # Filtros
@@ -565,7 +565,7 @@ class MantenimientoView(QWidget):
 
     def create_metricas_panel(self):
         """Panel de métricas clave."""
-        panel = QGroupBox("📈 Métricas Clave de Mantenimiento")
+        panel = QGroupBox("[TRENDING] Métricas Clave de Mantenimiento")
         layout = QGridLayout(panel)
 
         # KPIs con barras de progreso
@@ -613,7 +613,7 @@ class MantenimientoView(QWidget):
         layout = QVBoxLayout(tab_widget)
 
         # Configuraciones generales
-        config_panel = QGroupBox("⚙️ Configuración General")
+        config_panel = QGroupBox("[SETTINGS] Configuración General")
         config_layout = QGridLayout(config_panel)
 
         # Notificaciones
@@ -675,7 +675,7 @@ class MantenimientoView(QWidget):
 
     def create_actions_button(self, row):
         """Crea botón de acciones para tabla."""
-        btn = QPushButton("⚙️ Acciones")
+        btn = QPushButton("[SETTINGS] Acciones")
         btn.setStyleSheet("""
             QPushButton {
                 background: #6366f1;

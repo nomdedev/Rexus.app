@@ -9,7 +9,7 @@ class InventarioConstants:
     """Constantes del módulo de inventario."""
 
     # Títulos y etiquetas
-    TITULO_MODULO = "📦 Gestión de Inventario"
+    TITULO_MODULO = "[PACKAGE] Gestión de Inventario"
     
     # Botones
     BTN_NUEVO_PRODUCTO = "➕ Nuevo Producto"
@@ -18,7 +18,7 @@ class InventarioConstants:
     BTN_IMPORTAR = "📥 Importar"
     BTN_EXPORTAR = "📤 Exportar"
     BTN_ACTUALIZAR = "🔄 Actualizar"
-    BTN_BUSCAR = "🔍 Buscar"
+    BTN_BUSCAR = "[SEARCH] Buscar"
     BTN_LIMPIAR = "🧹 Limpiar"
     
     # Headers de tabla
@@ -53,7 +53,7 @@ class InventarioConstants:
     MSG_CONFIRMAR_ELIMINACION = "¿Está seguro de eliminar este producto?"
     
     # Placeholders
-    PLACEHOLDER_BUSCAR = "🔍 Buscar productos..."
+    PLACEHOLDER_BUSCAR = "[SEARCH] Buscar productos..."
     PLACEHOLDER_CODIGO = "Ej: VID-001, PER-002"
     PLACEHOLDER_DESCRIPCION = "Descripción del producto"
     PLACEHOLDER_PRECIO = "0.00"

@@ -483,7 +483,7 @@ class PedidosViewComplete(BaseModuleView):
         header_layout = QHBoxLayout(header_frame)
 
         # Título
-        titulo = QLabel("📋 Gestión de Pedidos")
+        titulo = QLabel("[CLIPBOARD] Gestión de Pedidos")
         titulo.setStyleSheet("""
             QLabel {
                 font-size: 24px;
@@ -542,7 +542,7 @@ class PedidosViewComplete(BaseModuleView):
 
         self.btn_nuevo = QPushButton("➕ Nuevo Pedido")
         self.btn_editar = QPushButton("✏️ Editar")
-        self.btn_duplicar = QPushButton("📋 Duplicar")
+        self.btn_duplicar = QPushButton("[CLIPBOARD] Duplicar")
         self.btn_eliminar = QPushButton("🗑️ Eliminar")
         self.btn_exportar = QPushButton("[CHART] Exportar")
         self.btn_actualizar = QPushButton("🔄 Actualizar")

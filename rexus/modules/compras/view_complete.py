@@ -107,7 +107,7 @@ class OrdenCompraDialog(QDialog):
         layout.addRow("Presupuesto:", self.dsb_presupuesto)
         layout.addRow("Observaciones:", self.te_observaciones)
 
-        tabs.addTab(tab, "📋 Información General")
+        tabs.addTab(tab, "[CLIPBOARD] Información General")
 
     def setup_productos_tab(self, tabs):
         """Configura la pestaña de productos."""
@@ -181,7 +181,7 @@ class OrdenCompraDialog(QDialog):
 
         layout.addWidget(totales_group)
 
-        tabs.addTab(tab, "📦 Productos")
+        tabs.addTab(tab, "[PACKAGE] Productos")
 
     def setup_proveedor_tab(self, tabs):
         """Configura la pestaña de proveedor y entrega."""
@@ -253,16 +253,16 @@ class OrdenCompraDialog(QDialog):
 
         self.setStyleSheet(f"""
             QDialog {{
-                background-color: {style_manager.colors.BACKGROUND};
-                color: {style_manager.colors.TEXT_PRIMARY};
+                background-color: #f8fafc;
+                color: #1f2937;
             }}
             QTabWidget::pane {{
-                border: 1px solid {style_manager.colors.BORDER};
+                border: 1px solid #d1d5db;
                 background-color: white;
             }}
             QTabBar::tab {{
                 background-color: #f1f5f9;
-                border: 1px solid {style_manager.colors.BORDER};
+                border: 1px solid #d1d5db;
                 padding: 8px 16px;
                 margin-right: 2px;
                 font-weight: 600;
@@ -270,10 +270,10 @@ class OrdenCompraDialog(QDialog):
             QTabBar::tab:selected {{
                 background-color: white;
                 border-bottom-color: white;
-                color: {style_manager.colors.PRIMARY};
+                color: #3b82f6;
             }}
             QPushButton {{
-                background-color: {style_manager.colors.PRIMARY};
+                background-color: #3b82f6;
                 color: white;
                 border: none;
                 border-radius: 6px;
@@ -282,26 +282,26 @@ class OrdenCompraDialog(QDialog):
                 min-height: 20px;
             }}
             QPushButton:hover {{
-                background-color: {style_manager.colors.PRIMARY_HOVER};
+                background-color: #2563eb;
             }}
             QLineEdit, QComboBox, QSpinBox, QDoubleSpinBox, QDateEdit {{
-                border: 2px solid {style_manager.colors.BORDER};
+                border: 2px solid #d1d5db;
                 border-radius: 6px;
                 padding: 8px;
                 min-height: 20px;
             }}
             QLineEdit:focus, QComboBox:focus, QSpinBox:focus,
             QDoubleSpinBox:focus, QDateEdit:focus {{
-                border-color: {style_manager.colors.PRIMARY};
+                border-color: #3b82f6;
             }}
             QTableWidget {{
-                gridline-color: {style_manager.colors.BORDER};
-                selection-background-color: {style_manager.colors.SELECTION};
-                alternate-background-color: {style_manager.colors.ALTERNATE_ROW};
+                gridline-color: #d1d5db;
+                selection-background-color: #dbeafe;
+                alternate-background-color: #f9fafb;
             }}
             QGroupBox {{
                 font-weight: bold;
-                border: 2px solid {style_manager.colors.BORDER};
+                border: 2px solid #d1d5db;
                 border-radius: 8px;
                 margin-top: 1ex;
                 padding-top: 10px;
@@ -496,6 +496,9 @@ class ComprasViewComplete(BaseModuleView):
     """Vista completa y moderna para gestión de compras."""
 
     compra_actualizada = pyqtSignal()
+    orden_creada = pyqtSignal(dict)
+    orden_actualizada = pyqtSignal(dict)
+    busqueda_realizada = pyqtSignal(str)
 
     def __init__(self, parent=None):
         super().__init__(module_name="compras", parent=parent)
@@ -697,7 +700,7 @@ class ComprasViewComplete(BaseModuleView):
         self.setStyleSheet(f"""
             QGroupBox {{
                 font-weight: bold;
-                border: 2px solid {style_manager.colors.BORDER};
+                border: 2px solid #d1d5db;
                 border-radius: 8px;
                 margin-top: 1ex;
                 padding-top: 10px;
@@ -708,7 +711,7 @@ class ComprasViewComplete(BaseModuleView):
                 padding: 0 10px 0 10px;
             }}
             QPushButton {{
-                background-color: {style_manager.colors.PRIMARY};
+                background-color: #3b82f6;
                 color: white;
                 border: none;
                 border-radius: 6px;
@@ -717,15 +720,15 @@ class ComprasViewComplete(BaseModuleView):
                 min-height: 20px;
             }}
             QPushButton:hover {{
-                background-color: {style_manager.colors.PRIMARY_HOVER};
+                background-color: #2563eb;
             }}
             QTableWidget {{
-                gridline-color: {style_manager.colors.BORDER};
-                selection-background-color: {style_manager.colors.SELECTION};
-                alternate-background-color: {style_manager.colors.ALTERNATE_ROW};
+                gridline-color: #d1d5db;
+                selection-background-color: #dbeafe;
+                alternate-background-color: #f9fafb;
             }}
             QComboBox, QLineEdit {{
-                border: 2px solid {style_manager.colors.BORDER};
+                border: 2px solid #d1d5db;
                 border-radius: 6px;
                 padding: 6px;
                 min-height: 16px;

@@ -64,11 +64,11 @@ class DialogProveedor(QDialog):
 
         # Pestaña de información básica
         tab_basica = self.crear_tab_informacion_basica()
-        tab_widget.addTab(tab_basica, "📋 Información Básica")
+        tab_widget.addTab(tab_basica, "[CLIPBOARD] Información Básica")
 
         # Pestaña de contacto
         tab_contacto = self.crear_tab_contacto()
-        tab_widget.addTab(tab_contacto, "📞 Contacto")
+        tab_widget.addTab(tab_contacto, "[PHONE] Contacto")
 
         # Pestaña de detalles adicionales
         tab_detalles = self.crear_tab_detalles()
@@ -90,7 +90,7 @@ class DialogProveedor(QDialog):
         layout = QVBoxLayout(widget)
 
         # Información principal
-        grupo_principal = RexusGroupBox("📋 Información Principal")
+        grupo_principal = RexusGroupBox("[CLIPBOARD] Información Principal")
         form_layout = QFormLayout(grupo_principal)
 
         # Campos principales
@@ -144,7 +144,7 @@ class DialogProveedor(QDialog):
         layout = QVBoxLayout(widget)
 
         # Información de contacto
-        grupo_contacto = RexusGroupBox("📞 Información de Contacto")
+        grupo_contacto = RexusGroupBox("[PHONE] Información de Contacto")
         form_layout = QFormLayout(grupo_contacto)
 
         self.input_telefono = RexusLineEdit("Teléfono principal...")
@@ -220,7 +220,7 @@ class DialogProveedor(QDialog):
         layout.addWidget(grupo_contacto_principal)
 
         # Términos comerciales
-        grupo_comercial = RexusGroupBox("💼 Términos Comerciales")
+        grupo_comercial = RexusGroupBox("[BRIEFCASE] Términos Comerciales")
         comercial_layout = QFormLayout(grupo_comercial)
 
         self.combo_forma_pago = RexusComboBox([

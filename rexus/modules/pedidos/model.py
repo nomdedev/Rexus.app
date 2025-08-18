@@ -82,13 +82,15 @@ class PedidosModel:
         self.sanitizer = unified_sanitizer  # Para validación y sanitización
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
 
-        # Validar conexión a BD
+        # Modo sin conexión para testing/demo
         if not self.db_connection:
-            raise ValueError("Conexión a base de datos requerida")
-
-        # Inicializar tablas
-        self._crear_tablas_si_no_existen()
-        self.create_tables()
+            self.demo_mode = True
+            print("[PEDIDOS] Inicializado en modo demo - funcionalidad limitada")
+        else:
+            self.demo_mode = False
+            # Inicializar tablas solo si hay conexión
+            self._crear_tablas_si_no_existen()
+            self.create_tables()
 
     def _crear_tablas_si_no_existen(self):
         """Crea las tablas necesarias para pedidos usando SQL externo."""

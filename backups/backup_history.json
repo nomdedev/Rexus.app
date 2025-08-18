@@ -1,0 +1,14 @@
+[
+  {
+    "backup_id": "full_20250818_081606",
+    "timestamp": "2025-08-18T08:16:21.814792",
+    "backup_type": "full",
+    "size_bytes": 2601229,
+    "checksum": "8c107a8a8c15e4a0b053e382316a70c2",
+    "files_count": 944,
+    "database_included": false,
+    "config_included": true,
+    "status": "completed",
+    "recovery_verified": false
+  }
+]

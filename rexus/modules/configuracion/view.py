@@ -107,7 +107,7 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
         layout = QHBoxLayout(panel)
 
         # Botón Nuevo estandarizado
-        self.btn_nuevo = StandardComponents.create_primary_button("⚙️ Nueva Configuración")
+        self.btn_nuevo = StandardComponents.create_primary_button("[SETTINGS] Nueva Configuración")
         self.btn_nuevo.clicked.connect(self.nuevo_registro)
         layout.addWidget(self.btn_nuevo)
 

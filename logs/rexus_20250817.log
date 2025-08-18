@@ -479,3 +479,29 @@ Traceback (most recent call last):
 UnicodeEncodeError: 'charmap' codec can't encode character '\u2705' in position 0: character maps to <undefined>
 2025-08-17 16:10:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-17 16:10:08 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-17 22:03:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 22:03:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 22:03:18 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-17 22:03:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-17 22:03:25 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-17 22:03:25 | INFO     | rexus.startup   | ============================================================
+2025-08-17 22:03:25 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Argumentos: ['main.py', '--version']
+2025-08-17 22:03:25 | INFO     | rexus.startup   | ============================================================
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-17 22:03:25 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-17 22:03:27 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-17 22:03:27 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-17 22:03:27 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-17 22:03:27 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-17 22:03:27 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-17 22:03:27 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-17 22:03:27 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-17 22:03:27 | WARNING  | rexus.main      | Error inicializando sistema de backup: No module named 'schedule'
+2025-08-17 22:07:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 22:08:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-17 22:08:21 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-17 22:08:29 | INFO     | rexus           | Sistema de logging Rexus inicializado

@@ -88,7 +88,7 @@ class ModernObraDialog(ModernFormDialog):
         """Configura todos los campos del formulario"""
 
         # SECCIÓN: INFORMACIÓN BÁSICA
-        basic_section = self.add_section("🏗️ Información Básica")
+        basic_section = self.add_section("[CONSTRUCTION] Información Básica")
         QVBoxLayout(basic_section)
 
         # Código de obra
@@ -273,7 +273,7 @@ class ModernObraDialog(ModernFormDialog):
         )
 
         # SECCIÓN: INFORMACIÓN ADICIONAL
-        adicional_section = self.add_section("📋 Información Adicional")
+        adicional_section = self.add_section("[CLIPBOARD] Información Adicional")
         QVBoxLayout(adicional_section)
 
         # Observaciones

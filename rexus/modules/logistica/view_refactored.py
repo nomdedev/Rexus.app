@@ -115,7 +115,7 @@ class LogisticaViewRefactored(QWidget, ModuleExportMixin):
         splitter.setSizes([300, 700])
         
         layout.addWidget(splitter)
-        self.tab_widget.addTab(tab, "📦 Entregas")
+        self.tab_widget.addTab(tab, "[PACKAGE] Entregas")
 
     def _crear_pestaña_estadisticas(self):
         """Crea la pestaña de estadísticas y métricas."""
@@ -134,7 +134,7 @@ class LogisticaViewRefactored(QWidget, ModuleExportMixin):
         panel_resumen = self.panel_manager.crear_panel_resumen_optimizado()
         layout.addWidget(panel_resumen)
         
-        self.tab_widget.addTab(tab, "📊 Estadísticas")
+        self.tab_widget.addTab(tab, "[CHART] Estadísticas")
 
     def _crear_pestaña_servicios(self):
         """Crea la pestaña de servicios y rutas."""
@@ -184,14 +184,14 @@ class LogisticaViewRefactored(QWidget, ModuleExportMixin):
         
         # Campo de búsqueda
         self.busqueda_edit = RexusLineEdit()
-        self.busqueda_edit.setPlaceholderText("🔍 Buscar transportes...")
+        self.busqueda_edit.setPlaceholderText("[SEARCH] Buscar transportes...")
         layout.addWidget(self.busqueda_edit)
         
         # Botones de acción
         self.btn_nuevo_transporte = RexusButton("➕ Nuevo")
         self.btn_editar_transporte = RexusButton("✏️ Editar")
         self.btn_eliminar_transporte = RexusButton("🗑️ Eliminar")
-        self.btn_exportar = RexusButton("📊 Exportar")
+        self.btn_exportar = RexusButton("[CHART] Exportar")
         
         # Establecer estilos de botones
         self.btn_nuevo_transporte.setStyleSheet("background-color: #4CAF50; color: white;")

@@ -74,7 +74,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
     solicitud_eliminar_usuario = pyqtSignal(str)
 
     def __init__(self):
-        BaseModuleView.__init__(self, "👥 Gestión de Usuarios")
+        BaseModuleView.__init__(self, "[USERS] Gestión de Usuarios")
         ModuleExportMixin.__init__(self)
         self.controller = None
         self.setup_usuarios_ui()
@@ -96,7 +96,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
         controls_layout = RexusLayoutHelper.create_horizontal_layout()
 
         # Botón Nuevo Usuario con componente Rexus
-        self.btn_nuevo_usuario = RexusButton("👥 Nuevo Usuario", "primary")
+        self.btn_nuevo_usuario = RexusButton("[USERS] Nuevo Usuario", "primary")
         self.btn_nuevo_usuario.clicked.connect(self.nuevo_usuario)
         controls_layout.addWidget(self.btn_nuevo_usuario)
 

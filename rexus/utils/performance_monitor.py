@@ -1,9 +1,18 @@
 """
-Sistema de monitoreo de rendimiento para Rexus.app
+Sistema de monitoreo de rendimiento para Rexus.app v2.0.0
+Optimizado para el proyecto post-reestructuración
+
+Funcionalidades mejoradas:
+- Monitoreo de SQL queries optimizado
+- Cache inteligente de consultas frecuentes
+- Análisis de cuellos de botella
+- Alertas proactivas de rendimiento
 """
 
 import time
 import threading
+from collections import defaultdict, deque
+import functools
 
 # Fallback para psutil si no está disponible
 try:
@@ -23,6 +32,19 @@ except ImportError:
                 percent = 0.0
                 used = 1024 * 1024 * 1024  # 1GB mock
             return MockMemory()
+        
+        @staticmethod
+        def Process():
+            class MockProcess:
+                def cpu_percent(self):
+                    return 0.0
+                def memory_percent(self):
+                    return 0.0
+                def memory_info(self):
+                    class MockMemInfo:
+                        rss = 1024 * 1024 * 50  # 50MB mock
+                    return MockMemInfo()
+            return MockProcess()
 
         @staticmethod
         def active_children():
@@ -45,13 +67,20 @@ class PerformanceMetric:
     db_connections: int = 0
 
 class PerformanceMonitor:
-    """Monitor de rendimiento de la aplicación"""
+    """Monitor de rendimiento optimizado de la aplicación"""
 
     def __init__(self):
         self.logger = get_logger('performance')
         self.metrics: List[PerformanceMetric] = []
         self.monitoring = False
         self.monitor_thread: Optional[threading.Thread] = None
+        
+        # Nuevas funcionalidades de optimización
+        self.query_timings = defaultdict(deque)
+        self.slow_operations = deque(maxlen=50)
+        self.cache_hits = defaultdict(int)
+        self.cache_misses = defaultdict(int)
+        self.lock = threading.Lock()
 
     def start_monitoring(self, interval_seconds=60):
         """Inicia el monitoreo de rendimiento"""
@@ -136,6 +165,93 @@ class PerformanceMonitor:
             'last_update': recent_metrics[-1].timestamp
         }
 
+    def record_query_timing(self, query_name: str, execution_time: float):
+        """Registra tiempo de ejecución de consulta SQL"""
+        with self.lock:
+            if len(self.query_timings[query_name]) >= 100:
+                self.query_timings[query_name].popleft()
+            
+            self.query_timings[query_name].append(execution_time)
+            
+            # Detectar operaciones lentas
+            if execution_time > 1.0:
+                self.slow_operations.append({
+                    'query': query_name,
+                    'time': execution_time,
+                    'timestamp': time.time()
+                })
+                self.logger.warning(f"Slow SQL query: {query_name} ({execution_time:.3f}s)")
+    
+    def record_cache_hit(self, cache_key: str):
+        """Registra hit de cache"""
+        with self.lock:
+            self.cache_hits[cache_key] += 1
+    
+    def record_cache_miss(self, cache_key: str):
+        """Registra miss de cache"""
+        with self.lock:
+            self.cache_misses[cache_key] += 1
+    
+    def get_optimization_report(self) -> Dict:
+        """Genera reporte de optimización"""
+        with self.lock:
+            report = {
+                'sql_performance': {},
+                'cache_performance': {},
+                'slow_operations': list(self.slow_operations),
+                'recommendations': []
+            }
+            
+            # Análisis de rendimiento SQL
+            for query, timings in self.query_timings.items():
+                if timings:
+                    avg_time = sum(timings) / len(timings)
+                    report['sql_performance'][query] = {
+                        'avg_time': avg_time,
+                        'min_time': min(timings),
+                        'max_time': max(timings),
+                        'call_count': len(timings)
+                    }
+            
+            # Análisis de cache
+            total_hits = sum(self.cache_hits.values())
+            total_misses = sum(self.cache_misses.values())
+            total_requests = total_hits + total_misses
+            
+            if total_requests > 0:
+                hit_rate = (total_hits / total_requests) * 100
+                report['cache_performance'] = {
+                    'hit_rate': hit_rate,
+                    'total_hits': total_hits,
+                    'total_misses': total_misses,
+                    'efficiency': 'Excellent' if hit_rate > 90 else 'Good' if hit_rate > 75 else 'Poor'
+                }
+            
+            # Generar recomendaciones
+            report['recommendations'] = self._generate_optimization_recommendations(report)
+            
+            return report
+    
+    def _generate_optimization_recommendations(self, report: Dict) -> List[str]:
+        """Genera recomendaciones de optimización"""
+        recommendations = []
+        
+        # Recomendaciones SQL
+        for query, stats in report['sql_performance'].items():
+            if stats['avg_time'] > 0.5:
+                recommendations.append(f"Optimizar consulta '{query}' (promedio: {stats['avg_time']:.2f}s)")
+        
+        # Recomendaciones de cache
+        cache_perf = report.get('cache_performance', {})
+        if cache_perf.get('hit_rate', 0) < 75:
+            recommendations.append("Mejorar estrategia de cache (hit rate bajo)")
+        
+        # Operaciones lentas
+        if len(report['slow_operations']) > 5:
+            recommendations.append("Múltiples operaciones lentas detectadas - revisar índices de BD")
+        
+        return recommendations
+
 def performance_timer(func):
     """Decorador para medir tiempo de ejecución"""
     def wrapper(*args, **kwargs):
@@ -149,6 +265,24 @@ def performance_timer(func):
                 logger = get_logger('performance')
                 logger.warning(f"Slow operation: {func.__name__} took {execution_time:.2f}s")
     return wrapper
+
+def sql_performance_monitor(query_name: str):
+    """Decorador para monitorear rendimiento de consultas SQL"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            start_time = time.time()
+            try:
+                result = func(*args, **kwargs)
+                execution_time = time.time() - start_time
+                performance_monitor.record_query_timing(query_name, execution_time)
+                return result
+            except Exception as e:
+                execution_time = time.time() - start_time
+                performance_monitor.record_query_timing(f"{query_name}_ERROR", execution_time)
+                raise e
+        return wrapper
+    return decorator
 
 # Instancia global del monitor
 performance_monitor = PerformanceMonitor()

@@ -33,7 +33,7 @@ class LogisticaPanelManager:
         layout = QVBoxLayout(panel)
 
         # Título
-        titulo = QLabel("📊 Gráficos y Análisis")
+        titulo = QLabel("[CHART] Gráficos y Análisis")
         titulo.setStyleSheet("font-weight: bold; font-size: 14px; margin: 10px;")
         layout.addWidget(titulo)
 
@@ -53,9 +53,9 @@ class LogisticaPanelManager:
         # Métricas demo
         metricas = [
             ("🚚 Transportes Activos", "12"),
-            ("📦 Entregas Hoy", "28"),
+            ("[PACKAGE] Entregas Hoy", "28"),
             ("⏱️ Tiempo Promedio", "2.5h"),
-            ("✅ Eficiencia", "94%")
+            ("[CHECK] Eficiencia", "94%")
         ]
 
         for i, (etiqueta, valor) in enumerate(metricas):
@@ -85,7 +85,7 @@ class LogisticaPanelManager:
         layout = QVBoxLayout(panel)
 
         # Título
-        titulo = QLabel("📋 Resumen del Día")
+        titulo = QLabel("[CLIPBOARD] Resumen del Día")
         titulo.setStyleSheet("font-weight: bold; font-size: 14px; margin: 10px;")
         layout.addWidget(titulo)
 
@@ -126,7 +126,7 @@ class LogisticaPanelManager:
 
     def crear_panel_filtros_servicios_optimizado(self) -> QWidget:
         """Crea el panel de filtros de servicios optimizado."""
-        panel = RexusGroupBox("🔍 Filtros de Servicios")
+        panel = RexusGroupBox("[SEARCH] Filtros de Servicios")
         layout = QVBoxLayout(panel)
 
         # Filtro por tipo

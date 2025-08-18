@@ -58,7 +58,7 @@ class InventarioView(BaseModuleView):
     solicitar_importar = pyqtSignal()
 
     def __init__(self, parent=None):
-        super().__init__("📦 Gestión de Inventario", parent=parent)
+        super().__init__("[PACKAGE] Gestión de Inventario", parent=parent)
         self.controller = None
         self.productos_actuales = []
         self.filtros_activos = {}
@@ -309,9 +309,9 @@ class InventarioView(BaseModuleView):
         acciones_group = RexusGroupBox("⚡ Acciones Rápidas")
         acciones_layout = RexusLayoutHelper.create_vertical_layout()
 
-        self.btn_reporte_stock_bajo = RexusButton("📋 Reporte Stock Bajo", "secondary")
-        self.btn_movimiento = RexusButton("📦 Registrar Movimiento", "secondary")
-        self.btn_asociar_obra = RexusButton("🏗️ Asociar a Obra", "secondary")
+        self.btn_reporte_stock_bajo = RexusButton("[CLIPBOARD] Reporte Stock Bajo", "secondary")
+        self.btn_movimiento = RexusButton("[PACKAGE] Registrar Movimiento", "secondary")
+        self.btn_asociar_obra = RexusButton("[CONSTRUCTION] Asociar a Obra", "secondary")
         self.btn_generar_qr = RexusButton("📱 Generar QR", "secondary")
 
         # Establecer nombres de objeto para que el controlador los encuentre
@@ -390,7 +390,7 @@ class InventarioView(BaseModuleView):
         """Configura la tabla con todas las funcionalidades mejoradas."""
         # Configurar columnas con más información
         columnas = [
-            "📋 Código", "[NOTE] Descripción", "📂 Categoría", "📦 Stock",
+            "[CLIPBOARD] Código", "[NOTE] Descripción", "📂 Categoría", "[PACKAGE] Stock",
             "[MONEY] Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización"
         ]
 
@@ -614,10 +614,10 @@ class InventarioView(BaseModuleView):
     def mostrar_info_producto(self, producto):
         """Muestra información detallada del producto seleccionado."""
         info = f"""
-📋 <b>Código:</b> {producto.get('codigo', 'N/A')}
+[CLIPBOARD] <b>Código:</b> {producto.get('codigo', 'N/A')}
 [NOTE] <b>Descripción:</b> {producto.get('descripcion', 'N/A')}
 📂 <b>Categoría:</b> {producto.get('categoria', 'N/A')}
-📦 <b>Stock actual:</b> {producto.get('stock_actual', 0)}
+[PACKAGE] <b>Stock actual:</b> {producto.get('stock_actual', 0)}
 [MONEY] <b>Precio:</b> ${producto.get('precio_unitario', 0):,.2f}
 [CHART] <b>Estado:</b> {producto.get('estado', 'N/A')}
 📍 <b>Ubicación:</b> {producto.get('ubicacion', 'No especificada')}
