@@ -60,6 +60,17 @@ class VidriosController(QObject):
             if hasattr(self.view, 'solicitud_exportar'):
                 self.view.solicitud_exportar.connect(self.exportar_vidrios)
 
+    def actualizar_vista(self):
+        """Actualiza la vista con los datos más recientes."""
+        try:
+            if self.view and hasattr(self.view, 'refresh_data'):
+                self.view.refresh_data()
+            else:
+                self.cargar_vidrios()
+            logger.info("[VIDRIOS] Vista actualizada exitosamente")
+        except Exception as e:
+            logger.error(f"[ERROR VIDRIOS] Error actualizando vista: {e}")
+
     def _validar_datos_vidrio(self, datos_vidrio):
         """
         Valida y sanitiza los datos de vidrio antes de enviar al modelo.

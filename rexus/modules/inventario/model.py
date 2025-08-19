@@ -111,6 +111,19 @@ class InventarioModel(PaginatedTableMixin):
         super().__init__()
 
         self.db_connection = db_connection
+        
+        # Intentar establecer conexión automática si no se proporciona
+        if not self.db_connection:
+            try:
+                from rexus.core.database import get_inventario_connection
+                self.db_connection = get_inventario_connection()
+                if self.db_connection:
+                    logger.info("[INVENTARIO] Conexión automática establecida exitosamente")
+                else:
+                    logger.warning("[ERROR INVENTARIO] No se pudo establecer conexión automática")
+            except Exception as e:
+                logger.error(f"[ERROR INVENTARIO] Error en conexión automática: {e}")
+        
         # [LOCK] Inicializar SQLQueryManager para consultas seguras
         self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
         self.tabla_inventario = "inventario_perfiles"  # Usar tabla real de la BD
@@ -3252,11 +3265,11 @@ datos_reserva: Dict[str,
             List[Dict]: Lista de productos
         """
         try:
-            # Usar consulta paginada como base
-            productos_paginados, total = self.obtener_productos_paginados(
-                page=1, 
-                page_size=limite or 1000,
-                filtro=filtros  # Cambiar 'filters' por 'filtro' que es el parámetro correcto
+            # Usar consulta paginada inicial que acepta filtros
+            productos_paginados, total = self.obtener_productos_paginados_inicial(
+                offset=0, 
+                limit=limite or 1000,
+                filtros=filtros
             )
             
             return productos_paginados

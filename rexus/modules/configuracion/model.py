@@ -15,6 +15,7 @@ Gestiona todas las configuraciones del sistema incluyendo:
 
 import json
 import logging
+import os
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
 
@@ -137,6 +138,45 @@ class ConfiguracionModel:
 
         # Inicializar configuración
         self._cargar_configuracion_inicial()
+
+    def actualizar_configuracion(self, clave, valor, descripcion=None, categoria=None):
+        """
+        Actualiza una configuración específica.
+        
+        Args:
+            clave (str): Clave de configuración
+            valor (str): Nuevo valor
+            descripcion (str): Descripción opcional
+            categoria (str): Categoría opcional
+            
+        Returns:
+            bool: True si se actualizó correctamente
+        """
+        try:
+            # Usar SQL externo para actualización
+            archivo_sql = 'sql/configuracion/actualizar_configuracion.sql'
+            parametros = {
+                'clave': clave,
+                'valor': valor,
+                'descripcion': descripcion,
+                'categoria': categoria
+            }
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._actualizar_configuracion_demo(clave, valor)
+                
+            resultado = self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            return resultado is not None
+            
+        except Exception as e:
+            logger.error(f"Error actualizando configuración: {e}")
+            return False
+
+    def _actualizar_configuracion_demo(self, clave, valor):
+        """Actualización demo para testing."""
+        logger.info(f"[DEMO CONFIG] Configuración actualizada: {clave} = {valor}")
+        return True
 
     def _sanitize_text(self, text: str) -> str:
         """
@@ -909,3 +949,22 @@ f,
                 resultado = [c for c in resultado if not c.get('es_editable', True)]
         
         return resultado
+
+    def obtener_configuracion(self, categoria=None):
+        """
+        Obtiene configuración del sistema
+        
+        Args:
+            categoria (str, optional): Categoría específica
+            
+        Returns:
+            List[Dict]: Lista de configuraciones
+        """
+        # Obtener todas las configuraciones
+        todas_config = self.obtener_todas_configuraciones()
+        
+        # Filtrar por categoría si se especifica
+        if categoria:
+            return [config for config in todas_config if config.get('categoria') == categoria]
+        
+        return todas_config

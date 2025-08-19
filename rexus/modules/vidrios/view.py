@@ -305,7 +305,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         acciones_panel = self.crear_panel_acciones_inventario()
         layout.addWidget(acciones_panel)
 
-        self.tab_widget.addTab(tab_inventario, "[PACKAGE] Inventario")
+        self.tab_widget.addTab(tab_inventario, "Inventario")
 
     def crear_panel_control_inventario(self) -> QFrame:
         """Crea el panel de control para la pestaña de inventario."""
@@ -477,7 +477,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         splitter.setSizes([400, 600])
 
         layout.addWidget(splitter)
-        self.tab_widget.addTab(tab_specs, "[CLIPBOARD] Especificaciones")
+        self.tab_widget.addTab(tab_specs, "Especificaciones")
 
     def crear_widget_lista_vidrios(self) -> QWidget:
         """Crea el widget de lista de vidrios para especificaciones."""
@@ -611,7 +611,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         acciones_pedidos = self.crear_panel_acciones_pedidos()
         layout.addWidget(acciones_pedidos)
 
-        self.tab_widget.addTab(tab_pedidos, "[CLIPBOARD] Pedidos")
+        self.tab_widget.addTab(tab_pedidos, "Pedidos")
 
     def crear_panel_control_pedidos(self) -> QFrame:
         """Panel de control para pedidos."""
@@ -719,7 +719,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
             stats_layout.addWidget(widget, pos[0], pos[1])
 
         layout.addLayout(stats_layout)
-        self.tab_widget.addTab(tab_stats, "[CHART] Estadísticas")
+        self.tab_widget.addTab(tab_stats, "Estadísticas")
 
     def crear_widget_resumen_inventario(self) -> QWidget:
         """Widget de resumen del inventario."""

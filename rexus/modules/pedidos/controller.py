@@ -53,8 +53,14 @@ class PedidosController(QObject):
     pedido_eliminado = pyqtSignal(int)
     estado_cambiado = pyqtSignal(int, str)
 
-    def __init__(self, model, view, usuario_actual=None):
+    def __init__(self, model=None, view=None, usuario_actual=None):
         super().__init__()
+        
+        # Crear modelo si no se proporciona
+        if model is None:
+            from rexus.modules.pedidos.model import PedidosModel
+            model = PedidosModel()
+            
         self.model = model
         self.view = view
         self.db_connection = model.db_connection if model else None

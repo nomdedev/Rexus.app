@@ -1,3 +1,23 @@
+---
+
+## 🚨 ERRORES DETECTADOS EN EJECUCIÓN (19/08/2025)
+### Inventario
+- Errores de conexión y destrucción de widgets: varios botones y la tabla principal (`RexusButton`, `RexusTable`) ya han sido eliminados al intentar conectar señales.
+- Error conectando señales: `wrapped C/C++ object of type RexusTable has been deleted`.
+- Error cargando datos iniciales: `Usuario no autenticado` (AuthenticationError en `obtener_productos_paginados_inicial`).
+- Revisar el ciclo de vida de la vista y el controlador para evitar destrucción prematura de widgets.
+ - **FALTA FUNCIONALIDAD CLAVE:** Implementar la tabla principal donde se visualicen todos los materiales, mostrando stock disponible y material separado.
+ - **FALTA FUNCIONALIDAD:** Permitir subir archivos PDF de presupuestos y asociarlos correctamente a una obra (actualmente no funciona o no está implementado).
+
+### Obras
+- Error SQL: columna inválida `'fecha_fin'` en la consulta de obras activas (`sql/obras/select_obras_activas.sql`).
+- Archivo SQL faltante: `calcular_presupuesto_total.sql` no encontrado en `sql/obras/`.
+- Advertencia: `SecurityManager` no tiene el método `log_access_attempt` (revisar implementación y llamadas).
+
+### Estilos/QSS
+- Muchas advertencias de propiedades desconocidas (`transform`, `box-shadow`) en los archivos de estilos. Revisar y limpiar QSS.
+
+---
 # 📋 CHECKLIST PENDIENTES - REXUS.APP v2.0.0
 
 **Última actualización**: 17 de Agosto 2025  
@@ -288,78 +308,54 @@ grep -r "SELECT\|INSERT\|UPDATE\|DELETE" rexus/modules/ --include="*.py" | grep 
 
 ---
 
-*Actualizado por: Sistema de Reestructuración Completa*  
 *Metodología: Expert Software Architecture Cleanup*
 - ✅ **Vidrios/Mantenimiento Views**: Métodos crear_controles_paginacion existen (errores transitorios)
 
 ### ✅ 3. **Errores de Base de Datos** - RESUELTO
-- ✅ **Logística**: SQL syntax error near 'ORDER' keyword - Corregido lógica WHERE clauses
 - ✅ **Pedidos**: `Invalid column name 'cantidad_pendiente'` - Reemplazado por cálculo dinámico
 - ✅ **Usuarios**: `'NoneType' object has no attribute 'cursor'` - Agregada validación conexión BD
 - ✅ **Auditoría**: Conexión a base de datos no disponible - Agregado modo seguro sin conexión
 
 ### ✅ 4. **Archivos de Tema/QSS Faltantes** - RESUELTO
-- ✅ **Rutas QSS corregidas**: StyleManager usa `resources/qss` correctamente
 - ✅ **Tema 'dark' disponible**: theme_dark_contrast_fixed.qss existe y funciona
 - ✅ **Unknown properties limpiadas**: `transform`, `box-shadow` eliminadas de QSS
 - ✅ **Todos los temas disponibles**: 9 temas funcionando correctamente
 
----
 
 ## ⚠️ PRIORIDAD MEDIA - PENDIENTE
 
 ### 1. **Migrar Prints Restantes a Logger Central**
-**Estado**: CRÍTICO - 600 prints detectados por análisis completo
-
+**Estado**: CRÍTICO - Pendiente solo en Usuarios, Inventario y Obras
 #### Usuarios/submodules (23 prints verificados)
-- `consultas_manager.py`: 7 prints
-- `usuarios_manager.py`: 9 prints  
-- `autenticacion_manager.py`: 7 prints
+- `consultas_manager.py`: 7 prints (PENDIENTE)
+- `usuarios_manager.py`: 9 prints  (PENDIENTE)
+- `autenticacion_manager.py`: 7 prints (PENDIENTE)
 
-#### Otros Módulos (estimado 400+ prints)
-- **Vidrios**: ~55 prints (model.py, controller.py, submodules)
-- **Logística**: ~44 prints (view.py, model.py, controller.py)
-- **Pedidos, Obras, Inventario**: No auditados
+- **Obras**: prints pendientes
+- **Inventario**: prints pendientes
 
 **Acción**: Migrar usando patrón con `rexus.utils.app_logger`
-
 ### 2. **Reemplazar Except Exception Genérico**
-**Estado**: CRÍTICO - 21 casos detectados por análisis completo
+**Estado**: CRÍTICO - Pendiente solo en Usuarios, Inventario y Obras
 
 #### Casos Identificados (Análisis Completo)
-- ✅ **rexus/modules/herrajes/controller.py**: ImportError corregido
-- ✅ **rexus/modules/obras/components/enhanced_label_widget.py**: ValueError/TypeError corregidos
-- ✅ **rexus/modules/obras/submodules/proyectos_manager.py**: 2 casos corregidos (date/db errors)
-- ❌ **17 casos restantes** en audit_system, core, otros módulos
-
-#### Ubicaciones Restantes
-- rexus/core/audit_system.py:147 (rollback - acceptable)
-- 16 casos adicionales por corregir
+- ❌ Pendiente en audit_system, core, usuarios, inventario, obras
 
 **Acción**: Reemplazar con excepciones específicas (ImportError, ValueError, TypeError, DatabaseError)
 
 ### 3. **Consolidar Mensajes Hardcodeados**
-**Estado**: EXTENSO - 90%+ pendiente
-
+**Estado**: EXTENSO - Pendiente solo en Usuarios, Inventario y Obras
 #### Progreso Actual
 - ✅ 20+ constantes creadas en usuarios/constants.py
-- ✅ 6/1000+ mensajes migrados
 
 #### Pendiente
-- Crear constants.py para cada módulo
-- Migrar mensajes de error/warning hardcodeados
+- Crear constants.py para cada módulo pendiente
 - Unificar títulos de ventanas y diálogos
 
 **Acción**: Crear constantes por módulo y migrar sistemáticamente
 
 ---
-
-## 🚨 **ANÁLISIS COMPLETO DEL SISTEMA** - 719 ERRORES DETECTADOS
-
-### **Distribución de Errores por Criticidad:**
-
 #### 🔥 **CRÍTICOS (Afectan funcionalidad)**
-- **Print Statements**: 600 casos - Contaminan logs y pueden causar crashes
 - **Generic Exceptions**: 21 casos - Ocultan errores reales y dificultan debug
 
 #### ⚠️ **IMPORTANTES (Afectan mantenibilidad)**  

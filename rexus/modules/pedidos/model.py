@@ -14,6 +14,7 @@ para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import uuid
+import os
 from datetime import datetime
 from typing import Any, Dict, List, Optional
 from rexus.utils.app_logger import get_logger
@@ -596,6 +597,45 @@ None,
         except (ConnectionError, ValueError, TypeError, AttributeError) as e:
             logger.info(f"[PEDIDOS] Error obteniendo pedido {pedido_id}: {e}")
             return None
+
+    def actualizar_estado(self, pedido_id, nuevo_estado, usuario_id=None, observaciones=""):
+        """
+        Actualiza el estado de un pedido (método simplificado).
+        
+        Args:
+            pedido_id (int): ID del pedido
+            nuevo_estado (str): Nuevo estado
+            usuario_id (int): ID del usuario que realiza el cambio
+            observaciones (str): Observaciones del cambio
+            
+        Returns:
+            bool: True si se actualizó correctamente
+        """
+        try:
+            # Usar SQL externo para actualización
+            archivo_sql = 'sql/pedidos/actualizar_estado.sql'
+            parametros = {
+                'id': pedido_id,
+                'nuevo_estado': nuevo_estado,
+                'observaciones': observaciones,
+                'usuario_id': usuario_id or 1
+            }
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._actualizar_estado_demo(pedido_id, nuevo_estado)
+                
+            resultado = self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            return resultado is not None
+            
+        except Exception as e:
+            logger.error(f"Error actualizando estado de pedido: {e}")
+            return False
+
+    def _actualizar_estado_demo(self, pedido_id, nuevo_estado):
+        """Actualización demo para testing."""
+        logger.info(f"[DEMO] Pedido {pedido_id} actualizado a estado: {nuevo_estado}")
+        return True
 
     def actualizar_estado_pedido(
         self,

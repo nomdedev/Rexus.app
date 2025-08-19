@@ -23,6 +23,7 @@ INVALID_DATA_MSG = "Datos inválidos"
 # Importar utilidades requeridas
 from rexus.utils.sql_script_loader import sql_script_loader
 from rexus.utils.unified_sanitizer import sanitize_string
+import os
 
 # Importar sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
@@ -288,9 +289,60 @@ class VidriosModel:
         except Exception as e:
             logger.error(f"Error verificando tablas: {e}")
 
-    def obtener_todos_vidrios(self, filtros=None):
+    def obtener_vidrios(self, filtros=None):
         """
         Obtiene todos los vidrios disponibles.
+
+        Args:
+            filtros (dict): Filtros opcionales (proveedor, tipo, espesor)
+
+        Returns:
+            List[Dict]: Lista de vidrios
+        """
+        try:
+            # Usar SQL externo para consulta principal
+            archivo_sql = 'sql/vidrios/obtener_vidrios.sql'
+            parametros = filtros or {}
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._get_vidrios_fallback(filtros)
+                
+            return self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo vidrios: {e}")
+            return self._get_vidrios_fallback(filtros)
+
+    def _get_vidrios_fallback(self, filtros=None):
+        """Fallback para obtener vidrios cuando no hay conexión BD o archivo SQL."""
+        logger.warning("[VIDRIOS] Usando datos demo - sin conexión BD")
+        return [
+            {
+                'id': 1,
+                'tipo': 'Templado',
+                'espesor': 6.0,
+                'color': 'Transparente',
+                'precio_m2': 25.50,
+                'proveedor': 'Vidrios SA',
+                'stock': 100,
+                'estado': 'Activo'
+            },
+            {
+                'id': 2,
+                'tipo': 'Laminado',
+                'espesor': 8.0,
+                'color': 'Verde',
+                'precio_m2': 45.75,
+                'proveedor': 'Cristales Premium',
+                'stock': 50,
+                'estado': 'Activo'
+            }
+        ]
+
+    def obtener_todos_vidrios(self, filtros=None):
+        """
+        ALIAS para compatibilidad - redirige a obtener_vidrios.
 
         Args:
             filtros (dict): Filtros opcionales (proveedor, tipo, espesor)

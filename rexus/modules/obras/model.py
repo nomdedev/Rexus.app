@@ -1,4 +1,5 @@
 import logging
+import os
 from typing import Any, Dict, Optional
 from sqlite3 import IntegrityError
 
@@ -76,6 +77,56 @@ class ObrasModel:
                 logger.error(f"[ERROR OBRAS] Error en conexión automática: {e}")
         
         self._verificar_tablas()
+
+    def obtener_obras(self, filtros=None):
+        """
+        Obtiene obras con filtros opcionales.
+        
+        Args:
+            filtros (dict): Filtros opcionales (estado, cliente, activo)
+            
+        Returns:
+            List[Dict]: Lista de obras filtradas
+        """
+        try:
+            # Usar SQL externo para consulta principal
+            archivo_sql = 'sql/obras/obtener_obras.sql'
+            parametros = filtros or {}
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._get_obras_demo()
+                
+            return self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo obras: {e}")
+            return self._get_obras_demo()
+
+    def _get_obras_demo(self):
+        """Datos demo para obras."""
+        return [
+            {
+                'id': 1,
+                'nombre': 'Casa Moderna',
+                'descripcion': 'Construcción de casa moderna',
+                'estado': 'En progreso',
+                'fecha_inicio': '2025-01-01',
+                'fecha_fin': '2025-06-30',
+                'direccion': 'Av. Principal 123',
+                'cliente': 'Juan Pérez'
+            },
+            {
+                'id': 2,
+                'nombre': 'Edificio Comercial',
+                'descripcion': 'Centro comercial 3 pisos',
+                'estado': 'Planificación',
+                'fecha_inicio': '2025-03-01',
+                'fecha_fin': '2025-12-31',
+                'direccion': 'Calle Central 456',
+                'cliente': 'Empresa ABC'
+            }
+        ]
 
     def _validate_table_name(self, table_name: str) -> str:
         """

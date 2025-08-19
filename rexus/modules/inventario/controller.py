@@ -321,6 +321,77 @@ class InventarioController(QObject):
         # Redirigir al método de paginación
         return self.cargar_inventario_paginado(1, 100)
 
+    def actualizar_vista(self):
+        """Actualiza la vista con los datos más recientes."""
+        try:
+            if self.view and hasattr(self.view, 'refresh_data'):
+                self.view.refresh_data()
+            else:
+                self.cargar_inventario()
+            logger.info("Vista actualizada exitosamente")
+        except Exception as e:
+            logger.error(f"Error actualizando vista: {e}")
+
+    def buscar_productos(self, termino="", categoria=None):
+        """Busca productos según criterios específicos."""
+        try:
+            if self.model and hasattr(self.model, 'buscar_productos'):
+                filtros = {'termino': termino}
+                if categoria:
+                    filtros['categoria'] = categoria
+                productos = self.model.buscar_productos(filtros)
+                self._actualizar_vista_productos(productos)
+                logger.info(f"Búsqueda completada: {len(productos)} productos encontrados")
+                return productos
+            else:
+                logger.warning("Método buscar_productos no disponible en modelo")
+                return []
+        except Exception as e:
+            logger.error(f"Error buscando productos: {e}")
+            return []
+
+    def crear_producto(self, datos_producto):
+        """Crea un nuevo producto en el inventario."""
+        try:
+            if self.model and hasattr(self.model, 'crear_producto'):
+                resultado = self.model.crear_producto(datos_producto)
+                if resultado:
+                    self.actualizar_vista()
+                    show_success(self.view, "Éxito", "Producto creado correctamente")
+                    logger.info(f"Producto creado: {datos_producto.get('nombre', 'N/A')}")
+                    return True
+                else:
+                    show_error(self.view, "Error", "No se pudo crear el producto")
+                    return False
+            else:
+                logger.warning("Método crear_producto no disponible en modelo")
+                return False
+        except Exception as e:
+            logger.error(f"Error creando producto: {e}")
+            show_error(self.view, "Error", f"Error creando producto: {e}")
+            return False
+
+    def eliminar_producto(self, producto_id):
+        """Elimina un producto del inventario."""
+        try:
+            if self.model and hasattr(self.model, 'eliminar_producto'):
+                resultado = self.model.eliminar_producto(producto_id)
+                if resultado:
+                    self.actualizar_vista()
+                    show_success(self.view, "Éxito", "Producto eliminado correctamente")
+                    logger.info(f"Producto eliminado: ID {producto_id}")
+                    return True
+                else:
+                    show_error(self.view, "Error", "No se pudo eliminar el producto")
+                    return False
+            else:
+                logger.warning("Método eliminar_producto no disponible en modelo")
+                return False
+        except Exception as e:
+            logger.error(f"Error eliminando producto: {e}")
+            show_error(self.view, "Error", f"Error eliminando producto: {e}")
+            return False
+
     def _actualizar_vista_productos(self, productos):
         """Actualiza la vista con la lista de productos."""
         if not self.view:

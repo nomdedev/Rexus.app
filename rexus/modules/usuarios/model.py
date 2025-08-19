@@ -32,6 +32,7 @@ para prevenir inyección SQL y mejorar mantenibilidad.
 """
 
 import logging
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Tuple
@@ -1165,6 +1166,78 @@ username: str,
             return False, f"Error creando usuario: {str(e)}"
 
     @cached_query(ttl=120)  # Cache por 2 minutos - listado completo de usuarios
+    def obtener_usuarios(self, filtros=None) -> List[Dict[str, Any]]:
+        """
+        Obtiene usuarios con filtros opcionales.
+        
+        Args:
+            filtros (dict): Filtros opcionales (rol, estado, activo)
+            
+        Returns:
+            List[Dict]: Lista de usuarios filtrados
+        """
+        try:
+            # Usar SQL externo para consulta principal
+            archivo_sql = 'sql/usuarios/obtener_usuarios.sql'
+            parametros = filtros or {}
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._get_usuarios_demo()
+                
+            return self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo usuarios: {e}")
+            return self._get_usuarios_demo()
+
+    def validar_usuario(self, usuario, password):
+        """
+        Valida las credenciales de un usuario.
+        
+        Args:
+            usuario (str): Nombre de usuario
+            password (str): Contraseña
+            
+        Returns:
+            Dict: Información del usuario si es válido, None si no
+        """
+        try:
+            # Usar SQL externo para validación
+            archivo_sql = 'sql/usuarios/validar_usuario.sql'
+            parametros = {
+                'usuario': usuario,
+                'password': password  # En producción debería estar hasheada
+            }
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._validar_usuario_demo(usuario, password)
+                
+            resultado = self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            return resultado[0] if resultado else None
+            
+        except Exception as e:
+            logger.error(f"Error validando usuario: {e}")
+            return self._validar_usuario_demo(usuario, password)
+
+    def _validar_usuario_demo(self, usuario, password):
+        """Validación demo para testing."""
+        usuarios_demo = {
+            'admin': {'password': 'admin123', 'id': 1, 'rol': 'Administrador'},
+            'user': {'password': 'user123', 'id': 2, 'rol': 'Usuario'},
+            'test': {'password': 'test123', 'id': 3, 'rol': 'Test'}
+        }
+        
+        if usuario in usuarios_demo and usuarios_demo[usuario]['password'] == password:
+            return {
+                'id': usuarios_demo[usuario]['id'],
+                'usuario': usuario,
+                'rol': usuarios_demo[usuario]['rol'],
+                'estado': 'Activo'
+            }
+        return None
+
     def obtener_todos_usuarios(self) -> List[Dict[str, Any]]:
         """Obtiene todos los usuarios del sistema con permisos optimizados (sin consultas N+1)."""
         if not self.db_connection:

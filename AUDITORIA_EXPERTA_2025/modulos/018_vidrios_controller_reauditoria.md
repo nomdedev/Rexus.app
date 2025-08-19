@@ -16,7 +16,7 @@ Recomendaciones
 3. Añadir logging en lugar de prints y `mostrar_error`.
 4. Añadir pruebas unitarias para cada método que mockee el modelo y la vista.
 
-### Estado de migración y mejoras (2025-08-18)
+### Estado de migración y mejoras (2025-08-19)
 - Migración de prints a logger: COMPLETA
 - Consolidación de mensajes hardcodeados: EN PROGRESO
 - Migración SQL: COMPLETA

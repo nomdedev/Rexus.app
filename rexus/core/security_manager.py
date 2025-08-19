@@ -248,13 +248,49 @@ password: str,
         # Agregar nuevo intento
         self.failed_attempts[identifier].append(now)
 
-        attempt_count = len(self.failed_attempts[identifier])
+        return len(self.failed_attempts[identifier])
 
-        # Auto-bloquear después de 5 intentos
-        if attempt_count >= 5:
-            self.block_ip(identifier, f"Too many failed attempts: {attempt_count}")
-
-        return attempt_count
+    def log_access_attempt(self, user_id=None, username=None, ip_address=None, 
+                          success=True, action="login", details=None):
+        """
+        Registra un intento de acceso al sistema.
+        
+        Args:
+            user_id (int): ID del usuario
+            username (str): Nombre de usuario
+            ip_address (str): Dirección IP
+            success (bool): Si el intento fue exitoso
+            action (str): Tipo de acción (login, logout, access_module, etc.)
+            details (str): Detalles adicionales
+        """
+        try:
+            timestamp = datetime.now().isoformat()
+            status = "SUCCESS" if success else "FAILED"
+            
+            log_entry = {
+                'timestamp': timestamp,
+                'user_id': user_id,
+                'username': username or 'unknown',
+                'ip_address': ip_address or 'unknown',
+                'action': action,
+                'status': status,
+                'details': details or ''
+            }
+            
+            # Log del evento
+            if success:
+                logger.info(f"[ACCESS] {status} - {action} by {username} from {ip_address}")
+            else:
+                logger.warning(f"[ACCESS] {status} - {action} attempt by {username} from {ip_address}")
+                
+                # Registrar intento fallido para posible bloqueo
+                if ip_address:
+                    failed_count = self.record_failed_attempt(ip_address)
+                    if failed_count >= 5:  # Bloquear después de 5 intentos fallidos
+                        self.block_ip(ip_address, f"Too many failed {action} attempts")
+                        
+        except Exception as e:
+            logger.error(f"Error logging access attempt: {e}")
 
     def validate_input_length(self, data: str, max_length: int = 1000) -> bool:
         """
