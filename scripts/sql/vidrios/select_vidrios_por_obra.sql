@@ -1,7 +1,3 @@
--- Consulta segura para obtener vidrios asociados a una obra específica
--- Reemplaza f-string en obtener_vidrios_por_obra()
--- Parámetros: obra_id (int)
-
 SELECT
     v.id, v.codigo, v.descripcion, v.tipo, v.espesor, v.proveedor,
     v.precio_m2, vo.metros_cuadrados_requeridos, vo.metros_cuadrados_pedidos,

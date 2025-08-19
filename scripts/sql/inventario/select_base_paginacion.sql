@@ -1,8 +1,4 @@
--- Consulta base para paginación de inventario
--- Utiliza la tabla principal de inventario_perfiles
--- Los filtros y ordenamiento se aplican de forma segura en el código
-
-SELECT 
+SELECT
     id,
     codigo,
     descripcion,

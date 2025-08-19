@@ -1,6 +1,4 @@
--- Obtiene estadísticas financieras del libro contable
--- Sin parámetros
-SELECT 
+SELECT
     SUM(debe) as total_debe,
     SUM(haber) as total_haber,
     SUM(saldo) as saldo_total

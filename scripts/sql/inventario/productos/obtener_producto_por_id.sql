@@ -1,9 +1,4 @@
--- Obtener producto por ID
--- Archivo: obtener_producto_por_id.sql
--- Módulo: Inventario/Productos
--- Descripción: Obtiene un producto específico con todos sus datos
-
-SELECT 
+SELECT
     id,
     codigo,
     descripcion,
@@ -21,7 +16,3 @@ SELECT
     activo
 FROM [inventario]
 WHERE id = @producto_id AND activo = 1;
-
--- Ejemplo de uso en Python:
--- cursor.execute(query, {'producto_id': producto_id})
--- return cursor.fetchone()

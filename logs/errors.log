@@ -504,3 +504,39 @@ AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_pa
 2025-08-18 20:49:34 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
 2025-08-18 20:50:27 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
 2025-08-18 20:58:55 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 11:53:33 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 11:53:34 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-19 11:55:21 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 11:55:55 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-19 11:55:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-19 11:55:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-19 12:01:10 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:06:41 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:33:19 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 12:34:29 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:34:31 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusTable has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 135, in conectar_senales
+    self.view.tabla_inventario.itemSelectionChanged.connect(
+RuntimeError: wrapped C/C++ object of type RexusTable has been deleted
+2025-08-19 12:37:33 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:37:34 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 12:43:22 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:43:59 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:49:38 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 12:49:39 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 12:49:39 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 12:49:39 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 16:20:12 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 16:20:13 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 16:20:15 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-19 16:20:36 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-19 16:20:37 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 16:24:49 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 16:24:49 | ERROR    | rexus.inventario.model | Error obteniendo productos: InventarioModel.obtener_productos_paginados() got an unexpected keyword argument 'filters'

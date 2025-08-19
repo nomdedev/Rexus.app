@@ -1,8 +1,4 @@
--- Consultas SQL para gestión de proyectos de obras
--- Archivo: proyectos_obras.sql
-
--- Consulta para obtener obra por ID
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -21,9 +17,7 @@ SELECT
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE o.id = %s;
-
--- Consulta para obtener todas las obras con información básica
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -37,8 +31,6 @@ SELECT
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 ORDER BY o.fecha_inicio DESC;
-
--- Consulta para insertar nueva obra
 INSERT INTO obras (
     nombre,
     descripcion,
@@ -52,10 +44,8 @@ INSERT INTO obras (
     created_at,
     updated_at
 ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, NOW(), NOW());
-
--- Consulta para actualizar obra
-UPDATE obras 
-SET 
+UPDATE obras
+SET
     nombre = %s,
     descripcion = %s,
     cliente_id = %s,
@@ -69,72 +59,54 @@ SET
     notas = %s,
     updated_at = NOW()
 WHERE id = %s;
-
--- Consulta para cambiar estado de obra
-UPDATE obras 
-SET 
+UPDATE obras
+SET
     estado = %s,
     updated_at = NOW()
 WHERE id = %s;
-
--- Consulta para actualizar fecha fin real (cuando se completa)
-UPDATE obras 
-SET 
+UPDATE obras
+SET
     fecha_fin_real = %s,
     estado = 'completada',
     updated_at = NOW()
 WHERE id = %s;
-
--- Consulta para eliminar obra (soft delete si existe campo deleted_at)
-UPDATE obras 
-SET 
+UPDATE obras
+SET
     deleted_at = NOW(),
     updated_at = NOW()
 WHERE id = %s;
-
--- Consulta alternativa para eliminar obra (hard delete)
 DELETE FROM obras WHERE id = %s;
-
--- Consulta para obtener estados disponibles
-SELECT DISTINCT estado 
-FROM obras 
-WHERE estado IS NOT NULL 
+SELECT DISTINCT estado
+FROM obras
+WHERE estado IS NOT NULL
 ORDER BY estado;
-
--- Consulta para calcular progreso de obra basado en tareas completadas
-SELECT 
+SELECT
     o.id,
     o.nombre,
     COUNT(t.id) AS total_tareas,
     COUNT(CASE WHEN t.estado = 'completada' THEN 1 END) AS tareas_completadas,
-    CASE 
-        WHEN COUNT(t.id) > 0 THEN 
+    CASE
+        WHEN COUNT(t.id) > 0 THEN
             (COUNT(CASE WHEN t.estado = 'completada' THEN 1 END) * 100.0 / COUNT(t.id))
-        ELSE 0 
+        ELSE 0
     END AS porcentaje_progreso
 FROM obras o
 LEFT JOIN tareas_obra t ON o.id = t.obra_id
 WHERE o.id = %s
 GROUP BY o.id, o.nombre;
-
--- Consulta para validar cliente antes de asignar obra
-SELECT id, nombre, activo 
-FROM clientes 
+SELECT id, nombre, activo
+FROM clientes
 WHERE id = %s AND activo = TRUE;
-
--- Consulta para verificar conflictos de fechas
 SELECT id, nombre, fecha_inicio, fecha_fin_estimada
-FROM obras 
-WHERE cliente_id = %s 
+FROM obras
+WHERE cliente_id = %s
   AND estado IN ('activa', 'en_progreso', 'planificada')
   AND (
     (fecha_inicio BETWEEN %s AND %s) OR
     (fecha_fin_estimada BETWEEN %s AND %s) OR
     (fecha_inicio <= %s AND fecha_fin_estimada >= %s)
   );
-
--- Consulta para obtener obras por estado
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -148,13 +120,11 @@ FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE o.estado = %s
 ORDER BY o.fecha_inicio DESC;
-
--- Consulta para obtener última obra creada
-SELECT 
+SELECT
     id,
     nombre,
     estado,
     created_at
-FROM obras 
-ORDER BY created_at DESC 
+FROM obras
+ORDER BY created_at DESC
 LIMIT 1;

@@ -1,0 +1,1 @@
+SELECT clave, valor FROM configuracion

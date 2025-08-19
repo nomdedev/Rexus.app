@@ -1,6 +1,0 @@
-INVENTARIO UI TEST RESULTS
-========================================
-ERRORES (1):
-- Error general: 'charmap' codec can't encode character '\U0001f4e6' in position 19: character maps to <undefined>
-
-REQUIERE AJUSTES

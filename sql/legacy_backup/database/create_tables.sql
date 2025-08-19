@@ -1,22 +1,5 @@
--- =================================================================
--- SCRIPT DE CREACIÓN DE TABLAS - REXUS.APP v2.0.0
--- =================================================================
--- 
--- Este script crea todas las tablas necesarias para el sistema
--- de usuarios, roles, permisos y auditoría de la aplicación.
---
--- EJECUTAR DESDE: SQL Server Management Studio o sqlcmd
--- BASE DE DATOS: users (debe existir previamente)
---
--- =================================================================
-
 USE users;
 GO
-
--- =================================================================
--- TABLA: usuarios
--- Almacena información de usuarios del sistema con controles de seguridad
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='usuarios' AND xtype='U')
 BEGIN
     CREATE TABLE usuarios (
@@ -39,7 +22,6 @@ BEGIN
         configuracion_personal NTEXT,
         activo BIT NOT NULL DEFAULT 1
     );
-    
     PRINT '✅ Tabla usuarios creada';
 END
 ELSE
@@ -47,11 +29,6 @@ BEGIN
     PRINT 'ℹ️  Tabla usuarios ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: roles  
--- Define los roles disponibles en el sistema
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='roles' AND xtype='U')
 BEGIN
     CREATE TABLE roles (
@@ -62,7 +39,6 @@ BEGIN
         fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
         activo BIT NOT NULL DEFAULT 1
     );
-    
     PRINT '✅ Tabla roles creada';
 END
 ELSE
@@ -70,11 +46,6 @@ BEGIN
     PRINT 'ℹ️  Tabla roles ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: permisos_usuario
--- Permisos específicos asignados a usuarios
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='permisos_usuario' AND xtype='U')
 BEGIN
     CREATE TABLE permisos_usuario (
@@ -85,7 +56,6 @@ BEGIN
         fecha_asignacion DATETIME NOT NULL DEFAULT GETDATE(),
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
     );
-    
     PRINT '✅ Tabla permisos_usuario creada';
 END
 ELSE
@@ -93,11 +63,6 @@ BEGIN
     PRINT 'ℹ️  Tabla permisos_usuario ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: sesiones_usuario
--- Control de sesiones activas de usuarios
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='sesiones_usuario' AND xtype='U')
 BEGIN
     CREATE TABLE sesiones_usuario (
@@ -111,7 +76,6 @@ BEGIN
         activa BIT NOT NULL DEFAULT 1,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE
     );
-    
     PRINT '✅ Tabla sesiones_usuario creada';
 END
 ELSE
@@ -119,11 +83,6 @@ BEGIN
     PRINT 'ℹ️  Tabla sesiones_usuario ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: auditoria_sistema
--- Registro de eventos de seguridad y auditoría
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='auditoria_sistema' AND xtype='U')
 BEGIN
     CREATE TABLE auditoria_sistema (
@@ -142,7 +101,6 @@ BEGIN
         session_id NVARCHAR(100) NULL,
         FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
     );
-    
     PRINT '✅ Tabla auditoria_sistema creada';
 END
 ELSE
@@ -150,11 +108,6 @@ BEGIN
     PRINT 'ℹ️  Tabla auditoria_sistema ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: rbac_roles
--- Roles para el sistema RBAC (Control de Acceso Basado en Roles)
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rbac_roles' AND xtype='U')
 BEGIN
     CREATE TABLE rbac_roles (
@@ -165,7 +118,6 @@ BEGIN
         activo BIT DEFAULT 1,
         fecha_creacion DATETIME DEFAULT GETDATE()
     );
-    
     PRINT '✅ Tabla rbac_roles creada';
 END
 ELSE
@@ -173,11 +125,6 @@ BEGIN
     PRINT 'ℹ️  Tabla rbac_roles ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: rbac_permissions
--- Permisos granulares para el sistema RBAC
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rbac_permissions' AND xtype='U')
 BEGIN
     CREATE TABLE rbac_permissions (
@@ -190,7 +137,6 @@ BEGIN
         activo BIT DEFAULT 1,
         fecha_creacion DATETIME DEFAULT GETDATE()
     );
-    
     PRINT '✅ Tabla rbac_permissions creada';
 END
 ELSE
@@ -198,11 +144,6 @@ BEGIN
     PRINT 'ℹ️  Tabla rbac_permissions ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: rbac_role_permissions
--- Asignación de permisos a roles
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rbac_role_permissions' AND xtype='U')
 BEGIN
     CREATE TABLE rbac_role_permissions (
@@ -216,7 +157,6 @@ BEGIN
         FOREIGN KEY (granted_by) REFERENCES usuarios(id),
         UNIQUE(role_id, permission_id)
     );
-    
     PRINT '✅ Tabla rbac_role_permissions creada';
 END
 ELSE
@@ -224,11 +164,6 @@ BEGIN
     PRINT 'ℹ️  Tabla rbac_role_permissions ya existe';
 END
 GO
-
--- =================================================================
--- TABLA: rbac_user_roles
--- Asignación de roles a usuarios
--- =================================================================
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='rbac_user_roles' AND xtype='U')
 BEGIN
     CREATE TABLE rbac_user_roles (
@@ -244,7 +179,6 @@ BEGIN
         FOREIGN KEY (assigned_by) REFERENCES usuarios(id),
         UNIQUE(usuario_id, role_id)
     );
-    
     PRINT '✅ Tabla rbac_user_roles creada';
 END
 ELSE
@@ -252,93 +186,68 @@ BEGIN
     PRINT 'ℹ️  Tabla rbac_user_roles ya existe';
 END
 GO
-
--- =================================================================
--- ÍNDICES PARA OPTIMIZACIÓN DE CONSULTAS
--- =================================================================
-
--- Índices para tabla usuarios
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_usuarios_usuario')
 BEGIN
     CREATE INDEX idx_usuarios_usuario ON usuarios(usuario);
     PRINT '✅ Índice idx_usuarios_usuario creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_usuarios_email')
 BEGIN
     CREATE INDEX idx_usuarios_email ON usuarios(email);
     PRINT '✅ Índice idx_usuarios_email creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_usuarios_estado')
 BEGIN
     CREATE INDEX idx_usuarios_estado ON usuarios(estado);
     PRINT '✅ Índice idx_usuarios_estado creado';
 END
-
--- Índices para tabla permisos_usuario
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_permisos_usuario')
 BEGIN
     CREATE INDEX idx_permisos_usuario ON permisos_usuario(usuario_id);
     PRINT '✅ Índice idx_permisos_usuario creado';
 END
-
--- Índices para tabla sesiones_usuario
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_sesiones_usuario')
 BEGIN
     CREATE INDEX idx_sesiones_usuario ON sesiones_usuario(usuario_id);
     PRINT '✅ Índice idx_sesiones_usuario creado';
 END
-
--- Índices para tabla auditoria_sistema
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_auditoria_timestamp')
 BEGIN
     CREATE INDEX idx_auditoria_timestamp ON auditoria_sistema(timestamp);
     PRINT '✅ Índice idx_auditoria_timestamp creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_auditoria_usuario')
 BEGIN
     CREATE INDEX idx_auditoria_usuario ON auditoria_sistema(usuario_id);
     PRINT '✅ Índice idx_auditoria_usuario creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_auditoria_event_type')
 BEGIN
     CREATE INDEX idx_auditoria_event_type ON auditoria_sistema(event_type);
     PRINT '✅ Índice idx_auditoria_event_type creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_auditoria_level')
 BEGIN
     CREATE INDEX idx_auditoria_level ON auditoria_sistema(level);
     PRINT '✅ Índice idx_auditoria_level creado';
 END
-
--- Índices para tablas RBAC
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_rbac_user_roles_usuario')
 BEGIN
     CREATE INDEX idx_rbac_user_roles_usuario ON rbac_user_roles(usuario_id);
     PRINT '✅ Índice idx_rbac_user_roles_usuario creado';
 END
-
 IF NOT EXISTS (SELECT * FROM sys.indexes WHERE name = 'idx_rbac_role_permissions_role')
 BEGIN
     CREATE INDEX idx_rbac_role_permissions_role ON rbac_role_permissions(role_id);
     PRINT '✅ Índice idx_rbac_role_permissions_role creado';
 END
-
 GO
-
--- =================================================================
--- VERIFICACIÓN FINAL
--- =================================================================
 PRINT '';
 PRINT '🎉 SCRIPT DE CREACIÓN DE TABLAS COMPLETADO';
 PRINT '============================================';
 PRINT 'Tablas creadas para Rexus.app v2.0.0:';
 PRINT '- usuarios (con controles de seguridad)';
-PRINT '- roles';  
+PRINT '- roles';
 PRINT '- permisos_usuario';
 PRINT '- sesiones_usuario';
 PRINT '- auditoria_sistema';

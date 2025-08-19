@@ -1,8 +1,4 @@
--- scripts/sql/logistica/obtener_entregas_filtros.sql
--- Consulta para obtener entregas con filtros aplicados
--- Parámetros dinámicos según filtros activos
-
-SELECT 
+SELECT
     e.id,
     e.numero_entrega,
     e.fecha_entrega,

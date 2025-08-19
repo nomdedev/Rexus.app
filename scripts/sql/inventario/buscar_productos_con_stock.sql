@@ -1,15 +1,13 @@
--- 🔒 Búsqueda de productos con filtros y estado de stock
--- Reemplaza concatenación vulnerable por consulta parametrizada
-SELECT 
-    i.id, 
-    i.codigo, 
-    i.descripcion, 
-    i.categoria, 
-    i.stock_actual, 
+SELECT
+    i.id,
+    i.codigo,
+    i.descripcion,
+    i.categoria,
+    i.stock_actual,
     i.stock_minimo,
-    i.precio_unitario, 
-    i.unidad_medida, 
-    i.activo, 
+    i.precio_unitario,
+    i.unidad_medida,
+    i.activo,
     i.fecha_actualizacion,
     COALESCE(r.stock_reservado, 0) as stock_reservado,
     CASE

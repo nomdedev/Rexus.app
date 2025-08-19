@@ -1,5 +1,4 @@
--- Obtener usuario por ID
-SELECT 
+SELECT
     id,
     username,
     email,
@@ -11,5 +10,5 @@ SELECT
     ultimo_acceso,
     fecha_registro,
     fecha_modificacion
-FROM usuarios 
+FROM usuarios
 WHERE id = %(user_id)s;

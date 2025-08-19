@@ -1,5 +1,4 @@
--- Buscar vidrios asociados a una obra específica
-SELECT 
+SELECT
     v.id,
     v.codigo_vidrio,
     v.descripcion,

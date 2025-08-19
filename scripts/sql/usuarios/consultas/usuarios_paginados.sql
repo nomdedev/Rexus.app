@@ -1,5 +1,4 @@
--- Obtener usuarios con paginación
-SELECT 
+SELECT
     id,
     username,
     email,
@@ -8,7 +7,7 @@ SELECT
     activo,
     ultimo_acceso,
     fecha_registro
-FROM usuarios 
+FROM usuarios
 WHERE activo = 1
 ORDER BY fecha_registro DESC
 LIMIT %(limit)s OFFSET %(offset)s;

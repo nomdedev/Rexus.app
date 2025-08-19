@@ -1,8 +1,3 @@
--- Creación de tabla de detalle de pedidos
--- Archivo: create_pedidos_detalle_table.sql
--- Módulo: Pedidos
--- Descripción: Crea la tabla de detalle de items por pedido
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_detalle' AND xtype='U')
 CREATE TABLE pedidos_detalle (
     id INT IDENTITY(1,1) PRIMARY KEY,

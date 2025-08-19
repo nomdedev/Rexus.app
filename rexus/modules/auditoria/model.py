@@ -68,7 +68,22 @@ class AuditoriaModel:
         self.data_sanitizer = unified_sanitizer  # Alias for compatibility
         logger.info("OK [AUDITORIA] Sistema unificado de sanitización cargado")
 
-        self._crear_tabla_si_no_existe()
+        # Intentar establecer conexión automática si no se proporciona
+        if not self.db_connection:
+            try:
+                from rexus.core.database import get_inventario_connection
+                self.db_connection = get_inventario_connection()
+                if self.db_connection:
+                    logger.info("[AUDITORIA] Conexión automática establecida exitosamente")
+                else:
+                    logger.warning("[ERROR AUDITORIA] No se pudo establecer conexión automática")
+            except Exception as e:
+                logger.error(f"[ERROR AUDITORIA] Error en conexión automática: {e}")
+
+        if not self.db_connection:
+            logger.error("[ERROR AUDITORÍA] Conexión a base de datos no disponible")
+        else:
+            self._crear_tabla_si_no_existe()
 
     def _validate_table_name(self, table_name: str) -> str:
         """

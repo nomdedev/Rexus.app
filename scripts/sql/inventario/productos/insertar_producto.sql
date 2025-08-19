@@ -1,8 +1,3 @@
--- Insertar nuevo producto
--- Archivo: insertar_producto.sql
--- Módulo: Inventario/Productos
--- Descripción: Crea un nuevo producto con validación
-
 INSERT INTO [inventario] (
     codigo,
     descripcion,
@@ -36,7 +31,3 @@ INSERT INTO [inventario] (
     GETDATE(),
     1
 );
-
--- Ejemplo de uso en Python:
--- cursor.execute(query, params_dict)
--- cursor.execute("SELECT @@IDENTITY")

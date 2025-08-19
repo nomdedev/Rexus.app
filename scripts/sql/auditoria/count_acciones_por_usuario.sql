@@ -1,5 +1,3 @@
--- Contar acciones por usuario desde una fecha
--- Parámetros: fecha_desde
 SELECT usuario, COUNT(*) as cantidad
 FROM auditoria_log
 WHERE fecha_hora >= ?

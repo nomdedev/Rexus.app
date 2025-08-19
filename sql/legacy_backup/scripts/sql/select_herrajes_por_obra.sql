@@ -1,6 +1,3 @@
--- Script seguro para obtener herrajes por obra
--- Uso: Ejecutar desde backend con parámetro obra_id seguro
-
 SELECT
     h.id, h.codigo, h.descripcion, h.proveedor, h.precio_unitario,
     h.unidad_medida, ho.cantidad_requerida, ho.cantidad_pedida,

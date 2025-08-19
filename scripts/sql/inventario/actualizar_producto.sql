@@ -1,4 +1,3 @@
--- Actualiza un producto existente en inventario_perfiles
 UPDATE inventario_perfiles
 SET descripcion = ?, categoria = ?, subcategoria = ?, stock_minimo = ?,
     stock_maximo = ?, precio_unitario = ?, ubicacion = ?, proveedor = ?,

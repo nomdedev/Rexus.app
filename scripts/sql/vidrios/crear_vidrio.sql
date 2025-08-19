@@ -1,4 +1,3 @@
--- Crear nuevo vidrio en inventario
 INSERT INTO vidrios (
     codigo_vidrio,
     descripcion,

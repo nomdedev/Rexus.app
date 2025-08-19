@@ -1,7 +1,3 @@
--- Consultas SQL para gestión de recursos de obras
--- Archivo: recursos_obras.sql
-
--- Consulta para asignar material a obra
 INSERT INTO obra_materiales (
     obra_id,
     material_id,
@@ -12,9 +8,7 @@ INSERT INTO obra_materiales (
     created_at,
     updated_at
 ) VALUES (?, ?, ?, ?, 0, NOW(), NOW(), NOW());
-
--- Consulta para obtener materiales de una obra
-SELECT 
+SELECT
     om.id,
     om.obra_id,
     om.material_id,
@@ -22,12 +16,12 @@ SELECT
     om.cantidad,
     om.cantidad_utilizada,
     om.fecha_asignacion,
-    CASE 
+    CASE
         WHEN om.tipo_material = 'vidrio' THEN v.tipo
         WHEN om.tipo_material = 'inventario' THEN i.nombre
         ELSE om.tipo_material
     END AS nombre_material,
-    CASE 
+    CASE
         WHEN om.tipo_material = 'vidrio' THEN v.precio_m2
         WHEN om.tipo_material = 'inventario' THEN i.precio_unitario
         ELSE 0
@@ -36,19 +30,13 @@ FROM obra_materiales om
 LEFT JOIN vidrios v ON om.material_id = v.id AND om.tipo_material = 'vidrio'
 LEFT JOIN inventario i ON om.material_id = i.id AND om.tipo_material = 'inventario'
 WHERE om.obra_id = ?;
-
--- Consulta para liberar material de obra
-UPDATE obra_materiales 
-SET 
+UPDATE obra_materiales
+SET
     cantidad = cantidad - ?,
     updated_at = NOW()
 WHERE obra_id = ? AND material_id = ? AND cantidad >= ?;
-
--- Consulta para eliminar asignación de material (cuando cantidad llega a 0)
-DELETE FROM obra_materiales 
+DELETE FROM obra_materiales
 WHERE obra_id = ? AND material_id = ? AND cantidad <= 0;
-
--- Consulta para asignar personal a obra
 INSERT INTO obra_personal (
     obra_id,
     personal_id,
@@ -59,9 +47,7 @@ INSERT INTO obra_personal (
     created_at,
     updated_at
 ) VALUES (?, ?, ?, ?, NULL, TRUE, NOW(), NOW());
-
--- Consulta para obtener personal de una obra
-SELECT 
+SELECT
     op.id,
     op.obra_id,
     op.personal_id,
@@ -76,32 +62,28 @@ SELECT
 FROM obra_personal op
 LEFT JOIN personal p ON op.personal_id = p.id
 WHERE op.obra_id = ? AND op.activo = TRUE;
-
--- Consulta para liberar personal de obra
-UPDATE obra_personal 
-SET 
+UPDATE obra_personal
+SET
     activo = FALSE,
     fecha_fin = NOW(),
     updated_at = NOW()
 WHERE obra_id = ? AND personal_id = ?;
-
--- Consulta para obtener resumen de recursos de obra
-SELECT 
+SELECT
     o.id AS obra_id,
     o.nombre AS obra_nombre,
     COUNT(DISTINCT om.material_id) AS total_materiales,
     COUNT(DISTINCT op.personal_id) AS total_personal,
     SUM(
-        CASE 
+        CASE
             WHEN om.tipo_material = 'vidrio' THEN om.cantidad * v.precio_m2
             WHEN om.tipo_material = 'inventario' THEN om.cantidad * i.precio_unitario
             ELSE 0
         END
     ) AS costo_materiales,
     SUM(
-        CASE 
-            WHEN op.activo = TRUE THEN 
-                COALESCE(p.costo_hora * 8, 0) -- Asumiendo 8 horas por día
+        CASE
+            WHEN op.activo = TRUE THEN
+                COALESCE(p.costo_hora * 8, 0)
             ELSE 0
         END
     ) AS costo_personal_diario
@@ -113,22 +95,20 @@ LEFT JOIN inventario i ON om.material_id = i.id AND om.tipo_material = 'inventar
 LEFT JOIN personal p ON op.personal_id = p.id
 WHERE o.id = ?
 GROUP BY o.id, o.nombre;
-
--- Consulta para calcular costo total de obra (materiales + personal)
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.presupuesto,
     COALESCE(costos_materiales.total_materiales, 0) AS costo_materiales,
     COALESCE(costos_personal.total_personal, 0) AS costo_personal,
-    (COALESCE(costos_materiales.total_materiales, 0) + 
+    (COALESCE(costos_materiales.total_materiales, 0) +
      COALESCE(costos_personal.total_personal, 0)) AS costo_total_calculado
 FROM obras o
 LEFT JOIN (
-    SELECT 
+    SELECT
         om.obra_id,
         SUM(
-            CASE 
+            CASE
                 WHEN om.tipo_material = 'vidrio' THEN om.cantidad * v.precio_m2
                 WHEN om.tipo_material = 'inventario' THEN om.cantidad * i.precio_unitario
                 ELSE 0
@@ -140,13 +120,13 @@ LEFT JOIN (
     GROUP BY om.obra_id
 ) costos_materiales ON o.id = costos_materiales.obra_id
 LEFT JOIN (
-    SELECT 
+    SELECT
         op.obra_id,
         SUM(
-            CASE 
-                WHEN op.fecha_fin IS NOT NULL THEN 
+            CASE
+                WHEN op.fecha_fin IS NOT NULL THEN
                     DATEDIFF(op.fecha_fin, op.fecha_inicio) * p.costo_hora * 8
-                WHEN op.activo = TRUE THEN 
+                WHEN op.activo = TRUE THEN
                     DATEDIFF(NOW(), op.fecha_inicio) * p.costo_hora * 8
                 ELSE 0
             END
@@ -156,20 +136,16 @@ LEFT JOIN (
     GROUP BY op.obra_id
 ) costos_personal ON o.id = costos_personal.obra_id
 WHERE o.id = ?;
-
--- Consulta para verificar disponibilidad de material
-SELECT 
+SELECT
     id,
-    CASE 
-        WHEN ? = 'vidrio' THEN 
+    CASE
+        WHEN ? = 'vidrio' THEN
             (SELECT stock_disponible FROM vidrios WHERE id = ?)
-        WHEN ? = 'inventario' THEN 
+        WHEN ? = 'inventario' THEN
             (SELECT cantidad_disponible FROM inventario WHERE id = ?)
         ELSE 0
     END AS cantidad_disponible;
-
--- Consulta para verificar disponibilidad de personal
-SELECT 
+SELECT
     p.id,
     p.nombre,
     p.apellido,
@@ -179,16 +155,12 @@ FROM personal p
 LEFT JOIN obra_personal op ON p.id = op.personal_id AND op.activo = TRUE
 WHERE p.id = ? AND p.activo = TRUE
 GROUP BY p.id, p.nombre, p.apellido, p.especialidad;
-
--- Consulta para actualizar cantidad utilizada de material
-UPDATE obra_materiales 
-SET 
+UPDATE obra_materiales
+SET
     cantidad_utilizada = cantidad_utilizada + ?,
     updated_at = NOW()
 WHERE obra_id = ? AND material_id = ?;
-
--- Consulta para obtener historial de asignaciones de material
-SELECT 
+SELECT
     om.id,
     om.obra_id,
     om.material_id,
@@ -197,7 +169,7 @@ SELECT
     om.cantidad_utilizada,
     om.fecha_asignacion,
     o.nombre AS obra_nombre,
-    CASE 
+    CASE
         WHEN om.tipo_material = 'vidrio' THEN v.tipo
         WHEN om.tipo_material = 'inventario' THEN i.nombre
         ELSE om.tipo_material
@@ -208,19 +180,17 @@ LEFT JOIN vidrios v ON om.material_id = v.id AND om.tipo_material = 'vidrio'
 LEFT JOIN inventario i ON om.material_id = i.id AND om.tipo_material = 'inventario'
 WHERE om.material_id = ? AND om.tipo_material = ?
 ORDER BY om.fecha_asignacion DESC;
-
--- Consulta para obtener eficiencia de uso de materiales
-SELECT 
+SELECT
     om.obra_id,
     o.nombre AS obra_nombre,
     om.material_id,
     om.tipo_material,
     om.cantidad AS cantidad_asignada,
     om.cantidad_utilizada,
-    CASE 
-        WHEN om.cantidad > 0 THEN 
+    CASE
+        WHEN om.cantidad > 0 THEN
             (om.cantidad_utilizada * 100.0 / om.cantidad)
-        ELSE 0 
+        ELSE 0
     END AS porcentaje_utilizacion
 FROM obra_materiales om
 LEFT JOIN obras o ON om.obra_id = o.id

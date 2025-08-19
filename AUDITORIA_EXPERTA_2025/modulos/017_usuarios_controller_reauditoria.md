@@ -22,4 +22,17 @@ Recomendaciones
 4. Añadir tests que simulen ataques de fuerza bruta para validar bloqueo.
 5. Revisar almacenamiento de contraseñas y usar hashing fuerte (BCrypt/Argon2) en el modelo (si no está ya).
 
+### Estado de migración y mejoras (2025-08-19)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: PENDIENTE (prioridad alta)
+- Decoradores duplicados detectados, pendiente limpieza completa.
+
+Recomendaciones adicionales:
+- Completar migración SQL y eliminar queries hardcodeadas.
+- Unificar uso de logger centralizado y message_system.
+- Remover decoradores duplicados y revisar permisos.
+- Documentar contratos de métodos y señales.
+- Añadir tests unitarios para autenticación, bloqueo y flujos críticos.
+
 Estado: listo (archivo creado).

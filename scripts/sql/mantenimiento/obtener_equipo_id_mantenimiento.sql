@@ -1,3 +1,3 @@
-SELECT equipo_id 
-FROM mantenimientos 
+SELECT equipo_id
+FROM mantenimientos
 WHERE id = ?

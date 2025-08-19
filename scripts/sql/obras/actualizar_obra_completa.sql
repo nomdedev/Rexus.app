@@ -1,6 +1,4 @@
--- 🔒 Actualización completa de obra
--- Reemplaza f-string vulnerable por consulta parametrizada segura
-UPDATE obras 
+UPDATE obras
 SET nombre = @nombre,
     descripcion = @descripcion,
     direccion = @direccion,
@@ -12,5 +10,5 @@ SET nombre = @nombre,
     presupuesto_utilizado = @presupuesto_utilizado,
     observaciones = @observaciones,
     updated_at = GETDATE()
-WHERE id = @obra_id 
+WHERE id = @obra_id
     AND activo = 1;

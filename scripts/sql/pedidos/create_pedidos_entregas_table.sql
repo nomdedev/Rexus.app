@@ -1,8 +1,3 @@
--- Creación de tabla de entregas de pedidos
--- Archivo: create_pedidos_entregas_table.sql
--- Módulo: Pedidos
--- Descripción: Tabla para gestión de entregas parciales o totales
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_entregas' AND xtype='U')
 CREATE TABLE pedidos_entregas (
     id INT IDENTITY(1,1) PRIMARY KEY,

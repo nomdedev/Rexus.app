@@ -1,5 +1,4 @@
--- Obtener pagos de materiales con detalles
-SELECT 
+SELECT
     pm.id,
     pm.proveedor_id,
     pm.monto,

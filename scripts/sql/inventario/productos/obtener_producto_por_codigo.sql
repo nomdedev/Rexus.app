@@ -1,9 +1,4 @@
--- Obtener producto por código
--- Archivo: obtener_producto_por_codigo.sql
--- Módulo: Inventario/Productos
--- Descripción: Busca producto por código exacto
-
-SELECT 
+SELECT
     id,
     codigo,
     descripcion,
@@ -20,7 +15,3 @@ SELECT
     fecha_modificacion
 FROM [inventario]
 WHERE LOWER(codigo) = LOWER(@codigo) AND activo = 1;
-
--- Ejemplo de uso en Python:
--- cursor.execute(query, {'codigo': codigo_sanitizado})
--- return cursor.fetchone()

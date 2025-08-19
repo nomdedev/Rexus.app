@@ -1,8 +1,5 @@
--- Actualizar vidrio existente
--- Archivo: scripts/sql/vidrios/productos/actualizar_vidrio.sql
-
-UPDATE vidrios 
-SET 
+UPDATE vidrios
+SET
     codigo = :codigo,
     tipo = :tipo,
     descripcion = :descripcion,

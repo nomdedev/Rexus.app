@@ -1,4 +1,3 @@
--- Crear un nuevo equipo
 INSERT INTO equipos (
     codigo, nombre, tipo, modelo, marca, numero_serie,
     fecha_adquisicion, fecha_instalacion, ubicacion, estado,

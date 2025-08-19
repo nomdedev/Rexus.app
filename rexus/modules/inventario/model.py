@@ -213,6 +213,11 @@ datos_producto: Dict[str,
         else:
             return self._actualizar_stock_fallback(producto_id, nuevo_stock, razon)
 
+    def actualizar_stock(self, producto_id: int, nuevo_stock: Union[int, float],
+                        razon: str = "Ajuste manual") -> Dict[str, Any]:
+        """Alias conveniente para actualizar_stock_producto."""
+        return self.actualizar_stock_producto(producto_id, nuevo_stock, razon)
+
     def registrar_movimiento_stock(self,
 datos_movimiento: Dict[str,
         Any]) -> Dict[str,
@@ -3234,3 +3239,146 @@ datos_reserva: Dict[str,
                 })
 
         return categorias_default
+
+    def obtener_productos(self, filtros=None, limite=None):
+        """
+        Obtiene todos los productos del inventario
+        
+        Args:
+            filtros (dict, optional): Filtros a aplicar
+            limite (int, optional): Límite de resultados
+            
+        Returns:
+            List[Dict]: Lista de productos
+        """
+        try:
+            # Usar consulta paginada como base
+            productos_paginados, total = self.obtener_productos_paginados(
+                page=1, 
+                page_size=limite or 1000,
+                filtro=filtros  # Cambiar 'filters' por 'filtro' que es el parámetro correcto
+            )
+            
+            return productos_paginados
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo productos: {e}")
+            # Fallback con datos demo si no hay conexión
+            if not self.db_connection:
+                return self._get_productos_demo()
+            return []
+
+    def obtener_lotes(self, producto_id=None, activos_solo=True):
+        """
+        Obtiene todos los lotes del inventario
+        
+        Args:
+            producto_id (int, optional): ID del producto específico
+            activos_solo (bool): Solo lotes activos
+            
+        Returns:
+            List[Dict]: Lista de lotes
+        """
+        try:
+            if not self.db_connection:
+                logger.warning("No hay conexión BD para obtener lotes")
+                return []
+                
+            cursor = self.db_connection.cursor()
+            
+            if producto_id:
+                # Usar método existente para producto específico
+                return self.obtener_lotes_producto(producto_id)
+            else:
+                # Obtener todos los lotes
+                if self.sql_manager:
+                    # Intentar usar SQL externo
+                    try:
+                        sql = self.sql_manager.get_query('inventario', 'obtener_todos_lotes')
+                        cursor.execute(sql, {
+                            'activos_solo': activos_solo
+                        })
+                    except:
+                        # Fallback con query manual
+                        sql = """
+                        SELECT 
+                            l.id,
+                            l.producto_id,
+                            l.numero_lote,
+                            l.cantidad,
+                            l.fecha_vencimiento,
+                            l.ubicacion,
+                            l.estado,
+                            l.fecha_ingreso,
+                            p.nombre as producto_nombre,
+                            p.codigo as producto_codigo
+                        FROM lotes_inventario l
+                        LEFT JOIN productos p ON l.producto_id = p.id
+                        WHERE l.activo = ?
+                        ORDER BY l.fecha_ingreso DESC
+                        """
+                        cursor.execute(sql, (1 if activos_solo else 0,))
+                else:
+                    # Query manual sin SQL Manager
+                    sql = """
+                    SELECT 
+                        l.id,
+                        l.producto_id,
+                        l.numero_lote,
+                        l.cantidad,
+                        l.fecha_vencimiento,
+                        l.ubicacion,
+                        l.estado,
+                        l.fecha_ingreso,
+                        p.nombre as producto_nombre,
+                        p.codigo as producto_codigo
+                    FROM lotes_inventario l
+                    LEFT JOIN productos p ON l.producto_id = p.id
+                    WHERE l.activo = ?
+                    ORDER BY l.fecha_ingreso DESC
+                    """
+                    cursor.execute(sql, (1 if activos_solo else 0,))
+                
+                # Procesar resultados
+                lotes = []
+                for row in cursor.fetchall():
+                    lote = {
+                        'id': row[0],
+                        'producto_id': row[1], 
+                        'numero_lote': row[2],
+                        'cantidad': row[3],
+                        'fecha_vencimiento': row[4],
+                        'ubicacion': row[5],
+                        'estado': row[6],
+                        'fecha_ingreso': row[7],
+                        'producto_nombre': row[8] if len(row) > 8 else None,
+                        'producto_codigo': row[9] if len(row) > 9 else None
+                    }
+                    lotes.append(lote)
+                    
+                return lotes
+                
+        except Exception as e:
+            logger.error(f"Error obteniendo lotes: {e}")
+            return []
+
+    def _get_productos_demo(self):
+        """Datos demo para productos cuando no hay conexión"""
+        return [
+            {
+                'id': 1,
+                'codigo': 'PROD001',
+                'nombre': 'Producto Demo 1',
+                'categoria': 'DEMO',
+                'cantidad_disponible': 10,
+                'precio_unitario': 100.0
+            },
+            {
+                'id': 2,
+                'codigo': 'PROD002', 
+                'nombre': 'Producto Demo 2',
+                'categoria': 'DEMO',
+                'cantidad_disponible': 5,
+                'precio_unitario': 200.0
+            }
+        ]

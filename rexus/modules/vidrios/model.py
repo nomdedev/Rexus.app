@@ -65,6 +65,10 @@ class VidriosModel:
         # Configurar cargador de scripts SQL
         self.sql_loader = sql_script_loader
 
+        # Inicializar SQL Manager para consultas seguras
+        from rexus.utils.sql_query_manager import SQLQueryManager
+        self.sql_manager = SQLQueryManager()
+
         # Inicializar utilidades de seguridad
         self.sanitizer_available = SANITIZER_AVAILABLE
         if self.sanitizer_available:
@@ -74,6 +78,18 @@ class VidriosModel:
             self.data_sanitizer = None
             logger.warning("Sin sistema de sanitización - funcionalidad limitada")
 
+        # Intentar establecer conexión automática si no se proporciona
+        if not self.db_connection:
+            try:
+                from rexus.core.database import get_inventario_connection
+                self.db_connection = get_inventario_connection()
+                if self.db_connection:
+                    logger.info("[VIDRIOS] Conexión automática establecida exitosamente")
+                else:
+                    logger.warning("[ERROR VIDRIOS] No se pudo establecer conexión automática")
+            except Exception as e:
+                logger.error(f"[ERROR VIDRIOS] Error en conexión automática: {e}")
+                
         if not self.db_connection:
             logger.error("No hay conexión a la base de datos. El módulo no funcionará correctamente")
         else:

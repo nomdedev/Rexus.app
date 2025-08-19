@@ -1,10 +1,5 @@
--- Actualizar producto existente
--- Archivo: actualizar_producto.sql
--- Módulo: Inventario/Productos
--- Descripción: Actualiza datos de producto (sin stock)
-
 UPDATE [inventario]
-SET 
+SET
     descripcion = @descripcion,
     categoria = @categoria,
     unidad_medida = @unidad_medida,
@@ -16,7 +11,3 @@ SET
     usuario_modificador = @usuario_modificador,
     fecha_modificacion = GETDATE()
 WHERE id = @producto_id AND activo = 1;
-
--- Ejemplo de uso en Python:
--- cursor.execute(query, params_dict)
--- affected_rows = cursor.rowcount

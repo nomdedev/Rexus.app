@@ -18,3 +18,14 @@ Recomendaciones
 5. Audit logging: registrar quién importó/exportó configuraciones y cuándo.
 
 Estado: listo.
+
+### Estado de migración y mejoras (2025-08-19)
+- Migración de prints a logger: EN PROGRESO
+- Consolidación de mensajes hardcodeados: EN PROGRESO
+- Migración SQL: COMPLETA
+- No se detectaron señales faltantes críticas.
+
+Recomendaciones adicionales:
+- Unificar uso de logger centralizado y message_system.
+- Documentar contratos de métodos y señales para facilitar testing.
+- Añadir tests unitarios para flujos de configuración y validación de IO.

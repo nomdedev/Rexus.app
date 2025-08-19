@@ -1,8 +1,4 @@
--- Consulta segura para obtener reservas de materiales por obra
--- Incluye información del producto y estado de la reserva
--- Utiliza parámetros seguros para filtrar por obra
-
-SELECT 
+SELECT
     r.id,
     r.obra_id,
     r.producto_id,

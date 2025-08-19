@@ -1,9 +1,4 @@
--- Listar pedidos con filtros y paginación
--- Archivo: listar_pedidos.sql
--- Módulo: Pedidos
--- Descripción: Obtiene lista de pedidos con filtros opcionales
-
-SELECT 
+SELECT
     p.id,
     p.numero_pedido,
     p.cliente_id,
@@ -27,17 +22,12 @@ SELECT
     p.fecha_aprobacion,
     p.fecha_creacion,
     p.fecha_modificacion,
-    
-    -- Conteo de items
     COUNT(pd.id) as total_items,
-    
-    -- Estado de entrega
-    CASE 
+    CASE
         WHEN SUM(pd.cantidad - COALESCE(pd.cantidad_entregada, 0)) = 0 THEN 'COMPLETO'
         WHEN SUM(pd.cantidad_entregada) > 0 THEN 'PARCIAL'
         ELSE 'PENDIENTE'
     END as estado_entrega
-
 FROM [pedidos] p
 LEFT JOIN [pedidos_detalle] pd ON p.id = pd.pedido_id
 WHERE p.activo = 1
@@ -52,7 +42,7 @@ WHERE p.activo = 1
         p.observaciones LIKE '%' + @busqueda + '%' OR
         p.responsable_entrega LIKE '%' + @busqueda + '%'
     ))
-GROUP BY 
+GROUP BY
     p.id, p.numero_pedido, p.cliente_id, p.obra_id, p.fecha_pedido,
     p.fecha_entrega_solicitada, p.fecha_entrega_real, p.estado, p.tipo_pedido,
     p.prioridad, p.subtotal, p.descuento, p.impuestos, p.total,
@@ -61,7 +51,3 @@ GROUP BY
     p.fecha_aprobacion, p.fecha_creacion, p.fecha_modificacion
 ORDER BY p.fecha_pedido DESC
 OFFSET @offset ROWS FETCH NEXT @limit ROWS ONLY;
-
--- Ejemplo de uso en Python:
--- params = {'estado': 'PENDIENTE', 'offset': 0, 'limit': 50, ...}
--- cursor.execute(query, params)

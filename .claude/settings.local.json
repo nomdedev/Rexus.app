@@ -18,7 +18,8 @@
       "Bash(touch:*)",
       "Bash(mv:*)",
       "Bash(pip install:*)",
-      "Bash(dir /a .env*)"
+      "Bash(dir /a .env*)",
+      "Bash(Get-Content D:martinRexus.apprexusmodulesinventariomodel.py -Tail 50)"
     ],
     "deny": [],
     "ask": [],

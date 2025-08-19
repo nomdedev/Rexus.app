@@ -1,8 +1,4 @@
--- Consulta segura para obtener reservas por producto específico
--- Incluye información de la obra asociada
--- Utiliza parámetros seguros para filtrar por producto
-
-SELECT 
+SELECT
     r.id,
     r.obra_id,
     r.producto_id,

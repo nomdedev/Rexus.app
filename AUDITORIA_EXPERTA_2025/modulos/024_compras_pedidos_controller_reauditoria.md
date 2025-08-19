@@ -16,7 +16,7 @@ Recomendaciones
 3. Añadir pruebas de permisos para rutas críticas (crear, actualizar estado).
 4. Normalizar respuestas (usar estructuras {exito: bool, mensaje: str, data: ...}).
 
-### Estado de migración y mejoras (2025-08-18)
+### Estado de migración y mejoras (2025-08-19)
 - Migración de prints a logger: EN PROGRESO
 - Consolidación de mensajes hardcodeados: EN PROGRESO
 - Migración SQL: EN PROGRESO

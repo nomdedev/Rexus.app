@@ -1,7 +1,4 @@
--- Obtener vidrio por ID
--- Archivo: scripts/sql/vidrios/productos/obtener_vidrio_por_id.sql
-
-SELECT 
+SELECT
     id,
     codigo,
     tipo,
@@ -16,5 +13,5 @@ SELECT
     activo,
     fecha_creacion,
     fecha_modificacion
-FROM vidrios 
+FROM vidrios
 WHERE id = :vidrio_id AND activo = 1;
