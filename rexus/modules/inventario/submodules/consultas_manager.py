@@ -355,3 +355,55 @@ termino_like,
             relevancia = 0.4
 
         return relevancia
+
+    @auth_required
+    @permission_required("view_inventario")
+    def obtener_productos_paginados_inicial(
+        self, 
+        page: int = 1, 
+        limit: int = 50, 
+        filtros: Optional[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
+        """
+        Obtiene productos paginados para carga inicial del inventario.
+        
+        Args:
+            page: Número de página (empezando en 1)
+            limit: Límite de registros por página
+            filtros: Filtros opcionales a aplicar
+            
+        Returns:
+            Dict con items, total, metadata de paginación
+        """
+        try:
+            # Calcular offset basado en página
+            offset = (page - 1) * limit
+            
+            # Usar el método existente obtener_productos_paginados
+            resultado = self.obtener_productos_paginados(
+                offset=offset,
+                limit=limit,
+                filtros=filtros or {},
+                orden="fecha_actualizacion DESC"
+            )
+            
+            # Agregar metadata adicional para carga inicial
+            resultado["page"] = page
+            resultado["is_initial_load"] = True
+            resultado["timestamp"] = int(time.time()) if 'time' in globals() else None
+            
+            return resultado
+            
+        except Exception as e:
+            # Fallback con datos mínimos en caso de error
+            return {
+                "items": [],
+                "total": 0,
+                "offset": offset,
+                "limit": limit,
+                "pages": 0,
+                "current_page": page,
+                "page": page,
+                "is_initial_load": True,
+                "error": str(e)
+            }

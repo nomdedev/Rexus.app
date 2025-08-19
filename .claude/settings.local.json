@@ -17,7 +17,8 @@
       "Bash(rg:*)",
       "Bash(touch:*)",
       "Bash(mv:*)",
-      "Bash(pip install:*)"
+      "Bash(pip install:*)",
+      "Bash(dir /a .env*)"
     ],
     "deny": [],
     "ask": [],
