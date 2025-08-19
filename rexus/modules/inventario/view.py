@@ -13,6 +13,7 @@ from PyQt6.QtWidgets import (
     QTableWidgetItem,
     QWidget,
     QSplitter,
+    QTabWidget,
 )
 
 # Importar componentes del framework de estandarización UI
@@ -95,7 +96,20 @@ class InventarioView(BaseModuleView):
         self.panel_filtros = self.crear_panel_filtros_avanzados()
         self.add_to_main_content(self.panel_filtros)
 
-        # Splitter principal para dividir tabla y panel lateral
+        # Crear pestañas principales: Inventario General y Obras
+        self.tab_widget = QTabWidget()
+        
+        # Pestaña 1: Inventario General (tabla principal)
+        self.tab_inventario_general = self.crear_tab_inventario_general()
+        self.tab_widget.addTab(self.tab_inventario_general, "Inventario General")
+        
+        # Pestaña 2: Separación por Obras
+        self.tab_obras = self.crear_tab_obras()
+        self.tab_widget.addTab(self.tab_obras, "Obras y Asignaciones")
+        
+        self.add_to_main_content(self.tab_widget)
+        
+        # Splitter principal para dividir tabla y panel lateral (en pestaña general)
         splitter = QSplitter(Qt.Orientation.Horizontal)
 
         # Widget principal de la tabla
@@ -910,3 +924,204 @@ class InventarioView(BaseModuleView):
     def cargar_inventario_inicial(self):
         """Carga inicial del inventario."""
         self.cargar_inventario()
+
+    # === MÉTODOS PARA PESTAÑAS DE OBRAS ===
+
+    def crear_tab_inventario_general(self):
+        """Crea la pestaña de inventario general con todos los perfiles."""
+        from PyQt6.QtWidgets import QWidget, QVBoxLayout
+        
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        
+        # Mover el splitter existente a esta pestaña
+        # (El código existente del splitter debería ir aquí)
+        
+        # Por ahora, agregar un placeholder
+        from rexus.ui.components.base_components import RexusLabel
+        placeholder = RexusLabel("Inventario General - Tabla principal con todos los perfiles")
+        layout.addWidget(placeholder)
+        
+        return widget
+
+    def crear_tab_obras(self):
+        """Crea la pestaña de obras con separación de materiales."""
+        from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, 
+                                   QSplitter, QGroupBox, QTabWidget as QTabWidgetObras)
+        from PyQt6.QtCore import Qt
+        from rexus.ui.components.base_components import (RexusButton, RexusLabel, 
+                                                       RexusTable, RexusComboBox)
+        
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        
+        # Panel de control para obras
+        panel_control = QGroupBox("Control de Separación por Obras")
+        control_layout = QHBoxLayout(panel_control)
+        
+        # Botón para cargar obras
+        self.btn_cargar_obras = RexusButton("Cargar Obras")
+        control_layout.addWidget(self.btn_cargar_obras)
+        
+        # Combo para seleccionar obra
+        control_layout.addWidget(RexusLabel("Obra:"))
+        self.combo_obras = RexusComboBox()
+        control_layout.addWidget(self.combo_obras)
+        
+        # Botón para separar material
+        self.btn_separar_material = RexusButton("Separar Material Seleccionado")
+        control_layout.addWidget(self.btn_separar_material)
+        
+        control_layout.addStretch()
+        layout.addWidget(panel_control)
+        
+        # Splitter horizontal: Lista de productos | Pestañas de obras
+        splitter_obras = QSplitter(Qt.Orientation.Horizontal)
+        
+        # Panel izquierdo: Lista de productos disponibles
+        panel_productos = QGroupBox("Productos Disponibles")
+        productos_layout = QVBoxLayout(panel_productos)
+        
+        self.tabla_productos_disponibles = RexusTable()
+        self.configurar_tabla_productos_disponibles()
+        productos_layout.addWidget(self.tabla_productos_disponibles)
+        
+        splitter_obras.addWidget(panel_productos)
+        
+        # Panel derecho: Pestañas de obras
+        self.tab_widget_obras = QTabWidgetObras()
+        
+        # Pestaña de resumen
+        tab_resumen = self.crear_tab_resumen_obras()
+        self.tab_widget_obras.addTab(tab_resumen, "Resumen")
+        
+        splitter_obras.addWidget(self.tab_widget_obras)
+        
+        # Configurar proporciones del splitter
+        splitter_obras.setSizes([400, 600])
+        layout.addWidget(splitter_obras)
+        
+        return widget
+
+    def configurar_tabla_productos_disponibles(self):
+        """Configura la tabla de productos disponibles para separar."""
+        headers = ["ID", "Código", "Nombre", "Stock Disponible", "Stock Asignado", "Ubicación"]
+        self.tabla_productos_disponibles.setColumnCount(len(headers))
+        self.tabla_productos_disponibles.setHorizontalHeaderLabels(headers)
+        
+        # Configurar anchos
+        from PyQt6.QtWidgets import QHeaderView
+        header = self.tabla_productos_disponibles.horizontalHeader()
+        header.setSectionResizeMode(0, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(1, QHeaderView.ResizeMode.ResizeToContents)
+        header.setSectionResizeMode(2, QHeaderView.ResizeMode.Stretch)
+        
+        # Selección por filas
+        from PyQt6.QtWidgets import QTableWidget
+        self.tabla_productos_disponibles.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        self.tabla_productos_disponibles.setAlternatingRowColors(True)
+
+    def crear_tab_resumen_obras(self):
+        """Crea la pestaña de resumen de obras."""
+        from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGroupBox
+        from rexus.ui.components.base_components import RexusLabel
+        
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        
+        # Estadísticas generales
+        grupo_stats = QGroupBox("Estadísticas de Separación")
+        stats_layout = QVBoxLayout(grupo_stats)
+        
+        self.lbl_total_obras = RexusLabel("Obras activas: 0")
+        self.lbl_material_asignado = RexusLabel("Material total asignado: 0")
+        self.lbl_material_disponible = RexusLabel("Material disponible: 0")
+        
+        stats_layout.addWidget(self.lbl_total_obras)
+        stats_layout.addWidget(self.lbl_material_asignado)
+        stats_layout.addWidget(self.lbl_material_disponible)
+        
+        layout.addWidget(grupo_stats)
+        layout.addStretch()
+        
+        return widget
+
+    def agregar_obra_tab(self, obra_id, obra_nombre):
+        """Agrega una nueva pestaña para una obra específica."""
+        from PyQt6.QtWidgets import QWidget, QVBoxLayout, QGroupBox, QHBoxLayout
+        from rexus.ui.components.base_components import RexusButton, RexusLabel, RexusTable
+        
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
+        
+        # Información de la obra
+        grupo_info = QGroupBox(f"Obra: {obra_nombre}")
+        info_layout = QHBoxLayout(grupo_info)
+        
+        info_layout.addWidget(RexusLabel(f"ID: {obra_id}"))
+        info_layout.addStretch()
+        
+        # Botones de acción
+        btn_liberar = RexusButton("Liberar Material")
+        btn_exportar = RexusButton("Exportar Lista")
+        info_layout.addWidget(btn_liberar)
+        info_layout.addWidget(btn_exportar)
+        
+        layout.addWidget(grupo_info)
+        
+        # Tabla de materiales asignados
+        tabla_materiales = RexusTable()
+        self.configurar_tabla_materiales_obra(tabla_materiales)
+        layout.addWidget(tabla_materiales)
+        
+        # Guardar referencia a la tabla en el widget
+        widget.tabla_materiales = tabla_materiales
+        widget.obra_id = obra_id
+        
+        self.tab_widget_obras.addTab(widget, f"Obra: {obra_nombre}")
+        
+        return widget
+
+    def configurar_tabla_materiales_obra(self, tabla):
+        """Configura una tabla de materiales asignados a una obra."""
+        headers = ["Código", "Nombre", "Cantidad Asignada", "Fecha Asignación", "Estado"]
+        tabla.setColumnCount(len(headers))
+        tabla.setHorizontalHeaderLabels(headers)
+        
+        from PyQt6.QtWidgets import QTableWidget
+        tabla.setSelectionBehavior(QTableWidget.SelectionBehavior.SelectRows)
+        tabla.setAlternatingRowColors(True)
+
+    def cargar_obras_disponibles(self, obras):
+        """Carga las obras disponibles en el combo y crea pestañas."""
+        # Cargar en combo
+        self.combo_obras.clear()
+        for obra in obras:
+            self.combo_obras.addItem(obra['nombre'], obra['id'])
+        
+        # Limpiar pestañas existentes (excepto resumen)
+        while self.tab_widget_obras.count() > 1:
+            self.tab_widget_obras.removeTab(1)
+        
+        # Crear pestaña para cada obra
+        for obra in obras:
+            self.agregar_obra_tab(obra['id'], obra['nombre'])
+
+    def cargar_materiales_obra(self, obra_id, materiales):
+        """Carga los materiales asignados a una obra específica."""
+        from PyQt6.QtWidgets import QTableWidgetItem
+        
+        # Encontrar la pestaña correspondiente
+        for i in range(1, self.tab_widget_obras.count()):
+            widget = self.tab_widget_obras.widget(i)
+            if hasattr(widget, 'obra_id') and widget.obra_id == obra_id:
+                tabla = widget.tabla_materiales
+                tabla.setRowCount(len(materiales))
+                
+                for row, material in enumerate(materiales):
+                    tabla.setItem(row, 0, QTableWidgetItem(str(material.get('codigo', ''))))
+                    tabla.setItem(row, 1, QTableWidgetItem(str(material.get('nombre', ''))))
+                    tabla.setItem(row, 2, QTableWidgetItem(str(material.get('cantidad_asignada', 0))))
+                    tabla.setItem(row, 3, QTableWidgetItem(str(material.get('fecha_asignacion', ''))))
+                    tabla.setItem(row, 4, QTableWidgetItem(str(material.get('estado', ''))))
+                break

@@ -211,3 +211,80 @@
 2025-08-18 20:29:57 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
 2025-08-18 20:30:43 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
 2025-08-18 20:30:43 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-18 20:35:39 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:35:39 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-18 20:35:39 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-18 20:35:39 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-18 20:35:40 | INFO     | rexus.modules.obras.model | [OBRAS] Sin conexión a BD - omitiendo verificación de tablas
+2025-08-18 20:35:40 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-18 20:35:40 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-18 20:35:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:35:41 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:35:41 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:35:41 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:35:41 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:35:45 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-18 20:35:45 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-18 20:35:46 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo todas las obras: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-18 20:35:46 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo estadísticas: Archivo SQL no encontrado: calcular_presupuesto_total.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\obras\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\common\\calcular_presupuesto_total.sql']
+2025-08-18 20:35:47 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-18 20:35:47 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-18 20:35:50 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-18 20:35:50 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-18 20:35:50 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-18 20:35:50 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-18 20:35:50 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-18 20:44:18 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-18 20:44:18 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-18 20:44:21 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo todas las obras: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-18 20:44:21 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo estadísticas: Archivo SQL no encontrado: calcular_presupuesto_total.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\obras\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\common\\calcular_presupuesto_total.sql']
+2025-08-18 20:44:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:44:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:44:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:44:24 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:45:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:45:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:45:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:45:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:45:13 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-18 20:45:13 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-18 20:45:15 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo todas las obras: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-18 20:45:16 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo estadísticas: Archivo SQL no encontrado: calcular_presupuesto_total.sql en módulo obras. Rutas buscadas: ['D:\\martin\\Rexus.app\\sql\\obras\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\calcular_presupuesto_total.sql', 'D:\\martin\\Rexus.app\\sql\\common\\calcular_presupuesto_total.sql']
+2025-08-18 20:45:45 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-18 20:45:45 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-18 20:45:45 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-18 20:45:45 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-18 20:45:47 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-18 20:48:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:06 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:06 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:06 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:06 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-18 20:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-18 20:49:34 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:49:34 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-18 20:49:34 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-18 20:49:34 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-18 20:49:34 | INFO     | rexus.modules.administracion.model | Sistema unificado de sanitización cargado
+2025-08-18 20:49:34 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-18 20:49:34 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:49:34 | INFO     | rexus.modules.obras.model | [OBRAS] Sin conexión a BD - omitiendo verificación de tablas
+2025-08-18 20:49:34 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-18 20:50:27 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:50:27 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-18 20:50:27 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-18 20:50:27 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-18 20:58:55 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager

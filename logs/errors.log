@@ -384,3 +384,123 @@ Traceback (most recent call last):
     cursor.execute(sql_select)
 pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
 2025-08-18 20:30:47 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-18 20:35:39 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-18 20:35:40 | ERROR    | rexus.vidrios.model | No hay conexión a la base de datos. El módulo no funcionará correctamente
+2025-08-18 20:35:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:35:41 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-18 20:35:41 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-18 20:35:41 | ERROR    | rexus.inventario.controller | Error en paginación: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 184, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3117, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+2025-08-18 20:35:47 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-18 20:35:47 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:35:49 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:35:49 | ERROR    | rexus.compras.model | [ERROR COMPRAS] Error obteniendo compras: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\compras\model.py", line 149, in obtener_todas_compras
+    cursor.execute(sql_select)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:35:49 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-18 20:35:49 | ERROR    | rexus.compras.model | [ERROR COMPRAS] Error obteniendo compras: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\compras\model.py", line 149, in obtener_todas_compras
+    cursor.execute(sql_select)
+pyodbc.ProgrammingError: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:35:49 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-18 20:35:50 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-18 20:35:50 | ERROR    | rexus.core.module_manager | [Auditoria] Error cargando datos iniciales: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+2025-08-18 20:35:50 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\deep_module_diagnostics.py", line 252, in <module>
+    factory_results, component_results = main()
+  File "D:\martin\Rexus.app\deep_module_diagnostics.py", line 247, in main
+    generate_comprehensive_report(factory_results, component_results)
+  File "D:\martin\Rexus.app\deep_module_diagnostics.py", line 206, in generate_comprehensive_report
+    print("\n📊 FACTORY RESULTS SUMMARY:")
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f4ca' in position 2: character maps to <undefined>
+2025-08-18 20:44:24 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-18 20:44:24 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-18 20:44:24 | ERROR    | rexus.inventario.controller | Error en paginación: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 184, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3117, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+2025-08-18 20:45:11 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-18 20:45:11 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-18 20:45:11 | ERROR    | rexus.inventario.controller | Error en paginación: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 184, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3117, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+2025-08-18 20:45:17 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-18 20:45:47 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-18 20:45:47 | ERROR    | rexus.core.module_manager | [Auditoria] Error cargando datos iniciales: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+2025-08-18 20:48:02 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-18 20:48:02 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-18 20:48:02 | ERROR    | rexus.inventario.controller | Error en paginación: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 184, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3117, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+2025-08-18 20:48:06 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-18 20:48:06 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusButton has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 123, in conectar_senales
+    self._conectar_boton("btn_actualizar", self.cargar_inventario)
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 160, in _conectar_boton
+    boton.clicked.connect(metodo)
+RuntimeError: wrapped C/C++ object of type RexusButton has been deleted
+2025-08-18 20:48:06 | ERROR    | rexus.inventario.controller | Error en paginación: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 184, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3117, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+AttributeError: 'ConsultasManager' object has no attribute 'obtener_productos_paginados_inicial'
+2025-08-18 20:48:17 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-18 20:48:25 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:48:29 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42000', '[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306) (SQLExecDirectW)')
+2025-08-18 20:49:34 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-18 20:49:34 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-18 20:50:27 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-18 20:58:55 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
