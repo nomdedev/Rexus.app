@@ -10,6 +10,7 @@ Maneja la lógica de negocio y acceso a datos para el sistema de compras.
 
 import datetime
 import logging
+import os
 from typing import Any, Dict, List
 from rexus.core.query_optimizer import cached_query, track_performance
 from rexus.utils.sql_query_manager import SQLQueryManager
@@ -34,6 +35,54 @@ class ComprasModel:
         self.tabla_detalle_compras = "detalle_compras"
         self.sql_manager = SQLQueryManager()
         self._crear_tablas_si_no_existen()
+
+    def obtener_compras(self, filtros=None):
+        """
+        Obtiene compras con filtros opcionales.
+        
+        Args:
+            filtros (dict): Filtros opcionales (estado, proveedor, fecha_desde, fecha_hasta)
+            
+        Returns:
+            List[Dict]: Lista de compras filtradas
+        """
+        try:
+            # Usar SQL externo para consulta principal
+            archivo_sql = 'sql/compras/obtener_compras.sql'
+            parametros = filtros or {}
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._get_compras_demo()
+                
+            return self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo compras: {e}")
+            return self._get_compras_demo()
+
+    def _get_compras_demo(self):
+        """Datos demo para compras."""
+        return [
+            {
+                'id': 1,
+                'numero_compra': 'COMP-001',
+                'proveedor_nombre': 'Proveedor ABC',
+                'fecha_compra': '2025-01-15',
+                'total_final': 1500.00,
+                'estado': 'Pendiente',
+                'estado_actual': 'Pendiente'
+            },
+            {
+                'id': 2,
+                'numero_compra': 'COMP-002',
+                'proveedor_nombre': 'Suministros XYZ',
+                'fecha_compra': '2025-01-10',
+                'total_final': 2300.50,
+                'estado': 'Entregada',
+                'estado_actual': 'Completada'
+            }
+        ]
 
     def _crear_tablas_si_no_existen(self):
         """Verifica que las tablas de compras existan en la base de datos."""

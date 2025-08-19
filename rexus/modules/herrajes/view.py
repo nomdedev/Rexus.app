@@ -64,6 +64,61 @@ class HerrajesView(QWidget, ModuleExportMixin):
         self.init_ui()
         self.aplicar_estilos()
 
+    def setup_ui(self):
+        """Método de compatibilidad para setup_ui."""
+        self.init_ui()
+
+    def refresh_data(self):
+        """Actualiza los datos mostrados en la vista."""
+        try:
+            if self.controller and hasattr(self.controller, 'cargar_herrajes'):
+                self.controller.cargar_herrajes()
+            else:
+                self._cargar_datos_demo()
+        except Exception as e:
+            self.show_error(f"Error actualizando datos: {e}")
+
+    def show_error(self, mensaje, titulo="Error"):
+        """
+        Muestra un mensaje de error al usuario.
+        
+        Args:
+            mensaje (str): Mensaje de error
+            titulo (str): Título del diálogo
+        """
+        try:
+            show_error(mensaje, titulo)
+        except Exception:
+            # Fallback usando QMessageBox
+            from PyQt6.QtWidgets import QMessageBox
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle(titulo)
+            msg.setText(mensaje)
+            msg.exec()
+
+    def _cargar_datos_demo(self):
+        """Carga datos demo cuando no hay controlador."""
+        datos_demo = [
+            {
+                'id': 1,
+                'codigo': 'H001',
+                'nombre': 'Bisagra Piano',
+                'categoria': 'Bisagras',
+                'stock_actual': 50,
+                'precio_unitario': 15.75
+            },
+            {
+                'id': 2,
+                'codigo': 'H002', 
+                'nombre': 'Manija Moderna',
+                'categoria': 'Manijas',
+                'stock_actual': 25,
+                'precio_unitario': 32.50
+            }
+        ]
+        self.actualizar_tabla_herrajes(datos_demo)
+
     def init_ui(self):
         """Inicializa la interfaz de usuario con pestañas (QTabWidget)."""
         main_layout = QVBoxLayout(self)

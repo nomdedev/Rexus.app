@@ -45,6 +45,80 @@ class HerrajesController(BaseController):
         if self.view:
             self.cargar_datos_iniciales()
 
+    def actualizar_vista(self):
+        """Actualiza la vista con los datos más recientes."""
+        try:
+            if self.view and hasattr(self.view, 'refresh_data'):
+                self.view.refresh_data()
+            else:
+                self.cargar_datos_iniciales()
+            print("[HERRAJES] Vista actualizada exitosamente")
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error actualizando vista: {e}")
+
+    def buscar_herrajes(self, termino="", categoria=None):
+        """Busca herrajes según criterios específicos."""
+        try:
+            if self.model and hasattr(self.model, 'buscar_herrajes'):
+                filtros = {'termino': termino}
+                if categoria:
+                    filtros['categoria'] = categoria
+                herrajes = self.model.buscar_herrajes(filtros)
+                self._actualizar_vista_herrajes(herrajes)
+                print(f"[HERRAJES] Búsqueda completada: {len(herrajes)} herrajes encontrados")
+                return herrajes
+            else:
+                print("[WARNING HERRAJES] Método buscar_herrajes no disponible en modelo")
+                return []
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
+            return []
+
+    def crear_herraje(self, datos_herraje):
+        """Crea un nuevo herraje."""
+        try:
+            if self.model and hasattr(self.model, 'crear_herraje'):
+                resultado = self.model.crear_herraje(datos_herraje)
+                if resultado:
+                    self.actualizar_vista()
+                    print(f"[HERRAJES] Herraje creado: {datos_herraje.get('nombre', 'N/A')}")
+                    return True
+                else:
+                    print("[ERROR HERRAJES] No se pudo crear el herraje")
+                    return False
+            else:
+                print("[WARNING HERRAJES] Método crear_herraje no disponible en modelo")
+                return False
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error creando herraje: {e}")
+            return False
+
+    def eliminar_herraje(self, herraje_id):
+        """Elimina un herraje."""
+        try:
+            if self.model and hasattr(self.model, 'eliminar_herraje'):
+                resultado = self.model.eliminar_herraje(herraje_id)
+                if resultado:
+                    self.actualizar_vista()
+                    print(f"[HERRAJES] Herraje eliminado: ID {herraje_id}")
+                    return True
+                else:
+                    print("[ERROR HERRAJES] No se pudo eliminar el herraje")
+                    return False
+            else:
+                print("[WARNING HERRAJES] Método eliminar_herraje no disponible en modelo")
+                return False
+        except Exception as e:
+            print(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
+            return False
+
+    def _actualizar_vista_herrajes(self, herrajes):
+        """Actualiza la vista con la lista de herrajes."""
+        if self.view and hasattr(self.view, 'actualizar_tabla_herrajes'):
+            self.view.actualizar_tabla_herrajes(herrajes)
+        elif self.view and hasattr(self.view, 'cargar_datos'):
+            self.view.cargar_datos(herrajes)
+
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
         print("[HERRAJES CONTROLLER] Cargando datos iniciales...")

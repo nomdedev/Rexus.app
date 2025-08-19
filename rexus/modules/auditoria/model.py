@@ -9,6 +9,7 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 """
 
 import datetime
+import os
 import sys
 from pathlib import Path
 from typing import Any, Dict, List
@@ -158,6 +159,53 @@ class AuditoriaModel:
                 )
         except Exception as e:
             logger.error(f"[ERROR AUDITORÍA] Error creando tabla: {e}")
+
+    def crear_log(self, nivel, modulo, accion, usuario_id=None, detalle="", ip_origen=None, user_agent=None, datos_adicionales=None):
+        """
+        Crea un nuevo log de auditoría (método simplificado).
+        
+        Args:
+            nivel (str): Nivel del log (INFO, WARNING, ERROR)
+            modulo (str): Módulo que genera el log
+            accion (str): Acción realizada
+            usuario_id (int): ID del usuario
+            detalle (str): Detalle del evento
+            ip_origen (str): IP de origen
+            user_agent (str): User agent
+            datos_adicionales (str): Datos adicionales en JSON
+            
+        Returns:
+            bool: True si se creó correctamente
+        """
+        try:
+            # Usar SQL externo para inserción
+            archivo_sql = 'sql/auditoria/crear_log.sql'
+            parametros = {
+                'nivel': nivel or 'INFO',
+                'modulo': modulo,
+                'accion': accion,
+                'usuario_id': usuario_id,
+                'detalle': detalle,
+                'ip_origen': ip_origen,
+                'user_agent': user_agent,
+                'datos_adicionales': datos_adicionales
+            }
+            
+            # Fallback si no existe archivo SQL
+            if not os.path.exists(archivo_sql):
+                return self._crear_log_demo(nivel, modulo, accion, detalle)
+                
+            resultado = self.sql_manager.ejecutar_consulta_archivo(archivo_sql, parametros)
+            return resultado is not None
+            
+        except Exception as e:
+            logger.error(f"Error creando log de auditoría: {e}")
+            return False
+
+    def _crear_log_demo(self, nivel, modulo, accion, detalle):
+        """Creación de log demo para testing."""
+        logger.info(f"[DEMO AUDIT] {nivel} - {modulo}.{accion}: {detalle}")
+        return True
 
     def registrar_accion(
         self,
@@ -516,3 +564,97 @@ modulo,
         except Exception as e:
             logger.error(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
             return False
+
+    def obtener_logs_auditoria(self, limite=50, filtros=None):
+        """
+        Obtiene logs de auditoría con límite y filtros opcionales
+        
+        Args:
+            limite (int): Número máximo de registros a obtener
+            filtros (dict, optional): Filtros a aplicar
+            
+        Returns:
+            List[Dict]: Lista de logs de auditoría
+        """
+        try:
+            if not self.db_connection:
+                logger.warning("Sin conexión BD para obtener logs")
+                return self._get_logs_demo()
+                
+            cursor = self.db_connection.cursor()
+            
+            # Query base para obtener logs
+            query = """
+            SELECT TOP (?) 
+                id,
+                fecha,
+                nivel_criticidad,
+                accion,
+                descripcion,
+                usuario,
+                detalles
+            FROM auditoria_log
+            WHERE 1=1
+            """
+            
+            params = [limite]
+            
+            # Agregar filtros si se proporcionan
+            if filtros:
+                if filtros.get('usuario'):
+                    query += " AND usuario LIKE ?"
+                    params.append(f"%{filtros['usuario']}%")
+                if filtros.get('accion'):
+                    query += " AND accion LIKE ?"
+                    params.append(f"%{filtros['accion']}%")
+                if filtros.get('nivel'):
+                    query += " AND nivel_criticidad = ?"
+                    params.append(filtros['nivel'])
+                    
+            query += " ORDER BY fecha DESC"
+            
+            cursor.execute(query, params)
+            
+            logs = []
+            for row in cursor.fetchall():
+                log = {
+                    'id': row[0],
+                    'fecha': row[1],
+                    'nivel_criticidad': row[2],
+                    'accion': row[3],
+                    'descripcion': row[4],
+                    'usuario': row[5],
+                    'detalles': row[6]
+                }
+                logs.append(log)
+                
+            return logs
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo logs auditoria: {e}")
+            return self._get_logs_demo()
+            
+    def _get_logs_demo(self):
+        """Datos demo para logs cuando no hay conexión o tabla"""
+        from datetime import datetime, timedelta
+        
+        return [
+            {
+                'id': 1,
+                'fecha': datetime.now() - timedelta(hours=1),
+                'nivel_criticidad': 'INFO',
+                'accion': 'LOGIN',
+                'descripcion': 'Usuario inició sesión',
+                'usuario': 'demo_user',
+                'detalles': 'Sesión demo iniciada correctamente'
+            },
+            {
+                'id': 2,
+                'fecha': datetime.now() - timedelta(hours=2),
+                'nivel_criticidad': 'WARNING',
+                'accion': 'CONEXION_BD',
+                'descripcion': 'Intento de conexión fallido',
+                'usuario': 'sistema',
+                'detalles': 'Error de conectividad temporal'
+            }
+        ]

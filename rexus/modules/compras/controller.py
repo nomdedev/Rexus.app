@@ -27,15 +27,20 @@ class ComprasController(BaseController):
     # Señales
     datos_actualizados = pyqtSignal()
 
-    def __init__(self, model, view, db_connection=None):
+    def __init__(self, model=None, view=None, db_connection=None):
         """
         Inicializa el controlador.
 
         Args:
-            model: Modelo de compras
-            view: Vista de compras
+            model: Modelo de compras (opcional)
+            view: Vista de compras (opcional)
             db_connection: Conexión a la base de datos
         """
+        # Crear modelo si no se proporciona
+        if model is None:
+            from rexus.modules.compras.model import ComprasModel
+            model = ComprasModel(db_connection)
+            
         super().__init__(module_name="compras", model=model, view=view, db_connection=db_connection)
         self.model = model
         self.view = view

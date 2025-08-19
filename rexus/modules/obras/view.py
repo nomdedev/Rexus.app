@@ -142,7 +142,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         acciones_panel = self.crear_panel_acciones_obras()
         layout.addWidget(acciones_panel)
 
-        self.tab_widget.addTab(tab_obras, "[CONSTRUCTION] Obras")
+        self.tab_widget.addTab(tab_obras, "Obras")
 
     def crear_panel_control_obras(self) -> QFrame:
         """Crea el panel de control para la pestaña de obras."""
@@ -804,7 +804,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         splitter.setSizes([350, 650])
 
         layout.addWidget(splitter)
-        self.tab_widget.addTab(tab_presupuestos, "[MONEY] Presupuestos")
+        self.tab_widget.addTab(tab_presupuestos, "Presupuestos")
 
     def crear_panel_control_presupuestos(self) -> QFrame:
         """Panel de control para gestión de presupuestos."""
@@ -1028,7 +1028,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             stats_layout.addWidget(widget, pos[0], pos[1])
 
         layout.addLayout(stats_layout)
-        self.tab_widget.addTab(tab_stats, "[CHART] Estadísticas")
+        self.tab_widget.addTab(tab_stats, "Estadísticas")
 
     def crear_widget_resumen_obras(self) -> QWidget:
         """Widget de resumen de obras."""

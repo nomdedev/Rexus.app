@@ -925,6 +925,26 @@ class InventarioView(BaseModuleView):
         """Carga inicial del inventario."""
         self.cargar_inventario()
 
+    def show_error(self, mensaje, titulo="Error"):
+        """
+        Muestra un mensaje de error al usuario.
+        
+        Args:
+            mensaje (str): Mensaje de error a mostrar
+            titulo (str): Título del diálogo de error
+        """
+        try:
+            from rexus.utils.message_system import show_error
+            show_error(mensaje, titulo)
+        except ImportError:
+            # Fallback usando QMessageBox
+            from PyQt6.QtWidgets import QMessageBox
+            msg = QMessageBox()
+            msg.setIcon(QMessageBox.Icon.Critical)
+            msg.setWindowTitle(titulo)
+            msg.setText(mensaje)
+            msg.exec()
+
     # === MÉTODOS PARA PESTAÑAS DE OBRAS ===
 
     def crear_tab_inventario_general(self):

@@ -1016,3 +1016,15 @@ transporte_id,
                 'costo_total_mes': 0.0,
                 'entregas_programadas': 0
             }
+
+    def obtener_todas_entregas(self, filtros=None):
+        """
+        Obtiene todas las entregas (alias para obtener_entregas)
+        
+        Args:
+            filtros (dict, optional): Filtros a aplicar
+            
+        Returns:
+            List[Dict]: Lista de entregas
+        """
+        return self.obtener_entregas(filtros)

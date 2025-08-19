@@ -104,7 +104,7 @@ class MantenimientoView(QWidget):
         """Crea todas las pestañas del módulo."""
         # Pestaña 1: Órdenes de Trabajo
         ordenes_tab = self.create_ordenes_trabajo_tab()
-        self.tab_widget.addTab(ordenes_tab, "[CLIPBOARD] Órdenes de Trabajo")
+        self.tab_widget.addTab(ordenes_tab, "Órdenes de Trabajo")
 
         # Pestaña 2: Mantenimiento Preventivo
         preventivo_tab = self.create_mantenimiento_preventivo_tab()
@@ -112,19 +112,19 @@ class MantenimientoView(QWidget):
 
         # Pestaña 3: Inventario de Repuestos
         inventario_tab = self.create_inventario_repuestos_tab()
-        self.tab_widget.addTab(inventario_tab, "[PACKAGE] Inventario Repuestos")
+        self.tab_widget.addTab(inventario_tab, "Inventario Repuestos")
 
         # Pestaña 4: Equipos y Activos
         equipos_tab = self.create_equipos_activos_tab()
-        self.tab_widget.addTab(equipos_tab, "[SETTINGS] Equipos y Activos")
+        self.tab_widget.addTab(equipos_tab, "Equipos y Activos")
 
         # Pestaña 5: Reportes y Análisis
         reportes_tab = self.create_reportes_analisis_tab()
-        self.tab_widget.addTab(reportes_tab, "[CHART] Reportes y Análisis")
+        self.tab_widget.addTab(reportes_tab, "Reportes y Análisis")
 
         # Pestaña 6: Configuración
         config_tab = self.create_configuracion_tab()
-        self.tab_widget.addTab(config_tab, "[SETTINGS] Configuración")
+        self.tab_widget.addTab(config_tab, "Configuración")
 
     def create_ordenes_trabajo_tab(self):
         """Crea la pestaña de órdenes de trabajo."""

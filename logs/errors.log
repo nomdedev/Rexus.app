@@ -540,3 +540,74 @@ RuntimeError: wrapped C/C++ object of type RexusTable has been deleted
 2025-08-19 16:20:37 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
 2025-08-19 16:24:49 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
 2025-08-19 16:24:49 | ERROR    | rexus.inventario.model | Error obteniendo productos: InventarioModel.obtener_productos_paginados() got an unexpected keyword argument 'filters'
+2025-08-19 16:26:40 | ERROR    | rexus.inventario.model | [ERROR INVENTARIO] No hay conexión a la base de datos. El módulo no funcionará correctamente.
+2025-08-19 16:26:40 | ERROR    | rexus.inventario.model | Error obteniendo productos: InventarioModel.obtener_productos_paginados() got an unexpected keyword argument 'filtro'
+2025-08-19 16:26:43 | ERROR    | rexus.modules.auditoria.model | Error obteniendo logs auditoria: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'auditoria_log'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-19 16:33:47 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-19 16:33:47 | ERROR    | rexus.inventario.model | Error obteniendo productos: Usuario no autenticado
+2025-08-19 16:33:47 | ERROR    | rexus.inventario.model | Error obteniendo lotes: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'lotes_inventario'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-19 16:33:49 | ERROR    | rexus.modules.auditoria.model | Error obteniendo logs auditoria: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'auditoria_log'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-19 16:33:49,113 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 2: character maps to <undefined>
+File: D:\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "<string>", line 73, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 2: character maps to <undefined>
+2025-08-19 16:33:49 | ERROR    | rexus.errors    | Uncaught exception: UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 2: character maps to <undefined>
+Traceback (most recent call last):
+  File "<string>", line 73, in <module>
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f389' in position 2: character maps to <undefined>
+2025-08-19 16:35:02 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-19 16:35:03 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2025-08-19 16:42:34 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-19 16:43:30 | ERROR    | rexus.herrajes.controller | CRITICO: Modelo de herrajes no disponible
+2025-08-19 16:43:30 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2025-08-19 16:43:30,278 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: NameError: name 'missing_controller_methods' is not defined
+File: D:\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "<string>", line 132, in <module>
+NameError: name 'missing_controller_methods' is not defined
+2025-08-19 16:43:30 | ERROR    | rexus.errors    | Uncaught exception: NameError: name 'missing_controller_methods' is not defined
+Traceback (most recent call last):
+  File "<string>", line 132, in <module>
+NameError: name 'missing_controller_methods' is not defined
+2025-08-19 17:03:00 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-19 17:03:01 | ERROR    | rexus.inventario.controller | Error conectando señales: wrapped C/C++ object of type RexusTable has been deleted
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 135, in conectar_senales
+    self.view.tabla_inventario.itemSelectionChanged.connect(
+RuntimeError: wrapped C/C++ object of type RexusTable has been deleted
+2025-08-19 17:03:01 | ERROR    | rexus.core.module_manager | [Inventario] Error cargando datos iniciales: Usuario no autenticado
+2025-08-19 18:12:30 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-19 18:13:35 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-19 18:15:56 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-19 18:15:56 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-19 18:15:58 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-19 18:15:58 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-19 18:17:10,429 - ERROR - rexus.errors - ERROR
+Message: Uncaught exception: AttributeError: 'QDate' object has no attribute 'toPython'
+File: D:\martin\Rexus.app\rexus\utils\error_handler.py:22
+Function: handle_exception
+---
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\administracion\view.py", line 230, in nuevo_empleado
+    datos = dialog.obtener_datos()
+  File "D:\martin\Rexus.app\rexus\modules\administracion\view.py", line 730, in obtener_datos
+    'fecha_ingreso': self.fecha_ingreso_edit.date().toPython()
+AttributeError: 'QDate' object has no attribute 'toPython'
+2025-08-19 18:17:10 | ERROR    | rexus.errors    | Uncaught exception: AttributeError: 'QDate' object has no attribute 'toPython'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\administracion\view.py", line 230, in nuevo_empleado
+    datos = dialog.obtener_datos()
+  File "D:\martin\Rexus.app\rexus\modules\administracion\view.py", line 730, in obtener_datos
+    'fecha_ingreso': self.fecha_ingreso_edit.date().toPython()
+AttributeError: 'QDate' object has no attribute 'toPython'

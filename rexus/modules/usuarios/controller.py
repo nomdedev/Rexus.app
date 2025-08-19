@@ -26,7 +26,12 @@ class UsuariosController(BaseController):
     sesion_iniciada = pyqtSignal(dict)
     sesion_terminada = pyqtSignal(str)
 
-    def __init__(self, model, view, db_connection=None, usuario_actual=None):
+    def __init__(self, model=None, view=None, db_connection=None, usuario_actual=None):
+        # Crear modelo si no se proporciona
+        if model is None:
+            from rexus.modules.usuarios.model import UsuariosModel
+            model = UsuariosModel(db_connection)
+            
         # BaseController inicializa los componentes básicos
         super().__init__("usuarios", model, view, db_connection)
         
