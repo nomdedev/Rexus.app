@@ -1,6 +1,85 @@
 ---
 
-## 🚨 ERRORES DETECTADOS EN EJECUCIÓN (19/08/2025)
+## � ASPECTOS DE MEJORA Y TAREAS TÉCNICAS SUGERIDAS (19/08/2025)
+
+### Inventario
+- Implementar tabla dinámica y filtrable de materiales (stock, separado, ubicación, alertas visuales).
+- Permitir ordenamiento y búsqueda avanzada en la tabla.
+- Integrar carga de archivos PDF de presupuestos con validación, vista previa y asociación a obra.
+- Mostrar historial de presupuestos por obra.
+- Estandarizar nombres de UI (eliminar corchetes, usar nombres claros).
+- Revisar ciclo de vida de widgets y ownership para evitar referencias a objetos eliminados.
+- Validar sesión antes de cargar datos y mostrar mensajes claros si la sesión expiró.
+
+#### Tareas técnicas:
+1. Refactorizar InventarioView para soportar tabla dinámica y filtrable.
+2. Implementar métodos de búsqueda, orden y filtrado en el modelo y la vista.
+3. Crear sistema de carga y asociación de PDFs a obras, con historial.
+4. Auditar y limpiar todos los nombres de UI con corchetes.
+5. Revisar y corregir el ciclo de vida de widgets en el controlador.
+6. Añadir validación de sesión y mensajes de expiración.
+
+### Logística
+- Verificar dependencias (QtWebEngine, folium) y asegurar inicialización correcta del widget de mapa.
+- Agregar fallback o mensaje de ayuda si el mapa no puede mostrarse.
+
+#### Tareas técnicas:
+1. Revisar imports y dependencias de mapa.
+2. Implementar manejo de errores y fallback visual.
+3. Añadir tests de integración para la vista de mapa.
+
+### Pedidos, Vidrios y Materiales
+- Crear selector de obras con búsqueda/autocompletado al crear/editar elementos.
+- Validar que solo se pueda asociar a obras existentes y mostrar info relevante.
+
+#### Tareas técnicas:
+1. Implementar selector de obras reutilizable en formularios de pedidos, vidrios y materiales.
+2. Validar existencia de obra antes de asociar.
+3. Mostrar detalles de la obra seleccionada en el formulario.
+
+### Compras
+- Rediseñar UI para simplificar el flujo de compra.
+- Agregar validaciones en cada paso y mejorar integración con inventario/proveedores.
+- Asegurar que todas las acciones sean auditables.
+- Implementar tests unitarios y de integración.
+
+#### Tareas técnicas:
+1. Refactorizar vistas y controladores de Compras.
+2. Mejorar validaciones y feedback de usuario.
+3. Integrar auditoría de acciones de compra.
+4. Crear tests para flujos principales.
+
+### Administración (Usuarios)
+- Rediseñar formulario de usuario para edición directa de todos los campos (incluyendo cargo).
+- Agregar autocompletado y validaciones en tiempo real.
+- Mejorar visualización de errores y gestión de roles/permisos.
+
+#### Tareas técnicas:
+1. Refactorizar formulario de alta/edición de usuario.
+2. Implementar autocompletado y validaciones live.
+3. Permitir roles personalizados y gestión granular de permisos.
+
+### Obras
+- Revisar y actualizar todos los scripts SQL, asegurando compatibilidad y existencia de columnas/archivos.
+- Implementar tests automáticos para verificar integridad de scripts.
+
+#### Tareas técnicas:
+1. Auditar y actualizar scripts SQL de Obras.
+2. Crear tests automáticos para scripts y migraciones.
+
+### Estilos/QSS
+- Limpiar archivos QSS, eliminando propiedades no soportadas por Qt.
+- Usar solo propiedades compatibles y documentar estilos personalizados.
+
+#### Tareas técnicas:
+1. Auditar todos los archivos QSS.
+2. Eliminar propiedades no soportadas y documentar cambios.
+3. Añadir tests visuales/manuales para validar estilos.
+
+---
+---
+
+## �🚨 ERRORES DETECTADOS EN EJECUCIÓN (19/08/2025)
 ### Inventario
 - Errores de conexión y destrucción de widgets: varios botones y la tabla principal (`RexusButton`, `RexusTable`) ya han sido eliminados al intentar conectar señales.
 - Error conectando señales: `wrapped C/C++ object of type RexusTable has been deleted`.
