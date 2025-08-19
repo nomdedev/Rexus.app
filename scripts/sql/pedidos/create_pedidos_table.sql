@@ -1,8 +1,3 @@
--- Creación de tabla principal de pedidos
--- Archivo: create_pedidos_table.sql
--- Módulo: Pedidos
--- Descripción: Crea la tabla principal de pedidos con todas las relaciones
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos' AND xtype='U')
 CREATE TABLE pedidos (
     id INT IDENTITY(1,1) PRIMARY KEY,

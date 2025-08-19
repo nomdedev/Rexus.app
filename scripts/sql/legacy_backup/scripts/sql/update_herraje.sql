@@ -1,6 +1,3 @@
--- Script seguro para actualizar un herraje
--- Uso: Ejecutar desde backend con parámetros seguros
-
 UPDATE herrajes SET
     descripcion = @descripcion,
     tipo = @tipo,

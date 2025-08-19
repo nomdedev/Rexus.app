@@ -25,6 +25,22 @@ class HerrajesModel:
         self.tabla_herrajes = "herrajes"
         self.tabla_herrajes_obra = "herrajes_obra"
 
+        # Inicializar SQL Manager para consultas seguras
+        from rexus.utils.sql_query_manager import SQLQueryManager
+        self.sql_manager = SQLQueryManager()
+        
+        # Intentar establecer conexión automática si no se proporciona
+        if not self.db_connection:
+            try:
+                from rexus.core.database import get_inventario_connection
+                self.db_connection = get_inventario_connection()
+                if self.db_connection:
+                    logger.info("[HERRAJES] Conexión automática establecida exitosamente")
+                else:
+                    logger.warning("[ERROR HERRAJES] No se pudo establecer conexión automática")
+            except Exception as e:
+                logger.error(f"[ERROR HERRAJES] Error en conexión automática: {e}")
+
         if not self.db_connection:
             print("[ERROR HERRAJES] No hay conexión a la base de datos.")
         else:
@@ -127,6 +143,10 @@ class HerrajesModel:
         except Exception as e:
             logger.error(f"[HERRAJES] Error obteniendo herrajes: {e}")
             return self._get_herrajes_demo()
+
+    def obtener_herrajes(self, filtros=None) -> List[Dict]:
+        """Alias conveniente para obtener_todos_herrajes."""
+        return self.obtener_todos_herrajes(filtros)
 
     def obtener_herrajes_por_obra(self, obra_id: int) -> List[Dict]:
         """

@@ -1,9 +1,4 @@
--- Obtener pedido por ID con detalles completos
--- Archivo: obtener_pedido_por_id.sql
--- Módulo: Pedidos
--- Descripción: Obtiene un pedido específico con todos sus detalles
-
-SELECT 
+SELECT
     p.id,
     p.numero_pedido,
     p.cliente_id,
@@ -30,6 +25,3 @@ SELECT
     p.fecha_modificacion
 FROM [pedidos] p
 WHERE p.id = @pedido_id AND p.activo = 1;
-
--- Ejemplo de uso en Python:
--- cursor.execute(query, {'pedido_id': pedido_id})

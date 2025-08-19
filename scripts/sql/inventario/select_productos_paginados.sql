@@ -1,8 +1,4 @@
--- Consulta segura para obtener productos paginados
--- Utiliza parámetros para OFFSET y LIMIT
--- Los filtros se aplican de forma segura mediante parámetros
-
-SELECT 
+SELECT
     id,
     codigo,
     descripcion,
@@ -19,9 +15,5 @@ SELECT
     fecha_modificacion
 FROM inventario_perfiles
 WHERE activo = 1
-    -- Los filtros dinámicos se agregan en el código usando parámetros seguros:
-    -- AND codigo LIKE ?
-    -- AND descripcion LIKE ?
-    -- AND tipo = ?
 ORDER BY id DESC
 OFFSET ? ROWS FETCH NEXT ? ROWS ONLY;

@@ -1,5 +1,4 @@
--- Obtener vidrio específico por ID
-SELECT 
+SELECT
     id,
     codigo_vidrio,
     descripcion,
@@ -17,5 +16,5 @@ SELECT
     fecha_actualizacion,
     usuario_creacion,
     estado
-FROM vidrios 
+FROM vidrios
 WHERE id = ? AND estado = 'ACTIVO'

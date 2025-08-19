@@ -1,5 +1,4 @@
--- Obtener pagos de obras con detalles
-SELECT 
+SELECT
     po.id,
     po.obra_id,
     po.monto,

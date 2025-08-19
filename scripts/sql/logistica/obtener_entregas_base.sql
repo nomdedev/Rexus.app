@@ -1,8 +1,4 @@
--- scripts/sql/logistica/obtener_entregas_base.sql
--- Consulta base para obtener entregas con información completa
--- Sin parámetros base, pero se aplican filtros dinámicamente
-
-SELECT 
+SELECT
     e.id,
     e.numero_entrega,
     e.fecha_entrega,

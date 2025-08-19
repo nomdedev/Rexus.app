@@ -1,5 +1,3 @@
--- Crear tabla de intentos de login si no existe
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='intentos_login' AND xtype='U')
 CREATE TABLE intentos_login (
     id INT IDENTITY(1,1) PRIMARY KEY,

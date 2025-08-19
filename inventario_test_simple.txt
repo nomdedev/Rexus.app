@@ -1,3 +1,0 @@
-INVENTARIO TEST RESULTS
-==============================
-TODAS LAS FUNCIONES OK

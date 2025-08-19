@@ -1,6 +1,4 @@
--- Obtener registros del libro contable
--- Parámetros opcionales para filtrado
-SELECT 
+SELECT
     id,
     numero_asiento,
     fecha_asiento,

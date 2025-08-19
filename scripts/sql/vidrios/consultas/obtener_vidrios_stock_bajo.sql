@@ -1,5 +1,4 @@
--- Obtiene vidrios con stock por debajo del mínimo
-SELECT 
+SELECT
     v.id,
     v.codigo,
     v.tipo,

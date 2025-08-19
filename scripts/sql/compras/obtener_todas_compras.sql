@@ -1,4 +1,3 @@
--- Obtener todas las órdenes de compra con totales calculados
 SELECT
     c.id, c.proveedor, c.numero_orden, c.fecha_pedido,
     c.fecha_entrega_estimada, c.estado, c.observaciones,

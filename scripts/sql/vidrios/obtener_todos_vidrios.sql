@@ -1,5 +1,4 @@
--- Obtener todos los vidrios con información de stock
-SELECT 
+SELECT
     v.id,
     v.codigo_vidrio,
     v.descripcion,

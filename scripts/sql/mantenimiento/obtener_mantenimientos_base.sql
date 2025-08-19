@@ -1,5 +1,4 @@
--- Obtener mantenimientos con filtros
-SELECT 
+SELECT
     m.id, m.equipo_id, m.tipo_mantenimiento, m.fecha_programada,
     m.fecha_realizada, m.tecnico_responsable, m.estado,
     m.tiempo_estimado, m.tiempo_real, m.costo_estimado, m.costo_real,

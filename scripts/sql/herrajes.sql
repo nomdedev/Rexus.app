@@ -1,7 +1,4 @@
--- Script principal para el módulo Herrajes
--- Consulta todos los herrajes del sistema
-
-SELECT 
+SELECT
     h.ID_Herraje,
     h.Nombre,
     h.Descripcion,

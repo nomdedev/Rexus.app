@@ -1,6 +1,3 @@
--- Insertar nuevo vidrio
--- Archivo: scripts/sql/vidrios/productos/insertar_vidrio.sql
-
 INSERT INTO vidrios (
     codigo,
     tipo,

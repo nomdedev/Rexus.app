@@ -1,8 +1,4 @@
--- Consulta segura para obtener un producto por ID
--- Utiliza la tabla consolidada 'productos'
--- El parámetro ID se debe pasar usando prepared statements
-
-SELECT 
+SELECT
     id, codigo, descripcion, categoria, subcategoria, tipo,
     stock_actual, stock_minimo, stock_maximo, stock_reservado, stock_disponible,
     precio_unitario, precio_promedio, costo_unitario, unidad_medida,
@@ -10,5 +6,5 @@ SELECT
     proveedor, codigo_proveedor, tiempo_entrega_dias,
     observaciones, codigo_qr, imagen_url, propiedades_especiales,
     estado, activo, fecha_creacion, fecha_actualizacion
-FROM productos 
+FROM productos
 WHERE id = ? AND activo = 1;

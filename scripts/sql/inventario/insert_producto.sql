@@ -1,7 +1,3 @@
--- Inserción segura de nuevo producto en inventario
--- Utiliza la tabla consolidada 'productos'
--- Todos los parámetros se deben pasar usando prepared statements
-
 INSERT INTO productos (
     codigo, descripcion, categoria, subcategoria, tipo,
     stock_actual, stock_minimo, stock_maximo, stock_reservado, stock_disponible,

@@ -1,2 +1,0 @@
-timestamp,error_type,error_message,strategy,success,retry_count,execution_time
-2025-08-18 08:10:07.682217,RuntimeError,"Falla simulada en operación crítica",retry,True,2,1.277242660522461

@@ -288,3 +288,110 @@
 2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
 2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
 2025-08-18 20:58:55 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 11:53:33 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 11:53:33 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 11:53:33 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 11:53:33 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 11:53:54 | INFO     | rexus.modules.obras.model | [OBRAS] Sin conexión a BD - omitiendo verificación de tablas
+2025-08-19 11:54:18 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-19 11:55:55 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-19 11:55:55 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-19 11:55:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-19 11:55:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-19 11:55:57 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-19 11:55:57 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-19 12:01:10 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:01:10 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:01:10 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:01:10 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:02:18 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-19 12:06:41 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:06:41 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:06:41 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:06:41 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:06:41 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-19 12:06:41 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo demo - funcionalidad limitada
+2025-08-19 12:34:29 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:34:29 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:34:29 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:34:29 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:34:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:34:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:34:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:34:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:37:33 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:37:33 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:37:33 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:37:33 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:37:34 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:37:34 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:37:34 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:37:34 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:22 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:43:22 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:43:22 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:43:22 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:43:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:43:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:43:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:43:59 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:43:59 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:43:59 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:43:59 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:49:38 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:49:38 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:49:38 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:49:38 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:49:38 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:49:38 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:49:38 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:49:38 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:49:39 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 12:49:39 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 12:49:39 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 12:49:39 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 12:49:39 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 12:49:39 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 12:49:39 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 12:49:39 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 16:20:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 16:20:13 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 16:20:13 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 16:20:13 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 16:20:14 | INFO     | rexus.modules.obras.model | [OBRAS] Sin conexión a BD - omitiendo verificación de tablas
+2025-08-19 16:20:14 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 16:20:14 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 16:20:15 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 16:20:15 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 16:20:15 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-19 16:20:15 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-19 16:20:37 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 16:20:37 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 16:20:37 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 16:20:37 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 16:20:37 | INFO     | rexus.modules.obras.model | [OBRAS] Sin conexión a BD - omitiendo verificación de tablas
+2025-08-19 16:20:37 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-19 16:20:37 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-19 16:20:37 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 16:20:37 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-19 16:24:49 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-19 16:24:49 | WARNING  | rexus.modules.inventario.submodules.reservas_manager | Utilidades base no disponibles en ReservasManager
+2025-08-19 16:24:49 | WARNING  | rexus.modules.inventario.submodules.reportes_manager | Utilidades base no disponibles en ReportesManager
+2025-08-19 16:24:49 | WARNING  | rexus.modules.inventario.submodules.categorias_manager | Utilidades base no disponibles en CategoriasManager
+2025-08-19 16:24:50 | INFO     | rexus.modules.herrajes.model | [HERRAJES] Conexión automática establecida exitosamente
+2025-08-19 16:24:50 | INFO     | rexus.modules.obras.model | [OBRAS] Conexión automática establecida exitosamente
+2025-08-19 16:24:50 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-19 16:24:50 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-19 16:24:50 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo todas las obras: ('The SQL contains 0 parameter markers, but 2 parameters were supplied', 'HY000')
+2025-08-19 16:24:50 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-19 16:24:50 | INFO     | rexus.modules.auditoria.model | [AUDITORIA] Conexión automática establecida exitosamente
+2025-08-19 16:24:50 | WARNING  | rexus.modules.auditoria.model | [ADVERTENCIA] La tabla 'auditoria_log' no existe en la base de datos.

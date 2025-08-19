@@ -1,5 +1,4 @@
--- Obtiene todos los vidrios con información completa
-SELECT 
+SELECT
     v.id,
     v.codigo,
     v.tipo,

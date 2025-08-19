@@ -1,8 +1,3 @@
--- Creación de tabla de historial de estados de pedidos
--- Archivo: create_pedidos_historial_table.sql
--- Módulo: Pedidos
--- Descripción: Tabla para auditoría de cambios de estado
-
 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_historial' AND xtype='U')
 CREATE TABLE pedidos_historial (
     id INT IDENTITY(1,1) PRIMARY KEY,

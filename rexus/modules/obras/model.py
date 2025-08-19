@@ -62,6 +62,19 @@ class ObrasModel:
         self.sql_loader = sql_script_loader
         # Permitir inyectar un sanitizer para tests, si no usar el global
         self.data_sanitizer = data_sanitizer_instance if data_sanitizer_instance else data_sanitizer
+        
+        # Intentar establecer conexión automática si no se proporciona
+        if not self.db_connection:
+            try:
+                from rexus.core.database import get_inventario_connection
+                self.db_connection = get_inventario_connection()
+                if self.db_connection:
+                    logger.info("[OBRAS] Conexión automática establecida exitosamente")
+                else:
+                    logger.warning("[ERROR OBRAS] No se pudo establecer conexión automática")
+            except Exception as e:
+                logger.error(f"[ERROR OBRAS] Error en conexión automática: {e}")
+        
         self._verificar_tablas()
 
     def _validate_table_name(self, table_name: str) -> str:

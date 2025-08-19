@@ -1,5 +1,4 @@
--- Búsqueda avanzada de vidrios por múltiples campos
-SELECT 
+SELECT
     v.id,
     v.codigo,
     v.tipo,

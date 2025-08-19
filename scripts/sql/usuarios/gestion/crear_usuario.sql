@@ -1,4 +1,3 @@
--- Crear nuevo usuario
 INSERT INTO usuarios (
     username,
     password_hash,

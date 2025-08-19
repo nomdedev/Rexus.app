@@ -1,4 +1,3 @@
--- Obtiene productos asignados a una obra específica
 SELECT i.id, i.codigo, i.descripcion, i.categoria, i.stock_actual,
        mo.cantidad as cantidad_asignada, mo.estado, mo.fecha_asignacion,
        mo.etapa_id, mo.observaciones

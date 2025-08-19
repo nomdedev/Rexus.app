@@ -1,4 +1,3 @@
--- Actualizar asiento contable existente
 UPDATE libro_contable
 SET fecha_asiento = ?,
     descripcion = ?,

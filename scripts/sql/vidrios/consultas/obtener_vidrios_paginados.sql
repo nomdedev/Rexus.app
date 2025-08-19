@@ -1,5 +1,4 @@
--- Obtiene vidrios con paginación
-SELECT 
+SELECT
     v.id,
     v.codigo,
     v.tipo,

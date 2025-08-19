@@ -286,3 +286,36 @@ def sql_performance_monitor(query_name: str):
 
 # Instancia global del monitor
 performance_monitor = PerformanceMonitor()
+
+# Factory functions
+def get_performance_monitor() -> PerformanceMonitor:
+    """Obtiene la instancia global del monitor de rendimiento"""
+    return performance_monitor
+
+def get_query_optimizer():
+    """Obtiene una nueva instancia del optimizador de consultas"""
+    class QueryOptimizer:
+        """Analizador y optimizador de consultas SQL básico"""
+        
+        def __init__(self):
+            self.slow_queries = []
+            self.query_stats = {}
+            self.logger = get_logger(self.__class__.__name__)
+            
+        def get_query_statistics(self):
+            """Obtiene estadísticas básicas de consultas"""
+            return {
+                "message": "Sistema de optimización de consultas inicializado",
+                "slow_queries_count": len(self.slow_queries),
+                "total_queries": len(self.query_stats)
+            }
+            
+        def get_optimization_recommendations(self):
+            """Obtiene recomendaciones básicas"""
+            return [
+                "Revisar índices en tablas principales",
+                "Optimizar consultas con múltiples JOINs",
+                "Considerar paginación en consultas grandes"
+            ]
+    
+    return QueryOptimizer()

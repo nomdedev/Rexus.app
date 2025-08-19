@@ -1,4 +1,3 @@
--- Actualizar recibo existente
 UPDATE recibos
 SET fecha_recibo = ?,
     cliente = ?,

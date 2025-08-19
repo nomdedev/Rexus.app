@@ -1,5 +1,4 @@
--- Reporte de vidrios por proveedor
-SELECT 
+SELECT
     v.proveedor,
     COUNT(*) as total_productos,
     SUM(v.stock * v.precio) as valor_inventario,

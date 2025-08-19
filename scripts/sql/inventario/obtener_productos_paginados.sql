@@ -1,8 +1,4 @@
--- Consulta optimizada para obtener productos de inventario paginados
--- Optimizada para tablas grandes con índices apropiados
--- Parámetros: offset, limit
-
-SELECT 
+SELECT
     id,
     codigo_producto,
     nombre,
@@ -15,8 +11,7 @@ SELECT
     estado,
     fecha_creacion,
     fecha_actualizacion,
-    -- Campos calculados para mejor UX
-    CASE 
+    CASE
         WHEN stock_actual <= 0 THEN 'SIN_STOCK'
         WHEN stock_actual <= stock_minimo THEN 'STOCK_BAJO'
         WHEN stock_actual <= (stock_minimo * 2) THEN 'STOCK_MEDIO'

@@ -1,4 +1,3 @@
--- Cuenta vidrios por tipo
 SELECT v.tipo, COUNT(*) as cantidad
 FROM vidrios v
 WHERE v.activo = 1

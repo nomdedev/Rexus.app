@@ -1,8 +1,4 @@
--- Consultas SQL para consultas y estadísticas de obras
--- Archivo: consultas_obras.sql
-
--- Consulta para búsqueda avanzada de obras
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -22,9 +18,7 @@ WHERE (
     o.direccion LIKE ?
 )
 ORDER BY o.fecha_inicio DESC;
-
--- Consulta para obtener estadísticas generales de obras
-SELECT 
+SELECT
     COUNT(*) AS total_obras,
     COUNT(CASE WHEN estado = 'activa' THEN 1 END) AS obras_activas,
     COUNT(CASE WHEN estado = 'completada' THEN 1 END) AS obras_completadas,
@@ -36,9 +30,7 @@ SELECT
     SUM(costo_real) AS costo_real_total
 FROM obras
 WHERE deleted_at IS NULL;
-
--- Consulta para obtener obras con paginación
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -54,15 +46,11 @@ LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE 1=1
 ORDER BY o.fecha_inicio DESC
 LIMIT ? OFFSET ?;
-
--- Consulta para contar total de obras (para paginación)
 SELECT COUNT(*) AS total_count
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE 1=1;
-
--- Consulta para obtener obras vencidas
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -75,30 +63,26 @@ SELECT
     o.presupuesto
 FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
-WHERE o.fecha_fin_estimada < NOW() 
+WHERE o.fecha_fin_estimada < NOW()
   AND o.estado NOT IN ('completada', 'cancelada')
 ORDER BY o.fecha_fin_estimada ASC;
-
--- Consulta para reporte de productividad por periodo
-SELECT 
+SELECT
     DATE_FORMAT(o.fecha_inicio, '%Y-%m') AS periodo,
     COUNT(*) AS obras_iniciadas,
     COUNT(CASE WHEN o.fecha_fin_real IS NOT NULL THEN 1 END) AS obras_completadas,
     AVG(DATEDIFF(COALESCE(o.fecha_fin_real, NOW()), o.fecha_inicio)) AS duracion_promedio_dias,
     SUM(o.presupuesto) AS presupuesto_total,
     SUM(o.costo_real) AS costo_real_total,
-    CASE 
-        WHEN SUM(o.presupuesto) > 0 THEN 
+    CASE
+        WHEN SUM(o.presupuesto) > 0 THEN
             ((SUM(o.presupuesto) - SUM(COALESCE(o.costo_real, 0))) / SUM(o.presupuesto) * 100)
-        ELSE 0 
+        ELSE 0
     END AS margen_promedio_porcentaje
 FROM obras o
 WHERE o.fecha_inicio BETWEEN ? AND ?
 GROUP BY DATE_FORMAT(o.fecha_inicio, '%Y-%m')
 ORDER BY periodo DESC;
-
--- Consulta para obtener obras por cliente
-SELECT 
+SELECT
     c.id AS cliente_id,
     c.nombre AS cliente_nombre,
     COUNT(o.id) AS total_obras,
@@ -111,9 +95,7 @@ LEFT JOIN obras o ON c.id = o.cliente_id
 GROUP BY c.id, c.nombre
 HAVING COUNT(o.id) > 0
 ORDER BY total_obras DESC;
-
--- Consulta para obtener top clientes por facturación
-SELECT 
+SELECT
     c.id AS cliente_id,
     c.nombre AS cliente_nombre,
     COUNT(o.id) AS total_obras,
@@ -125,18 +107,16 @@ WHERE o.estado = 'completada'
 GROUP BY c.id, c.nombre
 ORDER BY facturacion_total DESC
 LIMIT 10;
-
--- Consulta para análisis de rentabilidad por obra
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.presupuesto,
     o.costo_real,
     (o.presupuesto - COALESCE(o.costo_real, 0)) AS ganancia,
-    CASE 
-        WHEN o.presupuesto > 0 THEN 
+    CASE
+        WHEN o.presupuesto > 0 THEN
             ((o.presupuesto - COALESCE(o.costo_real, 0)) / o.presupuesto * 100)
-        ELSE 0 
+        ELSE 0
     END AS margen_porcentaje,
     o.estado,
     c.nombre AS cliente_nombre
@@ -144,9 +124,7 @@ FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE o.estado = 'completada'
 ORDER BY margen_porcentaje DESC;
-
--- Consulta para obtener obras por estado específico
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.descripcion,
@@ -162,63 +140,55 @@ FROM obras o
 LEFT JOIN clientes c ON o.cliente_id = c.id
 WHERE o.estado = ?
 ORDER BY o.fecha_inicio DESC;
-
--- Consulta para dashboard de métricas
-SELECT 
+SELECT
     'obras_totales' AS metrica,
     COUNT(*) AS valor
 FROM obras
 WHERE deleted_at IS NULL
 UNION ALL
-SELECT 
+SELECT
     'obras_activas' AS metrica,
     COUNT(*) AS valor
 FROM obras
 WHERE estado = 'activa' AND deleted_at IS NULL
 UNION ALL
-SELECT 
+SELECT
     'obras_vencidas' AS metrica,
     COUNT(*) AS valor
 FROM obras
-WHERE fecha_fin_estimada < NOW() 
+WHERE fecha_fin_estimada < NOW()
   AND estado NOT IN ('completada', 'cancelada')
   AND deleted_at IS NULL
 UNION ALL
-SELECT 
+SELECT
     'presupuesto_total' AS metrica,
     COALESCE(SUM(presupuesto), 0) AS valor
 FROM obras
 WHERE estado = 'activa' AND deleted_at IS NULL;
-
--- Consulta para obtener progreso semanal
-SELECT 
+SELECT
     YEARWEEK(o.fecha_inicio) AS semana,
     COUNT(*) AS obras_iniciadas,
-    COUNT(CASE WHEN o.fecha_fin_real IS NOT NULL 
-               AND YEARWEEK(o.fecha_fin_real) = YEARWEEK(o.fecha_inicio) 
+    COUNT(CASE WHEN o.fecha_fin_real IS NOT NULL
+               AND YEARWEEK(o.fecha_fin_real) = YEARWEEK(o.fecha_inicio)
           THEN 1 END) AS obras_completadas_misma_semana
 FROM obras o
 WHERE o.fecha_inicio >= DATE_SUB(NOW(), INTERVAL 12 WEEK)
 GROUP BY YEARWEEK(o.fecha_inicio)
 ORDER BY semana DESC;
-
--- Consulta para análisis de duración vs presupuesto
-SELECT 
+SELECT
     o.id,
     o.nombre,
     o.presupuesto,
     DATEDIFF(COALESCE(o.fecha_fin_real, NOW()), o.fecha_inicio) AS duracion_dias,
-    CASE 
+    CASE
         WHEN DATEDIFF(COALESCE(o.fecha_fin_real, NOW()), o.fecha_inicio) > 0 THEN
             (o.presupuesto / DATEDIFF(COALESCE(o.fecha_fin_real, NOW()), o.fecha_inicio))
-        ELSE 0 
+        ELSE 0
     END AS presupuesto_por_dia
 FROM obras o
 WHERE o.fecha_inicio IS NOT NULL
 ORDER BY presupuesto_por_dia DESC;
-
--- Consulta para alertas de obras
-SELECT 
+SELECT
     'vencimiento_proximo' AS tipo_alerta,
     o.id,
     o.nombre,
@@ -228,7 +198,7 @@ FROM obras o
 WHERE o.fecha_fin_estimada BETWEEN NOW() AND DATE_ADD(NOW(), INTERVAL 7 DAY)
   AND o.estado NOT IN ('completada', 'cancelada')
 UNION ALL
-SELECT 
+SELECT
     'presupuesto_excedido' AS tipo_alerta,
     o.id,
     o.nombre,

@@ -1,5 +1,4 @@
--- Reporte completo de inventario con categorías y stock
-SELECT 
+SELECT
     ip.id,
     ip.codigo,
     ip.tipo,
@@ -15,7 +14,7 @@ SELECT
     ip.proveedor,
     ip.fecha_creacion,
     ip.fecha_modificacion,
-    CASE 
+    CASE
         WHEN ip.stock_actual = 0 THEN 'Sin Stock'
         WHEN ip.stock_actual <= ip.stock_minimo THEN 'Stock Bajo'
         ELSE 'En Stock'

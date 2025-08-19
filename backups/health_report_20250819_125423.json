@@ -1,0 +1,455 @@
+{
+  "timestamp": "2025-08-19T12:54:20.274644",
+  "system_info": {
+    "python_version": "3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]",
+    "platform": "win32",
+    "working_directory": "D:\\martin\\Rexus.app"
+  },
+  "file_stats": {
+    "total_files": 15943,
+    "total_size_mb": 981.1972427368164,
+    "file_types": {
+      ".example": {
+        "count": 1,
+        "size": 943
+      },
+      ".md": {
+        "count": 121,
+        "size": 393992
+      },
+      ".yml": {
+        "count": 12,
+        "size": 30004
+      },
+      ".py": {
+        "count": 4732,
+        "size": 65770199
+      },
+      ".log": {
+        "count": 20,
+        "size": 1600662
+      },
+      ".txt": {
+        "count": 140,
+        "size": 330714
+      },
+      ".properties": {
+        "count": 1,
+        "size": 0
+      },
+      ".sh": {
+        "count": 1,
+        "size": 0
+      },
+      ".json": {
+        "count": 12,
+        "size": 2018386
+      },
+      ".sample": {
+        "count": 14,
+        "size": 25827
+      },
+      ".3": {
+        "count": 2,
+        "size": 1410
+      },
+      ".4": {
+        "count": 2,
+        "size": 619
+      },
+      ".0": {
+        "count": 3,
+        "size": 11827
+      },
+      ".idx": {
+        "count": 4,
+        "size": 1495904
+      },
+      ".pack": {
+        "count": 4,
+        "size": 289440929
+      },
+      ".rev": {
+        "count": 1,
+        "size": 19560
+      },
+      ".tag": {
+        "count": 1,
+        "size": 191
+      },
+      ".cfg": {
+        "count": 3,
+        "size": 4382
+      },
+      ".pyd": {
+        "count": 150,
+        "size": 71227392
+      },
+      ".pth": {
+        "count": 4,
+        "size": 1192
+      },
+      ".whl": {
+        "count": 1,
+        "size": 0
+      },
+      ".pyi": {
+        "count": 356,
+        "size": 3780101
+      },
+      ".html": {
+        "count": 296,
+        "size": 32373644
+      },
+      ".conf": {
+        "count": 4,
+        "size": 3098
+      },
+      ".css_t": {
+        "count": 1,
+        "size": 15236
+      },
+      ".css": {
+        "count": 34,
+        "size": 267585
+      },
+      ".svg": {
+        "count": 54,
+        "size": 477195
+      },
+      ".rst": {
+        "count": 11,
+        "size": 23268
+      },
+      ".typed": {
+        "count": 48,
+        "size": 691
+      },
+      ".dat": {
+        "count": 1069,
+        "size": 40790293
+      },
+      ".unicode": {
+        "count": 1,
+        "size": 2033
+      },
+      ".pem": {
+        "count": 2,
+        "size": 577691
+      },
+      ".h": {
+        "count": 32,
+        "size": 443484
+      },
+      ".js": {
+        "count": 115,
+        "size": 1277447
+      },
+      ".png": {
+        "count": 1186,
+        "size": 2883627
+      },
+      ".scss": {
+        "count": 1,
+        "size": 21737
+      },
+      ".apache": {
+        "count": 3,
+        "size": 31708
+      },
+      ".bsd": {
+        "count": 3,
+        "size": 4220
+      },
+      ".gz": {
+        "count": 4,
+        "size": 157101
+      },
+      ".tex": {
+        "count": 4,
+        "size": 1998
+      },
+      ".sty": {
+        "count": 21,
+        "size": 294540
+      },
+      ".odt": {
+        "count": 1,
+        "size": 16500
+      },
+      ".python": {
+        "count": 1,
+        "size": 14688
+      },
+      ".c": {
+        "count": 53,
+        "size": 105389
+      },
+      ".pxd": {
+        "count": 7,
+        "size": 107425
+      },
+      ".f90": {
+        "count": 60,
+        "size": 29992
+      },
+      ".f": {
+        "count": 24,
+        "size": 11332
+      },
+      ".pyf": {
+        "count": 7,
+        "size": 2433
+      },
+      ".inc": {
+        "count": 1,
+        "size": 17
+      },
+      ".f95": {
+        "count": 1,
+        "size": 144
+      },
+      ".template": {
+        "count": 1,
+        "size": 1654
+      },
+      ".lib": {
+        "count": 66,
+        "size": 479483
+      },
+      ".npy": {
+        "count": 5,
+        "size": 1033
+      },
+      ".npz": {
+        "count": 2,
+        "size": 819
+      },
+      ".csv": {
+        "count": 30,
+        "size": 1391679
+      },
+      ".pyx": {
+        "count": 4,
+        "size": 14704
+      },
+      ".build": {
+        "count": 3,
+        "size": 4744
+      },
+      ".ini": {
+        "count": 4,
+        "size": 1420
+      },
+      ".pc": {
+        "count": 1,
+        "size": 198
+      },
+      ".pkl": {
+        "count": 1,
+        "size": 716
+      },
+      ".cpp": {
+        "count": 1,
+        "size": 6012
+      },
+      ".fits": {
+        "count": 1,
+        "size": 8640
+      },
+      ".dll": {
+        "count": 223,
+        "size": 384762416
+      },
+      ".toml": {
+        "count": 52,
+        "size": 35905
+      },
+      ".tpl": {
+        "count": 7,
+        "size": 8486
+      },
+      ".exe": {
+        "count": 54,
+        "size": 6630518
+      },
+      ".sip": {
+        "count": 783,
+        "size": 3254840
+      },
+      ".sip5": {
+        "count": 1,
+        "size": 22
+      },
+      ".qmltypes": {
+        "count": 63,
+        "size": 2058898
+      },
+      ".qml": {
+        "count": 808,
+        "size": 3441862
+      },
+      ".metainfo": {
+        "count": 8,
+        "size": 97879
+      },
+      ".frag": {
+        "count": 2,
+        "size": 214
+      },
+      ".mesh": {
+        "count": 1,
+        "size": 128684
+      },
+      ".api": {
+        "count": 2,
+        "size": 1829930
+      },
+      ".pak": {
+        "count": 57,
+        "size": 52967004
+      },
+      ".bin": {
+        "count": 2,
+        "size": 2821381
+      },
+      ".qm": {
+        "count": 216,
+        "size": 9643804
+      },
+      ".tab": {
+        "count": 8,
+        "size": 98588
+      },
+      ".zi": {
+        "count": 2,
+        "size": 214940
+      },
+      ".tmpl": {
+        "count": 2,
+        "size": 356
+      },
+      ".xml": {
+        "count": 3,
+        "size": 1553
+      },
+      ".pot": {
+        "count": 7,
+        "size": 99543
+      },
+      ".mo": {
+        "count": 341,
+        "size": 2111358
+      },
+      ".po": {
+        "count": 341,
+        "size": 7221413
+      },
+      ".jinja": {
+        "count": 40,
+        "size": 143308
+      },
+      ".hhc": {
+        "count": 2,
+        "size": 1593
+      },
+      ".hhp": {
+        "count": 2,
+        "size": 2197
+      },
+      ".stp": {
+        "count": 2,
+        "size": 330
+      },
+      ".xdy": {
+        "count": 4,
+        "size": 42919
+      },
+      ".ist": {
+        "count": 1,
+        "size": 392
+      },
+      ".cls": {
+        "count": 2,
+        "size": 7497
+      },
+      ".gif": {
+        "count": 1,
+        "size": 49
+      },
+      ".html_t": {
+        "count": 1,
+        "size": 403
+      },
+      ".qhcp": {
+        "count": 1,
+        "size": 567
+      },
+      ".qhp": {
+        "count": 1,
+        "size": 863
+      },
+      ".eot": {
+        "count": 7,
+        "size": 1367872
+      },
+      ".ttf": {
+        "count": 7,
+        "size": 2975764
+      },
+      ".woff": {
+        "count": 13,
+        "size": 2987200
+      },
+      ".woff2": {
+        "count": 13,
+        "size": 1857936
+      },
+      ".js_t": {
+        "count": 1,
+        "size": 7243
+      },
+      ".bat": {
+        "count": 2,
+        "size": 1389
+      },
+      ".ps1": {
+        "count": 2,
+        "size": 22818
+      },
+      ".zip": {
+        "count": 1,
+        "size": 2601229
+      },
+      ".print_backup": {
+        "count": 10,
+        "size": 175804
+      },
+      ".sql_backup": {
+        "count": 10,
+        "size": 369794
+      },
+      ".backup": {
+        "count": 2,
+        "size": 59214
+      },
+      ".sql": {
+        "count": 1210,
+        "size": 372341
+      },
+      ".jpg": {
+        "count": 2,
+        "size": 92654
+      },
+      ".jpeg": {
+        "count": 1,
+        "size": 219181
+      },
+      ".qss": {
+        "count": 31,
+        "size": 296544
+      }
+    }
+  },
+  "maintenance_results": {}
+}
