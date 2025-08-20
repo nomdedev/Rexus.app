@@ -402,9 +402,10 @@ class InventarioView(BaseModuleView):
 
     def configurar_tabla_mejorada(self):
         """Configura la tabla con todas las funcionalidades mejoradas."""
-        # Configurar columnas con más información
+        # Configurar columnas con información completa de stock
         columnas = [
-            "[CLIPBOARD] Código", "[NOTE] Descripción", "📂 Categoría", "[PACKAGE] Stock",
+            "[CLIPBOARD] Código", "[NOTE] Descripción", "📂 Categoría", 
+            "[PACKAGE] Stock Total", "📦 Stock Disponible", "🔒 Stock Separado",
             "[MONEY] Precio", "[CHART] Estado", "📍 Ubicación", "📅 Actualización"
         ]
 
@@ -415,8 +416,8 @@ class InventarioView(BaseModuleView):
         header = self.tabla_inventario.horizontalHeader()
         header.setStretchLastSection(True)
 
-        # Tamaños de columnas optimizados
-        anchos = [80, 200, 100, 70, 80, 80, 100, 120]
+        # Tamaños de columnas optimizados para las nuevas columnas
+        anchos = [80, 180, 90, 70, 80, 80, 80, 80, 100, 120]
         for i, ancho in enumerate(anchos):
             if i < len(anchos):
                 header.resizeSection(i, ancho)

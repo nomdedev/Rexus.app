@@ -170,6 +170,26 @@ class UsuariosModel:
 
         # Las tablas deben existir previamente - no crear desde la aplicación
 
+    def _validate_database_connection(self) -> bool:
+        """Valida que la conexión a la base de datos esté disponible y funcional."""
+        try:
+            if self.db_connection is None:
+                logger.error("Conexión a base de datos es None")
+                return False
+            
+            if not hasattr(self.db_connection, 'cursor'):
+                logger.error("La conexión no tiene método cursor")
+                return False
+                
+            # Probar conexión
+            cursor = self.db_connection.cursor()
+            cursor.close()
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error validando conexión a base de datos: {e}")
+            return False
+
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
@@ -241,7 +261,7 @@ class UsuariosModel:
             self._validate_table_name(self.tabla_usuarios)
 
             # Validar conexión BD antes de crear cursor
-            if not self.db_connection:
+            if not self._validate_database_connection():
                 logger.error("Conexión BD no disponible en validar_usuario_duplicado")
                 return resultado
                 

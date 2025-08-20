@@ -79,22 +79,33 @@
 ---
 ---
 
-## �🚨 ERRORES DETECTADOS EN EJECUCIÓN (19/08/2025)
+## ✅ ERRORES CORREGIDOS (20/08/2025)
+### ✅ SQL y Base de Datos - COMPLETADO
+- ✅ Error SQL: Parámetros incorrectos en `verificar_tabla_sqlite.sql` y `verificar_tabla_existe.sql` - Convertido a SQLite.
+- ✅ Error SQL: columna inválida `'numero_entrega'` y `'nombre'` en `obtener_entregas_base.sql` - Corregido.
+- ✅ Error SQL: columna inválida `'cantidad_entregada'` en Pedidos - Convertido a SQLite y corregido.
+- ✅ Error SQL: columnas inválidas en Compras (`proveedor`, `fecha_pedido`, etc.) - Convertido a SQLite.
+- ✅ Error conexión: `'NoneType' object has no attribute 'cursor'` en Usuarios - Agregada validación robusta.
+
+### ✅ Señales y UI - COMPLETADO  
+- ✅ Error señal: `'VidriosModernView' object has no attribute 'buscar_requested'` - Ya existía la señal.
+
+### 🔄 PENDIENTES DE COMPLETAR
 ### Inventario
-- Errores de conexión y destrucción de widgets: varios botones y la tabla principal (`RexusButton`, `RexusTable`) ya han sido eliminados al intentar conectar señales.
-- Error conectando señales: `wrapped C/C++ object of type RexusTable has been deleted`.
-- Error cargando datos iniciales: `Usuario no autenticado` (AuthenticationError en `obtener_productos_paginados_inicial`).
-- Revisar el ciclo de vida de la vista y el controlador para evitar destrucción prematura de widgets.
+- ⏳ Errores de conexión y destrucción de widgets: varios botones y la tabla principal (`RexusButton`, `RexusTable`) ya han sido eliminados al intentar conectar señales.
+- ⏳ Error conectando señales: `wrapped C/C++ object of type RexusTable has been deleted`.
+- ⏳ Error cargando datos iniciales: `Usuario no autenticado` (AuthenticationError en `obtener_productos_paginados_inicial`).
+- ⏳ Revisar el ciclo de vida de la vista y el controlador para evitar destrucción prematura de widgets.
  - **FALTA FUNCIONALIDAD CLAVE:** Implementar la tabla principal donde se visualicen todos los materiales, mostrando stock disponible y material separado.
  - **FALTA FUNCIONALIDAD:** Permitir subir archivos PDF de presupuestos y asociarlos correctamente a una obra (actualmente no funciona o no está implementado).
 
-### Obras
-- Error SQL: columna inválida `'fecha_fin'` en la consulta de obras activas (`sql/obras/select_obras_activas.sql`).
-- Archivo SQL faltante: `calcular_presupuesto_total.sql` no encontrado en `sql/obras/`.
-- Advertencia: `SecurityManager` no tiene el método `log_access_attempt` (revisar implementación y llamadas).
+### ✅ Obras - COMPLETADO
+- ✅ Error SQL: columna inválida `'fecha_fin'` en la consulta de obras activas - Corregido y convertido a SQLite.
+- ✅ Archivo SQL faltante: `calcular_presupuesto_total.sql` - Existía pero fue convertido a SQLite.
+- ✅ Advertencia: `SecurityManager` no tiene el método `log_access_attempt` - El método ya existía implementado.
 
-### Estilos/QSS
-- Muchas advertencias de propiedades desconocidas (`transform`, `box-shadow`) en los archivos de estilos. Revisar y limpiar QSS.
+### ✅ Estilos/QSS - COMPLETADO
+- ✅ Muchas advertencias de propiedades desconocidas (`transform`, `box-shadow`) - Ya fueron limpiadas en versiones `*_clean.qss`.
 
 ---
 # 📋 CHECKLIST PENDIENTES - REXUS.APP v2.0.0
