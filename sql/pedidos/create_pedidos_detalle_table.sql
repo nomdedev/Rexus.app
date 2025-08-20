@@ -1,19 +1,18 @@
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos_detalle' AND xtype='U')
-CREATE TABLE pedidos_detalle (
-    id INT IDENTITY(1,1) PRIMARY KEY,
-    pedido_id INT NOT NULL,
-    producto_id INT,
-    codigo_producto NVARCHAR(50),
-    descripcion NVARCHAR(255) NOT NULL,
-    categoria NVARCHAR(100),
-    cantidad DECIMAL(10,3) NOT NULL,
-    unidad_medida NVARCHAR(20) NOT NULL DEFAULT 'UND',
-    precio_unitario DECIMAL(12,2) NOT NULL,
-    descuento_item DECIMAL(12,2) NOT NULL DEFAULT 0,
-    subtotal_item DECIMAL(12,2) NOT NULL,
-    observaciones_item NTEXT,
-    cantidad_entregada DECIMAL(10,3) NOT NULL DEFAULT 0,
-    cantidad_pendiente AS (cantidad - cantidad_entregada) PERSISTED,
-    fecha_creacion DATETIME NOT NULL DEFAULT GETDATE(),
+-- Crear tabla pedidos_detalle (SQLite)
+CREATE TABLE IF NOT EXISTS pedidos_detalle (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    pedido_id INTEGER NOT NULL,
+    producto_id INTEGER,
+    codigo_producto TEXT,
+    descripcion TEXT NOT NULL,
+    categoria TEXT,
+    cantidad REAL NOT NULL,
+    unidad_medida TEXT NOT NULL DEFAULT 'UND',
+    precio_unitario REAL NOT NULL,
+    descuento_item REAL NOT NULL DEFAULT 0,
+    subtotal_item REAL NOT NULL,
+    observaciones_item TEXT,
+    cantidad_entregada REAL NOT NULL DEFAULT 0,
+    fecha_creacion DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
 );

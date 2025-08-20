@@ -1,5 +1,6 @@
-SELECT
-    TABLE_NAME
-FROM INFORMATION_SCHEMA.TABLES
-WHERE TABLE_TYPE = 'BASE TABLE'
-    AND TABLE_NAME = ?;
+-- Verificar si tabla existe en SQLite
+SELECT 
+    name as TABLE_NAME
+FROM sqlite_master 
+WHERE type = 'table' 
+    AND name = ?;

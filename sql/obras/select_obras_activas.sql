@@ -1,18 +1,18 @@
+-- Obtener obras activas con paginación (SQLite)
 SELECT 
     id,
-    nombre,
+    COALESCE(nombre_obra, descripcion, 'Sin nombre') as nombre,
     descripcion,
     estado,
     fecha_inicio,
-    fecha_fin_estimada as fecha_fin,
+    COALESCE(fecha_fin_estimada, fecha_fin_real) as fecha_fin,
     direccion as ubicacion,
     fecha_creacion,
     fecha_fin_real,
-    presupuesto_total,
-    progreso,
-    etapa_actual
+    COALESCE(presupuesto_total, 0) as presupuesto_total,
+    COALESCE(progreso, 0) as progreso,
+    COALESCE(etapa_actual, 'No definida') as etapa_actual
 FROM obras
 WHERE activo = 1
 ORDER BY fecha_creacion DESC
-OFFSET ? ROWS
-FETCH NEXT ? ROWS ONLY
+LIMIT ? OFFSET ?

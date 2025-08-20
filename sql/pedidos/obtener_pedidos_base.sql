@@ -1,3 +1,4 @@
+-- Obtener pedidos base con detalles agregados (SQLite)
 SELECT
     p.id,
     p.numero_pedido,
@@ -7,17 +8,16 @@ SELECT
     p.tipo_pedido,
     p.prioridad,
     p.total,
-    CAST(p.observaciones AS NVARCHAR(MAX)) as observaciones,
+    p.observaciones,
     p.responsable_entrega,
     p.obra_id,
     COUNT(pd.id) as cantidad_items,
     SUM(pd.cantidad) as total_cantidad,
-    SUM(CASE WHEN pd.cantidad > 0 THEN pd.cantidad ELSE 0 END) as cantidad_pendiente
+    SUM(pd.cantidad - COALESCE(pd.cantidad_entregada, 0)) as cantidad_pendiente
 FROM pedidos p
 LEFT JOIN pedidos_detalle pd ON p.id = pd.pedido_id
 WHERE p.activo = 1
 GROUP BY p.id, p.numero_pedido, p.fecha_pedido, p.fecha_entrega_solicitada,
          p.estado, p.tipo_pedido, p.prioridad, p.total,
-         CAST(p.observaciones AS NVARCHAR(MAX)),
-         p.responsable_entrega, p.obra_id
+         p.observaciones, p.responsable_entrega, p.obra_id
 ORDER BY p.fecha_pedido DESC
