@@ -129,6 +129,7 @@ class InventarioController(QObject):
             self._conectar_boton("btn_eliminar", self.eliminar_producto)
             self._conectar_boton("btn_movimiento", self.registrar_movimiento)
             self._conectar_boton("btn_exportar", self.exportar_inventario)
+            self._conectar_boton("btn_cargar_presupuesto", self.cargar_presupuesto_pdf)
 
             # Conectar señales de selección de tabla
             if hasattr(self.view, "tabla_inventario"):
@@ -147,6 +148,11 @@ class InventarioController(QObject):
                 logger.debug("Conectado: input_busqueda.textChanged")
             else:
                 logger.warning("No encontrado: input_busqueda")
+
+            # Conectar señal de presupuesto cargado
+            if hasattr(self.view, "presupuesto_cargado"):
+                self.view.presupuesto_cargado.connect(self.procesar_presupuesto_cargado)
+                logger.debug("Conectado: presupuesto_cargado")
 
             logger.info("Todas las señales conectadas correctamente")
 

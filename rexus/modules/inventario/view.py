@@ -57,6 +57,7 @@ class InventarioView(BaseModuleView):
     solicitar_cargar_pagina = pyqtSignal(int, int)  # página, registros_por_página
     solicitar_exportar = pyqtSignal()
     solicitar_importar = pyqtSignal()
+    presupuesto_cargado = pyqtSignal(dict)  # datos del presupuesto cargado
 
     def __init__(self, parent=None):
         super().__init__("[PACKAGE] Gestión de Inventario", parent=parent)
@@ -285,6 +286,14 @@ class InventarioView(BaseModuleView):
         self.btn_eliminar = RexusButton("🗑️ Eliminar", "danger")
         self.btn_eliminar.setEnabled(False)
         toolbar.addWidget(self.btn_eliminar)
+
+        # Agregar separador visual
+        toolbar.addStretch()
+
+        # Botón para cargar presupuestos PDF
+        self.btn_cargar_presupuesto = RexusButton("📄 Cargar Presupuesto", "info")
+        self.btn_cargar_presupuesto.setToolTip("Subir presupuesto PDF y asociarlo a una obra")
+        toolbar.addWidget(self.btn_cargar_presupuesto)
 
         layout.addLayout(toolbar)
 
@@ -1162,3 +1171,38 @@ class InventarioView(BaseModuleView):
                     tabla.setItem(row, 3, QTableWidgetItem(str(material.get('fecha_asignacion', ''))))
                     tabla.setItem(row, 4, QTableWidgetItem(str(material.get('estado', ''))))
                 break
+
+    # === MÉTODOS PARA CARGA DE PRESUPUESTOS PDF ===
+
+    def cargar_presupuesto_pdf(self):
+        """Abre un diálogo para cargar un presupuesto PDF y asociarlo a una obra."""
+        from PyQt6.QtWidgets import QFileDialog, QMessageBox
+        try:
+            # Abrir diálogo para seleccionar archivo PDF
+            archivo_pdf, _ = QFileDialog.getOpenFileName(
+                self,
+                "Seleccionar Presupuesto PDF",
+                "",
+                "Archivos PDF (*.pdf);;Todos los archivos (*)"
+            )
+            
+            if archivo_pdf:
+                # Abrir diálogo para seleccionar obra
+                from .dialogs.seleccionar_obra_dialog import SeleccionarObraDialog
+                dialogo_obra = SeleccionarObraDialog(self)
+                
+                if dialogo_obra.exec() == QFileDialog.DialogCode.Accepted:
+                    obra_seleccionada = dialogo_obra.get_obra_seleccionada()
+                    
+                    if obra_seleccionada:
+                        # Emitir señal para que el controlador maneje la carga
+                        self.presupuesto_cargado.emit({
+                            'archivo_pdf': archivo_pdf,
+                            'obra_id': obra_seleccionada['id'],
+                            'obra_nombre': obra_seleccionada['nombre']
+                        })
+                    else:
+                        QMessageBox.warning(self, "Advertencia", "Debe seleccionar una obra")
+                        
+        except Exception as e:
+            QMessageBox.critical(self, "Error", f"Error al cargar presupuesto: {str(e)}")
