@@ -444,9 +444,24 @@ pedido_id,
 
                 # Actualizar inventario
                 for detalle in detalles:
-                    # Aquí se integrará con el módulo de inventario
-                    # TODO: Implementar actualización de stock en inventario
-                    pass
+                    # Integración con el módulo de inventario
+                    try:
+                        from rexus.modules.inventario.model import InventarioModel
+                        from rexus.core.database import get_inventario_connection
+                        
+                        db_connection = get_inventario_connection()
+                        if db_connection:
+                            inventario_model = InventarioModel(db_connection)
+                            # Actualizar stock de producto recibido
+                            inventario_model.actualizar_stock_por_compra(
+                                producto_id=detalle.get('producto_id'),
+                                cantidad_recibida=detalle.get('cantidad', 0),
+                                precio_unitario=detalle.get('precio_unitario', 0),
+                                numero_compra=compra_id
+                            )
+                    except Exception as e:
+                        self.logger.warning(f"No se pudo actualizar inventario para detalle {detalle}: {e}")
+                        # Continuar con el resto de la operación
 
                 self.mostrar_exito("Stock actualizado desde compra")
         except Exception as e:
@@ -463,13 +478,58 @@ pedido_id,
                     mensaje = f"Se encontraron {len(productos_minimos)} productos con stock mínimo"
                     self.mostrar_info(mensaje)
 
-                    # TODO: Proponer generación automática de órdenes
+                    # Proponer generación automática de órdenes
+                    from PyQt6.QtWidgets import QMessageBox
+                    
+                    respuesta = QMessageBox.question(
+                        self.view,
+                        "Stock Mínimo Detectado",
+                        f"Se encontraron {len(productos_minimos)} productos con stock bajo.\n\n"
+                        "¿Desea generar órdenes de compra automáticamente?",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
+                        QMessageBox.StandardButton.Yes
+                    )
+                    
+                    if respuesta == QMessageBox.StandardButton.Yes:
+                        self._generar_ordenes_automaticas(productos_minimos)
 
                 return productos_minimos
         except Exception as e:
             self.mostrar_error(f"Error verificando stock mínimos: {e}")
             return []
 
+    def _generar_ordenes_automaticas(self, productos_minimos):
+        """Genera órdenes de compra automáticas para productos con stock mínimo."""
+        try:
+            ordenes_generadas = 0
+            for producto in productos_minimos:
+                # Calcular cantidad a ordenar (stock máximo - stock actual)
+                cantidad_ordenar = producto.get('stock_maximo', 100) - producto.get('stock_actual', 0)
+                
+                if cantidad_ordenar > 0:
+                    # Crear orden automática
+                    orden_data = {
+                        'proveedor_id': producto.get('proveedor_preferido_id', 1),
+                        'fecha_solicitud': datetime.now().date(),
+                        'estado': 'PENDIENTE',
+                        'observaciones': f'Orden automática por stock mínimo - {producto.get("descripcion", "")}',
+                        'productos': [{
+                            'producto_id': producto.get('id'),
+                            'cantidad': cantidad_ordenar,
+                            'precio_estimado': producto.get('precio_unitario', 0)
+                        }]
+                    }
+                    
+                    if self.model.crear_orden_compra(orden_data):
+                        ordenes_generadas += 1
+            
+            if ordenes_generadas > 0:
+                self.mostrar_exito(f"Se generaron {ordenes_generadas} órdenes de compra automáticamente")
+            else:
+                self.mostrar_info("No se pudieron generar órdenes automáticas")
+                
+        except Exception as e:
+            self.mostrar_error(f"Error generando órdenes automáticas: {e}")
 
     @admin_required
     def generar_reporte_compras(self,

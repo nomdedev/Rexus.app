@@ -131,23 +131,11 @@ class InventarioController(QObject):
             self._conectar_boton("btn_exportar", self.exportar_inventario)
             self._conectar_boton("btn_cargar_presupuesto", self.cargar_presupuesto_pdf)
 
-            # Conectar señales de selección de tabla
-            if hasattr(self.view, "tabla_inventario"):
-                self.view.tabla_inventario.itemSelectionChanged.connect(
-                    self.producto_seleccionado
-                )
-                logger.debug("Conectado: tabla_inventario.itemSelectionChanged")
-            else:
-                logger.warning("No encontrado: tabla_inventario")
+            # Conectar señales de selección de tabla con verificación de ciclo de vida
+            self._conectar_widget_tabla("tabla_inventario", "itemSelectionChanged", self.producto_seleccionado)
 
-            # Conectar campo de búsqueda si existe
-            if hasattr(self.view, "input_busqueda"):
-                self.view.input_busqueda.textChanged.connect(
-                    self.filtrar_en_tiempo_real
-                )
-                logger.debug("Conectado: input_busqueda.textChanged")
-            else:
-                logger.warning("No encontrado: input_busqueda")
+            # Conectar campo de búsqueda con verificación de ciclo de vida
+            self._conectar_widget_signal("input_busqueda", "textChanged", self.filtrar_en_tiempo_real)
 
             # Conectar señal de presupuesto cargado
             if hasattr(self.view, "presupuesto_cargado"):
@@ -160,23 +148,113 @@ class InventarioController(QObject):
             logger.error(f"Error conectando señales: {e}", exc_info=True)
 
     def _conectar_boton(self, nombre_boton, metodo):
-        """Conecta un botón específico a su método correspondiente."""
+        """Conecta un botón específico a su método correspondiente con verificación de ciclo de vida."""
         try:
+            if not self.view:
+                logger.warning(f"Vista no disponible para conectar {nombre_boton}")
+                return
+                
             if hasattr(self.view, nombre_boton):
                 boton = getattr(self.view, nombre_boton)
-                # Verificar que el widget no esté eliminado
-                if boton is not None and hasattr(boton, 'clicked'):
-                    boton.clicked.connect(metodo)
-                    logger.debug(f"Conectado botón: {nombre_boton}")
+                
+                # Verificación robusta del ciclo de vida del widget
+                if self._es_widget_valido(boton):
+                    # Verificar que no esté ya conectado
+                    if hasattr(boton, 'clicked'):
+                        boton.clicked.connect(metodo)
+                        logger.debug(f"Conectado botón: {nombre_boton}")
+                    else:
+                        logger.warning(f"Botón {nombre_boton} no tiene señal 'clicked'")
                 else:
-                    logger.warning(f"Botón {nombre_boton} es None o no válido")
+                    logger.warning(f"Botón {nombre_boton} no es válido o fue eliminado")
             else:
                 logger.warning(f"Botón no encontrado: {nombre_boton}")
+                
         except RuntimeError as e:
-            # Capturar específicamente el error de widget eliminado
-            logger.warning(f"Widget {nombre_boton} ya fue eliminado: {e}")
+            # Error específico de widget eliminado en Qt
+            if "wrapped C/C++ object" in str(e):
+                logger.warning(f"Widget {nombre_boton} fue eliminado prematuramente: {e}")
+            else:
+                logger.error(f"RuntimeError conectando {nombre_boton}: {e}")
         except Exception as e:
             logger.error(f"Error inesperado conectando {nombre_boton}: {e}")
+
+    def _es_widget_valido(self, widget):
+        """Verifica si un widget está válido y no ha sido eliminado."""
+        try:
+            if widget is None:
+                return False
+                
+            # Intentar acceder a una propiedad básica para verificar si el widget existe
+            _ = widget.isVisible()
+            return True
+            
+        except RuntimeError:
+            # Widget fue eliminado
+            return False
+        except Exception:
+            # Otro tipo de error
+            return False
+
+    def _conectar_widget_tabla(self, nombre_widget, signal_name, metodo):
+        """Conecta una señal de tabla con verificación de ciclo de vida."""
+        try:
+            if not self.view:
+                logger.warning(f"Vista no disponible para conectar {nombre_widget}")
+                return
+                
+            if hasattr(self.view, nombre_widget):
+                widget = getattr(self.view, nombre_widget)
+                
+                if self._es_widget_valido(widget):
+                    if hasattr(widget, signal_name):
+                        signal = getattr(widget, signal_name)
+                        signal.connect(metodo)
+                        logger.debug(f"Conectado: {nombre_widget}.{signal_name}")
+                    else:
+                        logger.warning(f"Widget {nombre_widget} no tiene señal {signal_name}")
+                else:
+                    logger.warning(f"Widget {nombre_widget} no es válido o fue eliminado")
+            else:
+                logger.warning(f"Widget no encontrado: {nombre_widget}")
+                
+        except RuntimeError as e:
+            if "wrapped C/C++ object" in str(e):
+                logger.warning(f"Widget {nombre_widget} fue eliminado prematuramente: {e}")
+            else:
+                logger.error(f"RuntimeError conectando {nombre_widget}: {e}")
+        except Exception as e:
+            logger.error(f"Error inesperado conectando {nombre_widget}: {e}")
+
+    def _conectar_widget_signal(self, nombre_widget, signal_name, metodo):
+        """Conecta cualquier señal de widget con verificación de ciclo de vida."""
+        try:
+            if not self.view:
+                logger.warning(f"Vista no disponible para conectar {nombre_widget}")
+                return
+                
+            if hasattr(self.view, nombre_widget):
+                widget = getattr(self.view, nombre_widget)
+                
+                if self._es_widget_valido(widget):
+                    if hasattr(widget, signal_name):
+                        signal = getattr(widget, signal_name)
+                        signal.connect(metodo)
+                        logger.debug(f"Conectado: {nombre_widget}.{signal_name}")
+                    else:
+                        logger.warning(f"Widget {nombre_widget} no tiene señal {signal_name}")
+                else:
+                    logger.warning(f"Widget {nombre_widget} no es válido o fue eliminado")
+            else:
+                logger.warning(f"Widget no encontrado: {nombre_widget}")
+                
+        except RuntimeError as e:
+            if "wrapped C/C++ object" in str(e):
+                logger.warning(f"Widget {nombre_widget} fue eliminado prematuramente: {e}")
+            else:
+                logger.error(f"RuntimeError conectando {nombre_widget}: {e}")
+        except Exception as e:
+            logger.error(f"Error inesperado conectando {nombre_widget}: {e}")
 
     @limit_records("table", enforce=False)  # Aplicar límite automáticamente
     def cargar_inventario_paginado(self, pagina=1, registros_por_pagina=100):
@@ -724,3 +802,111 @@ class InventarioController(QObject):
                 logger.error(f"[ERROR CRITICO] {mensaje}")
         except (AttributeError, RuntimeError) as display_error:
             logger.error(f"Error crítico mostrando error de {operacion}: {display_error}", exc_info=True)
+
+    # === MÉTODOS PARA CARGA DE PRESUPUESTOS PDF ===
+
+    def cargar_presupuesto_pdf(self):
+        """Abre el diálogo para cargar presupuesto PDF."""
+        try:
+            if hasattr(self.view, 'cargar_presupuesto_pdf'):
+                self.view.cargar_presupuesto_pdf()
+            else:
+                logger.warning("Método cargar_presupuesto_pdf no disponible en la vista")
+                
+        except Exception as e:
+            logger.error(f"Error abriendo diálogo de presupuesto: {e}")
+            self._mostrar_error("cargar presupuesto", e)
+
+    def procesar_presupuesto_cargado(self, datos_presupuesto):
+        """Procesa el presupuesto PDF cargado y lo asocia a la obra."""
+        try:
+            archivo_pdf = datos_presupuesto.get('archivo_pdf')
+            obra_id = datos_presupuesto.get('obra_id')
+            obra_nombre = datos_presupuesto.get('obra_nombre')
+            
+            logger.info(f"Procesando presupuesto PDF: {archivo_pdf} para obra {obra_nombre}")
+            
+            # Validar datos
+            if not archivo_pdf or not obra_id:
+                raise ValueError("Datos de presupuesto incompletos")
+                
+            # Procesar el archivo PDF
+            resultado = self._procesar_archivo_presupuesto(archivo_pdf, obra_id, obra_nombre)
+            
+            if resultado['exito']:
+                show_success(
+                    self.view, 
+                    "Presupuesto Cargado", 
+                    f"Presupuesto PDF asociado exitosamente a la obra: {obra_nombre}"
+                )
+                logger.info(f"Presupuesto procesado exitosamente: {resultado['archivo_guardado']}")
+            else:
+                raise Exception(resultado['error'])
+                
+        except Exception as e:
+            logger.error(f"Error procesando presupuesto: {e}")
+            self._mostrar_error("procesar presupuesto", e)
+
+    def _procesar_archivo_presupuesto(self, archivo_pdf, obra_id, obra_nombre):
+        """Procesa y guarda el archivo de presupuesto."""
+        import os
+        import shutil
+        from datetime import datetime
+        
+        try:
+            # Crear directorio de presupuestos si no existe
+            directorio_presupuestos = os.path.join("data", "presupuestos", str(obra_id))
+            os.makedirs(directorio_presupuestos, exist_ok=True)
+            
+            # Generar nombre único para el archivo
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            nombre_original = os.path.basename(archivo_pdf)
+            nombre_sin_extension = os.path.splitext(nombre_original)[0]
+            extension = os.path.splitext(nombre_original)[1]
+            
+            nombre_nuevo = f"{nombre_sin_extension}_{timestamp}{extension}"
+            ruta_destino = os.path.join(directorio_presupuestos, nombre_nuevo)
+            
+            # Copiar archivo
+            shutil.copy2(archivo_pdf, ruta_destino)
+            
+            # Registrar en base de datos
+            self._registrar_presupuesto_en_bd(obra_id, nombre_nuevo, ruta_destino, obra_nombre)
+            
+            return {
+                'exito': True,
+                'archivo_guardado': ruta_destino,
+                'nombre_archivo': nombre_nuevo
+            }
+            
+        except Exception as e:
+            return {
+                'exito': False,
+                'error': str(e)
+            }
+
+    def _registrar_presupuesto_en_bd(self, obra_id, nombre_archivo, ruta_archivo, obra_nombre):
+        """Registra el presupuesto en la base de datos."""
+        try:
+            if self.model and hasattr(self.model, 'db_connection') and self.model.db_connection:
+                cursor = self.model.db_connection.cursor()
+                
+                # Insertar registro de presupuesto
+                query = """
+                INSERT INTO presupuestos_obras 
+                (obra_id, nombre_archivo, ruta_archivo, fecha_carga, estado, observaciones)
+                VALUES (?, ?, ?, datetime('now'), 'ACTIVO', ?)
+                """
+                
+                observaciones = f"Presupuesto cargado para obra: {obra_nombre}"
+                cursor.execute(query, (obra_id, nombre_archivo, ruta_archivo, observaciones))
+                self.model.db_connection.commit()
+                
+                logger.info(f"Presupuesto registrado en BD para obra {obra_id}")
+                
+            else:
+                logger.warning("No hay conexión a BD disponible para registrar presupuesto")
+                
+        except Exception as e:
+            logger.error(f"Error registrando presupuesto en BD: {e}")
+            # No lanzar excepción para no fallar todo el proceso

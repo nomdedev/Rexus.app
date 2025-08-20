@@ -501,7 +501,7 @@ haber = ?,
             return recibos
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo recibos: {e}")
+            logger.error(f"Error obteniendo recibos: {e}")
             return []
 
     def crear_recibo(self, datos_recibo):
@@ -552,11 +552,11 @@ haber = ?,
             recibo_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Recibo creado con ID: {recibo_id}")
+            logger.info(f"Recibo creado con ID: {recibo_id}")
             return recibo_id
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error creando recibo: {e}")
+            logger.error(f"Error creando recibo: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -586,11 +586,11 @@ haber = ?,
             cursor.execute(query, (recibo_id,))
             self.db_connection.commit()
 
-            print(f"[CONTABILIDAD] Recibo {recibo_id} marcado como impreso")
+            logger.info(f"Recibo {recibo_id} marcado como impreso")
             return True
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error marcando recibo como impreso: {e}")
+            logger.error(f"Error marcando recibo como impreso: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -647,7 +647,7 @@ haber = ?,
             return pagos
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo pagos por obra: {e}")
+            logger.error(f"Error obteniendo pagos por obra: {e}")
             return []
 
     def crear_pago_obra(self, datos_pago):
@@ -690,11 +690,11 @@ haber = ?,
             pago_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Pago por obra creado con ID: {pago_id}")
+            logger.info(f"Pago por obra creado con ID: {pago_id}")
             return pago_id
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error creando pago por obra: {e}")
+            logger.error(f"Error creando pago por obra: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -751,7 +751,7 @@ haber = ?,
             return pagos
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo pagos de materiales: {e}")
+            logger.error(f"Error obteniendo pagos de materiales: {e}")
             return []
 
     def crear_pago_material(self, datos_pago):
@@ -802,11 +802,11 @@ haber = ?,
             pago_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[CONTABILIDAD] Pago de material creado con ID: {pago_id}")
+            logger.info(f"Pago de material creado con ID: {pago_id}")
             return pago_id
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error creando pago de material: {e}")
+            logger.error(f"Error creando pago de material: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -883,7 +883,7 @@ haber = ?,
             return estadisticas
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo estadísticas: {e}")
+            logger.error(f"Error obteniendo estadísticas: {e}")
             return {}
 
     def obtener_balance_general(self, fecha_desde=None, fecha_hasta=None):
@@ -939,7 +939,7 @@ haber = ?,
             return balance
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo balance: {e}")
+            logger.error(f"Error obteniendo balance: {e}")
             return {}
 
     def obtener_flujo_caja(self, fecha_desde=None, fecha_hasta=None):
@@ -1007,5 +1007,5 @@ haber = ?,
             return flujo
 
         except Exception as e:
-            print(f"[ERROR CONTABILIDAD] Error obteniendo flujo de caja: {e}")
+            logger.error(f"Error obteniendo flujo de caja: {e}")
             return {}

@@ -1848,9 +1848,14 @@ nombre: str,
     def init_xss_protection(self):
         """Inicializa la protección XSS."""
         try:
-            # TODO: Implementar FormProtector cuando esté disponible
-            # self.form_protector = FormProtector()
-            self.form_protector = None
+            # Implementar FormProtector para seguridad XSS
+            from rexus.utils.xss_protection import FormProtector
+            self.form_protector = FormProtector()
+            # Proteger formularios críticos
+            if hasattr(self, 'form_entrada_mercancia'):
+                self.form_protector.protect_form(self.form_entrada_mercancia)
+            if hasattr(self, 'form_salida_mercancia'):
+                self.form_protector.protect_form(self.form_salida_mercancia)
 
             # Proteger campos de entrada
             if hasattr(self, 'input_busqueda'):

@@ -1497,15 +1497,9 @@ username: str,
             if nombre_usuario == "admin":
                 return False, "No se puede eliminar el usuario administrador"
 
-            # Eliminación lógica
-            cursor.execute(
-                """
-                UPDATE usuarios
-                SET activo = 0, estado = 'INACTIVO', fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """,
-                (usuario_id,),
-            )
+            # Eliminación lógica usando SQL externo
+            sql_eliminar = self.sql_manager.get_query('usuarios', 'eliminar_usuario_logico')
+            cursor.execute(sql_eliminar, {'usuario_id': usuario_id})
 
             # Cerrar sesiones activas usando SQLQueryManager
             sql_cerrar_sesiones = self.sql_manager.get_query('usuarios', 'cerrar_sesiones_usuario')
@@ -1570,17 +1564,10 @@ username: str,
             if not self._verificar_password(password_actual, row[0]):
                 return False, "Contraseña actual incorrecta"
 
-            # Actualizar contraseña
+            # Actualizar contraseña usando SQL externo
             nueva_hash = self._hashear_password(password_nueva)
-            cursor.execute(
-                """
-                UPDATE usuarios
-                SET password_hash = ?, intentos_fallidos = 0, bloqueado_hasta = NULL,
-                    fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """,
-                (nueva_hash, usuario_id),
-            )
+            sql_actualizar = self.sql_manager.get_query('usuarios', 'actualizar_password_completo')
+            cursor.execute(sql_actualizar, {'password_hash': nueva_hash, 'usuario_id': usuario_id})
 
             self.db_connection.commit()
             return True, "Contraseña cambiada exitosamente"
@@ -1933,66 +1920,33 @@ usuario_id: int,
                 logger.error("No hay conexión a la base de datos")
                 return []
             
-            cursor = self.db_connection.cursor()
+            # Usar SQL externo para búsqueda filtrada
+            # Preparar parámetros para la consulta
+            params = {
+                'busqueda': filtros.get('busqueda') if filtros.get('busqueda') else None,
+                'rol': filtros.get('rol') if filtros.get('rol') and filtros['rol'] != 'Todos' else None,
+                'estado': filtros.get('estado') if filtros.get('estado') and filtros['estado'] != 'Todos' else None
+            }
             
-            # Query base
-            query = """
-                SELECT 
-                    u.id, u.username, u.email, u.nombre_completo, u.departamento,
-                    u.cargo, u.telefono, u.activo, u.fecha_creacion, u.ultimo_acceso,
-                    ur.role_name as rol, u.estado
-                FROM usuarios u
-                LEFT JOIN user_roles ur ON u.id = ur.user_id
-                WHERE 1=1
-            """
+            # Ejecutar consulta usando SQL Manager
+            usuarios = self.sql_manager.ejecutar_consulta_archivo(
+                'usuarios/buscar_usuarios_filtrado.sql',
+                params
+            )
             
-            params = []
+            # Convertir a lista de diccionarios si es necesario
+            if usuarios and not isinstance(usuarios[0], dict):
+                # Convertir tuplas a diccionarios
+                columns = ['id', 'username', 'email', 'nombre_completo', 'departamento', 
+                          'cargo', 'telefono', 'activo', 'fecha_creacion', 'ultimo_acceso', 'rol', 'estado']
+                usuarios = [dict(zip(columns, row)) for row in usuarios]
             
-            # Aplicar filtros dinámicamente
-            if filtros.get('busqueda'):
-                query += """
-                    AND (u.username LIKE ? OR u.email LIKE ? OR u.nombre_completo LIKE ? 
-                         OR u.departamento LIKE ? OR u.cargo LIKE ?)
-                """
-                busqueda = f"%{filtros['busqueda']}%"
-                params.extend([busqueda, busqueda, busqueda, busqueda, busqueda])
+            # Sanitizar datos de salida si está disponible
+            if self.data_sanitizer and usuarios:
+                usuarios = [self.data_sanitizer.sanitize_dict(usuario) for usuario in usuarios]
             
-            if filtros.get('rol') and filtros['rol'] != 'Todos':
-                query += " AND ur.role_name = ?"
-                params.append(filtros['rol'])
-            
-            if filtros.get('estado') and filtros['estado'] != 'Todos':
-                if filtros['estado'] == 'Activo':
-                    query += " AND u.activo = 1"
-                elif filtros['estado'] == 'Inactivo':
-                    query += " AND u.activo = 0"
-                elif filtros['estado'] in ['Suspendido', 'Bloqueado']:
-                    query += " AND u.estado = ?"
-                    params.append(filtros['estado'])
-            
-            if filtros.get('departamento') and filtros['departamento'] != 'Todos':
-                query += " AND u.departamento = ?"
-                params.append(filtros['departamento'])
-            
-            # Ordenar por fecha de creación descendente
-            query += " ORDER BY u.fecha_creacion DESC"
-            
-            logger.debug(f"Ejecutando query con {len(params)} parámetros")
-            cursor.execute(query, params)
-            
-            # Convertir resultados a diccionarios
-            usuarios = []
-            columns = [desc[0] for desc in cursor.description]
-            
-            for row in cursor.fetchall():
-                usuario = dict(zip(columns, row))
-                # Sanitizar datos de salida
-                if data_sanitizer:
-                    usuario = data_sanitizer.sanitize_dict(usuario)
-                usuarios.append(usuario)
-            
-            logger.info(f"Filtrados {len(usuarios)} usuarios exitosamente")
-            return usuarios
+            logger.info(f"Filtrados {len(usuarios) if usuarios else 0} usuarios exitosamente")
+            return usuarios or []
             
         except Exception as e:
             logger.error(f"Error filtrando usuarios: {e}", exc_info=True)

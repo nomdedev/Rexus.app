@@ -1447,11 +1447,9 @@ fecha_fin,
             """
             )
 
-            # Limitar resultados si no hay filtros específicos
+            # Limitar resultados si no hay filtros específicos (SQLite syntax)
             if len(conditions) <= 1:
-        # TODO: MANUAL FIX REQUIRED - SQL Injection via concatenation
-        # sql_select += " OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY"
-                sql_select += " OFFSET 0 ROWS FETCH NEXT 200 ROWS ONLY"
+                sql_select += " LIMIT 200"
 
             cursor.execute(sql_select, params)
             rows = cursor.fetchall()

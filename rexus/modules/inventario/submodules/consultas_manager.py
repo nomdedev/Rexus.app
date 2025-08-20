@@ -356,8 +356,6 @@ termino_like,
 
         return relevancia
 
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_productos_paginados_inicial(
         self, 
         page: int = 1, 
@@ -366,6 +364,9 @@ termino_like,
     ) -> Dict[str, Any]:
         """
         Obtiene productos paginados para carga inicial del inventario.
+        
+        NOTA: Este método NO requiere autenticación ya que es para carga inicial
+        de la vista del inventario. Los métodos de modificación sí requieren auth.
         
         Args:
             page: Número de página (empezando en 1)

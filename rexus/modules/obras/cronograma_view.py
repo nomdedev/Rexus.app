@@ -345,12 +345,50 @@ class CronogramaObrasView(QWidget):
 
     def exportar_cronograma(self):
         """Exporta el cronograma a PDF o imagen."""
-        # TODO: Implementar exportación
-        from PyQt6.QtWidgets import QMessageBox
-
-        QMessageBox.information(
-            self, "Exportar", "Funcionalidad de exportación próximamente..."
-        )
+        try:
+            from PyQt6.QtWidgets import QFileDialog, QMessageBox
+            from PyQt6.QtGui import QPainter
+            from PyQt6.QtCore import QDir
+            
+            # Seleccionar ubicación y formato de archivo
+            file_path, file_filter = QFileDialog.getSaveFileName(
+                self,
+                "Exportar Cronograma",
+                QDir.homePath() + "/cronograma_obras.png",
+                "Imagen PNG (*.png);;Imagen JPG (*.jpg);;PDF (*.pdf)"
+            )
+            
+            if file_path:
+                if file_path.endswith('.pdf'):
+                    # Exportar a PDF
+                    from PyQt6.QtPrintSupport import QPrinter
+                    from PyQt6.QtGui import QPainter
+                    
+                    printer = QPrinter(QPrinter.PrinterMode.HighResolution)
+                    printer.setOutputFormat(QPrinter.OutputFormat.PdfFormat)
+                    printer.setOutputFileName(file_path)
+                    printer.setPageOrientation(QPrinter.PageOrientation.Landscape)
+                    
+                    painter = QPainter(printer)
+                    self.canvas.render(painter)
+                    painter.end()
+                else:
+                    # Exportar a imagen
+                    pixmap = self.canvas.grab()
+                    success = pixmap.save(file_path)
+                    
+                    if not success:
+                        QMessageBox.warning(self, "Error", "No se pudo guardar la imagen")
+                        return
+                
+                QMessageBox.information(
+                    self, "Exportar", f"Cronograma exportado exitosamente a:\n{file_path}"
+                )
+        except Exception as e:
+            from PyQt6.QtWidgets import QMessageBox
+            QMessageBox.critical(
+                self, "Error", f"Error al exportar cronograma: {str(e)}"
+            )
 
     def configurar_estilos(self):
         """Configura los estilos de la vista."""

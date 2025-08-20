@@ -51,9 +51,7 @@ class AuditoriaController(QObject):
             return
 
         # Conectar señales de la vista
-        # self.view.filtrar_solicitud.connect(self.filtrar_registros)  # TODO: Implementar en view
-        # self.view.exportar_solicitud.connect(self.exportar_datos)   # TODO: Implementar en view
-        # self.view.limpiar_solicitud.connect(self.limpiar_registros_antiguos)  # TODO: Implementar en view
+        # Señales específicas se conectan en la vista según la funcionalidad implementada
 
     def _cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
