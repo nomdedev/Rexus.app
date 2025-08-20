@@ -1,2 +1,5 @@
+# Evitar archivos grandes y entornos virtuales
+.venv/
+.venv/Lib/site-packages/PyQt6/Qt6/bin/Qt6WebEngineCore.dll
 # Entorno virtual de Python
 .venv/
