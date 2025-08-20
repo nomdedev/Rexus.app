@@ -574,18 +574,16 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         layout.addWidget(control_cronograma)
 
         # Área principal del cronograma
-        # Desactivar temporalmente el cronograma para evitar errores de autenticación
-        # TODO: Revisar autenticación en CronogramaObrasView
-        # if CronogramaObrasView is not None:
-        #     self.cronograma_widget = CronogramaObrasView()
-        #     layout.addWidget(self.cronograma_widget)
-        #
-        #     # Cargar datos iniciales en el cronograma
-        #     self.actualizar_cronograma()
-        # else:
-        # Usar fallback temporalmente
-        fallback = self.crear_cronograma_fallback()
-        layout.addWidget(fallback)
+        if CronogramaObrasView is not None:
+            self.cronograma_widget = CronogramaObrasView()
+            layout.addWidget(self.cronograma_widget)
+
+            # Cargar datos iniciales en el cronograma
+            self.actualizar_cronograma()
+        else:
+            # Usar fallback temporalmente
+            fallback = self.crear_cronograma_fallback()
+            layout.addWidget(fallback)
 
         self.tab_widget.addTab(tab_cronograma, "📅 Cronograma")
 

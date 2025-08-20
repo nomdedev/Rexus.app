@@ -52,6 +52,13 @@ class PedidosController(QObject):
     pedido_actualizado = pyqtSignal(dict)
     pedido_eliminado = pyqtSignal(int)
     estado_cambiado = pyqtSignal(int, str)
+    
+    # Señales para UI - separar lógica de presentación del controller
+    mostrar_mensaje_success = pyqtSignal(str)
+    mostrar_mensaje_error = pyqtSignal(str)
+    mostrar_mensaje_warning = pyqtSignal(str)
+    mostrar_mensaje_info = pyqtSignal(str)
+    solicitar_confirmacion = pyqtSignal(str, str, str)  # (titulo, mensaje, operacion_id)
 
     def __init__(self, model=None, view=None, usuario_actual=None):
         super().__init__()
@@ -65,6 +72,9 @@ class PedidosController(QObject):
         self.view = view
         self.db_connection = model.db_connection if model else None
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
+        
+        # Para manejar confirmaciones asíncronas
+        self._operaciones_pendientes = {}
 
         # Conectar señales si hay vista
         if self.view:
@@ -165,7 +175,7 @@ class PedidosController(QObject):
                 success_msg = "Pedido actualizado exitosamente"
                 logger.info(f"Pedido {pedido_id} actualizado correctamente")
                 
-                self.mostrar_mensaje(success_msg, "success")
+                self.mostrar_mensaje_success.emit(success_msg)
                 self.pedido_actualizado.emit({"id": pedido_id, **datos_pedido})
                 self.cargar_pedidos()  # Recargar vista
             else:
@@ -200,7 +210,7 @@ class PedidosController(QObject):
                         success_msg = f"Pedido {pedido_id} eliminado exitosamente"
                         logger.info(f"Pedido {pedido_id} eliminado correctamente")
                         
-                        self.mostrar_mensaje(success_msg, "success")
+                        self.mostrar_mensaje_success.emit(success_msg)
                         self.pedido_eliminado.emit(int(pedido_id))
                         self.cargar_pedidos()  # Recargar vista
                     else:
@@ -340,7 +350,7 @@ class PedidosController(QObject):
     def mostrar_exito(self, mensaje: str):
         """Muestra un mensaje de éxito."""
         logger.info(f"Éxito en pedidos: {mensaje}")
-        self.mostrar_mensaje(mensaje, "success")
+        self.mostrar_mensaje_success.emit(mensaje)
 
 
     def cargar_pagina(self, pagina, registros_por_pagina=50):
@@ -392,7 +402,7 @@ class PedidosController(QObject):
         logger.error(f"Error en pedidos: {mensaje}")
         
         if self.view:
-            show_error(self.view, "Error - Pedidos", mensaje)
+            self.mostrar_mensaje_error.emit(mensaje)
         else:
             # Fallback si no hay vista
             logger.error(f"[NO VIEW] Error: {mensaje}")
@@ -400,42 +410,23 @@ class PedidosController(QObject):
     def mostrar_advertencia(self, mensaje: str):
         """Muestra un mensaje de advertencia."""
         logger.warning(f"Advertencia en pedidos: {mensaje}")
-        self.mostrar_mensaje(mensaje, "warning")
+        self.mostrar_mensaje_warning.emit(mensaje)
 
     def mostrar_info(self, mensaje: str):
         """Muestra un mensaje informativo."""
         logger.info(f"Info en pedidos: {mensaje}")
-        self.mostrar_mensaje(mensaje, "info")
+        self.mostrar_mensaje_info.emit(mensaje)
 
     def get_view(self):
         """Retorna la vista del módulo."""
         return self.view
 
-    def mostrar_mensaje(self, mensaje, tipo="info"):
-        """
-        Muestra un mensaje usando el sistema centralizado.
-        
-        Args:
-            mensaje: Mensaje a mostrar
-            tipo: Tipo de mensaje ('info', 'success', 'warning', 'error')
-        """
-        logger.info(f"Mensaje mostrado: {mensaje}")
-        
-        if self.view:
-            if tipo == "success":
-                show_success(self.view, "Pedidos", mensaje)
-            elif tipo == "warning":
-                show_warning(self.view, "Pedidos", mensaje)
-            elif tipo == "error":
-                show_error(self.view, "Error - Pedidos", mensaje)
-            else:
-                show_info(self.view, "Pedidos", mensaje)
 
     def cleanup(self):
         """Limpia recursos al cerrar el módulo."""
         try:
-            print("[PEDIDOS CONTROLLER] Limpiando recursos...")
+            logger.info("Limpiando recursos del controlador de pedidos")
             # Desconectar señales si es necesario
             # Cerrar conexiones, etc.
         except Exception as e:
-            print(f"[ERROR PEDIDOS CONTROLLER] Error en cleanup: {e}")
+            logger.error(f"Error en cleanup del controlador de pedidos: {e}")

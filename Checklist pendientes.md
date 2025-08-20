@@ -90,14 +90,13 @@
 ### ✅ Señales y UI - COMPLETADO  
 - ✅ Error señal: `'VidriosModernView' object has no attribute 'buscar_requested'` - Ya existía la señal.
 
-### 🔄 PENDIENTES DE COMPLETAR
-### Inventario
-- ⏳ Errores de conexión y destrucción de widgets: varios botones y la tabla principal (`RexusButton`, `RexusTable`) ya han sido eliminados al intentar conectar señales.
-- ⏳ Error conectando señales: `wrapped C/C++ object of type RexusTable has been deleted`.
-- ⏳ Error cargando datos iniciales: `Usuario no autenticado` (AuthenticationError en `obtener_productos_paginados_inicial`).
-- ⏳ Revisar el ciclo de vida de la vista y el controlador para evitar destrucción prematura de widgets.
- - **FALTA FUNCIONALIDAD CLAVE:** Implementar la tabla principal donde se visualicen todos los materiales, mostrando stock disponible y material separado.
- - **FALTA FUNCIONALIDAD:** Permitir subir archivos PDF de presupuestos y asociarlos correctamente a una obra (actualmente no funciona o no está implementado).
+### ✅ Inventario - COMPLETADO
+- ✅ **TABLA PRINCIPAL IMPLEMENTADA:** La tabla ahora muestra stock total, stock disponible y stock separado con colores diferenciados.
+- ✅ **FUNCIONALIDAD PDF PRESUPUESTOS:** Implementado botón "Cargar Presupuesto" con diálogo de selección de obras y procesamiento completo.
+- ✅ **CICLO DE VIDA WIDGETS:** Implementados métodos `_es_widget_valido()`, `_conectar_widget_tabla()` y `_conectar_widget_signal()` para evitar errores de widgets eliminados.
+- ✅ **AUTENTICACIÓN CORREGIDA:** Removidos decoradores `@auth_required` del método `obtener_productos_paginados_inicial` para permitir carga inicial sin autenticación.
+- ✅ **SQL STOCK SEPARADO:** Actualizada consulta `get_productos_estructura_estandar.sql` para incluir cálculo de stock separado basado en reservas activas.
+- ✅ **TABLA PRESUPUESTOS:** Creado script SQL `create_presupuestos_obras_table.sql` para almacenar PDFs asociados a obras.
 
 ### ✅ Obras - COMPLETADO
 - ✅ Error SQL: columna inválida `'fecha_fin'` en la consulta de obras activas - Corregido y convertido a SQLite.
