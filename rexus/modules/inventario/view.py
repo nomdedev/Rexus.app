@@ -787,28 +787,48 @@ class InventarioView(BaseModuleView):
                     ''))))
 
                 # Categoría
-                self.tabla_inventario.setItem(fila,
-2,
-                    QTableWidgetItem(str(producto.get('categoria',
-                    ''))))
+                self.tabla_inventario.setItem(fila, 2,
+                    QTableWidgetItem(str(producto.get('categoria', ''))))
 
-                # Stock con colores
-                stock = producto.get('stock_actual', 0)
-                stock_item = QTableWidgetItem(str(stock))
-                if stock == 0:
-                    stock_item.setBackground(QColor("#ffebee"))
-                    stock_item.setForeground(QColor("#c62828"))
-                elif stock <= 10:
-                    stock_item.setBackground(QColor("#fff3e0"))
-                    stock_item.setForeground(QColor("#ef6c00"))
+                # Stock Total
+                stock_total = producto.get('stock_actual', 0)
+                stock_total_item = QTableWidgetItem(str(stock_total))
+                if stock_total == 0:
+                    stock_total_item.setBackground(QColor("#ffebee"))
+                    stock_total_item.setForeground(QColor("#c62828"))
+                elif stock_total <= 10:
+                    stock_total_item.setBackground(QColor("#fff3e0"))
+                    stock_total_item.setForeground(QColor("#ef6c00"))
                 else:
-                    stock_item.setBackground(QColor("#e8f5e8"))
-                    stock_item.setForeground(QColor("#2e7d32"))
-                self.tabla_inventario.setItem(fila, 3, stock_item)
+                    stock_total_item.setBackground(QColor("#e8f5e8"))
+                    stock_total_item.setForeground(QColor("#2e7d32"))
+                self.tabla_inventario.setItem(fila, 3, stock_total_item)
+
+                # Stock Disponible (Stock Total - Stock Separado)
+                stock_separado = producto.get('stock_separado', 0)
+                stock_disponible = stock_total - stock_separado
+                disponible_item = QTableWidgetItem(str(max(0, stock_disponible)))
+                if stock_disponible <= 0:
+                    disponible_item.setBackground(QColor("#ffebee"))
+                    disponible_item.setForeground(QColor("#c62828"))
+                elif stock_disponible <= 5:
+                    disponible_item.setBackground(QColor("#fff3e0"))
+                    disponible_item.setForeground(QColor("#ef6c00"))
+                else:
+                    disponible_item.setBackground(QColor("#e8f5e8"))
+                    disponible_item.setForeground(QColor("#2e7d32"))
+                self.tabla_inventario.setItem(fila, 4, disponible_item)
+
+                # Stock Separado
+                separado_item = QTableWidgetItem(str(stock_separado))
+                if stock_separado > 0:
+                    separado_item.setBackground(QColor("#e3f2fd"))
+                    separado_item.setForeground(QColor("#1565c0"))
+                self.tabla_inventario.setItem(fila, 5, separado_item)
 
                 # Precio
                 precio = producto.get('precio_unitario', 0.0)
-                self.tabla_inventario.setItem(fila, 4, QTableWidgetItem(f"${precio:.2f}"))
+                self.tabla_inventario.setItem(fila, 6, QTableWidgetItem(f"${precio:.2f}"))
 
                 # Estado
                 estado = producto.get('estado', 'Activo')
@@ -817,19 +837,15 @@ class InventarioView(BaseModuleView):
                     estado_item.setForeground(QColor("#2e7d32"))
                 else:
                     estado_item.setForeground(QColor("#c62828"))
-                self.tabla_inventario.setItem(fila, 5, estado_item)
+                self.tabla_inventario.setItem(fila, 7, estado_item)
 
                 # Ubicación
-                self.tabla_inventario.setItem(fila,
-6,
-                    QTableWidgetItem(str(producto.get('ubicacion',
-                    ''))))
+                self.tabla_inventario.setItem(fila, 8,
+                    QTableWidgetItem(str(producto.get('ubicacion', ''))))
 
                 # Fecha actualización
-                self.tabla_inventario.setItem(fila,
-7,
-                    QTableWidgetItem(str(producto.get('fecha_actualizacion',
-                    ''))))
+                self.tabla_inventario.setItem(fila, 9,
+                    QTableWidgetItem(str(producto.get('fecha_actualizacion', ''))))
 
             # Actualizar controles
             self.actualizar_controles_paginacion()
