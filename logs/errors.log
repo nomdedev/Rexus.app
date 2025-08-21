@@ -712,3 +712,39 @@ AttributeError: 'QDate' object has no attribute 'toPython'
 2025-08-21 11:52:31 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:09:53 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-21 12:09:53 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-21 12:09:53 | ERROR    | rexus.utils.dependency_validator |   ❌ Archivo crítico faltante: requirements.txt
+2025-08-21 12:10:02 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-21 12:10:02 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-21 12:10:02 | ERROR    | rexus.utils.dependency_validator |   ❌ Archivo crítico faltante: requirements.txt
+2025-08-21 12:11:25 | ERROR    | rexus.compras.model | Error obteniendo compras: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:11:30 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:13:42 | ERROR    | rexus.vidrios.model | Error creando vidrio: 'dimensiones_disponibles'
+2025-08-21 12:13:42 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error cargando configuración inicial: 'Mock' object is not subscriptable - usando archivo
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor' - usando configuración de archivos
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error verificando tablas: '>' not supported between instances of 'str' and 'int' - usando configuración de archivos
+2025-08-21 12:14:11 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:14:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database query failed: INSERT INTO productos (codigo, nombre, precio) VALUES (?, ?, ?)... Error: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo

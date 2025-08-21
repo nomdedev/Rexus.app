@@ -82,3 +82,39 @@
 2025-08-21 11:52:39 | INFO     | rexus.database  | Database pool initialized with 3 connections
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database query failed: INSERT INTO productos (codigo, nombre, precio) VALUES (?, ?, ?)... Error: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 50 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections

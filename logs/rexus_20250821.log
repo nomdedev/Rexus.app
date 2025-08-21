@@ -201,3 +201,530 @@
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
 2025-08-21 11:52:39 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
 2025-08-21 11:52:39 | INFO     | rexus.test.database_integration_real | Limpieza de tests de BD real completada
+2025-08-21 12:09:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-21 12:09:48 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-21 12:09:48 | INFO     | rexus.startup   | ============================================================
+2025-08-21 12:09:48 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-21 12:09:48 | INFO     | rexus.startup   | ============================================================
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-21 12:09:48 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-21 12:09:52 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:09:53 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | ============================================================
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | Estado: FAILED
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | Errores Críticos: 1
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | Advertencias: 0
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | Puede Iniciar Aplicación: NO
+2025-08-21 12:09:53 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-21 12:09:53 | ERROR    | rexus.utils.dependency_validator |   ❌ Archivo crítico faltante: requirements.txt
+2025-08-21 12:09:53 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-21 12:09:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-21 12:09:59 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-21 12:09:59 | INFO     | rexus.startup   | ============================================================
+2025-08-21 12:09:59 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-21 12:09:59 | INFO     | rexus.startup   | ============================================================
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-21 12:09:59 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-21 12:10:01 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:10:02 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | REPORTE DE VALIDACIÓN DE DEPENDENCIAS REXUS.APP
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | ============================================================
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | Estado: FAILED
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | Errores Críticos: 1
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | Advertencias: 0
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | Puede Iniciar Aplicación: NO
+2025-08-21 12:10:02 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-21 12:10:02 | ERROR    | rexus.utils.dependency_validator |   ❌ Archivo crítico faltante: requirements.txt
+2025-08-21 12:10:02 | INFO     | rexus.utils.dependency_validator | 
+============================================================
+2025-08-21 12:11:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:11:25 | ERROR    | rexus.compras.model | Error obteniendo compras: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:11:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:30 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:30 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\sql\pedidos\obtener_pedidos_base.sql
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:11:31 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:31 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:11:38 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:13:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:13:41 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Creando vidrio: VID-TEST-001 - Vidrio Test
+2025-08-21 12:13:42 | ERROR    | rexus.vidrios.model | Error creando vidrio: 'dimensiones_disponibles'
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: TEMPLADO
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: LAMINADO
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: FLOAT
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 4: REFLECTIVO
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:13:42 | WARNING  | rexus.vidrios.model | [VIDRIOS] Usando datos demo - sin conexión BD
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | [VIDRIOS] Conexión automática establecida exitosamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios' verificada correctamente
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Estructura de tabla 'vidrios':
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 1: VID-001
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 2: VID-002
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model |   - 3: VID-003
+2025-08-21 12:13:42 | INFO     | rexus.vidrios.model | Tabla 'vidrios_obra' verificada correctamente
+2025-08-21 12:13:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:13:48 | INFO     | rexus.notificaciones.controller | OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente
+2025-08-21 12:13:48 | INFO     | rexus.notificaciones.controller | OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente
+2025-08-21 12:13:48 | INFO     | rexus.notificaciones.controller | [ERROR] No hay usuario actual
+2025-08-21 12:13:48 | INFO     | rexus.notificaciones.controller | OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente
+2025-08-21 12:13:55 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:13:55 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:55 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:55 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:55 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:55 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:55 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Base de datos: auditoria
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 12:13:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=auditoria;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 12:13:56 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 12:14:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:02 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:02 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:02 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:02 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:02 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.verificar_tabla desde D:\martin\Rexus.app\sql\compras\verificar_tabla.sql
+2025-08-21 12:14:02 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'compras' verificada correctamente.
+2025-08-21 12:14:02 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'detalle_compras' verificada correctamente.
+2025-08-21 12:14:02 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.verificar_tabla desde D:\martin\Rexus.app\sql\compras\verificar_tabla.sql
+2025-08-21 12:14:02 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'compras' verificada correctamente.
+2025-08-21 12:14:02 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'detalle_compras' verificada correctamente.
+2025-08-21 12:14:03 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: configuracion.count_all_configs desde D:\martin\Rexus.app\sql\configuracion\count_all_configs.sql
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error cargando configuración inicial: 'Mock' object is not subscriptable - usando archivo
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error verificando tablas: 'NoneType' object has no attribute 'cursor' - usando configuración de archivos
+2025-08-21 12:14:03 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: configuracion.count_all_configs desde D:\martin\Rexus.app\sql\configuracion\count_all_configs.sql
+2025-08-21 12:14:03 | INFO     | rexus.configuracion.model | test_value configuraciones ya existentes en BD
+2025-08-21 12:14:03 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: configuracion.check_table_exists desde D:\martin\Rexus.app\sql\configuracion\check_table_exists.sql
+2025-08-21 12:14:03 | ERROR    | rexus.configuracion.model | Error verificando tablas: '>' not supported between instances of 'str' and 'int' - usando configuración de archivos
+2025-08-21 12:14:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:14:10 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:11 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:11 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:11 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:12 | INFO     | rexus.modules.obras.model | [OBRAS] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.verificar_tabla_sqlite desde D:\martin\Rexus.app\sql\obras\verificar_tabla_sqlite.sql
+2025-08-21 12:14:12 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-21 12:14:12 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 12:14:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:12 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:14:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:12 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:12 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | [INVENTARIO] Conexión automática establecida exitosamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-21 12:14:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:13 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:13 | ERROR    | rexus.inventario.model | Error obteniendo productos: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-21 12:14:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:14:20 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:16:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Configuración de tests de BD real completada
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database query failed: INSERT INTO productos (codigo, nombre, precio) VALUES (?, ?, ?)... Error: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Bulk insert de 1000 productos completado en 0.04s
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Limpieza de tests de BD real completada
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Creando dataset grande para tests de rendimiento...
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Dataset grande creado exitosamente
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Configuración de tests de rendimiento completada
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Test de concurrencia completado en 0.12s
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | Resultados: {'writer_1': {'writes': 25, 'time': 0.021294832229614258, 'success': True}, 'writer_0': {'writes': 25, 'time': 0.03211569786071777, 'success': True}, 'reader_0': {'reads': 50, 'time': 0.0955343246459961, 'success': True}, 'reader_1': {'reads': 50, 'time': 0.09653639793395996, 'success': True}, 'reader_2': {'reads': 50, 'time': 0.11754012107849121, 'success': True}}
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.database  | Transaction completed with 50 queries
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | 20 consultas complejas completadas en 0.01s
+2025-08-21 12:16:28 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 12:16:28 | INFO     | rexus.test.database_integration_real | 100 SELECT simples completados en 0.02s
+2025-08-21 12:16:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:17:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 12:17:22 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 12:17:23 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-21 13:10:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-21 13:10:57 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-21 13:10:57 | INFO     | rexus.startup   | ============================================================
+2025-08-21 13:10:57 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-21 13:10:57 | INFO     | rexus.startup   | ============================================================
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-21 13:10:57 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-21 13:11:02 | INFO     | rexus.startup   | Validación de dependencias exitosa - 1 advertencias
+2025-08-21 13:11:02 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-21 13:11:02 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-21 13:11:02 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-21 13:11:02 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-21 13:11:02 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-21 13:11:02 | WARNING  | rexus.main      | Error inicializando sistema de backup: No module named 'schedule'
