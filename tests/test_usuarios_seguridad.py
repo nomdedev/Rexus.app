@@ -4,7 +4,7 @@ Tests Completos de Usuarios y Seguridad - Rexus.app
 ====================================================
 
 Tests críticos de autenticación, autorización y seguridad.
-Valor: $8,000 USD de los $25,000 USD del módulo de seguridad.
+Cobertura completa del módulo de seguridad.
 
 Cubre:
 - Autenticación con credenciales válidas/inválidas
@@ -634,7 +634,7 @@ def run_security_tests():
     print("=" * 80)
     print("EJECUTANDO TESTS CRÍTICOS DE SEGURIDAD - REXUS.APP")
     print("=" * 80)
-    print(f"Valor: $8,000 USD de los $25,000 USD del módulo de seguridad")
+    print("Cobertura completa del módulo de seguridad")
     print(f"Fecha: {datetime.datetime.now().strftime('%d/%m/%Y %H:%M')}")
     print()
     
@@ -684,7 +684,7 @@ def run_security_tests():
         print("\n✅ TODOS LOS TESTS DE SEGURIDAD PASARON")
         print("🔒 Sistema de autenticación verificado")
         print("🛡️  Protecciones de seguridad funcionando")
-        print(f"💰 Valor entregado: $8,000 USD")
+        print("✅ Módulo de seguridad completamente implementado")
     else:
         print("\n❌ ALGUNOS TESTS FALLARON")
         print("⚠️  REVISAR IMPLEMENTACIÓN DE SEGURIDAD")

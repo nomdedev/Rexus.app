@@ -12,7 +12,17 @@ from unittest.mock import Mock, patch, MagicMock
 
 # Configurar path y entorno
 sys.path.insert(0, str(Path(__file__).parent.parent))
+
+# Configurar encoding UTF-8 globalmente para evitar errores Unicode
 os.environ['PYTHONIOENCODING'] = 'utf-8'
+if sys.stdout.encoding != 'utf-8':
+    try:
+        sys.stdout.reconfigure(encoding='utf-8')
+        sys.stderr.reconfigure(encoding='utf-8')
+    except AttributeError:
+        import io
+        sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8')
+        sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding='utf-8')
 
 # Configurar logging
 import logging

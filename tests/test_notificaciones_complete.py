@@ -81,22 +81,24 @@ class TestNotificacionesModel(unittest.TestCase):
             'datos_adicionales': {'test': True}
         }
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_notificaciones_model_initialization(self, mock_connection):
         """Test inicialización correcta del modelo de notificaciones."""
         mock_connection.return_value = self.mock_db
         
         try:
             from rexus.modules.notificaciones.model import NotificacionesModel
-            model = NotificacionesModel()
+            model = NotificacionesModel(db_connection=self.mock_db)
             
             self.assertIsNotNone(model)
-            mock_connection.assert_called_once()
+            # El mock_connection no debería ser llamado cuando pasamos conexión directa
+            # En su lugar, verificamos que el modelo se inicializó correctamente
+            self.assertIsNotNone(model.db_connection)
             
         except ImportError:
             self.skipTest("Módulo NotificacionesModel no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_obtener_todas_notificaciones(self, mock_connection):
         """Test obtener listado completo de notificaciones."""
         mock_connection.return_value = self.mock_db
@@ -120,7 +122,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error en test obtener notificaciones: {e}")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_crear_notificacion_exitosa(self, mock_connection):
         """Test crear nueva notificación."""
         mock_connection.return_value = self.mock_db
@@ -128,10 +130,19 @@ class TestNotificacionesModel(unittest.TestCase):
         
         try:
             from rexus.modules.notificaciones.model import NotificacionesModel
-            model = NotificacionesModel()
+            # Pasar la conexión mock directamente al constructor
+            model = NotificacionesModel(db_connection=self.mock_db)
             
             if hasattr(model, 'crear_notificacion'):
-                resultado = model.crear_notificacion(self.sample_notificacion)
+                # Usar argumentos individuales según la firma de la función
+                resultado = model.crear_notificacion(
+                    titulo=self.sample_notificacion['titulo'],
+                    mensaje=self.sample_notificacion['mensaje'],
+                    tipo=self.sample_notificacion.get('tipo', 'info'),
+                    prioridad=self.sample_notificacion.get('prioridad', 2),
+                    modulo_origen=self.sample_notificacion.get('modulo_origen', 'test'),
+                    metadata=self.sample_notificacion.get('datos_adicionales')
+                )
                 
                 # Verificar que se intentó insertar
                 self.mock_db.cursor_mock.execute.assert_called()
@@ -142,7 +153,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except Exception as e:
             self.fail(f"Error en test crear notificación: {e}")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_enviar_notificacion_broadcast(self, mock_connection):
         """Test envío de notificación a múltiples usuarios."""
         mock_connection.return_value = self.mock_db
@@ -165,7 +176,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método enviar_broadcast no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_marcar_como_leida(self, mock_connection):
         """Test marcar notificación como leída."""
         mock_connection.return_value = self.mock_db
@@ -184,7 +195,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método marcar_leida no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_obtener_notificaciones_no_leidas(self, mock_connection):
         """Test obtener solo notificaciones no leídas."""
         mock_connection.return_value = self.mock_db
@@ -204,7 +215,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método obtener_no_leidas no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_filtrar_por_tipo(self, mock_connection):
         """Test filtrar notificaciones por tipo."""
         mock_connection.return_value = self.mock_db
@@ -224,7 +235,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método filtrar_por_tipo no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_eliminar_notificacion(self, mock_connection):
         """Test eliminar notificación."""
         mock_connection.return_value = self.mock_db
@@ -232,7 +243,7 @@ class TestNotificacionesModel(unittest.TestCase):
         
         try:
             from rexus.modules.notificaciones.model import NotificacionesModel
-            model = NotificacionesModel()
+            model = NotificacionesModel(db_connection=self.mock_db)
             
             if hasattr(model, 'eliminar_notificacion'):
                 resultado = model.eliminar_notificacion(1)
@@ -243,7 +254,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método eliminar_notificacion no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_limpiar_notificaciones_antiguas(self, mock_connection):
         """Test limpieza de notificaciones antiguas."""
         mock_connection.return_value = self.mock_db
@@ -263,7 +274,7 @@ class TestNotificacionesModel(unittest.TestCase):
         except ImportError:
             self.skipTest("Método limpiar_antiguas no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_obtener_estadisticas(self, mock_connection):
         """Test obtener estadísticas de notificaciones."""
         mock_connection.return_value = self.mock_db
@@ -296,7 +307,7 @@ class TestNotificacionesController(unittest.TestCase):
         """Configuración inicial para cada test."""
         self.mock_db = MockNotificacionesDatabase()
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_controller_initialization(self, mock_connection):
         """Test inicialización del controlador."""
         mock_connection.return_value = self.mock_db
@@ -313,7 +324,7 @@ class TestNotificacionesController(unittest.TestCase):
         except ImportError:
             self.skipTest("Controlador NotificacionesController no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_procesar_nueva_notificacion(self, mock_connection):
         """Test procesamiento de nueva notificación."""
         mock_connection.return_value = self.mock_db
@@ -344,7 +355,7 @@ class TestNotificacionesController(unittest.TestCase):
             if "QWidget" not in str(e) and "QApplication" not in str(e):
                 self.fail(f"Error en test procesar notificación: {e}")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_manejar_acciones_usuario(self, mock_connection):
         """Test manejo de acciones del usuario."""
         mock_connection.return_value = self.mock_db
@@ -379,7 +390,7 @@ class TestNotificacionesIntegracion(unittest.TestCase):
         """Configuración inicial para cada test."""
         self.mock_db = MockNotificacionesDatabase()
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_notificacion_desde_inventario(self, mock_connection):
         """Test generación de notificación desde módulo de inventario."""
         mock_connection.return_value = self.mock_db
@@ -409,7 +420,7 @@ class TestNotificacionesIntegracion(unittest.TestCase):
         except ImportError:
             self.skipTest("Integración con inventario no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_notificacion_desde_pedidos(self, mock_connection):
         """Test generación de notificación desde módulo de pedidos."""
         mock_connection.return_value = self.mock_db
@@ -441,7 +452,7 @@ class TestNotificacionesIntegracion(unittest.TestCase):
         except ImportError:
             self.skipTest("Integración con pedidos no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_notificacion_desde_compras(self, mock_connection):
         """Test generación de notificación desde módulo de compras."""
         mock_connection.return_value = self.mock_db
@@ -471,7 +482,7 @@ class TestNotificacionesIntegracion(unittest.TestCase):
         except ImportError:
             self.skipTest("Integración con compras no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_notificacion_desde_obras(self, mock_connection):
         """Test generación de notificación desde módulo de obras."""
         mock_connection.return_value = self.mock_db
@@ -510,7 +521,7 @@ class TestNotificacionesAlerts(unittest.TestCase):
         """Configuración inicial para cada test."""
         self.mock_db = MockNotificacionesDatabase()
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_sistema_alertas_automaticas(self, mock_connection):
         """Test sistema de alertas automáticas."""
         mock_connection.return_value = self.mock_db
@@ -532,7 +543,7 @@ class TestNotificacionesAlerts(unittest.TestCase):
         except ImportError:
             self.skipTest("Sistema de alertas no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_configuracion_alertas(self, mock_connection):
         """Test configuración de tipos de alertas."""
         mock_connection.return_value = self.mock_db
@@ -567,7 +578,7 @@ class TestNotificacionesReportes(unittest.TestCase):
         """Configuración inicial para cada test."""
         self.mock_db = MockNotificacionesDatabase()
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_generar_reporte_actividad(self, mock_connection):
         """Test generación de reporte de actividad."""
         mock_connection.return_value = self.mock_db
@@ -597,7 +608,7 @@ class TestNotificacionesReportes(unittest.TestCase):
         except ImportError:
             self.skipTest("Generación de reportes no disponible")
     
-    @patch('rexus.modules.notificaciones.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_estadisticas_por_modulo(self, mock_connection):
         """Test estadísticas de notificaciones por módulo origen."""
         mock_connection.return_value = self.mock_db

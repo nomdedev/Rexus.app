@@ -4,7 +4,7 @@ Tests de UI de Login/Logout - Rexus.app
 =========================================
 
 Tests críticos de interfaz de usuario para autenticación.
-Valor: $6,000 USD de los $25,000 USD del módulo de seguridad.
+Cobertura completa de UI del módulo de seguridad.
 
 Cubre:
 - Interacciones reales con el diálogo de login

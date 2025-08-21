@@ -71,7 +71,7 @@ class TestUIInteractions:
             module = __import__(f'rexus.modules.{module_name}.view', fromlist=[view_class])
             ViewClass = getattr(module, view_class)
             
-            with patch(f'rexus.modules.{module_name}.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ViewClass()
                 qtbot.addWidget(view)
                 
@@ -97,7 +97,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -128,7 +128,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -164,7 +164,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -203,7 +203,7 @@ class TestUIInteractions:
                 (2, 'TEST002', 'Producto 2', 'Cat B', 50, 30.00)
             ]
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -235,7 +235,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -263,7 +263,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -300,7 +300,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 
@@ -321,7 +321,7 @@ class TestUIInteractions:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 start_time = time.time()
                 
                 view = InventarioView()
@@ -353,7 +353,7 @@ class TestUIInteractions:
                 module = __import__(f'rexus.modules.{module_name}.view', fromlist=[view_class])
                 ViewClass = getattr(module, view_class)
                 
-                with patch(f'rexus.modules.{module_name}.model.get_inventario_connection', return_value=mock_db):
+                with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                     view = ViewClass()
                     qtbot.addWidget(view)
                     created_views.append(view)

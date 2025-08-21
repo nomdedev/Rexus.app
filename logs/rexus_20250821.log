@@ -1,0 +1,203 @@
+2025-08-21 11:37:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:41:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:41:23 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:41:23 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:41:23 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:41:23 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:41:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:44:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:44:42 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\sql\pedidos\obtener_pedidos_base.sql
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:45:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:45:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:45:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:45:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:45:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:45:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\sql\pedidos\obtener_pedidos_base.sql
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:46:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\sql\pedidos\obtener_pedidos_base.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-21 11:46:00 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:48:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:49:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:49:07 | ERROR    | rexus.compras.model | Error obteniendo compras: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 11:49:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:49:18 | ERROR    | rexus.compras.model | Error obteniendo compras: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 11:49:47 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:49:47 | ERROR    | rexus.compras.model | Error obteniendo compras: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 11:50:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:50:14 | INFO     | rexus.test.database_integration_real | Configuración de tests de BD real completada
+2025-08-21 11:50:14 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:14 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:14 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:14 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:14 | ERROR    | rexus.database  | Database query failed: INSERT INTO productos (codigo, nombre, precio) VALUES (?, ?, ?)... Error: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:50:14 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:50:14 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 100 queries
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Bulk insert de 1000 productos completado en 0.04s
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:50:15 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Limpieza de tests de BD real completada
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Creando dataset grande para tests de rendimiento...
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 500 queries
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Dataset grande creado exitosamente
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Configuración de tests de rendimiento completada
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Test de concurrencia completado en 0.08s
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | Resultados: {'writer_1': {'writes': 25, 'time': 0.021845102310180664, 'success': True}, 'writer_0': {'writes': 25, 'time': 0.03617119789123535, 'success': True}, 'reader_1': {'reads': 50, 'time': 0.0649869441986084, 'success': True}, 'reader_2': {'reads': 50, 'time': 0.06757855415344238, 'success': True}, 'reader_0': {'reads': 50, 'time': 0.07670998573303223, 'success': True}}
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.database  | Transaction completed with 50 queries
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | 20 consultas complejas completadas en 0.00s
+2025-08-21 11:50:15 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:50:15 | INFO     | rexus.test.database_integration_real | 100 SELECT simples completados en 0.02s
+2025-08-21 11:50:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:51:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:51:03 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:51:03 | INFO     | rexus.test.database_integration_real | Creando dataset grande para tests de rendimiento...
+2025-08-21 11:51:35 | ERROR    | rexus.database  | Transaction failed: database is locked
+2025-08-21 11:51:35 | ERROR    | rexus.database  | Database connection error: Error en transacción: database is locked
+2025-08-21 11:52:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:52:31 | INFO     | rexus.test.database_integration_real | Configuración de tests de BD real completada
+2025-08-21 11:52:31 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:52:31 | ERROR    | rexus.database  | Database query failed: INSERT INTO productos (codigo, nombre, precio) VALUES (?, ?, ?)... Error: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:52:31 | ERROR    | rexus.database  | Database connection error: Error en consulta: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:52:31 | INFO     | rexus.test.database_integration_real | Limpieza de tests de BD real completada
+2025-08-21 11:52:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 11:52:39 | INFO     | rexus.test.database_integration_real | Configuración de tests de BD real completada
+2025-08-21 11:52:39 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:52:39 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:52:39 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:52:39 | INFO     | rexus.database  | Database pool initialized with 3 connections
+2025-08-21 11:52:39 | ERROR    | rexus.database  | Transaction failed: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:52:39 | ERROR    | rexus.database  | Database connection error: Error en transacción: UNIQUE constraint failed: productos.codigo
+2025-08-21 11:52:39 | INFO     | rexus.test.database_integration_real | Limpieza de tests de BD real completada

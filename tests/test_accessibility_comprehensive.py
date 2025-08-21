@@ -132,7 +132,7 @@ class TestKeyboardNavigation:
             module = __import__(f'rexus.modules.{module_name}.view', fromlist=[view_class])
             ViewClass = getattr(module, view_class)
             
-            with patch(f'rexus.modules.{module_name}.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ViewClass()
                 qtbot.addWidget(view)
                 view.show()
@@ -168,7 +168,7 @@ class TestKeyboardNavigation:
             module = __import__(f'rexus.modules.{module_name}.view', fromlist=[view_class])
             ViewClass = getattr(module, view_class)
             
-            with patch(f'rexus.modules.{module_name}.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ViewClass()
                 qtbot.addWidget(view)
                 view.show()
@@ -197,7 +197,7 @@ class TestKeyboardNavigation:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -226,7 +226,7 @@ class TestKeyboardNavigation:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -261,7 +261,7 @@ class TestKeyboardNavigation:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -307,7 +307,7 @@ class TestColorContrast:
             module = __import__(f'rexus.modules.{module_name}.view', fromlist=[view_class])
             ViewClass = getattr(module, view_class)
             
-            with patch(f'rexus.modules.{module_name}.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ViewClass()
                 qtbot.addWidget(view)
                 view.show()
@@ -356,7 +356,7 @@ class TestColorContrast:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -389,7 +389,7 @@ class TestColorContrast:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -429,7 +429,7 @@ class TestScreenReaderCompatibility:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -477,7 +477,7 @@ class TestScreenReaderCompatibility:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -505,7 +505,7 @@ class TestScreenReaderCompatibility:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -538,7 +538,7 @@ class TestFocusManagement:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -572,7 +572,7 @@ class TestFocusManagement:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -603,7 +603,7 @@ class TestFocusManagement:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()
@@ -640,7 +640,7 @@ class TestA11yStandards:
         try:
             from rexus.modules.compras.view import ComprasView
             
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = ComprasView()
                 qtbot.addWidget(view)
                 view.show()
@@ -684,7 +684,7 @@ class TestA11yStandards:
         try:
             from rexus.modules.inventario.view import InventarioView
             
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 view = InventarioView()
                 qtbot.addWidget(view)
                 view.show()

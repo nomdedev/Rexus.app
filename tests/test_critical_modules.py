@@ -56,7 +56,7 @@ class TestInventarioModule(unittest.TestCase):
             'precio_unitario': 25.50
         }
     
-    @patch('rexus.modules.inventario.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_inventario_model_initialization(self, mock_connection):
         """Test inicialización del modelo de inventario."""
         mock_connection.return_value = self.mock_db
@@ -71,7 +71,7 @@ class TestInventarioModule(unittest.TestCase):
         except ImportError:
             self.skipTest("Módulo inventario no disponible")
     
-    @patch('rexus.modules.inventario.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_inventario_obtener_productos(self, mock_connection):
         """Test obtener productos del inventario."""
         mock_connection.return_value = self.mock_db
@@ -129,7 +129,7 @@ class TestComprasModule(unittest.TestCase):
             'total': 1500.00
         }
     
-    @patch('rexus.modules.compras.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_compras_model_initialization(self, mock_connection):
         """Test inicialización del modelo de compras."""
         mock_connection.return_value = self.mock_db
@@ -144,7 +144,7 @@ class TestComprasModule(unittest.TestCase):
         except ImportError:
             self.skipTest("Módulo compras no disponible")
     
-    @patch('rexus.modules.compras.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_compras_crear_compra(self, mock_connection):
         """Test crear nueva compra."""
         mock_connection.return_value = self.mock_db
@@ -256,7 +256,7 @@ class TestConfiguracionModule(unittest.TestCase):
             'categoria': 'TEST'
         }
     
-    @patch('rexus.modules.configuracion.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_configuracion_model_initialization(self, mock_connection):
         """Test inicialización del modelo de configuración."""
         mock_connection.return_value = self.mock_db
@@ -271,7 +271,7 @@ class TestConfiguracionModule(unittest.TestCase):
         except ImportError:
             self.skipTest("Módulo configuración no disponible")
     
-    @patch('rexus.modules.configuracion.model.get_inventario_connection')
+    @patch('rexus.core.database.get_inventario_connection')
     def test_configuracion_obtener_valor(self, mock_connection):
         """Test obtener valor de configuración."""
         mock_connection.return_value = self.mock_db

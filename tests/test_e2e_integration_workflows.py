@@ -104,9 +104,9 @@ class TestCompleteBusinessWorkflows:
         
         try:
             # Paso 1: Inicializar módulos necesarios
-            with patch('rexus.modules.pedidos.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.notificaciones.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 
                 from rexus.modules.pedidos.view import PedidosView
                 from rexus.modules.inventario.model import InventarioModel
@@ -192,9 +192,9 @@ class TestCompleteBusinessWorkflows:
         mock_db, cursor_mock = e2e_mock_db
         
         try:
-            with patch('rexus.modules.compras.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.notificaciones.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 
                 from rexus.modules.compras.model import ComprasModel
                 from rexus.modules.inventario.model import InventarioModel
@@ -272,8 +272,8 @@ class TestCompleteBusinessWorkflows:
         mock_db, cursor_mock = e2e_mock_db
         
         try:
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.notificaciones.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 
                 from rexus.modules.inventario.model import InventarioModel
                 from rexus.modules.notificaciones.model import NotificacionesModel
@@ -363,9 +363,9 @@ class TestCompleteBusinessWorkflows:
         mock_db, cursor_mock = e2e_mock_db
         
         try:
-            with patch('rexus.modules.obras.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.pedidos.model.get_inventario_connection', return_value=mock_db), \
-                 patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db), \
+                 patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 
                 from rexus.modules.obras.model import ObrasModel
                 from rexus.modules.pedidos.model import PedidosModel
@@ -497,7 +497,7 @@ class TestErrorRecoveryWorkflows:
         mock_db, cursor_mock = failing_mock_db
         
         try:
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 from rexus.modules.inventario.model import InventarioModel
                 
                 inventario_model = InventarioModel()
@@ -543,7 +543,7 @@ class TestErrorRecoveryWorkflows:
         mock_db.commit = Mock()
         
         try:
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 from rexus.modules.inventario.model import InventarioModel
                 
                 inventario_model = InventarioModel()
@@ -588,7 +588,7 @@ class TestPerformanceWorkflows:
         mock_db.commit = Mock()
         
         try:
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 from rexus.modules.inventario.model import InventarioModel
                 
                 inventario_model = InventarioModel()
@@ -623,7 +623,7 @@ class TestPerformanceWorkflows:
         mock_db.commit = Mock()
         
         try:
-            with patch('rexus.modules.inventario.model.get_inventario_connection', return_value=mock_db):
+            with patch('rexus.core.database.get_inventario_connection', return_value=mock_db):
                 from rexus.modules.inventario.model import InventarioModel
                 
                 # Simular operaciones concurrentes

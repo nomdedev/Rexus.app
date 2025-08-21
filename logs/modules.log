@@ -487,3 +487,216 @@
 2025-08-19 18:18:38 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
 2025-08-19 18:18:38 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
 2025-08-19 18:18:38 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-20 21:33:57 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:33:57 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:33:57 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:33:57 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:40:28 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:40:28 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:41:10 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:16 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:48:25 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-20 21:55:59 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:55:59 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:55:59 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:55:59 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:55:59 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:55:59 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:00 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:00 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:00 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:00 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:00 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:56:00 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.obras.model | [OBRAS] Conexión automática establecida exitosamente
+2025-08-20 21:56:12 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 21:56:12 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-20 21:56:12 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-20 21:56:12 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:12 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 21:56:13 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:11 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 22:21:11 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 22:21:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:23 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 22:21:23 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 22:21:32 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 22:21:32 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:21:32 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-20 22:21:32 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-20 22:23:18 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:23:18 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:23:18 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-20 22:23:18 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:41:23 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:44:42 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:45:48 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | ERROR    | rexus.modules.pedidos.model | Error actualizando estado de pedido: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error creando pedido: 'PedidosModel' object has no attribute 'data_sanitizer'
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Error obteniendo pedidos: 'Mock' object is not iterable
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Conexión automática establecida exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-21 11:46:00 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
