@@ -760,3 +760,15 @@ ERRORES CRÍTICOS:
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 16:51:22 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-21 16:51:27 | ERROR    | rexus.main      | Error crítico creando inventario: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-21 16:51:31 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-21 16:51:35 | ERROR    | rexus.main      | Error crítico creando pedidos: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near the keyword 'IF'. (156) (SQLExecDirectW); [42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near 'pedidos_detalle'. (102)")
+2025-08-21 16:51:38 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-21 16:51:38 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas

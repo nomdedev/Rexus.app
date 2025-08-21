@@ -811,3 +811,24 @@
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
 2025-08-21 13:25:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 16:51:27 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 16:51:27 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 16:51:27 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 16:51:27 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-21 16:51:35 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-21 16:51:45 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-21 16:51:46 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-21 16:51:46 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-21 16:51:46 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-21 16:51:49 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-21 16:51:49 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 16:51:56 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 16:51:58 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-21 16:51:58 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-21 16:51:58 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-21 16:51:58 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente

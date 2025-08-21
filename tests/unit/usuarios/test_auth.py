@@ -23,21 +23,9 @@ class MockDatabase:
         self.cursor_mock = Mock()
         self.connected = True
         
-        # Datos de usuarios de prueba
-        self.users_data = {
-            'admin': {
-                'usuario': 'admin',
-                'password_hash': 'hashed_admin_password',
-                'rol': 'ADMIN',
-                'estado': 'activo'
-            },
-            'user1': {
-                'usuario': 'user1', 
-                'password_hash': 'hashed_user1_password',
-                'rol': 'USER',
-                'estado': 'activo'
-            }
-        }
+        # Datos de usuarios de prueba - SEGUROS
+        from tests.utils.security_helpers import SECURE_TEST_CONSTANTS
+        self.users_data = SECURE_TEST_CONSTANTS['MOCK_USERS']
     
     def cursor(self):
         return self.cursor_mock
@@ -62,9 +50,11 @@ class TestUsuariosAuth(unittest.TestCase):
         # Configurar mock
         mock_db_connection.return_value = self.mock_db
         
-        # Simular respuesta de usuario válido
+        # Simular respuesta de usuario válido - DATOS SEGUROS
+        from tests.utils.security_helpers import TestSecurityManager
+        mock_user = TestSecurityManager.create_mock_user_data('admin', 'ADMIN')
         self.mock_db.cursor_mock.fetchone.return_value = (
-            'admin', 'hashed_admin_password', 'ADMIN', 'activo'
+            mock_user['usuario'], mock_user['password_hash'], mock_user['rol'], mock_user['estado']
         )
         
         # Test básico - el módulo debe poder importarse
@@ -91,16 +81,21 @@ class TestUsuariosAuth(unittest.TestCase):
             self.skipTest(f"Módulo usuarios no disponible: {e}")
     
     def test_password_validation(self):
-        """Test: Validación de contraseñas."""
-        # Tests básicos de validación
-        weak_passwords = ['123', 'pass', 'abc']
-        strong_passwords = ['Admin123!', 'SecurePass456#']
+        """Test: Validación de contraseñas - USANDO DATOS SEGUROS."""
+        from tests.utils.security_helpers import TestSecurityManager, MockPasswordValidator
         
-        for pwd in weak_passwords:
-            self.assertLess(len(pwd), 8, f"Password débil detectado: {pwd}")
+        # Obtener casos de prueba seguros
+        test_cases = TestSecurityManager.get_password_strength_test_cases()
+        
+        # Tests de passwords débiles
+        for weak_pwd in test_cases['weak_patterns']:
+            result = MockPasswordValidator.validate_password_strength(weak_pwd)
+            self.assertFalse(result['is_valid'], f"Password débil debería fallar: {weak_pwd}")
             
-        for pwd in strong_passwords:
-            self.assertGreaterEqual(len(pwd), 8, f"Password fuerte: {pwd}")
+        # Tests de passwords fuertes
+        for strong_pwd in test_cases['strong_patterns']:
+            result = MockPasswordValidator.validate_password_strength(strong_pwd)
+            self.assertTrue(result['is_valid'], f"Password fuerte debería pasar: {strong_pwd}")
     
     def test_user_roles_enum(self):
         """Test: Validación de roles de usuario."""
