@@ -20,7 +20,12 @@
       "Bash(pip install:*)",
       "Bash(dir /a .env*)",
       "Bash(Get-Content D:martinRexus.apprexusmodulesinventariomodel.py -Tail 50)",
-      "Bash(dir:*)"
+      "Bash(dir:*)",
+      "Bash(where python)",
+      "Bash(.venvScriptsactivate)",
+      "Bash(D:martinRexus.app.venvScriptspython.exe -m pytest tests/ -v --tb=short --maxfail=50)",
+      "Bash(/d/martin/Rexus.app/.venv/Scripts/python.exe -m pytest tests/ -v --tb=short --maxfail=50)",
+      "Bash(C:\\Python310\\python.exe:*)"
     ],
     "deny": [],
     "ask": [],
@@ -29,7 +34,8 @@
       "C:\\tmp",
       "C:\\c\\Users\\itachi\\Desktop\\martin",
       "D:\\d D:\\martin",
-      "D:\\martin"
+      "D:\\martin",
+      "D:\\d\\martin"
     ]
   }
 }

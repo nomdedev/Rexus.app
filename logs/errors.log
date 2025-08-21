@@ -772,3 +772,4 @@ ERRORES CRÍTICOS:
 2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
 2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
 2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-21 18:00:35 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible

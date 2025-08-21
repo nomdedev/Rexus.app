@@ -82,14 +82,22 @@ class BaseController(QObject):
         """
         self.logger.debug(f"Validando componentes del controlador {self.module_name}")
         
-        if not self.model:
-            self.logger.error(f"CRITICO: Modelo de {self.module_name} no disponible")
-            
-        if not self.view:
-            self.logger.warning(f"Vista de {self.module_name} no disponible")
-            
+        # Validar conexión de BD
         if not self.db_connection:
             self.logger.warning(f"Conexión de BD no disponible para {self.module_name}")
+        else:
+            # Pasar conexión al modelo si está disponible
+            if self.model and hasattr(self.model, 'db_connection'):
+                self.model.db_connection = self.db_connection
+                self.logger.debug(f"Conexión BD asignada al modelo {self.module_name}")
+        
+        # Validar modelo
+        if not self.model:
+            self.logger.warning(f"Modelo no disponible para {self.module_name}")
+        
+        # Validar vista
+        if not self.view:
+            self.logger.warning(f"Vista no disponible para {self.module_name}")
             
         self.logger.info(f"Validación de componentes {self.module_name} completada")
     
