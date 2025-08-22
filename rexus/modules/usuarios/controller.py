@@ -234,7 +234,6 @@ datos: Dict[str,
             self.mostrar_error(f"Error actualizando usuario: {str(e)}")
 
     @admin_required
-    @admin_required
     def eliminar_usuario(self, usuario_id:str):
         """Elimina un usuario."""
         try:

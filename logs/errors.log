@@ -1310,3 +1310,21 @@ Traceback (most recent call last):
   File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
     logger.info(f"Cargadas {len(obras)} obras exitosamente")
 TypeError: object of type 'Mock' has no len()
+2025-08-22 18:35:31 | ERROR    | rexus.<Mock id='2865553354768'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:31 | ERROR    | rexus.<Mock id='2865553059904'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:34 | ERROR    | rexus.<Mock id='2865553361792'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:34 | ERROR    | rexus.<Mock id='2865553040016'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:35 | ERROR    | rexus.<Mock id='2865553615040'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:35 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:35 | ERROR    | rexus.<Mock id='2865554217744'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:39 | ERROR    | rexus.<Mock id='2865553527600'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:40 | ERROR    | rexus.<Mock id='2865554221200'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:35:50 - rexus.compras.controller - [31mERROR[0m - Error creando orden: 'impuestos'
+2025-08-22 18:35:50 - rexus.compras.controller - [31mERROR[0m - Error cargando datos iniciales: Error de base de datos
+2025-08-22 18:35:51 - rexus.configuracion.controller - [31mERROR[0m - [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 18:35:51 - rexus.configuracion.controller - [31mERROR[0m - [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 18:35:55 - rexus.inventario.controller - [31mERROR[0m - Error en paginación: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 356, in cargar_inventario_paginado
+    total = len(productos)
+TypeError: object of type 'Mock' has no len()

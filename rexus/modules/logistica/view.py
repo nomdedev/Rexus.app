@@ -1232,7 +1232,7 @@ nombre: str,
 
         # Descripción pequeña
         desc_label = QLabel(descripcion)
-        desc_label.setStyleSheet("font-size: 9px; color: #6c757d; padding-top: 2px;")
+        desc_label.setStyleSheet("font-size: 11px; color: #6c757d; padding-top: 4px;")
         layout.addWidget(desc_label)
 
         widget.setFixedHeight(55)  # Altura fija para consistencia

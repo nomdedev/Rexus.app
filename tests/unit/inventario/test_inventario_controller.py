@@ -23,6 +23,15 @@ class TestInventarioController(unittest.TestCase):
         """Configuración inicial para cada test."""
         self.mock_model = Mock()
         self.mock_view = Mock()
+        
+        # Configurar retornos predeterminados para evitar errores con len()
+        productos_mock = [
+            {'id': 1, 'nombre': 'Producto 1', 'stock': 10},
+            {'id': 2, 'nombre': 'Producto 2', 'stock': 5}
+        ]
+        self.mock_model.obtener_productos.return_value = productos_mock
+        self.mock_model.obtener_productos_paginados.return_value = (productos_mock, {"total_records": 2})
+        
         self.controller = InventarioController()
         self.controller.model = self.mock_model
         self.controller.view = self.mock_view
@@ -42,10 +51,12 @@ class TestInventarioController(unittest.TestCase):
         # Mock del modelo
         mock_model_instance = Mock()
         mock_model_class.return_value = mock_model_instance
-        mock_model_instance.obtener_productos.return_value = [
+        productos_mock = [
             {'id': 1, 'nombre': 'Producto 1', 'stock': 10},
             {'id': 2, 'nombre': 'Producto 2', 'stock': 5}
         ]
+        mock_model_instance.obtener_productos.return_value = productos_mock
+        mock_model_instance.obtener_productos_paginados.return_value = (productos_mock, {"total_records": 2})
         
         # Configurar controller
         controller = InventarioController()

@@ -547,7 +547,7 @@ class ComprasViewComplete(BaseModuleView):
         titulo = QLabel("🛒 Gestión de Compras y Órdenes")
         titulo.setStyleSheet("""
             QLabel {
-                font-size: 16px;
+                font-size: 14px;
                 font-weight: bold;
                 color: #374151;
                 padding: 8px;
@@ -667,7 +667,7 @@ class ComprasViewComplete(BaseModuleView):
             metric_layout = QVBoxLayout(metric_frame)
 
             nombre_label = QLabel(nombre)
-            nombre_label.setStyleSheet("font-size: 11px; font-weight: 500;")
+            nombre_label.setStyleSheet("font-size: 12px; font-weight: 500;")
             nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             valor_label = QLabel(valor)
@@ -699,7 +699,7 @@ class ComprasViewComplete(BaseModuleView):
         self.setStyleSheet("""
             QGroupBox {
                 font-weight: 500;
-                font-size: 13px;
+                font-size: 14px;
                 border: 1px solid #e5e7eb;
                 border-radius: 6px;
                 margin-top: 8px;
@@ -716,7 +716,7 @@ class ComprasViewComplete(BaseModuleView):
                 border: none;
                 border-radius: 4px;
                 padding: 6px 12px;
-                font-size: 13px;
+                font-size: 14px;
                 font-weight: 500;
                 min-height: 18px;
                 max-height: 28px;
@@ -729,21 +729,21 @@ class ComprasViewComplete(BaseModuleView):
             }
             QComboBox {
                 padding: 5px 8px;
-                font-size: 13px;
+                font-size: 14px;
                 min-height: 18px;
                 border: 1px solid #e5e7eb;
                 border-radius: 4px;
             }
             QLineEdit {
                 padding: 5px 8px;
-                font-size: 13px;
+                font-size: 14px;
                 min-height: 18px;
                 border: 1px solid #e5e7eb;
                 border-radius: 4px;
             }
             QTableWidget {
                 gridline-color: #e5e7eb;
-                font-size: 13px;
+                font-size: 14px;
                 selection-background-color: #dbeafe;
                 alternate-background-color: #f9fafb;
             }

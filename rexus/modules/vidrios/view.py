@@ -101,13 +101,13 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 font-size: 9px;
                 border: 1px solid #e5e7eb;
                 border-radius: 2px;
-                background: transparent;
+                background-color: #f8fafc;
             }
 
             QTableWidget::item {
-                padding: 1px 4px;
+                padding: 6px 8px;
                 border: none;
-                font-size: 9px;
+                font-size: 12px;
             }
 
             QHeaderView::section {
@@ -203,7 +203,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 color: white;
                 font-size: 18px;
                 font-weight: bold;
-                background: transparent;
+                background-color: #f8fafc;
             }
         """)
 
@@ -248,7 +248,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         self.tab_widget.setStyleSheet("""
             QTabWidget::pane {
                 border: none;
-                background: transparent;
+                background-color: #f8fafc;
             }
             QTabBar::tab {
                 background: #f8fafc;
@@ -563,7 +563,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         scroll_area.setStyleSheet("""
             QScrollArea {
                 border: none;
-                background: transparent;
+                background-color: #f8fafc;
             }
         """)
 

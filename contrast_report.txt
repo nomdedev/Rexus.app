@@ -1,0 +1,114 @@
+================================================================================
+REPORTE DE ANÁLISIS DE CONTRASTE Y ESTILOS UI
+================================================================================
+
+RESUMEN:
+  - Total de archivos analizados: 12
+  - Total de problemas: 24
+  - Problemas críticos: 12
+  - Advertencias: 2
+
+CRITICAL ISSUES:
+----------------------------------------
+[FILE] rexus\modules\configuracion\database_config_dialog.py:472
+   [ISSUE] Texto transparente: background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\modules\inventario\view.py:50
+   [ISSUE] Texto transparente: background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\modules\logistica\view.py:144
+   [ISSUE] Texto transparente: alternate-background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\modules\logistica\view.py:687
+   [ISSUE] Texto transparente: alternate-background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\modules\vidrios\view.py:100
+   [ISSUE] Texto transparente: alternate-background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\modules\vidrios\view.py:108
+   [ISSUE] Padding muy pequeño: padding: 1px 4px;
+   [FIX] Usar mínimo 4px de padding para espaciado
+
+[FILE] rexus\modules\vidrios\view.py:114
+   [ISSUE] Texto transparente: background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\ui\standard_components.py:86
+   [ISSUE] Padding muy pequeño: padding: 0px;
+   [FIX] Usar mínimo 4px de padding para espaciado
+
+[FILE] rexus\ui\standard_components.py:333
+   [ISSUE] Texto transparente: alternate-background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+[FILE] rexus\ui\style_manager.py:290
+   [ISSUE] Padding muy pequeño: padding: 0px;
+   [FIX] Usar mínimo 4px de padding para espaciado
+
+[FILE] rexus\ui\components\base_components.py:418
+   [ISSUE] Padding muy pequeño: padding: 0px 8px 0px 8px;
+   [FIX] Usar mínimo 4px de padding para espaciado
+
+[FILE] rexus\ui\templates\base_module_view.py:61
+   [ISSUE] Texto transparente: background-color: transparent;
+   [FIX] Evitar texto transparente, usar colores visibles
+
+WARNING ISSUES:
+----------------------------------------
+[FILE] rexus\modules\logistica\view.py:1235
+   [ISSUE] Fuente muy pequeña: 9px
+   [FIX] Usar mínimo 12px para texto normal, 14px para texto principal
+
+[FILE] rexus\modules\notificaciones\view.py:61
+   [ISSUE] Fuente muy pequeña: 9px
+   [FIX] Usar mínimo 12px para texto normal, 14px para texto principal
+
+INFO ISSUES:
+----------------------------------------
+[FILE] rexus\modules\inventario\obras_asociadas_dialog.py:110
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\modules\inventario\obras_asociadas_dialog.py:129
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\modules\inventario\view_obras.py:300
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\modules\inventario\view_obras.py:311
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\style_manager.py:684
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\components\theme_manager.py:56
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\components\theme_manager.py:105
+   [ISSUE] Color de bajo contraste detectado: #999999
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\components\theme_manager.py:161
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\components\theme_manager.py:167
+   [ISSUE] Color de bajo contraste detectado: #999999
+   [FIX] Considerar usar colores más contrastantes
+
+[FILE] rexus\ui\components\theme_manager.py:281
+   [ISSUE] Color de bajo contraste detectado: #cccccc
+   [FIX] Considerar usar colores más contrastantes
+
+RESUMEN POR MÓDULO:
+----------------------------------------

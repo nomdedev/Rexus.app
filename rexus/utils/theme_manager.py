@@ -472,7 +472,9 @@ QPushButton[buttonType="sidebar"] {{
 }}
 
 QPushButton[buttonType="sidebar"]:hover {{
-    background-color: {colors['sidebar_hover']};
+    background-color: {colors['sidebar_hover']} !important;
+    border-left: 3px solid {colors['primary']} !important;
+    transition: all 0.2s ease !important;
 }}
 
 QPushButton[buttonType="sidebar"]:checked {{

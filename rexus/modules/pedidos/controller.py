@@ -163,6 +163,7 @@ class PedidosController(QObject):
                 return
 
             # Implementar actualización de pedidos
+            pedido_id = datos_pedido["id"]
             logger.info(f"Actualizando pedido ID: {pedido_id}")
             
             # Agregar información de auditoría
