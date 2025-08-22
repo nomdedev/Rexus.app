@@ -783,3 +783,347 @@ NameError: name 'logger' is not defined
 2025-08-22 12:22:29 | ERROR    | rexus.<Mock id='2335793564832'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
 2025-08-22 12:22:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-22 12:22:51 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:29:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:29:56 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-22 12:29:56 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:29:57 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:29:57 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-22 12:29:57 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:29:57 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-22 12:29:57 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-22 12:29:57 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-22 12:29:57 | INFO     | rexus.startup   | Argumentos: ['main.py', '--version']
+2025-08-22 12:29:57 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:29:57 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-22 12:29:57 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-22 12:29:58 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-22 12:29:58 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-22 12:29:58 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-22 12:29:58 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-22 12:29:58 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:29:58 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Base de datos: users
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:05 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=users;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:05 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:30:05 | INFO     | rexus.core.security | Estado del sistema de permisos:
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   security_manager_initialized: True
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   current_role: ADMIN
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   db_connection_status: Connected
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   session_active: True
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   role_recognized: True
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   modules_count: 12
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   has_admin_access: True
+2025-08-22 12:30:05 | INFO     | rexus.core.security |   modules_list: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:30:05 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:30:05 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:30:06 | DEBUG    | rexus.None.controller | Validando componentes del controlador None
+2025-08-22 12:30:06 | WARNING  | rexus.None.controller | Conexión de BD no disponible para None
+2025-08-22 12:30:06 | WARNING  | rexus.None.controller | Vista no disponible para None
+2025-08-22 12:30:06 | INFO     | rexus.None.controller | Validación de componentes None completada
+2025-08-22 12:30:06 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:30:06 | DEBUG    | rexus.main      | Módulos permitidos: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:30:06 | ERROR    | rexus.main      | Error creando dashboard moderno: 'charmap' codec can't encode character '\U0001f3e0' in position 7: character maps to <undefined>
+2025-08-22 12:30:06 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-22 12:30:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:11 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:11 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:11 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:11 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-22 12:30:11 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-22 12:30:11 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-22 12:30:11 | INFO     | rexus.inventario.controller | Inicializando controlador completo de inventario
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectando señales de la vista de inventario...
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_buscar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_actualizar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_limpiar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_nuevo_producto
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_editar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_eliminar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_movimiento
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_exportar
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_cargar_presupuesto
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado: tabla_inventario.itemSelectionChanged
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado: input_busqueda.textChanged
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Conectado: presupuesto_cargado
+2025-08-22 12:30:11 | INFO     | rexus.inventario.controller | Todas las señales conectadas correctamente
+2025-08-22 12:30:11 | INFO     | rexus.inventario.controller | Controlador de inventario inicializado exitosamente
+2025-08-22 12:30:11 | INFO     | rexus.inventario.controller | Iniciando carga inicial de inventario
+2025-08-22 12:30:11 | DEBUG    | rexus.inventario.controller | Cargando página 1, 100 registros...
+2025-08-22 12:30:11 | ERROR    | rexus.inventario.controller | Error en paginación: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 288, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3133, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+TypeError: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:20 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:20 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:20 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.verificar_tabla_sqlite desde D:\martin\Rexus.app\sql\obras\verificar_tabla_sqlite.sql
+2025-08-22 12:30:20 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-22 12:30:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:23 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:23 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:23 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:23 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-22 12:30:23 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | Tabla 'historial' verificada correctamente
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | Tabla 'reserva_materiales' verificada correctamente
+2025-08-22 12:30:23 | INFO     | rexus.inventario.model | Verificación de tablas completada
+2025-08-22 12:30:23 | INFO     | rexus.inventario.controller | Inicializando controlador completo de inventario
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectando señales de la vista de inventario...
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_buscar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_actualizar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_limpiar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_nuevo_producto
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_editar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_eliminar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_movimiento
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_exportar
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado botón: btn_cargar_presupuesto
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado: tabla_inventario.itemSelectionChanged
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado: input_busqueda.textChanged
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Conectado: presupuesto_cargado
+2025-08-22 12:30:23 | INFO     | rexus.inventario.controller | Todas las señales conectadas correctamente
+2025-08-22 12:30:23 | INFO     | rexus.inventario.controller | Controlador de inventario inicializado exitosamente
+2025-08-22 12:30:23 | INFO     | rexus.inventario.controller | Iniciando carga inicial de inventario
+2025-08-22 12:30:23 | DEBUG    | rexus.inventario.controller | Cargando página 1, 100 registros...
+2025-08-22 12:30:23 | ERROR    | rexus.inventario.controller | Error en paginación: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 288, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3133, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+TypeError: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:25 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:25 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:26 | DEBUG    | rexus.herrajes.controller | Validando componentes del controlador herrajes
+2025-08-22 12:30:26 | WARNING  | rexus.herrajes.controller | Conexión de BD no disponible para herrajes
+2025-08-22 12:30:26 | INFO     | rexus.herrajes.controller | Validación de componentes herrajes completada
+2025-08-22 12:30:27 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-22 12:30:27 | WARNING  | rexus.vidrios.model | No se puede verificar tablas: conexión no disponible
+2025-08-22 12:30:27 | INFO     | rexus.vidrios.controller | Iniciando carga del módulo de vidrios
+2025-08-22 12:30:27 | ERROR    | rexus.vidrios.controller | Error al cargar módulo de vidrios: 'VidriosController' object has no attribute 'obtener_vidrios'
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:29 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:29 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:29 | WARNING  | rexus.core.module_manager | [Logistica] Método cargar_logistica no encontrado en controlador
+2025-08-22 12:30:29 | INFO     | rexus.logistica.controller | Iniciando carga de datos iniciales de logística
+2025-08-22 12:30:29 | DEBUG    | rexus.logistica.controller | Cargando entregas desde el modelo
+2025-08-22 12:30:29 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: logistica.obtener_entregas_base desde D:\martin\Rexus.app\sql\logistica\obtener_entregas_base.sql
+2025-08-22 12:30:29 | INFO     | rexus.logistica.controller | Cargadas 0 entregas
+2025-08-22 12:30:29 | DEBUG    | rexus.logistica.controller | Método obtener_services no disponible en el modelo
+2025-08-22 12:30:30 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-22 12:30:30 | WARNING  | rexus.vidrios.model | No se puede verificar tablas: conexión no disponible
+2025-08-22 12:30:30 | INFO     | rexus.vidrios.controller | Iniciando carga del módulo de vidrios
+2025-08-22 12:30:30 | ERROR    | rexus.vidrios.controller | Error al cargar módulo de vidrios: 'VidriosController' object has no attribute 'obtener_vidrios'
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:32 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:32 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:32 | WARNING  | rexus.core.module_manager | [Logistica] Método cargar_logistica no encontrado en controlador
+2025-08-22 12:30:32 | INFO     | rexus.logistica.controller | Iniciando carga de datos iniciales de logística
+2025-08-22 12:30:32 | DEBUG    | rexus.logistica.controller | Cargando entregas desde el modelo
+2025-08-22 12:30:32 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: logistica.obtener_entregas_base desde D:\martin\Rexus.app\sql\logistica\obtener_entregas_base.sql
+2025-08-22 12:30:32 | INFO     | rexus.logistica.controller | Cargadas 0 entregas
+2025-08-22 12:30:32 | DEBUG    | rexus.logistica.controller | Método obtener_services no disponible en el modelo
+2025-08-22 12:30:33 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Inicializado en modo completo con conexión BD
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:33 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:33 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:33 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
+2025-08-22 12:30:33 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
+2025-08-22 12:30:33 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_historial_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_historial_table.sql
+2025-08-22 12:30:33 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_entregas_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_entregas_table.sql
+2025-08-22 12:30:33 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-22 12:30:33 | INFO     | rexus.modules.pedidos.model | [PEDIDOS] Tablas verificadas/creadas exitosamente
+2025-08-22 12:30:33 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.obtener_pedidos_base desde D:\martin\Rexus.app\sql\pedidos\obtener_pedidos_base.sql
+2025-08-22 12:30:33 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 12:30:33 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:35 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.verificar_tabla desde D:\martin\Rexus.app\sql\compras\verificar_tabla.sql
+2025-08-22 12:30:35 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'compras' verificada correctamente.
+2025-08-22 12:30:35 | INFO     | rexus.compras.model | [COMPRAS] Tabla 'detalle_compras' verificada correctamente.
+2025-08-22 12:30:35 | DEBUG    | rexus.compras.controller | Validando componentes del controlador compras
+2025-08-22 12:30:35 | WARNING  | rexus.compras.controller | Conexión de BD no disponible para compras
+2025-08-22 12:30:35 | INFO     | rexus.compras.controller | Validación de componentes compras completada
+2025-08-22 12:30:35 | INFO     | rexus.core.database | Cambiado a base de datos: inventario
+2025-08-22 12:30:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.obtener_todas_compras desde D:\martin\Rexus.app\sql\compras\obtener_todas_compras.sql
+2025-08-22 12:30:35 | INFO     | rexus.compras.model | [COMPRAS] Obtenidas 0 órdenes de compra
+2025-08-22 12:30:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.count_total_compras desde D:\martin\Rexus.app\sql\compras\count_total_compras.sql
+2025-08-22 12:30:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.count_compras_por_estado desde D:\martin\Rexus.app\sql\compras\count_compras_por_estado.sql
+2025-08-22 12:30:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: compras.sum_monto_total_compras desde D:\martin\Rexus.app\sql\compras\sum_monto_total_compras.sql
+2025-08-22 12:30:35 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 12:30:35 | INFO     | rexus.compras.controller | Datos iniciales cargados: 0 compras
+2025-08-22 12:30:35 | WARNING  | rexus.core.module_manager | [Compras] Método cargar_compras no encontrado en controlador
+2025-08-22 12:30:35 | INFO     | rexus.compras.model | [COMPRAS] Obtenidas 0 órdenes de compra
+2025-08-22 12:30:35 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 12:30:35 | INFO     | rexus.compras.controller | Datos iniciales cargados: 0 compras
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:30:38 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:30:38 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:30:38 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-22 12:30:38 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: mantenimiento.obtener_equipos_base desde D:\martin\Rexus.app\sql\mantenimiento\obtener_equipos_base.sql
+2025-08-22 12:30:38 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-22 12:30:38 | WARNING  | rexus.core.module_manager | [Mantenimiento] Método cargar_mantenimiento no encontrado en controlador
+2025-08-22 12:30:38 | INFO     | rexus.modules.mantenimiento.controller | Verificación completada: 0 vencidos, 0 próximos
+2025-08-22 12:30:38 | INFO     | rexus.modules.mantenimiento.controller | Datos iniciales de mantenimiento cargados exitosamente
+2025-08-22 12:30:40 | INFO     | rexus.modules.auditoria.model | OK [AUDITORIA] Sistema unificado de sanitización cargado
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-22 12:30:40 | WARNING  | rexus.core.module_manager | [Auditoria] Método cargar_auditoria no encontrado en controlador
+2025-08-22 12:30:40 | ERROR    | rexus.core.module_manager | [Auditoria] Error cargando datos iniciales: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+2025-08-22 12:30:40 | DEBUG    | rexus.core.module_manager | Stack trace para Auditoria:
+2025-08-22 12:30:40 | DEBUG    | rexus.core.module_manager | Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\core\module_manager.py", line 290, in _load_initial_data
+    print(f"ℹ️  [{module_name}] No requiere carga inicial de datos")
+  File "C:\Python310\lib\encodings\cp1252.py", line 19, in encode
+    return codecs.charmap_encode(input,self.errors,encoding_table)[0]
+UnicodeEncodeError: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+
+2025-08-22 12:38:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:38:01 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-22 12:38:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:38:44 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:38:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:38:51 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-22 12:38:52 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:38:52 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:38:52 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-22 12:38:52 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:38:52 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-22 12:38:52 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-22 12:38:52 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-22 12:38:52 | INFO     | rexus.startup   | Argumentos: ['main.py', '--debug']
+2025-08-22 12:38:52 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:38:52 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-22 12:38:52 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-22 12:38:53 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-22 12:38:53 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-22 12:38:53 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-22 12:38:53 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-22 12:38:53 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:38:53 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:40:05 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:40:05 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:40:05 | INFO     | rexus.core.database | Base de datos: users
+2025-08-22 12:40:05 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:40:05 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:40:05 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=users;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:40:06 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:40:06 | INFO     | rexus.core.security | Estado del sistema de permisos:
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   security_manager_initialized: True
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   current_role: ADMIN
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   db_connection_status: Connected
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   session_active: True
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   role_recognized: True
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   modules_count: 12
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   has_admin_access: True
+2025-08-22 12:40:06 | INFO     | rexus.core.security |   modules_list: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:40:06 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:40:06 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:40:07 | DEBUG    | rexus.None.controller | Validando componentes del controlador None
+2025-08-22 12:40:07 | WARNING  | rexus.None.controller | Conexión de BD no disponible para None
+2025-08-22 12:40:07 | WARNING  | rexus.None.controller | Vista no disponible para None
+2025-08-22 12:40:07 | INFO     | rexus.None.controller | Validación de componentes None completada
+2025-08-22 12:40:07 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:40:07 | DEBUG    | rexus.main      | Módulos permitidos: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:40:07 | ERROR    | rexus.main      | Error creando dashboard moderno: 'charmap' codec can't encode character '\U0001f3e0' in position 7: character maps to <undefined>
+2025-08-22 12:40:07 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:40:09 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:40:09 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:40:09 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.verificar_tabla_sqlite desde D:\martin\Rexus.app\sql\obras\verificar_tabla_sqlite.sql
+2025-08-22 12:40:09 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'obras' verificada correctamente.
+2025-08-22 12:40:09 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
+2025-08-22 12:40:11 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2025-08-22 12:40:11 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2025-08-22 12:40:11 | INFO     | rexus.obras.controller | Validación de componentes completada
+2025-08-22 12:40:11 | DEBUG    | rexus.obras.controller | Iniciando carga de obras
+2025-08-22 12:40:11 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.select_obras_activas desde D:\martin\Rexus.app\sql\obras\select_obras_activas.sql
+2025-08-22 12:40:11 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo todas las obras: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near 'LIMIT'. (102) (SQLExecDirectW); [42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:40:11 | DEBUG    | rexus.utils.cache_manager | Using pickle serialization for type: dict
+2025-08-22 12:40:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.select_estadisticas_completas_obras desde D:\martin\Rexus.app\sql\obras\select_estadisticas_completas_obras.sql
+2025-08-22 12:40:13 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.calcular_presupuesto_total desde D:\martin\Rexus.app\sql\obras\calcular_presupuesto_total.sql
+2025-08-22 12:40:13 | INFO     | rexus.modules.obras.model | [ERROR OBRAS] Error obteniendo estadísticas: ('42000', "[42000] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Incorrect syntax near ':'. (102) (SQLExecDirectW)")
+2025-08-22 12:40:13 | DEBUG    | rexus.utils.cache_manager | Using pickle serialization for type: dict
+2025-08-22 12:40:13 | INFO     | rexus.obras.controller | Cargadas 2 obras exitosamente

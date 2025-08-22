@@ -423,8 +423,8 @@ class MainWindow(QMainWindow):
         sidebar.setFixedWidth(250)
         sidebar.setStyleSheet("""
             QFrame {
-                background-color: #3498db;
-                border-right: 2px solid #217dbb;
+                background-color: #2563eb !important;
+                border-right: 2px solid #1d4ed8 !important;
             }
         """)
 
@@ -542,20 +542,21 @@ QPushButton {
     border: none;
     font-size: 13px;
     font-weight: 500;
-    background-color: rgba(255, 255, 255, 0.15);
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
     border-radius: 6px;
     margin: 2px 8px;
     max-height: 36px;
     min-height: 36px;
 }
 QPushButton:hover {
-    background-color: #3498db;
-    color: #111111;
+    background-color: #1d4ed8 !important;
+    color: #ffffff !important;
     font-weight: bold;
 }
 QPushButton:pressed {
-    background-color: #217dbb;
-    color: #111111;
+    background-color: #1e40af !important;
+    color: #ffffff !important;
 }
             """
         )

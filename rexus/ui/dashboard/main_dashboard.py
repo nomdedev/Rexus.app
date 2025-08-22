@@ -54,7 +54,7 @@ class MainDashboard(BaseModuleView):
         # Sección de acceso rápido a módulos
         self.crear_seccion_acceso_rapido()
         
-        # self.apply_theme()  # TODO: Implementar método de aplicación de tema
+        self.apply_theme()
     
     def crear_header_dashboard(self):
         """Crea el header del dashboard con información general."""
@@ -331,3 +331,12 @@ class MainDashboard(BaseModuleView):
                 if hasattr(child, 'metrica_label'):
                     child.metrica_label.setText(str(valor))
                 break
+    
+    def apply_theme(self):
+        """Aplica el tema visual al dashboard."""
+        self.setStyleSheet("""
+            MainDashboard {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', sans-serif;
+            }
+        """)

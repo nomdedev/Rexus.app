@@ -675,12 +675,12 @@ class BaseModuleView(QWidget):
             if main_layout is None:
                 main_layout = QVBoxLayout(self)
 
-            # Verificar si es un QVBoxLayout para agregar layout
-            if hasattr(widget_or_layout, 'addWidget') and \
-                isinstance(main_layout, QVBoxLayout):
+            # Verificar si es un QLayout
+            from PyQt6.QtWidgets import QLayout
+            if isinstance(widget_or_layout, QLayout):
                 main_layout.addLayout(widget_or_layout)
             else:
-                # Es un widget
+                # Es un widget (incluyendo QSplitter)
                 main_layout.addWidget(widget_or_layout)
         except Exception as e:
             print(f"[WARNING] Error en add_to_main_content: {e}")

@@ -984,3 +984,34 @@ Traceback (most recent call last):
     logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
 NameError: name 'logger' is not defined
 2025-08-22 12:22:29 | ERROR    | rexus.<Mock id='2335793564832'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:30:06 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:30:06 | ERROR    | rexus.main      | Error creando dashboard moderno: 'charmap' codec can't encode character '\U0001f3e0' in position 7: character maps to <undefined>
+2025-08-22 12:30:11 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-22 12:30:11 | ERROR    | rexus.inventario.controller | Error en paginación: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 288, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3133, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+TypeError: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-22 12:30:20 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:30:23 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-22 12:30:23 | ERROR    | rexus.inventario.controller | Error en paginación: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 288, in cargar_inventario_paginado
+    resultado = self.model.obtener_productos_paginados_inicial(
+  File "D:\martin\Rexus.app\rexus\modules\inventario\model.py", line 3133, in obtener_productos_paginados_inicial
+    return self.consultas_manager.obtener_productos_paginados_inicial(
+TypeError: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 to 4 positional arguments but 5 were given
+2025-08-22 12:30:27 | ERROR    | rexus.vidrios.controller | Error al cargar módulo de vidrios: 'VidriosController' object has no attribute 'obtener_vidrios'
+2025-08-22 12:30:30 | ERROR    | rexus.vidrios.controller | Error al cargar módulo de vidrios: 'VidriosController' object has no attribute 'obtener_vidrios'
+2025-08-22 12:30:33 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 12:30:33 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 12:30:35 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 12:30:35 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-22 12:30:40 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-22 12:30:40 | ERROR    | rexus.core.module_manager | [Auditoria] Error cargando datos iniciales: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
+2025-08-22 12:40:07 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:40:07 | ERROR    | rexus.main      | Error creando dashboard moderno: 'charmap' codec can't encode character '\U0001f3e0' in position 7: character maps to <undefined>

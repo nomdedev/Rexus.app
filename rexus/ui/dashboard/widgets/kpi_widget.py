@@ -86,11 +86,10 @@ class KPIWidget(QFrame):
                 background: white;
                 border: 1px solid #e0e0e0;
                 border-radius: 8px;
-                box-shadow: 0px 2px 4px rgba(0,0,0,0.1);
             }
             QFrame:hover {
-                border: 1px solid #667eea;
-                box-shadow: 0px 4px 8px rgba(102,126,234,0.2);
+                border: 2px solid #667eea;
+                background: #f8f9fa;
             }
         """)
     
@@ -148,9 +147,8 @@ class KPIWidget(QFrame):
         self.setStyleSheet("""
             QFrame {
                 background: #f0f8ff;
-                border: 2px solid #667eea;
+                border: 3px solid #667eea;
                 border-radius: 8px;
-                box-shadow: 0px 4px 12px rgba(102,126,234,0.3);
             }
         """)
         

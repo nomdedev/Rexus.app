@@ -95,3 +95,11 @@
 2025-08-22 12:20:36 | INFO     | rexus.security  | Aplicación iniciada para admin
 2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
 2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:29:58 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:29:58 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:30:05 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:30:06 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:38:53 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:38:53 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:40:06 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:40:07 | INFO     | rexus.security  | Aplicación iniciada para admin

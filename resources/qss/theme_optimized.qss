@@ -196,10 +196,41 @@ QToolTip {
     border-bottom: 1px solid #e5e7eb;
     padding: 12px 16px;
     }
-.sidebar {
-    background-color: #f9fafb;
-    border-right: 1px solid #e5e7eb;
+/* SIDEBAR - COLORES FIJOS (NO DEPENDEN DEL TEMA) */
+.sidebar, QWidget[class~="sidebar"] {
+    background-color: #2563eb !important;  /* Azul fijo */
+    border-right: 2px solid #1d4ed8 !important;
     padding: 16px;
+    }
+
+/* Estilos para el sidebar y botones de módulos - COLORES FIJOS */
+QListWidget {
+    background-color: #2563eb !important;  /* Azul fijo */
+    border: none;
+    color: #ffffff !important;
+    padding: 8px;
+    }
+
+QListWidget::item {
+    background-color: #3b82f6 !important;  /* Azul más claro fijo */
+    border: 1px solid #1e40af !important;
+    border-radius: 6px;
+    margin: 4px;
+    padding: 12px;
+    color: #ffffff !important;
+    font-weight: 500;
+    }
+
+QListWidget::item:hover {
+    background-color: #1d4ed8 !important;  /* Azul más oscuro al hover */
+    color: #ffffff !important;
+    border-color: #1e3a8a !important;
+    }
+
+QListWidget::item:selected {
+    background-color: #1e40af !important;  /* Azul muy oscuro seleccionado */
+    color: #ffffff !important;
+    border-color: #1e3a8a !important;
     }
 .title {
     color: #111827;

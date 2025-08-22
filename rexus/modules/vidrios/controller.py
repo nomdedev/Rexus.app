@@ -532,3 +532,29 @@ obra_id,
             logger.error(f"Error exportando vidrios: {e}")
             self.mostrar_error(f"Error exportando vidrios: {str(e)}")
             return False
+    
+    def cargar_vidrios(self):
+        """Método de carga principal del módulo de vidrios."""
+        logger.info("Iniciando carga del módulo de vidrios")
+        try:
+            # Conectar con base de datos y cargar datos
+            return self.obtener_vidrios()
+        except Exception as e:
+            logger.error(f"Error al cargar módulo de vidrios: {e}")
+            return []
+    
+    def obtener_vidrios(self):
+        """Obtiene todos los vidrios de la base de datos."""
+        logger.info("Obteniendo vidrios de la base de datos")
+        try:
+            if not self.model:
+                logger.error("Modelo de vidrios no disponible")
+                return []
+            
+            # Obtener vidrios del modelo
+            vidrios = self.model.obtener_todos_vidrios() if hasattr(self.model, 'obtener_todos_vidrios') else []
+            logger.info(f"Obtenidos {len(vidrios)} vidrios")
+            return vidrios
+        except Exception as e:
+            logger.error(f"Error obteniendo vidrios: {e}")
+            return []
