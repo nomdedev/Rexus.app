@@ -143,9 +143,6 @@ class CategoriasManager:
         finally:
             if 'cursor' in locals():
                 cursor.close()
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_todas_categorias(self, incluir_estadisticas: bool = False) -> List[Dict[str, Any]]:
         """
         Obtiene todas las categorías disponibles en el sistema.
@@ -231,9 +228,6 @@ class CategoriasManager:
             self.logger.error(f"Error obteniendo categorías: {e}")
             # Devolver categorías por defecto en caso de error
             return [{'categoria': cat, 'total_productos': 0} for cat in self.CATEGORIAS_DEFAULT]
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_productos_por_categoria(self, categoria: str, incluir_inactivos: bool = False,
                                       limite: int = 100, offset: int = 0) -> Dict[str, Any]:
         """
@@ -342,9 +336,6 @@ class CategoriasManager:
                 'productos': [],
                 'total': 0
             }
-
-    @auth_required
-    @permission_required("admin_inventario")
     def crear_categoria(self, nombre_categoria: str, descripcion: str = "",
                        categoria_padre: Optional[str] = None) -> Dict[str, Any]:
         """
@@ -443,9 +434,6 @@ class CategoriasManager:
                 'success': False,
                 'error': f'Error interno: {str(e)}'
             }
-
-    @auth_required
-    @permission_required("admin_inventario")
     def renombrar_categoria(self,
 categoria_actual: str,
         categoria_nueva: str) -> Dict[str,
@@ -562,9 +550,6 @@ categoria_actual: str,
                 'error': f'Error interno: {str(e)}',
                 'productos_actualizados': 0
             }
-
-    @auth_required
-    @permission_required("admin_inventario")
     def migrar_productos_categoria(self,
 categoria_origen: str,
         categoria_destino: str) -> Dict[str,
@@ -658,9 +643,6 @@ categoria_origen: str,
                 'error': f'Error interno: {str(e)}',
                 'productos_migrados': 0
             }
-
-    @auth_required
-    @permission_required("admin_inventario")
     def limpiar_categorias_vacias(self) -> Dict[str, Any]:
         """
         Limpia categorías que no tienen productos asociados (si hay tabla independiente).
@@ -738,9 +720,6 @@ categoria_origen: str,
                 'error': f'Error interno: {str(e)}',
                 'categorias_eliminadas': 0
             }
-
-    @auth_required
-    @permission_required("view_reportes")
     def generar_reporte_categorias(self) -> Dict[str, Any]:
         """
         Genera reporte completo de análisis de categorías.

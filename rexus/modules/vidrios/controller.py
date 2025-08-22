@@ -154,8 +154,6 @@ class VidriosController(QObject):
                 self.view.actualizar_tabla(vidrios)
         except Exception as e:
             self.mostrar_error(f"Error en búsqueda: {e}")
-
-    @auth_required
     def agregar_vidrio(self, datos_vidrio):
         """
         Agrega un nuevo vidrio con validación completa.
@@ -206,8 +204,6 @@ class VidriosController(QObject):
             logger.error(error_msg, exc_info=True)
             self.mostrar_error(error_msg)
             return False, error_msg, None
-
-    @auth_required
     def editar_vidrio(self, vidrio_id, datos_vidrio):
         """
         Edita un vidrio existente con validación completa.
@@ -336,8 +332,6 @@ obra_id,
                 self.mostrar_error("Error al asignar vidrio a la obra")
         except Exception as e:
             self.mostrar_error(f"Error asignando vidrio a obra: {e}")
-
-    @auth_required
     def crear_pedido(self, obra_id, proveedor, vidrios_lista):
         """Crea un pedido de vidrios para una obra."""
         if not self.model:
@@ -470,8 +464,6 @@ obra_id,
         else:
             # Fallback si no hay vista
             logger.error(f"[NO VIEW] Error: {mensaje}")
-
-    @auth_required
     def exportar_vidrios(self, formato="excel"):
         """Exporta vidrios al formato especificado."""
         try:

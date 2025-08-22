@@ -140,9 +140,6 @@ class ReservasManager:
         finally:
             if 'cursor' in locals():
                 cursor.close()
-
-    @auth_required
-    @permission_required("create_reserva")
     def crear_reserva(self, datos_reserva: Dict[str, Any]) -> Dict[str, Any]:
         """
         Crea una nueva reserva de material.
@@ -237,9 +234,6 @@ class ReservasManager:
                 'error': f'Error interno: {str(e)}',
                 'reserva_id': None
             }
-
-    @auth_required
-    @permission_required("update_reserva")
     def actualizar_reserva(self,
 reserva_id: int,
         datos_reserva: Dict[str,
@@ -355,9 +349,6 @@ reserva_id: int,
                 'success': False,
                 'error': f'Error interno: {str(e)}'
             }
-
-    @auth_required
-    @permission_required("cancel_reserva")
     def liberar_reserva(self,
 reserva_id: int,
         motivo: str = "Liberación manual") -> Dict[str,
@@ -373,9 +364,6 @@ reserva_id: int,
             Dict con resultado de la operación
         """
         return self._cambiar_estado_reserva(reserva_id, 'LIBERADA', motivo)
-
-    @auth_required
-    @permission_required("cancel_reserva")
     def cancelar_reserva(self,
 reserva_id: int,
         motivo: str = "Cancelación manual") -> Dict[str,
@@ -391,9 +379,6 @@ reserva_id: int,
             Dict con resultado de la operación
         """
         return self._cambiar_estado_reserva(reserva_id, 'CANCELADA', motivo)
-
-    @auth_required
-    @permission_required("consume_reserva")
     def consumir_reserva(self, reserva_id: int, cantidad_consumida: Optional[float] = None,
                         motivo: str = "Consumo de materiales") -> Dict[str, Any]:
         """
@@ -512,9 +497,6 @@ reserva_id: int,
                 'success': False,
                 'error': f'Error interno: {str(e)}'
             }
-
-    @auth_required
-    @permission_required("view_reservas")
     def obtener_reservas_activas(self, obra_id: Optional[int] = None,
                                 producto_id: Optional[int] = None) -> List[Dict[str, Any]]:
         """
@@ -592,9 +574,6 @@ reserva_id: int,
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             self.logger.error(f"Error obteniendo reservas activas: {e}")
             return []
-
-    @auth_required
-    @permission_required("admin_reservas")
     def procesar_reservas_vencidas(self) -> Dict[str, Any]:
         """
         Procesa y marca como vencidas las reservas que han superado su fecha límite.

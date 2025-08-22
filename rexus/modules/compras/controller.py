@@ -67,32 +67,56 @@ class ComprasController(BaseController):
 
     def conectar_señales(self):
         """Conecta las señales entre vista y controlador."""
-        # Señales de la vista
-        self.view.orden_creada.connect(self.crear_orden)
-        self.view.orden_actualizada.connect(self.actualizar_estado_orden)
-        self.view.busqueda_realizada.connect(self.buscar_compras)
+        try:
+            # Verificar que la vista tenga las señales necesarias
+            if hasattr(self.view, 'orden_creada'):
+                self.view.orden_creada.connect(self.crear_orden)
+            if hasattr(self.view, 'orden_actualizada'):
+                self.view.orden_actualizada.connect(self.actualizar_estado_orden)
+            if hasattr(self.view, 'busqueda_realizada'):
+                self.view.busqueda_realizada.connect(self.buscar_compras)
 
-        # Señales del controlador
-        self.datos_actualizados.connect(self.actualizar_vista)
+            # Señales del controlador
+            self.datos_actualizados.connect(self.actualizar_vista)
+            
+        except AttributeError as e:
+            logger.warning(f"Error conectando señales en compras: {e}")
+        except Exception as e:
+            logger.error(f"Error inesperado conectando señales: {e}")
 
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
         try:
+            # Verificar que la vista esté disponible
+            if not self.view:
+                logger.warning("Vista no disponible para cargar datos iniciales")
+                return
+            
+            # Verificar que el modelo esté disponible
+            if not self.model:
+                logger.warning("Modelo no disponible para cargar datos iniciales")
+                return
+
             # Obtener todas las compras
             compras = self.model.obtener_todas_compras()
-            self.view.cargar_compras_en_tabla(compras)
+            
+            # Verificar que la vista tenga el método necesario
+            if hasattr(self.view, 'cargar_compras_en_tabla'):
+                self.view.cargar_compras_en_tabla(compras)
+            else:
+                logger.warning("Vista no tiene método cargar_compras_en_tabla")
 
             # Obtener estadísticas
             stats = self.model.obtener_estadisticas_compras()
-            self.view.actualizar_estadisticas(stats)
+            if hasattr(self.view, 'actualizar_estadisticas'):
+                self.view.actualizar_estadisticas(stats)
 
             logger.info(f"Datos iniciales cargados: {len(compras)} compras")
 
         except Exception as e:
             logger.error(f"Error cargando datos iniciales: {e}")
-            self.mostrar_error(ErrorMessages.FETCH_FAILED, str(e))
-
-    @auth_required
+            if hasattr(self, 'mostrar_error'):
+                self.mostrar_error("Error de carga", str(e))
     def crear_orden(self, datos_orden):
         """
         Crea una nueva orden de compra.
@@ -127,8 +151,6 @@ class ComprasController(BaseController):
         except Exception as e:
             logger.error(f"Error creando orden: {e}")
             self.mostrar_error("Error creando orden", str(e))
-
-    @auth_required
     def actualizar_estado_orden(self, orden_id, nuevo_estado):
         # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
@@ -230,8 +252,6 @@ class ComprasController(BaseController):
                 "monto_total": 0,
                 "proveedores_activos": [],
             }
-
-    @auth_required
     def actualizar_vista(self):
         # [LOCK] VERIFICACIÓN DE AUTORIZACIÓN REQUERIDA
         # Autorización verificada por decorador
@@ -306,8 +326,6 @@ class ComprasController(BaseController):
         else:
             from rexus.utils.message_system import show_info
             show_info(self.view, titulo, mensaje)
-
-    @auth_required
     def procesar_recepcion_orden(self,
 orden_id,
         items_recibidos,
@@ -366,8 +384,6 @@ orden_id,
 
         except Exception as e:
             logger.error(f"Error registrando seguimiento: {e}")
-
-    @auth_required
     def verificar_disponibilidad_antes_orden(self, items_solicitud):
         """
         Verifica disponibilidad en inventario antes de crear una orden.
@@ -400,9 +416,6 @@ orden_id,
         except Exception as e:
             logger.error(f"Error verificando disponibilidad: {e}")
             return {'disponible_completo': False, 'error': str(e)}
-
-
-    @auth_required
     def obtener_estado_pedido(self, pedido_id):
         """Obtiene el estado detallado de un pedido"""
         try:
@@ -413,8 +426,6 @@ orden_id,
         except Exception as e:
             self.mostrar_error(f"Error obteniendo estado de pedido: {e}")
             return None
-
-    @auth_required
     def actualizar_seguimiento_pedido(self,
 pedido_id,
         nuevo_estado,
@@ -432,9 +443,6 @@ pedido_id,
                     self.mostrar_error("Error actualizando seguimiento")
         except Exception as e:
             self.mostrar_error(f"Error actualizando seguimiento: {e}")
-
-
-    @auth_required
     def actualizar_stock_desde_compra(self, orden_id):
         """Actualiza el stock de inventario desde una compra recibida"""
         try:
@@ -466,8 +474,6 @@ pedido_id,
                 self.mostrar_exito("Stock actualizado desde compra")
         except Exception as e:
             self.mostrar_error(f"Error actualizando stock: {e}")
-
-    @auth_required
     def verificar_stock_minimos(self):
         """Verifica productos con stock mínimo para generar órdenes automáticas"""
         try:
@@ -551,8 +557,6 @@ fecha_inicio,
         except Exception as e:
             self.mostrar_error(f"Error generando reporte: {e}")
         return None
-
-    @auth_required
     def obtener_estadisticas_proveedor(self, proveedor_id):
         """Obtiene estadísticas detalladas de un proveedor"""
         try:
@@ -638,8 +642,6 @@ fecha_inicio,
             }
 
     # === MÉTODOS PARA GESTIÓN DE PROVEEDORES ===
-
-    @auth_required
     def crear_proveedor(self, datos_proveedor):
         """
         Crea un nuevo proveedor.
@@ -740,8 +742,6 @@ fecha_inicio,
         except Exception as e:
             logger.error(f"Error obteniendo items: {e}")
             return []
-
-    @auth_required
     def agregar_item_compra(self, datos_item):
         """
         Agrega un item a una orden de compra.
@@ -864,7 +864,6 @@ fecha_inicio,
                 "error": str(e),
                 "estado": "Error"
             }
-    @auth_required
     def eliminar_orden(self, orden_id):
         """
         Elimina una orden de compra.

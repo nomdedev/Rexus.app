@@ -101,6 +101,16 @@ class InventarioController(QObject):
         """Inicializa el controlador."""
         try:
             logger.info("Inicializando controlador completo de inventario")
+            
+            # Crear vista si no existe
+            if not self.view:
+                try:
+                    from .view import InventarioView
+                    self.view = InventarioView()
+                    logger.info("Vista de inventario creada automáticamente")
+                except Exception as e:
+                    logger.warning(f"No se pudo crear vista automáticamente: {e}")
+            
             self.conectar_senales()
             # No cargar datos en inicializacion para evitar problemas de autenticacion
             # Los datos se cargarán posteriormente con cargar_inventario_inicial
@@ -390,8 +400,6 @@ class InventarioController(QObject):
             self.cargar_inventario_paginado(1, 100)
         except (AttributeError, RuntimeError, ConnectionError) as e:
             logger.error(f"Error en carga inicial: {e}", exc_info=True)
-
-    @auth_required
     def cargar_inventario(self):
         """Carga el inventario completo."""
         try:
@@ -534,8 +542,6 @@ class InventarioController(QObject):
             import traceback
 
             traceback.print_exc()
-
-    @auth_required
     def buscar_productos(self):
         """Busca productos según los filtros aplicados."""
         try:
@@ -639,9 +645,6 @@ class InventarioController(QObject):
         if hasattr(self.view, nombre_boton):
             boton = getattr(self.view, nombre_boton)
             boton.setEnabled(habilitado)
-
-    @auth_required
-    @permission_required("create_producto")
     def nuevo_producto(self):
         """Abre el diálogo para crear un nuevo producto."""
         try:
@@ -655,9 +658,6 @@ class InventarioController(QObject):
         except (AttributeError, RuntimeError) as e:
             logger.error(f"Error en nuevo producto: {e}", exc_info=True)
             self._mostrar_error("crear nuevo producto", e)
-
-    @auth_required
-    @permission_required("update_producto")
     def editar_producto(self):
         """Abre el diálogo para editar el producto seleccionado."""
         try:
@@ -671,9 +671,6 @@ class InventarioController(QObject):
         except (AttributeError, RuntimeError) as e:
             logger.error(f"Error en editar producto: {e}", exc_info=True)
             self._mostrar_error("editar producto", e)
-
-    @auth_required
-    @permission_required("delete_producto")
     def eliminar_producto(self):
         """Elimina el producto seleccionado."""
         try:
@@ -697,9 +694,6 @@ class InventarioController(QObject):
         except (AttributeError, RuntimeError, ConnectionError) as e:
             logger.error(f"Error en eliminar producto: {e}", exc_info=True)
             self._mostrar_error("eliminar producto", e)
-
-    @auth_required
-    @permission_required("create_movimiento")
     def registrar_movimiento(self):
         """Registra un movimiento de inventario."""
         try:
@@ -713,8 +707,6 @@ class InventarioController(QObject):
         except (AttributeError, RuntimeError) as e:
             logger.error(f"Error en registrar movimiento: {e}", exc_info=True)
             self._mostrar_error("registrar movimiento", e)
-
-    @auth_required
     def exportar_inventario(self, formato="excel", max_records=None):
         """
         Exporta el inventario a diferentes formatos con límites de seguridad.

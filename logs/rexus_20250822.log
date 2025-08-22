@@ -1,0 +1,785 @@
+2025-08-22 00:00:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:00:02 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:00:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:00:57 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:00:58 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:01:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:01:53 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:01:53 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:02:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:02:16 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:02:17 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:02:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:02:48 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:02:49 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:03:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:03:01 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:03:02 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:05:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:05:12 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:05:13 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:05:14 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:05:14 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:06:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:06:58 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:06:59 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:06:59 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:06:59 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:07:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:07:59 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:08:00 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:08:00 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:08:00 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:08:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:08:10 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:08:11 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:09:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:09:30 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:09:31 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:09:31 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:31 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:31 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:31 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:09:41 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:09:43 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_sql_input'"}
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_sql_input'"}
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_sql_input'"}
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_sql_input'"}
+2025-08-22 00:09:43 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:09:43 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_sql_input'"}
+2025-08-22 00:10:19 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:10:19 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:10:20 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:10:20 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:20 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:20 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:20 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:20 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:20 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:20 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:20 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_html_input'"}
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_html_input'"}
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_html_input'"}
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_html_input'"}
+2025-08-22 00:10:21 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:21 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "type object 'SecurityUtils' has no attribute 'sanitize_html_input'"}
+2025-08-22 00:10:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:10:46 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:10:48 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:10:48 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:10:48 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:10:48 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:10:48 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:10:48 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'is_safe_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 414, in autenticar_usuario
+    if not SecurityUtils.is_safe_input(username_sanitizado):
+AttributeError: type object 'SecurityUtils' has no attribute 'is_safe_input'
+2025-08-22 00:10:48 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "type object 'SecurityUtils' has no attribute 'is_safe_input'"}
+2025-08-22 00:12:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:12:35 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:12:36 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:12:36 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:12:36 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:12:36 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:12:36 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:12:36 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: cannot unpack non-iterable Mock object
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 419, in autenticar_usuario
+    bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
+TypeError: cannot unpack non-iterable Mock object
+2025-08-22 00:12:36 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': 'cannot unpack non-iterable Mock object'}
+2025-08-22 00:13:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:13:25 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:13:27 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:13:27 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:27 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:27 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:27 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:27 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:13:27 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:27 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:27 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:27 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "'Mock' object is not subscriptable"}
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "name 'logger' is not defined"}
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "'Mock' object is not subscriptable"}
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "'Mock' object is not subscriptable"}
+2025-08-22 00:13:28 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:13:28 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "'Mock' object is not subscriptable"}
+2025-08-22 00:14:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:14:05 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:14:06 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:14:06 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:14:06 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:14:06 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:14:06 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:14:06 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:14:06 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'testuser', 'error': "'Mock' object is not subscriptable"}
+2025-08-22 00:15:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:15:03 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:15:05 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:15:05 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:05 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:05 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:05 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:05 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:15:05 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:15:16 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:15:18 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:15:18 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:18 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:18 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:18 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:15:18 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:38 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:15:38 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:15:39 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:15:40 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:15:40 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:15:40 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:40 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:40 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:40 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:40 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:40 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:40 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:40 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:40 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:40 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:15:41 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "name 'logger' is not defined"}
+2025-08-22 00:15:41 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:15:41 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:15:41 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:15:41 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 00:15:58 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 00:16:00 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 00:16:01 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:16:01 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:16:02 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "name 'logger' is not defined"}
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "name 'logger' is not defined"}
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "name 'logger' is not defined"}
+2025-08-22 00:16:02 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 00:16:02 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 00:16:02 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 00:16:02 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:20:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:20:22 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-22 12:20:23 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:20:23 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:20:23 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-22 12:20:23 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:20:23 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-22 12:20:23 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-22 12:20:23 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-22 12:20:23 | INFO     | rexus.startup   | Argumentos: ['main.py']
+2025-08-22 12:20:23 | INFO     | rexus.startup   | ============================================================
+2025-08-22 12:20:23 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-22 12:20:23 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-22 12:20:27 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-22 12:20:27 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-22 12:20:27 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-22 12:20:27 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-22 12:20:27 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:20:27 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Base de datos: users
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:31 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=users;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:31 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:20:31 | INFO     | rexus.core.security | Estado del sistema de permisos:
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   security_manager_initialized: True
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   current_role: ADMIN
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   db_connection_status: Connected
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   session_active: True
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   role_recognized: True
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   modules_count: 12
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   has_admin_access: True
+2025-08-22 12:20:31 | INFO     | rexus.core.security |   modules_list: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | get_user_modules llamado con user_id: 1
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | current_role: 'ADMIN'
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | current_user: {'username': 'admin', 'role': 'ADMIN', 'nombre': 'Administrador', 'apellido': 'Admin', 'email': 'admin@rexus.app', 'authenticated': True}
+2025-08-22 12:20:31 | DEBUG    | rexus.core.security | Admin detectado, devolviendo 12 módulos
+2025-08-22 12:20:31 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:20:34 | DEBUG    | rexus.None.controller | Validando componentes del controlador None
+2025-08-22 12:20:34 | WARNING  | rexus.None.controller | Conexión de BD no disponible para None
+2025-08-22 12:20:34 | WARNING  | rexus.None.controller | Vista no disponible para None
+2025-08-22 12:20:35 | INFO     | rexus.None.controller | Validación de componentes None completada
+2025-08-22 12:20:35 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:20:35 | DEBUG    | rexus.main      | Módulos permitidos: ['Inventario', 'Administración', 'Obras', 'Pedidos', 'Logística', 'Herrajes', 'Vidrios', 'Usuarios', 'Auditoría', 'Configuración', 'Compras', 'Mantenimiento']
+2025-08-22 12:20:36 | ERROR    | rexus.main      | Error creando dashboard moderno: 'MainDashboard' object has no attribute 'apply_theme'
+2025-08-22 12:20:36 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:47 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:47 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:47 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.verificar_tabla_sqlite desde D:\martin\Rexus.app\sql\obras\verificar_tabla_sqlite.sql
+2025-08-22 12:20:47 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:48 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-22 12:20:48 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-22 12:20:48 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:48 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:48 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:48 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:48 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-22 12:20:48 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:48 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:48 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-22 12:20:48 | ERROR    | rexus.main      | Error crítico creando inventario: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:48 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:48 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:49 | DEBUG    | rexus.herrajes.controller | Validando componentes del controlador herrajes
+2025-08-22 12:20:49 | WARNING  | rexus.herrajes.controller | Conexión de BD no disponible para herrajes
+2025-08-22 12:20:49 | INFO     | rexus.herrajes.controller | Validación de componentes herrajes completada
+2025-08-22 12:20:49 | INFO     | rexus.vidrios.model | Sanitizador inicializado correctamente
+2025-08-22 12:20:49 | WARNING  | rexus.vidrios.model | No se puede verificar tablas: conexión no disponible
+2025-08-22 12:20:49 | WARNING  | rexus.core.module_manager | [Vidrios] Método cargar_vidrios no encontrado en controlador
+2025-08-22 12:20:49 | WARNING  | rexus.vidrios.model | No se puede obtener vidrios: conexión no disponible
+2025-08-22 12:20:49 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-22 12:20:55 | INFO     | rexus.inventario.model | Utilidades de seguridad cargadas
+2025-08-22 12:20:55 | INFO     | rexus.inventario.model | SQL script loader disponible
+2025-08-22 12:20:55 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:55 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:55 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:55 | INFO     | rexus.modules.inventario.submodules.base_utilities | Utilidades de seguridad cargadas en BaseUtilities
+2025-08-22 12:20:55 | INFO     | rexus.inventario.model | Managers especializados inicializados
+2025-08-22 12:20:55 | INFO     | rexus.inventario.model | ConsultasManager inicializado
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:55 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:55 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:56 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: inventario.verificar_tabla_existe desde D:\martin\Rexus.app\sql\inventario\verificar_tabla_existe.sql
+2025-08-22 12:20:56 | ERROR    | rexus.main      | Error crítico creando inventario: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:56 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-22 12:20:56 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-22 12:20:56 | INFO     | rexus.core.database | Base de datos: inventario
+2025-08-22 12:20:56 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-22 12:20:56 | INFO     | rexus.core.database | Usuario: sa
+2025-08-22 12:20:56 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=inventario;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-22 12:20:57 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-22 12:20:57 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: obras.verificar_tabla_sqlite desde D:\martin\Rexus.app\sql\obras\verificar_tabla_sqlite.sql
+2025-08-22 12:20:57 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:21:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:21:29 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:21:30 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:21:30 | DEBUG    | rexus.<Mock id='2012068471824'>.controller | Validando componentes del controlador <Mock id='2012068471824'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068471824'>.controller | Conexión de BD no disponible para <Mock id='2012068471824'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068471824'>.controller | Modelo no disponible para <Mock id='2012068471824'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068471824'>.controller | Vista no disponible para <Mock id='2012068471824'>
+2025-08-22 12:21:30 | INFO     | rexus.<Mock id='2012068471824'>.controller | Validación de componentes <Mock id='2012068471824'> completada
+2025-08-22 12:21:30 | ERROR    | rexus.<Mock id='2012068471824'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:21:30 | DEBUG    | rexus.<Mock id='2012068361984'>.controller | Validando componentes del controlador <Mock id='2012068361984'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068361984'>.controller | Conexión de BD no disponible para <Mock id='2012068361984'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068361984'>.controller | Modelo no disponible para <Mock id='2012068361984'>
+2025-08-22 12:21:30 | WARNING  | rexus.<Mock id='2012068361984'>.controller | Vista no disponible para <Mock id='2012068361984'>
+2025-08-22 12:21:30 | INFO     | rexus.<Mock id='2012068361984'>.controller | Validación de componentes <Mock id='2012068361984'> completada
+2025-08-22 12:21:30 | ERROR    | rexus.<Mock id='2012068361984'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:22:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:22:05 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:22:06 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:22:07 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 12:22:07 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': '', 'error': "name 'logger' is not defined"}
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'user', 'error': "name 'logger' is not defined"}
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | AUDITORIA: Error en proceso de autenticación - usuarios - {'username': 'admin', 'error': "name 'logger' is not defined"}
+2025-08-22 12:22:08 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-22 12:22:08 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-22 12:22:08 | INFO     | rexus.usuarios.controller | AUDITORIA: Inicio de sesión exitoso - usuarios - {'usuario_id': 1, 'username': 'testuser'}
+2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:22:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:22:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:22:29 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 12:22:29 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 12:22:29 | DEBUG    | rexus.<Mock id='2335793564832'>.controller | Validando componentes del controlador <Mock id='2335793564832'>
+2025-08-22 12:22:29 | WARNING  | rexus.<Mock id='2335793564832'>.controller | Conexión de BD no disponible para <Mock id='2335793564832'>
+2025-08-22 12:22:29 | WARNING  | rexus.<Mock id='2335793564832'>.controller | Modelo no disponible para <Mock id='2335793564832'>
+2025-08-22 12:22:29 | WARNING  | rexus.<Mock id='2335793564832'>.controller | Vista no disponible para <Mock id='2335793564832'>
+2025-08-22 12:22:29 | INFO     | rexus.<Mock id='2335793564832'>.controller | Validación de componentes <Mock id='2335793564832'> completada
+2025-08-22 12:22:29 | ERROR    | rexus.<Mock id='2335793564832'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:22:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 12:22:51 | INFO     | rexus.inventario.model | Submódulos especializados cargados

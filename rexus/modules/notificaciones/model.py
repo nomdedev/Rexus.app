@@ -136,8 +136,6 @@ class NotificacionesModel:
 
         except Exception as e:
             print(f"[ERROR NOTIFICACIONES] Error verificando tablas: {str(e)}")
-
-    @auth_required
     def crear_notificacion(self, titulo: str, mensaje: str, tipo: str = "info",
                           prioridad: int = 2, usuario_destino: Optional[int] = None,
                           modulo_origen: str = None, metadata: Optional[Dict] = None,
@@ -218,7 +216,6 @@ mensaje,
             return False
 
     @cached_query(ttl=60)  # Cache por 1 minuto - notificaciones deben ser relativamente frescas
-    @auth_required
     def obtener_notificaciones_usuario(self, usuario_id: int, solo_no_leidas: bool = False,
                                      limite: int = 50, offset: int = 0) -> List[Dict]:
         """
@@ -301,8 +298,6 @@ mensaje,
                 'archivada': False
             }
         ]
-
-    @auth_required
     def marcar_como_leida(self, notificacion_id: int, usuario_id: int) -> bool:
         """
         Marca una notificación como leída.
@@ -349,7 +344,6 @@ mensaje,
             return False
 
     @cached_query(ttl=30)  # Cache por 30 segundos - contador debe actualizarse frecuentemente
-    @auth_required
     def contar_no_leidas(self, usuario_id: int) -> int:
         """
         Cuenta las notificaciones no leídas de un usuario.
@@ -420,8 +414,6 @@ mensaje,
             if self.db_connection:
                 self.db_connection.rollback()
             return False
-
-    @auth_required
     def crear_notificacion_sistema(self, evento: str, modulo: str,
                                  detalles: Optional[Dict] = None) -> bool:
         """

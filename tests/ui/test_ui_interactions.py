@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Tests de Interacción UI con pytest-qt para Rexus.app
 Prueba flujos completos de usuario, formularios y interacciones UI reales

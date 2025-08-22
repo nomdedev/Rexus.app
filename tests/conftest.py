@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Configuración Global de Tests - Rexus.app
 ========================================

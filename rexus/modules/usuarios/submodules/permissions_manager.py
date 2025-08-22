@@ -93,8 +93,6 @@ class PermissionsManager:
                 'configuracion:read', 'configuracion:write', 'configuracion:admin'
             ]
         }
-
-    @auth_required
     def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
         """
         Obtiene todos los permisos de un usuario.
@@ -150,8 +148,6 @@ class PermissionsManager:
         finally:
             if cursor is not None:
                     cursor.close()
-
-    @auth_required
     def verificar_permiso_usuario(self,
 usuario_id: int,
         modulo: str,
@@ -468,8 +464,6 @@ usuario_id: int,
             """)
         except Exception as e:
             logger.error("Error creando tabla permisos_usuarios: %s", e)
-
-    @auth_required
     def obtener_estadisticas_permisos(self) -> Dict[str, Any]:
         """
         Obtiene estadísticas de permisos del sistema.

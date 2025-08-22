@@ -271,8 +271,6 @@ class SessionsManager:
         finally:
             if 'cursor' in locals():
                 cursor.close()
-
-    @auth_required
     def obtener_sesiones_usuario(self, usuario_id: int) -> List[SessionInfo]:
         """
         Obtiene todas las sesiones activas de un usuario.

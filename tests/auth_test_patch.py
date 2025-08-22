@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Patch de Autenticación para Tests - Rexus.app
 ============================================

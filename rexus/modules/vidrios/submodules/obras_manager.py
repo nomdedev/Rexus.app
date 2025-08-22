@@ -78,9 +78,6 @@ class ObrasManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_vidrios_por_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los vidrios asignados a una obra específica."""
         if not self.db_connection or not obra_id:
@@ -112,9 +109,6 @@ class ObrasManager:
         except Exception as e:
             logger.error(f"Error obteniendo vidrios por obra: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("add_inventario")
     def asignar_vidrio_obra(
         self, obra_id: int, vidrio_id: int, cantidad: int, observaciones: str = ""
     ) -> bool:
@@ -168,9 +162,6 @@ class ObrasManager:
                 self.db_connection.rollback()
             logger.error(f"Error asignando vidrio a obra: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("add_inventario")
     def crear_pedido_obra(
         self, obra_id: int, proveedor: str, vidrios_lista: List[Dict[str, Any]]
     ) -> Optional[int]:
@@ -244,9 +235,6 @@ class ObrasManager:
                 self.db_connection.rollback()
             logger.error(f"Error creando pedido de obra: {str(e)}")
             return None
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_pedidos_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los pedidos de una obra específica."""
         if not self.db_connection or not obra_id:
@@ -274,9 +262,6 @@ class ObrasManager:
         except Exception as e:
             logger.error(f"Error obteniendo pedidos de obra: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("change_inventario")
     def actualizar_estado_pedido(self, pedido_id: int, nuevo_estado: str) -> bool:
         """Actualiza el estado de un pedido de vidrios."""
         if not self.db_connection or not pedido_id:
@@ -352,9 +337,6 @@ datos: Dict[str,
             raise ValueError("La cantidad debe ser mayor a 0")
 
         return datos_sanitizados
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_resumen_obra(self, obra_id: int) -> Dict[str, Any]:
         """Obtiene resumen de vidrios y pedidos de una obra."""
         if not self.db_connection or not obra_id:
@@ -401,9 +383,6 @@ datos: Dict[str,
         except Exception as e:
             logger.error(f"Error obteniendo resumen de obra: {str(e)}")
             return {}
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_vidrios_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los vidrios asignados a una obra específica."""
         if not self.db_connection or not obra_id:

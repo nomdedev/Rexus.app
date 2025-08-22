@@ -64,9 +64,6 @@ class ProductosManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_producto_por_id(self, producto_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un producto específico por ID."""
         if not self.db_connection or not producto_id:
@@ -88,9 +85,6 @@ class ProductosManager:
 
         except Exception as e:
             raise Exception(f"Error obteniendo producto: {str(e)}")
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_producto_por_codigo(self, codigo: str) -> Optional[Dict[str, Any]]:
         """Obtiene un producto por su código."""
         if not self.db_connection or not codigo:
@@ -117,9 +111,6 @@ class ProductosManager:
 
         except Exception as e:
             raise Exception(f"Error obteniendo producto por código: {str(e)}")
-
-    @auth_required
-    @permission_required("create_producto")
     def crear_producto(
         self, datos_producto: Dict[str, Any], usuario: str = "SISTEMA"
     ) -> Optional[int]:
@@ -185,9 +176,6 @@ class ProductosManager:
         except Exception as e:
             self.db_connection.rollback()
             raise Exception(f"Error creando producto: {str(e)}")
-
-    @auth_required
-    @permission_required("update_producto")
     def actualizar_producto(
         self, producto_id: int, datos_producto: Dict[str, Any], usuario: str = "SISTEMA"
     ) -> bool:
@@ -263,9 +251,6 @@ class ProductosManager:
 
         stock_actual = producto.get("stock_actual", 0)
         return (stock_actual + cantidad_nueva) >= 0
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_categorias(self) -> List[str]:
         """Obtiene lista de categorías disponibles."""
         if not self.db_connection:

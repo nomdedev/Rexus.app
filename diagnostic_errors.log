@@ -150,3 +150,123 @@
     return codecs.charmap_encode(input,self.errors,encoding_table)[0]
 UnicodeEncodeError: 'charmap' codec can't encode character '\U0001f3af' in position 2: character maps to <undefined>
 
+2025-08-21 18:05:03,102 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-21 18:05:03,111 - DiagnosticRunner - INFO - ================================================================================
+2025-08-21 18:05:03,111 - DiagnosticRunner - INFO - Timestamp: 2025-08-21 18:05:03.111061
+2025-08-21 18:05:03,111 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-21 18:05:03,113 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-21 18:05:03,113 - DiagnosticRunner - INFO - ================================================================================
+2025-08-21 18:05:03,113 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-21 18:05:03,113 - DiagnosticRunner - INFO - ============================================================
+2025-08-21 18:05:03,113 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-21 18:05:03,184 - rexus - INFO - Sistema de logging Rexus inicializado
+2025-08-21 18:05:03,205 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: cannot import name 'DatabaseConfig' from 'rexus.core.database' (D:\martin\Rexus.app\rexus\core\database.py)
+2025-08-21 18:05:03,205 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-21 18:05:03,358 - DiagnosticRunner - INFO - OK rexus.core.module_manager - OK
+2025-08-21 18:05:03,358 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-21 18:05:03,370 - DiagnosticRunner - INFO - OK rexus.core.auth_manager - OK
+2025-08-21 18:05:03,370 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - OK rexus.modules.configuracion.controller - OK
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - OK rexus.modules.configuracion.model - OK
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - OK rexus.modules.configuracion.view - OK
+2025-08-21 18:05:03,973 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-21 18:05:03,992 - DiagnosticRunner - INFO - OK rexus.modules.usuarios.controller - OK
+2025-08-21 18:05:03,992 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-21 18:05:03,994 - DiagnosticRunner - INFO - OK rexus.modules.usuarios.model - OK
+2025-08-21 18:05:03,994 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-21 18:05:03,994 - DiagnosticRunner - INFO - OK rexus.modules.usuarios.view - OK
+2025-08-21 18:05:03,994 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-21 18:05:04,036 - rexus.inventario.model - INFO - Submódulos especializados cargados
+2025-08-21 18:05:04,084 - DiagnosticRunner - INFO - OK rexus.modules.inventario.controller - OK
+2025-08-21 18:05:04,084 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-21 18:05:04,088 - DiagnosticRunner - INFO - OK rexus.modules.inventario.model - OK
+2025-08-21 18:05:04,088 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-21 18:05:04,088 - DiagnosticRunner - INFO - OK rexus.modules.inventario.view - OK
+2025-08-21 18:05:04,088 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-21 18:05:04,097 - DiagnosticRunner - INFO - OK rexus.modules.obras.controller - OK
+2025-08-21 18:05:04,097 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-21 18:05:04,097 - DiagnosticRunner - INFO - OK rexus.modules.obras.model - OK
+2025-08-21 18:05:04,097 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-21 18:05:04,097 - DiagnosticRunner - INFO - OK rexus.modules.obras.view - OK
+2025-08-21 18:05:04,100 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-21 18:05:04,113 - DiagnosticRunner - INFO - OK rexus.modules.compras.controller - OK
+2025-08-21 18:05:04,113 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-21 18:05:04,114 - DiagnosticRunner - INFO - OK rexus.modules.compras.model - OK
+2025-08-21 18:05:04,114 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-21 18:05:04,116 - DiagnosticRunner - INFO - OK rexus.modules.compras.view - OK
+2025-08-21 18:05:04,116 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - OK rexus.modules.pedidos.controller - OK
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - OK rexus.modules.pedidos.model - OK
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - OK rexus.modules.pedidos.view - OK
+2025-08-21 18:05:04,123 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-21 18:05:04,130 - rexus.vidrios.model - INFO - Sistema unificado de sanitización cargado
+2025-08-21 18:05:04,133 - DiagnosticRunner - INFO - OK rexus.modules.vidrios.controller - OK
+2025-08-21 18:05:04,135 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-21 18:05:04,135 - DiagnosticRunner - INFO - OK rexus.modules.vidrios.model - OK
+2025-08-21 18:05:04,135 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-21 18:05:04,137 - DiagnosticRunner - INFO - OK rexus.modules.vidrios.view - OK
+2025-08-21 18:05:04,137 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-21 18:05:04,139 - DiagnosticRunner - INFO - OK rexus.modules.notificaciones.controller - OK
+2025-08-21 18:05:04,139 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-21 18:05:04,139 - DiagnosticRunner - INFO - OK rexus.modules.notificaciones.model - OK
+2025-08-21 18:05:04,139 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-21 18:05:04,163 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-21 18:05:04,166 - rexus.modules.notificaciones.view - [32mINFO[0m[0m - Sistema de logging inicializado
+2025-08-21 18:05:04,169 - DiagnosticRunner - INFO - OK rexus.modules.notificaciones.view - OK
+2025-08-21 18:05:04,169 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-21 18:05:04,170 - DiagnosticRunner - INFO - ============================================================
+2025-08-21 18:05:04,171 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: cannot import name 'DatabaseConfig' from 'rexus.core.database' (D:\martin\Rexus.app\rexus\core\database.py)
+2025-08-21 18:05:04,171 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-21 18:05:04,173 - DiagnosticRunner - INFO - ============================================================
+2025-08-21 18:05:04,173 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-21 18:05:04,174 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-21 18:05:04,174 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-21 18:05:04,349 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-21 18:05:04,350 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-21 18:05:04,350 - DiagnosticRunner - INFO - ============================================================
+2025-08-21 18:05:04,350 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-21 18:05:04,357 - rexus.configuracion.advanced - [32mINFO[0m - Plantilla de configuración creada: Desarrollo en categoría Entorno
+2025-08-21 18:05:04,359 - rexus.configuracion.advanced - [32mINFO[0m - Plantilla de configuración creada: Producción en categoría Entorno
+2025-08-21 18:05:04,361 - rexus.configuracion.advanced - [32mINFO[0m - Regla de validación agregada para session_timeout
+2025-08-21 18:05:04,361 - rexus.configuracion.advanced - [32mINFO[0m - Regla de validación agregada para theme
+2025-08-21 18:05:04,363 - rexus.configuracion.advanced - [32mINFO[0m - Configuraciones avanzadas inicializadas
+2025-08-21 18:05:04,363 - rexus.configuracion.model - [32mINFO[0m - Funcionalidades avanzadas de configuración inicializadas
+2025-08-21 18:05:04,363 - DiagnosticRunner - INFO - ✅ configuracion Controller - OK
+2025-08-21 18:05:04,365 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-21 18:05:04,366 - rexus.core.database - [32mINFO[0m - Intentando conectar a la base de datos
+2025-08-21 18:05:04,368 - rexus.core.database - [32mINFO[0m - Servidor: ITACHI\SQLEXPRESS
+2025-08-21 18:05:04,369 - rexus.core.database - [32mINFO[0m - Base de datos: users
+2025-08-21 18:05:04,370 - rexus.core.database - [32mINFO[0m - Driver: ODBC Driver 17 for SQL Server
+2025-08-21 18:05:04,371 - rexus.core.database - [32mINFO[0m - Usuario: sa
+2025-08-21 18:05:04,490 - rexus.core.database - [32mINFO[0m - Conexión exitosa OK
+2025-08-21 18:05:04,492 - rexus.usuarios.model - [32mINFO[0m - UsuariosModel estableció conexión automáticamente
+2025-08-21 18:05:04,492 - rexus.usuarios.model - [32mINFO[0m - OK [USUARIOS] Utilidades de seguridad cargadas
+2025-08-21 18:05:04,502 - rexus.usuarios.controller - [33mWARNING[0m - Conexión de BD no disponible para usuarios
+2025-08-21 18:05:04,506 - rexus.usuarios.controller - [33mWARNING[0m - Vista no disponible para usuarios
+2025-08-21 18:05:04,506 - rexus.usuarios.controller - [32mINFO[0m - Validación de componentes usuarios completada
+2025-08-21 18:05:04,506 - DiagnosticRunner - INFO - ✅ usuarios Controller - OK
+2025-08-21 18:05:04,508 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-21 18:05:04,508 - rexus.inventario.controller - [32mINFO[0m - Inicializando controlador completo de inventario
+2025-08-21 18:05:04,508 - rexus.inventario.controller - [33mWARNING[0m - No hay vista disponible para conectar señales
+2025-08-21 18:05:04,508 - rexus.inventario.controller - [32mINFO[0m - Controlador de inventario inicializado exitosamente
+2025-08-21 18:05:04,508 - DiagnosticRunner - INFO - ✅ inventario Controller - OK
+2025-08-21 18:05:04,508 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-21 18:05:04,508 - rexus.obras.controller - [31mERROR[0m - CRITICO: Modelo de obras no disponible
+2025-08-21 18:05:04,508 - rexus.obras.controller - [33mWARNING[0m - Vista de obras no disponible
+2025-08-21 18:05:04,508 - rexus.obras.controller - [33mWARNING[0m - Conexión de base de datos no disponible
+2025-08-21 18:05:04,517 - rexus.obras.controller - [32mINFO[0m - Validación de componentes completada
+2025-08-21 18:05:04,517 - rexus.obras.controller - [33mWARNING[0m - Vista no disponible durante inicialización del controlador de obras
+2025-08-21 18:05:04,518 - DiagnosticRunner - INFO - ✅ obras Controller - OK
+2025-08-21 18:05:04,519 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-21 18:05:04,519 - rexus.compras.controller - [33mWARNING[0m - Conexión de BD no disponible para compras
+2025-08-21 18:05:04,520 - rexus.compras.controller - [33mWARNING[0m - Vista no disponible para compras
+2025-08-21 18:05:04,521 - rexus.compras.controller - [32mINFO[0m - Validación de componentes compras completada
+2025-08-21 18:05:04,587 - rexus.core.database - [32mINFO[0m - Cambiado a base de datos: inventario
+2025-08-21 18:05:04,588 - rexus.compras.controller - [31mERROR[0m - Error cargando datos iniciales: 'NoneType' object has no attribute 'cargar_compras_en_tabla'

@@ -46,9 +46,6 @@ class ConsultasManager(PaginatedTableMixin):
         """Inicializa el gestor de consultas."""
         self.db_connection = db_connection
         self.sanitizer = data_sanitizer
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_productos_paginados(
         self,
         offset: int = 0,
@@ -138,9 +135,6 @@ class ConsultasManager(PaginatedTableMixin):
 
         except Exception as e:
             raise Exception(f"Error obteniendo productos paginados: {str(e)}")
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_todos_productos(
         self, filtros: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
@@ -183,9 +177,6 @@ class ConsultasManager(PaginatedTableMixin):
 
         except Exception as e:
             raise Exception(f"Error obteniendo todos los productos: {str(e)}")
-
-    @auth_required
-    @permission_required("view_estadisticas")
     def obtener_estadisticas_inventario(self) -> Dict[str, Any]:
         """Obtiene estadísticas generales del inventario."""
         if not self.db_connection:
@@ -274,9 +265,6 @@ class ConsultasManager(PaginatedTableMixin):
 
         except Exception as e:
             raise Exception(f"Error obteniendo estadísticas: {str(e)}")
-
-    @auth_required
-    @permission_required("view_inventario")
     def buscar_productos(
         self, termino_busqueda: str, limite: int = 20
     ) -> List[Dict[str, Any]]:

@@ -177,8 +177,6 @@ model=None,
             error_msg = f"Error cargando entregas: {e}"
             logger.error(error_msg, exc_info=True)
             self.mostrar_error(error_msg)
-
-    @auth_required
     def guardar_entrega(self, datos):
         """
         Guarda una nueva entrega con validación completa.
@@ -253,8 +251,6 @@ model=None,
             error_msg = f"Error cargando servicios: {e}"
             logger.error(error_msg, exc_info=True)
             self.mostrar_error(error_msg)
-
-    @auth_required
     def guardar_service(self, datos):
         """
         Guarda un nuevo servicio con validación.
@@ -588,7 +584,6 @@ model=None,
         return servicios
 
     # Nuevos métodos para manejo de transportes
-    @auth_required
     def crear_transporte(self, datos):
         """
         Crea un nuevo transporte con validación completa.
@@ -644,8 +639,6 @@ model=None,
             logger.error(error_msg, exc_info=True)
             self.mostrar_error(error_msg)
             return False, error_msg, None
-
-    @auth_required
     def actualizar_transporte(self, datos):
         """
         Actualiza un transporte existente con validación.

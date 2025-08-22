@@ -16,7 +16,7 @@ project_root = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, project_root)
 sys.path.insert(0, os.path.join(project_root, 'rexus'))
 
-# Configurar logging
+# Configurar logging con encoding seguro
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -26,6 +26,11 @@ logging.basicConfig(
     ]
 )
 logger = logging.getLogger("DiagnosticRunner")
+
+# Configurar encoding para stdout
+if sys.platform.startswith('win'):
+    import codecs
+    sys.stdout = codecs.getwriter('utf-8')(sys.stdout.detach())
 
 class SystemDiagnostic:
     """Ejecuta diagnósticos del sistema para identificar errores."""
@@ -68,18 +73,18 @@ class SystemDiagnostic:
             'rexus.modules.notificaciones.view'
         ]
         
-        logger.info("🔍 INICIANDO PRUEBAS DE IMPORTACIÓN DE MÓDULOS")
+        logger.info("INICIANDO PRUEBAS DE IMPORTACION DE MODULOS")
         logger.info("=" * 60)
         
         for module_name in modules_to_test:
             try:
                 logger.info(f"Testing: {module_name}")
                 __import__(module_name)
-                logger.info(f"✅ {module_name} - OK")
+                logger.info(f"OK {module_name} - OK")
                 self.modules_tested.append((module_name, "SUCCESS"))
                 
             except ImportError as e:
-                error_msg = f"❌ {module_name} - ImportError: {str(e)}"
+                error_msg = f"ERROR {module_name} - ImportError: {str(e)}"
                 logger.error(error_msg)
                 self.errors_found.append(f"IMPORT_ERROR: {module_name} - {str(e)}")
                 self.modules_tested.append((module_name, "IMPORT_ERROR"))
@@ -271,7 +276,7 @@ class SystemDiagnostic:
     def run_full_diagnostic(self):
         """Ejecuta diagnóstico completo del sistema."""
         
-        logger.info("🚀 INICIANDO DIAGNÓSTICO COMPLETO DEL SISTEMA")
+        logger.info("INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA")
         logger.info("=" * 80)
         logger.info(f"Timestamp: {datetime.now()}")
         logger.info(f"Python: {sys.version}")
@@ -288,9 +293,9 @@ class SystemDiagnostic:
         report_file = self.generate_comprehensive_report()
         
         logger.info("\n" + "=" * 80)
-        logger.info("🏁 DIAGNÓSTICO COMPLETO FINALIZADO")
+        logger.info("DIAGNOSTICO COMPLETO FINALIZADO")
         logger.info("=" * 80)
-        logger.info(f"📊 RESUMEN:")
+        logger.info(f"RESUMEN:")
         logger.info(f"   - Errores críticos encontrados: {len(self.errors_found)}")
         logger.info(f"   - Advertencias del sistema: {len(self.warnings_found)}")
         logger.info(f"   - Módulos analizados: {len(self.modules_tested)}")

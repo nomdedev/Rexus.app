@@ -1130,3 +1130,68 @@ ERRORES CRÍTICOS:
 2025-08-21 18:00:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_table.sql
 2025-08-21 18:00:35 | DEBUG    | rexus.utils.sql_query_manager | [SQL_MANAGER] Consulta cargada: pedidos.create_pedidos_detalle_table desde D:\martin\Rexus.app\sql\pedidos\create_pedidos_detalle_table.sql
 2025-08-21 18:00:35 | INFO     | rexus.notificaciones.controller | OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente
+2025-08-21 18:05:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 18:05:04 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 18:05:04 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-21 18:05:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 18:05:10 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.advanced | Plantilla de configuración creada: Desarrollo en categoría Entorno
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.advanced | Plantilla de configuración creada: Producción en categoría Entorno
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.advanced | Regla de validación agregada para session_timeout
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.advanced | Regla de validación agregada para theme
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.advanced | Configuraciones avanzadas inicializadas
+2025-08-21 18:05:10 | INFO     | rexus.configuracion.model | Funcionalidades avanzadas de configuración inicializadas
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Base de datos: users
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 18:05:10 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=users;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 18:05:10 | INFO     | rexus.usuarios.model | UsuariosModel estableció conexión automáticamente
+2025-08-21 18:05:10 | INFO     | rexus.usuarios.model | OK [USUARIOS] Utilidades de seguridad cargadas
+2025-08-21 18:05:10 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-21 18:05:10 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-21 18:05:10 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-21 18:05:10 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-21 18:05:10 | INFO     | rexus.inventario.controller | Inicializando controlador completo de inventario
+2025-08-21 18:05:10 | WARNING  | rexus.inventario.controller | No hay vista disponible para conectar señales
+2025-08-21 18:05:10 | INFO     | rexus.inventario.controller | Controlador de inventario inicializado exitosamente
+2025-08-21 18:05:10 | DEBUG    | rexus.obras.controller | Validando componentes del controlador de obras
+2025-08-21 18:05:10 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2025-08-21 18:05:10 | WARNING  | rexus.obras.controller | Vista de obras no disponible
+2025-08-21 18:05:10 | WARNING  | rexus.obras.controller | Conexión de base de datos no disponible
+2025-08-21 18:05:10 | INFO     | rexus.obras.controller | Validación de componentes completada
+2025-08-21 18:05:10 | WARNING  | rexus.obras.controller | Vista no disponible durante inicialización del controlador de obras
+2025-08-21 18:05:10 | DEBUG    | rexus.compras.controller | Validando componentes del controlador compras
+2025-08-21 18:05:10 | WARNING  | rexus.compras.controller | Conexión de BD no disponible para compras
+2025-08-21 18:05:10 | WARNING  | rexus.compras.controller | Vista no disponible para compras
+2025-08-21 18:05:10 | INFO     | rexus.compras.controller | Validación de componentes compras completada
+2025-08-21 18:05:10 | INFO     | rexus.core.database | Cambiado a base de datos: inventario
+2025-08-21 18:05:10 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: 'NoneType' object has no attribute 'cargar_compras_en_tabla'
+2025-08-21 23:16:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 23:16:37 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.advanced | Plantilla de configuración creada: Desarrollo en categoría Entorno
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.advanced | Plantilla de configuración creada: Producción en categoría Entorno
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.advanced | Regla de validación agregada para session_timeout
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.advanced | Regla de validación agregada para theme
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.advanced | Configuraciones avanzadas inicializadas
+2025-08-21 23:16:38 | INFO     | rexus.configuracion.model | Funcionalidades avanzadas de configuración inicializadas
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Intentando conectar a la base de datos
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Servidor: ITACHI\SQLEXPRESS
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Base de datos: users
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Driver: ODBC Driver 17 for SQL Server
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Usuario: sa
+2025-08-21 23:16:38 | DEBUG    | rexus.core.database | String de conexión: DRIVER={ODBC Driver 17 for SQL Server};SERVER=ITACHI\SQLEXPRESS;DATABASE=users;UID=sa;PWD=******;TrustServerCertificate=yes;
+2025-08-21 23:16:38 | INFO     | rexus.core.database | Conexión exitosa OK
+2025-08-21 23:16:38 | INFO     | rexus.usuarios.model | UsuariosModel estableció conexión automáticamente
+2025-08-21 23:16:38 | INFO     | rexus.usuarios.model | OK [USUARIOS] Utilidades de seguridad cargadas
+2025-08-21 23:16:38 | DEBUG    | rexus.usuarios.controller | Validando componentes del controlador usuarios
+2025-08-21 23:16:38 | WARNING  | rexus.usuarios.controller | Conexión de BD no disponible para usuarios
+2025-08-21 23:16:38 | WARNING  | rexus.usuarios.controller | Vista no disponible para usuarios
+2025-08-21 23:16:38 | INFO     | rexus.usuarios.controller | Validación de componentes usuarios completada
+2025-08-21 23:16:38 | INFO     | rexus.inventario.controller | Inicializando controlador completo de inventario
+2025-08-21 23:17:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 23:57:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-21 23:57:46 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-21 23:57:47 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado

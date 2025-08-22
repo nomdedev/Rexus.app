@@ -82,3 +82,16 @@
 2025-08-21 16:50:58 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
 2025-08-21 16:51:15 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
 2025-08-21 16:51:19 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 00:15:05 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:18 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:18 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:41 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:15:41 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:16:02 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 00:16:02 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:20:27 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:20:27 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:20:31 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:20:36 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 12:22:08 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser

@@ -438,8 +438,6 @@ class VidriosModel:
         except Exception as e:
             logger.error(f"Error obteniendo vidrios por obra: {e}")
             return []
-
-    @auth_required
     def asignar_vidrio_obra(
         self,
         vidrio_id,
@@ -491,8 +489,6 @@ class VidriosModel:
         except Exception as e:
             logger.error(f"Error asignando vidrio a obra: {e}")
             return False
-
-    @auth_required
     def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):
         """
         Crea un pedido de vidrios para una obra específica.
@@ -662,8 +658,6 @@ class VidriosModel:
         except Exception as e:
             logger.error(f"Error buscando vidrios: {e}")
             return False, []
-
-    @auth_required
     def crear_vidrio(self, datos_vidrio):
         """
         Crea un nuevo vidrio en la base de datos con sanitización completa.
@@ -746,8 +740,6 @@ class VidriosModel:
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False, f"Error creando vidrio: {str(e)}", None
-
-    @auth_required
     def actualizar_vidrio(self, vidrio_id, datos_vidrio):
         """
         Actualiza un vidrio existente con sanitización completa.

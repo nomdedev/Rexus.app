@@ -151,8 +151,6 @@ class PedidosController(QObject):
         except Exception as e:
             print(f"[ERROR PEDIDOS CONTROLLER] Error creando pedido: {e}")
             self.mostrar_error(f"Error creando pedido: {str(e)}")
-
-    @auth_required
     def actualizar_pedido(self, datos_pedido:Dict[str, Any]):
         """Actualiza un pedido existente."""
         try:

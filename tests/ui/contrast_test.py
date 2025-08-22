@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Test Automatizado de Contraste y Estilos UI - Rexus.app
 Verifica problemas de contraste y consistencia visual en todos los módulos

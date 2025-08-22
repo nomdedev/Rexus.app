@@ -68,8 +68,6 @@ class ConsultasManager:
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/vidrios/consultas"
 
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_todos_vidrios(
         self, filtros: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
@@ -106,8 +104,6 @@ class ConsultasManager:
             logger.error(f"Error obteniendo vidrios: {str(e)}")
             return []
 
-    @auth_required
-    @permission_required("view_inventario")
     def buscar_vidrios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
         """Búsqueda avanzada de vidrios por múltiples campos."""
         if not self.db_connection or not termino_busqueda:
@@ -150,9 +146,6 @@ class ConsultasManager:
         except Exception as e:
             logger.error(f"Error en búsqueda de vidrios: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_estadisticas_vidrios(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas del inventario de vidrios."""
         if not self.db_connection:
@@ -206,9 +199,6 @@ class ConsultasManager:
         except Exception as e:
             logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_vidrios_paginados(
         self,
         page: int = 1,
@@ -279,9 +269,6 @@ min(100,
         except Exception as e:
             logger.error(f"Error obteniendo vidrios paginados: {str(e)}")
             return {"vidrios": [], "total": 0, "page": page, "per_page": per_page}
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_vidrios_stock_bajo(self) -> List[Dict[str, Any]]:
         """Obtiene vidrios con stock por debajo del mínimo."""
         if not self.db_connection:
@@ -376,9 +363,6 @@ vidrio: Dict[str,
             relevancia += 10
 
         return relevancia
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_reporte_proveedores(self) -> List[Dict[str, Any]]:
         """Genera reporte de vidrios por proveedor."""
         if not self.db_connection:

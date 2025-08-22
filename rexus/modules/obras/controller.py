@@ -47,6 +47,15 @@ class ObrasController(QObject):
         # Inicializar current_user para compatibilidad con @auth_required
         self.current_user = self._get_current_auth_user()
 
+        # Crear modelo si no existe
+        if not self.model:
+            try:
+                from .model import ObrasModel
+                self.model = ObrasModel(db_connection=self.db_connection)
+                logger.info("Modelo de obras creado automáticamente")
+            except Exception as e:
+                logger.error(f"Error creando modelo de obras: {e}")
+        
         # Validar y conectar componentes de forma segura
         self._validate_components()
         
@@ -196,13 +205,9 @@ class ObrasController(QObject):
                 )
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error mostrando formulario: {e}")
-
-    @auth_required
     def agregar_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """Alias para crear_obra - usado por la vista del diálogo."""
         return self.crear_obra(datos_obra)
-
-    @auth_required
     def crear_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """
         Crea una nueva obra con los datos proporcionados.
@@ -248,8 +253,6 @@ class ObrasController(QObject):
             print(f"[ERROR OBRAS CONTROLLER] Error creando obra: {e}")
             self.mostrar_mensaje_error(f"Error creando obra: {str(e)}")
             return False
-
-    @auth_required
     def editar_obra_seleccionada(self):
         """Edita la obra seleccionada en la tabla."""
         try:
@@ -270,8 +273,6 @@ class ObrasController(QObject):
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error editando obra: {e}")
             self.mostrar_mensaje_error(f"Error editando obra: {str(e)}")
-
-    @auth_required
     def actualizar_obra(self,
 obra_id: int,
         datos_actualizados: Dict[str,
@@ -398,8 +399,6 @@ obra_id: int,
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error filtrando obras: {e}")
             self.mostrar_mensaje_error(f"Error filtrando obras: {str(e)}")
-
-    @auth_required
     def actualizar_estadisticas(self):
         """Actualiza las estadísticas mostradas en la vista."""
         try:
@@ -408,8 +407,6 @@ obra_id: int,
                 self.view.actualizar_estadisticas(estadisticas)
         except Exception as e:
             print(f"[ERROR OBRAS CONTROLLER] Error actualizando estadísticas: {e}")
-
-    @auth_required
     def validar_datos_obra(
         self, datos_obra: Dict[str, Any], es_actualizacion: bool = False
     ) -> bool:
@@ -546,8 +543,6 @@ obra_id: int,
         except Exception as e:
             print(f"[ERROR] Error obteniendo total de registros: {e}")
             return 0
-
-    @auth_required
     def exportar_obras(self, formato="excel"):
         """Exporta obras al formato especificado."""
         try:

@@ -65,9 +65,6 @@ class RecursosManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/obras/recursos"
-
-    @auth_required
-    @permission_required("edit_obras")
     def asignar_material_obra(
         self,
         obra_id: int,
@@ -126,9 +123,6 @@ class RecursosManager:
                 self.db_connection.rollback()
             print(f"Error asignando material a obra: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_materiales_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los materiales asignados a una obra."""
         if not self.db_connection or not obra_id:
@@ -158,9 +152,6 @@ class RecursosManager:
         except Exception as e:
             print(f"Error obteniendo materiales de obra: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("edit_obras")
     def liberar_material_obra(
         self, obra_id: int, material_id: int, cantidad: int
     ) -> bool:
@@ -193,9 +184,6 @@ class RecursosManager:
                 self.db_connection.rollback()
             print(f"Error liberando material: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("edit_obras")
     def asignar_personal_obra(
         self, obra_id: int, personal_id: int, rol: str, fecha_inicio: datetime = None
     ) -> bool:
@@ -225,9 +213,6 @@ class RecursosManager:
                 self.db_connection.rollback()
             print(f"Error asignando personal: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_resumen_recursos(self, obra_id: int) -> Dict[str, Any]:
         """Obtiene resumen completo de recursos de una obra."""
         if not self.db_connection or not obra_id:

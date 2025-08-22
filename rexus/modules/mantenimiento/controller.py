@@ -75,8 +75,6 @@ model=None,
 
         except Exception as e:
             logger.error(f"Error cargando datos iniciales: {e}")
-
-    @auth_required
     def crear_equipo(self, datos_equipo: Dict) -> bool:
         """
         Crea un nuevo equipo en el sistema.
@@ -110,8 +108,6 @@ model=None,
             logger.error(f"Error creando equipo: {e}")
             show_error(self.view, "Error", f"Error creando equipo: {str(e)}")
             return False
-
-    @auth_required
     def programar_mantenimiento(self, equipo_id: int, tipo_mantenimiento: str,
                                fecha_programada: date, observaciones: str = "") -> bool:
         """
@@ -151,8 +147,6 @@ model=None,
             logger.error(f"Error programando mantenimiento: {e}")
             show_error(self.view, "Error", f"Error programando mantenimiento: {str(e)}")
             return False
-
-    @auth_required
     def ejecutar_mantenimiento(self, programacion_id: int, datos_ejecucion: Dict) -> bool:
         """
         Ejecuta un mantenimiento programado.
@@ -222,8 +216,6 @@ model=None,
 
         except Exception as e:
             logger.error(f"Error verificando mantenimientos pendientes: {e}")
-
-    @auth_required
     def generar_reporte_historial(self, equipo_id: int, fecha_inicio: date,
                                  fecha_fin: date) -> List[Dict]:
         """

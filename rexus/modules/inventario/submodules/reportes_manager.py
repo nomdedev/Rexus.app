@@ -157,8 +157,6 @@ class ReportesManager:
                 cursor.close()
 
     @cached_query(ttl=300)  # Cache por 5 minutos - reporte de stock cambia frecuentemente
-    @auth_required
-    @permission_required("view_reportes")
     def generar_reporte_stock_actual(self, filtros: Optional[Dict[str, Any]] = None,
                                    formato: str = 'DICT') -> Dict[str, Any]:
         """
@@ -302,9 +300,6 @@ class ReportesManager:
                 'error': f'Error interno: {str(e)}',
                 'data': None
             }
-
-    @auth_required
-    @permission_required("view_reportes")
     def generar_reporte_movimientos(self, fecha_desde: Optional[str] = None,
                                   fecha_hasta: Optional[str] = None,
                                   producto_id: Optional[int] = None,
@@ -457,8 +452,6 @@ class ReportesManager:
             }
 
     @cached_query(ttl=600)  # Cache por 10 minutos - Dashboard KPIs son más estables
-    @auth_required
-    @permission_required("view_reportes")
     def generar_dashboard_kpis(self, formato: str = 'DICT') -> Dict[str, Any]:
         """
         Genera dashboard con KPIs principales del inventario.
@@ -641,8 +634,6 @@ class ReportesManager:
             }
 
     @cached_query(ttl=1200)  # Cache por 20 minutos - Análisis ABC es más estático
-    @auth_required
-    @permission_required("view_reportes")
     def generar_analisis_abc(self,
 criterio: str = 'valor',
         formato: str = 'DICT') -> Dict[str,
@@ -821,8 +812,6 @@ criterio: str = 'valor',
             }
 
     @cached_query(ttl=900)  # Cache por 15 minutos - Valoración se actualiza moderadamente
-    @auth_required
-    @permission_required("view_reportes")
     def generar_reporte_valoracion_inventario(self, fecha_corte: Optional[str] = None,
                                             formato: str = 'DICT') -> Dict[str, Any]:
         """

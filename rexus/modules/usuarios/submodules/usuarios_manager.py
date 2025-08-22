@@ -91,9 +91,6 @@ class UsuariosManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("add_usuarios")
     def crear_usuario(
         self,
         username: str,
@@ -202,9 +199,6 @@ class UsuariosManager:
                 self.db_connection.rollback()
             self.logger.error(f"Error creando usuario: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario específico por ID."""
         if not self.db_connection or not usuario_id:
@@ -240,9 +234,6 @@ class UsuariosManager:
         except Exception as e:
             self.logger.error(f"Error obteniendo usuario: {str(e)}", exc_info=True)
             return None
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario por nombre de usuario."""
         if not self.db_connection or not username:
@@ -275,9 +266,6 @@ class UsuariosManager:
         except Exception as e:
             self.logger.error(f"Error obteniendo usuario por nombre: {str(e)}", exc_info=True)
             return None
-
-    @auth_required
-    @permission_required("change_usuarios")
     def actualizar_usuario(
         self, usuario_id: int, datos_actualizacion: Dict[str, Any]
     ) -> Dict[str, Any]:
@@ -366,9 +354,6 @@ class UsuariosManager:
                 self.db_connection.rollback()
             self.logger.error(f"Error actualizando usuario: {str(e)}", exc_info=True)
             return {"success": False, "error": "Error interno del sistema"}
-
-    @auth_required
-    @permission_required("delete_usuarios")
     def eliminar_usuario(
         self, usuario_id: int, soft_delete: bool = True
     ) -> Dict[str, Any]:
@@ -473,9 +458,6 @@ class UsuariosManager:
         except Exception as e:
             self.logger.error(f"Error verificando unicidad email: {str(e)}", exc_info=True)
             return False
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
         """Obtiene la lista de permisos de un usuario."""
         if not self.db_connection or not usuario_id:
@@ -501,9 +483,6 @@ class UsuariosManager:
         except Exception as e:
             self.logger.error(f"Error obteniendo permisos: {str(e)}", exc_info=True)
             return []
-
-    @auth_required
-    @permission_required("change_usuarios")
     def asignar_permiso_usuario(self, usuario_id: int, permiso: str) -> bool:
         """Asigna un permiso específico a un usuario."""
         if not self.db_connection or not usuario_id or not permiso:

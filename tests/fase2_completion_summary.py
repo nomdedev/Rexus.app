@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 #!/usr/bin/env python3
 """
 Resumen de Completado de FASE 2: Workflows de Negocio

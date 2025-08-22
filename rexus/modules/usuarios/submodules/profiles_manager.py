@@ -123,8 +123,6 @@ class ProfilesManager:
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """
         Obtiene un usuario por su ID.
@@ -166,8 +164,6 @@ class ProfilesManager:
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def obtener_usuario_por_username(self, username: str) -> Optional[Dict[str, Any]]:
         """
         Obtiene un usuario por su username.
@@ -215,8 +211,6 @@ class ProfilesManager:
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def obtener_usuario_por_email(self, email: str) -> Optional[Dict[str, Any]]:
         """
         Obtiene un usuario por su email.
@@ -264,8 +258,6 @@ class ProfilesManager:
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def obtener_todos_usuarios(self, incluir_inactivos: bool = False) -> List[Dict[str, Any]]:
         """
         Obtiene todos los usuarios del sistema.
@@ -318,8 +310,6 @@ class ProfilesManager:
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def actualizar_usuario(self,
 usuario_id: int,
         datos_actualizados: Dict[str,
@@ -462,8 +452,6 @@ usuario.get("username",
                     cursor.close()
                 except Exception as e:
                     logger.error(f"Error cerrando cursor: {e}")
-
-    @auth_required
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
         """
         Obtiene estadísticas de usuarios del sistema.

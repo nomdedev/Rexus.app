@@ -773,3 +773,214 @@ ERRORES CRÍTICOS:
 2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
 2025-08-21 16:51:56 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
 2025-08-21 18:00:35 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2025-08-21 18:05:04 - rexus.obras.controller - [31mERROR[0m - CRITICO: Modelo de obras no disponible
+2025-08-21 18:05:04 - rexus.compras.controller - [31mERROR[0m - Error cargando datos iniciales: 'NoneType' object has no attribute 'cargar_compras_en_tabla'
+2025-08-21 18:05:10 | ERROR    | rexus.obras.controller | CRITICO: Modelo de obras no disponible
+2025-08-21 18:05:10 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: 'NoneType' object has no attribute 'cargar_compras_en_tabla'
+2025-08-22 00:05:14 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:05:14 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:06:59 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:06:59 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:08:00 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:08:00 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:09:43 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 410, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_sql_input(str(username))
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_sql_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:21 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'sanitize_html_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 411, in autenticar_usuario
+    username_sanitizado = SecurityUtils.sanitize_html_input(username_sanitizado)
+AttributeError: type object 'SecurityUtils' has no attribute 'sanitize_html_input'. Did you mean: 'sanitize_input'?
+2025-08-22 00:10:48 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: type object 'SecurityUtils' has no attribute 'is_safe_input'
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 414, in autenticar_usuario
+    if not SecurityUtils.is_safe_input(username_sanitizado):
+AttributeError: type object 'SecurityUtils' has no attribute 'is_safe_input'
+2025-08-22 00:12:36 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: cannot unpack non-iterable Mock object
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 419, in autenticar_usuario
+    bloqueado, tiempo_restante = self.model.verificar_usuario_bloqueado(username_sanitizado)
+TypeError: cannot unpack non-iterable Mock object
+2025-08-22 00:13:27 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:13:27 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:13:28 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:14:06 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: 'Mock' object is not subscriptable
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 455, in autenticar_usuario
+    if not self.model._verificar_password(password, usuario["password_hash"]):
+TypeError: 'Mock' object is not subscriptable
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:18 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:40 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:15:40 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:15:40 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:15:41 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:01 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:16:01 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 00:16:02 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 12:20:35 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:20:36 | ERROR    | rexus.main      | Error creando dashboard moderno: 'MainDashboard' object has no attribute 'apply_theme'
+2025-08-22 12:20:47 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:48 | ERROR    | rexus.main      | Error crítico creando inventario: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:49 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'NoneType' object has no attribute 'cursor'
+2025-08-22 12:20:56 | ERROR    | rexus.main      | Error crítico creando inventario: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:20:57 | ERROR    | rexus.main      | Error crítico creando obras: ('42S02', "[42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid object name 'sqlite_master'. (208) (SQLExecDirectW); [42S02] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Statement(s) could not be prepared. (8180)")
+2025-08-22 12:21:30 | ERROR    | rexus.<Mock id='2012068471824'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:21:30 | ERROR    | rexus.<Mock id='2012068361984'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 12:22:07 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 12:22:07 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:08 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 12:22:29 | ERROR    | rexus.<Mock id='2335793564832'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'

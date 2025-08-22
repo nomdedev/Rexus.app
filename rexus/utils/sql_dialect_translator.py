@@ -176,13 +176,18 @@ class SQLDialectTranslator:
         # Reemplazos básicos
         translated = original_query
         
-        # IF NOT EXISTS
-        translated = re.sub(
-            r'CREATE TABLE IF NOT EXISTS\s+(\w+)',
-            r"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='\1' AND xtype='U') CREATE TABLE \1",
-            translated,
-            flags=re.IGNORECASE
-        )
+        # IF NOT EXISTS - Corregir sintaxis SQL Server
+        if 'IF NOT EXISTS' in translated.upper():
+            table_match = re.search(r'CREATE TABLE IF NOT EXISTS\s+(\w+)', translated, re.IGNORECASE)
+            if table_match:
+                table_name = table_match.group(1)
+                # Remover IF NOT EXISTS del CREATE TABLE
+                translated = re.sub(r'CREATE TABLE IF NOT EXISTS\s+', 'CREATE TABLE ', translated, flags=re.IGNORECASE)
+                # Envolver en bloque condicional SQL Server
+                translated = f"""IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}')
+BEGIN
+    {translated}
+END"""
         
         # Tipos de datos
         type_mappings = {

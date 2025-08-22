@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Auditoría Automática de Módulos - Rexus.app
 Detecta variables no definidas, botones sin configurar, formularios con problemas, etc.

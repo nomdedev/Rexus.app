@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 🎯 MASTER TEST RUNNER - PHASE 3: INTEGRATION & E2E TESTS
 =====================================================

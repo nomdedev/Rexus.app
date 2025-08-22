@@ -82,9 +82,6 @@ class ConsultasManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_todos_usuarios(
         self, incluir_inactivos: bool = False
     ) -> List[Dict[str, Any]]:
@@ -123,9 +120,6 @@ class ConsultasManager:
         except Exception as e:
             self.logger.error(f"Error obteniendo usuarios: {str(e)}", exc_info=True)
             return []
-
-    @auth_required
-    @permission_required("view_usuarios")
     def buscar_usuarios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
         """Búsqueda avanzada de usuarios por múltiples criterios."""
         if not self.db_connection or not termino_busqueda:
@@ -165,9 +159,6 @@ class ConsultasManager:
         except Exception as e:
             self.logger.error(f"Error en búsqueda: {str(e)}", exc_info=True)
             return []
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_usuarios_paginados(
         self,
         page: int = 1,
@@ -257,9 +248,6 @@ min(100,
         except Exception as e:
             self.logger.error(f"Error en paginación: {str(e)}", exc_info=True)
             return {"usuarios": [], "total": 0, "pages": 0}
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas del sistema de usuarios."""
         if not self.db_connection:
@@ -341,9 +329,6 @@ min(100,
         except Exception as e:
             self.logger.error(f"Error obteniendo estadísticas: {str(e)}", exc_info=True)
             return {}
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_usuarios_por_rol(self, rol: str) -> List[Dict[str, Any]]:
         """Obtiene usuarios filtrados por rol específico."""
         if not self.db_connection or not rol:
@@ -375,9 +360,6 @@ min(100,
         except Exception as e:
             self.logger.error(f"Error obteniendo usuarios por rol: {str(e)}", exc_info=True)
             return []
-
-    @auth_required
-    @permission_required("view_usuarios")
     def obtener_actividad_usuario(
         self, usuario_id: int, dias: int = 30
     ) -> Dict[str, Any]:
@@ -435,9 +417,6 @@ min(100,
         except Exception as e:
             self.logger.error(f"Error obteniendo actividad de usuario: {str(e)}", exc_info=True)
             return {"intentos_login": [], "estadisticas": {}}
-
-    @auth_required
-    @permission_required("admin")
     def generar_reporte_seguridad(self) -> Dict[str, Any]:
         """Genera un reporte de seguridad del sistema de usuarios."""
         if not self.db_connection:

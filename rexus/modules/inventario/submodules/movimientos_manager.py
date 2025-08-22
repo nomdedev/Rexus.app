@@ -59,9 +59,6 @@ class MovimientosManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = unified_sanitizer
         self.sql_path = "scripts/sql/inventario/movimientos"
-
-    @auth_required
-    @permission_required("create_movimiento")
     def registrar_movimiento(
         self,
         producto_id: int,
@@ -181,9 +178,6 @@ class MovimientosManager:
         except Exception as e:
             self.db_connection.rollback()
             raise Exception(f"Error registrando movimiento: {str(e)}")
-
-    @auth_required
-    @permission_required("view_movimientos")
     def obtener_movimientos(
         self,
         producto_id: Optional[int] = None,
@@ -246,9 +240,6 @@ class MovimientosManager:
 
         except Exception as e:
             raise Exception(f"Error obteniendo movimientos: {str(e)}")
-
-    @auth_required
-    @permission_required("view_reportes")
     def generar_reporte_movimientos(
         self, filtros: Optional[Dict[str, Any]] = None
     ) -> Dict[str, Any]:
@@ -327,9 +318,6 @@ class MovimientosManager:
 
         except (sqlite3.Error, ValueError, TypeError, AttributeError):
             return None
-
-    @auth_required
-    @permission_required("view_stock_bajo")
     def obtener_productos_stock_bajo(self) -> List[Dict[str, Any]]:
         """Obtiene productos con stock por debajo del mínimo."""
         if not self.db_connection:

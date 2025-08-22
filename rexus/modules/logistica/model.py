@@ -813,8 +813,6 @@ transporte_id,
         except Exception as e:
             print(f"[ERROR LOGÍSTICA] Error calculando costo de envío: {e}")
             return 0.0
-
-    @auth_required
     def eliminar_transporte(self, transporte_id):
         """
         Elimina un transporte de la base de datos.

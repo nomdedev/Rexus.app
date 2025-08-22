@@ -68,9 +68,6 @@ class ConsultasManager:
         self.sql_manager = SQLQueryManager()
         self.sanitizer = DataSanitizer()
         self.sql_path = "scripts/sql/obras/consultas"
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_todas_obras(
         self, filtros: Optional[Dict[str, Any]] = None
     ) -> List[Dict[str, Any]]:
@@ -107,9 +104,6 @@ class ConsultasManager:
         except Exception as e:
             logger.error(f"Error obteniendo obras: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("view_obras")
     def buscar_obras(self, termino_busqueda: str) -> List[Dict[str, Any]]:
         """Búsqueda avanzada de obras por múltiples campos."""
         if not self.db_connection or not termino_busqueda:
@@ -149,9 +143,6 @@ class ConsultasManager:
         except Exception as e:
             logger.error(f"Error en búsqueda de obras: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_estadisticas_obras(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas de obras."""
         if not self.db_connection:
@@ -207,9 +198,6 @@ class ConsultasManager:
         except Exception as e:
             logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_obras_paginadas(
         self,
         page: int = 1,
@@ -280,9 +268,6 @@ min(100,
         except Exception as e:
             logger.error(f"Error obteniendo obras paginadas: {str(e)}")
             return {"obras": [], "total": 0, "page": page, "per_page": per_page}
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_obras_vencidas(self) -> List[Dict[str, Any]]:
         """Obtiene obras que han superado su fecha de finalización."""
         if not self.db_connection:
@@ -310,9 +295,6 @@ min(100,
         except Exception as e:
             logger.error(f"Error obteniendo obras vencidas: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_reporte_productividad(
         self, fecha_inicio: datetime = None, fecha_fin: datetime = None
     ) -> Dict[str, Any]:

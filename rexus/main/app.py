@@ -119,7 +119,8 @@ from PyQt6.QtWidgets import (
 # Imports del core de Rexus
 from rexus.core.login_dialog import LoginDialog
 from rexus.core.module_manager import module_manager
-from rexus.main.dashboard_premium import PremiumDashboard
+from rexus.ui.dashboard import MainDashboard, DashboardController
+from rexus.ui.components.theme_manager import ThemeManager
 
 
 def initialize_security_manager():
@@ -315,10 +316,34 @@ class MainWindow(QMainWindow):
         self.modulos_permitidos = modulos_permitidos
 
         self.content_stack = QStackedWidget()
+        
+        # Inicializar gestores de tema y dashboard
+        self._init_theme_manager()
+        self._init_dashboard_controller()
 
         # Inicializar StyleManager y aplicar tema automático
         self._init_styles()
         self._init_ui()
+    
+    def _init_theme_manager(self):
+        """Inicializa el gestor de temas."""
+        try:
+            self.theme_manager = ThemeManager(self)
+            self.theme_manager.apply_theme()  # Aplicar tema por defecto
+            print("[THEME] Gestor de temas inicializado correctamente")
+        except Exception as e:
+            logger.warning(f"Error inicializando ThemeManager: {e}")
+            self.theme_manager = None
+    
+    def _init_dashboard_controller(self):
+        """Inicializa el controlador del dashboard."""
+        try:
+            # Crear controlador del dashboard sin db_manager por ahora
+            self.dashboard_controller = DashboardController(None, self)
+            print("[DASHBOARD] Controlador de dashboard inicializado")
+        except Exception as e:
+            logger.warning(f"Error inicializando DashboardController: {e}")
+            self.dashboard_controller = None
 
     def _init_styles(self):
         """Inicializa y aplica el sistema de estilos."""
@@ -479,6 +504,26 @@ class MainWindow(QMainWindow):
         modules_layout.addStretch()
         scroll.setWidget(modules_widget)
         sidebar_layout.addWidget(scroll)
+        
+        # Agregar botón de toggle de tema al final del sidebar
+        if self.theme_manager:
+            theme_btn = QPushButton("🌙 Alternar Tema")
+            theme_btn.setStyleSheet("""
+                QPushButton {
+                    background-color: rgba(0, 0, 0, 0.3);
+                    color: white;
+                    border: 1px solid rgba(255, 255, 255, 0.3);
+                    border-radius: 4px;
+                    padding: 8px;
+                    margin: 10px;
+                    font-size: 12px;
+                }
+                QPushButton:hover {
+                    background-color: rgba(0, 0, 0, 0.5);
+                }
+            """)
+            theme_btn.clicked.connect(self.toggle_theme)
+            sidebar_layout.addWidget(theme_btn)
 
         main_layout.addWidget(sidebar)
 
@@ -609,10 +654,20 @@ QPushButton:disabled {
         self.content_stack.addWidget(dashboard)
 
     def _create_premium_dashboard(self):
-        """Crea el dashboard premium moderno."""
-        dashboard = PremiumDashboard(self.user_data)
-        dashboard.navegar_modulo.connect(self.cargar_modulo)
-        self.content_stack.addWidget(dashboard)
+        """Crea el dashboard moderno con widgets especializados."""
+        try:
+            if self.dashboard_controller:
+                dashboard = self.dashboard_controller.get_view()
+                dashboard.modulo_solicitado.connect(self.show_module)
+                self.content_stack.addWidget(dashboard)
+                print("[DASHBOARD] Dashboard moderno cargado correctamente")
+            else:
+                # Fallback al dashboard básico si el controlador no está disponible
+                self._create_dashboard()
+                print("[DASHBOARD] Usando dashboard básico como fallback")
+        except Exception as e:
+            logger.error(f"Error creando dashboard moderno: {e}")
+            self._create_dashboard()  # Fallback seguro
 
     def _create_simple_header(self):
         """Header limpio y compacto"""
@@ -1257,6 +1312,21 @@ text,
     def cargar_modulo(self, module_name):
         """Carga un módulo específico - método requerido por PremiumDashboard."""
         self._navigate_to_module(module_name)
+    
+    def toggle_theme(self):
+        """Alterna entre tema claro y oscuro."""
+        if self.theme_manager:
+            self.theme_manager.toggle_theme()
+            current_theme = self.theme_manager.get_current_theme()
+            print(f"[THEME] Tema cambiado a: {current_theme}")
+            
+            # Actualizar dashboard si está disponible
+            if self.dashboard_controller:
+                self.dashboard_controller.actualizar_dashboard_manual()
+    
+    def abrir_modulo(self, modulo_nombre):
+        """Abre un módulo desde el dashboard controller."""
+        self.show_module(modulo_nombre)
 
     def _create_notifications_section(self):
         """Crea la sección de notificaciones"""

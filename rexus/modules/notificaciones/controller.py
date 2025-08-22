@@ -35,8 +35,6 @@ class NotificacionesController:
         self.usuario_actual = usuario_actual or {}
 
         logger.info("OK [NOTIFICACIONES CONTROLLER] Inicializado correctamente")
-
-    @auth_required
     def obtener_notificaciones_usuario(self, solo_no_leidas: bool = False,
                                      limite: int = 50) -> List[Dict]:
         """
@@ -69,8 +67,6 @@ class NotificacionesController:
             if self.view:
                 self.view.mostrar_error(f"Error cargando notificaciones: {str(e)}")
             return []
-
-    @auth_required
     def marcar_como_leida(self, notificacion_id: int) -> bool:
         """
         Marca una notificación como leída.
@@ -101,8 +97,6 @@ class NotificacionesController:
             if self.view:
                 self.view.mostrar_error(f"Error marcando notificación: {str(e)}")
             return False
-
-    @auth_required
     def contar_no_leidas(self) -> int:
         """
         Obtiene el conteo de notificaciones no leídas.
@@ -121,8 +115,6 @@ class NotificacionesController:
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error contando no leídas: {str(e)}")
             return 0
-
-    @auth_required
     def actualizar_contador_no_leidas(self):
         """Actualiza el contador en la vista."""
         try:
@@ -132,8 +124,6 @@ class NotificacionesController:
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
             logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error actualizando contador: {str(e)}")
-
-    @auth_required
     def crear_notificacion(self, titulo: str, mensaje: str,
                           tipo: str = "info", prioridad: int = 2,
                           usuario_destino: Optional[int] = None,

@@ -80,9 +80,6 @@ class ProyectosManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_obra_por_id(self, obra_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene una obra específica por ID."""
         if not self.db_connection or not obra_id:
@@ -110,9 +107,6 @@ class ProyectosManager:
 
         except Exception as e:
             raise Exception(f"Error obteniendo obra: {str(e)}")
-
-    @auth_required
-    @permission_required("add_obras")
     def crear_obra(self, datos_obra: Dict[str, Any]) -> bool:
         """Crea un nuevo proyecto de obra con validaciones."""
         if not self.db_connection:
@@ -156,9 +150,6 @@ class ProyectosManager:
                 self.db_connection.rollback()
             print(f"Error creando obra: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("change_obras")
     def actualizar_obra(self,
 obra_id: int,
         datos_obra: Dict[str,
@@ -202,9 +193,6 @@ obra_id: int,
                 self.db_connection.rollback()
             print(f"Error actualizando obra: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("delete_obras")
     def eliminar_obra(self, obra_id: int) -> bool:
         """Elimina una obra (soft delete)."""
         if not self.db_connection or not obra_id:
@@ -229,9 +217,6 @@ obra_id: int,
                 self.db_connection.rollback()
             print(f"Error eliminando obra: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("change_obras")
     def cambiar_estado_obra(self, obra_id: int, nuevo_estado: str) -> bool:
         """Cambia el estado de una obra con validaciones."""
         if not self.db_connection or not obra_id:
@@ -404,9 +389,6 @@ obra_id: int,
             "PENDIENTE_APROBACION",
         }
         return estado.upper() in estados_validos
-
-    @auth_required
-    @permission_required("view_obras")
     def obtener_estados_disponibles(self) -> List[str]:
         """Obtiene los estados de obra disponibles."""
         return [
@@ -417,9 +399,6 @@ obra_id: int,
             "COMPLETADA",
             "CANCELADA",
         ]
-
-    @auth_required
-    @permission_required("view_obras")
     def calcular_progreso_obra(self, obra_id: int) -> float:
         """Calcula el porcentaje de progreso de una obra."""
         if not self.db_connection or not obra_id:

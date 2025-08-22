@@ -78,9 +78,6 @@ class ProductosManager:
         if table_name not in tablas_permitidas:
             raise ValueError(f"Tabla no permitida: {table_name}")
         return table_name
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_vidrio_por_id(self, vidrio_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene un vidrio específico por ID."""
         if not self.db_connection or not vidrio_id:
@@ -102,9 +99,6 @@ class ProductosManager:
 
         except Exception as e:
             raise Exception(f"Error obteniendo vidrio: {str(e)}")
-
-    @auth_required
-    @permission_required("add_inventario")
     def crear_vidrio(self, datos_vidrio: Dict[str, Any]) -> bool:
         """Crea un nuevo producto vidrio con validaciones."""
         if not self.db_connection:
@@ -128,9 +122,6 @@ class ProductosManager:
                 self.db_connection.rollback()
             logger.error(f"Error creando vidrio: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("change_inventario")
     def actualizar_vidrio(self,
 vidrio_id: int,
         datos_vidrio: Dict[str,
@@ -158,9 +149,6 @@ vidrio_id: int,
                 self.db_connection.rollback()
             logger.error(f"Error actualizando vidrio: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("delete_inventario")
     def eliminar_vidrio(self, vidrio_id: int) -> bool:
         """Elimina un producto vidrio (soft delete)."""
         if not self.db_connection or not vidrio_id:
@@ -240,9 +228,6 @@ vidrio_id: int,
             raise ValueError("El tipo de vidrio es requerido")
 
         return datos_sanitizados
-
-    @auth_required
-    @permission_required("view_inventario")
     def obtener_tipos_vidrio(self) -> List[str]:
         """Obtiene los tipos de vidrio disponibles."""
         if not self.db_connection:
@@ -261,9 +246,6 @@ vidrio_id: int,
         except Exception as e:
             logger.error(f"Error obteniendo tipos de vidrio: {str(e)}")
             return []
-
-    @auth_required
-    @permission_required("view_inventario")
     def validar_codigo_unico(
         self, codigo: str, vidrio_id: Optional[int] = None
     ) -> bool:
@@ -327,9 +309,6 @@ vidrio_id: int,
 
         except Exception:
             return 0.0
-
-    @auth_required
-    @permission_required("edit_inventario")
     def actualizar_stock(self, vidrio_id: int, nuevo_stock: int) -> bool:
         """Actualiza solo el stock de un vidrio."""
         if not self.db_connection or not vidrio_id:
@@ -360,9 +339,6 @@ vidrio_id: int,
                 self.db_connection.rollback()
             logger.error(f"Error actualizando stock: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("edit_inventario")
     def actualizar_precio(self, vidrio_id: int, nuevo_precio: float) -> bool:
         """Actualiza solo el precio de un vidrio."""
         if not self.db_connection or not vidrio_id:
@@ -396,9 +372,6 @@ vidrio_id: int,
                 self.db_connection.rollback()
             logger.error(f"Error actualizando precio: {str(e)}")
             return False
-
-    @auth_required
-    @permission_required("view_inventario")
     def validar_disponibilidad(self, vidrio_id: int, cantidad_requerida: int) -> bool:
         """Valida si hay stock suficiente para la cantidad requerida."""
         if not self.db_connection or not vidrio_id:

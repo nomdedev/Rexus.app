@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Suite Completa de Tests para Rexus.app - Runner Principal
 Ejecuta todos los tests implementados para conseguir cobertura completa del sistema
