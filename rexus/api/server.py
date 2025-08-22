@@ -547,7 +547,8 @@ class RexusAPI:
                             categoria=row[5]
                         ))
 
-                    # Count total con mismos filtros
+                    # Count total con mismos filtros 
+                    # SEGURO: where_clause se construye con condiciones parametrizadas válidas
                     count_query = f"SELECT COUNT(*) FROM inventario {where_clause}"
                     count_params = params[:-2] if where_conditions else []  # Excluir offset y page_size
                     cursor = conn.execute(count_query, count_params)

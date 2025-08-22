@@ -1328,3 +1328,12 @@ Traceback (most recent call last):
   File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 356, in cargar_inventario_paginado
     total = len(productos)
 TypeError: object of type 'Mock' has no len()
+2025-08-22 18:50:13 | ERROR    | rexus.<Mock id='1898835742912'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:13 | ERROR    | rexus.<Mock id='1898835485568'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:14 | ERROR    | rexus.<Mock id='1898836532608'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:14 | ERROR    | rexus.<Mock id='1898835875952'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | ERROR    | rexus.<Mock id='1898835984288'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | ERROR    | rexus.<Mock id='1899339043680'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:18 | ERROR    | rexus.<Mock id='1898835309136'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:19 | ERROR    | rexus.<Mock id='1898835977280'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'

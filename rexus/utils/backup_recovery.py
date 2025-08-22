@@ -516,7 +516,8 @@ class BackupRecoveryManager:
             if inv_conn:
                 inv_backup_path = backup_path / "inventario.bak"
                 cursor = inv_conn.cursor()
-                cursor.execute(f"BACKUP DATABASE inventario TO DISK = '{inv_backup_path}'")
+                # Usar consulta parametrizada para prevenir SQL injection
+                cursor.execute("BACKUP DATABASE inventario TO DISK = ?", (str(inv_backup_path),))
                 cursor.close()
                 logger.debug("Inventario database backed up")
             
@@ -525,7 +526,8 @@ class BackupRecoveryManager:
             if users_conn:
                 users_backup_path = backup_path / "users.bak"
                 cursor = users_conn.cursor()
-                cursor.execute(f"BACKUP DATABASE users TO DISK = '{users_backup_path}'")
+                # Usar consulta parametrizada para prevenir SQL injection
+                cursor.execute("BACKUP DATABASE users TO DISK = ?", (str(users_backup_path),))
                 cursor.close()
                 logger.debug("Users database backed up")
             

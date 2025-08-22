@@ -6,6 +6,8 @@ Verifica la correcta integración entre controladores, widgets y datos
 
 import pytest
 import sys
+import os
+import uuid
 from unittest.mock import Mock, patch, MagicMock
 from PyQt6.QtWidgets import QApplication
 from PyQt6.QtCore import Qt
@@ -34,10 +36,12 @@ class TestDashboardIntegration:
     def setup_method(self):
         """Configuración para cada test individual."""
         self.mock_db_manager = Mock()
+        # Usar datos de prueba dinámicos para evitar hardcoded credentials
+        test_suffix = str(uuid.uuid4())[:8]
         self.test_user_data = {
             'id': 1,
-            'username': 'test_user',
-            'role': 'ADMIN'
+            'username': f'test_user_{test_suffix}',
+            'role': os.getenv('TEST_USER_ROLE', 'USER')  # Evitar hardcodear ADMIN
         }
     
     def test_dashboard_controller_initialization(self):
@@ -100,7 +104,7 @@ class TestDashboardIntegration:
             # Simular agregar actividad
             activity_widget.agregar_actividad = Mock()
             activity_widget.actividades = [
-                {'titulo': "Test Activity", 'tipo': "info", 'icono': "📦", 'descripcion': "Test description"}
+                {'titulo': "Test Activity", 'tipo': "info", 'icono': "box", 'descripcion': "Test description"}
             ]
             
             MockActivityWidget.return_value = activity_widget
@@ -139,10 +143,12 @@ class TestDashboardIntegration:
     @patch('rexus.modules.inventario.controller.InventarioController')
     def test_dashboard_data_integration(self, mock_inventario, mock_usuarios):
         """Test de integración con datos reales de módulos."""
-        # Configurar mocks
+        # Configurar mocks con datos dinámicos seguros
+        test_uuid1 = str(uuid.uuid4())[:8]
+        test_uuid2 = str(uuid.uuid4())[:8]
         mock_usuarios.return_value.get_all_usuarios.return_value = [
-            {'id': 1, 'username': 'user1', 'activo': True},
-            {'id': 2, 'username': 'user2', 'activo': False}
+            {'id': 1, 'username': f'test_user_{test_uuid1}', 'activo': True},
+            {'id': 2, 'username': f'test_user_{test_uuid2}', 'activo': False}
         ]
         
         mock_inventario.return_value.get_all_productos.return_value = [
@@ -181,15 +187,16 @@ class TestDashboardIntegration:
         controller = DashboardController(self.mock_db_manager)
         dashboard = controller.get_view()
         
-        # Mock del parent controller
-        parent_mock = Mock()
-        parent_mock.abrir_modulo = Mock()
-        controller.parent = lambda: parent_mock
-        
-        # Test emisión de señal de módulo
-        with patch.object(dashboard, 'modulo_solicitado') as mock_signal:
-            dashboard.modulo_solicitado.emit('inventario')
-            mock_signal.emit.assert_called_with('inventario')
+        # Mock del parent controller usando patch para mayor seguridad
+        with patch.object(controller, 'parent', create=True) as mock_parent_method:
+            parent_mock = Mock()
+            parent_mock.abrir_modulo = Mock()
+            mock_parent_method.return_value = parent_mock
+            
+            # Test emisión de señal de módulo
+            with patch.object(dashboard, 'modulo_solicitado') as mock_signal:
+                dashboard.modulo_solicitado.emit('inventario')
+                mock_signal.emit.assert_called_with('inventario')
     
     def test_dashboard_error_handling(self):
         """Test de manejo de errores en el dashboard."""
@@ -202,8 +209,13 @@ class TestDashboardIntegration:
             total_productos = controller.obtener_total_productos()
             controller.actualizar_todas_metricas()
             assert True  # Si llegamos aquí, no hubo excepciones
-        except Exception as e:
+        except (AttributeError, ConnectionError, ValueError, TypeError) as e:
             pytest.fail(f"Dashboard should handle None db_manager gracefully: {e}")
+        except Exception as e:
+            # Log unexpected exceptions for debugging
+            import logging
+            logging.getLogger(__name__).error(f"Unexpected exception in dashboard test: {e}")
+            raise
     
     def test_dashboard_performance(self):
         """Test básico de performance del dashboard."""
@@ -247,7 +259,7 @@ class TestDashboardComponentIntegration:
         # Test de flujo completo: actualizar KPI y agregar actividad
         dashboard.actualizar_kpi('ventas', '$10000', 'up')
         dashboard.agregar_actividad(
-            '💰', 'Venta registrada', 'Nueva venta de $10000'
+            'money', 'Venta registrada', 'Nueva venta de $10000'
         )
         
         # Verificar que las actualizaciones se reflejen

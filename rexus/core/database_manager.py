@@ -136,9 +136,10 @@ class DatabaseManager:
     def table_exists(self, table_name: str, database: str = None) -> bool:
         """Verifica si una tabla existe"""
         try:
-            query = f"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}'"
+            # Usar consulta parametrizada para prevenir SQL injection
+            query = "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?"
             
-            results = self.execute_query(query, database=database)
+            results = self.execute_query(query, (table_name,), database=database)
             return len(results) > 0
             
         except Exception as e:

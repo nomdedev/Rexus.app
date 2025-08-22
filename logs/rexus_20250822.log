@@ -4703,3 +4703,66 @@ TypeError: object of type 'Mock' has no len()
 2025-08-22 18:40:03 | INFO     | rexus.inventario.controller | Inicializando controlador completo de inventario
 2025-08-22 18:40:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-22 18:40:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 18:50:11 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 18:50:12 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 18:50:12 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 18:50:13 | DEBUG    | rexus.<Mock id='1898835742912'>.controller | Validando componentes del controlador <Mock id='1898835742912'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835742912'>.controller | Conexión de BD no disponible para <Mock id='1898835742912'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835742912'>.controller | Modelo no disponible para <Mock id='1898835742912'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835742912'>.controller | Vista no disponible para <Mock id='1898835742912'>
+2025-08-22 18:50:13 | INFO     | rexus.<Mock id='1898835742912'>.controller | Validación de componentes <Mock id='1898835742912'> completada
+2025-08-22 18:50:13 | ERROR    | rexus.<Mock id='1898835742912'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:13 | DEBUG    | rexus.<Mock id='1898835485568'>.controller | Validando componentes del controlador <Mock id='1898835485568'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835485568'>.controller | Conexión de BD no disponible para <Mock id='1898835485568'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835485568'>.controller | Modelo no disponible para <Mock id='1898835485568'>
+2025-08-22 18:50:13 | WARNING  | rexus.<Mock id='1898835485568'>.controller | Vista no disponible para <Mock id='1898835485568'>
+2025-08-22 18:50:13 | INFO     | rexus.<Mock id='1898835485568'>.controller | Validación de componentes <Mock id='1898835485568'> completada
+2025-08-22 18:50:13 | ERROR    | rexus.<Mock id='1898835485568'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:14 | DEBUG    | rexus.<Mock id='1898836532608'>.controller | Validando componentes del controlador <Mock id='1898836532608'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898836532608'>.controller | Conexión de BD no disponible para <Mock id='1898836532608'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898836532608'>.controller | Modelo no disponible para <Mock id='1898836532608'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898836532608'>.controller | Vista no disponible para <Mock id='1898836532608'>
+2025-08-22 18:50:14 | INFO     | rexus.<Mock id='1898836532608'>.controller | Validación de componentes <Mock id='1898836532608'> completada
+2025-08-22 18:50:14 | ERROR    | rexus.<Mock id='1898836532608'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:14 | DEBUG    | rexus.<Mock id='1898835875952'>.controller | Validando componentes del controlador <Mock id='1898835875952'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898835875952'>.controller | Conexión de BD no disponible para <Mock id='1898835875952'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898835875952'>.controller | Modelo no disponible para <Mock id='1898835875952'>
+2025-08-22 18:50:14 | WARNING  | rexus.<Mock id='1898835875952'>.controller | Vista no disponible para <Mock id='1898835875952'>
+2025-08-22 18:50:14 | INFO     | rexus.<Mock id='1898835875952'>.controller | Validación de componentes <Mock id='1898835875952'> completada
+2025-08-22 18:50:14 | ERROR    | rexus.<Mock id='1898835875952'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | DEBUG    | rexus.<Mock id='1898835984288'>.controller | Validando componentes del controlador <Mock id='1898835984288'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1898835984288'>.controller | Conexión de BD no disponible para <Mock id='1898835984288'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1898835984288'>.controller | Modelo no disponible para <Mock id='1898835984288'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1898835984288'>.controller | Vista no disponible para <Mock id='1898835984288'>
+2025-08-22 18:50:15 | INFO     | rexus.<Mock id='1898835984288'>.controller | Validación de componentes <Mock id='1898835984288'> completada
+2025-08-22 18:50:15 | ERROR    | rexus.<Mock id='1898835984288'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | DEBUG    | rexus.None.controller | Validando componentes del controlador None
+2025-08-22 18:50:15 | WARNING  | rexus.None.controller | Conexión de BD no disponible para None
+2025-08-22 18:50:15 | WARNING  | rexus.None.controller | Modelo no disponible para None
+2025-08-22 18:50:15 | WARNING  | rexus.None.controller | Vista no disponible para None
+2025-08-22 18:50:15 | INFO     | rexus.None.controller | Validación de componentes None completada
+2025-08-22 18:50:15 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:15 | DEBUG    | rexus.<Mock id='1899339043680'>.controller | Validando componentes del controlador <Mock id='1899339043680'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1899339043680'>.controller | Conexión de BD no disponible para <Mock id='1899339043680'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1899339043680'>.controller | Modelo no disponible para <Mock id='1899339043680'>
+2025-08-22 18:50:15 | WARNING  | rexus.<Mock id='1899339043680'>.controller | Vista no disponible para <Mock id='1899339043680'>
+2025-08-22 18:50:15 | INFO     | rexus.<Mock id='1899339043680'>.controller | Validación de componentes <Mock id='1899339043680'> completada
+2025-08-22 18:50:15 | ERROR    | rexus.<Mock id='1899339043680'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:18 | DEBUG    | rexus.<Mock id='1898835309136'>.controller | Validando componentes del controlador <Mock id='1898835309136'>
+2025-08-22 18:50:18 | WARNING  | rexus.<Mock id='1898835309136'>.controller | Conexión de BD no disponible para <Mock id='1898835309136'>
+2025-08-22 18:50:18 | WARNING  | rexus.<Mock id='1898835309136'>.controller | Modelo no disponible para <Mock id='1898835309136'>
+2025-08-22 18:50:18 | WARNING  | rexus.<Mock id='1898835309136'>.controller | Vista no disponible para <Mock id='1898835309136'>
+2025-08-22 18:50:18 | INFO     | rexus.<Mock id='1898835309136'>.controller | Validación de componentes <Mock id='1898835309136'> completada
+2025-08-22 18:50:18 | ERROR    | rexus.<Mock id='1898835309136'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 18:50:19 | DEBUG    | rexus.<Mock id='1898835977280'>.controller | Validando componentes del controlador <Mock id='1898835977280'>
+2025-08-22 18:50:19 | WARNING  | rexus.<Mock id='1898835977280'>.controller | Conexión de BD no disponible para <Mock id='1898835977280'>
+2025-08-22 18:50:19 | WARNING  | rexus.<Mock id='1898835977280'>.controller | Modelo no disponible para <Mock id='1898835977280'>
+2025-08-22 18:50:19 | WARNING  | rexus.<Mock id='1898835977280'>.controller | Vista no disponible para <Mock id='1898835977280'>
+2025-08-22 18:50:19 | INFO     | rexus.<Mock id='1898835977280'>.controller | Validación de componentes <Mock id='1898835977280'> completada
+2025-08-22 18:50:19 | ERROR    | rexus.<Mock id='1898835977280'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 19:03:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 19:08:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 19:08:47 | INFO     | rexus.inventario.model | Submódulos especializados cargados
+2025-08-22 19:08:47 | INFO     | rexus.vidrios.model | Sistema unificado de sanitización cargado
+2025-08-22 19:15:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-22 19:15:39 | INFO     | rexus           | Sistema de logging Rexus inicializado

@@ -7,6 +7,7 @@ Traduce queries SQLite a SQL Server automáticamente
 
 import re
 import logging
+import string
 from typing import Dict, Any, Optional
 
 try:
@@ -183,11 +184,15 @@ class SQLDialectTranslator:
                 table_name = table_match.group(1)
                 # Remover IF NOT EXISTS del CREATE TABLE
                 translated = re.sub(r'CREATE TABLE IF NOT EXISTS\s+', 'CREATE TABLE ', translated, flags=re.IGNORECASE)
-                # Envolver en bloque condicional SQL Server
-                translated = f"""IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}')
+                # Validar nombre de tabla antes de usar
+                if self._is_valid_table_name(table_name):
+                    # Envolver en bloque condicional SQL Server
+                    translated = f"""IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}')
 BEGIN
     {translated}
 END"""
+                else:
+                    raise ValueError(f"Invalid table name: {table_name}")
         
         # Tipos de datos
         type_mappings = {
@@ -211,6 +216,39 @@ END"""
         )
         
         return translated
+
+    def _is_valid_table_name(self, table_name: str) -> bool:
+        """
+        Valida que el nombre de tabla sea seguro para prevenir SQL injection.
+        
+        Args:
+            table_name: Nombre de tabla a validar
+            
+        Returns:
+            True si el nombre es válido
+        """
+        if not table_name or not isinstance(table_name, str):
+            return False
+            
+        # Solo permitir letras, números y guiones bajos
+        allowed_chars = string.ascii_letters + string.digits + '_'
+        if not all(c in allowed_chars for c in table_name):
+            return False
+            
+        # No debe empezar con número
+        if table_name[0].isdigit():
+            return False
+            
+        # Longitud razonable
+        if len(table_name) > 128:
+            return False
+            
+        # Lista negra de palabras clave SQL
+        sql_keywords = {'SELECT', 'INSERT', 'UPDATE', 'DELETE', 'DROP', 'CREATE', 'ALTER', 'EXEC', 'EXECUTE'}
+        if table_name.upper() in sql_keywords:
+            return False
+            
+        return True
     
     def translate_file_query(self, file_path: str) -> str:
         """Traduce una query desde archivo."""

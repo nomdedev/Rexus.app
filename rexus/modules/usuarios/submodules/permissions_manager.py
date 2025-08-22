@@ -10,6 +10,8 @@ Responsabilidades:
 """
 
 import logging
+import re
+from datetime import datetime
 from typing import Dict, Any, List
 from enum import Enum
 
@@ -47,6 +49,14 @@ class SystemModule(Enum):
     AUDITORIA = "auditoria"
     ADMINISTRACION = "administracion"
     CONFIGURACION = "configuracion"
+
+
+class UserRole(Enum):
+    """Roles seguros del sistema."""
+    VIEWER = "viewer"
+    OPERATOR = "operator"
+    SUPERVISOR = "supervisor"
+    ADMIN = "admin"
 
 
 class PermissionsManager:
@@ -209,7 +219,10 @@ usuario_id: int,
             if not self.db_connection:
                 return {'success': False, 'message': 'Sin conexión a base de datos'}
 
-            # Validar módulo y acción
+            # Sanitizar y validar módulo y acción
+            modulo = self._sanitize_input(modulo)
+            accion = self._sanitize_input(accion)
+            
             if not self._validar_modulo_accion(modulo, accion):
                 return {'success': False, 'message': 'Módulo o acción inválida'}
 
@@ -230,27 +243,23 @@ usuario_id: int,
             cursor.execute("""
                 SELECT COUNT(*) FROM permisos_usuarios
                 WHERE usuario_id = ? AND modulo = ? AND accion = ? AND activo = 1
-            """, (usuario_id, modulo.lower(), accion.lower()))
+            """, (usuario_id, modulo, accion))
 
             if cursor.fetchone()[0] > 0:
                 return {'success': True, 'message': 'El usuario ya tiene este permiso'}
 
             # Insertar permiso
             cursor.execute("""
-                INSERT INTO permisos_usuarios (usuario_id,
-modulo,
-                    accion,
-                    activo,
-                    created_at)
-                VALUES (?, ?, ?, 1, GETDATE())
-            """, (usuario_id, modulo.lower(), accion.lower()))
+                INSERT INTO permisos_usuarios (usuario_id, modulo, accion, activo, created_at)
+                VALUES (?, ?, ?, 1, ?)
+            """, (usuario_id, modulo, accion, datetime.now()))
 
             self.db_connection.commit()
 
-            logger.info("Permiso asignado: %s:%s a usuario %s",
-modulo,
-                accion,
-                usuario_id)
+            # Log de auditoría de seguridad
+            self._log_permission_change("ASSIGN", usuario_id, f"{modulo}:{accion}")
+            
+            logger.info("Permiso asignado: %s:%s a usuario %s", modulo, accion, usuario_id)
             return {'success': True, 'message': 'Permiso asignado correctamente'}
 
         except Exception as e:
@@ -287,27 +296,29 @@ usuario_id: int,
             if not self.db_connection:
                 return {'success': False, 'message': 'Sin conexión a base de datos'}
 
+            # Sanitizar entrada
+            modulo = self._sanitize_input(modulo)
+            accion = self._sanitize_input(accion)
+
             cursor = None
-
-
             cursor = self.db_connection.cursor()
 
             # Soft delete del permiso
             cursor.execute("""
                 UPDATE permisos_usuarios
-                SET activo = 0, updated_at = GETDATE()
+                SET activo = 0, updated_at = ?
                 WHERE usuario_id = ? AND modulo = ? AND accion = ? AND activo = 1
-            """, (usuario_id, modulo.lower(), accion.lower()))
+            """, (datetime.now(), usuario_id, modulo, accion))
 
             if cursor.rowcount == 0:
                 return {'success': False, 'message': 'Permiso no encontrado o ya revocado'}
 
             self.db_connection.commit()
 
-            logger.info("Permiso revocado: %s:%s de usuario %s",
-modulo,
-                accion,
-                usuario_id)
+            # Log de auditoría de seguridad
+            self._log_permission_change("REVOKE", usuario_id, f"{modulo}:{accion}")
+            
+            logger.info("Permiso revocado: %s:%s de usuario %s", modulo, accion, usuario_id)
             return {'success': True, 'message': 'Permiso revocado correctamente'}
 
         except Exception as e:
@@ -342,12 +353,13 @@ usuario_id: int,
             if not self.db_connection:
                 return {'success': False, 'message': 'Sin conexión a base de datos'}
 
-            # Validar rol
-            roles_validos = ['viewer', 'operator', 'supervisor', 'admin']
-            if nuevo_rol.lower() not in roles_validos:
+            # Sanitizar y validar rol usando enum seguro
+            nuevo_rol = self._sanitize_input(nuevo_rol)
+            if not self._validate_role(nuevo_rol):
+                valid_roles = [role.value for role in UserRole]
                 return {
                     'success': False,
-                    'message': f'Rol inválido. Roles válidos: {", ".join(roles_validos)}'
+                    'message': f'Rol inválido. Roles válidos: {", ".join(valid_roles)}'
                 }
 
             cursor = None
@@ -358,15 +370,18 @@ usuario_id: int,
             # Actualizar rol
             cursor.execute("""
                 UPDATE usuarios
-                SET rol = ?, updated_at = GETDATE()
+                SET rol = ?, updated_at = ?
                 WHERE id = ? AND activo = 1
-            """, (nuevo_rol.lower(), usuario_id))
+            """, (nuevo_rol, datetime.now(), usuario_id))
 
             if cursor.rowcount == 0:
                 return {'success': False, 'message': 'Usuario no encontrado'}
 
             self.db_connection.commit()
 
+            # Log de auditoría de seguridad
+            self._log_permission_change("ROLE_CHANGE", usuario_id, nuevo_rol)
+            
             logger.info("Rol cambiado a %s para usuario %s", nuevo_rol, usuario_id)
             return {"success": True, "message": "Rol cambiado a {}".format(nuevo_rol)}
 
@@ -424,6 +439,76 @@ usuario_id: int,
         """
         return self.default_permissions.get(rol.lower(), [])
 
+    def _sanitize_input(self, value: str) -> str:
+        """
+        Sanitiza entrada para prevenir ataques de inyección.
+        
+        Args:
+            value: Valor a sanitizar
+            
+        Returns:
+            Valor sanitizado
+            
+        Raises:
+            ValueError: Si la entrada es inválida
+        """
+        if not isinstance(value, str):
+            raise ValueError("Input must be string")
+        
+        # Remover caracteres peligrosos
+        sanitized = re.sub(r'[^\w\-]', '', value.strip())
+        if len(sanitized) > 50:  # Límite razonable
+            raise ValueError("Input too long")
+        if not sanitized:
+            raise ValueError("Input cannot be empty after sanitization")
+            
+        return sanitized.lower()
+
+    def _validate_role(self, role: str) -> bool:
+        """
+        Valida rol contra enumeración segura.
+        
+        Args:
+            role: Rol a validar
+            
+        Returns:
+            True si el rol es válido
+        """
+        try:
+            UserRole(role.lower())
+            return True
+        except ValueError:
+            return False
+
+    def _validate_input_length(self, value: str, max_length: int = 50) -> bool:
+        """
+        Valida longitud de entrada.
+        
+        Args:
+            value: Valor a validar
+            max_length: Longitud máxima permitida
+            
+        Returns:
+            True si la longitud es válida
+        """
+        return isinstance(value, str) and len(value.strip()) <= max_length
+
+    def _log_permission_change(self, action: str, user_id: int, permission: str, actor_id: int = None):
+        """
+        Registra cambios de permisos para auditoría de seguridad.
+        
+        Args:
+            action: Acción realizada (ASSIGN, REVOKE, ROLE_CHANGE)
+            user_id: ID del usuario objetivo
+            permission: Permiso o rol modificado
+            actor_id: ID del usuario que realiza la acción
+        """
+        audit_logger = logging.getLogger('security.audit')
+        audit_logger.info(
+            "PERMISSION_CHANGE: action=%s, target_user=%s, permission=%s, actor=%s, timestamp=%s",
+            action, user_id, permission, actor_id or 'SYSTEM', datetime.now().isoformat()
+        )
+
     def _validar_modulo_accion(self, modulo: str, accion: str) -> bool:
         """
         Valida que el módulo y acción sean válidos.
@@ -457,7 +542,7 @@ usuario_id: int,
                     modulo NVARCHAR(50) NOT NULL,
                     accion NVARCHAR(20) NOT NULL,
                     activo BIT DEFAULT 1,
-                    created_at DATETIME DEFAULT GETDATE(),
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
                     updated_at DATETIME NULL,
                     FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
                 )

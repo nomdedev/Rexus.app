@@ -647,3 +647,13 @@ Traceback (most recent call last):
   File "D:\martin\Rexus.app\rexus\modules\inventario\controller.py", line 356, in cargar_inventario_paginado
     total = len(productos)
 TypeError: object of type 'Mock' has no len()
+2025-08-22 19:15:25 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:25 - rexus.core.database_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:25 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
+2025-08-22 19:15:25 - rexus.core.database_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:25 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
+2025-08-22 19:15:40 - rexus - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
+2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m - Sistema de logging inicializado
+2025-08-22 19:15:40 - rexus.core.database_manager - [32mINFO[0m[0m - Sistema de logging inicializado
