@@ -1,5 +1,6 @@
 -- Crear tabla pedidos_detalle (SQL Server)
 IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'pedidos_detalle')
+BEGIN
 CREATE TABLE pedidos_detalle (
     id INT IDENTITY(1,1) PRIMARY KEY,
     pedido_id INT NOT NULL,
@@ -17,3 +18,4 @@ CREATE TABLE pedidos_detalle (
     fecha_creacion DATETIME2 NOT NULL DEFAULT GETDATE(),
     FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
 );
+END

@@ -103,3 +103,21 @@
 2025-08-22 12:38:53 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
 2025-08-22 12:40:06 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
 2025-08-22 12:40:07 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 12:46:34 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 12:46:34 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 12:46:40 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 12:46:43 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 13:02:24 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-22 13:02:24 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-22 13:03:00 | INFO     | rexus.security  | Creando MainWindow para usuario: admin
+2025-08-22 13:03:03 | INFO     | rexus.security  | Aplicación iniciada para admin
+2025-08-22 13:31:23 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 13:31:23 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 13:41:31 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 13:41:31 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 13:44:54 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 13:44:54 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 17:58:17 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 17:58:17 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 17:58:46 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-22 17:58:46 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser

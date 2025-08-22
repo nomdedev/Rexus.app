@@ -1,4 +1,5 @@
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pedidos' AND xtype='U')
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'pedidos')
+BEGIN
 CREATE TABLE pedidos (
     id INT IDENTITY(1,1) PRIMARY KEY,
     numero_pedido NVARCHAR(50) UNIQUE NOT NULL,
@@ -26,3 +27,4 @@ CREATE TABLE pedidos (
     fecha_modificacion DATETIME NOT NULL DEFAULT GETDATE(),
     activo BIT NOT NULL DEFAULT 1
 );
+END

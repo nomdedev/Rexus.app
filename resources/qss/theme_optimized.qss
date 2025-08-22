@@ -10,13 +10,13 @@ QMainWindow {
     }
 QPushButton {
     background-color: #3b82f6;
-    border-radius: 8px;
+    border-radius: 6px;
     border: none;
     color: #FFFFFF;
-    font-size: 14px;
-    font-weight: 600;
-    min-height: 36px;
-    padding: 8px 16px;
+    font-size: 13px;
+    font-weight: 500;
+    min-height: 28px;
+    padding: 6px 12px;
     }
 QPushButton:hover, QCheckBox::indicator:checked:pressed {
     background-color: #2563eb;
@@ -30,12 +30,12 @@ QPushButton:disabled {
     }
 QLineEdit {
     background-color: #FFFFFF;
-    border-radius: 6px;
+    border-radius: 4px;
     border: 1px solid #e5e7eb;
     color: #374151;
-    font-size: 14px;
-    min-height: 20px;
-    padding: 8px 12px;
+    font-size: 13px;
+    min-height: 18px;
+    padding: 6px 10px;
     }
 QLineEdit:focus {
     border-color: #3b82f6;
@@ -47,8 +47,8 @@ QLineEdit:disabled {
     }
 QLabel {
     color: #374151;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 400;
     }
 QTableWidget {
     background-color: #FFFFFF;
@@ -59,7 +59,7 @@ QTableWidget {
     }
 QTableWidget::item {
     border-bottom: 1px solid #f3f4f6;
-    padding: 8px;
+    padding: 6px;
     }
 QTableWidget::item:selected {
     background-color: #dbeafe;
@@ -70,8 +70,9 @@ QHeaderView::section {
     border-radius: 0px;
     border: 1px solid #e5e7eb;
     color: #374151;
-    font-weight: 600;
-    padding: 8px;
+    font-weight: 500;
+    padding: 6px;
+    font-size: 12px;
     }
 QScrollBar:vertical {
     background-color: #f3f4f6;
@@ -196,6 +197,43 @@ QToolTip {
     border-bottom: 1px solid #e5e7eb;
     padding: 12px 16px;
     }
+/* TAMAÑOS COMPACTOS PARA MÓDULOS */
+QGroupBox {
+    font-weight: 500;
+    font-size: 13px;
+    padding-top: 15px;
+    margin-top: 5px;
+}
+
+QGroupBox::title {
+    subcontrol-origin: margin;
+    left: 10px;
+    padding: 0 5px 0 5px;
+}
+
+QComboBox {
+    padding: 5px 8px;
+    font-size: 13px;
+    min-height: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+QSpinBox, QDoubleSpinBox {
+    padding: 5px 8px;
+    font-size: 13px;
+    min-height: 18px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
+QTextEdit {
+    font-size: 13px;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+}
+
 /* SIDEBAR - COLORES FIJOS (NO DEPENDEN DEL TEMA) */
 .sidebar, QWidget[class~="sidebar"] {
     background-color: #2563eb !important;  /* Azul fijo */

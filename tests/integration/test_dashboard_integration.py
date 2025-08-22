@@ -77,8 +77,9 @@ class TestDashboardIntegration:
         chart_widget = ChartWidget("line")
         
         assert chart_widget.tipo_chart == "line"
-        assert chart_widget.datos == []
-        assert chart_widget.labels == []
+        # El widget carga datos de ejemplo por defecto
+        assert len(chart_widget.datos) > 0
+        assert len(chart_widget.labels) > 0
         
         # Test actualización de datos
         nuevos_datos = [10, 20, 30, 40, 50]

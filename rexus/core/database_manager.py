@@ -8,10 +8,17 @@ import logging
 import pyodbc
 import sqlite3
 from typing import Optional, Dict, Any, List, Tuple
-from .database import DatabaseConnection
-from .logger import setup_logger
+from .database import get_inventario_connection, get_users_connection
+try:
+    from .logger import setup_logger
+    logger = setup_logger(__name__)
+except ImportError:
+    # Fallback logging
+    import logging
+    logging.basicConfig(level=logging.INFO)
+    logger = logging.getLogger(__name__)
 
-logger = setup_logger(__name__)
+logger.info("Sistema de logging inicializado")
 
 class DatabaseManager:
     """Administrador centralizado de bases de datos para Rexus.app"""
@@ -19,14 +26,19 @@ class DatabaseManager:
     def __init__(self):
         self.connections = {}
         self.current_connection = None
-        self.config = DatabaseConnection()
         logger.info("DatabaseManager inicializado")
     
     def get_connection(self, database_name: str = None) -> Optional[pyodbc.Connection]:
         """Obtiene una conexión a la base de datos especificada"""
         try:
             if database_name is None:
-                database_name = self.config.database or "inventario"
+                database_name = "inventario"
+            
+            # Usar funciones específicas de la base
+            if database_name == "users":
+                return get_users_connection()
+            else:
+                return get_inventario_connection()
             
             if database_name in self.connections:
                 return self.connections[database_name]

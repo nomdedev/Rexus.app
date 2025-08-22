@@ -388,8 +388,13 @@ class MainWindow(QMainWindow):
 
     def _init_ui(self):
         self.setWindowTitle("Rexus.app v2.0.0 - Sistema de Gestión Integral")
-        # Configurar para iniciar en fullscreen maximizado
-        self.showMaximized()
+        
+        # Configurar ventana con tamaño mínimo
+        self.setMinimumSize(1024, 768)
+        
+        # Configurar para iniciar maximizado de forma más robusta
+        from PyQt6.QtCore import QTimer
+        QTimer.singleShot(100, self.showMaximized)
 
         # Widget central
         central_widget = QWidget()
@@ -463,7 +468,33 @@ class MainWindow(QMainWindow):
         # Scroll area para módulos
         scroll = QScrollArea()
         scroll.setWidgetResizable(True)
-        scroll.setStyleSheet("QScrollArea { border: none; background: transparent; }")
+        scroll.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll.setStyleSheet("""
+            QScrollArea { 
+                border: none; 
+                background: transparent; 
+            }
+            QScrollBar:vertical {
+                background-color: rgba(255, 255, 255, 0.2);
+                width: 12px;
+                border-radius: 6px;
+                margin: 2px;
+            }
+            QScrollBar::handle:vertical {
+                background-color: rgba(255, 255, 255, 0.6);
+                border: 1px solid rgba(255, 255, 255, 0.8);
+                border-radius: 6px;
+                min-height: 30px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background-color: rgba(255, 255, 255, 0.8);
+                border-color: #ffffff;
+            }
+            QScrollBar::add-line:vertical, QScrollBar::sub-line:vertical {
+                height: 0px;
+            }
+        """)
 
         modules_widget = QWidget()
         modules_layout = QVBoxLayout(modules_widget)
@@ -538,24 +569,27 @@ class MainWindow(QMainWindow):
             """
 QPushButton {
     text-align: left;
-    padding: 8px 16px;
-    border: none;
+    padding: 10px 16px;
+    border: 2px solid #1e40af !important;
     font-size: 13px;
-    font-weight: 500;
-    background-color: rgba(255, 255, 255, 0.2) !important;
+    font-weight: 600;
+    background-color: #3b82f6 !important;
     color: #ffffff !important;
-    border-radius: 6px;
-    margin: 2px 8px;
-    max-height: 36px;
-    min-height: 36px;
+    border-radius: 8px;
+    margin: 3px 8px;
+    max-height: 40px;
+    min-height: 40px;
 }
 QPushButton:hover {
     background-color: #1d4ed8 !important;
+    border-color: #1e3a8a !important;
     color: #ffffff !important;
     font-weight: bold;
+    transform: none;
 }
 QPushButton:pressed {
     background-color: #1e40af !important;
+    border-color: #1e3a8a !important;
     color: #ffffff !important;
 }
             """
@@ -1655,7 +1689,7 @@ text,
             from rexus.core.database import InventarioDatabaseConnection
             from rexus.modules.obras.controller import ObrasController
             from rexus.modules.obras.model import ObrasModel
-            from rexus.modules.obras.view import ObrasView
+            from rexus.modules.obras.view import ObrasModernView as ObrasView
 
             # Crear conexión a la base de datos
             try:

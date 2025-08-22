@@ -1015,3 +1015,298 @@ TypeError: ConsultasManager.obtener_productos_paginados_inicial() takes from 1 t
 2025-08-22 12:30:40 | ERROR    | rexus.core.module_manager | [Auditoria] Error cargando datos iniciales: 'charmap' codec can't encode characters in position 0-1: character maps to <undefined>
 2025-08-22 12:40:07 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
 2025-08-22 12:40:07 | ERROR    | rexus.main      | Error creando dashboard moderno: 'charmap' codec can't encode character '\U0001f3e0' in position 7: character maps to <undefined>
+2025-08-22 12:46:41 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:03:03 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:03:15 | ERROR    | rexus.inventario.model | [INVENTARIO] Tabla principal 'inventario_perfiles' verificada correctamente.
+2025-08-22 13:03:15 | ERROR    | rexus.main      | Error crítico creando inventario: Error creando vista: 'InventarioView' object has no attribute 'search_btn'
+2025-08-22 13:03:33 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:03:33 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:03:33 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:03:33 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:03:33 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:04:03 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:04:03 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:04:03 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:04:03 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:04:03 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:04:33 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:04:33 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:04:33 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:04:33 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:04:33 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:05:03 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:05:03 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:05:03 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:05:03 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:05:03 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:05:33 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:05:33 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:05:33 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:05:33 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:05:33 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:05:57 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 13:05:57 | ERROR    | rexus.pedidos.controller | Error en pedidos: Error cargando pedidos: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'cantidad_entregada'. (207); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator. (306)")
+2025-08-22 13:05:59 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:05:59 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:06:00 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:06:00 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:06:02 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:06:02 | ERROR    | rexus.compras.model | Error obteniendo estadísticas: ('42S22', "[42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Invalid column name 'descuento'. (207) (SQLExecDirectW); [42S22] [Microsoft][ODBC Driver 17 for SQL Server][SQL Server]Cannot perform an aggregate function on an expression containing an aggregate or a subquery. (130)")
+2025-08-22 13:06:03 | ERROR    | rexus.None.controller | Error actualizando KPIs: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:06:03 | ERROR    | rexus.None.controller | Error actualizando header: wrapped C/C++ object of type QLabel has been deleted
+2025-08-22 13:06:03 | ERROR    | rexus.None.controller | Error actualizando métricas de módulos: wrapped C/C++ object of type MainDashboard has been deleted
+2025-08-22 13:06:03 | ERROR    | rexus.None.controller | Error actualizando gráficos: wrapped C/C++ object of type ChartWidget has been deleted
+2025-08-22 13:06:03 | ERROR    | rexus.None.controller | Error actualizando actividad: wrapped C/C++ object of type QVBoxLayout has been deleted
+2025-08-22 13:06:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Conexión a base de datos no disponible
+2025-08-22 13:06:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener registros
+2025-08-22 13:06:05 | ERROR    | rexus.modules.auditoria.model | [ERROR AUDITORÍA] Sin conexión a BD para obtener estadísticas
+2025-08-22 13:31:09 | ERROR    | rexus.<Mock id='1944921418160'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:09 | ERROR    | rexus.<Mock id='1944921347776'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:10 | ERROR    | rexus.<Mock id='1944921351136'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:10 | ERROR    | rexus.<Mock id='1944921995104'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:11 | ERROR    | rexus.<Mock id='1944922158128'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:11 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:11 | ERROR    | rexus.<Mock id='1944920863504'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:15 | ERROR    | rexus.<Mock id='1945408013408'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:16 | ERROR    | rexus.<Mock id='1945408061344'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:31:23 - rexus.configuracion.controller - [31mERROR[0m - [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:31:23 - rexus.configuracion.controller - [31mERROR[0m - [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:31:23 - rexus.usuarios.controller - [31mERROR[0m - Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 13:31:23 - rexus.usuarios.controller - [31mERROR[0m - Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 13:31:23 - rexus.usuarios.controller - [31mERROR[0m - Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 13:31:23 - rexus.usuarios.controller - [31mERROR[0m - Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 13:34:59 | ERROR    | rexus.<Mock id='2665888360880'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:34:59 | ERROR    | rexus.<Mock id='2665888328832'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:23 | ERROR    | rexus.<Mock id='2878637266000'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:23 | ERROR    | rexus.<Mock id='2878637228864'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:24 | ERROR    | rexus.<Mock id='2878620093072'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:24 | ERROR    | rexus.<Mock id='2878619843264'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:25 | ERROR    | rexus.<Mock id='2879123557776'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:25 | ERROR    | rexus.None.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:25 | ERROR    | rexus.<Mock id='2878637241584'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:29 | ERROR    | rexus.<Mock id='2878620097536'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:36:29 | ERROR    | rexus.<Mock id='2879123562192'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-22 13:41:30 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:41:30 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:41:31 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 13:41:31 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 13:41:31 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 13:41:31 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error actualizando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error eliminando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'Mock' object is not subscriptable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error obteniendo vidrio por ID: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:24 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-22 13:44:25 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:25 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios por obra: 'Mock' object is not iterable
+2025-08-22 13:44:25 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:25 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 13:44:54 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:44:54 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 13:44:54 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 13:44:54 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 13:44:54 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 13:44:54 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 14:53:55 | ERROR    | rexus.compras.controller | Error actualizando estado: arguments did not match any overloaded call:
+  QMessageBox(parent: Optional[QWidget] = None): argument 1 has unexpected type 'Mock'
+  QMessageBox(icon: QMessageBox.Icon, title: Optional[str], text: Optional[str], buttons: QMessageBox.StandardButton = QMessageBox.NoButton, parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.Dialog|Qt.MSWindowsFixedSizeDialogHint): argument 1 has unexpected type 'Mock'
+2025-08-22 14:53:55 | ERROR    | rexus.compras.controller | Error creando orden: 'fecha_pedido'
+2025-08-22 17:33:29 | ERROR    | rexus.compras.controller | Error actualizando estado: arguments did not match any overloaded call:
+  QMessageBox(parent: Optional[QWidget] = None): argument 1 has unexpected type 'Mock'
+  QMessageBox(icon: QMessageBox.Icon, title: Optional[str], text: Optional[str], buttons: QMessageBox.StandardButton = QMessageBox.NoButton, parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.Dialog|Qt.MSWindowsFixedSizeDialogHint): argument 1 has unexpected type 'Mock'
+2025-08-22 17:33:29 | ERROR    | rexus.compras.controller | Error creando orden: 'fecha_pedido'
+2025-08-22 17:37:20 | ERROR    | rexus.compras.controller | Error actualizando estado: arguments did not match any overloaded call:
+  QMessageBox(parent: Optional[QWidget] = None): argument 1 has unexpected type 'Mock'
+  QMessageBox(icon: QMessageBox.Icon, title: Optional[str], text: Optional[str], buttons: QMessageBox.StandardButton = QMessageBox.NoButton, parent: Optional[QWidget] = None, flags: Qt.WindowType = Qt.Dialog|Qt.MSWindowsFixedSizeDialogHint): argument 1 has unexpected type 'Mock'
+2025-08-22 17:37:20 | ERROR    | rexus.compras.controller | Error creando orden: 'fecha_pedido'
+2025-08-22 17:37:20 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:38:35 | ERROR    | rexus.compras.controller | Error creando orden: 'fecha_pedido'
+2025-08-22 17:38:58 | ERROR    | rexus.compras.controller | Error calculando estadísticas: object of type 'Mock' has no len()
+2025-08-22 17:38:58 | ERROR    | rexus.compras.controller | Error en búsqueda: object of type 'Mock' has no len()
+2025-08-22 17:38:58 | ERROR    | rexus.compras.controller | Error creando orden: 'fecha_entrega_estimada'
+2025-08-22 17:38:58 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:39:48 | ERROR    | rexus.compras.controller | Error creando orden: 'estado'
+2025-08-22 17:39:48 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:40:38 | ERROR    | rexus.compras.controller | Error creando orden: 'descuento'
+2025-08-22 17:41:03 | ERROR    | rexus.compras.controller | Error creando orden: 'impuestos'
+2025-08-22 17:41:03 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:41:42 | ERROR    | rexus.compras.controller | Error creando orden: 'impuestos'
+2025-08-22 17:41:42 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:41:53 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:53:11 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:57:44 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:58:06 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 17:58:06 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 17:58:17 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:58:17 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:17 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:17 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error actualizando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error eliminando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'Mock' object is not subscriptable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error obteniendo vidrio por ID: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios por obra: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:27 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:41 | ERROR    | rexus.compras.controller | Error creando orden: 'impuestos'
+2025-08-22 17:58:41 | ERROR    | rexus.compras.controller | Error cargando datos iniciales: Error de base de datos
+2025-08-22 17:58:43 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:58:44 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 17:58:44 | ERROR    | rexus.configuracion.controller | [ERROR CONFIGURACION CONTROLLER] Error cargando configuraciones: object of type 'Mock' has no len()
+2025-08-22 17:58:46 | ERROR    | rexus.usuarios.controller | Error inesperado cargando usuarios: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 133, in cargar_usuarios
+    self.logger.info(f"Cargados {len(usuarios)} usuarios")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 17:58:46 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 415, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con username vacío")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:46 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:46 | ERROR    | rexus.usuarios.controller | Error autenticando usuario: name 'logger' is not defined
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\usuarios\controller.py", line 443, in autenticar_usuario
+    logger.warning(f"[SECURITY] Intento de login con usuario inexistente: {username}")
+NameError: name 'logger' is not defined
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error actualizando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error eliminando vidrio: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:47 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error obteniendo estadísticas: 'Mock' object is not subscriptable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error obteniendo vidrio por ID: 'UnifiedDataSanitizer' object has no attribute 'sanitize_integer'
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios: 'SQLQueryManager' object has no attribute 'ejecutar_consulta_archivo'
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error obteniendo vidrios por obra: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 17:58:48 | ERROR    | rexus.vidrios.model | Error verificando tablas: 'Mock' object is not iterable
+2025-08-22 18:00:10 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()
+2025-08-22 18:01:19 | ERROR    | rexus.obras.controller | Error cargando obras: object of type 'Mock' has no len()
+Traceback (most recent call last):
+  File "D:\martin\Rexus.app\rexus\modules\obras\controller.py", line 199, in cargar_obras
+    logger.info(f"Cargadas {len(obras)} obras exitosamente")
+TypeError: object of type 'Mock' has no len()

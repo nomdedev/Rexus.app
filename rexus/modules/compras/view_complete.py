@@ -547,10 +547,11 @@ class ComprasViewComplete(BaseModuleView):
         titulo = QLabel("🛒 Gestión de Compras y Órdenes")
         titulo.setStyleSheet("""
             QLabel {
-                font-size: 24px;
+                font-size: 16px;
                 font-weight: bold;
-                color: #8b5cf6;
-                padding: 10px;
+                color: #374151;
+                padding: 8px;
+                margin-bottom: 4px;
             }
         """)
 
@@ -666,11 +667,11 @@ class ComprasViewComplete(BaseModuleView):
             metric_layout = QVBoxLayout(metric_frame)
 
             nombre_label = QLabel(nombre)
-            nombre_label.setStyleSheet("font-size: 12px; font-weight: bold;")
+            nombre_label.setStyleSheet("font-size: 11px; font-weight: 500;")
             nombre_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             valor_label = QLabel(valor)
-            valor_label.setStyleSheet(f"font-size: 18px; font-weight: bold; color: {color};")
+            valor_label.setStyleSheet(f"font-size: 14px; font-weight: bold; color: {color};")
             valor_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
 
             metric_layout.addWidget(nombre_label)
@@ -694,45 +695,65 @@ class ComprasViewComplete(BaseModuleView):
         self.btn_actualizar.clicked.connect(self.cargar_compras)
 
     def aplicar_estilos(self):
-        """Aplica estilos modernos."""
-        # style_manager ya está importado globalmente
-
-        self.setStyleSheet(f"""
-            QGroupBox {{
-                font-weight: bold;
-                border: 2px solid #d1d5db;
-                border-radius: 8px;
-                margin-top: 1ex;
-                padding-top: 10px;
-            }}
-            QGroupBox::title {{
+        """Aplica estilos modernos compatibles con el diseño estándar."""
+        self.setStyleSheet("""
+            QGroupBox {
+                font-weight: 500;
+                font-size: 13px;
+                border: 1px solid #e5e7eb;
+                border-radius: 6px;
+                margin-top: 8px;
+                padding-top: 12px;
+            }
+            QGroupBox::title {
                 subcontrol-origin: margin;
                 left: 10px;
-                padding: 0 10px 0 10px;
-            }}
-            QPushButton {{
+                padding: 0 5px 0 5px;
+            }
+            QPushButton {
                 background-color: #3b82f6;
                 color: white;
                 border: none;
-                border-radius: 6px;
-                padding: 8px 16px;
-                font-weight: bold;
-                min-height: 20px;
-            }}
-            QPushButton:hover {{
+                border-radius: 4px;
+                padding: 6px 12px;
+                font-size: 13px;
+                font-weight: 500;
+                min-height: 18px;
+                max-height: 28px;
+            }
+            QPushButton:hover {
                 background-color: #2563eb;
-            }}
-            QTableWidget {{
-                gridline-color: #d1d5db;
+            }
+            QPushButton:pressed {
+                background-color: #1d4ed8;
+            }
+            QComboBox {
+                padding: 5px 8px;
+                font-size: 13px;
+                min-height: 18px;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
+            }
+            QLineEdit {
+                padding: 5px 8px;
+                font-size: 13px;
+                min-height: 18px;
+                border: 1px solid #e5e7eb;
+                border-radius: 4px;
+            }
+            QTableWidget {
+                gridline-color: #e5e7eb;
+                font-size: 13px;
                 selection-background-color: #dbeafe;
                 alternate-background-color: #f9fafb;
-            }}
-            QComboBox, QLineEdit {{
-                border: 2px solid #d1d5db;
-                border-radius: 6px;
+            }
+            QHeaderView::section {
+                background-color: #f3f4f6;
+                border: 1px solid #e5e7eb;
                 padding: 6px;
-                min-height: 16px;
-            }}
+                font-size: 12px;
+                font-weight: 500;
+            }
         """)
 
     @auth_required

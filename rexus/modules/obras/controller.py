@@ -53,8 +53,17 @@ class ObrasController(QObject):
                 from .model import ObrasModel
                 self.model = ObrasModel(db_connection=self.db_connection)
                 logger.info("Modelo de obras creado automáticamente")
+            except ImportError as ie:
+                logger.error(f"Error importando modelo de obras: {ie}")
             except Exception as e:
                 logger.error(f"Error creando modelo de obras: {e}")
+                # Intentar crear modelo sin conexión específica
+                try:
+                    from .model import ObrasModel
+                    self.model = ObrasModel()
+                    logger.info("Modelo de obras creado con conexión automática")
+                except Exception as e2:
+                    logger.error(f"Error final creando modelo: {e2}")
         
         # Validar y conectar componentes de forma segura
         self._validate_components()

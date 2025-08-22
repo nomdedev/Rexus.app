@@ -903,11 +903,11 @@ categoria_origen: str,
         """Verifica si existe una tabla independiente de categorías."""
         try:
             cursor = self.db_connection.cursor()
-            cursor.execute(f"""
+            cursor.execute("""
                 SELECT COUNT(*)
                 FROM INFORMATION_SCHEMA.TABLES
-                WHERE TABLE_NAME = '{TABLA_CATEGORIAS}'
-            """)
+                WHERE TABLE_NAME = ?
+            """, (TABLA_CATEGORIAS,))
 
             exists = cursor.fetchone()[0] > 0
             cursor.close()

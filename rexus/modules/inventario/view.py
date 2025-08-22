@@ -34,7 +34,28 @@ class InventarioView(BaseModuleView):
         self.setup_ui()
         
     def setup_ui(self):
-        """Configura la interfaz principal."""
+        """Configura la interfaz principal con scroll automático."""
+        # Layout principal sin márgenes
+        main_layout = QVBoxLayout(self)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Scroll area para las pestañas
+        scroll_area = QScrollArea()
+        scroll_area.setWidgetResizable(True)
+        scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        scroll_area.setStyleSheet("""
+            QScrollArea {
+                border: none;
+                background-color: transparent;
+            }
+        """)
+        
+        # Widget contenedor para las pestañas
+        tabs_container = QWidget()
+        tabs_layout = QVBoxLayout(tabs_container)
+        tabs_layout.setContentsMargins(8, 8, 8, 8)
+        
         # Widget de pestañas principal
         self.tabs = QTabWidget()
         
@@ -54,7 +75,12 @@ class InventarioView(BaseModuleView):
         self.tab_reportes = self.crear_tab_reportes()
         self.tabs.addTab(self.tab_reportes, "📋 Reportes")
         
-        self.add_to_main_content(self.tabs)
+        tabs_layout.addWidget(self.tabs)
+        
+        # Configurar scroll
+        scroll_area.setWidget(tabs_container)
+        main_layout.addWidget(scroll_area)
+        
         self.apply_theme()
     
     def crear_tab_materiales(self):

@@ -45,14 +45,45 @@ class BaseModuleView(QWidget):
         self.apply_styles()
 
     def setup_ui(self):
-        """Configura la interfaz usuario estándar"""
+        """Configura la interfaz usuario estándar con scroll automático"""
+        # Layout principal de la vista
         main_layout = QVBoxLayout(self)
-        main_layout.setContentsMargins(16, 16, 16, 16)
-        main_layout.setSpacing(16)
+        main_layout.setContentsMargins(0, 0, 0, 0)
+        
+        # Scroll area para todo el contenido del módulo
+        self.scroll_area = QScrollArea()
+        self.scroll_area.setWidgetResizable(True)
+        self.scroll_area.setHorizontalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAlwaysOff)
+        self.scroll_area.setVerticalScrollBarPolicy(Qt.ScrollBarPolicy.ScrollBarAsNeeded)
+        self.scroll_area.setStyleSheet("""
+            QScrollArea {
+                border: none;
+                background-color: transparent;
+            }
+            QScrollBar:vertical {
+                background-color: #f3f4f6;
+                width: 10px;
+                border-radius: 5px;
+            }
+            QScrollBar::handle:vertical {
+                background-color: #d1d5db;
+                border-radius: 5px;
+                min-height: 20px;
+            }
+            QScrollBar::handle:vertical:hover {
+                background-color: #9ca3af;
+            }
+        """)
+        
+        # Widget contenedor del scroll
+        scroll_content = QWidget()
+        scroll_layout = QVBoxLayout(scroll_content)
+        scroll_layout.setContentsMargins(16, 16, 16, 16)
+        scroll_layout.setSpacing(16)
 
         # Header del módulo
         header_widget = self.create_header()
-        main_layout.addWidget(header_widget)
+        scroll_layout.addWidget(header_widget)
 
         # Área principal con splitter
         splitter = QSplitter(Qt.Orientation.Horizontal)
@@ -69,11 +100,15 @@ class BaseModuleView(QWidget):
         splitter.setStretchFactor(0, 2)  # Lista ocupa 2/3
         splitter.setStretchFactor(1, 1)  # Detalles ocupa 1/3
 
-        main_layout.addWidget(splitter, 1)
+        scroll_layout.addWidget(splitter, 1)
 
         # Footer con información/progreso
         footer_widget = self.create_footer()
-        main_layout.addWidget(footer_widget)
+        scroll_layout.addWidget(footer_widget)
+        
+        # Configurar el scroll
+        self.scroll_area.setWidget(scroll_content)
+        main_layout.addWidget(self.scroll_area)
 
     def create_header(self) -> QWidget:
         """Crea el header estándar del módulo"""
@@ -329,22 +364,31 @@ class BaseModuleView(QWidget):
 
     def setup_connections(self):
         """Configura las conexiones de señales estándar"""
-        # Búsqueda
-        self.search_btn.clicked.connect(self.perform_search)
-        self.search_input.returnPressed.connect(self.perform_search)
+        # Búsqueda - solo si los widgets existen
+        if hasattr(self, 'search_btn') and self.search_btn:
+            self.search_btn.clicked.connect(self.perform_search)
+        if hasattr(self, 'search_input') and self.search_input:
+            self.search_input.returnPressed.connect(self.perform_search)
 
-        # Acciones principales
-        self.new_btn.clicked.connect(self.create_new_item)
-        self.refresh_btn.clicked.connect(self.refresh_data)
+        # Acciones principales - solo si los widgets existen
+        if hasattr(self, 'new_btn') and self.new_btn:
+            self.new_btn.clicked.connect(self.create_new_item)
+        if hasattr(self, 'refresh_btn') and self.refresh_btn:
+            self.refresh_btn.clicked.connect(self.refresh_data)
 
-        # Tabla
-        self.main_table.itemSelectionChanged.connect(self.on_selection_changed)
+        # Tabla - solo si existe
+        if hasattr(self, 'main_table') and self.main_table:
+            self.main_table.itemSelectionChanged.connect(self.on_selection_changed)
 
-        # Controles de detalle
-        self.edit_btn.clicked.connect(self.enter_edit_mode)
-        self.delete_btn.clicked.connect(self.delete_item)
-        self.cancel_btn.clicked.connect(self.cancel_edit)
-        self.save_btn.clicked.connect(self.save_item)
+        # Controles de detalle - solo si existen
+        if hasattr(self, 'edit_btn') and self.edit_btn:
+            self.edit_btn.clicked.connect(self.enter_edit_mode)
+        if hasattr(self, 'delete_btn') and self.delete_btn:
+            self.delete_btn.clicked.connect(self.delete_item)
+        if hasattr(self, 'cancel_btn') and self.cancel_btn:
+            self.cancel_btn.clicked.connect(self.cancel_edit)
+        if hasattr(self, 'save_btn') and self.save_btn:
+            self.save_btn.clicked.connect(self.save_item)
 
     def cleanup_connections(self):
         """Limpia las conexiones de señales para evitar memory leaks."""
@@ -668,9 +712,25 @@ class BaseModuleView(QWidget):
 
     def add_to_main_content(self, widget_or_layout):
         """
-        Agrega un widget o layout al contenido principal del módulo.
+        Agrega un widget o layout al contenido principal del módulo con scroll.
         """
         try:
+            # Si existe el scroll_area, agregar al contenido del scroll
+            if hasattr(self, 'scroll_area') and self.scroll_area:
+                scroll_widget = self.scroll_area.widget()
+                if scroll_widget:
+                    scroll_layout = scroll_widget.layout()
+                    if scroll_layout:
+                        # Verificar si es un QLayout
+                        from PyQt6.QtWidgets import QLayout
+                        if isinstance(widget_or_layout, QLayout):
+                            scroll_layout.addLayout(widget_or_layout)
+                        else:
+                            # Es un widget (incluyendo QSplitter)
+                            scroll_layout.addWidget(widget_or_layout)
+                        return
+            
+            # Fallback al comportamiento anterior
             main_layout = self.layout()
             if main_layout is None:
                 main_layout = QVBoxLayout(self)
@@ -684,4 +744,3 @@ class BaseModuleView(QWidget):
                 main_layout.addWidget(widget_or_layout)
         except Exception as e:
             print(f"[WARNING] Error en add_to_main_content: {e}")
-            # Fallback básico
