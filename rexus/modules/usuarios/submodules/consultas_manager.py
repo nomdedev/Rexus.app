@@ -10,11 +10,7 @@ Responsabilidades:
 """
 
 import datetime
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
@@ -32,7 +28,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -118,48 +114,7 @@ class ConsultasManager:
             return usuarios
 
         except Exception as e:
-            self.logger.error(f"Error obteniendo usuarios: {str(e)}", exc_info=True)
-            return []
-    def buscar_usuarios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
-        """Búsqueda avanzada de usuarios por múltiples criterios."""
-        if not self.db_connection or not termino_busqueda:
-            return []
-
-        try:
-            termino_safe = sanitize_string(
-                termino_busqueda, max_length=100
-            )
-            termino_like = f"%{termino_safe}%"
-
-            cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(self.sql_path, "buscar_usuarios")
-            cursor.execute(
-                query,
-(termino_like,
-                    termino_like,
-                    termino_like,
-                    termino_like)
-            )
-
-            usuarios = []
-            columns = [desc[0] for desc in cursor.description]
-
-            for row in cursor.fetchall():
-                usuario = dict(zip(columns, row))
-                # Limpiar datos sensibles
-                if "password_hash" in usuario:
-                    del usuario["password_hash"]
-                if "salt" in usuario:
-                    del usuario["salt"]
-                usuarios.append(usuario)
-
-            return usuarios
-
-        except Exception as e:
-            self.logger.error(f"Error en búsqueda: {str(e)}", exc_info=True)
-            return []
-    def obtener_usuarios_paginados(
+            self.    def obtener_usuarios_paginados(
         self,
         page: int = 1,
         per_page: int = 20,
@@ -246,90 +201,7 @@ min(100,
             }
 
         except Exception as e:
-            self.logger.error(f"Error en paginación: {str(e)}", exc_info=True)
-            return {"usuarios": [], "total": 0, "pages": 0}
-    def obtener_estadisticas_usuarios(self) -> Dict[str, Any]:
-        """Obtiene estadísticas completas del sistema de usuarios."""
-        if not self.db_connection:
-            return {}
-
-        try:
-            cursor = self.db_connection.cursor()
-            estadisticas = {}
-
-            # Estadísticas básicas
-            query_basicas = self.sql_manager.get_query(
-                self.sql_path, "estadisticas_basicas_usuarios"
-            )
-            cursor.execute(query_basicas)
-            result = cursor.fetchone()
-
-            if result:
-                estadisticas.update(
-                    {
-                        "total_usuarios": result[0] or 0,
-                        "usuarios_activos": result[1] or 0,
-                        "usuarios_inactivos": result[2] or 0,
-                        "nuevos_hoy": result[3] or 0,
-                        "nuevos_esta_semana": result[4] or 0,
-                        "nuevos_este_mes": result[5] or 0,
-                    }
-                )
-
-            # Estadísticas por rol
-            query_roles = self.sql_manager.get_query(
-                self.sql_path, "estadisticas_por_rol"
-            )
-            cursor.execute(query_roles)
-
-            roles_stats = {}
-            for row in cursor.fetchall():
-                roles_stats[row[0]] = row[1]
-
-            estadisticas["distribucion_roles"] = roles_stats
-
-            # Estadísticas de actividad (últimos 30 días)
-            query_actividad = self.sql_manager.get_query(
-                self.sql_path, "estadisticas_actividad_reciente"
-            )
-            cursor.execute(query_actividad)
-
-            actividad = []
-            for row in cursor.fetchall():
-                actividad.append(
-                    {
-                        "fecha": row[0],
-                        "logins_exitosos": row[1] or 0,
-                        "intentos_fallidos": row[2] or 0,
-                    }
-                )
-
-            estadisticas["actividad_reciente"] = actividad
-
-            # Usuarios más activos
-            query_activos = self.sql_manager.get_query(
-                self.sql_path, "usuarios_mas_activos"
-            )
-            cursor.execute(query_activos)
-
-            usuarios_activos = []
-            for row in cursor.fetchall():
-                usuarios_activos.append(
-                    {
-                        "username": row[0],
-                        "total_logins": row[1] or 0,
-                        "ultimo_acceso": row[2],
-                    }
-                )
-
-            estadisticas["usuarios_mas_activos"] = usuarios_activos
-
-            return estadisticas
-
-        except Exception as e:
-            self.logger.error(f"Error obteniendo estadísticas: {str(e)}", exc_info=True)
-            return {}
-    def obtener_usuarios_por_rol(self, rol: str) -> List[Dict[str, Any]]:
+            self.    def obtener_usuarios_por_rol(self, rol: str) -> List[Dict[str, Any]]:
         """Obtiene usuarios filtrados por rol específico."""
         if not self.db_connection or not rol:
             return []
@@ -358,66 +230,7 @@ min(100,
             return usuarios
 
         except Exception as e:
-            self.logger.error(f"Error obteniendo usuarios por rol: {str(e)}", exc_info=True)
-            return []
-    def obtener_actividad_usuario(
-        self, usuario_id: int, dias: int = 30
-    ) -> Dict[str, Any]:
-        """Obtiene el historial de actividad de un usuario específico."""
-        if not self.db_connection or not usuario_id:
-            return {"intentos_login": [], "estadisticas": {}}
-
-        try:
-            usuario_id_safe = self.sanitizer.sanitize_integer(
-                usuario_id, min_val=1
-            )
-            dias_safe = max(
-                1, min(365, self.sanitizer.sanitize_integer(dias, min_val=1))
-            )
-
-            cursor = self.db_connection.cursor()
-
-            # Historial de intentos de login
-            query_historial = self.sql_manager.get_query(
-                self.sql_path, "historial_actividad_usuario"
-            )
-            fecha_limite = datetime.datetime.now() - datetime.timedelta(days=dias_safe)
-            cursor.execute(query_historial, (usuario_id_safe, fecha_limite))
-
-            intentos = []
-            for row in cursor.fetchall():
-                intentos.append(
-                    {
-                        "fecha": row[0],
-                        "exitoso": bool(row[1]),
-                        "ip_address": row[2] or "Unknown",
-                    }
-                )
-
-            # Estadísticas resumidas
-            query_stats = self.sql_manager.get_query(
-                self.sql_path, "estadisticas_usuario"
-            )
-            cursor.execute(query_stats, (usuario_id_safe, fecha_limite))
-
-            stats_row = cursor.fetchone()
-            estadisticas = (
-                {
-                    "total_intentos": stats_row[0] or 0,
-                    "intentos_exitosos": stats_row[1] or 0,
-                    "intentos_fallidos": stats_row[2] or 0,
-                    "dias_analizados": dias_safe,
-                }
-                if stats_row
-                else {}
-            )
-
-            return {"intentos_login": intentos, "estadisticas": estadisticas}
-
-        except Exception as e:
-            self.logger.error(f"Error obteniendo actividad de usuario: {str(e)}", exc_info=True)
-            return {"intentos_login": [], "estadisticas": {}}
-    def generar_reporte_seguridad(self) -> Dict[str, Any]:
+            self.    def generar_reporte_seguridad(self) -> Dict[str, Any]:
         """Genera un reporte de seguridad del sistema de usuarios."""
         if not self.db_connection:
             return {}
@@ -492,8 +305,6 @@ min(100,
             return reporte
 
         except Exception as e:
-            self.logger.error(f"Error generando reporte de seguridad: {str(e)}", exc_info=True)
-            return {}
 
     def _calcular_nivel_alerta(self, reporte: Dict[str, Any]) -> str:
         """Calcula el nivel de alerta de seguridad."""

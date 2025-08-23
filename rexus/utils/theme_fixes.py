@@ -28,37 +28,21 @@ def apply_critical_form_fixes(widget: QWidget = None):
         success = style_manager.apply_critical_contrast_fixes(widget)
 
         if success:
-            logger.info("Correcciones críticas aplicadas correctamente")
+            logger.info()
         else:
             logger.error("Error aplicando correcciones críticas")
 
         return success
 
     except (ImportError, AttributeError, RuntimeError) as e:
-        logger.error(f"Error aplicando correcciones: {e}")
-        return False
-
-
-def ensure_forms_readable():
-    """
-    Garantiza que todos los formularios sean legibles.
-    Aplica correcciones críticas automáticamente si es necesario.
-    """
-    try:
-        # Aplicar correcciones globalmente
-        return apply_critical_form_fixes()
-
-    except (ImportError, AttributeError, RuntimeError) as e:
-        logger.error(f"Error garantizando legibilidad: {e}")
-        return False
-
+        
 
 def fix_dark_theme_forms():
     """
     Método específico para corregir formularios en tema oscuro.
     Alias para compatibilidad con código existente.
     """
-    print("[THEME_FIX] Aplicando correcciones para tema oscuro...")
+    logger.info("[THEME_FIX] Aplicando correcciones para tema oscuro...")
     return ensure_forms_readable()
 
 
@@ -113,12 +97,12 @@ def apply_safe_dark_styles(widget: QWidget):
             safe_styles = get_safe_dark_styles()
             current_style = widget.styleSheet()
             widget.setStyleSheet(current_style + safe_styles)
-            print(f"[THEME_FIX] Estilos seguros aplicados a {widget.__class__.__name__}")
+            logger.info(f"[THEME_FIX] Estilos seguros aplicados a {widget.__class__.__name__}")
             return True
         return False
 
     except Exception as e:
-        print(f"[THEME_FIX] Error aplicando estilos seguros: {e}")
+        logger.info(f"[THEME_FIX] Error aplicando estilos seguros: {e}")
         return False
 
 
@@ -165,10 +149,10 @@ def ensure_module_forms_readable(module_widget: QWidget):
     """
     try:
         if is_dark_theme_active():
-            print(f"[THEME_FIX] Tema oscuro detectado - aplicando correcciones a módulo")
+            logger.info(f"[THEME_FIX] Tema oscuro detectado - aplicando correcciones a módulo")
             return apply_safe_dark_styles(module_widget)
         return True
 
     except Exception as e:
-        print(f"[THEME_FIX] Error en correcciones de módulo: {e}")
+        logger.info(f"[THEME_FIX] Error en correcciones de módulo: {e}")
         return False

@@ -5,36 +5,11 @@ Este módulo proporciona datos de ejemplo realistas para todos los módulos
 de la aplicación, útil para testing y demostración.
 """
 
-from datetime import datetime, timedelta
-import random
-from typing import List, Dict, Any
 
+import logging
+logger = logging.getLogger(__name__)
 
-class DemoDataGenerator:
-    """Generador de datos demo para todos los módulos."""
-
-    # Datos base para generación
-    NOMBRES = ["Juan", "María", "Carlos", "Ana", "Luis", "Carmen", "Miguel", "Isabel", "José", "Laura"]
-    APELLIDOS = ["García", "Rodríguez", "López", "Martínez", "González", "Pérez", "Sánchez", "Ramírez", "Cruz", "Flores"]
-
-    DIRECCIONES_LA_PLATA = [
-        "Calle 7 entre 47 y 48, La Plata",
-        "Av. 13 y 60, La Plata",
-        "Calle 50 entre 15 y 16, Berisso",
-        "Calle 25 entre 3 y 4, Gonnet",
-        "Av. 122 y 82, Los Hornos",
-        "Calle 1 y 57, Tolosa",
-        "Calle 10 y 38, City Bell",
-        "Av. 44 y 150, Villa Elisa",
-        "Calle 520 y 15, Melchor Romero",
-        "Calle 2 y 64, Ringuelet"
-    ]
-
-    TIPOS_VIDRIO = ["Templado", "Laminado", "Float", "Espejo", "Doble Vidriado Hermético"]
-    ACABADOS_VIDRIO = ["Natural", "Bronceado", "Reflectivo", "Satinado", "Serigrafía"]
-
-    TIPOS_HERRAJE = ["Bisagra", "Cerradura", "Manija", "Tirador", "Pestillo", "Corredera"]
-
+            
     ESTADOS_OBRA = ["Planificada", "En Proceso", "Pausada", "Finalizada", "Cancelada"]
     ESTADOS_PEDIDO = ["Borrador", "Pendiente", "Aprobado", "En Preparación", "Entregado"]
     ESTADOS_ENTREGA = ["Programada", "En Preparación", "En Tránsito", "Entregada"]

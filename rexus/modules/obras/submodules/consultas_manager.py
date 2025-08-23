@@ -9,12 +9,7 @@ Responsabilidades:
 - Reportes de productividad
 """
 
-from datetime import datetime, timedelta
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.app_logger import get_logger
 
 # Configurar logger
@@ -33,7 +28,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -102,7 +97,6 @@ class ConsultasManager:
             return obras
 
         except Exception as e:
-            logger.error(f"Error obteniendo obras: {str(e)}")
             return []
     def buscar_obras(self, termino_busqueda: str) -> List[Dict[str, Any]]:
         """Búsqueda avanzada de obras por múltiples campos."""
@@ -141,7 +135,6 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            logger.error(f"Error en búsqueda de obras: {str(e)}")
             return []
     def obtener_estadisticas_obras(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas de obras."""
@@ -196,7 +189,6 @@ class ConsultasManager:
             return estadisticas
 
         except Exception as e:
-            logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
     def obtener_obras_paginadas(
         self,
@@ -266,7 +258,6 @@ min(100,
             }
 
         except Exception as e:
-            logger.error(f"Error obteniendo obras paginadas: {str(e)}")
             return {"obras": [], "total": 0, "page": page, "per_page": per_page}
     def obtener_obras_vencidas(self) -> List[Dict[str, Any]]:
         """Obtiene obras que han superado su fecha de finalización."""
@@ -293,7 +284,6 @@ min(100,
             return obras
 
         except Exception as e:
-            logger.error(f"Error obteniendo obras vencidas: {str(e)}")
             return []
     def obtener_reporte_productividad(
         self, fecha_inicio: datetime = None, fecha_fin: datetime = None
@@ -332,7 +322,6 @@ min(100,
             return reporte
 
         except Exception as e:
-            logger.error(f"Error generando reporte de productividad: {str(e)}")
             return {}
 
     def _sanitizar_filtros(self, filtros: Dict[str, Any]) -> Dict[str, Any]:

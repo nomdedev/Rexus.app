@@ -7,8 +7,12 @@ Arquitectura modular para gestión de obras:
 - ConsultasManager: Búsquedas, filtros y estadísticas
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .consultas_manager import ConsultasManager
 from .proyectos_manager import ProyectosManager
 from .recursos_manager import RecursosManager
 
-__all__ = ["ProyectosManager", "RecursosManager", "ConsultasManager"]
+__all__ = [, "RecursosManager", "ConsultasManager"]

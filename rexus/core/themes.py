@@ -3,11 +3,15 @@ Sistema de Temas Moderno para Rexus
 Versión: 2.0.0 - Enterprise Ready
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
 # Tema por defecto
-DEFAULT_THEME = "light"
+DEFAULT_THEME = 
 
 @dataclass
 class ColorPalette:

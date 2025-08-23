@@ -181,7 +181,7 @@ class LogRotationManager:
 
                 return True
         except Exception as e:
-            print(f"Error rotando log {log_name}: {e}")
+            logger.info(f"Error rotando log {log_name}: {e}")
 
         return False
 
@@ -211,7 +211,7 @@ class LogRotationManager:
                     self._set_secure_permissions(str(compressed_file))
 
                 except Exception as e:
-                    print(f"Error comprimiendo {rotated_file}: {e}")
+                    logger.info(f"Error comprimiendo {rotated_file}: {e}")
 
     def cleanup_old_logs(self):
         """Limpia logs antiguos según la política de retención."""
@@ -241,12 +241,12 @@ class LogRotationManager:
                 for old_file in old_files:
                     try:
                         old_file.unlink()
-                        print(f"Log antiguo eliminado: {old_file}")
+                        logger.info(f"Log antiguo eliminado: {old_file}")
                     except Exception as e:
-                        print(f"Error eliminando {old_file}: {e}")
+                        logger.info(f"Error eliminando {old_file}: {e}")
 
             except Exception as e:
-                print(f"Error limpiando logs para {log_name}: {e}")
+                logger.info(f"Error limpiando logs para {log_name}: {e}")
 
     def get_log_stats(self) -> Dict[str, Dict]:
         """
@@ -323,7 +323,7 @@ class LogRotationManager:
                     self.cleanup_old_logs()
 
                 except Exception as e:
-                    print(f"Error en rotación automática: {e}")
+                    logger.info(f"Error en rotación automática: {e}")
 
         self.stop_rotation.clear()
         self.rotation_thread = threading.Thread(target=rotation_worker, daemon=True)

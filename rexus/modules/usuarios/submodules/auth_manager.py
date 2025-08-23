@@ -41,115 +41,11 @@ except ImportError:
             return test_hash == hashed
 
     bcrypt = MockBcrypt()
-from typing import Dict, Any, Optional
-
-# Configurar logging
-logger = logging.getLogger(__name__)
-
-# Importar utilidades de seguridad
-try:
-    from rexus.utils.sql_security import SQLSecurityValidator, DataSanitizer
-except ImportError:
-    logger.warning("Security utilities not fully available")
-    DataSanitizer = None
-    SQLSecurityValidator = None
-
-from rexus.utils.unified_sanitizer import sanitize_string
-from rexus.utils.sql_query_manager import SQLQueryManager
-
-
-class AuthenticationManager:
-    """Gestor especializado de autenticación de usuarios."""
-
-    def __init__(self, db_connection=None):
-        self.db_connection = db_connection
-        self.sanitizer = DataSanitizer() if DataSanitizer else None
-        self.sql_manager = SQLQueryManager()
-
-        # Configuración de seguridad
-        self.max_intentos_login = 3
-        self.tiempo_bloqueo_minutos = 15
-        self.password_min_length = 8
-
-        # Salt para bcrypt (configurar según entorno)
-        self.bcrypt_rounds = 12
-
-    def autenticar_usuario_seguro(self,
-username: str,
-        password: str) -> Dict[str,
-        Any]:
-        """
-        Autenticación segura de usuario con protección contra ataques.
-
-        Args:
-            username: Nombre de usuario
-            password: Contraseña en texto plano
-
-        Returns:
-            Dict con resultado de autenticación
-        """
-        try:
-            # Sanitizar entrada
-            if self.sanitizer:
-                username_clean = sanitize_string(username, 50)
-                password_clean = sanitize_string(password, 128)
-            else:
-                username_clean = str(username)[:50]
-                password_clean = str(password)[:128]
-
-            # Verificar si la cuenta está bloqueada
-            if self.verificar_cuenta_bloqueada(username_clean):
-                return {
-                    'success': False,
-                    'message': f'Cuenta bloqueada. Intente nuevamente en {self.tiempo_bloqueo_minutos} minutos.',
-                    'user_data': None,
-                    'bloqueado': True
-                }
-
-            # Obtener datos del usuario
-            user_data = self._obtener_usuario_por_nombre(username_clean)
-            if not user_data:
-                # Registrar intento fallido (incluso para usuarios inexistentes)
-                self.registrar_intento_login(username_clean, False)
-                return {
-                    'success': False,
-                    'message': 'Credenciales inválidas',
-                    'user_data': None,
-                    'bloqueado': False
-                }
-
-            # Verificar contraseña
-            password_valida = self._verificar_password_segura(password_clean, user_data.get('password', ''))
-
-            if password_valida:
-                # Autenticación exitosa
-                self.reset_intentos_login(username_clean)
-                self.registrar_intento_login(username_clean, True)
-
-                # Limpiar datos sensibles antes de retornar
-                user_data_safe = user_data.copy()
-                if 'password' in user_data_safe:
-                    del user_data_safe['password']
-
-                return {
-                    'success': True,
-                    'message': 'Autenticación exitosa',
-                    'user_data': user_data_safe,
-                    'bloqueado': False
-                }
-            else:
-                # Contraseña incorrecta
-                self.registrar_intento_login(username_clean, False)
-                return {
-                    'success': False,
-                    'message': 'Credenciales inválidas',
-                    'user_data': None,
+                                'user_data': None,
                     'bloqueado': False
                 }
 
         except Exception as e:
-            logger.error(f"Error en autenticación: {e}")
-            return {
                 'success': False,
                 'message': 'Error interno del sistema',
                 'user_data': None,
@@ -214,96 +110,10 @@ usuario_id: int,
             return {'success': True, 'message': 'Contraseña actualizada exitosamente'}
 
         except Exception as e:
-            logger.error(f"Error cambiando contraseña: {e}")
-            if self.db_connection:
                 try:
                     self.db_connection.rollback()
                 except Exception:
-                    logger.error(f"Error en operación de base de datos: {e}")
-                    return None
-            return {'success': False, 'message': 'Error interno del sistema'}
-        finally:
-            if 'cursor' in locals():
-                if cursor:
-                    cursor.close()
-
-    def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
-        """
-        Valida la fortaleza de una contraseña según políticas de seguridad.
-
-        Args:
-            password: Contraseña a validar
-
-        Returns:
-            Dict con resultado de validación
-        """
-        errores = []
-
-        # Longitud mínima
-        if len(password) < self.password_min_length:
-            errores.append(f"Debe tener al menos {self.password_min_length} caracteres")
-
-        # Al menos una letra mayúscula
-        if not any(c.isupper() for c in password):
-            errores.append("Debe contener al menos una letra mayúscula")
-
-        # Al menos una letra minúscula
-        if not any(c.islower() for c in password):
-            errores.append("Debe contener al menos una letra minúscula")
-
-        # Al menos un número
-        if not any(c.isdigit() for c in password):
-            errores.append("Debe contener al menos un número")
-
-        # Al menos un carácter especial
-        caracteres_especiales = "!@#$%^&*()_+-=[]{}|;:,.<>?"
-        if not any(c in caracteres_especiales for c in password):
-            errores.append("Debe contener al menos un carácter especial")
-
-        # Verificar que no sea una contraseña común
-        passwords_comunes = [
-            "password", "123456", "qwerty", "admin", "usuario",
-            "12345678", "password123", "admin123"
-        ]
-        if password.lower() in passwords_comunes:
-            errores.append("No puede ser una contraseña común")
-
-        return {
-            'es_valida': len(errores) == 0,
-            'errores': errores,
-            'puntuacion': max(0, 100 - (len(errores) * 15))
-        }
-
-    def verificar_cuenta_bloqueada(self, username: str) -> bool:
-        """
-        Verifica si una cuenta está bloqueada por intentos fallidos.
-
-        Args:
-            username: Nombre de usuario
-
-        Returns:
-            True si está bloqueada
-        """
-        try:
-            if not self.db_connection:
-                return False
-
-            cursor = self.db_connection.cursor()
-
-            # Verificar intentos fallidos recientes
-            tiempo_limite = datetime.datetime.now() - datetime.timedelta(minutes=self.tiempo_bloqueo_minutos)
-
-            query = self.sql_manager.get_query('usuarios', 'contar_intentos_fallidos')
-            cursor.execute(query, (username, tiempo_limite))
-
-            intentos_recientes = cursor.fetchone()[0]
-
-            return intentos_recientes >= self.max_intentos_login
-
-        except Exception as e:
-            logger.error(f"Error verificando bloqueo: {e}")
-            return False
-        finally:
+                            finally:
             if 'cursor' in locals():
                 if cursor:
                     cursor.close()
@@ -333,8 +143,6 @@ usuario_id: int,
             self.db_connection.commit()
 
         except Exception as e:
-            logger.error(f"Error registrando intento de login: {e}")
-        finally:
             if 'cursor' in locals():
                 if cursor:
                     cursor.close()
@@ -363,8 +171,6 @@ usuario_id: int,
             return True
 
         except Exception as e:
-            logger.error(f"Error reseteando intentos: {e}")
-            return False
         finally:
             if 'cursor' in locals():
                 if cursor:
@@ -406,8 +212,6 @@ usuario_id: int,
             }
 
         except Exception as e:
-            logger.error(f"Error obteniendo usuario: {e}")
-            return None
         finally:
             if 'cursor' in locals():
                 if cursor:
@@ -428,8 +232,6 @@ usuario_id: int,
             salt = bcrypt.gensalt(rounds=self.bcrypt_rounds)
             return bcrypt.hashpw(password.encode('utf-8'), salt).decode('utf-8')
         except Exception as e:
-            logger.error(f"Error hasheando contraseña: {e}")
-            # Fallback a SHA256 (menos seguro pero funcional)
             return hashlib.sha256(password.encode()).hexdigest()
 
     def _verificar_password_segura(self, password: str, hash_almacenado: str) -> bool:
@@ -451,5 +253,3 @@ usuario_id: int,
                 # Fallback para hashes SHA256 legacy
                 return hashlib.sha256(password.encode()).hexdigest() == hash_almacenado
         except Exception as e:
-            logger.error(f"Error verificando contraseña: {e}")
-            return False

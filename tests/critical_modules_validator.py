@@ -342,7 +342,7 @@ class CriticalModulesValidator:
         """Genera reporte detallado de errores encontrados."""
         
         from datetime import datetime
-        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        timestamp = datetime.now().strftime()
         report_file = f"CRITICAL_ERRORS_REPORT_{timestamp}.md"
         
         content = f"""# REPORTE DE ERRORES CRÍTICOS - {datetime.now().strftime("%d/%m/%Y %H:%M:%S")}

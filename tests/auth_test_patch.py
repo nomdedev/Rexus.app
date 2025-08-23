@@ -157,7 +157,7 @@ def apply_auth_patches():
             # Ignorar si el decorador no existe
             pass
     
-    print("[AUTH_PATCH] ✅ Patches de autenticación aplicados exitosamente")
+    print()
     return True
 
 

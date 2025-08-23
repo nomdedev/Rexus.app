@@ -2,102 +2,14 @@
 Mejoras en la gestión de base de datos para Rexus.app
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sqlite3
 import threading
 import time
-from contextlib import contextmanager
-from typing import Optional
-from queue import Queue, Empty
-from rexus.utils.logging_config import get_logger
-from rexus.utils.error_handler import DatabaseConnectionError
-
-class DatabasePool:
-    """Pool de conexiones de base de datos mejorado"""
-
-    def __init__(self, database_path: str, max_connections: int = 10):
-        self.database_path = database_path
-        self.max_connections = max_connections
-        self.connections = Queue(maxsize=max_connections)
-        self.active_connections = 0
-        self.lock = threading.Lock()
-        self.logger = get_logger('database')
-
-        # Crear conexiones iniciales
-        self._initialize_pool()
-
-    def _initialize_pool(self):
-        """Inicializa el pool de conexiones"""
-        try:
-            for _ in range(min(3, self.max_connections)):  # Iniciar con 3 conexiones
-                conn = self._create_connection()
-                if conn:
-                    self.connections.put(conn)
-                    self.active_connections += 1
-
-            self.logger.info(f"Database pool initialized with {self.active_connections} connections")
-        except Exception as e:
-            self.logger.error(f"Failed to initialize database pool: {e}")
-            raise DatabaseConnectionError(f"No se pudo inicializar el pool de BD: {e}")
-
-    def _create_connection(self) -> Optional[sqlite3.Connection]:
-        """Crea una nueva conexión a la base de datos"""
-        try:
-            conn = sqlite3.connect(
-                self.database_path,
-                check_same_thread=False,
-                timeout=30.0
-            )
-
-            # Configuraciones de rendimiento
-            conn.execute("PRAGMA journal_mode=WAL")
-            conn.execute("PRAGMA synchronous=NORMAL")
-            conn.execute("PRAGMA cache_size=10000")
-            conn.execute("PRAGMA foreign_keys=ON")
-
-            return conn
-        except Exception as e:
-            self.logger.error(f"Failed to create database connection: {e}")
-            return None
-
-    @contextmanager
-    def get_connection(self, timeout: float = 10.0):
-        """Obtiene una conexión del pool"""
-        connection = None
-        time.time()
-
-        try:
-            # Intentar obtener conexión existente
-            try:
-                connection = self.connections.get(timeout=timeout)
-            except Empty:
-                # Si no hay conexiones disponibles, crear una nueva
-                with self.lock:
-                    if self.active_connections < self.max_connections:
-                        connection = self._create_connection()
-                        if connection:
-                            self.active_connections += 1
-                        else:
-                            raise DatabaseConnectionError("No se pudo crear nueva conexión")
-                    else:
-                        raise DatabaseConnectionError("Pool de conexiones agotado")
-
-            # Verificar que la conexión esté activa
-            if connection:
-                try:
-                    connection.execute("SELECT 1")
-                except sqlite3.Error:
-                    # Conexión inválida, crear una nueva
-                    connection.close()
-                    connection = self._create_connection()
-                    if not connection:
-                        raise DatabaseConnectionError("No se pudo restablecer la conexión")
-
-            yield connection
-
-        except Exception as e:
-            self.logger.error(f"Database connection error: {e}")
-            raise DatabaseConnectionError(f"Error de conexión a BD: {e}")
-        finally:
+                    finally:
             # Devolver conexión al pool
             if connection:
                 try:

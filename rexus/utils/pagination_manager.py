@@ -6,6 +6,10 @@ Fecha: 13/08/2025
 Objetivo: Mejorar rendimiento en consultas paginadas grandes
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import math
 from typing import Dict, List, Any, Optional, Callable, Tuple
 from dataclasses import dataclass
@@ -173,7 +177,7 @@ search_term: str = "",
             return total
 
         except Exception as e:
-            print(f"[PAGINATION] Error contando registros: {e}")
+            logger.info(f"[PAGINATION] Error contando registros: {e}")
             return 0
         finally:
             if cursor:
@@ -253,7 +257,7 @@ page_size,
             return result
 
         except Exception as e:
-            print(f"[PAGINATION] Error obteniendo datos paginados: {e}")
+            logger.info(f"[PAGINATION] Error obteniendo datos paginados: {e}")
             # Retornar resultado vacío en caso de error
             return PaginationResult(
                 data=[],
@@ -339,7 +343,7 @@ page_size,
             return data
 
         except Exception as e:
-            print(f"[PAGINATION] Error obteniendo página de datos: {e}")
+            logger.info(f"[PAGINATION] Error obteniendo página de datos: {e}")
             return []
         finally:
             if cursor:
@@ -389,7 +393,7 @@ page_size,
         else:
             invalidate_cache_pattern(self.table_name)
 
-        print(f"[PAGINATION] Cache invalidado para tabla {self.table_name}")
+        logger.info(f"[PAGINATION] Cache invalidado para tabla {self.table_name}")
 
     def get_statistics(self) -> Dict[str, Any]:
         """
@@ -437,10 +441,10 @@ page_size,
                         search_term,
                         filters)
 
-            print(f"[PAGINATION] Precargadas {pages_to_prefetch} páginas siguientes")
+            logger.info(f"[PAGINATION] Precargadas {pages_to_prefetch} páginas siguientes")
 
         except Exception as e:
-            print(f"[PAGINATION] Error precargando páginas: {e}")
+            logger.info(f"[PAGINATION] Error precargando páginas: {e}")
 
 
 # Funciones de utilidad para integración con módulos
@@ -500,7 +504,7 @@ def paginate_query_results(data_loader: Callable,
         )
 
     except Exception as e:
-        print(f"[PAGINATION] Error paginando resultados: {e}")
+        logger.info(f"[PAGINATION] Error paginando resultados: {e}")
         return PaginationResult(
             data=[],
             total_records=0,

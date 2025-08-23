@@ -89,8 +89,11 @@ class ProductosModel:
                 else:
                     logger.error(f"CRÍTICO: Tabla '{tabla}' no existe")
 
+        except (AttributeError, ConnectionError) as e:
+            logger.error(f"Error de conexión verificando tablas: {e}")
         except Exception as e:
-            logger.error(f"Error verificando tablas: {e}")
+            logger.exception(f"Error inesperado verificando tablas: {e}")
+            raise
 
     def create_product(self, product_data: Dict[str, Any]) -> Dict[str, Any]:
         """
@@ -195,13 +198,21 @@ class ProductosModel:
                 'codigo': sanitized_data['codigo']
             }
 
-        except Exception as e:
-            logger.error(f"Error creando producto: {e}")
+        except (ValueError, TypeError, KeyError) as e:
+            logger.error(f"Error de datos creando producto: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return {
                 'success': False,
-                'error': f"Error interno: {str(e)}"
+                'error': f"Datos inválidos: {str(e)}"
+            }
+        except Exception as e:
+            logger.exception(f"Error inesperado creando producto: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return {
+                'success': False,
+                'error': "Error interno del sistema"
             }
 
     def get_product_by_id(self, product_id: int) -> Optional[Dict[str, Any]]:

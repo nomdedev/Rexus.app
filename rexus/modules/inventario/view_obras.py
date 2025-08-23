@@ -8,6 +8,10 @@ Funcionalidades principales:
 - Vista de material asignado a cada obra
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,

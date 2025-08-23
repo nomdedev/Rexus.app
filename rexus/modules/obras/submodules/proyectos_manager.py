@@ -9,13 +9,12 @@ Responsabilidades:
 - Control de fechas y presupuestos
 """
 
-import sqlite3
-from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+import logging
+logger = logging.getLogger(__name__)
+
+import sqlite3
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -30,7 +29,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -148,7 +147,7 @@ class ProyectosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error creando obra: {str(e)}")
+            logger.info(f"Error creando obra: {str(e)}")
             return False
     def actualizar_obra(self,
 obra_id: int,
@@ -191,7 +190,7 @@ obra_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error actualizando obra: {str(e)}")
+            logger.info(f"Error actualizando obra: {str(e)}")
             return False
     def eliminar_obra(self, obra_id: int) -> bool:
         """Elimina una obra (soft delete)."""
@@ -215,7 +214,7 @@ obra_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error eliminando obra: {str(e)}")
+            logger.info(f"Error eliminando obra: {str(e)}")
             return False
     def cambiar_estado_obra(self, obra_id: int, nuevo_estado: str) -> bool:
         """Cambia el estado de una obra con validaciones."""
@@ -241,7 +240,7 @@ obra_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error cambiando estado de obra: {str(e)}")
+            logger.info(f"Error cambiando estado de obra: {str(e)}")
             return False
 
     def _validar_datos_obra(self, datos: Dict[str, Any]) -> Dict[str, Any]:
@@ -313,7 +312,7 @@ obra_id: int,
             return detalles
 
         except Exception as e:
-            print(f"Error obteniendo detalles de obra: {str(e)}")
+            logger.info(f"Error obteniendo detalles de obra: {str(e)}")
             return []
 
     def _calcular_duracion_dias(self, obra: Dict[str, Any]) -> int:
@@ -354,7 +353,7 @@ obra_id: int,
                 ),
             )
         except Exception as e:
-            print(f"Error creando fase inicial: {str(e)}")
+            logger.info(f"Error creando fase inicial: {str(e)}")
 
     def _tiene_recursos_asignados(self, obra_id: int) -> bool:
         """Verifica si la obra tiene recursos asignados."""
@@ -414,5 +413,5 @@ obra_id: int,
             return float(result[0]) if result and result[0] else 0.0
 
         except Exception as e:
-            print(f"Error calculando progreso: {str(e)}")
+            logger.info(f"Error calculando progreso: {str(e)}")
             return 0.0

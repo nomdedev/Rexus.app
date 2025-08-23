@@ -53,7 +53,7 @@ class TestConfiguracionController:
             from rexus.modules.configuracion.controller import ConfiguracionController
             assert ConfiguracionController is not None
         except ImportError as e:
-            pytest.fail(f"Error crítico: No se pudo importar ConfiguracionController: {e}")
+            pytest.fail(f)
     
     def test_controller_instantiation_basic(self, mock_dependencies):
         """Test crítico: El controlador se puede instanciar."""
@@ -69,7 +69,7 @@ class TestConfiguracionController:
                 assert hasattr(controller, 'view')
                 
         except Exception as e:
-            pytest.fail(f"Error crítico: No se pudo instanciar ConfiguracionController: {e}")
+            pytest.fail(f)
     
     def test_controller_has_required_methods(self, mock_dependencies):
         """Test crítico: El controlador tiene los métodos requeridos."""
@@ -96,7 +96,7 @@ class TestConfiguracionController:
                         missing_methods.append(method)
                 
                 if missing_methods:
-                    pytest.fail(f"Error crítico: Métodos faltantes en ConfiguracionController: {missing_methods}")
+                    pytest.fail(f)
                     
         except Exception as e:
             pytest.fail(f"Error crítico verificando métodos: {e}")
@@ -111,7 +111,7 @@ class TestConfiguracionController:
                 
                 controller = ConfiguracionController()
                 
-                assert hasattr(controller, 'cargar_configuracion'), "Método cargar_configuracion faltante"
+                assert hasattr(controller, 'cargar_configuracion'), 
                 assert callable(getattr(controller, 'cargar_configuracion')), "cargar_configuracion no es callable"
                 
                 # Intentar ejecutar el método
@@ -134,7 +134,7 @@ class TestConfiguracionController:
             from rexus.modules.configuracion.controller import ConfiguracionController
             
             # Mock modelo que falla por falta de BD
-            mock_dependencies['model'].obtener_configuracion.side_effect = Exception("Database not available")
+            mock_dependencies['model'].obtener_configuracion.side_effect = Exception()
             
             with patch('rexus.modules.configuracion.controller.ConfiguracionModel', mock_dependencies['model_class']), \
                  patch('rexus.modules.configuracion.controller.ConfiguracionView', mock_dependencies['view_class']):
@@ -178,7 +178,7 @@ class TestConfiguracionController:
                 else:
                     # Advertencia: falta integración avanzada
                     import warnings
-                    warnings.warn("ConfiguracionController carece de integración con AdvancedConfigurationManager")
+                    warnings.warn()
                     
         except ImportError as e:
             pytest.fail(f"Error crítico: No se puede importar AdvancedConfigurationManager: {e}")
@@ -198,7 +198,7 @@ class TestConfiguracionController:
             
             # Mock que retorna configuración válida
             mock_config = {
-                "database_url": "sqlite:///test.db",
+                : "sqlite:///test.db",
                 "debug_mode": True,
                 "max_connections": 10,
                 "timeout": 30.0

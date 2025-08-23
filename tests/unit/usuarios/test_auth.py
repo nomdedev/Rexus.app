@@ -63,7 +63,7 @@ class TestUsuariosAuth(unittest.TestCase):
             # Si llegamos aquí, el import fue exitoso
             self.assertTrue(True)
         except ImportError as e:
-            self.skipTest(f"Módulo usuarios no disponible: {e}")
+            self.skipTest(f)
     
     @patch('rexus.core.database.DatabaseConnection')  
     def test_login_invalid_credentials(self, mock_db_connection):
@@ -78,7 +78,7 @@ class TestUsuariosAuth(unittest.TestCase):
             # Test de concepto - en implementación real verificaríamos el resultado
             self.assertTrue(True)
         except ImportError as e:
-            self.skipTest(f"Módulo usuarios no disponible: {e}")
+            self.skipTest(f)
     
     def test_password_validation(self):
         """Test: Validación de contraseñas - USANDO DATOS SEGUROS."""
@@ -90,7 +90,7 @@ class TestUsuariosAuth(unittest.TestCase):
         # Tests de passwords débiles
         for weak_pwd in test_cases['weak_patterns']:
             result = MockPasswordValidator.validate_password_strength(weak_pwd)
-            self.assertFalse(result['is_valid'], f"Password débil debería fallar: {weak_pwd}")
+            self.assertFalse(result['is_valid'], f)
             
         # Tests de passwords fuertes
         for strong_pwd in test_cases['strong_patterns']:

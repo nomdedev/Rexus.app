@@ -7,6 +7,10 @@ sistema de pestañas, filtros mejorados y dashboard integrado.
 Sigue el patrón de diseño de los módulos más exitosos.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer, QDate
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QTabWidget, QFrame, QLabel,

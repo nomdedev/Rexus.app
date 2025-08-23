@@ -3,6 +3,10 @@ Sistema de Navegación por Teclado Completa - Rexus.app
 Proporciona navegación consistente y accesible en todos los módulos
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Callable, Dict, List, Optional
 
 from PyQt6.QtCore import QEvent, QObject, Qt
@@ -427,7 +431,7 @@ class AccessibilityHelper:
     def announce_to_screen_reader(message: str):
         """Anuncia un mensaje a lectores de pantalla."""
         # En un entorno real, esto se integraría con APIs de accesibilidad
-        print(f"[Screen Reader] {message}")
+        logger.info(f"[Screen Reader] {message}")
 
 
 # Función de utilidad para configurar navegación en un widget

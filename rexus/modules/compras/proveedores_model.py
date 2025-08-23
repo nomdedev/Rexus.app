@@ -4,79 +4,11 @@ Modelo de Proveedores
 Maneja la gestión de proveedores para el módulo de compras.
 """
 
-from typing import Any, Dict, List, Optional
-from rexus.utils.security import SecurityUtils
 
+import logging
+logger = logging.getLogger(__name__)
 
-class ProveedoresModel:
-    """Modelo para gestionar proveedores."""
-
-    def __init__(self, db_connection=None):
-        """
-        Inicializa el modelo de proveedores.
-
-        Args:
-            db_connection: Conexión a la base de datos
-        """
-        self.db_connection = db_connection
-        self.tabla_proveedores = "proveedores"
-        self._crear_tabla_si_no_existe()
-
-    def _crear_tabla_si_no_existe(self):
-        """Verifica que la tabla de proveedores exista."""
-        if not self.db_connection:
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_proveedores,),
-            )
-            if cursor.fetchone():
-                print(f"[PROVEEDORES] Tabla '{self.tabla_proveedores}' verificada.")
-            else:
-                print(f"[ADVERTENCIA] La tabla '{self.tabla_proveedores}' no existe.")
-
-        except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error verificando tabla: {e}")
-
-    def crear_proveedor(
-        self,
-        nombre: str,
-        razon_social: str = "",
-        ruc: str = "",
-        telefono: str = "",
-        email: str = "",
-        direccion: str = "",
-        contacto_principal: str = "",
-        categoria: str = "",
-        estado: str = "ACTIVO",
-        observaciones: str = "",
-        usuario_creacion: str = ""
-    ) -> bool:
-        """
-        Crea un nuevo proveedor.
-
-        Args:
-            nombre: Nombre comercial del proveedor
-            razon_social: Razón social oficial
-            ruc: RUC/CUIT del proveedor
-            telefono: Teléfono de contacto
-            email: Email de contacto
-            direccion: Dirección física
-            contacto_principal: Nombre del contacto principal
-            categoria: Categoría de productos que provee
-            estado: Estado del proveedor (ACTIVO, INACTIVO)
-            observaciones: Observaciones adicionales
-            usuario_creacion: Usuario que crea el proveedor
-
-        Returns:
-            bool: True si se creó exitosamente
-        """
-        if not self.db_connection:
-            print("[WARN PROVEEDORES] Sin conexión BD")
-            return False
+                        return False
 
         try:
             # Sanitizar todos los datos de entrada
@@ -93,7 +25,7 @@ class ProveedoresModel:
 
             # Validar email si se proporciona
             if email and not SecurityUtils.validate_email(email):
-                print("[ERROR PROVEEDORES] Email inválido")
+                logger.info("[ERROR PROVEEDORES] Email inválido")
                 return False
 
             cursor = self.db_connection.cursor()
@@ -104,7 +36,7 @@ class ProveedoresModel:
                 (nombre_sanitizado, ruc_sanitizado)
             )
             if cursor.fetchone():
-                print(f"[ERROR PROVEEDORES] Ya existe un proveedor con nombre '{nombre}' o RUC '{ruc}'")
+                logger.info(f"[ERROR PROVEEDORES] Ya existe un proveedor con nombre '{nombre}' o RUC '{ruc}'")
                 return False
 
             sql_insert = """
@@ -133,11 +65,11 @@ class ProveedoresModel:
             )
 
             self.db_connection.commit()
-            print(f"[PROVEEDORES] Proveedor creado: {nombre}")
+            logger.info(f"[PROVEEDORES] Proveedor creado: {nombre}")
             return True
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error creando proveedor: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error creando proveedor: {e}")
             return False
 
     def obtener_todos_proveedores(self) -> List[Dict]:
@@ -185,11 +117,11 @@ class ProveedoresModel:
                 proveedor = dict(zip(columns, row))
                 proveedores.append(proveedor)
 
-            print(f"[PROVEEDORES] Obtenidos {len(proveedores)} proveedores")
+            logger.info(f"[PROVEEDORES] Obtenidos {len(proveedores)} proveedores")
             return proveedores
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error obteniendo proveedores: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error obteniendo proveedores: {e}")
             return self._get_proveedores_demo()
 
     def obtener_proveedor_por_id(self, proveedor_id: int) -> Optional[Dict]:
@@ -228,7 +160,7 @@ class ProveedoresModel:
             return None
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error obteniendo proveedor {proveedor_id}: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error obteniendo proveedor {proveedor_id}: {e}")
             return None
 
     def actualizar_proveedor(
@@ -284,7 +216,7 @@ class ProveedoresModel:
             if email is not None:
                 # Validar email si se proporciona
                 if email and not SecurityUtils.validate_email(email):
-                    print("[ERROR PROVEEDORES] Email inválido en actualización")
+                    logger.info("[ERROR PROVEEDORES] Email inválido en actualización")
                     return False
                 updates.append("email = ?")
                 params.append(SecurityUtils.sanitize_sql_input(email))
@@ -324,11 +256,11 @@ class ProveedoresModel:
             cursor.execute(sql_update, params)
             self.db_connection.commit()
 
-            print(f"[PROVEEDORES] Proveedor {proveedor_id} actualizado")
+            logger.info(f"[PROVEEDORES] Proveedor {proveedor_id} actualizado")
             return True
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error actualizando proveedor: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error actualizando proveedor: {e}")
             return False
 
     def buscar_proveedores(
@@ -401,11 +333,11 @@ class ProveedoresModel:
                 proveedor = dict(zip(columns, row))
                 proveedores.append(proveedor)
 
-            print(f"[PROVEEDORES] Búsqueda retornó {len(proveedores)} proveedores")
+            logger.info(f"[PROVEEDORES] Búsqueda retornó {len(proveedores)} proveedores")
             return proveedores
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error en búsqueda: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error en búsqueda: {e}")
             return []
 
     def obtener_estadisticas_proveedor(self, proveedor_id: int) -> Dict[str, Any]:
@@ -507,7 +439,7 @@ class ProveedoresModel:
             }
 
         except Exception as e:
-            print(f"[ERROR PROVEEDORES] Error obteniendo estadísticas: {e}")
+            logger.info(f"[ERROR PROVEEDORES] Error obteniendo estadísticas: {e}")
             return self._get_estadisticas_proveedor_demo(proveedor_id)
 
     def obtener_proveedores_activos(self) -> List[Dict]:

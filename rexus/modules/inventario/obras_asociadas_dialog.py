@@ -3,6 +3,10 @@
 Ventana de diálogo para mostrar las obras asociadas a un ítem del inventario
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sqlite3
 
 from PyQt6.QtWidgets import (QDialog, QVBoxLayout, QHBoxLayout, QLabel,
@@ -141,7 +145,7 @@ class ObrasAsociadasDialog(QDialog):
             item_codigo = self.item_inventario.get('codigo', '').strip()
             self.item_inventario.get('descripcion', '').strip()
 
-            print(f"[DEBUG] Buscando obras para código específico: '{item_codigo}'")
+            logger.info(f"[DEBUG] Buscando obras para código específico: '{item_codigo}'")
 
             # Query para buscar obras que usan exactamente este código de inventario
             query = """
@@ -162,7 +166,7 @@ class ObrasAsociadasDialog(QDialog):
             cursor.execute(query, (item_codigo,))
             obras = cursor.fetchall()
 
-            print(f"[DEBUG] Encontradas {len(obras)} obras que usan el código '{item_codigo}'")
+            logger.info(f"[DEBUG] Encontradas {len(obras)} obras que usan el código '{item_codigo}'")
 
             self.tabla_obras.setRowCount(len(obras))
 
@@ -195,7 +199,7 @@ class ObrasAsociadasDialog(QDialog):
                     self.tabla_obras.setItem(row, 4, QTableWidgetItem(f"${precio_total or 0:.2f}"))
                     self.tabla_obras.setItem(row, 5, QTableWidgetItem(str(estado or 'Activa')))
 
-                    print(f"[DEBUG] Fila {row}: {obra_nombre} - {detalle} - Cant: {cantidad}")
+                    logger.info(f"[DEBUG] Fila {row}: {obra_nombre} - {detalle} - Cant: {cantidad}")
 
                     # Acumular totales
                     if cantidad:
@@ -223,7 +227,7 @@ class ObrasAsociadasDialog(QDialog):
             # ValueError: conversión de tipos incorrecta
             # TypeError: tipo de dato incorrecto
             QMessageBox.critical(self, "Error", f"Error al cargar obras asociadas: {str(e)}")
-            print(f"[ERROR] Error cargando obras asociadas: {e}")
+            logger.info(f"[ERROR] Error cargando obras asociadas: {e}")
             import traceback
             traceback.print_exc()
             obras = cursor.fetchall()
@@ -280,7 +284,7 @@ class ObrasAsociadasDialog(QDialog):
 
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al cargar obras asociadas: {str(e)}")
-            print(f"[ERROR] Error cargando obras asociadas: {e}")
+            logger.info(f"[ERROR] Error cargando obras asociadas: {e}")
 
     def exportar_datos(self):
         """Exportar datos a CSV"""
@@ -291,7 +295,7 @@ class ObrasAsociadasDialog(QDialog):
 
             # Crear nombre de archivo
             codigo = self.item_inventario.get('codigo', 'material')
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            timestamp = datetime.now().strftime()
             filename = f"obras_material_{codigo}_{timestamp}.csv"
             filepath = os.path.join(os.getcwd(), filename)
 

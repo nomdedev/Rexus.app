@@ -6,6 +6,10 @@ COMPONENTE DE PAGINACIÓN PARA OBRAS
 Widget reutilizable para manejar paginación en la tabla de obras.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtWidgets import (QWidget, QHBoxLayout, QVBoxLayout, QPushButton,
                             QLabel, QComboBox, QSpinBox, QFrame)
 from PyQt6.QtCore import pyqtSignal

@@ -5,383 +5,13 @@ Muestra información detallada sobre errores de carga de módulos
 y proporciona soluciones específicas para cada tipo de problema.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sys
 import traceback
-from pathlib import Path
-
-from PyQt6.QtCore import pyqtSignal
-from PyQt6.QtWidgets import (
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QTextEdit,
-    QVBoxLayout,
-    QWidget,
-)
-
-
-class DiagnosticWidget(QWidget):
-    """Widget que muestra diagnósticos detallados de errores de módulos."""
-
-    retry_requested = pyqtSignal(str)  # Señal para reintentar carga del módulo
-
-    def __init__(self, module_name: str, error_info: dict):
-        # Solo inicializar QWidget si hay una aplicación Qt activa
-        try:
-            from PyQt6.QtWidgets import QApplication
-
-            if QApplication.instance() is not None:
-                super().__init__()
-                self.qt_initialized = True
-            else:
-                # No hay aplicación Qt, crear como objeto Python normal
-                self.qt_initialized = False
-        except:
-            self.qt_initialized = False
-
-        self.module_name = module_name
-        self.error_info = error_info
-
-        if self.qt_initialized:
-            self.init_ui()
-
-    def init_ui(self):
-        """Inicializa la interfaz de diagnóstico."""
-        if not self.qt_initialized:
-            return
-
-        layout = QVBoxLayout(self)
-        layout.setSpacing(15)
-        layout.setContentsMargins(20, 20, 20, 20)  # Header con ícono de error
-        header_layout = QHBoxLayout()
-
-        # Ícono de error (usando emoji como fallback)
-        icon_label = QLabel("[WARN]")
-        icon_label.setStyleSheet("font-size: 48px;")
-        header_layout.addWidget(icon_label)
-
-        # Título del error
-        title_layout = QVBoxLayout()
-        title = QLabel(f"Error en Módulo: {self.module_name.title()}")
-        title.setStyleSheet("""
-            QLabel {
-                font-size: 18px;
-                font-weight: bold;
-                color: #d32f2f;
-                margin-bottom: 5px;
-            }
-        """)
-
-        subtitle = QLabel("El módulo no pudo cargarse correctamente")
-        subtitle.setStyleSheet("""
-            QLabel {
-                font-size: 12px;
-                color: #666;
-            }
-        """)
-
-        title_layout.addWidget(title)
-        title_layout.addWidget(subtitle)
-        header_layout.addLayout(title_layout)
-        header_layout.addStretch()
-
-        layout.addLayout(header_layout)
-
-        # Separator
-        separator = QFrame()
-        separator.setFrameShape(QFrame.Shape.HLine)
-        separator.setFrameShadow(QFrame.Shadow.Sunken)
-        layout.addWidget(separator)
-
-        # Información del error
-        self.create_error_section(layout)
-
-        # Diagnóstico automático
-        self.create_diagnostic_section(layout)
-
-        # Soluciones sugeridas
-        self.create_solutions_section(layout)
-
-        # Botones de acción
-        self.create_action_buttons(layout)
-
-        layout.addStretch()
-
-    def create_error_section(self, parent_layout):
-        """Crea la sección de información del error."""
-        error_group = QGroupBox("📋 Información del Error")
-        error_group.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-            }
-        """)
-
-        error_layout = QVBoxLayout(error_group)
-
-        # Error principal
-        error_msg = self.error_info.get("error", "Error desconocido")
-        error_label = QLabel(f"Error: {error_msg}")
-        error_label.setStyleSheet("""
-            QLabel {
-                background-color: #ffebee;
-                border: 1px solid #ffcdd2;
-                border-radius: 4px;
-                padding: 8px;
-                color: #c62828;
-                font-family: 'Consolas', 'Monaco', monospace;
-            }
-        """)
-        error_label.setWordWrap(True)
-        error_layout.addWidget(error_label)
-
-        # Traceback si está disponible
-        if "traceback" in self.error_info:
-            traceback_text = QTextEdit()
-            traceback_text.setPlainText(self.error_info["traceback"])
-            traceback_text.setMaximumHeight(100)
-            traceback_text.setStyleSheet("""
-                QTextEdit {
-                    background-color: #f5f5f5;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    font-family: 'Consolas', 'Monaco', monospace;
-                    font-size: 9px;
-                }
-            """)
-            error_layout.addWidget(QLabel("Traceback detallado:"))
-            error_layout.addWidget(traceback_text)
-
-        parent_layout.addWidget(error_group)
-
-    def create_diagnostic_section(self, parent_layout):
-        """Crea la sección de diagnóstico automático."""
-        diagnostic_group = QGroupBox("[SEARCH] Diagnóstico Automático")
-        diagnostic_group.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-            }
-        """)
-
-        diagnostic_layout = QVBoxLayout(diagnostic_group)
-
-        # Ejecutar diagnósticos
-        diagnostics = self.run_diagnostics()
-
-        for diagnostic in diagnostics:
-            status_icon = (
-                "[CHECK]"
-                if diagnostic["status"] == "ok"
-                else "[ERROR]"
-                if diagnostic["status"] == "error"
-                else "[WARN]"
-            )
-            diagnostic_label = QLabel(f"{status_icon} {diagnostic['description']}")
-
-            if diagnostic["status"] == "error":
-                diagnostic_label.setStyleSheet("color: #d32f2f; font-weight: bold;")
-            elif diagnostic["status"] == "warning":
-                diagnostic_label.setStyleSheet("color: #f57c00; font-weight: bold;")
-            else:
-                diagnostic_label.setStyleSheet("color: #388e3c;")
-
-            diagnostic_layout.addWidget(diagnostic_label)
-
-            if diagnostic.get("details"):
-                details_label = QLabel(f"   → {diagnostic['details']}")
-                details_label.setStyleSheet(
-                    "color: #666; font-size: 11px; margin-left: 20px;"
-                )
-                diagnostic_layout.addWidget(details_label)
-
-        parent_layout.addWidget(diagnostic_group)
-
-    def run_diagnostics(self):
-        """Ejecuta diagnósticos automáticos del módulo."""
-        diagnostics = []
-
-        # 1. Verificar archivos del módulo
-        module_path = Path(f"rexus/modules/{self.module_name}")
-        required_files = ["__init__.py", "model.py", "view.py", "controller.py"]
-
-        for file in required_files:
-            file_path = module_path / file
-            if file_path.exists():
-                diagnostics.append(
-                    {
-                        "status": "ok",
-                        "description": f"Archivo {file} encontrado",
-                        "details": str(file_path),
-                    }
-                )
-            else:
-                diagnostics.append(
-                    {
-                        "status": "error",
-                        "description": f"Archivo {file} faltante",
-                        "details": f"Se esperaba en: {file_path}",
-                    }
-                )
-
-        # 2. Verificar sintaxis de archivos Python
-        for file in ["model.py", "view.py", "controller.py"]:
-            file_path = module_path / file
-            if file_path.exists():
-                try:
-                    with open(file_path, "r", encoding="utf-8") as f:
-                        content = f.read()
-                    compile(content, str(file_path), "exec")
-                    diagnostics.append(
-                        {"status": "ok", "description": f"Sintaxis de {file} correcta"}
-                    )
-                except SyntaxError as e:
-                    diagnostics.append(
-                        {
-                            "status": "error",
-                            "description": f"Error de sintaxis en {file}",
-                            "details": f"Línea {e.lineno}: {e.msg}",
-                        }
-                    )
-                except Exception as e:
-                    diagnostics.append(
-                        {
-                            "status": "warning",
-                            "description": f"No se pudo verificar {file}",
-                            "details": str(e),
-                        }
-                    )
-
-        # 3. Verificar imports principales
-        try:
-            import importlib.util
-
-            spec = importlib.util.spec_from_file_location(
-                f"rexus.modules.{self.module_name}.model", module_path / "model.py"
-            )
-            if spec and spec.loader:
-                diagnostics.append({"status": "ok", "description": "Modelo importable"})
-            else:
-                diagnostics.append(
-                    {"status": "error", "description": "Modelo no importable"}
-                )
-        except Exception as e:
-            diagnostics.append(
-                {
-                    "status": "error",
-                    "description": "Error importando modelo",
-                    "details": str(e),
-                }
-            )
-
-        # 4. Verificar dependencias
-        error_msg = self.error_info.get("error", "")
-        if "ModuleNotFoundError" in error_msg:
-            missing_module = (
-                error_msg.split("'")[1] if "'" in error_msg else "desconocido"
-            )
-            diagnostics.append(
-                {
-                    "status": "error",
-                    "description": f"Dependencia faltante: {missing_module}",
-                    "details": "Ejecutar: pip install " + missing_module,
-                }
-            )
-
-        if "auth_required" in error_msg:
-            diagnostics.append(
-                {
-                    "status": "error",
-                    "description": "Error en decoradores de autenticación",
-                    "details": "Verificar imports de rexus.core.auth_manager",
-                }
-            )
-
-        return diagnostics
-
-    def create_solutions_section(self, parent_layout):
-        """Crea la sección de soluciones sugeridas."""
-        solutions_group = QGroupBox("[TOOL] Soluciones Sugeridas")
-        solutions_group.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                border: 2px solid #ddd;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-            }
-        """)
-
-        solutions_layout = QVBoxLayout(solutions_group)
-
-        # Generar soluciones basadas en el error
-        solutions = self.generate_solutions()
-
-        for i, solution in enumerate(solutions, 1):
-            solution_label = QLabel(f"{i}. {solution['title']}")
-            solution_label.setStyleSheet("font-weight: bold; color: #1976d2;")
-            solutions_layout.addWidget(solution_label)
-
-            if solution.get("description"):
-                desc_label = QLabel(f"   {solution['description']}")
-                desc_label.setStyleSheet("color: #666; margin-left: 15px;")
-                desc_label.setWordWrap(True)
-                solutions_layout.addWidget(desc_label)
-
-            if solution.get("command"):
-                cmd_label = QLabel(f"   Comando: {solution['command']}")
-                cmd_label.setStyleSheet("""
-                    background-color: #f5f5f5;
-                    border: 1px solid #ddd;
-                    border-radius: 4px;
-                    padding: 4px;
-                    margin-left: 15px;
-                    font-family: 'Consolas', 'Monaco', monospace;
-                """)
-                solutions_layout.addWidget(cmd_label)
-
-        parent_layout.addWidget(solutions_group)
-
-    def generate_solutions(self):
-        """Genera soluciones basadas en el tipo de error."""
-        solutions = []
-        error_msg = self.error_info.get("error", "").lower()
-
-        if "modulenotfounderror" in error_msg:
-            solutions.append(
-                {
-                    "title": "Instalar dependencias faltantes",
-                    "description": "Algunas librerías requeridas no están instaladas.",
-                    "command": "pip install -r requirements.txt",
-                }
-            )
-
-        if (
-            "auth_required" in error_msg
-            or "name" in error_msg
+                        or "name" in error_msg
             and "not defined" in error_msg
         ):
             solutions.append(
@@ -511,7 +141,7 @@ class DiagnosticWidget(QWidget):
             from rexus.utils.dialogs import show_info
 
             show_info(
-                "Corrección Automática",
+                ,
                 f"Ejecutando correcciones automáticas para el módulo {self.module_name}...\n\n"
                 "Esto puede tardar unos momentos.",
             )
@@ -545,14 +175,14 @@ class DiagnosticWidget(QWidget):
                 from rexus.utils.dialogs import show_error
 
                 show_error(
-                    "Error en Corrección",
+                    ,
                     f"Algunas correcciones fallaron:\n{result1.stderr}\n{result2.stderr}",
                 )
 
         except Exception as e:
             from rexus.utils.dialogs import show_error
 
-            show_error("Error", f"Error ejecutando correcciones automáticas: {e}")
+            show_error(, f"Error ejecutando correcciones automáticas: {e}")
 
     def report_error(self):
         """Genera un reporte detallado del error."""
@@ -588,14 +218,14 @@ ARCHIVOS INVOLUCRADOS:
             from rexus.utils.dialogs import show_info
 
             show_info(
-                "Reporte Generado",
+                ,
                 f"Reporte de error guardado en:\n{report_file.absolute()}",
             )
 
         except Exception as e:
             from rexus.utils.dialogs import show_error
 
-            show_error("Error", f"Error generando reporte: {e}")
+            show_error(, f"Error generando reporte: {e}")
 
 
 def create_diagnostic_widget(

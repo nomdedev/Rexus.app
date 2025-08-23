@@ -107,7 +107,7 @@ class TestUIInteractions:
                 search_widgets = view.findChildren(QLineEdit)
                 for search_widget in search_widgets:
                     if hasattr(search_widget, 'setPlaceholderText') and 'buscar' in search_widget.placeholderText().lower():
-                        qtbot.keyClicks(search_widget, "TEST001")
+                        qtbot.keyClicks(search_widget, )
                         QTest.keyPress(search_widget, Qt.Key.Key_Enter)
                         qtbot.wait(100)  # Esperar procesamiento
                         break
@@ -139,7 +139,7 @@ class TestUIInteractions:
                 
                 # Simular llenado de campos si existen
                 for line_edit in line_edits[:3]:  # Probar los primeros 3 campos
-                    qtbot.keyClicks(line_edit, "Test Value")
+                    qtbot.keyClicks(line_edit, )
                     qtbot.wait(50)
                 
                 # Test validación - presionar tab para trigger validación
@@ -186,7 +186,7 @@ class TestUIInteractions:
                 
                 # Test datos inválidos
                 if line_edits:
-                    qtbot.keyClicks(line_edits[0], "INVALID@DATA#123")
+                    qtbot.keyClicks(line_edits[0], )
                     QTest.keyPress(line_edits[0], Qt.Key.Key_Tab)
                     qtbot.wait(100)
                 
@@ -229,7 +229,7 @@ class TestUIInteractions:
                         qtbot.wait(100)
                 
         except ImportError:
-            pytest.skip("Vista de inventario no disponible")
+            pytest.skip()
 
     def test_dialog_interactions(self, qtbot, mock_db):
         """Test interacciones con diálogos modales."""
@@ -257,7 +257,7 @@ class TestUIInteractions:
                     # Por seguridad, solo verificamos la existencia del botón
                 
         except ImportError:
-            pytest.skip("Vista de inventario no disponible")
+            pytest.skip()
 
     def test_keyboard_navigation(self, qtbot, mock_db):
         """Test navegación por teclado en formularios."""
@@ -286,7 +286,7 @@ class TestUIInteractions:
                 
                 # Test navegación con Enter
                 if line_edits:
-                    qtbot.keyClicks(line_edits[0], "Test")
+                    qtbot.keyClicks(line_edits[0], )
                     QTest.keyPress(line_edits[0], Qt.Key.Key_Return)
                     qtbot.wait(100)
                 
@@ -314,7 +314,7 @@ class TestUIInteractions:
                 assert isinstance(view, QWidget)
                 
         except ImportError:
-            pytest.skip("Vista de inventario no disponible")
+            pytest.skip()
 
     @pytest.mark.slow
     def test_performance_ui_load(self, qtbot, mock_db):
@@ -332,7 +332,7 @@ class TestUIInteractions:
                 load_time = time.time() - start_time
                 
                 # La vista debería cargar en menos de 5 segundos
-                assert load_time < 5.0, f"Vista tardó {load_time:.2f}s en cargar"
+                assert load_time < 5.0, f
                 
                 qtbot.wait(100)
                 

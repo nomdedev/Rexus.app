@@ -53,7 +53,7 @@ class TestUsuariosController:
             from rexus.modules.usuarios.controller import UsuariosController
             assert UsuariosController is not None
         except ImportError as e:
-            pytest.fail(f"Error crítico: No se pudo importar UsuariosController: {e}")
+            pytest.fail(f)
     
     def test_controller_instantiation_basic(self, mock_dependencies):
         """Test crítico: El controlador se puede instanciar."""
@@ -69,7 +69,7 @@ class TestUsuariosController:
                 assert hasattr(controller, 'view')
                 
         except Exception as e:
-            pytest.fail(f"Error crítico: No se pudo instanciar UsuariosController: {e}")
+            pytest.fail(f)
     
     def test_controller_has_required_authentication_methods(self, mock_dependencies):
         """Test crítico: El controlador tiene métodos de autenticación requeridos."""
@@ -97,7 +97,7 @@ class TestUsuariosController:
                         missing_methods.append(method)
                 
                 if missing_methods:
-                    pytest.fail(f"Error crítico: Métodos de autenticación faltantes: {missing_methods}")
+                    pytest.fail(f)
                     
         except Exception as e:
             pytest.fail(f"Error crítico verificando métodos de autenticación: {e}")
@@ -133,7 +133,7 @@ class TestUsuariosController:
                 
                 # Debe tener al menos algunos métodos básicos
                 if len(existing_methods) == 0:
-                    pytest.fail(f"Error crítico: No hay métodos de gestión de usuarios implementados")
+                    pytest.fail(f)
                 
                 if len(missing_methods) > len(existing_methods):
                     import warnings
@@ -152,7 +152,7 @@ class TestUsuariosController:
                 
                 controller = UsuariosController()
                 
-                assert hasattr(controller, 'cargar_usuarios'), "Método cargar_usuarios faltante"
+                assert hasattr(controller, 'cargar_usuarios'), 
                 assert callable(getattr(controller, 'cargar_usuarios')), "cargar_usuarios no es callable"
                 
                 # Intentar ejecutar el método
@@ -213,7 +213,7 @@ class TestUsuariosController:
                                     password_arg = kwargs['password']
                                 
                                 if password_arg == 'plainpassword':
-                                    pytest.fail("Error crítico de seguridad: Password almacenado en texto plano")
+                                    pytest.fail()
                         except Exception:
                             pass  # Error de implementación, no de seguridad
                     
@@ -241,7 +241,7 @@ class TestUsuariosController:
                     assert True
                 else:
                     import warnings
-                    warnings.warn("UsuariosController carece de integración con AdvancedUserManager")
+                    warnings.warn()
                     
         except ImportError as e:
             pytest.fail(f"Error crítico: No se puede importar AdvancedUserManager: {e}")
@@ -273,7 +273,7 @@ class TestUsuariosController:
                 
                 if len(existing_session_methods) == 0:
                     import warnings
-                    warnings.warn("UsuariosController carece completamente de gestión de sesiones")
+                    warnings.warn()
                 else:
                     # Al menos tiene algunos métodos de sesión
                     assert len(existing_session_methods) > 0
@@ -319,7 +319,7 @@ class TestUsuariosController:
                         assert result is not None
                         
         except Exception as e:
-            pytest.fail(f"Error crítico validando autenticación {username}: {e}")
+            pytest.fail(f)
 
 if __name__ == "__main__":
     pytest.main([__file__, "-v", "--tb=short"])

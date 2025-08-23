@@ -52,9 +52,9 @@ class HerrajesController(BaseController):
                 self.view.refresh_data()
             else:
                 self.cargar_datos_iniciales()
-            print("[HERRAJES] Vista actualizada exitosamente")
+            logger.info("[HERRAJES] Vista actualizada exitosamente")
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error actualizando vista: {e}")
+            logger.info(f"[ERROR HERRAJES] Error actualizando vista: {e}")
 
     def buscar_herrajes(self, termino="", categoria=None):
         """Busca herrajes según criterios específicos."""
@@ -65,13 +65,13 @@ class HerrajesController(BaseController):
                     filtros['categoria'] = categoria
                 herrajes = self.model.buscar_herrajes(filtros)
                 self._actualizar_vista_herrajes(herrajes)
-                print(f"[HERRAJES] Búsqueda completada: {len(herrajes)} herrajes encontrados")
+                logger.info(f"[HERRAJES] Búsqueda completada: {len(herrajes)} herrajes encontrados")
                 return herrajes
             else:
-                print("[WARNING HERRAJES] Método buscar_herrajes no disponible en modelo")
+                logger.info("[WARNING HERRAJES] Método buscar_herrajes no disponible en modelo")
                 return []
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
+            logger.info(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
             return []
 
     def crear_herraje(self, datos_herraje):
@@ -81,16 +81,16 @@ class HerrajesController(BaseController):
                 resultado = self.model.crear_herraje(datos_herraje)
                 if resultado:
                     self.actualizar_vista()
-                    print(f"[HERRAJES] Herraje creado: {datos_herraje.get('nombre', 'N/A')}")
+                    logger.info(f"[HERRAJES] Herraje creado: {datos_herraje.get('nombre', 'N/A')}")
                     return True
                 else:
-                    print("[ERROR HERRAJES] No se pudo crear el herraje")
+                    logger.info("[ERROR HERRAJES] No se pudo crear el herraje")
                     return False
             else:
-                print("[WARNING HERRAJES] Método crear_herraje no disponible en modelo")
+                logger.info("[WARNING HERRAJES] Método crear_herraje no disponible en modelo")
                 return False
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error creando herraje: {e}")
+            logger.info(f"[ERROR HERRAJES] Error creando herraje: {e}")
             return False
 
     def eliminar_herraje(self, herraje_id):
@@ -100,16 +100,16 @@ class HerrajesController(BaseController):
                 resultado = self.model.eliminar_herraje(herraje_id)
                 if resultado:
                     self.actualizar_vista()
-                    print(f"[HERRAJES] Herraje eliminado: ID {herraje_id}")
+                    logger.info(f"[HERRAJES] Herraje eliminado: ID {herraje_id}")
                     return True
                 else:
-                    print("[ERROR HERRAJES] No se pudo eliminar el herraje")
+                    logger.info("[ERROR HERRAJES] No se pudo eliminar el herraje")
                     return False
             else:
-                print("[WARNING HERRAJES] Método eliminar_herraje no disponible en modelo")
+                logger.info("[WARNING HERRAJES] Método eliminar_herraje no disponible en modelo")
                 return False
         except Exception as e:
-            print(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
+            logger.info(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
             return False
 
     def _actualizar_vista_herrajes(self, herrajes):
@@ -121,7 +121,7 @@ class HerrajesController(BaseController):
 
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
-        print("[HERRAJES CONTROLLER] Cargando datos iniciales...")
+        logger.info("[HERRAJES CONTROLLER] Cargando datos iniciales...")
 
         try:
             # Cargar herrajes
@@ -134,10 +134,10 @@ class HerrajesController(BaseController):
             # Cargar estadísticas
             self.cargar_estadisticas()
 
-            print(f"[HERRAJES CONTROLLER] Datos iniciales cargados: {len(herrajes)} herrajes")
+            logger.info(f"[HERRAJES CONTROLLER] Datos iniciales cargados: {len(herrajes)} herrajes")
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error cargando datos iniciales: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando datos iniciales: {e}")
             logging.error(f"Error cargando datos herrajes: {e}")
 
     def cargar_herrajes(self):
@@ -173,7 +173,7 @@ class HerrajesController(BaseController):
                 self.view.cargar_herrajes(herrajes)
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error en búsqueda: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error en búsqueda: {e}")
             logging.error(f"Error en búsqueda herrajes: {e}")
 
     def cargar_estadisticas(self):
@@ -193,7 +193,7 @@ class HerrajesController(BaseController):
                 self.view.actualizar_estadisticas(estadisticas)
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error cargando estadísticas: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando estadísticas: {e}")
             logging.error(f"Error cargando estadísticas herrajes: {e}")
 
     def cargar_herrajes_obra(self, obra_id: int) -> List[Dict]:
@@ -203,7 +203,7 @@ class HerrajesController(BaseController):
                 return self.model.obtener_herrajes_por_obra(obra_id)
             return []
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error cargando herrajes de obra: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando herrajes de obra: {e}")
             logging.error(f"Error cargando herrajes de obra {obra_id}: {e}")
             return []
 
@@ -237,7 +237,7 @@ class HerrajesController(BaseController):
             return proveedores
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo proveedores: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error obteniendo proveedores: {e}")
             logging.error(f"Error obteniendo proveedores: {e}")
             return []
 
@@ -267,10 +267,10 @@ class HerrajesController(BaseController):
                 self.cargar_datos_iniciales()  # Recargar datos
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error en diálogo: {e}")
+            logger.info(f)
             # Fallback básico
             from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.information(self.view, "Herrajes", "Diálogo pendiente de implementar")
+            QMessageBox.information(self.view, , "Diálogo pendiente de implementar")
 
     def crear_herraje(self, data):
         """Crea un nuevo herraje."""
@@ -297,12 +297,12 @@ class HerrajesController(BaseController):
 
             if resultado:
                 self.herraje_creado.emit(data_limpia)
-                print(f"[HERRAJES CONTROLLER] Herraje creado: {data_limpia.get('codigo')}")
+                logger.info(f"[HERRAJES CONTROLLER] Herraje creado: {data_limpia.get('codigo')}")
 
             return resultado
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error creando herraje: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error creando herraje: {e}")
             return False
 
     def actualizar_herraje(self, data):
@@ -330,12 +330,12 @@ class HerrajesController(BaseController):
 
             if resultado:
                 self.herraje_actualizado.emit(data_limpia)
-                print(f"[HERRAJES CONTROLLER] Herraje actualizado: {data_limpia.get('codigo')}")
+                logger.info(f"[HERRAJES CONTROLLER] Herraje actualizado: {data_limpia.get('codigo')}")
 
             return resultado
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error actualizando herraje: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error actualizando herraje: {e}")
             return False
 
     def eliminar_herraje(self, codigo):
@@ -348,7 +348,7 @@ class HerrajesController(BaseController):
             from PyQt6.QtWidgets import QMessageBox
             respuesta = QMessageBox.question(
                 self.view,
-                "Confirmar eliminación",
+                ,
                 f"¿Está seguro de eliminar el herraje {codigo}?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
             )
@@ -359,20 +359,20 @@ class HerrajesController(BaseController):
                 if resultado:
                     self.herraje_eliminado.emit(hash(codigo))  # Emitir señal
                     self.cargar_datos_iniciales()  # Recargar datos
-                    print(f"[HERRAJES CONTROLLER] Herraje eliminado: {codigo}")
+                    logger.info(f"[HERRAJES CONTROLLER] Herraje eliminado: {codigo}")
 
                 return resultado
 
             return False
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error eliminando herraje: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error eliminando herraje: {e}")
             return False
 
     def exportar_herrajes(self, formato="excel"):
         """Exporta herrajes al formato especificado."""
         try:
-            print(f"[HERRAJES CONTROLLER] Iniciando exportación en formato {formato}")
+            logger.info(f"[HERRAJES CONTROLLER] Iniciando exportación en formato {formato}")
             
             if not self.model:
                 self.mostrar_error("Modelo no disponible para exportación")
@@ -399,7 +399,7 @@ class HerrajesController(BaseController):
                     'titulo': 'Listado de Herrajes',
                     'modulo': 'Herrajes',
                     'usuario': self.usuario_actual,
-                    'fecha': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                    'fecha': datetime.now().strftime()
                 }
                 
                 # Generar nombre de archivo
@@ -420,7 +420,7 @@ class HerrajesController(BaseController):
                 
                 if resultado:
                     self.mostrar_exito(f"Herrajes exportados exitosamente a {filename}")
-                    print(f"[HERRAJES CONTROLLER] Herrajes exportados exitosamente a {filename}")
+                    logger.info(f"[HERRAJES CONTROLLER] Herrajes exportados exitosamente a {filename}")
                     return True
                 else:
                     self.mostrar_error("Error durante la exportación")
@@ -434,7 +434,7 @@ class HerrajesController(BaseController):
                 return False
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error exportando herrajes: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error exportando herrajes: {e}")
             self.mostrar_error(f"Error exportando herrajes: {str(e)}")
             return False
 
@@ -474,7 +474,7 @@ class HerrajesController(BaseController):
                         )
 
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error cargando página: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando página: {e}")
             if hasattr(self, 'mostrar_error'):
                 self.mostrar_error(f"Error cargando página: {str(e)}")
 
@@ -490,7 +490,7 @@ class HerrajesController(BaseController):
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
-            print(f"[ERROR HERRAJES CONTROLLER] Error obteniendo total de registros: {e}")
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error obteniendo total de registros: {e}")
             return 0
 
     def obtener_unidades_medida(self) -> List[str]:

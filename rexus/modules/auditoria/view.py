@@ -398,13 +398,13 @@ class AuditoriaView(BaseModuleView, ModuleExportMixin):
                 if hasattr(self.controller, '_cargar_datos_iniciales'):
                     self.controller._cargar_datos_iniciales()
                 else:
-                    print("[AUDITORÍA] Controlador sin método _cargar_datos_iniciales")
+                    logger.info("[AUDITORÍA] Controlador sin método _cargar_datos_iniciales")
             else:
                 # Sin controlador, cargar datos dummy o desde modelo directo
-                print("[AUDITORÍA] Actualizando registros sin controlador")
+                logger.info("[AUDITORÍA] Actualizando registros sin controlador")
                 self.cargar_datos_en_tabla([])  # Datos vacíos por ahora
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error actualizando registros: {e}")
+            logger.info(f"[ERROR AUDITORÍA] Error actualizando registros: {e}")
             self.mostrar_error(f"Error cargando registros: {e}")
 
     def cargar_registros_auditoria(self, registros):
@@ -417,9 +417,9 @@ class AuditoriaView(BaseModuleView, ModuleExportMixin):
         """
         try:
             self.cargar_datos_en_tabla(registros)
-            print(f"[AUDITORÍA] {len(registros)} registros cargados en la tabla")
+            logger.info(f"[AUDITORÍA] {len(registros)} registros cargados en la tabla")
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error cargando registros de auditoría: {e}")
+            logger.info(f"[ERROR AUDITORÍA] Error cargando registros de auditoría: {e}")
             self.mostrar_error(f"Error cargando registros: {e}")
 
     # Alias method for compatibility with accented Spanish name
@@ -443,11 +443,11 @@ class AuditoriaView(BaseModuleView, ModuleExportMixin):
 
                 texto = f"Total: {total} | Críticos: {criticos} | Advertencias: {advertencias}"
                 self.label_estadisticas.setText(texto)
-                print(f"[AUDITORÍA] Estadísticas actualizadas: {texto}")
+                logger.info(f"[AUDITORÍA] Estadísticas actualizadas: {texto}")
             else:
-                print(f"[AUDITORÍA] Estadísticas recibidas: {estadisticas}")
+                logger.info(f"[AUDITORÍA] Estadísticas recibidas: {estadisticas}")
         except Exception as e:
-            print(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
+            logger.info(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
 
     # === MÉTODOS DE PAGINACIÓN ===
 

@@ -4,6 +4,10 @@ Vista de Notificaciones - Rexus.app
 Interfaz gráfica para el sistema de notificaciones y alertas
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sys
 from typing import Optional, List, Dict, Any
 from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QPushButton, 
@@ -262,9 +266,6 @@ class NotificacionesView(QWidget):
             logger.info(f"Notificaciones actualizadas: {len(notificaciones)}")
             
         except Exception as e:
-            logger.error(f"Error actualizando notificaciones: {e}")
-    
-    def clear_notification_widgets(self):
         """Limpia todos los widgets de notificación"""
         for widget in self.notification_widgets:
             widget.setParent(None)
@@ -285,9 +286,6 @@ class NotificacionesView(QWidget):
                 self.refresh_notifications()
                 logger.info(f"Notificación {notif_id} descartada")
         except Exception as e:
-            logger.error(f"Error descartando notificación {notif_id}: {e}")
-    
-    def clear_all_notifications(self):
         """Limpia todas las notificaciones"""
         try:
             if self.model:
@@ -295,9 +293,6 @@ class NotificacionesView(QWidget):
                 self.refresh_notifications()
                 logger.info("Todas las notificaciones limpiadas")
         except Exception as e:
-            logger.error(f"Error limpiando notificaciones: {e}")
-    
-    def mark_all_read(self):
         """Marca todas las notificaciones como leídas"""
         try:
             if self.model:
@@ -305,9 +300,6 @@ class NotificacionesView(QWidget):
                 self.refresh_notifications()
                 logger.info("Todas las notificaciones marcadas como leídas")
         except Exception as e:
-            logger.error(f"Error marcando notificaciones como leídas: {e}")
-    
-    def update_stats(self, count: int):
         """Actualiza las estadísticas mostradas"""
         if count == 0:
             self.stats_label.setText("Sin notificaciones pendientes")
@@ -324,9 +316,6 @@ class NotificacionesView(QWidget):
                 self.refresh_notifications()
                 logger.info(f"Nueva notificación agregada: {titulo}")
         except Exception as e:
-            logger.error(f"Error agregando notificación: {e}")
-
-class NotificationToast(QWidget):
     """Widget flotante para mostrar notificaciones temporales"""
     
     def __init__(self, mensaje: str, tipo: str = 'info', duracion: int = 3000, parent=None):

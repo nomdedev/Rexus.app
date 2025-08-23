@@ -4,6 +4,10 @@ Gestor Central de Optimizaciones para Rexus
 Coordina cache, lazy loading y compresión
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict, Any
 import time
 
@@ -26,24 +30,24 @@ class OptimizationManager:
         try:
             from .intelligent_cache import cache_instance
             self.cache_system = cache_instance
-            print("[CHECK] Cache inteligente inicializado")
+            logger.info()
         except ImportError:
-            print("[WARN] Cache inteligente no disponible")
+            logger.info("[WARN] Cache inteligente no disponible")
 
         try:
             from .lazy_loader import lazy_loader, preload_essential_modules
             self.lazy_loader = lazy_loader
             preload_essential_modules()
-            print("[CHECK] Carga bajo demanda inicializada")
+            logger.info()
         except ImportError:
-            print("[WARN] Carga bajo demanda no disponible")
+            logger.info("[WARN] Carga bajo demanda no disponible")
 
         try:
             from .backup_compressor import backup_compressor
             self.backup_compressor = backup_compressor
-            print("[CHECK] Compresión de backups inicializada")
+            logger.info()
         except ImportError:
-            print("[WARN] Compresión de backups no disponible")
+            logger.info("[WARN] Compresión de backups no disponible")
 
     def get_performance_report(self) -> Dict[str, Any]:
         """Genera reporte de rendimiento"""

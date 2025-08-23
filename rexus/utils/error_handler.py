@@ -2,6 +2,10 @@
 Sistema mejorado de manejo de errores para Rexus.app
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sys
 from typing import Callable, Any
 from rexus.utils.logging_config import get_logger
@@ -34,7 +38,7 @@ exc_info=(exc_type,
 
             msg_box = QMessageBox()
             msg_box.setIcon(QMessageBox.Icon.Critical)
-            msg_box.setWindowTitle("Error - Rexus.app")
+            msg_box.setWindowTitle()
             msg_box.setText("Ha ocurrido un error inesperado")
             msg_box.setDetailedText(f"Detalles técnicos:\n{error_message}")
             msg_box.setInformativeText(
@@ -44,7 +48,7 @@ exc_info=(exc_type,
             msg_box.exec()
         except (ImportError, AttributeError, RuntimeError):
             # Fallback si PyQt no está disponible
-            print(f"ERROR: {error_message}")
+            logger.info(f"ERROR: {error_message}")
 
 def error_boundary(func: Callable) -> Callable:
     """Decorador para capturar errores en funciones"""
@@ -53,20 +57,7 @@ def error_boundary(func: Callable) -> Callable:
             return func(*args, **kwargs)
         except Exception as e:
             logger = get_logger('errors')
-            logger.error(f"Error in {func.__name__}: {str(e)}", exc_info=True)
-
-            # Re-raise para que el llamador pueda manejar el error
-            raise
-    return wrapper
-
-def safe_execute(func: Callable, default_return=None, log_errors=True) -> Any:
-    """Ejecuta función de forma segura con valor por defecto"""
-    try:
-        return func()
-    except Exception as e:
-        if log_errors:
-            logger = get_logger('errors')
-            logger.error(f"Safe execution failed: {str(e)}", exc_info=True)
+                        logger.error(f"Safe execution failed: {str(e)}", exc_info=True)
         return default_return
 
 def validate_database_connection(func: Callable) -> Callable:

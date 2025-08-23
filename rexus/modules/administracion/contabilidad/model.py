@@ -19,7 +19,7 @@ try:
     from rexus.utils.sql_query_manager import SQLQueryManager
     SQL_SYSTEM_AVAILABLE = True
 except ImportError as e:
-    logger.warning(f"SQL System not available in contabilidad: {e}")
+    logger.warning(f)
     SQL_SYSTEM_AVAILABLE = False
 
 
@@ -104,64 +104,10 @@ class ContabilidadModel:
                 else:
                     logger.warning(f"La tabla '{tabla}' no existe en la base de datos")
 
-        except Exception as e:
-            logger.error(f"Error verificando tablas: {e}")
-
-    # MÉTODOS PARA LIBRO CONTABLE
-
-    def obtener_asientos_contables(self,
-fecha_desde=None,
-        fecha_hasta=None,
-        tipo=None):
-        """
-        Obtiene asientos del libro contable con filtros opcionales.
-
-        Args:
-            fecha_desde (date): Fecha desde
-            fecha_hasta (date): Fecha hasta
-            tipo (str): Tipo de asiento
-
-        Returns:
-            List[Dict]: Lista de asientos contables
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["1=1"]
-            params = []
-
-            if fecha_desde:
-                conditions.append("fecha_asiento >= ?")
-                params.append(fecha_desde)
-
-            if fecha_hasta:
-                conditions.append("fecha_asiento <= ?")
-                params.append(fecha_hasta)
-
-            if tipo and tipo != "Todos":
-                conditions.append("tipo_asiento = ?")
-                params.append(tipo)
-
-            # Usar SQLQueryManager si está disponible
-            if self.sql_manager:
-                try:
-                    query = self.sql_manager.get_query('contabilidad', 'select_asientos_contables')
-                    if query:
-                        # Preparar parámetros para el script SQL: fecha_desde, fecha_desde, fecha_hasta, fecha_hasta, tipo, tipo, tipo
-                        script_params = [
-                            fecha_desde, fecha_desde,  # Para el primer filtro
-                            fecha_hasta, fecha_hasta,  # Para el segundo filtro
-                            tipo, tipo, tipo  # Para el tercer filtro (tipo != "Todos")
-                        ]
-                        cursor.execute(query, script_params)
-                    else:
-                        raise Exception("No se pudo cargar el query SQL")
+        except Exception as e:                        raise Exception("No se pudo cargar el query SQL")
                 except Exception as e:
-                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-                    # Fallback con query validada
+            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+            # FIXME: Specify concrete exception types instead of generic Exception# Fallback con query validada
                     tabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         SELECT
@@ -202,37 +148,10 @@ fecha_desde=None,
 
             return asientos
 
-        except Exception as e:
-            logger.error(f"Error obteniendo asientos: {e}")
-            return []
-
-    def crear_asiento_contable(self, datos_asiento):
-        """
-        Crea un nuevo asiento contable.
-
-        Args:
-            datos_asiento (dict): Datos del asiento
-
-        Returns:
-            int: ID del asiento creado o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Generar número de asiento usando SQLQueryManager
-            if self.sql_manager:
-                try:
-                    query = self.sql_manager.get_query('contabilidad', 'select_max_numero_asiento')
-                    if query:
-                        cursor.execute(query)
-                    else:
-                        raise Exception("No se pudo cargar query SQL")
+        except Exception as e:                        raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-                    # Usar query parametrizada segura
+            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+            # FIXME: Specify concrete exception types instead of generic Exception# Usar query parametrizada segura
                     query = "SELECT MAX(numero_asiento) FROM libro_contable"
                     cursor.execute(query)
             else:
@@ -268,8 +187,8 @@ fecha_desde=None,
                     else:
                         raise Exception("No se pudo cargar query SQL")
                 except Exception as e:
-                    logger.error(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
+            # FIXME: Specify concrete exception types instead of generic Exceptiontabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         INSERT INTO [{tabla_validada}]
                         (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
@@ -340,55 +259,10 @@ fecha_desde=None,
             logger.info(f"Asiento contable creado con ID: {asiento_id}")
             return asiento_id
 
-        except Exception as e:
-            logger.error(f"Error creando asiento: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return None
-
-    def actualizar_asiento_contable(self, asiento_id, datos_asiento):
-        """
-        Actualiza un asiento contable existente.
-
-        Args:
-            asiento_id (int): ID del asiento
-            datos_asiento (dict): Nuevos datos del asiento
-
-        Returns:
-            bool: True si fue exitoso
-        """
-        if not self.db_connection:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Calcular saldo
-            debe = float(datos_asiento.get('debe', 0))
-            haber = float(datos_asiento.get('haber', 0))
-            saldo = debe - haber
-
-            # Actualizar asiento usando script SQL seguro
-            if self.sql_loader:
-                try:
-                    script_content = self.sql_loader.load_script('contabilidad/update_asiento_contable')
-                    if script_content:
-                        cursor.execute(script_content, (
-                            datos_asiento.get('fecha_asiento'),
-                            datos_asiento.get('tipo_asiento'),
-                            datos_asiento.get('concepto'),
-                            datos_asiento.get('referencia', ''),
-                            debe,
-                            haber,
-                            saldo,
-                            datos_asiento.get('estado', 'ACTIVO'),
-                            asiento_id
-                        ))
-                    else:
-                        raise Exception("No se pudo cargar script SQL")
+        except Exception as e:                        raise Exception("No se pudo cargar script SQL")
                 except Exception as e:
-                    logger.error(f"No se pudo usar script SQL: {e}. Usando fallback seguro.")
-                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
+            logger.exception(f"No se pudo usar script SQL: {e}. Usando fallback seguro.")
+            # FIXME: Specify concrete exception types instead of generic Exceptiontabla_validada = self._validate_table_name(self.tabla_libro_contable)
                     query = f"""
                         UPDATE [{tabla_validada}]
                         SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
@@ -439,8 +313,6 @@ haber = ?,
             return True
 
         except Exception as e:
-            logger.error(f"Error actualizando asiento: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
             return False
 
@@ -501,8 +373,6 @@ haber = ?,
             return recibos
 
         except Exception as e:
-            logger.error(f"Error obteniendo recibos: {e}")
-            return []
 
     def crear_recibo(self, datos_recibo):
         """
@@ -556,8 +426,6 @@ haber = ?,
             return recibo_id
 
         except Exception as e:
-            logger.error(f"Error creando recibo: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
             return None
 
@@ -590,8 +458,6 @@ haber = ?,
             return True
 
         except Exception as e:
-            logger.error(f"Error marcando recibo como impreso: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
             return False
 
@@ -647,8 +513,6 @@ haber = ?,
             return pagos
 
         except Exception as e:
-            logger.error(f"Error obteniendo pagos por obra: {e}")
-            return []
 
     def crear_pago_obra(self, datos_pago):
         """
@@ -694,8 +558,6 @@ haber = ?,
             return pago_id
 
         except Exception as e:
-            logger.error(f"Error creando pago por obra: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
             return None
 
@@ -751,8 +613,6 @@ haber = ?,
             return pagos
 
         except Exception as e:
-            logger.error(f"Error obteniendo pagos de materiales: {e}")
-            return []
 
     def crear_pago_material(self, datos_pago):
         """
@@ -806,8 +666,6 @@ haber = ?,
             return pago_id
 
         except Exception as e:
-            logger.error(f"Error creando pago de material: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
             return None
 
@@ -883,8 +741,6 @@ haber = ?,
             return estadisticas
 
         except Exception as e:
-            logger.error(f"Error obteniendo estadísticas: {e}")
-            return {}
 
     def obtener_balance_general(self, fecha_desde=None, fecha_hasta=None):
         """
@@ -939,8 +795,6 @@ haber = ?,
             return balance
 
         except Exception as e:
-            logger.error(f"Error obteniendo balance: {e}")
-            return {}
 
     def obtener_flujo_caja(self, fecha_desde=None, fecha_hasta=None):
         """
@@ -1007,5 +861,3 @@ haber = ?,
             return flujo
 
         except Exception as e:
-            logger.error(f"Error obteniendo flujo de caja: {e}")
-            return {}

@@ -7,46 +7,7 @@ Implementa funciones de seguridad críticas
 import hashlib
 import secrets
 import re
-from typing import Optional
-import logging
-
-# Re-exportar desde core para compatibilidad
-try:
-    from ..core.security import SecurityManager, init_security_manager, get_security_manager
-except ImportError:
-    # Fallback si core no está disponible
-    SecurityManager = None
-    init_security_manager = None
-    get_security_manager = None
-
-# Configuración de logging para seguridad
-logging.basicConfig(level=logging.INFO)
-
-class SecurityUtils:
-    """Utilidades de seguridad para la aplicacion"""
-
-    @staticmethod
-    def hash_password(password: str) -> str:
-        """Genera hash seguro de contraseña usando PBKDF2"""
-        salt = secrets.token_hex(32)
-        pwdhash = hashlib.pbkdf2_hmac('sha256',
-password.encode('utf-8'),
-            salt.encode('utf-8'),
-            100000)
-        return salt + pwdhash.hex()
-
-    @staticmethod
-    def verify_password(password: str, hashed: str) -> bool:
-        """Verifica contraseña contra hash"""
-        try:
-            salt = hashed[:64]
-            stored_hash = hashed[64:]
-            pwdhash = hashlib.pbkdf2_hmac('sha256',
-password.encode('utf-8'),
-                salt.encode('utf-8'),
-                100000)
-            return pwdhash.hex() == stored_hash
-        except (ValueError, TypeError, UnicodeDecodeError, IndexError):
+                    except (ValueError, TypeError, UnicodeDecodeError, IndexError):
             return False
 
     @staticmethod

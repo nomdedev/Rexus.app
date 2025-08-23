@@ -25,6 +25,10 @@ Optimizador de Consultas
 Sistema para prevenir problemas N+1 y mejorar el rendimiento de queries.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import time
 import functools
 import hashlib
@@ -124,7 +128,7 @@ query_key: str,
                 # Consulta en lote - la función debe saber manejar múltiples queries
                 return func(queries)
         except Exception as e:
-            print(f"[QUERY_OPTIMIZER] Error ejecutando lote {query_key}: {e}")
+            logger.info(f"[QUERY_OPTIMIZER] Error ejecutando lote {query_key}: {e}")
             return None
 
 
@@ -170,7 +174,7 @@ func: Callable,
 
                 # Log consultas lentas
                 if execution_time > self.slow_query_threshold:
-                    print(f"[SLOW_QUERY] {func.__name__} took {execution_time:.3f}s")
+                    logger.info(f"[SLOW_QUERY] {func.__name__} took {execution_time:.3f}s")
 
         return wrapper
 

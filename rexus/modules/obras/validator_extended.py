@@ -7,6 +7,10 @@ Validaciones completas y robustas para el módulo obras.
 Incluye validaciones de seguridad, sanitización y reglas de negocio.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 from datetime import datetime, date
 from typing import Dict, List, Tuple, Any

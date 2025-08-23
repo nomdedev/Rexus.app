@@ -7,6 +7,10 @@ Vista de Obras Modernizada - Sistema de pestañas integrado
 Migración de vista alternada cronograma/tabla a pestañas unificadas
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import datetime
 from typing import Any, Dict, List
 
@@ -142,7 +146,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         acciones_panel = self.crear_panel_acciones_obras()
         layout.addWidget(acciones_panel)
 
-        self.tab_widget.addTab(tab_obras, "Obras")
+        self.tab_widget.addTab(tab_obras, )
 
     def crear_panel_control_obras(self) -> QFrame:
         """Crea el panel de control para la pestaña de obras."""
@@ -258,7 +262,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         self.tabla_obras.setSelectionBehavior(self.tabla_obras.SelectionBehavior.SelectRows)
         self.tabla_obras.setSortingEnabled(True)
 
-        print("[OBRAS] Tabla configurada correctamente")
+        logger.info("[OBRAS] Tabla configurada correctamente")
 
     def cargar_obras_en_tabla(self, obras_data=None):
         """Carga las obras en la tabla principal usando componente optimizado."""
@@ -287,7 +291,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             # Cargar datos en la tabla optimizada
             self.tabla_obras.load_data(obras_data, update_progress)
 
-            print(f"[OBRAS] Cargadas {len(obras_data)} obras en tabla optimizada")
+            logger.info(f"[OBRAS] Cargadas {len(obras_data)} obras en tabla optimizada")
 
             # Poblar la tabla
             for row, obra in enumerate(obras_data):
@@ -377,10 +381,10 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                     self.tabla_obras.setCellWidget(row, 10, btn_acciones)
 
                 except Exception as e:
-                    print(f"Error cargando fila {row}: {str(e)}")
+                    logger.info(f"Error cargando fila {row}: {str(e)}")
                     continue
 
-            print(f"Cargadas {len(obras_data)} obras en la tabla")
+            logger.info(f"Cargadas {len(obras_data)} obras en la tabla")
 
         except Exception as e:
             show_error(self, "Error", f"Error cargando obras en tabla: {str(e)}")
@@ -1175,7 +1179,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                 from PyQt6.QtWidgets import QMessageBox
                 respuesta = QMessageBox.question(
                     self,
-                    "Confirmar Eliminación",
+                    ,
                     f"¿Está seguro de eliminar la obra ID {obra_id}?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
@@ -1210,7 +1214,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             try:
                 self.cronograma_widget.cargar_obras(obras_cronograma)
             except Exception as e:
-                print(f"Error al cargar obras en cronograma: {e}")
+                logger.info(f"Error al cargar obras en cronograma: {e}")
 
     def exportar_cronograma(self):
         """Exporta el cronograma actual."""
@@ -1222,7 +1226,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             año = self.combo_año.currentText()
             self.combo_estado_cronograma.currentText()
 
-            filename = f"cronograma_obras_{vista.lower()}_{año}.xlsx"
+            filename = f
 
             # Datos del cronograma para exportar
             datos_cronograma = self.obtener_datos_cronograma()
@@ -1249,7 +1253,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                     self.cronograma_widget.render(painter)
                 else:
                     # Fallback para imprimir información básica
-                    painter.drawText(100, 100, "Cronograma de Obras")
+                    painter.drawText(100, 100, )
                     painter.drawText(100, 150, f"Vista: {self.combo_vista_cronograma.currentText()}")
                     painter.drawText(100, 200, f"Año: {self.combo_año.currentText()}")
 
@@ -1318,7 +1322,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             if dialogo.exec() == QDialog.DialogCode.Accepted:
                 dialogo.obtener_datos()
                 # Aquí se enviarían los datos al controlador
-                show_success(self, "Éxito", "Presupuesto creado exitosamente")
+                show_success(self, , "Presupuesto creado exitosamente")
         except ImportError:
             # Fallback simple
             show_warning(self, "En desarrollo", "Funcionalidad de presupuesto en desarrollo")
@@ -1331,7 +1335,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             dialogo.exec()
         except ImportError:
             # Fallback simple
-            show_warning(self, "En desarrollo", "Comparación de presupuestos en desarrollo")
+            show_warning(self, , "Comparación de presupuestos en desarrollo")
 
     def exportar_presupuestos(self):
         """Exporta presupuestos filtrados."""
@@ -1354,7 +1358,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             export_manager = ExportManager()
             export_manager.exportar_presupuestos(datos_export, filename)
 
-            show_success(self, "Éxito", f"Presupuestos exportados como {filename}")
+            show_success(self, , f"Presupuestos exportados como {filename}")
         except Exception as e:
             show_error(self, "Error", f"Error al exportar: {str(e)}")
 
@@ -1374,7 +1378,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                         painter = QPainter(printer)
 
                         # Crear contenido del presupuesto
-                        painter.drawText(100, 100, f"Presupuesto: {item_actual.text()}")
+                        painter.drawText(100, 100, f)
                         painter.drawText(100, 150, f"Fecha: {datetime.datetime.now().strftime('%Y-%m-%d')}")
 
                         painter.end()

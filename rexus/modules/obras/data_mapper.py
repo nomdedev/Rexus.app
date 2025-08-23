@@ -3,6 +3,10 @@ Mapeo centralizado de datos para obras.
 Evita índices hardcodeados y facilita mantenimiento.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict, Any, Tuple, List
 from datetime import datetime
 
@@ -57,7 +61,7 @@ class ObrasDataMapper:
                 'responsable': cls._extraer_campo(tupla_obra, 'responsable')
             }
         except Exception as e:
-            print(f"[MAPPER] Error mapeando tupla: {e}")
+            logger.info(f"[MAPPER] Error mapeando tupla: {e}")
             return cls._dict_vacio()
 
     @classmethod
@@ -83,7 +87,7 @@ class ObrasDataMapper:
                 cls._formatear_presupuesto_tabla(obra_dict.get('presupuesto_inicial', 0))
             ]
         except Exception as e:
-            print(f"[MAPPER] Error convirtiendo a fila: {e}")
+            logger.info(f"[MAPPER] Error convirtiendo a fila: {e}")
             return [''] * 8
 
     @classmethod

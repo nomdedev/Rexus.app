@@ -1,5 +1,9 @@
 """Controlador de Producción"""
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import QObject
 
 
@@ -9,4 +13,4 @@ class ProduccionController(QObject):
         self.model = model
         self.view = view
         self.db_connection = db_connection
-        self.usuario_actual = "SISTEMA"
+        self.usuario_actual = 

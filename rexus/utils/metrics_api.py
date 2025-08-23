@@ -58,28 +58,7 @@ class MetricsAPIHandler(BaseHTTPRequestHandler):
                 self._send_error(404, "Endpoint not found")
                 
         except Exception as e:
-            self.logger.error(f"Error processing GET request: {e}")
-            self._send_error(500, f"Internal server error: {str(e)}")
-            
-    def do_POST(self):
-        """Maneja requests POST para comandos"""
-        try:
-            parsed_url = urlparse(self.path)
-            path = parsed_url.path
-            
-            if path == '/api/metrics/start-monitoring':
-                self._handle_start_monitoring()
-            elif path == '/api/metrics/stop-monitoring':
-                self._handle_stop_monitoring()
-            elif path == '/api/metrics/reset-stats':
-                self._handle_reset_stats()
-            else:
-                self._send_error(404, "Endpoint not found")
-                
-        except Exception as e:
-            self.logger.error(f"Error processing POST request: {e}")
-            self._send_error(500, f"Internal server error: {str(e)}")
-            
+            self.            
     def _handle_system_metrics(self):
         """Endpoint para métricas del sistema"""
         try:
@@ -276,30 +255,7 @@ class MetricsAPIHandler(BaseHTTPRequestHandler):
             
             self.wfile.write(json_data.encode())
         except Exception as e:
-            self.logger.error(f"Error sending JSON response: {e}")
-            
-    def _send_error(self, status_code: int, message: str):
-        """Envía respuesta de error"""
-        try:
-            error_data = {
-                'error': True,
-                'status_code': status_code,
-                'message': message,
-                'timestamp': datetime.now().isoformat()
-            }
-            
-            json_data = json.dumps(error_data, indent=2)
-            
-            self.send_response(status_code)
-            self.send_header('Content-Type', 'application/json')
-            self.send_header('Access-Control-Allow-Origin', '*')
-            self.end_headers()
-            
-            self.wfile.write(json_data.encode())
-        except Exception as e:
-            self.logger.error(f"Error sending error response: {e}")
-            
-    def do_OPTIONS(self):
+            self.    def do_OPTIONS(self):
         """Maneja requests OPTIONS para CORS"""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')

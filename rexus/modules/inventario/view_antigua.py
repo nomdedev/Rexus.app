@@ -6,6 +6,10 @@ Copyright (c) 2024 Rexus.app
 Vista de Inventario Mejorada - Soluciona limitaciones de paginación y funcionalidades faltantes
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, pyqtSignal, QTimer
 from PyQt6.QtGui import QColor
 from PyQt6.QtWidgets import (
@@ -879,7 +883,7 @@ class InventarioView(BaseModuleView):
             self.lbl_valor_total.setText(f"Valor total: ${valor_total:,.2f}")
 
         except Exception as e:
-            print(f"Error actualizando estadísticas: {e}")
+            logger.info(f"Error actualizando estadísticas: {e}")
 
     def _on_dangerous_content(self, campo, contenido):
         """Maneja detección de contenido peligroso XSS."""
@@ -918,13 +922,13 @@ class InventarioView(BaseModuleView):
                     button = getattr(self, button_name)
                     if button and hasattr(button, 'clicked'):
                         button.clicked.connect(callback)
-                        print(f"[INVENTARIO] Conectado {button_name} -> {controller_method}")
+                        logger.info(f"[INVENTARIO] Conectado {button_name} -> {controller_method}")
                     else:
-                        print(f"[INVENTARIO] Botón {button_name} no válido o ya destruido")
+                        logger.info(f"[INVENTARIO] Botón {button_name} no válido o ya destruido")
                 else:
-                    print(f"[INVENTARIO] Saltando {button_name} - no disponible")
+                    logger.info(f"[INVENTARIO] Saltando {button_name} - no disponible")
             except Exception as e:
-                print(f"[INVENTARIO] Error conectando {button_name}: {e}")
+                logger.info(f"[INVENTARIO] Error conectando {button_name}: {e}")
 
     def obtener_producto_seleccionado_id(self):
         """Obtiene el ID del producto seleccionado."""
@@ -985,7 +989,7 @@ class InventarioView(BaseModuleView):
         
         # Por ahora, agregar un placeholder
         from rexus.ui.components.base_components import RexusLabel
-        placeholder = RexusLabel("Inventario General - Tabla principal con todos los perfiles")
+        placeholder = RexusLabel()
         layout.addWidget(placeholder)
         
         return widget
@@ -1002,7 +1006,7 @@ class InventarioView(BaseModuleView):
         layout = QVBoxLayout(widget)
         
         # Panel de control para obras
-        panel_control = QGroupBox("Control de Separación por Obras")
+        panel_control = QGroupBox()
         control_layout = QHBoxLayout(panel_control)
         
         # Botón para cargar obras
@@ -1076,7 +1080,7 @@ class InventarioView(BaseModuleView):
         layout = QVBoxLayout(widget)
         
         # Estadísticas generales
-        grupo_stats = QGroupBox("Estadísticas de Separación")
+        grupo_stats = QGroupBox()
         stats_layout = QVBoxLayout(grupo_stats)
         
         self.lbl_total_obras = RexusLabel("Obras activas: 0")
@@ -1101,7 +1105,7 @@ class InventarioView(BaseModuleView):
         layout = QVBoxLayout(widget)
         
         # Información de la obra
-        grupo_info = QGroupBox(f"Obra: {obra_nombre}")
+        grupo_info = QGroupBox(f)
         info_layout = QHBoxLayout(grupo_info)
         
         info_layout.addWidget(RexusLabel(f"ID: {obra_id}"))
@@ -1181,7 +1185,7 @@ class InventarioView(BaseModuleView):
             # Abrir diálogo para seleccionar archivo PDF
             archivo_pdf, _ = QFileDialog.getOpenFileName(
                 self,
-                "Seleccionar Presupuesto PDF",
+                ,
                 "",
                 "Archivos PDF (*.pdf);;Todos los archivos (*)"
             )
@@ -1202,7 +1206,7 @@ class InventarioView(BaseModuleView):
                             'obra_nombre': obra_seleccionada['nombre']
                         })
                     else:
-                        QMessageBox.warning(self, "Advertencia", "Debe seleccionar una obra")
+                        QMessageBox.warning(self, , "Debe seleccionar una obra")
                         
         except Exception as e:
             QMessageBox.critical(self, "Error", f"Error al cargar presupuesto: {str(e)}")

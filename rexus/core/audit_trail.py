@@ -4,6 +4,10 @@ Sistema de Audit Trail para Rexus.app
 Maneja el registro de cambios en la base de datos con timestamps
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sys
 from datetime import datetime
 from typing import Optional, Dict, List
@@ -74,7 +78,7 @@ class AuditTrail:
             return True
 
         except Exception as e:
-            print(f"Error en audit trail: {e}")
+            logger.info(f"Error en audit trail: {e}")
             return False
 
     def _create_audit_table_if_not_exists(self):
@@ -106,7 +110,7 @@ class AuditTrail:
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"Error creando tabla de auditoría: {e}")
+            logger.info(f"Error creando tabla de auditoría: {e}")
 
     def _get_client_ip(self):
         """Obtiene la IP del cliente"""
@@ -116,7 +120,7 @@ class AuditTrail:
             ip_address = socket.gethostbyname(hostname)
             return ip_address
         except (socket.error, OSError) as e:
-            print(f"[WARNING AUDIT_TRAIL] Could not get IP address: {e}")
+            logger.info(f"[WARNING AUDIT_TRAIL] Could not get IP address: {e}")
             return "127.0.0.1"
 
     def get_audit_log(self, tabla: str = None, usuario_id: int = None,
@@ -181,7 +185,7 @@ class AuditTrail:
             return results
 
         except Exception as e:
-            print(f"Error obteniendo audit log: {e}")
+            logger.info(f"Error obteniendo audit log: {e}")
             return []
 
     def get_record_history(self, tabla: str, registro_id: int) -> List[Dict]:
@@ -214,7 +218,7 @@ class AuditTrail:
             return results
 
         except Exception as e:
-            print(f"Error obteniendo historial de registro: {e}")
+            logger.info(f"Error obteniendo historial de registro: {e}")
             return []
 
     def get_user_activity(self, usuario_id: int, limit: int = 50) -> List[Dict]:
@@ -261,11 +265,11 @@ class AuditTrail:
             deleted_count = cursor.rowcount
             self.db_connection.commit()
 
-            print(f"Eliminados {deleted_count} registros de auditoría antiguos")
+            logger.info(f"Eliminados {deleted_count} registros de auditoría antiguos")
             return deleted_count
 
         except Exception as e:
-            print(f"Error eliminando registros antiguos: {e}")
+            logger.info(f"Error eliminando registros antiguos: {e}")
             return 0
 
 
@@ -462,12 +466,12 @@ record_id: int,
                         fecha_actualizacion DATETIME DEFAULT GETDATE()
                 """)
 
-                print(f"Columnas de timestamp agregadas a {self.tabla_name}")
+                logger.info(f"Columnas de timestamp agregadas a {self.tabla_name}")
 
             self.db_connection.commit()
 
         except Exception as e:
-            print(f"Error agregando columnas de timestamp: {e}")
+            logger.info(f"Error agregando columnas de timestamp: {e}")
 
 
 # Instancia global del sistema de auditoría

@@ -3,6 +3,10 @@ Widget de Ayuda de Atajos de Teclado - Rexus.app
 Muestra una ventana emergente con todos los atajos disponibles
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict
 
 from PyQt6.QtCore import Qt
@@ -127,9 +131,9 @@ class ShortcutHelpDialog(QDialog):
     def print_shortcuts(self):
         """Imprime o exporta la lista de atajos."""
         # En un entorno real, esto abriría un diálogo de impresión
-        print("Imprimiendo atajos de teclado...")
+        logger.info("Imprimiendo atajos de teclado...")
         for action, shortcut in self.shortcuts.items():
-            print(f"{action}: {shortcut}")
+            logger.info(f"{action}: {shortcut}")
 
 
 class KeyboardHelpWidget:

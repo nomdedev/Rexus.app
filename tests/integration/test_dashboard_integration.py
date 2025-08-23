@@ -19,7 +19,7 @@ try:
     from rexus.ui.dashboard.widgets import KPIWidget, ChartWidget, ActivityWidget
     from rexus.ui.components.theme_manager import ThemeManager
 except ImportError as e:
-    pytest.skip(f"Dashboard components not available: {e}", allow_module_level=True)
+    pytest.skip(f, allow_module_level=True)
 
 
 class TestDashboardIntegration:

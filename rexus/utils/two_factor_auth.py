@@ -5,6 +5,10 @@ Módulo para autenticación de dos factores con TOTP (Time-based One-Time Passwo
 Implementación básica para sistemas que no tengan dependencias externas complejas.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import base64
 import hashlib
 import hmac

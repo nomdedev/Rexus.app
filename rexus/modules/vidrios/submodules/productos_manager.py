@@ -8,15 +8,11 @@ Responsabilidades:
 - Gestión de tipos y categorías de vidrio
 """
 
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
-logger = get_logger("vidrios.productos_manager")
+logger = get_logger()
 
 # SQLQueryManager unificado
 try:
@@ -31,7 +27,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -120,132 +116,7 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            logger.error(f"Error creando vidrio: {str(e)}")
-            return False
-    def actualizar_vidrio(self,
-vidrio_id: int,
-        datos_vidrio: Dict[str,
-        Any]) -> bool:
-        """Actualiza un producto vidrio existente."""
-        if not self.db_connection or not vidrio_id:
-            return False
-
-        try:
-            # Validar y sanitizar datos
-            datos_sanitizados = self._validar_datos_vidrio(datos_vidrio)
-            datos_sanitizados["vidrio_id"] = vidrio_id
-
-            cursor = self.db_connection.cursor()
-
-            # Usar SQL externo para actualización
-            query = self.sql_manager.get_query(self.sql_path, "actualizar_vidrio")
-            cursor.execute(query, datos_sanitizados)
-
-            self.db_connection.commit()
-            return cursor.rowcount > 0
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error actualizando vidrio: {str(e)}")
-            return False
-    def eliminar_vidrio(self, vidrio_id: int) -> bool:
-        """Elimina un producto vidrio (soft delete)."""
-        if not self.db_connection or not vidrio_id:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Usar SQL externo para eliminación
-            query = self.sql_manager.get_query(self.sql_path, "eliminar_vidrio")
-            cursor.execute(query, {"vidrio_id": vidrio_id})
-
-            self.db_connection.commit()
-            return cursor.rowcount > 0
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error eliminando vidrio: {str(e)}")
-            return False
-
-    def _validar_datos_vidrio(self, datos: Dict[str, Any]) -> Dict[str, Any]:
-        """Valida y sanitiza datos de vidrio."""
-        # Campos requeridos
-        campos_requeridos = ["tipo", "espesor", "precio"]
-        for campo in campos_requeridos:
-            if campo not in datos or not datos[campo]:
-                raise ValueError(f"Campo requerido faltante: {campo}")
-
-        # Sanitizar datos
-        datos_sanitizados = {}
-
-        # Strings
-        datos_sanitizados["tipo"] = sanitize_string(
-            datos.get("tipo", "")
-        )
-        datos_sanitizados["descripcion"] = sanitize_string(
-            datos.get("descripcion", "")
-        )
-        datos_sanitizados["proveedor"] = sanitize_string(
-            datos.get("proveedor", "")
-        )
-        datos_sanitizados["codigo"] = sanitize_string(
-            datos.get("codigo", "")
-        )
-
-        # Números
-        datos_sanitizados["espesor"] = self.sanitizer.sanitize_numeric(
-            datos.get("espesor", 0), min_val=0
-        )
-        datos_sanitizados["precio"] = self.sanitizer.sanitize_numeric(
-            datos.get("precio", 0), min_val=0
-        )
-        datos_sanitizados["largo"] = self.sanitizer.sanitize_numeric(
-            datos.get("largo", 0), min_val=0
-        )
-        datos_sanitizados["ancho"] = self.sanitizer.sanitize_numeric(
-            datos.get("ancho", 0), min_val=0
-        )
-
-        # Enteros
-        datos_sanitizados["stock"] = self.sanitizer.sanitize_integer(
-            datos.get("stock", 0), min_val=0
-        )
-        datos_sanitizados["stock_minimo"] = self.sanitizer.sanitize_integer(
-            datos.get("stock_minimo", 0), min_val=0
-        )
-
-        # Validaciones específicas
-        if datos_sanitizados["precio"] <= 0:
-            raise ValueError("El precio debe ser mayor a 0")
-
-        if datos_sanitizados["espesor"] <= 0:
-            raise ValueError("El espesor debe ser mayor a 0")
-
-        if not datos_sanitizados["tipo"]:
-            raise ValueError("El tipo de vidrio es requerido")
-
-        return datos_sanitizados
-    def obtener_tipos_vidrio(self) -> List[str]:
-        """Obtiene los tipos de vidrio disponibles."""
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Usar SQL externo para consulta
-            query = self.sql_manager.get_query(self.sql_path, "obtener_tipos_vidrio")
-            cursor.execute(query)
-
-            tipos = [row[0] for row in cursor.fetchall()]
-            return tipos
-
-        except Exception as e:
-            logger.error(f"Error obteniendo tipos de vidrio: {str(e)}")
-            return []
+                                                return []
     def validar_codigo_unico(
         self, codigo: str, vidrio_id: Optional[int] = None
     ) -> bool:
@@ -276,7 +147,6 @@ vidrio_id: int,
             return cursor.fetchone() is None
 
         except Exception as e:
-            logger.error(f"Error validando código: {str(e)}")
             return False
 
     def calcular_area_vidrio(self, largo: float, ancho: float) -> float:
@@ -337,69 +207,4 @@ vidrio_id: int,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            logger.error(f"Error actualizando stock: {str(e)}")
-            return False
-    def actualizar_precio(self, vidrio_id: int, nuevo_precio: float) -> bool:
-        """Actualiza solo el precio de un vidrio."""
-        if not self.db_connection or not vidrio_id:
-            return False
-
-        try:
-            precio_sanitizado = self.sanitizer.sanitize_numeric(
-                nuevo_precio, min_val=0
-            )
-
-            if precio_sanitizado <= 0:
-                raise ValueError("El precio debe ser mayor a 0")
-
-            cursor = self.db_connection.cursor()
-
-            # Actualización específica de precio
-            query = """
-                UPDATE vidrios
-                SET precio = %(precio)s,
-                    fecha_modificacion = GETDATE()
-                WHERE id = %(vidrio_id)s AND activo = 1
-            """
-
-            cursor.execute(query, {"precio": precio_sanitizado, "vidrio_id": vidrio_id})
-
-            self.db_connection.commit()
-            return cursor.rowcount > 0
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error actualizando precio: {str(e)}")
-            return False
-    def validar_disponibilidad(self, vidrio_id: int, cantidad_requerida: int) -> bool:
-        """Valida si hay stock suficiente para la cantidad requerida."""
-        if not self.db_connection or not vidrio_id:
-            return False
-
-        try:
-            cantidad_sanitizada = self.sanitizer.sanitize_integer(
-                cantidad_requerida, min_val=1
-            )
-
-            cursor = self.db_connection.cursor()
-
-            # Consultar stock actual
-            query = """
-                SELECT stock
-                FROM vidrios
-                WHERE id = %(vidrio_id)s AND activo = 1
-            """
-
-            cursor.execute(query, {"vidrio_id": vidrio_id})
-            result = cursor.fetchone()
-
-            if not result:
-                return False
-
-            stock_actual = result[0] or 0
-            return stock_actual >= cantidad_sanitizada
-
-        except Exception as e:
-            logger.error(f"Error validando disponibilidad: {str(e)}")
-            return False
+                                    return False

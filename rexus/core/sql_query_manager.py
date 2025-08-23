@@ -4,48 +4,7 @@ Proporciona interfaz unificada para operaciones de base de datos con protección
 """
 
 import logging
-from typing import Any, Dict, List, Optional, Tuple
-from contextlib import contextmanager
-import threading
-
-logger = logging.getLogger(__name__)
-
-class SQLQueryManager:
-    """
-    Gestor centralizado para consultas SQL seguras.
-    Proporciona métodos seguros para ejecutar consultas con parámetros preparados.
-    """
-
-    def __init__(self, db_connection=None):
-        """
-        Inicializa el gestor de consultas SQL.
-
-        Args:
-            db_connection: Conexión a la base de datos (opcional)
-        """
-        self.db_connection = db_connection
-        self._lock = threading.Lock()
-
-    def set_connection(self, connection):
-        """Establece la conexión a la base de datos."""
-        with self._lock:
-            self.db_connection = connection
-
-    @contextmanager
-    def get_cursor(self):
-        """
-        Context manager para obtener un cursor de base de datos.
-        Maneja automáticamente el cierre del cursor.
-        """
-        if not self.db_connection:
-            raise RuntimeError("No hay conexión de base de datos establecida")
-
-        cursor = None
-        try:
-            cursor = self.db_connection.cursor()
-            yield cursor
-        except Exception as e:
-            logger.error(f"Error en operación de base de datos: {e}")
+                    except Exception as e:            raise
             if self.db_connection:
                 self.db_connection.rollback()
             raise
@@ -87,23 +46,7 @@ query: str,
                 logger.debug(f"Query ejecutada exitosamente. Resultados: {len(results)}")
                 return results
 
-        except Exception as e:
-            logger.error(f"Error ejecutando consulta: {query[:100]}... Error: {e}")
-            raise
-
-    def execute_non_query(self, query: str, params: Optional[Tuple] = None) -> int:
-        """
-        Ejecuta una consulta INSERT, UPDATE o DELETE segura.
-
-        Args:
-            query: Consulta SQL con placeholders (?)
-            params: Parámetros para la consulta
-
-        Returns:
-            Número de filas afectadas
-        """
-        if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada")
+        except Exception as e:            raise ValueError("Consulta SQL potencialmente insegura detectada")
 
         params = params or ()
 
@@ -119,43 +62,7 @@ query: str,
                 logger.debug(f"Query no-select ejecutada. Filas afectadas: {rows_affected}")
                 return rows_affected
 
-        except Exception as e:
-            logger.error(f"Error ejecutando query no-select: {query[:100]}... Error: {e}")
-            raise
-
-    def execute_scalar(self, query: str, params: Optional[Tuple] = None) -> Any:
-        """
-        Ejecuta una consulta que retorna un valor único.
-
-        Args:
-            query: Consulta SQL con placeholders (?)
-            params: Parámetros para la consulta
-
-        Returns:
-            Valor único del resultado
-        """
-        results = self.execute_query(query, params)
-
-        if not results:
-            return None
-
-        # Retornar el primer valor de la primera fila
-        first_row = results[0]
-        return next(iter(first_row.values())) if first_row else None
-
-    def execute_batch(self, query: str, params_list: List[Tuple]) -> int:
-        """
-        Ejecuta la misma consulta múltiples veces con diferentes parámetros.
-
-        Args:
-            query: Consulta SQL con placeholders (?)
-            params_list: Lista de tuplas con parámetros
-
-        Returns:
-            Número total de filas afectadas
-        """
-        if not self._is_safe_query(query):
-            raise ValueError("Consulta SQL potencialmente insegura detectada")
+        except Exception as e:            raise ValueError("Consulta SQL potencialmente insegura detectada")
 
         total_affected = 0
 
@@ -172,11 +79,7 @@ query: str,
                 logger.debug(f"Batch ejecutado. Operaciones: {len(params_list)}, Filas afectadas: {total_affected}")
                 return total_affected
 
-        except Exception as e:
-            logger.error(f"Error ejecutando batch: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            raise
+        except Exception as e:            raise
 
     def exists(self,
 table: str,
@@ -236,52 +139,7 @@ table: str,
         try:
             with self.get_cursor() as cursor:
                 return cursor.lastrowid
-        except Exception as e:
-            logger.error(f"Error obteniendo último ID: {e}")
-            return None
-
-    def _is_safe_query(self, query: str) -> bool:
-        """
-        Verifica que la consulta sea segura (uso básico de detección).
-
-        Args:
-            query: Consulta SQL a verificar
-
-        Returns:
-            True si la consulta parece segura
-        """
-        query_upper = query.upper().strip()
-
-        # Verificar que no contenga múltiples statements
-        if ';' in query and not query_upper.endswith(';'):
-            logger.warning("Consulta con múltiples statements detectada")
-            return False
-
-        # Verificar comandos peligrosos
-        dangerous_keywords = ['DROP', 'ALTER', 'CREATE', 'EXEC', 'EXECUTE']
-        for keyword in dangerous_keywords:
-            if keyword in query_upper:
-                logger.warning(f"Comando peligroso detectado: {keyword}")
-                return False
-
-        return True
-
-    def _sanitize_identifier(self, identifier: str) -> str:
-        """
-        Sanitiza identificadores de base de datos (nombres de tabla, columna).
-
-        Args:
-            identifier: Identificador a sanitizar
-
-        Returns:
-            Identificador sanitizado
-        """
-        # Remover caracteres peligrosos
-        identifier = ''.join(char for char in identifier if char.isalnum() or char == '_')
-
-        # Verificar que no esté vacío después de sanitizar
-        if not identifier:
-            raise ValueError("Identificador inválido después de sanitización")
+        except Exception as e:            raise ValueError("Identificador inválido después de sanitización")
 
         return identifier
 
@@ -315,8 +173,6 @@ table: str,
         except Exception as e:
             self.rollback_transaction()
             logger.error(f"Transacción revertida debido a error: {e}")
-            raise
-
 # Instancia global para uso conveniente
 _global_sql_manager = None
 

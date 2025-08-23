@@ -8,6 +8,10 @@ XSS Protection - Sistema completo de protección contra Cross-Site Scripting
 Proporciona decoradores y utilidades para proteger formularios y entrada de usuario.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import html
 import re
 from typing import Any, Callable, Dict, Union

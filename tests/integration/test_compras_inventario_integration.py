@@ -383,7 +383,7 @@ class TestUsuariosPermisosDatos(unittest.TestCase):
         
         for modulo in modulos_esperados:
             tiene_acceso = 'ALL' in permisos_usuario or modulo in permisos_usuario
-            self.assertTrue(tiene_acceso, f"Manager debería tener acceso a {modulo}")
+            self.assertTrue(tiene_acceso, f)
         
         # Manager NO debería tener acceso a usuarios (administración)
         tiene_acceso_usuarios = 'ALL' in permisos_usuario or 'usuarios' in permisos_usuario

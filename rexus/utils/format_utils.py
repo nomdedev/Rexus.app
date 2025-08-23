@@ -4,40 +4,11 @@ Utilidades de formateo de datos - Rexus.app v2.0.0
 Proporciona funciones para formatear datos de manera consistente en toda la aplicación.
 """
 
-from datetime import datetime, date
-from typing import Any, Dict, List, Union
-from decimal import Decimal, ROUND_HALF_UP
 
+import logging
+logger = logging.getLogger(__name__)
 
-class CurrencyFormatter:
-    """Formateador de moneda."""
-
-    def __init__(self, currency_symbol: str = "$", decimal_places: int = 2):
-        self.currency_symbol = currency_symbol
-        self.decimal_places = decimal_places
-
-    def format_amount(self, amount: Union[int, float, Decimal, str]) -> str:
-        """
-        Formatea una cantidad como moneda.
-
-        Args:
-            amount: Cantidad a formatear
-
-        Returns:
-            str: Cantidad formateada como moneda
-        """
-        if amount is None:
-            return f"{self.currency_symbol}0.00"
-
-        try:
-            # Convertir a Decimal para precisión
-            if isinstance(amount, str):
-                decimal_amount = Decimal(amount)
-            else:
-                decimal_amount = Decimal(str(amount))
-
-            # Redondear a los decimales especificados
-            rounded_amount = decimal_amount.quantize(
+                        rounded_amount = decimal_amount.quantize(
                 Decimal('0.01') if self.decimal_places == 2 else Decimal('0.' + '0' * self.decimal_places),
                 rounding=ROUND_HALF_UP
             )

@@ -2,6 +2,10 @@
 Adapter para el modelo de obras que facilita testing y desacoplamiento.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from abc import ABC, abstractmethod
 from typing import List, Dict, Any, Optional, Tuple
 

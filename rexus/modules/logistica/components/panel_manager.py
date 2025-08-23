@@ -5,6 +5,10 @@ Maneja la creación de paneles de UI (gráficos, métricas, filtros, etc.).
 Extraído de view.py para mejorar la mantenibilidad.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout,
     QLabel, QPushButton, QComboBox, QProgressBar,

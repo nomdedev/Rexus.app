@@ -24,6 +24,10 @@ SOFTWARE.
 API Validators - Validación exhaustiva y sanitización de datos de entrada
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 import html
 from typing import Any, Dict, List, Optional
@@ -309,7 +313,11 @@ class InventoryCreateModel(BaseModel):
     stock_minimo: int = Field(0, ge=0, description="Stock mínimo")
 
     @validator('codigo', 'nombre', 'categoria')
-    def sanitize_required_fields(cls, v):
+    def sanitize_requiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise_fields(cls, v):
         return InputSanitizer.sanitize_string(v, allow_html=False)
 
     @validator('descripcion')

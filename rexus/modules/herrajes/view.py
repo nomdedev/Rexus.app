@@ -140,7 +140,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
         # Remover panel de estadísticas de aquí - solo en pestaña Estadísticas
         self.crear_tabla_herrajes(inventario_layout)
         self.tab_inventario = tab_inventario
-        self.tabs.addTab(tab_inventario, "Inventario")
+        self.tabs.addTab(tab_inventario, )
 
         # --- Pestaña Asignación a Obra ---
         tab_asignacion = QWidget()

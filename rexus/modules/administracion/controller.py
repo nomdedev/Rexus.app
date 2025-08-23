@@ -16,7 +16,7 @@ from PyQt6.QtCore import QObject, QTimer, pyqtSlot
 # Importar logging centralizado
 try:
     from rexus.utils.app_logger import get_logger
-    logger = get_logger("administracion.controller")
+    logger = get_logger()
 except ImportError:
     class DummyLogger:
         def info(self, msg): logger.debug(f"[INFO] {msg}")
@@ -145,41 +145,36 @@ model=None,
                 )
 
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
-
-    def actualizar_estadisticas_generales(self, estadisticas):
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef actualizar_estadisticas_generales(self, estadisticas):
         """Actualiza las estadísticas generales con datos de los submódulos."""
         try:
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
-
-    def manejar_reporte_generado(self, archivo_reporte):
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_reporte_generado(self, archivo_reporte):
         """Maneja la generación de reportes de los submódulos."""
         try:
             if self.view:
                 self.view.mostrar_mensaje("Reporte", f"Reporte generado: {archivo_reporte}", "info")
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
-
-    def manejar_nomina_calculada(self, nomina_data):
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_nomina_calculada(self, nomina_data):
         """Maneja el cálculo de nómina del submódulo de RRHH."""
         try:
             if self.view:
                 self.view.mostrar_mensaje("Nómina", f"Nómina calculada para {len(nomina_data)} empleados", "info")
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
-
-    def manejar_empleado_agregado(self, empleado_data):
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_empleado_agregado(self, empleado_data):
         """Maneja la adición de empleados del submódulo de RRHH."""
         try:
             # Actualizar estadísticas y datos relacionados
             self.actualizar_datos()
         except Exception as e:
-            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
-
-    def cargar_datos_iniciales(self):
+            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
         try:
             self.actualizar_datos()

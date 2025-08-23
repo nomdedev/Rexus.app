@@ -1,300 +1,276 @@
+# -*- coding: utf-8 -*-
 """
-Vista de Logística Refactorizada - Rexus.app v2.0.0
+Vista Refactorizada de Logística - Rexus.app
+Refactorización del archivo original view.py de 2207 líneas
 
-Versión modular y mantenible que utiliza componentes separados
-para mejorar la organización del código.
+Esta versión divide la funcionalidad en componentes especializados:
+- TablaTransportesWidget: Gestión de tabla de transportes
+- EstadisticasWidget: Métricas y estadísticas
+- ServiciosWidget: Gestión de servicios
+- MapaWidget: Visualización geográfica
 
-Reducido de 2196 líneas a <500 líneas mediante extracción de componentes.
+Mejoras implementadas:
+- Separación de responsabilidades
+- Componentes reutilizables
+- Mejor mantenibilidad
+- Código más legible y testeable
 """
 
 import logging
-from typing import Dict, List
-
-from PyQt6.QtCore import Qt, pyqtSignal
+from typing import Dict, Any, Optional
 from PyQt6.QtWidgets import (
-    QWidget, QVBoxLayout, QHBoxLayout, QTabWidget,
-    QTableWidget, QSplitter, QLabel
+    QWidget, QVBoxLayout, QTabWidget, QMessageBox, QHBoxLayout
 )
+from PyQt6.QtCore import pyqtSignal, Qt
 
-# Importar componentes modulares
-from rexus.modules.logistica.components import (
-    LogisticaTableManager,
-    LogisticaPanelManager,
-    LogisticaTransportManager
-)
+# Imports de componentes refactorizados
+from .components.base_logistica_widget import BaseLogisticaWidget
+from .components.tabla_transportes_widget import TablaTransportesWidget
+from .components.estadisticas_widget import EstadisticasWidget
+from .components.servicios_widget import ServiciosWidget
+from .components.mapa_widget import MapaWidget
 
-# Importar componentes Rexus
-from rexus.ui.components.base_components import RexusButton, RexusLineEdit
+# Imports originales conservados
 from rexus.ui.standard_components import StandardComponents
 from rexus.utils.export_manager import ModuleExportMixin
-
-# Importar constantes
 from rexus.modules.logistica.constants import LogisticaConstants
+from rexus.modules.logistica.dialogo_transporte import DialogoNuevoTransporte
 
 logger = logging.getLogger(__name__)
 
 
 class LogisticaViewRefactored(QWidget, ModuleExportMixin):
-    """Vista principal de logística modularizada."""
+    """Vista principal de logística refactorizada con componentes especializados."""
     
-    # Señales para comunicación con el controlador
-    solicitud_actualizar_estadisticas = pyqtSignal()
-    solicitud_actualizar_transporte = pyqtSignal(dict)
-    solicitud_eliminar_transporte = pyqtSignal(str)
-
+    # Señales principales
+    transport_created = pyqtSignal(dict)
+    transport_updated = pyqtSignal(dict)
+    transport_deleted = pyqtSignal(int)
+    
     def __init__(self, parent=None):
-        """Inicializa la vista de logística."""
-        QWidget.__init__(self, parent)
-        ModuleExportMixin.__init__(self)
-        
+        super().__init__(parent)
         self.controller = None
+        self.current_data = {}
+        self.widgets = {}
         
-        # Inicializar gestores de componentes
-        self.table_manager = LogisticaTableManager(self)
-        self.panel_manager = LogisticaPanelManager(self)
-        self.transport_manager = LogisticaTransportManager(self)
-        
-        # Configurar UI y datos
         self.setup_ui()
-        self.setup_connections()
-        self.cargar_datos_iniciales()
-
-    def setup_ui(self) -> None:
-        """Configura la interfaz principal modular."""
+        self.connect_signals()
+        self.load_initial_data()
+    
+    def setup_ui(self):
+        """Configurar interfaz principal."""
         layout = QVBoxLayout(self)
-        layout.setContentsMargins(8, 8, 8, 8)
-        layout.setSpacing(5)
-
+        
         # Crear widget de pestañas
         self.tab_widget = QTabWidget()
-        self.tab_widget.setStyleSheet(self._get_tab_style())
+        self.tab_widget.setTabPosition(QTabWidget.TabPosition.North)
         
-        # Crear pestañas
-        self._crear_pestaña_transportes()
-        self._crear_pestaña_entregas()
-        self._crear_pestaña_estadisticas()
-        self._crear_pestaña_servicios()
-        self._crear_pestaña_mapa()
+        # Crear pestañas especializadas
+        self.create_tabs()
         
         layout.addWidget(self.tab_widget)
-
-    def _crear_pestaña_transportes(self):
-        """Crea la pestaña de gestión de transportes."""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+        self.apply_styles()
+    
+    def create_tabs(self):
+        """Crear pestañas especializadas."""
         
-        # Panel de control superior
-        panel_control = self._crear_panel_control_transportes()
-        layout.addWidget(panel_control)
+        # Pestaña Transportes
+        self.transportes_widget = TablaTransportesWidget(self)
+        self.tab_widget.addTab(self.transportes_widget, "🚛 Transportes")
+        self.widgets['transportes'] = self.transportes_widget
         
-        # Tabla de transportes
-        self.tabla_transportes = QTableWidget()
-        self.table_manager.set_tabla_transportes(self.tabla_transportes)
-        self.table_manager.configurar_tabla_transportes()
-        layout.addWidget(self.tabla_transportes)
+        # Pestaña Estadísticas
+        self.estadisticas_widget = EstadisticasWidget(self)
+        self.tab_widget.addTab(self.estadisticas_widget, "📊 Estadísticas")
+        self.widgets['estadisticas'] = self.estadisticas_widget
         
-        self.tab_widget.addTab(tab, "🚚 Transportes")
-
-    def _crear_pestaña_entregas(self):
-        """Crea la pestaña de gestión de entregas."""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+        # Pestaña Servicios
+        self.servicios_widget = ServiciosWidget(self)
+        self.tab_widget.addTab(self.servicios_widget, "🔧 Servicios")
+        self.widgets['servicios'] = self.servicios_widget
         
-        # Panel de filtros de entregas
-        panel_filtros = self.panel_manager.crear_panel_filtros_servicios_optimizado()
+        # Pestaña Mapa
+        self.mapa_widget = MapaWidget(self)
+        self.tab_widget.addTab(self.mapa_widget, "🗺️ Mapa")
+        self.widgets['mapa'] = self.mapa_widget
+    
+    def create_placeholder(self, text: str) -> QWidget:
+        """Crear placeholder para futuras implementaciones."""
+        widget = QWidget()
+        layout = QVBoxLayout(widget)
         
-        # Tabla de entregas
-        self.tabla_entregas = QTableWidget()
-        self.table_manager.set_tabla_entregas(self.tabla_entregas)
-        self.table_manager.cargar_entregas_en_tabla()
+        from PyQt6.QtWidgets import QLabel
+        label = QLabel(text)
+        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        label.setStyleSheet()
         
-        # Layout horizontal con filtros y tabla
-        splitter = QSplitter(Qt.Orientation.Horizontal)
-        splitter.addWidget(panel_filtros)
-        splitter.addWidget(self.tabla_entregas)
-        splitter.setSizes([300, 700])
+        layout.addWidget(label)
+        return widget
+    
+    def connect_signals(self):
+        """Conectar señales entre componentes."""
         
-        layout.addWidget(splitter)
-        self.tab_widget.addTab(tab, "[PACKAGE] Entregas")
-
-    def _crear_pestaña_estadisticas(self):
-        """Crea la pestaña de estadísticas y métricas."""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
+        # Señales de transportes
+        if hasattr(self, 'transportes_widget'):
+            self.transportes_widget.transport_selected.connect(self.on_transport_selected)
+            self.transportes_widget.transport_edited.connect(self.on_transport_edited)
+            self.transportes_widget.transport_deleted.connect(self.on_transport_deleted)
+            self.transportes_widget.error_occurred.connect(self.handle_error)
         
-        # Panel de métricas
-        panel_metricas = self.panel_manager.crear_panel_metricas_compacto()
-        layout.addWidget(panel_metricas)
+        # Señales de estadísticas
+        if hasattr(self, 'estadisticas_widget'):
+            self.estadisticas_widget.data_updated.connect(self.on_stats_updated)
+            self.estadisticas_widget.error_occurred.connect(self.handle_error)
         
-        # Panel de gráficos
-        panel_graficos = self.panel_manager.crear_panel_graficos_mejorado()
-        layout.addWidget(panel_graficos)
+        # Señales de servicios
+        if hasattr(self, 'servicios_widget'):
+            self.servicios_widget.service_created.connect(self.on_service_created)
+            self.servicios_widget.service_updated.connect(self.on_service_updated)
+            self.servicios_widget.service_completed.connect(self.on_service_completed)
+            self.servicios_widget.error_occurred.connect(self.handle_error)
         
-        # Panel de resumen
-        panel_resumen = self.panel_manager.crear_panel_resumen_optimizado()
-        layout.addWidget(panel_resumen)
-        
-        self.tab_widget.addTab(tab, "[CHART] Estadísticas")
-
-    def _crear_pestaña_servicios(self):
-        """Crea la pestaña de servicios y rutas."""
-        tab = QWidget()
-        layout = QVBoxLayout(tab)
-        
-        # Widget de direcciones
-        widget_direcciones = self.panel_manager.crear_widget_direcciones_mejorado()
-        layout.addWidget(widget_direcciones)
-        
-        # Placeholder para gestión de servicios
-        placeholder = QLabel("🚀 Gestión de Servicios\n\nPróximamente: Generación automática de servicios")
-        placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        placeholder.setStyleSheet("color: #666; font-size: 16px; padding: 50px;")
-        layout.addWidget(placeholder)
-        
-        self.tab_widget.addTab(tab, "🛣️ Servicios")
-
-    def _crear_pestaña_mapa(self):
-        """Crea la pestaña del mapa interactivo."""
-        tab = QWidget()
-        layout = QHBoxLayout(tab)
-        
-        # Panel de control del mapa
-        panel_control = self.panel_manager.crear_panel_control_mapa_optimizado()
-        
-        # Área del mapa (placeholder)
-        mapa_placeholder = QLabel("🗺️ Mapa Interactivo\n\nIntegración con mapas pendiente")
-        mapa_placeholder.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        mapa_placeholder.setStyleSheet("""
-            background-color: #f5f5f5;
-            border: 2px dashed #ccc;
-            color: #666;
-            font-size: 16px;
-            border-radius: 8px;
-        """)
-        
-        layout.addWidget(panel_control)
-        layout.addWidget(mapa_placeholder, 1)
-        
-        self.tab_widget.addTab(tab, "🗺️ Mapa")
-
-    def _crear_panel_control_transportes(self) -> QWidget:
-        """Crea el panel de control para transportes."""
-        panel = QWidget()
-        layout = QHBoxLayout(panel)
-        
-        # Campo de búsqueda
-        self.busqueda_edit = RexusLineEdit()
-        self.busqueda_edit.setPlaceholderText("[SEARCH] Buscar transportes...")
-        layout.addWidget(self.busqueda_edit)
-        
-        # Botones de acción
-        self.btn_nuevo_transporte = RexusButton("➕ Nuevo")
-        self.btn_editar_transporte = RexusButton("✏️ Editar")
-        self.btn_eliminar_transporte = RexusButton("🗑️ Eliminar")
-        self.btn_exportar = RexusButton("[CHART] Exportar")
-        
-        # Establecer estilos de botones
-        self.btn_nuevo_transporte.setStyleSheet("background-color: #4CAF50; color: white;")
-        self.btn_editar_transporte.setStyleSheet("background-color: #2196F3; color: white;")
-        self.btn_eliminar_transporte.setStyleSheet("background-color: #f44336; color: white;")
-        self.btn_exportar.setStyleSheet("background-color: #FF9800; color: white;")
-        
-        # Deshabilitar botones de edición inicialmente
-        self.btn_editar_transporte.setEnabled(False)
-        self.btn_eliminar_transporte.setEnabled(False)
-        
-        layout.addWidget(self.btn_nuevo_transporte)
-        layout.addWidget(self.btn_editar_transporte)
-        layout.addWidget(self.btn_eliminar_transporte)
-        layout.addWidget(self.btn_exportar)
-        
-        return panel
-
-    def setup_connections(self):
-        """Configura las conexiones de señales y slots."""
-        # Conexiones de búsqueda
-        if hasattr(self, 'busqueda_edit'):
-            self.busqueda_edit.textChanged.connect(self.transport_manager.buscar_transportes)
-        
-        # Conexiones de botones de transportes
-        if hasattr(self, 'btn_nuevo_transporte'):
-            self.btn_nuevo_transporte.clicked.connect(
-                self.transport_manager.mostrar_dialogo_nuevo_transporte
-            )
-        
-        if hasattr(self, 'btn_editar_transporte'):
-            self.btn_editar_transporte.clicked.connect(
-                self.transport_manager.editar_transporte_seleccionado
-            )
-        
-        if hasattr(self, 'btn_eliminar_transporte'):
-            self.btn_eliminar_transporte.clicked.connect(
-                self.transport_manager.eliminar_transporte_seleccionado
-            )
-        
-        if hasattr(self, 'btn_exportar'):
-            self.btn_exportar.clicked.connect(
-                self.transport_manager.exportar_transportes_excel
-            )
-        
-        # Conexión de selección de tabla
-        if hasattr(self, 'tabla_transportes'):
-            self.tabla_transportes.itemSelectionChanged.connect(
-                self.transport_manager.actualizar_estado_botones
-            )
-
-    def cargar_datos_iniciales(self):
-        """Carga los datos iniciales en las tablas."""
-        # Los datos se cargan automáticamente en los managers
-        pass
-
-    def set_controller(self, controller):
-        """Establece el controlador."""
-        self.controller = controller
-        self.transport_manager.set_controller(controller)
-
-    def exportar_a_excel(self):
-        """Exporta datos a Excel (implementación heredada)."""
-        try:
-            from rexus.utils.export_manager import export_table_to_excel
-            
-            if hasattr(self, 'tabla_transportes'):
-                export_table_to_excel(
-                    self.tabla_transportes,
-                    "transportes_logistica",
-                    "Exportación de Transportes"
-                )
-            else:
-                logger.warning("No hay tabla de transportes para exportar")
-                
-        except Exception as e:
-            logger.error(f"Error exportando a Excel: {e}")
-
-    def _get_tab_style(self) -> str:
-        """Retorna el estilo CSS para las pestañas."""
-        return """
+        # Señales de mapas
+        if hasattr(self, 'mapa_widget'):
+            self.mapa_widget.location_selected.connect(self.on_location_selected)
+            self.mapa_widget.route_calculated.connect(self.on_route_calculated)
+            self.mapa_widget.error_occurred.connect(self.handle_error)
+    
+    def apply_styles(self):
+        """Aplicar estilos personalizados."""
+        self.setStyleSheet("""
             QTabWidget::pane {
                 border: 1px solid #c0c0c0;
-                background-color: white;
+                border-top: 2px solid #4CAF50;
             }
+            
             QTabBar::tab {
-                background-color: #f0f0f0;
-                padding: 8px 16px;
-                margin-right: 2px;
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                          stop: 0 #f0f0f0, stop: 1 #e0e0e0);
                 border: 1px solid #c0c0c0;
-                border-bottom: none;
-                border-top-left-radius: 4px;
-                border-top-right-radius: 4px;
+                padding: 8px 20px;
+                margin-right: 2px;
             }
+            
             QTabBar::tab:selected {
-                background-color: white;
-                border-bottom: 2px solid #2196F3;
+                background: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                          stop: 0 #4CAF50, stop: 1 #45a049);
+                color: white;
             }
-            QTabBar::tab:hover {
-                background-color: #e0e0e0;
-            }
-        """
+        """)
+    
+    def load_initial_data(self):
+        """Cargar datos iniciales."""
+        try:
+            if hasattr(self, 'transportes_widget'):
+                self.transportes_widget.refresh_data()
+            
+            if hasattr(self, 'estadisticas_widget'):
+                self.estadisticas_widget.refresh_data()
+            
+            # Cargar servicios
+            if hasattr(self, 'servicios_widget'):
+                self.servicios_widget.refresh_data()
+            
+            # Cargar mapas
+            if hasattr(self, 'mapa_widget'):
+                self.mapa_widget.refresh_data()
+                
+        except Exception as e:
+    
+    # Event handlers
+    def on_transport_selected(self, transport_data: Dict[str, Any]):
+        """Manejar selección de transporte."""
+        logger.info(f"Transporte seleccionado: {transport_data.get('numero', 'N/A')}")
+        self.current_data['selected_transport'] = transport_data
+    
+    def on_transport_edited(self, transport_data: Dict[str, Any]):
+        """Manejar edición de transporte."""
+        try:
+            self.mostrar_dialogo_editar_transporte(transport_data)
+        except Exception as e:
+    
+    def on_transport_deleted(self, transport_id: int):
+        """Manejar eliminación de transporte."""
+        try:
+            if self.controller:
+                success = self.controller.delete_transport(transport_id)
+                if success:
+                    self.transport_deleted.emit(transport_id)
+                    QMessageBox.information(self, "Éxito", "Transporte eliminado")
+            else:
+                QMessageBox.information(self, "Simulación", f"Transporte {transport_id} eliminado")
+                
+        except Exception as e:
+    
+    def on_stats_updated(self):
+        """Manejar actualización de estadísticas."""
+        logger.info("Estadísticas actualizadas")
+    
+    def on_service_created(self, service_data: Dict[str, Any]):
+        """Manejar creación de servicio."""
+        logger.info(f"Servicio creado: {service_data.get('tipo', 'N/A')}")
+        # Actualizar estadísticas si es necesario
+        if hasattr(self, 'estadisticas_widget'):
+            self.estadisticas_widget.refresh_data()
+    
+    def on_service_updated(self, service_data: Dict[str, Any]):
+        """Manejar actualización de servicio."""
+        logger.info(f"Servicio actualizado: {service_data.get('id', 'N/A')}")
+    
+    def on_service_completed(self, service_id: int):
+        """Manejar finalización de servicio."""
+        logger.info(f"Servicio completado: {service_id}")
+        # Actualizar estadísticas y mapa
+        if hasattr(self, 'estadisticas_widget'):
+            self.estadisticas_widget.refresh_data()
+        if hasattr(self, 'mapa_widget'):
+            self.mapa_widget.refresh_data()
+    
+    def on_location_selected(self, lat: float, lon: float):
+        """Manejar selección de ubicación en mapa."""
+        logger.info(f"Ubicación seleccionada: {lat}, {lon}")
+        self.current_data['selected_location'] = {'lat': lat, 'lon': lon}
+    
+    def on_route_calculated(self, route_data: Dict[str, Any]):
+        """Manejar cálculo de ruta."""
+        logger.info(f"Ruta calculada - Distancia: {route_data.get('distancia', 0)} km")
+        self.current_data['current_route'] = route_data
+    
+    def handle_error(self, error_message: str):
+        """Manejar errores de widgets hijos."""
+            
+    def mostrar_dialogo_editar_transporte(self, transport_data: Dict[str, Any]):
+        """Mostrar diálogo para editar transporte.""" 
+        try:
+            dialogo = DialogoNuevoTransporte(self, transport_data)
+            dialogo.setWindowTitle("Editar Transporte")
+            
+            if dialogo.exec() == dialogo.DialogCode.Accepted:
+                updated_data = dialogo.get_transport_data()
+                
+                if self.controller:
+                    success = self.controller.update_transport(updated_data)
+                    if success:
+                        self.transport_updated.emit(updated_data)
+                        self.transportes_widget.update_transport(updated_data)
+                        QMessageBox.information(self, "Éxito", "Transporte actualizado")
+                else:
+                    QMessageBox.information(self, "Simulación", "Transporte actualizado")
+                    
+        except Exception as e:
+    
+    def export_data(self, data, formato='excel'):
+        """Método de compatibilidad para exportación."""
+        try:
+            if formato == 'excel':
+                return self.export_to_excel(
+                    data=data,
+                    filename="logistica_export",
+                    sheet_name="Datos"
+                )
+            return False
+        except Exception as e:
 
 
-# Alias para compatibilidad con el sistema actual
+# Alias para compatibilidad
 LogisticaView = LogisticaViewRefactored

@@ -2,6 +2,10 @@
 Splash Screen para la aplicación
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QPixmap
 from PyQt6.QtWidgets import QSplashScreen

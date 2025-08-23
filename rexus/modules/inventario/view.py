@@ -4,6 +4,10 @@ Vista de Inventario Refactorizada - Rexus.app
 Vista funcional con pestañas organizadas para gestión de inventario
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QWidget, QVBoxLayout, QHBoxLayout, QGridLayout, 

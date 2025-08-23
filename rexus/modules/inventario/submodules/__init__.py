@@ -6,13 +6,17 @@ Importa submódulos refactorizados para mayor compatibilidad.
 
 # Importar submódulos disponibles
 try:
+
+import logging
+logger = logging.getLogger(__name__)
+
     from .consultas_manager import ConsultasManager
     from .movimientos_manager import MovimientosManager
     from .productos_manager import ProductosManager
 
-    print("[SUBMODULOS INVENTARIO] OK - Submodulos cargados correctamente")
+    logger.info()
 except ImportError as e:
-    print(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e}")
+    logger.info(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e}")
 
     # Crear clases dummy para evitar errores
     class ConsultasManager:

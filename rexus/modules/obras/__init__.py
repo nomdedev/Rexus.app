@@ -1,5 +1,9 @@
 """Módulo de Obras"""
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .controller import ObrasController
 from .model import ObrasModel
 
@@ -7,11 +11,11 @@ from .model import ObrasModel
 try:
     pass
 except ImportError:
-    print("[OBRAS] Warning: Some submodules not available")
+    logger.info()
 from .view import ObrasModernView as ObrasView
 
 __all__ = [
-    "ObrasModel",
+    ,
     "ObrasView",
     "ObrasController",
 ]

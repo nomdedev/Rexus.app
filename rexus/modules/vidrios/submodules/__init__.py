@@ -7,8 +7,12 @@ Arquitectura modular para gestión de vidrios:
 - ConsultasManager: Búsquedas, filtros y estadísticas
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .consultas_manager import ConsultasManager
 from .obras_manager import ObrasManager
 from .productos_manager import ProductosManager
 
-__all__ = ["ProductosManager", "ObrasManager", "ConsultasManager"]
+__all__ = [, "ObrasManager", "ConsultasManager"]

@@ -10,6 +10,10 @@ Este módulo maneja todo lo relacionado con el inventario de vidrios:
 """
 
 # Exportar el modelo principal y vistas
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .controller import VidriosController
 from .model import ModeloVidrios, VidriosModel
 from .view import VidriosModernView as VidriosView
@@ -21,7 +25,7 @@ except ImportError:
     _submodules_available = False
 
 __all__ = [
-    "ModeloVidrios",
+    ,
     "VidriosModel",
     "VidriosView",
     "VidriosController",

@@ -474,7 +474,7 @@ from rexus.utils.query_performance_analyzer import track_sql_query
 
 def obtener_productos():
     start_time = time.time()
-    cursor.execute("SELECT * FROM productos WHERE categoria = ?", (categoria,))
+    cursor.execute(, (categoria,))
     execution_time = time.time() - start_time
     
     # Trackear la consulta
@@ -488,6 +488,6 @@ def obtener_productos():
 
 # Para generar reporte:
 report = get_performance_report()
-print(f"Consultas ejecutadas: {report['summary']['total_queries_executed']}")
-print(f"Problemas N+1: {report['summary']['n_plus_one_issues']}")
+logger.info(f"Consultas ejecutadas: {report['summary']['total_queries_executed']}")
+logger.info(f"Problemas N+1: {report['summary']['n_plus_one_issues']}")
 """

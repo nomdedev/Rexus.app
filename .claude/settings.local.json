@@ -28,7 +28,9 @@
       "Bash(C:\\Python310\\python.exe:*)",
       "Bash(D:martinRexus.app.venvScriptspython.exe -m pytest tests/ -v --tb=short --maxfail=10)",
       "Bash(.venvScriptspython.exe -m pytest tests/ -v --tb=short --maxfail=10)",
-      "Bash(bandit:*)"
+      "Bash(bandit:*)",
+      "Bash(D:martinRexus.app.venvScriptspython.exe -m pytest tests/ --tb=short --maxfail=5 -x --disable-warnings)",
+      "Bash(..venvScriptspython.exe -m pytest tests/ --tb=short --maxfail=5 -x --disable-warnings)"
     ],
     "deny": [],
     "ask": [],

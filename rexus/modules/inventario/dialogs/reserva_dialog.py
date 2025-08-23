@@ -26,6 +26,10 @@ SOFTWARE.
 Diálogo para crear reservas de material por obra.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict
 
 from PyQt6.QtCore import QDate, Qt

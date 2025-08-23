@@ -8,15 +8,11 @@ Responsabilidades:
 - Seguimiento de consumo por proyecto
 """
 
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
-logger = get_logger("vidrios.obras_manager")
+logger = get_logger()
 
 # SQLQueryManager unificado
 try:
@@ -31,7 +27,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -106,182 +102,7 @@ class ObrasManager:
 
             return vidrios
 
-        except Exception as e:
-            logger.error(f"Error obteniendo vidrios por obra: {str(e)}")
-            return []
-    def asignar_vidrio_obra(
-        self, obra_id: int, vidrio_id: int, cantidad: int, observaciones: str = ""
-    ) -> bool:
-        """Asigna un vidrio específico a una obra."""
-        if not self.db_connection or not obra_id or not vidrio_id:
-            return False
-
-        try:
-            # Validar y sanitizar datos
-            datos_asignacion = self._validar_datos_asignacion(
-                {
-                    "obra_id": obra_id,
-                    "vidrio_id": vidrio_id,
-                    "cantidad": cantidad,
-                    "observaciones": observaciones,
-                }
-            )
-
-            cursor = self.db_connection.cursor()
-
-            # Verificar si ya existe asignación
-            query_verificar = self.sql_manager.get_query(
-                self.sql_path, "verificar_asignacion_existente"
-            )
-            cursor.execute(
-                query_verificar,
-                {
-                    "obra_id": datos_asignacion["obra_id"],
-                    "vidrio_id": datos_asignacion["vidrio_id"],
-                },
-            )
-
-            if cursor.fetchone():
-                # Actualizar cantidad existente
-                query = self.sql_manager.get_query(
-                    self.sql_path, "actualizar_asignacion_vidrio"
-                )
-                cursor.execute(query, datos_asignacion)
-            else:
-                # Crear nueva asignación
-                query = self.sql_manager.get_query(
-                    self.sql_path, "insertar_asignacion_vidrio"
-                )
-                cursor.execute(query, datos_asignacion)
-
-            self.db_connection.commit()
-            return True
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error asignando vidrio a obra: {str(e)}")
-            return False
-    def crear_pedido_obra(
-        self, obra_id: int, proveedor: str, vidrios_lista: List[Dict[str, Any]]
-    ) -> Optional[int]:
-        """Crea un pedido de vidrios para una obra específica."""
-        if not self.db_connection or not obra_id or not vidrios_lista:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Validar datos del pedido
-            datos_pedido = {
-                "obra_id": self.sanitizer.sanitize_integer(obra_id, min_val=1),
-                "proveedor": sanitize_string(proveedor),
-                "estado": "PENDIENTE",
-                "fecha_pedido": "GETDATE()",
-                "total": 0.0,
-            }
-
-            # Calcular total del pedido
-            total = 0.0
-            for vidrio in vidrios_lista:
-                cantidad = self.sanitizer.sanitize_integer(
-                    vidrio.get("cantidad", 0)
-                )
-                precio = self.sanitizer.sanitize_numeric(vidrio.get("precio", 0))
-                total += cantidad * precio
-
-            datos_pedido["total"] = total
-
-            # Crear pedido principal
-            query_pedido = self.sql_manager.get_query(
-                self.sql_path, "crear_pedido_obra"
-            )
-            cursor.execute(query_pedido, datos_pedido)
-
-            # Obtener ID del pedido creado
-            pedido_id = (
-                cursor.lastrowid or cursor.execute("SELECT @@IDENTITY").fetchone()[0]
-            )
-
-            # Insertar detalles del pedido
-            for vidrio in vidrios_lista:
-                detalle = {
-                    "pedido_id": pedido_id,
-                    "vidrio_id": self.sanitizer.sanitize_integer(
-                        vidrio.get("vidrio_id", 0)
-                    ),
-                    "cantidad": self.sanitizer.sanitize_integer(
-                        vidrio.get("cantidad", 0)
-                    ),
-                    "precio_unitario": self.sanitizer.sanitize_numeric(
-                        vidrio.get("precio", 0)
-                    ),
-                    "subtotal": self.sanitizer.sanitize_integer(
-                        vidrio.get("cantidad", 0)
-                    )
-                    * self.sanitizer.sanitize_numeric(vidrio.get("precio", 0)),
-                }
-
-                query_detalle = self.sql_manager.get_query(
-                    self.sql_path, "insertar_detalle_pedido"
-                )
-                cursor.execute(query_detalle, detalle)
-
-            self.db_connection.commit()
-            return pedido_id
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error creando pedido de obra: {str(e)}")
-            return None
-    def obtener_pedidos_obra(self, obra_id: int) -> List[Dict[str, Any]]:
-        """Obtiene todos los pedidos de una obra específica."""
-        if not self.db_connection or not obra_id:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            obra_id_sanitizado = self.sanitizer.sanitize_integer(
-                obra_id, min_val=1
-            )
-
-            query = self.sql_manager.get_query(self.sql_path, "obtener_pedidos_obra")
-            cursor.execute(query, {"obra_id": obra_id_sanitizado})
-
-            pedidos = []
-            columns = [column[0] for column in cursor.description]
-
-            for row in cursor.fetchall():
-                pedido = dict(zip(columns, row))
-                pedidos.append(pedido)
-
-            return pedidos
-
-        except Exception as e:
-            logger.error(f"Error obteniendo pedidos de obra: {str(e)}")
-            return []
-    def actualizar_estado_pedido(self, pedido_id: int, nuevo_estado: str) -> bool:
-        """Actualiza el estado de un pedido de vidrios."""
-        if not self.db_connection or not pedido_id:
-            return False
-
-        try:
-            # Validar estado
-            estados_validos = [
-                "PENDIENTE",
-                "CONFIRMADO",
-                "EN_TRANSITO",
-                "ENTREGADO",
-                "CANCELADO",
-            ]
-            estado_sanitizado = sanitize_string(
-                nuevo_estado
-            ).upper()
-
-            if estado_sanitizado not in estados_validos:
-                raise ValueError(f"Estado no válido: {nuevo_estado}")
+        except Exception as e:                raise ValueError(f"Estado no válido: {nuevo_estado}")
 
             cursor = self.db_connection.cursor()
 
@@ -302,87 +123,7 @@ class ObrasManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            logger.error(f"Error actualizando estado de pedido: {str(e)}")
-            return False
-
-    def _validar_datos_asignacion(self,
-datos: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
-        """Valida y sanitiza datos de asignación de vidrio a obra."""
-        # Campos requeridos
-        campos_requeridos = ["obra_id", "vidrio_id", "cantidad"]
-        for campo in campos_requeridos:
-            if campo not in datos or datos[campo] is None:
-                raise ValueError(f"Campo requerido faltante: {campo}")
-
-        # Sanitizar datos
-        datos_sanitizados = {}
-
-        datos_sanitizados["obra_id"] = self.sanitizer.sanitize_integer(
-            datos["obra_id"], min_val=1
-        )
-        datos_sanitizados["vidrio_id"] = self.sanitizer.sanitize_integer(
-            datos["vidrio_id"], min_val=1
-        )
-        datos_sanitizados["cantidad"] = self.sanitizer.sanitize_integer(
-            datos["cantidad"], min_val=1
-        )
-        datos_sanitizados["observaciones"] = sanitize_string(
-            datos.get("observaciones", "")
-        )
-
-        # Validaciones específicas
-        if datos_sanitizados["cantidad"] <= 0:
-            raise ValueError("La cantidad debe ser mayor a 0")
-
-        return datos_sanitizados
-    def obtener_resumen_obra(self, obra_id: int) -> Dict[str, Any]:
-        """Obtiene resumen de vidrios y pedidos de una obra."""
-        if not self.db_connection or not obra_id:
-            return {}
-
-        try:
-            obra_id_sanitizado = self.sanitizer.sanitize_integer(
-                obra_id, min_val=1
-            )
-
-            # Obtener estadísticas de la obra
-            resumen = {
-                "obra_id": obra_id_sanitizado,
-                "total_vidrios_asignados": 0,
-                "total_pedidos": 0,
-                "total_valor_pedidos": 0.0,
-                "vidrios_por_tipo": {},
-                "pedidos_por_estado": {},
-            }
-
-            cursor = self.db_connection.cursor()
-
-            # Total vidrios asignados
-            query_vidrios = self.sql_manager.get_query(
-                self.sql_path, "contar_vidrios_obra"
-            )
-            cursor.execute(query_vidrios, {"obra_id": obra_id_sanitizado})
-            result = cursor.fetchone()
-            if result:
-                resumen["total_vidrios_asignados"] = result[0] or 0
-
-            # Total pedidos y valor
-            query_pedidos = self.sql_manager.get_query(
-                self.sql_path, "resumen_pedidos_obra"
-            )
-            cursor.execute(query_pedidos, {"obra_id": obra_id_sanitizado})
-            result = cursor.fetchone()
-            if result:
-                resumen["total_pedidos"] = result[0] or 0
-                resumen["total_valor_pedidos"] = result[1] or 0.0
-
-            return resumen
-
-        except Exception as e:
-            logger.error(f"Error obteniendo resumen de obra: {str(e)}")
-            return {}
+                        return {}
     def obtener_vidrios_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los vidrios asignados a una obra específica."""
         if not self.db_connection or not obra_id:
@@ -419,5 +160,4 @@ datos: Dict[str,
             return vidrios
 
         except Exception as e:
-            logger.error(f"Error obteniendo vidrios de obra: {str(e)}")
             return []

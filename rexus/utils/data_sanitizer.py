@@ -8,6 +8,10 @@ Data Sanitizer - Utilidades para sanitización de datos
 Proporciona funciones para limpiar y validar datos de entrada.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 import html
 from typing import Any, Optional, Union

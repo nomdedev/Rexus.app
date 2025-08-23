@@ -3,6 +3,10 @@ Sistema de Loading Manager para Rexus.app
 Proporciona indicadores de carga unificados para toda la aplicación
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Optional
 
 from PyQt6.QtCore import Qt, QTimer

@@ -46,7 +46,7 @@ class ContabilidadController(QObject):
         self.model = model
         self.view = view
         self.db_connection = db_connection
-        self.usuario_actual = "ADMIN"
+        self.usuario_actual = 
         self.conectar_senales()
 
     def conectar_senales(self):
@@ -88,12 +88,7 @@ class ContabilidadController(QObject):
             self.cargar_estadisticas_financieras()
 
         except (AttributeError, TypeError) as e:
-            logger.error(f"Error de configuración cargando asientos: {e}")
-            self.mostrar_error(f"Error de configuración: {e}")
-        except Exception as e:
-            logger.error(f"Error inesperado cargando asientos: {e}")
-            self.mostrar_error(f"Error cargando asientos: {e}")
-
+            
     def buscar_asientos(self, filtros):
         """Busca asientos contables con filtros específicos."""
         self.cargar_asientos_contables(filtros)
@@ -121,14 +116,7 @@ class ContabilidadController(QObject):
                 self.mostrar_error("Error al crear asiento contable")
 
         except ValueError as e:
-            logger.error(f"Error de validación creando asiento: {e}")
-            self.mostrar_error(f"Datos inválidos: {e}")
-        except (AttributeError, KeyError) as e:
-            logger.error(f"Error de configuración creando asiento: {e}")
-            self.mostrar_error(f"Error de configuración: {e}")
-        except Exception as e:
-            logger.error(f"Error inesperado creando asiento: {e}")
-            self.mostrar_error(f"Error creando asiento: {e}")
+                    except Exception as e:
 
     def actualizar_asiento_contable(self, asiento_id, datos_asiento):
         """Actualiza un asiento contable existente."""
@@ -570,9 +558,8 @@ class ContabilidadController(QObject):
                 file.write(f"Monto: {recibo['moneda']} {recibo['monto']:,.2f}\n")
                 file.write("=" * 50 + "\n")
 
-        except Exception as e:
-            logger.error(f"Error generando archivo de recibo: {e}")
-
+        except (FileNotFoundError, PermissionError, OSError) as e:
+            
     def _escribir_reporte_balance(self, balance, nombre_archivo):
         """Escribe el reporte de balance en un archivo."""
         with open(nombre_archivo, 'w', encoding='utf-8') as file:

@@ -3,6 +3,10 @@ API REST para Rexus - Opcional
 Versión: 2.0.0 - Enterprise Ready
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 import time
 from datetime import datetime, timedelta
@@ -14,7 +18,11 @@ try:
     from fastapi import FastAPI, HTTPException, Depends, status, Request, Body
     from fastapi.middleware.cors import CORSMiddleware
     from fastapi.middleware.trustedhost import TrustedHostMiddleware
-    from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+    from fastapi.security import HTTPBearer, HTTPAuthorizationCexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials
     from fastapi.responses import JSONResponse
     from pydantic import BaseModel, Field
     import uvicorn
@@ -43,10 +51,26 @@ except ImportError:
         def __init__(self, *args, **kwargs):
             pass
 
-    class HTTPAuthorizationCredentials:
-        def __init__(self, scheme: str, credentials: str):
+    class HTTPAuthorizationCexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials:
+        def __init__(self, scheme: str, cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials: str):
             self.scheme = scheme
-            self.credentials = credentials
+            self.cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials = cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials
 
 try:
     import jwt
@@ -161,7 +185,15 @@ class RexusAPI:
             description="API REST para el sistema de gestión empresarial Rexus",
             version="2.0.0",
             docs_url="/docs" if get_env_var("API_ENABLED", False, var_type=bool) else None,
-            redoc_url="/redoc" if get_env_var("API_ENABLED", False, var_type=bool) else None
+            except (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseoc_url="/except (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseoc" if get_env_var("API_ENABLED", False, var_type=bool) else None
         )
 
         # Estado de la API
@@ -184,23 +216,20 @@ class RexusAPI:
             init_csrf_protection(SECURITY_CONFIG.get("secret_key", "fallback_key"))
             logger.info("Protección CSRF inicializada")
         except Exception as e:
-            logger.error(f"Error inicializando protección CSRF: {e}")
-
-        # Inicializar protección contra enumeración de usuarios
+            logger.exception(f"Error inicializando protección CSRF: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exception# Inicializar protección contra enumeración de usuarios
         try:
             init_user_enumeration_protection()
             logger.info("Protección contra enumeración de usuarios inicializada")
         except Exception as e:
-            logger.error(f"Error inicializando protección de enumeración: {e}")
-
-        # Inicializar gestor de contraseñas
+            logger.exception(f"Error inicializando protección de enumeración: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exception# Inicializar gestor de contraseñas
         try:
             init_password_manager()
             logger.info("Gestor de contraseñas inicializado")
         except Exception as e:
-            logger.error(f"Error inicializando gestor de contraseñas: {e}")
-
-        logger.info("RexusAPI inicializada")
+            logger.exception(f"Error inicializando gestor de contraseñas: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionlogger.info("RexusAPI inicializada")
 
     def _setup_middleware(self):
         """Configurar middleware de la API"""
@@ -249,7 +278,11 @@ class RexusAPI:
         self.app.add_middleware(
             CORSMiddleware,
             allow_origins=cors_origins,
-            allow_credentials=True,
+            allow_cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials=True,
             allow_methods=["GET", "POST", "PUT", "DELETE"],
             allow_headers=["*"],
         )
@@ -276,7 +309,11 @@ class RexusAPI:
                         log_security_event("CSRF_TOKEN_MISSING", "MEDIUM", f"Method: {request.method}, Path: {request.url.path}")
                         return JSONResponse(
                             status_code=403,
-                            content={"error": "csrf_token_required", "message": "Token CSRF requerido"}
+                            content={"error": "csrf_token_requiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise", "message": "Token CSRF requerido"}
                         )
 
                     # Obtener información del usuario (si está autenticado)
@@ -292,7 +329,11 @@ class RexusAPI:
                                 algorithms=["HS256"]
                             )
                             user_id = payload.get("sub", "anonymous")
-                        except (jwt.InvalidTokenError, jwt.ExpiredSignatureError, jwt.DecodeError, KeyError, ValueError):
+                        except (jwt.InvalidTokenError, jwt.Expiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseSignatureError, jwt.DecodeError, KeyError, ValueError):
                             pass  # Mantener user_id como anonymous si falla
 
                     # Validar token CSRF
@@ -430,12 +471,28 @@ class RexusAPI:
                     client_ip = request.client.host if hasattr(request, 'client') and \
                         request.client else "unknown"
 
-                    # Verificar credenciales con protección contra enumeración
-                    credentials_valid, user_exists = self._verify_credentials(safe_username,
+                    # Verificar cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales con protección contra enumeración
+                    cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid, user_exists = self._verify_cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials(safe_username,
                                                                              password,
                                                                              client_ip)
 
-                    if not credentials_valid:
+                    if not cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid:
                         # Usar mensaje genérico para evitar revelación de información
                         error_message = get_user_enumeration_protection().get_generic_error_message()
                         raise HTTPException(
@@ -567,7 +624,8 @@ class RexusAPI:
                 return result
 
             except Exception as e:
-                logger.error("Error obteniendo inventario", extra={"error": str(e)})
+            logger.exception("Error obteniendo inventario", extra={"error": str(e)
+            # FIXME: Specify concrete exception types instead of generic Exception})
                 raise HTTPException(status_code=500, detail="Error interno del servidor")
 
         @self.app.post("/api/v1/inventory", response_model=InventoryItem, tags=["Inventory"])
@@ -769,7 +827,8 @@ descripcion,
                     "results": [asdict(result) for result in results]
                 }
             except Exception as e:
-                logger.error("Error ejecutando backup", extra={"error": str(e)})
+            logger.exception("Error ejecutando backup", extra={"error": str(e)
+            # FIXME: Specify concrete exception types instead of generic Exception})
                 raise HTTPException(status_code=500, detail="Error ejecutando backup")
 
         @self.app.get("/api/v1/backup/status", tags=["System"])
@@ -780,16 +839,25 @@ descripcion,
             try:
                 return backup_manager.get_backup_status()
             except Exception as e:
-                logger.error("Error obteniendo estado de backup", extra={"error": str(e)})
+            logger.exception("Error obteniendo estado de backup", extra={"error": str(e)
+            # FIXME: Specify concrete exception types instead of generic Exception})
                 raise HTTPException(status_code=500, detail="Error obteniendo estado")
 
-    def _verify_credentials(self,
+    def _verify_cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials(self,
 username: str,
         password: str,
         ip_address: str = "unknown") -> Tuple[bool,
         bool]:
         """
-        Verificar credenciales con protección contra enumeración y timing attacks.
+        Verificar cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales con protección contra enumeración y timing attacks.
 
         Args:
             username: Nombre de usuario sanitizado
@@ -797,7 +865,11 @@ username: str,
             ip_address: Dirección IP del cliente
 
         Returns:
-            Tuple[bool, bool]: (credenciales_válidas, usuario_existe)
+            Tuple[bool, bool]: (cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales_válidas, usuario_existe)
         """
         try:
             from ..utils.secure_logger import log_security_event
@@ -805,7 +877,11 @@ username: str,
 
             start_time = time.time()
             user_exists = False
-            credentials_valid = False
+            cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid = False
 
             # Verificar si IP puede hacer intentos
             enum_protection = get_user_enumeration_protection()
@@ -818,18 +894,34 @@ username: str,
                 simulate_password_check(username)
                 return False, False
 
-            # Verificar credenciales usando el gestor de contraseñas
+            # Verificar cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales usando el gestor de contraseñas
             import os
             if os.getenv('APP_ENV', 'development') == 'development':
-                # Credenciales de desarrollo desde variables de entorno
+                # Cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales de desarrollo desde variables de entorno
                 password_mgr = get_password_manager()
 
-                # Obtener credenciales de desarrollo desde el entorno (NO hardcodeadas)
+                # Obtener cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales de desarrollo desde el entorno (NO hardcodeadas)
                 admin_password = os.getenv("API_ADMIN_PASSWORD")
                 api_password = os.getenv("API_USER_PASSWORD")
 
                 if not admin_password or not api_password:
-                    log_security_event("MISSING_CREDENTIALS", "HIGH",
+                    log_security_event("MISSING_Cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseENTIALS", "HIGH",
                                      "Variables de entorno API_ADMIN_PASSWORD y API_USER_PASSWORD no definidas")
                     return False, False
 
@@ -841,7 +933,11 @@ username: str,
                 user_exists = username in dev_users
 
                 if user_exists:
-                    credentials_valid = password_mgr.verify_password(password, dev_users[username])
+                    cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid = password_mgr.verify_password(password, dev_users[username])
                 else:
                     # Simular verificación para usuarios inexistentes
                     simulate_password_check(username)
@@ -859,12 +955,28 @@ username: str,
                         user_exists = result is not None
 
                         if user_exists:
-                            stored_hash, activo = result
+                            stoexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise_hash, activo = result
                             if activo:
                                 # Verificar contraseña usando el gestor seguro
-                                credentials_valid = password_mgr.verify_password(password, stored_hash)
+                                cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid = password_mgr.verify_password(password, stoexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise_hash)
                             else:
-                                credentials_valid = False
+                                cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid = False
                                 log_security_event("LOGIN_USER_DISABLED", "MEDIUM", f"Username: {username}")
                         else:
                             # Simular verificación para usuarios inexistentes
@@ -878,19 +990,35 @@ username: str,
             # Registrar intento en sistema de protección
             record_login_attempt(ip_address,
 username,
-                credentials_valid,
+                cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid,
                 user_exists)
 
             # Aplicar delay consistente para prevenir timing attacks
-            required_delay = get_response_delay(username, user_exists)
+            requiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise_delay = get_response_delay(username, user_exists)
             elapsed_time = time.time() - start_time
-            remaining_delay = max(0, required_delay - elapsed_time)
+            remaining_delay = max(0, requiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raise_delay - elapsed_time)
 
             if remaining_delay > 0:
                 time.sleep(remaining_delay)
 
             # Log del resultado
-            if credentials_valid:
+            if cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid:
                 log_security_event("LOGIN_SUCCESS", "INFO",
                                   f"Username: {username}, IP: {ip_address}")
             else:
@@ -898,23 +1026,47 @@ username,
                 log_security_event(f"LOGIN_FAILED_{result_type}", "MEDIUM",
                                   f"Username: {username}, IP: {ip_address}")
 
-            return credentials_valid, user_exists
+            return cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials_valid, user_exists
 
         except Exception as e:
             from ..utils.secure_logger import log_error
-            log_error(f"Error verificando credenciales: {str(e)}")
+            log_error(f"Error verificando cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseenciales: {str(e)}")
             # Simular verificación en caso de error crítico
             simulate_password_check(username)
             return False, False
 
-    async def _get_current_user(self, credentials: HTTPAuthorizationCredentials = Depends(HTTPBearer())):
+    async def _get_current_user(self, cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials: HTTPAuthorizationCexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials = Depends(HTTPBearer())):
         """Obtener usuario actual desde token JWT"""
         if not JWT_AVAILABLE:
             return {"sub": "anonymous"}
 
         try:
             payload = jwt.decode(
-                credentials.credentials,
+                cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials.cexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseentials,
                 SECURITY_CONFIG["jwt_secret"],
                 algorithms=["HS256"]
             )
@@ -928,7 +1080,11 @@ username,
 
             return payload
 
-        except jwt.ExpiredSignatureError:
+        except jwt.Expiexcept (ConnectionError, TimeoutError, ValueError) as e:
+            logger.error(f"Error de red/API: {e}")
+        except Exception as e:
+            logger.exception(f"Error inesperado de red: {e}")
+            raiseSignatureError:
             raise HTTPException(
                 status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Token expirado"

@@ -1,0 +1,324 @@
+# Reporte de Correcciones de Seguridad
+
+Total de cambios: 313
+
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\audit_integrity.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\audit_system.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\audit_trail.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\auth.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\auth.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\auth_decorators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\auth_decorators.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\auth_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\auth_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\backup_integration.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\backup_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\backup_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\base_controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\base_controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\config.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\config.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\database.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\database_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\database_pool.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\database_pool.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\dev_auth_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\dev_auth_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\dev_db_mock.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\logger.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\login_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\login_dialog.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\module_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\module_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\query_optimizer.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\rate_limiter.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\rbac_database.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\rbac_database.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\rbac_system.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\safety_limits.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\safety_limits.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\security.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\security_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\splash_screen.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\sql_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\sql_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\core\sql_query_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\themes.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\user_management.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\core\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\administracion\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\administracion\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\administracion\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\administracion\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\administracion\contabilidad\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\administracion\contabilidad\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\administracion\contabilidad\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\administracion\recursos_humanos\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\auditoria\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\auditoria\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\auditoria\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\auditoria\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\constants.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\constants.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\detalle_model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\inventory_integration.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\proveedores_model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\proveedores_model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\view.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\view_complete.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\view_complete.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\dialogs\dialog_proveedor.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\dialogs\dialog_seguimiento.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\dialogs\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\compras\pedidos\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\pedidos\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\pedidos\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\pedidos\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\compras\pedidos\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\configuracion\advanced_features.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\configuracion\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\configuracion\database_config_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\configuracion\database_config_dialog.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\configuracion\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\configuracion\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\configuracion\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\herrajes\constants.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\constants.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\herrajes\improved_dialogs.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\improved_dialogs.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\herrajes\inventario_integration.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\herrajes\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\model_consolidado.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\herrajes\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\constants.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\model_consolidado.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\obras_asociadas_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\view_antigua.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\view_obras.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\missing_dialogs.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\modern_product_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\modern_product_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\reserva_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\seleccionar_obra_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\dialogs\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\base_utilities.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\submodules\base_utilities.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\categorias_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\consultas_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\submodules\consultas_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\movimientos_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\submodules\movimientos_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\productos_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\reportes_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\inventario\submodules\reservas_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\inventario\submodules\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\constants.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\constants.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\dialogo_servicios.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\view.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\view_refactored.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\components\panel_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\components\table_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\logistica\components\transport_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\logistica\components\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\mantenimiento\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\mantenimiento\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\mantenimiento\model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\mantenimiento\programacion_model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\mantenimiento\programacion_model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\mantenimiento\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\mantenimiento\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\mantenimiento\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\notificaciones\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\notificaciones\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\notificaciones\model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\notificaciones\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\notificaciones\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\notificaciones\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\cronograma_view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\cronograma_view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\data_mapper.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\model_adapter.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\model_consolidado.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\validator_extended.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\widgets_advanced.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\components\enhanced_label_widget.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\components\optimized_table_widget.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\components\optimized_table_widget.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\components\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\dialogs\modern_obra_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\dialogs\modern_obra_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\produccion\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\produccion\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\produccion\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\produccion\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\submodules\consultas_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\submodules\proyectos_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\submodules\proyectos_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\obras\submodules\recursos_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\submodules\recursos_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\obras\submodules\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\pedidos\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\pedidos\improved_dialogs.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\improved_dialogs.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\pedidos\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\model_consolidado.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\pedidos\view_complete.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\view_complete.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\view_modern.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\pedidos\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\advanced_features.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\usuarios\constants.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\improved_dialogs.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\usuarios\improved_dialogs.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\model.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\security_dialog.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\usuarios\security_dialog.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\security_features.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\usuarios\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\autenticacion_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\auth_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\consultas_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\permissions_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\profiles_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\sessions_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\usuarios_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\usuarios\submodules\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\vidrios\controller.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\vidrios\controller.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\vidrios\model.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\vidrios\model_consolidado.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\vidrios\view.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\vidrios\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\vidrios\submodules\consultas_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\vidrios\submodules\obras_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\modules\vidrios\submodules\productos_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\modules\vidrios\submodules\__init__.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\app_logger.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\backup_compressor.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\backup_recovery.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\cache_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\cache_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\contextual_error_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\contextual_error_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\contextual_error_system.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\contextual_error_system.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\database.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\database_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\database_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\data_integrity_validator.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\data_sanitizer.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\data_sanitizers.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\demo_data_generator.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\demo_data_generator.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\demo_mode.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\demo_mode.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\dependency_validator.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\diagnostic_widget.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\diagnostic_widget.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\dialogs.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\dialog_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\dialog_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\encoding_fix.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\encrypted_cache.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\encrypted_cache.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\env_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\error_handler.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\error_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\error_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\error_notification_widget.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\error_notification_widget.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\error_recovery.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\export_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\feedback_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\format_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\format_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\form_styles.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\form_validators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\form_validators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\icon_loader.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\input_validator.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\intelligent_cache.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\intelligent_cache.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\keyboard_help.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\keyboard_navigation.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\lazy_loader.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\loading_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\log_rotation_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\message_system.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\modern_form_components.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\modern_form_components.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\module_loader_fixes.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\module_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\module_validators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\optimization_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\pagination.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\pagination.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\pagination_manager.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\password_security.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\password_security.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\performance_monitor.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\performance_optimizer.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\query_optimizer.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\query_performance_analyzer.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\realtime_dashboard.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\rexus_styles.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\secure_logger.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\security.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\security_analyzer.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\security_clean.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\smart_cache.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\smart_cache.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\smart_tooltips.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\smart_tooltips.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\sql_dialect_translator.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\sql_security.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\style_unifier.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\style_unifier.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\system_integration.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\system_integration.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\theme_fixes.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\theme_manager.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\two_factor_auth.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\utils\validation_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\validation_utils.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\xss_protection.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\utils\__init__.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\api\server.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\api\server.py
+- Fixed generic exceptions in D:\martin\Rexus.app\rexus\api\validators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\api\validators.py
+- Migrated print statements to logging in D:\martin\Rexus.app\rexus\api\__init__.py
+
+## Recomendaciones Post-Corrección
+
+1. Revisar los comentarios TODO agregados
+2. Ejecutar tests para validar funcionalidad
+3. Considerar refactoring adicional en archivos grandes
+4. Configurar lint rules para prevenir regresiones

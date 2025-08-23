@@ -4,6 +4,10 @@ Modelo de Pedidos de Compras
 Maneja la lógica de negocio y acceso a datos para órdenes de compra.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Any, Dict, List
 from datetime import datetime
 from rexus.utils.security import SecurityUtils
@@ -38,9 +42,9 @@ class PedidosModel:
                 (self.tabla_pedidos,),
             )
             if cursor.fetchone():
-                print(f"[PEDIDOS] Tabla '{self.tabla_pedidos}' verificada.")
+                logger.info(f"[PEDIDOS] Tabla '{self.tabla_pedidos}' verificada.")
             else:
-                print(f"[ADVERTENCIA] La tabla '{self.tabla_pedidos}' no existe.")
+                logger.info(f"[ADVERTENCIA] La tabla '{self.tabla_pedidos}' no existe.")
 
             # Verificar tabla detalle_pedidos_compra
             cursor.execute(
@@ -48,12 +52,12 @@ class PedidosModel:
                 (self.tabla_detalle_pedidos,),
             )
             if cursor.fetchone():
-                print(f"[PEDIDOS] Tabla '{self.tabla_detalle_pedidos}' verificada.")
+                logger.info(f"[PEDIDOS] Tabla '{self.tabla_detalle_pedidos}' verificada.")
             else:
-                print(f"[ADVERTENCIA] La tabla '{self.tabla_detalle_pedidos}' no existe.")
+                logger.info(f"[ADVERTENCIA] La tabla '{self.tabla_detalle_pedidos}' no existe.")
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error verificando tablas: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error verificando tablas: {e}")
 
     def crear_pedido_compra(
         self,
@@ -116,11 +120,11 @@ ENVIADO,
             )
 
             self.db_connection.commit()
-            print(f"[PEDIDOS] Pedido creado exitosamente para proveedor {proveedor_id}")
+            logger.info(f"[PEDIDOS] Pedido creado exitosamente para proveedor {proveedor_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error creando pedido: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error creando pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -164,7 +168,7 @@ ENVIADO,
             return pedidos
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error obteniendo pedidos por estado: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error obteniendo pedidos por estado: {e}")
             return []
 
     def actualizar_estado_pedido(self, pedido_id: int, nuevo_estado: str, usuario_actualizacion: str = "Sistema") -> bool:
@@ -205,11 +209,11 @@ usuario_actualizacion,
             )
 
             self.db_connection.commit()
-            print(f"[PEDIDOS] Estado del pedido {pedido_id} actualizado a {nuevo_estado}")
+            logger.info(f"[PEDIDOS] Estado del pedido {pedido_id} actualizado a {nuevo_estado}")
             return True
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error actualizando estado pedido: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error actualizando estado pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -248,7 +252,7 @@ usuario_actualizacion,
             return pedidos
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error obteniendo todos los pedidos: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error obteniendo todos los pedidos: {e}")
             return []
 
     def agregar_detalle_pedido(
@@ -298,11 +302,11 @@ usuario_actualizacion,
                 precio_unitario,
                 subtotal))
             self.db_connection.commit()
-            print(f"[PEDIDOS] Detalle agregado al pedido {pedido_id}")
+            logger.info(f"[PEDIDOS] Detalle agregado al pedido {pedido_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR PEDIDOS] Error agregando detalle pedido: {e}")
+            logger.info(f"[ERROR PEDIDOS] Error agregando detalle pedido: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False

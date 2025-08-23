@@ -31,7 +31,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 # Importar logging
 from rexus.utils.app_logger import get_logger
 
-logger = get_logger("test.master_phase3_runner")
+logger = get_logger()
 
 
 class Phase3TestRunner:
@@ -122,192 +122,7 @@ class Phase3TestRunner:
             return False
             
         except Exception as e:
-            logger.error(f"Error ejecutando tests de {module_name}: {e}")
-            print(f"❌ ERROR en {description}: {e}")
-            
-            self.results[module_name] = {
-                'description': description,
-                'error': str(e),
-                'success': False
-            }
-            
-            return False
-    
-    def run_all_tests(self, skip_performance=False):
-        """Ejecuta todos los tests de Phase 3"""
-        self.print_header()
-        self.start_time = time.time()
-        
-        print("🚀 INICIANDO EJECUCIÓN DE TODOS LOS TESTS DE PHASE 3...")
-        print()
-        
-        # Definir tests a ejecutar
-        test_definitions = [
-            ('tests.test_vidrios_workflows_completos', 
-             '📋 Tests Integrales - Módulo Vidrios'),
-            
-            ('tests.test_notificaciones_workflows_completos', 
-             '🔔 Tests Integrales - Módulo Notificaciones'),
-            
-            ('tests.test_inventario_integracion_avanzada', 
-             '📦 Tests Integración Avanzada - Inventario'),
-            
-            ('tests.test_obras_integracion_avanzada', 
-             '🏗️  Tests Integración Avanzada - Obras'),
-            
-            ('tests.test_e2e_workflows_inter_modulos', 
-             '🔄 Tests E2E - Workflows Inter-Módulos'),
-            
-            ('tests.test_database_integration_real', 
-             '🗄️  Tests Integración Real - Base de Datos')
-        ]
-        
-        # Ejecutar cada suite de tests
-        all_successful = True
-        
-        for module_name, description in test_definitions:
-            success = self.run_module_tests(module_name, description)
-            all_successful = all_successful and success
-        
-        self.end_time = time.time()
-        
-        # Imprimir resumen final
-        self.print_final_summary(all_successful)
-        
-        return all_successful
-    
-    def run_quick_validation(self):
-        """Ejecuta una validación rápida de los tests más críticos"""
-        self.print_header()
-        print("⚡ MODO VALIDACIÓN RÁPIDA - Tests Críticos de Phase 3")
-        print()
-        
-        self.start_time = time.time()
-        
-        # Solo ejecutar tests más críticos y rápidos
-        critical_tests = [
-            ('tests.test_vidrios_workflows_completos', 
-             '📋 Validación Rápida - Vidrios'),
-            
-            ('tests.test_inventario_integracion_avanzada', 
-             '📦 Validación Rápida - Inventario'),
-            
-            ('tests.test_database_integration_real', 
-             '🗄️  Validación Rápida - Base de Datos')
-        ]
-        
-        all_successful = True
-        
-        for module_name, description in critical_tests:
-            success = self.run_module_tests(module_name, description)
-            all_successful = all_successful and success
-        
-        self.end_time = time.time()
-        self.print_final_summary(all_successful, quick_mode=True)
-        
-        return all_successful
-    
-    def print_final_summary(self, all_successful, quick_mode=False):
-        """Imprime resumen final de la ejecución"""
-        total_duration = self.end_time - self.start_time
-        
-        print("\n" + "=" * 100)
-        print("📊 RESUMEN FINAL DE EJECUCIÓN" + (" (MODO RÁPIDO)" if quick_mode else ""))
-        print("=" * 100)
-        
-        # Estadísticas generales
-        total_tests = 0
-        total_failures = 0
-        total_errors = 0
-        total_skipped = 0
-        successful_modules = 0
-        
-        for module_name, result in self.results.items():
-            if not result.get('skipped', False):
-                total_tests += result.get('tests_run', 0)
-                total_failures += result.get('failures', 0)
-                total_errors += result.get('errors', 0)
-                total_skipped += result.get('skipped', 0)
-                
-                if result.get('success', False):
-                    successful_modules += 1
-        
-        print(f"⏱️  Duración Total: {total_duration:.2f} segundos")
-        print(f"📁 Módulos Ejecutados: {len([r for r in self.results.values() if not r.get('skipped', False)])}")
-        print(f"✅ Módulos Exitosos: {successful_modules}")
-        print(f"🧪 Tests Totales: {total_tests}")
-        print(f"❌ Fallos: {total_failures}")
-        print(f"💥 Errores: {total_errors}")
-        print(f"⏭️  Saltados: {total_skipped}")
-        
-        print("\n📋 DETALLE POR MÓDULO:")
-        print("-" * 100)
-        
-        for module_name, result in self.results.items():
-            status = "✅" if result.get('success', False) else "❌"
-            
-            if result.get('skipped', False):
-                status = "⏭️ "
-                print(f"{status} {result['description']:<50} | SALTADO")
-            else:
-                duration = result.get('duration', 0)
-                tests = result.get('tests_run', 0)
-                failures = result.get('failures', 0)
-                errors = result.get('errors', 0)
-                
-                print(f"{status} {result['description']:<50} | "
-                      f"Tests: {tests:3d} | "
-                      f"Fallos: {failures:2d} | "
-                      f"Errores: {errors:2d} | "
-                      f"Tiempo: {duration:6.2f}s")
-        
-        print("=" * 100)
-        
-        if all_successful:
-            print("🎉 ¡TODOS LOS TESTS DE PHASE 3 PASARON EXITOSAMENTE!")
-            print("✨ La implementación de Phase 3 está COMPLETA y VALIDADA")
-        else:
-            print("⚠️  ALGUNOS TESTS FALLARON - Revisar módulos marcados con ❌")
-            print("🔧 Se recomienda investigar y corregir los fallos antes de continuar")
-        
-        print("=" * 100)
-    
-    def generate_report(self, output_file='phase3_test_report.txt'):
-        """Genera reporte detallado de la ejecución"""
-        if not self.results:
-            print("⚠️  No hay resultados para generar reporte")
-            return False
-        
-        try:
-            with open(output_file, 'w', encoding='utf-8') as f:
-                f.write("REPORTE DE EJECUCIÓN - PHASE 3 TESTS\n")
-                f.write("=" * 80 + "\n")
-                f.write(f"Fecha: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n")
-                f.write(f"Duración Total: {(self.end_time - self.start_time):.2f} segundos\n\n")
-                
-                for module_name, result in self.results.items():
-                    f.write(f"MÓDULO: {module_name}\n")
-                    f.write(f"Descripción: {result['description']}\n")
-                    
-                    if result.get('skipped', False):
-                        f.write("Estado: SALTADO\n")
-                        f.write(f"Razón: {result.get('error', 'No especificada')}\n")
-                    else:
-                        f.write(f"Tests Ejecutados: {result.get('tests_run', 0)}\n")
-                        f.write(f"Fallos: {result.get('failures', 0)}\n")
-                        f.write(f"Errores: {result.get('errors', 0)}\n")
-                        f.write(f"Duración: {result.get('duration', 0):.2f}s\n")
-                        f.write(f"Éxito: {'SÍ' if result.get('success', False) else 'NO'}\n")
-                    
-                    f.write("-" * 40 + "\n")
-            
-            print(f"📄 Reporte generado: {output_file}")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Error generando reporte: {e}")
-            print(f"❌ Error generando reporte: {e}")
-            return False
+                        return False
 
 
 class Phase3CLIRunner:
@@ -371,33 +186,7 @@ DESCRIPCIÓN:
             print("\n⚠️  Ejecución interrumpida por el usuario")
             sys.exit(1)
         except Exception as e:
-            logger.error(f"Error ejecutando tests: {e}")
-            print(f"❌ Error inesperado: {e}")
-            sys.exit(1)
-
-
-# ================================
-# FUNCIONES DE UTILIDAD ADICIONALES
-# ================================
-
-def run_specific_test_class(test_class_name, module_name):
-    """Ejecuta una clase de test específica"""
-    try:
-        module = __import__(module_name, fromlist=[''])
-        test_class = getattr(module, test_class_name)
-        
-        loader = unittest.TestLoader()
-        suite = loader.loadTestsFromTestCase(test_class)
-        
-        runner = unittest.TextTestRunner(verbosity=2)
-        result = runner.run(suite)
-        
-        return result.wasSuccessful()
-        
-    except Exception as e:
-        print(f"❌ Error ejecutando {test_class_name}: {e}")
-        return False
-
+            
 
 def validate_test_environment():
     """Valida que el entorno esté configurado para ejecutar tests"""

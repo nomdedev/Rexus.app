@@ -5,6 +5,10 @@ Proporciona mensajes visuales consistentes y atractivos usando QMessageBox
 con iconos, estilos y comportamientos personalizados.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from enum import Enum
 from typing import Optional
 from PyQt6.QtWidgets import QMessageBox, QWidget

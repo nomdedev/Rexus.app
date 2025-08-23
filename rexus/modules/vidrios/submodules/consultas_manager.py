@@ -9,15 +9,11 @@ Responsabilidades:
 - Paginación de resultados
 """
 
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
-logger = get_logger("vidrios.consultas_manager")
+logger = get_logger()
 
 # SQLQueryManager unificado
 try:
@@ -32,7 +28,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -101,7 +97,6 @@ class ConsultasManager:
             return vidrios
 
         except Exception as e:
-            logger.error(f"Error obteniendo vidrios: {str(e)}")
             return []
 
     def buscar_vidrios(self, termino_busqueda: str) -> List[Dict[str, Any]]:
@@ -144,7 +139,6 @@ class ConsultasManager:
             return resultados
 
         except Exception as e:
-            logger.error(f"Error en búsqueda de vidrios: {str(e)}")
             return []
     def obtener_estadisticas_vidrios(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas del inventario de vidrios."""
@@ -197,7 +191,6 @@ class ConsultasManager:
             return estadisticas
 
         except Exception as e:
-            logger.error(f"Error obteniendo estadísticas: {str(e)}")
             return {}
     def obtener_vidrios_paginados(
         self,
@@ -267,7 +260,6 @@ min(100,
             }
 
         except Exception as e:
-            logger.error(f"Error obteniendo vidrios paginados: {str(e)}")
             return {"vidrios": [], "total": 0, "page": page, "per_page": per_page}
     def obtener_vidrios_stock_bajo(self) -> List[Dict[str, Any]]:
         """Obtiene vidrios con stock por debajo del mínimo."""
@@ -298,7 +290,6 @@ min(100,
             return vidrios
 
         except Exception as e:
-            logger.error(f"Error obteniendo vidrios con stock bajo: {str(e)}")
             return []
 
     def _sanitizar_filtros(self, filtros: Dict[str, Any]) -> Dict[str, Any]:
@@ -384,5 +375,4 @@ vidrio: Dict[str,
             return proveedores
 
         except Exception as e:
-            logger.error(f"Error generando reporte de proveedores: {str(e)}")
             return []

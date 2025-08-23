@@ -92,47 +92,7 @@ class MetricsCollector:
                 time.sleep(interval)
                 
             except Exception as e:
-                self.logger.error(f"Error recolectando métricas: {e}")
-                time.sleep(interval)
-                
-    def _collect_system_metrics(self) -> SystemMetrics:
-        """Recolecta métricas del sistema"""
-        try:
-            # Métricas de CPU y memoria
-            cpu_percent = psutil.cpu_percent(interval=1)
-            memory = psutil.virtual_memory()
-            disk = psutil.disk_usage('.')
-            
-            # Métricas de base de datos
-            active_connections = self._get_active_connections()
-            query_count = len(self.query_times)
-            
-            # Tiempo de respuesta promedio
-            if self.query_times:
-                response_time_avg = sum(self.query_times) / len(self.query_times)
-                self.query_times = self.query_times[-100:]  # Mantener últimas 100
-            else:
-                response_time_avg = 0.0
-                
-            metrics = SystemMetrics(
-                timestamp=datetime.now(),
-                cpu_percent=cpu_percent,
-                memory_percent=memory.percent,
-                memory_available=memory.available / (1024**3),  # GB
-                disk_usage_percent=disk.percent,
-                active_connections=active_connections,
-                query_count=query_count,
-                error_count=self.error_count,
-                response_time_avg=response_time_avg,
-                user_sessions=len(self.user_sessions)
-            )
-            
-            return metrics
-            
-        except Exception as e:
-            self.logger.error(f"Error recolectando métricas del sistema: {e}")
-            # Retornar métricas vacías en caso de error
-            return SystemMetrics(
+                self.            return SystemMetrics(
                 timestamp=datetime.now(),
                 cpu_percent=0.0,
                 memory_percent=0.0,

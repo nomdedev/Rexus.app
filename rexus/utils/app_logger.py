@@ -260,10 +260,10 @@ def replace_print_with_logging():
     
     Ejemplos de migración:
     
-    print("[INFO] Mensaje") -> log_info("Mensaje", "component")
-    print("[ERROR] Error") -> log_error("Error", "component")
-    print("[DEBUG] Debug") -> log_debug("Debug", "component")
-    print(f"[SECURITY] {msg}") -> log_security("INFO", msg)
+    logger.info("[INFO] Mensaje") -> log_info("Mensaje", "component")
+    logger.info("[ERROR] Error") -> log_error("Error", "component")
+    logger.info("[DEBUG] Debug") -> log_debug("Debug", "component")
+    logger.info(f"[SECURITY] {msg}") -> log_security("INFO", msg)
     """
     pass
 
@@ -274,7 +274,7 @@ def replace_print_with_logging():
 from rexus.utils.app_logger import get_logger, log_info, log_error, log_security
 
 # Obtener logger específico para el módulo
-logger = get_logger("inventario")
+logger = get_logger()
 logger.info("Módulo inventario inicializado")
 
 # Usar funciones de conveniencia
@@ -283,7 +283,7 @@ log_error("Error en validación", "inventario")
 log_security("CRITICAL", "Intento de acceso no autorizado", "usuario123")
 
 # En lugar de:
-print("[INFO] Mensaje")
+logger.info("[INFO] Mensaje")
 # Usar:
 log_info("Mensaje", "component_name")
 """

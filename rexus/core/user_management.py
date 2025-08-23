@@ -4,6 +4,10 @@ Sistema de Gestión de Usuarios Completo - Rexus.app
 Incluye autenticación, autorización, gestión de roles y edge cases
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import hashlib
 import re
 import sys
@@ -420,10 +424,10 @@ data: Dict,
             ]
 
         except Exception as e:
-            print(f"Error listando usuarios: {e}")
+            logger.info(f"Error listando usuarios: {e}")
             return []
 
 
 if __name__ == "__main__":
-    print("Sistema de Gestión de Usuarios - Rexus.app")
-    print("Este módulo contiene todas las funciones de gestión de usuarios")
+    logger.info("Sistema de Gestión de Usuarios - Rexus.app")
+    logger.info("Este módulo contiene todas las funciones de gestión de usuarios")

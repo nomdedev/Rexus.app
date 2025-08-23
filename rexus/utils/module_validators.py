@@ -7,6 +7,10 @@ funciones como validate_producto_form y validate_module_form.
 Implementaciones mínimas usan las utilidades existentes en
 `rexus.utils.form_validators` y validaciones básicas.
 """
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Tuple, Dict, Any
 import re
 

@@ -10,7 +10,7 @@ from typing import Any, Dict
 
 try:
     from rexus.utils.app_logger import get_logger
-    logger = get_logger("module.loader.fixes")
+    logger = get_logger()
 except ImportError:
     logger = logging.getLogger("module.loader.fixes")
 
@@ -80,7 +80,6 @@ class ModuleLoaderFixes:
             return True
             
         except Exception as e:
-            logger.error(f"Error cargando datos para {module_name}: {str(e)}")
             return False
     
     @staticmethod
@@ -112,7 +111,6 @@ class ModuleLoaderFixes:
             logger.debug(f"No se encontró método de actualización específico para {module_name}")
             
         except Exception as e:
-            logger.error(f"Error actualizando vista para {module_name}: {str(e)}")
 
 # Mapeo de módulos que necesitan patches
 MODULES_NEEDING_PATCHES = {

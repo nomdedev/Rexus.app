@@ -33,6 +33,10 @@ Sistema de rate limiting que protege contra ataques de fuerza bruta:
 - Permite configuración flexible
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import datetime
 import json
 from pathlib import Path
@@ -105,7 +109,7 @@ class LoginRateLimiter:
                 self.attempts = data
 
         except Exception as e:
-            print(f"[WARNING] Error cargando rate limiter data: {e}")
+            logger.info(f"[WARNING] Error cargando rate limiter data: {e}")
             self.attempts = {}
 
     def _save_data(self):
@@ -134,7 +138,7 @@ class LoginRateLimiter:
                 json.dump(data_to_save, f, indent=2, ensure_ascii=False)
 
         except Exception as e:
-            print(f"[ERROR] Error guardando rate limiter data: {e}")
+            logger.info(f"[ERROR] Error guardando rate limiter data: {e}")
 
     def _cleanup_old_records(self):
         """Limpia registros antiguos basado en configuración"""
@@ -158,11 +162,11 @@ class LoginRateLimiter:
                 del self.attempts[username]
 
             if users_to_remove:
-                print(f"[INFO] Rate limiter: limpiados {len(users_to_remove)} registros antiguos")
+                logger.info(f"[INFO] Rate limiter: limpiados {len(users_to_remove)} registros antiguos")
                 self._save_data()
 
         except Exception as e:
-            print(f"[ERROR] Error limpiando registros antiguos: {e}")
+            logger.info(f"[ERROR] Error limpiando registros antiguos: {e}")
 
     def is_blocked(self, username: str) -> Tuple[bool, Optional[datetime.datetime]]:
         """
@@ -329,7 +333,7 @@ class LoginRateLimiter:
                 conn.close()
 
         except Exception as e:
-            print(f"[WARNING] Error logging security event: {e}")
+            logger.info(f"[WARNING] Error logging security event: {e}")
 
     def reset_user_attempts(self, username: str, admin_user: str = "system"):
         """
@@ -346,7 +350,7 @@ class LoginRateLimiter:
             # Log de la acción administrativa
             self._log_security_event(admin_user, "admin_reset_attempts", f"Reset for user: {username}")
 
-            print(f"[ADMIN] Intentos resetados para usuario '{username}' por '{admin_user}'")
+            logger.info(f"[ADMIN] Intentos resetados para usuario '{username}' por '{admin_user}'")
 
     def get_statistics(self) -> Dict:
         """Obtiene estadísticas del rate limiter"""

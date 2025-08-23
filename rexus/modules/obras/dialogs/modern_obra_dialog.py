@@ -27,249 +27,12 @@ Diálogo moderno mejorado para obras
 Incluye todos los campos de la base de datos con feedback visual avanzado
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import sys
-from typing import Optional, Dict, Any
-from PyQt6.QtCore import QDate
-from PyQt6.QtWidgets import (
-    QLineEdit, QTextEdit, QComboBox, QSpinBox, QDoubleSpinBox,
-    QDateEdit, QCheckBox, QVBoxLayout
-)
-
-# Importar componentes modernos con manejo de errores
-try:
-    from rexus.utils.modern_form_components import ModernFormDialog, FormValidators
-except ImportError:
-    print("[WARNING] Modern form components not available, using basic dialog")
-    from PyQt6.QtWidgets import QDialog as ModernFormDialog
-
-    class FormValidators:
-        @staticmethod
-        def code_format(value):
-            return bool(value.strip() if hasattr(value, 'strip') else value)
-
-        @staticmethod
-        def required_field(value):
-            return bool(value.strip() if hasattr(value, 'strip') else value)
-
-        @staticmethod
-        def numeric_range(value, min_val=None, max_val=None):
-            try:
-                num = float(value)
-                if min_val is not None and num < min_val:
-                    return False
-                if max_val is not None and num > max_val:
-                    return False
-                return True
-            except (ValueError, TypeError):
-                return False
-
-        @staticmethod
-        def email_format(value):
-            return '@' in str(value) if value else False
-
-
-
-class ModernObraDialog(ModernFormDialog):
-    """Diálogo moderno para crear/editar obras"""
-
-    def __init__(self, parent=None, obra_data: Optional[Dict] = None):
-        self.obra_data = obra_data
-        self.is_editing = obra_data is not None
-
-        title = "Editar Obra" if self.is_editing else "Nueva Obra"
-        super().__init__(title, parent)
-
-        self.setup_form_fields()
-
-        if self.is_editing:
-            self.load_obra_data()
-
-    def setup_form_fields(self):
-        """Configura todos los campos del formulario"""
-
-        # SECCIÓN: INFORMACIÓN BÁSICA
-        basic_section = self.add_section("[CONSTRUCTION] Información Básica")
-        QVBoxLayout(basic_section)
-
-        # Código de obra
-        codigo_input = QLineEdit()
-        codigo_input.setPlaceholderText("Ej: OBR-2024-001")
-        self.add_field(
-            "codigo_obra", "Código de Obra", codigo_input,
-            required=True,
-            tooltip="Código único para identificar la obra (formato: OBR-YYYY-NNN)",
-            validation_func=lambda x: self.validate_codigo_obra(x)
-        )
-
-        # Nombre de la obra
-        nombre_input = QLineEdit()
-        nombre_input.setPlaceholderText("Nombre descriptivo de la obra")
-        self.add_field(
-            "nombre", "Nombre de la Obra", nombre_input,
-            required=True,
-            tooltip="Nombre claro y descriptivo de la obra",
-            validation_func=FormValidators.required_field
-        )
-
-        # Descripción
-        descripcion_input = QTextEdit()
-        descripcion_input.setMaximumHeight(100)
-        descripcion_input.setPlaceholderText("Descripción detallada de la obra, alcance, características...")
-        self.add_field(
-            "descripcion", "Descripción", descripcion_input,
-            tooltip="Descripción detallada del proyecto"
-        )
-
-        # Cliente ID (combo con clientes existentes)
-        cliente_combo = QComboBox()
-        cliente_combo.setEditable(True)
-        cliente_combo.addItems([
-            "Cliente 1 - Juan Pérez",
-            "Cliente 2 - María García",
-            "Cliente 3 - Empresa ABC S.A.",
-            "Cliente 4 - Constructora XYZ"
-        ])
-        self.add_field(
-            "cliente_id", "Cliente", cliente_combo,
-            required=True,
-            tooltip="Seleccionar cliente existente o crear nuevo"
-        )
-
-        # SECCIÓN: FECHAS Y CRONOGRAMA
-        fechas_section = self.add_section("📅 Cronograma")
-        QVBoxLayout(fechas_section)
-
-        # Fecha de inicio
-        fecha_inicio_input = QDateEdit()
-        fecha_inicio_input.setDate(QDate.currentDate())
-        fecha_inicio_input.setCalendarPopup(True)
-        self.add_field(
-            "fecha_inicio", "Fecha de Inicio", fecha_inicio_input,
-            required=True,
-            tooltip="Fecha planificada de inicio de la obra"
-        )
-
-        # Fecha fin estimada
-        fecha_fin_estimada_input = QDateEdit()
-        fecha_fin_estimada_input.setDate(QDate.currentDate().addMonths(3))
-        fecha_fin_estimada_input.setCalendarPopup(True)
-        self.add_field(
-            "fecha_fin_estimada", "Fecha Fin Estimada", fecha_fin_estimada_input,
-            required=True,
-            tooltip="Fecha estimada de finalización de la obra"
-        )
-
-        # Fecha fin real
-        fecha_fin_real_input = QDateEdit()
-        fecha_fin_real_input.setCalendarPopup(True)
-        fecha_fin_real_input.setEnabled(False)  # Se habilita cuando la obra esté terminada
-        self.add_field(
-            "fecha_fin_real", "Fecha Fin Real", fecha_fin_real_input,
-            tooltip="Fecha real de finalización (se completa al finalizar la obra)"
-        )
-
-        # SECCIÓN: ESTADO Y PROGRESO
-        estado_section = self.add_section("[CHART] Estado y Progreso")
-        QVBoxLayout(estado_section)
-
-        # Etapa actual
-        etapa_combo = QComboBox()
-        etapa_combo.addItems([
-            "PLANIFICACION", "DISEÑO", "PERMISOS", "PREPARACION_SITIO",
-            "CIMENTACION", "ESTRUCTURA", "CERRAMIENTOS", "INSTALACIONES",
-            "ACABADOS", "REVISION", "ENTREGA", "COMPLETADA"
-        ])
-        self.add_field(
-            "etapa_actual", "Etapa Actual", etapa_combo,
-            required=True,
-            tooltip="Etapa actual en la que se encuentra la obra"
-        )
-
-        # Estado de la obra
-        estado_combo = QComboBox()
-        estado_combo.addItems([
-            "PLANIFICACION", "EN_PROCESO", "PAUSADA", "COMPLETADA",
-            "CANCELADA", "EN_REVISION", "ENTREGADA"
-        ])
-        self.add_field(
-            "estado", "Estado", estado_combo,
-            required=True,
-            tooltip="Estado general de la obra"
-        )
-
-        # Porcentaje completado
-        porcentaje_input = QSpinBox()
-        porcentaje_input.setRange(0, 100)
-        porcentaje_input.setSuffix(" %")
-        self.add_field(
-            "porcentaje_completado", "Porcentaje Completado", porcentaje_input,
-            tooltip="Porcentaje de avance de la obra (0-100%)"
-        )
-
-        # SECCIÓN: ASPECTOS FINANCIEROS
-        financiero_section = self.add_section("[MONEY] Aspectos Financieros")
-        QVBoxLayout(financiero_section)
-
-        # Presupuesto inicial
-        presupuesto_inicial_input = QDoubleSpinBox()
-        presupuesto_inicial_input.setRange(0.00, 999999999.99)
-        presupuesto_inicial_input.setDecimals(2)
-        presupuesto_inicial_input.setPrefix("$ ")
-        self.add_field(
-            "presupuesto_inicial", "Presupuesto Inicial", presupuesto_inicial_input,
-            required=True,
-            tooltip="Presupuesto inicial acordado con el cliente",
-            validation_func=lambda x: FormValidators.numeric_range(x, 0.01)
-        )
-
-        # Costo actual
-        costo_actual_input = QDoubleSpinBox()
-        costo_actual_input.setRange(0.00, 999999999.99)
-        costo_actual_input.setDecimals(2)
-        costo_actual_input.setPrefix("$ ")
-        self.add_field(
-            "costo_actual", "Costo Actual", costo_actual_input,
-            tooltip="Costo acumulado hasta la fecha"
-        )
-
-        # Margen estimado
-        margen_estimado_input = QDoubleSpinBox()
-        margen_estimado_input.setRange(-999999.99, 999999999.99)
-        margen_estimado_input.setDecimals(2)
-        margen_estimado_input.setPrefix("$ ")
-        self.add_field(
-            "margen_estimado", "Margen Estimado", margen_estimado_input,
-            tooltip="Margen de ganancia estimado (puede ser negativo si hay pérdidas)"
-        )
-
-        # SECCIÓN: UBICACIÓN Y RESPONSABLES
-        ubicacion_section = self.add_section("📍 Ubicación y Responsables")
-        QVBoxLayout(ubicacion_section)
-
-        # Ubicación/Dirección
-        ubicacion_input = QTextEdit()
-        ubicacion_input.setMaximumHeight(80)
-        ubicacion_input.setPlaceholderText("Dirección completa de la obra, referencias, coordenadas...")
-        self.add_field(
-            "ubicacion", "Ubicación", ubicacion_input,
-            required=True,
-            tooltip="Dirección completa donde se realizará la obra",
-            validation_func=FormValidators.required_field
-        )
-
-        # Responsable de obra
-        responsable_combo = QComboBox()
-        responsable_combo.setEditable(True)
-        responsable_combo.addItems([
-            "Ing. Carlos Rodríguez",
-            "Arq. Ana Martínez",
-            "Ing. Luis González",
-            "Arq. Patricia López"
-        ])
-        self.add_field(
-            "responsable_obra", "Responsable de Obra", responsable_combo,
-            required=True,
-            tooltip="Responsable técnico asignado a la obra"
+                        tooltip="Responsable técnico asignado a la obra"
         )
 
         # SECCIÓN: INFORMACIÓN ADICIONAL
@@ -383,7 +146,7 @@ class ModernObraDialog(ModernFormDialog):
                                 qdate = QDate(int(date_parts[0]), int(date_parts[1]), int(date_parts[2]))
                                 widget.setDate(qdate)
                             except (ValueError, IndexError) as e:
-                                print(f"[WARNING OBRA_DIALOG] Invalid date format '{value}': {e}")
+                                logger.info(f)
                                 widget.setDate(QDate.currentDate())
                         else:
                             widget.setDate(value)
@@ -446,7 +209,7 @@ class ModernObraDialog(ModernFormDialog):
         is_valid, error_message = self.validate_business_rules()
         if not is_valid:
             from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.warning(self, "Error de Validación", error_message)
+            QMessageBox.warning(self, , error_message)
             return
 
         # Mostrar loading y proceder con guardado
@@ -457,7 +220,7 @@ class ModernObraDialog(ModernFormDialog):
         QTimer.singleShot(2000, self.on_save_complete)
 
 
-if __name__ == "__main__":
+if __name__ == :
     """Test del diálogo moderno de obras"""
     from PyQt6.QtWidgets import QApplication
 
@@ -468,8 +231,8 @@ if __name__ == "__main__":
 
     if dialog.exec() == dialog.DialogCode.Accepted:
         data = dialog.get_obra_data()
-        print("Datos de la obra:")
+        logger.info()
         for key, value in data.items():
-            print(f"  {key}: {value}")
+            logger.info(f"  {key}: {value}")
 
     app.exec()

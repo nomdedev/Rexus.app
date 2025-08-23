@@ -9,13 +9,12 @@ Responsabilidades:
 - Seguimiento de costos de recursos
 """
 
-import sqlite3
-from datetime import datetime
-from typing import Any, Dict, List
 
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+import logging
+logger = logging.getLogger(__name__)
+
+import sqlite3
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # SQLQueryManager unificado
 try:
@@ -30,7 +29,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -121,7 +120,7 @@ class RecursosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error asignando material a obra: {str(e)}")
+            logger.info(f"Error asignando material a obra: {str(e)}")
             return False
     def obtener_materiales_obra(self, obra_id: int) -> List[Dict[str, Any]]:
         """Obtiene todos los materiales asignados a una obra."""
@@ -150,7 +149,7 @@ class RecursosManager:
             return materiales
 
         except Exception as e:
-            print(f"Error obteniendo materiales de obra: {str(e)}")
+            logger.info(f"Error obteniendo materiales de obra: {str(e)}")
             return []
     def liberar_material_obra(
         self, obra_id: int, material_id: int, cantidad: int
@@ -182,7 +181,7 @@ class RecursosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error liberando material: {str(e)}")
+            logger.info(f"Error liberando material: {str(e)}")
             return False
     def asignar_personal_obra(
         self, obra_id: int, personal_id: int, rol: str, fecha_inicio: datetime = None
@@ -211,7 +210,7 @@ class RecursosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            print(f"Error asignando personal: {str(e)}")
+            logger.info(f"Error asignando personal: {str(e)}")
             return False
     def obtener_resumen_recursos(self, obra_id: int) -> Dict[str, Any]:
         """Obtiene resumen completo de recursos de una obra."""
@@ -247,7 +246,7 @@ class RecursosManager:
             return resumen
 
         except Exception as e:
-            print(f"Error obteniendo resumen de recursos: {str(e)}")
+            logger.info(f"Error obteniendo resumen de recursos: {str(e)}")
             return {}
 
     def _validar_disponibilidad_material(
@@ -283,7 +282,7 @@ class RecursosManager:
             return stock_actual >= cantidad
 
         except Exception as e:
-            print(f"Error validando disponibilidad: {str(e)}")
+            logger.info(f"Error validando disponibilidad: {str(e)}")
             return False
 
     def _actualizar_stock_material(
@@ -306,7 +305,7 @@ class RecursosManager:
             cursor.execute(query, (cantidad, material_id))
 
         except Exception as e:
-            print(f"Error actualizando stock: {str(e)}")
+            logger.info(f"Error actualizando stock: {str(e)}")
 
     def _devolver_stock_material(self,
 material_id: int,
@@ -325,7 +324,7 @@ material_id: int,
             cursor.execute(query, {"material_id": material_id, "cantidad": cantidad})
 
         except Exception as e:
-            print(f"Error devolviendo stock: {str(e)}")
+            logger.info(f"Error devolviendo stock: {str(e)}")
 
     def _verificar_material_asignado(self, obra_id: int, material_id: int) -> bool:
         """Verifica si un material está asignado a una obra."""
@@ -382,7 +381,7 @@ material_id: int,
             return float(result[0]) if result and result[0] else 0.0
 
         except Exception as e:
-            print(f"Error calculando costo total: {str(e)}")
+            logger.info(f"Error calculando costo total: {str(e)}")
             return 0.0
 
     def _validate_table_name(self, table_name: str) -> str:

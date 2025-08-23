@@ -11,108 +11,7 @@ Responsabilidades:
 
 import datetime
 import hashlib
-from typing import Any, Dict
-
-# Imports de seguridad unificados
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-
-# Sistema de logging centralizado
-from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
-
-# SQLQueryManager unificado
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    # Fallback al script loader
-    from rexus.utils.sql_script_loader import sql_script_loader
-
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-
-        def get_query(self, path, filename):
-            # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
-            return self.sql_loader.load_script(script_name)
-
-
-# DataSanitizer unificado
-try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer
-    DataSanitizer = unified_sanitizer
-except ImportError:
-    class DataSanitizer:
-        def sanitize_dict(self, data):
-            return data if data else {}
-
-        def sanitize_string(self, text):
-            return str(text) if text else ""
-
-        def sanitize_integer(self, value):
-            return int(value) if value else 0
-
-        def sanitize_integer(self, value, min_val=None, max_val=None):
-            return int(value) if value else 0
-
-
-class AutenticacionManager:
-    """Gestor especializado para autenticación y seguridad de usuarios."""
-
-    def __init__(self, db_connection=None):
-        """Inicializa el gestor de autenticación."""
-        self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
-        self.sanitizer = DataSanitizer()
-        self.sql_path = "scripts/sql/usuarios/autenticacion"
-        self.logger = get_logger("usuarios.autenticacion_manager")
-
-        # Configuración de seguridad
-        self.max_intentos_fallidos = 5
-        self.tiempo_bloqueo_minutos = 30
-
-    def _validate_table_name(self, table_name: str) -> str:
-        """Valida nombre de tabla contra lista blanca."""
-        import re
-
-        if not re.match(r"^[a-zA-Z_][a-zA-Z0-9_]*$", table_name):
-            raise ValueError(f"Nombre de tabla inválido: {table_name}")
-
-        tablas_permitidas = {
-            "usuarios",
-            "intentos_login",
-            "sesiones_usuario",
-            "bloqueos_usuario",
-            "permisos_usuario",
-            "roles_usuario",
-        }
-        if table_name not in tablas_permitidas:
-            raise ValueError(f"Tabla no permitida: {table_name}")
-        return table_name
-
-    def autenticar_usuario_seguro(self,
-username: str,
-        password: str) -> Dict[str,
-        Any]:
-        """
-        Autentica un usuario de forma segura con validaciones completas.
-
-        Args:
-            username: Nombre de usuario
-            password: Contraseña en texto plano
-
-        Returns:
-            Dict con resultado de autenticación
-        """
-        if not self.db_connection:
-            return {"success": False, "error": "Sin conexión a base de datos"}
-
-        try:
-            # Sanitizar datos de entrada
-            username_safe = sanitize_string(username, max_length=50)
-
-            if not username_safe or not password:
-                return {"success": False, "error": "Credenciales incompletas"}
-
+            
             # Verificar si la cuenta está bloqueada
             if self.verificar_cuenta_bloqueada(username_safe):
                 return {
@@ -160,30 +59,7 @@ username: str,
             }
 
         except Exception as e:
-            self.logger.error(f"Error en autenticación: {str(e)}", exc_info=True)
-            return {"success": False, "error": "Error interno del sistema"}
-
-    def verificar_cuenta_bloqueada(self, username: str) -> bool:
-        """Verifica si una cuenta de usuario está bloqueada."""
-        if not self.db_connection:
-            return False
-
-        try:
-            username_safe = sanitize_string(username)
-            cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(
-                self.sql_path, "verificar_bloqueo_usuario"
-            )
-            cursor.execute(query, (username_safe, self.tiempo_bloqueo_minutos))
-
-            result = cursor.fetchone()
-            return (result[0] if result else 0) > 0
-
-        except Exception as e:
-            self.logger.error(f"Error verificando bloqueo: {str(e)}", exc_info=True)
-            return True  # Por seguridad, asumir bloqueado
-
+            self.
     def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
         """Registra un intento de login en el sistema."""
         if not self.db_connection:
@@ -211,27 +87,7 @@ username: str,
                 self._incrementar_intentos_fallidos(username_safe)
 
         except Exception as e:
-            self.logger.error(f"Error registrando intento: {str(e)}", exc_info=True)
-
-    def reset_intentos_login(self, username: str) -> bool:
-        """Resetea los intentos fallidos de un usuario."""
-        if not self.db_connection:
-            return False
-
-        try:
-            username_safe = sanitize_string(username)
-            cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(self.sql_path, "reset_intentos_fallidos")
-            cursor.execute(query, (username_safe,))
-
-            self.db_connection.commit()
-            return cursor.rowcount > 0
-
-        except Exception as e:
-            self.logger.error(f"Error reseteando intentos: {str(e)}", exc_info=True)
-            return False
-
+            self.
     def validar_fortaleza_password(self, password: str) -> Dict[str, Any]:
         """
         Valida la fortaleza de una contraseña según criterios de seguridad.
@@ -341,44 +197,7 @@ username: str,
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            self.logger.error(f"Error cambiando contraseña: {str(e)}", exc_info=True)
-            return {"success": False, "error": "Error interno del sistema"}
-
-    def _incrementar_intentos_fallidos(self, username: str) -> None:
-        """Incrementa el contador de intentos fallidos."""
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Obtener intentos actuales
-            query_obtener = self.sql_manager.get_query(
-                self.sql_path, "obtener_intentos_fallidos"
-            )
-            cursor.execute(query_obtener, (username,))
-
-            result = cursor.fetchone()
-            intentos_actuales = (result[0] if result else 0) + 1
-
-            # Actualizar contador
-            query_actualizar = self.sql_manager.get_query(
-                self.sql_path, "actualizar_intentos_fallidos"
-            )
-            cursor.execute(
-                query_actualizar,
-(intentos_actuales,
-                    datetime.datetime.now(),
-                    username)
-            )
-
-            # Si supera el límite, bloquear usuario
-            if intentos_actuales >= self.max_intentos_fallidos:
-                self._bloquear_usuario(username)
-
-            self.db_connection.commit()
-
-        except Exception as e:
-            self.logger.error(f"Error incrementando intentos: {str(e)}", exc_info=True)
-
-    def _bloquear_usuario(self, username: str) -> None:
+            self.    def _bloquear_usuario(self, username: str) -> None:
         """Bloquea temporalmente un usuario."""
         try:
             cursor = self.db_connection.cursor()
@@ -395,8 +214,6 @@ username: str,
             )
 
         except Exception as e:
-            self.logger.error(f"Error bloqueando usuario: {str(e)}", exc_info=True)
-
     def _hash_password(self, password: str, salt: str) -> str:
         """Genera hash de contraseña con salt."""
         return hashlib.pbkdf2_hmac(

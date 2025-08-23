@@ -13,12 +13,12 @@ import time
 # Importar logging
 try:
     from rexus.utils.app_logger import get_logger
-    logger = get_logger("safety.limits")
+    logger = get_logger()
 except ImportError:
     class DummyLogger:
-        def info(self, msg): print(f"[INFO] {msg}")
-        def warning(self, msg): print(f"[WARNING] {msg}")  
-        def error(self, msg): print(f"[ERROR] {msg}")
+        def info(self, msg): logger.info(f"[INFO] {msg}")
+        def warning(self, msg): logger.info(f"[WARNING] {msg}")  
+        def error(self, msg): logger.info(f"[ERROR] {msg}")
     logger = DummyLogger()
 
 class SafetyLimits:
@@ -160,51 +160,7 @@ def timeout_operation(seconds: int = None):
                 
             except Exception as e:
                 elapsed = time.time() - start_time
-                logger.error(f"Error en {func.__name__} después de {elapsed:.2f}s: {e}")
-                raise
-        return wrapper
-    return decorator
-
-class SafeExportManager:
-    """
-    Manager para exportaciones seguras con límites y validaciones.
-    """
-    
-    def __init__(self, module_name: str):
-        self.module_name = module_name
-        self.logger = logger
-    
-    @limit_records("export", enforce=True)
-    def export_to_excel(self, data, filename: str, max_records: int = None):
-        """
-        Exporta datos a Excel con límites de seguridad.
-        
-        Args:
-            data: Datos a exportar
-            filename: Nombre del archivo
-            max_records: Máximo número de registros (será limitado automáticamente)
-        """
-        try:
-            self.logger.info(f"Iniciando exportación Excel para {self.module_name}: {len(data)} registros")
-            
-            # Aplicar límite si se especifica
-            if max_records:
-                data = data[:max_records]
-            
-            # Validar nombre de archivo
-            if len(filename) > SafetyLimits.MAX_FILENAME_LENGTH:
-                filename = filename[:SafetyLimits.MAX_FILENAME_LENGTH]
-                self.logger.warning(f"Nombre de archivo truncado: {filename}")
-            
-            # Aquí iría la lógica real de exportación
-            self.logger.info(f"Exportación Excel completada: {filename}")
-            
-            return True, f"Exportación exitosa: {len(data)} registros"
-            
-        except Exception as e:
-            error_msg = f"Error en exportación Excel: {str(e)}"
-            self.logger.error(error_msg, exc_info=True)
-            return False, error_msg
+                            return False, error_msg
     
     @limit_records("export", enforce=False)  # Aplicar límite automáticamente
     def export_to_csv(self, data, filename: str, max_records: int = None):
@@ -264,9 +220,7 @@ class SafeQueryManager:
             
             return result
             
-        except Exception as e:
-            logger.error(f"Error en consulta segura: {str(e)}", exc_info=True)
-            raise
+        except Exception as e:            raise
     
     @staticmethod
     @timeout_operation()

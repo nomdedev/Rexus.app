@@ -7,52 +7,7 @@ de los datos entre las 3 bases de datos del sistema.
 
 import logging
 import sqlite3
-from typing import Dict, List, Any, Tuple, Optional
-from datetime import datetime
-from dataclasses import dataclass
-from pathlib import Path
-
-logger = logging.getLogger(__name__)
-
-
-@dataclass
-class IntegrityViolation:
-    """Representa una violación de integridad detectada."""
-    violation_type: str
-    table_name: str
-    record_id: Any
-    field_name: str
-    expected_value: Any
-    actual_value: Any
-    severity: str  # 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'
-    description: str
-    timestamp: datetime
-
-
-class DataIntegrityValidator:
-    """
-    Validador de integridad de datos para el sistema Rexus.app.
-    
-    Valida:
-    - Referencias entre bases de datos
-    - Consistencia de datos críticos
-    - Reglas de negocio automáticas
-    - Detección de datos huérfanos
-    """
-
-    def __init__(self, db_connections: Dict[str, Any] = None):
-        """
-        Inicializa el validador de integridad.
-        
-        Args:
-            db_connections: Dict con conexiones a las 3 bases de datos
-                           {'users': conn, 'inventario': conn, 'auditoria': conn}
-        """
-        self.db_connections = db_connections or {}
-        self.violations: List[IntegrityViolation] = []
-        
-        # Reglas de integridad predefinidas
-        self.integrity_rules = {
+                    self.integrity_rules = {
             'foreign_key_consistency': True,
             'data_type_validation': True,
             'business_rule_validation': True,
@@ -90,8 +45,6 @@ class DataIntegrityValidator:
             return self._generate_integrity_report()
             
         except Exception as e:
-            logger.error(f"Error durante validación de integridad: {e}", exc_info=True)
-            return self._generate_error_report()
 
     def _validate_foreign_key_consistency(self):
         """Valida consistencia de claves foráneas entre tablas."""
@@ -142,9 +95,6 @@ class DataIntegrityValidator:
                     ))
                     
         except Exception as e:
-            logger.error(f"Error validando referencias de usuario en inventario: {e}")
-
-    def _validate_product_references_in_auditoria(self):
         """Valida que productos referenciados en auditoría existan."""
         if 'auditoria' not in self.db_connections or 'inventario' not in self.db_connections:
             return
@@ -180,9 +130,6 @@ class DataIntegrityValidator:
                     ))
                     
         except Exception as e:
-            logger.error(f"Error validando referencias de producto en auditoría: {e}")
-
-    def _validate_obra_references(self):
         """Valida referencias entre obras y otros módulos."""
         if 'inventario' not in self.db_connections:
             return
@@ -216,9 +163,6 @@ class DataIntegrityValidator:
                     ))
                     
         except Exception as e:
-            logger.error(f"Error validando referencias de obra: {e}")
-
-    def _validate_business_rules(self):
         """Valida reglas de negocio específicas."""
         logger.debug("Validando reglas de negocio")
         
@@ -276,9 +220,6 @@ class DataIntegrityValidator:
                 ))
                 
         except Exception as e:
-            logger.error(f"Error validando consistencia de stock: {e}")
-
-    def _validate_date_logic(self):
         """Valida lógica de fechas."""
         if 'inventario' not in self.db_connections:
             return
@@ -307,9 +248,6 @@ class DataIntegrityValidator:
                 ))
                 
         except Exception as e:
-            logger.error(f"Error validando lógica de fechas: {e}")
-
-    def _validate_price_ranges(self):
         """Valida rangos de precios."""
         if 'inventario' not in self.db_connections:
             return
@@ -338,9 +276,6 @@ class DataIntegrityValidator:
                 ))
                 
         except Exception as e:
-            logger.error(f"Error validando rangos de precios: {e}")
-
-    def _validate_data_types(self):
         """Valida tipos de datos y formatos."""
         logger.debug("Validando tipos de datos")
         
@@ -385,9 +320,6 @@ class DataIntegrityValidator:
                 ))
                 
         except Exception as e:
-            logger.error(f"Error detectando movimientos huérfanos: {e}")
-
-    def _detect_orphaned_audit_records(self):
         """Detecta registros de auditoría huérfanos."""
         if 'auditoria' not in self.db_connections or 'users' not in self.db_connections:
             return
@@ -420,9 +352,6 @@ class DataIntegrityValidator:
                     ))
                     
         except Exception as e:
-            logger.error(f"Error detectando registros de auditoría huérfanos: {e}")
-
-    def _detect_duplicates(self):
         """Detecta registros duplicados."""
         logger.debug("Detectando registros duplicados")
         
@@ -454,9 +383,6 @@ class DataIntegrityValidator:
                 ))
                 
         except Exception as e:
-            logger.error(f"Error detectando duplicados: {e}")
-
-    def _generate_integrity_report(self) -> Dict[str, Any]:
         """Genera reporte final de integridad."""
         violations_by_severity = {
             'CRITICAL': [v for v in self.violations if v.severity == 'CRITICAL'],
@@ -576,8 +502,6 @@ class DataIntegrityValidator:
                     failed_fixes.append(violation)
                     
             except Exception as e:
-                logger.error(f"Error corrigiendo violación {violation.record_id}: {e}")
-                failed_fixes.append(violation)
         
         return {
             'fixed_count': len(fixed_violations),
@@ -602,9 +526,6 @@ class DataIntegrityValidator:
                     logger.info(f"Eliminado registro huérfano {violation.record_id} de {violation.table_name}")
                     return True
         except Exception as e:
-            logger.error(f"Error eliminando registro huérfano: {e}")
-        
-        return False
 
     def _fix_duplicate_record(self, violation: IntegrityViolation) -> bool:
         """Intenta corregir un registro duplicado."""
@@ -629,9 +550,6 @@ class DataIntegrityValidator:
                     logger.info(f"Marcados {cursor.rowcount} duplicados de {violation.actual_value}")
                     return True
         except Exception as e:
-            logger.error(f"Error corrigiendo duplicados: {e}")
-        
-        return False
 
 
 # Funciones de conveniencia
@@ -681,7 +599,7 @@ db_connections = {
 is_safe, report = validate_system_integrity(db_connections)
 
 if not is_safe:
-    logger.warning(f"Integridad comprometida: {report['total_violations']} violaciones")
+    logger.warning(f)
     for violation in report['violations']:
         if violation['severity'] == 'CRITICAL':
             logger.critical(f"CRÍTICO: {violation['description']}")

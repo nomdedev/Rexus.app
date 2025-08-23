@@ -1,8 +1,11 @@
 # Constantes para el módulo de Herrajes
-# Reduce la duplicación de literales y mejora la mantenibilidad
-
+            
 class HerrajesConstants:
     """Constantes para el módulo de Herrajes"""
+
+import logging
+logger = logging.getLogger(__name__)
+
 
     # Mensajes de funcionalidad
     FUNCIONALIDAD_NO_DISPONIBLE = "Funcionalidad no disponible"

@@ -5,6 +5,10 @@ Proporciona funciones para prevenir SQL injection y validar consultas SQL
 de manera segura.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 from typing import List, Set
 
@@ -29,8 +33,6 @@ def validate_column_names(columns: str) -> bool:
             return False
     
     return True
-
-
 
 # Lista blanca de tablas permitidas en el sistema
 ALLOWED_TABLES: Set[str] = {

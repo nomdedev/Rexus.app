@@ -14,183 +14,7 @@ import hashlib
 import threading
 import gzip
 import logging
-from typing import Any, Dict, Optional, Tuple, List, Callable
-from dataclasses import dataclass
-from functools import wraps
-import weakref
-
-# Configure secure logging
-logger = logging.getLogger(__name__)
-
-
-@dataclass
-class CacheEntry:
-    """Entrada de caché con metadatos."""
-    value: Any
-    created_at: float
-    ttl: float
-    access_count: int = 0
-    last_accessed: float = 0
-    compressed: bool = False
-    size_bytes: int = 0
-
-
-@dataclass
-class CacheStats:
-    """Estadísticas del sistema de caché."""
-    hits: int = 0
-    misses: int = 0
-    evictions: int = 0
-    total_entries: int = 0
-    memory_usage_bytes: int = 0
-    average_access_time_ms: float = 0.0
-
-
-class CacheManager:
-    """Gestor de caché inteligente con TTL y optimizaciones."""
-
-    def __init__(self, max_size: int = 1000, default_ttl: float = 3600,
-                 compression_threshold: int = 1024, enable_metrics: bool = True):
-        """
-        Inicializa el gestor de caché.
-
-        Args:
-            max_size: Número máximo de entradas
-            default_ttl: TTL por defecto en segundos
-            compression_threshold: Tamaño mínimo para compresión
-            enable_metrics: Habilitar métricas de rendimiento
-        """
-        self.max_size = max_size
-        self.default_ttl = default_ttl
-        self.compression_threshold = compression_threshold
-        self.enable_metrics = enable_metrics
-
-        self._cache: Dict[str, CacheEntry] = {}
-        self._lock = threading.RLock()
-        self._stats = CacheStats()
-
-        # Configuración de limpieza automática
-        self._cleanup_interval = 300  # 5 minutos
-        self._last_cleanup = time.time()
-
-        # Registro de objetos débiles para limpieza automática
-        self._weak_refs: List[weakref.ref] = []
-
-    def _generate_key(self, key: Any) -> str:
-        """Genera clave de caché normalizada."""
-        if isinstance(key, str):
-            return key
-        elif isinstance(key, (tuple, list)):
-            return hashlib.md5(str(key).encode()).hexdigest()
-        else:
-            return hashlib.md5(str(key).encode()).hexdigest()
-
-    def _serialize_value(self, value: Any) -> Tuple[bytes, bool]:
-        """Serializa y opcionalmente comprime un valor."""
-        # WARNING: This method uses pickle for complex objects.
-        # Only use with trusted data to prevent deserialization attacks.
-        try:
-            # Serializar
-            if isinstance(value, (str, int, float, bool, type(None))):
-                serialized = json.dumps(value).encode('utf-8')
-            else:
-                # Log pickle usage for security auditing
-                logger.debug(f"Using pickle serialization for type: {type(value).__name__}")
-                serialized = pickle.dumps(value, protocol=pickle.HIGHEST_PROTOCOL)
-        except Exception as e:
-            logger.error(f"Error serializing cache value: {e}")
-            raise
-
-        # Comprimir si supera el umbral
-        compressed = False
-        if len(serialized) > self.compression_threshold:
-            try:
-                compressed_data = gzip.compress(serialized)
-                if len(compressed_data) < len(serialized):
-                    serialized = compressed_data
-                    compressed = True
-            except Exception as e:
-                logger.warning(f"Compression failed, using uncompressed data: {e}")
-
-        return serialized, compressed
-
-    def _deserialize_value(self, data: bytes, compressed: bool) -> Any:
-        """Deserializa y descomprime un valor."""
-        # Descomprimir si es necesario
-        if compressed:
-            try:
-                data = gzip.decompress(data)
-            except Exception as e:
-                logger.error(f"Error decompressing cache data: {e}")
-                raise ValueError("Error descomprimiendo datos del caché")
-
-        # Deserializar
-        try:
-            # Intentar JSON primero (más rápido para tipos simples)
-            return json.loads(data.decode('utf-8'))
-        except (json.JSONDecodeError, UnicodeDecodeError):
-            try:
-                # Usar pickle para objetos complejos (ONLY for trusted data)
-                logger.debug("Using pickle deserialization for cached object")
-                return pickle.loads(data)
-            except Exception as e:
-                logger.error(f"Error deserializing cache data: {e}")
-                raise
-
-    def _cleanup_expired(self):
-        """Limpia entradas expiradas del caché."""
-        current_time = time.time()
-
-        # Solo ejecutar limpieza si ha pasado el intervalo
-        if current_time - self._last_cleanup < self._cleanup_interval:
-            return
-
-        expired_keys = []
-
-        for key, entry in self._cache.items():
-            if current_time - entry.created_at > entry.ttl:
-                expired_keys.append(key)
-
-        for key in expired_keys:
-            del self._cache[key]
-            if self.enable_metrics:
-                self._stats.evictions += 1
-                self._stats.total_entries -= 1
-
-        self._last_cleanup = current_time
-
-    def _evict_lru(self):
-        """Expulsa la entrada menos recientemente usada."""
-        if not self._cache:
-            return
-
-        # Encontrar entrada con menor last_accessed
-        lru_key = min(self._cache.keys(),
-                     key=lambda k: self._cache[k].last_accessed)
-
-        del self._cache[lru_key]
-
-        if self.enable_metrics:
-            self._stats.evictions += 1
-            self._stats.total_entries -= 1
-
-    def put(self, key: Any, value: Any, ttl: Optional[float] = None) -> bool:
-        """
-        Almacena un valor en el caché.
-
-        Args:
-            key: Clave del caché
-            value: Valor a almacenar
-            ttl: Tiempo de vida en segundos (None para usar default)
-
-        Returns:
-            bool: True si se almacenó correctamente
-        """
-        with self._lock:
-            try:
-                # Limpiar entradas expiradas
-                self._cleanup_expired()
-
+            
                 # Verificar espacio disponible
                 if len(self._cache) >= self.max_size:
                     self._evict_lru()
@@ -221,8 +45,6 @@ class CacheManager:
                 return True
 
             except Exception as e:
-                logger.error(f"Error storing value in cache: {e}", exc_info=True)
-                return False
 
     def get(self, key: Any, default: Any = None) -> Any:
         """
@@ -276,8 +98,6 @@ class CacheManager:
                 return value
 
             except Exception as e:
-                logger.error(f"Error retrieving value from cache: {e}", exc_info=True)
-                if self.enable_metrics:
                     self._stats.misses += 1
                 return default
 
@@ -469,12 +289,12 @@ if __name__ == "__main__":
     user = cache.get("user:1")
     config = cache.get("config:app")
 
-    print(f"Usuario: {user}")
-    print(f"Configuración: {config}")
+    logger.info(f"Usuario: {user}")
+    logger.info(f"Configuración: {config}")
 
     # Estadísticas
     stats = cache.get_cache_info()
-    print(f"Estadísticas del caché: {json.dumps(stats, indent=2)}")
+    logger.info(f"Estadísticas del caché: {json.dumps(stats, indent=2)}")
 
     # Test del decorador
     @cached(ttl=30)
@@ -493,6 +313,6 @@ if __name__ == "__main__":
     result2 = expensive_calculation(10)
     time2 = time.time() - start
 
-    print(f"Primera llamada: {result1} en {time1:.3f}s")
-    print(f"Segunda llamada: {result2} en {time2:.3f}s")
-    print(f"Mejora de rendimiento: {time1/time2:.1f}x más rápido")
+    logger.info(f"Primera llamada: {result1} en {time1:.3f}s")
+    logger.info(f"Segunda llamada: {result2} en {time2:.3f}s")
+    logger.info(f"Mejora de rendimiento: {time1/time2:.1f}x más rápido")

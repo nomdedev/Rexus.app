@@ -2,6 +2,10 @@
 Utilidades para manejo de módulos y normalización de nombres.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import unicodedata
 from typing import Dict, Any
 

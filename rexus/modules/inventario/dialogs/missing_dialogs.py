@@ -27,6 +27,10 @@ DiÃ¡logos faltantes para el mÃ³dulo de inventario
 Implementaciones temporales para resolver errores de compilaciÃ³n
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, QDate
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QLabel, QLineEdit,
@@ -39,10 +43,8 @@ from PyQt6.QtWidgets import (
 try:
     VALIDATORS_AVAILABLE = True
 except ImportError:
-    print("[INFO] Form validators not available, using basic validation")
+    logger.info()
     VALIDATORS_AVAILABLE = False
-
-
 
 class DialogoEditarProducto(QDialog):
     """DiÃ¡logo para editar un producto existente"""

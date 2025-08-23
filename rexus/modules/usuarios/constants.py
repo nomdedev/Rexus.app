@@ -8,6 +8,10 @@ duplicación y facilitar mantenimiento.
 class UsuariosConstants:
     """Constantes del módulo de usuarios."""
 
+import logging
+logger = logging.getLogger(__name__)
+
+
     # Títulos y etiquetas
     TITULO_MODULO = "[USERS] Gestión de Usuarios"
     

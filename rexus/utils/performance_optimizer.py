@@ -62,7 +62,7 @@ class PerformanceOptimizer:
                 # Aumentar tamaño del caché
                 cache_manager.max_size = min(cache_manager.max_size * 1.5, 5000)
                 improvement = 15.0
-                description = f"Tamaño de caché aumentado. Hit rate actual: {hit_rate:.1f}%"
+                description = f
             else:
                 improvement = 0.0
                 description = f"Caché funcionando correctamente. Hit rate: {hit_rate:.1f}%"
@@ -176,9 +176,8 @@ class PerformanceOptimizer:
                 results.append(result)
                 logger.info(f"[OPTIMIZER] {result.optimization_type}: {result.description}")
             except Exception as e:
-                logger.error(f"[OPTIMIZER] Error en optimización: {e}", exc_info=True)
-
-        return results
+            logger.exception(f"[OPTIMIZER] Error en optimización: {e}", exc_info=True)
+            # FIXME: Specify concrete exception types instead of generic Exceptionreturn results
 
     def get_optimization_report(self) -> Dict[str, Any]:
         """Genera reporte de optimizaciones."""

@@ -8,38 +8,7 @@ import hashlib
 import logging
 import re
 import secrets
-from typing import Optional
-
-# Configuración de logging para seguridad
-logging.basicConfig(level=logging.INFO)
-
-
-class SecurityUtils:
-    """Utilidades de seguridad para la aplicacion"""
-
-    @staticmethod
-    def hash_password(password: str) -> str:
-        """Genera hash seguro de contraseña usando PBKDF2"""
-        salt = secrets.token_hex(32)
-        pwdhash = hashlib.pbkdf2_hmac(
-            "sha256", password.encode("utf-8"), salt.encode("utf-8"), 100000
-        )
-        return salt + pwdhash.hex()
-
-    @staticmethod
-    def verify_password(password: str, hashed: str) -> bool:
-        """Verifica contraseña contra hash"""
-        try:
-            salt = hashed[:64]
-            stored_hash = hashed[64:]
-            pwdhash = hashlib.pbkdf2_hmac(
-                "sha256",
-password.encode("utf-8"),
-                    salt.encode("utf-8"),
-                    100000
-            )
-            return pwdhash.hex() == stored_hash
-        except (ValueError, TypeError, AttributeError, UnicodeDecodeError) as e:
+                    except (ValueError, TypeError, AttributeError, UnicodeDecodeError) as e:
             # ValueError: hash mal formateado
             # TypeError: tipo de dato incorrecto
             # AttributeError: objeto None o sin atributos

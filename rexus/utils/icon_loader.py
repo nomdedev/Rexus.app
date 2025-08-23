@@ -2,6 +2,10 @@
 Cargador de iconos básico
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from pathlib import Path
 
 from PyQt6.QtGui import QIcon, QPixmap

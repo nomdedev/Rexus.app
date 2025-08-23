@@ -4,6 +4,10 @@ Diálogo para Seleccionar Obra - Inventario Module
 Diálogo que permite al usuario seleccionar una obra para asociar presupuestos PDF.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QLabel, QLineEdit, 

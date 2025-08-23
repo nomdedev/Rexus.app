@@ -374,7 +374,7 @@ class PedidosView(QWidget):
             # Confirmación del usuario
             respuesta = QMessageBox.question(
                 self,
-                "Confirmar Eliminación",
+                ,
                 "¿Está seguro de que desea eliminar este pedido?\n\nEsta acción no se puede deshacer.",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No
@@ -593,7 +593,7 @@ pagina_actual,
                 # Solicitar ubicación de archivo
                 archivo, _ = QFileDialog.getSaveFileName(
                     self,
-                    "Guardar archivo Excel",
+                    ,
                     "pedidos_export.xlsx",
                     "Excel Files (*.xlsx);;All Files (*)"
                 )
@@ -665,7 +665,7 @@ class DialogoPedido(QDialog):
         self.input_fecha_entrega.setCalendarPopup(True)
         from PyQt6.QtCore import QDate
         self.input_fecha_entrega.setDate(QDate.currentDate().addDays(7))
-        form_layout.addRow("Fecha Entrega:", self.input_fecha_entrega)
+        form_layout.addRow(, self.input_fecha_entrega)
 
         # Descripción
         self.input_descripcion = QTextEdit()

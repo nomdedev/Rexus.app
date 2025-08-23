@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  rexus:
+    build: .
+    container_name: rexus-app
+    volumes:
+      - .:/app
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PYTHONDONTWRITEBYTECODE=1
+    # Si tu app necesita exponer un puerto, descomenta la línea siguiente y ajusta el puerto
+    # ports:
+    #   - "8000:8000"
+    command: ["python", "main.py"]
+    # Si necesitas otras variables de entorno, agrégalas aquí
+    # environment:
+    #   - REXUS_ENV=development

@@ -12,7 +12,7 @@ from PyQt6.QtCore import QObject
 # Importar logging centralizado
 try:
     from rexus.utils.app_logger import get_logger
-    logger = get_logger("auditoria.controller")
+    logger = get_logger()
 except ImportError:
     class DummyLogger:
         def info(self, msg): logger.debug(f"[INFO] {msg}")
@@ -68,8 +68,8 @@ class AuditoriaController(QObject):
             self.view.actualizar_estadisticas(estadisticas)
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
-            if self.view:
+            logger.exception(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionif self.view:
                 self.view.mostrar_error(
                     f"Error cargando datos de auditoría: {e}"
                 )
@@ -112,8 +112,8 @@ class AuditoriaController(QObject):
             )
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
-            self.view.mostrar_error(f"Error aplicando filtros: {e}")
+            logger.exception(f"[ERROR AUDITORÍA] Error filtrando registros: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionself.view.mostrar_error(f"Error aplicando filtros: {e}")
 
     def exportar_datos(self, formato="csv"):
         """
@@ -166,8 +166,8 @@ class AuditoriaController(QObject):
             )
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error exportando: {e}")
-            self.view.mostrar_error(f"Error exportando datos: {e}")
+            logger.exception(f"[ERROR AUDITORÍA] Error exportando: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionself.view.mostrar_error(f"Error exportando datos: {e}")
 
     def _exportar_csv(self, registros, archivo):
         """Exporta registros a formato CSV."""
@@ -280,8 +280,8 @@ class AuditoriaController(QObject):
                 )
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
-            self.view.mostrar_error(f"Error limpiando registros: {e}")
+            logger.exception(f"[ERROR AUDITORÍA] Error limpiando registros: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionself.view.mostrar_error(f"Error limpiando registros: {e}")
 
     def registrar_accion(
         self,
@@ -324,8 +324,8 @@ class AuditoriaController(QObject):
                 resultado=resultado,
             )
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
-            return False
+            logger.exception(f"[ERROR AUDITORÍA] Error registrando acción: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionreturn False
 
     def actualizar_estadisticas(self):
         """Actualiza las estadísticas mostradas en la vista."""
@@ -336,9 +336,8 @@ class AuditoriaController(QObject):
             estadisticas = self.model.obtener_estadisticas()
             self.view.actualizar_estadisticas(estadisticas)
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
-
-    def buscar_por_tabla(self, tabla, registro_id=None):
+            logger.exception(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptiondef buscar_por_tabla(self, tabla, registro_id=None):
         """
         Busca registros de auditoría por tabla específica.
 
@@ -373,8 +372,8 @@ class AuditoriaController(QObject):
             return registros_filtrados
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error buscando por tabla: {e}")
-            return []
+            logger.exception(f"[ERROR AUDITORÍA] Error buscando por tabla: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionreturn []
 
     def obtener_resumen_usuario(self, usuario, dias=30):
         """
@@ -419,5 +418,5 @@ class AuditoriaController(QObject):
             }
 
         except Exception as e:
-            logger.error(f"[ERROR AUDITORÍA] Error obteniendo resumen usuario: {e}")
-            return {}
+            logger.exception(f"[ERROR AUDITORÍA] Error obteniendo resumen usuario: {e}")
+            # FIXME: Specify concrete exception types instead of generic Exceptionreturn {}

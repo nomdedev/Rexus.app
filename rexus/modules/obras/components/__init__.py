@@ -7,6 +7,10 @@ Incluye:
 - EnhancedLabel: Etiquetas mejoradas con animaciones y estados dinámicos
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .optimized_table_widget import OptimizedTableWidget, EnhancedTableContainer
 from .enhanced_label_widget import EnhancedLabel, StatusIndicatorLabel, MetricDisplayLabel
 

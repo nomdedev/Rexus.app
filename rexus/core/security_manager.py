@@ -13,149 +13,7 @@ import re
 import hashlib
 import secrets
 import logging
-from typing import Any, Dict, List, Optional, Union
-from datetime import datetime, timedelta
-import html
-
-# Configurar logging
-logger = logging.getLogger(__name__)
-
-class SecurityManager:
-    """Gestor centralizado de seguridad."""
-
-    def __init__(self):
-        """Inicializa el gestor de seguridad."""
-        self.csrf_tokens = {}
-        self.blocked_ips = set()
-        self.failed_attempts = {}
-
-        # Patrones maliciosos comunes
-        self.malicious_patterns = [
-            r'<script[^>]*>.*?</script>',  # XSS Scripts
-            r'javascript:',  # JavaScript URLs
-            r'on\w+\s*=',   # Event handlers
-            r'union.*select',  # SQL Union attacks
-            r'drop\s+table',   # SQL Drop commands
-            r'exec\s*\(',      # Command execution
-            r'eval\s*\(',      # Code evaluation
-        ]
-
-    def sanitize_input(self,
-data: Union[str,
-        Dict,
-        List]) -> Union[str,
-        Dict,
-        List]:
-        """
-        Sanitiza datos de entrada de forma recursiva.
-
-        Args:
-            data: Datos a sanitizar (str, dict, list)
-
-        Returns:
-            Datos sanitizados
-        """
-        if isinstance(data, str):
-            return self._sanitize_string(data)
-        elif isinstance(data, dict):
-            return {key: self.sanitize_input(value) for key, value in data.items()}
-        elif isinstance(data, list):
-            return [self.sanitize_input(item) for item in data]
-        else:
-            return data
-
-    def _sanitize_string(self, text: str) -> str:
-        """Sanitiza una cadena de texto."""
-        if not isinstance(text, str):
-            return text
-
-        # Escape HTML entities
-        sanitized = html.escape(text)
-
-        # Remover patrones maliciosos
-        for pattern in self.malicious_patterns:
-            sanitized = re.sub(pattern, '', sanitized, flags=re.IGNORECASE)
-
-        # Limpiar caracteres de control
-        sanitized = ''.join(char for char in sanitized if ord(char) >= 32 or char in '\t\n\r')
-
-        return sanitized.strip()
-
-    def validate_sql_query(self, query: str) -> bool:
-        """
-        Valida que una consulta SQL no contenga patrones peligrosos.
-
-        Args:
-            query: Consulta SQL a validar
-
-        Returns:
-            bool: True si la consulta es segura
-        """
-        if not query or not isinstance(query, str):
-            return False
-
-        query_lower = query.lower().strip()
-
-        # Patrones peligrosos en SQL
-        dangerous_patterns = [
-            r';\s*(drop|alter|create|truncate)',
-            r'union.*select',
-            r'exec\s*\(',
-            r'xp_',
-            r'sp_',
-            r'--',  # Comentarios SQL
-            r'/\*',  # Comentarios de bloque
-        ]
-
-        for pattern in dangerous_patterns:
-            if re.search(pattern, query_lower):
-                logger.warning("SQL query rejected - dangerous pattern detected: %s", pattern)
-                return False
-
-        return True
-
-    def generate_csrf_token(self, session_id: str) -> str:
-        """
-        Genera un token CSRF para una sesión.
-
-        Args:
-            session_id: ID de la sesión
-
-        Returns:
-            str: Token CSRF
-        """
-        token = secrets.token_urlsafe(32)
-        self.csrf_tokens[session_id] = {
-            'token': token,
-            'created': datetime.now(),
-            'expires': datetime.now() + timedelta(hours=2)
-        }
-        return token
-
-    def validate_csrf_token(self, session_id: str, token: str) -> bool:
-        """
-        Valida un token CSRF.
-
-        Args:
-            session_id: ID de la sesión
-            token: Token a validar
-
-        Returns:
-            bool: True si el token es válido
-        """
-        if session_id not in self.csrf_tokens:
-            return False
-
-        stored_token = self.csrf_tokens[session_id]
-
-        # Verificar expiración
-        if datetime.now() > stored_token['expires']:
-            del self.csrf_tokens[session_id]
-            return False
-
-        # Verificar token
-        return secrets.compare_digest(stored_token['token'], token)
-
+            
     def hash_password(self,
 password: str,
         salt: Optional[str] = None) -> tuple[str,
@@ -197,8 +55,8 @@ password: str,
             computed_hash, _ = self.hash_password(password, salt)
             return secrets.compare_digest(computed_hash, hashed)
         except Exception as e:
-            logger.error("Error verifying password: %s", e)
-            return False
+            logger.exception("Error verifying password: %s", e)
+            # FIXME: Specify concrete exception types instead of generic Exceptionreturn False
 
     def is_ip_blocked(self, ip: str) -> bool:
         """
@@ -290,9 +148,6 @@ password: str,
                         self.block_ip(ip_address, f"Too many failed {action} attempts")
                         
         except Exception as e:
-            logger.error(f"Error logging access attempt: {e}")
-
-    def validate_input_length(self, data: str, max_length: int = 1000) -> bool:
         """
         Valida la longitud de entrada.
 

@@ -1,6 +1,5 @@
 # Constantes para el módulo de Logística
-# Reduce la duplicación de literales y mejora la mantenibilidad
-
+            
 class LogisticaConstants:
     """Constantes para el módulo de Logística"""
 
@@ -49,6 +48,10 @@ class LogisticaConstants:
     """
 
     TITLE_LABEL_STYLE = """
+
+import logging
+logger = logging.getLogger(__name__)
+
         QLabel {
             font-size: 10px;
             color: #6c757d;

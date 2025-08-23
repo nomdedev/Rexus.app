@@ -6,6 +6,10 @@ Fecha: 13/08/2025
 Objetivo: Completar UI/UX del módulo Obras con componente de etiquetas mejorado
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtWidgets import (
     QLabel, QGraphicsDropShadowEffect
 )

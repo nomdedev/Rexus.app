@@ -16,5 +16,9 @@ Este paquete contiene todos los módulos funcionales de la aplicación:
 - Vidrios
 """
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 __version__ = "1.1.3"
 __author__ = "Stock App Team"

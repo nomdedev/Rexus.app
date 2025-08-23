@@ -18,431 +18,7 @@ Maneja la lógica de negocio para:
 """
 
 
-from rexus.utils.demo_data_generator import DemoDataGenerator
-from rexus.utils.sql_security import SQLSecurityError, validate_table_name
-from rexus.utils.sql_query_manager import SQLQueryManager
-from rexus.core.auth_decorators import auth_required
-from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
-
-# Sistema de logging centralizado
-from rexus.utils.app_logger import get_logger
-logger = get_logger("logistica.model")
-
-class LogisticaModel:
-    """
-    Modelo para gestionar logística y distribución.
-
-    MIGRADO A SQL EXTERNO - Todas las consultas ahora usan SQLQueryManager
-    para prevenir inyección SQL y mejorar mantenibilidad.
-    """
-
-    def __init__(self, db_connection=None):
-        """
-        Inicializa el modelo de logística.
-
-        Args:
-            db_connection: Conexión a la base de datos
-        """
-        self.db_connection = db_connection
-        # [LOCK] Inicializar SQLQueryManager para consultas seguras
-        self.sql_manager = SQLQueryManager()  # Para consultas SQL seguras
-        self.tabla_transportes = "transportes"
-        self.tabla_entregas = "entregas"
-        self.tabla_detalle_entregas = "detalle_entregas"
-        self.tabla_proveedores_transporte = "proveedores_transporte"
-        self.tabla_rutas = "rutas"
-        self.tabla_costos_logisticos = "costos_logisticos"
-        self.tabla_obras = "obras"
-        self._verificar_tablas()
-
-    def _verificar_tablas(self):
-        """Verifica que las tablas necesarias existan en la base de datos."""
-        if not self.db_connection:
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-            tablas = [
-                self.tabla_transportes,
-                self.tabla_entregas,
-                self.tabla_detalle_entregas,
-                self.tabla_proveedores_transporte,
-                self.tabla_rutas,
-                self.tabla_costos_logisticos,
-                self.tabla_obras,
-            ]
-
-            for tabla in tablas:
-                cursor.execute(
-                    "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                    (tabla,),
-                )
-                if cursor.fetchone():
-                    print(f"[LOGÍSTICA] Tabla '{tabla}' verificada correctamente.")
-                else:
-                    print(
-                        f"[ADVERTENCIA] La tabla '{tabla}' no existe en la base de datos."
-                    )
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error verificando tablas: {e}")
-
-    def _validate_table_name(self, table_name):
-        """
-        Valida que el nombre de tabla sea seguro para prevenir SQL injection.
-
-        Args:
-            table_name (str): Nombre de tabla a validar
-
-        Returns:
-            str: Nombre de tabla validado
-
-        Raises:
-            SQLSecurityError: Si el nombre de tabla no es válido
-        """
-        try:
-            return validate_table_name(table_name)
-        except SQLSecurityError:
-            # Fallback a tabla por defecto si no es válida
-            if "transporte" in table_name.lower():
-                return "transportes"
-            elif "entrega" in table_name.lower():
-                if "detalle" in table_name.lower():
-                    return "detalle_entregas"
-                return "entregas"
-            elif "proveedor" in table_name.lower():
-                return "proveedores_transporte"
-            elif "ruta" in table_name.lower():
-                return "rutas"
-            elif "costo" in table_name.lower():
-                return "costos_logisticos"
-            elif "obra" in table_name.lower():
-                return "obras"
-            else:
-                raise SQLSecurityError(f"Nombre de tabla no válido: {table_name}")
-
-    # MÉTODOS PARA TRANSPORTES
-
-    def obtener_transportes(self, filtros=None):
-        """
-        Obtiene transportes con filtros opcionales.
-
-        Args:
-            filtros (dict): Filtros opcionales (tipo,
-proveedor,
-                disponible,
-                etc.)
-
-        Returns:
-            List[Dict]: Lista de transportes
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # [LOCK] MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
-            base_query = self.sql_manager.get_query('logistica', 'obtener_transportes_base')
-            conditions = []
-            params = []
-
-            if filtros:
-                if filtros.get("tipo") and filtros["tipo"] != "Todos":
-                    conditions.append("AND t.tipo = ?")
-                    params.append(filtros["tipo"])
-
-                if filtros.get("proveedor") and \
-                    filtros["proveedor"] != "Todos":
-                    conditions.append("AND t.proveedor = ?")
-                    params.append(filtros["proveedor"])
-
-                if filtros.get("disponible") is not None:
-                    conditions.append("AND t.disponible = ?")
-                    params.append(filtros["disponible"])
-
-                if filtros.get("busqueda"):
-                    conditions.append("AND (t.codigo LIKE ? OR t.proveedor LIKE ?)")
-                    busqueda = f"%{filtros['busqueda']}%"
-                    params.extend([busqueda, busqueda])
-
-            # Construir query final con filtros seguros
-            if conditions:
-                # Verificar si base_query ya tiene WHERE
-                if "WHERE" in base_query.upper():
-                    filter_clause = " " + " ".join(conditions)
-                else:
-                    # Reemplazar el primer AND por WHERE
-                    first_condition = conditions[0].replace("AND ", "WHERE ", 1)
-                    remaining_conditions = conditions[1:] if len(conditions) > 1 else []
-                    filter_clause = " " + first_condition + " " + " ".join(remaining_conditions)
-            else:
-                filter_clause = ""
-            query = f"{base_query}{filter_clause} ORDER BY t.tipo, t.proveedor"
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            transportes = []
-            for fila in resultados:
-                transporte = dict(zip(columnas, fila))
-                transportes.append(transporte)
-
-            return transportes
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error obteniendo transportes: {e}")
-            return []
-
-    def crear_transporte(self, datos_transporte):
-        """
-        Crea un nuevo transporte.
-
-        Args:
-            datos_transporte (dict): Datos del transporte
-
-        Returns:
-            int: ID del transporte creado o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = """
-                INSERT INTO transportes
-                (codigo, tipo, proveedor, capacidad_kg, capacidad_m3, costo_km,
-                 disponible, observaciones, activo, fecha_creacion, fecha_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, GETDATE(), GETDATE())
-            """
-
-            cursor.execute(
-                query,
-                (
-                    datos_transporte.get("codigo", ""),
-                    datos_transporte.get("tipo", ""),
-                    datos_transporte.get("proveedor", ""),
-                    datos_transporte.get("capacidad_kg", 0),
-                    datos_transporte.get("capacidad_m3", 0),
-                    datos_transporte.get("costo_km", 0),
-                    datos_transporte.get("disponible", True),
-                    datos_transporte.get("observaciones", ""),
-                ),
-            )
-
-            # Obtener ID del transporte creado
-            cursor.execute("SELECT @@IDENTITY")
-            transporte_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            print(f"[LOGÍSTICA] Transporte creado con ID: {transporte_id}")
-            return transporte_id
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error creando transporte: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return None
-
-    def actualizar_transporte(self, transporte_id, datos_transporte):
-        """
-        Actualiza un transporte existente.
-
-        Args:
-            transporte_id (int): ID del transporte
-            datos_transporte (dict): Nuevos datos del transporte
-
-        Returns:
-            bool: True si fue exitoso
-        """
-        if not self.db_connection:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = """
-                UPDATE transportes
-                SET tipo = ?, proveedor = ?, capacidad_kg = ?, capacidad_m3 = ?,
-                    costo_km = ?, disponible = ?, observaciones = ?,
-                    fecha_modificacion = GETDATE()
-                WHERE id = ?
-            """
-
-            cursor.execute(
-                query,
-                (
-                    datos_transporte.get("tipo", ""),
-                    datos_transporte.get("proveedor", ""),
-                    datos_transporte.get("capacidad_kg", 0),
-                    datos_transporte.get("capacidad_m3", 0),
-                    datos_transporte.get("costo_km", 0),
-                    datos_transporte.get("disponible", True),
-                    datos_transporte.get("observaciones", ""),
-                    transporte_id,
-                ),
-            )
-
-            self.db_connection.commit()
-            print(f"[LOGÍSTICA] Transporte {transporte_id} actualizado exitosamente")
-            return True
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error actualizando transporte: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return False
-
-    # MÉTODOS PARA ENTREGAS
-
-    def obtener_entregas(self, filtros=None):
-        """
-        Obtiene entregas con filtros opcionales.
-
-        Args:
-            filtros (dict): Filtros opcionales (estado, fecha, obra, etc.)
-
-        Returns:
-            List[Dict]: Lista de entregas
-        """
-        if not self.db_connection:
-            # Modo demo: devolver datos demo
-            if DemoDataGenerator.es_modo_demo():
-                return DemoDataGenerator.generar_logistica_demo()["entregas"]
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # [LOCK] MIGRADO: Usar SQL base seguro y construir filtros dinámicamente
-            base_query = self.sql_manager.get_query('logistica', 'obtener_entregas_base')
-            conditions = []
-            params = []
-
-            if filtros:
-                if filtros.get("estado") and filtros["estado"] != "Todos":
-                    conditions.append("AND e.estado = ?")
-                    params.append(filtros["estado"])
-
-                if filtros.get("obra_id"):
-                    conditions.append("AND e.obra_id = ?")
-                    params.append(filtros["obra_id"])
-
-                if filtros.get("fecha_desde"):
-                    conditions.append("AND e.fecha_entrega >= ?")
-                    params.append(filtros["fecha_desde"])
-
-                if filtros.get("fecha_hasta"):
-                    conditions.append("AND e.fecha_entrega <= ?")
-                    params.append(filtros["fecha_hasta"])
-
-                if filtros.get("transporte_id"):
-                    conditions.append("AND e.transporte_id = ?")
-                    params.append(filtros["transporte_id"])
-
-            # Construir query final con filtros seguros
-            if conditions:
-                # Verificar si base_query ya tiene WHERE
-                if "WHERE" in base_query.upper():
-                    filter_clause = " " + " ".join(conditions)
-                else:
-                    # Reemplazar el primer AND por WHERE
-                    first_condition = conditions[0].replace("AND ", "WHERE ", 1)
-                    remaining_conditions = conditions[1:] if len(conditions) > 1 else []
-                    filter_clause = " " + first_condition + " " + " ".join(remaining_conditions)
-            else:
-                filter_clause = ""
-            query = f"{base_query}{filter_clause} ORDER BY e.fecha_entrega DESC"
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            entregas = []
-            for fila in resultados:
-                entrega = dict(zip(columnas, fila))
-                entregas.append(entrega)
-
-            return entregas
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error obteniendo entregas: {e}")
-            return []
-
-    def obtener_entregas_con_filtros(self, filtros=None):
-        """Alias conveniente para obtener_entregas con filtros."""
-        return self.obtener_entregas(filtros)
-
-    def crear_entrega(self, datos_entrega):
-        """
-        Crea una nueva entrega.
-
-        Args:
-            datos_entrega (dict): Datos de la entrega
-
-        Returns:
-            int: ID de la entrega creada o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = """
-                INSERT INTO entregas
-                (obra_id, transporte_id, fecha_programada, direccion_entrega,
-                 contacto, telefono, estado, observaciones, costo_envio,
-                 usuario_creacion, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
-
-            cursor.execute(
-                query,
-                (
-                    datos_entrega.get("obra_id"),
-                    datos_entrega.get("transporte_id"),
-                    datos_entrega.get("fecha_programada"),
-                    datos_entrega.get("direccion_entrega", ""),
-                    datos_entrega.get("contacto", ""),
-                    datos_entrega.get("telefono", ""),
-                    datos_entrega.get("estado", "PROGRAMADA"),
-                    datos_entrega.get("observaciones", ""),
-                    datos_entrega.get("costo_envio", 0),
-                    datos_entrega.get("usuario_creacion", "SYSTEM"),
-                ),
-            )
-
-            # Obtener ID de la entrega creada
-            cursor.execute("SELECT @@IDENTITY")
-            entrega_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            print(f"[LOGÍSTICA] Entrega creada con ID: {entrega_id}")
-            return entrega_id
-
-        except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error creando entrega: {e}")
-            if self.db_connection:
-                self.db_connection.rollback()
-            return None
-
-    def actualizar_entrega(self, entrega_id, datos_entrega):
-        """
-        Actualiza una entrega existente con nuevos datos.
-
-        Args:
-            entrega_id (int): ID de la entrega a actualizar
-            datos_entrega (dict): Datos actualizados de la entrega
-
-        Returns:
-            bool: True si la actualización fue exitosa, False en caso contrario
-        """
-        if not self.db_connection:
-            print("[ERROR LOGÍSTICA] No hay conexión a la base de datos para actualizar")
-            return False
+                        return False
 
         try:
             cursor = self.db_connection.cursor()
@@ -463,7 +39,7 @@ proveedor,
                     valores.append(datos_entrega[campo])
             
             if not campos_actualizar:
-                print("[WARNING LOGÍSTICA] No hay campos válidos para actualizar")
+                logger.info("[WARNING LOGÍSTICA] No hay campos válidos para actualizar")
                 return False
                 
             query = f"""
@@ -476,11 +52,11 @@ proveedor,
             cursor.execute(query, valores)
             self.db_connection.commit()
             
-            print(f"[LOGÍSTICA] Entrega {entrega_id} actualizada exitosamente")
+            logger.info(f"[LOGÍSTICA] Entrega {entrega_id} actualizada exitosamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error actualizando entrega: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error actualizando entrega: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -523,13 +99,11 @@ entrega_id,
             cursor.execute(query, (nuevo_estado, observaciones, entrega_id))
 
             self.db_connection.commit()
-            print(
-                f"[LOGÍSTICA] Estado de entrega {entrega_id} actualizado a {nuevo_estado}"
-            )
+            logger.info(f"[LOGÍSTICA] Estado de entrega {entrega_id} actualizado a {nuevo_estado}")
             return True
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error actualizando estado de entrega: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error actualizando estado de entrega: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -573,7 +147,7 @@ entrega_id,
             return detalles
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error obteniendo detalle de entrega: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error obteniendo detalle de entrega: {e}")
             return []
 
     def agregar_producto_entrega(self, entrega_id, datos_producto):
@@ -616,11 +190,11 @@ entrega_id,
             detalle_id = cursor.fetchone()[0]
 
             self.db_connection.commit()
-            print(f"[LOGÍSTICA] Producto agregado a entrega {entrega_id}")
+            logger.info(f"[LOGÍSTICA] Producto agregado a entrega {entrega_id}")
             return detalle_id
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error agregando producto a entrega: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error agregando producto a entrega: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return None
@@ -646,11 +220,11 @@ entrega_id,
             cursor.execute(query, (detalle_id,))
 
             self.db_connection.commit()
-            print("[LOGÍSTICA] Producto eliminado de entrega")
+            logger.info("[LOGÍSTICA] Producto eliminado de entrega")
             return True
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error eliminando producto de entrega: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error eliminando producto de entrega: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -716,7 +290,7 @@ entrega_id,
             return estadisticas
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error obteniendo estadísticas: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error obteniendo estadísticas: {e}")
             return {}
 
     def obtener_obras_disponibles(self):
@@ -751,7 +325,7 @@ entrega_id,
             return obras
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error obteniendo obras disponibles: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error obteniendo obras disponibles: {e}")
             return []
 
     def calcular_costo_envio(self,
@@ -811,7 +385,7 @@ transporte_id,
             return costo_total
 
         except Exception as e:
-            print(f"[ERROR LOGÍSTICA] Error calculando costo de envío: {e}")
+            logger.info(f"[ERROR LOGÍSTICA] Error calculando costo de envío: {e}")
             return 0.0
     def eliminar_transporte(self, transporte_id):
         """
@@ -837,7 +411,7 @@ transporte_id,
             verify_sql = "SELECT COUNT(*) FROM transportes WHERE id = ?"
             cursor.execute(verify_sql, (transporte_id,))
             if cursor.fetchone()[0] == 0:
-                print(f"[ERROR] Transporte {transporte_id} no encontrado")
+                logger.info(f"[ERROR] Transporte {transporte_id} no encontrado")
                 return False
 
             # Eliminar el transporte
@@ -845,11 +419,11 @@ transporte_id,
             cursor.execute(delete_sql, (transporte_id,))
             self.db_connection.commit()
 
-            print(f"[OK] Transporte {transporte_id} eliminado exitosamente")
+            logger.info(f"[OK] Transporte {transporte_id} eliminado exitosamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error eliminando transporte: {e}")
+            logger.info(f"[ERROR] Error eliminando transporte: {e}")
             if self.db_connection:
                 self.db_connection.rollback()
             return False
@@ -933,11 +507,11 @@ transporte_id,
                 }
                 transportes.append(transporte)
 
-            print(f"[SEARCH] Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
+            logger.info(f"[SEARCH] Encontrados {len(transportes)} transportes con criterios: '{termino_busqueda}' - Estado: {estado}")
             return transportes
 
         except Exception as e:
-            print(f"[ERROR] Error buscando transportes: {e}")
+            logger.info(f"[ERROR] Error buscando transportes: {e}")
             return []
 
     def obtener_estadisticas(self):
@@ -1005,7 +579,7 @@ transporte_id,
             return stats
 
         except Exception as e:
-            print(f"[ERROR] Error obteniendo estadísticas: {e}")
+            logger.info(f"[ERROR] Error obteniendo estadísticas: {e}")
             return {
                 'total_transportes': 0,
                 'en_transito': 0,

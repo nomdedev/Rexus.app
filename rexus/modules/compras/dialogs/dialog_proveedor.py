@@ -24,6 +24,10 @@ SOFTWARE.
 Diálogo de Gestión de Proveedores
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtWidgets import (
     QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QDialogButtonBox,
     QTextEdit, QLabel, QTabWidget, QWidget

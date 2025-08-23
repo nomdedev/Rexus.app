@@ -9,6 +9,10 @@ FUNCIONALIDADES DE SEGURIDAD:
 [CHECK] Gestión centralizada de autorizaciones
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from enum import Enum
 from typing import Set, Optional
 from dataclasses import dataclass
@@ -365,10 +369,10 @@ class RBACSystem:
             cursor.execute("CREATE INDEX IF NOT EXISTS idx_rbac_role_permissions_role ON rbac_role_permissions(role_id)")
 
             self.db_connection.connection.commit()
-            print("[CHECK] [RBAC] Tablas de control de acceso creadas/verificadas")
+            logger.info("[CHECK] [RBAC] Tablas de control de acceso creadas/verificadas")
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error creando tablas RBAC: {e}")
+            logger.info(f"[ERROR] [RBAC] Error creando tablas RBAC: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
 
@@ -423,7 +427,7 @@ class RBACSystem:
             return False
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error verificando permiso: {e}")
+            logger.info(f"[ERROR] [RBAC] Error verificando permiso: {e}")
             return False
 
     def get_user_permissions(self, usuario_id: int) -> Set[Permission]:
@@ -459,7 +463,7 @@ class RBACSystem:
             return all_permissions
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error obteniendo permisos de usuario: {e}")
+            logger.info(f"[ERROR] [RBAC] Error obteniendo permisos de usuario: {e}")
             return set()
 
     def assign_role_to_user(self, usuario_id: int, role: Role,
@@ -476,7 +480,7 @@ class RBACSystem:
             role_row = cursor.fetchone()
 
             if not role_row:
-                print(f"[ERROR] [RBAC] Rol no encontrado: {role.value}")
+                logger.info(f"[ERROR] [RBAC] Rol no encontrado: {role.value}")
                 return False
 
             role_id = role_row[0]
@@ -495,11 +499,11 @@ role,
                 assigned_by,
                 "ASSIGNED")
 
-            print(f"[CHECK] [RBAC] Rol {role.value} asignado a usuario {usuario_id}")
+            logger.info(f"[CHECK] [RBAC] Rol {role.value} asignado a usuario {usuario_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error asignando rol: {e}")
+            logger.info(f"[ERROR] [RBAC] Error asignando rol: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False
@@ -530,11 +534,11 @@ role,
                 revoked_by,
                 "REVOKED")
 
-            print(f"[CHECK] [RBAC] Rol {role.value} revocado de usuario {usuario_id}")
+            logger.info(f"[CHECK] [RBAC] Rol {role.value} revocado de usuario {usuario_id}")
             return True
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error revocando rol: {e}")
+            logger.info(f"[ERROR] [RBAC] Error revocando rol: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
             return False
@@ -566,7 +570,7 @@ role,
                 audit.log_event(
                     event_type=AuditEvent.PERMISSION_GRANTED if granted else AuditEvent.UNAUTHORIZED_ACCESS,
                     level=AuditLevel.SECURITY,
-                    modulo="RBAC",
+                    modulo=,
                     accion=f"Verificación de permiso: {permission.value}",
                     resultado="SUCCESS" if granted else "DENIED",
                     usuario_id=usuario_id,
@@ -574,7 +578,7 @@ role,
                     acceso_concedido=granted
                 )
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error auditando verificación de permiso: {e}")
+            logger.info(f"[ERROR] [RBAC] Error auditando verificación de permiso: {e}")
 
     def _audit_role_assignment(self, usuario_id: int, role: Role,
                                assigned_by: int, action: str):
@@ -585,7 +589,7 @@ role,
             audit = get_audit_system()
             if audit:
                 audit.log_event(
-                    event_type=AuditEvent.ROLE_ASSIGNED if action == "ASSIGNED" else AuditEvent.ROLE_REMOVED,
+                    event_type=AuditEvent.ROLE_ASSIGNED if action ==  else AuditEvent.ROLE_REMOVED,
                     level=AuditLevel.CRITICAL,
                     modulo="RBAC",
                     accion=f"Rol {action.lower()}: {role.value}",
@@ -596,7 +600,7 @@ role,
                     accion_realizada=action
                 )
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error auditando asignación de rol: {e}")
+            logger.info(f"[ERROR] [RBAC] Error auditando asignación de rol: {e}")
 
     def initialize_default_roles(self):
         """Inicializa los roles por defecto en la base de datos."""
@@ -636,10 +640,10 @@ display_name,
                     es_sensible))
 
             self.db_connection.connection.commit()
-            print("[CHECK] [RBAC] Roles y permisos por defecto inicializados")
+            logger.info("[CHECK] [RBAC] Roles y permisos por defecto inicializados")
 
         except Exception as e:
-            print(f"[ERROR] [RBAC] Error inicializando roles por defecto: {e}")
+            logger.info(f"[ERROR] [RBAC] Error inicializando roles por defecto: {e}")
             if self.db_connection:
                 self.db_connection.connection.rollback()
 

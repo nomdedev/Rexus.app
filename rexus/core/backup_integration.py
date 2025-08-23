@@ -5,6 +5,10 @@ Proporciona una interfaz simple para integrar el sistema de backup
 con los módulos principales de Rexus.app
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import os
 import json
 from typing import Optional, Dict, List
@@ -53,11 +57,11 @@ class BackupIntegration:
             self.scheduler.start_scheduler()
 
             self.initialized = True
-            print("[CHECK] Sistema de backup inicializado correctamente")
+            logger.info("[CHECK] Sistema de backup inicializado correctamente")
             return True
 
         except Exception as e:
-            print(f"[ERROR] Error inicializando sistema de backup: {e}")
+            logger.info(f"[ERROR] Error inicializando sistema de backup: {e}")
             return False
 
     def _create_default_config(self):
@@ -75,7 +79,7 @@ class BackupIntegration:
         config.auto_cleanup = True
 
         config.save_to_file(self.config_path)
-        print(f"Configuracion de backup por defecto creada: {self.config_path}")
+        logger.info(f"Configuracion de backup por defecto creada: {self.config_path}")
 
     def backup_now(self) -> List[BackupResult]:
         """
@@ -85,10 +89,10 @@ class BackupIntegration:
             Lista de resultados de backup
         """
         if not self.initialized or not self.backup_manager:
-            print("[ERROR] Sistema de backup no inicializado")
+            logger.info("[ERROR] Sistema de backup no inicializado")
             return []
 
-        print("🔄 Iniciando backup manual...")
+        logger.info("🔄 Iniciando backup manual...")
         results = self.backup_manager.backup_all_databases()
 
         # Mostrar resultados
@@ -96,9 +100,9 @@ class BackupIntegration:
         total_count = len(results)
 
         if success_count == total_count:
-            print(f"[CHECK] Backup completado exitosamente: {success_count}/{total_count} bases de datos")
+            logger.info(f"[CHECK] Backup completado exitosamente: {success_count}/{total_count} bases de datos")
         else:
-            print(f"[WARN] Backup completado con errores: {success_count}/{total_count} bases de datos")
+            logger.info(f"[WARN] Backup completado con errores: {success_count}/{total_count} bases de datos")
 
         return results
 
@@ -113,24 +117,24 @@ class BackupIntegration:
             Resultado del backup o None si hay error
         """
         if not self.initialized or not self.backup_manager:
-            print("[ERROR] Sistema de backup no inicializado")
+            logger.info("[ERROR] Sistema de backup no inicializado")
             return None
 
         db_connections = self.backup_manager.get_database_connections()
 
         if database_name not in db_connections:
-            print(f"[ERROR] Base de datos no encontrada: {database_name}")
+            logger.info(f"[ERROR] Base de datos no encontrada: {database_name}")
             return None
 
         db_path = db_connections[database_name]
-        print(f"🔄 Realizando backup de {database_name}...")
+        logger.info(f"🔄 Realizando backup de {database_name}...")
 
         result = self.backup_manager.backup_single_database(database_name, db_path)
 
         if result.success:
-            print(f"[CHECK] Backup de {database_name} completado: {result.backup_path}")
+            logger.info(f"[CHECK] Backup de {database_name} completado: {result.backup_path}")
         else:
-            print(f"[ERROR] Error en backup de {database_name}: {result.message}")
+            logger.info(f"[ERROR] Error en backup de {database_name}: {result.message}")
 
         return result
 
@@ -170,36 +174,36 @@ class BackupIntegration:
             True si se restauró correctamente, False si hubo error
         """
         if not self.initialized or not self.backup_manager:
-            print("[ERROR] Sistema de backup no inicializado")
+            logger.info("[ERROR] Sistema de backup no inicializado")
             return False
 
         db_connections = self.backup_manager.get_database_connections()
 
         if database_name not in db_connections:
-            print(f"[ERROR] Base de datos no encontrada: {database_name}")
+            logger.info(f"[ERROR] Base de datos no encontrada: {database_name}")
             return False
 
         target_path = db_connections[database_name]
-        print(f"🔄 Restaurando {database_name} desde {backup_path}...")
+        logger.info(f"🔄 Restaurando {database_name} desde {backup_path}...")
 
         success = self.backup_manager.restore_database(backup_path, target_path)
 
         if success:
-            print(f"[CHECK] Base de datos {database_name} restaurada correctamente")
+            logger.info(f"[CHECK] Base de datos {database_name} restaurada correctamente")
         else:
-            print(f"[ERROR] Error restaurando base de datos {database_name}")
+            logger.info(f"[ERROR] Error restaurando base de datos {database_name}")
 
         return success
 
     def cleanup_old_backups(self):
         """Limpia backups antiguos según la política de retención."""
         if not self.initialized or not self.backup_manager:
-            print("[ERROR] Sistema de backup no inicializado")
+            logger.info("[ERROR] Sistema de backup no inicializado")
             return
 
-        print("🧹 Ejecutando limpieza de backups antiguos...")
+        logger.info("🧹 Ejecutando limpieza de backups antiguos...")
         self.backup_manager.cleanup_old_backups()
-        print("[CHECK] Limpieza completada")
+        logger.info("[CHECK] Limpieza completada")
 
     def update_config(self, **kwargs):
         """
@@ -218,7 +222,7 @@ class BackupIntegration:
             for key, value in kwargs.items():
                 if hasattr(config, key):
                     setattr(config, key, value)
-                    print(f"[NOTE] Configuración actualizada: {key} = {value}")
+                    logger.info(f"[NOTE] Configuración actualizada: {key} = {value}")
 
             # Guardar configuración
             config.save_to_file(self.config_path)
@@ -227,10 +231,10 @@ class BackupIntegration:
             if self.initialized:
                 self.shutdown()
                 self.initialize()
-                print("🔄 Sistema de backup reinicializado con nueva configuración")
+                logger.info("🔄 Sistema de backup reinicializado con nueva configuración")
 
         except Exception as e:
-            print(f"[ERROR] Error actualizando configuración: {e}")
+            logger.info(f"[ERROR] Error actualizando configuración: {e}")
 
     def get_config(self) -> Dict:
         """
@@ -246,7 +250,7 @@ class BackupIntegration:
             with open(self.config_path, 'r', encoding='utf-8') as f:
                 return json.load(f)
         except Exception as e:
-            print(f"[ERROR] Error leyendo configuración: {e}")
+            logger.info(f"[ERROR] Error leyendo configuración: {e}")
             return {}
 
     def shutdown(self):
@@ -257,7 +261,7 @@ class BackupIntegration:
         self.backup_manager = None
         self.scheduler = None
         self.initialized = False
-        print("⏹️ Sistema de backup detenido")
+        logger.info("⏹️ Sistema de backup detenido")
 
     def is_running(self) -> bool:
         """
@@ -360,22 +364,22 @@ def backup_before_critical_operation(operation_name: str = "operación crítica"
     Returns:
         True si el backup fue exitoso, False si no
     """
-    print(f"[SHIELD] Realizando backup de seguridad antes de {operation_name}...")
+    logger.info(f"[SHIELD] Realizando backup de seguridad antes de {operation_name}...")
 
     backup_system = get_backup_system()
     if not backup_system.is_running():
         if not backup_system.initialize():
-            print("[ERROR] No se pudo inicializar el sistema de backup")
+            logger.info("[ERROR] No se pudo inicializar el sistema de backup")
             return False
 
     results = backup_system.backup_now()
     success_count = sum(1 for r in results if r.success)
 
     if success_count == len(results):
-        print(f"[CHECK] Backup de seguridad completado antes de {operation_name}")
+        logger.info(f"[CHECK] Backup de seguridad completado antes de {operation_name}")
         return True
     else:
-        print(f"[WARN] Backup de seguridad completado con errores antes de {operation_name}")
+        logger.info(f"[WARN] Backup de seguridad completado con errores antes de {operation_name}")
         return False
 
 
@@ -391,5 +395,5 @@ def schedule_backup_after_maintenance() -> bool:
         return backup_system.initialize()
 
     # El backup se ejecutará en el próximo horario programado
-    print("📅 Backup programado para después del mantenimiento")
+    logger.info("📅 Backup programado para después del mantenimiento")
     return True

@@ -3,6 +3,10 @@ Mock Database para Desarrollo - Rexus.app
 Sistema de autenticación local que no requiere SQL Server
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import os
 import json
 from pathlib import Path
@@ -33,7 +37,7 @@ class DevDatabaseMock:
         user_pwd = os.environ.get('DEV_USER_PASSWORD')
         test_pwd = os.environ.get('DEV_TEST_PASSWORD')
         if not (admin_pwd and user_pwd and test_pwd):
-            print("[SEGURIDAD] Debe definir DEV_ADMIN_PASSWORD, DEV_USER_PASSWORD y DEV_TEST_PASSWORD en el entorno para usuarios de desarrollo. No se crearán usuarios por defecto inseguros.")
+            logger.info("[SEGURIDAD] Debe definir DEV_ADMIN_PASSWORD, DEV_USER_PASSWORD y DEV_TEST_PASSWORD en el entorno para usuarios de desarrollo. No se crearán usuarios por defecto inseguros.")
             return {}
         default_users = {
             'admin': {
@@ -67,7 +71,7 @@ class DevDatabaseMock:
             with open(self.db_file, 'w', encoding='utf-8') as f:
                 json.dump(users_data, f, indent=2, ensure_ascii=False)
         except Exception as e:
-            print(f"[DEV_DB] Error guardando usuarios: {e}")
+            logger.info(f"[DEV_DB] Error guardando usuarios: {e}")
 
     def authenticate(self,
 username: str,
@@ -86,15 +90,15 @@ username: str,
         user_data = self.users_db.get(username)
 
         if not user_data:
-            print(f"[DEV_DB] Usuario '{username}' no encontrado")
+            logger.info(f"[DEV_DB] Usuario '{username}' no encontrado")
             return None
 
         if not user_data.get('activo', False):
-            print(f"[DEV_DB] Usuario '{username}' está inactivo")
+            logger.info(f"[DEV_DB] Usuario '{username}' está inactivo")
             return None
 
         if user_data.get('password') != password:
-            print(f"[DEV_DB] Contraseña incorrecta para '{username}'")
+            logger.info(f"[DEV_DB] Contraseña incorrecta para '{username}'")
             return None
 
         # Autenticación exitosa
@@ -109,7 +113,7 @@ username: str,
             'login_time': 'development_mode'
         }
 
-        print(f"[DEV_DB] Autenticación exitosa: {username} ({user_data.get('rol', 'user')})")
+        logger.info(f"[DEV_DB] Autenticación exitosa: {username} ({user_data.get('rol', 'user')})")
         return session_data
 
     def is_available(self) -> bool:
@@ -156,12 +160,12 @@ def is_dev_mode() -> bool:
 def setup_dev_authentication():
     """Configura autenticación para desarrollo."""
     if is_dev_mode():
-        print("[DEV_DB] Sistema de autenticación local iniciado")
+        logger.info("[DEV_DB] Sistema de autenticación local iniciado")
         print("[DEV_DB] Usuarios disponibles:", len(dev_db_mock.users_db))
         # Mostrar usuarios disponibles
         for user, data in dev_db_mock.users_db.items():
             if data.get('activo', False):
-                print(f"[DEV_DB]   - {user} ({data.get('rol', 'user')})")
+                logger.info(f"[DEV_DB]   - {user} ({data.get('rol', 'user')})")
 
         return True
     return False

@@ -121,7 +121,7 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
         
         # Filtro por Categoría
         from rexus.ui.components.base_components import RexusLabel
-        layout.addWidget(RexusLabel("Categoría:"))
+        layout.addWidget(RexusLabel())
         self.filtro_categoria = RexusComboBox()
         self.filtro_categoria.addItems([
             "Todas", "Sistema", "Apariencia", "Base de Datos", 
@@ -415,11 +415,11 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
                 self.cargar_datos_en_tabla(configuraciones)
             else:
                 from rexus.utils.message_system import show_error
-                show_error(self, "Error", "Error al aplicar filtros")
+                show_error(self, , "Error al aplicar filtros")
                 
         except Exception as e:
             from rexus.utils.message_system import show_error
-            show_error(self, "Error", f"Error aplicando filtros: {str(e)}")
+            show_error(self, , f"Error aplicando filtros: {str(e)}")
 
     def obtener_filtros_aplicados(self):
         """Obtiene los filtros actualmente aplicados."""
@@ -463,7 +463,7 @@ class ConfiguracionView(QWidget, ModuleExportMixin):
             
         except Exception as e:
             from rexus.utils.message_system import show_error
-            show_error(self, "Error", f"Error limpiando filtros: {str(e)}")
+            show_error(self, , f"Error limpiando filtros: {str(e)}")
 
     def actualizar_datos(self):
         """Actualiza los datos de la tabla."""

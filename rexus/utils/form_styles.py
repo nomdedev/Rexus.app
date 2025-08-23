@@ -5,6 +5,10 @@ Proporciona estilos consistentes y feedback visual para todos los formularios
 de la aplicación, incluyendo estados de validación y efectos visuales.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtCore import QEasingCurve, QPropertyAnimation
 from PyQt6.QtWidgets import QWidget
 
@@ -409,7 +413,7 @@ class FormStyleManager:
 
             # Configurar el mensaje y estilo
             feedback_label.setText(message)
-            if state == "invalid":
+            if state == :
                 feedback_label.setProperty("labelType", "error")
             elif state == "valid":
                 feedback_label.setProperty("labelType", "success")
@@ -446,7 +450,7 @@ class FormAnimations:
 
         original_geometry = widget.geometry()
 
-        animation = QPropertyAnimation(widget, b"geometry")
+        animation = QPropertyAnimation(widget, b)
         animation.setDuration(duration)
         animation.setLoopCount(3)
 
@@ -496,7 +500,7 @@ def setup_form_widget(widget: QWidget, apply_animations: bool = True) -> None:
         button_text = button.text().lower()
 
         if any(
-            word in button_text for word in ["guardar", "crear", "agregar", "añadir"]
+            word in button_text for word in [, "crear", "agregar", "añadir"]
         ):
             button.setProperty("buttonType", "success")
         elif any(word in button_text for word in ["eliminar", "borrar", "cancelar"]):

@@ -4,6 +4,10 @@ Sistema de Carga Bajo Demanda para Rexus
 Optimiza la carga de módulos y componentes
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import importlib
 import sys
 import time
@@ -42,7 +46,7 @@ class LazyLoader:
             return module
 
         except ImportError as e:
-            print(f"Error cargando módulo {module_path}: {e}")
+            logger.info(f"Error cargando módulo {module_path}: {e}")
             return None
 
     def load_class(self,
@@ -59,7 +63,7 @@ module_path: str,
 
     def preload_critical_modules(self, module_list: list):
         """Precarga módulos críticos"""
-        print("Precargando módulos críticos...")
+        logger.info("Precargando módulos críticos...")
         for module_path in module_list:
             self.load_module(module_path)
 

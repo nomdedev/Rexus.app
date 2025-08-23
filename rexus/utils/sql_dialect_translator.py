@@ -12,7 +12,7 @@ from typing import Dict, Any, Optional
 
 try:
     from rexus.utils.app_logger import get_logger
-    logger = get_logger("sql.translator")
+    logger = get_logger()
 except ImportError:
     logger = logging.getLogger("sql.translator")
 
@@ -110,89 +110,7 @@ class SQLDialectTranslator:
             logger.debug(f"Query traducida: {query_name if query_name else 'unnamed'}")
             return translated
             
-        except Exception as e:
-            logger.error(f"Error traduciendo query {query_name}: {str(e)}")
-            return query  # Retornar query original si falla la traducción
-    
-    def _apply_regex_patterns(self, query: str) -> str:
-        """Aplica patrones regex para traducciones complejas."""
-        
-        # Convertir CREATE TABLE IF NOT EXISTS
-        query = re.sub(
-            r'CREATE TABLE IF NOT EXISTS\s+(\w+)',
-            r"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='\1' AND xtype='U') CREATE TABLE \1",
-            query,
-            flags=re.IGNORECASE
-        )
-        
-        # Convertir LIMIT a TOP
-        query = re.sub(
-            r'SELECT\s+(.*?)\s+LIMIT\s+(\d+)',
-            r'SELECT TOP \2 \1',
-            query,
-            flags=re.IGNORECASE
-        )
-        
-        # Convertir concatenación con ||
-        query = re.sub(
-            r"(\w+)\s*\|\|\s*'([^']*)'",
-            r"\1 + '\2'",
-            query
-        )
-        
-        # Convertir SUBSTR a SUBSTRING (ajustar parámetros)
-        query = re.sub(
-            r'SUBSTR\(([^,]+),\s*(\d+),\s*(\d+)\)',
-            r'SUBSTRING(\1, \2, \3)',
-            query
-        )
-        
-        return query
-    
-    def _generate_sqlserver_table_check(self, original_query: str) -> str:
-        """Genera query SQL Server para verificar existencia de tabla."""
-        # Extraer nombre de tabla del query original
-        table_match = re.search(r"WHERE.*?name\s*=\s*['\"]?(\w+)['\"]?", original_query, re.IGNORECASE)
-        
-        if table_match:
-            table_name = table_match.group(1)
-            return f"""
-            SELECT TABLE_NAME 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_TYPE='BASE TABLE' 
-            AND TABLE_NAME='{table_name}'
-            """
-        else:
-            # Query genérica si no se puede extraer el nombre
-            return """
-            SELECT TABLE_NAME 
-            FROM INFORMATION_SCHEMA.TABLES 
-            WHERE TABLE_TYPE='BASE TABLE' 
-            AND TABLE_NAME=?
-            """
-    
-    def _generate_sqlserver_create_table(self, original_query: str) -> str:
-        """Convierte CREATE TABLE SQLite a SQL Server."""
-        
-        # Reemplazos básicos
-        translated = original_query
-        
-        # IF NOT EXISTS - Corregir sintaxis SQL Server
-        if 'IF NOT EXISTS' in translated.upper():
-            table_match = re.search(r'CREATE TABLE IF NOT EXISTS\s+(\w+)', translated, re.IGNORECASE)
-            if table_match:
-                table_name = table_match.group(1)
-                # Remover IF NOT EXISTS del CREATE TABLE
-                translated = re.sub(r'CREATE TABLE IF NOT EXISTS\s+', 'CREATE TABLE ', translated, flags=re.IGNORECASE)
-                # Validar nombre de tabla antes de usar
-                if self._is_valid_table_name(table_name):
-                    # Envolver en bloque condicional SQL Server
-                    translated = f"""IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = '{table_name}')
-BEGIN
-    {translated}
-END"""
-                else:
-                    raise ValueError(f"Invalid table name: {table_name}")
+        except Exception as e:                    raise ValueError(f"Invalid table name: {table_name}")
         
         # Tipos de datos
         type_mappings = {
@@ -261,9 +179,8 @@ END"""
             
             return self.translate_query(original_query, file_name)
             
-        except Exception as e:
-            logger.error(f"Error leyendo archivo {file_path}: {str(e)}")
-            return ""
+        except (FileNotFoundError, PermissionError, OSError) as e:
+                        return ""
     
     def detect_dialect(self, query: str) -> str:
         """Detecta el dialecto SQL de una query."""

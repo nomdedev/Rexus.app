@@ -345,7 +345,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                 """)
         except Exception as e:
             from rexus.utils.app_logger import get_logger
-            logger = get_logger("usuarios.view")
+            logger = get_logger()
             logger.warning(f"Error aplicando estilos específicos de usuarios: {e}")
 
     def nuevo_usuario(self):
@@ -361,17 +361,17 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                         exito = self.controller.crear_usuario(datos)
                         if exito:
                             from rexus.utils.message_system import show_success
-                            show_success(self, "Éxito", "Usuario creado exitosamente.")
+                            show_success(self, , "Usuario creado exitosamente.")
                             self.actualizar_datos()
                         else:
                             from rexus.utils.message_system import show_error
-                            show_error(self, "Error", "No se pudo crear el usuario.")
+                            show_error(self, , "No se pudo crear el usuario.")
                     except Exception as e:
                         from rexus.utils.message_system import show_error
-                        show_error(self, "Error", f"Error al crear usuario: {str(e)}")
+                        show_error(self, , f"Error al crear usuario: {str(e)}")
                 else:
                     from rexus.utils.message_system import show_warning
-                    show_warning(self, "Advertencia", "No hay controlador disponible.")
+                    show_warning(self, , "No hay controlador disponible.")
 
     def buscar_usuarios(self):
         """Busca usuarios según el término ingresado."""
@@ -394,7 +394,7 @@ class UsuariosView(BaseModuleView, ModuleExportMixin):
                     show_error(self, UsuariosConstants.TITULO_ERROR, UsuariosConstants.MSG_ERROR_BUSCAR_USUARIOS)
             except Exception as e:
                 from .constants import UsuariosConstants
-                show_error(self, UsuariosConstants.TITULO_ERROR, f"Error en la búsqueda: {str(e)}")
+                show_error(self, UsuariosConstants.TITULO_ERROR, f)
         else:
             show_warning(self, "Sin Controlador", "No hay controlador disponible para realizar la búsqueda")
 
@@ -690,7 +690,7 @@ class DialogoUsuario(QDialog):
         self.input_fecha_caducidad.setCalendarPopup(True)
         from PyQt6.QtCore import QDate
         self.input_fecha_caducidad.setDate(QDate.currentDate().addDays(365))
-        form_layout.addRow("Caducidad:", self.input_fecha_caducidad)
+        form_layout.addRow(, self.input_fecha_caducidad)
 
         # Observaciones
         self.input_observaciones = QTextEdit()
@@ -780,7 +780,7 @@ class DialogoUsuario(QDialog):
         from rexus.utils.message_system import show_error
         datos = self.obtener_datos()
 
-        if not datos["username"]:
+        if not datos[]:
             show_error(self, "Error de Validación", "El nombre de usuario es obligatorio.")
             return False
 

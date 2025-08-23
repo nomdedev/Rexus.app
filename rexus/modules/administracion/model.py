@@ -29,7 +29,7 @@ try:
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning(f"Security utilities not available in administracion: {e}")
+    logger.warning(f)
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -39,7 +39,7 @@ try:
 
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    logger.warning("SQL security utilities not available in administracion")
+    logger.warning()
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -92,87 +92,7 @@ class AdministracionModel(ContabilidadModel):
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                logger.error(f"Error de seguridad SQL en validación de tabla: {str(e)}")
-                # Fallback a verificación básica
-
-        # Verificación básica si la utilidad no está disponible
-        if not table_name or not isinstance(table_name, str):
-            raise ValueError("Nombre de tabla inválido")
-
-        # Eliminar espacios en blanco
-        table_name = table_name.strip()
-
-        # Verificar que solo contenga caracteres alfanuméricos y guiones bajos
-        if not all(c.isalnum() or c == "_" for c in table_name):
-            raise ValueError(
-                f"Nombre de tabla contiene caracteres no válidos: {table_name}"
-            )
-
-        # Verificar longitud razonable
-        if len(table_name) > 64:
-            raise ValueError(f"Nombre de tabla demasiado largo: {table_name}")
-
-        return table_name.lower()
-
-    def validar_departamento_duplicado(
-        self, codigo: str, nombre: str, id_departamento_actual: Optional[int] = None
-    ) -> Dict[str, bool]:
-        """
-        Valida si existe un departamento duplicado por código o nombre.
-
-        Args:
-            codigo: Código del departamento a verificar
-            nombre: Nombre del departamento a verificar
-            id_departamento_actual: ID del departamento actual (para edición)
-
-        Returns:
-            Dict[str, bool]: {"codigo_duplicado": bool, "nombre_duplicado": bool}
-        """
-        resultado = {"codigo_duplicado": False, "nombre_duplicado": False}
-
-        if not self.db_connection:
-            return resultado
-
-        try:
-            # Sanitizar datos
-            if self.data_sanitizer:
-                codigo_limpio = sanitize_string(codigo)
-                nombre_limpio = sanitize_string(nombre)
-            else:
-                codigo_limpio = codigo.strip()
-                nombre_limpio = nombre.strip()
-
-            # Validar tabla
-            self._validate_table_name(self.tabla_departamentos)
-
-            cursor = self.db_connection.cursor()
-
-            # Verificar código duplicado
-            if id_departamento_actual:
-                query_codigo = self.sql_manager.get_query('administracion/count_departamento_codigo_duplicado_exclude')
-                cursor.execute(query_codigo, (codigo_limpio.lower(), id_departamento_actual))
-            else:
-                query_codigo = self.sql_manager.get_query('administracion/count_departamento_codigo_duplicado')
-                cursor.execute(query_codigo, (codigo_limpio.lower(),))
-
-            resultado["codigo_duplicado"] = cursor.fetchone()[0] > 0
-
-            # Verificar nombre duplicado
-            if id_departamento_actual:
-                query_nombre = self.sql_manager.get_query('administracion/count_departamento_nombre_duplicado_exclude')
-                cursor.execute(query_nombre, (nombre_limpio.lower(), id_departamento_actual))
-            else:
-                query_nombre = self.sql_manager.get_query('administracion/count_departamento_nombre_duplicado')
-                cursor.execute(query_nombre, (nombre_limpio.lower(),))
-
-            resultado["nombre_duplicado"] = cursor.fetchone()[0] > 0
-
-            return resultado
-
-        except Exception as e:
-            logger.error(f"Error validando departamento duplicado: {e}")
-            return resultado
-
+                
     def _validate_limit(self, limite):
         """
         Valida el parámetro de límite para prevenir SQL injection.
@@ -370,8 +290,6 @@ class AdministracionModel(ContabilidadModel):
             logger.info("Tablas de contabilidad creadas exitosamente")
 
         except Exception as e:
-            logger.error(f"Error creando tablas de contabilidad: {e}")
-            if self.db_connection:
                 self.db_connection.rollback()
 
     def registrar_auditoria(
@@ -412,9 +330,6 @@ registro_id,
             self.db_connection.commit()
 
         except Exception as e:
-            logger.error(f"Error registrando auditoría: {e}")
-
-    # GESTIÓN DE DEPARTAMENTOS
     def crear_departamento(
         self, codigo, nombre, descripcion="", responsable="", presupuesto_mensual=0
     ):
@@ -481,8 +396,6 @@ registro_id,
             return departamento_id
 
         except Exception as e:
-            logger.error(f"Error creando departamento: {e}")
-            self.db_connection.rollback()
             return None
 
     def obtener_departamentos(self, activos_solo=True):
@@ -522,8 +435,6 @@ registro_id,
             return departamentos
 
         except Exception as e:
-            logger.error(f"Error obteniendo departamentos: {e}")
-            return []
 
     # GESTIÓN DE EMPLEADOS
     def crear_empleado(
@@ -584,8 +495,6 @@ registro_id,
             return empleado_id
 
         except Exception as e:
-            logger.error(f"Error creando empleado: {e}")
-            self.db_connection.rollback()
             return None
 
     def obtener_empleados(self, departamento_id=None, activos_solo=True):
@@ -641,8 +550,6 @@ registro_id,
             return empleados
 
         except Exception as e:
-            logger.error(f"Error obteniendo empleados: {e}")
-            return []
 
     # GESTIÓN DE LIBRO CONTABLE
     def crear_asiento_contable(
@@ -722,8 +629,6 @@ registro_id,
             return asiento_id
 
         except Exception as e:
-            logger.error(f"Error creando asiento contable: {e}")
-            self.db_connection.rollback()
             return None
 
     def obtener_libro_contable(
@@ -812,7 +717,7 @@ registro_id,
             return asientos
 
         except Exception as e:
-            print(f"Error obteniendo libro contable: {e}")
+            logger.info(f"Error obteniendo libro contable: {e}")
             return []
 
     # GESTIÓN DE RECIBOS
@@ -889,7 +794,7 @@ registro_id,
             return recibo_id
 
         except Exception as e:
-            print(f"Error creando recibo: {e}")
+            logger.info(f"Error creando recibo: {e}")
             self.db_connection.rollback()
             return None
 
@@ -973,7 +878,7 @@ registro_id,
             return recibos
 
         except Exception as e:
-            print(f"Error obteniendo recibos: {e}")
+            logger.info(f"Error obteniendo recibos: {e}")
             return []
 
     def marcar_recibo_impreso(self, recibo_id, archivo_pdf=None):
@@ -1005,7 +910,7 @@ registro_id,
             return True
 
         except Exception as e:
-            print(f"Error marcando recibo como impreso: {e}")
+            logger.info(f"Error marcando recibo como impreso: {e}")
             self.db_connection.rollback()
             return False
 
@@ -1066,7 +971,7 @@ registro_id,
             return pago_id
 
         except Exception as e:
-            print(f"Error registrando pago de obra: {e}")
+            logger.info(f"Error registrando pago de obra: {e}")
             self.db_connection.rollback()
             return None
 
@@ -1145,7 +1050,7 @@ registro_id,
             return pagos
 
         except Exception as e:
-            print(f"Error obteniendo pagos de obra: {e}")
+            logger.info(f"Error obteniendo pagos de obra: {e}")
             return []
 
     # GESTIÓN DE PAGOS POR MATERIALES
@@ -1206,7 +1111,7 @@ registro_id,
             return compra_id
 
         except Exception as e:
-            print(f"Error registrando compra de material: {e}")
+            logger.info(f"Error registrando compra de material: {e}")
             self.db_connection.rollback()
             return None
 
@@ -1275,7 +1180,7 @@ registro_id,
             return True
 
         except Exception as e:
-            print(f"Error registrando pago de material: {e}")
+            logger.info(f"Error registrando pago de material: {e}")
             self.db_connection.rollback()
             return False
 
@@ -1402,7 +1307,7 @@ registro_id,
             return resumen
 
         except Exception as e:
-            print(f"Error obteniendo resumen contable: {e}")
+            logger.info(f"Error obteniendo resumen contable: {e}")
             return None
 
     def obtener_estadisticas_departamento(
@@ -1470,7 +1375,7 @@ registro_id,
             return estadisticas
 
         except Exception as e:
-            print(f"Error obteniendo estadísticas de departamento: {e}")
+            logger.info(f"Error obteniendo estadísticas de departamento: {e}")
             return None
 
     def obtener_auditoria(
@@ -1536,5 +1441,5 @@ registro_id,
             return auditoria
 
         except Exception as e:
-            print(f"Error obteniendo auditoría: {e}")
+            logger.info(f"Error obteniendo auditoría: {e}")
             return []

@@ -216,14 +216,7 @@ bool, str)  # database_name, success, message
             return True
 
         except sqlite3.Error as e:
-            self.logger.error(f"Error de SQLite en backup: {e}")
-            return False
-        except (OSError, IOError) as e:
-            self.logger.error(f"Error de archivo en backup: {e}")
-            return False
-        except Exception as e:
-            self.logger.exception(f"Error inesperado en backup SQLite: {e}")
-            return False
+            self.        except Exception as e:
 
     def _compress_backup(self, source_path: str, compressed_path: str) -> bool:
         """Comprime un archivo de backup."""
@@ -232,58 +225,7 @@ bool, str)  # database_name, success, message
                 zip_file.write(source_path, os.path.basename(source_path))
             return True
         except Exception as e:
-            self.logger.error(f"Error comprimiendo backup: {e}")
-            return False
-
-    def backup_all_databases(self) -> List[BackupResult]:
-        """Realiza backup de todas las bases de datos configuradas."""
-        results = []
-        db_connections = self.get_database_connections()
-
-        self.logger.info("Iniciando backup completo del sistema")
-
-        for db_name in self.config.backup_databases:
-            if db_name in db_connections:
-                db_path = db_connections[db_name]
-                result = self.backup_single_database(db_name, db_path)
-                results.append(result)
-            else:
-                error_msg = f"Base de datos no configurada: {db_name}"
-                self.logger.error(error_msg)
-                results.append(BackupResult(False, error_msg))
-
-        # Ejecutar limpieza automática si está habilitada
-        if self.config.auto_cleanup:
-            self.cleanup_old_backups()
-
-        self.logger.info("Backup completo del sistema finalizado")
-        return results
-
-    def cleanup_old_backups(self):
-        """Elimina backups antiguos según la política de retención."""
-        try:
-            backup_dir = Path(self.config.backup_dir)
-            if not backup_dir.exists():
-                return
-
-            cutoff_date = datetime.now() - timedelta(days=self.config.retention_days)
-            deleted_count = 0
-
-            for backup_file in backup_dir.glob("*_backup_*"):
-                if backup_file.is_file():
-                    file_time = datetime.fromtimestamp(backup_file.stat().st_mtime)
-                    if file_time < cutoff_date:
-                        backup_file.unlink()
-                        deleted_count += 1
-                        self.logger.info(f"Backup antiguo eliminado: {backup_file.name}")
-
-            if deleted_count > 0:
-                self.logger.info(f"Limpieza completada: {deleted_count} backups eliminados")
-
-        except Exception as e:
-            self.logger.error(f"Error en limpieza de backups: {e}")
-
-    def restore_database(self, backup_path: str, target_db_path: str) -> bool:
+            self.    def restore_database(self, backup_path: str, target_db_path: str) -> bool:
         """Restaura una base de datos desde un backup."""
         try:
             self.logger.info(f"Iniciando restauración desde {backup_path}")
@@ -326,44 +268,7 @@ bool, str)  # database_name, success, message
             return True
 
         except Exception as e:
-            self.logger.error(f"Error en restauración: {e}")
-            return False
-
-    def get_available_backups(self) -> List[Dict]:
-        """Obtiene lista de backups disponibles."""
-        backups = []
-        backup_dir = Path(self.config.backup_dir)
-
-        if not backup_dir.exists():
-            return backups
-
-        for backup_file in backup_dir.glob("*_backup_*"):
-            if backup_file.is_file():
-                try:
-                    # Extraer información del nombre del archivo
-                    parts = backup_file.stem.split('_backup_')
-                    if len(parts) == 2:
-                        db_name = parts[0]
-                        timestamp_str = parts[1]
-
-                        # Parsear timestamp
-                        timestamp = datetime.strptime(timestamp_str, "%Y%m%d_%H%M%S")
-
-                        # Información del archivo
-                        file_size_mb = backup_file.stat().st_size / (1024 * 1024)
-
-                        backups.append({
-                            'database': db_name,
-                            'timestamp': timestamp,
-                            'file_path': str(backup_file),
-                            'file_name': backup_file.name,
-                            'size_mb': file_size_mb,
-                            'compressed': backup_file.suffix == '.zip'
-                        })
-                except Exception as e:
-                    self.logger.error(f"Error procesando backup {backup_file}: {e}")
-
-        # Ordenar por timestamp descendente (más recientes primero)
+            self.        # Ordenar por timestamp descendente (más recientes primero)
         backups.sort(key=lambda x: x['timestamp'], reverse=True)
         return backups
 

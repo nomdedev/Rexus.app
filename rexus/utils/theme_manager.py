@@ -3,6 +3,10 @@ Gestor de Temas Moderno para Rexus
 Versión: 2.0.0 - Enterprise Ready
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import json
 import os
 from typing import Optional, Dict, Any, Callable
@@ -17,7 +21,7 @@ from ..core.themes import (
 from ..core.config import PROJECT_ROOT
 from ..core.logger import get_logger
 
-logger = get_logger("theme_manager")
+logger = get_logger()
 
 class ThemeManager(QObject):
     """

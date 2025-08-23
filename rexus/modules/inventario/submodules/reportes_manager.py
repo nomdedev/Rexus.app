@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 """
 Reportes Manager - Generación de reportes y estadísticas del inventario
 Refactorizado de InventarioModel para mejor mantenibilidad
@@ -12,1086 +13,852 @@ Responsabilidades:
 """
 
 import logging
-from datetime import datetime, timedelta
-from typing import Any, Dict, Optional
+import csv
 import json
+import os
+import time
+from datetime import datetime, timedelta
+from decimal import Decimal
+from typing import Any, Dict, List, Optional, Union
+
+# Imports del sistema de cache
+try:
+    from rexus.utils.report_cache_integration import (
+        cache_inventory_report,
+        get_report_cache_manager,
+        get_performance_monitor,
+        monitored_cache_report
+    )
+    CACHE_AVAILABLE = True
+except ImportError:
+    CACHE_AVAILABLE = False
+    logger.warning()
 
 # Configurar logging
 logger = logging.getLogger(__name__)
 
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-
-# Sistema de cache inteligente para optimizar rendimiento
-from rexus.utils.intelligent_cache import IntelligentCache, cached_query
-
-# Instancia global de cache para reportes
-reportes_cache = IntelligentCache(max_size=500, default_ttl=600)  # 10 minutos TTL para reportes
-
-# SQLQueryManager unificado
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    # Fallback al script loader
-    from rexus.utils.sql_script_loader import sql_script_loader
-
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-
-        def get_query(self, path, filename):
-            # Construir nombre del script sin extensión
-            script_name = filename.replace(".sql", "")
-            return self.sql_loader(script_name)
-
-        def execute_query(self, query, params=None):
-            # Placeholder para compatibilidad
-            return None
-
-# DataSanitizer unificado - Usar sistema unificado de sanitización
-try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer
-    data_sanitizer = unified_sanitizer
-except ImportError:
-    try:
-        from rexus.utils.unified_sanitizer import DataSanitizer
-        data_sanitizer = DataSanitizer()
-    except ImportError:
-        # Fallback seguro
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                """Sanitiza un diccionario de datos de forma segura."""
-                if not isinstance(data, dict):
-                    return {}
-
-                sanitized = {}
-                for key, value in data.items():
-                    if isinstance(value, str):
-                        # Sanitización básica de strings
-                        sanitized[key] = str(value).strip()
-                    else:
-                        sanitized[key] = value
-                return sanitized
-
-            def sanitize_text(self, text):
-                """Sanitiza texto de forma segura."""
-                return str(text).strip() if text else ""
-
-# Importar utilidades base si están disponibles
-try:
-    from .base_utilities import BaseUtilities, TABLA_INVENTARIO, TABLA_MOVIMIENTOS, TABLA_RESERVAS
-    BASE_AVAILABLE = True
-except ImportError as e:
-    logger.error(f"Error importando utilidades base: {e}")
-    BASE_AVAILABLE = False
-    BaseUtilities = None
-    TABLA_INVENTARIO = "inventario_perfiles"
-    TABLA_MOVIMIENTOS = "historial"
-    TABLA_RESERVAS = "reserva_materiales"
-
 
 class ReportesManager:
-    """Manager especializado para generación de reportes y estadísticas."""
-
-    # Tipos de reportes disponibles
-    TIPOS_REPORTE = {
-        'STOCK_ACTUAL': 'Reporte de Stock Actual',
-        'MOVIMIENTOS': 'Reporte de Movimientos',
-        'RESERVAS': 'Reporte de Reservas',
-        'PRODUCTOS_CRITICOS': 'Productos con Stock Crítico',
-        'VALORACION_INVENTARIO': 'Valoración de Inventario',
-        'ANALISIS_ABC': 'Análisis ABC de Productos',
-        'TENDENCIAS': 'Análisis de Tendencias',
-        'KPI_DASHBOARD': 'Dashboard de KPIs'
-    }
-
-    # Formatos de exportación soportados
-    FORMATOS_EXPORT = {
-        'JSON': 'json',
-        'CSV': 'csv',
-        'DICT': 'dict'
-    }
-
+    """Gestor de reportes y estadísticas para el módulo de inventario."""
+    
     def __init__(self, db_connection=None):
-        """
-        Inicializa el manager de reportes.
-
+        """Inicializa el gestor de reportes.
+        
         Args:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
-        self.sanitizer = data_sanitizer
-        self.sql_path = "scripts/sql/inventario/reportes"
-        self.logger = logging.getLogger(__name__)
-
-        # Inicializar utilidades base si están disponibles
-        if BASE_AVAILABLE and db_connection:
-            self.base_utils = BaseUtilities(db_connection)
-        else:
-            self.base_utils = None
-            logger.warning("Utilidades base no disponibles en ReportesManager")
-
-    def _validar_conexion(self) -> bool:
-        """Valida la conexión a la base de datos."""
-        if not self.db_connection:
-            self.logger.error("Sin conexión a base de datos")
-            return False
-
-        if self.base_utils and \
-            hasattr(self.base_utils, 'validar_conexion_db'):
-            return self.base_utils.validar_conexion_db()
-
-        # Validación básica como fallback
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute("SELECT 1")
-            cursor.fetchone()
-            return True
-        except Exception as e:
-            self.logger.error(f"Error validando conexión: {e}")
-            return False
-        finally:
-            if 'cursor' in locals():
-                cursor.close()
-
-    @cached_query(ttl=300)  # Cache por 5 minutos - reporte de stock cambia frecuentemente
-    def generar_reporte_stock_actual(self, filtros: Optional[Dict[str, Any]] = None,
-                                   formato: str = 'DICT') -> Dict[str, Any]:
-        """
-        Genera reporte completo del stock actual de todos los productos.
-
+        self.tabla_inventario = "inventario"
+        self.tabla_movimientos = "movimientos_inventario"
+        self.tabla_categorias = "categorias"
+        
+    @cache_inventory_report('stock', ttl=1800) if CACHE_AVAILABLE else lambda f: f
+    def generar_reporte_stock(self, filtros: Optional[Dict] = None) -> Dict[str, Any]:
+        """Genera reporte completo de stock actual.
+        
         Args:
-            filtros: Filtros opcionales (categoria, proveedor, etc.)
-            formato: Formato de salida
-
+            filtros: Filtros opcionales para el reporte
+            
         Returns:
-            Dict con el reporte de stock
+            Dict con productos y resumen del reporte
         """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'data': None
-            }
-
+        start_time = time.time() if CACHE_AVAILABLE else None
+        
         try:
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
             cursor = self.db_connection.cursor()
-
-            # Query optimizada para stock actual - elimina consultas N+1 con JOIN
+            
+            # Query base
             query = """
-                SELECT
-                    i.id, i.codigo, i.descripcion, i.categoria,
-                    i.precio_unitario, i.stock_actual, i.stock_minimo, i.stock_maximo,
-                    i.proveedor, i.unidad_medida, i.ubicacion,
-                    i.fecha_creacion, i.fecha_modificacion,
-                    -- Calcular estado de stock
-                    CASE
-                        WHEN i.stock_actual = 0 THEN 'CRITICO'
-                        WHEN i.stock_actual <= i.stock_minimo THEN 'BAJO'
-                        WHEN i.stock_actual >= i.stock_maximo THEN 'EXCESO'
-                        ELSE 'NORMAL'
-                    END as estado_stock,
-                    -- Calcular valor total
-                    (i.stock_actual * i.precio_unitario) as valor_total,
-                    -- Stock reservado optimizado con JOIN
-                    ISNULL(r.stock_reservado, 0) as stock_reservado,
-                    -- Stock disponible optimizado
-                    (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible
-                FROM inventario_perfiles i
-                LEFT JOIN (
-                    SELECT
-                        producto_id,
-                        SUM(cantidad_reservada) as stock_reservado
-                    FROM reserva_materiales
-                    WHERE estado = 'ACTIVA'
-                    GROUP BY producto_id
-                ) r ON i.id = r.producto_id
+                SELECT 
+                    i.id,
+                    i.codigo,
+                    i.descripcion,
+                    i.categoria,
+                    i.stock,
+                    i.precio_unitario,
+                    i.stock_minimo,
+                    i.stock_maximo,
+                    i.activo,
+                    (i.stock * i.precio_unitario) as valor_total
+                FROM inventario i
                 WHERE i.activo = 1
             """
-
+            
             params = []
-
-            # Aplicar filtros si existen
+            
+            # Aplicar filtros
             if filtros:
                 if filtros.get('categoria'):
                     query += " AND i.categoria = ?"
-                    params.append(sanitize_string(filtros['categoria']))
-
-                if filtros.get('proveedor'):
-                    query += " AND i.proveedor LIKE ?"
-                    params.append(f"%{sanitize_string(filtros['proveedor'])}%")
-
-                if filtros.get('estado_stock'):
-                    estado_filtro = filtros['estado_stock']
-                    if estado_filtro == 'CRITICO':
-                        query += " AND i.stock_actual = 0"
-                    elif estado_filtro == 'BAJO':
-                        query += " AND i.stock_actual > 0 AND i.stock_actual <= i.stock_minimo"
-                    elif estado_filtro == 'EXCESO':
-                        query += " AND i.stock_actual >= i.stock_maximo"
-                    elif estado_filtro == 'NORMAL':
-                        query += " AND i.stock_actual > i.stock_minimo AND i.stock_actual < i.stock_maximo"
-
-                if filtros.get('codigo_like'):
-                    query += " AND i.codigo LIKE ?"
-                    params.append(f"%{sanitize_string(filtros['codigo_like'])}%")
-
-                if filtros.get('descripcion_like'):
-                    query += " AND i.descripcion LIKE ?"
-                    params.append(f"%{sanitize_string(filtros['descripcion_like'])}%")
-
-            query += " ORDER BY i.categoria, i.codigo"
-
+                    params.append(filtros['categoria'])
+                    
+                if filtros.get('stock_minimo') is not None:
+                    query += " AND i.stock >= ?"
+                    params.append(filtros['stock_minimo'])
+                    
+                if filtros.get('solo_bajo_minimo'):
+                    query += " AND i.stock < i.stock_minimo"
+            
+            query += " ORDER BY i.codigo"
+            
             cursor.execute(query, params)
-            columnas = [desc[0] for desc in cursor.description]
-            filas = cursor.fetchall()
-            cursor.close()
-
-            # Procesar resultados
             productos = []
-            resumen = {
-                'total_productos': 0,
-                'valor_total_inventario': 0,
-                'productos_criticos': 0,
-                'productos_bajo_stock': 0,
-                'productos_exceso': 0,
-                'productos_normales': 0
-            }
-
-            for fila in filas:
-                producto = dict(zip(columnas, fila))
+            
+            for row in cursor.fetchall():
+                producto = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'descripcion': row[2],
+                    'categoria': row[3],
+                    'stock': row[4],
+                    'precio_unitario': float(row[5]) if row[5] else 0.0,
+                    'stock_minimo': row[6] or 0,
+                    'stock_maximo': row[7] or 0,
+                    'activo': bool(row[8]),
+                    'valor_total': float(row[9]) if row[9] else 0.0
+                }
                 productos.append(producto)
-
-                # Actualizar resumen
-                resumen['total_productos'] += 1
-                resumen['valor_total_inventario'] += float(producto.get('valor_total', 0) or 0)
-
-                estado = producto.get('estado_stock', 'NORMAL')
-                if estado == 'CRITICO':
-                    resumen['productos_criticos'] += 1
-                elif estado == 'BAJO':
-                    resumen['productos_bajo_stock'] += 1
-                elif estado == 'EXCESO':
-                    resumen['productos_exceso'] += 1
-                else:
-                    resumen['productos_normales'] += 1
-
-            # Construir reporte final
-            reporte = {
-                'tipo_reporte': 'STOCK_ACTUAL',
-                'fecha_generacion': datetime.now().isoformat(),
-                'filtros_aplicados': filtros or {},
-                'resumen': resumen,
+            
+            # Calcular resumen
+            total_productos = len(productos)
+            valor_total = sum(p['valor_total'] for p in productos)
+            productos_bajo_minimo = len([p for p in productos if p['stock'] < p['stock_minimo']])
+            productos_sin_stock = len([p for p in productos if p['stock'] == 0])
+            
+            resumen = {
+                'total_productos': total_productos,
+                'valor_total': valor_total,
+                'productos_bajo_minimo': productos_bajo_minimo,
+                'productos_sin_stock': productos_sin_stock,
+                'fecha_generacion': datetime.now().isoformat()
+            }
+            
+            # Log de rendimiento si está disponible
+            if CACHE_AVAILABLE and start_time:
+                execution_time = time.time() - start_time
+                monitor = get_performance_monitor()
+                monitor.log_report_execution(
+                    'Reporte de Stock', execution_time, False, 
+                    len(str(productos))
+                )
+            
+            return {
+                'success': True,
                 'productos': productos,
-                'total_registros': len(productos)
+                'resumen': resumen
             }
-
-            return {
-                'success': True,
-                'data': self._formatear_reporte(reporte, formato)
-            }
-
+            
         except Exception as e:
-            self.logger.error(f"Error generando reporte de stock actual: {e}")
-            return {
                 'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
+                'error': f"Error interno: {str(e)}"
             }
-    def generar_reporte_movimientos(self, fecha_desde: Optional[str] = None,
-                                  fecha_hasta: Optional[str] = None,
-                                  producto_id: Optional[int] = None,
-                                  tipo_movimiento: Optional[str] = None,
-                                  formato: str = 'DICT') -> Dict[str, Any]:
-        """
-        Genera reporte de movimientos de inventario en un período específico.
-
+    
+    @cache_inventory_report('movimientos', ttl=900) if CACHE_AVAILABLE else lambda f: f
+    def generar_reporte_movimientos(
+        self, 
+        fecha_inicio: Optional[datetime] = None, 
+        fecha_fin: Optional[datetime] = None
+    ) -> Dict[str, Any]:
+        """Genera reporte de movimientos de inventario.
+        
         Args:
-            fecha_desde: Fecha inicio del período (YYYY-MM-DD)
-            fecha_hasta: Fecha fin del período (YYYY-MM-DD)
-            producto_id: Filtrar por producto específico
-            tipo_movimiento: Filtrar por tipo de movimiento
-            formato: Formato de salida
-
+            fecha_inicio: Fecha de inicio del período
+            fecha_fin: Fecha de fin del período
+            
         Returns:
-            Dict con el reporte de movimientos
+            Dict con movimientos y estadísticas
         """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'data': None
-            }
-
+        start_time = time.time() if CACHE_AVAILABLE else None
+        
         try:
-            # Validar fechas
-            if not fecha_desde:
-                fecha_desde = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d')
-            if not fecha_hasta:
-                fecha_hasta = datetime.now().strftime('%Y-%m-%d')
-
-            cursor = self.db_connection.cursor()
-
-            # Query para obtener movimientos con información del producto
-            query = """
-                SELECT
-                    m.id, m.producto_id, m.tipo_movimiento, m.cantidad,
-                    m.stock_anterior, m.stock_posterior, m.fecha_movimiento,
-                    m.observaciones, m.usuario, m.obra_id,
-                    p.codigo, p.descripcion, p.categoria, p.unidad_medida,
-                    p.precio_unitario,
-                    -- Calcular valor del movimiento
-                    (ABS(m.cantidad) * p.precio_unitario) as valor_movimiento,
-                    o.nombre as obra_nombre
-                FROM historial m
-                INNER JOIN inventario_perfiles p ON m.producto_id = p.id
-                LEFT JOIN obras o ON m.obra_id = o.id
-                WHERE m.fecha_movimiento >= ? AND m.fecha_movimiento <= ?
-            """
-
-            params = [fecha_desde + ' 00:00:00', fecha_hasta + ' 23:59:59']
-
-            # Aplicar filtros adicionales
-            if producto_id:
-                query += " AND m.producto_id = ?"
-                params.append(producto_id)
-
-            if tipo_movimiento:
-                query += " AND m.tipo_movimiento = ?"
-                params.append(sanitize_string(tipo_movimiento))
-
-            query += " ORDER BY m.fecha_movimiento DESC"
-
-            cursor.execute(query, params)
-            columnas = [desc[0] for desc in cursor.description]
-            filas = cursor.fetchall()
-
-            # Query para estadísticas agregadas
-            query_stats = """
-                SELECT
-                    m.tipo_movimiento,
-                    COUNT(*) as cantidad_movimientos,
-                    SUM(ABS(m.cantidad)) as cantidad_total,
-                    SUM(ABS(m.cantidad) * p.precio_unitario) as valor_total
-                FROM historial m
-                INNER JOIN inventario_perfiles p ON m.producto_id = p.id
-                WHERE m.fecha_movimiento >= ? AND m.fecha_movimiento <= ?
-            """
-
-            params_stats = [fecha_desde + ' 00:00:00', fecha_hasta + ' 23:59:59']
-
-            if producto_id:
-                query_stats += " AND m.producto_id = ?"
-                params_stats.append(producto_id)
-
-            if tipo_movimiento:
-                query_stats += " AND m.tipo_movimiento = ?"
-                params_stats.append(tipo_movimiento)
-
-            query_stats += " GROUP BY m.tipo_movimiento"
-
-            cursor.execute(query_stats, params_stats)
-            stats_filas = cursor.fetchall()
-            cursor.close()
-
-            # Procesar movimientos
-            movimientos = []
-            for fila in filas:
-                movimiento = dict(zip(columnas, fila))
-                movimientos.append(movimiento)
-
-            # Procesar estadísticas
-            estadisticas_por_tipo = {}
-            total_movimientos = 0
-            total_valor = 0
-
-            for stat_fila in stats_filas:
-                tipo, cantidad, cantidad_total, valor_total = stat_fila
-                estadisticas_por_tipo[tipo] = {
-                    'cantidad_movimientos': cantidad,
-                    'cantidad_total': float(cantidad_total or 0),
-                    'valor_total': float(valor_total or 0)
-                }
-                total_movimientos += cantidad
-                total_valor += float(valor_total or 0)
-
-            # Construir reporte final
-            reporte = {
-                'tipo_reporte': 'MOVIMIENTOS',
-                'fecha_generacion': datetime.now().isoformat(),
-                'periodo': {
-                    'fecha_desde': fecha_desde,
-                    'fecha_hasta': fecha_hasta
-                },
-                'filtros_aplicados': {
-                    'producto_id': producto_id,
-                    'tipo_movimiento': tipo_movimiento
-                },
-                'resumen': {
-                    'total_movimientos': total_movimientos,
-                    'total_valor_movido': total_valor,
-                    'estadisticas_por_tipo': estadisticas_por_tipo
-                },
-                'movimientos': movimientos,
-                'total_registros': len(movimientos)
-            }
-
-            return {
-                'success': True,
-                'data': self._formatear_reporte(reporte, formato)
-            }
-
-        except Exception as e:
-            self.logger.error(f"Error generando reporte de movimientos: {e}")
-            return {
-                'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
-            }
-
-    @cached_query(ttl=600)  # Cache por 10 minutos - Dashboard KPIs son más estables
-    def generar_dashboard_kpis(self, formato: str = 'DICT') -> Dict[str, Any]:
-        """
-        Genera dashboard con KPIs principales del inventario.
-
-        Args:
-            formato: Formato de salida
-
-        Returns:
-            Dict con métricas KPI del dashboard
-        """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'data': None
-            }
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # KPI 1: Resumen de inventario actual  
-            # FIXED: Usar consulta parametrizada para prevenir SQL injection
-            query = """
-                SELECT
-                    COUNT(*) as total_productos,
-                    SUM(stock_actual * precio_unitario) as valor_total_inventario,
-                    SUM(CASE WHEN stock_actual = 0 THEN 1 ELSE 0 END) as productos_sin_stock,
-                    SUM(CASE WHEN stock_actual <= stock_minimo THEN 1 ELSE 0 END) as productos_stock_bajo,
-                    AVG(stock_actual) as promedio_stock,
-                    MAX(stock_actual) as stock_maximo_producto,
-                    MIN(stock_actual) as stock_minimo_producto
-                FROM inventario_perfiles
-                WHERE activo = 1
-            """
-            cursor.execute(query)
-
-            kpi_inventario = cursor.fetchone()
-
-            # KPI 2: Movimientos del último mes
-            fecha_hace_30_dias = (datetime.now() - timedelta(days=30)).strftime('%Y-%m-%d %H:%M:%S')
-
-            cursor.execute("""
-                SELECT
-                    COUNT(*) as total_movimientos_mes,
-                    SUM(CASE WHEN cantidad > 0 THEN 1 ELSE 0 END) as entradas_mes,
-                    SUM(CASE WHEN cantidad < 0 THEN 1 ELSE 0 END) as salidas_mes,
-                    SUM(ABS(cantidad)) as cantidad_total_movida,
-                    COUNT(DISTINCT producto_id) as productos_con_movimiento
-                FROM historial
-                WHERE fecha_movimiento >= ?
-            """, (fecha_hace_30_dias,))
-
-            kpi_movimientos = cursor.fetchone()
-
-            # KPI 3: Reservas activas
-            cursor.execute("""
-                SELECT
-                    COUNT(*) as total_reservas_activas,
-                    SUM(cantidad_reservada) as cantidad_total_reservada,
-                    COUNT(DISTINCT producto_id) as productos_reservados,
-                    COUNT(CASE WHEN fecha_vencimiento < GETDATE() THEN 1 END) as reservas_vencidas
-                FROM reserva_materiales
-                WHERE estado = 'ACTIVA'
-            """)
-
-            kpi_reservas = cursor.fetchone()
-
-            # KPI 4: Top productos por movimiento
-            cursor.execute("""
-                SELECT TOP 10
-                    p.codigo, p.descripcion,
-                    COUNT(m.id) as total_movimientos,
-                    SUM(ABS(m.cantidad)) as cantidad_total_movida
-                FROM inventario_perfiles p
-                INNER JOIN historial m ON p.id = m.producto_id
-                WHERE m.fecha_movimiento >= ?
-                GROUP BY p.id, p.codigo, p.descripcion
-                ORDER BY COUNT(m.id) DESC
-            """, (fecha_hace_30_dias,))
-
-            top_productos = cursor.fetchall()
-
-            # KPI 5: Productos críticos que requieren atención
-            cursor.execute("""
-                SELECT
-                    codigo, descripcion, stock_actual, stock_minimo,
-                    (stock_minimo - stock_actual) as faltante,
-                    precio_unitario,
-                    categoria
-                FROM inventario_perfiles
-                WHERE activo = 1 AND stock_actual <= stock_minimo
-                ORDER BY (stock_minimo - stock_actual) DESC
-            """)
-
-            productos_criticos = cursor.fetchall()
-            cursor.close()
-
-            # Construir dashboard de KPIs
-            dashboard = {
-                'tipo_reporte': 'KPI_DASHBOARD',
-                'fecha_generacion': datetime.now().isoformat(),
-                'periodo_analisis': '30 días',
-
-                # Métricas principales
-                'metricas_inventario': {
-                    'total_productos': int(kpi_inventario[0] or 0),
-                    'valor_total_inventario': float(kpi_inventario[1] or 0),
-                    'productos_sin_stock': int(kpi_inventario[2] or 0),
-                    'productos_stock_bajo': int(kpi_inventario[3] or 0),
-                    'promedio_stock': float(kpi_inventario[4] or 0),
-                    'stock_maximo_producto': int(kpi_inventario[5] or 0),
-                    'stock_minimo_producto': int(kpi_inventario[6] or 0)
-                },
-
-                'metricas_movimientos': {
-                    'total_movimientos_mes': int(kpi_movimientos[0] or 0),
-                    'entradas_mes': int(kpi_movimientos[1] or 0),
-                    'salidas_mes': int(kpi_movimientos[2] or 0),
-                    'cantidad_total_movida': float(kpi_movimientos[3] or 0),
-                    'productos_con_movimiento': int(kpi_movimientos[4] or 0)
-                },
-
-                'metricas_reservas': {
-                    'total_reservas_activas': int(kpi_reservas[0] or 0),
-                    'cantidad_total_reservada': float(kpi_reservas[1] or 0),
-                    'productos_reservados': int(kpi_reservas[2] or 0),
-                    'reservas_vencidas': int(kpi_reservas[3] or 0)
-                },
-
-                # Rankings y análisis
-                'top_productos_movimiento': [
-                    {
-                        'codigo': row[0],
-                        'descripcion': row[1],
-                        'total_movimientos': row[2],
-                        'cantidad_total_movida': float(row[3])
-                    }
-                    for row in top_productos
-                ],
-
-                'productos_criticos': [
-                    {
-                        'codigo': row[0],
-                        'descripcion': row[1],
-                        'stock_actual': row[2],
-                        'stock_minimo': row[3],
-                        'faltante': row[4],
-                        'precio_unitario': float(row[5]),
-                        'categoria': row[6]
-                    }
-                    for row in productos_criticos
-                ],
-
-                # Indicadores calculados
-                'indicadores': {
-                    'porcentaje_productos_criticos': (
-                        float(kpi_inventario[3] or 0) / max(float(kpi_inventario[0] or 1), 1) * 100
-                    ),
-                    'rotacion_inventario': (
-                        float(kpi_movimientos[2] or 0) / max(float(kpi_inventario[0] or 1), 1)
-                    ),
-                    'eficiencia_reservas': (
-                        (float(kpi_reservas[0] or 0) - float(kpi_reservas[3] or 0)) /
-                        max(float(kpi_reservas[0] or 1), 1) * 100
-                    )
-                }
-            }
-
-            return {
-                'success': True,
-                'data': self._formatear_reporte(dashboard, formato)
-            }
-
-        except Exception as e:
-            self.logger.error(f"Error generando dashboard de KPIs: {e}")
-            return {
-                'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
-            }
-
-    @cached_query(ttl=1200)  # Cache por 20 minutos - Análisis ABC es más estático
-    def generar_analisis_abc(self,
-criterio: str = 'valor',
-        formato: str = 'DICT') -> Dict[str,
-        Any]:
-        """
-        Genera análisis ABC de productos basado en criterio específico.
-
-        Args:
-            criterio: Criterio de análisis ('valor', 'movimiento', 'cantidad')
-            formato: Formato de salida
-
-        Returns:
-            Dict con análisis ABC
-        """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'data': None
-            }
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Definir query según criterio
-            if criterio == 'valor':
-                # ABC por valor de inventario
-                query = """
-                    SELECT
-                        p.id, p.codigo, p.descripcion, p.categoria,
-                        p.stock_actual, p.precio_unitario,
-                        (p.stock_actual * p.precio_unitario) as valor_total
-                    FROM inventario_perfiles p
-                    WHERE p.activo = 1 AND p.stock_actual > 0
-                    ORDER BY (p.stock_actual * p.precio_unitario) DESC
-                """
-                params = []
-                campo_analisis = 'valor_total'
-
-            elif criterio == 'movimiento':
-                # ABC por frecuencia de movimientos (último trimestre)
-                fecha_trimestre = (datetime.now() - timedelta(days=90)).strftime('%Y-%m-%d %H:%M:%S')
-                query = """
-                    SELECT
-                        p.id, p.codigo, p.descripcion, p.categoria,
-                        p.stock_actual, p.precio_unitario,
-                        COUNT(m.id) as total_movimientos,
-                        SUM(ABS(m.cantidad)) as cantidad_movida
-                    FROM inventario_perfiles p
-                    LEFT JOIN historial m ON p.id = m.producto_id
-                        AND m.fecha_movimiento >= ?
-                    WHERE p.activo = 1
-                    GROUP BY p.id, p.codigo, p.descripcion, p.categoria, p.stock_actual, p.precio_unitario
-                    ORDER BY COUNT(m.id) DESC, SUM(ABS(m.cantidad)) DESC
-                """
-                params = [fecha_trimestre]
-                campo_analisis = 'total_movimientos'
-
-            else:  # cantidad
-                # ABC por cantidad en stock
-                query = """
-                    SELECT
-                        p.id, p.codigo, p.descripcion, p.categoria,
-                        p.stock_actual, p.precio_unitario,
-                        p.stock_actual as cantidad_stock
-                    FROM inventario_perfiles p
-                    WHERE p.activo = 1 AND p.stock_actual > 0
-                    ORDER BY p.stock_actual DESC
-                """
-                params = []
-                campo_analisis = 'cantidad_stock'
-
-            cursor.execute(query, params if 'params' in locals() else [])
-            columnas = [desc[0] for desc in cursor.description]
-            filas = cursor.fetchall()
-            cursor.close()
-
-            if not filas:
+            if not self.db_connection:
                 return {
                     'success': False,
-                    'error': 'No hay datos suficientes para análisis ABC',
-                    'data': None
+                    'error': 'Sin conexión a base de datos'
                 }
-
-            # Procesar datos para análisis ABC
-            productos = []
-            total_valor_analisis = 0
-
-            for fila in filas:
-                producto = dict(zip(columnas, fila))
-                valor_analisis = float(producto.get(campo_analisis, 0) or 0)
-                producto['valor_analisis'] = valor_analisis
-                total_valor_analisis += valor_analisis
-                productos.append(producto)
-
-            # Clasificar en categorías ABC
-            productos_clasificados = []
-            acumulado = 0
-
-            for i, producto in enumerate(productos):
-                valor_analisis = producto['valor_analisis']
-                acumulado += valor_analisis
-                porcentaje_acumulado = (acumulado / total_valor_analisis) * 100 if total_valor_analisis > 0 else 0
-
-                # Clasificación ABC estándar
-                if porcentaje_acumulado <= 80:
-                    categoria_abc = 'A'
-                elif porcentaje_acumulado <= 95:
-                    categoria_abc = 'B'
-                else:
-                    categoria_abc = 'C'
-
-                producto['categoria_abc'] = categoria_abc
-                producto['porcentaje_individual'] = (valor_analisis / total_valor_analisis) * 100 if total_valor_analisis > 0 else 0
-                producto['porcentaje_acumulado'] = porcentaje_acumulado
-                producto['posicion'] = i + 1
-
-                productos_clasificados.append(producto)
-
-            # Calcular resumen por categoría
-            resumen_abc = {'A': [], 'B': [], 'C': []}
-            contadores = {'A': 0, 'B': 0, 'C': 0}
-            valores = {'A': 0, 'B': 0, 'C': 0}
-
-            for producto in productos_clasificados:
-                cat = producto['categoria_abc']
-                resumen_abc[cat].append(producto)
-                contadores[cat] += 1
-                valores[cat] += producto['valor_analisis']
-
-            # Construir reporte final
-            analisis = {
-                'tipo_reporte': 'ANALISIS_ABC',
-                'fecha_generacion': datetime.now().isoformat(),
-                'criterio_analisis': criterio,
-                'campo_analisis': campo_analisis,
-
-                'resumen': {
-                    'total_productos_analizados': len(productos_clasificados),
-                    'total_valor_analizado': total_valor_analisis,
-                    'categoria_A': {
-                        'cantidad_productos': contadores['A'],
-                        'porcentaje_productos': (contadores['A'] / len(productos)) * 100,
-                        'valor_total': valores['A'],
-                        'porcentaje_valor': (valores['A'] / total_valor_analisis) * 100 if total_valor_analisis > 0 else 0
-                    },
-                    'categoria_B': {
-                        'cantidad_productos': contadores['B'],
-                        'porcentaje_productos': (contadores['B'] / len(productos)) * 100,
-                        'valor_total': valores['B'],
-                        'porcentaje_valor': (valores['B'] / total_valor_analisis) * 100 if total_valor_analisis > 0 else 0
-                    },
-                    'categoria_C': {
-                        'cantidad_productos': contadores['C'],
-                        'porcentaje_productos': (contadores['C'] / len(productos)) * 100,
-                        'valor_total': valores['C'],
-                        'porcentaje_valor': (valores['C'] / total_valor_analisis) * 100 if total_valor_analisis > 0 else 0
-                    }
-                },
-
-                'productos_por_categoria': resumen_abc,
-                'todos_los_productos': productos_clasificados
-            }
-
-            return {
-                'success': True,
-                'data': self._formatear_reporte(analisis, formato)
-            }
-
-        except Exception as e:
-            self.logger.error(f"Error generando análisis ABC: {e}")
-            return {
-                'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
-            }
-
-    @cached_query(ttl=900)  # Cache por 15 minutos - Valoración se actualiza moderadamente
-    def generar_reporte_valoracion_inventario(self, fecha_corte: Optional[str] = None,
-                                            formato: str = 'DICT') -> Dict[str, Any]:
-        """
-        Genera reporte de valoración completa del inventario.
-
-        Args:
-            fecha_corte: Fecha para la valoración (YYYY-MM-DD), por defecto hoy
-            formato: Formato de salida
-
-        Returns:
-            Dict con la valoración del inventario
-        """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'data': None
-            }
-
-        try:
-            if not fecha_corte:
-                fecha_corte = datetime.now().strftime('%Y-%m-%d')
-
+            
+            # Validar fechas
+            if fecha_inicio and fecha_fin and fecha_inicio > fecha_fin:
+                return {
+                    'success': False,
+                    'error': 'Fecha de inicio no puede ser posterior a fecha de fin'
+                }
+            
             cursor = self.db_connection.cursor()
-
-            # Valoración detallada por producto - Optimizada para evitar consultas N+1
+            
+            # Si no se especifican fechas, usar último mes
+            if not fecha_inicio:
+                fecha_inicio = datetime.now() - timedelta(days=30)
+            if not fecha_fin:
+                fecha_fin = datetime.now()
+            
             query = """
-                SELECT
-                    i.id, i.codigo, i.descripcion, i.categoria, i.proveedor,
-                    i.stock_actual, i.precio_unitario, i.unidad_medida,
-                    i.fecha_creacion, i.fecha_modificacion,
-                    (i.stock_actual * i.precio_unitario) as valor_total,
-                    -- Stock reservado optimizado
-                    ISNULL(r.stock_reservado, 0) as stock_reservado,
-                    -- Valor de stock reservado optimizado
-                    (ISNULL(r.stock_reservado, 0) * i.precio_unitario) as valor_reservado,
-                    -- Stock disponible optimizado
-                    (i.stock_actual - ISNULL(r.stock_reservado, 0)) as stock_disponible,
-                    -- Valor disponible optimizado
-                    ((i.stock_actual - ISNULL(r.stock_reservado, 0)) * i.precio_unitario) as valor_disponible
-                FROM inventario_perfiles i
-                LEFT JOIN (
-                    SELECT
-                        producto_id,
-                        SUM(cantidad_reservada) as stock_reservado
-                    FROM reserva_materiales
-                    WHERE estado = 'ACTIVA'
-                    GROUP BY producto_id
-                ) r ON i.id = r.producto_id
-                WHERE i.activo = 1
-                ORDER BY (i.stock_actual * i.precio_unitario) DESC
+                SELECT 
+                    m.id,
+                    m.producto_id,
+                    i.codigo,
+                    i.descripcion,
+                    m.tipo,
+                    m.cantidad,
+                    m.fecha,
+                    m.costo_unitario,
+                    m.observaciones
+                FROM movimientos_inventario m
+                JOIN inventario i ON m.producto_id = i.id
+                WHERE m.fecha BETWEEN ? AND ?
+                ORDER BY m.fecha DESC
             """
-
-            cursor.execute(query)
-            columnas = [desc[0] for desc in cursor.description]
-            filas = cursor.fetchall()
-
-            # Resumen por categoría
-            query_categoria = """
-                SELECT
-                    i.categoria,
-                    COUNT(*) as total_productos,
-                    SUM(i.stock_actual) as total_unidades,
-                    SUM(i.stock_actual * i.precio_unitario) as valor_total_categoria,
-                    AVG(i.precio_unitario) as precio_promedio,
-                    MAX(i.precio_unitario) as precio_maximo,
-                    MIN(i.precio_unitario) as precio_minimo
-                FROM inventario_perfiles i
-                WHERE i.activo = 1
-                GROUP BY i.categoria
-                ORDER BY SUM(i.stock_actual * i.precio_unitario) DESC
-            """
-
-            cursor.execute(query_categoria)
-            categorias = cursor.fetchall()
-            cursor.close()
-
-            # Procesar datos de productos
-            productos = []
-            totales = {
-                'productos': 0,
-                'valor_total': 0,
-                'valor_reservado': 0,
-                'valor_disponible': 0,
-                'stock_total': 0,
-                'stock_reservado': 0,
-                'stock_disponible': 0
-            }
-
-            for fila in filas:
-                producto = dict(zip(columnas, fila))
-                productos.append(producto)
-
-                # Actualizar totales
-                totales['productos'] += 1
-                totales['valor_total'] += float(producto.get('valor_total', 0) or 0)
-                totales['valor_reservado'] += float(producto.get('valor_reservado', 0) or 0)
-                totales['valor_disponible'] += float(producto.get('valor_disponible', 0) or 0)
-                totales['stock_total'] += float(producto.get('stock_actual', 0) or 0)
-                totales['stock_reservado'] += float(producto.get('stock_reservado', 0) or 0)
-                totales['stock_disponible'] += float(producto.get('stock_disponible', 0) or 0)
-
-            # Procesar datos por categoría
-            valoracion_por_categoria = []
-            for cat_fila in categorias:
-                categoria_info = {
-                    'categoria': cat_fila[0],
-                    'total_productos': cat_fila[1],
-                    'total_unidades': float(cat_fila[2] or 0),
-                    'valor_total_categoria': float(cat_fila[3] or 0),
-                    'precio_promedio': float(cat_fila[4] or 0),
-                    'precio_maximo': float(cat_fila[5] or 0),
-                    'precio_minimo': float(cat_fila[6] or 0),
-                    'porcentaje_valor': (
-                        (float(cat_fila[3] or 0) / totales['valor_total']) * 100
-                        if totales['valor_total'] > 0 else 0
-                    )
+            
+            cursor.execute(query, [fecha_inicio, fecha_fin])
+            movimientos = []
+            
+            total_entradas = 0
+            total_salidas = 0
+            
+            for row in cursor.fetchall():
+                movimiento = {
+                    'id': row[0],
+                    'producto_id': row[1],
+                    'codigo': row[2],
+                    'descripcion': row[3],
+                    'tipo': row[4],
+                    'cantidad': row[5],
+                    'fecha': row[6],
+                    'costo_unitario': float(row[7]) if row[7] else 0.0,
+                    'observaciones': row[8] or ''
                 }
-                valoracion_por_categoria.append(categoria_info)
-
-            # Construir reporte final
-            valoracion = {
-                'tipo_reporte': 'VALORACION_INVENTARIO',
-                'fecha_generacion': datetime.now().isoformat(),
-                'fecha_corte_valoracion': fecha_corte,
-
-                'resumen_general': totales,
-
-                'valoracion_por_categoria': valoracion_por_categoria,
-
-                'productos_detallados': productos,
-
-                'indicadores_financieros': {
-                    'valor_promedio_producto': (
-                        totales['valor_total'] / totales['productos']
-                        if totales['productos'] > 0 else 0
-                    ),
-                    'porcentaje_valor_reservado': (
-                        (totales['valor_reservado'] / totales['valor_total']) * 100
-                        if totales['valor_total'] > 0 else 0
-                    ),
-                    'porcentaje_valor_disponible': (
-                        (totales['valor_disponible'] / totales['valor_total']) * 100
-                        if totales['valor_total'] > 0 else 0
-                    ),
-                    'categoria_mayor_valor': (
-                        max(valoracion_por_categoria, key=lambda x: x['valor_total_categoria'])['categoria']
-                        if valoracion_por_categoria else 'N/A'
-                    )
-                },
-
-                'total_registros': len(productos)
+                movimientos.append(movimiento)
+                
+                if movimiento['tipo'] == 'ENTRADA':
+                    total_entradas += movimiento['cantidad']
+                elif movimiento['tipo'] == 'SALIDA':
+                    total_salidas += movimiento['cantidad']
+            
+            estadisticas = {
+                'total_movimientos': len(movimientos),
+                'total_entradas': total_entradas,
+                'total_salidas': total_salidas,
+                'fecha_inicio': fecha_inicio.isoformat(),
+                'fecha_fin': fecha_fin.isoformat()
             }
-
+            
             return {
                 'success': True,
-                'data': self._formatear_reporte(valoracion, formato)
+                'movimientos': movimientos,
+                'estadisticas': estadisticas
             }
-
+            
         except Exception as e:
-            self.logger.error(f"Error generando reporte de valoración: {e}")
-            return {
                 'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
+                'error': f"Error interno: {str(e)}"
             }
-
-    # Métodos auxiliares
-
-    def _formatear_reporte(self,
-reporte: Dict[str,
-        Any],
-        formato: str) -> Any:
-        """Formatea el reporte según el formato solicitado."""
+    
+    def generar_analisis_abc(self) -> Dict[str, Any]:
+        """Genera análisis ABC de productos por valor y demanda.
+        
+        Returns:
+            Dict con clasificación ABC
+        """
         try:
-            if formato.upper() == 'JSON':
-                return json.dumps(reporte,
-indent=2,
-                    default=str,
-                    ensure_ascii=False)
-            elif formato.upper() == 'CSV':
-                return self._convertir_a_csv(reporte)
-            else:  # DICT por defecto
-                return reporte
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            
+            # Obtener productos con valor y demanda
+            query = """
+                SELECT 
+                    i.codigo,
+                    i.descripcion,
+                    i.stock,
+                    i.precio_unitario,
+                    (i.stock * i.precio_unitario) as valor_total,
+                    COALESCE(SUM(CASE WHEN m.tipo = 'SALIDA' THEN m.cantidad ELSE 0 END), 0) as demanda_anual
+                FROM inventario i
+                LEFT JOIN movimientos_inventario m ON i.id = m.producto_id 
+                    AND m.fecha >= date('now', '-1 year')
+                WHERE i.activo = 1
+                GROUP BY i.id, i.codigo, i.descripcion, i.stock, i.precio_unitario
+                ORDER BY valor_total DESC, demanda_anual DESC
+            """
+            
+            cursor.execute(query)
+            productos = []
+            
+            for row in cursor.fetchall():
+                producto = {
+                    'codigo': row[0],
+                    'descripcion': row[1],
+                    'stock': row[2],
+                    'precio_unitario': float(row[3]) if row[3] else 0.0,
+                    'valor_total': float(row[4]) if row[4] else 0.0,
+                    'demanda_anual': row[5] or 0
+                }
+                productos.append(producto)
+            
+            # Clasificación ABC (80-15-5)
+            total_productos = len(productos)
+            if total_productos == 0:
+                return {
+                    'success': True,
+                    'clasificacion': {
+                        'productos_a': [],
+                        'productos_b': [],
+                        'productos_c': []
+                    }
+                }
+            
+            # Calcular puntos de corte
+            corte_a = int(total_productos * 0.8)  # 80%
+            corte_b = int(total_productos * 0.95)  # 80% + 15% = 95%
+            
+            clasificacion = {
+                'productos_a': productos[:corte_a],
+                'productos_b': productos[corte_a:corte_b],
+                'productos_c': productos[corte_b:]
+            }
+            
+            return {
+                'success': True,
+                'clasificacion': clasificacion,
+                'resumen': {
+                    'total_productos': total_productos,
+                    'productos_a_count': len(clasificacion['productos_a']),
+                    'productos_b_count': len(clasificacion['productos_b']),
+                    'productos_c_count': len(clasificacion['productos_c'])
+                }
+            }
+            
         except Exception as e:
-            self.logger.error(f"Error formateando reporte: {e}")
-            return reporte
-
-    def _convertir_a_csv(self, reporte: Dict[str, Any]) -> str:
-        """Convierte un reporte a formato CSV básico."""
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def calcular_valoracion_inventario(self) -> Dict[str, Any]:
+        """Calcula valoración total del inventario.
+        
+        Returns:
+            Dict con valoración detallada
+        """
         try:
-            import io
-            import csv
-
-            output = io.StringIO()
-
-            # Escribir metadatos del reporte
-            output.write(f"# Reporte: {reporte.get('tipo_reporte', 'Desconocido')}\n")
-            output.write(f"# Fecha: {reporte.get('fecha_generacion', 'N/A')}\n")
-            output.write(f"# Total registros: {reporte.get('total_registros', 0)}\n")
-            output.write("\n")
-
-            # Identificar datos tabulares principales
-            datos_principales = None
-
-            if 'productos' in reporte:
-                datos_principales = reporte['productos']
-            elif 'movimientos' in reporte:
-                datos_principales = reporte['movimientos']
-            elif 'productos_detallados' in reporte:
-                datos_principales = reporte['productos_detallados']
-            elif 'todos_los_productos' in reporte:
-                datos_principales = reporte['todos_los_productos']
-
-            if datos_principales and len(datos_principales) > 0:
-                # Escribir encabezados CSV
-                headers = list(datos_principales[0].keys())
-                writer = csv.DictWriter(output, fieldnames=headers)
-                writer.writeheader()
-
-                # Escribir datos
-                for fila in datos_principales:
-                    writer.writerow(fila)
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            
+            # Valoración por categoría
+            query = """
+                SELECT 
+                    i.categoria,
+                    COUNT(*) as cantidad_productos,
+                    SUM(i.stock * i.precio_unitario) as valor_categoria,
+                    AVG(i.precio_unitario) as precio_promedio
+                FROM inventario i
+                WHERE i.activo = 1 AND i.stock > 0
+                GROUP BY i.categoria
+                ORDER BY valor_categoria DESC
+            """
+            
+            cursor.execute(query)
+            valor_por_categoria = []
+            valor_total = 0
+            
+            for row in cursor.fetchall():
+                categoria = {
+                    'categoria': row[0] or 'Sin Categoría',
+                    'cantidad_productos': row[1],
+                    'valor_categoria': float(row[2]) if row[2] else 0.0,
+                    'precio_promedio': float(row[3]) if row[3] else 0.0
+                }
+                valor_por_categoria.append(categoria)
+                valor_total += categoria['valor_categoria']
+            
+            # Productos sin stock
+            cursor.execute("""
+                SELECT COUNT(*) 
+                FROM inventario 
+                WHERE activo = 1 AND stock = 0
+            """)
+            productos_sin_stock = cursor.fetchone()[0] or 0
+            
+            return {
+                'success': True,
+                'valor_total': valor_total,
+                'valor_por_categoria': valor_por_categoria,
+                'productos_sin_stock': productos_sin_stock,
+                'fecha_valoracion': datetime.now().isoformat()
+            }
+            
+        except Exception as e:
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def generar_kpis_dashboard(self) -> Dict[str, Any]:
+        """Genera KPIs principales para dashboard.
+        
+        Returns:
+            Dict con métricas clave
+        """
+        try:
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            kpis = {}
+            
+            # Total productos activos
+            cursor.execute("SELECT COUNT(*) FROM inventario WHERE activo = 1")
+            kpis['total_productos'] = cursor.fetchone()[0] or 0
+            
+            # Productos bajo stock mínimo
+            cursor.execute("""
+                SELECT COUNT(*) FROM inventario 
+                WHERE activo = 1 AND stock < stock_minimo
+            """)
+            kpis['productos_bajo_minimo'] = cursor.fetchone()[0] or 0
+            
+            # Valor total inventario
+            cursor.execute("""
+                SELECT SUM(stock * precio_unitario) 
+                FROM inventario 
+                WHERE activo = 1
+            """)
+            valor_result = cursor.fetchone()[0]
+            kpis['valor_total_inventario'] = float(valor_result) if valor_result else 0.0
+            
+            # Movimientos del mes actual
+            primer_dia_mes = datetime.now().replace(day=1)
+            cursor.execute("""
+                SELECT COUNT(*) FROM movimientos_inventario 
+                WHERE fecha >= ?
+            """, [primer_dia_mes])
+            kpis['movimientos_mes_actual'] = cursor.fetchone()[0] or 0
+            
+            return {
+                'success': True,
+                **kpis
+            }
+            
+        except Exception as e:
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def exportar_reporte_csv(self, datos: List[Dict], archivo_destino: str) -> Dict[str, Any]:
+        """Exporta datos a archivo CSV.
+        
+        Args:
+            datos: Lista de diccionarios con datos
+            archivo_destino: Ruta del archivo destino
+            
+        Returns:
+            Dict con resultado de la exportación
+        """
+        try:
+            if not datos:
+                return {
+                    'success': False,
+                    'error': 'No hay datos para exportar'
+                }
+            
+            with open(archivo_destino, 'w', newline='', encoding='utf-8') as csvfile:
+                if datos:
+                    fieldnames = datos[0].keys()
+                    writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+                    
+                    writer.writeheader()
+                    for row in datos:
+                        writer.writerow(row)
+            
+            return {
+                'success': True,
+                'archivo': archivo_destino,
+                'registros_exportados': len(datos)
+            }
+            
+        except (FileNotFoundError, PermissionError) as e:
+                            'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def exportar_reporte_json(self, datos: Dict, archivo_destino: str) -> Dict[str, Any]:
+        """Exporta datos a archivo JSON.
+        
+        Args:
+            datos: Diccionario con datos
+            archivo_destino: Ruta del archivo destino
+            
+        Returns:
+            Dict con resultado de la exportación
+        """
+        try:
+            with open(archivo_destino, 'w', encoding='utf-8') as jsonfile:
+                json.dump(datos, jsonfile, indent=2, ensure_ascii=False, default=str)
+            
+            return {
+                'success': True,
+                'archivo': archivo_destino
+            }
+            
+        except (FileNotFoundError, PermissionError) as e:
+                            'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    @cache_inventory_report('productos_sin_movimientos', ttl=3600) if CACHE_AVAILABLE else lambda f: f
+    def generar_reporte_productos_sin_movimientos(self, dias: int = 30) -> Dict[str, Any]:
+        """Genera reporte de productos sin movimientos en período.
+        
+        Args:
+            dias: Número de días hacia atrás para verificar
+            
+        Returns:
+            Dict con productos sin movimientos
+        """
+        start_time = time.time() if CACHE_AVAILABLE else None
+        
+        try:
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            fecha_limite = datetime.now() - timedelta(days=dias)
+            
+            query = """
+                SELECT 
+                    i.id,
+                    i.codigo,
+                    i.descripcion,
+                    i.stock,
+                    MAX(m.fecha) as ultimo_movimiento
+                FROM inventario i
+                LEFT JOIN movimientos_inventario m ON i.id = m.producto_id
+                WHERE i.activo = 1
+                GROUP BY i.id, i.codigo, i.descripcion, i.stock
+                HAVING (ultimo_movimiento IS NULL OR ultimo_movimiento < ?)
+                ORDER BY i.codigo
+            """
+            
+            cursor.execute(query, [fecha_limite])
+            productos = []
+            
+            for row in cursor.fetchall():
+                producto = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'descripcion': row[2],
+                    'stock': row[3],
+                    'ultimo_movimiento': row[4]
+                }
+                productos.append(producto)
+            
+            return {
+                'success': True,
+                'productos': productos,
+                'parametros': {
+                    'dias_analisis': dias,
+                    'fecha_limite': fecha_limite.isoformat()
+                }
+            }
+            
+        except Exception as e:
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def calcular_tendencias_stock(self, producto_id: int) -> Dict[str, Any]:
+        """Calcula tendencias de stock para un producto.
+        
+        Args:
+            producto_id: ID del producto
+            
+        Returns:
+            Dict con análisis de tendencias
+        """
+        try:
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            
+            # Obtener historial de stock (simulado con movimientos)
+            query = """
+                SELECT 
+                    DATE(m.fecha) as fecha,
+                    AVG(
+                        CASE WHEN m.tipo = 'ENTRADA' THEN m.cantidad 
+                             WHEN m.tipo = 'SALIDA' THEN -m.cantidad 
+                             ELSE 0 END
+                    ) as cambio_promedio
+                FROM movimientos_inventario m
+                WHERE m.producto_id = ?
+                    AND m.fecha >= date('now', '-3 months')
+                GROUP BY DATE(m.fecha)
+                ORDER BY fecha
+            """
+            
+            cursor.execute(query, [producto_id])
+            datos_historicos = []
+            
+            for row in cursor.fetchall():
+                datos_historicos.append({
+                    'fecha': row[0],
+                    'cambio_promedio': float(row[1]) if row[1] else 0.0
+                })
+            
+            if len(datos_historicos) < 2:
+                return {
+                    'success': True,
+                    'tendencia': 0,
+                    'proyeccion': 'Datos insuficientes',
+                    'confidence': 'low'
+                }
+            
+            # Calcular tendencia simple (diferencia promedio)
+            cambios = [d['cambio_promedio'] for d in datos_historicos]
+            tendencia = sum(cambios) / len(cambios) if cambios else 0
+            
+            # Proyección básica
+            if tendencia > 0:
+                proyeccion = 'Crecimiento'
+            elif tendencia < 0:
+                proyeccion = 'Decrecimiento'
             else:
-                output.write("No hay datos tabulares para exportar en CSV\n")
-
-            return output.getvalue()
-
+                proyeccion = 'Estable'
+            
+            return {
+                'success': True,
+                'tendencia': tendencia,
+                'proyeccion': proyeccion,
+                'datos_historicos': datos_historicos,
+                'confidence': 'medium' if len(datos_historicos) > 10 else 'low'
+            }
+            
         except Exception as e:
-            self.logger.error(f"Error convirtiendo a CSV: {e}")
-            return f"Error generando CSV: {str(e)}"
-
-    # Métodos de invalidación de cache para optimización
-
-    @classmethod
-    def invalidar_cache_reportes(cls) -> None:
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    # Nuevas funciones con cache inteligente
+    @cache_inventory_report('analisis_abc', ttl=7200) if CACHE_AVAILABLE else lambda f: f
+    def generar_analisis_abc(self, tipo_analisis: str = 'valor') -> Dict[str, Any]:
+        """Genera análisis ABC de productos por valor o cantidad.
+        
+        Args:
+            tipo_analisis: 'valor' o 'cantidad' o 'rotacion'
+            
+        Returns:
+            Dict con clasificación ABC de productos
         """
-        Invalida el cache de reportes cuando hay cambios en inventario.
-        Debe ser llamado después de operaciones CRUD en inventario.
-        """
+        start_time = time.time() if CACHE_AVAILABLE else None
+        
         try:
-            from rexus.utils.intelligent_cache import invalidate_cache
-
-            # Invalidar cache de reportes específicos
-            patrones_invalidacion = [
-                'generar_reporte_stock_actual',
-                'generar_dashboard_kpis',
-                'generar_reporte_valoracion',
-                'generar_analisis_abc'
-            ]
-
-            for patron in patrones_invalidacion:
-                invalidate_cache(patron)
-                logger.info(f"Cache invalidado para patrón: {patron}")
-
-        except ImportError:
-            logger.warning("Sistema de cache no disponible para invalidación")
+            if not self.db_connection:
+                return {
+                    'success': False,
+                    'error': 'Sin conexión a base de datos'
+                }
+            
+            cursor = self.db_connection.cursor()
+            
+            # Query base según tipo de análisis
+            if tipo_analisis == 'valor':
+                query = """
+                    SELECT 
+                        i.id,
+                        i.codigo,
+                        i.descripcion,
+                        i.stock,
+                        i.precio_unitario,
+                        (i.stock * i.precio_unitario) as valor_total,
+                        COALESCE(
+                            (SELECT SUM(ABS(m.cantidad)) 
+                             FROM movimientos_inventario m 
+                             WHERE m.producto_id = i.id 
+                               AND m.fecha >= date('now', '-12 months')), 
+                            0
+                        ) as movimientos_anuales
+                    FROM inventario i
+                    WHERE i.activo = 1
+                    ORDER BY valor_total DESC
+                """
+                campo_ordenamiento = 'valor_total'
+            elif tipo_analisis == 'cantidad':
+                query = """
+                    SELECT 
+                        i.id,
+                        i.codigo,
+                        i.descripcion,
+                        i.stock,
+                        i.precio_unitario,
+                        (i.stock * i.precio_unitario) as valor_total,
+                        i.stock as cantidad_stock
+                    FROM inventario i
+                    WHERE i.activo = 1
+                    ORDER BY cantidad_stock DESC
+                """
+                campo_ordenamiento = 'cantidad_stock'
+            else:  # rotacion
+                query = """
+                    SELECT 
+                        i.id,
+                        i.codigo,
+                        i.descripcion,
+                        i.stock,
+                        i.precio_unitario,
+                        (i.stock * i.precio_unitario) as valor_total,
+                        COALESCE(
+                            (SELECT SUM(ABS(m.cantidad)) 
+                             FROM movimientos_inventario m 
+                             WHERE m.producto_id = i.id 
+                               AND m.fecha >= date('now', '-12 months')), 
+                            0
+                        ) / CASE WHEN i.stock > 0 THEN i.stock ELSE 1 END as rotacion
+                    FROM inventario i
+                    WHERE i.activo = 1
+                    ORDER BY rotacion DESC
+                """
+                campo_ordenamiento = 'rotacion'
+            
+            cursor.execute(query)
+            productos_raw = cursor.fetchall()
+            
+            # Procesar productos
+            productos = []
+            for row in productos_raw:
+                producto = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'descripcion': row[2],
+                    'stock': row[3],
+                    'precio_unitario': float(row[4]) if row[4] else 0.0,
+                    'valor_total': float(row[5]) if row[5] else 0.0,
+                    'metrica_abc': float(row[6]) if row[6] else 0.0
+                }
+                productos.append(producto)
+            
+            # Calcular acumulados y clasificar
+            total_metrica = sum(p['metrica_abc'] for p in productos)
+            acumulado = 0
+            
+            for i, producto in enumerate(productos):
+                acumulado += producto['metrica_abc']
+                porcentaje_acumulado = (acumulado / total_metrica * 100) if total_metrica > 0 else 0
+                
+                # Clasificación ABC
+                if porcentaje_acumulado <= 80:
+                    categoria = 'A'
+                elif porcentaje_acumulado <= 95:
+                    categoria = 'B'
+                else:
+                    categoria = 'C'
+                
+                producto['categoria_abc'] = categoria
+                producto['porcentaje_acumulado'] = round(porcentaje_acumulado, 2)
+                producto['ranking'] = i + 1
+            
+            # Resumen por categorías
+            categorias_resumen = {
+                'A': {'productos': 0, 'valor_total': 0.0, 'porcentaje_productos': 0.0},
+                'B': {'productos': 0, 'valor_total': 0.0, 'porcentaje_productos': 0.0},
+                'C': {'productos': 0, 'valor_total': 0.0, 'porcentaje_productos': 0.0}
+            }
+            
+            for producto in productos:
+                categoria = producto['categoria_abc']
+                categorias_resumen[categoria]['productos'] += 1
+                categorias_resumen[categoria]['valor_total'] += producto['metrica_abc']
+            
+            total_productos = len(productos)
+            for categoria in categorias_resumen:
+                if total_productos > 0:
+                    categorias_resumen[categoria]['porcentaje_productos'] = round(
+                        (categorias_resumen[categoria]['productos'] / total_productos) * 100, 2
+                    )
+            
+            # Log de rendimiento
+            if CACHE_AVAILABLE and start_time:
+                execution_time = time.time() - start_time
+                monitor = get_performance_monitor()
+                monitor.log_report_execution(
+                    f'Análisis ABC - {tipo_analisis}', execution_time, False,
+                    len(str(productos))
+                )
+            
+            return {
+                'success': True,
+                'tipo_analisis': tipo_analisis,
+                'productos': productos,
+                'resumen_categorias': categorias_resumen,
+                'total_productos': total_productos,
+                'fecha_generacion': datetime.now().isoformat()
+            }
+            
         except Exception as e:
-            logger.error(f"Error invalidando cache de reportes: {e}")
-
-    @classmethod
-    def invalidar_cache_movimientos(cls) -> None:
+                'success': False,
+                'error': f"Error interno: {str(e)}"
+            }
+    
+    def invalidar_cache_reportes(self, tipo_reporte: str = None):
+        """Invalidar cache de reportes específicos o todos.
+        
+        Args:
+            tipo_reporte: Tipo específico a invalidar o None para todos
         """
-        Invalida cache relacionado con movimientos.
-        Llamar después de crear/modificar movimientos de inventario.
-        """
+        if not CACHE_AVAILABLE:
+            return
+        
         try:
-            from rexus.utils.intelligent_cache import invalidate_cache
-            invalidate_cache('generar_reporte_movimientos')
-            logger.info("Cache de movimientos invalidado")
+            manager = get_report_cache_manager()
+            
+            if tipo_reporte:
+                invalidated = manager.invalidate_report_type(f'inventario_{tipo_reporte}')
+            else:
+                invalidated = manager.invalidate_module_cache('inventario')
+            
+            logger.info(f"Cache invalidado: {invalidated} entradas")
+            
         except Exception as e:
-            logger.error(f"Error invalidando cache de movimientos: {e}")
-
-
-# Funciones utilitarias para uso externo
-
-def invalidar_cache_inventario():
-    """Función utilitaria para invalidar cache desde otros módulos."""
-    ReportesManager.invalidar_cache_reportes()
-
-def invalidar_cache_movimientos_inventario():
-    """Función utilitaria para invalidar cache de movimientos."""
-    ReportesManager.invalidar_cache_movimientos()
+                
+    def _generar_recomendaciones_cache(self, stats: Dict) -> List[str]:
+        """Generar recomendaciones basadas en estadísticas de cache."""
+        recomendaciones = []
+        
+        hit_ratio = stats.get('hit_ratio', 0)
+        memory_usage = stats.get('memory_usage_percent', 0)
+        
+        if hit_ratio < 0.5:
+            recomendaciones.append("Hit ratio bajo (<50%). Considera aumentar TTL de reportes frecuentes.")
+        
+        if memory_usage > 80:
+            recomendaciones.append("Uso de memoria alto (>80%). Considera reducir tamaño máximo de cache.")
+        
+        if stats.get('evictions', 0) > stats.get('writes', 0) * 0.1:
+            recomendaciones.append("Muchas evictions. Considera aumentar memoria disponible para cache.")
+        
+        if hit_ratio > 0.8:
+            recomendaciones.append("Excelente rendimiento de cache. Sistema optimizado.")
+        
+        return recomendaciones

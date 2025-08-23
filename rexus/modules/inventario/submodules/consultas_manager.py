@@ -9,11 +9,11 @@ Responsabilidades:
 - Reportes y consultas optimizadas
 """
 
-from typing import Any, Dict, List, Optional
 
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.pagination import PaginatedTableMixin
+import logging
+logger = logging.getLogger(__name__)
+
+            from rexus.utils.pagination import PaginatedTableMixin
 from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.unified_sanitizer import sanitize_string
 

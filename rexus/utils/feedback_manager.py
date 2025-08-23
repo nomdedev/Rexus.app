@@ -6,6 +6,10 @@ Sistema centralizado para mostrar mensajes de feedback visual
 integrado con el sistema de temas de la aplicación.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Optional, Dict
 from PyQt6.QtCore import QObject, pyqtSignal, QTimer
 from PyQt6.QtWidgets import QMessageBox, QWidget, QLabel
@@ -14,7 +18,7 @@ from ..core.themes import get_theme, ColorPalette
 from ..utils.theme_manager import ThemeManager
 from ..core.logger import get_logger
 
-logger = get_logger("feedback_manager")
+logger = get_logger()
 
 
 class FeedbackManager(QObject):
@@ -209,54 +213,7 @@ parent: QWidget,
             return result
 
         except Exception as e:
-            self.logger.error(f"Error mostrando mensaje de feedback: {e}", extra={
-                "titulo": titulo,
-                "mensaje": mensaje,
-                "tipo": tipo
-            })
-
-            # Fallback a mensaje básico
-            QMessageBox.information(parent, titulo, mensaje)
-            return QMessageBox.StandardButton.Ok
-
-    def show_confirmation(self, parent: QWidget, titulo: str, mensaje: str,
-                         botones: QMessageBox.StandardButton = None) -> int:
-        """
-        Mostrar diálogo de confirmación integrado con el tema.
-
-        Args:
-            parent: Widget padre
-            titulo: Título del diálogo
-            mensaje: Mensaje de confirmación
-            botones: Botones a mostrar (por defecto Yes/No)
-
-        Returns:
-            Botón presionado por el usuario
-        """
-        try:
-            if botones is None:
-                botones = QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-
-            msg_box = QMessageBox(parent)
-            msg_box.setWindowTitle(titulo)
-            msg_box.setText(mensaje)
-            msg_box.setIcon(QMessageBox.Icon.Question)
-            msg_box.setStandardButtons(botones)
-            msg_box.setDefaultButton(QMessageBox.StandardButton.No)
-
-            # Aplicar estilo del tema
-            style = self._generate_message_style("info")
-            msg_box.setStyleSheet(style)
-
-            self.logger.debug(f"Confirmación mostrada: {titulo}")
-
-            result = msg_box.exec()
-            return result
-
-        except Exception as e:
-            self.logger.error(f"Error mostrando confirmación: {e}")
-            return QMessageBox.question(parent, titulo, mensaje, botones)
-
+            self.
     def create_status_label(self, parent: QWidget) -> QLabel:
         """
         Crear un label de estado integrado con el tema para feedback inline.
@@ -355,8 +312,6 @@ parent: QWidget,
             self.logger.debug(f"Status mostrado: {tipo} - {mensaje}")
 
         except Exception as e:
-            self.logger.error(f"Error mostrando status: {e}")
-
 
 # Instancia global singleton
 _feedback_manager: Optional[FeedbackManager] = None

@@ -5,6 +5,10 @@ Gestiona el inventario de productos, stock, movimientos y reportes.
 Incluye arquitectura modular con submódulos especializados.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from .controller import InventarioController
 from .model import (
     InventarioModel,
@@ -14,7 +18,7 @@ from .model import (
 from .view import InventarioView
 
 __all__ = [
-    "InventarioController",
+    ,
     "InventarioModel",
     "InventarioView",
     "ProductosManager",

@@ -27,63 +27,7 @@ Secure Logger - Logger con anonimización automática de datos sensibles
 import logging
 import re
 import hashlib
-from typing import Any, Dict, List, Pattern
-from datetime import datetime
-
-
-class SensitiveDataMasker:
-    """Enmascarador de datos sensibles en logs."""
-
-    def __init__(self):
-        self.sensitive_patterns = self._compile_patterns()
-        self.hash_salt = self._generate_salt()
-
-    def _generate_salt(self) -> str:
-        """Genera salt para hashing consistente."""
-        import os
-        salt = os.getenv('LOGGING_SALT')
-        if not salt:
-            # Usar timestamp del día para salt consistente por día
-            today = datetime.now().strftime('%Y%m%d')
-            salt = hashlib.sha256(f"rexus_log_salt_{today}".encode()).hexdigest()[:16]
-        return salt
-
-    def _compile_patterns(self) -> List[Dict[str, Pattern]]:
-        """Compila patrones regex para datos sensibles."""
-        return [
-            # Contraseñas
-            {
-                'name': 'password',
-                'pattern': re.compile(r'(password[\'"\s]*[:=][\'"\s]*)([^\s\'"]+)', re.IGNORECASE),
-                'replacement': r'\1***MASKED***'
-            },
-            {
-                'name': 'passwd',
-                'pattern': re.compile(r'(passwd[\'"\s]*[:=][\'"\s]*)([^\s\'"]+)', re.IGNORECASE),
-                'replacement': r'\1***MASKED***'
-            },
-
-            # Tokens y claves
-            {
-                'name': 'token',
-                'pattern': re.compile(r'(token[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})', re.IGNORECASE),
-                'replacement': r'\1***TOKEN_MASKED***'
-            },
-            {
-                'name': 'api_key',
-                'pattern': re.compile(r'(api[_-]?key[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})', re.IGNORECASE),
-                'replacement': r'\1***KEY_MASKED***'
-            },
-            {
-                'name': 'secret',
-                'pattern': re.compile(r'(secret[\'"\s]*[:=][\'"\s]*)([a-zA-Z0-9+/=]{20,})', re.IGNORECASE),
-                'replacement': r'\1***SECRET_MASKED***'
-            },
-
-            # Números de tarjeta de crédito
-            {
-                'name': 'credit_card',
-                'pattern': re.compile(r'\b(?:\d{4}[-\s]?){3}\d{4}\b'),
+                            'pattern': re.compile(r'\b(?:\d{4}[-\s]?){3}\d{4}\b'),
                 'replacement': '****-****-****-****'
             },
 

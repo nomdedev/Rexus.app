@@ -7,6 +7,10 @@ Vista de Vidrios Modernizada - Interfaz con pestañas y diseño mejorado
 Migración desde BaseModuleView a sistema de pestañas
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from typing import Dict, List, Any
 
 from PyQt6.QtCore import Qt, pyqtSignal
@@ -871,7 +875,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 from PyQt6.QtWidgets import QMessageBox
                 respuesta = QMessageBox.question(
                     self,
-                    "Confirmar Eliminación",
+                    ,
                     f"¿Está seguro de eliminar el vidrio ID {vidrio_id}?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
@@ -1109,7 +1113,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 self.lbl_valor_inventario.setText(f"Valor: ${estadisticas.get('valor_inventario', 0):,.2f}")
                 
         except Exception as e:
-            print(f"[ERROR] Error actualizando estadísticas en vista: {e}")
+            logger.info(f"[ERROR] Error actualizando estadísticas en vista: {e}")
 
 
 class DialogoVidrioModerno(QDialog):

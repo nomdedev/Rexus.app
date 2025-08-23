@@ -8,6 +8,10 @@ duplicación y facilitar mantenimiento.
 class InventarioConstants:
     """Constantes del módulo de inventario."""
 
+import logging
+logger = logging.getLogger(__name__)
+
+
     # Títulos y etiquetas
     TITULO_MODULO = "[PACKAGE] Gestión de Inventario"
     

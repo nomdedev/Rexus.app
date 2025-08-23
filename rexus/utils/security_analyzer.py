@@ -4,6 +4,10 @@ Analizador de Seguridad para Rexus.app
 Detecta patrones de riesgo en el código y genera reportes.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import re
 import os
 from pathlib import Path
@@ -261,7 +265,7 @@ Generado por SecurityAnalyzer de Rexus.app
 def main():
     """Función principal para ejecutar el análisis."""
     analyzer = SecurityAnalyzer()
-    print("Analizando seguridad del proyecto...")
+    logger.info("Analizando seguridad del proyecto...")
     
     results = analyzer.analyze_project()
     report = analyzer.generate_report(results)
@@ -270,15 +274,15 @@ def main():
     with open('security_report.md', 'w', encoding='utf-8') as f:
         f.write(report)
     
-    print("Analisis completado. Reporte guardado en 'security_report.md'")
+    logger.info("Analisis completado. Reporte guardado en 'security_report.md'")
     
     # Mostrar resumen en consola
     total_issues = sum(len(issues) for issues in results.values())
     if total_issues > 0:
-        print(f"Se encontraron {total_issues} problemas de seguridad.")
+        logger.info(f"Se encontraron {total_issues} problemas de seguridad.")
         return 1
     else:
-        print("No se encontraron problemas de seguridad criticos.")
+        logger.info("No se encontraron problemas de seguridad criticos.")
         return 0
 
 

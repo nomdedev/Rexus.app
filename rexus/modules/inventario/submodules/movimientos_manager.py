@@ -9,69 +9,11 @@ Responsabilidades:
 - Auditoría de cambios
 """
 
-from datetime import datetime
-from typing import Any, Dict, List, Optional
 
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+import logging
+logger = logging.getLogger(__name__)
 
-# SQLQueryManager unificado
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    # Fallback al script loader
-    from rexus.utils.sql_script_loader import sql_script_loader
-
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-
-        def get_query(self, path, filename):
-            # Construir nombre del script sin extensión
-            script_name = filename.replace(".sql", "")
-            return self.sql_loader(script_name)
-
-        def execute_query(self, query, params=None):
-            # Placeholder para compatibilidad
-            return None
-
-# Importar utilidades de sanitización
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-
-
-class MovimientosManager:
-    """Gestor especializado para movimientos de inventario."""
-
-    # Tipos de movimiento permitidos
-    TIPOS_MOVIMIENTO = {
-        "ENTRADA": "Entrada de Stock",
-        "SALIDA": "Salida de Stock",
-        "TRANSFERENCIA": "Transferencia entre ubicaciones",
-        "AJUSTE": "Ajuste de inventario",
-        "DEVOLUCION": "Devolución",
-        "MERMA": "Merma/Pérdida",
-    }
-
-    def __init__(self, db_connection=None):
-        """Inicializa el gestor de movimientos."""
-        self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
-        self.sanitizer = unified_sanitizer
-        self.sql_path = "scripts/sql/inventario/movimientos"
-    def registrar_movimiento(
-        self,
-        producto_id: int,
-        tipo_movimiento: str,
-        cantidad: float,
-        observaciones: str = "",
-        obra_id: Optional[int] = None,
-        usuario: str = "SISTEMA",
-    ) -> bool:
-        """Registra un movimiento de inventario con validaciones."""
-        if not self.db_connection:
-            raise Exception("No hay conexión a la base de datos")
-
+            
         try:
             # Validar tipo de movimiento
             if tipo_movimiento not in self.TIPOS_MOVIMIENTO:

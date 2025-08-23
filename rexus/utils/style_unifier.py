@@ -25,8 +25,7 @@ class StyleUnifier:
         'margin_small': 8,
     }
 
-    # Colores estándar (material design inspired)
-    COLORS = {
+                COLORS = {
         'primary': '#3b82f6',
         'primary_hover': '#2563eb',
         'surface': '#f8fafc',
@@ -226,6 +225,10 @@ class StyleUnifier:
                 'table')
             custom_colors (dict): Colores personalizados
         """
+
+import logging
+logger = logging.getLogger(__name__)
+
         style_map = {
             'tab': cls.get_standard_tab_style,
             'button': cls.get_standard_button_style,

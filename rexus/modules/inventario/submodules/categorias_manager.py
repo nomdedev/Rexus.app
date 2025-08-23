@@ -12,134 +12,7 @@ Responsabilidades:
 """
 
 import logging
-from datetime import datetime
-from typing import Any, Dict, List, Optional
-from sqlite3 import IntegrityError
-
-# Configurar logging
-logger = logging.getLogger(__name__)
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
-
-# SQLQueryManager unificado
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    # Fallback al script loader
-    from rexus.utils.sql_script_loader import sql_script_loader
-
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-
-        def get_query(self, path, filename):
-            # Construir nombre del script sin extensión
-            script_name = filename.replace(".sql", "")
-            return self.sql_loader(script_name)
-
-        def execute_query(self, query, params=None):
-            # Placeholder para compatibilidad
-            return None
-
-# DataSanitizer unificado - Usar sistema unificado de sanitización
-try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer
-    data_sanitizer = unified_sanitizer
-except ImportError:
-    try:
-        from rexus.utils.unified_sanitizer import DataSanitizer
-        data_sanitizer = DataSanitizer()
-    except ImportError:
-        # Fallback seguro
-        class DataSanitizer:
-            def sanitize_dict(self, data):
-                """Sanitiza un diccionario de datos de forma segura."""
-                if not isinstance(data, dict):
-                    return {}
-
-                sanitized = {}
-                for key, value in data.items():
-                    if isinstance(value, str):
-                        # Sanitización básica de strings
-                        sanitized[key] = str(value).strip()
-                    else:
-                        sanitized[key] = value
-                return sanitized
-
-            def sanitize_text(self, text):
-                """Sanitiza texto de forma segura."""
-                return str(text).strip() if text else ""
-
-# Importar utilidades base si están disponibles
-try:
-    from .base_utilities import BaseUtilities, TABLA_INVENTARIO
-    BASE_AVAILABLE = True
-except ImportError as e:
-    logger.error(f"Error importando utilidades base: {e}")
-    BASE_AVAILABLE = False
-    BaseUtilities = None
-    TABLA_INVENTARIO = "inventario_perfiles"
-
-# Tabla de categorías (podría ser independiente o columna en inventario)
-TABLA_CATEGORIAS = "categorias_inventario"
-
-
-class CategoriasManager:
-    """Manager especializado para gestión de categorías de productos."""
-
-    # Categorías por defecto del sistema
-    CATEGORIAS_DEFAULT = [
-        'GENERAL',
-        'HERRAMIENTAS',
-        'MATERIALES',
-        'SERVICIOS',
-        'INSUMOS',
-        'EQUIPOS',
-        'CONSUMIBLES',
-        'REPUESTOS'
-    ]
-
-    def __init__(self, db_connection=None):
-        """
-        Inicializa el manager de categorías.
-
-        Args:
-            db_connection: Conexión a la base de datos
-        """
-        self.db_connection = db_connection
-        self.sql_manager = SQLQueryManager()
-        self.sanitizer = data_sanitizer
-        self.sql_path = "scripts/sql/inventario/categorias"
-        self.logger = logging.getLogger(__name__)
-
-        # Inicializar utilidades base si están disponibles
-        if BASE_AVAILABLE and db_connection:
-            self.base_utils = BaseUtilities(db_connection)
-        else:
-            self.base_utils = None
-            logger.warning("Utilidades base no disponibles en CategoriasManager")
-
-    def _validar_conexion(self) -> bool:
-        """Valida la conexión a la base de datos."""
-        if not self.db_connection:
-            self.logger.error("Sin conexión a base de datos")
-            return False
-
-        if self.base_utils and \
-            hasattr(self.base_utils, 'validar_conexion_db'):
-            return self.base_utils.validar_conexion_db()
-
-        # Validación básica como fallback
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute("SELECT 1")
-            cursor.fetchone()
-            return True
-        except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error(f"Error validando conexión: {e}")
-            return False
+                        return False
         finally:
             if 'cursor' in locals():
                 cursor.close()
@@ -225,113 +98,7 @@ class CategoriasManager:
             return categorias
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error(f"Error obteniendo categorías: {e}")
-            # Devolver categorías por defecto en caso de error
-            return [{'categoria': cat, 'total_productos': 0} for cat in self.CATEGORIAS_DEFAULT]
-    def obtener_productos_por_categoria(self, categoria: str, incluir_inactivos: bool = False,
-                                      limite: int = 100, offset: int = 0) -> Dict[str, Any]:
-        """
-        Obtiene productos de una categoría específica.
-
-        Args:
-            categoria: Nombre de la categoría
-            incluir_inactivos: Si incluir productos inactivos
-            limite: Límite de productos por página
-            offset: Desplazamiento para paginación
-
-        Returns:
-            Dict con productos de la categoría y metadata
-        """
-        if not self._validar_conexion():
-            return {
-                'success': False,
-                'error': 'Sin conexión a base de datos',
-                'productos': [],
-                'total': 0
-            }
-
-        try:
-            # Sanitizar categoría
-            categoria_limpia = sanitize_string(categoria)
-            if not categoria_limpia:
-                return {
-                    'success': False,
-                    'error': 'Categoría inválida',
-                    'productos': [],
-                    'total': 0
-                }
-
-            cursor = self.db_connection.cursor()
-
-            # Query para contar total de productos
-            query_count = f"""
-                SELECT COUNT(*)
-                FROM {TABLA_INVENTARIO}
-                WHERE categoria = ?
-            """
-            params_count = [categoria_limpia]
-
-            if not incluir_inactivos:
-                query_count += " AND activo = 1"
-
-            cursor.execute(query_count, params_count)
-            total_productos = cursor.fetchone()[0]
-
-            # Query para obtener productos con paginación
-            query_productos = f"""
-                SELECT
-                    id, codigo, descripcion, categoria, precio_unitario,
-                    stock_actual, stock_minimo, stock_maximo, proveedor,
-                    unidad_medida, ubicacion, observaciones, activo,
-                    fecha_creacion, fecha_modificacion,
-                    -- Calcular estado de stock
-                    CASE
-                        WHEN stock_actual = 0 THEN 'CRITICO'
-                        WHEN stock_actual <= stock_minimo THEN 'BAJO'
-                        WHEN stock_actual >= stock_maximo THEN 'EXCESO'
-                        ELSE 'NORMAL'
-                    END as estado_stock,
-                    -- Calcular valor total
-                    (stock_actual * precio_unitario) as valor_total
-                FROM {TABLA_INVENTARIO}
-                WHERE categoria = ?
-            """
-            params_productos = [categoria_limpia]
-
-            if not incluir_inactivos:
-                query_productos += " AND activo = 1"
-
-            query_productos += f" ORDER BY codigo OFFSET {offset} ROWS FETCH NEXT {limite} ROWS ONLY"
-
-            cursor.execute(query_productos, params_productos)
-            columnas = [desc[0] for desc in cursor.description]
-            filas = cursor.fetchall()
-            cursor.close()
-
-            # Procesar productos
-            productos = []
-            valor_total_categoria = 0
-
-            for fila in filas:
-                producto = dict(zip(columnas, fila))
-                productos.append(producto)
-                valor_total_categoria += float(producto.get('valor_total', 0) or 0)
-
-            return {
-                'success': True,
-                'categoria': categoria_limpia,
-                'productos': productos,
-                'total': total_productos,
-                'limite': limite,
-                'offset': offset,
-                'valor_total_categoria': valor_total_categoria,
-                'tiene_mas_paginas': (offset + limite) < total_productos
-            }
-
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error(f"Error obteniendo productos por categoría {categoria}: {e}")
-            return {
-                'success': False,
+            self.                'success': False,
                 'error': f'Error interno: {str(e)}',
                 'productos': [],
                 'total': 0
@@ -424,14 +191,7 @@ class CategoriasManager:
                 }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error creando categoría {nombre_categoria}: {e}")
-            if self.db_connection:
-                try:
-                    self.db_connection.rollback()
-                except (AttributeError, RuntimeError):
-                    pass
-            return {
-                'success': False,
+            self.                'success': False,
                 'error': f'Error interno: {str(e)}'
             }
     def renombrar_categoria(self,
@@ -539,14 +299,7 @@ categoria_actual: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error renombrando categoría: {e}")
-            if self.db_connection:
-                try:
-                    self.db_connection.rollback()
-                except (AttributeError, RuntimeError):
-                    pass
-            return {
-                'success': False,
+            self.                'success': False,
                 'error': f'Error interno: {str(e)}',
                 'productos_actualizados': 0
             }
@@ -632,14 +385,7 @@ categoria_origen: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error migrando productos de categoría: {e}")
-            if self.db_connection:
-                try:
-                    self.db_connection.rollback()
-                except (AttributeError, RuntimeError):
-                    pass
-            return {
-                'success': False,
+            self.                'success': False,
                 'error': f'Error interno: {str(e)}',
                 'productos_migrados': 0
             }
@@ -709,14 +455,7 @@ categoria_origen: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError, IntegrityError) as e:
-            self.logger.error(f"Error limpiando categorías vacías: {e}")
-            if self.db_connection:
-                try:
-                    self.db_connection.rollback()
-                except (AttributeError, RuntimeError):
-                    pass
-            return {
-                'success': False,
+            self.                'success': False,
                 'error': f'Error interno: {str(e)}',
                 'categorias_eliminadas': 0
             }
@@ -862,43 +601,7 @@ categoria_origen: str,
             }
 
         except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            self.logger.error(f"Error generando reporte de categorías: {e}")
-            return {
-                'success': False,
-                'error': f'Error interno: {str(e)}',
-                'data': None
-            }
-
-    # Métodos auxiliares privados
-
-    def _existe_categoria(self, nombre_categoria: str) -> bool:
-        """Verifica si una categoría existe en el sistema."""
-        try:
-            cursor = self.db_connection.cursor()
-
-            if self._tabla_categorias_existe():
-                # Verificar en tabla independiente
-                cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                    "SELECT COUNT(*) FROM ? WHERE nombre = ? AND activa = 1", (TABLA_CATEGORIAS,),
-                    (nombre_categoria,)
-                )
-            else:
-                # Verificar en productos
-                cursor.execute(
-        # FIXED: SQL Injection vulnerability
-                    "SELECT COUNT(*) FROM ? WHERE categoria = ?", (TABLA_INVENTARIO,),
-                    (nombre_categoria,)
-                )
-
-            count = cursor.fetchone()[0]
-            cursor.close()
-            return count > 0
-
-        except (AttributeError, RuntimeError, ConnectionError) as e:
-            self.logger.error(f"Error verificando existencia de categoría: {e}")
-            return False
-
+            self.
     def _tabla_categorias_existe(self) -> bool:
         """Verifica si existe una tabla independiente de categorías."""
         try:

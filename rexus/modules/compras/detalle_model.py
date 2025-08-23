@@ -4,240 +4,6 @@ Modelo de Detalle de Compras
 Maneja los detalles de productos/items en las órdenes de compra.
 """
 
-from typing import Any, Dict, List
-from rexus.utils.security import SecurityUtils
-from rexus.utils.app_logger import get_logger
-
-# Configurar logger
-logger = get_logger(__name__)
-
-
-class DetalleComprasModel:
-    """Modelo para gestionar los detalles de las compras."""
-
-    def __init__(self, db_connection=None):
-        """
-        Inicializa el modelo de detalle de compras.
-
-        Args:
-            db_connection: Conexión a la base de datos
-        """
-        self.db_connection = db_connection
-        self.tabla_detalle = "detalle_compras"
-        self._crear_tabla_si_no_existe()
-
-    def _crear_tabla_si_no_existe(self):
-        """Verifica que la tabla de detalle de compras exista."""
-        if not self.db_connection:
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_detalle,),
-            )
-            if cursor.fetchone():
-                logger.info(f"[DETALLE COMPRAS] Tabla '{self.tabla_detalle}' verificada.")
-            else:
-                logger.warning(f"[ADVERTENCIA] La tabla '{self.tabla_detalle}' no existe.")
-
-        except (ConnectionError, AttributeError, TypeError) as e:
-            logger.error(f"[ERROR DETALLE COMPRAS] Error verificando tabla: {e}")
-
-    def agregar_item_compra(
-        self,
-        compra_id: int,
-        descripcion: str,
-        categoria: str = "",
-        cantidad: int = 1,
-        precio_unitario: float = 0.0,
-        unidad: str = "UN",
-        observaciones: str = "",
-        usuario_creacion: str = ""
-    ) -> bool:
-        """
-        Agrega un item/producto a una orden de compra.
-
-        Args:
-            compra_id: ID de la orden de compra
-            descripcion: Descripción del producto
-            categoria: Categoría del producto
-            cantidad: Cantidad solicitada
-            precio_unitario: Precio unitario
-            unidad: Unidad de medida
-            observaciones: Observaciones adicionales
-            usuario_creacion: Usuario que agrega el item
-
-        Returns:
-            bool: True si se agregó exitosamente
-        """
-        if not self.db_connection:
-            logger.warning("[WARN DETALLE COMPRAS] Sin conexión BD")
-            return False
-
-        try:
-            # Sanitizar datos de entrada
-            descripcion_sanitizada = SecurityUtils.sanitize_sql_input(descripcion)
-            categoria_sanitizada = SecurityUtils.sanitize_sql_input(categoria)
-            unidad_sanitizada = SecurityUtils.sanitize_sql_input(unidad)
-            observaciones_sanitizadas = SecurityUtils.sanitize_sql_input(observaciones)
-            usuario_sanitizado = SecurityUtils.sanitize_sql_input(usuario_creacion)
-
-            cursor = self.db_connection.cursor()
-
-            sql_insert = """
-            INSERT INTO detalle_compras
-            (compra_id, descripcion, categoria, cantidad, precio_unitario,
-             unidad, observaciones, usuario_creacion, fecha_creacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
-
-            cursor.execute(
-                sql_insert,
-                (
-                    compra_id,
-                    descripcion_sanitizada,
-                    categoria_sanitizada,
-                    cantidad,
-                    precio_unitario,
-                    unidad_sanitizada,
-                    observaciones_sanitizadas,
-                    usuario_sanitizado,
-                ),
-            )
-
-            self.db_connection.commit()
-            logger.info(f"[DETALLE COMPRAS] Item agregado a compra {compra_id}: {descripcion}")
-            return True
-
-        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
-            logger.error(f"[ERROR DETALLE COMPRAS] Error agregando item: {e}")
-            return False
-
-    def obtener_items_compra(self, compra_id: int) -> List[Dict]:
-        """
-        Obtiene todos los items de una orden de compra.
-
-        Args:
-            compra_id: ID de la orden de compra
-
-        Returns:
-            List[Dict]: Lista de items de la compra
-        """
-        if not self.db_connection:
-            return self._get_items_demo(compra_id)
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            sql_select = """
-            SELECT
-                id, compra_id, descripcion, categoria, cantidad,
-                precio_unitario, unidad, observaciones, usuario_creacion,
-                fecha_creacion,
-                (cantidad * precio_unitario) as subtotal
-            FROM detalle_compras
-            WHERE compra_id = ?
-            ORDER BY fecha_creacion ASC
-            """
-
-            cursor.execute(sql_select, (compra_id,))
-            rows = cursor.fetchall()
-
-            # Convertir a lista de diccionarios
-            columns = [desc[0] for desc in cursor.description]
-            items = []
-
-            for row in rows:
-                item = dict(zip(columns, row))
-                items.append(item)
-
-            logger.info(f"[DETALLE COMPRAS] Obtenidos {len(items)} items para compra {compra_id}")
-            return items
-
-        except (ConnectionError, ValueError, AttributeError) as e:
-            logger.error(f"[ERROR DETALLE COMPRAS] Error obteniendo items: {e}")
-            return self._get_items_demo(compra_id)
-
-    def actualizar_item_compra(
-        self,
-        item_id: int,
-        descripcion: str = None,
-        categoria: str = None,
-        cantidad: int = None,
-        precio_unitario: float = None,
-        unidad: str = None,
-        observaciones: str = None
-    ) -> bool:
-        """
-        Actualiza un item de compra existente.
-
-        Args:
-            item_id: ID del item
-            descripcion: Nueva descripción (opcional)
-            categoria: Nueva categoría (opcional)
-            cantidad: Nueva cantidad (opcional)
-            precio_unitario: Nuevo precio (opcional)
-            unidad: Nueva unidad (opcional)
-            observaciones: Nuevas observaciones (opcional)
-
-        Returns:
-            bool: True si se actualizó exitosamente
-        """
-        if not self.db_connection:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Construir query dinámico solo con campos a actualizar
-            updates = []
-            params = []
-
-            if descripcion is not None:
-                updates.append("descripcion = ?")
-                params.append(SecurityUtils.sanitize_sql_input(descripcion))
-
-            if categoria is not None:
-                updates.append("categoria = ?")
-                params.append(SecurityUtils.sanitize_sql_input(categoria))
-
-            if cantidad is not None:
-                updates.append("cantidad = ?")
-                params.append(cantidad)
-
-            if precio_unitario is not None:
-                updates.append("precio_unitario = ?")
-                params.append(precio_unitario)
-
-            if unidad is not None:
-                updates.append("unidad = ?")
-                params.append(SecurityUtils.sanitize_sql_input(unidad))
-
-            if observaciones is not None:
-                updates.append("observaciones = ?")
-                params.append(SecurityUtils.sanitize_sql_input(observaciones))
-
-            if not updates:
-                return False
-
-            updates.append("fecha_actualizacion = GETDATE()")
-            params.append(item_id)
-
-            sql_update = f"""
-            UPDATE detalle_compras
-            SET {', '.join(updates)}
-            WHERE id = ?
-            """
-
-            cursor.execute(sql_update, params)
-            self.db_connection.commit()
-
-            logger.info(f"[DETALLE COMPRAS] Item {item_id} actualizado")
-            return True
-
-        except (ConnectionError, ValueError, TypeError, AttributeError) as e:
             logger.error(f"[ERROR DETALLE COMPRAS] Error actualizando item: {e}")
             return False
 
@@ -265,8 +31,6 @@ class DetalleComprasModel:
             return True
 
         except Exception as e:
-            logger.error(f"Error eliminando item: {e}")
-            return False
 
     def obtener_resumen_compra(self, compra_id: int) -> Dict[str, Any]:
         """
@@ -332,8 +96,6 @@ class DetalleComprasModel:
             return self._get_resumen_demo(compra_id)
 
         except Exception as e:
-            logger.error(f"Error obteniendo resumen: {e}")
-            return self._get_resumen_demo(compra_id)
 
     def obtener_productos_por_categoria(self) -> Dict[str, List[Dict]]:
         """
@@ -383,8 +145,6 @@ class DetalleComprasModel:
             return productos_por_categoria
 
         except Exception as e:
-            logger.error(f"Error obteniendo productos por categoría: {e}")
-            return self._get_productos_por_categoria_demo()
 
     def buscar_productos_similares(self, descripcion: str, limite: int = 10) -> List[Dict]:
         """
@@ -436,8 +196,6 @@ class DetalleComprasModel:
             return productos
 
         except Exception as e:
-            logger.error(f"Error buscando productos similares: {e}")
-            return []
 
     def _get_items_demo(self, compra_id: int) -> List[Dict]:
         """Items demo para testing."""

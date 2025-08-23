@@ -26,309 +26,12 @@ Vista de Cronograma de Obras
 Muestra las obras en un cronograma visual para facilitar la planificación y seguimiento.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 import datetime
-from typing import Any, Dict, List
-
-from PyQt6.QtCore import QDate, QRect, Qt, pyqtSignal
-from PyQt6.QtGui import QBrush, QColor, QFont, QPainter, QPen
-from PyQt6.QtWidgets import (
-    QComboBox,
-    QDateEdit,
-    QFrame,
-    QGroupBox,
-    QHBoxLayout,
-    QLabel,
-    QPushButton,
-    QScrollArea,
-    QToolTip,
-    QVBoxLayout,
-    QWidget,
-)
-
-
-class CronogramaObrasView(QWidget):
-    """Vista de cronograma visual para obras."""
-
-    obra_seleccionada = pyqtSignal(dict)  # Emitida cuando se selecciona una obra
-
-    def __init__(self):
-        super().__init__()
-        self.obras_data = []
-        self.fecha_inicio_cronograma = datetime.date.today()
-        self.fecha_fin_cronograma = datetime.date.today() + datetime.timedelta(days=365)
-        self.escala_tiempo = "mensual"  # mensual, semanal, diario
-        self.filtro_estado = "todos"
-
-        self.init_ui()
-        self.configurar_estilos()
-
-    def init_ui(self):
-        """Inicializa la interfaz de usuario."""
-        layout_principal = QVBoxLayout(self)
-        layout_principal.setSpacing(10)
-        layout_principal.setContentsMargins(10, 10, 10, 10)
-
-        # Título
-        # Título removido por solicitud del usuario
-
-        # Panel de controles
-        panel_controles = self.crear_panel_controles()
-        layout_principal.addWidget(panel_controles)
-
-        # Área de cronograma
-        self.crear_area_cronograma(layout_principal)
-
-    def crear_titulo(self, layout: QVBoxLayout):
-        """Método removido - título eliminado por solicitud del usuario."""
-        # Crear solo el botón de alternar vista sin el título violeta
-        controles_container = QFrame()
-        controles_container.setStyleSheet("""
-            QFrame {
-                background: #f8fafc;
-                border: 1px solid #e2e8f0;
-                border-radius: 6px;
-                padding: 8px;
-                margin-bottom: 10px;
-            }
-        """)
-
-        controles_layout = QHBoxLayout(controles_container)
-        controles_layout.addStretch()  # Empujar botón a la derecha
-
-        # Solo el botón de alternar vista con nuevo estilo
-        self.btn_alternar_vista = QPushButton("🔄 Vista Tabla")
-        self.btn_alternar_vista.setStyleSheet("""
-            QPushButton {
-                background-color: #3b82f6;
-                color: white;
-                border: none;
-                border-radius: 6px;
-                padding: 6px 12px;
-                font-weight: 500;
-                font-size: 12px;
-            }
-            QPushButton:hover {
-                background-color: #2563eb;
-            }
-        """)
-        controles_layout.addWidget(self.btn_alternar_vista)
-
-        layout.addWidget(controles_container)
-
-    def crear_panel_controles(self) -> QGroupBox:
-        """Crea el panel de controles del cronograma."""
-        panel = QGroupBox("Controles de Cronograma")
-        panel.setStyleSheet("""
-            QGroupBox {
-                font-weight: bold;
-                font-size: 14px;
-                border: 2px solid #bdc3c7;
-                border-radius: 8px;
-                margin-top: 10px;
-                padding-top: 10px;
-            }
-            QGroupBox::title {
-                subcontrol-origin: margin;
-                left: 10px;
-                padding: 0 5px 0 5px;
-                background-color: white;
-            }
-        """)
-
-        layout = QHBoxLayout(panel)
-
-        # Filtro por estado
-        label_estado = QLabel("Estado:")
-        self.combo_filtro_estado = QComboBox()
-        self.combo_filtro_estado.addItems(
-            [
-                "Todos",
-                "PLANIFICACION",
-                "EN_PROCESO",
-                "PAUSADA",
-                "FINALIZADA",
-                "CANCELADA",
-            ]
-        )
-        self.combo_filtro_estado.currentTextChanged.connect(self.aplicar_filtros)
-
-        # Escala de tiempo
-        label_escala = QLabel("Escala:")
-        self.combo_escala = QComboBox()
-        self.combo_escala.addItems(["Mensual", "Semanal", "Diario"])
-        self.combo_escala.currentTextChanged.connect(self.cambiar_escala)
-
-        # Rango de fechas
-        label_desde = QLabel("Desde:")
-        self.date_desde = QDateEdit()
-        self.date_desde.setDate(QDate.currentDate())
-        self.date_desde.setCalendarPopup(True)
-        self.date_desde.dateChanged.connect(self.actualizar_cronograma)
-
-        label_hasta = QLabel("Hasta:")
-        self.date_hasta = QDateEdit()
-        self.date_hasta.setDate(QDate.currentDate().addYears(1))
-        self.date_hasta.setCalendarPopup(True)
-        self.date_hasta.dateChanged.connect(self.actualizar_cronograma)
-
-        # Botones de acción
-        self.btn_hoy = QPushButton("Hoy")
-        self.btn_hoy.clicked.connect(self.ir_a_hoy)
-
-        self.btn_zoom_in = QPushButton("[SEARCH]+")
-        self.btn_zoom_in.clicked.connect(self.zoom_in)
-
-        self.btn_zoom_out = QPushButton("[SEARCH]-")
-        self.btn_zoom_out.clicked.connect(self.zoom_out)
-
-        self.btn_exportar = QPushButton("📄 Exportar")
-        self.btn_exportar.clicked.connect(self.exportar_cronograma)
-
-        # Agregar al layout
-        controles = [
-            (label_estado, self.combo_filtro_estado),
-            (label_escala, self.combo_escala),
-            (label_desde, self.date_desde),
-            (label_hasta, self.date_hasta),
-            (self.btn_hoy, None),
-            (self.btn_zoom_in, None),
-            (self.btn_zoom_out, None),
-            (self.btn_exportar, None),
-        ]
-
-        for control, control2 in controles:
-            layout.addWidget(control)
-            if control2:
-                layout.addWidget(control2)
-
-        layout.addStretch()
-        return panel
-
-    def crear_area_cronograma(self, layout: QVBoxLayout):
-        """Crea el área de cronograma con scroll."""
-        # Contenedor con scroll
-        scroll_area = QScrollArea()
-        scroll_area.setWidgetResizable(True)
-        scroll_area.setMinimumHeight(500)
-
-        # Widget de cronograma
-        self.cronograma_widget = CronogramaWidget()
-        scroll_area.setWidget(self.cronograma_widget)
-
-        # Conectar señales
-        self.cronograma_widget.obra_clickeada.connect(self.obra_seleccionada)
-
-        layout.addWidget(scroll_area)
-
-    def cargar_obras(self, obras: List[Dict[str, Any]]):
-        """Carga las obras en el cronograma."""
-        self.obras_data = obras
-        self.actualizar_cronograma()
-
-    def actualizar_cronograma(self):
-        """Actualiza el cronograma con los datos actuales."""
-        # Obtener fechas del widget
-        fecha_inicio_qt = self.date_desde.date()
-        fecha_fin_qt = self.date_hasta.date()
-
-        # Convertir a datetime.date
-        self.fecha_inicio_cronograma = datetime.date(
-            fecha_inicio_qt.year(), fecha_inicio_qt.month(), fecha_inicio_qt.day()
-        )
-        self.fecha_fin_cronograma = datetime.date(
-            fecha_fin_qt.year(), fecha_fin_qt.month(), fecha_fin_qt.day()
-        )
-
-        # Filtrar obras
-        obras_filtradas = self.filtrar_obras()
-
-        # Actualizar widget de cronograma
-        self.cronograma_widget.actualizar_cronograma(
-            obras_filtradas,
-            self.fecha_inicio_cronograma,
-            self.fecha_fin_cronograma,
-            self.escala_tiempo,
-        )
-
-    def filtrar_obras(self) -> List[Dict[str, Any]]:
-        """Filtra las obras según los criterios seleccionados."""
-        if not self.obras_data:
-            return []
-
-        obras_filtradas = []
-        estado_filtro = self.combo_filtro_estado.currentText()
-
-        for obra in self.obras_data:
-            # Filtro por estado
-            if estado_filtro != "Todos" and \
-                obra.get("estado") != estado_filtro:
-                continue
-
-            # Filtro por rango de fechas
-            fecha_inicio = obra.get("fecha_inicio")
-            fecha_fin = obra.get("fecha_fin_estimada")
-
-            if fecha_inicio:
-                if isinstance(fecha_inicio, str):
-                    try:
-                        fecha_inicio = datetime.strptime(
-                            fecha_inicio, "%Y-%m-%d"
-                        ).date()
-                    except ValueError as e:
-                        print(f"[WARNING CRONOGRAMA] Invalid date format for obra {obra.get('nombre_obra', 'Unknown')}: {e}")
-                        continue  # Skip si no se puede parsear la fecha
-
-                # Verificar si la obra está en el rango visible
-                if fecha_fin:
-                    if isinstance(fecha_fin, str):
-                        try:
-                            fecha_fin = datetime.strptime(fecha_fin, "%Y-%m-%d").date()
-                        except ValueError as e:
-                            print(f"[WARNING CRONOGRAMA] Invalid end date format for obra {obra.get('nombre_obra', 'Unknown')}: {e}")
-                            fecha_fin = None
-
-                if fecha_inicio <= self.fecha_fin_cronograma and (
-                    not fecha_fin or fecha_fin >= self.fecha_inicio_cronograma
-                ):
-                    obras_filtradas.append(obra)
-
-        return obras_filtradas
-
-    def aplicar_filtros(self):
-        """Aplica los filtros seleccionados."""
-        self.actualizar_cronograma()
-
-    def cambiar_escala(self):
-        """Cambia la escala de tiempo del cronograma."""
-        escala_texto = self.combo_escala.currentText().lower()
-        if escala_texto == "mensual":
-            self.escala_tiempo = "mensual"
-        elif escala_texto == "semanal":
-            self.escala_tiempo = "semanal"
-        elif escala_texto == "diario":
-            self.escala_tiempo = "diario"
-
-        self.actualizar_cronograma()
-
-    def ir_a_hoy(self):
-        """Centra el cronograma en la fecha actual."""
-        hoy = QDate.currentDate()
-        self.date_desde.setDate(hoy.addMonths(-2))
-        self.date_hasta.setDate(hoy.addMonths(10))
-        self.actualizar_cronograma()
-
-    def zoom_in(self):
-        """Reduce el rango de fechas visible (zoom in)."""
-        fecha_inicio = self.date_desde.date()
-        fecha_fin = self.date_hasta.date()
-
-        # Reducir el rango a la mitad
-        dias_totales = fecha_inicio.daysTo(fecha_fin)
-        reduccion = dias_totales // 4
-
-        self.date_desde.setDate(fecha_inicio.addDays(reduccion))
-        self.date_hasta.setDate(fecha_fin.addDays(-reduccion))
-        self.actualizar_cronograma()
+                    self.actualizar_cronograma()
 
     def zoom_out(self):
         """Aumenta el rango de fechas visible (zoom out)."""
@@ -353,7 +56,7 @@ class CronogramaObrasView(QWidget):
             # Seleccionar ubicación y formato de archivo
             file_path, file_filter = QFileDialog.getSaveFileName(
                 self,
-                "Exportar Cronograma",
+                ,
                 QDir.homePath() + "/cronograma_obras.png",
                 "Imagen PNG (*.png);;Imagen JPG (*.jpg);;PDF (*.pdf)"
             )
@@ -378,7 +81,7 @@ class CronogramaObrasView(QWidget):
                     success = pixmap.save(file_path)
                     
                     if not success:
-                        QMessageBox.warning(self, "Error", "No se pudo guardar la imagen")
+                        QMessageBox.warning(self, , "No se pudo guardar la imagen")
                         return
                 
                 QMessageBox.information(
@@ -387,7 +90,7 @@ class CronogramaObrasView(QWidget):
         except Exception as e:
             from PyQt6.QtWidgets import QMessageBox
             QMessageBox.critical(
-                self, "Error", f"Error al exportar cronograma: {str(e)}"
+                self, , f"Error al exportar cronograma: {str(e)}"
             )
 
     def configurar_estilos(self):

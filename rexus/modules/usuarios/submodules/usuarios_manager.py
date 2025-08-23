@@ -10,11 +10,7 @@ Responsabilidades:
 """
 
 import datetime
-from typing import Any, Dict, List, Optional
-
-# Imports de seguridad unificados
-from rexus.core.auth_decorators import auth_required, permission_required
-from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger, log_error, log_info, log_warning
@@ -32,7 +28,7 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f"{path.replace('scripts/sql/', '')}/{filename}"
+            script_name = f
             return self.sql_loader.load_script(script_name)
 
 
@@ -197,44 +193,7 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            self.logger.error(f"Error creando usuario: {str(e)}", exc_info=True)
-            return {"success": False, "error": "Error interno del sistema"}
-    def obtener_usuario_por_id(self, usuario_id: int) -> Optional[Dict[str, Any]]:
-        """Obtiene un usuario específico por ID."""
-        if not self.db_connection or not usuario_id:
-            return None
-
-        try:
-            usuario_id_safe = self.sanitizer.sanitize_integer(
-                usuario_id, min_val=1
-            )
-            cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(self.sql_path, "obtener_usuario_por_id")
-            cursor.execute(query, (usuario_id_safe,))
-
-            row = cursor.fetchone()
-            if not row:
-                return None
-
-            columns = [desc[0] for desc in cursor.description]
-            usuario = dict(zip(columns, row))
-
-            # Agregar permisos del usuario
-            usuario["permisos"] = self.obtener_permisos_usuario(usuario_id_safe)
-
-            # Limpiar datos sensibles
-            if "password_hash" in usuario:
-                del usuario["password_hash"]
-            if "salt" in usuario:
-                del usuario["salt"]
-
-            return usuario
-
-        except Exception as e:
-            self.logger.error(f"Error obteniendo usuario: {str(e)}", exc_info=True)
-            return None
-    def obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
+            self.    def obtener_usuario_por_nombre(self, username: str) -> Optional[Dict[str, Any]]:
         """Obtiene un usuario por nombre de usuario."""
         if not self.db_connection or not username:
             return None
@@ -264,169 +223,7 @@ class UsuariosManager:
             return usuario
 
         except Exception as e:
-            self.logger.error(f"Error obteniendo usuario por nombre: {str(e)}", exc_info=True)
-            return None
-    def actualizar_usuario(
-        self, usuario_id: int, datos_actualizacion: Dict[str, Any]
-    ) -> Dict[str, Any]:
-        """Actualiza un usuario existente."""
-        if not self.db_connection or not usuario_id:
-            return {"success": False, "error": "Parámetros inválidos"}
-
-        try:
-            usuario_id_safe = self.sanitizer.sanitize_integer(
-                usuario_id, min_val=1
-            )
-
-            # Verificar que el usuario existe
-            usuario_existente = self.obtener_usuario_por_id(usuario_id_safe)
-            if not usuario_existente:
-                return {"success": False, "error": "Usuario no encontrado"}
-
-            cursor = self.db_connection.cursor()
-
-            # Preparar campos a actualizar
-            campos_actualizacion = {}
-
-            if "email" in datos_actualizacion:
-                email_safe = self.sanitizer.sanitize_email(
-                    datos_actualizacion["email"]
-                )
-                if email_safe and self.verificar_unicidad_email(
-                    email_safe, usuario_id_safe
-                ):
-                    campos_actualizacion["email"] = email_safe
-                else:
-                    return {"success": False, "error": "Email inválido o ya existe"}
-
-            if "rol" in datos_actualizacion:
-                campos_actualizacion["rol"] = sanitize_string(
-                    datos_actualizacion["rol"], max_length=20
-                )
-
-            if "activo" in datos_actualizacion:
-                campos_actualizacion["activo"] = bool(datos_actualizacion["activo"])
-
-            if "nombre" in datos_actualizacion:
-                campos_actualizacion["nombre"] = sanitize_string(
-                    datos_actualizacion["nombre"], max_length=100
-                )
-
-            if "apellido" in datos_actualizacion:
-                campos_actualizacion["apellido"] = sanitize_string(
-                    datos_actualizacion["apellido"], max_length=100
-                )
-
-            if "telefono" in datos_actualizacion:
-                campos_actualizacion["telefono"] = sanitize_string(
-                    datos_actualizacion["telefono"], max_length=20
-                )
-
-            if not campos_actualizacion:
-                return {
-                    "success": False,
-                    "error": "No hay campos válidos para actualizar",
-                }
-
-            # Agregar fecha de modificación
-            campos_actualizacion["fecha_modificacion"] = datetime.datetime.now()
-
-            # Construir query dinámicamente de forma segura
-            set_clause = ", ".join(
-                [f"{campo} = %s" for campo in campos_actualizacion.keys()]
-            )
-        # FIXED: SQL Injection vulnerability
-            query = "UPDATE usuarios SET ? WHERE id = %s", (set_clause,)
-
-            valores = list(campos_actualizacion.values()) + [usuario_id_safe]
-            cursor.execute(query, valores)
-
-            self.db_connection.commit()
-
-            return {
-                "success": True,
-                "mensaje": "Usuario actualizado exitosamente",
-                "campos_actualizados": list(campos_actualizacion.keys()),
-            }
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            self.logger.error(f"Error actualizando usuario: {str(e)}", exc_info=True)
-            return {"success": False, "error": "Error interno del sistema"}
-    def eliminar_usuario(
-        self, usuario_id: int, soft_delete: bool = True
-    ) -> Dict[str, Any]:
-        """Elimina un usuario (soft delete por defecto)."""
-        if not self.db_connection or not usuario_id:
-            return {"success": False, "error": "Parámetros inválidos"}
-
-        try:
-            usuario_id_safe = self.sanitizer.sanitize_integer(
-                usuario_id, min_val=1
-            )
-
-            # Verificar que el usuario existe
-            usuario_existente = self.obtener_usuario_por_id(usuario_id_safe)
-            if not usuario_existente:
-                return {"success": False, "error": "Usuario no encontrado"}
-
-            cursor = self.db_connection.cursor()
-
-            if soft_delete:
-                # Soft delete - marcar como inactivo
-                query = self.sql_manager.get_query(self.sql_path, "soft_delete_usuario")
-                cursor.execute(query,
-(False,
-                    datetime.datetime.now(),
-                    usuario_id_safe))
-            else:
-                # Hard delete - eliminar completamente
-                query = self.sql_manager.get_query(self.sql_path, "hard_delete_usuario")
-                cursor.execute(query, (usuario_id_safe,))
-
-            self.db_connection.commit()
-
-            return {
-                "success": True,
-                "mensaje": f"Usuario {'desactivado' if soft_delete else 'eliminado'} exitosamente",
-            }
-
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            self.logger.error(f"Error eliminando usuario: {str(e)}", exc_info=True)
-            return {"success": False, "error": "Error interno del sistema"}
-
-    def verificar_unicidad_username(
-        self, username: str, excluir_usuario_id: Optional[int] = None
-    ) -> bool:
-        """Verifica si un nombre de usuario es único."""
-        if not self.db_connection or not username:
-            return False
-
-        try:
-            username_safe = sanitize_string(username)
-            cursor = self.db_connection.cursor()
-
-            if excluir_usuario_id:
-                query = self.sql_manager.get_query(
-                    self.sql_path, "verificar_unicidad_username_excluir"
-                )
-                cursor.execute(query, (username_safe, excluir_usuario_id))
-            else:
-                query = self.sql_manager.get_query(
-                    self.sql_path, "verificar_unicidad_username"
-                )
-                cursor.execute(query, (username_safe,))
-
-            result = cursor.fetchone()
-            return (result[0] if result else 0) == 0
-
-        except Exception as e:
-            self.logger.error(f"Error verificando unicidad username: {str(e)}", exc_info=True)
-            return False
-
+            self.            self.            self.
     def verificar_unicidad_email(
         self, email: str, excluir_usuario_id: Optional[int] = None
     ) -> bool:
@@ -456,34 +253,7 @@ class UsuariosManager:
             return (result[0] if result else 0) == 0
 
         except Exception as e:
-            self.logger.error(f"Error verificando unicidad email: {str(e)}", exc_info=True)
-            return False
-    def obtener_permisos_usuario(self, usuario_id: int) -> List[str]:
-        """Obtiene la lista de permisos de un usuario."""
-        if not self.db_connection or not usuario_id:
-            return []
-
-        try:
-            usuario_id_safe = self.sanitizer.sanitize_integer(
-                usuario_id, min_val=1
-            )
-            cursor = self.db_connection.cursor()
-
-            query = self.sql_manager.get_query(
-                self.sql_path, "obtener_permisos_usuario"
-            )
-            cursor.execute(query, (usuario_id_safe,))
-
-            permisos = []
-            for row in cursor.fetchall():
-                permisos.append(row[0])  # Primer columna es el permiso
-
-            return permisos
-
-        except Exception as e:
-            self.logger.error(f"Error obteniendo permisos: {str(e)}", exc_info=True)
-            return []
-    def asignar_permiso_usuario(self, usuario_id: int, permiso: str) -> bool:
+            self.    def asignar_permiso_usuario(self, usuario_id: int, permiso: str) -> bool:
         """Asigna un permiso específico a un usuario."""
         if not self.db_connection or not usuario_id or not permiso:
             return False
@@ -510,8 +280,6 @@ class UsuariosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-            self.logger.error(f"Error asignando permiso: {str(e)}", exc_info=True)
-            return False
 
     def _hash_password(self, password: str, salt: str) -> str:
         """Genera hash de contraseña con salt."""

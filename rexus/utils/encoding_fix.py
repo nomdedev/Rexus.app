@@ -181,13 +181,13 @@ setup_safe_console_encoding()
 
 # Funciones de utilidad para usar en lugar de print
 def info(msg):
-    safe_print(f"[INFO] {msg}")
+    safe_logger.info(f"[INFO] {msg}")
 
 def warning(msg):
-    safe_print(f"[WARNING] {msg}")
+    safe_logger.info(f"[WARNING] {msg}")
 
 def error(msg):
-    safe_print(f"[ERROR] {msg}")
+    safe_logger.info(f"[ERROR] {msg}")
 
 def success(msg):
-    safe_print(f"[OK] {msg}")
+    safe_logger.info(f"[OK] {msg}")

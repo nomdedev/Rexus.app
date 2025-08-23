@@ -5,6 +5,10 @@ Maneja todas las operaciones relacionadas con tablas de entregas y transportes.
 Extraído de view.py para mejorar la mantenibilidad.
 """
 
+
+import logging
+logger = logging.getLogger(__name__)
+
 from PyQt6.QtWidgets import (
     QTableWidget, QTableWidgetItem, QHeaderView,
     QAbstractItemView
