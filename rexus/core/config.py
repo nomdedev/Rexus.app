@@ -1,4 +1,25 @@
-            }
+"""
+Configuración Central de Rexus.app
+Maneja todas las configuraciones del sistema
+"""
+
+import os
+from pathlib import Path
+from typing import Any, Union
+
+def get_env_var(name: str, default: Any = None, var_type: type = str) -> Any:
+    """Obtiene variable de entorno con tipo específico."""
+    value = os.getenv(name, default)
+    if var_type == bool:
+        return str(value).lower() in ('true', '1', 'yes', 'on')
+    elif var_type == int:
+        return int(value) if value else default
+    return value
+
+# Rutas base
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+UPLOADS_DIR = PROJECT_ROOT / "uploads"
+BACKUPS_DIR = PROJECT_ROOT / "backups"
 
 # ===== CONFIGURACIÓN DE ARCHIVOS =====
 FILES_CONFIG = {

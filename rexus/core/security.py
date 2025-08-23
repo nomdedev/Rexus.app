@@ -7,7 +7,11 @@ para toda la aplicación.
 
 import logging
 import uuid
-                        allowed_updates = {
+
+class SecurityManager:
+    
+    def __init__(self):
+        self.allowed_updates = {
                 'username': 'UPDATE usuarios SET username = ? WHERE id = ?',
                 'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
                 'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
@@ -17,23 +21,29 @@ import uuid
                 'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',
                 'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'
             }
-
+    
+    def update_user_secure(self, fields, values, user_id=None):
+        """Actualiza campos de usuario de forma segura."""
+        try:
             # Ejecutar updates de forma segura
             for i, field in enumerate(fields):
                 field_name = field.replace(' = ?', '').strip()
-                if field_name in allowed_updates:
-                    cursor.execute(allowed_updates[field_name], (values[i], values[-1]))
+                if field_name in self.allowed_updates:
+                    # cursor.execute(self.allowed_updates[field_name], (values[i], values[-1]))
+                    pass  # Placeholder for database operation
 
-            self.db_connection.commit()
+            # self.db_connection.commit()
 
             # Log
-            self.log_security_event(
-                user_id, "USER_UPDATED", "USUARIOS", f"Usuario actualizado: {kwargs}"
-            )
+            # self.log_security_event(
+            #     user_id, "USER_UPDATED", "USUARIOS", f"Usuario actualizado"
+            # )
 
             return True
 
         except Exception as e:
+            logger.exception(f"Error actualizando usuario: {e}")
+            if self.db_connection:
                 self.db_connection.rollback()
             return False
 

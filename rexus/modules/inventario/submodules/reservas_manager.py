@@ -200,7 +200,7 @@ reserva_id: int,
             # Registrar el consumo
             if cantidad_consumida == cantidad_reservada:
                 # Consumo total - marcar como consumida
-                query = f"""UPDATE {TABLA_RESERVAS}
+                query = """UPDATE reservas_materiales
                            SET estado = 'CONSUMIDA',
                                fecha_consumo = ?,
                                cantidad_consumida = ?,
@@ -221,7 +221,7 @@ reserva_id: int,
                 # Consumo parcial - actualizar cantidad reservada
                 nueva_cantidad_reservada = cantidad_reservada - cantidad_consumida
 
-                query = f"""UPDATE {TABLA_RESERVAS}
+                query = """UPDATE reservas_materiales
                            SET cantidad_reservada = ?,
                                cantidad_consumida = ISNULL(cantidad_consumida, 0) + ?,
                                observaciones_consumo = ISNULL(observaciones_consumo, '') + ?

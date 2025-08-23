@@ -10,8 +10,8 @@ WORKDIR /app
 
 # Instalar dependencias del sistema necesarias para PyQt6 y pyodbc
 RUN apt-get update && \
-    apt-get install -y build-essential libgl1 libegl1 libglib2.0-0 libpq-dev unixodbc-dev libxkbcommon0 libxkbcommon-x11-0 && \
-    rm -rf /var/lib/apt/lists/*
+    apt-get install -y build-essential libgl1 libegl1 libglib2.0-0 libpq-dev unixodbc-dev libxkbcommon0 libxkbcommon-x11-0 libfontconfig1 libdbus-1-3 \
+    && rm -rf /var/lib/apt/lists/*
 
 # Copiar requirements e instalar dependencias Python
 COPY requirements.txt ./

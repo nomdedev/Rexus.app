@@ -12,6 +12,7 @@ Responsabilidades:
 import datetime
 import hashlib
 import logging
+import sqlite3
 
 # Fallback para bcrypt si no está disponible
 try:
@@ -41,16 +42,8 @@ except ImportError:
             return test_hash == hashed
 
     bcrypt = MockBcrypt()
-                                'user_data': None,
-                    'bloqueado': False
-                }
 
-        except Exception as e:
-                'success': False,
-                'message': 'Error interno del sistema',
-                'user_data': None,
-                'bloqueado': False
-            }
+class AuthManager:
 
     def cambiar_password_segura(self,
 usuario_id: int,
@@ -109,14 +102,23 @@ usuario_id: int,
 
             return {'success': True, 'message': 'Contraseña actualizada exitosamente'}
 
+        except sqlite3.Error as e:
+            logger.error(f"Error de base de datos al cambiar contraseña: {e}")
+            try:
+                self.db_connection.rollback()
+            except sqlite3.Error:
+                logger.error("Error adicional durante rollback")
+            return {'success': False, 'message': 'Error de base de datos'}
         except Exception as e:
-                try:
-                    self.db_connection.rollback()
-                except Exception:
-                            finally:
-            if 'cursor' in locals():
-                if cursor:
-                    cursor.close()
+            logger.exception(f"Error inesperado al cambiar contraseña: {e}")
+            try:
+                self.db_connection.rollback()
+            except sqlite3.Error:
+                pass
+            return {'success': False, 'message': 'Error interno del sistema'}
+        finally:
+            if 'cursor' in locals() and cursor:
+                cursor.close()
 
     def registrar_intento_login(self, username: str, exitoso: bool = False) -> None:
         """
@@ -171,6 +173,8 @@ usuario_id: int,
             return True
 
         except Exception as e:
+            logger.error("Error registrando intento de login: %s", e)
+            return False
         finally:
             if 'cursor' in locals():
                 if cursor:
@@ -212,6 +216,8 @@ usuario_id: int,
             }
 
         except Exception as e:
+            logger.error("Error obteniendo información de usuario: %s", e)
+            return None
         finally:
             if 'cursor' in locals():
                 if cursor:

@@ -67,8 +67,8 @@ class SafeStreamHandler(logging.StreamHandler):
                 if hasattr(stream, 'flush'):
                     stream.flush()
                     
-        except Exception:
-            # En caso de error, usar el handler base
+        except (UnicodeEncodeError, AttributeError, OSError) as e:
+            # En caso de error de encoding o stream, usar el handler base
             super().emit(record)
 
 

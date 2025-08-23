@@ -6,16 +6,20 @@ Rexus.app - Sistema de Gestión Integral con Sidebar Colapsible
 import sys
 from typing import Any, Dict
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger()
+
 # Cargar variables de entorno antes de cualquier otra importación
 try:
     from dotenv import load_dotenv
 
     load_dotenv()
-    print("[ENV] Variables de entorno cargadas desde .env")
+    logger.info("[ENV] Variables de entorno cargadas desde .env")
 except ImportError:
-    print("[ENV] python-dotenv no disponible, usando variables del sistema")
+    logger.info("[ENV] python-dotenv no disponible, usando variables del sistema")
 except Exception as e:
-    print(f"[ENV] Error cargando variables: {e}")
+    logger.error("[ENV] Error cargando variables: %s", e)
 
 from PyQt6.QtCore import Qt, pyqtSignal
 from PyQt6.QtWidgets import (
@@ -518,7 +522,7 @@ class MainWindow(QMainWindow):
 
     def show_module(self, module_name: str):
         """Muestra un módulo específico"""
-        print(f"Mostrando módulo: {module_name}")
+        logger.info("Mostrando módulo: %s", module_name)
 
         # Crear un widget placeholder para el módulo
         module_widget = QWidget()
@@ -645,7 +649,7 @@ def main():
 
     def handle_login_failed(error):
         """Maneja login fallido"""
-        print(f"Login fallido: {error}")
+        logger.warning("Login fallido: %s", error)
 
     # Conectar señales
     login_dialog.login_successful.connect(handle_login_success)

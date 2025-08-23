@@ -1346,3 +1346,5 @@ TypeError: object of type 'Mock' has no len()
 2025-08-22 22:33:53 | ERROR    | rexus.<Mock id='2294195854768'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
 2025-08-22 22:33:56 | ERROR    | rexus.<Mock id='2295655926080'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
 2025-08-22 22:33:57 | ERROR    | rexus.<Mock id='2295655834592'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
+2025-08-23 17:42:35 | ERROR    | rexus.test_suite | Test error message
+2025-08-23 17:42:35 | CRITICAL | rexus.test_suite | Test critical message

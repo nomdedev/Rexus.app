@@ -123,9 +123,8 @@ class PerformanceMonitor:
 
                 time.sleep(interval_seconds)
             except Exception as e:
-                self.                raise e
-        return wrapper
-    return decorator
+                logger.error(f"Error en monitoreo continuo: {e}")
+                time.sleep(10)  # Esperar antes de reintentar
 
 # Instancia global del monitor
 performance_monitor = PerformanceMonitor()

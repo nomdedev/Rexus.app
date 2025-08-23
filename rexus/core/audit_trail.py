@@ -327,7 +327,7 @@ class AuditableModel:
 
         except Exception as e:
         # FIXED: SQL Injection vulnerability
-            print("Error en insert_with_audit: ?", (e,))
+            logger.error("Error en insert_with_audit: %s", e)
             self.db_connection.rollback()
             return None
 
@@ -394,7 +394,7 @@ record_id: int,
 
         except Exception as e:
         # FIXED: SQL Injection vulnerability
-            print("Error en update_with_audit: ?", (e,))
+            logger.error("Error en update_with_audit: %s", e)
             self.db_connection.rollback()
             return False
 
@@ -443,7 +443,7 @@ record_id: int,
 
         except Exception as e:
         # FIXED: SQL Injection vulnerability
-            print("Error en delete_with_audit: ?", (e,))
+            logger.error("Error en delete_with_audit: %s", e)
             self.db_connection.rollback()
             return False
 

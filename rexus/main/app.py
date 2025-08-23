@@ -132,9 +132,9 @@ def initialize_security_manager():
         # Intentar crear conexión a la base de datos
         try:
             db_connection = UsersDatabaseConnection()
-            print("[SECURITY] Conexión BD exitosa para sistema de seguridad")
+            logger.info("[SECURITY] Conexión BD exitosa para sistema de seguridad")
         except Exception as db_error:
-            print(f"[SECURITY] Error BD: {db_error}, usando modo sin BD")
+            logger.warning("[SECURITY] Error BD: %s, usando modo sin BD", db_error)
             db_connection = None
 
         # Inicializar con o sin conexión BD
@@ -181,23 +181,21 @@ class SimpleSecurityManager:
                         "password_hash": hashed_password,
                     }
                 }
-                print(f"[SIMPLE_AUTH] Usuario de desarrollo cargado: {admin_user}")
+                logger.info("[SIMPLE_AUTH] Usuario de desarrollo cargado: %s", admin_user)
             else:
                 self.users = {}
-                print(
-                    "[SIMPLE_AUTH] Modo desarrollo activo pero sin credenciales configuradas"
-                )
+                logger.warning("[SIMPLE_AUTH] Modo desarrollo activo pero sin credenciales configuradas")
         else:
             self.users = {}
-            print("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
+            logger.info("[SIMPLE_AUTH] Modo producción - sin usuarios fallback")
 
     def login(self, username: str, password: str) -> bool:
         """Autenticación segura con hashing"""
-        print(f"[SIMPLE_AUTH] Intentando login: usuario='{username}'")
+        logger.info("[SIMPLE_AUTH] Intentando login: usuario='%s'", username)
 
         # Verificar si hay usuarios disponibles
         if not self.users:
-            print("[SIMPLE_AUTH] No hay usuarios fallback disponibles")
+            logger.warning("[SIMPLE_AUTH] No hay usuarios fallback disponibles")
             return False
 
         user = self.users.get(username)
@@ -320,6 +318,7 @@ class MainWindow(QMainWindow):
         # Inicializar gestores de tema y dashboard
         self._init_theme_manager()
         self._init_dashboard_controller()
+        self._init_executive_dashboard()
 
         # Inicializar StyleManager y aplicar tema automático
         self._init_styles()
@@ -344,6 +343,16 @@ class MainWindow(QMainWindow):
         except Exception as e:
             logger.warning(f"Error inicializando DashboardController: {e}")
             self.dashboard_controller = None
+    
+    def _init_executive_dashboard(self):
+        """Inicializa el dashboard ejecutivo."""
+        try:
+            from rexus.ui.executive_dashboard import get_dashboard_manager
+            self.executive_dashboard_manager = get_dashboard_manager()
+            print("[EXECUTIVE_DASHBOARD] Gestor de dashboard ejecutivo inicializado")
+        except Exception as e:
+            logger.warning(f"Error inicializando Executive Dashboard: {e}")
+            self.executive_dashboard_manager = None
 
     def _init_styles(self):
         """Inicializa y aplica el sistema de estilos."""
@@ -451,7 +460,12 @@ class MainWindow(QMainWindow):
         header.setAlignment(Qt.AlignmentFlag.AlignCenter)
         sidebar_layout.addWidget(header)
 
-        # Usuario actual
+        # Usuario actual y dashboard
+        user_info_container = QWidget()
+        user_info_layout = QVBoxLayout(user_info_container)
+        user_info_layout.setContentsMargins(0, 0, 0, 0)
+        user_info_layout.setSpacing(5)
+        
         user_info = QLabel(
             f"Usuario: {self.user_data['username']}\nRol: {self.user_data.get('rol', self.user_data.get('role', 'Usuario'))}"
         )
@@ -463,7 +477,28 @@ class MainWindow(QMainWindow):
                 background-color: rgba(0, 0, 0, 0.1);
             }
         """)
-        sidebar_layout.addWidget(user_info)
+        
+        # Botón para dashboard ejecutivo
+        from rexus.ui.dashboard_integration import create_dashboard_button
+        dashboard_btn = create_dashboard_button()
+        dashboard_btn.setStyleSheet("""
+            QPushButton {
+                background-color: rgba(255, 255, 255, 0.2);
+                color: white;
+                border: 1px solid rgba(255, 255, 255, 0.3);
+                border-radius: 4px;
+                padding: 8px 15px;
+                font-size: 11px;
+                margin: 5px 15px;
+            }
+            QPushButton:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+        """)
+        
+        user_info_layout.addWidget(user_info)
+        user_info_layout.addWidget(dashboard_btn)
+        sidebar_layout.addWidget(user_info_container)
 
         # Scroll area para módulos
         scroll = QScrollArea()

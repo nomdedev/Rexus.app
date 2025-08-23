@@ -88,8 +88,9 @@ class HerrajesView(QWidget, ModuleExportMixin):
         """
         try:
             show_error(mensaje, titulo)
-        except Exception:
-            # Fallback usando QMessageBox
+        except ImportError as e:
+            # Fallback usando QMessageBox si show_error no está disponible
+            logger.warning("show_error no disponible, usando fallback: %s", e)
             from PyQt6.QtWidgets import QMessageBox
             msg = QMessageBox()
             msg.setIcon(QMessageBox.Icon.Critical)

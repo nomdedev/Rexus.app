@@ -20,6 +20,8 @@ import sqlite3
             return self.execute_query(query, database=database)
             
         except Exception as e:
+            logger.error(f"Error obteniendo esquema de tabla {table_name}: {e}")
+            return []
     
     def table_exists(self, table_name: str, database: str = None) -> bool:
         """Verifica si una tabla existe"""
@@ -31,6 +33,8 @@ import sqlite3
             return len(results) > 0
             
         except Exception as e:
+            logger.error(f"Error verificando existencia de tabla {table_name}: {e}")
+            return False
 
 # Instancia global del administrador
 _database_manager = None

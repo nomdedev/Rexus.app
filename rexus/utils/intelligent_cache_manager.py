@@ -278,6 +278,7 @@ class IntelligentCacheManager:
                 ))
                 
         except Exception as e:
+            logger.error(f"Error moviendo entrada a cache persistente: {e}")
                 
     def _remove_persistent_entry(self, key: str):
         """Remover entrada del cache persistente."""
@@ -296,6 +297,7 @@ class IntelligentCacheManager:
                     conn.execute('DELETE FROM cache_entries WHERE key = ?', (key,))
                 
         except Exception as e:
+            logger.error(f"Error removiendo entrada persistente: {e}")
                 
     def _get_adaptive_ttl(self, data_source: str) -> int:
         """Calcular TTL adaptativo basado en patrones de uso."""
@@ -420,7 +422,10 @@ class IntelligentCacheManager:
                 return True
                 
             except Exception as e:
-                    def _start_cleanup_thread(self):
+                logger.error(f"Error limpiando cache: {e}")
+                return False
+    
+    def _start_cleanup_thread(self):
         """Iniciar hilo de limpieza automática."""
         def cleanup_worker():
             while True:
@@ -428,6 +433,8 @@ class IntelligentCacheManager:
                 try:
                     self._cleanup_expired()
                 except Exception as e:
+                    logger.error(f"Error en limpieza automática: {e}")
+        
         cleanup_thread = threading.Thread(target=cleanup_worker, daemon=True)
         cleanup_thread.start()
         logger.debug("Hilo de limpieza automática iniciado")

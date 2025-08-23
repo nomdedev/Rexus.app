@@ -29,6 +29,10 @@ import logging
 from pathlib import Path
 from typing import Dict
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger()
+
 from PyQt6.QtWidgets import QApplication, QWidget
 
 
@@ -76,7 +80,7 @@ class StyleManager:
             # APLICAR CORRECCIONES AUTOMÁTICAMENTE si se detectó tema oscuro
             if hasattr(self, '_auto_apply_dark_fixes') and \
                 self._auto_apply_dark_fixes:
-                print("[STYLE] Aplicando correcciones criticas automaticas para tema oscuro")
+                logger.info("[STYLE] Aplicando correcciones criticas automaticas para tema oscuro")
                 self._apply_automatic_dark_fixes()
 
     def _detect_system_theme(self):
@@ -98,7 +102,7 @@ class StyleManager:
         except (OSError, ImportError, AttributeError, RuntimeError) as e:
             logger.warning(f"Error detectando tema del sistema: {e}")
             self._current_theme = 'professional'
-            print("[STYLE] Usando tema por defecto 'professional' por error")
+            logger.info("[STYLE] Usando tema por defecto 'professional' por error")
 
     def _detect_windows_theme(self):
         """Detecta tema en Windows."""
@@ -114,20 +118,20 @@ class StyleManager:
 
             if apps_light_theme == 0:  # Dark mode
                 self._current_theme = 'dark'
-                print("[STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas")
-                print("[STYLE] Aplicando correcciones criticas automaticas para tema oscuro")
+                logger.info("[STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas")
+                logger.info("[STYLE] Aplicando correcciones criticas automaticas para tema oscuro")
                 # APLICAR INMEDIATAMENTE las correcciones críticas para tema oscuro
                 self._auto_apply_dark_fixes = True
                 self._apply_critical_dark_theme_fixes()
             else:  # Light mode
                 self._current_theme = 'light'
-                print("[STYLE] Tema claro detectado en Windows - aplicando tema optimizado")
+                logger.info("[STYLE] Tema claro detectado en Windows - aplicando tema optimizado")
                 self._auto_apply_dark_fixes = False
 
         except (FileNotFoundError, OSError, ImportError):
             self._current_theme = 'professional'
             self._auto_apply_dark_fixes = False
-            print("[STYLE] WARNING: No se pudo detectar tema de Windows - usando 'professional'")
+            logger.info("[STYLE] WARNING: No se pudo detectar tema de Windows - usando 'professional'")
 
     def _detect_macos_theme(self):
         """Detecta tema en macOS."""
@@ -139,16 +143,16 @@ class StyleManager:
             if result.returncode == 0 and 'Dark' in result.stdout:
                 self._current_theme = 'dark'
                 self._auto_apply_dark_fixes = True
-                print("[STYLE] [DARK] Tema oscuro detectado en macOS - aplicando correcciones críticas")
+                logger.info("[STYLE] [DARK] Tema oscuro detectado en macOS - aplicando correcciones críticas")
             else:
                 self._current_theme = 'light'
                 self._auto_apply_dark_fixes = False
-                print("[STYLE] [LIGHT] Tema claro detectado en macOS - aplicando 'light'")
+                logger.info("[STYLE] [LIGHT] Tema claro detectado en macOS - aplicando 'light'")
 
         except (subprocess.CalledProcessError, FileNotFoundError):
             self._current_theme = 'professional'
             self._auto_apply_dark_fixes = False
-            print("[STYLE] [WARNING] No se pudo detectar tema de macOS - usando 'professional'")
+            logger.info("[STYLE] [WARNING] No se pudo detectar tema de macOS - usando 'professional'")
 
     def _detect_linux_theme(self):
         """Detecta tema en Linux (GNOME/KDE)."""
@@ -163,7 +167,7 @@ class StyleManager:
                 if result.returncode == 0 and ('dark' in result.stdout.lower() or 'adwaita-dark' in result.stdout.lower()):
                     self._current_theme = 'dark'
                     self._auto_apply_dark_fixes = True
-                    print("[STYLE] [DARK] Tema oscuro detectado en GNOME - aplicando correcciones críticas")
+                    logger.info("[STYLE] [DARK] Tema oscuro detectado en GNOME - aplicando correcciones críticas")
                     return
 
             # Intentar KDE
@@ -176,18 +180,18 @@ class StyleManager:
                         if 'ColorScheme=Breeze Dark' in content or 'ColorScheme=BreezeDark' in content:
                             self._current_theme = 'dark'
                             self._auto_apply_dark_fixes = True
-                            print("[STYLE] [DARK] Tema oscuro detectado en KDE - aplicando correcciones críticas")
+                            logger.info("[STYLE] [DARK] Tema oscuro detectado en KDE - aplicando correcciones críticas")
                             return
 
             # Si llegamos aquí, usar tema claro por defecto en Linux
             self._current_theme = 'light'
             self._auto_apply_dark_fixes = False
-            print("[STYLE] [LIGHT] Usando tema claro por defecto en Linux")
+            logger.info("[STYLE] [LIGHT] Usando tema claro por defecto en Linux")
 
         except (OSError, ImportError, AttributeError, RuntimeError):
             self._current_theme = 'professional'
             self._auto_apply_dark_fixes = False
-            print("[STYLE] [WARNING] No se pudo detectar tema de Linux - usando 'professional'")
+            logger.info("[STYLE] [WARNING] No se pudo detectar tema de Linux - usando 'professional'")
 
     def _load_available_themes(self):
         """Carga todos los temas disponibles en memoria."""
@@ -232,7 +236,7 @@ class StyleManager:
                     print(f"[STYLE] [DARK] Detectado tema oscuro '{theme_name}' - aplicando correcciones críticas automáticas")
                     critical_success = self.apply_critical_contrast_fixes()
                     if not critical_success:
-                        print("[STYLE] [WARNING] Aplicando tema claro de emergencia por problemas de contraste")
+                        logger.info("[STYLE] [WARNING] Aplicando tema claro de emergencia por problemas de contraste")
                         self.force_light_theme_for_forms()
 
                 logging.debug(f"Tema global '{theme_name}' aplicado exitosamente")
@@ -525,7 +529,7 @@ class StyleManager:
                 if app:
                     current_style = app.styleSheet()
                     app.setStyleSheet(current_style + critical_styles)
-                    print("[STYLE] Correcciones críticas de contraste aplicadas globalmente")
+                    logger.info("[STYLE] Correcciones críticas de contraste aplicadas globalmente")
 
             return True
 
@@ -651,7 +655,7 @@ class StyleManager:
                     current_styles = app.styleSheet()
                     new_styles = f"{current_styles}\n\n/* EMERGENCY FORM FIXES */\n{critical_styles}"
                     app.setStyleSheet(new_styles)
-                    print("[STYLE] Correcciones criticas de formularios aplicadas globalmente")
+                    logger.info("[STYLE] Correcciones criticas de formularios aplicadas globalmente")
                     return True
             else:
                 # Aplicar a widget específico
@@ -729,7 +733,7 @@ class StyleManager:
                 current_styles = app.styleSheet()
                 new_styles = f"{current_styles}\n{emergency_light_styles}"
                 app.setStyleSheet(new_styles)
-                print("[STYLE] Tema de emergencia claro aplicado para formularios")
+                logger.info("[STYLE] Tema de emergencia claro aplicado para formularios")
                 return True
         except (AttributeError, RuntimeError, OSError) as e:
             logger.error(f"Error aplicando tema de emergencia: {e}")
@@ -746,7 +750,7 @@ class StyleManager:
         Returns:
             bool: True (sin aplicar correcciones)
         """
-        print("[STYLE] apply_emergency_readable_forms DESHABILITADO - sin correcciones invasivas")
+        logger.info("[STYLE] apply_emergency_readable_forms DESHABILITADO - sin correcciones invasivas")
         return True
 
     def _apply_automatic_dark_fixes(self) -> bool:
@@ -757,17 +761,17 @@ class StyleManager:
         try:
             # Primero aplicar el tema oscuro mejorado
             if 'dark' in self._loaded_themes:
-                print("[STYLE] [ART] Aplicando tema oscuro mejorado")
+                logger.info("[STYLE] [ART] Aplicando tema oscuro mejorado")
 
             # Luego aplicar correcciones críticas
-            print("[STYLE]  Aplicando correcciones críticas de contraste")
+            logger.info("[STYLE]  Aplicando correcciones críticas de contraste")
             critical_success = self.apply_critical_contrast_fixes()
 
             if critical_success:
-                print("[STYLE] [OK] Correcciones automáticas aplicadas exitosamente")
+                logger.info("[STYLE] [OK] Correcciones automáticas aplicadas exitosamente")
                 return True
             else:
-                print("[STYLE] [WARNING] Advertencia: No se pudieron aplicar todas las correcciones")
+                logger.info("[STYLE] [WARNING] Advertencia: No se pudieron aplicar todas las correcciones")
                 return False
 
         except (AttributeError, RuntimeError, OSError, IOError) as e:
@@ -806,7 +810,7 @@ class StyleManager:
         Soluciona problemas de legibilidad inmediatamente.
         """
         try:
-            print("[STYLE] [ART] Aplicando tema oscuro mejorado")
+            logger.info("[STYLE] [ART] Aplicando tema oscuro mejorado")
             
             # Cargar y aplicar el tema oscuro corregido
             dark_theme_path = self._themes_path / 'theme_dark_contrast_fixed.qss'
@@ -819,12 +823,12 @@ class StyleManager:
                 app = QApplication.instance()
                 if app:
                     app.setStyleSheet(dark_styles)
-                    print("[STYLE]  Aplicando correcciones críticas de contraste")
-                    print("[STYLE] [OK] Correcciones automáticas aplicadas exitosamente")
+                    logger.info("[STYLE]  Aplicando correcciones críticas de contraste")
+                    logger.info("[STYLE] [OK] Correcciones automáticas aplicadas exitosamente")
                 else:
-                    print("[STYLE] [WARNING] No se pudo obtener instancia de QApplication")
+                    logger.info("[STYLE] [WARNING] No se pudo obtener instancia de QApplication")
             else:
-                print("[STYLE] [ERROR] Archivo de tema oscuro corregido no encontrado")
+                logger.info("[STYLE] [ERROR] Archivo de tema oscuro corregido no encontrado")
                 # Fallback: aplicar estilos críticos inline
                 self._apply_inline_dark_fixes()
                 
@@ -865,7 +869,7 @@ class StyleManager:
             app = QApplication.instance()
             if app:
                 app.setStyleSheet(critical_fixes)
-                print("[STYLE] [OK] Correcciones críticas inline aplicadas")
+                logger.info("[STYLE] [OK] Correcciones críticas inline aplicadas")
         except (AttributeError, RuntimeError, OSError) as e:
             print(f"[STYLE] [ERROR] Error aplicando correcciones inline: {e}")
 

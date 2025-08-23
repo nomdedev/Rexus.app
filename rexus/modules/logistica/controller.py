@@ -1,7 +1,20 @@
 """Controlador de Logística"""
 
 import time
-                def eliminar_transporte(self, transporte_id):
+import logging
+from typing import Dict, Any, List, Optional
+from rexus.core.base_controller import BaseController
+
+logger = logging.getLogger(__name__)
+
+
+class LogisticaController(BaseController):
+    """Controlador para el módulo de logística."""
+    
+    def __init__(self, parent=None):
+        super().__init__("logistica", parent)
+        
+    def eliminar_transporte(self, transporte_id):
         """
         Elimina un transporte (requiere permisos de administrador).
         

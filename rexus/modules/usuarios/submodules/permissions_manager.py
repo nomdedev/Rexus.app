@@ -11,7 +11,11 @@ Responsabilidades:
 
 import logging
 import re
-                def cambiar_rol_usuario(self,
+import sqlite3
+
+class PermissionsManager:
+
+    def cambiar_rol_usuario(self,
 usuario_id: int,
         nuevo_rol: str) -> Dict[str,
         Any]:
@@ -61,14 +65,21 @@ usuario_id: int,
             logger.info("Rol cambiado a %s para usuario %s", nuevo_rol, usuario_id)
             return {"success": True, "message": "Rol cambiado a {}".format(nuevo_rol)}
 
-        except Exception as e:
-            logger.exception("Error cambiando rol: %s", e)
-            # FIXME: Specify concrete exception types instead of generic Exceptionif self.db_connection:
+        except sqlite3.Error as e:
+            logger.error("Error de base de datos cambiando rol: %s", e)
+            if self.db_connection:
                 try:
                     self.db_connection.rollback()
-                except Exception:
-                    logger.error("Error en operación de base de datos: %s", e)
-                    return {'success': False, 'message': 'Error crítico del sistema'}
+                except sqlite3.Error:
+                    logger.error("Error adicional durante rollback")
+            return {'success': False, 'message': 'Error de base de datos'}
+        except Exception as e:
+            logger.exception("Error inesperado cambiando rol: %s", e)
+            if self.db_connection:
+                try:
+                    self.db_connection.rollback()
+                except sqlite3.Error:
+                    pass
             return {'success': False, 'message': 'Error interno del sistema'}
         finally:
             if cursor is not None:

@@ -161,7 +161,7 @@ def setup_dev_authentication():
     """Configura autenticación para desarrollo."""
     if is_dev_mode():
         logger.info("[DEV_DB] Sistema de autenticación local iniciado")
-        print("[DEV_DB] Usuarios disponibles:", len(dev_db_mock.users_db))
+        logger.info("[DEV_DB] Usuarios disponibles: %s", len(dev_db_mock.users_db))
         # Mostrar usuarios disponibles
         for user, data in dev_db_mock.users_db.items():
             if data.get('activo', False):

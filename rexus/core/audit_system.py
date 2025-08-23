@@ -13,7 +13,174 @@ import datetime
 import json
 import logging
 import sqlite3
-                    """Registra un intento de login fallido."""
+from typing import Optional, List, Dict, Any
+from enum import Enum
+
+# Sistema de logging
+try:
+    from ..utils.app_logger import get_logger
+    audit_logger = get_logger(__name__)
+except ImportError:
+    import logging
+    audit_logger = logging.getLogger(__name__)
+
+
+class AuditEvent(Enum):
+    """Tipos de eventos de auditoría."""
+    LOGIN_SUCCESS = "LOGIN_SUCCESS"
+    LOGIN_FAILED = "LOGIN_FAILED"
+    LOGOUT = "LOGOUT"
+    USER_CREATED = "USER_CREATED"
+    USER_UPDATED = "USER_UPDATED"
+    USER_DELETED = "USER_DELETED"
+    ACCOUNT_LOCKED = "ACCOUNT_LOCKED"
+    PERMISSION_GRANTED = "PERMISSION_GRANTED"
+    PERMISSION_REVOKED = "PERMISSION_REVOKED"
+    SENSITIVE_DATA_ACCESS = "SENSITIVE_DATA_ACCESS"
+    SUSPICIOUS_ACTIVITY = "SUSPICIOUS_ACTIVITY"
+    SYSTEM_ERROR = "SYSTEM_ERROR"
+    SYSTEM_START = "SYSTEM_START"
+    SYSTEM_STOP = "SYSTEM_STOP"
+
+
+class AuditLevel(Enum):
+    """Niveles de auditoría."""
+    INFO = "INFO"
+    WARNING = "WARNING"
+    CRITICAL = "CRITICAL"
+    SECURITY = "SECURITY"
+
+
+class AuditSystem:
+    """Sistema de auditoría y logging de seguridad."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el sistema de auditoría."""
+        self.db_connection = db_connection
+        self._create_audit_table()
+    
+    def _create_audit_table(self):
+        """Crea la tabla de auditoría si no existe."""
+        if not self.db_connection:
+            return
+        
+        try:
+            cursor = self.db_connection.connection.cursor()
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS auditoria_sistema (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    event_type TEXT NOT NULL,
+                    level TEXT NOT NULL,
+                    usuario_id INTEGER,
+                    usuario_nombre TEXT,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    modulo TEXT,
+                    accion TEXT,
+                    detalles TEXT,
+                    resultado TEXT,
+                    session_id TEXT
+                )
+            """)
+            self.db_connection.connection.commit()
+        except sqlite3.Error as e:
+            audit_logger.error(f"Error creando tabla de auditoría: {e}")
+    
+    def log_event(self, event_type: AuditEvent, level: AuditLevel, modulo: str, 
+                  accion: str, resultado: str = None, **kwargs):
+        """Registra un evento de auditoría."""
+        try:
+            # Preparar datos del evento
+            event_data = {
+                'event_type': event_type.value,
+                'level': level.value,
+                'modulo': modulo,
+                'accion': accion,
+                'resultado': resultado,
+                'timestamp': datetime.datetime.now(),
+                **kwargs
+            }
+            
+            # Extraer campos específicos
+            usuario_id = event_data.pop('usuario_id', None)
+            usuario_nombre = event_data.pop('usuario_nombre', None)
+            ip_address = event_data.pop('ip_address', None)
+            user_agent = event_data.pop('user_agent', None)
+            session_id = event_data.pop('session_id', None)
+            
+            # El resto va a detalles como JSON
+            detalles = {k: v for k, v in event_data.items() 
+                       if k not in ['event_type', 'level', 'modulo', 'accion', 'resultado', 'timestamp']}
+            
+            # Log local
+            audit_logger.info(f"[AUDIT] {level.value} - {modulo}: {accion} - {resultado}")
+            
+            # Persistir en base de datos si está disponible
+            if self.db_connection:
+                self._persist_audit_event(
+                    event_type=event_type.value,
+                    level=level.value,
+                    usuario_id=usuario_id,
+                    usuario_nombre=usuario_nombre,
+                    ip_address=ip_address,
+                    user_agent=user_agent,
+                    modulo=modulo,
+                    accion=accion,
+                    detalles=json.dumps(detalles) if detalles else None,
+                    resultado=resultado,
+                    session_id=session_id
+                )
+                
+        except Exception as e:
+            audit_logger.exception(f"Error registrando evento de auditoría: {e}")
+    
+    def _persist_audit_event(self, **event_data):
+        """Persiste evento en base de datos."""
+        try:
+            cursor = self.db_connection.connection.cursor()
+            cursor.execute("""
+                INSERT INTO auditoria_sistema 
+                (event_type, level, usuario_id, usuario_nombre, ip_address, 
+                 user_agent, modulo, accion, detalles, resultado, session_id)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                event_data.get('event_type'),
+                event_data.get('level'),
+                event_data.get('usuario_id'),
+                event_data.get('usuario_nombre'),
+                event_data.get('ip_address'),
+                event_data.get('user_agent'),
+                event_data.get('modulo'),
+                event_data.get('accion'),
+                event_data.get('detalles'),
+                event_data.get('resultado'),
+                event_data.get('session_id')
+            ))
+            self.db_connection.connection.commit()
+        except sqlite3.Error as e:
+            audit_logger.error(f"Error persistiendo evento: {e}")
+    
+    def log_login_success(self, usuario_id: int, usuario_nombre: str,
+                         ip_address: str = None, user_agent: str = None,
+                         session_id: str = None):
+        """Registra un login exitoso."""
+        self.log_event(
+            event_type=AuditEvent.LOGIN_SUCCESS,
+            level=AuditLevel.INFO,
+            modulo="AUTENTICACION",
+            accion=f"Login exitoso para usuario {usuario_nombre}",
+            resultado="SUCCESS",
+            usuario_id=usuario_id,
+            usuario_nombre=usuario_nombre,
+            ip_address=ip_address,
+            user_agent=user_agent,
+            session_id=session_id
+        )
+    
+    def log_login_failed(self, usuario_nombre: str, razon: str = None,
+                        ip_address: str = None, user_agent: str = None):
+        """Registra un intento de login fallido."""
         self.log_event(
             event_type=AuditEvent.LOGIN_FAILED,
             level=AuditLevel.WARNING,

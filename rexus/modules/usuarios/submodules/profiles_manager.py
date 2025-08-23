@@ -10,7 +10,11 @@ Responsabilidades:
 """
 
 import logging
-                def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
+import sqlite3
+
+class ProfilesManager:
+
+    def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """
         Elimina un usuario (soft delete).
 
@@ -52,11 +56,23 @@ usuario.get("username",
                 usuario_id)
             return {'success': True, 'message': 'Usuario eliminado exitosamente'}
 
+        except sqlite3.Error as e:
+            logger.error("Error de base de datos eliminando usuario: %s", e)
+            try:
+                self.db_connection.rollback()
+            except sqlite3.Error:
+                logger.error("Error adicional durante rollback")
+            return {'success': False, 'message': 'Error de base de datos'}
         except Exception as e:
-                try:
-                    self.db_connection.rollback()
-                except Exception:
-                            """
+            logger.exception("Error inesperado eliminando usuario: %s", e)
+            try:
+                self.db_connection.rollback()
+            except sqlite3.Error:
+                pass
+            return {'success': False, 'message': 'Error interno del sistema'}
+
+    def obtener_estadisticas_usuarios(self):
+        """
         Obtiene estadísticas de usuarios del sistema.
 
         Returns:
@@ -232,9 +248,9 @@ datos: Dict[str,
                 try:
                     cursor.close()
                 except Exception as e:
-datos: Dict[str,
-        Any]) -> Dict[str,
-        Any]:
+                    logger.error("Error cerrando cursor: %s", e)
+
+    def sanitizar_datos_usuario(self, datos: Dict[str, Any]) -> Dict[str, Any]:
         """
         Sanitiza los datos de usuario.
 

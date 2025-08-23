@@ -8,7 +8,10 @@ Sistema básico de autenticación que funciona con la estructura actual
 import logging
 logger = logging.getLogger(__name__)
 
-                    allowed_fields = {
+class AuthManager:
+    
+    def __init__(self):
+        self.allowed_fields = {
             'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',
             'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',
             'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',

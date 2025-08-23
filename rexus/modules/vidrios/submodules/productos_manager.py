@@ -8,7 +8,7 @@ Responsabilidades:
 - Gestión de tipos y categorías de vidrio
 """
 
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 
 # Sistema de logging centralizado
 from rexus.utils.app_logger import get_logger
@@ -116,7 +116,8 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-                                                return []
+            logger.exception("Error obteniendo vidrios: %s", e)
+            return []
     def validar_codigo_unico(
         self, codigo: str, vidrio_id: Optional[int] = None
     ) -> bool:
@@ -177,7 +178,8 @@ class ProductosManager:
 
             return area * precio_sanitizado
 
-        except Exception:
+        except (ValueError, TypeError, ArithmeticError) as e:
+            logger.warning("Error calculando precio por área: %s", e)
             return 0.0
     def actualizar_stock(self, vidrio_id: int, nuevo_stock: int) -> bool:
         """Actualiza solo el stock de un vidrio."""
@@ -207,4 +209,5 @@ class ProductosManager:
         except Exception as e:
             if self.db_connection:
                 self.db_connection.rollback()
-                                    return False
+            logger.exception("Error actualizando stock: %s", e)
+            return False

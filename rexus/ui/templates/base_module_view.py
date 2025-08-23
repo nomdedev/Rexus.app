@@ -17,6 +17,10 @@ from rexus.ui.components.base_components import (
     RexusFrame, RexusProgressBar, RexusMessageBox, RexusColors
 )
 
+# Sistema de logging centralizado
+from rexus.utils.app_logger import get_logger
+logger = get_logger()
+
 
 class BaseModuleView(QWidget):
     """
@@ -413,7 +417,7 @@ class BaseModuleView(QWidget):
             if hasattr(self, 'save_btn'):
                 self.save_btn.clicked.disconnect()
         except Exception as e:
-            print(f"Error limpiando conexiones en BaseModuleView: {e}")
+            logger.error("Error limpiando conexiones en BaseModuleView: %s", e)
 
     def closeEvent(self, event):
         """Maneja el cierre del widget."""
@@ -447,15 +451,15 @@ class BaseModuleView(QWidget):
                 # Aplicar correcciones críticas si es necesario
                 ensure_module_forms_readable(self)
 
-                print(f"[{(self.module_name or 'UNKNOWN').upper()}] Estilos aplicados con correcciones de legibilidad")
+                logger.debug("[%s] Estilos aplicados con correcciones de legibilidad", (self.module_name or 'UNKNOWN').upper())
 
             except ImportError:
                 # Fallback si theme_fixes no está disponible
                 self.setStyleSheet(base_styles)
-                print(f"[{(self.module_name or 'UNKNOWN').upper()}] Estilos básicos aplicados (sin correcciones)")
+                logger.debug("[%s] Estilos básicos aplicados (sin correcciones)", (self.module_name or 'UNKNOWN').upper())
 
         except Exception as e:
-            print(f"[ERROR {(self.module_name or 'UNKNOWN').upper()}] Error aplicando estilos: {e}")
+            logger.error("Error aplicando estilos en %s: %s", (self.module_name or 'UNKNOWN').upper(), e)
             # Aplicar estilos mínimos en caso de error
             self.setStyleSheet("QWidget { background-color: #fafbfc; }")
 
@@ -608,9 +612,9 @@ class BaseModuleView(QWidget):
             elif hasattr(self, 'refrescar'):
                 self.refrescar()
             else:
-                print("[INFO] actualizar_registros llamado - sin implementación específica")
+                logger.info("actualizar_registros llamado - sin implementación específica")
         except Exception as e:
-            print(f"[WARNING] Error en actualizar_registros: {e}")
+            logger.warning("Error en actualizar_registros: %s", e)
 
     def limpiar_formulario(self):
         """
@@ -631,7 +635,7 @@ class BaseModuleView(QWidget):
                 child.setCurrentIndex(0)
 
         except Exception as e:
-            print(f"[WARNING] Error en limpiar_formulario: {e}")
+            logger.warning("Error en limpiar_formulario: %s", e)
 
     def mostrar_mensaje(self, tipo, titulo, mensaje, detalle=None):
         """
@@ -708,7 +712,7 @@ class BaseModuleView(QWidget):
             if hasattr(self, 'main_content_area') and table_widget:
                 self.main_content_area.addWidget(table_widget)
         except Exception as e:
-            print(f"[WARNING] Error en set_main_table: {e}")
+            logger.warning("Error en set_main_table: %s", e)
 
     def add_to_main_content(self, widget_or_layout):
         """
@@ -743,4 +747,4 @@ class BaseModuleView(QWidget):
                 # Es un widget (incluyendo QSplitter)
                 main_layout.addWidget(widget_or_layout)
         except Exception as e:
-            print(f"[WARNING] Error en add_to_main_content: {e}")
+            logger.warning("Error en add_to_main_content: %s", e)

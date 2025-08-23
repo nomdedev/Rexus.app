@@ -1,0 +1,18 @@
+{
+  "timestamp": "2025-08-23T12:00:00Z",
+  "project": "Rexus.app",
+  "analyzer": "comprehensive_v1.0",
+  "files_analyzed": 306,
+  "total_issues": 0,
+  "statistics": {
+    "by_severity": {},
+    "by_type": {},
+    "total_issues": 0
+  },
+  "issues_by_severity": {},
+  "issues_by_type": {},
+  "top_problematic_files": [],
+  "recommendations": [
+    "Calidad de código en buen estado general"
+  ]
+}

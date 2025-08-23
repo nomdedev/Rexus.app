@@ -27,7 +27,14 @@ NO mezclar tablas de negocio en 'users'. NO usar 'inventario' para login o permi
 
 import os
 import logging
-                    return self._connection.cursor()
+import sqlite3
+
+class DatabaseConnection:
+    
+    def cursor(self):
+        """Retorna un cursor de la conexión."""
+        if self._connection:
+            return self._connection.cursor()
 
     def commit(self):
         """Confirma las transacciones pendientes."""
@@ -50,9 +57,12 @@ import logging
             result = cursor.fetchall()
             cursor.close()
             return result
+        except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.IntegrityError) as e:
+            logger.exception(f"Error de base de datos en consulta: {e}\nQuery: {query}\nParams: {params}")
+            return []
         except Exception as e:
-            logger.exception(f"Consulta fallida: {e}\nQuery: {query}\nParams: {params}")
-            # FIXME: Specify concrete exception types instead of generic Exceptionreturn []
+            logger.exception(f"Error inesperado en consulta: {e}\nQuery: {query}\nParams: {params}")
+            return []
 
     def execute_non_query(self, query: str, params: tuple = ()) -> bool:
         """Ejecuta consultas INSERT, UPDATE, DELETE. Devuelve True si tiene éxito."""
@@ -65,9 +75,14 @@ import logging
             self._connection.commit()
             cursor.close()
             return True
+        except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.IntegrityError) as e:
+            logger.exception(f"Error de base de datos en comando: {e}\nQuery: {query}\nParams: {params}")
+            self._connection.rollback()
+            return False
         except Exception as e:
-            logger.exception(f"Comando fallido: {e}\nQuery: {query}\nParams: {params}")
-            # FIXME: Specify concrete exception types instead of generic Exceptionreturn False
+            logger.exception(f"Error inesperado en comando: {e}\nQuery: {query}\nParams: {params}")
+            self._connection.rollback()
+            return False
 
 
 # Singleton para conexiones reutilizables

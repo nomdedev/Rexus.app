@@ -278,8 +278,8 @@ class LoginRateLimiter:
         # Log crítico de bloqueo
         self._log_security_event(username, "user_locked", lockout_minutes)
 
-        print(f"[SECURITY] Usuario '{username}' bloqueado por {lockout_minutes} minutos "
-              f"(fallos consecutivos: {failures})")
+        logger.critical("[SECURITY] Usuario '%s' bloqueado por %s minutos (fallos consecutivos: %s)", 
+                        username, lockout_minutes, failures)
 
     def get_lockout_info(self, username: str) -> Dict:
         """
