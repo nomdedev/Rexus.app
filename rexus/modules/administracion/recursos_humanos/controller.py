@@ -46,7 +46,7 @@ class RecursosHumanosController(QObject):
         self.model = model
         self.view = view
         self.db_connection = db_connection
-        self.usuario_actual = 
+        self.usuario_actual = "SISTEMA"
         self.conectar_senales()
 
     def conectar_senales(self):
@@ -190,7 +190,15 @@ class RecursosHumanosController(QObject):
 
                     except Exception as e:
                         empleados_error += 1
-                            # MÉTODOS PARA NÓMINA
+                        logger.error(f"Error importando empleado: {e}")
+
+            self.mostrar_mensaje(f"Importación completada: {empleados_importados} exitosos, {empleados_error} errores")
+            self.cargar_empleados()
+
+        except Exception as e:
+            self.mostrar_error(f"Error importando archivo CSV: {e}")
+
+    # MÉTODOS PARA NÓMINA
 
     def calcular_nomina(self, parametros):
         """Calcula la nómina para un período específico."""
@@ -257,6 +265,9 @@ class RecursosHumanosController(QObject):
                     recibos_generados += 1
 
                 except Exception as e:
+                    logger.error(f"Error generando recibo individual: {e}")
+
+            self.mostrar_mensaje(f"Recibos generados: {recibos_generados}")
 
         except Exception as e:
             self.mostrar_error(f"Error generando recibos: {e}")

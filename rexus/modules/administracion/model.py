@@ -29,7 +29,7 @@ try:
 
     SECURITY_AVAILABLE = True
 except ImportError as e:
-    logger.warning(f)
+    logger.warning(f"No se pudo cargar utilidad de seguridad: {e}")
     SECURITY_AVAILABLE = False
     data_sanitizer = None
 
@@ -39,7 +39,7 @@ try:
 
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
-    logger.warning()
+    logger.warning("No se pudo cargar SQL security - usando validación básica")
     SQL_SECURITY_AVAILABLE = False
     validate_table_name = None
     SQLSecurityError = Exception
@@ -92,7 +92,8 @@ class AdministracionModel(ContabilidadModel):
             try:
                 return validate_table_name(table_name)
             except SQLSecurityError as e:
-                
+                logger.error(f"Error de seguridad SQL: {e}")
+                raise Exception(f"Nombre de tabla inválido: {table_name}")
     def _validate_limit(self, limite):
         """
         Valida el parámetro de límite para prevenir SQL injection.
@@ -330,6 +331,11 @@ registro_id,
             self.db_connection.commit()
 
         except Exception as e:
+            logger.error(f"Error creando tablas de administración: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            raise
+
     def crear_departamento(
         self, codigo, nombre, descripcion="", responsable="", presupuesto_mensual=0
     ):
@@ -435,6 +441,8 @@ registro_id,
             return departamentos
 
         except Exception as e:
+            logger.error(f"Error obteniendo departamentos: {e}")
+            return []
 
     # GESTIÓN DE EMPLEADOS
     def crear_empleado(
@@ -550,6 +558,8 @@ registro_id,
             return empleados
 
         except Exception as e:
+            logger.error(f"Error obteniendo empleados: {e}")
+            return []
 
     # GESTIÓN DE LIBRO CONTABLE
     def crear_asiento_contable(

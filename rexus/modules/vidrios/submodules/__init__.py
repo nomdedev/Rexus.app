@@ -15,4 +15,4 @@ from .consultas_manager import ConsultasManager
 from .obras_manager import ObrasManager
 from .productos_manager import ProductosManager
 
-__all__ = [, "ObrasManager", "ConsultasManager"]
+__all__ = [ "ObrasManager", "ConsultasManager"]

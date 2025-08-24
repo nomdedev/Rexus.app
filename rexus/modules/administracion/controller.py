@@ -144,37 +144,46 @@ model=None,
                     self.manejar_empleado_agregado
                 )
 
-        except Exception as e:
+        except (ImportError, AttributeError) as e:
             logger.exception(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef actualizar_estadisticas_generales(self, estadisticas):
+
+    def actualizar_estadisticas_generales(self, estadisticas):
         """Actualiza las estadísticas generales con datos de los submódulos."""
         try:
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)
-        except Exception as e:
+        except AttributeError as e:
             logger.exception(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_reporte_generado(self, archivo_reporte):
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def manejar_reporte_generado(self, archivo_reporte):
         """Maneja la generación de reportes de los submódulos."""
         try:
             if self.view:
                 self.view.mostrar_mensaje("Reporte", f"Reporte generado: {archivo_reporte}", "info")
         except Exception as e:
             logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_nomina_calculada(self, nomina_data):
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def manejar_nomina_calculada(self, nomina_data):
         """Maneja el cálculo de nómina del submódulo de RRHH."""
         try:
             if self.view:
                 self.view.mostrar_mensaje("Nómina", f"Nómina calculada para {len(nomina_data)} empleados", "info")
         except Exception as e:
             logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef manejar_empleado_agregado(self, empleado_data):
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def manejar_empleado_agregado(self, empleado_data):
         """Maneja la adición de empleados del submódulo de RRHH."""
         try:
             # Actualizar estadísticas y datos relacionados
             self.actualizar_datos()
         except Exception as e:
             logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef cargar_datos_iniciales(self):
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
         try:
             self.actualizar_datos()

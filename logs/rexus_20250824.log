@@ -1,0 +1,7 @@
+2025-08-24 09:48:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 09:52:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 09:52:36 | WARNING  | rexus.modules.configuracion.controller | No se pudo importar BaseController
+2025-08-24 09:55:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 09:55:52 | WARNING  | rexus.modules.configuracion.controller | No se pudo importar BaseController
+2025-08-24 10:01:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 10:04:46 | INFO     | rexus           | Sistema de logging Rexus inicializado

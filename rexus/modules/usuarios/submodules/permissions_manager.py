@@ -236,7 +236,9 @@ usuario_id: int,
             """)
         except Exception as e:
             logger.exception("Error creando tabla permisos_usuarios: %s", e)
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef obtener_estadisticas_permisos(self) -> Dict[str, Any]:
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def obtener_estadisticas_permisos(self) -> Dict[str, Any]:
         """
         Obtiene estadísticas de permisos del sistema.
 

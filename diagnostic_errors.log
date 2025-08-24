@@ -1,0 +1,515 @@
+2025-08-24 00:25:57,460 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - Timestamp: 2025-08-24 00:25:57.462379
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 00:25:57,462 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-24 00:25:57,466 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 00:25:57,466 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-24 00:25:57,468 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,468 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-24 00:25:57,470 - DiagnosticRunner - ERROR - ERROR rexus.core.module_manager - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,470 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-24 00:25:57,471 - DiagnosticRunner - ERROR - ERROR rexus.core.auth_manager - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,471 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-24 00:25:57,473 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,473 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-24 00:25:57,474 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,474 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-24 00:25:57,476 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,476 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-24 00:25:57,477 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,477 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-24 00:25:57,479 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,479 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-24 00:25:57,479 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,481 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-24 00:25:57,482 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,482 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-24 00:25:57,484 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,484 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-24 00:25:57,484 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,484 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-24 00:25:57,487 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,487 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-24 00:25:57,487 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,487 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-24 00:25:57,487 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,491 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-24 00:25:57,491 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,493 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-24 00:25:57,493 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,493 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-24 00:25:57,496 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,496 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-24 00:25:57,497 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,497 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-24 00:25:57,499 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,499 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-24 00:25:57,499 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,501 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-24 00:25:57,501 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,503 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-24 00:25:57,503 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,504 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-24 00:25:57,505 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,505 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-24 00:25:57,507 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,507 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-24 00:25:57,508 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.model - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,508 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-24 00:25:57,510 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.view - ImportError: No module named 'rexus'
+2025-08-24 00:25:57,510 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-24 00:25:57,512 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 00:25:57,514 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: No module named 'rexus'
+2025-08-24 00:25:57,514 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-24 00:25:57,515 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 00:25:57,636 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-24 00:25:57,636 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-24 00:25:57,636 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-24 00:25:58,481 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-24 00:25:58,481 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-24 00:25:58,481 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 00:25:58,481 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-24 00:25:58,481 - DiagnosticRunner - ERROR - ❌ configuracion Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,481 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-24 00:25:58,490 - DiagnosticRunner - ERROR - ❌ usuarios Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,490 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-24 00:25:58,496 - DiagnosticRunner - ERROR - ❌ inventario Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,498 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-24 00:25:58,500 - DiagnosticRunner - ERROR - ❌ obras Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,500 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-24 00:25:58,500 - DiagnosticRunner - ERROR - ❌ compras Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,505 - DiagnosticRunner - INFO - Testing controller: pedidos
+2025-08-24 00:25:58,505 - DiagnosticRunner - ERROR - ❌ pedidos Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,505 - DiagnosticRunner - INFO - Testing controller: vidrios
+2025-08-24 00:25:58,510 - DiagnosticRunner - ERROR - ❌ vidrios Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,510 - DiagnosticRunner - INFO - Testing controller: notificaciones
+2025-08-24 00:25:58,514 - DiagnosticRunner - ERROR - ❌ notificaciones Controller - ImportError: No module named 'rexus'
+2025-08-24 00:25:58,521 - DiagnosticRunner - INFO - 
+📋 REPORTE COMPLETO GENERADO: DIAGNOSTIC_REPORT_20250824_002558.md
+2025-08-24 00:25:58,523 - DiagnosticRunner - INFO - 
+================================================================================
+2025-08-24 00:25:58,523 - DiagnosticRunner - INFO - DIAGNOSTICO COMPLETO FINALIZADO
+2025-08-24 00:25:58,523 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 00:25:58,525 - DiagnosticRunner - INFO - RESUMEN:
+2025-08-24 00:25:58,525 - DiagnosticRunner - INFO -    - Errores críticos encontrados: 36
+2025-08-24 00:25:58,527 - DiagnosticRunner - INFO -    - Advertencias del sistema: 0
+2025-08-24 00:25:58,527 - DiagnosticRunner - INFO -    - Módulos analizados: 27
+2025-08-24 00:25:58,527 - DiagnosticRunner - INFO -    - Reporte generado: DIAGNOSTIC_REPORT_20250824_002558.md
+2025-08-24 09:44:13,969 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-24 09:44:13,976 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:44:13,977 - DiagnosticRunner - INFO - Timestamp: 2025-08-24 09:44:13.977683
+2025-08-24 09:44:13,977 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-24 09:44:13,979 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-24 09:44:13,979 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:44:13,982 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-24 09:44:13,982 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:44:13,982 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-24 09:44:13,986 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,986 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-24 09:44:13,990 - DiagnosticRunner - ERROR - ERROR rexus.core.module_manager - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,990 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-24 09:44:13,992 - DiagnosticRunner - ERROR - ERROR rexus.core.auth_manager - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,992 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-24 09:44:13,996 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,996 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-24 09:44:13,996 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,996 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-24 09:44:13,996 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:13,996 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-24 09:44:14,007 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,009 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-24 09:44:14,009 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,009 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-24 09:44:14,016 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,016 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-24 09:44:14,017 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,017 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-24 09:44:14,022 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,022 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-24 09:44:14,024 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,024 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-24 09:44:14,028 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,030 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-24 09:44:14,034 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,034 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-24 09:44:14,038 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,038 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-24 09:44:14,042 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,043 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-24 09:44:14,048 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,048 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-24 09:44:14,050 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,052 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-24 09:44:14,056 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,057 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-24 09:44:14,058 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,058 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-24 09:44:14,058 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,058 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-24 09:44:14,058 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,058 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-24 09:44:14,069 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,069 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-24 09:44:14,073 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,073 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-24 09:44:14,073 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,077 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-24 09:44:14,080 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.model - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,080 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-24 09:44:14,081 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.view - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,081 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-24 09:44:14,081 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:44:14,090 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: No module named 'rexus'
+2025-08-24 09:44:14,091 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-24 09:44:14,091 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:44:14,356 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-24 09:44:14,358 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-24 09:44:14,358 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-24 09:44:14,683 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-24 09:44:14,683 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-24 09:44:14,685 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:44:14,685 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-24 09:44:14,687 - DiagnosticRunner - ERROR - ❌ configuracion Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,689 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-24 09:44:14,691 - DiagnosticRunner - ERROR - ❌ usuarios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,691 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-24 09:44:14,694 - DiagnosticRunner - ERROR - ❌ inventario Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,694 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-24 09:44:14,697 - DiagnosticRunner - ERROR - ❌ obras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,697 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-24 09:44:14,697 - DiagnosticRunner - ERROR - ❌ compras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,697 - DiagnosticRunner - INFO - Testing controller: pedidos
+2025-08-24 09:44:14,704 - DiagnosticRunner - ERROR - ❌ pedidos Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,706 - DiagnosticRunner - INFO - Testing controller: vidrios
+2025-08-24 09:44:14,708 - DiagnosticRunner - ERROR - ❌ vidrios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,708 - DiagnosticRunner - INFO - Testing controller: notificaciones
+2025-08-24 09:44:14,710 - DiagnosticRunner - ERROR - ❌ notificaciones Controller - ImportError: No module named 'rexus'
+2025-08-24 09:44:14,715 - DiagnosticRunner - INFO - 
+📋 REPORTE COMPLETO GENERADO: DIAGNOSTIC_REPORT_20250824_094414.md
+2025-08-24 09:44:14,717 - DiagnosticRunner - INFO - 
+================================================================================
+2025-08-24 09:44:14,717 - DiagnosticRunner - INFO - DIAGNOSTICO COMPLETO FINALIZADO
+2025-08-24 09:44:14,717 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:44:14,720 - DiagnosticRunner - INFO - RESUMEN:
+2025-08-24 09:44:14,720 - DiagnosticRunner - INFO -    - Errores críticos encontrados: 36
+2025-08-24 09:44:14,722 - DiagnosticRunner - INFO -    - Advertencias del sistema: 0
+2025-08-24 09:44:14,722 - DiagnosticRunner - INFO -    - Módulos analizados: 27
+2025-08-24 09:44:14,724 - DiagnosticRunner - INFO -    - Reporte generado: DIAGNOSTIC_REPORT_20250824_094414.md
+2025-08-24 09:53:34,452 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-24 09:53:34,458 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:53:34,459 - DiagnosticRunner - INFO - Timestamp: 2025-08-24 09:53:34.459429
+2025-08-24 09:53:34,460 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-24 09:53:34,461 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-24 09:53:34,461 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:53:34,462 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-24 09:53:34,463 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:53:34,464 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-24 09:53:34,467 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,467 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-24 09:53:34,470 - DiagnosticRunner - ERROR - ERROR rexus.core.module_manager - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,470 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-24 09:53:34,474 - DiagnosticRunner - ERROR - ERROR rexus.core.auth_manager - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,476 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-24 09:53:34,478 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,479 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-24 09:53:34,480 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,482 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-24 09:53:34,483 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,485 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-24 09:53:34,487 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,487 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-24 09:53:34,492 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,493 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-24 09:53:34,493 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,493 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-24 09:53:34,498 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,499 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-24 09:53:34,502 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,502 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-24 09:53:34,505 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,507 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-24 09:53:34,509 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,510 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-24 09:53:34,512 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,512 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-24 09:53:34,514 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,514 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-24 09:53:34,518 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,520 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-24 09:53:34,522 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,523 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-24 09:53:34,525 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,525 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-24 09:53:34,525 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,530 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-24 09:53:34,532 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,533 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-24 09:53:34,535 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,535 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-24 09:53:34,540 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,542 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-24 09:53:34,545 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,546 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-24 09:53:34,547 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,547 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-24 09:53:34,547 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,547 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-24 09:53:34,554 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.model - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,557 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-24 09:53:34,559 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.view - ImportError: No module named 'rexus'
+2025-08-24 09:53:34,561 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-24 09:53:34,564 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:53:34,567 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: No module named 'rexus'
+2025-08-24 09:53:34,568 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-24 09:53:34,568 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:53:34,793 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-24 09:53:34,793 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-24 09:53:34,794 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-24 09:53:35,121 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-24 09:53:35,123 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-24 09:53:35,126 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:53:35,128 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-24 09:53:35,131 - DiagnosticRunner - ERROR - ❌ configuracion Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,133 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-24 09:53:35,136 - DiagnosticRunner - ERROR - ❌ usuarios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,137 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-24 09:53:35,142 - DiagnosticRunner - ERROR - ❌ inventario Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,143 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-24 09:53:35,146 - DiagnosticRunner - ERROR - ❌ obras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,146 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-24 09:53:35,146 - DiagnosticRunner - ERROR - ❌ compras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,153 - DiagnosticRunner - INFO - Testing controller: pedidos
+2025-08-24 09:53:35,157 - DiagnosticRunner - ERROR - ❌ pedidos Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,160 - DiagnosticRunner - INFO - Testing controller: vidrios
+2025-08-24 09:53:35,163 - DiagnosticRunner - ERROR - ❌ vidrios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,163 - DiagnosticRunner - INFO - Testing controller: notificaciones
+2025-08-24 09:53:35,166 - DiagnosticRunner - ERROR - ❌ notificaciones Controller - ImportError: No module named 'rexus'
+2025-08-24 09:53:35,173 - DiagnosticRunner - INFO - 
+📋 REPORTE COMPLETO GENERADO: DIAGNOSTIC_REPORT_20250824_095335.md
+2025-08-24 09:53:35,175 - DiagnosticRunner - INFO - 
+================================================================================
+2025-08-24 09:53:35,176 - DiagnosticRunner - INFO - DIAGNOSTICO COMPLETO FINALIZADO
+2025-08-24 09:53:35,178 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:53:35,178 - DiagnosticRunner - INFO - RESUMEN:
+2025-08-24 09:53:35,180 - DiagnosticRunner - INFO -    - Errores críticos encontrados: 36
+2025-08-24 09:53:35,181 - DiagnosticRunner - INFO -    - Advertencias del sistema: 0
+2025-08-24 09:53:35,182 - DiagnosticRunner - INFO -    - Módulos analizados: 27
+2025-08-24 09:53:35,183 - DiagnosticRunner - INFO -    - Reporte generado: DIAGNOSTIC_REPORT_20250824_095335.md
+2025-08-24 09:56:02,466 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-24 09:56:02,471 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:56:02,471 - DiagnosticRunner - INFO - Timestamp: 2025-08-24 09:56:02.471879
+2025-08-24 09:56:02,472 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-24 09:56:02,472 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-24 09:56:02,472 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:56:02,474 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-24 09:56:02,474 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:56:02,474 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-24 09:56:02,476 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,478 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-24 09:56:02,478 - DiagnosticRunner - ERROR - ERROR rexus.core.module_manager - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,480 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-24 09:56:02,480 - DiagnosticRunner - ERROR - ERROR rexus.core.auth_manager - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,483 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-24 09:56:02,485 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,485 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-24 09:56:02,487 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,489 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-24 09:56:02,489 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,489 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-24 09:56:02,493 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,494 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-24 09:56:02,494 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,494 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-24 09:56:02,498 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,498 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-24 09:56:02,498 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,498 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-24 09:56:02,503 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,505 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-24 09:56:02,505 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,505 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-24 09:56:02,505 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,505 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-24 09:56:02,511 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,511 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-24 09:56:02,514 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,514 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-24 09:56:02,514 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,514 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-24 09:56:02,514 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,514 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-24 09:56:02,522 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,522 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-24 09:56:02,524 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,524 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-24 09:56:02,527 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,527 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-24 09:56:02,527 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,527 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-24 09:56:02,527 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,533 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-24 09:56:02,535 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,535 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-24 09:56:02,537 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,537 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-24 09:56:02,537 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,537 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-24 09:56:02,537 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.model - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,543 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-24 09:56:02,545 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.view - ImportError: No module named 'rexus'
+2025-08-24 09:56:02,545 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-24 09:56:02,549 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:56:02,551 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: No module named 'rexus'
+2025-08-24 09:56:02,551 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-24 09:56:02,554 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:56:02,762 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-24 09:56:02,767 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-24 09:56:02,767 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-24 09:56:03,049 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-24 09:56:03,049 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-24 09:56:03,049 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 09:56:03,052 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-24 09:56:03,052 - DiagnosticRunner - ERROR - ❌ configuracion Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,052 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-24 09:56:03,056 - DiagnosticRunner - ERROR - ❌ usuarios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,057 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-24 09:56:03,057 - DiagnosticRunner - ERROR - ❌ inventario Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,057 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-24 09:56:03,057 - DiagnosticRunner - ERROR - ❌ obras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,057 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-24 09:56:03,063 - DiagnosticRunner - ERROR - ❌ compras Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,063 - DiagnosticRunner - INFO - Testing controller: pedidos
+2025-08-24 09:56:03,065 - DiagnosticRunner - ERROR - ❌ pedidos Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,065 - DiagnosticRunner - INFO - Testing controller: vidrios
+2025-08-24 09:56:03,065 - DiagnosticRunner - ERROR - ❌ vidrios Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,065 - DiagnosticRunner - INFO - Testing controller: notificaciones
+2025-08-24 09:56:03,065 - DiagnosticRunner - ERROR - ❌ notificaciones Controller - ImportError: No module named 'rexus'
+2025-08-24 09:56:03,077 - DiagnosticRunner - INFO - 
+📋 REPORTE COMPLETO GENERADO: DIAGNOSTIC_REPORT_20250824_095603.md
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO - 
+================================================================================
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO - DIAGNOSTICO COMPLETO FINALIZADO
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO - RESUMEN:
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO -    - Errores críticos encontrados: 36
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO -    - Advertencias del sistema: 0
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO -    - Módulos analizados: 27
+2025-08-24 09:56:03,079 - DiagnosticRunner - INFO -    - Reporte generado: DIAGNOSTIC_REPORT_20250824_095603.md
+2025-08-24 10:09:28,270 - DiagnosticRunner - INFO - INICIANDO DIAGNOSTICO COMPLETO DEL SISTEMA
+2025-08-24 10:09:28,273 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - Timestamp: 2025-08-24 10:09:28.276937
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - Working Directory: D:\martin\Rexus.app
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - INICIANDO PRUEBAS DE IMPORTACION DE MODULOS
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 10:09:28,276 - DiagnosticRunner - INFO - Testing: rexus.core.database_manager
+2025-08-24 10:09:28,283 - DiagnosticRunner - ERROR - ERROR rexus.core.database_manager - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,284 - DiagnosticRunner - INFO - Testing: rexus.core.module_manager
+2025-08-24 10:09:28,287 - DiagnosticRunner - ERROR - ERROR rexus.core.module_manager - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,287 - DiagnosticRunner - INFO - Testing: rexus.core.auth_manager
+2025-08-24 10:09:28,287 - DiagnosticRunner - ERROR - ERROR rexus.core.auth_manager - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,287 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.controller
+2025-08-24 10:09:28,287 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,287 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.model
+2025-08-24 10:09:28,295 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,295 - DiagnosticRunner - INFO - Testing: rexus.modules.configuracion.view
+2025-08-24 10:09:28,299 - DiagnosticRunner - ERROR - ERROR rexus.modules.configuracion.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,301 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.controller
+2025-08-24 10:09:28,303 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,303 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.model
+2025-08-24 10:09:28,308 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,310 - DiagnosticRunner - INFO - Testing: rexus.modules.usuarios.view
+2025-08-24 10:09:28,310 - DiagnosticRunner - ERROR - ERROR rexus.modules.usuarios.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,310 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.controller
+2025-08-24 10:09:28,315 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,316 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.model
+2025-08-24 10:09:28,318 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,318 - DiagnosticRunner - INFO - Testing: rexus.modules.inventario.view
+2025-08-24 10:09:28,318 - DiagnosticRunner - ERROR - ERROR rexus.modules.inventario.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,318 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.controller
+2025-08-24 10:09:28,326 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,326 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.model
+2025-08-24 10:09:28,329 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,329 - DiagnosticRunner - INFO - Testing: rexus.modules.obras.view
+2025-08-24 10:09:28,333 - DiagnosticRunner - ERROR - ERROR rexus.modules.obras.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,334 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.controller
+2025-08-24 10:09:28,334 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,334 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.model
+2025-08-24 10:09:28,339 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,339 - DiagnosticRunner - INFO - Testing: rexus.modules.compras.view
+2025-08-24 10:09:28,339 - DiagnosticRunner - ERROR - ERROR rexus.modules.compras.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,339 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.controller
+2025-08-24 10:09:28,339 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,339 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.model
+2025-08-24 10:09:28,339 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,350 - DiagnosticRunner - INFO - Testing: rexus.modules.pedidos.view
+2025-08-24 10:09:28,351 - DiagnosticRunner - ERROR - ERROR rexus.modules.pedidos.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,351 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.controller
+2025-08-24 10:09:28,351 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,351 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.model
+2025-08-24 10:09:28,351 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,360 - DiagnosticRunner - INFO - Testing: rexus.modules.vidrios.view
+2025-08-24 10:09:28,360 - DiagnosticRunner - ERROR - ERROR rexus.modules.vidrios.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,360 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.controller
+2025-08-24 10:09:28,365 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,365 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.model
+2025-08-24 10:09:28,368 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.model - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,370 - DiagnosticRunner - INFO - Testing: rexus.modules.notificaciones.view
+2025-08-24 10:09:28,370 - DiagnosticRunner - ERROR - ERROR rexus.modules.notificaciones.view - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,370 - DiagnosticRunner - INFO - 
+🗄️ INICIANDO PRUEBAS DE CONECTIVIDAD DE BD
+2025-08-24 10:09:28,370 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 10:09:28,370 - DiagnosticRunner - ERROR - ❌ DatabaseManager no disponible: No module named 'rexus'
+2025-08-24 10:09:28,370 - DiagnosticRunner - INFO - 
+🖥️ INICIANDO PRUEBAS DE COMPONENTES UI
+2025-08-24 10:09:28,370 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 10:09:28,604 - DiagnosticRunner - INFO - ✅ PyQt6.QtWidgets - OK
+2025-08-24 10:09:28,604 - DiagnosticRunner - INFO - ✅ PyQt6.QtCore - OK
+2025-08-24 10:09:28,604 - DiagnosticRunner - INFO - ✅ PyQt6.QtGui - OK
+2025-08-24 10:09:28,954 - DiagnosticRunner - INFO - ✅ PyQt6.QtWebEngineWidgets - OK
+2025-08-24 10:09:28,954 - DiagnosticRunner - INFO - 
+🎮 INICIANDO PRUEBAS DE CONTROLADORES
+2025-08-24 10:09:28,954 - DiagnosticRunner - INFO - ============================================================
+2025-08-24 10:09:28,954 - DiagnosticRunner - INFO - Testing controller: configuracion
+2025-08-24 10:09:28,954 - DiagnosticRunner - ERROR - ❌ configuracion Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,954 - DiagnosticRunner - INFO - Testing controller: usuarios
+2025-08-24 10:09:28,954 - DiagnosticRunner - ERROR - ❌ usuarios Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,964 - DiagnosticRunner - INFO - Testing controller: inventario
+2025-08-24 10:09:28,966 - DiagnosticRunner - ERROR - ❌ inventario Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,968 - DiagnosticRunner - INFO - Testing controller: obras
+2025-08-24 10:09:28,970 - DiagnosticRunner - ERROR - ❌ obras Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,970 - DiagnosticRunner - INFO - Testing controller: compras
+2025-08-24 10:09:28,970 - DiagnosticRunner - ERROR - ❌ compras Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,974 - DiagnosticRunner - INFO - Testing controller: pedidos
+2025-08-24 10:09:28,974 - DiagnosticRunner - ERROR - ❌ pedidos Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,974 - DiagnosticRunner - INFO - Testing controller: vidrios
+2025-08-24 10:09:28,974 - DiagnosticRunner - ERROR - ❌ vidrios Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,974 - DiagnosticRunner - INFO - Testing controller: notificaciones
+2025-08-24 10:09:28,984 - DiagnosticRunner - ERROR - ❌ notificaciones Controller - ImportError: No module named 'rexus'
+2025-08-24 10:09:28,985 - DiagnosticRunner - INFO - 
+📋 REPORTE COMPLETO GENERADO: DIAGNOSTIC_REPORT_20250824_100928.md
+2025-08-24 10:09:28,990 - DiagnosticRunner - INFO - 
+================================================================================
+2025-08-24 10:09:28,990 - DiagnosticRunner - INFO - DIAGNOSTICO COMPLETO FINALIZADO
+2025-08-24 10:09:28,992 - DiagnosticRunner - INFO - ================================================================================
+2025-08-24 10:09:28,992 - DiagnosticRunner - INFO - RESUMEN:
+2025-08-24 10:09:28,992 - DiagnosticRunner - INFO -    - Errores críticos encontrados: 36
+2025-08-24 10:09:28,992 - DiagnosticRunner - INFO -    - Advertencias del sistema: 0
+2025-08-24 10:09:28,995 - DiagnosticRunner - INFO -    - Módulos analizados: 27
+2025-08-24 10:09:28,995 - DiagnosticRunner - INFO -    - Reporte generado: DIAGNOSTIC_REPORT_20250824_100928.md

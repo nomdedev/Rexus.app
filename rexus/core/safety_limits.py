@@ -9,17 +9,17 @@ Objetivo: Implementar límites máximos para operaciones críticas
 from typing import Any, Dict, Optional, Tuple
 from functools import wraps
 import time
+import sys
+import traceback
 
 # Importar logging
 try:
-    from rexus.utils.app_logger import get_logger
-    logger = get_logger()
+    from ..utils.app_logger import get_logger
+    logger = get_logger(__name__)
 except ImportError:
-    class DummyLogger:
-        def info(self, msg): logger.info(f"[INFO] {msg}")
-        def warning(self, msg): logger.info(f"[WARNING] {msg}")  
-        def error(self, msg): logger.info(f"[ERROR] {msg}")
-    logger = DummyLogger()
+    import logging
+    logger = logging.getLogger(__name__)
+
 
 class SafetyLimits:
     """
@@ -48,192 +48,344 @@ class SafetyLimits:
     RATE_LIMIT_SECONDS = 1      # Mínimo tiempo entre operaciones pesadas
     
     @staticmethod
-    def validate_record_limit(operation: str, requested: int, limit_type: str = "general") -> Tuple[bool, int, str]:
+    def validate_record_count(count: int, operation: str = "consulta") -> bool:
         """
-        Valida que la cantidad de registros solicitados esté dentro de los límites.
+        Valida que el número de registros esté dentro de los límites seguros.
         
         Args:
-            operation: Nombre de la operación para logging
-            requested: Cantidad de registros solicitados
-            limit_type: Tipo de límite ("export", "table", "api", "search", "bulk")
+            count: Número de registros
+            operation: Tipo de operación
             
         Returns:
-            Tuple[bool, int, str]: (es_válido, límite_aplicado, mensaje)
+            True si está dentro de los límites
         """
-        # Definir límites por tipo
         limits = {
             "export": SafetyLimits.MAX_EXPORT_RECORDS,
             "table": SafetyLimits.MAX_TABLE_RECORDS,
             "api": SafetyLimits.MAX_API_RECORDS,
             "search": SafetyLimits.MAX_SEARCH_RESULTS,
-            "bulk": SafetyLimits.MAX_BULK_INSERT,
-            "general": SafetyLimits.MAX_API_RECORDS
+            "bulk_insert": SafetyLimits.MAX_BULK_INSERT
         }
         
-        limit = limits.get(limit_type, SafetyLimits.MAX_API_RECORDS)
+        limit = limits.get(operation.lower(), SafetyLimits.MAX_API_RECORDS)
         
-        if requested <= 0:
-            logger.warning(f"Cantidad de registros inválida para {operation}: {requested}")
-            return False, limit, f"Cantidad de registros debe ser mayor a 0"
-        
-        if requested > limit:
-            logger.warning(f"Límite excedido en {operation}: solicitados={requested}, límite={limit}")
-            return False, limit, f"Máximo {limit} registros permitidos para {limit_type}"
-        
-        logger.debug(f"Límite OK para {operation}: {requested} <= {limit}")
-        return True, requested, "OK"
+        if count > limit:
+            logger.warning(f"Operación {operation} excede límite: {count} > {limit}")
+            return False
+            
+        return True
     
     @staticmethod
-    def apply_safe_limit(requested: int, limit_type: str = "general") -> int:
+    def validate_file_size(size_bytes: int) -> bool:
         """
-        Aplica un límite seguro a la cantidad solicitada.
+        Valida que el tamaño de archivo esté dentro de los límites.
         
         Args:
-            requested: Cantidad solicitada
-            limit_type: Tipo de límite
+            size_bytes: Tamaño en bytes
             
         Returns:
-            int: Cantidad segura a usar
+            True si está dentro del límite
         """
-        is_valid, safe_amount, _ = SafetyLimits.validate_record_limit("apply_limit", requested, limit_type)
-        return safe_amount
+        max_bytes = SafetyLimits.MAX_UPLOAD_SIZE_MB * 1024 * 1024
+        
+        if size_bytes > max_bytes:
+            logger.warning(f"Archivo excede límite: {size_bytes} bytes > {max_bytes} bytes")
+            return False
+            
+        return True
+    
+    @staticmethod
+    def validate_filename(filename: str) -> bool:
+        """
+        Valida que el nombre de archivo esté dentro de los límites.
+        
+        Args:
+            filename: Nombre del archivo
+            
+        Returns:
+            True si es válido
+        """
+        if len(filename) > SafetyLimits.MAX_FILENAME_LENGTH:
+            logger.warning(f"Nombre de archivo muy largo: {len(filename)} > {SafetyLimits.MAX_FILENAME_LENGTH}")
+            return False
+            
+        # Validar caracteres peligrosos
+        dangerous_chars = ['<', '>', ':', '"', '|', '?', '*', '\\', '/']
+        if any(char in filename for char in dangerous_chars):
+            logger.warning(f"Nombre de archivo contiene caracteres peligrosos: {filename}")
+            return False
+            
+        return True
+    
+    @staticmethod
+    def get_memory_usage_mb() -> float:
+        """
+        Obtiene el uso actual de memoria en MB.
+        
+        Returns:
+            Uso de memoria en MB
+        """
+        try:
+            import psutil
+            process = psutil.Process()
+            return process.memory_info().rss / 1024 / 1024
+        except ImportError:
+            # Fallback usando sys
+            return sys.getsizeof(locals()) / 1024 / 1024
+        except Exception:
+            return 0.0
 
-def limit_records(limit_type: str = "general", enforce: bool = True):
+
+def limit_records(operation: str, enforce: bool = True):
     """
-    Decorador para limitar automáticamente el número de registros en operaciones.
+    Decorador para limitar el número de registros en operaciones.
     
     Args:
-        limit_type: Tipo de límite a aplicar
-        enforce: Si True, falla si excede límite. Si False, aplica límite automáticamente
+        operation: Tipo de operación
+        enforce: Si forzar el límite o solo advertir
+        
+    Returns:
+        Decorador
     """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            # Buscar parámetros de límite comunes
-            limit_params = ['limit', 'cantidad', 'registros', 'max_records', 'count']
+            # Intentar obtener el count de los argumentos
+            record_count = None
             
-            for param in limit_params:
-                if param in kwargs:
-                    original_value = kwargs[param]
-                    
-                    if enforce:
-                        is_valid, safe_value, message = SafetyLimits.validate_record_limit(
-                            func.__name__, original_value, limit_type
-                        )
-                        if not is_valid:
-                            logger.error(f"Límite excedido en {func.__name__}: {message}")
-                            raise ValueError(message)
-                        kwargs[param] = safe_value
-                    else:
-                        safe_value = SafetyLimits.apply_safe_limit(original_value, limit_type)
-                        if safe_value != original_value:
-                            logger.warning(f"Límite aplicado en {func.__name__}: {original_value} -> {safe_value}")
-                        kwargs[param] = safe_value
+            # Buscar en args
+            for arg in args:
+                if isinstance(arg, (list, tuple)):
+                    record_count = len(arg)
                     break
+                elif isinstance(arg, int) and arg > 0:
+                    record_count = arg
+                    break
+            
+            # Buscar en kwargs
+            if record_count is None:
+                for key in ['count', 'limit', 'records', 'data']:
+                    if key in kwargs:
+                        if isinstance(kwargs[key], (list, tuple)):
+                            record_count = len(kwargs[key])
+                        elif isinstance(kwargs[key], int):
+                            record_count = kwargs[key]
+                        break
+            
+            # Validar si encontramos count
+            if record_count is not None:
+                if not SafetyLimits.validate_record_count(record_count, operation):
+                    if enforce:
+                        raise ValueError(f"Operación {operation} excede límites de seguridad: {record_count} registros")
+                    else:
+                        logger.warning(f"Operación {operation} con {record_count} registros (advertencia)")
             
             return func(*args, **kwargs)
         return wrapper
     return decorator
 
-def timeout_operation(seconds: int = None):
+
+def timeout_operation(seconds: int):
     """
-    Decorador para aplicar timeout a operaciones que pueden ser lentas.
+    Decorador para establecer timeout en operaciones.
     
     Args:
-        seconds: Tiempo máximo en segundos
+        seconds: Timeout en segundos
+        
+    Returns:
+        Decorador
     """
     def decorator(func):
         @wraps(func)
         def wrapper(*args, **kwargs):
-            timeout = seconds or SafetyLimits.MAX_QUERY_SECONDS
-            
             start_time = time.time()
             
             try:
                 result = func(*args, **kwargs)
                 
                 elapsed = time.time() - start_time
-                if elapsed > timeout:
-                    logger.warning(f"Operación {func.__name__} tardó {elapsed:.2f}s (límite: {timeout}s)")
+                if elapsed > seconds:
+                    logger.warning(f"Operación {func.__name__} tardó {elapsed:.2f}s (límite: {seconds}s)")
                 
                 return result
                 
             except Exception as e:
                 elapsed = time.time() - start_time
-                            return False, error_msg
+                logger.error(f"Error en {func.__name__} después de {elapsed:.2f}s: {e}")
+                raise
+                
+        return wrapper
+    return decorator
+
+
+def memory_limit(max_mb: int):
+    """
+    Decorador para verificar límites de memoria.
     
-    @limit_records("export", enforce=False)  # Aplicar límite automáticamente
-    def export_to_csv(self, data, filename: str, max_records: int = None):
+    Args:
+        max_mb: Límite máximo en MB
+        
+    Returns:
+        Decorador
+    """
+    def decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            memory_before = SafetyLimits.get_memory_usage_mb()
+            
+            try:
+                result = func(*args, **kwargs)
+                
+                memory_after = SafetyLimits.get_memory_usage_mb()
+                memory_used = memory_after - memory_before
+                
+                if memory_used > max_mb:
+                    logger.warning(f"Operación {func.__name__} usó {memory_used:.2f}MB (límite: {max_mb}MB)")
+                
+                return result
+                
+            except Exception as e:
+                logger.error(f"Error en {func.__name__}: {e}")
+                raise
+                
+        return wrapper
+    return decorator
+
+
+class SafeOperations:
+    """Operaciones comunes con límites de seguridad aplicados."""
+    
+    @staticmethod
+    @limit_records("export", enforce=False)
+    @timeout_operation(SafetyLimits.MAX_EXPORT_SECONDS)
+    def export_to_csv(data, filename: str, max_records: int = None):
         """
         Exporta datos a CSV con límites automáticos.
         
         Args:
             data: Datos a exportar
             filename: Nombre del archivo
-            max_records: Máximo número de registros (será limitado automáticamente)
+            max_records: Límite máximo de registros
         """
+        # Validar nombre de archivo
+        if not SafetyLimits.validate_filename(filename):
+            raise ValueError(f"Nombre de archivo inválido: {filename}")
+        
+        # Aplicar límite si se especifica
+        if max_records and len(data) > max_records:
+            logger.warning(f"Limitando exportación a {max_records} registros de {len(data)} totales")
+            data = data[:max_records]
+        
         try:
-            self.logger.info(f"Iniciando exportación CSV para {self.module_name}: {len(data)} registros")
+            import csv
+            with open(filename, 'w', newline='', encoding='utf-8') as csvfile:
+                if data:
+                    writer = csv.DictWriter(csvfile, fieldnames=data[0].keys())
+                    writer.writeheader()
+                    writer.writerows(data)
             
-            # El decorador ya aplicó el límite automáticamente
-            
-            # Validar nombre de archivo
-            if len(filename) > SafetyLimits.MAX_FILENAME_LENGTH:
-                filename = filename[:SafetyLimits.MAX_FILENAME_LENGTH]
-            
-            # Aquí iría la lógica real de exportación
-            self.logger.info(f"Exportación CSV completada: {filename}")
-            
-            return True, f"Exportación exitosa: {len(data)} registros"
+            logger.info(f"Exportación CSV exitosa: {len(data)} registros a {filename}")
+            return True
             
         except Exception as e:
-            error_msg = f"Error en exportación CSV: {str(e)}"
-            self.logger.error(error_msg, exc_info=True)
-            return False, error_msg
-
-class SafeQueryManager:
-    """
-    Manager para consultas seguras con límites y timeouts.
-    """
+            logger.error(f"Error en exportación CSV: {e}")
+            return False
     
     @staticmethod
-    @limit_records("api", enforce=True)
-    def obtener_registros_seguros(query_func, limit: int = None, **kwargs):
+    @limit_records("bulk_insert", enforce=True)
+    @timeout_operation(SafetyLimits.MAX_QUERY_SECONDS)
+    def bulk_insert_safe(connection, table: str, records: list):
         """
-        Ejecuta una consulta de forma segura con límites.
+        Inserción masiva con límites de seguridad.
         
         Args:
-            query_func: Función de consulta a ejecutar
-            limit: Límite de registros
-            **kwargs: Argumentos para la función
+            connection: Conexión a la base de datos
+            table: Tabla de destino
+            records: Registros a insertar
             
         Returns:
-            Resultado de la consulta limitado
+            Número de registros insertados
+        """
+        if not records:
+            return 0
+        
+        try:
+            # Dividir en lotes si es necesario
+            batch_size = min(SafetyLimits.MAX_BULK_INSERT, len(records))
+            total_inserted = 0
+            
+            for i in range(0, len(records), batch_size):
+                batch = records[i:i + batch_size]
+                
+                # Aquí iría la lógica específica de inserción
+                # Por ahora simulamos
+                logger.info(f"Insertando lote de {len(batch)} registros en {table}")
+                total_inserted += len(batch)
+            
+            return total_inserted
+            
+        except Exception as e:
+            logger.error(f"Error en inserción masiva: {e}")
+            raise
+    
+    @staticmethod
+    def validate_operation_safety(operation: str, **params) -> Tuple[bool, str]:
+        """
+        Valida que una operación sea segura antes de ejecutar.
+        
+        Args:
+            operation: Tipo de operación
+            **params: Parámetros de la operación
+            
+        Returns:
+            Tupla (es_seguro, mensaje)
         """
         try:
-            logger.debug(f"Ejecutando consulta segura con límite: {limit}")
+            # Validar registros
+            if 'record_count' in params:
+                if not SafetyLimits.validate_record_count(params['record_count'], operation):
+                    return False, f"Número de registros excede límites para {operation}"
             
-            result = query_func(limit=limit, **kwargs)
+            # Validar archivo
+            if 'filename' in params:
+                if not SafetyLimits.validate_filename(params['filename']):
+                    return False, f"Nombre de archivo inválido: {params['filename']}"
             
-            if hasattr(result, '__len__'):
-                logger.info(f"Consulta segura completada: {len(result)} registros")
+            if 'file_size' in params:
+                if not SafetyLimits.validate_file_size(params['file_size']):
+                    return False, f"Tamaño de archivo excede límites"
             
-            return result
+            # Validar memoria
+            current_memory = SafetyLimits.get_memory_usage_mb()
+            if current_memory > SafetyLimits.MAX_MEMORY_MB:
+                return False, f"Uso de memoria muy alto: {current_memory:.1f}MB"
             
-        except Exception as e:            raise
-    
-    @staticmethod
-    @timeout_operation()
-    def obtener_con_timeout(query_func, timeout_seconds: int = None, **kwargs):
-        """
-        Ejecuta una consulta con timeout automático.
-        
-        Args:
-            query_func: Función de consulta a ejecutar
-            timeout_seconds: Timeout en segundos
-            **kwargs: Argumentos para la función
+            return True, "Operación segura"
             
-        Returns:
-            Resultado de la consulta
-        """
-        return query_func(**kwargs)
+        except Exception as e:
+            error_msg = f"Error validando seguridad: {e}"
+            logger.error(error_msg)
+            return False, error_msg
+
+
+# Funciones de conveniencia
+def is_safe_operation(operation: str, **params) -> bool:
+    """Función de conveniencia para validar operaciones."""
+    is_safe, _ = SafeOperations.validate_operation_safety(operation, **params)
+    return is_safe
+
+
+def get_safety_limits() -> Dict[str, int]:
+    """Obtiene todos los límites de seguridad definidos."""
+    return {
+        'max_export_records': SafetyLimits.MAX_EXPORT_RECORDS,
+        'max_table_records': SafetyLimits.MAX_TABLE_RECORDS,
+        'max_api_records': SafetyLimits.MAX_API_RECORDS,
+        'max_search_results': SafetyLimits.MAX_SEARCH_RESULTS,
+        'max_bulk_insert': SafetyLimits.MAX_BULK_INSERT,
+        'max_query_seconds': SafetyLimits.MAX_QUERY_SECONDS,
+        'max_export_seconds': SafetyLimits.MAX_EXPORT_SECONDS,
+        'max_memory_mb': SafetyLimits.MAX_MEMORY_MB,
+        'max_upload_size_mb': SafetyLimits.MAX_UPLOAD_SIZE_MB,
+        'max_filename_length': SafetyLimits.MAX_FILENAME_LENGTH
+    }

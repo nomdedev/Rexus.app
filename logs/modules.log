@@ -1327,3 +1327,5 @@
 2025-08-22 18:01:19 | INFO     | rexus.modules.obras.model | [OBRAS] Tabla 'detalles_obra' verificada correctamente.
 2025-08-22 18:35:45 | [32mINFO[0m | rexus.modules.notificaciones.view | Sistema de logging inicializado
 2025-08-22 18:35:45 | [32mINFO[0m | rexus.modules.notificaciones.view | Vista de notificaciones inicializada
+2025-08-24 09:52:36 | WARNING  | rexus.modules.configuracion.controller | No se pudo importar BaseController
+2025-08-24 09:55:52 | WARNING  | rexus.modules.configuracion.controller | No se pudo importar BaseController

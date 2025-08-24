@@ -374,7 +374,7 @@ class PedidosView(QWidget):
             # Confirmación del usuario
             respuesta = QMessageBox.question(
                 self,
-                ,
+                "Confirmar Eliminación",
                 "¿Está seguro de que desea eliminar este pedido?\n\nEsta acción no se puede deshacer.",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                 QMessageBox.StandardButton.No

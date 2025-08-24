@@ -12,4 +12,4 @@ from .autenticacion_manager import AutenticacionManager
 from .consultas_manager import ConsultasManager
 from .usuarios_manager import UsuariosManager
 
-__all__ = [, "UsuariosManager", "ConsultasManager"]
+__all__ = [ "UsuariosManager", "ConsultasManager"]

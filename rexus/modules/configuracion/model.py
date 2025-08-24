@@ -1,6 +1,3 @@
-# [LOCK] DB Authorization Check - Verify user permissions before DB operations
-# Ensure all database operations are properly authorized
-# DB Authorization Check
 """
 Modelo de Configuración - Rexus.app v2.0.0
 
@@ -16,7 +13,160 @@ Gestiona todas las configuraciones del sistema incluyendo:
 import json
 import logging
 import os
-                            # Fallback con datos demo filtrados
+from typing import Dict, List, Any, Optional
+
+# Importar logging
+try:
+    from ...utils.app_logger import get_logger
+    logger = get_logger(__name__)
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
+
+
+class ConfiguracionModel:
+    """Modelo para gestionar configuraciones del sistema."""
+    
+    def __init__(self, db_connection=None):
+        """
+        Inicializar modelo de configuración.
+        
+        Args:
+            db_connection: Conexión a la base de datos
+        """
+        self.db_connection = db_connection
+        self.configuraciones_cache = {}
+        logger.info("ConfiguracionModel inicializado")
+    
+    def crear_tablas(self):
+        """Crea las tablas necesarias para configuraciones."""
+        try:
+            if not self.db_connection:
+                logger.warning("No hay conexión a BD disponible")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            
+            # Tabla principal de configuraciones
+            create_config_table = """
+                CREATE TABLE IF NOT EXISTS configuraciones (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    clave TEXT NOT NULL UNIQUE,
+                    valor TEXT NOT NULL,
+                    tipo TEXT DEFAULT 'string',
+                    categoria TEXT DEFAULT 'general',
+                    descripcion TEXT,
+                    es_editable BOOLEAN DEFAULT 1,
+                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    usuario_modificacion TEXT DEFAULT 'SISTEMA'
+                )
+            """
+            
+            cursor.execute(create_config_table)
+            self.db_connection.commit()
+            
+            # Insertar configuraciones por defecto si no existen
+            self._insertar_configuraciones_default()
+            
+            logger.debug("Tablas de configuración creadas exitosamente")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error creando tablas de configuración: {e}")
+            return False
+    
+    def _insertar_configuraciones_default(self):
+        """Inserta configuraciones por defecto del sistema."""
+        try:
+            cursor = self.db_connection.cursor()
+            
+            configuraciones_default = [
+                ('empresa_nombre', 'Rexus.app', 'string', 'empresa', 'Nombre de la empresa'),
+                ('empresa_direccion', '', 'string', 'empresa', 'Dirección de la empresa'),
+                ('empresa_telefono', '', 'string', 'empresa', 'Teléfono de la empresa'),
+                ('empresa_email', '', 'string', 'empresa', 'Email de la empresa'),
+                ('sistema_tema', 'light', 'string', 'sistema', 'Tema del sistema'),
+                ('sistema_idioma', 'es', 'string', 'sistema', 'Idioma del sistema'),
+                ('bd_backup_auto', 'true', 'boolean', 'database', 'Backup automático'),
+                ('bd_backup_frecuencia', '24', 'number', 'database', 'Frecuencia backup (horas)'),
+                ('usuario_sesion_timeout', '480', 'number', 'usuario', 'Timeout de sesión (minutos)'),
+                ('sistema_logs_nivel', 'INFO', 'string', 'sistema', 'Nivel de logs')
+            ]
+            
+            for config in configuraciones_default:
+                cursor.execute("""
+                    INSERT OR IGNORE INTO configuraciones 
+                    (clave, valor, tipo, categoria, descripcion) 
+                    VALUES (?, ?, ?, ?, ?)
+                """, config)
+            
+            self.db_connection.commit()
+            logger.debug("Configuraciones por defecto insertadas")
+            
+        except Exception as e:
+            logger.error(f"Error insertando configuraciones default: {e}")
+    
+    def obtener_todas_configuraciones(self) -> List[Dict[str, Any]]:
+        """
+        Obtiene todas las configuraciones del sistema.
+        
+        Returns:
+            Lista de configuraciones
+        """
+        try:
+            if not self.db_connection:
+                logger.warning("BD no disponible, usando datos demo")
+                return self._obtener_configuraciones_demo()
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT id, clave, valor, tipo, categoria, descripcion, 
+                       es_editable, fecha_creacion, fecha_modificacion, 
+                       usuario_modificacion
+                FROM configuraciones 
+                ORDER BY categoria, clave
+            """)
+            
+            configuraciones = []
+            for row in cursor.fetchall():
+                config = {
+                    'id': row[0],
+                    'clave': row[1],
+                    'valor': row[2],
+                    'tipo': row[3],
+                    'categoria': row[4],
+                    'descripcion': row[5],
+                    'es_editable': bool(row[6]),
+                    'fecha_creacion': row[7],
+                    'fecha_modificacion': row[8],
+                    'usuario_modificacion': row[9]
+                }
+                configuraciones.append(config)
+            
+            # Actualizar cache
+            self.configuraciones_cache = {c['clave']: c['valor'] for c in configuraciones}
+            
+            logger.debug(f"Obtenidas {len(configuraciones)} configuraciones")
+            return configuraciones
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo configuraciones: {e}")
+            return self._obtener_configuraciones_demo()
+    
+    def obtener_configuraciones_filtradas(self, filtros: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """
+        Obtiene configuraciones aplicando filtros.
+        
+        Args:
+            filtros: Diccionario con filtros a aplicar
+            
+        Returns:
+            Lista de configuraciones filtradas
+        """
+        try:
+            if not self.db_connection:
+                logger.warning("BD no disponible, usando datos demo")
                 configuraciones_demo = self._obtener_configuraciones_demo()
                 return self._aplicar_filtros_demo(configuraciones_demo, filtros)
             
@@ -24,315 +174,253 @@ import os
             
             # Query base
             query = """
-                SELECT 
-                    id, clave, valor, descripcion, tipo_dato, categoria, 
-                    es_editable, fecha_creacion, fecha_modificacion, usuario_modificacion
-                FROM configuraciones
+                SELECT id, clave, valor, tipo, categoria, descripcion, 
+                       es_editable, fecha_creacion, fecha_modificacion, 
+                       usuario_modificacion
+                FROM configuraciones 
                 WHERE 1=1
             """
-            
             params = []
             
-            # Aplicar filtros dinámicamente
-            if filtros.get('busqueda'):
-                query += """
-                    AND (clave LIKE ? OR descripcion LIKE ? OR valor LIKE ? OR categoria LIKE ?)
-                """
-                busqueda = f"%{filtros['busqueda']}%"
-                params.extend([busqueda, busqueda, busqueda, busqueda])
-            
-            if filtros.get('categoria') and filtros['categoria'] != 'Todas':
+            # Aplicar filtros
+            if filtros.get('categoria'):
                 query += " AND categoria = ?"
                 params.append(filtros['categoria'])
             
-            if filtros.get('tipo') and filtros['tipo'] != 'Todos':
-                query += " AND tipo_dato = ?"
-                params.append(filtros['tipo'].lower())
+            if filtros.get('clave'):
+                query += " AND clave LIKE ?"
+                params.append(f"%{filtros['clave']}%")
             
-            if filtros.get('estado') and filtros['estado'] != 'Todos':
-                if filtros['estado'] == 'Activo':
-                    query += " AND es_editable = 1"
-                elif filtros['estado'] == 'Inactivo':
-                    query += " AND es_editable = 0"
-                elif filtros['estado'] == 'Por Defecto':
-                    query += " AND usuario_modificacion IS NULL"
-                elif filtros['estado'] == 'Personalizado':
-                    query += " AND usuario_modificacion IS NOT NULL"
+            if filtros.get('es_editable') is not None:
+                query += " AND es_editable = ?"
+                params.append(filtros['es_editable'])
             
-            # Ordenar por categoría y clave
             query += " ORDER BY categoria, clave"
             
-            logger.info(f"[CONFIGURACION MODEL] Ejecutando query con {len(params)} parámetros")
             cursor.execute(query, params)
             
-            # Convertir resultados a diccionarios
             configuraciones = []
-            columns = [desc[0] for desc in cursor.description]
-            
             for row in cursor.fetchall():
-                configuracion = dict(zip(columns, row))
-                configuraciones.append(configuracion)
+                config = {
+                    'id': row[0],
+                    'clave': row[1],
+                    'valor': row[2],
+                    'tipo': row[3],
+                    'categoria': row[4],
+                    'descripcion': row[5],
+                    'es_editable': bool(row[6]),
+                    'fecha_creacion': row[7],
+                    'fecha_modificacion': row[8],
+                    'usuario_modificacion': row[9]
+                }
+                configuraciones.append(config)
             
-            logger.info(f"[CONFIGURACION MODEL] Filtradas {len(configuraciones)} configuraciones exitosamente")
+            logger.debug(f"Filtradas {len(configuraciones)} configuraciones")
             return configuraciones
             
         except Exception as e:
-            logger.info(f"[ERROR CONFIGURACION MODEL] Error filtrando configuraciones: {e}")
-            # Fallback con datos demo en caso de error
-            configuraciones_demo = self._obtener_configuraciones_demo()
-            return self._aplicar_filtros_demo(configuraciones_demo, filtros)
-
-    def _aplicar_filtros_demo(self, configuraciones: List[Dict], filtros: Dict[str, Any]) -> List[Dict]:
-        """Aplica filtros a los datos demo."""
-        resultado = configuraciones
-        
-        if filtros.get('busqueda'):
-            termino = filtros['busqueda'].lower()
-            resultado = [c for c in resultado if (
-                termino in c.get('clave', '').lower() or
-                termino in c.get('descripcion', '').lower() or
-                termino in c.get('valor', '').lower() or
-                termino in c.get('categoria', '').lower()
-            )]
-        
-        if filtros.get('categoria') and filtros['categoria'] != 'Todas':
-            resultado = [c for c in resultado if c.get('categoria', '') == filtros['categoria']]
-        
-        if filtros.get('tipo') and filtros['tipo'] != 'Todos':
-            resultado = [c for c in resultado if c.get('tipo_dato', '') == filtros['tipo'].lower()]
-        
-        if filtros.get('estado') and filtros['estado'] != 'Todos':
-            if filtros['estado'] == 'Activo':
-                resultado = [c for c in resultado if c.get('es_editable', False)]
-            elif filtros['estado'] == 'Inactivo':
-                resultado = [c for c in resultado if not c.get('es_editable', True)]
-        
-        return resultado
-
-    def obtener_configuracion(self, categoria=None):
+            logger.error(f"Error filtrando configuraciones: {e}")
+            return []
+    
+    def obtener_valor_configuracion(self, clave: str) -> Optional[str]:
         """
-        Obtiene configuración del sistema
+        Obtiene el valor de una configuración específica.
         
         Args:
-            categoria (str, optional): Categoría específica
+            clave: Clave de la configuración
             
         Returns:
-            List[Dict]: Lista de configuraciones
+            Valor de la configuración o None
         """
-        # Obtener todas las configuraciones
-        todas_config = self.obtener_todas_configuraciones()
-        
-        # Filtrar por categoría si se especifica
-        if categoria:
-            return [config for config in todas_config if config.get('categoria') == categoria]
-        
-        return todas_config
-    
-    def _inicializar_funcionalidades_avanzadas(self):
-        """Inicializa las funcionalidades avanzadas de configuración."""
         try:
-            from .advanced_features import AdvancedConfigurationManager
-            self.advanced_manager = AdvancedConfigurationManager(self)
-            self.advanced_manager.inicializar_configuraciones_avanzadas()
-            logger.info()
-        except ImportError as e:
-            logger.warning(f"No se pudieron cargar funcionalidades avanzadas: {e}")
-            self.advanced_manager = None
-    
-    # =================================================================
-    # MÉTODOS AVANZADOS - DELEGATE TO ADVANCED MANAGER
-    # =================================================================
-    
-    def crear_perfil_configuracion(self, nombre: str, descripcion: str, 
-                                 configuraciones: dict, usuario: str) -> str:
-        """Crea un nuevo perfil de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.crear_perfil_configuracion(
-                nombre, descripcion, configuraciones, usuario
+            # Usar cache si está disponible
+            if clave in self.configuraciones_cache:
+                return self.configuraciones_cache[clave]
+            
+            if not self.db_connection:
+                return self._obtener_valor_demo(clave)
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute(
+                "SELECT valor FROM configuraciones WHERE clave = ?", 
+                (clave,)
             )
-        return None
-    
-    def aplicar_perfil_configuracion(self, profile_id: str, usuario: str) -> tuple:
-        """Aplica un perfil de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.aplicar_perfil_configuracion(profile_id, usuario)
-        return False, "Funcionalidades avanzadas no disponibles"
-    
-    def listar_perfiles_configuracion(self) -> list:
-        """Lista todos los perfiles de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.listar_perfiles_configuracion()
-        return []
-    
-    def crear_backup_configuracion(self, nombre: str, descripcion: str, usuario: str) -> str:
-        """Crea un backup de la configuración actual."""
-        if self.advanced_manager:
-            return self.advanced_manager.crear_backup_configuracion(nombre, descripcion, usuario)
-        return None
-    
-    def restaurar_backup_configuracion(self, backup_id: str, usuario: str) -> tuple:
-        """Restaura configuración desde un backup."""
-        if self.advanced_manager:
-            return self.advanced_manager.restaurar_backup_configuracion(backup_id, usuario)
-        return False, "Funcionalidades avanzadas no disponibles"
-    
-    def listar_backups_configuracion(self) -> list:
-        """Lista todos los backups de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.listar_backups_configuracion()
-        return []
-    
-    def crear_plantilla_configuracion(self, nombre: str, categoria: str, 
-                                    configuraciones: dict, descripcion: str = "") -> str:
-        """Crea una plantilla de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.crear_plantilla_configuracion(
-                nombre, categoria, configuraciones, descripcion
-            )
-        return None
-    
-    def aplicar_plantilla_configuracion(self, template_id: str, usuario: str) -> tuple:
-        """Aplica una plantilla de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.aplicar_plantilla_configuracion(template_id, usuario)
-        return False, "Funcionalidades avanzadas no disponibles"
-    
-    def listar_plantillas_configuracion(self, categoria: str = None) -> list:
-        """Lista plantillas de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.listar_plantillas_configuracion(categoria)
-        return []
-    
-    def exportar_configuracion_completa(self, incluir_sensibles: bool = False) -> dict:
-        """Exporta toda la configuración del sistema."""
-        if self.advanced_manager:
-            return self.advanced_manager.exportar_configuracion_completa(incluir_sensibles)
-        return {'configuraciones': self.config_cache, 'metadata': {}}
-    
-    def importar_configuracion_completa(self, data: dict, usuario: str, 
-                                      sobrescribir: bool = False) -> tuple:
-        """Importa configuración desde datos exportados."""
-        if self.advanced_manager:
-            return self.advanced_manager.importar_configuracion_completa(data, usuario, sobrescribir)
-        return False, "Funcionalidades avanzadas no disponibles"
-    
-    def obtener_historial_cambios(self, limite: int = 100) -> list:
-        """Obtiene el historial de cambios de configuración."""
-        if self.advanced_manager:
-            return self.advanced_manager.obtener_historial_cambios(limite)
-        return []
-    
-    def validar_configuracion_avanzada(self, clave: str, valor) -> tuple:
-        """Valida una configuración con reglas avanzadas."""
-        if self.advanced_manager:
-            return self.advanced_manager.validar_configuracion(clave, valor)
-        return True, "Sin validación avanzada"
-    
-    # =================================================================
-    # CONFIGURACIONES ESPECÍFICAS DE NEGOCIO
-    # =================================================================
-    
-    def configurar_tema_empresa(self, configuraciones_tema: dict, usuario: str) -> tuple:
-        """Configura el tema visual de la empresa."""
-        try:
-            tema_config = {
-                'tema_principal': configuraciones_tema.get('tema_principal', 'light'),
-                'color_primario': configuraciones_tema.get('color_primario', '#2196F3'),
-                'color_secundario': configuraciones_tema.get('color_secundario', '#FFC107'),
-                'logo_empresa': configuraciones_tema.get('logo_empresa', ''),
-                'nombre_empresa': configuraciones_tema.get('nombre_empresa', 'Rexus.app'),
-                'mostrar_logo': configuraciones_tema.get('mostrar_logo', True)
-            }
             
-            for clave, valor in tema_config.items():
-                success, message = self.establecer_valor(f"tema_{clave}", valor, usuario)
-                if not success:
-                    return False, f"Error configurando {clave}: {message}"
+            result = cursor.fetchone()
+            if result:
+                valor = result[0]
+                self.configuraciones_cache[clave] = valor
+                return valor
             
-            return True, "Tema de empresa configurado exitosamente"
+            return None
             
         except Exception as e:
-            return False, f"Error configurando tema: {str(e)}"
+            logger.error(f"Error obteniendo valor de configuración '{clave}': {e}")
+            return None
     
-    def configurar_notificaciones_sistema(self, configuraciones_notif: dict, usuario: str) -> tuple:
-        """Configura las notificaciones del sistema."""
-        try:
-            notif_config = {
-                'email_habilitado': configuraciones_notif.get('email_habilitado', False),
-                'email_servidor': configuraciones_notif.get('email_servidor', ''),
-                'email_puerto': configuraciones_notif.get('email_puerto', 587),
-                'email_usuario': configuraciones_notif.get('email_usuario', ''),
-                'email_password': configuraciones_notif.get('email_password', ''),
-                'notif_sonido': configuraciones_notif.get('notif_sonido', True),
-                'notif_desktop': configuraciones_notif.get('notif_desktop', True),
-                'notif_criticas': configuraciones_notif.get('notif_criticas', True)
-            }
-            
-            for clave, valor in notif_config.items():
-                success, message = self.establecer_valor(f"notificaciones_{clave}", valor, usuario)
-                if not success:
-                    return False, f"Error configurando {clave}: {message}"
-            
-            return True, "Notificaciones del sistema configuradas exitosamente"
-            
-        except Exception as e:
-            return False, f"Error configurando notificaciones: {str(e)}"
-    
-    def configurar_seguridad_avanzada(self, configuraciones_seg: dict, usuario: str) -> tuple:
-        """Configura opciones avanzadas de seguridad."""
-        try:
-            seg_config = {
-                'session_timeout': configuraciones_seg.get('session_timeout', 1800),
-                'max_intentos_login': configuraciones_seg.get('max_intentos_login', 3),
-                'lockout_duration': configuraciones_seg.get('lockout_duration', 300),
-                'password_min_length': configuraciones_seg.get('password_min_length', 8),
-                'password_require_special': configuraciones_seg.get('password_require_special', True),
-                'password_require_numbers': configuraciones_seg.get('password_require_numbers', True),
-                'audit_log_enabled': configuraciones_seg.get('audit_log_enabled', True),
-                'two_factor_enabled': configuraciones_seg.get('two_factor_enabled', False)
-            }
-            
-            for clave, valor in seg_config.items():
-                success, message = self.establecer_valor(f"seguridad_{clave}", valor, usuario)
-                if not success:
-                    return False, f"Error configurando {clave}: {message}"
-            
-            return True, "Configuraciones de seguridad aplicadas exitosamente"
-            
-        except Exception as e:
-            return False, f"Error configurando seguridad: {str(e)}"
-    
-    def obtener_configuracion_modulo(self, nombre_modulo: str) -> dict:
-        """Obtiene la configuración específica de un módulo."""
-        config_modulo = {}
+    def crear_configuracion(self, datos_config: Dict[str, Any]) -> bool:
+        """
+        Crea una nueva configuración.
         
-        for clave, valor in self.config_cache.items():
-            if clave.startswith(f"{nombre_modulo}_"):
-                config_key = clave.replace(f"{nombre_modulo}_", "")
-                config_modulo[config_key] = valor
-        
-        return config_modulo
-    
-    def establecer_configuracion_modulo(self, nombre_modulo: str, 
-                                      configuraciones: dict, usuario: str) -> tuple:
-        """Establece múltiples configuraciones para un módulo específico."""
+        Args:
+            datos_config: Datos de la configuración
+            
+        Returns:
+            True si se creó exitosamente
+        """
         try:
-            configuradas = 0
-            errores = []
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
             
-            for clave, valor in configuraciones.items():
-                clave_completa = f"{nombre_modulo}_{clave}"
-                success, message = self.establecer_valor(clave_completa, valor, usuario)
-                
-                if success:
-                    configuradas += 1
-                else:
-                    errores.append(f"{clave}: {message}")
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                INSERT INTO configuraciones 
+                (clave, valor, tipo, categoria, descripcion, es_editable, usuario_modificacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?)
+            """, (
+                datos_config.get('clave'),
+                datos_config.get('valor'),
+                datos_config.get('tipo', 'string'),
+                datos_config.get('categoria', 'general'),
+                datos_config.get('descripcion', ''),
+                datos_config.get('es_editable', True),
+                datos_config.get('usuario_modificacion', 'SISTEMA')
+            ))
             
-            if errores:
-                return False, f"Errores en configuración: {'; '.join(errores)}"
+            self.db_connection.commit()
             
-            return True, f"Configuradas {configuradas} opciones para módulo {nombre_modulo}"
+            # Limpiar cache
+            self.configuraciones_cache.clear()
+            
+            logger.info(f"Configuración '{datos_config.get('clave')}' creada exitosamente")
+            return True
             
         except Exception as e:
-            return False, f"Error configurando módulo: {str(e)}"
+            logger.error(f"Error creando configuración: {e}")
+            return False
+    
+    def actualizar_configuracion(self, config_id: int, datos_config: Dict[str, Any]) -> bool:
+        """
+        Actualiza una configuración existente.
+        
+        Args:
+            config_id: ID de la configuración
+            datos_config: Nuevos datos de la configuración
+            
+        Returns:
+            True si se actualizó exitosamente
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                UPDATE configuraciones 
+                SET valor = ?, tipo = ?, categoria = ?, descripcion = ?, 
+                    es_editable = ?, fecha_modificacion = CURRENT_TIMESTAMP,
+                    usuario_modificacion = ?
+                WHERE id = ?
+            """, (
+                datos_config.get('valor'),
+                datos_config.get('tipo', 'string'),
+                datos_config.get('categoria', 'general'),
+                datos_config.get('descripcion', ''),
+                datos_config.get('es_editable', True),
+                datos_config.get('usuario_modificacion', 'SISTEMA'),
+                config_id
+            ))
+            
+            self.db_connection.commit()
+            
+            # Limpiar cache
+            self.configuraciones_cache.clear()
+            
+            logger.info(f"Configuración ID {config_id} actualizada exitosamente")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error actualizando configuración: {e}")
+            return False
+    
+    def eliminar_configuracion(self, config_id: int) -> bool:
+        """
+        Elimina una configuración.
+        
+        Args:
+            config_id: ID de la configuración
+            
+        Returns:
+            True si se eliminó exitosamente
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("DELETE FROM configuraciones WHERE id = ? AND es_editable = 1", (config_id,))
+            self.db_connection.commit()
+            
+            # Limpiar cache
+            self.configuraciones_cache.clear()
+            
+            logger.info(f"Configuración ID {config_id} eliminada exitosamente")
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error eliminando configuración: {e}")
+            return False
+    
+    def _obtener_configuraciones_demo(self) -> List[Dict[str, Any]]:
+        """Datos demo para cuando no hay BD disponible."""
+        return [
+            {
+                'id': 1,
+                'clave': 'empresa_nombre',
+                'valor': 'Rexus.app Demo',
+                'tipo': 'string',
+                'categoria': 'empresa',
+                'descripcion': 'Nombre de la empresa',
+                'es_editable': True,
+                'fecha_creacion': '2025-08-24',
+                'fecha_modificacion': '2025-08-24',
+                'usuario_modificacion': 'SISTEMA'
+            },
+            {
+                'id': 2,
+                'clave': 'sistema_tema',
+                'valor': 'light',
+                'tipo': 'string',
+                'categoria': 'sistema',
+                'descripcion': 'Tema del sistema',
+                'es_editable': True,
+                'fecha_creacion': '2025-08-24',
+                'fecha_modificacion': '2025-08-24',
+                'usuario_modificacion': 'SISTEMA'
+            }
+        ]
+    
+    def _aplicar_filtros_demo(self, configuraciones: List[Dict], filtros: Dict[str, Any]) -> List[Dict]:
+        """Aplica filtros a los datos demo."""
+        resultado = configuraciones.copy()
+        
+        if filtros.get('categoria'):
+            resultado = [c for c in resultado if c['categoria'] == filtros['categoria']]
+        
+        if filtros.get('clave'):
+            clave_filtro = filtros['clave'].lower()
+            resultado = [c for c in resultado if clave_filtro in c['clave'].lower()]
+        
+        return resultado
+    
+    def _obtener_valor_demo(self, clave: str) -> Optional[str]:
+        """Obtiene valor demo para una clave específica."""
+        valores_demo = {
+            'empresa_nombre': 'Rexus.app Demo',
+            'sistema_tema': 'light',
+            'sistema_idioma': 'es'
+        }
+        return valores_demo.get(clave)

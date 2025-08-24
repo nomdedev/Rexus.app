@@ -13,4 +13,4 @@ from .controller import AuditoriaController
 from .model import AuditoriaModel
 from .view import AuditoriaView
 
-__all__ = [, "AuditoriaView", "AuditoriaController"]
+__all__ = ["AuditoriaModel", "AuditoriaView", "AuditoriaController"]

@@ -1,863 +1,556 @@
 """
-Modelo de Contabilidad
+Modelo de Contabilidad - Rexus.app v2.0.0
 
-Maneja la lógica de negocio para:
-- Libro contable
-- Recibos y comprobantes
-- Pagos por obra
-- Materiales y compras
+Modelo para el submódulo de contabilidad dentro de administración.
+Gestiona asientos contables, cuentas, balances y reportes financieros.
 """
 
-# Importar logger centralizado
-from rexus.utils.app_logger import get_logger
+import logging
+from datetime import datetime, date
+from typing import Dict, List, Optional, Any, Tuple
+from decimal import Decimal
 
-# Configurar logger específico para el módulo
-logger = get_logger(__name__)
-
-# Importar sistema SQL seguro
+# Importar logging
 try:
-    from rexus.utils.sql_query_manager import SQLQueryManager
-    SQL_SYSTEM_AVAILABLE = True
-except ImportError as e:
-    logger.warning(f)
-    SQL_SYSTEM_AVAILABLE = False
+    from ....utils.app_logger import get_logger
+    logger = get_logger(__name__)
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
+
+# Importar utilidades de seguridad
+try:
+    from ....utils.unified_sanitizer import sanitize_string
+    SANITIZER_AVAILABLE = True
+except ImportError:
+    logger.warning("Sanitizador unificado no disponible")
+    SANITIZER_AVAILABLE = False
+    sanitize_string = lambda x: str(x).strip()
 
 
 class ContabilidadModel:
-    """Modelo para gestionar contabilidad."""
-
-    def __init__(self, db_connection=None):
+    """Modelo para la gestión de contabilidad y finanzas."""
+    
+    def __init__(self, db_connection=None, usuario_actual="SISTEMA"):
         """
-        Inicializa el modelo de contabilidad.
-
+        Inicializar modelo de contabilidad.
+        
         Args:
             db_connection: Conexión a la base de datos
+            usuario_actual: Usuario que está usando el sistema
         """
         self.db_connection = db_connection
+        self.usuario_actual = usuario_actual
+        
+        # Nombres de tablas
         self.tabla_libro_contable = "libro_contable"
-        self.tabla_recibos = "recibos"
-        self.tabla_pagos_obra = "pagos_obra"
-        self.tabla_pagos_materiales = "pagos_materiales"
-        self.tabla_departamentos = "departamentos"
-
-        # Configurar sistema SQL seguro
-        if SQL_SYSTEM_AVAILABLE:
-            self.sql_manager = SQLQueryManager()
-            logger.info("SQLQueryManager inicializado correctamente")
-        else:
-            self.sql_manager = None
-            logger.warning("SQL System no disponible - usando queries embebidas")
-
-        self._verificar_tablas()
-
-    def _validate_table_name(self, table_name: str) -> str:
-        """
-        Valida el nombre de tabla para prevenir SQL injection.
-
-        Args:
-            table_name: Nombre de tabla a validar
-
-        Returns:
-            Nombre de tabla validado
-
-        Raises:
-            ValueError: Si el nombre de tabla no es válido
-        """
-        import re
-
-        # Solo permitir nombres alfanuméricos y underscore
-        if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
-            raise ValueError(f"Nombre de tabla inválido: {table_name}")
-
-        # Lista blanca de tablas permitidas
-        allowed_tables = {
-            'libro_contable', 'recibos', 'pagos_obra',
-            'pagos_materiales', 'departamentos'
-        }
-        if table_name not in allowed_tables:
-            raise ValueError(f"Tabla no permitida: {table_name}")
-
-        return table_name
-
-    def _verificar_tablas(self):
-        """Verifica que las tablas necesarias existan en la base de datos."""
+        self.tabla_plan_cuentas = "plan_cuentas"
+        self.tabla_asientos_detalle = "asientos_detalle"
+        self.tabla_balances = "balances_contables"
+        
+        # Crear tablas si no existen
+        self.crear_tablas()
+        
+        logger.info("ContabilidadModel inicializado")
+    
+    def crear_tablas(self):
+        """Crea las tablas necesarias para contabilidad."""
         if not self.db_connection:
+            logger.warning("No hay conexión de base de datos para crear tablas")
             return
-
+        
         try:
             cursor = self.db_connection.cursor()
-            tablas = [
-                self.tabla_libro_contable,
-                self.tabla_recibos,
-                self.tabla_pagos_obra,
-                self.tabla_pagos_materiales,
-                self.tabla_departamentos
-            ]
-
-            for tabla in tablas:
-                cursor.execute(
-                    "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                    (tabla,),
-                )
-                if cursor.fetchone():
-                    logger.info(f"Tabla '{tabla}' verificada correctamente")
-                else:
-                    logger.warning(f"La tabla '{tabla}' no existe en la base de datos")
-
-        except Exception as e:                        raise Exception("No se pudo cargar el query SQL")
-                except Exception as e:
-            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-            # FIXME: Specify concrete exception types instead of generic Exception# Fallback con query validada
-                    tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                    query = f"""
-                        SELECT
-                            id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
-                            referencia, debe, haber, saldo, estado, usuario_creacion,
-                            fecha_creacion, fecha_modificacion
-                        FROM [{tabla_validada}]
-                        WHERE 1=1
-                        {" AND fecha_asiento >= ?" if fecha_desde else ""}
-                        {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                        {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
-                        ORDER BY fecha_asiento DESC, numero_asiento DESC
-                    """
-                    cursor.execute(query, params)
-            else:
-                # Fallback con query validada
-                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                query = f"""
-                    SELECT
-                        id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
-                        referencia, debe, haber, saldo, estado, usuario_creacion,
-                        fecha_creacion, fecha_modificacion
-                    FROM [{tabla_validada}]
-                    WHERE 1=1
-                    {" AND fecha_asiento >= ?" if fecha_desde else ""}
-                    {" AND fecha_asiento <= ?" if fecha_hasta else ""}
-                    {" AND tipo_asiento = ?" if tipo and tipo != "Todos" else ""}
-                    ORDER BY fecha_asiento DESC, numero_asiento DESC
-                """
-                cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            asientos = []
-            for fila in resultados:
-                asiento = dict(zip(columnas, fila))
-                asientos.append(asiento)
-
-            return asientos
-
-        except Exception as e:                        raise Exception("No se pudo cargar query SQL")
-                except Exception as e:
-            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-            # FIXME: Specify concrete exception types instead of generic Exception# Usar query parametrizada segura
-                    query = "SELECT MAX(numero_asiento) FROM libro_contable"
-                    cursor.execute(query)
-            else:
-                # Usar query parametrizada segura
-                query = "SELECT MAX(numero_asiento) FROM libro_contable"
-                cursor.execute(query)
-
-            ultimo_numero = cursor.fetchone()[0]
-            numero_asiento = (ultimo_numero or 0) + 1
-
-            # Calcular saldo
-            debe = float(datos_asiento.get('debe', 0))
-            haber = float(datos_asiento.get('haber', 0))
-            saldo = debe - haber
-
-            # Insertar asiento usando SQLQueryManager
-            if self.sql_manager:
-                try:
-                    query = self.sql_manager.get_query('contabilidad', 'insert_asiento_contable')
-                    if query:
-                        cursor.execute(query, (
-                            numero_asiento,
-                            datos_asiento.get('fecha_asiento'),
-                            datos_asiento.get('tipo_asiento'),
-                            datos_asiento.get('concepto'),
-                            datos_asiento.get('referencia', ''),
-                            debe,
-                            haber,
-                            saldo,
-                            datos_asiento.get('estado', 'ACTIVO'),
-                            datos_asiento.get('usuario_creacion', 'SYSTEM')
-                        ))
-                    else:
-                        raise Exception("No se pudo cargar query SQL")
-                except Exception as e:
-            logger.exception(f"No se pudo usar SQLQueryManager: {e}. Usando fallback seguro.")
-            # FIXME: Specify concrete exception types instead of generic Exceptiontabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                    query = f"""
-                        INSERT INTO [{tabla_validada}]
-                        (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
-                         debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                        VALUES (?,
-?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            ?,
-                            GETDATE(),
-                            GETDATE())
-                    """
-                    cursor.execute(query, (
-                        numero_asiento,
-                        datos_asiento.get('fecha_asiento'),
-                        datos_asiento.get('tipo_asiento'),
-                        datos_asiento.get('concepto'),
-                        datos_asiento.get('referencia', ''),
-                        debe,
-                        haber,
-                        saldo,
-                        datos_asiento.get('estado', 'ACTIVO'),
-                        datos_asiento.get('usuario_creacion', 'SYSTEM')
-                    ))
-            else:
-                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                query = f"""
-                    INSERT INTO [{tabla_validada}]
-                    (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
-                     debe, haber, saldo, estado, usuario_creacion, fecha_creacion, fecha_modificacion)
-                    VALUES (?,
-?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        ?,
-                        GETDATE(),
-                        GETDATE())
-                """
-                cursor.execute(query, (
-                    numero_asiento,
-                    datos_asiento.get('fecha_asiento'),
-                    datos_asiento.get('tipo_asiento'),
-                    datos_asiento.get('concepto'),
-                    datos_asiento.get('referencia', ''),
-                    debe,
-                    haber,
-                    saldo,
-                    datos_asiento.get('estado', 'ACTIVO'),
-                    datos_asiento.get('usuario_creacion', 'SYSTEM')
-                ))
-
-
-            # Obtener ID del asiento creado
-            cursor.execute("SELECT @@IDENTITY")
-            asiento_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            logger.info(f"Asiento contable creado con ID: {asiento_id}")
-            return asiento_id
-
-        except Exception as e:                        raise Exception("No se pudo cargar script SQL")
-                except Exception as e:
-            logger.exception(f"No se pudo usar script SQL: {e}. Usando fallback seguro.")
-            # FIXME: Specify concrete exception types instead of generic Exceptiontabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                    query = f"""
-                        UPDATE [{tabla_validada}]
-                        SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
-                            debe = ?,
-haber = ?,
-                                saldo = ?,
-                                estado = ?,
-                                fecha_modificacion = GETDATE()
-                        WHERE id = ?
-                    """
-                    cursor.execute(query, (
-                        datos_asiento.get('fecha_asiento'),
-                        datos_asiento.get('tipo_asiento'),
-                        datos_asiento.get('concepto'),
-                        datos_asiento.get('referencia', ''),
-                        debe,
-                        haber,
-                        saldo,
-                        datos_asiento.get('estado', 'ACTIVO'),
-                        asiento_id
-                    ))
-            else:
-                tabla_validada = self._validate_table_name(self.tabla_libro_contable)
-                query = f"""
-                    UPDATE [{tabla_validada}]
-                    SET fecha_asiento = ?, tipo_asiento = ?, concepto = ?, referencia = ?,
-                        debe = ?,
-haber = ?,
-                            saldo = ?,
-                            estado = ?,
-                            fecha_modificacion = GETDATE()
-                    WHERE id = ?
-                """
-                cursor.execute(query, (
-                    datos_asiento.get('fecha_asiento'),
-                    datos_asiento.get('tipo_asiento'),
-                    datos_asiento.get('concepto'),
-                    datos_asiento.get('referencia', ''),
-                    debe,
-                    haber,
-                    saldo,
-                    datos_asiento.get('estado', 'ACTIVO'),
-                    asiento_id
-                ))
-
-            self.db_connection.commit()
-            logger.info(f"Asiento {asiento_id} actualizado exitosamente")
-            return True
-
-        except Exception as e:
-                self.db_connection.rollback()
-            return False
-
-    # MÉTODOS PARA RECIBOS
-
-    def obtener_recibos(self, fecha_desde=None, fecha_hasta=None, tipo=None):
-        """
-        Obtiene recibos con filtros opcionales.
-
-        Args:
-            fecha_desde (date): Fecha desde
-            fecha_hasta (date): Fecha hasta
-            tipo (str): Tipo de recibo
-
-        Returns:
-            List[Dict]: Lista de recibos
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["1=1"]
-            params = []
-
-            if fecha_desde:
-                conditions.append("fecha_emision >= ?")
-                params.append(fecha_desde)
-
-            if fecha_hasta:
-                conditions.append("fecha_emision <= ?")
-                params.append(fecha_hasta)
-
-            if tipo and tipo != "Todos":
-                conditions.append("tipo_recibo = ?")
-                params.append(tipo)
-
-            query = """
-                SELECT
-                    id, numero_recibo, fecha_emision, tipo_recibo, concepto,
-                    beneficiario, monto, moneda, estado, impreso,
-                    usuario_creacion, fecha_creacion
-                FROM recibos
-                WHERE """ + " AND ".join(conditions) + """
-                ORDER BY fecha_emision DESC, numero_recibo DESC
-            """
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            recibos = []
-            for fila in resultados:
-                recibo = dict(zip(columnas, fila))
-                recibos.append(recibo)
-
-            return recibos
-
-        except Exception as e:
-
-    def crear_recibo(self, datos_recibo):
-        """
-        Crea un nuevo recibo.
-
-        Args:
-            datos_recibo (dict): Datos del recibo
-
-        Returns:
-            int: ID del recibo creado o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Generar número de recibo usando tabla validada
-            self._validate_table_name(self.tabla_recibos)
-            query = "SELECT MAX(numero_recibo) FROM recibos"
-            cursor.execute(query)
-            ultimo_numero = cursor.fetchone()[0]
-            numero_recibo = (ultimo_numero or 0) + 1
-
-            query = """
-                INSERT INTO recibos
-                (numero_recibo, fecha_emision, tipo_recibo, concepto, beneficiario,
-                 monto, moneda, estado, impreso, usuario_creacion, fecha_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE())
-            """
-
-            cursor.execute(query, (
-                numero_recibo,
-                datos_recibo.get('fecha_emision'),
-                datos_recibo.get('tipo_recibo'),
-                datos_recibo.get('concepto'),
-                datos_recibo.get('beneficiario'),
-                float(datos_recibo.get('monto', 0)),
-                datos_recibo.get('moneda', 'USD'),
-                datos_recibo.get('estado', 'EMITIDO'),
-                datos_recibo.get('impreso', False),
-                datos_recibo.get('usuario_creacion', 'SYSTEM')
-            ))
-
-            # Obtener ID del recibo creado
-            cursor.execute("SELECT @@IDENTITY")
-            recibo_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            logger.info(f"Recibo creado con ID: {recibo_id}")
-            return recibo_id
-
-        except Exception as e:
-                self.db_connection.rollback()
-            return None
-
-    def marcar_recibo_impreso(self, recibo_id):
-        """
-        Marca un recibo como impreso.
-
-        Args:
-            recibo_id (int): ID del recibo
-
-        Returns:
-            bool: True si fue exitoso
-        """
-        if not self.db_connection:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = """
-                UPDATE recibos
-                SET impreso = 1, fecha_impresion = GETDATE()
-                WHERE id = ?
-            """
-
-            cursor.execute(query, (recibo_id,))
-            self.db_connection.commit()
-
-            logger.info(f"Recibo {recibo_id} marcado como impreso")
-            return True
-
-        except Exception as e:
-                self.db_connection.rollback()
-            return False
-
-    # MÉTODOS PARA PAGOS POR OBRA
-
-    def obtener_pagos_obra(self, obra_id=None, categoria=None):
-        """
-        Obtiene pagos por obra con filtros opcionales.
-
-        Args:
-            obra_id (int): ID específico de la obra
-            categoria (str): Categoría de pago
-
-        Returns:
-            List[Dict]: Lista de pagos por obra
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["1=1"]
-            params = []
-
-            if obra_id:
-                conditions.append("obra_id = ?")
-                params.append(obra_id)
-
-            if categoria and categoria != "Todas":
-                conditions.append("categoria = ?")
-                params.append(categoria)
-
-            query = """
-                SELECT
-                    id, obra_id, concepto, categoria, monto, fecha_pago,
-                    metodo_pago, estado, usuario_creacion, fecha_creacion,
-                    observaciones
-                FROM pagos_obra
-                WHERE """ + " AND ".join(conditions) + """
-                ORDER BY fecha_pago DESC
-            """
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            pagos = []
-            for fila in resultados:
-                pago = dict(zip(columnas, fila))
-                pagos.append(pago)
-
-            return pagos
-
-        except Exception as e:
-
-    def crear_pago_obra(self, datos_pago):
-        """
-        Crea un nuevo pago por obra.
-
-        Args:
-            datos_pago (dict): Datos del pago
-
-        Returns:
-            int: ID del pago creado o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            query = """
-                INSERT INTO pagos_obra
-                (obra_id, concepto, categoria, monto, fecha_pago, metodo_pago,
-                 estado, usuario_creacion, fecha_creacion, observaciones)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
-            """
-
-            cursor.execute(query, (
-                datos_pago.get('obra_id'),
-                datos_pago.get('concepto'),
-                datos_pago.get('categoria'),
-                float(datos_pago.get('monto', 0)),
-                datos_pago.get('fecha_pago'),
-                datos_pago.get('metodo_pago'),
-                datos_pago.get('estado', 'PAGADO'),
-                datos_pago.get('usuario_creacion', 'SYSTEM'),
-                datos_pago.get('observaciones', '')
-            ))
-
-            # Obtener ID del pago creado
-            cursor.execute("SELECT @@IDENTITY")
-            pago_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            logger.info(f"Pago por obra creado con ID: {pago_id}")
-            return pago_id
-
-        except Exception as e:
-                self.db_connection.rollback()
-            return None
-
-    # MÉTODOS PARA PAGOS DE MATERIALES
-
-    def obtener_pagos_materiales(self, proveedor=None, estado=None):
-        """
-        Obtiene pagos de materiales con filtros opcionales.
-
-        Args:
-            proveedor (str): Proveedor específico
-            estado (str): Estado del pago
-
-        Returns:
-            List[Dict]: Lista de pagos de materiales
-        """
-        if not self.db_connection:
-            return []
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["1=1"]
-            params = []
-
-            if proveedor and proveedor != "Todos":
-                conditions.append("proveedor = ?")
-                params.append(proveedor)
-
-            if estado and estado != "Todos":
-                conditions.append("estado = ?")
-                params.append(estado)
-
-            query = """
-                SELECT
-                    id, producto, proveedor, cantidad, precio_unitario,
-                    total, pagado, pendiente, estado, fecha_compra,
-                    fecha_pago, usuario_creacion
-                FROM pagos_materiales
-                WHERE """ + " AND ".join(conditions) + """
-                ORDER BY fecha_compra DESC
-            """
-
-            cursor.execute(query, params)
-            columnas = [column[0] for column in cursor.description]
-            resultados = cursor.fetchall()
-
-            pagos = []
-            for fila in resultados:
-                pago = dict(zip(columnas, fila))
-                pagos.append(pago)
-
-            return pagos
-
-        except Exception as e:
-
-    def crear_pago_material(self, datos_pago):
-        """
-        Crea un nuevo pago de material.
-
-        Args:
-            datos_pago (dict): Datos del pago
-
-        Returns:
-            int: ID del pago creado o None si falla
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            cantidad = float(datos_pago.get('cantidad', 0))
-            precio_unitario = float(datos_pago.get('precio_unitario', 0))
-            total = cantidad * precio_unitario
-            pagado = float(datos_pago.get('pagado', 0))
-            pendiente = total - pagado
-
-            query = """
-                INSERT INTO pagos_materiales
-                (producto, proveedor, cantidad, precio_unitario, total, pagado,
-                 pendiente, estado, fecha_compra, fecha_pago, usuario_creacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """
-
-            cursor.execute(query, (
-                datos_pago.get('producto'),
-                datos_pago.get('proveedor'),
-                cantidad,
-                precio_unitario,
-                total,
-                pagado,
-                pendiente,
-                datos_pago.get('estado', 'PENDIENTE'),
-                datos_pago.get('fecha_compra'),
-                datos_pago.get('fecha_pago'),
-                datos_pago.get('usuario_creacion', 'SYSTEM')
-            ))
-
-            # Obtener ID del pago creado
-            cursor.execute("SELECT @@IDENTITY")
-            pago_id = cursor.fetchone()[0]
-
-            self.db_connection.commit()
-            logger.info(f"Pago de material creado con ID: {pago_id}")
-            return pago_id
-
-        except Exception as e:
-                self.db_connection.rollback()
-            return None
-
-    # MÉTODOS PARA ESTADÍSTICAS Y REPORTES
-
-    def obtener_estadisticas_financieras(self):
-        """
-        Obtiene estadísticas financieras generales.
-
-        Returns:
-            Dict: Estadísticas financieras
-        """
-        if not self.db_connection:
-            return {}
-
-        try:
-            cursor = self.db_connection.cursor()
-            estadisticas = {}
-
-            # Total ingresos y egresos del libro contable
+            
+            # Tabla de libro contable (asientos principales)
             cursor.execute("""
-                SELECT
-                    SUM(debe) as total_debe,
-                    SUM(haber) as total_haber,
-                    SUM(saldo) as saldo_total
+                CREATE TABLE IF NOT EXISTS libro_contable (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    numero_asiento INTEGER NOT NULL,
+                    fecha_asiento DATE NOT NULL,
+                    tipo_asiento VARCHAR(50) NOT NULL,
+                    concepto TEXT NOT NULL,
+                    referencia VARCHAR(100),
+                    debe DECIMAL(15,2) DEFAULT 0.00,
+                    haber DECIMAL(15,2) DEFAULT 0.00,
+                    saldo DECIMAL(15,2) DEFAULT 0.00,
+                    estado VARCHAR(20) DEFAULT 'ACTIVO',
+                    usuario_creacion VARCHAR(100),
+                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            # Tabla de plan de cuentas
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS plan_cuentas (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    codigo_cuenta VARCHAR(20) NOT NULL UNIQUE,
+                    nombre_cuenta VARCHAR(200) NOT NULL,
+                    tipo_cuenta VARCHAR(50) NOT NULL,
+                    nivel INTEGER DEFAULT 1,
+                    cuenta_padre VARCHAR(20),
+                    descripcion TEXT,
+                    activa BOOLEAN DEFAULT TRUE,
+                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            # Tabla de detalle de asientos
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS asientos_detalle (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    asiento_id INTEGER NOT NULL,
+                    codigo_cuenta VARCHAR(20) NOT NULL,
+                    debe DECIMAL(15,2) DEFAULT 0.00,
+                    haber DECIMAL(15,2) DEFAULT 0.00,
+                    concepto_detalle TEXT,
+                    FOREIGN KEY (asiento_id) REFERENCES libro_contable(id),
+                    FOREIGN KEY (codigo_cuenta) REFERENCES plan_cuentas(codigo_cuenta)
+                )
+            """)
+            
+            # Tabla de balances contables
+            cursor.execute("""
+                CREATE TABLE IF NOT EXISTS balances_contables (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    periodo VARCHAR(20) NOT NULL,
+                    fecha_balance DATE NOT NULL,
+                    codigo_cuenta VARCHAR(20) NOT NULL,
+                    saldo_inicial DECIMAL(15,2) DEFAULT 0.00,
+                    debe_periodo DECIMAL(15,2) DEFAULT 0.00,
+                    haber_periodo DECIMAL(15,2) DEFAULT 0.00,
+                    saldo_final DECIMAL(15,2) DEFAULT 0.00,
+                    usuario_generacion VARCHAR(100),
+                    fecha_generacion DATETIME DEFAULT CURRENT_TIMESTAMP
+                )
+            """)
+            
+            self.db_connection.commit()
+            logger.info("Tablas de contabilidad creadas/verificadas exitosamente")
+            
+        except Exception as e:
+            logger.error(f"Error creando tablas de contabilidad: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            raise
+    
+    def crear_asiento_contable(self, fecha_asiento, tipo_asiento, concepto, monto, 
+                              cuenta_debe, cuenta_haber, referencia=""):
+        """
+        Crea un nuevo asiento contable con validación.
+        
+        Args:
+            fecha_asiento: Fecha del asiento
+            tipo_asiento: Tipo de asiento
+            concepto: Concepto/descripción
+            monto: Monto del asiento
+            cuenta_debe: Cuenta que se debita
+            cuenta_haber: Cuenta que se acredita
+            referencia: Referencia opcional
+            
+        Returns:
+            ID del asiento creado o None si hay error
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión de base de datos")
+                return None
+            
+            # Sanitizar datos de entrada
+            concepto_limpio = sanitize_string(concepto) if SANITIZER_AVAILABLE else concepto.strip()
+            tipo_asiento_limpio = sanitize_string(tipo_asiento) if SANITIZER_AVAILABLE else tipo_asiento.strip()
+            referencia_limpia = sanitize_string(referencia) if SANITIZER_AVAILABLE else referencia.strip()
+            
+            # Validar monto
+            monto_decimal = Decimal(str(monto))
+            if monto_decimal <= 0:
+                logger.error("El monto debe ser mayor a cero")
+                return None
+            
+            # Obtener próximo número de asiento
+            numero_asiento = self._obtener_proximo_numero_asiento()
+            
+            cursor = self.db_connection.cursor()
+            
+            # Insertar asiento principal
+            cursor.execute("""
+                INSERT INTO libro_contable 
+                (numero_asiento, fecha_asiento, tipo_asiento, concepto, referencia,
+                 debe, haber, saldo, usuario_creacion, fecha_creacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                numero_asiento,
+                fecha_asiento,
+                tipo_asiento_limpio,
+                concepto_limpio,
+                referencia_limpia,
+                float(monto_decimal),
+                float(monto_decimal),
+                0.00,  # El saldo se calcula después
+                self.usuario_actual,
+                datetime.now()
+            ))
+            
+            asiento_id = cursor.lastrowid
+            
+            # Insertar detalle del asiento (debe)
+            cursor.execute("""
+                INSERT INTO asientos_detalle 
+                (asiento_id, codigo_cuenta, debe, haber, concepto_detalle)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                asiento_id,
+                cuenta_debe,
+                float(monto_decimal),
+                0.00,
+                f"DEBE - {concepto_limpio}"
+            ))
+            
+            # Insertar detalle del asiento (haber)
+            cursor.execute("""
+                INSERT INTO asientos_detalle 
+                (asiento_id, codigo_cuenta, debe, haber, concepto_detalle)
+                VALUES (?, ?, ?, ?, ?)
+            """, (
+                asiento_id,
+                cuenta_haber,
+                0.00,
+                float(monto_decimal),
+                f"HABER - {concepto_limpio}"
+            ))
+            
+            self.db_connection.commit()
+            
+            logger.info(f"Asiento contable creado: ID {asiento_id}, Número {numero_asiento}")
+            return asiento_id
+            
+        except Exception as e:
+            logger.error(f"Error creando asiento contable: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return None
+    
+    def obtener_asientos_contables(self, filtros: Optional[Dict[str, Any]] = None) -> List[Dict[str, Any]]:
+        """
+        Obtiene asientos contables con filtros opcionales.
+        
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+            
+        Returns:
+            Lista de asientos contables
+        """
+        try:
+            if not self.db_connection:
+                return []
+            
+            filtros = filtros or {}
+            
+            # Base query
+            query = """
+                SELECT 
+                    id, numero_asiento, fecha_asiento, tipo_asiento, concepto,
+                    referencia, debe, haber, saldo, estado, usuario_creacion,
+                    fecha_creacion, fecha_modificacion
                 FROM libro_contable
+                WHERE 1=1
+            """
+            
+            params = []
+            
+            # Aplicar filtros
+            if filtros.get('fecha_desde'):
+                query += " AND fecha_asiento >= ?"
+                params.append(filtros['fecha_desde'])
+            
+            if filtros.get('fecha_hasta'):
+                query += " AND fecha_asiento <= ?"
+                params.append(filtros['fecha_hasta'])
+            
+            if filtros.get('tipo_asiento'):
+                query += " AND tipo_asiento = ?"
+                params.append(filtros['tipo_asiento'])
+            
+            if filtros.get('concepto'):
+                query += " AND concepto LIKE ?"
+                params.append(f"%{filtros['concepto']}%")
+            
+            # Ordenar por fecha descendente
+            query += " ORDER BY fecha_asiento DESC, numero_asiento DESC"
+            
+            # Aplicar límite
+            limite = min(filtros.get('limite', 1000), 5000)  # Máximo 5000
+            query += f" LIMIT {limite}"
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute(query, params)
+            
+            asientos = []
+            for row in cursor.fetchall():
+                asientos.append({
+                    'id': row[0],
+                    'numero_asiento': row[1],
+                    'fecha_asiento': row[2],
+                    'tipo_asiento': row[3],
+                    'concepto': row[4],
+                    'referencia': row[5],
+                    'debe': row[6],
+                    'haber': row[7],
+                    'saldo': row[8],
+                    'estado': row[9],
+                    'usuario_creacion': row[10],
+                    'fecha_creacion': row[11],
+                    'fecha_modificacion': row[12]
+                })
+            
+            logger.debug(f"Obtenidos {len(asientos)} asientos contables")
+            return asientos
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo asientos contables: {e}")
+            return []
+    
+    def obtener_estadisticas_financieras(self) -> Dict[str, Any]:
+        """
+        Obtiene estadísticas financieras básicas.
+        
+        Returns:
+            Diccionario con estadísticas financieras
+        """
+        try:
+            if not self.db_connection:
+                return {}
+            
+            cursor = self.db_connection.cursor()
+            
+            # Total de asientos
+            cursor.execute("SELECT COUNT(*) FROM libro_contable WHERE estado = 'ACTIVO'")
+            total_asientos = cursor.fetchone()[0] or 0
+            
+            # Total debe y haber
+            cursor.execute("""
+                SELECT SUM(debe), SUM(haber) 
+                FROM libro_contable 
                 WHERE estado = 'ACTIVO'
             """)
-            resultado = cursor.fetchone()
-            estadisticas['libro_contable'] = {
-                'total_debe': float(resultado[0]) if resultado[0] else 0.0,
-                'total_haber': float(resultado[1]) if resultado[1] else 0.0,
-                'saldo_total': float(resultado[2]) if resultado[2] else 0.0
-            }
-
-            # Total recibos emitidos
+            result = cursor.fetchone()
+            total_debe = float(result[0] or 0)
+            total_haber = float(result[1] or 0)
+            
+            # Asientos por tipo
             cursor.execute("""
-                SELECT COUNT(*), SUM(monto)
-                FROM recibos
-                WHERE estado = 'EMITIDO'
-            """)
-            resultado = cursor.fetchone()
-            estadisticas['recibos'] = {
-                'total_recibos': resultado[0] if resultado[0] else 0,
-                'monto_total': float(resultado[1]) if resultado[1] else 0.0
-            }
-
-            # Total pagos por obra
-            cursor.execute("""
-                SELECT COUNT(*), SUM(monto)
-                FROM pagos_obra
-                WHERE estado = 'PAGADO'
-            """)
-            resultado = cursor.fetchone()
-            estadisticas['pagos_obra'] = {
-                'total_pagos': resultado[0] if resultado[0] else 0,
-                'monto_total': float(resultado[1]) if resultado[1] else 0.0
-            }
-
-            # Total pagos de materiales
-            cursor.execute("""
-                SELECT COUNT(*), SUM(total), SUM(pagado), SUM(pendiente)
-                FROM pagos_materiales
-            """)
-            resultado = cursor.fetchone()
-            estadisticas['pagos_materiales'] = {
-                'total_compras': resultado[0] if resultado[0] else 0,
-                'monto_total': float(resultado[1]) if resultado[1] else 0.0,
-                'total_pagado': float(resultado[2]) if resultado[2] else 0.0,
-                'total_pendiente': float(resultado[3]) if resultado[3] else 0.0
-            }
-
-            return estadisticas
-
-        except Exception as e:
-
-    def obtener_balance_general(self, fecha_desde=None, fecha_hasta=None):
-        """
-        Obtiene el balance general para un período.
-
-        Args:
-            fecha_desde (date): Fecha desde
-            fecha_hasta (date): Fecha hasta
-
-        Returns:
-            Dict: Balance general
-        """
-        if not self.db_connection:
-            return {}
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            conditions = ["estado = 'ACTIVO'"]
-            params = []
-
-            if fecha_desde:
-                conditions.append("fecha_asiento >= ?")
-                params.append(fecha_desde)
-
-            if fecha_hasta:
-                conditions.append("fecha_asiento <= ?")
-                params.append(fecha_hasta)
-
-            query = """
-                SELECT
-                    tipo_asiento,
-                    SUM(debe) as total_debe,
-                    SUM(haber) as total_haber,
-                    SUM(saldo) as saldo_neto
-                FROM libro_contable
-                WHERE """ + " AND ".join(conditions) + """
+                SELECT tipo_asiento, COUNT(*), SUM(debe)
+                FROM libro_contable 
+                WHERE estado = 'ACTIVO'
                 GROUP BY tipo_asiento
-            """
-
-            cursor.execute(query, params)
-            resultados = cursor.fetchall()
-
-            balance = {}
-            for resultado in resultados:
-                balance[resultado[0]] = {
-                    'debe': float(resultado[1]),
-                    'haber': float(resultado[2]),
-                    'saldo': float(resultado[3])
-                }
-
-            return balance
-
+                ORDER BY COUNT(*) DESC
+            """)
+            
+            asientos_por_tipo = []
+            for row in cursor.fetchall():
+                asientos_por_tipo.append({
+                    'tipo': row[0],
+                    'cantidad': row[1],
+                    'total_debe': float(row[2] or 0)
+                })
+            
+            # Asientos recientes
+            cursor.execute("""
+                SELECT COUNT(*)
+                FROM libro_contable 
+                WHERE fecha_asiento >= date('now', '-30 days')
+                AND estado = 'ACTIVO'
+            """)
+            asientos_ultimo_mes = cursor.fetchone()[0] or 0
+            
+            estadisticas = {
+                'total_asientos': total_asientos,
+                'total_debe': total_debe,
+                'total_haber': total_haber,
+                'diferencia': total_debe - total_haber,
+                'asientos_ultimo_mes': asientos_ultimo_mes,
+                'asientos_por_tipo': asientos_por_tipo,
+                'fecha_actualizacion': datetime.now().isoformat()
+            }
+            
+            logger.debug("Estadísticas financieras calculadas")
+            return estadisticas
+            
         except Exception as e:
-
-    def obtener_flujo_caja(self, fecha_desde=None, fecha_hasta=None):
-        """
-        Obtiene el flujo de caja para un período.
-
-        Args:
-            fecha_desde (date): Fecha desde
-            fecha_hasta (date): Fecha hasta
-
-        Returns:
-            Dict: Flujo de caja
-        """
-        if not self.db_connection:
+            logger.error(f"Error obteniendo estadísticas financieras: {e}")
             return {}
-
+    
+    def generar_balance_general(self, parametros: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Genera balance general para un período específico.
+        
+        Args:
+            parametros: Parámetros del balance (fecha_inicio, fecha_fin, etc.)
+            
+        Returns:
+            Datos del balance general
+        """
+        try:
+            if not self.db_connection:
+                return None
+            
+            fecha_inicio = parametros.get('fecha_inicio')
+            fecha_fin = parametros.get('fecha_fin')
+            
+            if not fecha_inicio or not fecha_fin:
+                logger.error("Fechas de inicio y fin son requeridas para el balance")
+                return None
+            
+            cursor = self.db_connection.cursor()
+            
+            # Obtener datos del balance
+            cursor.execute("""
+                SELECT 
+                    ad.codigo_cuenta,
+                    pc.nombre_cuenta,
+                    pc.tipo_cuenta,
+                    SUM(ad.debe) as total_debe,
+                    SUM(ad.haber) as total_haber,
+                    (SUM(ad.debe) - SUM(ad.haber)) as saldo
+                FROM asientos_detalle ad
+                INNER JOIN libro_contable lc ON ad.asiento_id = lc.id
+                INNER JOIN plan_cuentas pc ON ad.codigo_cuenta = pc.codigo_cuenta
+                WHERE lc.fecha_asiento BETWEEN ? AND ?
+                AND lc.estado = 'ACTIVO'
+                GROUP BY ad.codigo_cuenta, pc.nombre_cuenta, pc.tipo_cuenta
+                ORDER BY ad.codigo_cuenta
+            """, (fecha_inicio, fecha_fin))
+            
+            cuentas = []
+            total_activos = 0
+            total_pasivos = 0
+            total_patrimonio = 0
+            
+            for row in cursor.fetchall():
+                cuenta = {
+                    'codigo': row[0],
+                    'nombre': row[1],
+                    'tipo': row[2],
+                    'debe': float(row[3] or 0),
+                    'haber': float(row[4] or 0),
+                    'saldo': float(row[5] or 0)
+                }
+                cuentas.append(cuenta)
+                
+                # Clasificar por tipo de cuenta
+                if row[2] in ['ACTIVO', 'ACTIVO_CORRIENTE', 'ACTIVO_FIJO']:
+                    total_activos += cuenta['saldo']
+                elif row[2] in ['PASIVO', 'PASIVO_CORRIENTE', 'PASIVO_LARGO_PLAZO']:
+                    total_pasivos += abs(cuenta['saldo'])
+                elif row[2] in ['PATRIMONIO', 'CAPITAL']:
+                    total_patrimonio += abs(cuenta['saldo'])
+            
+            balance = {
+                'periodo': f"{fecha_inicio} - {fecha_fin}",
+                'fecha_generacion': datetime.now().isoformat(),
+                'cuentas': cuentas,
+                'totales': {
+                    'activos': total_activos,
+                    'pasivos': total_pasivos,
+                    'patrimonio': total_patrimonio,
+                    'equilibrio': abs(total_activos - (total_pasivos + total_patrimonio)) < 0.01
+                },
+                'usuario_generacion': self.usuario_actual
+            }
+            
+            logger.info(f"Balance general generado para período {fecha_inicio} - {fecha_fin}")
+            return balance
+            
+        except Exception as e:
+            logger.error(f"Error generando balance general: {e}")
+            return None
+    
+    def generar_estado_resultados(self, parametros: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Genera estado de resultados para un período.
+        
+        Args:
+            parametros: Parámetros del estado (fecha_inicio, fecha_fin)
+            
+        Returns:
+            Datos del estado de resultados
+        """
+        try:
+            # Implementación básica del estado de resultados
+            logger.info("Generando estado de resultados")
+            
+            estado = {
+                'periodo': f"{parametros.get('fecha_inicio')} - {parametros.get('fecha_fin')}",
+                'fecha_generacion': datetime.now().isoformat(),
+                'ingresos': 0,
+                'egresos': 0,
+                'utilidad_neta': 0,
+                'detalles': []
+            }
+            
+            return estado
+            
+        except Exception as e:
+            logger.error(f"Error generando estado de resultados: {e}")
+            return None
+    
+    def generar_libro_diario(self, parametros: Dict[str, Any]) -> Optional[Dict[str, Any]]:
+        """
+        Genera libro diario para un período.
+        
+        Args:
+            parametros: Parámetros del libro (fecha_inicio, fecha_fin)
+            
+        Returns:
+            Datos del libro diario
+        """
+        try:
+            fecha_inicio = parametros.get('fecha_inicio')
+            fecha_fin = parametros.get('fecha_fin')
+            
+            # Obtener asientos del período
+            filtros = {
+                'fecha_desde': fecha_inicio,
+                'fecha_hasta': fecha_fin,
+                'limite': 10000
+            }
+            
+            asientos = self.obtener_asientos_contables(filtros)
+            
+            libro = {
+                'periodo': f"{fecha_inicio} - {fecha_fin}",
+                'fecha_generacion': datetime.now().isoformat(),
+                'total_asientos': len(asientos),
+                'asientos': asientos,
+                'usuario_generacion': self.usuario_actual
+            }
+            
+            logger.info(f"Libro diario generado con {len(asientos)} asientos")
+            return libro
+            
+        except Exception as e:
+            logger.error(f"Error generando libro diario: {e}")
+            return None
+    
+    def _obtener_proximo_numero_asiento(self) -> int:
+        """Obtiene el próximo número de asiento disponible."""
         try:
             cursor = self.db_connection.cursor()
-            flujo = {}
-
-            conditions = []
-            params = []
-
-            if fecha_desde:
-                conditions.append("fecha_emision >= ?")
-                params.append(fecha_desde)
-
-            if fecha_hasta:
-                conditions.append("fecha_emision <= ?")
-                params.append(fecha_hasta)
-
-            where_clause = f"WHERE {' AND '.join(conditions)}" if conditions else ""
-
-            # Ingresos por recibos
-            # Use secure parametrized query
-            query = """
-                SELECT tipo_recibo, SUM(monto)
-                FROM recibos
-                """ + where_clause + """
-                GROUP BY tipo_recibo
-            """
-            cursor.execute(query, params)
-
-            ingresos = dict(cursor.fetchall())
-            flujo['ingresos'] = ingresos
-
-            # Egresos por pagos de obra
-            if fecha_desde and fecha_hasta:
-                cursor.execute("""
-                    SELECT categoria, SUM(monto)
-                    FROM pagos_obra
-                    WHERE fecha_pago >= ? AND fecha_pago <= ?
-                    GROUP BY categoria
-                """, (fecha_desde, fecha_hasta))
-            else:
-                cursor.execute("""
-                    SELECT categoria, SUM(monto)
-                    FROM pagos_obra
-                    GROUP BY categoria
-                """)
-
-            egresos = dict(cursor.fetchall())
-            flujo['egresos'] = egresos
-
-            return flujo
-
+            cursor.execute("SELECT MAX(numero_asiento) FROM libro_contable")
+            result = cursor.fetchone()
+            max_numero = result[0] if result and result[0] else 0
+            return max_numero + 1
+            
         except Exception as e:
+            logger.error(f"Error obteniendo próximo número de asiento: {e}")
+            return 1
+    
+    def _validate_table_name(self, table_name: str) -> str:
+        """Valida nombre de tabla para prevenir SQL injection."""
+        # Solo permitir caracteres alfanuméricos y guiones bajos
+        import re
+        if re.match(r'^[a-zA-Z_][a-zA-Z0-9_]*$', table_name):
+            return table_name
+        else:
+            raise ValueError(f"Nombre de tabla inválido: {table_name}")

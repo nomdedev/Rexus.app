@@ -8,4 +8,4 @@ from .controller import AdministracionController
 from .model import AdministracionModel
 from .view import AdministracionView
 
-__all__ = [, "AdministracionView", "AdministracionController"]
+__all__ = ["AdministracionModel", "AdministracionView", "AdministracionController"]

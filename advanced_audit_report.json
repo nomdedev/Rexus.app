@@ -3,140 +3,250 @@
   "project": "Rexus.app",
   "auditor": "advanced_v2.0",
   "modules_audited": 10,
-  "total_issues": 1287,
+  "total_issues": 1355,
   "statistics": {
     "by_severity": {
-      "MINOR": 960,
-      "BLOCKER": 176,
-      "MAJOR": 151
+      "MINOR": 1030,
+      "MAJOR": 165,
+      "BLOCKER": 160
     },
     "by_type": {
-      "global_variable": 358,
-      "long_line": 125,
-      "syntax_error": 170,
-      "missing_docstring": 270,
-      "function_too_complex": 29,
-      "function_too_long": 122,
-      "unused_import": 207,
-      "hardcoded_password": 6
+      "missing_docstring": 314,
+      "unused_import": 249,
+      "global_variable": 345,
+      "function_too_complex": 34,
+      "long_line": 122,
+      "function_too_long": 131,
+      "hardcoded_password": 6,
+      "syntax_error": 154
     },
     "by_module": {
-      "api": 17,
-      "core": 124,
+      "api": 50,
+      "core": 153,
       "main": 56,
       "models": 7,
       "modules": 480,
       "reports": 18,
       "security": 3,
       "ui": 245,
-      "utils": 317,
+      "utils": 323,
       "workflows": 20
     },
-    "total_issues": 1287
+    "total_issues": 1355
   },
   "modules": {
     "api": {
       "files_audited": 3,
-      "issues_found": 17,
+      "issues_found": 50,
       "issues": [
         {
-          "type": "global_variable",
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 8,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "line": 37,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "api"
         },
         {
-          "type": "global_variable",
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 87,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "cache_manager = get_cache_manager()",
+          "line": 41,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "api"
         },
         {
-          "type": "global_variable",
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 106,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = get_logger(\"api_server\")",
+          "line": 45,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 220,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "# FIXME: Specify concrete exception types instead of generic Exception# Inicializar protección contr",
+          "line": 52,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 257,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "log_info(f\"API {request.method} {request.url.path} from {request.client.host if request.client else ",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.middleware.trustedhost.TrustedHostMiddleware",
+          "rule": "unused_import",
+          "content": "import fastapi.middleware.trustedhost.TrustedHostMiddleware",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 309,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "log_security_event(\"CSRF_TOKEN_MISSING\", \"MEDIUM\", f\"Method: {request.method}, Path: {request.url.pa",
+          "line": 1,
+          "message": "Import no utilizado: typing.List",
+          "rule": "unused_import",
+          "content": "import typing.List",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 736,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "safe_departamento = InputSanitizer.sanitize_string(user.departamento, max_length=100) if user.depart",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.HTTPException",
+          "rule": "unused_import",
+          "content": "import fastapi.HTTPException",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 751,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "INSERT INTO usuarios (username, email, nombre, apellido, rol, departamento, activo, fecha_creacion)",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.security.HTTPBearer",
+          "rule": "unused_import",
+          "content": "import fastapi.security.HTTPBearer",
           "module": "api"
         },
         {
-          "type": "long_line",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 969,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "raiseentials_valid = password_mgr.verify_password(password, stoexcept (ConnectionError, TimeoutError",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.Depends",
+          "rule": "unused_import",
+          "content": "import fastapi.Depends",
           "module": "api"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "unused_import",
+          "severity": "MINOR",
           "file": "rexus\\api\\server.py",
-          "line": 21,
-          "message": "Error de sintaxis: invalid syntax",
-          "rule": "syntax_error",
-          "content": "Line 21: Syntax error",
+          "line": 1,
+          "message": "Import no utilizado: pydantic.BaseModel",
+          "rule": "unused_import",
+          "content": "import pydantic.BaseModel",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: json",
+          "rule": "unused_import",
+          "content": "import json",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: threading",
+          "rule": "unused_import",
+          "content": "import threading",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: pathlib.Path",
+          "rule": "unused_import",
+          "content": "import pathlib.Path",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.status",
+          "rule": "unused_import",
+          "content": "import fastapi.status",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.Dict",
+          "rule": "unused_import",
+          "content": "import typing.Dict",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.Body",
+          "rule": "unused_import",
+          "content": "import fastapi.Body",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.security.HTTPAuthorizationCredentials",
+          "rule": "unused_import",
+          "content": "import fastapi.security.HTTPAuthorizationCredentials",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.Request",
+          "rule": "unused_import",
+          "content": "import fastapi.Request",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: pydantic.Field",
+          "rule": "unused_import",
+          "content": "import pydantic.Field",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.Any",
+          "rule": "unused_import",
+          "content": "import typing.Any",
+          "module": "api"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\api\\server.py",
+          "line": 1,
+          "message": "Import no utilizado: fastapi.responses.JSONResponse",
+          "rule": "unused_import",
+          "content": "import fastapi.responses.JSONResponse",
           "module": "api"
         },
         {
@@ -173,7 +283,7 @@
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\api\\validators.py",
-          "line": 339,
+          "line": 335,
           "message": "Variable global detectada",
           "rule": "global_variable",
           "content": "min_length=3,",
@@ -183,20 +293,240 @@
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\api\\validators.py",
-          "line": 442,
+          "line": 438,
           "message": "Variable global detectada",
           "rule": "global_variable",
           "content": "input_validator = InputValidationMiddleware()",
           "module": "api"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 45,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 49,
+          "message": "Función \"validator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validator(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 50,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 54,
+          "message": "Función \"Field\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def Field(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 64,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 69,
+          "message": "Función \"Query\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def Query(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 70,
+          "message": "Función \"Path\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def Path(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 71,
+          "message": "Función \"Body\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def Body(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 77,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
+          "module": "api"
+        },
+        {
+          "type": "function_too_complex",
+          "severity": "MAJOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 177,
+          "message": "Función \"validate_date_range\" muy compleja (complejidad: 11)",
+          "rule": "function_too_complex",
+          "content": "def validate_date_range(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 275,
+          "message": "Función \"validate_positive\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_positive(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 290,
+          "message": "Función \"sanitize_text_fields\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def sanitize_text_fields(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 296,
+          "message": "Función \"validate_dates\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_dates(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
           "file": "rexus\\api\\validators.py",
           "line": 316,
-          "message": "Error de sintaxis: expected ':'",
-          "rule": "syntax_error",
-          "content": "Line 316: Syntax error",
+          "message": "Función \"sanitize_required_fields\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def sanitize_required_fields(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 320,
+          "message": "Función \"sanitize_description\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def sanitize_description(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 326,
+          "message": "Función \"validate_price\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_price(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 345,
+          "message": "Función \"validate_username\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_username(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 352,
+          "message": "Función \"validate_email\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_email(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 359,
+          "message": "Función \"sanitize_text_fields\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def sanitize_text_fields(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 365,
+          "message": "Función \"validate_role\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def validate_role(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 393,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 394,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "api"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\api\\validators.py",
+          "line": 409,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "api"
         },
         {
@@ -213,56 +543,106 @@
     },
     "core": {
       "files_audited": 31,
-      "issues_found": 124,
+      "issues_found": 153,
       "issues": [
         {
           "type": "long_line",
           "severity": "MINOR",
           "file": "rexus\\core\\audit_integrity.py",
-          "line": 31,
+          "line": 180,
           "message": "Línea demasiado larga (>120 chars)",
           "rule": "long_line",
-          "content": "issues=[{\"record_id\": \"IMPORT\", \"record_index\": -1, \"timestamp\": \"N/A\", \"issue\": f\"Error durante imp",
+          "content": "issues.append(f\"Hash de contenido no coincide: esperado {expected_content_hash}, encontrado {record.",
           "module": "core"
         },
         {
           "type": "long_line",
           "severity": "MINOR",
           "file": "rexus\\core\\audit_integrity.py",
-          "line": 171,
+          "line": 186,
+          "message": "Línea demasiado larga (>120 chars)",
+          "rule": "long_line",
+          "content": "issues.append(f\"Hash de cadena no coincide: esperado {expected_chain_hash}, encontrado {record.chain",
+          "module": "core"
+        },
+        {
+          "type": "long_line",
+          "severity": "MINOR",
+          "file": "rexus\\core\\audit_integrity.py",
+          "line": 248,
+          "message": "Línea demasiado larga (>120 chars)",
+          "rule": "long_line",
+          "content": "issues=[{\"record_id\": \"EXPORT\", \"record_index\": -1, \"timestamp\": \"N/A\", \"issue\": f\"Error durante exp",
+          "module": "core"
+        },
+        {
+          "type": "long_line",
+          "severity": "MINOR",
+          "file": "rexus\\core\\audit_integrity.py",
+          "line": 410,
           "message": "Línea demasiado larga (>120 chars)",
           "rule": "long_line",
           "content": "raise RuntimeError(\"Gestor de integridad de auditoría no está inicializado. Llame a init_audit_integ",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "missing_docstring",
+          "severity": "MINOR",
           "file": "rexus\\core\\audit_integrity.py",
-          "line": 26,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 26: Syntax error",
+          "line": 100,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\audit_integrity.py",
+          "line": 1,
+          "message": "Import no utilizado: cryptography.hazmat.primitives.asymmetric.rsa",
+          "rule": "unused_import",
+          "content": "import cryptography.hazmat.primitives.asymmetric.rsa",
           "module": "core"
         },
         {
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\core\\audit_system.py",
-          "line": 269,
+          "line": 436,
           "message": "Variable global detectada",
           "rule": "global_variable",
           "content": "_audit_system = None",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "function_too_complex",
+          "severity": "MAJOR",
           "file": "rexus\\core\\audit_system.py",
-          "line": 16,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 16: Syntax error",
+          "line": 287,
+          "message": "Función \"get_audit_logs\" muy compleja (complejidad: 14)",
+          "rule": "function_too_complex",
+          "content": "def get_audit_logs(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\audit_system.py",
+          "line": 287,
+          "message": "Función \"get_audit_logs\" demasiado larga (79 líneas)",
+          "rule": "function_too_long",
+          "content": "def get_audit_logs(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\audit_system.py",
+          "line": 368,
+          "message": "Función \"get_security_summary\" demasiado larga (64 líneas)",
+          "rule": "function_too_long",
+          "content": "def get_security_summary(...)",
           "module": "core"
         },
         {
@@ -376,43 +756,163 @@
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "long_line",
           "severity": "MINOR",
           "file": "rexus\\core\\auth_decorators.py",
-          "line": 10,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "line": 125,
+          "message": "Línea demasiado larga (>120 chars)",
+          "rule": "long_line",
+          "content": "logger.warning(f\"Usuario {current_user.get('username')} con rol {user_role} intentó acceso que requi",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "long_line",
+          "severity": "MINOR",
           "file": "rexus\\core\\auth_decorators.py",
-          "line": 15,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 15: Syntax error",
+          "line": 197,
+          "message": "Línea demasiado larga (>120 chars)",
+          "rule": "long_line",
+          "content": "user_info = f\"Usuario: {current_user.get('username', 'Unknown')}\" if current_user else \"Usuario: No ",
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 42,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 76,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 78,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 115,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 117,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 165,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 193,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 195,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 224,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 226,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\auth_decorators.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.Any",
+          "rule": "unused_import",
+          "content": "import typing.Any",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\auth_manager.py",
+          "line": 168,
+          "message": "Función \"authenticate_user\" demasiado larga (82 líneas)",
+          "rule": "function_too_long",
+          "content": "def authenticate_user(...)",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\core\\auth_manager.py",
-          "line": 8,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "line": 504,
+          "message": "Función \"decorator\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def decorator(...)",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "missing_docstring",
+          "severity": "MINOR",
           "file": "rexus\\core\\auth_manager.py",
-          "line": 10,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 10: Syntax error",
+          "line": 505,
+          "message": "Función \"wrapper\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def wrapper(...)",
           "module": "core"
         },
         {
@@ -449,40 +949,50 @@
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\core\\backup_manager.py",
-          "line": 8,
+          "line": 26,
           "message": "Variable global detectada",
           "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "content": "BACKUP_CONFIG = {",
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\core\\backup_manager.py",
-          "line": 209,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "backup_manager = BackupManager()",
+          "line": 1,
+          "message": "Import no utilizado: typing.List",
+          "rule": "unused_import",
+          "content": "import typing.List",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "unused_import",
+          "severity": "MINOR",
           "file": "rexus\\core\\backup_manager.py",
-          "line": 15,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 15: Syntax error",
+          "line": 1,
+          "message": "Import no utilizado: gzip",
+          "rule": "unused_import",
+          "content": "import gzip",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
-          "file": "rexus\\core\\base_controller.py",
-          "line": 9,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 9: Syntax error",
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\backup_manager.py",
+          "line": 1,
+          "message": "Import no utilizado: json",
+          "rule": "unused_import",
+          "content": "import json",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\backup_manager.py",
+          "line": 1,
+          "message": "Import no utilizado: schedule",
+          "rule": "unused_import",
+          "content": "import schedule",
           "module": "core"
         },
         {
@@ -716,83 +1226,33 @@
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "unused_import",
           "severity": "MINOR",
           "file": "rexus\\core\\database_manager.py",
-          "line": 40,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "_database_manager = None",
+          "line": 1,
+          "message": "Import no utilizado: typing.Union",
+          "rule": "unused_import",
+          "content": "import typing.Union",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
-          "file": "rexus\\core\\database_manager.py",
-          "line": 11,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 11: Syntax error",
-          "module": "core"
-        },
-        {
-          "type": "global_variable",
-          "severity": "MINOR",
+          "type": "function_too_complex",
+          "severity": "MAJOR",
           "file": "rexus\\core\\database_pool.py",
-          "line": 8,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "line": 66,
+          "message": "Función \"get_connection\" muy compleja (complejidad: 16)",
+          "rule": "function_too_complex",
+          "content": "def get_connection(...)",
           "module": "core"
         },
         {
-          "type": "global_variable",
-          "severity": "MINOR",
+          "type": "function_too_long",
+          "severity": "MAJOR",
           "file": "rexus\\core\\database_pool.py",
-          "line": 136,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "pool_manager = DatabasePoolManager()",
-          "module": "core"
-        },
-        {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
-          "file": "rexus\\core\\database_pool.py",
-          "line": 14,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 14: Syntax error",
-          "module": "core"
-        },
-        {
-          "type": "global_variable",
-          "severity": "MINOR",
-          "file": "rexus\\core\\dev_auth_manager.py",
-          "line": 7,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
-          "module": "core"
-        },
-        {
-          "type": "global_variable",
-          "severity": "MINOR",
-          "file": "rexus\\core\\dev_auth_manager.py",
-          "line": 34,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "dev_auth_manager = DevAuthManager()",
-          "module": "core"
-        },
-        {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
-          "file": "rexus\\core\\dev_auth_manager.py",
-          "line": 11,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 11: Syntax error",
+          "line": 66,
+          "message": "Función \"get_connection\" demasiado larga (53 líneas)",
+          "rule": "function_too_long",
+          "content": "def get_connection(...)",
           "module": "core"
         },
         {
@@ -839,7 +1299,17 @@
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\core\\logger.py",
-          "line": 18,
+          "line": 106,
+          "message": "Variable global detectada",
+          "rule": "global_variable",
+          "content": "logger = RexusLogger(\"rexus\")",
+          "module": "core"
+        },
+        {
+          "type": "global_variable",
+          "severity": "MINOR",
+          "file": "rexus\\core\\logger.py",
+          "line": 226,
           "message": "Variable global detectada",
           "rule": "global_variable",
           "content": "default_logger = logger",
@@ -849,60 +1319,220 @@
           "type": "global_variable",
           "severity": "MINOR",
           "file": "rexus\\core\\logger.py",
-          "line": 19,
+          "line": 227,
           "message": "Variable global detectada",
           "rule": "global_variable",
           "content": "Logger = logger",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "unused_import",
+          "severity": "MINOR",
           "file": "rexus\\core\\logger.py",
-          "line": 10,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 10: Syntax error",
+          "line": 1,
+          "message": "Import no utilizado: typing.Optional",
+          "rule": "unused_import",
+          "content": "import typing.Optional",
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\logger.py",
+          "line": 1,
+          "message": "Import no utilizado: logging.handlers",
+          "rule": "unused_import",
+          "content": "import logging.handlers",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\core\\login_dialog.py",
-          "line": 33,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
+          "line": 57,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "missing_docstring",
+          "severity": "MINOR",
           "file": "rexus\\core\\login_dialog.py",
-          "line": 38,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 38: Syntax error",
+          "line": 59,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "core"
         },
         {
-          "type": "global_variable",
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 60,
+          "message": "Función \"emit\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def emit(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 92,
+          "message": "Función \"setup_ui\" demasiado larga (82 líneas)",
+          "rule": "function_too_long",
+          "content": "def setup_ui(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 192,
+          "message": "Función \"setup_styling\" demasiado larga (68 líneas)",
+          "rule": "function_too_long",
+          "content": "def setup_styling(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_complex",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 262,
+          "message": "Función \"handle_login\" muy compleja (complejidad: 11)",
+          "rule": "function_too_complex",
+          "content": "def handle_login(...)",
+          "module": "core"
+        },
+        {
+          "type": "function_too_long",
+          "severity": "MAJOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 262,
+          "message": "Función \"handle_login\" demasiado larga (65 líneas)",
+          "rule": "function_too_long",
+          "content": "def handle_login(...)",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QPixmap",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QPixmap",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QPalette",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QColor",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSizePolicy",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QSizePolicy",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtCore.QThread",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtCore.QThread",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QMessageBox",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QMessageBox",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QIcon",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QIcon",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\login_dialog.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtCore.pyqtSlot",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtCore.pyqtSlot",
+          "module": "core"
+        },
+        {
+          "type": "missing_docstring",
           "severity": "MINOR",
           "file": "rexus\\core\\module_manager.py",
-          "line": 46,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "module_manager = ModuleManager()",
+          "line": 36,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "function_too_long",
+          "severity": "MAJOR",
           "file": "rexus\\core\\module_manager.py",
-          "line": 10,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 10: Syntax error",
+          "line": 103,
+          "message": "Función \"load_module\" demasiado larga (57 líneas)",
+          "rule": "function_too_long",
+          "content": "def load_module(...)",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\module_manager.py",
+          "line": 1,
+          "message": "Import no utilizado: traceback",
+          "rule": "unused_import",
+          "content": "import traceback",
+          "module": "core"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\core\\module_manager.py",
+          "line": 1,
+          "message": "Import no utilizado: pathlib.Path",
+          "rule": "unused_import",
+          "content": "import pathlib.Path",
           "module": "core"
         },
         {
@@ -1096,53 +1726,43 @@
           "module": "core"
         },
         {
-          "type": "global_variable",
-          "severity": "MINOR",
-          "file": "rexus\\core\\rbac_system.py",
-          "line": 14,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "logger = logging.getLogger(__name__)",
-          "module": "core"
-        },
-        {
           "type": "hardcoded_password",
           "severity": "BLOCKER",
           "file": "rexus\\core\\rbac_system.py",
-          "line": 33,
+          "line": 40,
           "message": "Contraseña hardcodeada detectada",
           "rule": "hardcoded_password",
           "content": "RESET_PASSWORD = \"reset_password\"",
           "module": "core"
         },
         {
-          "type": "long_line",
-          "severity": "MINOR",
+          "type": "function_too_long",
+          "severity": "MAJOR",
           "file": "rexus\\core\\rbac_system.py",
-          "line": 369,
-          "message": "Línea demasiado larga (>120 chars)",
-          "rule": "long_line",
-          "content": "cursor.execute(\"CREATE INDEX IF NOT EXISTS idx_rbac_role_permissions_role ON rbac_role_permissions(r",
+          "line": 130,
+          "message": "Función \"_initialize_roles\" demasiado larga (102 líneas)",
+          "rule": "function_too_long",
+          "content": "def _initialize_roles(...)",
           "module": "core"
         },
         {
-          "type": "global_variable",
-          "severity": "MINOR",
+          "type": "function_too_complex",
+          "severity": "MAJOR",
           "file": "rexus\\core\\rbac_system.py",
-          "line": 697,
-          "message": "Variable global detectada",
-          "rule": "global_variable",
-          "content": "_rbac_system = None",
+          "line": 433,
+          "message": "Función \"get_permission_module\" muy compleja (complejidad: 11)",
+          "rule": "function_too_complex",
+          "content": "def get_permission_module(...)",
           "module": "core"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "unused_import",
+          "severity": "MINOR",
           "file": "rexus\\core\\rbac_system.py",
-          "line": 573,
-          "message": "Error de sintaxis: invalid syntax",
-          "rule": "syntax_error",
-          "content": "Line 573: Syntax error",
+          "line": 1,
+          "message": "Import no utilizado: datetime.datetime",
+          "rule": "unused_import",
+          "content": "import datetime.datetime",
           "module": "core"
         },
         {
@@ -1796,9 +2416,9 @@
           "severity": "MINOR",
           "file": "rexus\\main\\app.py",
           "line": 1,
-          "message": "Import no utilizado: rexus.ui.dashboard.MainDashboard",
+          "message": "Import no utilizado: rexus.modules.obras.view.ObrasModernView",
           "rule": "unused_import",
-          "content": "import rexus.ui.dashboard.MainDashboard",
+          "content": "import rexus.modules.obras.view.ObrasModernView",
           "module": "main"
         },
         {
@@ -1806,9 +2426,9 @@
           "severity": "MINOR",
           "file": "rexus\\main\\app.py",
           "line": 1,
-          "message": "Import no utilizado: rexus.modules.obras.view.ObrasModernView",
+          "message": "Import no utilizado: rexus.ui.dashboard.MainDashboard",
           "rule": "unused_import",
-          "content": "import rexus.modules.obras.view.ObrasModernView",
+          "content": "import rexus.ui.dashboard.MainDashboard",
           "module": "main"
         },
         {
@@ -2768,9 +3388,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\administracion\\recursos_humanos\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: controller.RecursosHumanosController",
+          "message": "Import no utilizado: model.RecursosHumanosModel",
           "rule": "unused_import",
-          "content": "import controller.RecursosHumanosController",
+          "content": "import model.RecursosHumanosModel",
           "module": "modules"
         },
         {
@@ -2778,9 +3398,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\administracion\\recursos_humanos\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: model.RecursosHumanosModel",
+          "message": "Import no utilizado: controller.RecursosHumanosController",
           "rule": "unused_import",
-          "content": "import model.RecursosHumanosModel",
+          "content": "import controller.RecursosHumanosController",
           "module": "modules"
         },
         {
@@ -3288,9 +3908,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\compras\\dialogs\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: dialog_proveedor.DialogProveedor",
+          "message": "Import no utilizado: dialog_seguimiento.DialogSeguimiento",
           "rule": "unused_import",
-          "content": "import dialog_proveedor.DialogProveedor",
+          "content": "import dialog_seguimiento.DialogSeguimiento",
           "module": "modules"
         },
         {
@@ -3298,9 +3918,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\compras\\dialogs\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: dialog_seguimiento.DialogSeguimiento",
+          "message": "Import no utilizado: dialog_proveedor.DialogProveedor",
           "rule": "unused_import",
-          "content": "import dialog_seguimiento.DialogSeguimiento",
+          "content": "import dialog_proveedor.DialogProveedor",
           "module": "modules"
         },
         {
@@ -3878,16 +4498,6 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QFormLayout",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QFormLayout",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\inventario\\view.py",
-          "line": 1,
           "message": "Import no utilizado: PyQt6.QtWidgets.QSpinBox",
           "rule": "unused_import",
           "content": "import PyQt6.QtWidgets.QSpinBox",
@@ -3898,9 +4508,19 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QIcon",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QDialog",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QIcon",
+          "content": "import PyQt6.QtWidgets.QDialog",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\inventario\\view.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QTextEdit",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QTextEdit",
           "module": "modules"
         },
         {
@@ -3928,9 +4548,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QTextEdit",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QFormLayout",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QTextEdit",
+          "content": "import PyQt6.QtWidgets.QFormLayout",
           "module": "modules"
         },
         {
@@ -3938,9 +4558,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QDialog",
+          "message": "Import no utilizado: PyQt6.QtGui.QIcon",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QDialog",
+          "content": "import PyQt6.QtGui.QIcon",
           "module": "modules"
         },
         {
@@ -4048,9 +4668,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view_obras.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QLineEdit",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QLineEdit",
+          "content": "import PyQt6.QtWidgets.QPushButton",
           "module": "modules"
         },
         {
@@ -4058,9 +4678,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\inventario\\view_obras.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QLineEdit",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QPushButton",
+          "content": "import PyQt6.QtWidgets.QLineEdit",
           "module": "modules"
         },
         {
@@ -4838,16 +5458,6 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: model.LogisticaModel",
-          "rule": "unused_import",
-          "content": "import model.LogisticaModel",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\logistica\\__init__.py",
-          "line": 1,
           "message": "Import no utilizado: controller.LogisticaController",
           "rule": "unused_import",
           "content": "import controller.LogisticaController",
@@ -4861,6 +5471,16 @@
           "message": "Import no utilizado: view.LogisticaView",
           "rule": "unused_import",
           "content": "import view.LogisticaView",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\logistica\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: model.LogisticaModel",
+          "rule": "unused_import",
+          "content": "import model.LogisticaModel",
           "module": "modules"
         },
         {
@@ -4948,9 +5568,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\panel_manager.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QComboBox",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QPushButton",
+          "content": "import PyQt6.QtWidgets.QComboBox",
           "module": "modules"
         },
         {
@@ -4968,9 +5588,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\panel_manager.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QComboBox",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QComboBox",
+          "content": "import PyQt6.QtWidgets.QPushButton",
           "module": "modules"
         },
         {
@@ -5028,9 +5648,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\table_manager.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QTableWidget",
+          "message": "Import no utilizado: PyQt6.QtCore.Qt",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QTableWidget",
+          "content": "import PyQt6.QtCore.Qt",
           "module": "modules"
         },
         {
@@ -5038,9 +5658,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\table_manager.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.Qt",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QTableWidget",
           "rule": "unused_import",
-          "content": "import PyQt6.QtCore.Qt",
+          "content": "import PyQt6.QtWidgets.QTableWidget",
           "module": "modules"
         },
         {
@@ -5088,9 +5708,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: transport_manager.LogisticaTransportManager",
+          "message": "Import no utilizado: table_manager.LogisticaTableManager",
           "rule": "unused_import",
-          "content": "import transport_manager.LogisticaTransportManager",
+          "content": "import table_manager.LogisticaTableManager",
           "module": "modules"
         },
         {
@@ -5108,9 +5728,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\logistica\\components\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: table_manager.LogisticaTableManager",
+          "message": "Import no utilizado: transport_manager.LogisticaTransportManager",
           "rule": "unused_import",
-          "content": "import table_manager.LogisticaTableManager",
+          "content": "import transport_manager.LogisticaTransportManager",
           "module": "modules"
         },
         {
@@ -5768,9 +6388,29 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\obras\\components\\__init__.py",
           "line": 1,
+          "message": "Import no utilizado: optimized_table_widget.OptimizedTableWidget",
+          "rule": "unused_import",
+          "content": "import optimized_table_widget.OptimizedTableWidget",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\obras\\components\\__init__.py",
+          "line": 1,
           "message": "Import no utilizado: optimized_table_widget.EnhancedTableContainer",
           "rule": "unused_import",
           "content": "import optimized_table_widget.EnhancedTableContainer",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\obras\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: enhanced_label_widget.StatusIndicatorLabel",
+          "rule": "unused_import",
+          "content": "import enhanced_label_widget.StatusIndicatorLabel",
           "module": "modules"
         },
         {
@@ -5788,29 +6428,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\obras\\components\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: optimized_table_widget.OptimizedTableWidget",
-          "rule": "unused_import",
-          "content": "import optimized_table_widget.OptimizedTableWidget",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\obras\\components\\__init__.py",
-          "line": 1,
           "message": "Import no utilizado: enhanced_label_widget.MetricDisplayLabel",
           "rule": "unused_import",
           "content": "import enhanced_label_widget.MetricDisplayLabel",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\obras\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: enhanced_label_widget.StatusIndicatorLabel",
-          "rule": "unused_import",
-          "content": "import enhanced_label_widget.StatusIndicatorLabel",
           "module": "modules"
         },
         {
@@ -6188,9 +6808,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QDialogButtonBox",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSpinBox",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QDialogButtonBox",
+          "content": "import PyQt6.QtWidgets.QSpinBox",
           "module": "modules"
         },
         {
@@ -6198,9 +6818,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: rexus.ui.components.base_components.RexusFrame",
+          "message": "Import no utilizado: PyQt6.QtGui.QColor",
           "rule": "unused_import",
-          "content": "import rexus.ui.components.base_components.RexusFrame",
+          "content": "import PyQt6.QtGui.QColor",
           "module": "modules"
         },
         {
@@ -6218,9 +6838,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: rexus.utils.message_system.show_warning",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QDialog",
           "rule": "unused_import",
-          "content": "import rexus.utils.message_system.show_warning",
+          "content": "import PyQt6.QtWidgets.QDialog",
           "module": "modules"
         },
         {
@@ -6228,49 +6848,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QLineEdit",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QDialogButtonBox",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QLineEdit",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\pedidos\\view_modern.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QProgressBar",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\pedidos\\view_modern.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QSpinBox",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QSpinBox",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\pedidos\\view_modern.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QCheckBox",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QCheckBox",
-          "module": "modules"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\modules\\pedidos\\view_modern.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QFont",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QFont",
+          "content": "import PyQt6.QtWidgets.QDialogButtonBox",
           "module": "modules"
         },
         {
@@ -6288,9 +6868,9 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QDialog",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QDialog",
+          "content": "import PyQt6.QtWidgets.QProgressBar",
           "module": "modules"
         },
         {
@@ -6298,9 +6878,49 @@
           "severity": "MINOR",
           "file": "rexus\\modules\\pedidos\\view_modern.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "message": "Import no utilizado: rexus.ui.components.base_components.RexusFrame",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QColor",
+          "content": "import rexus.ui.components.base_components.RexusFrame",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\pedidos\\view_modern.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QFont",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QFont",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\pedidos\\view_modern.py",
+          "line": 1,
+          "message": "Import no utilizado: rexus.utils.message_system.show_warning",
+          "rule": "unused_import",
+          "content": "import rexus.utils.message_system.show_warning",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\pedidos\\view_modern.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QCheckBox",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QCheckBox",
+          "module": "modules"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\modules\\pedidos\\view_modern.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QLineEdit",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QLineEdit",
           "module": "modules"
         },
         {
@@ -6974,26 +7594,6 @@
           "severity": "MINOR",
           "file": "rexus\\reports\\report_generator.py",
           "line": 1,
-          "message": "Import no utilizado: reportlab.lib.pagesizes.letter",
-          "rule": "unused_import",
-          "content": "import reportlab.lib.pagesizes.letter",
-          "module": "reports"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\reports\\report_generator.py",
-          "line": 1,
-          "message": "Import no utilizado: pandas",
-          "rule": "unused_import",
-          "content": "import pandas",
-          "module": "reports"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\reports\\report_generator.py",
-          "line": 1,
           "message": "Import no utilizado: typing.Optional",
           "rule": "unused_import",
           "content": "import typing.Optional",
@@ -7007,6 +7607,26 @@
           "message": "Import no utilizado: reportlab.lib.units.inch",
           "rule": "unused_import",
           "content": "import reportlab.lib.units.inch",
+          "module": "reports"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\reports\\report_generator.py",
+          "line": 1,
+          "message": "Import no utilizado: reportlab.lib.pagesizes.letter",
+          "rule": "unused_import",
+          "content": "import reportlab.lib.pagesizes.letter",
+          "module": "reports"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\reports\\report_generator.py",
+          "line": 1,
+          "message": "Import no utilizado: pandas",
+          "rule": "unused_import",
+          "content": "import pandas",
           "module": "reports"
         },
         {
@@ -7034,9 +7654,19 @@
           "severity": "MINOR",
           "file": "rexus\\reports\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: report_generator.generate_quick_report",
+          "message": "Import no utilizado: report_generator.InventarioReportGenerator",
           "rule": "unused_import",
-          "content": "import report_generator.generate_quick_report",
+          "content": "import report_generator.InventarioReportGenerator",
+          "module": "reports"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\reports\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: report_generator.ObrasReportGenerator",
+          "rule": "unused_import",
+          "content": "import report_generator.ObrasReportGenerator",
           "module": "reports"
         },
         {
@@ -7054,9 +7684,9 @@
           "severity": "MINOR",
           "file": "rexus\\reports\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: report_generator.InventarioReportGenerator",
+          "message": "Import no utilizado: report_generator.generate_quick_report",
           "rule": "unused_import",
-          "content": "import report_generator.InventarioReportGenerator",
+          "content": "import report_generator.generate_quick_report",
           "module": "reports"
         },
         {
@@ -7077,16 +7707,6 @@
           "message": "Import no utilizado: report_generator.get_available_formats",
           "rule": "unused_import",
           "content": "import report_generator.get_available_formats",
-          "module": "reports"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\reports\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: report_generator.ObrasReportGenerator",
-          "rule": "unused_import",
-          "content": "import report_generator.ObrasReportGenerator",
           "module": "reports"
         }
       ]
@@ -7266,9 +7886,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard_integration.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QIcon",
+          "message": "Import no utilizado: PyQt6.QtCore.Qt",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QIcon",
+          "content": "import PyQt6.QtCore.Qt",
           "module": "ui"
         },
         {
@@ -7276,9 +7896,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard_integration.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.Qt",
+          "message": "Import no utilizado: PyQt6.QtGui.QIcon",
           "rule": "unused_import",
-          "content": "import PyQt6.QtCore.Qt",
+          "content": "import PyQt6.QtGui.QIcon",
           "module": "ui"
         },
         {
@@ -7386,56 +8006,6 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\enhanced_base_module_view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QStackedWidget",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QStackedWidget",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\enhanced_base_module_view.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QProgressBar",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\enhanced_base_module_view.py",
-          "line": 1,
-          "message": "Import no utilizado: typing.Callable",
-          "rule": "unused_import",
-          "content": "import typing.Callable",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\enhanced_base_module_view.py",
-          "line": 1,
-          "message": "Import no utilizado: modern_components.ModernTable",
-          "rule": "unused_import",
-          "content": "import modern_components.ModernTable",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\enhanced_base_module_view.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QFont",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QFont",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\enhanced_base_module_view.py",
-          "line": 1,
           "message": "Import no utilizado: typing.List",
           "rule": "unused_import",
           "content": "import typing.List",
@@ -7456,9 +8026,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\enhanced_base_module_view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.QEasingCurve",
+          "message": "Import no utilizado: modern_components.ModernCard",
           "rule": "unused_import",
-          "content": "import PyQt6.QtCore.QEasingCurve",
+          "content": "import modern_components.ModernCard",
           "module": "ui"
         },
         {
@@ -7466,9 +8036,39 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\enhanced_base_module_view.py",
           "line": 1,
-          "message": "Import no utilizado: modern_components.ModernCard",
+          "message": "Import no utilizado: modern_components.ModernTable",
           "rule": "unused_import",
-          "content": "import modern_components.ModernCard",
+          "content": "import modern_components.ModernTable",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\enhanced_base_module_view.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QColor",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\enhanced_base_module_view.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.Callable",
+          "rule": "unused_import",
+          "content": "import typing.Callable",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\enhanced_base_module_view.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QProgressBar",
           "module": "ui"
         },
         {
@@ -7486,6 +8086,26 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\enhanced_base_module_view.py",
           "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QFont",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QFont",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\enhanced_base_module_view.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QStackedWidget",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QStackedWidget",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\enhanced_base_module_view.py",
+          "line": 1,
           "message": "Import no utilizado: modern_components.ModernTheme",
           "rule": "unused_import",
           "content": "import modern_components.ModernTheme",
@@ -7496,9 +8116,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\enhanced_base_module_view.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "message": "Import no utilizado: PyQt6.QtCore.QEasingCurve",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QColor",
+          "content": "import PyQt6.QtCore.QEasingCurve",
           "module": "ui"
         },
         {
@@ -7696,6 +8316,86 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
+          "message": "Import no utilizado: typing.List",
+          "rule": "unused_import",
+          "content": "import typing.List",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QPalette",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QColor",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtChart.QChart",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtChart.QChart",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtChart.QLineSeries",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtChart.QLineSeries",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QTabWidget",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QTabWidget",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QPainter",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QProgressBar",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
           "message": "Import no utilizado: PyQt6.QtWidgets.QSizePolicy",
           "rule": "unused_import",
           "content": "import PyQt6.QtWidgets.QSizePolicy",
@@ -7716,29 +8416,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtChart.QChartView",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtChart.QChartView",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
           "message": "Import no utilizado: PyQt6.QtWidgets.QGridLayout",
           "rule": "unused_import",
           "content": "import PyQt6.QtWidgets.QGridLayout",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QTabWidget",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QTabWidget",
           "module": "ui"
         },
         {
@@ -7756,19 +8436,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QProgressBar",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtChart.QValueAxis",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtChart.QValueAxis",
+          "content": "import PyQt6.QtWidgets.QPushButton",
           "module": "ui"
         },
         {
@@ -7786,9 +8456,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtChart.QChart",
+          "message": "Import no utilizado: PyQt6.QtGui.QPen",
           "rule": "unused_import",
-          "content": "import PyQt6.QtChart.QChart",
+          "content": "import PyQt6.QtGui.QPen",
           "module": "ui"
         },
         {
@@ -7806,29 +8476,19 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPainter",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: typing.List",
-          "rule": "unused_import",
-          "content": "import typing.List",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
           "message": "Import no utilizado: PyQt6.QtCore.QTimer",
           "rule": "unused_import",
           "content": "import PyQt6.QtCore.QTimer",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\executive_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtChart.QChartView",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtChart.QChartView",
           "module": "ui"
         },
         {
@@ -7846,49 +8506,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\executive_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
+          "message": "Import no utilizado: PyQt6.QtChart.QValueAxis",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPalette",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtChart.QLineSeries",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtChart.QLineSeries",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QPushButton",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPen",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPen",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\executive_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QColor",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QColor",
+          "content": "import PyQt6.QtChart.QValueAxis",
           "module": "ui"
         },
         {
@@ -8126,9 +8746,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QGraphicsEffect",
+          "message": "Import no utilizado: PyQt6.QtGui.QPixmap",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QGraphicsEffect",
+          "content": "import PyQt6.QtGui.QPixmap",
           "module": "ui"
         },
         {
@@ -8136,9 +8756,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QSizePolicy",
+          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QSizePolicy",
+          "content": "import PyQt6.QtGui.QPalette",
           "module": "ui"
         },
         {
@@ -8146,9 +8766,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QListWidget",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSpinBox",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QListWidget",
+          "content": "import PyQt6.QtWidgets.QSpinBox",
           "module": "ui"
         },
         {
@@ -8156,9 +8776,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QLinearGradient",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QScrollArea",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QLinearGradient",
+          "content": "import PyQt6.QtWidgets.QScrollArea",
           "module": "ui"
         },
         {
@@ -8166,9 +8786,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QSlider",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSplitter",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QSlider",
+          "content": "import PyQt6.QtWidgets.QSplitter",
           "module": "ui"
         },
         {
@@ -8176,9 +8796,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QGroupBox",
+          "message": "Import no utilizado: PyQt6.QtCore.QPropertyAnimation",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QGroupBox",
+          "content": "import PyQt6.QtCore.QPropertyAnimation",
           "module": "ui"
         },
         {
@@ -8196,9 +8816,49 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QSpinBox",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QTextEdit",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QSpinBox",
+          "content": "import PyQt6.QtWidgets.QTextEdit",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QPainter",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSlider",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QSlider",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QGraphicsEffect",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QGraphicsEffect",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QSizePolicy",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QSizePolicy",
           "module": "ui"
         },
         {
@@ -8226,66 +8886,6 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.pyqtSignal",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtCore.pyqtSignal",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QSplitter",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QSplitter",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.QRect",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtCore.QRect",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QCheckBox",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QCheckBox",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.QPropertyAnimation",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtCore.QPropertyAnimation",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QScrollArea",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QScrollArea",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
           "message": "Import no utilizado: PyQt6.QtGui.QFont",
           "rule": "unused_import",
           "content": "import PyQt6.QtGui.QFont",
@@ -8296,49 +8896,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPixmap",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QGroupBox",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPixmap",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPainter",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QTextEdit",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QTextEdit",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPalette",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\modern_components.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtCore.QEasingCurve",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtCore.QEasingCurve",
+          "content": "import PyQt6.QtWidgets.QGroupBox",
           "module": "ui"
         },
         {
@@ -8356,9 +8916,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QBrush",
+          "message": "Import no utilizado: PyQt6.QtGui.QPen",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QBrush",
+          "content": "import PyQt6.QtGui.QPen",
           "module": "ui"
         },
         {
@@ -8376,9 +8936,69 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\modern_components.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPen",
+          "message": "Import no utilizado: PyQt6.QtCore.pyqtSignal",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPen",
+          "content": "import PyQt6.QtCore.pyqtSignal",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtCore.QRect",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtCore.QRect",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QBrush",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QBrush",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtGui.QLinearGradient",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtGui.QLinearGradient",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QCheckBox",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QCheckBox",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtCore.QEasingCurve",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtCore.QEasingCurve",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\modern_components.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QListWidget",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QListWidget",
           "module": "ui"
         },
         {
@@ -8846,9 +9466,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\components\\global_search_widget.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QApplication",
+          "message": "Import no utilizado: PyQt6.QtGui.QAction",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QApplication",
+          "content": "import PyQt6.QtGui.QAction",
           "module": "ui"
         },
         {
@@ -8856,9 +9476,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\components\\global_search_widget.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QAction",
+          "message": "Import no utilizado: PyQt6.QtWidgets.QApplication",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QAction",
+          "content": "import PyQt6.QtWidgets.QApplication",
           "module": "ui"
         },
         {
@@ -8956,9 +9576,69 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\components\\__init__.py",
           "line": 1,
+          "message": "Import no utilizado: base_components.RexusProgressBar",
+          "rule": "unused_import",
+          "content": "import base_components.RexusProgressBar",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: base_components.RexusButton",
+          "rule": "unused_import",
+          "content": "import base_components.RexusButton",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: base_components.RexusColors",
+          "rule": "unused_import",
+          "content": "import base_components.RexusColors",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: base_components.RexusLabel",
+          "rule": "unused_import",
+          "content": "import base_components.RexusLabel",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
           "message": "Import no utilizado: base_components.RexusComboBox",
           "rule": "unused_import",
           "content": "import base_components.RexusComboBox",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: base_components.RexusFonts",
+          "rule": "unused_import",
+          "content": "import base_components.RexusFonts",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\components\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: base_components.RexusTable",
+          "rule": "unused_import",
+          "content": "import base_components.RexusTable",
           "module": "ui"
         },
         {
@@ -8976,19 +9656,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\components\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: base_components.RexusProgressBar",
+          "message": "Import no utilizado: base_components.RexusMessageBox",
           "rule": "unused_import",
-          "content": "import base_components.RexusProgressBar",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: base_components.RexusColors",
-          "rule": "unused_import",
-          "content": "import base_components.RexusColors",
+          "content": "import base_components.RexusMessageBox",
           "module": "ui"
         },
         {
@@ -9016,59 +9686,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\components\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: base_components.RexusTable",
-          "rule": "unused_import",
-          "content": "import base_components.RexusTable",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: base_components.RexusMessageBox",
-          "rule": "unused_import",
-          "content": "import base_components.RexusMessageBox",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
           "message": "Import no utilizado: base_components.RexusLayoutHelper",
           "rule": "unused_import",
           "content": "import base_components.RexusLayoutHelper",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: base_components.RexusButton",
-          "rule": "unused_import",
-          "content": "import base_components.RexusButton",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: base_components.RexusFonts",
-          "rule": "unused_import",
-          "content": "import base_components.RexusFonts",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\components\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: base_components.RexusLabel",
-          "rule": "unused_import",
-          "content": "import base_components.RexusLabel",
           "module": "ui"
         },
         {
@@ -9126,19 +9746,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\main_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: components.base_components.RexusFrame",
+          "message": "Import no utilizado: PyQt6.QtGui.QPixmap",
           "rule": "unused_import",
-          "content": "import components.base_components.RexusFrame",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\dashboard\\main_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QProgressBar",
+          "content": "import PyQt6.QtGui.QPixmap",
           "module": "ui"
         },
         {
@@ -9156,19 +9766,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\main_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPixmap",
+          "message": "Import no utilizado: PyQt6.QtGui.QColor",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPixmap",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\dashboard\\main_dashboard.py",
-          "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
-          "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPainter",
+          "content": "import PyQt6.QtGui.QColor",
           "module": "ui"
         },
         {
@@ -9186,9 +9786,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\main_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
+          "message": "Import no utilizado: components.base_components.RexusFrame",
           "rule": "unused_import",
-          "content": "import PyQt6.QtWidgets.QPushButton",
+          "content": "import components.base_components.RexusFrame",
           "module": "ui"
         },
         {
@@ -9196,9 +9796,29 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\main_dashboard.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QColor",
+          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QColor",
+          "content": "import PyQt6.QtGui.QPainter",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\dashboard\\main_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QProgressBar",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QProgressBar",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\dashboard\\main_dashboard.py",
+          "line": 1,
+          "message": "Import no utilizado: PyQt6.QtWidgets.QPushButton",
+          "rule": "unused_import",
+          "content": "import PyQt6.QtWidgets.QPushButton",
           "module": "ui"
         },
         {
@@ -9216,19 +9836,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: widgets.kpi_widget.KPIWidget",
+          "message": "Import no utilizado: widgets.chart_widget.ChartWidget",
           "rule": "unused_import",
-          "content": "import widgets.kpi_widget.KPIWidget",
-          "module": "ui"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\ui\\dashboard\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: dashboard_controller.DashboardController",
-          "rule": "unused_import",
-          "content": "import dashboard_controller.DashboardController",
+          "content": "import widgets.chart_widget.ChartWidget",
           "module": "ui"
         },
         {
@@ -9246,9 +9856,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: widgets.chart_widget.ChartWidget",
+          "message": "Import no utilizado: dashboard_controller.DashboardController",
           "rule": "unused_import",
-          "content": "import widgets.chart_widget.ChartWidget",
+          "content": "import dashboard_controller.DashboardController",
           "module": "ui"
         },
         {
@@ -9259,6 +9869,16 @@
           "message": "Import no utilizado: widgets.activity_widget.ActivityWidget",
           "rule": "unused_import",
           "content": "import widgets.activity_widget.ActivityWidget",
+          "module": "ui"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\ui\\dashboard\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: widgets.kpi_widget.KPIWidget",
+          "rule": "unused_import",
+          "content": "import widgets.kpi_widget.KPIWidget",
           "module": "ui"
         },
         {
@@ -9416,9 +10036,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\widgets\\kpi_widget.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
+          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPainter",
+          "content": "import PyQt6.QtGui.QPalette",
           "module": "ui"
         },
         {
@@ -9426,9 +10046,9 @@
           "severity": "MINOR",
           "file": "rexus\\ui\\dashboard\\widgets\\kpi_widget.py",
           "line": 1,
-          "message": "Import no utilizado: PyQt6.QtGui.QPalette",
+          "message": "Import no utilizado: PyQt6.QtGui.QPainter",
           "rule": "unused_import",
-          "content": "import PyQt6.QtGui.QPalette",
+          "content": "import PyQt6.QtGui.QPainter",
           "module": "ui"
         },
         {
@@ -9585,7 +10205,7 @@
     },
     "utils": {
       "files_audited": 80,
-      "issues_found": 317,
+      "issues_found": 323,
       "issues": [
         {
           "type": "global_variable",
@@ -9902,6 +10522,16 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\database_optimizer.py",
           "line": 1,
+          "message": "Import no utilizado: datetime.timedelta",
+          "rule": "unused_import",
+          "content": "import datetime.timedelta",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\database_optimizer.py",
+          "line": 1,
           "message": "Import no utilizado: json",
           "rule": "unused_import",
           "content": "import json",
@@ -9915,16 +10545,6 @@
           "message": "Import no utilizado: threading",
           "rule": "unused_import",
           "content": "import threading",
-          "module": "utils"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\utils\\database_optimizer.py",
-          "line": 1,
-          "message": "Import no utilizado: datetime.timedelta",
-          "rule": "unused_import",
-          "content": "import datetime.timedelta",
           "module": "utils"
         },
         {
@@ -10118,13 +10738,73 @@
           "module": "utils"
         },
         {
-          "type": "syntax_error",
-          "severity": "BLOCKER",
+          "type": "global_variable",
+          "severity": "MINOR",
           "file": "rexus\\utils\\dependency_validator.py",
-          "line": 13,
-          "message": "Error de sintaxis: unexpected indent",
-          "rule": "syntax_error",
-          "content": "Line 13: Syntax error",
+          "line": 17,
+          "message": "Variable global detectada",
+          "rule": "global_variable",
+          "content": "logger = logging.getLogger(__name__)",
+          "module": "utils"
+        },
+        {
+          "type": "missing_docstring",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 37,
+          "message": "Función \"__init__\" sin docstring",
+          "rule": "missing_docstring",
+          "content": "def __init__(...)",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.Optional",
+          "rule": "unused_import",
+          "content": "import typing.Optional",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 1,
+          "message": "Import no utilizado: typing.List",
+          "rule": "unused_import",
+          "content": "import typing.List",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 1,
+          "message": "Import no utilizado: inspect",
+          "rule": "unused_import",
+          "content": "import inspect",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 1,
+          "message": "Import no utilizado: importlib",
+          "rule": "unused_import",
+          "content": "import importlib",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\dependency_validator.py",
+          "line": 1,
+          "message": "Import no utilizado: pathlib.Path",
+          "rule": "unused_import",
+          "content": "import pathlib.Path",
           "module": "utils"
         },
         {
@@ -10722,6 +11402,16 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\intelligent_cache_manager.py",
           "line": 1,
+          "message": "Import no utilizado: dataclasses.asdict",
+          "rule": "unused_import",
+          "content": "import dataclasses.asdict",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\intelligent_cache_manager.py",
+          "line": 1,
           "message": "Import no utilizado: datetime.datetime",
           "rule": "unused_import",
           "content": "import datetime.datetime",
@@ -10735,16 +11425,6 @@
           "message": "Import no utilizado: typing.Union",
           "rule": "unused_import",
           "content": "import typing.Union",
-          "module": "utils"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\utils\\intelligent_cache_manager.py",
-          "line": 1,
-          "message": "Import no utilizado: dataclasses.asdict",
-          "rule": "unused_import",
-          "content": "import dataclasses.asdict",
           "module": "utils"
         },
         {
@@ -11582,9 +12262,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\performance_monitor.py",
           "line": 1,
-          "message": "Import no utilizado: psutil",
+          "message": "Import no utilizado: functools",
           "rule": "unused_import",
-          "content": "import psutil",
+          "content": "import functools",
           "module": "utils"
         },
         {
@@ -11592,9 +12272,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\performance_monitor.py",
           "line": 1,
-          "message": "Import no utilizado: functools",
+          "message": "Import no utilizado: psutil",
           "rule": "unused_import",
-          "content": "import functools",
+          "content": "import psutil",
           "module": "utils"
         },
         {
@@ -11702,9 +12382,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\query_performance_analyzer.py",
           "line": 1,
-          "message": "Import no utilizado: collections.defaultdict",
+          "message": "Import no utilizado: typing.Tuple",
           "rule": "unused_import",
-          "content": "import collections.defaultdict",
+          "content": "import typing.Tuple",
           "module": "utils"
         },
         {
@@ -11722,16 +12402,6 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\query_performance_analyzer.py",
           "line": 1,
-          "message": "Import no utilizado: typing.Optional",
-          "rule": "unused_import",
-          "content": "import typing.Optional",
-          "module": "utils"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\utils\\query_performance_analyzer.py",
-          "line": 1,
           "message": "Import no utilizado: collections.Counter",
           "rule": "unused_import",
           "content": "import collections.Counter",
@@ -11742,9 +12412,19 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\query_performance_analyzer.py",
           "line": 1,
-          "message": "Import no utilizado: typing.Tuple",
+          "message": "Import no utilizado: typing.Optional",
           "rule": "unused_import",
-          "content": "import typing.Tuple",
+          "content": "import typing.Optional",
+          "module": "utils"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\utils\\query_performance_analyzer.py",
+          "line": 1,
+          "message": "Import no utilizado: collections.defaultdict",
+          "rule": "unused_import",
+          "content": "import collections.defaultdict",
           "module": "utils"
         },
         {
@@ -11982,9 +12662,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\report_cache_integration.py",
           "line": 1,
-          "message": "Import no utilizado: pathlib.Path",
+          "message": "Import no utilizado: intelligent_cache_manager.IntelligentCacheManager",
           "rule": "unused_import",
-          "content": "import pathlib.Path",
+          "content": "import intelligent_cache_manager.IntelligentCacheManager",
           "module": "utils"
         },
         {
@@ -11992,9 +12672,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\report_cache_integration.py",
           "line": 1,
-          "message": "Import no utilizado: intelligent_cache_manager.IntelligentCacheManager",
+          "message": "Import no utilizado: pathlib.Path",
           "rule": "unused_import",
-          "content": "import intelligent_cache_manager.IntelligentCacheManager",
+          "content": "import pathlib.Path",
           "module": "utils"
         },
         {
@@ -12112,9 +12792,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\smart_cache.py",
           "line": 1,
-          "message": "Import no utilizado: threading",
+          "message": "Import no utilizado: time",
           "rule": "unused_import",
-          "content": "import threading",
+          "content": "import time",
           "module": "utils"
         },
         {
@@ -12122,9 +12802,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\smart_cache.py",
           "line": 1,
-          "message": "Import no utilizado: time",
+          "message": "Import no utilizado: threading",
           "rule": "unused_import",
-          "content": "import time",
+          "content": "import threading",
           "module": "utils"
         },
         {
@@ -12242,9 +12922,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\sql_dialect_translator.py",
           "line": 1,
-          "message": "Import no utilizado: typing.Dict",
+          "message": "Import no utilizado: typing.Any",
           "rule": "unused_import",
-          "content": "import typing.Dict",
+          "content": "import typing.Any",
           "module": "utils"
         },
         {
@@ -12252,9 +12932,9 @@
           "severity": "MINOR",
           "file": "rexus\\utils\\sql_dialect_translator.py",
           "line": 1,
-          "message": "Import no utilizado: typing.Any",
+          "message": "Import no utilizado: typing.Dict",
           "rule": "unused_import",
-          "content": "import typing.Any",
+          "content": "import typing.Dict",
           "module": "utils"
         },
         {
@@ -12858,6 +13538,16 @@
           "severity": "MINOR",
           "file": "rexus\\workflows\\__init__.py",
           "line": 1,
+          "message": "Import no utilizado: workflow_engine.workflow_engine",
+          "rule": "unused_import",
+          "content": "import workflow_engine.workflow_engine",
+          "module": "workflows"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\workflows\\__init__.py",
+          "line": 1,
           "message": "Import no utilizado: workflow_engine.AutomatedStep",
           "rule": "unused_import",
           "content": "import workflow_engine.AutomatedStep",
@@ -12878,46 +13568,6 @@
           "severity": "MINOR",
           "file": "rexus\\workflows\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: workflow_engine.BaseWorkflowStep",
-          "rule": "unused_import",
-          "content": "import workflow_engine.BaseWorkflowStep",
-          "module": "workflows"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\workflows\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: workflow_engine.workflow_engine",
-          "rule": "unused_import",
-          "content": "import workflow_engine.workflow_engine",
-          "module": "workflows"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\workflows\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: workflow_engine.ApprovalStep",
-          "rule": "unused_import",
-          "content": "import workflow_engine.ApprovalStep",
-          "module": "workflows"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\workflows\\__init__.py",
-          "line": 1,
-          "message": "Import no utilizado: workflow_engine.StepStatus",
-          "rule": "unused_import",
-          "content": "import workflow_engine.StepStatus",
-          "module": "workflows"
-        },
-        {
-          "type": "unused_import",
-          "severity": "MINOR",
-          "file": "rexus\\workflows\\__init__.py",
-          "line": 1,
           "message": "Import no utilizado: workflow_engine.WorkflowStatus",
           "rule": "unused_import",
           "content": "import workflow_engine.WorkflowStatus",
@@ -12928,9 +13578,9 @@
           "severity": "MINOR",
           "file": "rexus\\workflows\\__init__.py",
           "line": 1,
-          "message": "Import no utilizado: workflow_engine.ConditionalStep",
+          "message": "Import no utilizado: workflow_engine.BaseWorkflowStep",
           "rule": "unused_import",
-          "content": "import workflow_engine.ConditionalStep",
+          "content": "import workflow_engine.BaseWorkflowStep",
           "module": "workflows"
         },
         {
@@ -12948,9 +13598,39 @@
           "severity": "MINOR",
           "file": "rexus\\workflows\\__init__.py",
           "line": 1,
+          "message": "Import no utilizado: workflow_engine.ConditionalStep",
+          "rule": "unused_import",
+          "content": "import workflow_engine.ConditionalStep",
+          "module": "workflows"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\workflows\\__init__.py",
+          "line": 1,
           "message": "Import no utilizado: workflow_engine.Workflow",
           "rule": "unused_import",
           "content": "import workflow_engine.Workflow",
+          "module": "workflows"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\workflows\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: workflow_engine.StepStatus",
+          "rule": "unused_import",
+          "content": "import workflow_engine.StepStatus",
+          "module": "workflows"
+        },
+        {
+          "type": "unused_import",
+          "severity": "MINOR",
+          "file": "rexus\\workflows\\__init__.py",
+          "line": 1,
+          "message": "Import no utilizado: workflow_engine.ApprovalStep",
+          "rule": "unused_import",
+          "content": "import workflow_engine.ApprovalStep",
           "module": "workflows"
         },
         {
@@ -12968,163 +13648,13 @@
   },
   "critical_issues": [
     {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\api\\server.py",
-      "line": 21,
-      "message": "Error de sintaxis: invalid syntax",
-      "rule": "syntax_error",
-      "content": "Line 21: Syntax error",
-      "module": "api"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\api\\validators.py",
-      "line": 316,
-      "message": "Error de sintaxis: expected ':'",
-      "rule": "syntax_error",
-      "content": "Line 316: Syntax error",
-      "module": "api"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\audit_integrity.py",
-      "line": 26,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 26: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\audit_system.py",
-      "line": 16,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 16: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\auth_decorators.py",
-      "line": 15,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 15: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\auth_manager.py",
-      "line": 10,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 10: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\backup_manager.py",
-      "line": 15,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 15: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\base_controller.py",
-      "line": 9,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 9: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\database_manager.py",
-      "line": 11,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 11: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\database_pool.py",
-      "line": 14,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 14: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\dev_auth_manager.py",
-      "line": 11,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 11: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\logger.py",
-      "line": 10,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 10: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\login_dialog.py",
-      "line": 38,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 38: Syntax error",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\module_manager.py",
-      "line": 10,
-      "message": "Error de sintaxis: unexpected indent",
-      "rule": "syntax_error",
-      "content": "Line 10: Syntax error",
-      "module": "core"
-    },
-    {
       "type": "hardcoded_password",
       "severity": "BLOCKER",
       "file": "rexus\\core\\rbac_system.py",
-      "line": 33,
+      "line": 40,
       "message": "Contraseña hardcodeada detectada",
       "rule": "hardcoded_password",
       "content": "RESET_PASSWORD = \"reset_password\"",
-      "module": "core"
-    },
-    {
-      "type": "syntax_error",
-      "severity": "BLOCKER",
-      "file": "rexus\\core\\rbac_system.py",
-      "line": 573,
-      "message": "Error de sintaxis: invalid syntax",
-      "rule": "syntax_error",
-      "content": "Line 573: Syntax error",
       "module": "core"
     },
     {
@@ -13166,15 +13696,165 @@
       "rule": "syntax_error",
       "content": "Line 13: Syntax error",
       "module": "core"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\core\\sql_query_manager.py",
+      "line": 7,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 7: Syntax error",
+      "module": "core"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\core\\themes.py",
+      "line": 14,
+      "message": "Error de sintaxis: invalid syntax",
+      "rule": "syntax_error",
+      "content": "Line 14: Syntax error",
+      "module": "core"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\administracion\\model.py",
+      "line": 96,
+      "message": "Error de sintaxis: expected an indented block after 'except' statement on line 94",
+      "rule": "syntax_error",
+      "content": "Line 96: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\administracion\\__init__.py",
+      "line": 11,
+      "message": "Error de sintaxis: invalid syntax",
+      "rule": "syntax_error",
+      "content": "Line 11: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\administracion\\contabilidad\\controller.py",
+      "line": 49,
+      "message": "Error de sintaxis: invalid syntax",
+      "rule": "syntax_error",
+      "content": "Line 49: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\administracion\\contabilidad\\model.py",
+      "line": 108,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 108: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\administracion\\recursos_humanos\\controller.py",
+      "line": 49,
+      "message": "Error de sintaxis: invalid syntax",
+      "rule": "syntax_error",
+      "content": "Line 49: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\auditoria\\controller.py",
+      "line": 73,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 73: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\auditoria\\model.py",
+      "line": 14,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 14: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\auditoria\\__init__.py",
+      "line": 16,
+      "message": "Error de sintaxis: invalid syntax",
+      "rule": "syntax_error",
+      "content": "Line 16: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\compras\\constants.py",
+      "line": 21,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 21: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\compras\\controller.py",
+      "line": 8,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 8: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\compras\\detalle_model.py",
+      "line": 7,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 7: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\compras\\inventory_integration.py",
+      "line": 11,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 11: Syntax error",
+      "module": "modules"
+    },
+    {
+      "type": "syntax_error",
+      "severity": "BLOCKER",
+      "file": "rexus\\modules\\compras\\model.py",
+      "line": 14,
+      "message": "Error de sintaxis: unexpected indent",
+      "rule": "syntax_error",
+      "content": "Line 14: Syntax error",
+      "module": "modules"
     }
   ],
   "recommendations": [
-    "CRÍTICO: 176 issues bloqueantes requieren atención inmediata",
+    "CRÍTICO: 160 issues bloqueantes requieren atención inmediata",
     "Implementar documentación sistemática de funciones",
     "Refactorizar funciones complejas para mejorar mantenibilidad",
     "SEGURIDAD: Eliminar contraseñas hardcodeadas inmediatamente",
     "Módulo 'modules' requiere refactorización (480 issues)",
-    "Módulo 'utils' requiere refactorización (317 issues)",
+    "Módulo 'utils' requiere refactorización (323 issues)",
     "Módulo 'ui' requiere refactorización (245 issues)"
   ]
 }

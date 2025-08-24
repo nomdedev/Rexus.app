@@ -3,224 +3,119 @@ Sistema de Backup Automatizado para Rexus
 Versión: 2.0.0 - Enterprise Ready
 """
 
-
-import logging
-logger = logging.getLogger(__name__)
-
+import os
 import sys
 import json
 import gzip
 import shutil
+import logging
 import schedule
-                            },
-                "backup_config": {
-                    "retention_days": BACKUP_CONFIG["retention_days"],
-                    "compression": BACKUP_CONFIG["compression"],
-                    "schedule": BACKUP_CONFIG.get("schedule")
-                },
-                "system_info": {
-                    "python_version": sys.version,
-                    "platform": sys.platform,
-                    "project_root": str(PROJECT_ROOT)
-                }
-            }
+from datetime import datetime, timedelta
+from pathlib import Path
+from typing import Dict, Any, List, Optional
 
-            # Escribir configuración
-            with open(backup_path, 'w', encoding='utf-8') as f:
-                json.dump(config_data, f, indent=2, ensure_ascii=False)
+# Sistema de logging
+try:
+    from ..utils.app_logger import get_logger
+    logger = get_logger(__name__)
+except ImportError:
+    import logging
+    logger = logging.getLogger(__name__)
 
-            # Comprimir si está habilitado
-            if self.compression_enabled:
-                compressed_path = backup_path.with_suffix('.json.gz')
-                with open(backup_path, 'rb') as f_in:
-                    with gzip.open(compressed_path, 'wb') as f_out:
-                        shutil.copyfileobj(f_in, f_out)
+# Configuración por defecto
+BACKUP_CONFIG = {
+    "retention_days": 30,
+    "compression": True,
+    "schedule": "daily",
+    "backup_location": "backups/"
+}
 
-                backup_path.unlink()
-                backup_path = compressed_path
-
-            file_size = backup_path.stat().st_size
-            duration = (datetime.now() - start_time).total_seconds()
-
-            self.logger.info("Backup de configuración completado", extra={
-                "file_path": str(backup_path),
-                "size_bytes": file_size,
-                "duration_seconds": duration
-            })
-
-            return BackupResult(
-                success=True,
-                backup_type="configuration",
-                file_path=str(backup_path),
-                size_bytes=file_size,
-                duration_seconds=duration
-            )
-
-        except Exception as e:
-            duration = (datetime.now() - start_time).total_seconds()
-
-            self.logger.error("Error en backup de configuración", extra={
-                "error": str(e),
-                "duration_seconds": duration
-            }, exc_info=True)
-
-            return BackupResult(
-                success=False,
-                backup_type="configuration",
-                file_path=None,
-                size_bytes=0,
-                duration_seconds=duration,
-                error_message=str(e)
-            )
-
-    def cleanup_old_backups(self):
-        """Limpiar backups antiguos según política de retención"""
+class BackupManager:
+    """Gestor de backups automatizados."""
+    
+    def __init__(self, config: Dict[str, Any] = None):
+        """Inicializa el gestor de backups."""
+        self.config = config or BACKUP_CONFIG.copy()
+        self.backup_dir = Path(self.config.get("backup_location", "backups/"))
+        self.backup_dir.mkdir(exist_ok=True)
+        
+    def create_backup(self, source_path: str, backup_name: str = None) -> bool:
+        """Crea un backup de la fuente especificada."""
         try:
-            cutoff_date = datetime.now() - timedelta(days=self.retention_days)
-            deleted_count = 0
-            freed_bytes = 0
-
-            for backup_subdir in [self.db_backup_dir, self.files_backup_dir, self.config_backup_dir]:
-                for backup_file in backup_subdir.iterdir():
-                    if backup_file.is_file():
-                        file_mtime = datetime.fromtimestamp(backup_file.stat().st_mtime)
-
-                        if file_mtime < cutoff_date:
-                            file_size = backup_file.stat().st_size
-                            backup_file.unlink()
-                            deleted_count += 1
-                            freed_bytes += file_size
-
-            self.logger.info("Limpieza de backups completada", extra={
-                "deleted_files": deleted_count,
-                "freed_mb": round(freed_bytes / 1024 / 1024, 2),
-                "retention_days": self.retention_days
-            })
-
-        except Exception as e:
-            self.logger.error("Error en limpieza de backups", extra={
-                "error": str(e)
-            }, exc_info=True)
-
-    def restore_database(self, backup_file: str, target_database: str) -> bool:
-        """Restaurar base de datos desde backup"""
-        try:
-            backup_path = Path(backup_file)
-
-            if not backup_path.exists():
-                raise FileNotFoundError(f"Archivo de backup no encontrado: {backup_file}")
-
-            # Leer script de backup
-            if backup_path.suffix == '.gz':
-                with gzip.open(backup_path, 'rt', encoding='utf-8') as f:
-                    script_content = f.read()
-            else:
-                with open(backup_path, 'r', encoding='utf-8') as f:
-                    script_content = f.read()
-
-            # Ejecutar script (en producción, usar transacciones)
-            connection_string = (
-                f"DRIVER={{{DATABASE_CONFIG['driver']}}};"
-                f"SERVER={DATABASE_CONFIG['server']};"
-                f"DATABASE={target_database};"
-                f"UID={DATABASE_CONFIG['username']};"
-                f"PWD={DATABASE_CONFIG['password']};"
-                f"TrustServerCertificate=yes;"
+            if not backup_name:
+                backup_name = f"backup_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
+            
+            source = Path(source_path)
+            if not source.exists():
+                logger.error(f"Fuente no encontrada: {source_path}")
+                return False
+            
+            backup_file = self.backup_dir / f"{backup_name}.tar.gz"
+            
+            # Crear backup comprimido
+            shutil.make_archive(
+                str(backup_file.with_suffix('')), 
+                'gztar', 
+                str(source.parent), 
+                str(source.name)
             )
-
-            with pyodbc.connect(connection_string, timeout=300) as conn:
-                # Ejecutar script por partes (para evitar timeouts)
-                statements = script_content.split(';')
-
-                for statement in statements:
-                    statement = statement.strip()
-                    if statement and not statement.startswith('--'):
-                        cursor = conn.cursor()
-                        cursor.execute(statement)
-                        cursor.close()
-
-                conn.commit()
-
-            self.logger.info("Restauración de BD completada", extra={
-                "backup_file": backup_file,
-                "target_database": target_database
-            })
-
+            
+            logger.info(f"Backup creado exitosamente: {backup_file}")
             return True
-
+            
         except Exception as e:
-            self.logger.error("Error en restauración de BD", extra={
-                "backup_file": backup_file,
-                "target_database": target_database,
-                "error": str(e)
-            }, exc_info=True)
-
+            logger.error(f"Error creando backup: {e}")
             return False
-
-    def get_backup_status(self) -> Dict[str, Any]:
-        """Obtener estado actual del sistema de backup"""
+    
+    def cleanup_old_backups(self) -> int:
+        """Limpia backups antiguos según configuración."""
         try:
-            status = {
-                "scheduler_running": self._scheduler_running,
-                "backup_directory": str(self.backup_dir),
-                "retention_days": self.retention_days,
-                "compression_enabled": self.compression_enabled,
-                "recent_backups": [],
-                "storage_usage": {}
-            }
-
-            # Obtener backups recientes
-            all_backups = []
-            for backup_subdir in [self.db_backup_dir, self.files_backup_dir, self.config_backup_dir]:
-                for backup_file in backup_subdir.iterdir():
-                    if backup_file.is_file():
-                        stat = backup_file.stat()
-                        all_backups.append({
-                            "name": backup_file.name,
-                            "type": backup_subdir.name,
-                            "size_mb": round(stat.st_size / 1024 / 1024, 2),
-                            "created": datetime.fromtimestamp(stat.st_mtime).isoformat()
-                        })
-
-            # Ordenar por fecha
-            all_backups.sort(key=lambda x: x["created"], reverse=True)
-            status["recent_backups"] = all_backups[:10]  # Últimos 10
-
-            # Calcular uso de almacenamiento
-            for backup_subdir in [self.db_backup_dir, self.files_backup_dir, self.config_backup_dir]:
-                total_size = sum(f.stat().st_size for f in backup_subdir.iterdir() if f.is_file())
-                file_count = len([f for f in backup_subdir.iterdir() if f.is_file()])
-
-                status["storage_usage"][backup_subdir.name] = {
-                    "total_mb": round(total_size / 1024 / 1024, 2),
-                    "file_count": file_count
-                }
-
-            return status
-
+            retention_days = self.config.get("retention_days", 30)
+            cutoff_date = datetime.now() - timedelta(days=retention_days)
+            
+            removed_count = 0
+            for backup_file in self.backup_dir.glob("*.tar.gz"):
+                if backup_file.stat().st_mtime < cutoff_date.timestamp():
+                    backup_file.unlink()
+                    removed_count += 1
+                    logger.info(f"Backup antiguo eliminado: {backup_file.name}")
+            
+            return removed_count
+            
         except Exception as e:
-            self.logger.error("Error obteniendo estado de backup", extra={
-                "error": str(e)
-            }, exc_info=True)
+            logger.error(f"Error limpiando backups: {e}")
+            return 0
+    
+    def get_backup_status(self) -> Dict[str, Any]:
+        """Obtiene estado actual de los backups."""
+        try:
+            backups = list(self.backup_dir.glob("*.tar.gz"))
+            total_size = sum(b.stat().st_size for b in backups)
+            
+            return {
+                "total_backups": len(backups),
+                "total_size_mb": round(total_size / (1024 * 1024), 2),
+                "oldest_backup": min(b.stat().st_mtime for b in backups) if backups else None,
+                "newest_backup": max(b.stat().st_mtime for b in backups) if backups else None,
+                "backup_location": str(self.backup_dir)
+            }
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo estado: {e}")
+            return {}
 
-            return {"error": str(e)}
+# Instancia global
+_backup_manager: Optional[BackupManager] = None
 
-# Instancia global del backup manager
-backup_manager = BackupManager()
+def get_backup_manager() -> BackupManager:
+    """Obtiene la instancia global del gestor de backups."""
+    global _backup_manager
+    if _backup_manager is None:
+        _backup_manager = BackupManager()
+    return _backup_manager
 
-# Funciones de conveniencia
-def start_backup_scheduler():
-    """Iniciar scheduler de backups"""
-    backup_manager.start_scheduler()
-
-def stop_backup_scheduler():
-    """Detener scheduler de backups"""
-    backup_manager.stop_scheduler()
-
-def run_backup_now() -> List[BackupResult]:
-    """Ejecutar backup inmediatamente"""
-    return backup_manager.backup_all()
-
-def get_backup_status() -> Dict[str, Any]:
-    """Obtener estado del sistema de backup"""
-    return backup_manager.get_backup_status()
+def init_backup_manager(config: Dict[str, Any] = None) -> BackupManager:
+    """Inicializa el gestor global de backups."""
+    global _backup_manager
+    _backup_manager = BackupManager(config)
+    return _backup_manager

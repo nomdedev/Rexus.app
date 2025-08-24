@@ -10,7 +10,49 @@ import importlib
 import inspect
 import logging
 import sys
-                            if not hasattr(ModuleManager, method):
+from typing import Dict, List, Optional, Tuple, Any
+from pathlib import Path
+
+# Configurar logger
+logger = logging.getLogger(__name__)
+
+
+class DependencyValidationError(Exception):
+    """Excepción para errores de validación de dependencias."""
+    pass
+
+
+class DependencyValidator:
+    """
+    Validador de dependencias críticas del sistema.
+    
+    Verifica:
+    - Módulos de Python requeridos
+    - Componentes internos críticos
+    - Bases de datos requeridas
+    - Archivos de configuración
+    - Permisos de sistema
+    """
+    
+    def __init__(self):
+        self.validation_results = {}
+        self.critical_errors = []
+        self.warnings = []
+
+    def validate_module_manager(self) -> bool:
+        """
+        Valida específicamente el module_manager que fue mencionado en la auditoría.
+        
+        Returns:
+            bool: True si module_manager está disponible y funcional
+        """
+        try:
+            from rexus.core.module_manager import ModuleManager
+            
+            # Verificar que tiene métodos críticos
+            required_methods = ['create_module_safely', 'get_available_modules']
+            for method in required_methods:
+                if not hasattr(ModuleManager, method):
                     self.critical_errors.append(f"ModuleManager falta método crítico: {method}")
                     return False
             

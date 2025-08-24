@@ -69,7 +69,8 @@ class AuditoriaController(QObject):
 
         except Exception as e:
             logger.exception(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptionif self.view:
+            # FIXME: Specify concrete exception types instead of generic Exception
+            if self.view:
                 self.view.mostrar_error(
                     f"Error cargando datos de auditoría: {e}"
                 )
@@ -337,7 +338,9 @@ class AuditoriaController(QObject):
             self.view.actualizar_estadisticas(estadisticas)
         except Exception as e:
             logger.exception(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exceptiondef buscar_por_tabla(self, tabla, registro_id=None):
+            # FIXME: Specify concrete exception types instead of generic Exception
+    
+    def buscar_por_tabla(self, tabla, registro_id=None):
         """
         Busca registros de auditoría por tabla específica.
 

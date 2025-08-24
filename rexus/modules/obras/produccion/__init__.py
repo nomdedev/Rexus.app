@@ -8,4 +8,4 @@ from .controller import ProduccionController
 from .model import ProduccionModel
 from .view import ProduccionView
 
-__all__ = [, "ProduccionView", "ProduccionController"]
+__all__ = [ "ProduccionView", "ProduccionController"]

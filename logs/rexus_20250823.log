@@ -30,3 +30,12 @@
 2025-08-23 17:45:37 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
 2025-08-23 17:45:37 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
 2025-08-23 17:45:37 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-23 23:34:39 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:34:39 | WARNING  | rexus.api.server | FastAPI no disponible - usando fallback
+2025-08-23 23:34:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:34:50 | WARNING  | rexus.api.server | FastAPI no disponible - usando fallback
+2025-08-23 23:36:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:40:25 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:49:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:49:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-23 23:50:25 | INFO     | rexus           | Sistema de logging Rexus inicializado

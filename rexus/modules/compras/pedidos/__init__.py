@@ -8,4 +8,4 @@ from .controller import ComprasPedidosController
 from .model import PedidosModel
 from .view import PedidosView
 
-__all__ = [, "PedidosView", "ComprasPedidosController"]
+__all__ = [ "PedidosView", "ComprasPedidosController"]

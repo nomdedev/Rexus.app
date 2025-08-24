@@ -11,7 +11,7 @@ from typing import Dict, Any, Optional
 from dataclasses import dataclass
 
 # Tema por defecto
-DEFAULT_THEME = 
+DEFAULT_THEME = "light" 
 
 @dataclass
 class ColorPalette:
