@@ -68,7 +68,7 @@ class ObrasController:
             
         try:
             # Verificar métodos de vista
-            if hasattr(self.view, 'obtener_obra_seleccionada'):
+            if self.view is not None and hasattr(self.view, 'obtener_obra_seleccionada'):
                 obra_seleccionada = self.view.obtener_obra_seleccionada()
             else:
                 self.mostrar_error("Error", "La vista no implementa obtener_obra_seleccionada")
@@ -89,7 +89,7 @@ class ObrasController:
             
             if respuesta == QMessageBox.StandardButton.Yes:
                 # Verificar métodos de modelo
-                if hasattr(self.model, 'eliminar_obra'):
+                if self.model is not None and hasattr(self.model, 'eliminar_obra'):
                     exito, mensaje = self.model.eliminar_obra(obra_seleccionada["id"], self.usuario_actual)
                 else:
                     self.mostrar_error("Error", "El modelo no implementa eliminar_obra")
@@ -112,7 +112,7 @@ class ObrasController:
             
         try:
             # Verificar métodos de vista
-            if hasattr(self.view, 'obtener_obra_seleccionada'):
+            if self.view is not None and hasattr(self.view, 'obtener_obra_seleccionada'):
                 obra_seleccionada = self.view.obtener_obra_seleccionada()
             else:
                 self.mostrar_error("Error", "La vista no implementa obtener_obra_seleccionada")
@@ -123,7 +123,7 @@ class ObrasController:
                 return
                 
             # Solicitar nuevo estado
-            if hasattr(self.view, 'mostrar_dialogo_cambiar_estado'):
+            if self.view is not None and hasattr(self.view, 'mostrar_dialogo_cambiar_estado'):
                 nuevo_estado = self.view.mostrar_dialogo_cambiar_estado(obra_seleccionada["estado_actual"])
             else:
                 # Estados básicos si no hay diálogo

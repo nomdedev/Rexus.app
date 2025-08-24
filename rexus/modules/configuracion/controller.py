@@ -49,13 +49,13 @@ class ConfiguracionController(BaseController):
         try:
             if self.view and hasattr(self.view, 'connect_signals'):
                 # Conectar señales específicas de configuración
-                if hasattr(self.view, 'buscar_signal'):
+                if self.view and hasattr(self.view, 'buscar_signal'):
                     self.view.buscar_signal.connect(self.buscar)
                 
-                if hasattr(self.view, 'guardar_configuracion_signal'):
+                if self.view and hasattr(self.view, 'guardar_configuracion_signal'):
                     self.view.guardar_configuracion_signal.connect(self.guardar_configuracion)
                 
-                if hasattr(self.view, 'eliminar_configuracion_signal'):
+                if self.view and hasattr(self.view, 'eliminar_configuracion_signal'):
                     self.view.eliminar_configuracion_signal.connect(self.eliminar_configuracion)
                 
                 logger.debug("Señales de configuración conectadas")
@@ -96,7 +96,19 @@ class ConfiguracionController(BaseController):
                 return []
             
             # Delegar al modelo la aplicación de filtros
-            configuraciones = self.model.obtener_configuraciones_filtradas(filtros)
+            if self.model and hasattr(self.model, 'obtener_configuraciones_filtradas'):
+                if self.model:
+
+                    if self.model:
+                        configuraciones = self.model.obtener_configuraciones_filtradas(filtros)
+                    else:
+                        configuraciones = []
+
+                else:
+
+                    configuraciones = []
+            else:
+                configuraciones = None
             
             if configuraciones is not None:
                 logger.info(f"[CONFIGURACION CONTROLLER] Filtradas {len(configuraciones)} configuraciones")
@@ -136,12 +148,36 @@ class ConfiguracionController(BaseController):
             
             # Obtener configuraciones del modelo
             if filtros:
-                configuraciones = self.model.obtener_configuraciones_filtradas(filtros)
+                if self.model and hasattr(self.model, 'obtener_configuraciones_filtradas'):
+                    if self.model:
+
+                        if self.model:
+                            configuraciones = self.model.obtener_configuraciones_filtradas(filtros)
+                        else:
+                            configuraciones = []
+
+                    else:
+
+                        configuraciones = []
+                else:
+                    configuraciones = None
             else:
-                configuraciones = self.model.obtener_todas_configuraciones()
+                if self.model and hasattr(self.model, 'obtener_todas_configuraciones'):
+                    if self.model:
+
+                        if self.model:
+                            configuraciones = self.model.obtener_todas_configuraciones()
+                        else:
+                            configuraciones = []
+
+                    else:
+
+                        configuraciones = []
+                else:
+                    configuraciones = None
             
             # Actualizar vista
-            if hasattr(self.view, 'cargar_datos_en_tabla'):
+            if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
                 self.view.cargar_datos_en_tabla(configuraciones)
             
             logger.debug(f"Cargadas {len(configuraciones)} configuraciones")
@@ -168,10 +204,34 @@ class ConfiguracionController(BaseController):
             # Determinar si es creación o actualización
             config_id = datos_config.get('id')
             if config_id:
-                resultado = self.model.actualizar_configuracion(config_id, datos_config)
+                if self.model and hasattr(self.model, 'actualizar_configuracion'):
+                    if self.model:
+
+                        if self.model:
+                            resultado = self.model.actualizar_configuracion(config_id, datos_config)
+                        else:
+                            resultado = None
+
+                    else:
+
+                        resultado = None
+                else:
+                    resultado = None
                 mensaje = "Configuración actualizada exitosamente"
             else:
-                resultado = self.model.crear_configuracion(datos_config)
+                if self.model and hasattr(self.model, 'crear_configuracion'):
+                    if self.model:
+
+                        if self.model:
+                            resultado = self.model.crear_configuracion(datos_config)
+                        else:
+                            resultado = None
+
+                    else:
+
+                        resultado = None
+                else:
+                    resultado = None
                 mensaje = "Configuración creada exitosamente"
             
             if resultado:
@@ -248,7 +308,19 @@ class ConfiguracionController(BaseController):
                 logger.error("No hay modelo disponible para exportar")
                 return False
             
-            configuraciones = self.model.obtener_todas_configuraciones()
+            if self.model:
+
+            
+                if self.model:
+                    configuraciones = self.model.obtener_todas_configuraciones()
+                else:
+                    configuraciones = []
+
+            
+            else:
+
+            
+                configuraciones = []
             
             if not configuraciones:
                 logger.warning("No hay configuraciones para exportar")

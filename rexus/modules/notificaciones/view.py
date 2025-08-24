@@ -236,7 +236,10 @@ class NotificacionesView(QWidget):
             self.clear_notification_widgets()
             
             # Obtener notificaciones del modelo
-            notificaciones = self.model.obtener_notificaciones_activas()
+            if self.model and hasattr(self.model, 'obtener_notificaciones_activas'):
+                notificaciones = self.model.obtener_notificaciones_activas()
+            else:
+                notificaciones = None
             
             # Aplicar filtro
             filtro_tipo = self.tipo_filter.currentText().lower()

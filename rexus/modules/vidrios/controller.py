@@ -40,7 +40,7 @@ class VidriosController(QObject):
                 self.logger.error("Modelo no disponible")
                 return False
                 
-            if hasattr(self.model, 'eliminar_vidrio'):
+            if self.model and hasattr(self.model, 'eliminar_vidrio'):
                 resultado = self.model.eliminar_vidrio(vidrio_id)
                 
                 if resultado:
@@ -75,7 +75,7 @@ class VidriosController(QObject):
             if not self.validar_datos_vidrio(datos):
                 return False
                 
-            if hasattr(self.model, 'crear_vidrio'):
+            if self.model and hasattr(self.model, 'crear_vidrio'):
                 vidrio_id = self.model.crear_vidrio(datos)
                 
                 if vidrio_id:
@@ -109,7 +109,7 @@ class VidriosController(QObject):
             if not self.validar_datos_vidrio(datos):
                 return False
                 
-            if hasattr(self.model, 'actualizar_vidrio'):
+            if self.model and hasattr(self.model, 'actualizar_vidrio'):
                 resultado = self.model.actualizar_vidrio(vidrio_id, datos)
                 
                 if resultado:
@@ -173,7 +173,7 @@ class VidriosController(QObject):
             if not self.model:
                 return None
                 
-            if hasattr(self.model, 'obtener_vidrio_por_id'):
+            if self.model and hasattr(self.model, 'obtener_vidrio_por_id'):
                 return self.model.obtener_vidrio_por_id(vidrio_id)
             return None
             
@@ -187,7 +187,7 @@ class VidriosController(QObject):
             if not self.model:
                 return []
                 
-            if hasattr(self.model, 'obtener_vidrios'):
+            if self.model and hasattr(self.model, 'obtener_vidrios'):
                 return self.model.obtener_vidrios(filtros)
             return []
             
@@ -212,7 +212,7 @@ class VidriosController(QObject):
             if not self.model:
                 return 0.0
                 
-            if hasattr(self.model, 'calcular_precio'):
+            if self.model and hasattr(self.model, 'calcular_precio'):
                 return self.model.calcular_precio(datos)
             
             # Cálculo básico si no hay modelo

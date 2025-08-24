@@ -48,7 +48,8 @@ class PedidosController(QObject):
                 if respuesta == QMessageBox.StandardButton.Yes:
                     self.logger.info(f"Eliminando pedido ID: {pedido_id}")
                     
-                    if hasattr(self.model, 'eliminar_pedido') and self.model.eliminar_pedido(pedido_id):
+ if self.model and hasattr(self.model, 'eliminar_pedido'):
+     self.model.eliminar_pedido(pedido_id)
                         success_msg = f"Pedido {pedido_id} eliminado exitosamente"
                         self.logger.info(f"Pedido {pedido_id} eliminado correctamente")
                         
@@ -69,7 +70,7 @@ class PedidosController(QObject):
                 self.logger.error("Modelo no disponible")
                 return
                 
-            if hasattr(self.model, 'actualizar_estado_pedido'):
+            if self.model and hasattr(self.model, 'actualizar_estado_pedido'):
                 exito = self.model.actualizar_estado_pedido(pedido_id, nuevo_estado)
                 if exito:
                     mensaje = f"Estado del pedido {pedido_id} cambiado a {nuevo_estado}"
@@ -94,7 +95,7 @@ class PedidosController(QObject):
             if not self.model:
                 return {}
                 
-            if hasattr(self.model, 'obtener_estadisticas'):
+            if self.model and hasattr(self.model, 'obtener_estadisticas'):
                 stats = self.model.obtener_estadisticas()
                 return stats if stats else {}
             return {}
@@ -156,7 +157,7 @@ class PedidosController(QObject):
                     self.mostrar_error("Formato de fecha de entrega inválido")
                     return False
                     
-            if hasattr(self.model, 'crear_pedido'):
+            if self.model and hasattr(self.model, 'crear_pedido'):
                 pedido_id = self.model.crear_pedido(datos)
                 if pedido_id:
                     self.logger.info(f"Pedido creado exitosamente: {pedido_id}")
@@ -176,7 +177,7 @@ class PedidosController(QObject):
             if not self.model:
                 return None
                 
-            if hasattr(self.model, 'obtener_pedido_por_id'):
+            if self.model and hasattr(self.model, 'obtener_pedido_por_id'):
                 return self.model.obtener_pedido_por_id(pedido_id)
             return None
         except Exception as e:
@@ -189,7 +190,7 @@ class PedidosController(QObject):
             if not self.model:
                 return []
                 
-            if hasattr(self.model, 'buscar_productos_inventario'):
+            if self.model and hasattr(self.model, 'buscar_productos_inventario'):
                 return self.model.buscar_productos_inventario(busqueda)
             return []
         except Exception as e:
@@ -233,7 +234,7 @@ class PedidosController(QObject):
                 self.logger.error("Modelo no disponible")
                 return
                 
-            if hasattr(self.model, 'obtener_pedidos_paginados'):
+            if self.model and hasattr(self.model, 'obtener_pedidos_paginados'):
                 pedidos = self.model.obtener_pedidos_paginados(page, per_page)
                 if self.view and hasattr(self.view, 'actualizar_lista_pedidos'):
                     self.view.actualizar_lista_pedidos(pedidos)
@@ -247,7 +248,7 @@ class PedidosController(QObject):
                 return
                 
             offset = (page - 1) * per_page
-            if hasattr(self.model, 'obtener_pedidos_paginados'):
+            if self.model and hasattr(self.model, 'obtener_pedidos_paginados'):
                 pedidos = self.model.obtener_pedidos_paginados(offset, per_page)
                 
                 if self.view and hasattr(self.view, 'actualizar_tabla'):
@@ -263,7 +264,7 @@ class PedidosController(QObject):
             if not self.model:
                 return 0
                 
-            if hasattr(self.model, 'obtener_total_registros'):
+            if self.model and hasattr(self.model, 'obtener_total_registros'):
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:

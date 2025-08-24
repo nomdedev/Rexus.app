@@ -64,27 +64,27 @@ class PedidosComprasController(BaseController):
         """Conecta las señales de la vista con los métodos del controlador."""
         try:
             # Señales básicas de pedidos
-            if hasattr(self.view, 'pedido_creado'):
+            if self.view and hasattr(self.view, 'pedido_creado'):
                 self.view.pedido_creado.connect(self.crear_pedido)
-            if hasattr(self.view, 'pedido_editado'):
+            if self.view and hasattr(self.view, 'pedido_editado'):
                 self.view.pedido_editado.connect(self.editar_pedido)
-            if hasattr(self.view, 'pedido_eliminado'):
+            if self.view and hasattr(self.view, 'pedido_eliminado'):
                 self.view.pedido_eliminado.connect(self.eliminar_pedido)
             
             # Señales de detalles
-            if hasattr(self.view, 'detalle_agregado'):
+            if self.view and hasattr(self.view, 'detalle_agregado'):
                 self.view.detalle_agregado.connect(self.agregar_detalle_pedido)
-            if hasattr(self.view, 'detalle_modificado'):
+            if self.view and hasattr(self.view, 'detalle_modificado'):
                 self.view.detalle_modificado.connect(self.modificar_detalle_pedido)
-            if hasattr(self.view, 'detalle_eliminado'):
+            if self.view and hasattr(self.view, 'detalle_eliminado'):
                 self.view.detalle_eliminado.connect(self.eliminar_detalle_pedido)
             
             # Señales de estado
-            if hasattr(self.view, 'pedido_enviado'):
+            if self.view and hasattr(self.view, 'pedido_enviado'):
                 self.view.pedido_enviado.connect(self.enviar_pedido)
-            if hasattr(self.view, 'pedido_cancelado'):
+            if self.view and hasattr(self.view, 'pedido_cancelado'):
                 self.view.pedido_cancelado.connect(self.cancelar_pedido)
-            if hasattr(self.view, 'pedido_aprobado'):
+            if self.view and hasattr(self.view, 'pedido_aprobado'):
                 self.view.pedido_aprobado.connect(self.aprobar_pedido)
             
             logger.debug("Señales de pedidos conectadas exitosamente")
@@ -120,7 +120,13 @@ class PedidosComprasController(BaseController):
             datos_pedido['fecha_creacion'] = datetime.now()
             datos_pedido['estado'] = 'BORRADOR'
             
-            pedido_id = self.model.crear_pedido(datos_pedido)
+            if self.model and hasattr(self.model, 'crear_pedido'):
+                if self.model:
+                    pedido_id = self.model.crear_pedido(datos_pedido)
+                else:
+                    pedido_id = None
+            else:
+                pedido_id = None
             
             if pedido_id:
                 show_info(self.view, "Éxito", f"Pedido {numero_pedido} creado correctamente")
@@ -163,7 +169,13 @@ class PedidosComprasController(BaseController):
                 return False
             
             datos_pedido['fecha_modificacion'] = datetime.now()
-            success = self.model.actualizar_pedido(pedido_id, datos_pedido)
+            if self.model and hasattr(self.model, 'actualizar_pedido'):
+                if self.model:
+                    success = self.model.actualizar_pedido(pedido_id, datos_pedido)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Pedido actualizado correctamente")
@@ -205,7 +217,13 @@ class PedidosComprasController(BaseController):
             if not show_question(self.view, "Confirmar", "¿Está seguro de eliminar este pedido?"):
                 return False
             
-            success = self.model.eliminar_pedido(pedido_id)
+            if self.model and hasattr(self.model, 'eliminar_pedido'):
+                if self.model:
+                    success = self.model.eliminar_pedido(pedido_id)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Pedido eliminado correctamente")
@@ -239,7 +257,13 @@ class PedidosComprasController(BaseController):
                 return False
             
             # Obtener datos del pedido original
-            pedido_original = self.model.obtener_pedido(pedido_id)
+            if self.model and hasattr(self.model, 'obtener_pedido'):
+                if self.model:
+                    pedido_original = self.model.obtener_pedido(pedido_id)
+                else:
+                    pedido_original = None
+            else:
+                pedido_original = None
             if not pedido_original:
                 show_error(self.view, "Error", "Pedido original no encontrado")
                 return False
@@ -252,7 +276,13 @@ class PedidosComprasController(BaseController):
             nuevo_pedido['fecha_creacion'] = datetime.now()
             nuevo_pedido['fecha_modificacion'] = None
             
-            nuevo_id = self.model.crear_pedido(nuevo_pedido)
+            if self.model and hasattr(self.model, 'crear_pedido'):
+                if self.model:
+                    nuevo_id = self.model.crear_pedido(nuevo_pedido)
+                else:
+                    nuevo_id = None
+            else:
+                nuevo_id = None
             
             if nuevo_id:
                 # Duplicar detalles del pedido
@@ -300,7 +330,13 @@ class PedidosComprasController(BaseController):
             # Calcular totales del detalle
             self._calcular_totales_detalle(detalle_data)
             
-            detalle_id = self.model.agregar_detalle_pedido(pedido_id, detalle_data)
+            if self.model and hasattr(self.model, 'agregar_detalle_pedido'):
+                if self.model:
+                    detalle_id = self.model.agregar_detalle_pedido(pedido_id, detalle_data)
+                else:
+                    detalle_id = None
+            else:
+                detalle_id = None
             
             if detalle_id:
                 # Recalcular totales del pedido
@@ -352,7 +388,13 @@ class PedidosComprasController(BaseController):
             # Calcular totales del detalle
             self._calcular_totales_detalle(detalle_data)
             
-            success = self.model.actualizar_detalle_pedido(detalle_id, detalle_data)
+            if self.model and hasattr(self.model, 'actualizar_detalle_pedido'):
+                if self.model:
+                    success = self.model.actualizar_detalle_pedido(detalle_id, detalle_data)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 # Recalcular totales del pedido
@@ -401,7 +443,13 @@ class PedidosComprasController(BaseController):
             if not show_question(self.view, "Confirmar", "¿Está seguro de eliminar este detalle?"):
                 return False
             
-            success = self.model.eliminar_detalle_pedido(detalle_id)
+            if self.model and hasattr(self.model, 'eliminar_detalle_pedido'):
+                if self.model:
+                    success = self.model.eliminar_detalle_pedido(detalle_id)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 # Recalcular totales del pedido
@@ -448,7 +496,13 @@ class PedidosComprasController(BaseController):
                 'fecha_envio': datetime.now()
             }
             
-            success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+            if self.model and hasattr(self.model, 'actualizar_pedido'):
+                if self.model:
+                    success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Pedido enviado correctamente")
@@ -493,7 +547,13 @@ class PedidosComprasController(BaseController):
                 'motivo_cancelacion': motivo
             }
             
-            success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+            if self.model and hasattr(self.model, 'actualizar_pedido'):
+                if self.model:
+                    success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Pedido cancelado correctamente")
@@ -537,7 +597,13 @@ class PedidosComprasController(BaseController):
                 'fecha_aprobacion': datetime.now()
             }
             
-            success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+            if self.model and hasattr(self.model, 'actualizar_pedido'):
+                if self.model:
+                    success = self.model.actualizar_pedido(pedido_id, datos_actualizacion)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Pedido aprobado correctamente")
@@ -558,7 +624,7 @@ class PedidosComprasController(BaseController):
     def actualizar_vista_pedidos(self):
         """Actualiza la vista de pedidos."""
         try:
-            if hasattr(self.view, 'cargar_pedidos'):
+            if self.view and hasattr(self.view, 'cargar_pedidos'):
                 pedidos = self._cargar_pedidos()
                 self.view.cargar_pedidos(pedidos)
             logger.debug("Vista de pedidos actualizada")
@@ -569,7 +635,7 @@ class PedidosComprasController(BaseController):
     def actualizar_vista_detalles(self, pedido_id: int):
         """Actualiza la vista de detalles de un pedido."""
         try:
-            if hasattr(self.view, 'cargar_detalles'):
+            if self.view and hasattr(self.view, 'cargar_detalles'):
                 detalles = self._cargar_detalles_pedido(pedido_id)
                 self.view.cargar_detalles(detalles)
             logger.debug(f"Vista de detalles actualizada para pedido {pedido_id}")
@@ -586,7 +652,7 @@ class PedidosComprasController(BaseController):
         """
         try:
             pedidos = self._cargar_pedidos()
-            if hasattr(self.view, 'cargar_pedidos'):
+            if self.view and hasattr(self.view, 'cargar_pedidos'):
                 self.view.cargar_pedidos(pedidos)
             return pedidos
         except Exception as e:
@@ -654,7 +720,10 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return f"PED{datetime.now().strftime('%Y%m%d%H%M%S')}"
             
-            contador = self.model.obtener_contador_pedidos() + 1
+            if self.model:
+                contador = self.model.obtener_contador_pedidos()
+            else:
+                contador = []
             return f"PED{contador:06d}"
             
         except Exception as e:
@@ -667,7 +736,10 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return False
             
-            pedido = self.model.obtener_pedido(pedido_id)
+            if self.model:
+                pedido = self.model.obtener_pedido(pedido_id)
+            else:
+                pedido = None
             if not pedido:
                 return False
             
@@ -684,7 +756,10 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return False
             
-            pedido = self.model.obtener_pedido(pedido_id)
+            if self.model:
+                pedido = self.model.obtener_pedido(pedido_id)
+            else:
+                pedido = None
             if not pedido:
                 return False
             
@@ -701,7 +776,10 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return False
             
-            pedido = self.model.obtener_pedido(pedido_id)
+            if self.model:
+                pedido = self.model.obtener_pedido(pedido_id)
+            else:
+                pedido = None
             if not pedido:
                 return False
             
@@ -718,7 +796,10 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return False
             
-            pedido = self.model.obtener_pedido(pedido_id)
+            if self.model:
+                pedido = self.model.obtener_pedido(pedido_id)
+            else:
+                pedido = None
             if not pedido:
                 return False
             
@@ -753,7 +834,8 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return
             
-            self.model.recalcular_totales_pedido(pedido_id)
+            if self.model:
+                self.model.recalcular_totales_pedido(pedido_id)
             
         except Exception as e:
             logger.error(f"Error recalculando totales pedido: {e}")
@@ -764,7 +846,8 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return
             
-            self.model.duplicar_detalles_pedido(pedido_origen_id, pedido_destino_id)
+            if self.model:
+                self.model.duplicar_detalles_pedido(pedido_origen_id, pedido_destino_id)
             
         except Exception as e:
             logger.error(f"Error duplicando detalles: {e}")
@@ -775,7 +858,9 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return None
             
-            return self.model.obtener_pedido_id_detalle(detalle_id)
+            if self.model:
+                return self.model.obtener_pedido_id_detalle(detalle_id)
+            return None
             
         except Exception as e:
             logger.error(f"Error obteniendo pedido ID del detalle: {e}")
@@ -787,7 +872,9 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return []
             
-            return self.model.obtener_pedidos()
+            if self.model:
+                return self.model.obtener_pedidos()
+            return []
             
         except Exception as e:
             logger.error(f"Error cargando pedidos: {e}")
@@ -799,7 +886,9 @@ class PedidosComprasController(BaseController):
             if not self.model:
                 return []
             
-            return self.model.obtener_detalles_pedido(pedido_id)
+            if self.model:
+                return self.model.obtener_detalles_pedido(pedido_id)
+            return None
             
         except Exception as e:
             logger.error(f"Error cargando detalles del pedido: {e}")

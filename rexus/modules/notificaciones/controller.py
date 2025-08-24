@@ -40,7 +40,7 @@ class NotificacionesController(QObject):
                 self.logger.error("Modelo no disponible")
                 return False
                 
-            if hasattr(self.model, 'eliminar_notificacion'):
+            if self.model and hasattr(self.model, 'eliminar_notificacion'):
                 resultado = self.model.eliminar_notificacion(notificacion_id)
 
                 if resultado:
@@ -72,7 +72,7 @@ class NotificacionesController(QObject):
                 self.logger.error("Titulo y mensaje son requeridos")
                 return False
                 
-            if hasattr(self.model, 'crear_notificacion'):
+            if self.model and hasattr(self.model, 'crear_notificacion'):
                 notificacion_id = self.model.crear_notificacion(datos)
                 
                 if notificacion_id:
@@ -92,7 +92,7 @@ class NotificacionesController(QObject):
             if not self.model:
                 return False
                 
-            if hasattr(self.model, 'marcar_como_leida'):
+            if self.model and hasattr(self.model, 'marcar_como_leida'):
                 return self.model.marcar_como_leida(notificacion_id)
             return False
             
@@ -106,7 +106,7 @@ class NotificacionesController(QObject):
             if not self.model:
                 return []
                 
-            if hasattr(self.model, 'obtener_notificaciones'):
+            if self.model and hasattr(self.model, 'obtener_notificaciones'):
                 return self.model.obtener_notificaciones(usuario_id)
             return []
             
@@ -120,7 +120,7 @@ class NotificacionesController(QObject):
             if not self.model:
                 return []
                 
-            if hasattr(self.model, 'obtener_notificaciones_no_leidas'):
+            if self.model and hasattr(self.model, 'obtener_notificaciones_no_leidas'):
                 return self.model.obtener_notificaciones_no_leidas(usuario_id)
             return []
             
@@ -134,7 +134,7 @@ class NotificacionesController(QObject):
             if not self.model:
                 return 0
                 
-            if hasattr(self.model, 'contar_no_leidas'):
+            if self.model and hasattr(self.model, 'contar_no_leidas'):
                 return self.model.contar_no_leidas(usuario_id)
             return 0
             

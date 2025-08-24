@@ -81,21 +81,21 @@ class LogisticaController(BaseController):
         """Conecta las señales de la vista con los métodos del controlador."""
         try:
             # Señales de servicios de transporte
-            if hasattr(self.view, 'servicio_creado'):
+            if self.view and hasattr(self.view, 'servicio_creado'):
                 self.view.servicio_creado.connect(self.crear_servicio_transporte)
-            if hasattr(self.view, 'servicio_editado'):
+            if self.view and hasattr(self.view, 'servicio_editado'):
                 self.view.servicio_editado.connect(self.actualizar_servicio_transporte)
-            if hasattr(self.view, 'servicio_eliminado'):
+            if self.view and hasattr(self.view, 'servicio_eliminado'):
                 self.view.servicio_eliminado.connect(self.eliminar_servicio_transporte)
             
             # Señales de proveedores
-            if hasattr(self.view, 'proveedor_creado'):
+            if self.view and hasattr(self.view, 'proveedor_creado'):
                 self.view.proveedor_creado.connect(self.crear_proveedor_transporte)
-            if hasattr(self.view, 'proveedor_editado'):
+            if self.view and hasattr(self.view, 'proveedor_editado'):
                 self.view.proveedor_editado.connect(self.actualizar_proveedor_transporte)
             
             # Señales de estado
-            if hasattr(self.view, 'estado_actualizado'):
+            if self.view and hasattr(self.view, 'estado_actualizado'):
                 self.view.estado_actualizado.connect(self.actualizar_estado_servicio)
             
             logger.debug("Señales de logística conectadas exitosamente")
@@ -127,14 +127,22 @@ class LogisticaController(BaseController):
             
             # Generar código único
             if not datos_servicio.get('codigo'):
-                datos_servicio['codigo'] = self.model.generar_codigo_servicio()
+ if self.model and hasattr(self.model, 'generar_codigo_servicio'):
+     if self.model:
+         self.model.generar_codigo_servicio()
             
             # Calcular costo estimado si no se proporciona
             if not datos_servicio.get('costo_estimado'):
                 costo_info = self._calcular_costo_servicio(datos_servicio)
                 datos_servicio['costo_estimado'] = costo_info.get('costo_estimado', 0.0)
             
-            servicio_id = self.model.crear_servicio_transporte(datos_servicio)
+            if self.model and hasattr(self.model, 'crear_servicio_transporte'):
+                if self.model:
+                    servicio_id = self.model.crear_servicio_transporte(datos_servicio)
+                else:
+                    servicio_id = None
+            else:
+                servicio_id = None
             
             if servicio_id:
                 show_success(self.view, "Éxito", "Servicio de transporte creado correctamente")
@@ -173,7 +181,13 @@ class LogisticaController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return False
             
-            success = self.model.actualizar_servicio_transporte(servicio_id, datos_servicio)
+            if self.model and hasattr(self.model, 'actualizar_servicio_transporte'):
+                if self.model:
+                    success = self.model.actualizar_servicio_transporte(servicio_id, datos_servicio)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_success(self.view, "Éxito", "Servicio actualizado correctamente")
@@ -213,7 +227,13 @@ class LogisticaController(BaseController):
             if not confirmar:
                 return False
             
-            success = self.model.eliminar_servicio_transporte(servicio_id)
+            if self.model and hasattr(self.model, 'eliminar_servicio_transporte'):
+                if self.model:
+                    success = self.model.eliminar_servicio_transporte(servicio_id)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_success(self.view, "Éxito", "Servicio eliminado correctamente")
@@ -250,7 +270,13 @@ class LogisticaController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return False
             
-            success = self.model.actualizar_estado_servicio(servicio_id, nuevo_estado, observaciones)
+            if self.model and hasattr(self.model, 'actualizar_estado_servicio'):
+                if self.model:
+                    success = self.model.actualizar_estado_servicio(servicio_id, nuevo_estado, observaciones)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_success(self.view, "Éxito", f"Estado actualizado a {nuevo_estado}")
@@ -293,7 +319,13 @@ class LogisticaController(BaseController):
             if not datos_proveedor.get('codigo'):
                 datos_proveedor['codigo'] = self._generar_codigo_proveedor()
             
-            proveedor_id = self.model.crear_proveedor_transporte(datos_proveedor)
+            if self.model and hasattr(self.model, 'crear_proveedor_transporte'):
+                if self.model:
+                    proveedor_id = self.model.crear_proveedor_transporte(datos_proveedor)
+                else:
+                    proveedor_id = None
+            else:
+                proveedor_id = None
             
             if proveedor_id:
                 show_success(self.view, "Éxito", "Proveedor de transporte creado correctamente")
@@ -332,7 +364,13 @@ class LogisticaController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return False
             
-            success = self.model.actualizar_proveedor_transporte(proveedor_id, datos_proveedor)
+            if self.model and hasattr(self.model, 'actualizar_proveedor_transporte'):
+                if self.model:
+                    success = self.model.actualizar_proveedor_transporte(proveedor_id, datos_proveedor)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_success(self.view, "Éxito", "Proveedor actualizado correctamente")
@@ -371,9 +409,15 @@ class LogisticaController(BaseController):
             # Sanitizar criterios
             criterios_sanitizados = self._sanitizar_criterios_busqueda(criterios)
             
-            servicios = self.model.buscar_servicios(criterios_sanitizados)
+            if self.model and hasattr(self.model, 'buscar_servicios'):
+                if self.model:
+                    servicios = self.model.buscar_servicios(criterios_sanitizados)
+                else:
+                    servicios = []
+            else:
+                servicios = None
             
-            if hasattr(self.view, 'cargar_servicios'):
+            if self.view and hasattr(self.view, 'cargar_servicios'):
                 self.view.cargar_servicios(servicios)
             
             logger.info(f"Encontrados {len(servicios)} servicios")
@@ -398,9 +442,12 @@ class LogisticaController(BaseController):
             if not self.model:
                 return []
             
-            servicios = self.model.obtener_servicios_por_estado(estado)
+            if self.model:
+                servicios = self.model.obtener_servicios_por_estado(estado)
+            else:
+                servicios = None
             
-            if hasattr(self.view, 'cargar_servicios'):
+            if self.view and hasattr(self.view, 'cargar_servicios'):
                 self.view.cargar_servicios(servicios)
             
             logger.info(f"Filtrados {len(servicios)} servicios con estado {estado}")
@@ -437,7 +484,7 @@ class LogisticaController(BaseController):
                 }
                 logger.info("Usando estadísticas de demostración")
 
-            if hasattr(self.view, 'actualizar_estadisticas'):
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(stats)
                 logger.debug("Estadísticas enviadas a la vista")
             
@@ -466,7 +513,13 @@ class LogisticaController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return {}
             
-            reporte = self.model.generar_reporte_logistico(fecha_inicio, fecha_fin)
+            if self.model and hasattr(self.model, 'generar_reporte_logistico'):
+                if self.model:
+                    reporte = self.model.generar_reporte_logistico(fecha_inicio, fecha_fin)
+                else:
+                    reporte = None
+            else:
+                reporte = None
             
             if reporte:
                 show_success(self.view, "Éxito", "Reporte generado correctamente")
@@ -506,7 +559,7 @@ class LogisticaController(BaseController):
     def actualizar_vista_servicios(self):
         """Actualiza la vista de servicios."""
         try:
-            if hasattr(self.view, 'cargar_servicios'):
+            if self.view and hasattr(self.view, 'cargar_servicios'):
                 servicios = self._cargar_servicios()
                 self.view.cargar_servicios(servicios)
             logger.debug("Vista de servicios actualizada")
@@ -517,7 +570,7 @@ class LogisticaController(BaseController):
     def actualizar_vista_proveedores(self):
         """Actualiza la vista de proveedores."""
         try:
-            if hasattr(self.view, 'cargar_proveedores'):
+            if self.view and hasattr(self.view, 'cargar_proveedores'):
                 proveedores = self._cargar_proveedores()
                 self.view.cargar_proveedores(proveedores)
             logger.debug("Vista de proveedores actualizada")
@@ -546,7 +599,10 @@ class LogisticaController(BaseController):
             if not self.model:
                 return {'costo_estimado': 0.0, 'error': 'No hay modelo disponible'}
             
-            costo_info = self.model.calcular_costo_transporte(origen, destino, peso, volumen, tipo_servicio)
+            if self.model:
+                costo_info = self.model.calcular_costo_transporte(origen, destino, peso, volumen, tipo_servicio)
+            else:
+                costo_info = None
             logger.info(f"Costo calculado: {costo_info.get('costo_estimado', 0)} para {origen}-{destino}")
             
             return costo_info
@@ -626,7 +682,10 @@ class LogisticaController(BaseController):
     def _obtener_estadisticas_completas(self) -> Dict[str, Any]:
         """Obtiene estadísticas completas del modelo."""
         try:
-            servicios = self.model.obtener_servicios_transporte()
+            if self.model:
+                servicios = self.model.obtener_servicios_transporte()
+            else:
+                servicios = None
             
             # Calcular estadísticas básicas
             total = len(servicios)
@@ -656,7 +715,9 @@ class LogisticaController(BaseController):
         """Carga los servicios desde el modelo."""
         try:
             if self.model:
-                return self.model.obtener_servicios_transporte()
+                if self.model:
+                    return self.model.obtener_servicios_transporte()
+                return None
             else:
                 return []
         except Exception as e:
@@ -667,7 +728,9 @@ class LogisticaController(BaseController):
         """Carga los proveedores desde el modelo."""
         try:
             if self.model:
-                return self.model.obtener_proveedores_transporte()
+                if self.model:
+                    return self.model.obtener_proveedores_transporte()
+                return None
             else:
                 return []
         except Exception as e:

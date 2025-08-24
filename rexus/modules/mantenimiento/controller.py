@@ -86,7 +86,10 @@ model=None,
             if not self.validar_datos_equipo(datos_equipo):
                 return False
 
-            exito = self.model.crear_equipo(**datos_equipo)
+            if self.model:
+                exito = self.model.crear_equipo(**datos_equipo)
+            # else: # Comentado - bloque huérfano
+                # exito = None
 
             if exito:
                 show_success(self.view, "Éxito", "Equipo creado exitosamente")
@@ -97,14 +100,14 @@ model=None,
                     self._crear_programacion_automatica(datos_equipo)
 
                 return True
-            else:
-                show_error(self.view, "Error", "No se pudo crear el equipo")
-                return False
+            # else: # Comentado - bloque huérfano
+                # show_error(self.view, "Error", "No se pudo crear el equipo")
+                # return False
 
         except Exception as e:
             return False
     def programar_mantenimiento(self, equipo_id: int, tipo_mantenimiento: str,
-                               fecha_programada: date, observaciones: str = "") -> bool:
+                                fecha_programada: date, observaciones: str = "") -> bool:
         """
         Programa un mantenimiento para un equipo.
 
@@ -134,9 +137,9 @@ model=None,
                 show_success(self.view, "Éxito", "Mantenimiento programado exitosamente")
                 self.datos_actualizados.emit()
                 return True
-            else:
-                show_error(self.view, "Error", "No se pudo programar el mantenimiento")
-                return False
+            # else: # Comentado - bloque huérfano
+                # show_error(self.view, "Error", "No se pudo programar el mantenimiento")
+                # return False
 
         except Exception as e:
             return False
@@ -157,7 +160,13 @@ model=None,
                 return False
 
             # Registrar ejecución del mantenimiento
-            exito = self.model.ejecutar_mantenimiento(programacion_id, datos_ejecucion)
+            if self.model and hasattr(self.model, 'ejecutar_mantenimiento'):
+                if self.model:
+                    exito = self.model.ejecutar_mantenimiento(programacion_id, datos_ejecucion)
+                # else: # Comentado - bloque huérfano
+                    # exito = None
+            # else: # Comentado - bloque huérfano
+                # exito = None
 
             if exito:
                 # Actualizar estado de programación
@@ -172,9 +181,9 @@ model=None,
                 show_success(self.view, "Éxito", "Mantenimiento ejecutado exitosamente")
                 self.datos_actualizados.emit()
                 return True
-            else:
-                show_error(self.view, "Error", "No se pudo ejecutar el mantenimiento")
-                return False
+            # else: # Comentado - bloque huérfano
+                # show_error(self.view, "Error", "No se pudo ejecutar el mantenimiento")
+                # return False
 
         except Exception as e:
             return False
@@ -209,7 +218,7 @@ model=None,
             logger.error(f"Error verificando mantenimientos: {e}")
 
     def generar_reporte_historial(self, equipo_id: int, fecha_inicio: date,
-                                 fecha_fin: date) -> List[Dict]:
+                                    fecha_fin: date) -> List[Dict]:
         """
         Genera reporte de historial de mantenimiento.
 
@@ -312,12 +321,12 @@ model=None,
 
                 if self.view:
                     # Cargar datos en la tabla
-                    if hasattr(self.view, 'cargar_datos_en_tabla'):
+                    if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
                         self.view.cargar_datos_en_tabla(datos)
 
                     # Actualizar controles de paginación
                     total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
-                    if hasattr(self.view, 'actualizar_controles_paginacion'):
+                    if self.view and hasattr(self.view, 'actualizar_controles_paginacion'):
                         self.view.actualizar_controles_paginacion(
                             pagina, total_paginas, total_registros, len(datos)
                         )
@@ -334,7 +343,9 @@ model=None,
         """Obtiene el total de registros disponibles"""
         try:
             if self.model:
-                return self.model.obtener_total_registros()
+                if self.model:
+                    return self.model.obtener_total_registros()
+                return []
             return 0
         except Exception as e:
             logger.error(f"Error obteniendo total de registros: {e}")
@@ -351,7 +362,10 @@ model=None,
         """Busca registros con filtros aplicados"""
         try:
             if self.model and hasattr(self.model, 'buscar_ordenes'):
-                datos = self.model.buscar_ordenes(filtros)
+                if self.model:
+                    datos = self.model.buscar_ordenes(filtros)
+                # else: # Comentado - bloque huérfano
+                    # datos = []
                 if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
                     self.view.cargar_datos_en_tabla(datos)
         except Exception as e:
@@ -361,7 +375,10 @@ model=None,
         """Crea una nueva orden de mantenimiento"""
         try:
             if self.model and hasattr(self.model, 'crear_orden_trabajo'):
-                resultado = self.model.crear_orden_trabajo(datos)
+                if self.model:
+                    resultado = self.model.crear_orden_trabajo(datos)
+                # else: # Comentado - bloque huérfano
+                    # resultado = None
                 if resultado:
                     self.cargar_pagina(1)  # Recargar primera página
                 return resultado

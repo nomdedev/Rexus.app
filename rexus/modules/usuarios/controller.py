@@ -74,27 +74,27 @@ class UsuariosController(BaseController):
         try:
             if self.view and hasattr(self.view, 'connect_signals'):
                 # Señales de autenticación
-                if hasattr(self.view, 'login_signal'):
+                if self.view and hasattr(self.view, 'login_signal'):
                     self.view.login_signal.connect(self.autenticar_usuario)
                 
-                if hasattr(self.view, 'logout_signal'):
+                if self.view and hasattr(self.view, 'logout_signal'):
                     self.view.logout_signal.connect(self.cerrar_sesion)
                 
                 # Señales de gestión de usuarios
-                if hasattr(self.view, 'crear_usuario_signal'):
+                if self.view and hasattr(self.view, 'crear_usuario_signal'):
                     self.view.crear_usuario_signal.connect(self.crear_usuario)
                 
-                if hasattr(self.view, 'actualizar_usuario_signal'):
+                if self.view and hasattr(self.view, 'actualizar_usuario_signal'):
                     self.view.actualizar_usuario_signal.connect(self.actualizar_usuario)
                 
-                if hasattr(self.view, 'eliminar_usuario_signal'):
+                if self.view and hasattr(self.view, 'eliminar_usuario_signal'):
                     self.view.eliminar_usuario_signal.connect(self.eliminar_usuario)
                 
-                if hasattr(self.view, 'buscar_usuarios_signal'):
+                if self.view and hasattr(self.view, 'buscar_usuarios_signal'):
                     self.view.buscar_usuarios_signal.connect(self.buscar_usuarios)
                 
                 # Señales de permisos
-                if hasattr(self.view, 'cambiar_permisos_signal'):
+                if self.view and hasattr(self.view, 'cambiar_permisos_signal'):
                     self.view.cambiar_permisos_signal.connect(self.cambiar_permisos_usuario)
                 
                 logger.debug("Señales de usuarios conectadas")
@@ -139,7 +139,13 @@ class UsuariosController(BaseController):
                 return False
             
             # Validar credenciales
-            usuario = self.model.validar_credenciales(username, password)
+            if self.model and hasattr(self.model, 'validar_credenciales'):
+                if self.model:
+                    usuario = self.model.validar_credenciales(username, password)
+                else:
+                    usuario = False
+            else:
+                usuario = None
             
             if usuario:
                 self.usuario_actual = usuario
@@ -152,7 +158,9 @@ class UsuariosController(BaseController):
                 })
                 
                 # Actualizar última conexión
-                self.model.actualizar_ultima_conexion(usuario['id'])
+                if self.model and hasattr(self.model, 'actualizar_ultima_conexion'):
+                    if self.model:
+                        self.model.actualizar_ultima_conexion(usuario['id'])
                 
                 logger.info(f"Usuario '{username}' autenticado exitosamente")
                 
@@ -216,12 +224,24 @@ class UsuariosController(BaseController):
             
             # Obtener usuarios del modelo
             if filtros:
-                usuarios = self.model.obtener_usuarios_filtrados(filtros)
+                if self.model and hasattr(self.model, 'obtener_usuarios_filtrados'):
+                    if self.model:
+                        usuarios = self.model.obtener_usuarios_filtrados(filtros)
+                    else:
+                        usuarios = []
+                else:
+                    usuarios = None
             else:
-                usuarios = self.model.obtener_todos_usuarios()
+                if self.model and hasattr(self.model, 'obtener_todos_usuarios'):
+                    if self.model:
+                        usuarios = self.model.obtener_todos_usuarios()
+                    else:
+                        usuarios = []
+                else:
+                    usuarios = None
             
             # Actualizar vista
-            if hasattr(self.view, 'cargar_datos_en_tabla'):
+            if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
                 self.view.cargar_datos_en_tabla(usuarios)
             
             logger.debug(f"Cargados {len(usuarios)} usuarios")
@@ -261,14 +281,19 @@ class UsuariosController(BaseController):
                 return False
             
             # Verificar si el username ya existe
-            if self.model.usuario_existe(datos_usuario.get('username')):
+ if self.model and hasattr(self.model, 'usuario_existe'):
+     if self.model:
+         self.model.usuario_existe(datos_usuario.get('username')
                 logger.error("El nombre de usuario ya existe")
                 if self.view:
                     self.view.mostrar_error("El nombre de usuario ya existe")
                 return False
             
             # Crear usuario
-            usuario_id = self.model.crear_usuario(datos_usuario)
+            if self.model:
+                usuario_id = self.model.crear_usuario(datos_usuario)
+            else:
+                usuario_id = None
             
             if usuario_id:
                 # Registrar auditoría
@@ -319,7 +344,9 @@ class UsuariosController(BaseController):
                 return False
             
             # Actualizar usuario
-            if self.model.actualizar_usuario(usuario_id, datos_usuario):
+ if self.model and hasattr(self.model, 'actualizar_usuario'):
+     if self.model:
+         self.model.actualizar_usuario(usuario_id, datos_usuario)
                 # Registrar auditoría
                 self.registrar_auditoria("UPDATE_USER", "USUARIOS", {
                     "usuario_actualizado": datos_usuario.get('username'),
@@ -363,7 +390,13 @@ class UsuariosController(BaseController):
                 return False
             
             # Obtener datos del usuario antes de eliminar
-            usuario = self.model.obtener_usuario_por_id(usuario_id)
+            if self.model and hasattr(self.model, 'obtener_usuario_por_id'):
+                if self.model:
+                    usuario = self.model.obtener_usuario_por_id(usuario_id)
+                else:
+                    usuario = None
+            else:
+                usuario = None
             if not usuario:
                 logger.error("Usuario no encontrado")
                 return False
@@ -424,7 +457,10 @@ class UsuariosController(BaseController):
             
             if self.model.actualizar_permisos_usuario(usuario_id, permisos):
                 # Registrar auditoría
-                usuario = self.model.obtener_usuario_por_id(usuario_id)
+                if self.model:
+                    usuario = self.model.obtener_usuario_por_id(usuario_id)
+                else:
+                    usuario = None
                 self.registrar_auditoria("UPDATE_PERMISSIONS", "USUARIOS", {
                     "usuario": usuario.get('username') if usuario else usuario_id,
                     "permisos": permisos,
@@ -458,10 +494,13 @@ class UsuariosController(BaseController):
                 return
             
             # Obtener estadísticas del modelo
-            estadisticas = self.model.obtener_estadisticas_usuarios()
+            if self.model:
+                estadisticas = self.model.obtener_estadisticas_usuarios()
+            else:
+                estadisticas = []
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_estadisticas'):
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(estadisticas)
             
             logger.debug("Estadísticas de usuarios actualizadas")

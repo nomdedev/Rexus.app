@@ -224,10 +224,17 @@ class AdministracionController(QObject):
                 return
 
             # Obtener resumen contable
-            resumen = self.model.obtener_resumen_contable()
+            if self.model and hasattr(self.model, 'obtener_resumen_contable'):
+                if self.model:
+                    resumen = self.model.obtener_resumen_contable()
+                # else: # Comentado - bloque huérfano
+                    # resumen = None
+            # else: # Comentado - bloque huérfano
+                # resumen = None
 
             if resumen and self.view:
-                self.view.actualizar_dashboard({"resumen": resumen})
+                if self.view and hasattr(self.view, 'actualizar_dashboard'):
+                    self.view.actualizar_dashboard({"resumen": resumen})
 
         except Exception as e:
             logger.debug(f"Error actualizando dashboard: {e}")
@@ -258,7 +265,8 @@ class AdministracionController(QObject):
             )
 
             # Actualizar tabla
-            self.view.actualizar_tabla_libro(asientos)
+            if self.view and hasattr(self.view, 'actualizar_tabla_libro'):
+                self.view.actualizar_tabla_libro(asientos)
 
         except Exception as e:
             logger.debug(f"Error actualizando libro contable: {e}")
@@ -289,7 +297,8 @@ class AdministracionController(QObject):
             )
 
             # Actualizar tabla
-            self.view.actualizar_tabla_recibos(recibos)
+            if self.view and hasattr(self.view, 'actualizar_tabla_recibos'):
+                self.view.actualizar_tabla_recibos(recibos)
 
         except Exception as e:
             logger.debug(f"Error actualizando recibos: {e}")
@@ -309,10 +318,13 @@ class AdministracionController(QObject):
             categoria = None if categoria_filtro == "Todas" else categoria_filtro
 
             # Obtener y procesar pagos
-            self.model.obtener_pagos_obra(categoria=categoria)
+            if self.model and hasattr(self.model, 'obtener_pagos_obra'):
+                if self.model:
+                    self.model.obtener_pagos_obra(categoria=categoria)
 
             # Actualizar tabla (método a implementar en la vista)
-            # self.view.actualizar_tabla_pagos_obra(pagos)
+    if self.view and hasattr(self.view, 'actualizar_tabla_pagos_obra'):
+        self.view.actualizar_tabla_pagos_obra(pagos)
 
         except (AttributeError, ValueError) as e:
             logger.debug(f"Error actualizando pagos por obra: {e}")
@@ -330,10 +342,17 @@ class AdministracionController(QObject):
                 pass
 
             # Obtener materiales (método a implementar en el modelo)
-            # materiales = self.model.obtener_pagos_materiales(estado_pago=estado)
+    if self.model and hasattr(self.model, 'obtener_pagos_materiales'):
+        if self.model:
+            materiales = self.model.obtener_pagos_materiales(estado_pago=estado)
+     # else: # Comentado - bloque huérfano
+         # materiales = []
+ # else: # Comentado - bloque huérfano
+     # materiales = None
 
-            # Actualizar tabla (método a implementar en la vista)
-            # self.view.actualizar_tabla_materiales(materiales)
+            # # Actualizar tabla (método a implementar en la vista)
+    if self.view and hasattr(self.view, 'actualizar_tabla_materiales'):
+        self.view.actualizar_tabla_materiales(materiales)
 
         except Exception as e:
             logger.debug(f"Error actualizando materiales: {e}")
@@ -349,10 +368,13 @@ class AdministracionController(QObject):
                 return
 
             # Obtener departamentos
-            self.model.obtener_departamentos()
+            if self.model and hasattr(self.model, 'obtener_departamentos'):
+                if self.model:
+                    self.model.obtener_departamentos()
 
             # Actualizar tabla (método a implementar en la vista)
-            # self.view.actualizar_tabla_departamentos(departamentos)
+    if self.view and hasattr(self.view, 'actualizar_tabla_departamentos'):
+        self.view.actualizar_tabla_departamentos(departamentos)
 
         except Exception as e:
             logger.debug(f"Error actualizando departamentos: {e}")
@@ -376,13 +398,19 @@ class AdministracionController(QObject):
             )
 
             # Obtener empleados
-            empleados = self.model.obtener_empleados(departamento_id=departamento_id)
+            if self.model and hasattr(self.model, 'obtener_empleados'):
+                if self.model:
+                    empleados = self.model.obtener_empleados(departamento_id=departamento_id)
+                # else: # Comentado - bloque huérfano
+                    # empleados = []
+            # else: # Comentado - bloque huérfano
+                # empleados = None
 
             # Actualizar tabla de empleados en la vista
-            if hasattr(self.view, 'actualizar_tabla_empleados'):
+            if self.view and hasattr(self.view, 'actualizar_tabla_empleados'):
                 self.view.actualizar_tabla_empleados(empleados)
-            else:
-                logger.debug(f"Empleados filtrados: {len(empleados) if empleados else 0}")
+            # else: # Comentado - bloque huérfano
+                # logger.debug(f"Empleados filtrados: {len(empleados) if empleados else 0}")
 
         except Exception as e:
             logger.debug(f"Error actualizando empleados: {e}")
@@ -405,13 +433,19 @@ class AdministracionController(QObject):
             usuario = None if usuario_filtro == "Todos" else usuario_filtro
 
             # Obtener auditoría
-            auditoria = self.model.obtener_auditoria(tabla=tabla, usuario=usuario)
+            if self.model and hasattr(self.model, 'obtener_auditoria'):
+                if self.model:
+                    auditoria = self.model.obtener_auditoria(tabla=tabla, usuario=usuario)
+                # else: # Comentado - bloque huérfano
+                    # auditoria = None
+            # else: # Comentado - bloque huérfano
+                # auditoria = None
 
             # Actualizar tabla de auditoría en la vista
-            if hasattr(self.view, 'actualizar_tabla_auditoria'):
+            if self.view and hasattr(self.view, 'actualizar_tabla_auditoria'):
                 self.view.actualizar_tabla_auditoria(auditoria)
-            else:
-                logger.debug(f"Registros de auditoría obtenidos: {len(auditoria) if auditoria else 0}")
+            # else: # Comentado - bloque huérfano
+                # logger.debug(f"Registros de auditoría obtenidos: {len(auditoria) if auditoria else 0}")
 
         except Exception as e:
             logger.debug(f"Error actualizando auditoría: {e}")
@@ -448,11 +482,11 @@ class AdministracionController(QObject):
                         "info",
                     )
                 self.actualizar_departamentos()
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudo crear el departamento", "error"
-                    )
+            # else: # Comentado - bloque huérfano
+                # if self.view:
+                    # self.view.mostrar_mensaje(
+                        # "Error", "No se pudo crear el departamento", "error"
+                    # )
 
         except Exception as e:
             logger.debug(f"Error creando departamento: {e}")
@@ -497,11 +531,11 @@ class AdministracionController(QObject):
                         "info",
                     )
                 self.actualizar_empleados()
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudo crear el empleado", "error"
-                    )
+            # else: # Comentado - bloque huérfano
+                # if self.view:
+                    # self.view.mostrar_mensaje(
+                        # "Error", "No se pudo crear el empleado", "error"
+                    # )
 
         except Exception as e:
             logger.debug(f"Error creando empleado: {e}")
@@ -546,11 +580,11 @@ class AdministracionController(QObject):
                         MENSAJE_EXITO, "Asiento contable creado exitosamente", "info"
                     )
                 self.actualizar_libro_contable()
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudo crear el asiento contable", "error"
-                    )
+            # else: # Comentado - bloque huérfano
+                # if self.view:
+                    # self.view.mostrar_mensaje(
+                        # "Error", "No se pudo crear el asiento contable", "error"
+                    # )
 
         except Exception as e:
             logger.debug(f"Error creando asiento contable: {e}")
@@ -595,11 +629,11 @@ class AdministracionController(QObject):
                         MENSAJE_EXITO, "Recibo creado exitosamente", "info"
                     )
                 self.actualizar_recibos()
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudo crear el recibo", "error"
-                    )
+            # else: # Comentado - bloque huérfano
+                # if self.view:
+                    # self.view.mostrar_mensaje(
+                        # "Error", "No se pudo crear el recibo", "error"
+                    # )
 
         except Exception as e:
             logger.debug(f"Error creando recibo: {e}")
@@ -640,11 +674,11 @@ class AdministracionController(QObject):
         """Procesa el resultado de la impresión del recibo."""
         if archivo_pdf:
             self._marcar_recibo_impreso(recibo_id, archivo_pdf)
-        else:
-            if self.view:
-                self.view.mostrar_mensaje(
-                    "Error", "No se pudo generar el archivo PDF", "error"
-                )
+        # else: # Comentado - bloque huérfano
+            # if self.view:
+                # self.view.mostrar_mensaje(
+                    # "Error", "No se pudo generar el archivo PDF", "error"
+                # )
 
     def _marcar_recibo_impreso(self, recibo_id, archivo_pdf):
         """Marca el recibo como impreso en el sistema."""
@@ -657,13 +691,13 @@ class AdministracionController(QObject):
                         "info",
                     )
                 self.actualizar_recibos()
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudo marcar el recibo como impreso", "error"
-                    )
-        else:
-            logger.debug("Método marcar_recibo_impreso no disponible en el modelo")
+            # else: # Comentado - bloque huérfano
+                # if self.view:
+                    # self.view.mostrar_mensaje(
+                        # "Error", "No se pudo marcar el recibo como impreso", "error"
+                    # )
+        # else: # Comentado - bloque huérfano
+            # logger.debug("Método marcar_recibo_impreso no disponible en el modelo")
 
     def _manejar_error_impresion(self, error):
         """Maneja errores durante la impresión."""
@@ -681,7 +715,13 @@ class AdministracionController(QObject):
                 return None
 
             # Obtener datos del recibo
-            recibos = self.model.obtener_recibos()
+            if self.model and hasattr(self.model, 'obtener_recibos'):
+                if self.model:
+                    recibos = self.model.obtener_recibos()
+                # else: # Comentado - bloque huérfano
+                    # recibos = []
+            # else: # Comentado - bloque huérfano
+                # recibos = None
             recibo = None
 
             for r in recibos:
@@ -742,11 +782,11 @@ class AdministracionController(QObject):
         """Procesa el resultado de la generación del reporte."""
         if datos_reporte:
             self._generar_archivo_reporte_completo(datos_reporte, parametros)
-        else:
-            if self.view:
-                self.view.mostrar_mensaje(
-                    "Error", "No se pudieron obtener los datos del reporte", "error"
-                )
+        # else: # Comentado - bloque huérfano
+            # if self.view:
+                # self.view.mostrar_mensaje(
+                    # "Error", "No se pudieron obtener los datos del reporte", "error"
+                # )
 
     def _generar_archivo_reporte_completo(self, datos_reporte, parametros):
         """Genera el archivo del reporte completo."""
@@ -760,11 +800,11 @@ class AdministracionController(QObject):
                 self.view.mostrar_mensaje(
                     MENSAJE_EXITO, f"Reporte generado: {archivo_reporte}", "info"
                 )
-        else:
-            if self.view:
-                self.view.mostrar_mensaje(
-                    "Error", "No se pudo generar el archivo del reporte", "error"
-                )
+        # else: # Comentado - bloque huérfano
+            # if self.view:
+                # self.view.mostrar_mensaje(
+                    # "Error", "No se pudo generar el archivo del reporte", "error"
+                # )
 
     def _manejar_error_reporte(self, error):
         """Maneja errores durante la generación del reporte."""
@@ -782,25 +822,35 @@ class AdministracionController(QObject):
                 return None
 
             if tipo_reporte == "libro_contable":
-                return self.model.obtener_libro_contable(fecha_desde, fecha_hasta)
+    if self.model and hasattr(self.model, 'obtener_libro_contable'):
+        if self.model:
+            self.model.obtener_libro_contable(fecha_desde, fecha_hasta)
             elif tipo_reporte == "recibos":
-                return self.model.obtener_recibos(fecha_desde, fecha_hasta)
+    if self.model and hasattr(self.model, 'obtener_recibos'):
+        if self.model:
+            self.model.obtener_recibos(fecha_desde, fecha_hasta)
             elif tipo_reporte == "pagos_obra":
                 return self.model.obtener_pagos_obra(
                     fecha_desde=fecha_desde, fecha_hasta=fecha_hasta
                 )
             elif tipo_reporte == "departamentos":
-                return self.model.obtener_departamentos()
+    if self.model and hasattr(self.model, 'obtener_departamentos'):
+        if self.model:
+            self.model.obtener_departamentos()
             elif tipo_reporte == "empleados":
-                return self.model.obtener_empleados()
+    if self.model and hasattr(self.model, 'obtener_empleados'):
+        if self.model:
+            self.model.obtener_empleados()
             elif tipo_reporte == "auditoria":
                 return self.model.obtener_auditoria(
                     fecha_desde=fecha_desde, fecha_hasta=fecha_hasta
                 )
             elif tipo_reporte == "resumen_ejecutivo":
-                return self.model.obtener_resumen_contable(fecha_desde, fecha_hasta)
-            else:
-                return None
+    if self.model and hasattr(self.model, 'obtener_resumen_contable'):
+        if self.model:
+            self.model.obtener_resumen_contable(fecha_desde, fecha_hasta)
+            # else: # Comentado - bloque huérfano
+                # return None
 
         except Exception as e:
             logger.debug(f"Error obteniendo datos del reporte: {e}")
@@ -827,8 +877,8 @@ class AdministracionController(QObject):
                 return self.generar_excel_reporte(datos, archivo, tipo_reporte)
             elif formato == "CSV":
                 return self.generar_csv_reporte(datos, archivo, tipo_reporte)
-            else:
-                return None
+            # else: # Comentado - bloque huérfano
+                # return None
 
         except Exception as e:
             logger.debug(f"Error generando archivo del reporte: {e}")
@@ -910,8 +960,8 @@ class AdministracionController(QObject):
                 return accion in permisos_supervisor
             elif self.rol_actual == "USUARIO":
                 return accion in permisos_usuario
-            else:
-                return False
+            # else: # Comentado - bloque huérfano
+                # return False
 
         except Exception as e:
             logger.debug(f"Error verificando permisos: {e}")
@@ -935,7 +985,9 @@ class AdministracionController(QObject):
             if not self.model:
                 logger.info("[ERROR] self.model es None en obtener_estadisticas_departamento")
                 return None
-            return self.model.obtener_estadisticas_departamento(departamento_id)
+            if self.model:
+                return self.model.obtener_estadisticas_departamento(departamento_id)
+            return {}
         except Exception as e:
             logger.debug(f"Error obteniendo estadísticas de departamento: {e}")
             return None
@@ -953,18 +1005,40 @@ class AdministracionController(QObject):
             # Obtener datos según el tipo
             if tipo_datos == "completo":
                 datos = {
-                    "libro_contable": self.model.obtener_libro_contable(limite=None),
-                    "recibos": self.model.obtener_recibos(limite=None),
-                    "departamentos": self.model.obtener_departamentos(),
-                    "empleados": self.model.obtener_empleados(),
-                    "auditoria": self.model.obtener_auditoria(limite=None),
+    if self.model and hasattr(self.model, 'obtener_libro_contable'):
+        if self.model:
+            self.model.obtener_libro_contable(limite=None)
+    if self.model and hasattr(self.model, 'obtener_recibos'):
+        if self.model:
+            self.model.obtener_recibos(limite=None)
+    if self.model and hasattr(self.model, 'obtener_departamentos'):
+        if self.model:
+            self.model.obtener_departamentos()
+    if self.model and hasattr(self.model, 'obtener_empleados'):
+        if self.model:
+            self.model.obtener_empleados()
+    if self.model and hasattr(self.model, 'obtener_auditoria'):
+        if self.model:
+            self.model.obtener_auditoria(limite=None)
                 }
             elif tipo_datos == "libro_contable":
-                datos = self.model.obtener_libro_contable(limite=None)
+                if self.model and hasattr(self.model, 'obtener_libro_contable'):
+                    if self.model:
+                        datos = self.model.obtener_libro_contable(limite=None)
+                    # else: # Comentado - bloque huérfano
+                        # datos = None
+                # else: # Comentado - bloque huérfano
+                    # datos = None
             elif tipo_datos == "recibos":
-                datos = self.model.obtener_recibos(limite=None)
-            else:
-                return None
+                if self.model and hasattr(self.model, 'obtener_recibos'):
+                    if self.model:
+                        datos = self.model.obtener_recibos(limite=None)
+                    # else: # Comentado - bloque huérfano
+                        # datos = []
+                # else: # Comentado - bloque huérfano
+                    # datos = None
+            # else: # Comentado - bloque huérfano
+                # return None
 
             # Crear archivo de exportación
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -977,8 +1051,8 @@ f,
                         indent=2,
                         ensure_ascii=False,
                         default=str)
-                else:
-                    f.write(str(datos))
+                # else: # Comentado - bloque huérfano
+                    # f.write(str(datos))
 
             return archivo
 

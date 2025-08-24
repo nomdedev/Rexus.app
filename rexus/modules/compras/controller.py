@@ -51,31 +51,31 @@ class ComprasController(BaseController):
         try:
             if self.view and hasattr(self.view, 'connect_signals'):
                 # Señales de órdenes de compra
-                if hasattr(self.view, 'crear_orden_signal'):
+                if self.view and hasattr(self.view, 'crear_orden_signal'):
                     self.view.crear_orden_signal.connect(self.crear_orden_compra)
                 
-                if hasattr(self.view, 'actualizar_orden_signal'):
+                if self.view and hasattr(self.view, 'actualizar_orden_signal'):
                     self.view.actualizar_orden_signal.connect(self.actualizar_orden_compra)
                 
-                if hasattr(self.view, 'cancelar_orden_signal'):
+                if self.view and hasattr(self.view, 'cancelar_orden_signal'):
                     self.view.cancelar_orden_signal.connect(self.cancelar_orden_compra)
                 
                 # Señales de proveedores
-                if hasattr(self.view, 'crear_proveedor_signal'):
+                if self.view and hasattr(self.view, 'crear_proveedor_signal'):
                     self.view.crear_proveedor_signal.connect(self.crear_proveedor)
                 
-                if hasattr(self.view, 'actualizar_proveedor_signal'):
+                if self.view and hasattr(self.view, 'actualizar_proveedor_signal'):
                     self.view.actualizar_proveedor_signal.connect(self.actualizar_proveedor)
                 
                 # Señales de búsqueda y filtros
-                if hasattr(self.view, 'buscar_ordenes_signal'):
+                if self.view and hasattr(self.view, 'buscar_ordenes_signal'):
                     self.view.buscar_ordenes_signal.connect(self.buscar_ordenes)
                 
-                if hasattr(self.view, 'buscar_proveedores_signal'):
+                if self.view and hasattr(self.view, 'buscar_proveedores_signal'):
                     self.view.buscar_proveedores_signal.connect(self.buscar_proveedores)
                 
                 # Señales de reportes
-                if hasattr(self.view, 'generar_reporte_signal'):
+                if self.view and hasattr(self.view, 'generar_reporte_signal'):
                     self.view.generar_reporte_signal.connect(self.generar_reporte_compras)
                 
                 logger.debug("Señales de compras conectadas")
@@ -119,12 +119,36 @@ class ComprasController(BaseController):
             
             # Obtener órdenes del modelo
             if filtros:
-                ordenes = self.model.obtener_ordenes_filtradas(filtros)
-            else:
-                ordenes = self.model.obtener_todas_ordenes()
+                if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
+                    if self.model:
+
+                        if self.model:
+                            ordenes = self.model.obtener_ordenes_filtradas(filtros)
+                        # else: # Comentado - bloque huérfano
+                            # ordenes = []
+
+                    # else: # Comentado - bloque huérfano
+
+                        # ordenes = []
+                # else: # Comentado - bloque huérfano
+                    # ordenes = None
+            # else: # Comentado - bloque huérfano
+                # if self.model and hasattr(self.model, 'obtener_todas_ordenes'):
+                    # if self.model:
+
+                        # if self.model:
+                            # ordenes = self.model.obtener_todas_ordenes()
+                        # else:
+                            # ordenes = []
+
+                    # else:
+
+                        # ordenes = []
+                # else:
+                    # ordenes = None
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_tabla_ordenes'):
+            if self.view and hasattr(self.view, 'actualizar_tabla_ordenes'):
                 self.view.actualizar_tabla_ordenes(ordenes)
             
             logger.debug(f"Cargadas {len(ordenes)} órdenes de compra")
@@ -164,7 +188,19 @@ class ComprasController(BaseController):
                 return False
             
             # Crear orden a través del modelo
-            orden_id = self.model.crear_orden_compra(datos_orden)
+            if self.model and hasattr(self.model, 'crear_orden_compra'):
+                if self.model:
+
+                    if self.model:
+                        orden_id = self.model.crear_orden_compra(datos_orden)
+                    # else: # Comentado - bloque huérfano
+                        # orden_id = None
+
+                # else: # Comentado - bloque huérfano
+
+                    # orden_id = None
+            # else: # Comentado - bloque huérfano
+                # orden_id = None
             
             if orden_id:
                 logger.info(f"Orden de compra {orden_id} creada exitosamente")
@@ -176,11 +212,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje(f"Orden de compra {orden_id} creada exitosamente")
                 
                 return True
-            else:
-                logger.error("Error creando orden de compra")
-                if self.view:
-                    self.view.mostrar_error("Error creando orden de compra")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error creando orden de compra")
+                # if self.view:
+                    # self.view.mostrar_error("Error creando orden de compra")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error creando orden de compra: {e}")
@@ -208,7 +244,10 @@ class ComprasController(BaseController):
             if not self._validar_datos_orden(datos_orden, es_actualizacion=True):
                 return False
             
-            if self.model.actualizar_orden_compra(orden_id, datos_orden):
+    if self.model and hasattr(self.model, 'actualizar_orden_compra'):
+        if self.model:
+            if self.model:
+                self.model.actualizar_orden_compra(orden_id, datos_orden)
                 logger.info(f"Orden de compra {orden_id} actualizada exitosamente")
                 
                 # Recargar lista de órdenes
@@ -218,11 +257,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Orden de compra actualizada exitosamente")
                 
                 return True
-            else:
-                logger.error("Error actualizando orden de compra")
-                if self.view:
-                    self.view.mostrar_error("Error actualizando orden de compra")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error actualizando orden de compra")
+                # if self.view:
+                    # self.view.mostrar_error("Error actualizando orden de compra")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error actualizando orden de compra: {e}")
@@ -256,11 +295,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Orden de compra cancelada exitosamente")
                 
                 return True
-            else:
-                logger.error("Error cancelando orden de compra")
-                if self.view:
-                    self.view.mostrar_error("Error cancelando orden de compra")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error cancelando orden de compra")
+                # if self.view:
+                    # self.view.mostrar_error("Error cancelando orden de compra")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error cancelando orden de compra: {e}")
@@ -293,11 +332,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Orden de compra aprobada exitosamente")
                 
                 return True
-            else:
-                logger.error("Error aprobando orden de compra")
-                if self.view:
-                    self.view.mostrar_error("Error aprobando orden de compra")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error aprobando orden de compra")
+                # if self.view:
+                    # self.view.mostrar_error("Error aprobando orden de compra")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error aprobando orden de compra: {e}")
@@ -320,12 +359,36 @@ class ComprasController(BaseController):
             
             # Obtener proveedores del modelo
             if filtros:
-                proveedores = self.model.obtener_proveedores_filtrados(filtros)
-            else:
-                proveedores = self.model.obtener_todos_proveedores()
+                if self.model and hasattr(self.model, 'obtener_proveedores_filtrados'):
+                    if self.model:
+
+                        if self.model:
+                            proveedores = self.model.obtener_proveedores_filtrados(filtros)
+                        # else: # Comentado - bloque huérfano
+                            # proveedores = []
+
+                    # else: # Comentado - bloque huérfano
+
+                        # proveedores = []
+                # else: # Comentado - bloque huérfano
+                    # proveedores = None
+            # else: # Comentado - bloque huérfano
+                # if self.model and hasattr(self.model, 'obtener_todos_proveedores'):
+                    # if self.model:
+
+                        # if self.model:
+                            # proveedores = self.model.obtener_todos_proveedores()
+                        # else:
+                            # proveedores = []
+
+                    # else:
+
+                        # proveedores = []
+                # else:
+                    # proveedores = None
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_tabla_proveedores'):
+            if self.view and hasattr(self.view, 'actualizar_tabla_proveedores'):
                 self.view.actualizar_tabla_proveedores(proveedores)
             
             logger.debug(f"Cargados {len(proveedores)} proveedores")
@@ -365,7 +428,19 @@ class ComprasController(BaseController):
                 return False
             
             # Crear proveedor a través del modelo
-            proveedor_id = self.model.crear_proveedor(datos_proveedor)
+            if self.model and hasattr(self.model, 'crear_proveedor'):
+                if self.model:
+
+                    if self.model:
+                        proveedor_id = self.model.crear_proveedor(datos_proveedor)
+                    # else: # Comentado - bloque huérfano
+                        # proveedor_id = None
+
+                # else: # Comentado - bloque huérfano
+
+                    # proveedor_id = None
+            # else: # Comentado - bloque huérfano
+                # proveedor_id = None
             
             if proveedor_id:
                 logger.info(f"Proveedor {proveedor_id} creado exitosamente")
@@ -377,11 +452,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Proveedor creado exitosamente")
                 
                 return True
-            else:
-                logger.error("Error creando proveedor")
-                if self.view:
-                    self.view.mostrar_error("Error creando proveedor")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error creando proveedor")
+                # if self.view:
+                    # self.view.mostrar_error("Error creando proveedor")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error creando proveedor: {e}")
@@ -409,7 +484,10 @@ class ComprasController(BaseController):
             if not self._validar_datos_proveedor(datos_proveedor, es_actualizacion=True):
                 return False
             
-            if self.model.actualizar_proveedor(proveedor_id, datos_proveedor):
+    if self.model and hasattr(self.model, 'actualizar_proveedor'):
+        if self.model:
+            if self.model:
+                self.model.actualizar_proveedor(proveedor_id, datos_proveedor)
                 logger.info(f"Proveedor {proveedor_id} actualizado exitosamente")
                 
                 # Recargar lista de proveedores
@@ -419,11 +497,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Proveedor actualizado exitosamente")
                 
                 return True
-            else:
-                logger.error("Error actualizando proveedor")
-                if self.view:
-                    self.view.mostrar_error("Error actualizando proveedor")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error actualizando proveedor")
+                # if self.view:
+                    # self.view.mostrar_error("Error actualizando proveedor")
+                # return False
                 
         except Exception as e:
             logger.error(f"Error actualizando proveedor: {e}")
@@ -440,10 +518,19 @@ class ComprasController(BaseController):
                 return
             
             # Obtener estadísticas del modelo
-            estadisticas = self.model.obtener_estadisticas_compras()
+            if self.model:
+
+                if self.model:
+                    estadisticas = self.model.obtener_estadisticas_compras()
+                # else: # Comentado - bloque huérfano
+                    # estadisticas = []
+
+            # else: # Comentado - bloque huérfano
+
+                # estadisticas = []
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_estadisticas'):
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(estadisticas)
             
             logger.debug("Estadísticas de compras actualizadas")
@@ -471,16 +558,52 @@ class ComprasController(BaseController):
             
             # Generar reporte según el tipo
             if tipo_reporte == "ordenes":
-                reporte = self.model.generar_reporte_ordenes(parametros)
+                if self.model and hasattr(self.model, 'generar_reporte_ordenes'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_reporte_ordenes(parametros)
+                        # else: # Comentado - bloque huérfano
+                            # reporte = None
+
+                    # else: # Comentado - bloque huérfano
+
+                        # reporte = None
+                # else: # Comentado - bloque huérfano
+                    # reporte = None
             elif tipo_reporte == "proveedores":
-                reporte = self.model.generar_reporte_proveedores(parametros)
+                if self.model and hasattr(self.model, 'generar_reporte_proveedores'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_reporte_proveedores(parametros)
+                        # else: # Comentado - bloque huérfano
+                            # reporte = None
+
+                    # else: # Comentado - bloque huérfano
+
+                        # reporte = None
+                # else: # Comentado - bloque huérfano
+                    # reporte = None
             elif tipo_reporte == "gastos":
-                reporte = self.model.generar_reporte_gastos(parametros)
-            else:
-                logger.error(f"Tipo de reporte no soportado: {tipo_reporte}")
-                if self.view:
-                    self.view.mostrar_error(f"Tipo de reporte no soportado: {tipo_reporte}")
-                return False
+                if self.model and hasattr(self.model, 'generar_reporte_gastos'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_reporte_gastos(parametros)
+                        # else: # Comentado - bloque huérfano
+                            # reporte = None
+
+                    # else: # Comentado - bloque huérfano
+
+                        # reporte = None
+                # else: # Comentado - bloque huérfano
+                    # reporte = None
+            # else: # Comentado - bloque huérfano
+                # logger.error(f"Tipo de reporte no soportado: {tipo_reporte}")
+                # if self.view:
+                    # self.view.mostrar_error(f"Tipo de reporte no soportado: {tipo_reporte}")
+                # return False
             
             # Mostrar reporte en la vista
             if reporte and hasattr(self.view, 'mostrar_reporte'):
@@ -490,11 +613,11 @@ class ComprasController(BaseController):
                     self.view.mostrar_mensaje("Reporte generado exitosamente")
                 
                 return True
-            else:
-                logger.error("Error generando reporte")
-                if self.view:
-                    self.view.mostrar_error("Error generando reporte")
-                return False
+            # else: # Comentado - bloque huérfano
+                # logger.error("Error generando reporte")
+                # if self.view:
+                    # self.view.mostrar_error("Error generando reporte")
+                # return False
             
         except Exception as e:
             logger.error(f"Error generando reporte de compras: {e}")
@@ -516,11 +639,26 @@ class ComprasController(BaseController):
             
             reporte = {
                 'fecha_generacion': datetime.now().isoformat(),
-                'estadisticas': self.model.obtener_estadisticas_compras(),
-                'ordenes_pendientes': self.model.obtener_ordenes_filtradas({'estado': 'PENDIENTE'}),
-                'proveedores_activos': self.model.obtener_proveedores_filtrados({'activo': True}),
-                'resumen_gastos': self.model.obtener_resumen_gastos_periodo(),
-                'alertas': self.model.obtener_alertas_compras()
+    if self.model and hasattr(self.model, 'obtener_estadisticas_compras'):
+        if self.model:
+            if self.model:
+                self.model.obtener_estadisticas_compras()
+    if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
+        if self.model:
+            if self.model:
+                self.model.obtener_ordenes_filtradas({'estado': 'PENDIENTE'})
+    if self.model and hasattr(self.model, 'obtener_proveedores_filtrados'):
+        if self.model:
+            if self.model:
+                self.model.obtener_proveedores_filtrados({'activo': True})
+    if self.model and hasattr(self.model, 'obtener_resumen_gastos_periodo'):
+        if self.model:
+            if self.model:
+                self.model.obtener_resumen_gastos_periodo()
+    if self.model and hasattr(self.model, 'obtener_alertas_compras'):
+        if self.model:
+            if self.model:
+                self.model.obtener_alertas_compras()
             }
             
             logger.info("Reporte completo de compras generado")
@@ -657,7 +795,19 @@ class ComprasController(BaseController):
                 return False
             
             # Obtener datos para exportar
-            ordenes = self.model.obtener_ordenes_filtradas(filtros or {})
+            if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
+                if self.model:
+
+                    if self.model:
+                        ordenes = self.model.obtener_ordenes_filtradas(filtros or {})
+                    # else: # Comentado - bloque huérfano
+                        # ordenes = []
+
+                # else: # Comentado - bloque huérfano
+
+                    # ordenes = []
+            # else: # Comentado - bloque huérfano
+                # ordenes = None
             
             if not ordenes:
                 logger.warning("No hay órdenes para exportar")

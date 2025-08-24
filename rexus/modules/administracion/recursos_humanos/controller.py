@@ -75,12 +75,30 @@ class RecursosHumanosController(QObject):
             return
 
         try:
-            empleados = self.model.obtener_todos_empleados(filtros)
+            if self.model:
+
+                if self.model:
+                    empleados = self.model.obtener_todos_empleados(filtros)
+                # else: # Comentado - bloque huérfano
+                    # empleados = []
+
+            # else: # Comentado - bloque huérfano
+
+                # empleados = []
             if self.view:
                 self.view.actualizar_tabla_empleados(empleados)
 
             # Cargar estadísticas
-            estadisticas = self.model.obtener_estadisticas_empleados()
+            if self.model:
+
+                if self.model:
+                    estadisticas = self.model.obtener_estadisticas_empleados()
+                # else: # Comentado - bloque huérfano
+                    # estadisticas = []
+
+            # else: # Comentado - bloque huérfano
+
+                # estadisticas = []
             if self.view:
                 self.view.actualizar_estadisticas_empleados(estadisticas)
 
@@ -101,13 +119,25 @@ class RecursosHumanosController(QObject):
             if not self._validar_datos_empleado(datos_empleado):
                 return
 
-            empleado_id = self.model.crear_empleado(datos_empleado)
+            if self.model:
+
+
+                if self.model:
+                    empleado_id = self.model.crear_empleado(datos_empleado)
+                # else: # Comentado - bloque huérfano
+                    # empleado_id = None
+
+
+            # else: # Comentado - bloque huérfano
+
+
+                # empleado_id = None
             if empleado_id:
                 self.mostrar_mensaje("Empleado creado exitosamente")
                 self.cargar_empleados()
                 self.empleado_agregado.emit(datos_empleado)
-            else:
-                self.mostrar_error("Error al crear empleado")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al crear empleado")
 
         except Exception as e:
             self.mostrar_error(f"Error creando empleado: {e}")
@@ -126,8 +156,8 @@ class RecursosHumanosController(QObject):
                 self.mostrar_mensaje("Empleado actualizado exitosamente")
                 self.cargar_empleados()
                 self.empleado_actualizado.emit(datos_empleado)
-            else:
-                self.mostrar_error("Error al actualizar empleado")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al actualizar empleado")
 
         except Exception as e:
             self.mostrar_error(f"Error actualizando empleado: {e}")
@@ -146,8 +176,8 @@ class RecursosHumanosController(QObject):
                 self.mostrar_mensaje("Empleado eliminado exitosamente")
                 self.cargar_empleados()
                 self.empleado_eliminado.emit(empleado_id)
-            else:
-                self.mostrar_error("Error al eliminar empleado")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al eliminar empleado")
 
         except Exception as e:
             self.mostrar_error(f"Error eliminando empleado: {e}")
@@ -183,10 +213,13 @@ class RecursosHumanosController(QObject):
                             'estado': row.get('estado', 'ACTIVO')
                         }
 
-                        if self.model.crear_empleado(datos_empleado):
+    if self.model and hasattr(self.model, 'crear_empleado'):
+        if self.model:
+            if self.model:
+                self.model.crear_empleado(datos_empleado)
                             empleados_importados += 1
-                        else:
-                            empleados_error += 1
+                        # else: # Comentado - bloque huérfano
+                            # empleados_error += 1
 
                     except Exception as e:
                         empleados_error += 1
@@ -210,15 +243,27 @@ class RecursosHumanosController(QObject):
             anio = parametros.get('anio', datetime.now().year)
             empleado_id = parametros.get('empleado_id')
 
-            nomina_calculada = self.model.calcular_nomina(mes, anio, empleado_id)
+            if self.model:
+
+
+                if self.model:
+                    nomina_calculada = self.model.calcular_nomina(mes, anio, empleado_id)
+                # else: # Comentado - bloque huérfano
+                    # nomina_calculada = None
+
+
+            # else: # Comentado - bloque huérfano
+
+
+                # nomina_calculada = None
 
             if nomina_calculada:
                 if self.view:
                     self.view.actualizar_tabla_nomina(nomina_calculada)
                 self.nomina_calculada.emit(nomina_calculada)
                 self.mostrar_mensaje(f"Nómina calculada para {len(nomina_calculada)} empleados")
-            else:
-                self.mostrar_error("No se pudo calcular la nómina")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("No se pudo calcular la nómina")
 
         except Exception as e:
             self.mostrar_error(f"Error calculando nómina: {e}")
@@ -232,9 +277,9 @@ class RecursosHumanosController(QObject):
             if self.model.guardar_nomina(nomina_data):
                 self.mostrar_mensaje("Nómina guardada exitosamente")
                 self.nomina_guardada.emit(True)
-            else:
-                self.mostrar_error("Error al guardar nómina")
-                self.nomina_guardada.emit(False)
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al guardar nómina")
+                # self.nomina_guardada.emit(False)
 
         except Exception as e:
             self.mostrar_error(f"Error guardando nómina: {e}")
@@ -288,8 +333,8 @@ class RecursosHumanosController(QObject):
                 self.mostrar_mensaje("Asistencia registrada exitosamente")
                 self.cargar_asistencias()
                 self.asistencia_registrada.emit(datos_asistencia)
-            else:
-                self.mostrar_error("Error al registrar asistencia")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al registrar asistencia")
 
         except Exception as e:
             self.mostrar_error(f"Error registrando asistencia: {e}")
@@ -305,11 +350,14 @@ class RecursosHumanosController(QObject):
             datos_falta['horas_trabajadas'] = 0
             datos_falta['horas_extra'] = 0
 
-            if self.model.registrar_asistencia(datos_falta):
+    if self.model and hasattr(self.model, 'registrar_asistencia'):
+        if self.model:
+            if self.model:
+                self.model.registrar_asistencia(datos_falta)
                 self.mostrar_mensaje("Falta registrada exitosamente")
                 self.cargar_asistencias()
-            else:
-                self.mostrar_error("Error al registrar falta")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al registrar falta")
 
         except Exception as e:
             self.mostrar_error(f"Error registrando falta: {e}")
@@ -324,7 +372,19 @@ class RecursosHumanosController(QObject):
             fecha_hasta = filtros.get('fecha_hasta') if filtros else None
             empleado_id = filtros.get('empleado_id') if filtros else None
 
-            asistencias = self.model.obtener_asistencias(fecha_desde, fecha_hasta, empleado_id)
+            if self.model:
+
+
+                if self.model:
+                    asistencias = self.model.obtener_asistencias(fecha_desde, fecha_hasta, empleado_id)
+                # else: # Comentado - bloque huérfano
+                    # asistencias = []
+
+
+            # else: # Comentado - bloque huérfano
+
+
+                # asistencias = []
 
             if self.view:
                 self.view.actualizar_tabla_asistencias(asistencias)
@@ -353,8 +413,8 @@ class RecursosHumanosController(QObject):
                 self.mostrar_mensaje(f"{tipo} creado exitosamente")
                 self.cargar_bonos_descuentos()
                 self.bono_creado.emit(datos_bono)
-            else:
-                self.mostrar_error("Error al crear bono/descuento")
+            # else: # Comentado - bloque huérfano
+                # self.mostrar_error("Error al crear bono/descuento")
 
         except Exception as e:
             self.mostrar_error(f"Error creando bono/descuento: {e}")
@@ -369,7 +429,19 @@ class RecursosHumanosController(QObject):
             mes = filtros.get('mes') if filtros else None
             anio = filtros.get('anio') if filtros else None
 
-            bonos = self.model.obtener_bonos_descuentos(empleado_id, mes, anio)
+            if self.model:
+
+
+                if self.model:
+                    bonos = self.model.obtener_bonos_descuentos(empleado_id, mes, anio)
+                # else: # Comentado - bloque huérfano
+                    # bonos = []
+
+
+            # else: # Comentado - bloque huérfano
+
+
+                # bonos = []
 
             if self.view:
                 self.view.actualizar_tabla_bonos(bonos)
@@ -388,7 +460,19 @@ class RecursosHumanosController(QObject):
             empleado_id = filtros.get('empleado_id') if filtros else None
             tipo = filtros.get('tipo') if filtros else None
 
-            historial = self.model.obtener_historial_laboral(empleado_id, tipo)
+            if self.model:
+
+
+                if self.model:
+                    historial = self.model.obtener_historial_laboral(empleado_id, tipo)
+                # else: # Comentado - bloque huérfano
+                    # historial = None
+
+
+            # else: # Comentado - bloque huérfano
+
+
+                # historial = None
 
             if self.view:
                 self.view.actualizar_tabla_historial(historial)
@@ -408,14 +492,23 @@ class RecursosHumanosController(QObject):
             return
 
         try:
-            empleados = self.model.obtener_todos_empleados()
+            if self.model:
+
+                if self.model:
+                    empleados = self.model.obtener_todos_empleados()
+                # else: # Comentado - bloque huérfano
+                    # empleados = []
+
+            # else: # Comentado - bloque huérfano
+
+                # empleados = []
 
             if formato == 'CSV':
                 self._generar_reporte_csv(empleados, 'empleados')
             elif formato == 'Excel':
                 self._generar_reporte_excel(empleados, 'empleados')
-            else:
-                self._generar_reporte_pdf(empleados, 'empleados')
+            # else: # Comentado - bloque huérfano
+                # self._generar_reporte_pdf(empleados, 'empleados')
 
             self.mostrar_mensaje(f"Reporte de empleados generado en formato {formato}")
 
@@ -428,14 +521,23 @@ class RecursosHumanosController(QObject):
             return
 
         try:
-            nomina = self.model.calcular_nomina(mes, anio)
+            if self.model:
+
+                if self.model:
+                    nomina = self.model.calcular_nomina(mes, anio)
+                # else: # Comentado - bloque huérfano
+                    # nomina = None
+
+            # else: # Comentado - bloque huérfano
+
+                # nomina = None
 
             if formato == 'CSV':
                 self._generar_reporte_csv(nomina, f'nomina_{mes}_{anio}')
             elif formato == 'Excel':
                 self._generar_reporte_excel(nomina, f'nomina_{mes}_{anio}')
-            else:
-                self._generar_reporte_pdf(nomina, f'nomina_{mes}_{anio}')
+            # else: # Comentado - bloque huérfano
+                # self._generar_reporte_pdf(nomina, f'nomina_{mes}_{anio}')
 
             self.mostrar_mensaje(f"Reporte de nómina generado en formato {formato}")
 

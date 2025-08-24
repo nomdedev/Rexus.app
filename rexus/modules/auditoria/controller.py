@@ -60,12 +60,22 @@ class AuditoriaController(QObject):
 
         try:
             # Cargar registros recientes
-            registros = self.model.obtener_registros(limite=100)
+            if self.model:
+                registros = self.model.obtener_registros(limite=100)
+            else:
+                registros = []
             self.view.cargar_registros_auditoría(registros)
 
             # Cargar estadísticas
-            estadisticas = self.model.obtener_estadisticas()
-            self.view.actualizar_estadisticas(estadisticas)
+            if self.model and hasattr(self.model, 'obtener_estadisticas'):
+                if self.model:
+                    estadisticas = self.model.obtener_estadisticas()
+                else:
+                    estadisticas = []
+            else:
+                estadisticas = None
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
+                self.view.actualizar_estadisticas(estadisticas)
 
         except Exception as e:
             logger.exception(f"[ERROR AUDITORÍA] Error cargando datos iniciales: {e}")
@@ -104,7 +114,8 @@ class AuditoriaController(QObject):
             )
 
             # Actualizar vista
-            self.view.cargar_registros_auditoría(registros)
+            if self.view and hasattr(self.view, 'cargar_registros_auditoría'):
+                self.view.cargar_registros_auditoría(registros)
 
             # Registrar la búsqueda
             self.registrar_accion(
@@ -147,7 +158,13 @@ class AuditoriaController(QObject):
                 return
 
             # Obtener todos los registros visibles actualmente
-            registros = self.model.obtener_registros(limite=10000)
+            if self.model and hasattr(self.model, 'obtener_registros'):
+                if self.model:
+                    registros = self.model.obtener_registros(limite=10000)
+                else:
+                    registros = []
+            else:
+                registros = None
 
             if formato.lower() == "csv":
                 self._exportar_csv(registros, archivo)
@@ -264,7 +281,13 @@ class AuditoriaController(QObject):
                 return
 
             # Realizar limpieza
-            success = self.model.limpiar_registros_antiguos(dias)
+            if self.model and hasattr(self.model, 'limpiar_registros_antiguos'):
+                if self.model:
+                    success = self.model.limpiar_registros_antiguos(dias)
+                else:
+                    success = None
+            else:
+                success = None
 
             if success:
                 self.view.mostrar_mensaje(
@@ -334,7 +357,10 @@ class AuditoriaController(QObject):
             return
 
         try:
-            estadisticas = self.model.obtener_estadisticas()
+            if self.model:
+                estadisticas = self.model.obtener_estadisticas()
+            else:
+                estadisticas = []
             self.view.actualizar_estadisticas(estadisticas)
         except Exception as e:
             logger.exception(f"[ERROR AUDITORÍA] Error actualizando estadísticas: {e}")
@@ -355,7 +381,10 @@ class AuditoriaController(QObject):
             return []
 
         try:
-            registros = self.model.obtener_registros(limite=1000)
+            if self.model:
+                registros = self.model.obtener_registros(limite=1000)
+            else:
+                registros = []
 
             # Filtrar por tabla
             registros_filtrados = [

@@ -26,13 +26,39 @@ try:
     from rexus.utils.report_cache_integration import (
         cache_inventory_report,
         get_report_cache_manager,
-        get_performance_monitor,
-        monitored_cache_report
+        get_performance_monitor
     )
     CACHE_AVAILABLE = True
 except ImportError:
     CACHE_AVAILABLE = False
-    logger.warning()
+    import logging
+    logger = logging.getLogger(__name__)
+    logger.warning("No se pudo importar la integración de cache de reportes.")
+
+    # Dummy decorator to avoid NameError if cache_inventory_report is not available
+    def cache_inventory_report(*args, **kwargs):
+        def decorator(func):
+            return func
+        return decorator
+
+    # Dummy get_performance_monitor to avoid NameError
+    def get_performance_monitor():
+        # Returns an object with a log_report_execution method
+        class DummyMonitor:
+            @staticmethod
+            def log_report_execution(*args, **kwargs):
+                # Método vacío porque en el entorno sin integración de cache
+                # no es necesario registrar la ejecución de reportes.
+                pass
+        return DummyMonitor()
+
+    # Dummy get_report_cache_manager to avoid NameError
+    def get_report_cache_manager():
+        # Returns an object with the same interface as the real ReportCacheManager
+        return type("ReportCacheManager", (), {
+            "invalidate_report_type": staticmethod(lambda *args, **kwargs: 0),
+            "invalidate_module_cache": staticmethod(lambda *args, **kwargs: 0)
+        })()
 
 # Configurar logging
 logger = logging.getLogger(__name__)
@@ -261,8 +287,8 @@ class ReportesManager:
                 'error': f"Error interno: {str(e)}"
             }
     
-    def generar_analisis_abc(self) -> Dict[str, Any]:
-        """Genera análisis ABC de productos por valor y demanda.
+    def generar_analisis_abc_simple(self) -> Dict[str, Any]:
+        """Genera análisis ABC simple de productos por valor y demanda.
         
         Returns:
             Dict con clasificación ABC
@@ -498,8 +524,14 @@ class ReportesManager:
             }
             
         except (FileNotFoundError, PermissionError) as e:
-                            'success': False,
+            return {
+                'success': False,
                 'error': f"Error interno: {str(e)}"
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': f"Error inesperado: {str(e)}"
             }
     
     def exportar_reporte_json(self, datos: Dict, archivo_destino: str) -> Dict[str, Any]:
@@ -522,8 +554,14 @@ class ReportesManager:
             }
             
         except (FileNotFoundError, PermissionError) as e:
-                            'success': False,
+            return {
+                'success': False,
                 'error': f"Error interno: {str(e)}"
+            }
+        except Exception as e:
+            return {
+                'success': False,
+                'error': f"Error inesperado: {str(e)}"
             }
     
     @cache_inventory_report('productos_sin_movimientos', ttl=3600) if CACHE_AVAILABLE else lambda f: f
@@ -829,7 +867,7 @@ class ReportesManager:
                 'error': f"Error interno: {str(e)}"
             }
     
-    def invalidar_cache_reportes(self, tipo_reporte: str = None):
+    def invalidar_cache_reportes(self, tipo_reporte: Optional[str] = None):
         """Invalidar cache de reportes específicos o todos.
         
         Args:
@@ -849,7 +887,8 @@ class ReportesManager:
             logger.info(f"Cache invalidado: {invalidated} entradas")
             
         except Exception as e:
-                
+            logger.error(f"Error al invalidar cache: {str(e)}")
+
     def _generar_recomendaciones_cache(self, stats: Dict) -> List[str]:
         """Generar recomendaciones basadas en estadísticas de cache."""
         recomendaciones = []

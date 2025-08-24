@@ -39,10 +39,10 @@ class HerrajesController(BaseController):
         if model is not None:
             self.model = model
             self.view = view
-        else:
-            # Compatibilidad hacia atrás
-            self.view = model
-            self.model = HerrajesModel(db_connection)
+        # else: # Comentado - bloque huérfano
+            # # Compatibilidad hacia atrás
+            # self.view = model
+            # self.model = HerrajesModel(db_connection)
 
         self.db_connection = db_connection
         self.usuario_actual = usuario_actual or {"id": 1, "nombre": "SISTEMA"}
@@ -56,8 +56,8 @@ class HerrajesController(BaseController):
         try:
             if self.view and hasattr(self.view, 'refresh_data'):
                 self.view.refresh_data()
-            else:
-                self.cargar_datos_iniciales()
+            # else: # Comentado - bloque huérfano
+                # self.cargar_datos_iniciales()
             logger.info("[HERRAJES] Vista actualizada exitosamente")
         except Exception as e:
             logger.info(f"[ERROR HERRAJES] Error actualizando vista: {e}")
@@ -73,9 +73,9 @@ class HerrajesController(BaseController):
                 self._actualizar_vista_herrajes(herrajes)
                 logger.info(f"[HERRAJES] Búsqueda completada: {len(herrajes)} herrajes encontrados")
                 return herrajes
-            else:
-                logger.info("[WARNING HERRAJES] Método buscar_herrajes no disponible en modelo")
-                return []
+            # else: # Comentado - bloque huérfano
+                # logger.info("[WARNING HERRAJES] Método buscar_herrajes no disponible en modelo")
+                # return []
         except Exception as e:
             logger.info(f"[ERROR HERRAJES] Error buscando herrajes: {e}")
             return []
@@ -89,12 +89,12 @@ class HerrajesController(BaseController):
                     self.actualizar_vista()
                     logger.info(f"[HERRAJES] Herraje creado: {datos_herraje.get('nombre', 'N/A')}")
                     return True
-                else:
-                    logger.info("[ERROR HERRAJES] No se pudo crear el herraje")
-                    return False
-            else:
-                logger.info("[WARNING HERRAJES] Método crear_herraje no disponible en modelo")
-                return False
+                # else: # Comentado - bloque huérfano
+                    # logger.info("[ERROR HERRAJES] No se pudo crear el herraje")
+                    # return False
+            # else: # Comentado - bloque huérfano
+                # logger.info("[WARNING HERRAJES] Método crear_herraje no disponible en modelo")
+                # return False
         except Exception as e:
             logger.info(f"[ERROR HERRAJES] Error creando herraje: {e}")
             return False
@@ -108,12 +108,12 @@ class HerrajesController(BaseController):
                     self.actualizar_vista()
                     logger.info(f"[HERRAJES] Herraje eliminado: ID {herraje_id}")
                     return True
-                else:
-                    logger.info("[ERROR HERRAJES] No se pudo eliminar el herraje")
-                    return False
-            else:
-                logger.info("[WARNING HERRAJES] Método eliminar_herraje no disponible en modelo")
-                return False
+                # else: # Comentado - bloque huérfano
+                    # logger.info("[ERROR HERRAJES] No se pudo eliminar el herraje")
+                    # return False
+            # else: # Comentado - bloque huérfano
+                # logger.info("[WARNING HERRAJES] Método eliminar_herraje no disponible en modelo")
+                # return False
         except Exception as e:
             logger.info(f"[ERROR HERRAJES] Error eliminando herraje: {e}")
             return False
@@ -168,11 +168,20 @@ class HerrajesController(BaseController):
 
             # Obtener herrajes filtrados
             if filtros:
-                herrajes = self.model.obtener_todos_herrajes(filtros)
+                if self.model and hasattr(self.model, 'obtener_todos_herrajes'):
+                    herrajes = self.model.obtener_todos_herrajes(filtros)
+                # else: # Comentado - bloque huérfano
+                    # herrajes = None
             elif termino and len(termino.strip()) >= 2:
-                herrajes = self.model.buscar_herrajes(termino.strip())
-            else:
-                herrajes = self.model.obtener_todos_herrajes()
+                if self.model and hasattr(self.model, 'buscar_herrajes'):
+                    herrajes = self.model.buscar_herrajes(termino.strip()
+                # else: # Comentado - bloque huérfano
+                    # herrajes = None
+            # else: # Comentado - bloque huérfano
+                # if self.model and hasattr(self.model, 'obtener_todos_herrajes'):
+                    # herrajes = self.model.obtener_todos_herrajes()
+                # else:
+                    # herrajes = None
 
             # Actualizar vista
             if self.view and hasattr(self.view, "cargar_herrajes"):
@@ -187,13 +196,13 @@ class HerrajesController(BaseController):
         try:
             if self.model:
                 estadisticas = self.model.obtener_estadisticas()
-            else:
-                estadisticas = {
-                    "total_herrajes": 0,
-                    "total_stock": 0,
-                    "herrajes_bajo_stock": 0,
-                    "proveedores_activos": 0
-                }
+            # else: # Comentado - bloque huérfano
+                # estadisticas = {
+                    # "total_herrajes": 0,
+                    # "total_stock": 0,
+                    # "herrajes_bajo_stock": 0,
+                    # "proveedores_activos": 0
+                # }
 
             if self.view and hasattr(self.view, "actualizar_estadisticas"):
                 self.view.actualizar_estadisticas(estadisticas)
@@ -221,7 +230,10 @@ class HerrajesController(BaseController):
 
             # Como el modelo simplificado no tiene obtener_proveedores,
             # extraemos los proveedores de los herrajes existentes
-            herrajes = self.model.obtener_todos_herrajes()
+            if self.model and hasattr(self.model, 'obtener_todos_herrajes'):
+                herrajes = self.model.obtener_todos_herrajes()
+            # else: # Comentado - bloque huérfano
+                # herrajes = None
             proveedores_set = set()
 
             for herraje in herrajes:
@@ -262,12 +274,12 @@ class HerrajesController(BaseController):
                     herraje_data,
                     self.actualizar_herraje
                 )
-            else:
-                # Crear nuevo herraje
-                resultado = dialog_manager.crud_manager.show_create_dialog(
-                    form_config,
-                    self.crear_herraje
-                )
+            # else: # Comentado - bloque huérfano
+                # # Crear nuevo herraje
+                # resultado = dialog_manager.crud_manager.show_create_dialog(
+                    # form_config,
+                    # self.crear_herraje
+                # )
 
             if resultado:
                 self.cargar_datos_iniciales()  # Recargar datos
@@ -299,7 +311,10 @@ class HerrajesController(BaseController):
             }
 
             # Crear en modelo
-            resultado = self.model.crear_herraje(data_limpia)
+            if self.model and hasattr(self.model, 'crear_herraje'):
+                resultado = self.model.crear_herraje(data_limpia)
+            # else: # Comentado - bloque huérfano
+                # resultado = None
 
             if resultado:
                 self.herraje_creado.emit(data_limpia)
@@ -332,7 +347,10 @@ class HerrajesController(BaseController):
             }
 
             # Actualizar en modelo
-            resultado = self.model.actualizar_herraje(data_limpia.get('codigo'), data_limpia)
+            if self.model and hasattr(self.model, 'actualizar_herraje'):
+                resultado = self.model.actualizar_herraje(data_limpia.get('codigo')
+            # else: # Comentado - bloque huérfano
+                # resultado = None
 
             if resultado:
                 self.herraje_actualizado.emit(data_limpia)
@@ -360,7 +378,10 @@ class HerrajesController(BaseController):
             )
 
             if respuesta == QMessageBox.StandardButton.Yes:
-                resultado = self.model.eliminar_herraje(codigo)
+                if self.model and hasattr(self.model, 'eliminar_herraje'):
+                    resultado = self.model.eliminar_herraje(codigo)
+                # else: # Comentado - bloque huérfano
+                    # resultado = None
 
                 if resultado:
                     self.herraje_eliminado.emit(hash(codigo))  # Emitir señal
@@ -385,138 +406,141 @@ class HerrajesController(BaseController):
                 return False
 
             # Obtener todos los datos para exportar
-            datos, total = self.model.obtener_datos_paginados(0, 10000)  # Obtener todos los registros
+    if self.model and hasattr(self.model, 'obtener_datos_paginados'):
+        total = self.model.obtener_datos_paginados(0, 10000)
+ # else: # Comentado - bloque huérfano
+     # total = None
 
-            if not datos:
-                self.mostrar_advertencia("No hay herrajes para exportar")
-                return False
+            # if not datos:
+                # self.mostrar_advertencia("No hay herrajes para exportar")
+                # return False
 
-            # Usar ExportManager para exportar
-            try:
-                from rexus.utils.export_manager import ExportManager
-                from datetime import datetime
+            # # Usar ExportManager para exportar
+            # try:
+                # from rexus.utils.export_manager import ExportManager
+                # from datetime import datetime
                 
-                export_manager = ExportManager()
+                # export_manager = ExportManager()
                 
-                # Preparar datos para exportación
-                datos_export = {
-                    'datos': datos,
-                    'columnas': ['Código', 'Nombre', 'Categoría', 'Proveedor', 'Precio', 'Stock', 'Stock Mínimo'],
-                    'titulo': 'Listado de Herrajes',
-                    'modulo': 'Herrajes',
-                    'usuario': self.usuario_actual,
-                    'fecha': datetime.now().strftime()
-                }
+                # # Preparar datos para exportación
+                # datos_export = {
+                    # 'datos': datos,
+                    # 'columnas': ['Código', 'Nombre', 'Categoría', 'Proveedor', 'Precio', 'Stock', 'Stock Mínimo'],
+                    # 'titulo': 'Listado de Herrajes',
+                    # 'modulo': 'Herrajes',
+                    # 'usuario': self.usuario_actual,
+                    # 'fecha': datetime.now().strftime()
+                # }
                 
-                # Generar nombre de archivo
-                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-                filename = f"herrajes_export_{timestamp}.{formato}"
+                # # Generar nombre de archivo
+                # timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                # filename = f"herrajes_export_{timestamp}.{formato}"
                 
-                # Exportar según formato
-                resultado = False
-                if formato.lower() == 'excel':
-                    resultado = export_manager.exportar_excel(datos_export, filename)
-                elif formato.lower() == 'csv':
-                    resultado = export_manager.exportar_csv(datos_export, filename)
-                elif formato.lower() == 'pdf':
-                    resultado = export_manager.exportar_pdf(datos_export, filename)
-                else:
-                    self.mostrar_error(f"Formato {formato} no soportado")
-                    return False
+                # # Exportar según formato
+                # resultado = False
+                # if formato.lower() == 'excel':
+                    # resultado = export_manager.exportar_excel(datos_export, filename)
+                # elif formato.lower() == 'csv':
+                    # resultado = export_manager.exportar_csv(datos_export, filename)
+                # elif formato.lower() == 'pdf':
+                    # resultado = export_manager.exportar_pdf(datos_export, filename)
+                # else:
+                    # self.mostrar_error(f"Formato {formato} no soportado")
+                    # return False
                 
-                if resultado:
-                    self.mostrar_exito(f"Herrajes exportados exitosamente a {filename}")
-                    logger.info(f"[HERRAJES CONTROLLER] Herrajes exportados exitosamente a {filename}")
-                    return True
-                else:
-                    self.mostrar_error("Error durante la exportación")
-                    return False
+                # if resultado:
+                    # self.mostrar_exito(f"Herrajes exportados exitosamente a {filename}")
+                    # logger.info(f"[HERRAJES CONTROLLER] Herrajes exportados exitosamente a {filename}")
+                    # return True
+                # else:
+                    # self.mostrar_error("Error durante la exportación")
+                    # return False
                     
-            except ImportError:
-                self.mostrar_error("ExportManager no disponible")
-                return False
-            except Exception as e:
-                self.mostrar_error(f"Error en exportación: {str(e)}")
-                return False
+            # except ImportError:
+                # self.mostrar_error("ExportManager no disponible")
+                # return False
+            # except Exception as e:
+                # self.mostrar_error(f"Error en exportación: {str(e)}")
+                # return False
 
-        except Exception as e:
-            logger.info(f"[ERROR HERRAJES CONTROLLER] Error exportando herrajes: {e}")
-            self.mostrar_error(f"Error exportando herrajes: {str(e)}")
-            return False
+        # except Exception as e:
+            # logger.info(f"[ERROR HERRAJES CONTROLLER] Error exportando herrajes: {e}")
+            # self.mostrar_error(f"Error exportando herrajes: {str(e)}")
+            # return False
 
-    # Métodos de utilidad
-    def obtener_tipos_herrajes(self) -> List[str]:
-        """Obtiene tipos de herrajes disponibles."""
-        return ["Bisagras", "Cerraduras", "Manijas", "Otros herrajes"]
+    # # Métodos de utilidad
+    # def obtener_tipos_herrajes(self) -> List[str]:
+        # """Obtiene tipos de herrajes disponibles."""
+        # return ["Bisagras", "Cerraduras", "Manijas", "Otros herrajes"]
 
-    def obtener_estados_herrajes(self) -> List[str]:
-        """Obtiene estados de herrajes disponibles."""
-        return ["Activo", "Inactivo"]
+    # def obtener_estados_herrajes(self) -> List[str]:
+        # """Obtiene estados de herrajes disponibles."""
+        # return ["Activo", "Inactivo"]
 
-    # === MÉTODOS DE PAGINACIÓN ===
+    # # === MÉTODOS DE PAGINACIÓN ===
 
-    def cargar_pagina(self, pagina, registros_por_pagina=50):
-        """Carga una página específica de datos."""
-        try:
-            if self.model:
-                offset = (pagina - 1) * registros_por_pagina
+    # def cargar_pagina(self, pagina, registros_por_pagina=50):
+        # """Carga una página específica de datos."""
+        # try:
+            # if self.model:
+                # offset = (pagina - 1) * registros_por_pagina
 
-                # Obtener datos paginados
-                datos, total_registros = self.model.obtener_datos_paginados(
-                    offset=offset,
-                    limit=registros_por_pagina
-                )
+                # # Obtener datos paginados
+                # datos, total_registros = self.model.obtener_datos_paginados(
+                    # offset=offset,
+                    # limit=registros_por_pagina
+                # )
 
-                if self.view:
-                    # Cargar datos en la tabla
-                    if hasattr(self.view, 'cargar_datos_en_tabla'):
-                        self.view.cargar_datos_en_tabla(datos)
+                # if self.view:
+                    # # Cargar datos en la tabla
+                    # if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
+                        # self.view.cargar_datos_en_tabla(datos)
 
-                    # Actualizar controles de paginación
-                    total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
-                    if hasattr(self.view, 'actualizar_controles_paginacion'):
-                        self.view.actualizar_controles_paginacion(
-                            pagina, total_paginas, total_registros, len(datos)
-                        )
+                    # # Actualizar controles de paginación
+                    # total_paginas = (total_registros + registros_por_pagina - 1) // registros_por_pagina
+                    # if self.view and hasattr(self.view, 'actualizar_controles_paginacion'):
+                        # self.view.actualizar_controles_paginacion(
+                            # pagina, total_paginas, total_registros, len(datos)
+                        # )
 
-        except Exception as e:
-            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando página: {e}")
-            if hasattr(self, 'mostrar_error'):
-                self.mostrar_error(f"Error cargando página: {str(e)}")
+        # except Exception as e:
+            # logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando página: {e}")
+            # if hasattr(self, 'mostrar_error'):
+                # self.mostrar_error(f"Error cargando página: {str(e)}")
 
-    def cambiar_registros_por_pagina(self, registros):
-        """Cambia la cantidad de registros por página y recarga."""
-        self.registros_por_pagina = registros
-        self.cargar_pagina(1, registros)
+    # def cambiar_registros_por_pagina(self, registros):
+        # """Cambia la cantidad de registros por página y recarga."""
+        # self.registros_por_pagina = registros
+        # self.cargar_pagina(1, registros)
 
-    def obtener_total_registros(self):
-        """Obtiene el total de registros disponibles."""
-        try:
-            if self.model:
-                return self.model.obtener_total_registros()
-            return 0
-        except Exception as e:
-            logger.info(f"[ERROR HERRAJES CONTROLLER] Error obteniendo total de registros: {e}")
-            return 0
+    # def obtener_total_registros(self):
+        # """Obtiene el total de registros disponibles."""
+        # try:
+            # if self.model:
+                # return self.model.obtener_total_registros()
+            # return 0
+        # except Exception as e:
+            # logger.info(f"[ERROR HERRAJES CONTROLLER] Error obteniendo total de registros: {e}")
+            # return 0
 
-    def obtener_unidades_medida(self) -> List[str]:
-        """Obtiene unidades de medida disponibles."""
-        return ["unidad", "metro", "kilogramo", "litro", "caja"]
+    # def obtener_unidades_medida(self) -> List[str]:
+        # """Obtiene unidades de medida disponibles."""
+        # return ["unidad", "metro", "kilogramo", "litro", "caja"]
 
-    @staticmethod
-    def get_integration_service(db_connection=None):
-        """Compatibilidad: devuelve el servicio de integración Herrajes-Inventario.
+    # @staticmethod
+    # def get_integration_service(db_connection=None):
+        # """Compatibilidad: devuelve el servicio de integración Herrajes-Inventario.
 
-        Implementado como método estático para que las pruebas puedan verificar su
-        existencia sin instanciar el controlador (evita BaseController __init__).
-        """
-        try:
-            from .inventario_integration import HerrajesInventarioIntegration
+        # Implementado como método estático para que las pruebas puedan verificar su
+        # existencia sin instanciar el controlador (evita BaseController __init__).
+        # """
+        # try:
+            # from .inventario_integration import HerrajesInventarioIntegration
 
-            return HerrajesInventarioIntegration(db_connection=db_connection)
-        except (ImportError, AttributeError, TypeError) as e:
-            # Retornar None si no puede construirse (evita lanzar en pruebas)
-            # ImportError: módulo no encontrado
-            # AttributeError: clase no encontrada en módulo
-            # TypeError: error en inicialización
-            return None
+            # return HerrajesInventarioIntegration(db_connection=db_connection)
+        # except (ImportError, AttributeError, TypeError) as e:
+            # # Retornar None si no puede construirse (evita lanzar en pruebas)
+            # # ImportError: módulo no encontrado
+            # # AttributeError: clase no encontrada en módulo
+            # # TypeError: error en inicialización
+            # return None

@@ -50,13 +50,13 @@ class ContabilidadController(BaseController):
         try:
             if self.view and hasattr(self.view, 'connect_signals'):
                 # Conectar señales específicas de contabilidad
-                if hasattr(self.view, 'crear_asiento_signal'):
+                if self.view and hasattr(self.view, 'crear_asiento_signal'):
                     self.view.crear_asiento_signal.connect(self.crear_asiento_contable)
                 
-                if hasattr(self.view, 'buscar_asientos_signal'):
+                if self.view and hasattr(self.view, 'buscar_asientos_signal'):
                     self.view.buscar_asientos_signal.connect(self.buscar_asientos)
                 
-                if hasattr(self.view, 'generar_reporte_signal'):
+                if self.view and hasattr(self.view, 'generar_reporte_signal'):
                     self.view.generar_reporte_signal.connect(self.generar_reporte_financiero)
                 
                 logger.debug("Señales de contabilidad conectadas")
@@ -117,8 +117,14 @@ class ContabilidadController(BaseController):
                 return False
             
             # Crear asiento a través del modelo
-            resultado = self.model.crear_asiento_contable(
-                datos_asiento.get('fecha_asiento'),
+            if self.model:
+
+                resultado = self.model.crear_asiento_contable(
+                datos_asiento.get('fecha_asiento')
+
+            else:
+
+                resultado = None,
                 datos_asiento.get('tipo_asiento'),
                 datos_asiento.get('concepto'),
                 datos_asiento.get('monto', 0),
@@ -150,10 +156,19 @@ class ContabilidadController(BaseController):
                 return
             
             # Obtener asientos del modelo
-            asientos = self.model.obtener_asientos_contables(filtros or {})
+            if self.model:
+
+                if self.model:
+                    asientos = self.model.obtener_asientos_contables(filtros or {})
+                else:
+                    asientos = []
+
+            else:
+
+                asientos = []
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_tabla_asientos'):
+            if self.view and hasattr(self.view, 'actualizar_tabla_asientos'):
                 self.view.actualizar_tabla_asientos(asientos)
             
             logger.debug(f"Cargados {len(asientos)} asientos contables")
@@ -168,10 +183,19 @@ class ContabilidadController(BaseController):
                 return
             
             # Obtener estadísticas del modelo
-            estadisticas = self.model.obtener_estadisticas_financieras()
+            if self.model:
+
+                if self.model:
+                    estadisticas = self.model.obtener_estadisticas_financieras()
+                else:
+                    estadisticas = []
+
+            else:
+
+                estadisticas = []
             
             # Actualizar vista
-            if hasattr(self.view, 'actualizar_estadisticas'):
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(estadisticas)
             
             logger.debug("Estadísticas financieras actualizadas")
@@ -196,11 +220,47 @@ class ContabilidadController(BaseController):
             
             # Generar reporte a través del modelo
             if tipo_reporte == "balance":
-                reporte = self.model.generar_balance_general(parametros)
+                if self.model and hasattr(self.model, 'generar_balance_general'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_balance_general(parametros)
+                        else:
+                            reporte = None
+
+                    else:
+
+                        reporte = None
+                else:
+                    reporte = None
             elif tipo_reporte == "estado_resultados":
-                reporte = self.model.generar_estado_resultados(parametros)
+                if self.model and hasattr(self.model, 'generar_estado_resultados'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_estado_resultados(parametros)
+                        else:
+                            reporte = None
+
+                    else:
+
+                        reporte = None
+                else:
+                    reporte = None
             elif tipo_reporte == "libro_diario":
-                reporte = self.model.generar_libro_diario(parametros)
+                if self.model and hasattr(self.model, 'generar_libro_diario'):
+                    if self.model:
+
+                        if self.model:
+                            reporte = self.model.generar_libro_diario(parametros)
+                        else:
+                            reporte = None
+
+                    else:
+
+                        reporte = None
+                else:
+                    reporte = None
             else:
                 logger.error(f"Tipo de reporte no soportado: {tipo_reporte}")
                 return None
@@ -270,7 +330,19 @@ class ContabilidadController(BaseController):
             logger.info(f"Exportando datos contables en formato {formato}")
             
             # Obtener datos para exportar
-            datos = self.model.obtener_asientos_contables(filtros or {})
+            if self.model and hasattr(self.model, 'obtener_asientos_contables'):
+                if self.model:
+
+                    if self.model:
+                        datos = self.model.obtener_asientos_contables(filtros or {})
+                    else:
+                        datos = []
+
+                else:
+
+                    datos = []
+            else:
+                datos = None
             
             if not datos:
                 logger.warning("No hay datos para exportar")

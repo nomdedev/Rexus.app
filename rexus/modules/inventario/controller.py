@@ -68,17 +68,17 @@ class InventarioController(BaseController):
         """Conecta las señales de la vista con los métodos del controlador."""
         try:
             # Señales principales de productos
-            if hasattr(self.view, 'producto_agregado'):
+            if self.view and hasattr(self.view, 'producto_agregado'):
                 self.view.producto_agregado.connect(self.agregar_producto)
-            if hasattr(self.view, 'producto_editado'):
+            if self.view and hasattr(self.view, 'producto_editado'):
                 self.view.producto_editado.connect(self.editar_producto)
-            if hasattr(self.view, 'producto_eliminado'):
+            if self.view and hasattr(self.view, 'producto_eliminado'):
                 self.view.producto_eliminado.connect(self.eliminar_producto)
             
             # Señales de movimientos
-            if hasattr(self.view, 'movimiento_registrado'):
+            if self.view and hasattr(self.view, 'movimiento_registrado'):
                 self.view.movimiento_registrado.connect(self.registrar_movimiento)
-            if hasattr(self.view, 'material_reservado'):
+            if self.view and hasattr(self.view, 'material_reservado'):
                 self.view.material_reservado.connect(self.reservar_material_obra)
             
             logger.debug("Señales conectadas exitosamente")
@@ -102,7 +102,13 @@ class InventarioController(BaseController):
                 logger.warning("No hay modelo disponible, usando datos demo")
                 return self._get_productos_demo()
             
-            productos = self.model.obtener_productos()
+            if self.model and hasattr(self.model, 'obtener_productos'):
+                if self.model:
+                    productos = self.model.obtener_productos()
+                else:
+                    productos = []
+            else:
+                productos = None
             logger.info(f"Inventario cargado: {len(productos)} productos")
             
             # Actualizar cache
@@ -137,7 +143,13 @@ class InventarioController(BaseController):
                 show_warning(self.view, "Advertencia", "Ya existe un producto con ese código")
                 return False
             
-            producto_id = self.model.crear_producto(datos_producto)
+            if self.model and hasattr(self.model, 'crear_producto'):
+                if self.model:
+                    producto_id = self.model.crear_producto(datos_producto)
+                else:
+                    producto_id = None
+            else:
+                producto_id = None
             
             if producto_id:
                 show_info(self.view, "Éxito", "Producto agregado correctamente")
@@ -177,7 +189,13 @@ class InventarioController(BaseController):
                 show_error(self.view, "Error", "El producto no existe")
                 return False
             
-            success = self.model.actualizar_producto(producto_id, datos_producto)
+            if self.model and hasattr(self.model, 'actualizar_producto'):
+                if self.model:
+                    success = self.model.actualizar_producto(producto_id, datos_producto)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Producto actualizado correctamente")
@@ -222,7 +240,13 @@ class InventarioController(BaseController):
                 show_warning(self.view, "Advertencia", "No se puede eliminar un producto con stock")
                 return False
             
-            success = self.model.eliminar_producto(producto_id)
+            if self.model and hasattr(self.model, 'eliminar_producto'):
+                if self.model:
+                    success = self.model.eliminar_producto(producto_id)
+                else:
+                    success = None
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Producto eliminado correctamente")
@@ -268,7 +292,13 @@ class InventarioController(BaseController):
                     show_warning(self.view, "Advertencia", "Stock insuficiente")
                     return False
             
-            movimiento_id = self.model.registrar_movimiento(datos_movimiento)
+            if self.model and hasattr(self.model, 'registrar_movimiento'):
+                if self.model:
+                    movimiento_id = self.model.registrar_movimiento(datos_movimiento)
+                else:
+                    movimiento_id = None
+            else:
+                movimiento_id = None
             
             if movimiento_id:
                 show_info(self.view, "Éxito", "Movimiento registrado correctamente")
@@ -343,7 +373,13 @@ class InventarioController(BaseController):
                 show_warning(self.view, "Advertencia", "Stock insuficiente para la reserva")
                 return False
             
-            reserva_id = self.model.crear_reserva(datos_reserva)
+            if self.model and hasattr(self.model, 'crear_reserva'):
+                if self.model:
+                    reserva_id = self.model.crear_reserva(datos_reserva)
+                else:
+                    reserva_id = None
+            else:
+                reserva_id = None
             
             if reserva_id:
                 show_info(self.view, "Éxito", "Material reservado correctamente")
@@ -374,7 +410,10 @@ class InventarioController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return False
             
-            success = self.model.liberar_reserva(reserva_id)
+            if self.model:
+                success = self.model.liberar_reserva(reserva_id)
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Reserva liberada correctamente")
@@ -406,7 +445,10 @@ class InventarioController(BaseController):
                 show_error(self.view, "Error", "No hay conexión al modelo de datos")
                 return False
             
-            success = self.model.usar_material_reservado(reserva_id, cantidad_usada)
+            if self.model:
+                success = self.model.usar_material_reservado(reserva_id, cantidad_usada)
+            else:
+                success = None
             
             if success:
                 show_info(self.view, "Éxito", "Uso de material registrado")
@@ -599,7 +641,7 @@ class InventarioController(BaseController):
     def actualizar_vista_movimientos(self):
         """Actualiza la vista de movimientos."""
         try:
-            if hasattr(self.view, 'cargar_movimientos'):
+            if self.view and hasattr(self.view, 'cargar_movimientos'):
                 movimientos = self._cargar_movimientos()
                 self.view.cargar_movimientos(movimientos)
             logger.debug("Vista de movimientos actualizada")
@@ -610,7 +652,7 @@ class InventarioController(BaseController):
     def actualizar_vista_reservas(self):
         """Actualiza la vista de reservas."""
         try:
-            if hasattr(self.view, 'cargar_reservas'):
+            if self.view and hasattr(self.view, 'cargar_reservas'):
                 reservas = self._cargar_reservas()
                 self.view.cargar_reservas(reservas)
             logger.debug("Vista de reservas actualizada")
@@ -623,7 +665,7 @@ class InventarioController(BaseController):
         logger.info("Iniciando carga inicial de inventario")
         try:
             productos = self.cargar_inventario()
-            if hasattr(self.view, 'cargar_datos_materiales'):
+            if self.view and hasattr(self.view, 'cargar_datos_materiales'):
                 self.view.cargar_datos_materiales(productos)
             return productos
         except Exception as e:
@@ -772,7 +814,9 @@ class InventarioController(BaseController):
             if not self.model:
                 return False
             
-            return self.model.codigo_producto_existe(codigo)
+            if self.model:
+                return self.model.codigo_producto_existe(codigo)
+            return None
             
         except Exception as e:
             logger.error(f"Error verificando código: {e}")
@@ -792,7 +836,9 @@ class InventarioController(BaseController):
             if not self.model:
                 return False
             
-            return self.model.producto_existe(producto_id)
+            if self.model:
+                return self.model.producto_existe(producto_id)
+            return None
             
         except Exception as e:
             logger.error(f"Error verificando producto: {e}")
@@ -812,7 +858,10 @@ class InventarioController(BaseController):
             if not self.model:
                 return False
             
-            stock = self.model.obtener_stock_producto(producto_id)
+            if self.model:
+                stock = self.model.obtener_stock_producto(producto_id)
+            else:
+                stock = None
             return stock > 0
             
         except Exception as e:
@@ -834,7 +883,10 @@ class InventarioController(BaseController):
             if not self.model:
                 return False
             
-            stock_actual = self.model.obtener_stock_producto(producto_id)
+            if self.model:
+                stock_actual = self.model.obtener_stock_producto(producto_id)
+            else:
+                stock_actual = None
             return stock_actual >= cantidad
             
         except Exception as e:
@@ -852,7 +904,9 @@ class InventarioController(BaseController):
             if not self.model:
                 return []
             
-            return self.model.obtener_movimientos()
+            if self.model:
+                return self.model.obtener_movimientos()
+            return []
             
         except Exception as e:
             logger.error(f"Error cargando movimientos: {e}")
@@ -869,7 +923,9 @@ class InventarioController(BaseController):
             if not self.model:
                 return []
             
-            return self.model.obtener_reservas()
+            if self.model:
+                return self.model.obtener_reservas()
+            return []
             
         except Exception as e:
             logger.error(f"Error cargando reservas: {e}")
