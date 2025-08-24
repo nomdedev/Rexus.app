@@ -1179,7 +1179,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
                 from PyQt6.QtWidgets import QMessageBox
                 respuesta = QMessageBox.question(
                     self,
-                    ,
+                    "Confirmar Eliminación",
                     f"¿Está seguro de eliminar la obra ID {obra_id}?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
@@ -1322,7 +1322,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             if dialogo.exec() == QDialog.DialogCode.Accepted:
                 dialogo.obtener_datos()
                 # Aquí se enviarían los datos al controlador
-                show_success(self, , "Presupuesto creado exitosamente")
+                show_success(self, "Éxito", "Presupuesto creado exitosamente")
         except ImportError:
             # Fallback simple
             show_warning(self, "En desarrollo", "Funcionalidad de presupuesto en desarrollo")
@@ -1335,7 +1335,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             dialogo.exec()
         except ImportError:
             # Fallback simple
-            show_warning(self, , "Comparación de presupuestos en desarrollo")
+            show_warning(self, "En desarrollo", "Comparación de presupuestos en desarrollo")
 
     def exportar_presupuestos(self):
         """Exporta presupuestos filtrados."""
@@ -1358,7 +1358,7 @@ class ObrasModernView(QWidget, ModuleExportMixin):
             export_manager = ExportManager()
             export_manager.exportar_presupuestos(datos_export, filename)
 
-            show_success(self, , f"Presupuestos exportados como {filename}")
+            show_success(self, "Éxito", f"Presupuestos exportados como {filename}")
         except Exception as e:
             show_error(self, "Error", f"Error al exportar: {str(e)}")
 

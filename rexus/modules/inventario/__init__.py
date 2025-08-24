@@ -18,7 +18,7 @@ from .model import (
 from .view import InventarioView
 
 __all__ = [
-    ,
+    "InventarioController",
     "InventarioModel",
     "InventarioView",
     "ProductosManager",

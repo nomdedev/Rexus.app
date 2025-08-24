@@ -408,9 +408,10 @@ class VidriosModernView(QWidget, ModuleExportMixin):
 
         # Header compacto
         header = self.tabla_vidrios.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
-        header.setMinimumSectionSize(40)
-        header.setDefaultSectionSize(60)
+        if header:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Interactive)
+            header.setMinimumSectionSize(40)
+            header.setDefaultSectionSize(60)
 
     def crear_panel_acciones_inventario(self) -> QFrame:
         """Crea el panel de acciones para inventario."""
@@ -524,7 +525,9 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         self.lista_specs.setHorizontalHeaderLabels(headers)
 
         # Ocultar números de fila
-        self.lista_specs.verticalHeader().setVisible(False)
+        vertical_header = self.lista_specs.verticalHeader()
+        if vertical_header:
+            vertical_header.setVisible(False)
 
         # Anchos ajustados
         self.lista_specs.setColumnWidth(0, 100)
@@ -875,7 +878,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
                 from PyQt6.QtWidgets import QMessageBox
                 respuesta = QMessageBox.question(
                     self,
-                    ,
+                    "Confirmar Eliminación",
                     f"¿Está seguro de eliminar el vidrio ID {vidrio_id}?",
                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
                 )
@@ -901,7 +904,7 @@ class VidriosModernView(QWidget, ModuleExportMixin):
         # Limpiar layout anterior
         while self.layout_detalles.count():
             child = self.layout_detalles.takeAt(0)
-            if child.widget():
+            if child and child.widget():
                 child.widget().deleteLater()
 
         # Crear nuevos detalles

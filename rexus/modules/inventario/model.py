@@ -1,4 +1,27 @@
-                            return []
+"""
+Modelo de Inventario - Rexus.app
+Gestión del inventario de productos
+"""
+
+import logging
+from typing import Dict, List, Any, Optional
+
+logger = logging.getLogger(__name__)
+
+class InventarioModel:
+    """Modelo para gestión de inventario."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el modelo de inventario."""
+        self.db_connection = db_connection
+        self.sql_manager = None
+        
+    def obtener_lotes(self, producto_id: Optional[int] = None, activos_solo: bool = True) -> List[Dict[str, Any]]:
+        """Obtiene lotes de inventario."""
+        try:
+            if not self.db_connection:
+                logger.warning("No hay conexión a base de datos disponible")
+                return []
                 
             cursor = self.db_connection.cursor()
             
@@ -75,6 +98,13 @@
                 return lotes
                 
         except Exception as e:
+            logger.error(f"Error obteniendo lotes: {e}")
+            return []
+    
+    def obtener_lotes_producto(self, producto_id: int) -> List[Dict[str, Any]]:
+        """Obtiene lotes de un producto específico."""
+        # Implementación placeholder
+        return []
 
     def _get_productos_demo(self):
         """Datos demo para productos cuando no hay conexión"""

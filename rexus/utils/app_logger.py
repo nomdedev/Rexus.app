@@ -268,22 +268,9 @@ def replace_print_with_logging():
     pass
 
 
-# Ejemplo de uso en módulos:
-"""
-# En cualquier archivo del proyecto:
-from rexus.utils.app_logger import get_logger, log_info, log_error, log_security
-
-# Obtener logger específico para el módulo
-logger = get_logger()
-logger.info("Módulo inventario inicializado")
-
-# Usar funciones de conveniencia
-log_info("Operación completada", "inventario")
-log_error("Error en validación", "inventario")
-log_security("CRITICAL", "Intento de acceso no autorizado", "usuario123")
-
-# En lugar de:
-logger.info("[INFO] Mensaje")
-# Usar:
-log_info("Mensaje", "component_name")
-"""
+# Función de utilidad para inicialización de módulos
+def initialize_module_logger(module_name: str) -> logging.Logger:
+    """Inicializar logger para un módulo específico."""
+    logger = get_logger(module_name)
+    logger.info(f"Módulo {module_name} inicializado")
+    return logger

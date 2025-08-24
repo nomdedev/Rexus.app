@@ -87,7 +87,7 @@ class HerrajesView(QWidget, ModuleExportMixin):
             titulo (str): Título del diálogo
         """
         try:
-            show_error(mensaje, titulo)
+            show_error(self, titulo, mensaje)
         except ImportError as e:
             # Fallback usando QMessageBox si show_error no está disponible
             logger.warning("show_error no disponible, usando fallback: %s", e)

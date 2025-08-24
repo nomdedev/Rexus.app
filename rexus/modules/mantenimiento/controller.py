@@ -1,8 +1,23 @@
 """Controlador de Mantenimiento"""
 
 import logging
-            from rexus.utils.message_system import show_success, show_error
-from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
+from datetime import date, datetime, timedelta
+from typing import Dict, List, Optional, Any
+
+from PyQt6.QtCore import QObject, pyqtSignal
+
+try:
+    from rexus.utils.message_system import show_success, show_error
+except ImportError:
+    def show_success(parent, title, message):
+        logging.info(f"{title}: {message}")
+    def show_error(parent, title, message):
+        logging.error(f"{title}: {message}")
+
+try:
+    from rexus.modules.mantenimiento.programacion_model import ProgramacionMantenimientoModel
+except ImportError:
+    ProgramacionMantenimientoModel = None
 
 logger = logging.getLogger(__name__)
 
@@ -55,6 +70,9 @@ model=None,
             logger.info("Datos iniciales de mantenimiento cargados exitosamente")
 
         except Exception as e:
+            logger.error(f"Error cargando datos iniciales: {e}")
+
+    def crear_equipo(self, datos_equipo: Dict[str, Any]) -> bool:
         """
         Crea un nuevo equipo en el sistema.
 
@@ -188,6 +206,9 @@ model=None,
             logger.info(f"Verificación completada: {len(vencidos)} vencidos, {len(proximos)} próximos")
 
         except Exception as e:
+            logger.error(f"Error verificando mantenimientos: {e}")
+
+    def generar_reporte_historial(self, equipo_id: int, fecha_inicio: date,
                                  fecha_fin: date) -> List[Dict]:
         """
         Genera reporte de historial de mantenimiento.
@@ -209,6 +230,8 @@ model=None,
             return historial
 
         except Exception as e:
+            logger.error(f"Error generando reporte: {e}")
+            return []
 
     def _crear_programacion_automatica(self, datos_equipo: Dict):
         """Crea programación automática basada en los datos del equipo."""
@@ -224,6 +247,9 @@ model=None,
             )
 
         except Exception as e:
+            logger.error(f"Error creando programación automática: {e}")
+
+    def reprogramar_mantenimiento(self, programacion_id: int, datos_ejecucion: Dict):
         """Reprograma un mantenimiento basado en los resultados de la ejecución."""
         try:
             dias_siguiente = datos_ejecucion.get('dias_proximo_mantenimiento', 30)
@@ -240,6 +266,9 @@ model=None,
                 )
 
         except Exception as e:
+            logger.error(f"Error reprogramando mantenimiento: {e}")
+
+    def validar_datos_equipo(self, datos: Dict) -> List[str]:
         """Valida los datos de un equipo."""
         errores = []
 
@@ -249,11 +278,7 @@ model=None,
         if not datos.get('codigo', '').strip():
             errores.append("El código del equipo es obligatorio")
 
-        if errores:
-            show_error(self.view, "Datos inválidos", "\n".join(errores))
-            return False
-
-        return True
+        return errores
 
     def _validar_datos_ejecucion(self, datos: Dict) -> bool:
         """Valida los datos de ejecución de mantenimiento."""
@@ -312,12 +337,17 @@ model=None,
                 return self.model.obtener_total_registros()
             return 0
         except Exception as e:
+            logger.error(f"Error obteniendo total de registros: {e}")
+            return 0
 
     def cargar_datos(self):
         """Carga datos iniciales - método de compatibilidad"""
         try:
             self.cargar_pagina(1)
         except Exception as e:
+            logger.error(f"Error cargando datos: {e}")
+
+    def buscar_ordenes(self, filtros: Dict):
         """Busca registros con filtros aplicados"""
         try:
             if self.model and hasattr(self.model, 'buscar_ordenes'):
@@ -325,6 +355,9 @@ model=None,
                 if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
                     self.view.cargar_datos_en_tabla(datos)
         except Exception as e:
+            logger.error(f"Error buscando órdenes: {e}")
+
+    def crear_orden_trabajo(self, datos: Dict):
         """Crea una nueva orden de mantenimiento"""
         try:
             if self.model and hasattr(self.model, 'crear_orden_trabajo'):
@@ -334,3 +367,5 @@ model=None,
                 return resultado
             return False
         except Exception as e:
+            logger.error(f"Error creando orden de trabajo: {e}")
+            return False

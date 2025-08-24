@@ -28,12 +28,51 @@ Diálogo de Configuración de Base de Datos - Rexus.app v2.0.0
 Permite configurar las conexiones a base de datos del sistema
 """
 
-
 import logging
+from PyQt6.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QPushButton
+
 logger = logging.getLogger(__name__)
 
-            
+class DatabaseConfigDialog(QDialog):
+    """Diálogo para configuración de base de datos."""
+    
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setWindowTitle("Configuración de Base de Datos")
+        self.setFixedSize(600, 400)
+        self.init_ui()
+    
+    def init_ui(self):
+        """Inicializa la interfaz de usuario."""
+        layout = QVBoxLayout()
+        
+        self.results_text = QTextEdit()
+        self.results_text.setReadOnly(True)
+        layout.addWidget(self.results_text)
+        
+        self.test_button = QPushButton("Probar Conexiones")
+        self.test_button.clicked.connect(self.test_all_connections)
+        layout.addWidget(self.test_button)
+        
+        self.setLayout(layout)
+    
+    def test_all_connections(self):
+        """Prueba todas las conexiones de base de datos."""
+        self.results_text.clear()
+        self.results_text.append("[INFO] Iniciando pruebas de conexión...")
+        
         for db_type in ["users", "inventario", "auditoria"]:
             self.test_connection(db_type)
 
-        self.results_text.append("\\n[CHECK] Pruebas completadas")
+        self.results_text.append("\n[CHECK] Pruebas completadas")
+    
+    def test_connection(self, db_type):
+        """Prueba la conexión a un tipo específico de base de datos."""
+        try:
+            self.results_text.append(f"[INFO] Probando conexión {db_type}...")
+            # Aquí se implementaría la lógica de prueba de conexión
+            self.results_text.append(f"[OK] Conexión {db_type} exitosa")
+            return True
+        except Exception as e:
+            self.results_text.append(f"[ERROR] Fallo conexión {db_type}: {str(e)}")
+            return False

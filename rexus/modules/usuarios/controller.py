@@ -6,7 +6,7 @@ Gestiona autenticación, autorización, permisos y sesiones de usuario.
 """
 
 import logging
-from typing import Dict, List, Any, Optional
+from typing import Dict, Any, Optional
 from datetime import datetime
 
 # Importar logging
@@ -22,7 +22,29 @@ try:
     from ...ui.base.base_controller import BaseController
 except ImportError:
     logger.warning("No se pudo importar BaseController")
-    BaseController = object
+    
+    class BaseController:
+        """Clase base para controllers cuando no está disponible la importación."""
+        def __init__(self, *args, **kwargs):
+            pass
+        
+        def mostrar_error(self, titulo: str, mensaje: str) -> None:
+            """Mostrar mensaje de error."""
+            logger.error(f"{titulo}: {mensaje}")
+        
+        def mostrar_exito(self, mensaje: str) -> None:
+            """Mostrar mensaje de éxito.""" 
+            logger.info(mensaje)
+        
+        def mostrar_advertencia(self, mensaje: str) -> None:
+            """Mostrar mensaje de advertencia."""
+            logger.warning(mensaje)
+
+# Constantes para mensajes de error
+MSG_ERROR_CREANDO = "Error creando usuario"
+MSG_ERROR_ACTUALIZANDO = "Error actualizando usuario" 
+MSG_ERROR_ELIMINANDO = "Error eliminando usuario"
+MSG_ERROR_PERMISOS = "Error actualizando permisos"
 
 
 class UsuariosController(BaseController):
@@ -265,15 +287,15 @@ class UsuariosController(BaseController):
                 
                 return True
             else:
-                logger.error("Error creando usuario")
+                logger.error(MSG_ERROR_CREANDO)
                 if self.view:
-                    self.view.mostrar_error("Error creando usuario")
+                    self.view.mostrar_error(MSG_ERROR_CREANDO)
                 return False
                 
         except Exception as e:
-            logger.error(f"Error creando usuario: {e}")
+            logger.error(f"{MSG_ERROR_CREANDO}: {e}")
             if self.view:
-                self.view.mostrar_error("Error creando usuario")
+                self.view.mostrar_error(MSG_ERROR_CREANDO)
             return False
     
     def actualizar_usuario(self, usuario_id: int, datos_usuario: Dict[str, Any]) -> bool:
@@ -314,15 +336,15 @@ class UsuariosController(BaseController):
                 
                 return True
             else:
-                logger.error("Error actualizando usuario")
+                logger.error(MSG_ERROR_ACTUALIZANDO)
                 if self.view:
-                    self.view.mostrar_error("Error actualizando usuario")
+                    self.view.mostrar_error(MSG_ERROR_ACTUALIZANDO)
                 return False
                 
         except Exception as e:
-            logger.error(f"Error actualizando usuario: {e}")
+            logger.error(f"{MSG_ERROR_ACTUALIZANDO}: {e}")
             if self.view:
-                self.view.mostrar_error("Error actualizando usuario")
+                self.view.mostrar_error(MSG_ERROR_ACTUALIZANDO)
             return False
     
     def eliminar_usuario(self, usuario_id: int) -> bool:
@@ -371,7 +393,7 @@ class UsuariosController(BaseController):
                 
                 return True
             else:
-                logger.error("Error eliminando usuario")
+                logger.error(MSG_ERROR_ELIMINANDO)
                 if self.view:
                     self.view.mostrar_error("Error eliminando usuario")
                 return False
@@ -416,7 +438,7 @@ class UsuariosController(BaseController):
                 
                 return True
             else:
-                logger.error("Error actualizando permisos")
+                logger.error(MSG_ERROR_PERMISOS)
                 if self.view:
                     self.view.mostrar_error("Error actualizando permisos")
                 return False

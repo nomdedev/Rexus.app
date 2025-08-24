@@ -25,7 +25,6 @@ except ImportError:
     _submodules_available = False
 
 __all__ = [
-    ,
     "VidriosModel",
     "VidriosView",
     "VidriosController",

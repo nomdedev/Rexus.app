@@ -155,6 +155,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -255,6 +256,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -339,6 +341,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -402,6 +405,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -456,6 +460,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -581,6 +586,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -657,6 +663,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }
@@ -817,6 +824,7 @@ class ReportesManager:
             }
             
         except Exception as e:
+            return {
                 'success': False,
                 'error': f"Error interno: {str(e)}"
             }

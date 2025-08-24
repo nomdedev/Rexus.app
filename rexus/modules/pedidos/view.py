@@ -530,7 +530,7 @@ pagina_actual,
 
     def ir_a_pagina(self, pagina):
         """Va a una página específica"""
-        if hasattr(self.controller, 'cargar_pagina'):
+        if self.controller and hasattr(self.controller, 'cargar_pagina'):
             self.controller.cargar_pagina(pagina)
 
     def pagina_anterior(self):
@@ -560,7 +560,7 @@ pagina_actual,
 
     def cambiar_registros_por_pagina(self, registros):
         """Cambia la cantidad de registros por página"""
-        if hasattr(self.controller, 'cambiar_registros_por_pagina'):
+        if self.controller and hasattr(self.controller, 'cambiar_registros_por_pagina'):
             self.controller.cambiar_registros_por_pagina(int(registros))
 
     def exportar_pedidos(self):
@@ -593,7 +593,7 @@ pagina_actual,
                 # Solicitar ubicación de archivo
                 archivo, _ = QFileDialog.getSaveFileName(
                     self,
-                    ,
+                    "Exportar Pedidos",
                     "pedidos_export.xlsx",
                     "Excel Files (*.xlsx);;All Files (*)"
                 )
@@ -665,7 +665,7 @@ class DialogoPedido(QDialog):
         self.input_fecha_entrega.setCalendarPopup(True)
         from PyQt6.QtCore import QDate
         self.input_fecha_entrega.setDate(QDate.currentDate().addDays(7))
-        form_layout.addRow(, self.input_fecha_entrega)
+        form_layout.addRow("Fecha Entrega:", self.input_fecha_entrega)
 
         # Descripción
         self.input_descripcion = QTextEdit()

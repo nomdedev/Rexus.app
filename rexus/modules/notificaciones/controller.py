@@ -5,7 +5,27 @@ Controlador para gestionar notificaciones del sistema.
 Coordina entre el modelo y la vista siguiendo el patrón MVC.
 """
 
-                def eliminar_notificacion(self, notificacion_id: int) -> bool:
+import logging
+from typing import Dict, List, Optional, Any
+from PyQt6.QtCore import QObject, pyqtSignal
+
+logger = logging.getLogger(__name__)
+
+class NotificacionesController(QObject):
+    """Controlador para el módulo de notificaciones."""
+    
+    # Señales
+    notificacion_eliminada = pyqtSignal(int)
+    nueva_notificacion = pyqtSignal(dict)
+    
+    def __init__(self, model=None, view=None):
+        """Inicializa el controlador de notificaciones."""
+        super().__init__()
+        self.model = model
+        self.view = view
+        self.logger = logger
+        
+    def eliminar_notificacion(self, notificacion_id: int) -> bool:
         """
         Elimina una notificación (solo administradores).
 
@@ -16,110 +36,108 @@ Coordina entre el modelo y la vista siguiendo el patrón MVC.
             bool: True si se eliminó exitosamente
         """
         try:
-            resultado = self.model.eliminar_notificacion(notificacion_id)
+            if not self.model:
+                self.logger.error("Modelo no disponible")
+                return False
+                
+            if hasattr(self.model, 'eliminar_notificacion'):
+                resultado = self.model.eliminar_notificacion(notificacion_id)
 
-            if resultado:
-                if self.view:
-                    self.view.mostrar_mensaje("Notificación eliminada exitosamente", "success")
-                    self.view.remover_notificacion_de_lista(notificacion_id)
+                if resultado:
+                    if self.view and hasattr(self.view, 'mostrar_mensaje'):
+                        self.view.mostrar_mensaje("Notificación eliminada exitosamente", "success")
+                    if self.view and hasattr(self.view, 'remover_notificacion_de_lista'):
+                        self.view.remover_notificacion_de_lista(notificacion_id)
+                    
+                    self.notificacion_eliminada.emit(notificacion_id)
 
-            return resultado
-
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error eliminando notificación: {str(e)}")
-            if self.view:
-                self.view.mostrar_error(f"Error eliminando notificación: {str(e)}")
+                return resultado
             return False
 
-    def manejar_evento_sistema(self, evento: str, modulo: str,
-                              detalles: Optional[Dict] = None) -> bool:
-        """
-        Maneja eventos del sistema creando notificaciones automáticas.
-
-        Args:
-            evento: Tipo de evento
-            modulo: Módulo que genera el evento
-            detalles: Información adicional
-
-        Returns:
-            bool: True si se procesó exitosamente
-        """
-        try:
-            resultado = self.model.crear_notificacion_sistema(evento, modulo, detalles)
-
-            if resultado and self.view:
-                # Actualizar vista si está visible
-                self.actualizar_contador_no_leidas()
-
-            return resultado
-
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error manejando evento: {str(e)}")
+        except Exception as e:
+            self.logger.error(f"Error eliminando notificación: {str(e)}")
+            if self.view and hasattr(self.view, 'mostrar_error'):
+                self.view.mostrar_error(f"Error al eliminar notificación: {str(e)}")
             return False
 
-    def inicializar_notificaciones_sistema(self):
-        """Inicializa notificaciones del sistema al startup."""
+    def crear_notificacion(self, datos: Dict[str, Any]) -> bool:
+        """Crea una nueva notificación."""
         try:
-            # Crear notificación de sistema iniciado
-            self.manejar_evento_sistema(
-                'sistema_iniciado',
-                'sistema',
-                {'timestamp': datetime.now().isoformat()}
-            )
+            if not self.model:
+                self.logger.error("Modelo no disponible")
+                return False
+                
+            # Validar datos básicos
+            if not datos.get('titulo') or not datos.get('mensaje'):
+                self.logger.error("Titulo y mensaje son requeridos")
+                return False
+                
+            if hasattr(self.model, 'crear_notificacion'):
+                notificacion_id = self.model.crear_notificacion(datos)
+                
+                if notificacion_id:
+                    self.logger.info(f"Notificación creada: {notificacion_id}")
+                    self.nueva_notificacion.emit(datos)
+                    return True
+                    
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Error creando notificación: {e}")
+            return False
 
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error inicializando: {str(e)}")
-
-    def procesar_notificaciones_programadas(self):
-        """Procesa notificaciones programadas (para ejecutar periódicamente)."""
+    def marcar_como_leida(self, notificacion_id: int) -> bool:
+        """Marca una notificación como leída."""
         try:
-            # Aquí se pueden agregar lógicas para notificaciones programadas
-            # Por ejemplo: recordatorios de mantenimiento, alertas de stock bajo, etc.
-            pass
+            if not self.model:
+                return False
+                
+            if hasattr(self.model, 'marcar_como_leida'):
+                return self.model.marcar_como_leida(notificacion_id)
+            return False
+            
+        except Exception as e:
+            self.logger.error(f"Error marcando notificación como leída: {e}")
+            return False
 
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error procesando programadas: {str(e)}")
-
-    def obtener_estadisticas(self) -> Dict:
-        """
-        Obtiene estadísticas de notificaciones para el usuario actual.
-
-        Returns:
-            Dict: Estadísticas de notificaciones
-        """
+    def obtener_notificaciones(self, usuario_id: Optional[int] = None) -> List[Dict[str, Any]]:
+        """Obtiene las notificaciones del usuario."""
         try:
-            usuario_id = self.usuario_actual.get('id')
-            if not usuario_id:
-                return {}
+            if not self.model:
+                return []
+                
+            if hasattr(self.model, 'obtener_notificaciones'):
+                return self.model.obtener_notificaciones(usuario_id)
+            return []
+            
+        except Exception as e:
+            self.logger.error(f"Error obteniendo notificaciones: {e}")
+            return []
 
-            # Obtener todas las notificaciones del usuario
-            todas = self.model.obtener_notificaciones_usuario(usuario_id, False, 1000)
+    def obtener_notificaciones_no_leidas(self, usuario_id: Optional[int] = None) -> List[Dict[str, Any]]:
+        """Obtiene las notificaciones no leídas."""
+        try:
+            if not self.model:
+                return []
+                
+            if hasattr(self.model, 'obtener_notificaciones_no_leidas'):
+                return self.model.obtener_notificaciones_no_leidas(usuario_id)
+            return []
+            
+        except Exception as e:
+            self.logger.error(f"Error obteniendo notificaciones no leídas: {e}")
+            return []
 
-            stats = {
-                'total': len(todas),
-                'no_leidas': sum(1 for n in todas if not n['leida']),
-                'por_tipo': {},
-                'por_prioridad': {},
-                'ultimas_24h': 0
-            }
-
-            # Contar por tipo y prioridad
-            for notif in todas:
-                tipo = notif['tipo']
-                prioridad = notif['prioridad']
-
-                stats['por_tipo'][tipo] = stats['por_tipo'].get(tipo, 0) + 1
-                stats['por_prioridad'][prioridad] = stats['por_prioridad'].get(prioridad, 0) + 1
-
-                # Contar las de últimas 24 horas
-                if notif['fecha_creacion']:
-                    hace_24h = datetime.now() - timedelta(hours=24)
-                    if isinstance(notif['fecha_creacion'], datetime):
-                        if notif['fecha_creacion'] > hace_24h:
-                            stats['ultimas_24h'] += 1
-
-            return stats
-
-        except (AttributeError, RuntimeError, ConnectionError, ValueError) as e:
-            logger.error(f"[ERROR NOTIFICACIONES CONTROLLER] Error obteniendo estadísticas: {str(e)}")
-            return {}
+    def contar_no_leidas(self, usuario_id: Optional[int] = None) -> int:
+        """Cuenta las notificaciones no leídas."""
+        try:
+            if not self.model:
+                return 0
+                
+            if hasattr(self.model, 'contar_no_leidas'):
+                return self.model.contar_no_leidas(usuario_id)
+            return 0
+            
+        except Exception as e:
+            self.logger.error(f"Error contando notificaciones no leídas: {e}")
+            return 0

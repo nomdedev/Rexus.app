@@ -1,15 +1,12 @@
 """Módulo de Usuarios"""
 
-
 import logging
-logger = logging.getLogger(__name__)
-
 from .controller import UsuariosController
-from .model import UsuariosModel
 from .view import UsuariosView
 
+logger = logging.getLogger(__name__)
+
 __all__ = [
-    ,
     "UsuariosView",
     "UsuariosController",
 ]

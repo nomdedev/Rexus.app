@@ -32,14 +32,15 @@ from rexus.core.security import get_security_manager
 from .contabilidad import ContabilidadModel, ContabilidadController
 from .recursos_humanos import RecursosHumanosModel, RecursosHumanosController
 
+# Constantes para mensajes
+MENSAJE_MODELO_NO_DISPONIBLE = "Modelo no disponible"
+MENSAJE_EXITO = "Éxito"
+MENSAJE_ERROR = "Error"
+
 class AdministracionController(QObject):
     """Controlador principal del módulo de administración."""
 
-    def __init__(self,
-model=None,
-        view=None,
-        db_connection=None,
-        usuarios_model=None):
+    def __init__(self, model=None, view=None, db_connection=None, usuarios_model=None):
         super().__init__()
         self.model = model
         self.view = view
@@ -48,16 +49,12 @@ model=None,
         self.security_manager = get_security_manager()
 
         # Obtener usuario y rol actual del sistema de seguridad
-        self.usuario_actual = (
-            self.security_manager.get_current_user()
-            if self.security_manager
-            else "SISTEMA"
-        )
-        self.rol_actual = (
-            self.security_manager.get_current_role()
-            if self.security_manager
-            else "ADMIN"
-        )
+        try:
+            self.usuario_actual = getattr(self.security_manager, 'get_current_user', lambda: "SISTEMA")()
+            self.rol_actual = getattr(self.security_manager, 'get_current_role', lambda: "ADMIN")()
+        except Exception:
+            self.usuario_actual = "SISTEMA"
+            self.rol_actual = "ADMIN"
 
         # Configurar el modelo con la conexión
         if self.model and self.db_connection:
@@ -95,25 +92,9 @@ model=None,
     def inicializar_submodulos(self):
         """Inicializa los submódulos de contabilidad y recursos humanos."""
         try:
-            # Inicializar submódulo de contabilidad
-            self.contabilidad_model = ContabilidadModel(self.db_connection)
-            self.contabilidad_controller = ContabilidadController(
-                model=self.contabilidad_model,
-                view=self.view,
-                db_connection=self.db_connection
-            )
-
-            # Inicializar submódulo de recursos humanos
-            self.recursos_humanos_model = RecursosHumanosModel(self.db_connection)
-            self.recursos_humanos_controller = RecursosHumanosController(
-                model=self.recursos_humanos_model,
-                view=self.view,
-                db_connection=self.db_connection
-            )
-
-            # Conectar señales entre submódulos
+            self._inicializar_contabilidad()
+            self._inicializar_recursos_humanos()
             self.conectar_senales_submodulos()
-
             logger.info("[ADMINISTRACIÓN] Submódulos inicializados correctamente")
 
         except ImportError as e:
@@ -121,7 +102,25 @@ model=None,
         except AttributeError as e:
             logger.error(f"[ERROR ADMINISTRACIÓN] Error configurando submódulos: {e}")
         except Exception as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error inesperado inicializando submódulos: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error inesperado inicializando submódulos: {e}")
+
+    def _inicializar_contabilidad(self):
+        """Inicializa el submódulo de contabilidad."""
+        self.contabilidad_model = ContabilidadModel(self.db_connection)
+        self.contabilidad_controller = ContabilidadController(
+            model=self.contabilidad_model,
+            view=self.view,
+            db_connection=self.db_connection
+        )
+
+    def _inicializar_recursos_humanos(self):
+        """Inicializa el submódulo de recursos humanos."""
+        self.recursos_humanos_model = RecursosHumanosModel(self.db_connection)
+        self.recursos_humanos_controller = RecursosHumanosController(
+            model=self.recursos_humanos_model,
+            view=self.view,
+            db_connection=self.db_connection
+        )
 
     def conectar_senales_submodulos(self):
         """Conecta las señales entre los submódulos."""
@@ -145,25 +144,23 @@ model=None,
                 )
 
         except (ImportError, AttributeError) as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error conectando señales de submódulos: {e}")
 
     def actualizar_estadisticas_generales(self, estadisticas):
         """Actualiza las estadísticas generales con datos de los submódulos."""
         try:
             if self.view:
                 self.view.actualizar_estadisticas_generales(estadisticas)
-        except AttributeError as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exception
+        except Exception as e:
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error actualizando estadísticas generales: {e}")
     
     def manejar_reporte_generado(self, archivo_reporte):
         """Maneja la generación de reportes de los submódulos."""
         try:
             if self.view:
                 self.view.mostrar_mensaje("Reporte", f"Reporte generado: {archivo_reporte}", "info")
-        except Exception as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exception
+        except (AttributeError, ValueError) as e:
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando reporte: {e}")
     
     def manejar_nomina_calculada(self, nomina_data):
         """Maneja el cálculo de nómina del submódulo de RRHH."""
@@ -171,8 +168,7 @@ model=None,
             if self.view:
                 self.view.mostrar_mensaje("Nómina", f"Nómina calculada para {len(nomina_data)} empleados", "info")
         except Exception as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exception
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando nómina: {e}")
     
     def manejar_empleado_agregado(self, empleado_data):
         """Maneja la adición de empleados del submódulo de RRHH."""
@@ -180,8 +176,7 @@ model=None,
             # Actualizar estadísticas y datos relacionados
             self.actualizar_datos()
         except Exception as e:
-            logger.exception(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
-            # FIXME: Specify concrete exception types instead of generic Exception
+            logger.error(f"[ERROR ADMINISTRACIÓN] Error manejando empleado agregado: {e}")
     
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
@@ -313,13 +308,13 @@ model=None,
             categoria_filtro = self.view.pagos_categoria_combo.currentText()
             categoria = None if categoria_filtro == "Todas" else categoria_filtro
 
-            # Obtener pagos
-            pagos = self.model.obtener_pagos_obra(categoria=categoria)
+            # Obtener y procesar pagos
+            self.model.obtener_pagos_obra(categoria=categoria)
 
             # Actualizar tabla (método a implementar en la vista)
             # self.view.actualizar_tabla_pagos_obra(pagos)
 
-        except Exception as e:
+        except (AttributeError, ValueError) as e:
             logger.debug(f"Error actualizando pagos por obra: {e}")
 
     def actualizar_materiales(self):
@@ -328,9 +323,11 @@ model=None,
             if not self.view:
                 return
 
-            # Obtener filtros
+            # Obtener filtros y procesar
             estado_filtro = self.view.materiales_estado_combo.currentText()
-            estado = None if estado_filtro == "Todos" else estado_filtro
+            if estado_filtro != "Todos":
+                # Procesar con el estado específico
+                pass
 
             # Obtener materiales (método a implementar en el modelo)
             # materiales = self.model.obtener_pagos_materiales(estado_pago=estado)
@@ -381,8 +378,11 @@ model=None,
             # Obtener empleados
             empleados = self.model.obtener_empleados(departamento_id=departamento_id)
 
-            # Actualizar tabla (método a implementar en la vista)
-            # self.view.actualizar_tabla_empleados(empleados)
+            # Actualizar tabla de empleados en la vista
+            if hasattr(self.view, 'actualizar_tabla_empleados'):
+                self.view.actualizar_tabla_empleados(empleados)
+            else:
+                logger.debug(f"Empleados filtrados: {len(empleados) if empleados else 0}")
 
         except Exception as e:
             logger.debug(f"Error actualizando empleados: {e}")
@@ -407,8 +407,11 @@ model=None,
             # Obtener auditoría
             auditoria = self.model.obtener_auditoria(tabla=tabla, usuario=usuario)
 
-            # Actualizar tabla (método a implementar en la vista)
-            # self.view.actualizar_tabla_auditoria(auditoria)
+            # Actualizar tabla de auditoría en la vista
+            if hasattr(self.view, 'actualizar_tabla_auditoria'):
+                self.view.actualizar_tabla_auditoria(auditoria)
+            else:
+                logger.debug(f"Registros de auditoría obtenidos: {len(auditoria) if auditoria else 0}")
 
         except Exception as e:
             logger.debug(f"Error actualizando auditoría: {e}")
@@ -425,7 +428,7 @@ model=None,
                 logger.info("[ERROR] self.model es None en crear_departamento")
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "Modelo no disponible", "error"
+                        MENSAJE_ERROR, MENSAJE_MODELO_NO_DISPONIBLE, "error"
                     )
                 return
 
@@ -440,7 +443,7 @@ model=None,
             if departamento_id:
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Éxito",
+                        MENSAJE_EXITO,
                         f"Departamento '{datos['nombre']}' creado exitosamente",
                         "info",
                     )
@@ -469,7 +472,7 @@ model=None,
                 logger.info("[ERROR] self.model es None en crear_empleado")
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "Modelo no disponible", "error"
+                        MENSAJE_ERROR, MENSAJE_MODELO_NO_DISPONIBLE, "error"
                     )
                 return
 
@@ -489,7 +492,7 @@ model=None,
             if empleado_id:
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Éxito",
+                        MENSAJE_EXITO,
                         f"Empleado '{datos['nombre']} {datos['apellido']}' creado exitosamente",
                         "info",
                     )
@@ -518,7 +521,7 @@ model=None,
                 logger.info("[ERROR] self.model es None en crear_asiento_contable")
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "Modelo no disponible", "error"
+                        MENSAJE_ERROR, MENSAJE_MODELO_NO_DISPONIBLE, "error"
                     )
                 return
 
@@ -540,7 +543,7 @@ model=None,
             if asiento_id:
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Éxito", f"Asiento contable creado exitosamente", "info"
+                        MENSAJE_EXITO, "Asiento contable creado exitosamente", "info"
                     )
                 self.actualizar_libro_contable()
             else:
@@ -567,7 +570,7 @@ model=None,
                 logger.info("[ERROR] self.model es None en crear_recibo")
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "Modelo no disponible", "error"
+                        MENSAJE_ERROR, MENSAJE_MODELO_NO_DISPONIBLE, "error"
                     )
                 return
 
@@ -589,7 +592,7 @@ model=None,
             if recibo_id:
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Éxito", f"Recibo creado exitosamente", "info"
+                        MENSAJE_EXITO, "Recibo creado exitosamente", "info"
                     )
                 self.actualizar_recibos()
             else:
@@ -609,47 +612,66 @@ model=None,
     def imprimir_recibo(self, recibo_id):
         """Imprime un recibo y lo marca como impreso."""
         try:
-            if not self.verificar_permisos("imprimir_recibo"):
+            if not self._verificar_requisitos_impresion():
                 return
 
-            if not self.model:
-                logger.info("[ERROR] self.model es None en imprimir_recibo")
+            archivo_pdf = self.generar_pdf_recibo(recibo_id)
+            self._procesar_resultado_impresion(recibo_id, archivo_pdf)
+
+        except Exception as e:
+            self._manejar_error_impresion(e)
+
+    def _verificar_requisitos_impresion(self):
+        """Verifica que se cumplan los requisitos para imprimir."""
+        if not self.verificar_permisos("imprimir_recibo"):
+            return False
+
+        if not self.model:
+            logger.info("[ERROR] self.model es None en imprimir_recibo")
+            if self.view:
+                self.view.mostrar_mensaje(
+                    MENSAJE_ERROR, MENSAJE_MODELO_NO_DISPONIBLE, "error"
+                )
+            return False
+        
+        return True
+
+    def _procesar_resultado_impresion(self, recibo_id, archivo_pdf):
+        """Procesa el resultado de la impresión del recibo."""
+        if archivo_pdf:
+            self._marcar_recibo_impreso(recibo_id, archivo_pdf)
+        else:
+            if self.view:
+                self.view.mostrar_mensaje(
+                    "Error", "No se pudo generar el archivo PDF", "error"
+                )
+
+    def _marcar_recibo_impreso(self, recibo_id, archivo_pdf):
+        """Marca el recibo como impreso en el sistema."""
+        if self.model and hasattr(self.model, 'marcar_recibo_impreso'):
+            if self.model.marcar_recibo_impreso(recibo_id, archivo_pdf):
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "Modelo no disponible", "error"
+                        MENSAJE_EXITO,
+                        f"Recibo impreso y guardado como: {archivo_pdf}",
+                        "info",
                     )
-                return
-
-            # Generar PDF del recibo
-            archivo_pdf = self.generar_pdf_recibo(recibo_id)
-
-            if archivo_pdf:
-                # Marcar como impreso
-                if self.model.marcar_recibo_impreso(recibo_id, archivo_pdf):
-                    if self.view:
-                        self.view.mostrar_mensaje(
-                            "Éxito",
-                            f"Recibo impreso y guardado como: {archivo_pdf}",
-                            "info",
-                        )
-                    self.actualizar_recibos()
-                else:
-                    if self.view:
-                        self.view.mostrar_mensaje(
-                            "Error", "No se pudo marcar el recibo como impreso", "error"
-                        )
+                self.actualizar_recibos()
             else:
                 if self.view:
                     self.view.mostrar_mensaje(
-                        "Error", "No se pudo generar el archivo PDF", "error"
+                        "Error", "No se pudo marcar el recibo como impreso", "error"
                     )
+        else:
+            logger.debug("Método marcar_recibo_impreso no disponible en el modelo")
 
-        except Exception as e:
-            logger.debug(f"Error imprimiendo recibo: {e}")
-            if self.view:
-                self.view.mostrar_mensaje(
-                    "Error", f"Error imprimiendo recibo: {str(e)}", "error"
-                )
+    def _manejar_error_impresion(self, error):
+        """Maneja errores durante la impresión."""
+        logger.debug(f"Error imprimiendo recibo: {error}")
+        if self.view:
+            self.view.mostrar_mensaje(
+                "Error", f"Error imprimiendo recibo: {str(error)}", "error"
+            )
 
     def generar_pdf_recibo(self, recibo_id):
         """Genera un archivo PDF del recibo."""
@@ -702,46 +724,55 @@ model=None,
             if not self.verificar_permisos("generar_reporte"):
                 return
 
-            tipo_reporte = parametros.get("tipo")
-            formato = parametros.get("formato", "PDF")
-            fecha_desde = parametros.get("fecha_desde")
-            fecha_hasta = parametros.get("fecha_hasta")
-
-            # Generar datos del reporte según el tipo
-            datos_reporte = self.obtener_datos_reporte(
-                tipo_reporte, fecha_desde, fecha_hasta
-            )
-
-            if datos_reporte:
-                # Generar archivo del reporte
-                archivo_reporte = self.generar_archivo_reporte(
-                    datos_reporte, tipo_reporte, formato
-                )
-
-                if archivo_reporte:
-                    if self.view:
-                        self.view.mostrar_mensaje(
-                            "Éxito", f"Reporte generado: {archivo_reporte}", "info"
-                        )
-                else:
-                    if self.view:
-                        self.view.mostrar_mensaje(
-                            "Error",
-                            "No se pudo generar el archivo del reporte",
-                            "error",
-                        )
-            else:
-                if self.view:
-                    self.view.mostrar_mensaje(
-                        "Error", "No se pudieron obtener los datos del reporte", "error"
-                    )
+            datos_reporte = self._obtener_datos_reporte_parametrizado(parametros)
+            self._procesar_resultado_reporte(datos_reporte, parametros)
 
         except Exception as e:
-            logger.debug(f"Error generando reporte: {e}")
+            self._manejar_error_reporte(e)
+
+    def _obtener_datos_reporte_parametrizado(self, parametros):
+        """Obtiene los datos del reporte según los parámetros."""
+        tipo_reporte = parametros.get("tipo")
+        fecha_desde = parametros.get("fecha_desde")
+        fecha_hasta = parametros.get("fecha_hasta")
+        
+        return self.obtener_datos_reporte(tipo_reporte, fecha_desde, fecha_hasta)
+
+    def _procesar_resultado_reporte(self, datos_reporte, parametros):
+        """Procesa el resultado de la generación del reporte."""
+        if datos_reporte:
+            self._generar_archivo_reporte_completo(datos_reporte, parametros)
+        else:
             if self.view:
                 self.view.mostrar_mensaje(
-                    "Error", f"Error generando reporte: {str(e)}", "error"
+                    "Error", "No se pudieron obtener los datos del reporte", "error"
                 )
+
+    def _generar_archivo_reporte_completo(self, datos_reporte, parametros):
+        """Genera el archivo del reporte completo."""
+        tipo_reporte = parametros.get("tipo")
+        formato = parametros.get("formato", "PDF")
+        
+        archivo_reporte = self.generar_archivo_reporte(datos_reporte, tipo_reporte, formato)
+        
+        if archivo_reporte:
+            if self.view:
+                self.view.mostrar_mensaje(
+                    MENSAJE_EXITO, f"Reporte generado: {archivo_reporte}", "info"
+                )
+        else:
+            if self.view:
+                self.view.mostrar_mensaje(
+                    "Error", "No se pudo generar el archivo del reporte", "error"
+                )
+
+    def _manejar_error_reporte(self, error):
+        """Maneja errores durante la generación del reporte."""
+        logger.debug(f"Error generando reporte: {error}")
+        if self.view:
+            self.view.mostrar_mensaje(
+                "Error", f"Error generando reporte: {str(error)}", "error"
+            )
 
     def obtener_datos_reporte(self, tipo_reporte, fecha_desde, fecha_hasta):
         """Obtiene los datos para el reporte especificado."""

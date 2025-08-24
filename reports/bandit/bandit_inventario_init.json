@@ -1,0 +1,30 @@
+{
+  "errors": [
+    {
+      "filename": ".\\rexus/modules/inventario/__init__.py",
+      "reason": "syntax error while parsing AST from file"
+    }
+  ],
+  "generated_at": "2025-08-24T13:48:57Z",
+  "metrics": {
+    ".\\rexus/modules/inventario/__init__.py": {
+      "loc": 21,
+      "nosec": 0,
+      "skipped_tests": 0
+    },
+    "_totals": {
+      "CONFIDENCE.HIGH": 0,
+      "CONFIDENCE.LOW": 0,
+      "CONFIDENCE.MEDIUM": 0,
+      "CONFIDENCE.UNDEFINED": 0,
+      "SEVERITY.HIGH": 0,
+      "SEVERITY.LOW": 0,
+      "SEVERITY.MEDIUM": 0,
+      "SEVERITY.UNDEFINED": 0,
+      "loc": 21,
+      "nosec": 0,
+      "skipped_tests": 0
+    }
+  },
+  "results": []
+}

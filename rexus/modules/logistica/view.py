@@ -8,20 +8,11 @@ Vista básica funcional para el módulo de logística
 """
 
 import logging
-from typing import Dict, Any, Optional
-
-try:
-    from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
-                                 QPushButton, QTableWidget, QTabWidget,
-                                 QMessageBox, QHeaderView)
-    from PyQt6.QtCore import Qt, pyqtSignal
-    from PyQt6.QtGui import QFont
-    PYQT_AVAILABLE = True
-except ImportError:
-    PYQT_AVAILABLE = False
-    # Clases fallback
-    class QWidget: pass
-    class pyqtSignal: pass
+from PyQt6.QtWidgets import (QWidget, QVBoxLayout, QHBoxLayout, QLabel, 
+                             QPushButton, QTableWidget, QTabWidget,
+                             QMessageBox, QHeaderView)
+from PyQt6.QtCore import Qt, pyqtSignal
+from PyQt6.QtGui import QFont
 
 # Importar logging
 try:
@@ -35,25 +26,20 @@ except ImportError:
 try:
     from ...ui.templates.base_module_view import BaseModuleView
 except ImportError:
-    logger.warning("No se pudo importar BaseModuleView")
-    BaseModuleView = QWidget if PYQT_AVAILABLE else object
+    logger.warning("No se pudo importar BaseModuleView, usando QWidget")
+    BaseModuleView = QWidget
 
 
-class LogisticaView(BaseModuleView):
+class LogisticaView(QWidget):
     """Vista principal del módulo de logística."""
     
     # Señales
-    servicio_selected = pyqtSignal(dict) if PYQT_AVAILABLE else None
-    transporte_selected = pyqtSignal(dict) if PYQT_AVAILABLE else None
+    servicio_selected = pyqtSignal(dict)
+    transporte_selected = pyqtSignal(dict)
     
     def __init__(self, controller=None):
         """Inicializar vista de logística."""
-        if not PYQT_AVAILABLE:
-            logger.error("PyQt6 no disponible - vista no funcional")
-            super().__init__(controller)
-            return
-            
-        super().__init__(controller)
+        super().__init__()
         self.controller = controller
         self.current_data = {}
         
@@ -64,9 +50,6 @@ class LogisticaView(BaseModuleView):
     
     def setup_ui(self):
         """Configurar interfaz de usuario."""
-        if not PYQT_AVAILABLE:
-            return
-            
         try:
             # Layout principal
             main_layout = QVBoxLayout(self)
@@ -131,7 +114,8 @@ class LogisticaView(BaseModuleView):
         
         # Configurar tabla
         header = self.tabla_servicios.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         
         servicios_layout.addWidget(self.tabla_servicios)
         
@@ -164,7 +148,8 @@ class LogisticaView(BaseModuleView):
         
         # Configurar tabla
         header = self.tabla_transportes.horizontalHeader()
-        header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
+        if header:
+            header.setSectionResizeMode(QHeaderView.ResizeMode.Stretch)
         
         transportes_layout.addWidget(self.tabla_transportes)
         

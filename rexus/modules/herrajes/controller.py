@@ -13,6 +13,8 @@ from rexus.utils.unified_sanitizer import sanitize_string, sanitize_numeric
 
 from .model import HerrajesModel
 
+logger = logging.getLogger(__name__)
+
 class HerrajesController(BaseController):
     """Controlador simplificado para la gestión de herrajes."""
 
@@ -27,7 +29,11 @@ class HerrajesController(BaseController):
         view=None,
         db_connection=None,
         usuario_actual=None):
-        super().__init__(module_name="herrajes", model=model, view=view, db_connection=db_connection)
+        # Parámetros básicos para el controlador
+        self.model = model
+        self.view = view  
+        self.db_connection = db_connection
+        self.module_name = "herrajes"
 
         # Configurar modelo y vista
         if model is not None:
@@ -267,10 +273,10 @@ class HerrajesController(BaseController):
                 self.cargar_datos_iniciales()  # Recargar datos
 
         except Exception as e:
-            logger.info(f)
+            logger.info(f"Error mostrando diálogo de herrajes: {e}")
             # Fallback básico
             from PyQt6.QtWidgets import QMessageBox
-            QMessageBox.information(self.view, , "Diálogo pendiente de implementar")
+            QMessageBox.information(self.view, "Información", "Diálogo pendiente de implementar")
 
     def crear_herraje(self, data):
         """Crea un nuevo herraje."""
@@ -348,7 +354,7 @@ class HerrajesController(BaseController):
             from PyQt6.QtWidgets import QMessageBox
             respuesta = QMessageBox.question(
                 self.view,
-                ,
+                "Confirmar eliminación",
                 f"¿Está seguro de eliminar el herraje {codigo}?",
                 QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
             )

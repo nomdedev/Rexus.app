@@ -18,7 +18,7 @@ class ErrorMessages:
     
     # Errores de validación
     VALIDATION_FAILED = "Error de validación de datos"
-                INVALID_FORMAT = "Formato de datos inválido"
+    INVALID_FORMAT = "Formato de datos inválido"
     INVALID_NUMBER = "El valor debe ser un número válido"
     INVALID_DATE = "Fecha inválida"
     
@@ -228,10 +228,6 @@ class FieldLabels:
 
 class Tooltips:
     """Textos de ayuda para elementos de la interfaz"""
-
-import logging
-logger = logging.getLogger(__name__)
-
     
     # Botones
     BTN_NEW = "Crear nueva orden de compra"
@@ -246,3 +242,8 @@ logger = logging.getLogger(__name__)
     FIELD_DELIVERY = "Fecha estimada de entrega"
     FIELD_PRIORITY = "Nivel de prioridad de la orden"
     FIELD_DISCOUNT = "Descuento aplicado (porcentaje o monto fijo)"
+
+
+# Initialize logger at module level
+import logging
+logger = logging.getLogger(__name__)

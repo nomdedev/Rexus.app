@@ -22,8 +22,8 @@ def setup_environment():
 
     if is_dev_mode:
         print("[DEV] Modo desarrollo activado")
-        os.environ.setdefault('REXUS_DEV_USER', 'admin')
-        os.environ.setdefault('REXUS_DEV_PASSWORD', 'admin')
+        os.environ.setdefault('REXUS_DEV_USER', 'dev_user')
+        os.environ.setdefault('REXUS_DEV_PASSWORD', 'RexusDev_2025#')
         os.environ.setdefault('REXUS_DEV_AUTO_LOGIN', 'true')
 
     return True

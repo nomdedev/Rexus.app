@@ -1,536 +1,737 @@
+# -*- coding: utf-8 -*-
 """
-Modelo de Proveedores
+Modelo de Proveedores para Compras - Rexus.app v2.0.0
 
-Maneja la gestión de proveedores para el módulo de compras.
+Maneja la gestión completa de proveedores para el módulo de compras.
+Incluye CRUD, validaciones, y funcionalidades de calificación de proveedores.
 """
-
 
 import logging
-logger = logging.getLogger(__name__)
+from typing import Dict, List, Any, Optional
+from decimal import Decimal
+from datetime import datetime
 
-                        return False
+# Configurar logging
+try:
+    from ...utils.app_logger import get_logger
+    logger = get_logger(__name__)
+except ImportError:
+    logger = logging.getLogger(__name__)
 
+try:
+    from ...utils.security_utils import SecurityUtils
+except ImportError:
+    class SecurityUtils:
+        @staticmethod
+        def sanitize_sql_input(text):
+            if not text:
+                return ""
+            return str(text).replace("'", "''")
+
+
+class ProveedoresModel:
+    """Modelo para gestionar proveedores del módulo de compras."""
+    
+    def __init__(self, db_connection=None):
+        """
+        Inicializa el modelo de proveedores.
+        
+        Args:
+            db_connection: Conexión a la base de datos
+        """
+        self.db_connection = db_connection
+        logger.info("ProveedoresModel inicializado")
+    
+    def crear_proveedor(self, datos_proveedor: Dict[str, Any]) -> Optional[int]:
+        """
+        Crea un nuevo proveedor.
+        
+        Args:
+            datos_proveedor: Datos del proveedor
+            
+        Returns:
+            ID del proveedor creado o None si falló
+        """
         try:
-            # Sanitizar todos los datos de entrada
-            nombre_sanitizado = SecurityUtils.sanitize_sql_input(nombre)
-            razon_social_sanitizada = SecurityUtils.sanitize_sql_input(razon_social)
-            ruc_sanitizado = SecurityUtils.sanitize_sql_input(ruc)
-            telefono_sanitizado = SecurityUtils.sanitize_sql_input(telefono)
-            email_sanitizado = SecurityUtils.sanitize_sql_input(email)
-            direccion_sanitizada = SecurityUtils.sanitize_sql_input(direccion)
-            contacto_sanitizado = SecurityUtils.sanitize_sql_input(contacto_principal)
-            categoria_sanitizada = SecurityUtils.sanitize_sql_input(categoria)
-            observaciones_sanitizadas = SecurityUtils.sanitize_sql_input(observaciones)
-            usuario_sanitizado = SecurityUtils.sanitize_sql_input(usuario_creacion)
-
-            # Validar email si se proporciona
-            if email and not SecurityUtils.validate_email(email):
-                logger.info("[ERROR PROVEEDORES] Email inválido")
-                return False
-
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return None
+            
+            # Validar datos requeridos
+            if not self._validar_datos_proveedor(datos_proveedor):
+                return None
+            
             cursor = self.db_connection.cursor()
-
-            # Verificar si ya existe un proveedor con el mismo nombre o RUC
-            cursor.execute(
-                "SELECT id FROM proveedores WHERE nombre = ? OR (ruc = ? AND ruc != '')",
-                (nombre_sanitizado, ruc_sanitizado)
-            )
-            if cursor.fetchone():
-                logger.info(f"[ERROR PROVEEDORES] Ya existe un proveedor con nombre '{nombre}' o RUC '{ruc}'")
-                return False
-
-            sql_insert = """
-            INSERT INTO proveedores
-            (nombre, razon_social, ruc, telefono, email, direccion,
-             contacto_principal, categoria, estado, observaciones,
-             usuario_creacion, fecha_creacion, fecha_actualizacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), GETDATE())
-            """
-
-            cursor.execute(
-                sql_insert,
-                (
-                    nombre_sanitizado,
-                    razon_social_sanitizada,
-                    ruc_sanitizado,
-                    telefono_sanitizado,
-                    email_sanitizado,
-                    direccion_sanitizada,
-                    contacto_sanitizado,
-                    categoria_sanitizada,
-                    estado,
-                    observaciones_sanitizadas,
-                    usuario_sanitizado,
-                ),
-            )
-
+            
+            # Sanitizar datos de entrada
+            datos_sanitizados = self._sanitizar_datos_proveedor(datos_proveedor)
+            
+            cursor.execute("""
+                INSERT INTO proveedores (
+                    codigo, nombre, razon_social, ruc, telefono, email, 
+                    direccion, contacto_principal, calificacion, activo,
+                    fecha_registro, observaciones, tipo_proveedor,
+                    condiciones_pago, descuento_comercial
+                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            """, (
+                datos_sanitizados['codigo'],
+                datos_sanitizados['nombre'],
+                datos_sanitizados['razon_social'],
+                datos_sanitizados['ruc'],
+                datos_sanitizados.get('telefono', ''),
+                datos_sanitizados.get('email', ''),
+                datos_sanitizados.get('direccion', ''),
+                datos_sanitizados.get('contacto_principal', ''),
+                datos_sanitizados.get('calificacion', 5),
+                1,  # activo por defecto
+                datetime.now(),
+                datos_sanitizados.get('observaciones', ''),
+                datos_sanitizados.get('tipo_proveedor', 'GENERAL'),
+                datos_sanitizados.get('condiciones_pago', '30 días'),
+                datos_sanitizados.get('descuento_comercial', 0.0)
+            ))
+            
+            proveedor_id = cursor.lastrowid
             self.db_connection.commit()
-            logger.info(f"[PROVEEDORES] Proveedor creado: {nombre}")
-            return True
-
+            
+            logger.info(f"Proveedor creado con ID {proveedor_id}")
+            return proveedor_id
+            
         except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error creando proveedor: {e}")
-            return False
-
-    def obtener_todos_proveedores(self) -> List[Dict]:
+            logger.error(f"Error creando proveedor: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return None
+    
+    def obtener_proveedor(self, proveedor_id: int) -> Optional[Dict[str, Any]]:
+        """
+        Obtiene los datos de un proveedor específico.
+        
+        Args:
+            proveedor_id: ID del proveedor
+            
+        Returns:
+            Diccionario con datos del proveedor o None si no existe
+        """
+        try:
+            if not self.db_connection:
+                return None
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT id, codigo, nombre, razon_social, ruc, telefono, email,
+                       direccion, contacto_principal, calificacion, activo,
+                       fecha_registro, observaciones, tipo_proveedor,
+                       condiciones_pago, descuento_comercial
+                FROM proveedores
+                WHERE id = ? AND activo = 1
+            """, (proveedor_id,))
+            
+            result = cursor.fetchone()
+            if result:
+                return {
+                    'id': result[0],
+                    'codigo': result[1],
+                    'nombre': result[2],
+                    'razon_social': result[3],
+                    'ruc': result[4],
+                    'telefono': result[5],
+                    'email': result[6],
+                    'direccion': result[7],
+                    'contacto_principal': result[8],
+                    'calificacion': result[9],
+                    'activo': result[10],
+                    'fecha_registro': result[11],
+                    'observaciones': result[12],
+                    'tipo_proveedor': result[13],
+                    'condiciones_pago': result[14],
+                    'descuento_comercial': float(result[15]) if result[15] else 0.0
+                }
+            
+            return None
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo proveedor {proveedor_id}: {e}")
+            return None
+    
+    def obtener_proveedores(self, activos_solo: bool = True) -> List[Dict[str, Any]]:
         """
         Obtiene todos los proveedores.
-
+        
+        Args:
+            activos_solo: Si True, solo devuelve proveedores activos
+            
         Returns:
-            List[Dict]: Lista de proveedores
+            Lista de proveedores
         """
-        if not self.db_connection:
-            return self._get_proveedores_demo()
-
         try:
+            if not self.db_connection:
+                return []
+            
             cursor = self.db_connection.cursor()
-
-            sql_select = """
-            SELECT
-                p.id, p.nombre, p.razon_social, p.ruc, p.telefono, p.email,
-                p.direccion, p.contacto_principal, p.categoria, p.estado,
-                p.observaciones, p.usuario_creacion, p.fecha_creacion,
-                p.fecha_actualizacion,
-                COUNT(c.id) as total_ordenes,
-                ISNULL(SUM(
-                    ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
-                            FROM detalle_compras dc
-                            WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
-                ), 0) as monto_total_compras
-            FROM proveedores p
-            LEFT JOIN compras c ON p.nombre = c.proveedor
-            GROUP BY p.id, p.nombre, p.razon_social, p.ruc, p.telefono, p.email,
-                     p.direccion, p.contacto_principal, p.categoria, p.estado,
-                     p.observaciones, p.usuario_creacion, p.fecha_creacion,
-                     p.fecha_actualizacion
-            ORDER BY p.nombre ASC
-            """
-
-            cursor.execute(sql_select)
-            rows = cursor.fetchall()
-
-            # Convertir a lista de diccionarios
-            columns = [desc[0] for desc in cursor.description]
+            
+            if activos_solo:
+                cursor.execute("""
+                    SELECT id, codigo, nombre, razon_social, ruc, telefono, email,
+                           direccion, contacto_principal, calificacion, activo,
+                           fecha_registro, observaciones, tipo_proveedor,
+                           condiciones_pago, descuento_comercial
+                    FROM proveedores
+                    WHERE activo = 1
+                    ORDER BY nombre
+                """)
+            else:
+                cursor.execute("""
+                    SELECT id, codigo, nombre, razon_social, ruc, telefono, email,
+                           direccion, contacto_principal, calificacion, activo,
+                           fecha_registro, observaciones, tipo_proveedor,
+                           condiciones_pago, descuento_comercial
+                    FROM proveedores
+                    ORDER BY nombre
+                """)
+            
             proveedores = []
-
-            for row in rows:
-                proveedor = dict(zip(columns, row))
+            for row in cursor.fetchall():
+                proveedor = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'nombre': row[2],
+                    'razon_social': row[3],
+                    'ruc': row[4],
+                    'telefono': row[5],
+                    'email': row[6],
+                    'direccion': row[7],
+                    'contacto_principal': row[8],
+                    'calificacion': row[9],
+                    'activo': row[10],
+                    'fecha_registro': row[11],
+                    'observaciones': row[12],
+                    'tipo_proveedor': row[13],
+                    'condiciones_pago': row[14],
+                    'descuento_comercial': float(row[15]) if row[15] else 0.0
+                }
                 proveedores.append(proveedor)
-
-            logger.info(f"[PROVEEDORES] Obtenidos {len(proveedores)} proveedores")
+            
             return proveedores
-
+            
         except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error obteniendo proveedores: {e}")
-            return self._get_proveedores_demo()
-
-    def obtener_proveedor_por_id(self, proveedor_id: int) -> Optional[Dict]:
-        """
-        Obtiene un proveedor por su ID.
-
-        Args:
-            proveedor_id: ID del proveedor
-
-        Returns:
-            Dict o None: Datos del proveedor
-        """
-        if not self.db_connection:
-            return None
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            sql_select = """
-            SELECT
-                id, nombre, razon_social, ruc, telefono, email, direccion,
-                contacto_principal, categoria, estado, observaciones,
-                usuario_creacion, fecha_creacion, fecha_actualizacion
-            FROM proveedores
-            WHERE id = ?
-            """
-
-            cursor.execute(sql_select, (proveedor_id,))
-            row = cursor.fetchone()
-
-            if row:
-                columns = [desc[0] for desc in cursor.description]
-                proveedor = dict(zip(columns, row))
-                return proveedor
-
-            return None
-
-        except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error obteniendo proveedor {proveedor_id}: {e}")
-            return None
-
-    def actualizar_proveedor(
-        self,
-        proveedor_id: int,
-        nombre: str = None,
-        razon_social: str = None,
-        ruc: str = None,
-        telefono: str = None,
-        email: str = None,
-        direccion: str = None,
-        contacto_principal: str = None,
-        categoria: str = None,
-        estado: str = None,
-        observaciones: str = None
-    ) -> bool:
-        """
-        Actualiza un proveedor existente.
-
-        Args:
-            proveedor_id: ID del proveedor
-            Resto de parámetros opcionales para actualizar
-
-        Returns:
-            bool: True si se actualizó exitosamente
-        """
-        if not self.db_connection:
-            return False
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Construir query dinámico solo con campos a actualizar
-            updates = []
-            params = []
-
-            if nombre is not None:
-                updates.append("nombre = ?")
-                params.append(SecurityUtils.sanitize_sql_input(nombre))
-
-            if razon_social is not None:
-                updates.append("razon_social = ?")
-                params.append(SecurityUtils.sanitize_sql_input(razon_social))
-
-            if ruc is not None:
-                updates.append("ruc = ?")
-                params.append(SecurityUtils.sanitize_sql_input(ruc))
-
-            if telefono is not None:
-                updates.append("telefono = ?")
-                params.append(SecurityUtils.sanitize_sql_input(telefono))
-
-            if email is not None:
-                # Validar email si se proporciona
-                if email and not SecurityUtils.validate_email(email):
-                    logger.info("[ERROR PROVEEDORES] Email inválido en actualización")
-                    return False
-                updates.append("email = ?")
-                params.append(SecurityUtils.sanitize_sql_input(email))
-
-            if direccion is not None:
-                updates.append("direccion = ?")
-                params.append(SecurityUtils.sanitize_sql_input(direccion))
-
-            if contacto_principal is not None:
-                updates.append("contacto_principal = ?")
-                params.append(SecurityUtils.sanitize_sql_input(contacto_principal))
-
-            if categoria is not None:
-                updates.append("categoria = ?")
-                params.append(SecurityUtils.sanitize_sql_input(categoria))
-
-            if estado is not None:
-                updates.append("estado = ?")
-                params.append(estado)
-
-            if observaciones is not None:
-                updates.append("observaciones = ?")
-                params.append(SecurityUtils.sanitize_sql_input(observaciones))
-
-            if not updates:
-                return False
-
-            updates.append("fecha_actualizacion = GETDATE()")
-            params.append(proveedor_id)
-
-            sql_update = f"""
-            UPDATE proveedores
-            SET {', '.join(updates)}
-            WHERE id = ?
-            """
-
-            cursor.execute(sql_update, params)
-            self.db_connection.commit()
-
-            logger.info(f"[PROVEEDORES] Proveedor {proveedor_id} actualizado")
-            return True
-
-        except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error actualizando proveedor: {e}")
-            return False
-
-    def buscar_proveedores(
-        self,
-        nombre: str = "",
-        categoria: str = "",
-        estado: str = "",
-        ruc: str = ""
-    ) -> List[Dict]:
-        """
-        Busca proveedores con filtros.
-
-        Args:
-            nombre: Filtrar por nombre
-            categoria: Filtrar por categoría
-            estado: Filtrar por estado
-            ruc: Filtrar por RUC
-
-        Returns:
-            List[Dict]: Lista de proveedores filtrados
-        """
-        if not self.db_connection:
-            return self._get_proveedores_demo()
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Construir query con filtros
-            conditions = []
-            params = []
-
-            if nombre:
-                conditions.append("nombre LIKE ?")
-                params.append(f"%{SecurityUtils.sanitize_sql_input(nombre)}%")
-
-            if categoria:
-                conditions.append("categoria LIKE ?")
-                params.append(f"%{SecurityUtils.sanitize_sql_input(categoria)}%")
-
-            if estado:
-                conditions.append("estado = ?")
-                params.append(estado)
-
-            if ruc:
-                conditions.append("ruc LIKE ?")
-                params.append(f"%{SecurityUtils.sanitize_sql_input(ruc)}%")
-
-            where_clause = ""
-            if conditions:
-                where_clause = "WHERE " + " AND ".join(conditions)
-
-            sql_select = f"""
-            SELECT
-                id, nombre, razon_social, ruc, telefono, email, direccion,
-                contacto_principal, categoria, estado, observaciones,
-                usuario_creacion, fecha_creacion, fecha_actualizacion
-            FROM proveedores
-            {where_clause}
-            ORDER BY nombre ASC
-            """
-
-            cursor.execute(sql_select, params)
-            rows = cursor.fetchall()
-
-            # Convertir a lista de diccionarios
-            columns = [desc[0] for desc in cursor.description]
-            proveedores = []
-
-            for row in rows:
-                proveedor = dict(zip(columns, row))
-                proveedores.append(proveedor)
-
-            logger.info(f"[PROVEEDORES] Búsqueda retornó {len(proveedores)} proveedores")
-            return proveedores
-
-        except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error en búsqueda: {e}")
+            logger.error(f"Error obteniendo proveedores: {e}")
             return []
-
+    
+    def actualizar_proveedor(self, proveedor_id: int, datos_proveedor: Dict[str, Any]) -> bool:
+        """
+        Actualiza los datos de un proveedor.
+        
+        Args:
+            proveedor_id: ID del proveedor
+            datos_proveedor: Nuevos datos del proveedor
+            
+        Returns:
+            True si se actualizó exitosamente
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
+            
+            # Validar datos
+            if not self._validar_datos_proveedor(datos_proveedor, proveedor_id):
+                return False
+            
+            cursor = self.db_connection.cursor()
+            
+            # Sanitizar datos de entrada
+            datos_sanitizados = self._sanitizar_datos_proveedor(datos_proveedor)
+            
+            cursor.execute("""
+                UPDATE proveedores 
+                SET nombre = ?, razon_social = ?, ruc = ?, telefono = ?, 
+                    email = ?, direccion = ?, contacto_principal = ?,
+                    observaciones = ?, tipo_proveedor = ?, condiciones_pago = ?,
+                    descuento_comercial = ?
+                WHERE id = ? AND activo = 1
+            """, (
+                datos_sanitizados['nombre'],
+                datos_sanitizados['razon_social'],
+                datos_sanitizados['ruc'],
+                datos_sanitizados.get('telefono', ''),
+                datos_sanitizados.get('email', ''),
+                datos_sanitizados.get('direccion', ''),
+                datos_sanitizados.get('contacto_principal', ''),
+                datos_sanitizados.get('observaciones', ''),
+                datos_sanitizados.get('tipo_proveedor', 'GENERAL'),
+                datos_sanitizados.get('condiciones_pago', '30 días'),
+                datos_sanitizados.get('descuento_comercial', 0.0),
+                proveedor_id
+            ))
+            
+            if cursor.rowcount > 0:
+                self.db_connection.commit()
+                logger.info(f"Proveedor {proveedor_id} actualizado exitosamente")
+                return True
+            else:
+                logger.warning(f"No se pudo actualizar el proveedor {proveedor_id}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error actualizando proveedor: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+    
+    def eliminar_proveedor(self, proveedor_id: int) -> bool:
+        """
+        Elimina (desactiva) un proveedor.
+        
+        Args:
+            proveedor_id: ID del proveedor a eliminar
+            
+        Returns:
+            True si se eliminó exitosamente
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
+            
+            # Verificar que el proveedor no tenga órdenes pendientes
+            if self._proveedor_tiene_ordenes_pendientes(proveedor_id):
+                logger.warning(f"No se puede eliminar proveedor {proveedor_id}: tiene órdenes pendientes")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                UPDATE proveedores 
+                SET activo = 0 
+                WHERE id = ?
+            """, (proveedor_id,))
+            
+            if cursor.rowcount > 0:
+                self.db_connection.commit()
+                logger.info(f"Proveedor {proveedor_id} eliminado exitosamente")
+                return True
+            else:
+                logger.warning(f"No se pudo eliminar el proveedor {proveedor_id}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error eliminando proveedor: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return False
+    
+    def buscar_proveedores(self, termino: str) -> List[Dict[str, Any]]:
+        """
+        Busca proveedores por nombre, razón social o RUC.
+        
+        Args:
+            termino: Término de búsqueda
+            
+        Returns:
+            Lista de proveedores que coinciden
+        """
+        try:
+            if not self.db_connection:
+                return []
+            
+            if not termino or len(termino.strip()) < 2:
+                return []
+            
+            cursor = self.db_connection.cursor()
+            termino_sanitizado = SecurityUtils.sanitize_sql_input(termino)
+            termino_busqueda = f"%{termino_sanitizado}%"
+            
+            cursor.execute("""
+                SELECT id, codigo, nombre, razon_social, ruc, telefono, email,
+                       direccion, contacto_principal, calificacion
+                FROM proveedores
+                WHERE activo = 1 
+                AND (nombre LIKE ? OR razon_social LIKE ? OR ruc LIKE ?)
+                ORDER BY nombre
+                LIMIT 50
+            """, (termino_busqueda, termino_busqueda, termino_busqueda))
+            
+            proveedores = []
+            for row in cursor.fetchall():
+                proveedor = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'nombre': row[2],
+                    'razon_social': row[3],
+                    'ruc': row[4],
+                    'telefono': row[5],
+                    'email': row[6],
+                    'direccion': row[7],
+                    'contacto_principal': row[8],
+                    'calificacion': row[9]
+                }
+                proveedores.append(proveedor)
+            
+            return proveedores
+            
+        except Exception as e:
+            logger.error(f"Error buscando proveedores: {e}")
+            return []
+    
+    def obtener_proveedores_por_tipo(self, tipo_proveedor: str) -> List[Dict[str, Any]]:
+        """
+        Obtiene proveedores filtrados por tipo.
+        
+        Args:
+            tipo_proveedor: Tipo de proveedor a filtrar
+            
+        Returns:
+            Lista de proveedores del tipo especificado
+        """
+        try:
+            if not self.db_connection:
+                return []
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT id, codigo, nombre, razon_social, ruc, calificacion
+                FROM proveedores
+                WHERE activo = 1 AND tipo_proveedor = ?
+                ORDER BY calificacion DESC, nombre
+            """, (tipo_proveedor,))
+            
+            proveedores = []
+            for row in cursor.fetchall():
+                proveedor = {
+                    'id': row[0],
+                    'codigo': row[1],
+                    'nombre': row[2],
+                    'razon_social': row[3],
+                    'ruc': row[4],
+                    'calificacion': row[5]
+                }
+                proveedores.append(proveedor)
+            
+            return proveedores
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo proveedores por tipo: {e}")
+            return []
+    
+    def actualizar_calificacion_proveedor(self, proveedor_id: int, calificacion: float) -> bool:
+        """
+        Actualiza la calificación de un proveedor.
+        
+        Args:
+            proveedor_id: ID del proveedor
+            calificacion: Nueva calificación (1-10)
+            
+        Returns:
+            True si se actualizó exitosamente
+        """
+        try:
+            if not self.db_connection:
+                logger.error("No hay conexión a BD disponible")
+                return False
+            
+            # Validar calificación
+            if not 1 <= calificacion <= 10:
+                logger.error("La calificación debe estar entre 1 y 10")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                UPDATE proveedores 
+                SET calificacion = ? 
+                WHERE id = ? AND activo = 1
+            """, (calificacion, proveedor_id))
+            
+            if cursor.rowcount > 0:
+                self.db_connection.commit()
+                logger.info(f"Calificación del proveedor {proveedor_id} actualizada a {calificacion}")
+                return True
+            else:
+                logger.warning(f"No se pudo actualizar calificación del proveedor {proveedor_id}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error actualizando calificación: {e}")
+            return False
+    
     def obtener_estadisticas_proveedor(self, proveedor_id: int) -> Dict[str, Any]:
         """
-        Obtiene estadísticas detalladas de un proveedor.
-
+        Obtiene estadísticas de un proveedor.
+        
         Args:
             proveedor_id: ID del proveedor
-
+            
         Returns:
-            Dict: Estadísticas del proveedor
+            Diccionario con estadísticas
         """
-        if not self.db_connection:
-            return self._get_estadisticas_proveedor_demo(proveedor_id)
-
         try:
-            cursor = self.db_connection.cursor()
-
-            # Obtener datos básicos del proveedor
-            cursor.execute(
-                "SELECT nombre, categoria, estado FROM proveedores WHERE id = ?",
-                (proveedor_id,)
-            )
-            proveedor_row = cursor.fetchone()
-
-            if not proveedor_row:
+            if not self.db_connection:
                 return {}
-
-            nombre_proveedor = proveedor_row[0]
-
-            # Estadísticas de compras
+            
+            cursor = self.db_connection.cursor()
+            
+            # Estadísticas de órdenes
             cursor.execute("""
-                SELECT
+                SELECT 
                     COUNT(*) as total_ordenes,
-                    COUNT(CASE WHEN estado = 'PENDIENTE' THEN 1 END) as ordenes_pendientes,
-                    COUNT(CASE WHEN estado = 'APROBADA' THEN 1 END) as ordenes_aprobadas,
-                    COUNT(CASE WHEN estado = 'RECIBIDA' THEN 1 END) as ordenes_recibidas,
-                    COUNT(CASE WHEN estado = 'CANCELADA' THEN 1 END) as ordenes_canceladas
-                FROM compras
-                WHERE proveedor = ?
-            """, (nombre_proveedor,))
-
-            stats_row = cursor.fetchone()
-
-            # Montos totales
-            cursor.execute("""
-                SELECT
-                    ISNULL(SUM(
-                        ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
-                                FROM detalle_compras dc
-                                WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
-                    ), 0) as monto_total,
-                    AVG(
-                        ISNULL((SELECT SUM(dc.cantidad * dc.precio_unitario)
-                                FROM detalle_compras dc
-                                WHERE dc.compra_id = c.id), 0) - c.descuento + c.impuestos
-                    ) as promedio_orden
-                FROM compras c
-                WHERE c.proveedor = ?
-            """, (nombre_proveedor,))
-
-            monto_row = cursor.fetchone()
-
-            # Productos más comprados a este proveedor
-            cursor.execute("""
-                SELECT TOP 5
-                    dc.descripcion,
-                    SUM(dc.cantidad) as cantidad_total,
-                    AVG(dc.precio_unitario) as precio_promedio
-                FROM detalle_compras dc
-                INNER JOIN compras c ON dc.compra_id = c.id
-                WHERE c.proveedor = ?
-                GROUP BY dc.descripcion
-                ORDER BY cantidad_total DESC
-            """, (nombre_proveedor,))
-
-            productos_top = cursor.fetchall()
-
-            return {
-                "proveedor_id": proveedor_id,
-                "nombre": nombre_proveedor,
-                "categoria": proveedor_row[1],
-                "estado": proveedor_row[2],
-                "total_ordenes": stats_row[0] if stats_row else 0,
-                "ordenes_pendientes": stats_row[1] if stats_row else 0,
-                "ordenes_aprobadas": stats_row[2] if stats_row else 0,
-                "ordenes_recibidas": stats_row[3] if stats_row else 0,
-                "ordenes_canceladas": stats_row[4] if stats_row else 0,
-                "monto_total": monto_row[0] if monto_row else 0.0,
-                "promedio_orden": monto_row[1] if monto_row else 0.0,
-                "productos_top": [
-                    {
-                        "descripcion": p[0],
-                        "cantidad_total": p[1],
-                        "precio_promedio": p[2]
-                    }
-                    for p in productos_top
-                ]
-            }
-
+                    COUNT(CASE WHEN estado = 'COMPLETADA' THEN 1 END) as ordenes_completadas,
+                    COUNT(CASE WHEN estado = 'CANCELADA' THEN 1 END) as ordenes_canceladas,
+                    AVG(CASE WHEN estado = 'COMPLETADA' THEN total END) as promedio_orden,
+                    SUM(CASE WHEN estado = 'COMPLETADA' THEN total ELSE 0 END) as total_comprado
+                FROM ordenes_compra
+                WHERE proveedor_id = ?
+                AND fecha_creacion >= datetime('now', '-12 months')
+            """, (proveedor_id,))
+            
+            stats = cursor.fetchone()
+            if stats:
+                return {
+                    'total_ordenes': stats[0] or 0,
+                    'ordenes_completadas': stats[1] or 0,
+                    'ordenes_canceladas': stats[2] or 0,
+                    'promedio_orden': float(stats[3]) if stats[3] else 0.0,
+                    'total_comprado': float(stats[4]) if stats[4] else 0.0,
+                    'tasa_cumplimiento': (stats[1] / stats[0] * 100) if stats[0] > 0 else 0
+                }
+            
+            return {}
+            
         except Exception as e:
-            logger.info(f"[ERROR PROVEEDORES] Error obteniendo estadísticas: {e}")
-            return self._get_estadisticas_proveedor_demo(proveedor_id)
-
-    def obtener_proveedores_activos(self) -> List[Dict]:
+            logger.error(f"Error obteniendo estadísticas de proveedor: {e}")
+            return {}
+    
+    def generar_codigo_proveedor(self) -> str:
         """
-        Obtiene solo los proveedores activos.
-
+        Genera un código único para un nuevo proveedor.
+        
         Returns:
-            List[Dict]: Lista de proveedores activos
+            Código generado
         """
-        return self.buscar_proveedores(estado="ACTIVO")
-
-    def cambiar_estado_proveedor(self, proveedor_id: int, nuevo_estado: str) -> bool:
+        try:
+            if not self.db_connection:
+                return f"PROV{datetime.now().strftime('%Y%m%d%H%M%S')}"
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("SELECT COUNT(*) FROM proveedores")
+            count = cursor.fetchone()[0] + 1
+            
+            return f"PROV{count:06d}"
+            
+        except Exception as e:
+            logger.error(f"Error generando código proveedor: {e}")
+            return f"PROV{datetime.now().strftime('%Y%m%d%H%M%S')}"
+    
+    def codigo_proveedor_existe(self, codigo: str, excluir_id: int = None) -> bool:
         """
-        Cambia el estado de un proveedor.
-
+        Verifica si un código de proveedor ya existe.
+        
+        Args:
+            codigo: Código a verificar
+            excluir_id: ID de proveedor a excluir de la verificación
+            
+        Returns:
+            True si el código existe
+        """
+        try:
+            if not self.db_connection:
+                return False
+            
+            cursor = self.db_connection.cursor()
+            
+            if excluir_id:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM proveedores 
+                    WHERE codigo = ? AND id != ?
+                """, (codigo, excluir_id))
+            else:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM proveedores 
+                    WHERE codigo = ?
+                """, (codigo,))
+            
+            count = cursor.fetchone()[0]
+            return count > 0
+            
+        except Exception as e:
+            logger.error(f"Error verificando código proveedor: {e}")
+            return False
+    
+    def ruc_proveedor_existe(self, ruc: str, excluir_id: int = None) -> bool:
+        """
+        Verifica si un RUC de proveedor ya existe.
+        
+        Args:
+            ruc: RUC a verificar
+            excluir_id: ID de proveedor a excluir de la verificación
+            
+        Returns:
+            True si el RUC existe
+        """
+        try:
+            if not self.db_connection or not ruc:
+                return False
+            
+            cursor = self.db_connection.cursor()
+            
+            if excluir_id:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM proveedores 
+                    WHERE ruc = ? AND id != ? AND activo = 1
+                """, (ruc, excluir_id))
+            else:
+                cursor.execute("""
+                    SELECT COUNT(*) FROM proveedores 
+                    WHERE ruc = ? AND activo = 1
+                """, (ruc,))
+            
+            count = cursor.fetchone()[0]
+            return count > 0
+            
+        except Exception as e:
+            logger.error(f"Error verificando RUC proveedor: {e}")
+            return False
+    
+    # ===== MÉTODOS PRIVADOS =====
+    
+    def _validar_datos_proveedor(self, datos: Dict[str, Any], proveedor_id: int = None) -> bool:
+        """
+        Valida los datos de un proveedor.
+        
+        Args:
+            datos: Datos a validar
+            proveedor_id: ID del proveedor (para actualizaciones)
+            
+        Returns:
+            True si los datos son válidos
+        """
+        try:
+            # Validar campos obligatorios
+            if not datos.get('nombre', '').strip():
+                logger.error("El nombre del proveedor es obligatorio")
+                return False
+            
+            if not datos.get('razon_social', '').strip():
+                logger.error("La razón social es obligatoria")
+                return False
+            
+            if not datos.get('ruc', '').strip():
+                logger.error("El RUC es obligatorio")
+                return False
+            
+            # Validar RUC único
+            ruc = datos['ruc'].strip()
+            if self.ruc_proveedor_existe(ruc, proveedor_id):
+                logger.error(f"Ya existe un proveedor con RUC {ruc}")
+                return False
+            
+            # Validar código único (si se proporciona)
+            codigo = datos.get('codigo', '').strip()
+            if codigo and self.codigo_proveedor_existe(codigo, proveedor_id):
+                logger.error(f"Ya existe un proveedor con código {codigo}")
+                return False
+            
+            # Validar email (si se proporciona)
+            email = datos.get('email', '').strip()
+            if email and not self._validar_email(email):
+                logger.error("El formato del email es inválido")
+                return False
+            
+            # Validar calificación
+            calificacion = datos.get('calificacion', 5)
+            try:
+                calificacion = float(calificacion)
+                if not 1 <= calificacion <= 10:
+                    logger.error("La calificación debe estar entre 1 y 10")
+                    return False
+            except ValueError:
+                logger.error("La calificación debe ser un número válido")
+                return False
+            
+            return True
+            
+        except Exception as e:
+            logger.error(f"Error validando datos proveedor: {e}")
+            return False
+    
+    def _sanitizar_datos_proveedor(self, datos: Dict[str, Any]) -> Dict[str, Any]:
+        """
+        Sanitiza los datos de entrada de un proveedor.
+        
+        Args:
+            datos: Datos a sanitizar
+            
+        Returns:
+            Datos sanitizados
+        """
+        datos_sanitizados = {}
+        
+        # Campos de texto
+        campos_texto = [
+            'codigo', 'nombre', 'razon_social', 'ruc', 'telefono', 
+            'email', 'direccion', 'contacto_principal', 'observaciones',
+            'tipo_proveedor', 'condiciones_pago'
+        ]
+        
+        for campo in campos_texto:
+            if campo in datos:
+                datos_sanitizados[campo] = SecurityUtils.sanitize_sql_input(datos[campo])
+        
+        # Campos numéricos
+        if 'calificacion' in datos:
+            try:
+                datos_sanitizados['calificacion'] = float(datos['calificacion'])
+            except ValueError:
+                datos_sanitizados['calificacion'] = 5.0
+        
+        if 'descuento_comercial' in datos:
+            try:
+                datos_sanitizados['descuento_comercial'] = float(datos['descuento_comercial'])
+            except ValueError:
+                datos_sanitizados['descuento_comercial'] = 0.0
+        
+        return datos_sanitizados
+    
+    def _validar_email(self, email: str) -> bool:
+        """
+        Valida el formato de un email.
+        
+        Args:
+            email: Email a validar
+            
+        Returns:
+            True si el formato es válido
+        """
+        import re
+        
+        if not email:
+            return True  # Email es opcional
+        
+        patron = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+        return re.match(patron, email) is not None
+    
+    def _proveedor_tiene_ordenes_pendientes(self, proveedor_id: int) -> bool:
+        """
+        Verifica si un proveedor tiene órdenes pendientes.
+        
         Args:
             proveedor_id: ID del proveedor
-            nuevo_estado: Nuevo estado (ACTIVO, INACTIVO)
-
+            
         Returns:
-            bool: True si se cambió exitosamente
+            True si tiene órdenes pendientes
         """
-        return self.actualizar_proveedor(proveedor_id, estado=nuevo_estado)
-
-    def _get_proveedores_demo(self) -> List[Dict]:
-        """Proveedores demo para testing."""
-        return [
-            {
-                "id": 1,
-                "nombre": "Materiales del Sur",
-                "razon_social": "Materiales del Sur S.A.",
-                "ruc": "20123456789",
-                "telefono": "+54 11 4000-1000",
-                "email": "ventas@materialesdelsur.com",
-                "direccion": "Av. Industrial 1234, Buenos Aires",
-                "contacto_principal": "Juan Pérez",
-                "categoria": "Materiales de Construcción",
-                "estado": "ACTIVO",
-                "observaciones": "Proveedor principal de perfiles",
-                "total_ordenes": 25,
-                "monto_total_compras": 156789.50
-            },
-            {
-                "id": 2,
-                "nombre": "Vidrios y Cristales SA",
-                "razon_social": "Vidrios y Cristales S.A.",
-                "ruc": "20987654321",
-                "telefono": "+54 11 4000-2000",
-                "email": "pedidos@vidriosycristales.com",
-                "direccion": "Calle del Vidrio 567, CABA",
-                "contacto_principal": "María González",
-                "categoria": "Vidrios y Cristales",
-                "estado": "ACTIVO",
-                "observaciones": "Especialistas en vidrio templado",
-                "total_ordenes": 18,
-                "monto_total_compras": 89234.75
-            },
-            {
-                "id": 3,
-                "nombre": "Herrajes Industriales",
-                "razon_social": "Herrajes Industriales LTDA",
-                "ruc": "20456789123",
-                "telefono": "+54 11 4000-3000",
-                "email": "info@herrajes.com",
-                "direccion": "Parque Industrial Norte, Lote 45",
-                "contacto_principal": "Carlos Rodriguez",
-                "categoria": "Herrajes y Accesorios",
-                "estado": "ACTIVO",
-                "observaciones": "Herrajes de alta calidad",
-                "total_ordenes": 12,
-                "monto_total_compras": 45678.25
-            }
-        ]
-
-    def _get_estadisticas_proveedor_demo(self, proveedor_id: int) -> Dict[str, Any]:
-        """Estadísticas demo de proveedor."""
-        return {
-            "proveedor_id": proveedor_id,
-            "nombre": "Materiales del Sur",
-            "categoria": "Materiales de Construcción",
-            "estado": "ACTIVO",
-            "total_ordenes": 25,
-            "ordenes_pendientes": 3,
-            "ordenes_aprobadas": 5,
-            "ordenes_recibidas": 15,
-            "ordenes_canceladas": 2,
-            "monto_total": 156789.50,
-            "promedio_orden": 6271.58,
-            "productos_top": [
-                {"descripcion": "Perfil Aluminio 20x20", "cantidad_total": 500, "precio_promedio": 12.50},
-                {"descripcion": "Perfil Aluminio 30x30", "cantidad_total": 250, "precio_promedio": 18.75},
-                {"descripcion": "Perfil Aluminio 40x40", "cantidad_total": 150, "precio_promedio": 25.00}
-            ]
-        }
+        try:
+            if not self.db_connection:
+                return False
+            
+            cursor = self.db_connection.cursor()
+            cursor.execute("""
+                SELECT COUNT(*) FROM ordenes_compra
+                WHERE proveedor_id = ? 
+                AND estado IN ('BORRADOR', 'ENVIADA', 'CONFIRMADA', 'PARCIAL')
+            """, (proveedor_id,))
+            
+            count = cursor.fetchone()[0]
+            return count > 0
+            
+        except Exception as e:
+            logger.error(f"Error verificando órdenes pendientes: {e}")
+            return False

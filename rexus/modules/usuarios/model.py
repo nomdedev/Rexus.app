@@ -1,8 +1,30 @@
 
-# Importar utilidades de sanitización
-                            return []
+"""
+Modelo de Usuarios - Rexus.app
+Gestión de usuarios del sistema
+"""
+
+import logging
+from typing import Dict, List, Any, Optional
+
+logger = logging.getLogger(__name__)
+
+class UsuariosModel:
+    """Modelo para gestión de usuarios."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el modelo de usuarios."""
+        self.db_connection = db_connection
+        self.sql_manager = None
+        self.data_sanitizer = None
+        
+    def buscar_usuarios_filtrado(self, filtros: Dict[str, Any]) -> List[Dict[str, Any]]:
+        """Busca usuarios aplicando filtros."""
+        try:
+            if not self.db_connection:
+                logger.warning("No hay conexión a base de datos disponible")
+                return []
             
-            # Usar SQL externo para búsqueda filtrada
             # Preparar parámetros para la consulta
             params = {
                 'busqueda': filtros.get('busqueda') if filtros.get('busqueda') else None,
@@ -11,10 +33,14 @@
             }
             
             # Ejecutar consulta usando SQL Manager
-            usuarios = self.sql_manager.ejecutar_consulta_archivo(
-                'usuarios/buscar_usuarios_filtrado.sql',
-                params
-            )
+            if self.sql_manager:
+                usuarios = self.sql_manager.ejecutar_consulta_archivo(
+                    'usuarios/buscar_usuarios_filtrado.sql',
+                    params
+                )
+            else:
+                # Fallback básico
+                usuarios = []
             
             # Convertir a lista de diccionarios si es necesario
             if usuarios and not isinstance(usuarios[0], dict):
@@ -31,3 +57,5 @@
             return usuarios or []
             
         except Exception as e:
+            logger.error(f"Error filtrando usuarios: {e}")
+            return []

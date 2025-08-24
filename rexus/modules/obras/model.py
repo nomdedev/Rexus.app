@@ -1,6 +1,31 @@
+"""
+Modelo de Obras - Rexus.app
+Gestión de obras del sistema
+"""
+
 import logging
 import os
-                        return
+from typing import Dict, List, Any, Optional, Tuple
+
+logger = logging.getLogger(__name__)
+
+class ObrasModel:
+    """Modelo para gestión de obras."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el modelo de obras."""
+        self.db_connection = db_connection
+        self.logger = logger
+        self.sql_manager = None
+        self.data_sanitizer = None
+        self.tabla_obras = "obras"
+        self.tabla_detalles_obra = "detalles_obra"
+        
+    def verificar_estructura_tabla(self):
+        """Verifica la estructura de la tabla de obras."""
+        if not self.db_connection:
+            self.logger.warning("No hay conexión a base de datos disponible")
+            return
 
         cursor = None
         try:

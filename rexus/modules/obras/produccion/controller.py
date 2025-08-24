@@ -13,4 +13,4 @@ class ProduccionController(QObject):
         self.model = model
         self.view = view
         self.db_connection = db_connection
-        self.usuario_actual = 
+        self.usuario_actual = "sistema" 
