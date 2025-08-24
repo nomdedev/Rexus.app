@@ -259,3 +259,141 @@
 2025-08-24 13:27:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-24 13:28:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
 2025-08-24 13:30:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:30:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:31:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:31:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:32:13 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:32:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:32:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 13:33:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:04:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:06:26 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:06:59 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:07:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:07:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:08:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:08:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:11:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:18:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:19:07 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:19:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:19:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:21:11 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:24:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:24:44 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:24:57 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:26:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:27:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:27:22 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:27:37 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:28:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:28:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:28:29 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:28:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:29:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:29:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:30:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:31:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:33:34 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:35:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:37:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:38:27 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:40:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:41:53 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:43:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:45:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:46:08 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:48:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:49:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:50:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:50:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:54:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:55:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:55:32 | WARNING  | rexus.modules.logistica.controller | Herramientas de seguridad no disponibles: cannot import name 'validate_sql_input' from 'rexus.utils.sql_security' (D:\martin\Rexus.app\rexus\utils\sql_security.py)
+2025-08-24 16:57:05 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 16:57:05 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 16:57:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:57:28 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 16:57:28 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 16:57:28 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 16:57:28 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:28 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 16:58:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:59:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 16:59:49 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:00:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:00:18 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:00:18 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 17:00:18 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 17:00:18 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 17:00:18 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:00:18 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:01:48 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:01:48 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 17:01:48 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 17:01:48 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:01:48 | DEBUG    | rexus.modules.logistica.controller | Cargando estadísticas de logística
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | Usando estadísticas de demostración
+2025-08-24 17:05:24 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:05:46 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:06:01 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:06:01 | INFO     | rexus.core.sql_manager | SQLQueryManager inicializado
+2025-08-24 17:06:01 | INFO     | rexus.core.sql_manager | Módulo herrajes: 1 consultas cargadas
+2025-08-24 17:06:01 | INFO     | rexus.core.sql_manager | Carga completa: 1 módulos, 1 consultas totales
+2025-08-24 17:06:01 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:06:01 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:10:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:10:15 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:23:28 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:23:28 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:32:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:32:21 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:32:58 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:32:58 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:33:06 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:16 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:33:16 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:33:30 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:41 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:33:41 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:33:52 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:00 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:34:00 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:06 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:34:06 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:15 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:34:15 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:35:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:35:54 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:04 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:36:04 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:36:14 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:36:21 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:31 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:36:31 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:36:54 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:37:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:37:23 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:39:20 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:30 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:39:30 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-24 17:39:36 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController

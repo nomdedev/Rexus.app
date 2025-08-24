@@ -62,8 +62,8 @@ class HerrajesController(BaseController):
         except Exception as e:
             logger.info(f"[ERROR HERRAJES] Error actualizando vista: {e}")
 
-    def buscar_herrajes(self, termino="", categoria=None):
-        """Busca herrajes según criterios específicos."""
+    def buscar_herrajes_basico(self, termino="", categoria=None):
+        """Busca herrajes según criterios específicos (versión básica)."""
         try:
             if self.model and hasattr(self.model, 'buscar_herrajes'):
                 filtros = {'termino': termino}
@@ -125,6 +125,26 @@ class HerrajesController(BaseController):
         elif self.view and hasattr(self.view, 'cargar_datos'):
             self.view.cargar_datos(herrajes)
 
+    def cargar_estadisticas(self):
+        """Carga las estadísticas en la vista."""
+        try:
+            if self.model:
+                estadisticas = self.model.obtener_estadisticas()
+            # else: # Comentado - bloque huérfano
+                # estadisticas = {
+                    # "total_herrajes": 0,
+                    # "total_stock": 0,
+                    # "herrajes_bajo_stock": 0,
+                    # "proveedores_activos": 0
+                # }
+
+            if self.view and hasattr(self.view, "actualizar_estadisticas"):
+                self.view.actualizar_estadisticas(estadisticas)
+
+        except Exception as e:
+            logger.info(f"[ERROR HERRAJES CONTROLLER] Error cargando estadísticas: {e}")
+            logging.error(f"Error cargando estadísticas herrajes: {e}")
+
     def cargar_datos_iniciales(self):
         """Carga los datos iniciales en la vista."""
         logger.info("[HERRAJES CONTROLLER] Cargando datos iniciales...")
@@ -174,14 +194,15 @@ class HerrajesController(BaseController):
                     # herrajes = None
             elif termino and len(termino.strip()) >= 2:
                 if self.model and hasattr(self.model, 'buscar_herrajes'):
-                    herrajes = self.model.buscar_herrajes(termino.strip()
-                # else: # Comentado - bloque huérfano
-                    # herrajes = None
-            # else: # Comentado - bloque huérfano
-                # if self.model and hasattr(self.model, 'obtener_todos_herrajes'):
-                    # herrajes = self.model.obtener_todos_herrajes()
-                # else:
-                    # herrajes = None
+                    herrajes = self.model.buscar_herrajes(termino.strip())
+                else:
+                    herrajes = []
+            else:
+                # Obtener todos los herrajes si no hay filtros ni términos
+                if self.model and hasattr(self.model, 'obtener_todos_herrajes'):
+                    herrajes = self.model.obtener_todos_herrajes()
+                else:
+                    herrajes = []
 
             # Actualizar vista
             if self.view and hasattr(self.view, "cargar_herrajes"):
@@ -190,6 +211,11 @@ class HerrajesController(BaseController):
         except Exception as e:
             logger.info(f"[ERROR HERRAJES CONTROLLER] Error en búsqueda: {e}")
             logging.error(f"Error en búsqueda herrajes: {e}")
+
+    def helper_cargar_herrajes(self, herrajes):
+        """Método auxiliar para cargar herrajes en la vista."""
+        if self.view and hasattr(self.view, "cargar_herrajes"):
+            self.view.cargar_herrajes(herrajes)
 
     def cargar_estadisticas(self):
         """Carga las estadísticas en la vista."""
@@ -348,9 +374,9 @@ class HerrajesController(BaseController):
 
             # Actualizar en modelo
             if self.model and hasattr(self.model, 'actualizar_herraje'):
-                resultado = self.model.actualizar_herraje(data_limpia.get('codigo')
-            # else: # Comentado - bloque huérfano
-                # resultado = None
+                resultado = self.model.actualizar_herraje(data_limpia.get('codigo'), data_limpia)
+            else:
+                resultado = None
 
             if resultado:
                 self.herraje_actualizado.emit(data_limpia)
@@ -406,10 +432,10 @@ class HerrajesController(BaseController):
                 return False
 
             # Obtener todos los datos para exportar
-    if self.model and hasattr(self.model, 'obtener_datos_paginados'):
-        total = self.model.obtener_datos_paginados(0, 10000)
- # else: # Comentado - bloque huérfano
-     # total = None
+            if self.model and hasattr(self.model, 'obtener_datos_paginados'):
+                total = self.model.obtener_datos_paginados(0, 10000)
+            else:
+                total = None
 
             # if not datos:
                 # self.mostrar_advertencia("No hay herrajes para exportar")

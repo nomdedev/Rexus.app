@@ -46,6 +46,7 @@ class LogisticaTransportManager:
                     self._mostrar_mensaje_info("Modo demo: Transporte simulado creado")
 
         except Exception as e:
+            logger.error(f"Error creando transporte: {e}")
 
     def editar_transporte_seleccionado(self):
         """Edita el transporte seleccionado en la tabla."""
@@ -80,6 +81,7 @@ class LogisticaTransportManager:
                     self._mostrar_mensaje_info("Modo demo: Transporte simulado actualizado")
 
         except Exception as e:
+            logger.error(f"Error al editar transporte seleccionado: {e}")
 
     def eliminar_transporte_seleccionado(self):
         """Elimina el transporte seleccionado."""
@@ -113,6 +115,7 @@ class LogisticaTransportManager:
                     self._mostrar_mensaje_info("Modo demo: Transporte simulado eliminado")
 
             except Exception as e:
+                logger.error(f"Error eliminando transporte: {e}")
 
     def buscar_transportes(self, termino_busqueda=""):
         """Busca transportes por término de búsqueda."""
@@ -145,6 +148,7 @@ class LogisticaTransportManager:
                 self._mostrar_mensaje_info("Función de exportación no disponible")
 
         except Exception as e:
+            logger.error(f"Error exportando transportes a Excel: {e}")
 
     def _actualizar_tabla_transportes(self):
         """Actualiza la tabla de transportes."""

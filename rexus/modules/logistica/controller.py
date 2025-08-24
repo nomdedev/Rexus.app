@@ -14,7 +14,7 @@ Controlador completo para el módulo de logística que maneja:
 import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime, date
-from PyQt6.QtCore import pyqtSignal
+from PyQt6.QtCore import pyqtSignal, QObject
 
 # Configurar logging
 try:
@@ -28,20 +28,28 @@ try:
 except ImportError:
     def show_info(parent, title, message):
         logger.info(f"{title}: {message}")
+        return None
+    
     def show_error(parent, title, message):
         logger.error(f"{title}: {message}")
+        return None
+    
     def show_warning(parent, title, message):
         logger.warning(f"{title}: {message}")
+        return None
+    
     def show_success(parent, title, message):
         logger.info(f"{title}: {message}")
+        return None
 
-try:
-    from ..base.base_controller import BaseController
-except ImportError:
-    class BaseController:
-        def __init__(self, model=None, view=None):
-            self.model = model
-            self.view = view
+# Base controller imports comentados para evitar errores
+# try:
+#     from rexus.modules.base.base_controller import BaseController
+# except ImportError:
+#     try:
+#         from ..base.base_controller import BaseController
+#     except ImportError:
+#         pass
 
 
 # Constantes para mensajes
@@ -49,7 +57,7 @@ MENSAJE_ERROR_CONEXION = "No hay conexión al modelo de datos"
 MENSAJE_EXITO = "Éxito"
 TITULO_LOGISTICA = "Logística"
 
-class LogisticaController(BaseController):
+class LogisticaController(QObject):
     """Controlador para el módulo de logística."""
     
     # Señales
@@ -68,7 +76,9 @@ class LogisticaController(BaseController):
             view: Vista de logística
             db_connection: Conexión a base de datos
         """
-        super().__init__(model, view)
+        super().__init__()
+        self.model = model
+        self.view = view
         self.db_connection = db_connection
         self.servicios_cache = {}
         self.proveedores_cache = {}
@@ -127,9 +137,11 @@ class LogisticaController(BaseController):
             
             # Generar código único
             if not datos_servicio.get('codigo'):
- if self.model and hasattr(self.model, 'generar_codigo_servicio'):
-     if self.model:
-         self.model.generar_codigo_servicio()
+                if self.model and hasattr(self.model, 'generar_codigo_servicio'):
+                    if self.model:
+                        datos_servicio['codigo'] = self.model.generar_codigo_servicio()
+                else:
+                    datos_servicio['codigo'] = self._generar_codigo_servicio()
             
             # Calcular costo estimado si no se proporciona
             if not datos_servicio.get('costo_estimado'):
@@ -415,7 +427,11 @@ class LogisticaController(BaseController):
                 else:
                     servicios = []
             else:
-                servicios = None
+                servicios = []
+            
+            # Asegurar que servicios sea una lista
+            if servicios is None:
+                servicios = []
             
             if self.view and hasattr(self.view, 'cargar_servicios'):
                 self.view.cargar_servicios(servicios)
@@ -445,7 +461,11 @@ class LogisticaController(BaseController):
             if self.model:
                 servicios = self.model.obtener_servicios_por_estado(estado)
             else:
-                servicios = None
+                servicios = []
+            
+            # Asegurar que servicios sea una lista
+            if servicios is None:
+                servicios = []
             
             if self.view and hasattr(self.view, 'cargar_servicios'):
                 self.view.cargar_servicios(servicios)
@@ -517,9 +537,13 @@ class LogisticaController(BaseController):
                 if self.model:
                     reporte = self.model.generar_reporte_logistico(fecha_inicio, fecha_fin)
                 else:
-                    reporte = None
+                    reporte = {}
             else:
-                reporte = None
+                reporte = {}
+            
+            # Asegurar que reporte sea un diccionario
+            if reporte is None:
+                reporte = {}
             
             if reporte:
                 show_success(self.view, "Éxito", "Reporte generado correctamente")
@@ -602,7 +626,12 @@ class LogisticaController(BaseController):
             if self.model:
                 costo_info = self.model.calcular_costo_transporte(origen, destino, peso, volumen, tipo_servicio)
             else:
-                costo_info = None
+                costo_info = {'costo_estimado': 0.0, 'error': 'Modelo no disponible'}
+            
+            # Asegurar que costo_info sea un diccionario
+            if costo_info is None:
+                costo_info = {'costo_estimado': 0.0, 'error': 'Resultado nulo del modelo'}
+            
             logger.info(f"Costo calculado: {costo_info.get('costo_estimado', 0)} para {origen}-{destino}")
             
             return costo_info
@@ -685,7 +714,11 @@ class LogisticaController(BaseController):
             if self.model:
                 servicios = self.model.obtener_servicios_transporte()
             else:
-                servicios = None
+                servicios = []
+            
+            # Asegurar que servicios sea una lista
+            if servicios is None:
+                servicios = []
             
             # Calcular estadísticas básicas
             total = len(servicios)
@@ -716,8 +749,12 @@ class LogisticaController(BaseController):
         try:
             if self.model:
                 if self.model:
-                    return self.model.obtener_servicios_transporte()
-                return None
+                    servicios = self.model.obtener_servicios_transporte()
+                    if servicios is None:
+                        servicios = []
+                    return servicios
+                else:
+                    return []
             else:
                 return []
         except Exception as e:
@@ -729,13 +766,25 @@ class LogisticaController(BaseController):
         try:
             if self.model:
                 if self.model:
-                    return self.model.obtener_proveedores_transporte()
-                return None
+                    proveedores = self.model.obtener_proveedores_transporte()
+                    if proveedores is None:
+                        proveedores = []
+                    return proveedores
+                else:
+                    return []
             else:
                 return []
         except Exception as e:
             logger.error(f"Error cargando proveedores: {e}")
             return []
+    
+    def _generar_codigo_servicio(self) -> str:
+        """Genera un código único para servicio."""
+        try:
+            timestamp = datetime.now().strftime('%Y%m%d%H%M%S')
+            return f"SRV{timestamp}"
+        except Exception:
+            return f"SRV{int(datetime.now().timestamp())}"
     
     def _generar_codigo_proveedor(self) -> str:
         """Genera un código único para proveedor."""

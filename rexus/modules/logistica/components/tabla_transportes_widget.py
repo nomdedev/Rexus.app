@@ -119,6 +119,7 @@ class TablaTransportesWidget(BaseLogisticaWidget, ModuleExportMixin):
                 self.cargar_datos_ejemplo()
                 
         except Exception as e:
+            logger.error(f"Error configurando tabla transportes: {e}")
     
     def cargar_transportes(self, transportes: List[Dict[str, Any]]):
         """Cargar transportes en la tabla."""
@@ -277,6 +278,7 @@ class TablaTransportesWidget(BaseLogisticaWidget, ModuleExportMixin):
                 QMessageBox.warning(self, "Exportar", "Error al exportar datos")
                 
         except Exception as e:
+            logger.error(f"Error al exportar datos de transportes: {e}")
     
     def get_selected_transport(self) -> Dict[str, Any]:
         """Obtener transporte seleccionado."""

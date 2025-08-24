@@ -266,6 +266,7 @@ class ServiciosWidget(BaseLogisticaWidget, ModuleExportMixin):
             self.cargar_datos_ejemplo()
             
         except Exception as e:
+            logger.error(f"Error configurando servicios: {e}")
     
     def cargar_datos_ejemplo(self):
         """Cargar datos de ejemplo para servicios."""
@@ -424,6 +425,7 @@ class ServiciosWidget(BaseLogisticaWidget, ModuleExportMixin):
                 QMessageBox.information(self, "Éxito", "Reporte generado exitosamente")
             
         except Exception as e:
+            logger.error(f"Error al generar reporte de servicios: {e}")
     
     def filtrar_servicios(self):
         """Filtrar servicios por texto de búsqueda."""

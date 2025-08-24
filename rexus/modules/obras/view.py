@@ -1405,8 +1405,10 @@ class ObrasModernView(QWidget, ModuleExportMixin):
         # Limpiar layout anterior
         while self.layout_presupuesto.count():
             child = self.layout_presupuesto.takeAt(0)
-            if child.widget():
-                child.widget().deleteLater()
+            if child is not None:
+                widget = child.widget()
+                if widget is not None:
+                    widget.deleteLater()
 
         # Crear tabla de items del presupuesto
         tabla_items = StandardComponents.create_standard_table()

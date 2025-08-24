@@ -13,4 +13,4 @@ try:
     __all__ = [ "DialogoEditarProducto", "DialogoMovimientoInventario", "DialogoHistorialProducto"]
 except ImportError as e:
     logger.info(f"[WARNING] Could not import missing dialogs: {e}")
-    __all__ = ["ReservaDialog"]
+__all__ = ["ReservaDialog"]

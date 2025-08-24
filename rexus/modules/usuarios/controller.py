@@ -6,7 +6,7 @@ Gestiona autenticación, autorización, permisos y sesiones de usuario.
 """
 
 import logging
-from typing import Dict, Any, Optional
+from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 # Importar logging
@@ -72,33 +72,35 @@ class UsuariosController(BaseController):
     def conectar_senales(self):
         """Conecta las señales de la vista con los métodos del controlador."""
         try:
-            if self.view and hasattr(self.view, 'connect_signals'):
-                # Señales de autenticación
-                if self.view and hasattr(self.view, 'login_signal'):
-                    self.view.login_signal.connect(self.autenticar_usuario)
+            if not self.view:
+                return
                 
-                if self.view and hasattr(self.view, 'logout_signal'):
-                    self.view.logout_signal.connect(self.cerrar_sesion)
-                
-                # Señales de gestión de usuarios
-                if self.view and hasattr(self.view, 'crear_usuario_signal'):
-                    self.view.crear_usuario_signal.connect(self.crear_usuario)
-                
-                if self.view and hasattr(self.view, 'actualizar_usuario_signal'):
-                    self.view.actualizar_usuario_signal.connect(self.actualizar_usuario)
-                
-                if self.view and hasattr(self.view, 'eliminar_usuario_signal'):
-                    self.view.eliminar_usuario_signal.connect(self.eliminar_usuario)
-                
-                if self.view and hasattr(self.view, 'buscar_usuarios_signal'):
-                    self.view.buscar_usuarios_signal.connect(self.buscar_usuarios)
-                
-                # Señales de permisos
-                if self.view and hasattr(self.view, 'cambiar_permisos_signal'):
-                    self.view.cambiar_permisos_signal.connect(self.cambiar_permisos_usuario)
-                
-                logger.debug("Señales de usuarios conectadas")
-                
+            # Señales de autenticación
+            if hasattr(self.view, 'login_signal'):
+                self.view.login_signal.connect(self.autenticar_usuario)
+            
+            if hasattr(self.view, 'logout_signal'):
+                self.view.logout_signal.connect(self.cerrar_sesion)
+            
+            # Señales de gestión de usuarios
+            if hasattr(self.view, 'crear_usuario_signal'):
+                self.view.crear_usuario_signal.connect(self.crear_usuario)
+            
+            if hasattr(self.view, 'actualizar_usuario_signal'):
+                self.view.actualizar_usuario_signal.connect(self.actualizar_usuario)
+            
+            if hasattr(self.view, 'eliminar_usuario_signal'):
+                self.view.eliminar_usuario_signal.connect(self.eliminar_usuario)
+            
+            if hasattr(self.view, 'buscar_usuarios_signal'):
+                self.view.buscar_usuarios_signal.connect(self.buscar_usuarios)
+            
+            # Señales de permisos
+            if hasattr(self.view, 'cambiar_permisos_signal'):
+                self.view.cambiar_permisos_signal.connect(self.cambiar_permisos_usuario)
+            
+            logger.debug("Señales de usuarios conectadas")
+            
         except Exception as e:
             logger.error(f"Error conectando señales de usuarios: {e}")
     
@@ -117,7 +119,7 @@ class UsuariosController(BaseController):
             
             logger.debug("Datos iniciales de usuarios cargados")
             
-        except (AttributeError, TypeError) as e:
+        except Exception as e:
             logger.error(f"Error cargando datos iniciales de usuarios: {e}")
     
     # MÉTODOS DE AUTENTICACIÓN
@@ -139,124 +141,97 @@ class UsuariosController(BaseController):
                 return False
             
             # Validar credenciales
-            if self.model and hasattr(self.model, 'validar_credenciales'):
-                if self.model:
-                    usuario = self.model.validar_credenciales(username, password)
-                else:
-                    usuario = False
+            if hasattr(self.model, 'validar_credenciales'):
+                usuario = self.model.validar_credenciales(username, password)
             else:
-                usuario = None
+                logger.error("Método validar_credenciales no disponible en modelo")
+                return False
             
             if usuario:
                 self.usuario_actual = usuario
                 self.sesion_activa = True
                 
-                # Registrar inicio de sesión
+                # Registrar auditoría de login
                 self.registrar_auditoria("LOGIN", "USUARIOS", {
                     "usuario": username,
-                    "timestamp": datetime.now().isoformat()
+                    "fecha_login": datetime.now().isoformat()
                 })
-                
-                # Actualizar última conexión
-                if self.model and hasattr(self.model, 'actualizar_ultima_conexion'):
-                    if self.model:
-                        self.model.actualizar_ultima_conexion(usuario['id'])
                 
                 logger.info(f"Usuario '{username}' autenticado exitosamente")
-                
-                if self.view:
-                    self.view.on_login_successful(usuario)
-                
                 return True
             else:
-                logger.warning(f"Intento de login fallido para usuario '{username}'")
-                
-                # Registrar intento fallido
-                self.registrar_auditoria("LOGIN_FAILED", "USUARIOS", {
-                    "usuario": username,
-                    "timestamp": datetime.now().isoformat()
-                })
-                
-                if self.view:
-                    self.view.mostrar_error("Credenciales incorrectas")
-                
+                logger.warning(f"Credenciales inválidas para usuario '{username}'")
                 return False
                 
         except Exception as e:
-            logger.error(f"Error autenticando usuario: {e}")
-            if self.view:
-                self.view.mostrar_error("Error de autenticación")
+            logger.error(f"Error en autenticación: {e}")
             return False
     
-    def cerrar_sesion(self):
-        """Cierra la sesión actual del usuario."""
+    def cerrar_sesion(self) -> bool:
+        """
+        Cierra la sesión del usuario actual.
+        
+        Returns:
+            True si se cerró exitosamente
+        """
         try:
             if self.usuario_actual:
-                # Registrar cierre de sesión
+                # Registrar auditoría de logout
                 self.registrar_auditoria("LOGOUT", "USUARIOS", {
-                    "usuario": self.usuario_actual.get('username'),
-                    "timestamp": datetime.now().isoformat()
+                    "usuario": self.usuario_actual.get('username', 'DESCONOCIDO'),
+                    "fecha_logout": datetime.now().isoformat()
                 })
                 
                 logger.info(f"Sesión cerrada para usuario '{self.usuario_actual.get('username')}'")
                 
-                self.usuario_actual = None
-                self.sesion_activa = False
-                
-                if self.view:
-                    self.view.on_logout_successful()
-                
+            self.usuario_actual = None
+            self.sesion_activa = False
+            return True
+            
         except Exception as e:
             logger.error(f"Error cerrando sesión: {e}")
+            return False
     
     # MÉTODOS DE GESTIÓN DE USUARIOS
     
     def cargar_usuarios(self, filtros: Optional[Dict[str, Any]] = None):
         """
-        Carga usuarios en la vista.
+        Carga la lista de usuarios en la vista.
         
         Args:
-            filtros: Filtros opcionales para la consulta
+            filtros: Filtros opcionales para la búsqueda
         """
         try:
-            if not self.model or not self.view:
+            if not self.model:
+                logger.warning("No hay modelo disponible para cargar usuarios")
                 return
             
-            # Obtener usuarios del modelo
-            if filtros:
-                if self.model and hasattr(self.model, 'obtener_usuarios_filtrados'):
-                    if self.model:
-                        usuarios = self.model.obtener_usuarios_filtrados(filtros)
-                    else:
-                        usuarios = []
-                else:
-                    usuarios = None
+            if hasattr(self.model, 'obtener_usuarios'):
+                usuarios = self.model.obtener_usuarios(filtros) if filtros else self.model.obtener_usuarios()
             else:
-                if self.model and hasattr(self.model, 'obtener_todos_usuarios'):
-                    if self.model:
-                        usuarios = self.model.obtener_todos_usuarios()
-                    else:
-                        usuarios = []
-                else:
-                    usuarios = None
+                logger.error("Método obtener_usuarios no disponible en modelo")
+                usuarios = []
             
-            # Actualizar vista
-            if self.view and hasattr(self.view, 'cargar_datos_en_tabla'):
-                self.view.cargar_datos_en_tabla(usuarios)
-            
-            logger.debug(f"Cargados {len(usuarios)} usuarios")
-            
+            if usuarios is not None:
+                logger.debug(f"Cargados {len(usuarios)} usuarios")
+                
+                if self.view and hasattr(self.view, 'cargar_usuarios'):
+                    self.view.cargar_usuarios(usuarios)
+            else:
+                logger.warning("No se pudieron obtener usuarios del modelo")
+                
         except Exception as e:
             logger.error(f"Error cargando usuarios: {e}")
     
     def buscar_usuarios(self, filtros: Dict[str, Any]):
         """
-        Busca usuarios con filtros específicos.
+        Busca usuarios con los filtros especificados.
         
         Args:
-            filtros: Diccionario con filtros de búsqueda
+            filtros: Criterios de búsqueda
         """
         try:
+            logger.debug(f"Buscando usuarios con filtros: {filtros}")
             self.cargar_usuarios(filtros)
         except Exception as e:
             logger.error(f"Error buscando usuarios: {e}")
@@ -281,19 +256,19 @@ class UsuariosController(BaseController):
                 return False
             
             # Verificar si el username ya existe
- if self.model and hasattr(self.model, 'usuario_existe'):
-     if self.model:
-         self.model.usuario_existe(datos_usuario.get('username')
-                logger.error("El nombre de usuario ya existe")
-                if self.view:
-                    self.view.mostrar_error("El nombre de usuario ya existe")
-                return False
+            if hasattr(self.model, 'usuario_existe'):
+                if self.model.usuario_existe(datos_usuario.get('username')):
+                    logger.error("El nombre de usuario ya existe")
+                    if self.view:
+                        self.mostrar_error("Error", "El nombre de usuario ya existe")
+                    return False
             
             # Crear usuario
-            if self.model:
+            if hasattr(self.model, 'crear_usuario'):
                 usuario_id = self.model.crear_usuario(datos_usuario)
             else:
-                usuario_id = None
+                logger.error("Método crear_usuario no disponible en modelo")
+                return False
             
             if usuario_id:
                 # Registrar auditoría
@@ -308,19 +283,19 @@ class UsuariosController(BaseController):
                 self.cargar_usuarios()
                 
                 if self.view:
-                    self.view.mostrar_mensaje("Usuario creado exitosamente")
+                    self.mostrar_exito("Usuario creado exitosamente")
                 
                 return True
             else:
                 logger.error(MSG_ERROR_CREANDO)
                 if self.view:
-                    self.view.mostrar_error(MSG_ERROR_CREANDO)
+                    self.mostrar_error("Error", MSG_ERROR_CREANDO)
                 return False
                 
         except Exception as e:
             logger.error(f"{MSG_ERROR_CREANDO}: {e}")
             if self.view:
-                self.view.mostrar_error(MSG_ERROR_CREANDO)
+                self.mostrar_error("Error", MSG_ERROR_CREANDO)
             return False
     
     def actualizar_usuario(self, usuario_id: int, datos_usuario: Dict[str, Any]) -> bool:
@@ -344,12 +319,17 @@ class UsuariosController(BaseController):
                 return False
             
             # Actualizar usuario
- if self.model and hasattr(self.model, 'actualizar_usuario'):
-     if self.model:
-         self.model.actualizar_usuario(usuario_id, datos_usuario)
+            if hasattr(self.model, 'actualizar_usuario'):
+                exito = self.model.actualizar_usuario(usuario_id, datos_usuario)
+            else:
+                logger.error("Método actualizar_usuario no disponible en modelo")
+                return False
+            
+            if exito:
                 # Registrar auditoría
                 self.registrar_auditoria("UPDATE_USER", "USUARIOS", {
-                    "usuario_actualizado": datos_usuario.get('username'),
+                    "usuario_id": usuario_id,
+                    "cambios": datos_usuario,
                     "por_usuario": self.usuario_actual.get('username') if self.usuario_actual else 'SISTEMA'
                 })
                 
@@ -359,24 +339,24 @@ class UsuariosController(BaseController):
                 self.cargar_usuarios()
                 
                 if self.view:
-                    self.view.mostrar_mensaje("Usuario actualizado exitosamente")
+                    self.mostrar_exito("Usuario actualizado exitosamente")
                 
                 return True
             else:
                 logger.error(MSG_ERROR_ACTUALIZANDO)
                 if self.view:
-                    self.view.mostrar_error(MSG_ERROR_ACTUALIZANDO)
+                    self.mostrar_error("Error", MSG_ERROR_ACTUALIZANDO)
                 return False
                 
         except Exception as e:
             logger.error(f"{MSG_ERROR_ACTUALIZANDO}: {e}")
             if self.view:
-                self.view.mostrar_error(MSG_ERROR_ACTUALIZANDO)
+                self.mostrar_error("Error", MSG_ERROR_ACTUALIZANDO)
             return False
     
     def eliminar_usuario(self, usuario_id: int) -> bool:
         """
-        Elimina un usuario.
+        Elimina un usuario del sistema.
         
         Args:
             usuario_id: ID del usuario a eliminar
@@ -389,52 +369,47 @@ class UsuariosController(BaseController):
                 logger.error("No hay modelo disponible para eliminar usuario")
                 return False
             
-            # Obtener datos del usuario antes de eliminar
-            if self.model and hasattr(self.model, 'obtener_usuario_por_id'):
-                if self.model:
-                    usuario = self.model.obtener_usuario_por_id(usuario_id)
-                else:
-                    usuario = None
-            else:
-                usuario = None
-            if not usuario:
-                logger.error("Usuario no encontrado")
-                return False
-            
-            # No permitir eliminar el usuario actual
-            if self.usuario_actual and usuario.get('id') == self.usuario_actual.get('id'):
-                logger.error("No se puede eliminar el usuario actualmente logueado")
+            # Verificar que no se elimine el usuario actual
+            if (self.usuario_actual and 
+                self.usuario_actual.get('id') == usuario_id):
+                logger.error("No se puede eliminar el usuario actual")
                 if self.view:
-                    self.view.mostrar_error("No se puede eliminar el usuario actual")
+                    self.mostrar_error("Error", "No se puede eliminar el usuario actual")
                 return False
             
             # Eliminar usuario
-            if self.model.eliminar_usuario(usuario_id):
+            if hasattr(self.model, 'eliminar_usuario'):
+                exito = self.model.eliminar_usuario(usuario_id)
+            else:
+                logger.error("Método eliminar_usuario no disponible en modelo")
+                return False
+            
+            if exito:
                 # Registrar auditoría
                 self.registrar_auditoria("DELETE_USER", "USUARIOS", {
-                    "usuario_eliminado": usuario.get('username'),
+                    "usuario_id": usuario_id,
                     "por_usuario": self.usuario_actual.get('username') if self.usuario_actual else 'SISTEMA'
                 })
                 
-                logger.info(f"Usuario '{usuario.get('username')}' eliminado exitosamente")
+                logger.info(f"Usuario ID {usuario_id} eliminado exitosamente")
                 
                 # Recargar lista de usuarios
                 self.cargar_usuarios()
                 
                 if self.view:
-                    self.view.mostrar_mensaje("Usuario eliminado exitosamente")
+                    self.mostrar_exito("Usuario eliminado exitosamente")
                 
                 return True
             else:
                 logger.error(MSG_ERROR_ELIMINANDO)
                 if self.view:
-                    self.view.mostrar_error("Error eliminando usuario")
+                    self.mostrar_error("Error", MSG_ERROR_ELIMINANDO)
                 return False
                 
         except Exception as e:
-            logger.error(f"Error eliminando usuario: {e}")
+            logger.error(f"{MSG_ERROR_ELIMINANDO}: {e}")
             if self.view:
-                self.view.mostrar_error("Error eliminando usuario")
+                self.mostrar_error("Error", MSG_ERROR_ELIMINANDO)
             return False
     
     # MÉTODOS DE PERMISOS
@@ -445,24 +420,27 @@ class UsuariosController(BaseController):
         
         Args:
             usuario_id: ID del usuario
-            permisos: Diccionario con permisos
+            permisos: Diccionario con los permisos
             
         Returns:
-            True si se cambiaron exitosamente
+            True si se actualizaron exitosamente
         """
         try:
             if not self.model:
                 logger.error("No hay modelo disponible para cambiar permisos")
                 return False
             
-            if self.model.actualizar_permisos_usuario(usuario_id, permisos):
+            # Actualizar permisos
+            if hasattr(self.model, 'actualizar_permisos_usuario'):
+                exito = self.model.actualizar_permisos_usuario(usuario_id, permisos)
+            else:
+                logger.error("Método actualizar_permisos_usuario no disponible en modelo")
+                return False
+            
+            if exito:
                 # Registrar auditoría
-                if self.model:
-                    usuario = self.model.obtener_usuario_por_id(usuario_id)
-                else:
-                    usuario = None
                 self.registrar_auditoria("UPDATE_PERMISSIONS", "USUARIOS", {
-                    "usuario": usuario.get('username') if usuario else usuario_id,
+                    "usuario_id": usuario_id,
                     "permisos": permisos,
                     "por_usuario": self.usuario_actual.get('username') if self.usuario_actual else 'SISTEMA'
                 })
@@ -470,43 +448,43 @@ class UsuariosController(BaseController):
                 logger.info(f"Permisos actualizados para usuario ID {usuario_id}")
                 
                 if self.view:
-                    self.view.mostrar_mensaje("Permisos actualizados exitosamente")
+                    self.mostrar_exito("Permisos actualizados exitosamente")
                 
                 return True
             else:
                 logger.error(MSG_ERROR_PERMISOS)
                 if self.view:
-                    self.view.mostrar_error("Error actualizando permisos")
+                    self.mostrar_error("Error", MSG_ERROR_PERMISOS)
                 return False
                 
         except Exception as e:
-            logger.error(f"Error actualizando permisos: {e}")
+            logger.error(f"{MSG_ERROR_PERMISOS}: {e}")
             if self.view:
-                self.view.mostrar_error("Error actualizando permisos")
+                self.mostrar_error("Error", MSG_ERROR_PERMISOS)
             return False
     
-    # MÉTODOS AUXILIARES
+    # MÉTODOS DE ESTADÍSTICAS
     
     def cargar_estadisticas_usuarios(self):
-        """Carga estadísticas de usuarios para el dashboard."""
+        """Carga estadísticas de usuarios en la vista."""
         try:
-            if not self.model or not self.view:
+            if not self.model:
+                logger.warning("No hay modelo disponible para estadísticas")
                 return
             
-            # Obtener estadísticas del modelo
-            if self.model:
+            if hasattr(self.model, 'obtener_estadisticas_usuarios'):
                 estadisticas = self.model.obtener_estadisticas_usuarios()
             else:
-                estadisticas = []
+                logger.warning("Método obtener_estadisticas_usuarios no disponible")
+                estadisticas = {}
             
-            # Actualizar vista
-            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
+            if estadisticas and self.view and hasattr(self.view, 'actualizar_estadisticas'):
                 self.view.actualizar_estadisticas(estadisticas)
-            
-            logger.debug("Estadísticas de usuarios actualizadas")
-            
+                
         except Exception as e:
             logger.error(f"Error cargando estadísticas de usuarios: {e}")
+    
+    # MÉTODOS DE VALIDACIÓN
     
     def _validar_datos_usuario(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
         """
@@ -514,39 +492,38 @@ class UsuariosController(BaseController):
         
         Args:
             datos: Datos del usuario a validar
-            es_actualizacion: Si es una actualización
+            es_actualizacion: Si es una actualización o creación
             
         Returns:
             True si los datos son válidos
         """
         try:
             # Validaciones básicas
-            if not es_actualizacion:  # Para creación, username es obligatorio
+            if not es_actualizacion:
                 if not datos.get('username'):
-                    logger.error("Nombre de usuario es requerido")
+                    logger.error("El nombre de usuario es requerido")
                     if self.view:
-                        self.view.mostrar_error("Nombre de usuario es requerido")
+                        self.mostrar_error("Error", "El nombre de usuario es requerido")
+                    return False
+                
+                if not datos.get('password'):
+                    logger.error("La contraseña es requerida")
+                    if self.view:
+                        self.mostrar_error("Error", "La contraseña es requerida")
                     return False
             
             if not datos.get('email'):
-                logger.error("Email es requerido")
+                logger.error("El email es requerido")
                 if self.view:
-                    self.view.mostrar_error("Email es requerido")
+                    self.mostrar_error("Error", "El email es requerido")
                 return False
             
             # Validar formato de email
-            if '@' not in datos.get('email', ''):
-                logger.error("Formato de email inválido")
+            email = datos.get('email', '')
+            if email and '@' not in email:
+                logger.error("El formato del email es inválido")
                 if self.view:
-                    self.view.mostrar_error("Formato de email inválido")
-                return False
-            
-            # Si hay contraseña, validar longitud mínima
-            password = datos.get('password')
-            if password and len(password) < 6:
-                logger.error("La contraseña debe tener al menos 6 caracteres")
-                if self.view:
-                    self.view.mostrar_error("La contraseña debe tener al menos 6 caracteres")
+                    self.mostrar_error("Error", "El formato del email es inválido")
                 return False
             
             return True
@@ -555,62 +532,71 @@ class UsuariosController(BaseController):
             logger.error(f"Error validando datos de usuario: {e}")
             return False
     
-    def registrar_auditoria(self, accion: str, modulo: str, detalles: Dict[str, Any]):
+    # MÉTODOS DE AUDITORÍA
+    
+    def registrar_auditoria(self, accion: str, tabla: str, datos: Dict[str, Any]):
         """
-        Registra una acción en el log de auditoría.
+        Registra una acción de auditoría.
         
         Args:
             accion: Tipo de acción realizada
-            modulo: Módulo donde se realizó la acción
-            detalles: Detalles adicionales de la acción
+            tabla: Tabla afectada
+            datos: Datos de la auditoría
         """
         try:
-            # Aquí se podría integrar con el módulo de auditoría
-            logger.info(f"AUDITORIA: {accion} - {modulo} - {detalles}")
-            
-            # Si hay modelo de auditoría disponible, usarlo
-            if hasattr(self, 'auditoria_model') and self.auditoria_model:
-                self.auditoria_model.registrar_evento(
-                    accion=accion,
-                    modulo=modulo,
-                    usuario=self.usuario_actual.get('username') if self.usuario_actual else 'SISTEMA',
-                    detalles=detalles
-                )
+            if self.model and hasattr(self.model, 'registrar_auditoria'):
+                self.model.registrar_auditoria(accion, tabla, datos)
+            else:
+                logger.debug(f"Auditoría no disponible: {accion} en {tabla}")
                 
         except Exception as e:
             logger.error(f"Error registrando auditoría: {e}")
     
-    def verificar_permisos(self, permiso_requerido: str) -> bool:
+    # MÉTODOS PÚBLICOS
+    
+    def obtener_usuario_actual(self) -> Optional[Dict[str, Any]]:
+        """
+        Obtiene el usuario actualmente autenticado.
+        
+        Returns:
+            Datos del usuario actual o None si no hay sesión activa
+        """
+        return self.usuario_actual if self.sesion_activa else None
+    
+    def verificar_permisos(self, permiso: str) -> bool:
         """
         Verifica si el usuario actual tiene un permiso específico.
         
         Args:
-            permiso_requerido: Permiso a verificar
+            permiso: Nombre del permiso a verificar
             
         Returns:
-            True si el usuario tiene el permiso
+            True si tiene el permiso
         """
         try:
             if not self.usuario_actual or not self.sesion_activa:
                 return False
             
-            if not self.model:
-                return False
-            
-            return self.model.usuario_tiene_permiso(
-                self.usuario_actual['id'], 
-                permiso_requerido
-            )
+            permisos = self.usuario_actual.get('permisos', {})
+            return permisos.get(permiso, False)
             
         except Exception as e:
             logger.error(f"Error verificando permisos: {e}")
             return False
     
-    def obtener_usuario_actual(self) -> Optional[Dict[str, Any]]:
+    def es_admin(self) -> bool:
         """
-        Obtiene el usuario actualmente logueado.
+        Verifica si el usuario actual es administrador.
         
         Returns:
-            Datos del usuario actual o None
+            True si es administrador
         """
-        return self.usuario_actual if self.sesion_activa else None
+        try:
+            if not self.usuario_actual or not self.sesion_activa:
+                return False
+            
+            return self.usuario_actual.get('es_admin', False)
+            
+        except Exception as e:
+            logger.error(f"Error verificando si es admin: {e}")
+            return False

@@ -68,7 +68,31 @@ def corregir_archivo_simple(filepath):
             contenido = f.read()
 
         lineas = contenido.split('\n')
-        modificado =
+        modificado = False
+
+        for i, linea in enumerate(lineas):
+            if 'return self.model.' in linea and 'if self.model' not in linea:
+                if handle_return_case(linea, i, lineas, filepath):
+                    modificado = True
+            elif ' = self.model.' in linea and 'if self.model' not in linea:
+                if handle_assignment_case(linea, i, lineas, filepath):
+                    modificado = True
+            elif re.match(r'^\s*self\.model\.\w+\([^)]*\)\s*$', linea):
+                if handle_direct_call_case(linea, i, lineas, filepath):
+                    modificado = True
+
+        if modificado:
+            with open(filepath, 'w', encoding='utf-8') as f:
+                f.write('\n'.join(lineas))
+            logger.info(f"Archivo corregido: {filepath}")
+            return True
+
+        return False
+
+    except Exception as e:
+        logger.error(f"Error procesando {filepath}: {e}")
+        return False
+
 def main():
     """Función principal."""
     logger.info("Iniciando corrección final simple de atributos None...")

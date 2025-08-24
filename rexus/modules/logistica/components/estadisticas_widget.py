@@ -290,6 +290,7 @@ class EstadisticasWidget(BaseLogisticaWidget):
                 self.update_with_sample_data()
                 
         except Exception as e:
+            logger.error(f"Error actualizando estadísticas: {e}")
     
     def update_statistics(self, stats: Dict[str, Any]):
         """Actualizar estadísticas con datos reales."""

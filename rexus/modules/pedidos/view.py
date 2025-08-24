@@ -309,22 +309,24 @@ class PedidosView(QWidget):
         """Abre el diálogo para crear un nuevo registro."""
         dialogo = DialogoPedido(self)
 
-        if dialogo.exec() == QDialog.DialogCode.Accepted:
-            if dialogo.validar_datos():
-                datos = dialogo.obtener_datos()
+        if dialogo.exec() == QDialog.DialogCode.Accepted and dialogo.validar_datos():
+            datos = dialogo.obtener_datos()
+            self._crear_pedido(datos)
 
-                if self.controller:
-                    try:
-                        exito = self.controller.crear_pedido(datos)
-                        if exito:
-                            show_success(self, "Éxito", "Pedido creado exitosamente.")
-                            self.actualizar_datos()
-                        else:
-                            show_error(self, "Error", "No se pudo crear el pedido.")
-                    except Exception as e:
-                        show_error(self, "Error", f"Error al crear pedido: {str(e)}")
+    def _crear_pedido(self, datos):
+        """Lógica para crear un pedido y mostrar mensajes."""
+        if self.controller:
+            try:
+                exito = self.controller.crear_pedido(datos)
+                if exito:
+                    show_success(self, "Éxito", "Pedido creado exitosamente.")
+                    self.actualizar_datos()
                 else:
-                    show_warning(self, "Advertencia", "No hay controlador disponible.")
+                    show_error(self, "Error", "No se pudo crear el pedido.")
+            except Exception as e:
+                show_error(self, "Error", f"Error al crear pedido: {str(e)}")
+        else:
+            show_warning(self, "Advertencia", "No hay controlador disponible.")
 
     def buscar(self):
         """Busca registros según los criterios especificados."""

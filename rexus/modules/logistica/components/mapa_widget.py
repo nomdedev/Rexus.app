@@ -359,6 +359,7 @@ class MapaWidget(BaseLogisticaWidget):
             self.web_view.load(QUrl.fromLocalFile(self.mapa_html_path))
             
         except Exception as e:
+            logger.error(f"Error configurando mapa: {e}")
     
     def agregar_marcadores_ejemplo(self, mapa):
         """Agregar marcadores de ejemplo al mapa."""
@@ -451,6 +452,7 @@ class MapaWidget(BaseLogisticaWidget):
                 logger.info("Mapa actualizado (modo simulación)")
                 
         except Exception as e:
+            logger.error(f"Error al actualizar datos del mapa: {e}")
     
     # Métodos de control del mapa
     
@@ -495,6 +497,8 @@ class MapaWidget(BaseLogisticaWidget):
                 self.generar_mapa_con_vista(tile_map.get(vista, 'OpenStreetMap'))
                 
             except Exception as e:
+                logger.error(f"Error cambiando vista del mapa: {e}")
+    
     def generar_mapa_con_vista(self, tile_type: str):
         """Generar mapa con tipo de tile específico."""
         if not FOLIUM_AVAILABLE:
@@ -518,6 +522,8 @@ class MapaWidget(BaseLogisticaWidget):
             self.web_view.load(QUrl.fromLocalFile(self.mapa_html_path))
             
         except Exception as e:
+            logger.error(f"Error generando mapa con vista {tile_type}: {e}")
+            
     def cambiar_zoom(self, valor: int):
         """Cambiar nivel de zoom del mapa."""
         self.zoom_nivel = valor

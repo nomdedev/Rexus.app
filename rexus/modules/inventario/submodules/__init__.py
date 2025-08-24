@@ -10,24 +10,24 @@ try:
 import logging
 logger = logging.getLogger(__name__)
 
-    from .consultas_manager import ConsultasManager
-    from .movimientos_manager import MovimientosManager
-    from .productos_manager import ProductosManager
+from .consultas_manager import ConsultasManager
+from .movimientos_manager import MovimientosManager
+from .productos_manager import ProductosManager
 
-    logger.info()
+logger.info()
 except ImportError as e:
     logger.info(f"[SUBMODULOS INVENTARIO] ERROR - Error importando submodulos: {e}")
 
-    # Crear clases dummy para evitar errores
-    class ConsultasManager:
+# Crear clases dummy para evitar errores
+class ConsultasManager:
         def __init__(self, db_connection=None):
             pass
 
-    class MovimientosManager:
+class MovimientosManager:
         def __init__(self, db_connection=None):
             pass
 
-    class ProductosManager:
+class ProductosManager:
         def __init__(self, db_connection=None):
             pass
 

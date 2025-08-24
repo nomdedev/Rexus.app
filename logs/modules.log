@@ -1392,3 +1392,40 @@
 2025-08-24 13:15:47 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
 2025-08-24 13:18:12 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
 2025-08-24 13:19:58 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 16:55:32 | WARNING  | rexus.modules.logistica.controller | Herramientas de seguridad no disponibles: cannot import name 'validate_sql_input' from 'rexus.utils.sql_security' (D:\martin\Rexus.app\rexus\utils\sql_security.py)
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:05 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 16:57:28 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 16:57:28 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:00:18 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:00:18 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:01:48 | DEBUG    | rexus.modules.logistica.controller | Cargando estadísticas de logística
+2025-08-24 17:01:48 | INFO     | rexus.modules.logistica.controller | Usando estadísticas de demostración
+2025-08-24 17:06:01 | INFO     | rexus.modules.logistica.controller | Herramientas de seguridad inicializadas
+2025-08-24 17:06:01 | INFO     | rexus.modules.logistica.controller | LogisticaController inicializado
+2025-08-24 17:10:15 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:23:28 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:32:21 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:32:58 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:06 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:16 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:30 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:41 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:33:52 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:00 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:06 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:34:15 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:35:54 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:04 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:14 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:21 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:31 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:36:54 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:37:23 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:20 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:30 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController
+2025-08-24 17:39:36 | WARNING  | rexus.modules.usuarios.controller | No se pudo importar BaseController

@@ -29,12 +29,12 @@ import logging
 logger = logging.getLogger(__name__)
 
 from PyQt6.QtWidgets import (
-    QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QDialogButtonBox,
-    QTextEdit, QLabel, QTabWidget, QWidget
+QDialog, QVBoxLayout, QHBoxLayout, QFormLayout, QDialogButtonBox,
+QTextEdit, QLabel, QTabWidget, QWidget
 )
 
 from rexus.ui.components.base_components import (
-    RexusLineEdit, RexusComboBox, RexusGroupBox
+RexusLineEdit, RexusComboBox, RexusGroupBox
 )
 from rexus.utils.form_validators import FormValidator, FormValidatorManager
 from rexus.utils.xss_protection import XSSProtection
@@ -42,394 +42,394 @@ from rexus.utils.message_system import show_error
 
 
 class DialogProveedor(QDialog):
-    """Diálogo para crear/editar proveedores."""
+"""Diálogo para crear/editar proveedores."""
 
-    def __init__(self, parent=None, proveedor_data=None):
+def __init__(self, parent=None, proveedor_data=None):
         super().__init__(parent)
-        self.proveedor_data = proveedor_data
-        self.validator_manager = FormValidatorManager()
+self.proveedor_data = proveedor_data
+self.validator_manager = FormValidatorManager()
 
-        self.setWindowTitle("Nuevo Proveedor" if not proveedor_data else "Editar Proveedor")
-        self.setModal(True)
-        self.setMinimumSize(600, 500)
+self.setWindowTitle("Nuevo Proveedor" if not proveedor_data else "Editar Proveedor")
+self.setModal(True)
+self.setMinimumSize(600, 500)
 
-        self.init_ui()
-        self.configurar_validaciones()
+self.init_ui()
+self.configurar_validaciones()
 
-        if proveedor_data:
-            self.cargar_datos(proveedor_data)
+if proveedor_data:
+        self.cargar_datos(proveedor_data)
 
-    def init_ui(self):
+def init_ui(self):
         """Inicializa la interfaz del diálogo."""
-        layout = QVBoxLayout(self)
+layout = QVBoxLayout(self)
 
-        # Crear pestañas
-        tab_widget = QTabWidget()
+# Crear pestañas
+tab_widget = QTabWidget()
 
-        # Pestaña de información básica
-        tab_basica = self.crear_tab_informacion_basica()
-        tab_widget.addTab(tab_basica, "[CLIPBOARD] Información Básica")
+# Pestaña de información básica
+tab_basica = self.crear_tab_informacion_basica()
+tab_widget.addTab(tab_basica, "[CLIPBOARD] Información Básica")
 
-        # Pestaña de contacto
-        tab_contacto = self.crear_tab_contacto()
-        tab_widget.addTab(tab_contacto, "[PHONE] Contacto")
+# Pestaña de contacto
+tab_contacto = self.crear_tab_contacto()
+tab_widget.addTab(tab_contacto, "[PHONE] Contacto")
 
-        # Pestaña de detalles adicionales
-        tab_detalles = self.crear_tab_detalles()
-        tab_widget.addTab(tab_detalles, "[CHART] Detalles")
+# Pestaña de detalles adicionales
+tab_detalles = self.crear_tab_detalles()
+tab_widget.addTab(tab_detalles, "[CHART] Detalles")
 
-        layout.addWidget(tab_widget)
+layout.addWidget(tab_widget)
 
-        # Botones
-        buttons = QDialogButtonBox(
-            QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
-        )
-        buttons.accepted.connect(self.validar_y_aceptar)
-        buttons.rejected.connect(self.reject)
-        layout.addWidget(buttons)
+# Botones
+buttons = QDialogButtonBox(
+QDialogButtonBox.StandardButton.Ok | QDialogButtonBox.StandardButton.Cancel
+)
+buttons.accepted.connect(self.validar_y_aceptar)
+buttons.rejected.connect(self.reject)
+layout.addWidget(buttons)
 
-    def crear_tab_informacion_basica(self):
+def crear_tab_informacion_basica(self):
         """Crea la pestaña de información básica."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
+widget = QWidget()
+layout = QVBoxLayout(widget)
 
-        # Información principal
-        grupo_principal = RexusGroupBox("[CLIPBOARD] Información Principal")
-        form_layout = QFormLayout(grupo_principal)
+# Información principal
+grupo_principal = RexusGroupBox("[CLIPBOARD] Información Principal")
+form_layout = QFormLayout(grupo_principal)
 
-        # Campos principales
-        self.input_nombre = RexusLineEdit("Nombre del proveedor...")
-        self.input_nombre.setObjectName("nombre")
-        form_layout.addRow("* Nombre:", self.input_nombre)
+# Campos principales
+self.input_nombre = RexusLineEdit("Nombre del proveedor...")
+self.input_nombre.setObjectName("nombre")
+form_layout.addRow("* Nombre:", self.input_nombre)
 
-        self.input_razon_social = RexusLineEdit("Razón social...")
-        self.input_razon_social.setObjectName("razon_social")
-        form_layout.addRow("Razón Social:", self.input_razon_social)
+self.input_razon_social = RexusLineEdit("Razón social...")
+self.input_razon_social.setObjectName("razon_social")
+form_layout.addRow("Razón Social:", self.input_razon_social)
 
-        self.input_ruc = RexusLineEdit("RUC o identificación fiscal...")
-        self.input_ruc.setObjectName("ruc")
-        form_layout.addRow("* RUC/DNI:", self.input_ruc)
+self.input_ruc = RexusLineEdit("RUC o identificación fiscal...")
+self.input_ruc.setObjectName("ruc")
+form_layout.addRow("* RUC/DNI:", self.input_ruc)
 
-        # Estado del proveedor
-        self.combo_estado = RexusComboBox(["ACTIVO", "INACTIVO", "BLOQUEADO"])
-        self.combo_estado.setObjectName("estado")
-        form_layout.addRow("Estado:", self.combo_estado)
+# Estado del proveedor
+self.combo_estado = RexusComboBox(["ACTIVO", "INACTIVO", "BLOQUEADO"])
+self.combo_estado.setObjectName("estado")
+form_layout.addRow("Estado:", self.combo_estado)
 
-        # Categoría
-        self.combo_categoria = RexusComboBox([
-            "GENERAL", "FERRETERÍA", "VIDRIOS", "HERRAJES",
-            "MATERIALES", "SERVICIOS", "EQUIPOS"
-        ])
-        self.combo_categoria.setObjectName("categoria")
-        form_layout.addRow("Categoría:", self.combo_categoria)
+# Categoría
+self.combo_categoria = RexusComboBox([
+"GENERAL", "FERRETERÍA", "VIDRIOS", "HERRAJES",
+"MATERIALES", "SERVICIOS", "EQUIPOS"
+])
+self.combo_categoria.setObjectName("categoria")
+form_layout.addRow("Categoría:", self.combo_categoria)
 
-        layout.addWidget(grupo_principal)
+layout.addWidget(grupo_principal)
 
-        # Información fiscal
-        grupo_fiscal = RexusGroupBox("[MONEY] Información Fiscal")
-        fiscal_layout = QFormLayout(grupo_fiscal)
+# Información fiscal
+grupo_fiscal = RexusGroupBox("[MONEY] Información Fiscal")
+fiscal_layout = QFormLayout(grupo_fiscal)
 
-        self.combo_condicion_iva = RexusComboBox([
-            "RESPONSABLE_INSCRIPTO", "MONOTRIBUTO", "EXENTO", "CONSUMIDOR_FINAL"
-        ])
-        fiscal_layout.addRow("Condición IVA:", self.combo_condicion_iva)
+self.combo_condicion_iva = RexusComboBox([
+"RESPONSABLE_INSCRIPTO", "MONOTRIBUTO", "EXENTO", "CONSUMIDOR_FINAL"
+])
+fiscal_layout.addRow("Condición IVA:", self.combo_condicion_iva)
 
-        self.input_cuit = RexusLineEdit("CUIT...")
-        fiscal_layout.addRow("CUIT:", self.input_cuit)
+self.input_cuit = RexusLineEdit("CUIT...")
+fiscal_layout.addRow("CUIT:", self.input_cuit)
 
-        layout.addWidget(grupo_fiscal)
-        layout.addStretch()
+layout.addWidget(grupo_fiscal)
+layout.addStretch()
 
-        return widget
+return widget
 
-    def crear_tab_contacto(self):
+def crear_tab_contacto(self):
         """Crea la pestaña de información de contacto."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
+widget = QWidget()
+layout = QVBoxLayout(widget)
 
-        # Información de contacto
-        grupo_contacto = RexusGroupBox("[PHONE] Información de Contacto")
-        form_layout = QFormLayout(grupo_contacto)
+# Información de contacto
+grupo_contacto = RexusGroupBox("[PHONE] Información de Contacto")
+form_layout = QFormLayout(grupo_contacto)
 
-        self.input_telefono = RexusLineEdit("Teléfono principal...")
-        self.input_telefono.setObjectName("telefono")
-        form_layout.addRow("* Teléfono:", self.input_telefono)
+self.input_telefono = RexusLineEdit("Teléfono principal...")
+self.input_telefono.setObjectName("telefono")
+form_layout.addRow("* Teléfono:", self.input_telefono)
 
-        self.input_telefono_secundario = RexusLineEdit("Teléfono secundario...")
-        form_layout.addRow("Teléfono 2:", self.input_telefono_secundario)
+self.input_telefono_secundario = RexusLineEdit("Teléfono secundario...")
+form_layout.addRow("Teléfono 2:", self.input_telefono_secundario)
 
-        self.input_email = RexusLineEdit("email@proveedor.com")
-        self.input_email.setObjectName("email")
-        form_layout.addRow("* Email:", self.input_email)
+self.input_email = RexusLineEdit("email@proveedor.com")
+self.input_email.setObjectName("email")
+form_layout.addRow("* Email:", self.input_email)
 
-        self.input_website = RexusLineEdit("https://www.proveedor.com")
-        form_layout.addRow("Sitio Web:", self.input_website)
+self.input_website = RexusLineEdit("https://www.proveedor.com")
+form_layout.addRow("Sitio Web:", self.input_website)
 
-        layout.addWidget(grupo_contacto)
+layout.addWidget(grupo_contacto)
 
-        # Dirección
-        grupo_direccion = RexusGroupBox("📍 Dirección")
-        direccion_layout = QFormLayout(grupo_direccion)
+# Dirección
+grupo_direccion = RexusGroupBox("📍 Dirección")
+direccion_layout = QFormLayout(grupo_direccion)
 
-        self.input_direccion = QTextEdit()
-        self.input_direccion.setMaximumHeight(80)
-        self.input_direccion.setObjectName("direccion")
-        direccion_layout.addRow("* Dirección:", self.input_direccion)
+self.input_direccion = QTextEdit()
+self.input_direccion.setMaximumHeight(80)
+self.input_direccion.setObjectName("direccion")
+direccion_layout.addRow("* Dirección:", self.input_direccion)
 
-        # Dirección en una línea (para layouts horizontales)
-        direccion_datos = QHBoxLayout()
+# Dirección en una línea (para layouts horizontales)
+direccion_datos = QHBoxLayout()
 
-        self.input_ciudad = RexusLineEdit("Ciudad...")
-        direccion_datos.addWidget(QLabel("Ciudad:"))
-        direccion_datos.addWidget(self.input_ciudad)
+self.input_ciudad = RexusLineEdit("Ciudad...")
+direccion_datos.addWidget(QLabel("Ciudad:"))
+direccion_datos.addWidget(self.input_ciudad)
 
-        self.input_provincia = RexusLineEdit("Provincia...")
-        direccion_datos.addWidget(QLabel("Provincia:"))
-        direccion_datos.addWidget(self.input_provincia)
+self.input_provincia = RexusLineEdit("Provincia...")
+direccion_datos.addWidget(QLabel("Provincia:"))
+direccion_datos.addWidget(self.input_provincia)
 
-        self.input_codigo_postal = RexusLineEdit("CP...")
-        direccion_datos.addWidget(QLabel("CP:"))
-        direccion_datos.addWidget(self.input_codigo_postal)
+self.input_codigo_postal = RexusLineEdit("CP...")
+direccion_datos.addWidget(QLabel("CP:"))
+direccion_datos.addWidget(self.input_codigo_postal)
 
-        direccion_widget = QWidget()
-        direccion_widget.setLayout(direccion_datos)
-        direccion_layout.addRow("Ubicación:", direccion_widget)
+direccion_widget = QWidget()
+direccion_widget.setLayout(direccion_datos)
+direccion_layout.addRow("Ubicación:", direccion_widget)
 
-        layout.addWidget(grupo_direccion)
-        layout.addStretch()
+layout.addWidget(grupo_direccion)
+layout.addStretch()
 
-        return widget
+return widget
 
-    def crear_tab_detalles(self):
+def crear_tab_detalles(self):
         """Crea la pestaña de detalles adicionales."""
-        widget = QWidget()
-        layout = QVBoxLayout(widget)
+widget = QWidget()
+layout = QVBoxLayout(widget)
 
-        # Contacto principal
-        grupo_contacto_principal = RexusGroupBox("👤 Contacto Principal")
-        contacto_layout = QFormLayout(grupo_contacto_principal)
+# Contacto principal
+grupo_contacto_principal = RexusGroupBox("👤 Contacto Principal")
+contacto_layout = QFormLayout(grupo_contacto_principal)
 
-        self.input_contacto_nombre = RexusLineEdit("Nombre del contacto...")
-        contacto_layout.addRow("Nombre:", self.input_contacto_nombre)
+self.input_contacto_nombre = RexusLineEdit("Nombre del contacto...")
+contacto_layout.addRow("Nombre:", self.input_contacto_nombre)
 
-        self.input_contacto_cargo = RexusLineEdit("Cargo...")
-        contacto_layout.addRow("Cargo:", self.input_contacto_cargo)
+self.input_contacto_cargo = RexusLineEdit("Cargo...")
+contacto_layout.addRow("Cargo:", self.input_contacto_cargo)
 
-        self.input_contacto_telefono = RexusLineEdit("Teléfono directo...")
-        contacto_layout.addRow("Teléfono:", self.input_contacto_telefono)
+self.input_contacto_telefono = RexusLineEdit("Teléfono directo...")
+contacto_layout.addRow("Teléfono:", self.input_contacto_telefono)
 
-        self.input_contacto_email = RexusLineEdit("email@contacto.com")
-        contacto_layout.addRow("Email:", self.input_contacto_email)
+self.input_contacto_email = RexusLineEdit("email@contacto.com")
+contacto_layout.addRow("Email:", self.input_contacto_email)
 
-        layout.addWidget(grupo_contacto_principal)
+layout.addWidget(grupo_contacto_principal)
 
-        # Términos comerciales
-        grupo_comercial = RexusGroupBox("[BRIEFCASE] Términos Comerciales")
-        comercial_layout = QFormLayout(grupo_comercial)
+# Términos comerciales
+grupo_comercial = RexusGroupBox("[BRIEFCASE] Términos Comerciales")
+comercial_layout = QFormLayout(grupo_comercial)
 
-        self.combo_forma_pago = RexusComboBox([
-            "CONTADO", "30_DIAS", "60_DIAS", "90_DIAS", "PERSONALIZADO"
-        ])
-        comercial_layout.addRow("Forma de Pago:", self.combo_forma_pago)
+self.combo_forma_pago = RexusComboBox([
+"CONTADO", "30_DIAS", "60_DIAS", "90_DIAS", "PERSONALIZADO"
+])
+comercial_layout.addRow("Forma de Pago:", self.combo_forma_pago)
 
-        self.combo_moneda = RexusComboBox(["ARS", "USD", "EUR"])
-        comercial_layout.addRow("Moneda:", self.combo_moneda)
+self.combo_moneda = RexusComboBox(["ARS", "USD", "EUR"])
+comercial_layout.addRow("Moneda:", self.combo_moneda)
 
-        self.input_descuento_maximo = RexusLineEdit("0.00")
-        comercial_layout.addRow("Descuento Máximo %:", self.input_descuento_maximo)
+self.input_descuento_maximo = RexusLineEdit("0.00")
+comercial_layout.addRow("Descuento Máximo %:", self.input_descuento_maximo)
 
-        layout.addWidget(grupo_comercial)
+layout.addWidget(grupo_comercial)
 
-        # Observaciones
-        grupo_observaciones = RexusGroupBox("[NOTE] Observaciones")
-        obs_layout = QVBoxLayout(grupo_observaciones)
+# Observaciones
+grupo_observaciones = RexusGroupBox("[NOTE] Observaciones")
+obs_layout = QVBoxLayout(grupo_observaciones)
 
-        self.input_observaciones = QTextEdit()
-        self.input_observaciones.setMaximumHeight(100)
-        self.input_observaciones.setPlaceholderText(
-            "Observaciones, notas especiales, condiciones particulares..."
-        )
-        self.input_observaciones.setObjectName("observaciones")
-        obs_layout.addWidget(self.input_observaciones)
+self.input_observaciones = QTextEdit()
+self.input_observaciones.setMaximumHeight(100)
+self.input_observaciones.setPlaceholderText(
+"Observaciones, notas especiales, condiciones particulares..."
+)
+self.input_observaciones.setObjectName("observaciones")
+obs_layout.addWidget(self.input_observaciones)
 
-        layout.addWidget(grupo_observaciones)
-        layout.addStretch()
+layout.addWidget(grupo_observaciones)
+layout.addStretch()
 
-        return widget
+return widget
 
-    def configurar_validaciones(self):
+def configurar_validaciones(self):
         """Configura las validaciones del formulario."""
-        # Validaciones de campos obligatorios
-        self.validator_manager.agregar_validacion(
-            self.input_nombre,
-            FormValidator.validar_campo_obligatorio,
-            "Nombre del proveedor"
-        )
-        self.validator_manager.agregar_validacion(
-            self.input_nombre,
-            FormValidator.validar_longitud_texto,
-            2, 100
-        )
+# Validaciones de campos obligatorios
+self.validator_manager.agregar_validacion(
+self.input_nombre,
+FormValidator.validar_campo_obligatorio,
+"Nombre del proveedor"
+)
+self.validator_manager.agregar_validacion(
+self.input_nombre,
+FormValidator.validar_longitud_texto,
+2, 100
+)
 
-        self.validator_manager.agregar_validacion(
-            self.input_ruc,
-            FormValidator.validar_campo_obligatorio,
-            "RUC/DNI"
-        )
-        self.validator_manager.agregar_validacion(
-            self.input_ruc,
-            FormValidator.validar_longitud_texto,
-            8, 20
-        )
+self.validator_manager.agregar_validacion(
+self.input_ruc,
+FormValidator.validar_campo_obligatorio,
+"RUC/DNI"
+)
+self.validator_manager.agregar_validacion(
+self.input_ruc,
+FormValidator.validar_longitud_texto,
+8, 20
+)
 
-        self.validator_manager.agregar_validacion(
-            self.input_telefono,
-            FormValidator.validar_campo_obligatorio,
-            "Teléfono"
-        )
+self.validator_manager.agregar_validacion(
+self.input_telefono,
+FormValidator.validar_campo_obligatorio,
+"Teléfono"
+)
 
-        # Validación de email
-        self.validator_manager.agregar_validacion(
-            self.input_email,
-            FormValidator.validar_email
-        )
+# Validación de email
+self.validator_manager.agregar_validacion(
+self.input_email,
+FormValidator.validar_email
+)
 
-        # Validación de dirección
-        self.validator_manager.agregar_validacion(
-            self.input_direccion,
-            FormValidator.validar_campo_obligatorio,
-            "Dirección"
-        )
+# Validación de dirección
+self.validator_manager.agregar_validacion(
+self.input_direccion,
+FormValidator.validar_campo_obligatorio,
+"Dirección"
+)
 
-    def validar_y_aceptar(self):
+def validar_y_aceptar(self):
         """Valida los datos y acepta el diálogo."""
-        # Validar formulario
-        es_valido, errores = self.validator_manager.validar_formulario()
+# Validar formulario
+es_valido, errores = self.validator_manager.validar_formulario()
 
-        if not es_valido:
-            mensajes_error = self.validator_manager.obtener_mensajes_error()
-            show_error(
-                self,
-                "Errores de Validación",
-                "Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
-            )
-            return
+if not es_valido:
+        mensajes_error = self.validator_manager.obtener_mensajes_error()
+show_error(
+self,
+"Errores de Validación",
+"Por favor corrige los siguientes errores:\n\n• " + "\n• ".join(mensajes_error)
+)
+return
 
-        # Validaciones adicionales personalizadas
-        if not self._validaciones_adicionales():
-            return
+# Validaciones adicionales personalizadas
+if not self._validaciones_adicionales():
+        return
 
-        self.accept()
+self.accept()
 
-    def _validaciones_adicionales(self):
+def _validaciones_adicionales(self):
         """Validaciones adicionales específicas del negocio."""
-        # Validar RUC/DNI único (solo para nuevos proveedores)
-        if not self.proveedor_data:
-            ruc = self.input_ruc.text().strip()
-            if len(ruc) < 8:
+# Validar RUC/DNI único (solo para nuevos proveedores)
+if not self.proveedor_data:
+        ruc = self.input_ruc.text().strip()
+if len(ruc) < 8:
                 show_error(self, "Error de Validación",
-                          "El RUC/DNI debe tener al menos 8 caracteres")
-                return False
+"El RUC/DNI debe tener al menos 8 caracteres")
+return False
 
-        # Validar formato de email si está presente
-        email = self.input_email.text().strip()
-        if email and "@" not in email:
-            show_error(self, "Error de Validación",
-                      "El formato del email no es válido")
-            return False
+# Validar formato de email si está presente
+email = self.input_email.text().strip()
+if email and "@" not in email:
+        show_error(self, "Error de Validación",
+"El formato del email no es válido")
+return False
 
-        return True
+return True
 
-    def obtener_datos(self):
+def obtener_datos(self):
         """Obtiene los datos del formulario con sanitización XSS."""
-        return {
-            # Información básica
-            "nombre": XSSProtection.sanitize_text(self.input_nombre.text()),
-            "razon_social": XSSProtection.sanitize_text(self.input_razon_social.text()),
-            "ruc": XSSProtection.sanitize_text(self.input_ruc.text()),
-            "estado": self.combo_estado.currentText(),
-            "categoria": self.combo_categoria.currentText(),
+return {
+# Información básica
+"nombre": XSSProtection.sanitize_text(self.input_nombre.text()),
+"razon_social": XSSProtection.sanitize_text(self.input_razon_social.text()),
+"ruc": XSSProtection.sanitize_text(self.input_ruc.text()),
+"estado": self.combo_estado.currentText(),
+"categoria": self.combo_categoria.currentText(),
 
-            # Información fiscal
-            "condicion_iva": self.combo_condicion_iva.currentText(),
-            "cuit": XSSProtection.sanitize_text(self.input_cuit.text()),
+# Información fiscal
+"condicion_iva": self.combo_condicion_iva.currentText(),
+"cuit": XSSProtection.sanitize_text(self.input_cuit.text()),
 
-            # Contacto
-            "telefono": XSSProtection.sanitize_text(self.input_telefono.text()),
-            "telefono_secundario": XSSProtection.sanitize_text(self.input_telefono_secundario.text()),
-            "email": XSSProtection.sanitize_text(self.input_email.text()),
-            "website": XSSProtection.sanitize_text(self.input_website.text()),
+# Contacto
+"telefono": XSSProtection.sanitize_text(self.input_telefono.text()),
+"telefono_secundario": XSSProtection.sanitize_text(self.input_telefono_secundario.text()),
+"email": XSSProtection.sanitize_text(self.input_email.text()),
+"website": XSSProtection.sanitize_text(self.input_website.text()),
 
-            # Dirección
-            "direccion": XSSProtection.sanitize_text(self.input_direccion.toPlainText()),
-            "ciudad": XSSProtection.sanitize_text(self.input_ciudad.text()),
-            "provincia": XSSProtection.sanitize_text(self.input_provincia.text()),
-            "codigo_postal": XSSProtection.sanitize_text(self.input_codigo_postal.text()),
+# Dirección
+"direccion": XSSProtection.sanitize_text(self.input_direccion.toPlainText()),
+"ciudad": XSSProtection.sanitize_text(self.input_ciudad.text()),
+"provincia": XSSProtection.sanitize_text(self.input_provincia.text()),
+"codigo_postal": XSSProtection.sanitize_text(self.input_codigo_postal.text()),
 
-            # Contacto principal
-            "contacto_nombre": XSSProtection.sanitize_text(self.input_contacto_nombre.text()),
-            "contacto_cargo": XSSProtection.sanitize_text(self.input_contacto_cargo.text()),
-            "contacto_telefono": XSSProtection.sanitize_text(self.input_contacto_telefono.text()),
-            "contacto_email": XSSProtection.sanitize_text(self.input_contacto_email.text()),
+# Contacto principal
+"contacto_nombre": XSSProtection.sanitize_text(self.input_contacto_nombre.text()),
+"contacto_cargo": XSSProtection.sanitize_text(self.input_contacto_cargo.text()),
+"contacto_telefono": XSSProtection.sanitize_text(self.input_contacto_telefono.text()),
+"contacto_email": XSSProtection.sanitize_text(self.input_contacto_email.text()),
 
-            # Términos comerciales
-            "forma_pago": self.combo_forma_pago.currentText(),
-            "moneda": self.combo_moneda.currentText(),
-            "descuento_maximo": float(self.input_descuento_maximo.text() or "0"),
+# Términos comerciales
+"forma_pago": self.combo_forma_pago.currentText(),
+"moneda": self.combo_moneda.currentText(),
+"descuento_maximo": float(self.input_descuento_maximo.text() or "0"),
 
-            # Observaciones
-            "observaciones": XSSProtection.sanitize_text(self.input_observaciones.toPlainText()),
-        }
+# Observaciones
+"observaciones": XSSProtection.sanitize_text(self.input_observaciones.toPlainText()),
+}
 
-    def cargar_datos(self, datos):
+def cargar_datos(self, datos):
         """Carga datos existentes en el formulario."""
-        # Información básica
-        self.input_nombre.setText(datos.get("nombre", ""))
-        self.input_razon_social.setText(datos.get("razon_social", ""))
-        self.input_ruc.setText(datos.get("ruc", ""))
+# Información básica
+self.input_nombre.setText(datos.get("nombre", ""))
+self.input_razon_social.setText(datos.get("razon_social", ""))
+self.input_ruc.setText(datos.get("ruc", ""))
 
-        estado = datos.get("estado", "ACTIVO")
-        if estado in ["ACTIVO", "INACTIVO", "BLOQUEADO"]:
-            self.combo_estado.setCurrentText(estado)
+estado = datos.get("estado", "ACTIVO")
+if estado in ["ACTIVO", "INACTIVO", "BLOQUEADO"]:
+        self.combo_estado.setCurrentText(estado)
 
-        categoria = datos.get("categoria", "GENERAL")
-        index = self.combo_categoria.findText(categoria)
-        if index >= 0:
-            self.combo_categoria.setCurrentIndex(index)
+categoria = datos.get("categoria", "GENERAL")
+index = self.combo_categoria.findText(categoria)
+if index >= 0:
+        self.combo_categoria.setCurrentIndex(index)
 
-        # Información fiscal
-        self.input_cuit.setText(datos.get("cuit", ""))
+# Información fiscal
+self.input_cuit.setText(datos.get("cuit", ""))
 
-        # Contacto
-        self.input_telefono.setText(datos.get("telefono", ""))
-        self.input_telefono_secundario.setText(datos.get("telefono_secundario", ""))
-        self.input_email.setText(datos.get("email", ""))
-        self.input_website.setText(datos.get("website", ""))
+# Contacto
+self.input_telefono.setText(datos.get("telefono", ""))
+self.input_telefono_secundario.setText(datos.get("telefono_secundario", ""))
+self.input_email.setText(datos.get("email", ""))
+self.input_website.setText(datos.get("website", ""))
 
-        # Dirección
-        self.input_direccion.setPlainText(datos.get("direccion", ""))
-        self.input_ciudad.setText(datos.get("ciudad", ""))
-        self.input_provincia.setText(datos.get("provincia", ""))
-        self.input_codigo_postal.setText(datos.get("codigo_postal", ""))
+# Dirección
+self.input_direccion.setPlainText(datos.get("direccion", ""))
+self.input_ciudad.setText(datos.get("ciudad", ""))
+self.input_provincia.setText(datos.get("provincia", ""))
+self.input_codigo_postal.setText(datos.get("codigo_postal", ""))
 
-        # Contacto principal
-        self.input_contacto_nombre.setText(datos.get("contacto_nombre", ""))
-        self.input_contacto_cargo.setText(datos.get("contacto_cargo", ""))
-        self.input_contacto_telefono.setText(datos.get("contacto_telefono", ""))
-        self.input_contacto_email.setText(datos.get("contacto_email", ""))
+# Contacto principal
+self.input_contacto_nombre.setText(datos.get("contacto_nombre", ""))
+self.input_contacto_cargo.setText(datos.get("contacto_cargo", ""))
+self.input_contacto_telefono.setText(datos.get("contacto_telefono", ""))
+self.input_contacto_email.setText(datos.get("contacto_email", ""))
 
-        # Términos comerciales
-        forma_pago = datos.get("forma_pago", "CONTADO")
-        index = self.combo_forma_pago.findText(forma_pago)
-        if index >= 0:
-            self.combo_forma_pago.setCurrentIndex(index)
+# Términos comerciales
+forma_pago = datos.get("forma_pago", "CONTADO")
+index = self.combo_forma_pago.findText(forma_pago)
+if index >= 0:
+        self.combo_forma_pago.setCurrentIndex(index)
 
-        moneda = datos.get("moneda", "ARS")
-        index = self.combo_moneda.findText(moneda)
-        if index >= 0:
-            self.combo_moneda.setCurrentIndex(index)
+moneda = datos.get("moneda", "ARS")
+index = self.combo_moneda.findText(moneda)
+if index >= 0:
+        self.combo_moneda.setCurrentIndex(index)
 
-        self.input_descuento_maximo.setText(str(datos.get("descuento_maximo", 0)))
+self.input_descuento_maximo.setText(str(datos.get("descuento_maximo", 0)))
 
-        # Observaciones
-        self.input_observaciones.setPlainText(datos.get("observaciones", ""))
+# Observaciones
+self.input_observaciones.setPlainText(datos.get("observaciones", ""))

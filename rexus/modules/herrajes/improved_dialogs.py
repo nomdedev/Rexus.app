@@ -32,52 +32,52 @@ Implementa diálogos CRUD modernos usando las utilidades dialog_utils.py
 import logging
 logger = logging.getLogger(__name__)
 
-                                    }
-                    ]
-                }
-            ]
-        }
+}
+]
+}
+]
+}
 
-        dialog = BaseFormDialog(
-            self.parent,
-            pedido_config['title'],
-            pedido_config['size']
-        )
+dialog = BaseFormDialog(
+self.parent,
+pedido_config['title'],
+pedido_config['size']
+)
 
-        # Agregar campos
-        for group in pedido_config['groups']:
-            dialog.add_form_group(group['title'], group['fields'])
+# Agregar campos
+for group in pedido_config['groups']:
+        dialog.add_form_group(group['title'], group['fields'])
 
-        if dialog.exec() == QDialog.DialogCode.Accepted:
-            pedido_data = dialog.get_form_data()
+if dialog.exec() == QDialog.DialogCode.Accepted:
+        pedido_data = dialog.get_form_data()
 
-            # Crear pedido a través del controlador
-            if self.controller:
+# Crear pedido a través del controlador
+if self.controller:
                 success = self.controller.crear_pedido_herrajes(
-                    pedido_data,
-                    herrajes_seleccionados or []
-                )
+pedido_data,
+herrajes_seleccionados or []
+)
 
-                if success:
-                    from rexus.utils.message_system import show_success
-                    show_success(
-                        self.parent,
-                        ,
-                        f"El pedido {pedido_data.get('numero_pedido')} ha sido creado exitosamente."
-                    )
-                    return True
-                else:
-                    from rexus.utils.message_system import show_error
-                    show_error(
-                        self.parent,
-                        ,
-                        "No se pudo crear el pedido de herrajes."
-                    )
+if success:
+                from rexus.utils.message_system import show_success
+show_success(
+self.parent,
+,
+f"El pedido {pedido_data.get('numero_pedido')} ha sido creado exitosamente."
+)
+return True
+else:
+                from rexus.utils.message_system import show_error
+show_error(
+self.parent,
+,
+"No se pudo crear el pedido de herrajes."
+)
 
-        return False
+return False
 
-    def _generar_numero_pedido(self) -> str:
+def _generar_numero_pedido(self) -> str:
         """Genera un número de pedido automático."""
-        from datetime import datetime
-        timestamp = datetime.now().strftime()
-        return f"PED-HER-{timestamp}"
+from datetime import datetime
+timestamp = datetime.now().strftime()
+return f"PED-HER-{timestamp}"
