@@ -19,7 +19,7 @@ except ImportError:
 
 # Importar componentes base
 try:
-    from ...ui.base.base_controller import BaseController
+    from ...core.base_controller import BaseController
 except ImportError:
     logger.warning("No se pudo importar BaseController")
     BaseController = object
@@ -47,59 +47,60 @@ class ComprasController(BaseController):
         logger.info("ComprasController inicializado")
 
     def conectar_senales(self):
-    """Conecta las señales de la vista con los métodos del controlador."""
+        """Conecta las señales de la vista con los métodos del controlador."""
         try:
-        if self.view and hasattr(self.view, 'connect_signals'):
-            # Señales de órdenes de compra
-        if self.view and hasattr(self.view, 'crear_orden_signal'):
-            self.view.crear_orden_signal.connect(self.crear_orden_compra)
+            if self.view and hasattr(self.view, 'connect_signals'):
+                # Señales de órdenes de compra
+                pass
+            if self.view and hasattr(self.view, 'crear_orden_signal'):
+                self.view.crear_orden_signal.connect(self.crear_orden_compra)
 
-        if self.view and hasattr(self.view, 'actualizar_orden_signal'):
-            self.view.actualizar_orden_signal.connect(self.actualizar_orden_compra)
+            if self.view and hasattr(self.view, 'actualizar_orden_signal'):
+                self.view.actualizar_orden_signal.connect(self.actualizar_orden_compra)
 
-        if self.view and hasattr(self.view, 'cancelar_orden_signal'):
-            self.view.cancelar_orden_signal.connect(self.cancelar_orden_compra)
+            if self.view and hasattr(self.view, 'cancelar_orden_signal'):
+                self.view.cancelar_orden_signal.connect(self.cancelar_orden_compra)
 
-        # Señales de proveedores
-        if self.view and hasattr(self.view, 'crear_proveedor_signal'):
-            self.view.crear_proveedor_signal.connect(self.crear_proveedor)
+            # Señales de proveedores
+            if self.view and hasattr(self.view, 'crear_proveedor_signal'):
+                self.view.crear_proveedor_signal.connect(self.crear_proveedor)
 
-        if self.view and hasattr(self.view, 'actualizar_proveedor_signal'):
-            self.view.actualizar_proveedor_signal.connect(self.actualizar_proveedor)
+            if self.view and hasattr(self.view, 'actualizar_proveedor_signal'):
+                self.view.actualizar_proveedor_signal.connect(self.actualizar_proveedor)
 
-        # Señales de búsqueda y filtros
-        if self.view and hasattr(self.view, 'buscar_ordenes_signal'):
-            self.view.buscar_ordenes_signal.connect(self.buscar_ordenes)
+            # Señales de búsqueda y filtros
+            if self.view and hasattr(self.view, 'buscar_ordenes_signal'):
+                self.view.buscar_ordenes_signal.connect(self.buscar_ordenes)
 
-        if self.view and hasattr(self.view, 'buscar_proveedores_signal'):
-            self.view.buscar_proveedores_signal.connect(self.buscar_proveedores)
+            if self.view and hasattr(self.view, 'buscar_proveedores_signal'):
+                self.view.buscar_proveedores_signal.connect(self.buscar_proveedores)
 
-        # Señales de reportes
-        if self.view and hasattr(self.view, 'generar_reporte_signal'):
-            self.view.generar_reporte_signal.connect(self.generar_reporte_compras)
+            # Señales de reportes
+            if self.view and hasattr(self.view, 'generar_reporte_signal'):
+                self.view.generar_reporte_signal.connect(self.generar_reporte_compras)
 
-        logger.debug("Señales de compras conectadas")
+            logger.debug("Señales de compras conectadas")
 
         except Exception as e:
             logger.error(f"Error conectando señales de compras: {e}")
 
     def cargar_datos_iniciales(self):
-    """Carga datos iniciales del módulo de compras."""
+        """Carga datos iniciales del módulo de compras."""
         try:
-        if not self.model:
-            logger.warning("No hay modelo de compras disponible")
-        return
+            if not self.model:
+                logger.warning("No hay modelo de compras disponible")
+                return
 
-        # Cargar órdenes de compra recientes
-        self.cargar_ordenes_compra()
+            # Cargar órdenes de compra recientes
+            self.cargar_ordenes_compra()
 
-        # Cargar lista de proveedores
-        self.cargar_proveedores()
+            # Cargar lista de proveedores
+            self.cargar_proveedores()
 
-        # Cargar estadísticas de compras
-        self.cargar_estadisticas_compras()
+            # Cargar estadísticas de compras
+            self.cargar_estadisticas_compras()
 
-        logger.debug("Datos iniciales de compras cargados")
+            logger.debug("Datos iniciales de compras cargados")
 
         except (AttributeError, TypeError) as e:
             logger.error(f"Error cargando datos iniciales de compras: {e}")
@@ -107,721 +108,584 @@ class ComprasController(BaseController):
         # MÉTODOS DE ÓRDENES DE COMPRA
 
     def cargar_ordenes_compra(self, filtros: Optional[Dict[str, Any]] = None):
-    """
-    Carga órdenes de compra en la vista.
-    
-    Args:
-    filtros: Filtros opcionales para la consulta
-    """
+        """
+        Carga órdenes de compra en la vista.
+        
+        Args:
+            filtros: Filtros opcionales para la consulta
+        """
         try:
-        if not self.model or not self.view:
-            return
+            if not self.model or not self.view:
+                return
 
-        # Obtener órdenes del modelo
-        if filtros:
-        if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
-        if self.model:
+            # Obtener órdenes del modelo
+            ordenes = []
+            if filtros and self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
+                ordenes = self.model.obtener_ordenes_filtradas(filtros)
+            elif self.model and hasattr(self.model, 'obtener_todas_ordenes'):
+                ordenes = self.model.obtener_todas_ordenes()
 
-        if self.model:
-            ordenes = self.model.obtener_ordenes_filtradas(filtros)
-        # else: # Comentado - bloque huérfano
-        # ordenes = []
+            # Actualizar vista
+            if self.view and hasattr(self.view, 'actualizar_tabla_ordenes'):
+                self.view.actualizar_tabla_ordenes(ordenes)
 
-        # else: # Comentado - bloque huérfano
-
-        # ordenes = []
-        # else: # Comentado - bloque huérfano
-        # ordenes = None
-        # else: # Comentado - bloque huérfano
-        # if self.model and hasattr(self.model, 'obtener_todas_ordenes'):
-            # if self.model:
-
-        # if self.model:
-            # ordenes = self.model.obtener_todas_ordenes()
-        # else:
-            # ordenes = []
-
-        # else:
-
-        # ordenes = []
-        # else:
-            # ordenes = None
-
-        # Actualizar vista
-        if self.view and hasattr(self.view, 'actualizar_tabla_ordenes'):
-            self.view.actualizar_tabla_ordenes(ordenes)
-
-        logger.debug(f"Cargadas {len(ordenes)} órdenes de compra")
+            logger.debug(f"Cargadas {len(ordenes)} órdenes de compra")
 
         except Exception as e:
             logger.error(f"Error cargando órdenes de compra: {e}")
 
     def buscar_ordenes(self, filtros: Dict[str, Any]):
-    """
-    Busca órdenes de compra con filtros específicos.
-    
-    Args:
-    filtros: Diccionario con filtros de búsqueda
-    """
+        """
+        Busca órdenes de compra con filtros específicos.
+        
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+        """
         try:
             self.cargar_ordenes_compra(filtros)
         except Exception as e:
             logger.error(f"Error buscando órdenes de compra: {e}")
 
     def crear_orden_compra(self, datos_orden: Dict[str, Any]) -> bool:
-    """
-    Crea una nueva orden de compra.
-    
-    Args:
-    datos_orden: Datos de la orden de compra
-    
-    Returns:
-    True si se creó exitosamente
-    """
+        """
+        Crea una nueva orden de compra.
+        
+        Args:
+            datos_orden: Datos de la orden de compra
+        
+        Returns:
+            True si se creó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para crear orden")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para crear orden")
+                return False
 
-        # Validar datos de la orden
-        if not self._validar_datos_orden(datos_orden):
-            return False
+            # Validar datos de la orden
+            if not self._validar_datos_orden(datos_orden):
+                return False
 
-        # Crear orden a través del modelo
-        if self.model and hasattr(self.model, 'crear_orden_compra'):
-        if self.model:
+            # Crear orden a través del modelo
+            orden_id = None
+            if self.model and hasattr(self.model, 'crear_orden_compra'):
+                orden_id = self.model.crear_orden_compra(datos_orden)
 
-        if self.model:
-            orden_id = self.model.crear_orden_compra(datos_orden)
-        # else: # Comentado - bloque huérfano
-        # orden_id = None
+            if orden_id:
+                logger.info(f"Orden de compra {orden_id} creada exitosamente")
 
-        # else: # Comentado - bloque huérfano
+                # Recargar lista de órdenes
+                self.cargar_ordenes_compra()
 
-        # orden_id = None
-        # else: # Comentado - bloque huérfano
-        # orden_id = None
+                if self.view:
+                    self.view.mostrar_mensaje(f"Orden de compra {orden_id} creada exitosamente")
 
-        if orden_id:
-            logger.info(f"Orden de compra {orden_id} creada exitosamente")
-
-        # Recargar lista de órdenes
-        self.cargar_ordenes_compra()
-
-        if self.view:
-            self.view.mostrar_mensaje(f"Orden de compra {orden_id} creada exitosamente")
-
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error creando orden de compra")
-        # if self.view:
-            # self.view.mostrar_error("Error creando orden de compra")
-        # return False
+                return True
+            else:
+                logger.error("Error creando orden de compra")
+                if self.view:
+                    self.view.mostrar_error("Error creando orden de compra")
+                return False
 
         except Exception as e:
             logger.error(f"Error creando orden de compra: {e}")
-        if self.view:
-            self.view.mostrar_error("Error creando orden de compra")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error creando orden de compra")
+            return False
 
     def actualizar_orden_compra(self, orden_id: int, datos_orden: Dict[str, Any]) -> bool:
-    """
-    Actualiza una orden de compra existente.
-    
-    Args:
-    orden_id: ID de la orden
-    datos_orden: Nuevos datos de la orden
-    
-    Returns:
-    True si se actualizó exitosamente
-    """
+        """
+        Actualiza una orden de compra existente.
+        
+        Args:
+            orden_id: ID de la orden
+            datos_orden: Nuevos datos de la orden
+        
+        Returns:
+            True si se actualizó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para actualizar orden")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para actualizar orden")
+                return False
 
-        # Validar datos de la orden
-        if not self._validar_datos_orden(datos_orden, es_actualizacion=True):
-            return False
+            # Validar datos de la orden
+            if not self._validar_datos_orden(datos_orden, es_actualizacion=True):
+                return False
 
-        # Actualizar orden en el modelo
-        if self.model and hasattr(self.model, 'actualizar_orden_compra'):
-            resultado = self.model.actualizar_orden_compra(orden_id, datos_orden)
-        return resultado is not False
-        else:
-            return False
+            # Actualizar orden en el modelo
+            if self.model and hasattr(self.model, 'actualizar_orden_compra'):
+                resultado = self.model.actualizar_orden_compra(orden_id, datos_orden)
+                return resultado is not False
+            else:
+                return False
 
         except Exception as e:
             logger.error(f'Error actualizando orden: {e}')
-        return False
+            return False
 
     def helper_actualizar_orden(self, orden_id, datos_orden):
-    """Método auxiliar para actualizar orden."""
+        """Método auxiliar para actualizar orden."""
         try:
-        if self.model and hasattr(self.model, 'actualizar_orden_compra'):
-            return self.model.actualizar_orden_compra(orden_id, datos_orden)
-        return False
+            if self.model and hasattr(self.model, 'actualizar_orden_compra'):
+                return self.model.actualizar_orden_compra(orden_id, datos_orden)
+            return False
         except Exception as e:
             logger.error(f"Error en helper_actualizar_orden: {e}")
-        return False
+            return False
 
     def cancelar_orden_compra(self, orden_id: int, motivo: str = "") -> bool:
-    """
-    Cancela una orden de compra.
-    
-    Args:
-    orden_id: ID de la orden
-    motivo: Motivo de cancelación
-    
-    Returns:
-    True si se canceló exitosamente
-    """
+        """
+        Cancela una orden de compra.
+        
+        Args:
+            orden_id: ID de la orden
+            motivo: Motivo de cancelación
+        
+        Returns:
+            True si se canceló exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para cancelar orden")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para cancelar orden")
+                return False
 
-        if self.model.cancelar_orden_compra(orden_id, motivo):
-            logger.info(f"Orden de compra {orden_id} cancelada exitosamente")
+            if self.model.cancelar_orden_compra(orden_id, motivo):
+                logger.info(f"Orden de compra {orden_id} cancelada exitosamente")
 
-        # Recargar lista de órdenes
-        self.cargar_ordenes_compra()
+                # Recargar lista de órdenes
+                self.cargar_ordenes_compra()
 
-        if self.view:
-            self.view.mostrar_mensaje("Orden de compra cancelada exitosamente")
+                if self.view:
+                    self.view.mostrar_mensaje("Orden de compra cancelada exitosamente")
 
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error cancelando orden de compra")
-        # if self.view:
-            # self.view.mostrar_error("Error cancelando orden de compra")
-        # return False
+                return True
+            else:
+                logger.error("Error cancelando orden de compra")
+                if self.view:
+                    self.view.mostrar_error("Error cancelando orden de compra")
+                return False
 
         except Exception as e:
             logger.error(f"Error cancelando orden de compra: {e}")
-        if self.view:
-            self.view.mostrar_error("Error cancelando orden de compra")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error cancelando orden de compra")
+            return False
 
     def aprobar_orden_compra(self, orden_id: int) -> bool:
-    """
-    Aprueba una orden de compra.
-    
-    Args:
-    orden_id: ID de la orden
-    
-    Returns:
-    True si se aprobó exitosamente
-    """
+        """
+        Aprueba una orden de compra.
+        
+        Args:
+            orden_id: ID de la orden
+        
+        Returns:
+            True si se aprobó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para aprobar orden")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para aprobar orden")
+                return False
 
-        if self.model.aprobar_orden_compra(orden_id, self.usuario_actual):
-            logger.info(f"Orden de compra {orden_id} aprobada exitosamente")
+            if self.model.aprobar_orden_compra(orden_id, self.usuario_actual):
+                logger.info(f"Orden de compra {orden_id} aprobada exitosamente")
 
-        # Recargar lista de órdenes
-        self.cargar_ordenes_compra()
+                # Recargar lista de órdenes
+                self.cargar_ordenes_compra()
 
-        if self.view:
-            self.view.mostrar_mensaje("Orden de compra aprobada exitosamente")
+                if self.view:
+                    self.view.mostrar_mensaje("Orden de compra aprobada exitosamente")
 
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error aprobando orden de compra")
-        # if self.view:
-            # self.view.mostrar_error("Error aprobando orden de compra")
-        # return False
+                return True
+            else:
+                logger.error("Error aprobando orden de compra")
+                if self.view:
+                    self.view.mostrar_error("Error aprobando orden de compra")
+                return False
 
         except Exception as e:
             logger.error(f"Error aprobando orden de compra: {e}")
-        if self.view:
-            self.view.mostrar_error("Error aprobando orden de compra")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error aprobando orden de compra")
+            return False
 
         # MÉTODOS DE PROVEEDORES
 
     def cargar_proveedores(self, filtros: Optional[Dict[str, Any]] = None):
-    """
-    Carga proveedores en la vista.
-    
-    Args:
-    filtros: Filtros opcionales para la consulta
-    """
+        """
+        Carga proveedores en la vista.
+        
+        Args:
+            filtros: Filtros opcionales para la consulta
+        """
         try:
-        if not self.model or not self.view:
-            return
+            if not self.model or not self.view:
+                return
 
-        # Obtener proveedores del modelo
-        if filtros:
-        if self.model and hasattr(self.model, 'obtener_proveedores_filtrados'):
-        if self.model:
+            # Obtener proveedores del modelo
+            proveedores = []
+            if filtros and self.model and hasattr(self.model, 'obtener_proveedores_filtrados'):
+                proveedores = self.model.obtener_proveedores_filtrados(filtros)
+            elif self.model and hasattr(self.model, 'obtener_todos_proveedores'):
+                proveedores = self.model.obtener_todos_proveedores()
 
-        if self.model:
-            proveedores = self.model.obtener_proveedores_filtrados(filtros)
-        # else: # Comentado - bloque huérfano
-        # proveedores = []
+            # Actualizar vista
+            if self.view and hasattr(self.view, 'actualizar_tabla_proveedores'):
+                self.view.actualizar_tabla_proveedores(proveedores)
 
-        # else: # Comentado - bloque huérfano
-
-        # proveedores = []
-        # else: # Comentado - bloque huérfano
-        # proveedores = None
-        # else: # Comentado - bloque huérfano
-        # if self.model and hasattr(self.model, 'obtener_todos_proveedores'):
-            # if self.model:
-
-        # if self.model:
-            # proveedores = self.model.obtener_todos_proveedores()
-        # else:
-            # proveedores = []
-
-        # else:
-
-        # proveedores = []
-        # else:
-            # proveedores = None
-
-        # Actualizar vista
-        if self.view and hasattr(self.view, 'actualizar_tabla_proveedores'):
-            self.view.actualizar_tabla_proveedores(proveedores)
-
-        logger.debug(f"Cargados {len(proveedores)} proveedores")
+            logger.debug(f"Cargados {len(proveedores)} proveedores")
 
         except Exception as e:
             logger.error(f"Error cargando proveedores: {e}")
 
     def buscar_proveedores(self, filtros: Dict[str, Any]):
-    """
-    Busca proveedores con filtros específicos.
-    
-    Args:
-    filtros: Diccionario con filtros de búsqueda
-    """
+        """
+        Busca proveedores con filtros específicos.
+        
+        Args:
+            filtros: Diccionario con filtros de búsqueda
+        """
         try:
             self.cargar_proveedores(filtros)
         except Exception as e:
             logger.error(f"Error buscando proveedores: {e}")
 
     def crear_proveedor(self, datos_proveedor: Dict[str, Any]) -> bool:
-    """
-    Crea un nuevo proveedor.
-    
-    Args:
-    datos_proveedor: Datos del proveedor
-    
-    Returns:
-    True si se creó exitosamente
-    """
+        """
+        Crea un nuevo proveedor.
+        
+        Args:
+            datos_proveedor: Datos del proveedor
+        
+        Returns:
+            True si se creó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para crear proveedor")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para crear proveedor")
+                return False
 
-        # Validar datos del proveedor
-        if not self._validar_datos_proveedor(datos_proveedor):
-            return False
+            # Validar datos del proveedor
+            if not self._validar_datos_proveedor(datos_proveedor):
+                return False
 
-        # Crear proveedor a través del modelo
-        if self.model and hasattr(self.model, 'crear_proveedor'):
-        if self.model:
+            # Crear proveedor a través del modelo
+            proveedor_id = None
+            if self.model and hasattr(self.model, 'crear_proveedor'):
+                proveedor_id = self.model.crear_proveedor(datos_proveedor)
 
-        if self.model:
-            proveedor_id = self.model.crear_proveedor(datos_proveedor)
-        # else: # Comentado - bloque huérfano
-        # proveedor_id = None
+            if proveedor_id:
+                logger.info(f"Proveedor {proveedor_id} creado exitosamente")
 
-        # else: # Comentado - bloque huérfano
+                # Recargar lista de proveedores
+                self.cargar_proveedores()
 
-        # proveedor_id = None
-        # else: # Comentado - bloque huérfano
-        # proveedor_id = None
+                if self.view:
+                    self.view.mostrar_mensaje("Proveedor creado exitosamente")
 
-        if proveedor_id:
-            logger.info(f"Proveedor {proveedor_id} creado exitosamente")
-
-        # Recargar lista de proveedores
-        self.cargar_proveedores()
-
-        if self.view:
-            self.view.mostrar_mensaje("Proveedor creado exitosamente")
-
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error creando proveedor")
-        # if self.view:
-            # self.view.mostrar_error("Error creando proveedor")
-        # return False
+                return True
+            else:
+                logger.error("Error creando proveedor")
+                if self.view:
+                    self.view.mostrar_error("Error creando proveedor")
+                return False
 
         except Exception as e:
             logger.error(f"Error creando proveedor: {e}")
-        if self.view:
-            self.view.mostrar_error("Error creando proveedor")
-        return False
-
-    def actualizar_proveedor(self, proveedor_id: int, datos_proveedor: Dict[str, Any]) -> bool:
-    """
-    Actualiza un proveedor existente.
-    
-    Args:
-    proveedor_id: ID del proveedor
-    datos_proveedor: Nuevos datos del proveedor
-    
-    Returns:
-    True si se actualizó exitosamente
-    """
-        try:
-        if not self.model:
-            logger.error("No hay modelo disponible para actualizar proveedor")
-        return False
-
-        # Validar datos del proveedor
-        if not self._validar_datos_proveedor(datos_proveedor, es_actualizacion=True):
+            if self.view:
+                self.view.mostrar_error("Error creando proveedor")
             return False
 
-        if self.model and hasattr(self.model, 'actualizar_proveedor'):
-        if self.model:
-        if self.model:
-            self.model.actualizar_proveedor(proveedor_id, datos_proveedor)
-        logger.info(f"Proveedor {proveedor_id} actualizado exitosamente")
+    def actualizar_proveedor(self, proveedor_id: int, datos_proveedor: Dict[str, Any]) -> bool:
+        """
+        Actualiza un proveedor existente.
+        
+        Args:
+            proveedor_id: ID del proveedor
+            datos_proveedor: Nuevos datos del proveedor
+        
+        Returns:
+            True si se actualizó exitosamente
+        """
+        try:
+            if not self.model:
+                logger.error("No hay modelo disponible para actualizar proveedor")
+                return False
 
-        # Recargar lista de proveedores
-        self.cargar_proveedores()
+            # Validar datos del proveedor
+            if not self._validar_datos_proveedor(datos_proveedor, es_actualizacion=True):
+                return False
 
-        if self.view:
-            self.view.mostrar_mensaje("Proveedor actualizado exitosamente")
+            if self.model and hasattr(self.model, 'actualizar_proveedor'):
+                self.model.actualizar_proveedor(proveedor_id, datos_proveedor)
+                logger.info(f"Proveedor {proveedor_id} actualizado exitosamente")
 
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error actualizando proveedor")
-        # if self.view:
-            # self.view.mostrar_error("Error actualizando proveedor")
-        # return False
+                # Recargar lista de proveedores
+                self.cargar_proveedores()
+
+                if self.view:
+                    self.view.mostrar_mensaje("Proveedor actualizado exitosamente")
+
+                return True
+            else:
+                logger.error("Error actualizando proveedor")
+                if self.view:
+                    self.view.mostrar_error("Error actualizando proveedor")
+                return False
 
         except Exception as e:
             logger.error(f"Error actualizando proveedor: {e}")
-        if self.view:
-            self.view.mostrar_error("Error actualizando proveedor")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error actualizando proveedor")
+            return False
 
         # MÉTODOS DE ESTADÍSTICAS Y REPORTES
 
     def cargar_estadisticas_compras(self):
-    """Carga estadísticas de compras para el dashboard."""
+        """Carga estadísticas de compras para el dashboard."""
         try:
-        if not self.model or not self.view:
-            return
+            if not self.model or not self.view:
+                return
 
-        # Obtener estadísticas del modelo
-        if self.model:
+            # Obtener estadísticas del modelo
+            estadisticas = []
+            if self.model:
+                estadisticas = self.model.obtener_estadisticas_compras()
 
-        if self.model:
-            estadisticas = self.model.obtener_estadisticas_compras()
-        # else: # Comentado - bloque huérfano
-        # estadisticas = []
+            # Actualizar vista
+            if self.view and hasattr(self.view, 'actualizar_estadisticas'):
+                self.view.actualizar_estadisticas(estadisticas)
 
-        # else: # Comentado - bloque huérfano
-
-        # estadisticas = []
-
-        # Actualizar vista
-        if self.view and hasattr(self.view, 'actualizar_estadisticas'):
-            self.view.actualizar_estadisticas(estadisticas)
-
-        logger.debug("Estadísticas de compras actualizadas")
+            logger.debug("Estadísticas de compras actualizadas")
 
         except Exception as e:
             logger.error(f"Error cargando estadísticas de compras: {e}")
 
     def generar_reporte_compras(self, tipo_reporte: str, parametros: Dict[str, Any]) -> bool:
-    """
-    Genera un reporte de compras.
-    
-    Args:
-    tipo_reporte: Tipo de reporte (ordenes, proveedores, gastos)
-    parametros: Parámetros del reporte
-    
-    Returns:
-    True si se generó exitosamente
-    """
+        """
+        Genera un reporte de compras.
+        
+        Args:
+            tipo_reporte: Tipo de reporte (ordenes, proveedores, gastos)
+            parametros: Parámetros del reporte
+        
+        Returns:
+            True si se generó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para generar reporte")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para generar reporte")
+                return False
 
-        logger.info(f"Generando reporte de compras: {tipo_reporte}")
+            logger.info(f"Generando reporte de compras: {tipo_reporte}")
 
-        # Generar reporte según el tipo
-        if tipo_reporte == "ordenes":
-        if self.model and hasattr(self.model, 'generar_reporte_ordenes'):
-        if self.model:
+            reporte = None
+            # Generar reporte según el tipo
+            if tipo_reporte == "ordenes":
+                if self.model and hasattr(self.model, 'generar_reporte_ordenes'):
+                    reporte = self.model.generar_reporte_ordenes(parametros)
+            elif tipo_reporte == "proveedores":
+                if self.model and hasattr(self.model, 'generar_reporte_proveedores'):
+                    reporte = self.model.generar_reporte_proveedores(parametros)
+            elif tipo_reporte == "gastos":
+                if self.model and hasattr(self.model, 'generar_reporte_gastos'):
+                    reporte = self.model.generar_reporte_gastos(parametros)
+            else:
+                logger.error(f"Tipo de reporte no soportado: {tipo_reporte}")
+                if self.view:
+                    self.view.mostrar_error(f"Tipo de reporte no soportado: {tipo_reporte}")
+                return False
 
-        if self.model:
-            reporte = self.model.generar_reporte_ordenes(parametros)
-        # else: # Comentado - bloque huérfano
-        # reporte = None
+            # Mostrar reporte en la vista
+            if reporte and hasattr(self.view, 'mostrar_reporte'):
+                self.view.mostrar_reporte(reporte, tipo_reporte)
 
-        # else: # Comentado - bloque huérfano
+            if self.view:
+                self.view.mostrar_mensaje("Reporte generado exitosamente")
 
-        # reporte = None
-        # else: # Comentado - bloque huérfano
-        # reporte = None
-        elif tipo_reporte == "proveedores":
-        if self.model and hasattr(self.model, 'generar_reporte_proveedores'):
-        if self.model:
-
-        if self.model:
-            reporte = self.model.generar_reporte_proveedores(parametros)
-        # else: # Comentado - bloque huérfano
-        # reporte = None
-
-        # else: # Comentado - bloque huérfano
-
-        # reporte = None
-        # else: # Comentado - bloque huérfano
-        # reporte = None
-        elif tipo_reporte == "gastos":
-        if self.model and hasattr(self.model, 'generar_reporte_gastos'):
-        if self.model:
-
-        if self.model:
-            reporte = self.model.generar_reporte_gastos(parametros)
-        # else: # Comentado - bloque huérfano
-        # reporte = None
-
-        # else: # Comentado - bloque huérfano
-
-        # reporte = None
-        # else: # Comentado - bloque huérfano
-        # reporte = None
-        # else: # Comentado - bloque huérfano
-        # logger.error(f"Tipo de reporte no soportado: {tipo_reporte}")
-        # if self.view:
-            # self.view.mostrar_error(f"Tipo de reporte no soportado: {tipo_reporte}")
-        # return False
-
-        # Mostrar reporte en la vista
-        if reporte and hasattr(self.view, 'mostrar_reporte'):
-            self.view.mostrar_reporte(reporte, tipo_reporte)
-
-        if self.view:
-            self.view.mostrar_mensaje("Reporte generado exitosamente")
-
-        return True
-        # else: # Comentado - bloque huérfano
-        # logger.error("Error generando reporte")
-        # if self.view:
-            # self.view.mostrar_error("Error generando reporte")
-        # return False
+            return True
 
         except Exception as e:
             logger.error(f"Error generando reporte de compras: {e}")
-        if self.view:
-            self.view.mostrar_error("Error generando reporte")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error generando reporte")
+            return False
 
     def generar_reporte_completo(self):
-    """
-    Genera un reporte completo del módulo de compras.
-    
-    Returns:
-    Dict: Reporte completo
-    """
+        """
+        Genera un reporte completo del módulo de compras.
+        
+        Returns:
+            Dict: Reporte completo
+        """
         try:
-        if not self.model:
-            logger.warning("No hay modelo disponible para reporte completo")
-        return {}
+            if not self.model:
+                logger.warning("No hay modelo disponible para reporte completo")
+                return {}
 
-        reporte = {
-        'fecha_generacion': datetime.now().isoformat(),
-        if self.model and hasattr(self.model, 'obtener_estadisticas_compras'):
-        if self.model:
-        if self.model:
-            self.model.obtener_estadisticas_compras()
-        if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
-        if self.model:
-        if self.model:
-            self.model.obtener_ordenes_filtradas({'estado': 'PENDIENTE'})
-        if self.model and hasattr(self.model, 'obtener_proveedores_filtrados'):
-        if self.model:
-        if self.model:
-            self.model.obtener_proveedores_filtrados({'activo': True})
-        if self.model and hasattr(self.model, 'obtener_resumen_gastos_periodo'):
-        if self.model:
-        if self.model:
-            self.model.obtener_resumen_gastos_periodo()
-        if self.model and hasattr(self.model, 'obtener_alertas_compras'):
-        if self.model:
-        if self.model:
-            self.model.obtener_alertas_compras()
-        }
+            reporte = {
+                'fecha_generacion': datetime.now().isoformat(),
+                'estadisticas': self.model.obtener_estadisticas_compras() if self.model and hasattr(self.model, 'obtener_estadisticas_compras') else {},
+                'ordenes_pendientes': self.model.obtener_ordenes_filtradas({'estado': 'PENDIENTE'}) if self.model and hasattr(self.model, 'obtener_ordenes_filtradas') else [],
+                'proveedores_activos': self.model.obtener_proveedores_filtrados({'activo': True}) if self.model and hasattr(self.model, 'obtener_proveedores_filtrados') else [],
+                'resumen_gastos': self.model.obtener_resumen_gastos_periodo() if self.model and hasattr(self.model, 'obtener_resumen_gastos_periodo') else {},
+                'alertas': self.model.obtener_alertas_compras() if self.model and hasattr(self.model, 'obtener_alertas_compras') else []
+            }
 
-        logger.info("Reporte completo de compras generado")
-        return reporte
+            logger.info("Reporte completo de compras generado")
+            return reporte
 
         except Exception as e:
             logger.error(f"Error generando reporte completo: {e}")
-        return {}
+            return {}
 
         # MÉTODOS AUXILIARES DE VALIDACIÓN
 
     def _validar_datos_orden(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
-    """
-    Valida los datos de una orden de compra.
-    
-    Args:
-    datos: Datos de la orden a validar
-    es_actualizacion: Si es una actualización
-    
-    Returns:
-    True si los datos son válidos
-    """
+        """
+        Valida los datos de una orden de compra.
+        
+        Args:
+            datos: Datos de la orden a validar
+            es_actualizacion: Si es una actualización
+        
+        Returns:
+            True si los datos son válidos
+        """
         try:
             # Validaciones básicas
-        if not datos.get('proveedor_id'):
-            logger.error("Proveedor es requerido")
-        if self.view:
-            self.view.mostrar_error("Proveedor es requerido")
-        return False
+            if not datos.get('proveedor_id'):
+                logger.error("Proveedor es requerido")
+                if self.view:
+                    self.view.mostrar_error("Proveedor es requerido")
+                return False
 
-        if not datos.get('fecha_orden'):
-            logger.error("Fecha de orden es requerida")
-        if self.view:
-            self.view.mostrar_error("Fecha de orden es requerida")
-        return False
+            if not datos.get('fecha_orden'):
+                logger.error("Fecha de orden es requerida")
+                if self.view:
+                    self.view.mostrar_error("Fecha de orden es requerida")
+                return False
 
-        # Validar detalles de la orden
-        detalles = datos.get('detalles', [])
-        if not detalles:
-            logger.error("La orden debe tener al menos un detalle")
-        if self.view:
-            self.view.mostrar_error("La orden debe tener al menos un detalle")
-        return False
+            # Validar detalles de la orden
+            detalles = datos.get('detalles', [])
+            if not detalles:
+                logger.error("La orden debe tener al menos un detalle")
+                if self.view:
+                    self.view.mostrar_error("La orden debe tener al menos un detalle")
+                return False
 
-        # Validar cada detalle
-        for detalle in detalles:
-        if not detalle.get('producto_id'):
-            logger.error("Producto es requerido en cada detalle")
-        if self.view:
-            self.view.mostrar_error("Producto es requerido en cada detalle")
-        return False
+            # Validar cada detalle
+            for detalle in detalles:
+                if not detalle.get('producto_id'):
+                    logger.error("Producto es requerido en cada detalle")
+                    if self.view:
+                        self.view.mostrar_error("Producto es requerido en cada detalle")
+                    return False
 
-        try:
-            cantidad = float(detalle.get('cantidad', 0))
-        precio = float(detalle.get('precio_unitario', 0))
+                try:
+                    cantidad = float(detalle.get('cantidad', 0))
+                    precio = float(detalle.get('precio_unitario', 0))
 
-        if cantidad <= 0:
-            logger.error("La cantidad debe ser mayor a 0")
-        if self.view:
-            self.view.mostrar_error("La cantidad debe ser mayor a 0")
-        return False
+                    if cantidad <= 0:
+                        logger.error("La cantidad debe ser mayor a 0")
+                        if self.view:
+                            self.view.mostrar_error("La cantidad debe ser mayor a 0")
+                        return False
 
-        if precio <= 0:
-            logger.error("El precio unitario debe ser mayor a 0")
-        if self.view:
-            self.view.mostrar_error("El precio unitario debe ser mayor a 0")
-        return False
+                    if precio <= 0:
+                        logger.error("El precio unitario debe ser mayor a 0")
+                        if self.view:
+                            self.view.mostrar_error("El precio unitario debe ser mayor a 0")
+                        return False
 
-        except ValueError:
-            logger.error("Cantidad y precio deben ser valores numéricos válidos")
-        if self.view:
-            self.view.mostrar_error("Cantidad y precio deben ser valores numéricos válidos")
-        return False
+                except ValueError:
+                    logger.error("Cantidad y precio deben ser valores numéricos válidos")
+                    if self.view:
+                        self.view.mostrar_error("Cantidad y precio deben ser valores numéricos válidos")
+                    return False
 
-        return True
+            return True
 
         except Exception as e:
             logger.error(f"Error validando datos de orden: {e}")
-        return False
+            return False
 
     def _validar_datos_proveedor(self, datos: Dict[str, Any], es_actualizacion: bool = False) -> bool:
-    """
-    Valida los datos de un proveedor.
-    
-    Args:
-    datos: Datos del proveedor a validar
-    es_actualizacion: Si es una actualización
-    
-    Returns:
-    True si los datos son válidos
-    """
+        """
+        Valida los datos de un proveedor.
+        
+        Args:
+            datos: Datos del proveedor a validar
+            es_actualizacion: Si es una actualización
+        
+        Returns:
+            True si los datos son válidos
+        """
         try:
             # Validaciones básicas
-        if not datos.get('nombre'):
-            logger.error("Nombre del proveedor es requerido")
-        if self.view:
-            self.view.mostrar_error("Nombre del proveedor es requerido")
-        return False
+            if not datos.get('nombre'):
+                logger.error("Nombre del proveedor es requerido")
+                if self.view:
+                    self.view.mostrar_error("Nombre del proveedor es requerido")
+                return False
 
-        if not datos.get('contacto'):
-            logger.error("Contacto del proveedor es requerido")
-        if self.view:
-            self.view.mostrar_error("Contacto del proveedor es requerido")
-        return False
+            if not datos.get('contacto'):
+                logger.error("Contacto del proveedor es requerido")
+                if self.view:
+                    self.view.mostrar_error("Contacto del proveedor es requerido")
+                return False
 
-        # Validar email si se proporciona
-        email = datos.get('email')
-        if email and '@' not in email:
-            logger.error("Formato de email inválido")
-        if self.view:
-            self.view.mostrar_error("Formato de email inválido")
-        return False
+            # Validar email si se proporciona
+            email = datos.get('email')
+            if email and '@' not in email:
+                logger.error("Formato de email inválido")
+                if self.view:
+                    self.view.mostrar_error("Formato de email inválido")
+                return False
 
-        return True
+            return True
 
         except Exception as e:
             logger.error(f"Error validando datos de proveedor: {e}")
-        return False
+            return False
 
     def exportar_ordenes(self, formato: str = "excel", filtros: Optional[Dict[str, Any]] = None) -> bool:
-    """
-    Exporta órdenes de compra en el formato especificado.
-    
-    Args:
-    formato: Formato de exportación (excel, pdf, csv)
-    filtros: Filtros para la exportación
-    
-    Returns:
-    True si se exportó exitosamente
-    """
+        """
+        Exporta órdenes de compra en el formato especificado.
+        
+        Args:
+            formato: Formato de exportación (excel, pdf, csv)
+            filtros: Filtros para la exportación
+        
+        Returns:
+            True si se exportó exitosamente
+        """
         try:
-        if not self.model:
-            logger.error("No hay modelo disponible para exportar")
-        return False
+            if not self.model:
+                logger.error("No hay modelo disponible para exportar")
+                return False
 
-        # Obtener datos para exportar
-        if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
-        if self.model:
+            # Obtener datos para exportar
+            ordenes = []
+            if self.model and hasattr(self.model, 'obtener_ordenes_filtradas'):
+                ordenes = self.model.obtener_ordenes_filtradas(filtros or {})
 
-        if self.model:
-            ordenes = self.model.obtener_ordenes_filtradas(filtros or {})
-        # else: # Comentado - bloque huérfano
-        # ordenes = []
+            if not ordenes:
+                logger.warning("No hay órdenes para exportar")
+                if self.view:
+                    self.view.mostrar_mensaje("No hay órdenes para exportar")
+                return False
 
-        # else: # Comentado - bloque huérfano
+            # Exportar según el formato
+            # Aquí iría la lógica de exportación
+            logger.info(f"Órdenes exportadas en formato {formato}: {len(ordenes)} registros")
 
-        # ordenes = []
-        # else: # Comentado - bloque huérfano
-        # ordenes = None
+            if self.view:
+                self.view.mostrar_mensaje(f"Exportación completada: {len(ordenes)} órdenes")
 
-        if not ordenes:
-            logger.warning("No hay órdenes para exportar")
-        if self.view:
-            self.view.mostrar_mensaje("No hay órdenes para exportar")
-        return False
-
-        # Exportar según el formato
-        # Aquí iría la lógica de exportación
-        logger.info(f"Órdenes exportadas en formato {formato}: {len(ordenes)} registros")
-
-        if self.view:
-            self.view.mostrar_mensaje(f"Exportación completada: {len(ordenes)} órdenes")
-
-        return True
+            return True
 
         except Exception as e:
             logger.error(f"Error exportando órdenes: {e}")
-        if self.view:
-            self.view.mostrar_error("Error exportando órdenes")
-        return False
+            if self.view:
+                self.view.mostrar_error("Error exportando órdenes")
+            return False

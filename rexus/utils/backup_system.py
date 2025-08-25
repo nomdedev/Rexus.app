@@ -216,7 +216,11 @@ bool, str)  # database_name, success, message
             return True
 
         except sqlite3.Error as e:
-            self.        except Exception as e:
+            logger.error(f"Error de SQLite en backup: {e}")
+            return False
+        except Exception as e:
+            logger.error(f"Error general en backup: {e}")
+            return False
 
     def _compress_backup(self, source_path: str, compressed_path: str) -> bool:
         """Comprime un archivo de backup."""
@@ -225,7 +229,10 @@ bool, str)  # database_name, success, message
                 zip_file.write(source_path, os.path.basename(source_path))
             return True
         except Exception as e:
-            self.    def restore_database(self, backup_path: str, target_db_path: str) -> bool:
+            logger.error(f"Error en compresión de backup: {e}")
+            return False
+    
+    def restore_database(self, backup_path: str, target_db_path: str) -> bool:
         """Restaura una base de datos desde un backup."""
         try:
             self.logger.info(f"Iniciando restauración desde {backup_path}")
@@ -268,7 +275,10 @@ bool, str)  # database_name, success, message
             return True
 
         except Exception as e:
-            self.        # Ordenar por timestamp descendente (más recientes primero)
+            logger.error(f"Error en restore_database: {e}")
+            return False
+            
+        # Ordenar por timestamp descendente (más recientes primero)
         backups.sort(key=lambda x: x['timestamp'], reverse=True)
         return backups
 

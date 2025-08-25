@@ -13,60 +13,60 @@ from datetime import datetime
 
 # Configurar logging
 try:
-from ...utils.app_logger import get_logger
-logger = get_logger(__name__)
+    from ...utils.app_logger import get_logger
+    logger = get_logger(__name__)
 except ImportError:
-logger = logging.getLogger(__name__)
+    logger = logging.getLogger(__name__)
 
 try:
-from ...utils.security_utils import SecurityUtils
+    from ...utils.security_utils import SecurityUtils
 except ImportError:
-class SecurityUtils:
+    class SecurityUtils:
         @staticmethod
-def sanitize_sql_input(text):
-        if not text:
+        def sanitize_sql_input(text):
+            if not text:
                 return ""
-return str(text).replace("'", "''")
+            return str(text).replace("'", "''")
 
 
 class ProveedoresModel:
-"""Modelo para gestionar proveedores del módulo de compras."""
+    """Modelo para gestionar proveedores del módulo de compras."""
 
-def __init__(self, db_connection=None):
+    def __init__(self, db_connection=None):
         """
-Inicializa el modelo de proveedores.
+        Inicializa el modelo de proveedores.
 
-Args:
-        db_connection: Conexión a la base de datos
-"""
-self.db_connection = db_connection
-logger.info("ProveedoresModel inicializado")
-
-def crear_proveedor(self, datos_proveedor: Dict[str, Any]) -> Optional[int]:
+        Args:
+            db_connection: Conexión a la base de datos
         """
-Crea un nuevo proveedor.
+        self.db_connection = db_connection
+        logger.info("ProveedoresModel inicializado")
 
-Args:
-        datos_proveedor: Datos del proveedor
+    def crear_proveedor(self, datos_proveedor: Dict[str, Any]) -> Optional[int]:
+        """
+        Crea un nuevo proveedor.
 
-Returns:
-        ID del proveedor creado o None si falló
-"""
-try:
-        if not self.db_connection:
+        Args:
+            datos_proveedor: Datos del proveedor
+
+        Returns:
+            ID del proveedor creado o None si falló
+        """
+        try:
+            if not self.db_connection:
                 logger.error("No hay conexión a BD disponible")
-return None
-
-# Validar datos requeridos
-if not self._validar_datos_proveedor(datos_proveedor):
                 return None
 
-cursor = self.db_connection.cursor()
+            # Validar datos requeridos
+            if not self._validar_datos_proveedor(datos_proveedor):
+                return None
 
-# Sanitizar datos de entrada
-datos_sanitizados = self._sanitizar_datos_proveedor(datos_proveedor)
+            cursor = self.db_connection.cursor()
 
-cursor.execute("""
+            # Sanitizar datos de entrada
+            datos_sanitizados = self._sanitizar_datos_proveedor(datos_proveedor)
+
+            cursor.execute("""
 INSERT INTO proveedores (
 codigo, nombre, razon_social, ruc, telefono, email, 
 direccion, contacto_principal, calificacion, activo,

@@ -1348,3 +1348,10 @@ TypeError: object of type 'Mock' has no len()
 2025-08-22 22:33:57 | ERROR    | rexus.<Mock id='2295655834592'>.controller | Error inicializando controladores: 'DashboardController' object has no attribute 'db_manager'
 2025-08-23 17:42:35 | ERROR    | rexus.test_suite | Test error message
 2025-08-23 17:42:35 | CRITICAL | rexus.test_suite | Test critical message
+2025-08-24 21:58:14 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-24 21:58:58 | CRITICAL | rexus.startup   | Dependencias críticas faltantes - aplicación no puede iniciar
+2025-08-24 21:58:58 | ERROR    | rexus.utils.dependency_validator | 
+ERRORES CRÍTICOS:
+2025-08-24 21:58:58 | ERROR    | rexus.utils.dependency_validator |   ❌ ModuleManager falta método crítico: create_module_safely
+2025-08-25 09:52:44 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 4 intentos restantes.
+2025-08-25 09:53:14 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 3 intentos restantes.

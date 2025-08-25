@@ -84,8 +84,8 @@ class LoginDialog(QDialog):
         
         # Configuraciones de ventana
         self.setModal(True)
-        self.setFixedSize(400, 300)
-        self.setWindowTitle("Rexus.app - Iniciar Sesión")
+        self.setFixedSize(500, 900)
+        self.setWindowTitle("Rexus.app")
         self.setWindowFlags(Qt.WindowType.Dialog | Qt.WindowType.CustomizeWindowHint | 
                            Qt.WindowType.WindowTitleHint | Qt.WindowType.WindowCloseButtonHint)
     
@@ -97,81 +97,70 @@ class LoginDialog(QDialog):
         # Layout principal
         main_layout = QVBoxLayout(self)
         main_layout.setSpacing(20)
-        main_layout.setContentsMargins(40, 40, 40, 40)
+        main_layout.setContentsMargins(80, 60, 80, 60)
         
-        # Título
-        title_label = QLabel("Iniciar Sesión")
-        title_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        title_font = QFont()
-        title_font.setPointSize(18)
-        title_font.setBold(True)
-        title_label.setFont(title_font)
-        main_layout.addWidget(title_label)
+        # Espaciador superior para centrar contenido
+        main_layout.addStretch(2)
         
-        # Subtítulo
-        subtitle_label = QLabel("Acceso al Sistema Rexus")
-        subtitle_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        subtitle_label.setStyleSheet("color: #666; font-size: 12px;")
-        main_layout.addWidget(subtitle_label)
+        # Logo/Imagen
+        self.logo_label = QLabel()
+        self.logo_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.logo_label.setMinimumHeight(120)
+        self.logo_label.setMaximumHeight(120)
+        self.logo_label.setStyleSheet("""
+            QLabel {
+                background-color: #f8f9fa;
+                border: 2px dashed #dee2e6;
+                border-radius: 8px;
+                color: #6c757d;
+                font-size: 12px;
+            }
+        """)
+        self.logo_label.setText("LOGO\nRexus.app")
+        main_layout.addWidget(self.logo_label)
         
         # Formulario
         form_frame = QFrame()
         form_layout = QVBoxLayout(form_frame)
-        form_layout.setSpacing(15)
+        form_layout.setSpacing(20)
         
         # Campo usuario
-        self.username_label = QLabel("Usuario:")
         self.username_edit = QLineEdit()
-        self.username_edit.setPlaceholderText("Ingrese su nombre de usuario")
-        self.username_edit.setMinimumHeight(35)
-        
-        form_layout.addWidget(self.username_label)
+        self.username_edit.setPlaceholderText("Usuario")
+        self.username_edit.setMinimumHeight(45)
         form_layout.addWidget(self.username_edit)
         
         # Campo contraseña
-        self.password_label = QLabel("Contraseña:")
         self.password_edit = QLineEdit()
         self.password_edit.setEchoMode(QLineEdit.EchoMode.Password)
-        self.password_edit.setPlaceholderText("Ingrese su contraseña")
-        self.password_edit.setMinimumHeight(35)
-        
-        form_layout.addWidget(self.password_label)
+        self.password_edit.setPlaceholderText("Contraseña")
+        self.password_edit.setMinimumHeight(45)
         form_layout.addWidget(self.password_edit)
         
-        # Checkbox recordar
-        self.remember_checkbox = QCheckBox("Recordar usuario")
-        form_layout.addWidget(self.remember_checkbox)
         
         main_layout.addWidget(form_frame)
         
         # Barra de progreso (oculta inicialmente)
         self.progress_bar = QProgressBar()
         self.progress_bar.setVisible(False)
-        self.progress_bar.setMinimumHeight(5)
+        self.progress_bar.setMinimumHeight(2)
         main_layout.addWidget(self.progress_bar)
         
-        # Botones
-        button_layout = QHBoxLayout()
-        button_layout.setSpacing(10)
-        
-        self.cancel_button = QPushButton("Cancelar")
-        self.cancel_button.setMinimumHeight(40)
-        
-        self.login_button = QPushButton("Iniciar Sesión")
-        self.login_button.setMinimumHeight(40)
+        # Botón de login
+        self.login_button = QPushButton("Ingresar")
+        self.login_button.setMinimumHeight(45)
         self.login_button.setDefault(True)
-        
-        button_layout.addWidget(self.cancel_button)
-        button_layout.addWidget(self.login_button)
-        
-        main_layout.addLayout(button_layout)
+        main_layout.addWidget(self.login_button)
         
         # Mensaje de estado
         self.status_label = QLabel("")
         self.status_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.status_label.setStyleSheet("color: #d32f2f; font-size: 11px;")
+        self.status_label.setStyleSheet("color: #e74c3c; font-size: 10px;")
         self.status_label.setVisible(False)
         main_layout.addWidget(self.status_label)
+        
+        # Espaciador inferior para centrar contenido
+        main_layout.addStretch(3)
     
     def setup_connections(self):
         """Configura las conexiones de señales."""
@@ -179,7 +168,6 @@ class LoginDialog(QDialog):
             return
             
         self.login_button.clicked.connect(self.handle_login)
-        self.cancel_button.clicked.connect(self.reject)
         
         # Enter en los campos
         self.username_edit.returnPressed.connect(self.password_edit.setFocus)
@@ -197,67 +185,57 @@ class LoginDialog(QDialog):
         # Estilo general del diálogo
         self.setStyleSheet("""
             QDialog {
-                background-color: #f5f5f5;
-                border-radius: 8px;
+                background-color: #ffffff;
+                border: none;
             }
             QLabel {
-                color: #333;
+                color: #333333;
+                font-size: 14px;
+                font-weight: 400;
+                margin-bottom: 15px;
             }
             QLineEdit {
-                border: 2px solid #ddd;
+                border: 1px solid #e1e1e1;
                 border-radius: 4px;
-                padding: 8px;
-                background-color: white;
+                padding: 12px 15px;
+                background-color: #ffffff;
                 font-size: 14px;
+                color: #333333;
             }
             QLineEdit:focus {
-                border-color: #2196F3;
+                border-color: #4a90e2;
+                outline: none;
             }
             QPushButton {
-                background-color: #2196F3;
+                background-color: #4a90e2;
                 color: white;
                 border: none;
                 border-radius: 4px;
                 font-size: 14px;
-                font-weight: bold;
+                font-weight: 400;
+                padding: 12px;
             }
             QPushButton:hover {
-                background-color: #1976D2;
+                background-color: #357abd;
             }
             QPushButton:pressed {
-                background-color: #0D47A1;
+                background-color: #2a5d87;
             }
             QPushButton:disabled {
-                background-color: #ccc;
-            }
-            QCheckBox {
-                color: #666;
-                font-size: 12px;
+                background-color: #cccccc;
             }
             QProgressBar {
                 border: none;
-                background-color: #e0e0e0;
-                border-radius: 2px;
+                background-color: #f0f0f0;
+                border-radius: 1px;
+                height: 2px;
             }
             QProgressBar::chunk {
-                background-color: #2196F3;
-                border-radius: 2px;
+                background-color: #4a90e2;
+                border-radius: 1px;
             }
         """)
         
-        # Estilo específico para botón cancelar
-        self.cancel_button.setStyleSheet("""
-            QPushButton {
-                background-color: #757575;
-                color: white;
-            }
-            QPushButton:hover {
-                background-color: #616161;
-            }
-            QPushButton:pressed {
-                background-color: #424242;
-            }
-        """)
     
     def handle_login(self):
         """Maneja el intento de login."""
@@ -288,16 +266,10 @@ class LoginDialog(QDialog):
         self.show_progress("Autenticando...")
         
         try:
-            # Simular autenticación (en producción usar auth_manager real)
+            # Autenticación real con base de datos
             if self.authenticate_user(username, password):
-                self.user_data = {
-                    'username': username,
-                    'user_id': 1,
-                    'role': 'admin',
-                    'authenticated': True
-                }
-                
                 self.show_success("Login exitoso")
+                self.save_remembered_user()  # Guardar usuario recordado
                 QTimer.singleShot(500, self.accept_login)
                 
             else:
@@ -328,7 +300,7 @@ class LoginDialog(QDialog):
     
     def authenticate_user(self, username: str, password: str) -> bool:
         """
-        Autentica al usuario (mock para desarrollo).
+        Autentica al usuario usando la base de datos real.
         
         Args:
             username: Nombre de usuario
@@ -337,14 +309,54 @@ class LoginDialog(QDialog):
         Returns:
             True si la autenticación es exitosa
         """
-        # Mock de autenticación para desarrollo
-        valid_credentials = {
-            'admin': 'admin123',
-            'user': 'user123',
-            'manager': 'manager123'
-        }
-        
-        return username in valid_credentials and valid_credentials[username] == password
+        try:
+            from ..core.database import get_users_connection
+            from ..core.user_management import UserManagementSystem
+            
+            # Obtener conexión a la base de datos
+            db = get_users_connection()
+            if not db or not db.connection:
+                logger.error("No se pudo conectar a la base de datos de usuarios")
+                return False
+            
+            # Buscar usuario en la base de datos
+            query = """
+                SELECT id, usuario, password_hash, nombre, apellido, rol, activo
+                FROM usuarios 
+                WHERE usuario = ? AND activo = 1
+            """
+            
+            result = db.execute_query(query, (username,))
+            
+            if not result or len(result) == 0:
+                logger.warning(f"Usuario no encontrado: {username}")
+                return False
+                
+            user_data = result[0]
+            stored_password_hash = user_data[2]
+            
+            # Verificar contraseña
+            password_hash = UserManagementSystem.hash_password(password)
+            
+            if password_hash == stored_password_hash:
+                # Actualizar datos del usuario para la sesión
+                self.user_data = {
+                    'user_id': user_data[0],
+                    'username': user_data[1],
+                    'nombre': user_data[3],
+                    'apellido': user_data[4],
+                    'role': user_data[5],
+                    'authenticated': True
+                }
+                logger.info(f"Autenticación exitosa para: {username}")
+                return True
+            else:
+                logger.warning(f"Contraseña incorrecta para usuario: {username}")
+                return False
+                
+        except Exception as e:
+            logger.error(f"Error en autenticación con BD: {e}")
+            return False
     
     def accept_login(self):
         """Acepta el login y emite señal."""
@@ -358,7 +370,7 @@ class LoginDialog(QDialog):
             return
             
         self.status_label.setText(message)
-        self.status_label.setStyleSheet("color: #d32f2f; font-size: 11px;")
+        self.status_label.setStyleSheet("color: #e74c3c; font-size: 10px;")
         self.status_label.setVisible(True)
         logger.warning(f"Login error: {message}")
     
@@ -368,7 +380,7 @@ class LoginDialog(QDialog):
             return
             
         self.status_label.setText(message)
-        self.status_label.setStyleSheet("color: #388e3c; font-size: 11px;")
+        self.status_label.setStyleSheet("color: #27ae60; font-size: 10px;")
         self.status_label.setVisible(True)
         logger.info(f"Login success: {message}")
     
@@ -380,7 +392,7 @@ class LoginDialog(QDialog):
         self.progress_bar.setVisible(True)
         self.progress_bar.setRange(0, 0)  # Indeterminada
         self.status_label.setText(message)
-        self.status_label.setStyleSheet("color: #1976D2; font-size: 11px;")
+        self.status_label.setStyleSheet("color: #4a90e2; font-size: 10px;")
         self.status_label.setVisible(True)
     
     def hide_progress(self):
@@ -406,18 +418,55 @@ class LoginDialog(QDialog):
         """Reinicia contador de intentos fallidos."""
         self.failed_attempts = 0
     
+    def load_logo(self):
+        """Carga el logo de la aplicación si existe."""
+        try:
+            # Buscar logo en diferentes ubicaciones
+            logo_paths = [
+                "resources/images/logo.png",
+                "resources/images/rexus_logo.png",
+                "assets/logo.png",
+                "logo.png"
+            ]
+            
+            for logo_path in logo_paths:
+                if os.path.exists(logo_path):
+                    pixmap = QPixmap(logo_path)
+                    if not pixmap.isNull():
+                        # Escalar el logo manteniendo proporción
+                        scaled_pixmap = pixmap.scaled(
+                            100, 100, 
+                            Qt.AspectRatioMode.KeepAspectRatio, 
+                            Qt.TransformationMode.SmoothTransformation
+                        )
+                        self.logo_label.setPixmap(scaled_pixmap)
+                        self.logo_label.setText("")  # Limpiar texto placeholder
+                        self.logo_label.setStyleSheet("""
+                            QLabel {
+                                background-color: transparent;
+                                border: none;
+                            }
+                        """)
+                        logger.info(f"Logo cargado desde: {logo_path}")
+                        return
+                        
+        except Exception as e:
+            logger.warning(f"No se pudo cargar el logo: {e}")
+            
+        # Si no se encuentra logo, mantener placeholder
+        logger.info("No se encontró logo, usando placeholder")
+    
     def load_remembered_user(self):
         """Carga usuario recordado si existe."""
         # En producción, cargar de configuración/registro
         remembered_user = os.getenv("REXUS_REMEMBERED_USER", "")
         if remembered_user:
             self.username_edit.setText(remembered_user)
-            self.remember_checkbox.setChecked(True)
             self.password_edit.setFocus()
     
     def save_remembered_user(self):
-        """Guarda usuario si está marcado recordar."""
-        if self.remember_checkbox.isChecked() and self.user_data:
+        """Guarda usuario recordado."""
+        if self.user_data:
             # En producción, guardar en configuración segura
             logger.info(f"Usuario recordado: {self.user_data.get('username')}")
 
@@ -425,6 +474,7 @@ class LoginDialog(QDialog):
         """Evento al mostrar el diálogo."""
         if PYQT_AVAILABLE:
             super().showEvent(event)
+            self.load_logo()  # Cargar logo al mostrar diálogo
             self.load_remembered_user()
             if not self.username_edit.text():
                 self.username_edit.setFocus()

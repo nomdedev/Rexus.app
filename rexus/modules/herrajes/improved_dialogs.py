@@ -32,52 +32,79 @@ Implementa diálogos CRUD modernos usando las utilidades dialog_utils.py
 import logging
 logger = logging.getLogger(__name__)
 
-}
-]
-}
-]
-}
+from ...ui.components.dialog_utils import BaseFormDialog
+from ...utils.form_validators import validate_required, validate_numeric
 
-dialog = BaseFormDialog(
-self.parent,
-pedido_config['title'],
-pedido_config['size']
-)
 
-# Agregar campos
-for group in pedido_config['groups']:
-        dialog.add_form_group(group['title'], group['fields'])
+class HerrajesDialogs:
+    """Diálogos mejorados para el módulo de herrajes."""
+    
+    def __init__(self, parent=None):
+        self.parent = parent
+    
+    def dialog_create_herraje(self):
+        """Diálogo para crear un nuevo herraje."""
+        pedido_config = {
+            'title': 'Crear Herraje',
+            'size': (600, 400),
+            'groups': [
+                {
+                    'title': 'Información Básica',
+                    'fields': [
+                        {'name': 'nombre', 'label': 'Nombre', 'type': 'text', 'required': True},
+                        {'name': 'codigo', 'label': 'Código', 'type': 'text', 'required': True}
+                    ]
+                }
+            ]
+        }
+        
+        dialog = BaseFormDialog(
+            self.parent,
+            pedido_config['title'],
+            pedido_config['size']
+        )
+        
+        # Agregar campos
+        for group in pedido_config['groups']:
+            dialog.add_form_group(group['title'], group['fields'])
+        
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            pedido_data = dialog.get_form_data()
+            return pedido_data
+        
+        return None
 
-if dialog.exec() == QDialog.DialogCode.Accepted:
-        pedido_data = dialog.get_form_data()
-
-# Crear pedido a través del controlador
-if self.controller:
-                success = self.controller.crear_pedido_herrajes(
-pedido_data,
-herrajes_seleccionados or []
-)
-
-if success:
-                from rexus.utils.message_system import show_success
-show_success(
-self.parent,
-,
-f"El pedido {pedido_data.get('numero_pedido')} ha sido creado exitosamente."
-)
-return True
-else:
-                from rexus.utils.message_system import show_error
-show_error(
-self.parent,
-,
-"No se pudo crear el pedido de herrajes."
-)
-
-return False
-
-def _generar_numero_pedido(self) -> str:
-        """Genera un número de pedido automático."""
-from datetime import datetime
-timestamp = datetime.now().strftime()
-return f"PED-HER-{timestamp}"
+    def dialog_edit_herraje(self, herraje_data):
+        """Diálogo para editar un herraje existente."""
+        pedido_config = {
+            'title': 'Editar Herraje',
+            'size': (600, 400),
+            'groups': [
+                {
+                    'title': 'Información Básica',
+                    'fields': [
+                        {'name': 'nombre', 'label': 'Nombre', 'type': 'text', 'required': True},
+                        {'name': 'codigo', 'label': 'Código', 'type': 'text', 'required': True}
+                    ]
+                }
+            ]
+        }
+        
+        dialog = BaseFormDialog(
+            self.parent,
+            pedido_config['title'],
+            pedido_config['size']
+        )
+        
+        # Agregar campos
+        for group in pedido_config['groups']:
+            dialog.add_form_group(group['title'], group['fields'])
+        
+        # Llenar con datos existentes
+        dialog.set_form_data(herraje_data)
+        
+        if dialog.exec() == QDialog.DialogCode.Accepted:
+            updated_data = dialog.get_form_data()
+            return updated_data
+        
+        return None

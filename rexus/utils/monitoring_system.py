@@ -92,7 +92,9 @@ class MetricsCollector:
                 time.sleep(interval)
                 
             except Exception as e:
-                self.            return SystemMetrics(
+                self.error_count += 1
+                self.logger.error(f"Error in monitoring loop: {e}")
+                return SystemMetrics(
                 timestamp=datetime.now(),
                 cpu_percent=0.0,
                 memory_percent=0.0,

@@ -62,7 +62,7 @@ class WebEngineManager:
                 try:
                     QtWebEngine.initialize()
                     self._initialization_attempted = True
-                    self.logger.info()
+                    self.logger.info("QtWebEngine inicializado correctamente")
                 except Exception as e:
                     self.logger.warning(f"Error inicializando QtWebEngine: {e}")
                     self._fallback_reasons.append(f"Inicialización falló: {e}")
@@ -80,9 +80,10 @@ class WebEngineManager:
             return False
 
         except Exception as e:
-            self.
-        # Fallback a QTextBrowser
-        return self._create_fallback_browser(fallback_message)
+            self.logger.error(f"Error inesperado en verificación de WebEngine: {e}")
+            self._fallback_reasons.append(f"Error inesperado: {e}")
+            self._webengine_available = False
+            return False
 
     def _create_fallback_browser(self, message: str = None) -> QTextBrowser:
         """
@@ -153,7 +154,9 @@ class WebEngineManager:
                 return False
 
         except Exception as e:
-            self.
+            self.logger.error(f"Error cargando URL {url}: {e}")
+            return False
+    
     def load_file(self, widget: QWidget, file_path: str) -> bool:
         """
         Carga un archivo local en el widget.
@@ -174,7 +177,82 @@ class WebEngineManager:
             return self.load_url(widget, file_url.toString())
 
         except Exception as e:
-            self.        # Fallback para mapas
+            self.logger.error(f"Error cargando archivo {file_path}: {e}")
+            return False
+
+    def create_web_view(self, fallback_message: str = None) -> QWidget:
+        """
+        Crea un widget de vista web con fallback automático.
+        
+        Args:
+            fallback_message: Mensaje a mostrar en caso de fallback
+            
+        Returns:
+            Widget QWebEngineView o QTextBrowser según disponibilidad
+        """
+        try:
+            if self.is_webengine_available() and self._webengine_view_class:
+                return self._webengine_view_class()
+        except Exception as e:
+            self.logger.error(f"Error creando WebEngineView: {e}")
+            self._fallback_reasons.append(f"Error creando vista: {e}")
+        
+        # Fallback a QTextBrowser
+        return self._create_fallback_browser(fallback_message)
+
+    def load_html(self, widget: QWidget, html: str, base_url: str = None) -> bool:
+        """
+        Carga HTML en el widget de forma robusta.
+        
+        Args:
+            widget: Widget donde cargar el HTML
+            html: Código HTML a cargar
+            base_url: URL base opcional
+            
+        Returns:
+            True si se cargó exitosamente, False caso contrario
+        """
+        try:
+            if self.is_webengine_available() and hasattr(widget, 'setHtml'):
+                if base_url:
+                    widget.setHtml(html, QUrl(base_url))
+                else:
+                    widget.setHtml(html)
+                return True
+            elif hasattr(widget, 'setHtml'):
+                # Para QTextBrowser
+                widget.setHtml(html)
+                return True
+            else:
+                self.logger.warning(f"Widget no soporta carga de HTML: {type(widget)}")
+                return False
+        except Exception as e:
+            self.logger.error(f"Error cargando HTML: {e}")
+            return False
+    
+    def create_map_widget(self, fallback_content: str = None) -> QWidget:
+        """
+        Crea un widget para mapas con fallback automático.
+        
+        Args:
+            fallback_content: Contenido a mostrar en caso de fallback
+            
+        Returns:
+            Widget contenedor para mapas
+        """
+        container = QWidget()
+        layout = QVBoxLayout(container)
+        
+        try:
+            if self.is_webengine_available():
+                web_view = self.create_web_view()
+                layout.addWidget(web_view)
+                return container
+        except Exception as e:
+            self.logger.error(f"Error creando widget de mapa: {e}")
+            self._fallback_reasons.append(f"Error widget mapa: {e}")
+        
+        # Fallback para mapas
         fallback = QLabel()
         if fallback_content:
             fallback.setText(fallback_content)
@@ -235,6 +313,7 @@ Motivos: {}
                         self.logger.warning(f"No se pudo eliminar {filename}: {e}")
 
         except Exception as e:
+            self.logger.error(f"Error limpiando archivos temporales: {e}")
 
 # Instancia global del gestor
 webengine_manager = WebEngineManager()

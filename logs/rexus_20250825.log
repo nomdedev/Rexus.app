@@ -1,0 +1,294 @@
+2025-08-25 09:10:40 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:10:40 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:10:40 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:10:42 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:10:42 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:10:42 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:10:42 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:10:42 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:10:42 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:10:42 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:10:42 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:10:42 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:10:42 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:10:42 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:10:42 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:10:42 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:42:43 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:42:43 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:42:43 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:42:44 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:42:44 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:42:44 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:42:44 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:42:44 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:42:44 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:42:44 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:42:44 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:42:44 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:42:44 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:42:44 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:42:44 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:42:44 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:49:37 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:49:37 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:49:37 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:49:38 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:49:38 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:49:38 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:49:38 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:49:38 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:49:38 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:49:38 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:49:38 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:49:38 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:49:38 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:49:38 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:49:38 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:49:38 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:51:51 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:51:51 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:51:51 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:51:51 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:51:51 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:51:51 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:51:51 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:51:51 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:51:51 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:51:51 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:51:51 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:51:51 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:51:51 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:51:51 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:51:51 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:52:44 | WARNING  | rexus.core.login_dialog | Login error: Credenciales incorrectas. 4 intentos restantes.
+2025-08-25 09:52:44 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 4 intentos restantes.
+2025-08-25 09:53:14 | WARNING  | rexus.core.login_dialog | Login error: Credenciales incorrectas. 3 intentos restantes.
+2025-08-25 09:53:14 | ERROR    | rexus.main      | [LOGIN] Autenticación fallida: Credenciales incorrectas. 3 intentos restantes.
+2025-08-25 09:53:14 | WARNING  | rexus.core.login_dialog | Login error: Ingrese su contraseña
+2025-08-25 09:55:33 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:55:33 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:55:33 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:55:34 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:55:34 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:55:34 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:55:34 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:55:34 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:55:34 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:55:34 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:55:34 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:55:34 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:55:34 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:55:34 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:55:34 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:55:34 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:55:34 | INFO     | rexus.core.login_dialog | No se encontró logo, usando placeholder
+2025-08-25 09:58:02 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Variables de entorno cargadas desde .env
+2025-08-25 09:58:02 | INFO     | rexus.core.module_manager | ModuleManager inicializado
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 09:58:02 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 09:58:02 | WARNING  | rexus.utils.webengine_manager | QtWebEngine no disponible: No module named 'PyQt6.QtWebEngine'
+2025-08-25 09:58:02 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:58:02 | INFO     | rexus.startup   | REXUS.APP - INICIO DE APLICACIÓN
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Versión Python: 3.10.5 (tags/v3.10.5:f377153, Jun  6 2022, 16:14:13) [MSC v.1929 64 bit (AMD64)]
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Directorio de trabajo: D:\martin\Rexus.app
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Argumentos: ['D:\\martin\\Rexus.app\\rexus\\main\\app.py']
+2025-08-25 09:58:02 | INFO     | rexus.startup   | ============================================================
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Iniciando Rexus.app
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Validando dependencias críticas del sistema
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Validación de dependencias exitosa - 0 advertencias
+2025-08-25 09:58:02 | INFO     | rexus.startup   | module_manager validado correctamente
+2025-08-25 09:58:02 | INFO     | rexus.startup   | Iniciando QApplication
+2025-08-25 09:58:02 | INFO     | rexus.startup   | QApplication inicializada, preparando login
+2025-08-25 09:58:02 | WARNING  | rexus.main      | [SECURITY] Error BD: object.__init__() takes exactly one argument (the instance to initialize), usando modo sin BD
+2025-08-25 09:58:02 | INFO     | rexus.core.security | SecurityManager inicializado correctamente
+2025-08-25 09:58:02 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:58:02 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:58:02 | INFO     | rexus.core.backup_integration | [CHECK] Sistema de backup inicializado correctamente
+2025-08-25 09:58:03 | INFO     | rexus.core.login_dialog | No se encontró logo, usando placeholder
+2025-08-25 10:16:21 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:16:24 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 10:16:52 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:16:58 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 10:17:23 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:17:25 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 10:17:32 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:17:34 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 10:18:11 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:18:12 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 10:19:03 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 10:19:04 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 13:50:17 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 13:50:18 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 13:50:37 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 13:50:38 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 13:50:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 13:52:12 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 13:52:13 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 13:53:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 13:53:19 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 14:10:45 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 14:11:56 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 14:11:58 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-25 17:27:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 17:27:13 | INFO     | rexus.modules.usuarios.controller | UsuariosController inicializado correctamente
+2025-08-25 17:27:13 | INFO     | rexus.modules.usuarios.controller | UsuariosController inicializado
+2025-08-25 17:27:14 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-25 17:27:15 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente

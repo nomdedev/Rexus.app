@@ -121,3 +121,23 @@
 2025-08-22 17:58:17 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
 2025-08-22 17:58:46 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
 2025-08-22 17:58:46 | INFO     | rexus.security  | [SECURITY-INFO] Login exitoso para usuario 'testuser' | Usuario: testuser
+2025-08-24 22:00:27 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-24 22:00:27 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-24 22:38:42 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-24 22:38:42 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-24 23:02:19 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-24 23:02:19 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-24 23:25:42 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-24 23:25:42 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:10:42 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:10:42 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:42:44 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:42:44 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:49:38 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:49:38 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:51:51 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:51:51 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:55:34 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:55:34 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado
+2025-08-25 09:58:02 | INFO     | rexus.security  | [SECURITY-INFO] SecurityManager inicializado correctamente
+2025-08-25 09:58:02 | INFO     | rexus.security  | [SECURITY-INFO] Sistema de seguridad completo inicializado

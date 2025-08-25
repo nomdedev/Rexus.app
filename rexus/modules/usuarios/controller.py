@@ -19,7 +19,7 @@ except ImportError:
 
 # Importar componentes base
 try:
-    from ...ui.base.base_controller import BaseController
+    from ...core.base_controller import BaseController
 except ImportError:
     logger.warning("No se pudo importar BaseController")
     
@@ -124,48 +124,126 @@ class UsuariosController(BaseController):
     
     # MÉTODOS DE AUTENTICACIÓN
     
-    def autenticar_usuario(self, username: str, password: str) -> bool:
+    def autenticar_usuario(self, username: str, password: str) -> Dict[str, Any]:
         """
-        Autentica un usuario en el sistema.
+        Autentica un usuario en el sistema usando la base de datos users.
         
         Args:
             username: Nombre de usuario
             password: Contraseña
             
         Returns:
-            True si la autenticación es exitosa
+            Dict con resultado de autenticación:
+            {
+                'success': bool,
+                'user': dict | None,
+                'permisos': list,
+                'mensaje': str
+            }
         """
         try:
             if not self.model:
                 logger.error("No hay modelo disponible para autenticación")
-                return False
+                return {
+                    'success': False,
+                    'user': None,
+                    'permisos': [],
+                    'mensaje': 'Error interno: Modelo no disponible'
+                }
             
-            # Validar credenciales
-            if hasattr(self.model, 'validar_credenciales'):
-                usuario = self.model.validar_credenciales(username, password)
-            else:
-                logger.error("Método validar_credenciales no disponible en modelo")
-                return False
+            # Validar entrada
+            if not username or not password:
+                logger.warning("Intento de login con credenciales vacías")
+                return {
+                    'success': False,
+                    'user': None,
+                    'permisos': [],
+                    'mensaje': 'Username y password son requeridos'
+                }
+            
+            # Validar credenciales usando el modelo
+            usuario = self.model.validar_credenciales(username, password)
             
             if usuario:
+                # Autenticación exitosa
                 self.usuario_actual = usuario
                 self.sesion_activa = True
+                
+                # Obtener permisos del usuario
+                permisos = usuario.get('permisos', [])
                 
                 # Registrar auditoría de login
                 self.registrar_auditoria("LOGIN", "USUARIOS", {
                     "usuario": username,
-                    "fecha_login": datetime.now().isoformat()
+                    "fecha_login": datetime.now().isoformat(),
+                    "permisos": permisos
                 })
                 
-                logger.info(f"Usuario '{username}' autenticado exitosamente")
-                return True
+                logger.info(f"Usuario '{username}' autenticado exitosamente con permisos: {permisos}")
+                
+                return {
+                    'success': True,
+                    'user': usuario,
+                    'permisos': permisos,
+                    'mensaje': f'Bienvenido, {usuario.get("nombre_completo", username)}'
+                }
             else:
+                # Autenticación fallida
                 logger.warning(f"Credenciales inválidas para usuario '{username}'")
-                return False
+                
+                return {
+                    'success': False,
+                    'user': None,
+                    'permisos': [],
+                    'mensaje': 'Usuario o contraseña incorrectos'
+                }
                 
         except Exception as e:
             logger.error(f"Error en autenticación: {e}")
+            return {
+                'success': False,
+                'user': None,
+                'permisos': [],
+                'mensaje': 'Error interno del sistema'
+            }
+    
+    def obtener_modulos_habilitados(self) -> List[str]:
+        """
+        Obtiene la lista de módulos habilitados para el usuario actual.
+        
+        Returns:
+            Lista de nombres de módulos permitidos
+        """
+        if not self.usuario_actual:
+            logger.warning("No hay usuario autenticado")
+            return []
+        
+        permisos = self.usuario_actual.get('permisos', [])
+        logger.debug(f"Módulos habilitados para {self.usuario_actual.get('usuario')}: {permisos}")
+        
+        return permisos
+    
+    def verificar_permiso_modulo(self, modulo: str) -> bool:
+        """
+        Verifica si el usuario actual tiene permiso para acceder a un módulo.
+        
+        Args:
+            modulo: Nombre del módulo a verificar
+            
+        Returns:
+            True si tiene permiso, False si no
+        """
+        if not self.usuario_actual:
+            logger.warning("No hay usuario autenticado para verificar permisos")
             return False
+        
+        permisos = self.usuario_actual.get('permisos', [])
+        tiene_permiso = modulo in permisos
+        
+        if not tiene_permiso:
+            logger.warning(f"Usuario '{self.usuario_actual.get('usuario')}' no tiene permiso para módulo '{modulo}'")
+        
+        return tiene_permiso
     
     def cerrar_sesion(self) -> bool:
         """

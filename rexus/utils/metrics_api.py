@@ -58,7 +58,7 @@ class MetricsAPIHandler(BaseHTTPRequestHandler):
                 self._send_error(404, "Endpoint not found")
                 
         except Exception as e:
-            self.            
+            self._send_error(500, f"Server error: {str(e)}")            
     def _handle_system_metrics(self):
         """Endpoint para métricas del sistema"""
         try:
@@ -255,7 +255,9 @@ class MetricsAPIHandler(BaseHTTPRequestHandler):
             
             self.wfile.write(json_data.encode())
         except Exception as e:
-            self.    def do_OPTIONS(self):
+            self._send_error(500, f"Error sending response: {str(e)}")
+            
+    def do_OPTIONS(self):
         """Maneja requests OPTIONS para CORS"""
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')

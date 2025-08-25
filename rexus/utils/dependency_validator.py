@@ -62,6 +62,40 @@ class DependencyValidator:
             self.critical_errors.append(f"ModuleManager no disponible: {e}")
             return False
     
+    def validate_all(self) -> Dict[str, Any]:
+        """
+        Valida todas las dependencias del sistema.
+        
+        Returns:
+            Dict: Reporte completo de validación con estructura:
+                {
+                    'can_start_application': bool,
+                    'module_manager_valid': bool,
+                    'critical_errors': List[str],
+                    'warnings': List[str]
+                }
+        """
+        # Limpiar resultados previos
+        self.critical_errors.clear()
+        self.warnings.clear()
+        
+        # Ejecutar validaciones
+        module_manager_ok = self.validate_module_manager()
+        
+        # Construir reporte
+        can_start = len(self.critical_errors) == 0
+        report = {
+            'can_start_application': can_start,
+            'module_manager_valid': module_manager_ok,
+            'critical_errors': self.critical_errors.copy(),
+            'warnings': self.warnings.copy(),
+            'status': 'OK' if can_start else 'ERROR',
+            'critical_errors_count': len(self.critical_errors),
+            'warnings_count': len(self.warnings)
+        }
+        
+        return report
+    
     def print_validation_summary(self, report: Dict[str, Any]):
         """Imprime resumen de validación usando logger."""
         logger.info("\n" + "="*60)

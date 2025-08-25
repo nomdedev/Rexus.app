@@ -36,7 +36,9 @@
       "Bash(for f in rexus/modules/logistica/components/*.py)",
       "Bash(do echo \"Testing $f:\")",
       "Bash(done)",
-      "Bash(for:*)"
+      "Bash(for:*)",
+      "Bash(copy:*)",
+      "Bash(taskkill:*)"
     ],
     "deny": [],
     "ask": [],

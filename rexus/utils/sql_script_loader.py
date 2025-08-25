@@ -9,7 +9,7 @@ class SQLScriptLoader:
             # Auto-detect scripts directory relative to the project root
             current_file = Path(__file__)
             project_root = current_file.parent.parent.parent  # Go up from rexus/utils/
-            scripts_dir = project_root /  / "sql"
+            scripts_dir = project_root / "sql"
 
         self.scripts_dir = Path(scripts_dir)
         self.logger = logging.getLogger(__name__)
@@ -47,6 +47,8 @@ class SQLScriptLoader:
                 self.logger.warning(f"Script SQL no encontrado: {script_path}")
                 return None
         except Exception as e:
+            self.logger.error(f"Error loading script: {e}")
+            return None
 
     def execute_script(self, cursor, script_name, params=None):
         """

@@ -15,7 +15,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 from .controller import VidriosController
-from .model import ModeloVidrios, VidriosModel
+from .model import VidriosModel
 from .view import VidriosModernView as VidriosView
 
 # Exportar submódulos especializados si existen

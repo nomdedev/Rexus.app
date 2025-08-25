@@ -11,17 +11,17 @@ from typing import Dict, List, Any, Optional
 
 # Importar logging
 try:
-from ...utils.app_logger import get_logger
-logger = get_logger(__name__)
+    from ...utils.app_logger import get_logger
+    logger = get_logger(__name__)
 except ImportError:
-import logging
-logger = logging.getLogger(__name__)
+    import logging
+    logger = logging.getLogger(__name__)
 
 
 class DetalleComprasModel:
-"""Modelo para gestionar detalles de órdenes de compra."""
+    """Modelo para gestionar detalles de órdenes de compra."""
 
-def __init__(self, db_connection=None):
+    def __init__(self, db_connection=None):
         """
 Inicializar modelo de detalles de compras.
 

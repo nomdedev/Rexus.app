@@ -49,6 +49,21 @@ MONITORING_CONFIG = {
 # Tema por defecto
 DEFAULT_THEME = get_env_var("DEFAULT_THEME", "light")
 
+# ===== CONFIGURACIÓN DE BASE DE DATOS =====
+DATABASE_CONFIG = {
+    "driver": get_env_var("DB_DRIVER", "sqlite"),
+    "server": get_env_var("DB_SERVER", "localhost"),
+    "server_alternate": get_env_var("DB_SERVER_ALTERNATE", ""),
+    "username": get_env_var("DB_USERNAME", ""),
+    "password": get_env_var("DB_PASSWORD", ""),
+    "timeout": get_env_var("DB_TIMEOUT", 30, var_type=int),
+    "databases": {
+        "inventario": get_env_var("DB_INVENTARIO", "rexus_inventario.db"),
+        "users": get_env_var("DB_USERS", "rexus_users.db"),
+        "auditoria": get_env_var("DB_AUDITORIA", "rexus_auditoria.db")
+    }
+}
+
 # ===== COMPATIBILIDAD CON CÓDIGO LEGACY =====
 # Variables individuales para compatibilidad con código existente
 DB_DRIVER = DATABASE_CONFIG["driver"]

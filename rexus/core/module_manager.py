@@ -411,6 +411,50 @@ class ModuleManager:
                 report["suggestions"][name] = self.get_loading_suggestions(info.error_message)
         
         return report
+    
+    def create_module_safely(self, module_name: str, **kwargs) -> Optional[Any]:
+        """
+        Crea una instancia de módulo de forma segura.
+        
+        Args:
+            module_name: Nombre del módulo a crear
+            **kwargs: Argumentos adicionales para el constructor
+            
+        Returns:
+            Instancia del módulo o None si falla
+        """
+        try:
+            module_info = self.get_module(module_name)
+            if not module_info or module_info.status != ModuleStatus.SUCCESS:
+                logger.warning(f"Módulo {module_name} no disponible o tiene errores")
+                return None
+                
+            if hasattr(module_info.module, 'Controller'):
+                controller_class = getattr(module_info.module, 'Controller')
+                return controller_class(**kwargs)
+            elif hasattr(module_info.module, f'{module_name.title()}Controller'):
+                controller_class = getattr(module_info.module, f'{module_name.title()}Controller')
+                return controller_class(**kwargs)
+            else:
+                logger.warning(f"No se encontró controlador para módulo {module_name}")
+                return None
+                
+        except Exception as e:
+            logger.error(f"Error creando módulo {module_name}: {e}")
+            return None
+    
+    def get_available_modules(self) -> List[str]:
+        """
+        Obtiene lista de módulos disponibles (cargados exitosamente).
+        
+        Returns:
+            Lista de nombres de módulos disponibles
+        """
+        available = []
+        for name, info in self._modules.items():
+            if info.status == ModuleStatus.SUCCESS:
+                available.append(name)
+        return available
 
 
 # Instancia global del gestor
@@ -458,3 +502,7 @@ def get_module(module_name: str) -> Optional[Any]:
     """
     manager = get_module_manager()
     return manager.get_module_instance(module_name)
+
+
+# Instancia global del gestor de módulos
+module_manager = get_module_manager()

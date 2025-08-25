@@ -17,7 +17,7 @@ except ImportError:
 
 # Importar componentes base
 try:
-    from ...ui.base.base_controller import BaseController
+    from ...core.base_controller import BaseController
 except ImportError:
     logger.warning("No se pudo importar BaseController")
     BaseController = object

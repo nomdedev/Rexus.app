@@ -413,7 +413,7 @@ class FormStyleManager:
 
             # Configurar el mensaje y estilo
             feedback_label.setText(message)
-            if state == :
+            if state == "error":
                 feedback_label.setProperty("labelType", "error")
             elif state == "valid":
                 feedback_label.setProperty("labelType", "success")
@@ -500,7 +500,7 @@ def setup_form_widget(widget: QWidget, apply_animations: bool = True) -> None:
         button_text = button.text().lower()
 
         if any(
-            word in button_text for word in [, "crear", "agregar", "añadir"]
+            word in button_text for word in ["crear", "agregar", "añadir"]
         ):
             button.setProperty("buttonType", "success")
         elif any(word in button_text for word in ["eliminar", "borrar", "cancelar"]):

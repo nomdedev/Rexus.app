@@ -213,7 +213,9 @@ parent: QWidget,
             return result
 
         except Exception as e:
-            self.
+            self.logger.error(f"Error showing message: {e}")
+            return QMessageBox.StandardButton.Cancel
+
     def create_status_label(self, parent: QWidget) -> QLabel:
         """
         Crear un label de estado integrado con el tema para feedback inline.
@@ -312,6 +314,7 @@ parent: QWidget,
             self.logger.debug(f"Status mostrado: {tipo} - {mensaje}")
 
         except Exception as e:
+            self.logger.error(f"Error setting status: {e}")
 
 # Instancia global singleton
 _feedback_manager: Optional[FeedbackManager] = None

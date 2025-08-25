@@ -42,24 +42,24 @@ from rexus.utils.message_system import show_error
 
 
 class DialogProveedor(QDialog):
-"""Diálogo para crear/editar proveedores."""
+    """Diálogo para crear/editar proveedores."""
 
-def __init__(self, parent=None, proveedor_data=None):
+    def __init__(self, parent=None, proveedor_data=None):
         super().__init__(parent)
-self.proveedor_data = proveedor_data
-self.validator_manager = FormValidatorManager()
+        self.proveedor_data = proveedor_data
+        self.validator_manager = FormValidatorManager()
 
-self.setWindowTitle("Nuevo Proveedor" if not proveedor_data else "Editar Proveedor")
-self.setModal(True)
-self.setMinimumSize(600, 500)
+        self.setWindowTitle("Nuevo Proveedor" if not proveedor_data else "Editar Proveedor")
+        self.setModal(True)
+        self.setMinimumSize(600, 500)
 
-self.init_ui()
-self.configurar_validaciones()
+        self.init_ui()
+        self.configurar_validaciones()
 
-if proveedor_data:
-        self.cargar_datos(proveedor_data)
+        if proveedor_data:
+            self.cargar_datos(proveedor_data)
 
-def init_ui(self):
+    def init_ui(self):
         """Inicializa la interfaz del diálogo."""
 layout = QVBoxLayout(self)
 

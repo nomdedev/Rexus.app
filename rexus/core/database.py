@@ -29,6 +29,9 @@ import os
 import logging
 import sqlite3
 
+# Importar configuraciones de base de datos
+from .config import DB_USERS, DB_INVENTARIO, DB_AUDITORIA
+
 class DatabaseConnection:
     
     def cursor(self):

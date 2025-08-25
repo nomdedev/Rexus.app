@@ -40,12 +40,12 @@ Returns:
 if not self.db_connection:
         return False, "Sin conexión a la base de datos", 0
 
-try:
-        cursor = self.db_connection.cursor()
-correcciones = 0
+        try:
+            cursor = self.db_connection.cursor()
+            correcciones = 0
 
-# Obtener discrepancias
-cursor.execute("""
+            # Obtener discrepancias
+            cursor.execute("""
 SELECT h.id, h.codigo, h.stock_actual, hi.stock_actual
 FROM herrajes h
 LEFT JOIN herrajes_inventario hi ON h.id = hi.herraje_id
@@ -53,13 +53,13 @@ WHERE h.estado = 'ACTIVO'
 AND (h.stock_actual != ISNULL(hi.stock_actual, 0))
 """)
 
-discrepancias = cursor.fetchall()
+            discrepancias = cursor.fetchall()
 
-for herraje_id, codigo, stock_herrajes, stock_inventario in discrepancias:
+            for herraje_id, codigo, stock_herrajes, stock_inventario in discrepancias:
                 # Usar stock_herrajes como fuente de verdad
-if stock_inventario is None:
-                # Crear entrada en herrajes_inventario
-cursor.execute("""
+                if stock_inventario is None:
+                    # Crear entrada en herrajes_inventario
+                    cursor.execute("""
 INSERT INTO herrajes_inventario (herraje_id, stock_actual)
 VALUES (?, ?)
 """, (herraje_id, stock_herrajes))
@@ -82,9 +82,11 @@ USER_NAME(),
 GETDATE(), ?)
 """, (herraje_id, f"Corrección automática de stock: {stock_inventario} -> {stock_herrajes}"))
 
-correcciones += 1
+            correcciones += 1
 
-self.db_connection.commit()
-return True, f"Se corrigieron {correcciones} discrepancias de stock", correcciones
+            self.db_connection.commit()
+            return True, f"Se corrigieron {correcciones} discrepancias de stock", correcciones
 
-except Exception as e:
+        except Exception as e:
+            logger.error(f"Error sincronizando stock: {e}")
+            return False, f"Error: {str(e)}", 0
