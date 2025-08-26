@@ -19,6 +19,7 @@ root_dir = Path(__file__).parent.parent.parent
 sys.path.insert(0, str(root_dir))
 
 from rexus.core.database import get_users_connection
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 
 class UserManagementSystem:
@@ -273,7 +274,7 @@ data: Dict,
             # Ejecutar actualización
             params.append(username)
         # FIXED: SQL Injection vulnerability
-            query = "UPDATE usuarios SET ? WHERE usuario = ?", (', '.join(updates),)
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/update_1.sql', params), (', '.join(updates),)
 
             result = db.execute_non_query(query, params)
 

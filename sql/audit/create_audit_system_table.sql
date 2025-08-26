@@ -1,0 +1,2 @@
+-- Crear tabla auditoria_sistema si no existe
+-- (Esta query solo contiene un comentario, la tabla ya existe en SQL Server)

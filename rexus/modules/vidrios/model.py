@@ -239,39 +239,34 @@ class VidriosModel:
             return
 
         try:
-            cursor = self.db_connection.connection.cursor()
+            with self.db_connection.get_connection() as conn:
+                cursor = conn.cursor()
 
-            # Verificar tabla principal de vidrios
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_vidrios,),
-            )
-            if cursor.fetchone():
-                logger.info(f"Tabla '{self.tabla_vidrios}' verificada correctamente")
+                # Verificar tabla principal de vidrios
+                check_vidrios_query = self.sql_manager.get_query("vidrios", "check_vidrios_table")
+                cursor.execute(check_vidrios_query, (self.tabla_vidrios,))
+                if cursor.fetchone():
+                    logger.info(f"Tabla '{self.tabla_vidrios}' verificada correctamente")
 
-                # Obtener estructura de la tabla
-                cursor.execute(
-                    "SELECT COLUMN_NAME, DATA_TYPE FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ?",
-                    (self.tabla_vidrios,),
-                )
-                columnas = cursor.fetchall()
-                logger.info(f"Estructura de tabla '{self.tabla_vidrios}':")
-                for columna in columnas:
-                    logger.info(f"  - {columna[0]}: {columna[1]}")
-            else:
-                logger.warning(f"La tabla '{self.tabla_vidrios}' no existe en la base de datos")
+                    # Obtener estructura de la tabla
+                    columns_query = self.sql_manager.get_query("vidrios", "get_columns_info")
+                    cursor.execute(columns_query, (self.tabla_vidrios,))
+                    columnas = cursor.fetchall()
+                    logger.info(f"Estructura de tabla '{self.tabla_vidrios}':")
+                    for columna in columnas:
+                        logger.info(f"  - {columna[0]}: {columna[1]}")
+                else:
+                    logger.warning(f"La tabla '{self.tabla_vidrios}' no existe en la base de datos")
 
-            # Verificar tabla de vidrios por obra
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_vidrios_obra,),
-            )
-            if cursor.fetchone():
-                logger.info(f"Tabla '{self.tabla_vidrios_obra}' verificada correctamente")
-            else:
-                logger.warning(
-                    f"La tabla '{self.tabla_vidrios_obra}' no existe en la base de datos."
-                )
+                # Verificar tabla de vidrios por obra
+                check_obra_query = self.sql_manager.get_query("vidrios", "check_vidrios_obra_table")
+                cursor.execute(check_obra_query, (self.tabla_vidrios_obra,))
+                if cursor.fetchone():
+                    logger.info(f"Tabla '{self.tabla_vidrios_obra}' verificada correctamente")
+                else:
+                    logger.warning(
+                        f"La tabla '{self.tabla_vidrios_obra}' no existe en la base de datos."
+                    )
 
         except Exception as e:
             logger.error(f"Error verificando tablas: {e}")

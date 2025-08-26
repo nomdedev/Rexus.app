@@ -1,3 +1,4 @@
+from rexus.utils.sql_query_manager import SQLQueryManager
 """
 Modelo de Detalle de Compras - Rexus.app v2.0.0
 
@@ -29,6 +30,7 @@ class DetalleComprasModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         logger.info("DetalleComprasModel inicializado")
 
     def crear_item_compra(self, orden_id: int, datos_item: Dict[str, Any]) -> Optional[int]:
@@ -150,7 +152,10 @@ class DetalleComprasModel:
             cursor = self.db_connection.cursor()
 
             # Obtener orden_id antes de actualizar
-            cursor.execute("SELECT orden_id FROM detalle_compras WHERE id = ?", (item_id,))
+            cursor.execute(
+                self.sql_manager.get_query('compras', 'select_detalle_compras_1'), 
+                (item_id,)
+            )
             result = cursor.fetchone()
             if not result:
                 logger.error(f"Item {item_id} no encontrado")
@@ -213,7 +218,10 @@ class DetalleComprasModel:
             cursor = self.db_connection.cursor()
 
             # Obtener orden_id antes de eliminar
-            cursor.execute("SELECT orden_id FROM detalle_compras WHERE id = ?", (item_id,))
+            cursor.execute(
+                self.sql_manager.get_query('compras', 'select_detalle_compras_2'), 
+                (item_id,)
+            )
             result = cursor.fetchone()
             if not result:
                 logger.error(f"Item {item_id} no encontrado")
@@ -222,7 +230,10 @@ class DetalleComprasModel:
             orden_id = result[0]
 
             # Eliminar item
-            cursor.execute("DELETE FROM detalle_compras WHERE id = ?", (item_id,))
+            cursor.execute(
+                self.sql_manager.get_query('compras', 'delete_detalle_compras_5'), 
+                (item_id,)
+            )
 
             if cursor.rowcount > 0:
                 self.db_connection.commit()

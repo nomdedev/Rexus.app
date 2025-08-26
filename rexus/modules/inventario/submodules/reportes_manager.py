@@ -24,6 +24,7 @@ from typing import Any, Dict, List, Optional, Union
 # Imports del sistema de cache
 try:
 from rexus.utils.report_cache_integration import (
+from rexus.utils.sql_query_manager import SQLQueryManager
 cache_inventory_report,
 get_report_cache_manager,
 get_performance_monitor
@@ -453,7 +454,7 @@ cursor = self.db_connection.cursor()
 kpis = {}
 
 # Total productos activos
-cursor.execute("SELECT COUNT(*) FROM inventario WHERE activo = 1")
+self.sql_manager.ejecutar_consulta_archivo('sql/inventario/count_inventario_1.sql', params))
 kpis['total_productos'] = cursor.fetchone()[0] or 0
 
 # Productos bajo stock mínimo

@@ -1,3 +1,4 @@
+from rexus.utils.sql_query_manager import SQLQueryManager
 """
 Modelo de Auditoría - Rexus.app v2.0.0
 
@@ -46,6 +47,7 @@ class AuditoriaModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         logger.info("AuditoriaModel inicializado")
     
     # Las tablas de auditoría ya existen en SQL Server
@@ -253,7 +255,7 @@ class AuditoriaModel:
             cursor = self.db_connection.cursor()
             
             # Total de eventos
-            cursor.execute("SELECT COUNT(*) FROM auditoria_eventos")
+            cursor.execute(self.sql_manager.get_query('auditoria', 'count_auditoria_eventos_1'))
             total_eventos = cursor.fetchone()[0]
             
             # Eventos por módulo

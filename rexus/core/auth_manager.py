@@ -19,6 +19,13 @@ except ImportError:
     import logging
     logger = logging.getLogger(__name__)
 
+# Importar SQLQueryManager
+try:
+    from ..utils.sql_query_manager import SQLQueryManager
+except ImportError:
+    logger.error("SQLQueryManager es requerido para AuthManager")
+    raise ImportError("SQLQueryManager no disponible - es requerido para AuthManager")
+
 
 class UserRole(Enum):
     """Roles de usuario del sistema."""
@@ -75,6 +82,9 @@ class AuthManager:
         self.lockout_duration = timedelta(minutes=30)
         self.failed_attempts: Dict[str, List[datetime]] = {}
         
+        # Inicializar SQLQueryManager
+        self.sql_manager = SQLQueryManager()
+        
         # Inicializar tablas si es necesario
         self._initialize_auth_tables()
     
@@ -84,25 +94,13 @@ class AuthManager:
             return
         
         try:
-            cursor = self.db_connection.connection.cursor()
-            
-            # Tabla de usuarios con autenticación
-            cursor.execute("""
-                -- Tabla auth_users ya existe en SQL Server
-            """)
-            
-            # Tabla de sesiones activas
-            cursor.execute("""
-                -- Tabla auth_sessions ya existe en SQL Server
-            """)
-            
-            self.db_connection.connection.commit()
-            logger.info("Tablas de autenticación inicializadas")
+            # Las tablas auth_users y auth_sessions ya existen en SQL Server
+            logger.info("Tablas de autenticación verificadas")
             
         except Exception as e:
             logger.error(f"Error inicializando tablas de autenticación: {e}")
     
-    def hash_password(self, password: str, salt: str = None) -> tuple:
+    def hash_password(self, password: str, salt: Optional[str] = None) -> tuple:
         """
         Genera hash seguro de contraseña.
         
@@ -145,8 +143,8 @@ class AuthManager:
             logger.error(f"Error verificando contraseña: {e}")
             return False
     
-    def authenticate_user(self, username: str, password: str, 
-                         ip_address: str = None, user_agent: str = None) -> AuthResult:
+    def authenticate_user(self, username: str, password: str,
+                         ip_address: Optional[str] = None, user_agent: Optional[str] = None) -> AuthResult:
         """
         Autentica un usuario con credenciales.
         
@@ -171,7 +169,7 @@ class AuthManager:
             # Obtener usuario de la base de datos
             user_data = self._get_user_by_username(username)
             if not user_data:
-                self._record_failed_attempt(username, ip_address)
+                self._record_failed_attempt(username)
                 return AuthResult(
                     success=False,
                     message="Credenciales inválidas",
@@ -180,7 +178,7 @@ class AuthManager:
             
             # Verificar contraseña
             if not self.verify_password(password, user_data['password_hash'], user_data['salt']):
-                self._record_failed_attempt(username, ip_address)
+                self._record_failed_attempt(username)
                 return AuthResult(
                     success=False,
                     message="Credenciales inválidas",
@@ -230,7 +228,7 @@ class AuthManager:
             )
     
     def _create_session(self, user_id: int, username: str, role: UserRole,
-                       ip_address: str = None, user_agent: str = None) -> UserSession:
+                       ip_address: Optional[str] = None, user_agent: Optional[str] = None) -> UserSession:
         """Crea una nueva sesión de usuario."""
         session_id = secrets.token_urlsafe(32)
         now = datetime.now()
@@ -242,22 +240,19 @@ class AuthManager:
             role=role,
             login_time=now,
             last_activity=now,
-            ip_address=ip_address,
-            user_agent=user_agent
+            ip_address=ip_address or 'unknown',
+            user_agent=user_agent or 'unknown'
         )
         
         # Almacenar en memoria
         self.active_sessions[session_id] = session
         
         # Persistir en base de datos
-        if self.db_connection:
+        if self.db_connection and self.sql_manager:
             try:
                 cursor = self.db_connection.connection.cursor()
-                cursor.execute("""
-                    INSERT INTO auth_sessions 
-                    (session_id, user_id, ip_address, user_agent)
-                    VALUES (?, ?, ?, ?)
-                """, (session_id, user_id, ip_address, user_agent))
+                sql_insert_session = self.sql_manager.get_query('auth', 'insert_session')
+                cursor.execute(sql_insert_session, (session_id, user_id, username, ip_address, user_agent))
                 self.db_connection.connection.commit()
             except Exception as e:
                 logger.error(f"Error persistiendo sesión: {e}")
@@ -288,14 +283,11 @@ class AuthManager:
             session.last_activity = datetime.now()
             
             # Actualizar en base de datos
-            if self.db_connection:
+            if self.db_connection and self.sql_manager:
                 try:
                     cursor = self.db_connection.connection.cursor()
-                    cursor.execute("""
-                        UPDATE auth_sessions 
-                        SET last_activity = CURRENT_TIMESTAMP
-                        WHERE session_id = ?
-                    """, (session_id,))
+                    sql_update_activity = self.sql_manager.get_query('auth', 'update_session_activity')
+                    cursor.execute(sql_update_activity, (session_id,))
                     self.db_connection.connection.commit()
                 except Exception as e:
                     logger.error(f"Error actualizando sesión: {e}")
@@ -332,29 +324,24 @@ class AuthManager:
         if session_id in self.active_sessions:
             del self.active_sessions[session_id]
         
-        if self.db_connection:
+        if self.db_connection and self.sql_manager:
             try:
                 cursor = self.db_connection.connection.cursor()
-                cursor.execute("""
-                    UPDATE auth_sessions 
-                    SET status = ? 
-                    WHERE session_id = ?
-                """, (reason, session_id))
+                sql_terminate_session = self.sql_manager.get_query('auth', 'terminate_session')
+                cursor.execute(sql_terminate_session, (reason, reason.upper(), session_id))
                 self.db_connection.connection.commit()
             except Exception as e:
                 logger.error(f"Error terminando sesión en BD: {e}")
     
     def _is_user_locked(self, username: str) -> bool:
         """Verifica si un usuario está temporalmente bloqueado."""
-        if not self.db_connection:
+        if not self.db_connection or not self.sql_manager:
             return False
         
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute("""
-                SELECT bloqueado_hasta FROM usuarios 
-                WHERE usuario = ? AND bloqueado_hasta > CURRENT_TIMESTAMP
-            """, (username,))
+            sql_check_locked = self.sql_manager.get_query('auth', 'check_user_locked')
+            cursor.execute(sql_check_locked, (username,))
             
             return cursor.fetchone() is not None
             
@@ -362,35 +349,28 @@ class AuthManager:
             logger.error(f"Error verificando bloqueo: {e}")
             return False
     
-    def _record_failed_attempt(self, username: str, ip_address: str = None):
+    def _record_failed_attempt(self, username: str):
         """Registra un intento de login fallido."""
-        if not self.db_connection:
+        if not self.db_connection or not self.sql_manager:
             return
         
         try:
             cursor = self.db_connection.connection.cursor()
             
             # Incrementar contador de intentos fallidos
-            cursor.execute("""
-                UPDATE usuarios 
-                SET intentos_fallidos = intentos_fallidos + 1
-                WHERE usuario = ?
-            """, (username,))
+            sql_increment_failed = self.sql_manager.get_query('auth', 'increment_failed_attempts')
+            cursor.execute(sql_increment_failed, (username,))
             
             # Verificar si debe bloquearse
-            cursor.execute("""
-                SELECT intentos_fallidos FROM usuarios WHERE usuario = ?
-            """, (username,))
+            sql_get_failed = self.sql_manager.get_query('auth', 'get_failed_attempts')
+            cursor.execute(sql_get_failed, (username,))
             
             result = cursor.fetchone()
             if result and result[0] >= self.max_failed_attempts:
                 # Bloquear usuario
                 lockout_until = datetime.now() + self.lockout_duration
-                cursor.execute("""
-                    UPDATE usuarios 
-                    SET bloqueado_hasta = ?
-                    WHERE usuario = ?
-                """, (lockout_until, username))
+                sql_lock_user = self.sql_manager.get_query('auth', 'lock_user')
+                cursor.execute(sql_lock_user, (lockout_until, username))
                 
                 logger.warning(f"Usuario {username} bloqueado hasta {lockout_until}")
             
@@ -401,32 +381,26 @@ class AuthManager:
     
     def _clear_failed_attempts(self, username: str):
         """Limpia los intentos fallidos de un usuario."""
-        if not self.db_connection:
+        if not self.db_connection or not self.sql_manager:
             return
         
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute("""
-                UPDATE usuarios 
-                SET intentos_fallidos = 0, bloqueado_hasta = NULL
-                WHERE usuario = ?
-            """, (username,))
+            sql_clear_failed = self.sql_manager.get_query('auth', 'clear_failed_attempts')
+            cursor.execute(sql_clear_failed, (username,))
             self.db_connection.connection.commit()
         except Exception as e:
             logger.error(f"Error limpiando intentos fallidos: {e}")
     
     def _get_user_by_username(self, username: str) -> Optional[Dict[str, Any]]:
         """Obtiene datos de usuario por nombre de usuario."""
-        if not self.db_connection:
+        if not self.db_connection or not self.sql_manager:
             return None
         
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute("""
-                SELECT id, usuario, password_hash, salt, rol, activo
-                FROM usuarios 
-                WHERE usuario = ? AND activo = 1
-            """, (username,))
+            sql_get_user = self.sql_manager.get_query('auth', 'get_user_by_username')
+            cursor.execute(sql_get_user, (username,))
             
             row = cursor.fetchone()
             if row:
@@ -441,19 +415,96 @@ class AuthManager:
     
     def _update_last_login(self, user_id: int):
         """Actualiza el timestamp del último login."""
-        if not self.db_connection:
+        if not self.db_connection or not self.sql_manager:
             return
         
         try:
             cursor = self.db_connection.connection.cursor()
-            cursor.execute("""
-                UPDATE auth_users 
-                SET last_login = CURRENT_TIMESTAMP
-                WHERE id = ?
-            """, (user_id,))
+            sql_update_login = self.sql_manager.get_query('auth', 'update_last_login')
+            cursor.execute(sql_update_login, (user_id,))
             self.db_connection.connection.commit()
         except Exception as e:
             logger.error(f"Error actualizando último login: {e}")
+    
+    def get_user_session_history(self, user_id: int) -> List[Dict[str, Any]]:
+        """Obtiene el historial de sesiones de un usuario para auditoría."""
+        if not self.db_connection or not self.sql_manager:
+            return []
+        
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_get_history = self.sql_manager.get_query('auth', 'get_user_session_history')
+            cursor.execute(sql_get_history, (user_id,))
+            
+            sessions = []
+            for row in cursor.fetchall():
+                sessions.append({
+                    'session_id': row[0],
+                    'usuario': row[1],
+                    'ip_address': row[2],
+                    'user_agent': row[3],
+                    'login_time': row[4],
+                    'logout_time': row[5],
+                    'status': row[6],
+                    'logout_reason': row[7]
+                })
+            
+            return sessions
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo historial de sesiones: {e}")
+            return []
+    
+    def get_active_sessions(self) -> List[Dict[str, Any]]:
+        """Obtiene todas las sesiones activas para monitoreo."""
+        if not self.db_connection or not self.sql_manager:
+            return []
+        
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_get_active = self.sql_manager.get_query('auth', 'get_active_sessions')
+            cursor.execute(sql_get_active)
+            
+            sessions = []
+            for row in cursor.fetchall():
+                sessions.append({
+                    'session_id': row[0],
+                    'usuario': row[1],
+                    'ip_address': row[2],
+                    'login_time': row[3],
+                    'last_activity': row[4],
+                    'rol': row[5],
+                    'nombre': row[6],
+                    'apellido': row[7]
+                })
+            
+            return sessions
+            
+        except Exception as e:
+            logger.error(f"Error obteniendo sesiones activas: {e}")
+            return []
+    
+    def cleanup_expired_sessions(self, timeout_hours: int = 8) -> int:
+        """Limpia sesiones expiradas. Retorna número de sesiones limpiadas."""
+        if not self.db_connection or not self.sql_manager:
+            return 0
+        
+        try:
+            cursor = self.db_connection.connection.cursor()
+            sql_cleanup = self.sql_manager.get_query('auth', 'cleanup_expired_sessions')
+            cursor.execute(sql_cleanup, (timeout_hours,))
+            
+            cleaned_count = cursor.rowcount
+            self.db_connection.connection.commit()
+            
+            if cleaned_count > 0:
+                logger.info(f"Limpiadas {cleaned_count} sesiones expiradas")
+            
+            return cleaned_count
+            
+        except Exception as e:
+            logger.error(f"Error limpiando sesiones expiradas: {e}")
+            return 0
 
 
 # Instancia global del gestor de autenticación
@@ -474,8 +525,12 @@ def get_auth_manager() -> Optional[AuthManager]:
 
 def get_current_session() -> Optional[UserSession]:
     """Obtiene la sesión actual del usuario."""
-    # En una implementación real, esto obtendría de variables globales o contexto
-    # Por ahora retorna None para evitar errores
+    auth_manager = get_auth_manager()
+    if auth_manager and hasattr(auth_manager, 'active_sessions') and auth_manager.active_sessions:
+        # Retorna la primera sesión activa (simplificado)
+        for session in auth_manager.active_sessions.values():
+            if session and session.login_time:
+                return session
     return None
 
 

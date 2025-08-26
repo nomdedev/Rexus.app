@@ -1,0 +1,5 @@
+-- select_7.sql
+-- Extracted from: rexus\core\audit_trail.py
+-- Line: 363
+
+SELECT * FROM ? WHERE id = ?

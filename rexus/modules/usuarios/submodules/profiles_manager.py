@@ -109,11 +109,11 @@ usuario.get("username",
             stats = {}
 
             # Total de usuarios
-            cursor.execute("SELECT COUNT(*) FROM usuarios")
+            self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_usuarios_1.sql', params))
             stats['total_usuarios'] = cursor.fetchone()[0]
 
             # Usuarios activos
-            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE activo = 1")
+            self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_usuarios_3.sql', params))
             stats['usuarios_activos'] = cursor.fetchone()[0]
 
             # Usuarios por rol
@@ -249,13 +249,13 @@ datos: Dict[str,
             cursor = self.db_connection.cursor()
 
             # Verificar username
-            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE usuario = ?", (username,))
+            self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_usuarios_5.sql', params), (username,))
             if cursor.fetchone()[0] > 0:
                 return False
 
             # Verificar email si está presente
             if email:
-                cursor.execute("SELECT COUNT(*) FROM usuarios WHERE email = ?", (email,))
+                self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_usuarios_7.sql', params), (email,))
                 if cursor.fetchone()[0] > 0:
                     return False
 

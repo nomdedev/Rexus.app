@@ -1,3 +1,4 @@
+from rexus.utils.sql_query_manager import SQLQueryManager
 """
 Sessions Manager - Módulo especializado para gestión de sesiones de usuarios
 Refactorizado de UsuariosModel para mejor mantenibilidad
@@ -28,7 +29,7 @@ import logging
             stats = {}
 
             # Sesiones activas totales
-            cursor.execute("SELECT COUNT(*) FROM sesiones WHERE activa = 1")
+            self.sql_manager.ejecutar_consulta_archivo('sql/usuarios/count_sesiones_1.sql', params))
             stats['sesiones_activas'] = cursor.fetchone()[0]
 
             # Usuarios únicos con sesiones activas

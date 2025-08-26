@@ -4,20 +4,26 @@ Sistema de Audit Trail para Rexus.app
 Maneja el registro de cambios en la base de datos con timestamps
 """
 
-
 import logging
-logger = logging.getLogger(__name__)
-
 import sys
 from datetime import datetime
 from typing import Optional, Dict, List
 from pathlib import Path
+
+logger = logging.getLogger(__name__)
 
 # Agregar el directorio raíz al path
 ROOT_DIR = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(ROOT_DIR))
 
 from rexus.core.database import DatabaseConnection
+
+# Importar SQLQueryManager
+try:
+    from rexus.utils.sql_query_manager import SQLQueryManager
+except ImportError:
+    logger.error("SQLQueryManager es requerido para AuditTrail")
+    raise ImportError("SQLQueryManager no disponible - es requerido para AuditTrail")
 
 
 class AuditTrail:
@@ -27,6 +33,8 @@ class AuditTrail:
         self.db_connection = db_connection or DatabaseConnection('audit')
         self.current_user_id = None
         self.current_username = None
+        # Inicializar SQLQueryManager
+        self.sql_manager = SQLQueryManager()
 
     def set_current_user(self, user_id: int, username: str):
         """Establece el usuario actual para auditoría"""
@@ -34,8 +42,8 @@ class AuditTrail:
         self.current_username = username
 
     def log_change(self, tabla: str, accion: str, registro_id: int,
-                   datos_anteriores: Dict = None, datos_nuevos: Dict = None,
-                   modulo: str = None, detalles: str = None):
+                   datos_anteriores: Optional[Dict] = None, datos_nuevos: Optional[Dict] = None,
+                   modulo: Optional[str] = None, detalles: Optional[str] = None):
         """
         Registra un cambio en la auditoría
 
@@ -54,11 +62,8 @@ class AuditTrail:
             # Crear tabla de auditoría si no existe
             self._create_audit_table_if_not_exists()
 
-            # CORREGIDO: SQL injection - usar archivo SQL externo
-            from rexus.utils.sql_query_manager import SQLQueryManager
-            sql_manager = SQLQueryManager()
-            
-            query = sql_manager.load_sql("core/insert_audit_trail.sql")
+            # Usar SQL externo para insertar
+            query = self.sql_manager.get_query('audit', 'insert_audit_trail')
             cursor.execute(query, (
                 tabla,
                 accion,
@@ -84,25 +89,9 @@ class AuditTrail:
         try:
             cursor = self.db_connection.cursor()
 
-            cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='audit_trail' AND xtype='U')
-                -- Tabla audit_trail ya existe en SQL Server PRIMARY KEY,
-                    tabla VARCHAR(100) NOT NULL,
-                    accion VARCHAR(20) NOT NULL,
-                    registro_id INT NOT NULL,
-                    usuario_id INT,
-                    usuario_nombre VARCHAR(100),
-                    datos_anteriores TEXT,
-                    datos_nuevos TEXT,
-                    modulo VARCHAR(50),
-                    detalles TEXT,
-                    fecha_cambio DATETIME NOT NULL DEFAULT GETDATE(),
-                    ip_address VARCHAR(45),
-                    INDEX idx_tabla_fecha (tabla, fecha_cambio),
-                    INDEX idx_usuario_fecha (usuario_id, fecha_cambio),
-                    INDEX idx_registro (tabla, registro_id)
-                )
-            """)
+            # Usar SQL externo para crear tabla
+            query = self.sql_manager.get_query('audit', 'create_audit_trail_table')
+            cursor.execute(query)
 
             self.db_connection.commit()
 
@@ -120,8 +109,8 @@ class AuditTrail:
             logger.info(f"[WARNING AUDIT_TRAIL] Could not get IP address: {e}")
             return "127.0.0.1"
 
-    def get_audit_log(self, tabla: str = None, usuario_id: int = None,
-                      fecha_inicio: datetime = None, fecha_fin: datetime = None,
+    def get_audit_log(self, tabla: Optional[str] = None, usuario_id: Optional[int] = None,
+                      fecha_inicio: Optional[datetime] = None, fecha_fin: Optional[datetime] = None,
                       limit: int = 100) -> List[Dict]:
         """
         Obtiene registros de auditoría
@@ -140,7 +129,7 @@ class AuditTrail:
             cursor = self.db_connection.cursor()
 
             # Construir query con filtros
-            query = "SELECT * FROM audit_trail WHERE 1=1"
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_audit_trail_1.sql', params)
             params = []
 
             if tabla:
@@ -167,7 +156,7 @@ class AuditTrail:
                 if not isinstance(limit, int) or limit <= 0:
                     raise ValueError("Invalid limit value")
         # FIXED: SQL Injection vulnerability
-                query = "SELECT TOP {limit} * FROM (?) AS subquery ORDER BY fecha_cambio DESC", (query,)
+                self.sql_manager.ejecutar_consulta_archivo('sql/core/select_2.sql', params), (query,)
 
             cursor.execute(query, params)
 
@@ -302,7 +291,7 @@ class AuditableModel:
             values = list(data.values())
 
         # FIXED: SQL Injection vulnerability
-            query = "INSERT INTO {self.tabla_name} ({columns}) VALUES (?)", (placeholders,)
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/insert_3.sql', params), (placeholders,)
             cursor.execute(query, values)
 
             # Obtener ID insertado
@@ -348,7 +337,7 @@ record_id: int,
 
             # Obtener datos anteriores
         # FIXED: SQL Injection vulnerability
-            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_4.sql', params), (self.tabla_name,), (record_id,))
             old_data = cursor.fetchone()
 
             if not old_data:
@@ -366,12 +355,12 @@ record_id: int,
             values = list(data.values()) + [record_id]
 
         # FIXED: SQL Injection vulnerability
-            query = "UPDATE {self.tabla_name} SET ? WHERE id = ?", (set_clause,)
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/update_6.sql', params), (set_clause,)
             cursor.execute(query, values)
 
             # Obtener datos nuevos
         # FIXED: SQL Injection vulnerability
-            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
+            cursorself.sql_manager.ejecutar_consulta_archivo('sql/core/select_5.sql', params), (self.tabla_name,), (record_id,))
             new_data = cursor.fetchone()
             datos_nuevos = dict(zip(columns, new_data))
 
@@ -411,7 +400,7 @@ record_id: int,
 
             # Obtener datos antes de eliminar
         # FIXED: SQL Injection vulnerability
-            cursor.execute("SELECT * FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_7.sql', params), (self.tabla_name,), (record_id,))
             old_data = cursor.fetchone()
 
             if not old_data:
@@ -423,7 +412,7 @@ record_id: int,
 
             # Eliminar registro
         # FIXED: SQL Injection vulnerability
-            cursor.execute("DELETE FROM ? WHERE id = ?", (self.tabla_name,), (record_id,))
+            self.sql_manager.ejecutar_consulta_archivo('sql/core/delete_11.sql', params), (self.tabla_name,), (record_id,))
 
             # Registrar en auditoría
             self.audit_trail.log_change(

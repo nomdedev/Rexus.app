@@ -1,0 +1,93 @@
+[
+  {
+    "module_name": "auditoria",
+    "total_queries": 2,
+    "files_processed": 1,
+    "migrated_files": [
+      "sql\\auditoria\\count_auditoria_eventos_1.sql",
+      "sql\\auditoria\\count_auditoria_eventos_2.sql"
+    ]
+  },
+  {
+    "module_name": "compras",
+    "total_queries": 6,
+    "files_processed": 1,
+    "migrated_files": [
+      "sql\\compras\\select_detalle_compras_1.sql",
+      "sql\\compras\\select_detalle_compras_2.sql",
+      "sql\\compras\\select_detalle_compras_3.sql",
+      "sql\\compras\\select_detalle_compras_4.sql",
+      "sql\\compras\\delete_detalle_compras_5.sql",
+      "sql\\compras\\delete_detalle_compras_6.sql"
+    ]
+  },
+  {
+    "module_name": "inventario",
+    "total_queries": 4,
+    "files_processed": 2,
+    "migrated_files": [
+      "sql\\inventario\\count_inventario_1.sql",
+      "sql\\inventario\\count_inventario_2.sql",
+      "sql\\inventario\\select_reservas_materiales_1.sql",
+      "sql\\inventario\\select_inventario_2.sql"
+    ]
+  },
+  {
+    "module_name": "usuarios",
+    "total_queries": 10,
+    "files_processed": 2,
+    "migrated_files": [
+      "sql\\usuarios\\count_usuarios_1.sql",
+      "sql\\usuarios\\count_usuarios_2.sql",
+      "sql\\usuarios\\count_usuarios_3.sql",
+      "sql\\usuarios\\count_usuarios_4.sql",
+      "sql\\usuarios\\count_usuarios_5.sql",
+      "sql\\usuarios\\count_usuarios_6.sql",
+      "sql\\usuarios\\count_usuarios_7.sql",
+      "sql\\usuarios\\count_usuarios_8.sql",
+      "sql\\usuarios\\count_sesiones_1.sql",
+      "sql\\usuarios\\count_sesiones_2.sql"
+    ]
+  },
+  {
+    "module_name": "core",
+    "total_queries": 14,
+    "files_processed": 3,
+    "migrated_files": [
+      "sql\\core\\select_audit_trail_1.sql",
+      "sql\\core\\select_2.sql",
+      "sql\\core\\insert_3.sql",
+      "sql\\core\\select_4.sql",
+      "sql\\core\\select_5.sql",
+      "sql\\core\\update_6.sql",
+      "sql\\core\\select_7.sql",
+      "sql\\core\\select_8.sql",
+      "sql\\core\\select_9.sql",
+      "sql\\core\\select_10.sql",
+      "sql\\core\\delete_11.sql",
+      "sql\\core\\delete_12.sql",
+      "sql\\core\\select_sqlite_master_1.sql",
+      "sql\\core\\update_1.sql"
+    ]
+  },
+  {
+    "module_name": "utils",
+    "total_queries": 13,
+    "files_processed": 3,
+    "migrated_files": [
+      "sql\\utils\\select_usuarios_1.sql",
+      "sql\\utils\\select_usuarios_2.sql",
+      "sql\\utils\\select_productos_3.sql",
+      "sql\\utils\\select_productos_4.sql",
+      "sql\\utils\\select_obras_5.sql",
+      "sql\\utils\\select_obras_6.sql",
+      "sql\\utils\\select_usuarios_7.sql",
+      "sql\\utils\\select_usuarios_8.sql",
+      "sql\\utils\\delete_cache_entries_1.sql",
+      "sql\\utils\\select_cache_entries_2.sql",
+      "sql\\utils\\delete_cache_entries_3.sql",
+      "sql\\utils\\select_productos_1.sql",
+      "sql\\utils\\select_productos_2.sql"
+    ]
+  }
+]

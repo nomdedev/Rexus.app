@@ -304,26 +304,8 @@ class DatabaseOptimizer:
     def _get_missing_indexes(self, cursor: pyodbc.Cursor) -> List[IndexSuggestion]:
         """Obtiene sugerencias de índices faltantes."""
         try:
-            cursor.execute("""
-                SELECT TOP 10
-                    OBJECT_SCHEMA_NAME(mid.object_id) as schema_name,
-                    OBJECT_NAME(mid.object_id) as table_name,
-                    migs.avg_total_user_cost * (migs.avg_user_impact / 100.0) * (migs.user_seeks + migs.user_scans) as improvement_measure,
-                    'CREATE INDEX [IX_' + OBJECT_NAME(mid.object_id) + '_missing_' + CAST(mid.index_handle as VARCHAR(10)) + '] ON [' + 
-                    OBJECT_SCHEMA_NAME(mid.object_id) + '].[' + OBJECT_NAME(mid.object_id) + '] (' + 
-                    ISNULL(mid.equality_columns,'') + 
-                    CASE WHEN mid.equality_columns IS NOT NULL AND mid.inequality_columns IS NOT NULL THEN ',' ELSE '' END + 
-                    ISNULL(mid.inequality_columns, '') + ')' +
-                    ISNULL(' INCLUDE (' + mid.included_columns + ')', '') as create_statement,
-                    migs.avg_user_impact,
-                    ISNULL(mid.equality_columns,'') + ISNULL(mid.inequality_columns, '') as key_columns,
-                    ISNULL(mid.included_columns, '') as include_columns
-                FROM sys.dm_db_missing_index_groups mig
-                INNER JOIN sys.dm_db_missing_index_group_stats migs ON migs.group_handle = mig.index_group_handle
-                INNER JOIN sys.dm_db_missing_index_details mid ON mig.index_handle = mid.index_handle
-                WHERE migs.avg_user_impact > 20
-                ORDER BY improvement_measure DESC
-            """)
+            sql_get_missing = self.sql_manager.get_query('optimizer', 'get_missing_indexes')
+            cursor.execute(sql_get_missing)
             
             suggestions = []
             for row in cursor.fetchall():
@@ -348,33 +330,23 @@ class DatabaseOptimizer:
     def _get_slow_queries(self, cursor: pyodbc.Cursor) -> List[QueryMetrics]:
         """Obtiene consultas lentas recientes."""
         try:
-            cursor.execute("""
-                SELECT TOP 20
-                    qs.sql_handle,
-                    qs.total_elapsed_time / qs.execution_count as avg_elapsed_time,
-                    qs.execution_count,
-                    qs.total_logical_reads / qs.execution_count as avg_logical_reads,
-                    qs.total_physical_reads / qs.execution_count as avg_physical_reads,
-                    qs.last_execution_time,
-                    SUBSTRING(qt.text, (qs.statement_start_offset/2)+1,
-                        ((CASE qs.statement_end_offset
-                            WHEN -1 THEN DATALENGTH(qt.text)
-                            ELSE qs.statement_end_offset
-                        END - qs.statement_start_offset)/2)+1) as query_text
-                FROM sys.dm_exec_query_stats qs
-                CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
-                WHERE qs.total_elapsed_time / qs.execution_count > ?
-                ORDER BY avg_elapsed_time DESC
-            """, (self.slow_query_threshold * 1000000,))  # Convertir a microsegundos
+            sql_get_slow_queries = self.sql_manager.get_query('optimizer', 'get_slow_queries')
+            cursor.execute(sql_get_slow_queries, (self.slow_query_threshold * 1000000,))  # Convertir a microsegundos
             
             slow_queries = []
             for row in cursor.fetchall():
+                # Obtener nombre de la base de datos actual
+                sql_get_current_db = self.sql_manager.get_query('optimizer', 'get_current_database_name')
+                cursor.execute(sql_get_current_db)
+                current_db_result = cursor.fetchone()
+                current_db = current_db_result[0] if current_db_result else "Unknown"
+                
                 slow_queries.append(QueryMetrics(
                     query=row[6][:500] + "..." if len(row[6]) > 500 else row[6],
                     execution_time=row[1] / 1000000.0,  # Convertir a segundos
                     rows_affected=0,
                     timestamp=row[5],
-                    database=cursor.execute("SELECT DB_NAME()").fetchone()[0],
+                    database=current_db,
                     logical_reads=row[3],
                     physical_reads=row[4]
                 ))
@@ -531,12 +503,8 @@ class DatabaseOptimizer:
             cursor = conn.cursor()
             
             # Obtener todas las tablas de usuario
-            cursor.execute("""
-                SELECT SCHEMA_NAME(schema_id) as schema_name, name as table_name
-                FROM sys.tables
-                WHERE type = 'U'
-                ORDER BY schema_name, name
-            """)
+            sql_get_tables = self.sql_manager.get_query('optimizer', 'get_user_tables_for_stats')
+            cursor.execute(sql_get_tables)
             
             tables = cursor.fetchall()
             
@@ -577,6 +545,95 @@ class DatabaseOptimizer:
         
         return result
 
+    def create_performance_indexes(self, execute: bool = False) -> Dict[str, Any]:
+        """
+        Crea índices de rendimiento basados en las sugerencias del sistema.
+        
+        Args:
+            execute: Si ejecutar realmente las creaciones de índices
+            
+        Returns:
+            Resultado de la operación
+        """
+        result = {
+            'success': False,
+            'indexes_created': 0,
+            'indexes_failed': 0,
+            'suggested_indexes': [],
+            'execution_time': 0,
+            'errors': []
+        }
+        
+        start_time = time.time()
+        
+        try:
+            conn = self._get_connection()
+            if not conn:
+                result['errors'].append("No se pudo obtener conexión")
+                return result
+            
+            cursor = conn.cursor()
+            
+            # Obtener sugerencias de índices
+            missing_indexes = self._get_missing_indexes(cursor)
+            
+            for suggestion in missing_indexes:
+                try:
+                    # Crear nombre único para el índice
+                    table_parts = suggestion.table.split('.')
+                    if len(table_parts) == 2:
+                        schema, table = table_parts
+                    else:
+                        schema, table = 'dbo', suggestion.table
+                    
+                    index_name = f"IX_{table}_Performance_{result['indexes_created'] + 1}"
+                    columns = ', '.join(f"[{col}]" for col in suggestion.columns)
+                    
+                    create_sql = f"CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})"
+                    
+                    if suggestion.include_columns:
+                        include_cols = ', '.join(f"[{col}]" for col in suggestion.include_columns)
+                        create_sql += f" INCLUDE ({include_cols})"
+                    
+                    result['suggested_indexes'].append({
+                        'table': suggestion.table,
+                        'index_name': index_name,
+                        'sql': create_sql,
+                        'estimated_improvement': suggestion.estimated_improvement
+                    })
+                    
+                    if execute:
+                        cursor.execute(create_sql)
+                        result['indexes_created'] += 1
+                        logger.info(f"Índice creado: {index_name} en {suggestion.table}")
+                        
+                        # Log de la acción
+                        self._log_optimization_action(
+                            "CREATE_INDEX",
+                            suggestion.table,
+                            f"Created index {index_name}",
+                            True,
+                            time.time() - start_time
+                        )
+                    
+                except Exception as e:
+                    error_msg = f"Error creando índice en {suggestion.table}: {e}"
+                    result['errors'].append(error_msg)
+                    result['indexes_failed'] += 1
+                    logger.error(error_msg)
+            
+            result['success'] = result['indexes_failed'] == 0
+            
+        except Exception as e:
+            result['errors'].append(f"Error general: {e}")
+            logger.error(f"Error en create_performance_indexes: {e}")
+        finally:
+            result['execution_time'] = time.time() - start_time
+            if 'conn' in locals() and conn and not self.db_connection:
+                conn.close()
+        
+        return result
+
     def monitor_slow_queries(self, threshold_seconds: float = 1.0) -> List[QueryMetrics]:
         """
         Monitorea consultas lentas en SQL Server.
@@ -596,27 +653,16 @@ class DatabaseOptimizer:
             cursor = conn.cursor()
             
             # Consultar estadísticas de consultas
-            cursor.execute("""
-                SELECT TOP 50
-                    qs.total_elapsed_time / qs.execution_count as avg_elapsed_time_us,
-                    qs.execution_count,
-                    qs.total_logical_reads / qs.execution_count as avg_logical_reads,
-                    qs.total_physical_reads / qs.execution_count as avg_physical_reads,
-                    qs.total_worker_time / qs.execution_count as avg_cpu_time_us,
-                    qs.last_execution_time,
-                    SUBSTRING(qt.text, (qs.statement_start_offset/2)+1,
-                        ((CASE qs.statement_end_offset
-                            WHEN -1 THEN DATALENGTH(qt.text)
-                            ELSE qs.statement_end_offset
-                        END - qs.statement_start_offset)/2)+1) as query_text
-                FROM sys.dm_exec_query_stats qs
-                CROSS APPLY sys.dm_exec_sql_text(qs.sql_handle) qt
-                WHERE qs.total_elapsed_time / qs.execution_count > ?
-                ORDER BY avg_elapsed_time_us DESC
-            """, (threshold_seconds * 1000000,))  # Convertir a microsegundos
+            sql_get_performance_stats = self.sql_manager.get_query('optimizer', 'get_query_performance_stats')
+            cursor.execute(sql_get_performance_stats, (threshold_seconds * 1000000,))  # Convertir a microsegundos
             
             slow_queries = []
-            current_db = cursor.execute("SELECT DB_NAME()").fetchone()[0]
+            
+            # Obtener nombre de la base de datos actual
+            sql_get_current_db = self.sql_manager.get_query('optimizer', 'get_current_database_name')
+            cursor.execute(sql_get_current_db)
+            current_db_result = cursor.fetchone()
+            current_db = current_db_result[0] if current_db_result else "Unknown"
             
             for row in cursor.fetchall():
                 query_metric = QueryMetrics(
@@ -689,14 +735,10 @@ class DatabaseOptimizer:
             
             # Calcular hash de la consulta
             import hashlib
-            query_hash = hashlib.md5(metric.query.encode()).hexdigest()
+            query_hash = hashlib.md5(metric.query.encode(), usedforsecurity=False).hexdigest()
             
-            cursor.execute("""
-                INSERT INTO query_metrics 
-                (query_hash, query_text, execution_time, rows_affected, 
-                 cpu_time, logical_reads, physical_reads, database_name, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+            sql_insert_metric = self.sql_manager.get_query('optimizer', 'insert_query_metrics')
+            cursor.execute(sql_insert_metric, (
                 query_hash, metric.query, metric.execution_time, metric.rows_affected,
                 metric.cpu_time, metric.logical_reads, metric.physical_reads,
                 metric.database, metric.timestamp
@@ -719,11 +761,8 @@ class DatabaseOptimizer:
                 return
             
             cursor = conn.cursor()
-            cursor.execute("""
-                INSERT INTO optimization_actions 
-                (action_type, table_name, details, success, execution_time, timestamp)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (action_type, table_name, details, success, execution_time, datetime.now()))
+            sql_insert_action = self.sql_manager.get_query('optimizer', 'insert_optimization_action')
+            cursor.execute(sql_insert_action, (action_type, table_name, details, success, execution_time, datetime.now()))
             
             conn.commit()
             
@@ -777,12 +816,8 @@ class DatabaseOptimizer:
             conn = self._get_connection()
             if conn:
                 cursor = conn.cursor()
-                cursor.execute("""
-                    SELECT TOP 20 action_type, table_name, details, success, 
-                           execution_time, timestamp
-                    FROM optimization_actions 
-                    ORDER BY timestamp DESC
-                """)
+                sql_get_recent_actions = self.sql_manager.get_query('optimizer', 'get_recent_optimization_actions')
+                cursor.execute(sql_get_recent_actions)
                 
                 report['optimization_actions'] = [
                     {

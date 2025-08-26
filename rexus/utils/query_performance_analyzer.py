@@ -417,7 +417,7 @@ def query_performance_decorator(func):
     Usage:
         @query_performance_decorator
         def obtener_productos():
-            cursor.execute("SELECT * FROM productos")
+            self.sql_manager.ejecutar_consulta_archivo('sql/utils/select_productos_1.sql', params))
             return cursor.fetchall()
     """
     @functools.wraps(func)
@@ -471,6 +471,7 @@ def clear_performance_metrics():
 """
 # En modelo que ejecuta consultas:
 from rexus.utils.query_performance_analyzer import track_sql_query
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 def obtener_productos():
     start_time = time.time()

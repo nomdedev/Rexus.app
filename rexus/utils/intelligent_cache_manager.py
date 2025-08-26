@@ -1,3 +1,4 @@
+from rexus.utils.sql_query_manager import SQLQueryManager
 # -*- coding: utf-8 -*-
 """
 Sistema de Cache Inteligente para Reportes - Rexus.app
@@ -294,7 +295,7 @@ class IntelligentCacheManager:
                     if file_path.exists():
                         file_path.unlink()
                     
-                    conn.execute('DELETE FROM cache_entries WHERE key = ?', (key,))
+                    connself.sql_manager.ejecutar_consulta_archivo('sql/utils/delete_cache_entries_1.sql', params), (key,))
                 
         except Exception as e:
             logger.error(f"Error removiendo entrada persistente: {e}")
@@ -409,14 +410,14 @@ class IntelligentCacheManager:
                 # Limpiar persistente
                 with sqlite3.connect(self.db_path) as conn:
                     # Obtener archivos a eliminar
-                    cursor = conn.execute('SELECT file_path FROM cache_entries')
+                    cursor = connself.sql_manager.ejecutar_consulta_archivo('sql/utils/select_cache_entries_2.sql', params))
                     for row in cursor:
                         file_path = Path(row[0])
                         if file_path.exists():
                             file_path.unlink()
                     
                     # Limpiar tabla
-                    conn.execute('DELETE FROM cache_entries')
+                    connself.sql_manager.ejecutar_consulta_archivo('sql/utils/delete_cache_entries_3.sql', params))
                 
                 logger.info(f"Cache limpiado: {cleared_memory} entradas de memoria")
                 return True

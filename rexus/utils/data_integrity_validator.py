@@ -80,7 +80,7 @@ import sqlite3
             
             # Verificar que existan en tabla users
             for user in referenced_users:
-                users_cursor.execute("SELECT id FROM usuarios WHERE usuario = ?", (user,))
+                users_self.sql_manager.ejecutar_consulta_archivo('sql/utils/select_usuarios_1.sql', params), (user,))
                 if not users_cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="foreign_key_violation",
@@ -115,7 +115,7 @@ import sqlite3
             
             # Verificar que existan en tabla productos
             for product_id in referenced_products:
-                inv_cursor.execute("SELECT id FROM productos WHERE id = ?", (product_id,))
+                inv_self.sql_manager.ejecutar_consulta_archivo('sql/utils/select_productos_3.sql', params), (product_id,))
                 if not inv_cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="foreign_key_violation",
@@ -148,7 +148,7 @@ import sqlite3
             referenced_obras = [row[0] for row in cursor.fetchall()]
             
             for obra_id in referenced_obras:
-                cursor.execute("SELECT id FROM obras WHERE id = ?", (obra_id,))
+                self.sql_manager.ejecutar_consulta_archivo('sql/utils/select_obras_5.sql', params), (obra_id,))
                 if not cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="foreign_key_violation",
@@ -337,7 +337,7 @@ import sqlite3
             """)
             
             for row in audit_cursor.fetchall():
-                users_cursor.execute("SELECT id FROM usuarios WHERE usuario = ?", (row[1],))
+                users_cursorself.sql_manager.ejecutar_consulta_archivo('sql/utils/select_usuarios_2.sql', params), (row[1],))
                 if not users_cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="orphaned_record",
@@ -587,6 +587,7 @@ def quick_integrity_check(db_connections: Dict[str, Any] = None) -> bool:
 """
 # En main.py o durante arranque:
 from rexus.utils.data_integrity_validator import validate_system_integrity
+from rexus.utils.sql_query_manager import SQLQueryManager
 
 # Obtener conexiones a las 3 bases de datos
 db_connections = {

@@ -510,7 +510,7 @@ class ReservasManager:
         """Obtiene una reserva por su ID."""
         try:
             cursor = self.db_connection.cursor()
-            query = "SELECT * FROM reservas_materiales WHERE id = ?"
+            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_reservas_materiales_1.sql', params)
             cursor.execute(query, (reserva_id,))
             fila = cursor.fetchone()
             cursor.close()
@@ -633,7 +633,7 @@ class ReservasManager:
         """Obtiene el stock disponible de un producto."""
         try:
             cursor = self.db_connection.cursor()
-            query = "SELECT stock_actual FROM inventario WHERE id = ?"
+            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_inventario_2.sql', params)
             cursor.execute(query, (producto_id,))
             resultado = cursor.fetchone()
             cursor.close()
