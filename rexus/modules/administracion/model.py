@@ -1,10 +1,3 @@
-import sys
-import logging
-import pyodbc
-from datetime import date
-from pathlib import Path
-from typing import Dict, Optional, List, Any
-
 """
 Modelo de Administración - Rexus.app v2.0.0
 
@@ -15,51 +8,39 @@ Incluye utilidades de seguridad para prevenir SQL injection y XSS.
 Ensure all database operations are properly authorized
 """
 
+import sys
+import logging
+from datetime import date
+from pathlib import Path
+from typing import Dict, Optional
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+from rexus.utils.sql_query_manager import SQLQueryManager
+
 # Configurar logger específico para el módulo
 logger = logging.getLogger(__name__)
 
-# SQLQueryManager unificado
-try:
-    from rexus.core.sql_query_manager import SQLQueryManager
-except ImportError:
-    from rexus.utils.sql_script_loader import sql_script_loader
-    
-    class SQLQueryManager:
-        def __init__(self):
-            self.sql_loader = sql_script_loader
-
-        def get_query(self, path, filename):
-            script_name = filename
-            return self.sql_loader.load_script(script_name)
-
-# DataSanitizer unificado
-try:
-    from rexus.utils.unified_sanitizer import unified_sanitizer
-    DataSanitizer = unified_sanitizer
-except ImportError:
-    class DataSanitizer:
-        def sanitize_dict(self, data):
-            return data if data else {}
-
-        def sanitize_string(self, text):
-            return str(text) if text else ""
-
-        def sanitize_integer(self, value):
-            return int(value) if value else 0
-
 # Importar utilidades de seguridad
+try:
+    # Agregar ruta src al path para imports de seguridad
+    root_dir = Path(__file__).parent.parent.parent.parent
+    sys.path.insert(0, str(root_dir))
+    SECURITY_AVAILABLE = True
+except ImportError as e:
+    logger.warning(f"No se pudo cargar utilidad de seguridad: {e}")
+    SECURITY_AVAILABLE = False
+    data_sanitizer = None
+
+# Importar utilidad de seguridad SQL
 try:
     from rexus.utils.sql_security import SQLSecurityError, validate_table_name
     SQL_SECURITY_AVAILABLE = True
 except ImportError:
     logger.warning("No se pudo cargar SQL security - usando validación básica")
     SQL_SECURITY_AVAILABLE = False
-    
-    def validate_table_name(table_name):
-        return table_name
-    
-    class SQLSecurityError(Exception):
-        pass
+    validate_table_name = None
+    SQLSecurityError = Exception
+
 
 class ContabilidadModel:
     """Modelo completo de administración y contabilidad con control de roles y auditoría."""
@@ -90,9 +71,7 @@ class AdministracionModel(ContabilidadModel):
         self.sanitizer = unified_sanitizer
         logger.info("Sistema unificado de sanitización cargado")
 
-        # Crear tablas si no existen
-        self.crear_tablas()
-
+        # Las tablas ya existen en SQL Server
     def _validate_table_name(self, table_name: str) -> str:
         """
         Valida el nombre de tabla para prevenir SQL injection.
@@ -134,33 +113,7 @@ class AdministracionModel(ContabilidadModel):
         # Si no es válido, usar límite por defecto
         return 100
 
-    def crear_tablas(self):
-        """Crea las tablas necesarias para el módulo de contabilidad."""
-        if not self.db_connection:
-            return
-
-        try:
-            cursor = self.db_connection.cursor()
-
-            # Verificar que las tablas principales ya existen
-            tablas_requeridas = ['departamentos', 'empleados', 'libro_contable']
-            
-            for tabla in tablas_requeridas:
-                try:
-                    cursor.execute(f"SELECT COUNT(*) FROM {tabla}")
-                    logger.debug(f"Tabla '{tabla}' verificada correctamente")
-                except Exception as e:
-                    logger.error(f"Error: tabla '{tabla}' no existe: {e}")
-                    return False
-
-            logger.info("Verificación de tablas de administración completada")
-            return True
-        
-        except Exception as e:
-            if self.db_connection:
-                self.db_connection.rollback()
-            logger.error(f"Error creando tablas: {e}")
-
+    
     def registrar_auditoria(
         self,
         tabla,
@@ -325,24 +278,31 @@ fecha_ingreso=None,
 try:
         cursor = self.db_connection.cursor()
 
-            if fecha_ingreso is None:
+if fecha_ingreso is None:
                 fecha_ingreso = date.today()
 
-            query = self.sql_manager.get_query('administracion', 'insert_empleado')
-            cursor.execute(query, {
-                'codigo': codigo,
-                'nombre': nombre,
-                'apellido': apellido,
-                'documento': documento,
-                'email': email,
-                'telefono': telefono,
-                'departamento_id': departamento_id,
-                'cargo': cargo,
-                'salario': salario,
-                'fecha_ingreso': fecha_ingreso,
-                'usuario_creacion': self.usuario_actual,
-                'usuario_actualizacion': self.usuario_actual
-            })
+cursor.execute(
+"""
+INSERT INTO [{self._validate_table_name(self.tabla_empleados)}]
+(codigo, nombre, apellido, documento, email, telefono, departamento_id,
+cargo, salario, fecha_ingreso, usuario_creacion, usuario_actualizacion)
+VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+""",
+(
+codigo,
+nombre,
+apellido,
+documento,
+email,
+telefono,
+departamento_id,
+cargo,
+salario,
+fecha_ingreso,
+self.usuario_actual,
+self.usuario_actual,
+),
+)
 
 empleado_id = cursor.lastrowid
 self.db_connection.commit()

@@ -1,1 +1,0 @@
-SELECT password_hash FROM usuarios WHERE id = :id

@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM detalles_obra WHERE obra_id = ?

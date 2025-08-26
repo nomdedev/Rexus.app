@@ -1,1 +1,0 @@
-SELECT name FROM sysobjects WHERE name = ? AND xtype = 'U'

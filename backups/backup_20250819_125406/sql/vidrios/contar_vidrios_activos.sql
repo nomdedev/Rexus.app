@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM vidrios WHERE estado = 'ACTIVO'

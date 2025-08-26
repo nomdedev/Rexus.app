@@ -53,24 +53,20 @@ class ConfiguracionModel:
         self.sql_path = 'configuracion'
         logger.info("ConfiguracionModel inicializado")
     
-    def crear_tablas(self):
-        """Crea las tablas necesarias para configuraciones."""
+    # Las tablas de configuración ya existen en SQL Server
+    def verificar_configuracion(self):
+        """Verifica que las tablas de configuración existan."""
         try:
             if not self.db_connection:
-                logger.warning("No hay conexión a BD disponible")
                 return False
-            
             cursor = self.db_connection.cursor()
-            
-            # Verificar que la tabla configuracion_sistema existe (ya está creada)
-            try:
-                cursor.execute("SELECT COUNT(*) FROM configuracion_sistema")
-                logger.debug("Tabla 'configuracion_sistema' verificada correctamente")
-            except Exception as e:
-                logger.error(f"Error: tabla 'configuracion_sistema' no existe: {e}")
-                return False
-            
-            # Insertar configuraciones por defecto si no existen
+            cursor.execute("SELECT COUNT(*) FROM configuracion_sistema")
+            return True
+        except Exception as e:
+            logger.error(f"Error verificando configuración: {e}")
+            return False
+
+    def defecto si no existen
             self._insertar_configuraciones_default()
             
             logger.debug("Tablas de configuración creadas exitosamente")

@@ -1,1 +1,0 @@
-SELECT * FROM pedidos WHERE id = ? AND activo = 1

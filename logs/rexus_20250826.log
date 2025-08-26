@@ -1180,3 +1180,94 @@
 2025-08-26 11:24:16 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
 2025-08-26 11:24:16 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
 2025-08-26 11:24:16 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:29:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:29:51 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:30:09 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:30:11 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:30:38 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:30:40 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:34:10 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:34:11 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:34:20 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:34:21 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:34:40 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:34:40 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:34:50 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:34:51 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:35:35 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:35:35 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:35:54 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:35:55 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:45:36 | INFO     | rexus           | Sistema de logging Rexus inicializado
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] Tema oscuro detectado en Windows - aplicando correcciones criticas
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] [WARNING] No se pudo obtener instancia de QApplication
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] Aplicando correcciones criticas automaticas para tema oscuro
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] [ART] Aplicando tema oscuro mejorado
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE]  Aplicando correcciones críticas de contraste
+2025-08-26 11:45:41 | INFO     | rexus           | [STYLE] [OK] Correcciones automáticas aplicadas exitosamente
+2025-08-26 11:49:17 | INFO     | rexus           | Sistema de logging Rexus inicializado

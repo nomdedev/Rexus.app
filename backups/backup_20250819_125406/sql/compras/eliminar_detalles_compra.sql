@@ -1,1 +1,0 @@
-DELETE FROM detalle_compras WHERE compra_id = ?

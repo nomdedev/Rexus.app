@@ -1,1 +1,0 @@
-DELETE FROM compras WHERE id = ?

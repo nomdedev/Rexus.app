@@ -1,1 +1,0 @@
-UPDATE usuarios SET intentos_fallidos = :intentos WHERE usuario = :username

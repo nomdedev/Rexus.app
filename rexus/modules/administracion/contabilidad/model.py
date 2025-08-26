@@ -48,83 +48,13 @@ self.tabla_plan_cuentas = "plan_cuentas"
 self.tabla_asientos_detalle = "asientos_detalle"
 self.tabla_balances = "balances_contables"
 
-# Crear tablas si no existen
-self.crear_tablas()
-
+# Las tablas ya existen en SQL Server
 logger.info("ContabilidadModel inicializado")
 
-def crear_tablas(self):
-        """Crea las tablas necesarias para contabilidad."""
-if not self.db_connection:
-        logger.warning("No hay conexión de base de datos para crear tablas")
-return
+# Las tablas de contabilidad ya existen en SQL Server
+    pass
 
-try:
-        cursor = self.db_connection.cursor()
-
-# Tabla de libro contable (asientos principales)
-cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
-concepto TEXT NOT NULL,
-referencia VARCHAR(100),
-debe DECIMAL(15,2) DEFAULT 0.00,
-haber DECIMAL(15,2) DEFAULT 0.00,
-saldo DECIMAL(15,2) DEFAULT 0.00,
-estado VARCHAR(20) DEFAULT 'ACTIVO',
-usuario_creacion VARCHAR(100),
-fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-# Tabla de plan de cuentas
-cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL UNIQUE,
-nombre_cuenta VARCHAR(200) NOT NULL,
-tipo_cuenta VARCHAR(50) NOT NULL,
-nivel INTEGER DEFAULT 1,
-cuenta_padre VARCHAR(20),
-descripcion TEXT,
-activa BOOLEAN DEFAULT TRUE,
-fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-# Tabla de detalle de asientos
-cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
-debe DECIMAL(15,2) DEFAULT 0.00,
-haber DECIMAL(15,2) DEFAULT 0.00,
-concepto_detalle TEXT,
-FOREIGN KEY (asiento_id) REFERENCES libro_contable(id),
-FOREIGN KEY (codigo_cuenta) REFERENCES plan_cuentas(codigo_cuenta)
-)
-""")
-
-# Tabla de balances contables
-cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
-fecha_balance DATE NOT NULL,
-codigo_cuenta VARCHAR(20) NOT NULL,
-saldo_inicial DECIMAL(15,2) DEFAULT 0.00,
-debe_periodo DECIMAL(15,2) DEFAULT 0.00,
-haber_periodo DECIMAL(15,2) DEFAULT 0.00,
-saldo_final DECIMAL(15,2) DEFAULT 0.00,
-usuario_generacion VARCHAR(100),
-fecha_generacion DATETIME DEFAULT CURRENT_TIMESTAMP
-)
-""")
-
-self.db_connection.commit()
-logger.info("Tablas de contabilidad creadas/verificadas exitosamente")
-
-except Exception as e:
-        logger.error(f"Error creando tablas de contabilidad: {e}")
-if self.db_connection:
-                self.db_connection.rollback()
-raise
-
-def crear_asiento_contable(self, fecha_asiento, tipo_asiento, concepto, monto, 
+    def def crear_asiento_contable(self, fecha_asiento, tipo_asiento, concepto, monto, 
 cuenta_debe, cuenta_haber, referencia=""):
         """
 Crea un nuevo asiento contable con validación.

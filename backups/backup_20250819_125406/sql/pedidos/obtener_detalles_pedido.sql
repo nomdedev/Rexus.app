@@ -1,1 +1,0 @@
-SELECT * FROM pedidos_detalle WHERE pedido_id = ?

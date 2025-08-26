@@ -1,1 +1,0 @@
-SELECT salario_base, cargo, departamento_id FROM empleados WHERE id = ?

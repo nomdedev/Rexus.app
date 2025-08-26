@@ -48,10 +48,8 @@ class AuditoriaModel:
         self.db_connection = db_connection
         logger.info("AuditoriaModel inicializado")
     
-    def crear_tablas(self):
-        """Las tablas de auditoría ya existen en la base de datos SQL Server."""
-        logger.info("Las tablas de auditoría ya están creadas en SQL Server")
-        return True
+    # Las tablas de auditoría ya existen en SQL Server
+    # No necesitamos crear tablas aquí
     
     def _insertar_configuraciones_default(self):
         """Inserta configuraciones por defecto de auditoría."""

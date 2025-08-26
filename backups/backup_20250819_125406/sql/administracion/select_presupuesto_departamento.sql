@@ -1,1 +1,0 @@
-SELECT presupuesto_mensual FROM departamentos WHERE id = ?
