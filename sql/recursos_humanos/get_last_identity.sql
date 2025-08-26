@@ -1,0 +1,1 @@
+SELECT @@IDENTITY AS last_id

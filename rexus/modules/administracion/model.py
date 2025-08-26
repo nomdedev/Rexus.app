@@ -220,45 +220,37 @@ class AdministracionModel(ContabilidadModel):
             logger.error(f"Error creando departamento: {e}")
             return None
 
-def obtener_departamentos(self, activos_solo=True):
+    def obtener_departamentos(self, activos_solo=True):
         """Obtiene la lista de departamentos."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-query = """
-SELECT id, codigo, nombre, descripcion, responsable, presupuesto_mensual,
-estado, fecha_creacion, usuario_creacion
-FROM departamentos
-"""
+            if activos_solo:
+                query = self.sql_manager.get_query("administracion", "obtener_departamentos_activos")
+            else:
+                query = self.sql_manager.get_query("administracion", "obtener_departamentos")
 
-if activos_solo:
-                query += " WHERE estado = 'ACTIVO'"
+            cursor.execute(query)
 
-query += " ORDER BY nombre"
+            departamentos = []
+            for row in cursor.fetchall():
+                departamentos.append({
+                    "id": row[0],
+                    "codigo": row[1],
+                    "nombre": row[2],
+                    "descripcion": row[3],
+                    "responsable": row[4],
+                    "presupuesto_mensual": float(row[5]),
+                    "estado": row[6],
+                    "fecha_creacion": row[7],
+                    "usuario_creacion": row[8],
+                })
 
-cursor.execute(query)
+            return departamentos
 
-departamentos = []
-for row in cursor.fetchall():
-                departamentos.append(
-{
-"id": row[0],
-"codigo": row[1],
-"nombre": row[2],
-"descripcion": row[3],
-"responsable": row[4],
-"presupuesto_mensual": float(row[5]),
-"estado": row[6],
-"fecha_creacion": row[7],
-"usuario_creacion": row[8],
-}
-)
-
-return departamentos
-
-except Exception as e:
-        logger.error(f"Error obteniendo departamentos: {e}")
-return []
+        except Exception as e:
+            logger.error(f"Error obteniendo departamentos: {e}")
+            return []
 
 # GESTIÓN DE EMPLEADOS
 def crear_empleado(
@@ -269,360 +261,343 @@ apellido,
 documento,
 email="",
 telefono="",
-departamento_id=None,
-cargo="",
-salario=0,
-fecha_ingreso=None,
-):
+        departamento_id=None,
+        cargo="",
+        salario=0,
+        fecha_ingreso=None,
+    ):
         """Crea un nuevo empleado."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-if fecha_ingreso is None:
+            if fecha_ingreso is None:
                 fecha_ingreso = date.today()
 
-cursor.execute(
-"""
-INSERT INTO [{self._validate_table_name(self.tabla_empleados)}]
-(codigo, nombre, apellido, documento, email, telefono, departamento_id,
-cargo, salario, fecha_ingreso, usuario_creacion, usuario_actualizacion)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""",
-(
-codigo,
-nombre,
-apellido,
-documento,
-email,
-telefono,
-departamento_id,
-cargo,
-salario,
-fecha_ingreso,
-self.usuario_actual,
-self.usuario_actual,
-),
-)
+            cursor.execute(
+                """
+                INSERT INTO [{self._validate_table_name(self.tabla_empleados)}]
+                (codigo, nombre, apellido, documento, email, telefono, departamento_id,
+                 cargo, salario, fecha_ingreso, usuario_creacion, usuario_actualizacion)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """,
+                (
+                    codigo,
+                    nombre,
+                    apellido,
+                    documento,
+                    email,
+                    telefono,
+                    departamento_id,
+                    cargo,
+                    salario,
+                    fecha_ingreso,
+                    self.usuario_actual,
+                    self.usuario_actual,
+                ),
+            )
 
-empleado_id = cursor.lastrowid
-self.db_connection.commit()
+            empleado_id = cursor.lastrowid
+            self.db_connection.commit()
 
-# Registrar auditoría
-self.registrar_auditoria(
-"empleados",
-empleado_id,
-"INSERT",
-None,
-{"codigo": codigo, "nombre": nombre, "apellido": apellido},
-)
+            # Registrar auditoría
+            self.registrar_auditoria(
+                "empleados",
+                empleado_id,
+                "INSERT",
+                None,
+                {"codigo": codigo, "nombre": nombre, "apellido": apellido},
+            )
 
-return empleado_id
+            return empleado_id
 
-except Exception as e:
-        return None
+        except Exception as e:
+            self.db_connection.rollback()
+            logging.error(f"Error creando empleado: {e}")
+            return None
 
-def obtener_empleados(self, departamento_id=None, activos_solo=True):
+    def obtener_empleados(self, departamento_id=None, activos_solo=True):
         """Obtiene la lista de empleados."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-query = """
-SELECT e.id, e.codigo, e.nombre, e.apellido, e.documento, e.email,
-e.telefono, e.departamento_id, d.nombre as departamento,
-e.cargo, e.salario, e.fecha_ingreso, e.estado
-FROM [{self._validate_table_name('empleados')}] e
-LEFT JOIN [{self._validate_table_name('departamentos')}] d ON e.departamento_id = d.id
-"""
+            # Usar la query base y construir WHERE dinámicamente
+            query = self.sql_manager.get_query("administracion", "obtener_empleados")
+            
+            conditions = []
+            params = []
 
-conditions = []
-params = []
-
-if activos_solo:
+            if activos_solo:
                 conditions.append("e.estado = 'ACTIVO'")
 
-if departamento_id:
+            if departamento_id:
                 conditions.append("e.departamento_id = ?")
-params.append(departamento_id)
+                params.append(departamento_id)
 
-if conditions:
-                query += " WHERE " + " AND ".join(conditions)
+            # Reemplazar el WHERE 1=1 con las condiciones reales
+            if conditions:
+                where_clause = " AND ".join(conditions)
+                query = query.replace("WHERE 1=1", f"WHERE {where_clause}")
+            else:
+                query = query.replace("WHERE 1=1", "")
 
-query += " ORDER BY e.nombre, e.apellido"
+            cursor.execute(query, params)
 
-cursor.execute(query, params)
-
-empleados = []
-for row in cursor.fetchall():
+            empleados = []
+            for row in cursor.fetchall():
                 empleados.append(
-{
-"id": row[0],
-"codigo": row[1],
-"nombre": row[2],
-"apellido": row[3],
-"documento": row[4],
-"email": row[5],
-"telefono": row[6],
-"departamento_id": row[7],
-"departamento": row[8],
-"cargo": row[9],
-"salario": float(row[10]) if row[10] else 0,
-"fecha_ingreso": row[11],
-"estado": row[12],
-}
-)
+                    {
+                        "id": row[0],
+                        "codigo": row[1],
+                        "nombre": row[2],
+                        "apellido": row[3],
+                        "documento": row[4],
+                        "email": row[5],
+                        "telefono": row[6],
+                        "departamento_id": row[7],
+                        "departamento": row[8],
+                        "cargo": row[9],
+                        "salario": float(row[10]) if row[10] else 0,
+                        "fecha_ingreso": row[11],
+                        "estado": row[12],
+                    }
+                )
 
-return empleados
+            return empleados
 
-except Exception as e:
-        logger.error(f"Error obteniendo empleados: {e}")
-return []
+        except Exception as e:
+            logging.error(f"Error obteniendo empleados: {e}")
+            return []
 
-# GESTIÓN DE LIBRO CONTABLE
-def crear_asiento_contable(
-    self,
-    fecha_asiento,
-    tipo_asiento,
-    concepto,
-    referencia="",
-    obra_id=None,
-    proveedor_id=None,
-    empleado_id=None,
-    departamento_id=None,
-    cuenta_contable="",
-    debe=0,
-    haber=0,
-    observaciones="",
-):
-    """Crea un nuevo asiento contable."""
-    try:
-        cursor = self.db_connection.cursor()
+    # GESTIÓN DE LIBRO CONTABLE
+    def crear_asiento_contable(
+        self,
+        fecha_asiento,
+        tipo_asiento,
+        concepto,
+        referencia="",
+        obra_id=None,
+        proveedor_id=None,
+        empleado_id=None,
+        departamento_id=None,
+        cuenta_contable="",
+        debe=0,
+        haber=0,
+        observaciones="",
+    ):
+        """Crea un nuevo asiento contable."""
+        try:
+            cursor = self.db_connection.cursor()
 
-        # Generar número de asiento usando SQL externa
-        sql_siguiente_numero = self.sql_manager.load_sql("select_siguiente_numero_asiento.sql")
-        tabla_libro_contable = self._validate_table_name(self.tabla_libro_contable)
-        query_numero = sql_siguiente_numero.format(tabla_libro_contable=tabla_libro_contable)
-        
-        cursor.execute(query_numero)
-        numero = cursor.fetchone()[0]
-        numero_asiento = f"AS-{numero:06d}"
+            # Generar número de asiento usando SQL externa
+            sql_siguiente_numero = self.sql_manager.load_sql("select_siguiente_numero_asiento.sql")
+            tabla_libro_contable = self._validate_table_name(self.tabla_libro_contable)
+            query_numero = sql_siguiente_numero.format(tabla_libro_contable=tabla_libro_contable)
+            
+            cursor.execute(query_numero)
+            numero = cursor.fetchone()[0]
+            numero_asiento = f"AS-{numero:06d}"
 
-        # Calcular saldo
-        saldo = debe - haber
+            # Calcular saldo
+            saldo = debe - haber
 
-        # Insertar asiento usando SQL externa
-        sql_insert = self.sql_manager.load_sql("insert_asiento_contable.sql")
-        query_insert = sql_insert.format(tabla_libro_contable=tabla_libro_contable)
-        
-        cursor.execute(
-            query_insert,
-            (
-                numero_asiento,
-                fecha_asiento,
-                tipo_asiento,
-                concepto,
-                referencia,
-                obra_id,
-                proveedor_id,
-                empleado_id,
-                departamento_id,
-                cuenta_contable,
-                debe,
-                haber,
-                saldo,
-                observaciones,
-                self.usuario_actual,
-                self.usuario_actual,
-            ),
-        )
+            # Insertar asiento usando SQL externa
+            sql_insert = self.sql_manager.load_sql("insert_asiento_contable.sql")
+            query_insert = sql_insert.format(tabla_libro_contable=tabla_libro_contable)
+            
+            cursor.execute(
+                query_insert,
+                (
+                    numero_asiento,
+                    fecha_asiento,
+                    tipo_asiento,
+                    concepto,
+                    referencia,
+                    obra_id,
+                    proveedor_id,
+                    empleado_id,
+                    departamento_id,
+                    cuenta_contable,
+                    debe,
+                    haber,
+                    saldo,
+                    observaciones,
+                    self.usuario_actual,
+                    self.usuario_actual,
+                ),
+            )
 
-        asiento_id = cursor.lastrowid
-        self.db_connection.commit()
+            asiento_id = cursor.lastrowid
+            self.db_connection.commit()
 
-        # Registrar auditoría
-        self.registrar_auditoria(
-            "libro_contable",
-            asiento_id,
-            "INSERT",
-            None,
-            {"numero_asiento": numero_asiento, "concepto": concepto},
-        )
+            # Registrar auditoría
+            self.registrar_auditoria(
+                "libro_contable",
+                asiento_id,
+                "INSERT",
+                None,
+                {"numero_asiento": numero_asiento, "concepto": concepto},
+            )
 
-        return asiento_id
+            return asiento_id
 
-    except Exception as e:
-        logger.error(f"Error creando asiento contable: {e}")
-        if self.db_connection:
-            self.db_connection.rollback()
-        return None
+        except Exception as e:
+            logging.error(f"Error creando asiento contable: {e}")
+            if self.db_connection:
+                self.db_connection.rollback()
+            return None
 
-def obtener_libro_contable(
-self,
-fecha_desde=None,
-fecha_hasta=None,
-tipo_asiento=None,
-obra_id=None,
-departamento_id=None,
-limite=100,
-):
+    def obtener_libro_contable(
+        self,
+        fecha_desde=None,
+        fecha_hasta=None,
+        tipo_asiento=None,
+        obra_id=None,
+        departamento_id=None,
+        limite=100,
+    ):
         """Obtiene asientos del libro contable."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-query = """
-SELECT lc.id, lc.numero_asiento, lc.fecha_asiento, lc.tipo_asiento,
-lc.concepto, lc.referencia, lc.obra_id, lc.proveedor_id,
-lc.empleado_id, lc.departamento_id, d.nombre as departamento,
-lc.cuenta_contable, lc.debe, lc.haber, lc.saldo, lc.estado,
-lc.observaciones, lc.fecha_creacion, lc.usuario_creacion
-FROM [{self._validate_table_name('libro_contable')}] lc
-LEFT JOIN [{self._validate_table_name('departamentos')}] d ON lc.departamento_id = d.id
-"""
+            # Usar la query base y construir WHERE dinámicamente
+            query = self.sql_manager.get_query("administracion", "obtener_libro_contable")
 
-conditions = []
-params = []
+            conditions = []
+            params = []
 
-if fecha_desde:
+            if fecha_desde:
                 conditions.append("lc.fecha_asiento >= ?")
-params.append(fecha_desde)
+                params.append(fecha_desde)
 
-if fecha_hasta:
+            if fecha_hasta:
                 conditions.append("lc.fecha_asiento <= ?")
-params.append(fecha_hasta)
+                params.append(fecha_hasta)
 
-if tipo_asiento:
+            if tipo_asiento:
                 conditions.append("lc.tipo_asiento = ?")
-params.append(tipo_asiento)
+                params.append(tipo_asiento)
 
-if obra_id:
+            if obra_id:
                 conditions.append("lc.obra_id = ?")
-params.append(obra_id)
+                params.append(obra_id)
 
-if departamento_id:
+            if departamento_id:
                 conditions.append("lc.departamento_id = ?")
-params.append(departamento_id)
+                params.append(departamento_id)
 
-if conditions:
-                query += " WHERE " + " AND ".join(conditions)
+            # Reemplazar el WHERE 1=1 con las condiciones reales
+            if conditions:
+                where_clause = " AND ".join(conditions)
+                query = query.replace("WHERE 1=1", f"WHERE {where_clause}")
+            else:
+                query = query.replace("WHERE 1=1", "")
 
-query += " ORDER BY lc.fecha_asiento DESC, lc.numero_asiento DESC"
-
-if limite:
+            if limite:
                 limite_validado = self._validate_limit(limite)
-query += f" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY"
+                query += f" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY"
 
-cursor.execute(query, params)
+            cursor.execute(query, params)
 
-asientos = []
-for row in cursor.fetchall():
+            asientos = []
+            for row in cursor.fetchall():
                 asientos.append(
-{
-"id": row[0],
-"numero_asiento": row[1],
-"fecha_asiento": row[2],
-"tipo_asiento": row[3],
-"concepto": row[4],
-"referencia": row[5],
-"obra_id": row[6],
-"proveedor_id": row[7],
-"empleado_id": row[8],
-"departamento_id": row[9],
-"departamento": row[10],
-"cuenta_contable": row[11],
-"debe": float(row[12]),
-"haber": float(row[13]),
-"saldo": float(row[14]),
-"estado": row[15],
-"observaciones": row[16],
-"fecha_creacion": row[17],
-"usuario_creacion": row[18],
-}
-)
+                    {
+                        "id": row[0],
+                        "numero_asiento": row[1],
+                        "fecha_asiento": row[2],
+                        "tipo_asiento": row[3],
+                        "concepto": row[4],
+                        "referencia": row[5],
+                        "obra_id": row[6],
+                        "proveedor_id": row[7],
+                        "empleado_id": row[8],
+                        "departamento_id": row[9],
+                        "departamento": row[10],
+                        "cuenta_contable": row[11],
+                        "debe": float(row[12]),
+                        "haber": float(row[13]),
+                        "saldo": float(row[14]),
+                        "estado": row[15],
+                        "observaciones": row[16],
+                        "fecha_creacion": row[17],
+                        "usuario_creacion": row[18],
+                    }
+                )
 
-return asientos
+            return asientos
 
-except Exception as e:
-        logger.info(f"Error obteniendo libro contable: {e}")
-return []
+        except Exception as e:
+            logging.error(f"Error obteniendo libro contable: {e}")
+            return []
 
-# GESTIÓN DE RECIBOS
-def crear_recibo(
-self,
-fecha_emision,
-tipo_recibo,
-concepto,
-beneficiario,
-monto,
-obra_id=None,
-proveedor_id=None,
-empleado_id=None,
-moneda="ARS",
-metodo_pago="EFECTIVO",
-numero_comprobante="",
-observaciones="",
-):
+    # GESTIÓN DE RECIBOS
+    def crear_recibo(
+        self,
+        fecha_emision,
+        tipo_recibo,
+        concepto,
+        beneficiario,
+        monto,
+        obra_id=None,
+        proveedor_id=None,
+        empleado_id=None,
+        moneda="ARS",
+        metodo_pago="EFECTIVO",
+        numero_comprobante="",
+        observaciones="",
+    ):
         """Crea un nuevo recibo."""
-try:
-        cursor = self.db_connection.cursor()
+        try:
+            cursor = self.db_connection.cursor()
 
-# Generar número de recibo
-cursor.execute("""
-SELECT ISNULL(MAX(CAST(SUBSTRING(numero_recibo,
-4,
-10) AS INT)),
-0) + 1
-FROM recibos
-WHERE numero_recibo LIKE 'REC-%'
-""")
-numero = cursor.fetchone()[0]
-numero_recibo = f"REC-{numero:06d}"
+            # Generar número de recibo
+            query_numero = self.sql_manager.get_query("administracion", "generar_numero_recibo")
+            cursor.execute(query_numero)
+            numero = cursor.fetchone()[0]
+            numero_recibo = f"REC-{numero:06d}"
 
-cursor.execute(
-"""
-INSERT INTO [{self._validate_table_name(self.tabla_recibos)}]
-(numero_recibo, fecha_emision, tipo_recibo, concepto, beneficiario,
-obra_id, proveedor_id, empleado_id, monto, moneda, metodo_pago,
-numero_comprobante, observaciones, usuario_creacion, usuario_actualizacion)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-""",
-(
-numero_recibo,
-fecha_emision,
-tipo_recibo,
-concepto,
-beneficiario,
-obra_id,
-proveedor_id,
-empleado_id,
-monto,
-moneda,
-metodo_pago,
-numero_comprobante,
-observaciones,
-self.usuario_actual,
-self.usuario_actual,
-),
-)
+            query_insert = self.sql_manager.get_query("administracion", "insertar_recibo")
+            cursor.execute(
+                query_insert,
+                (
+                    numero_recibo,
+                    fecha_emision,
+                    tipo_recibo,
+                    concepto,
+                    beneficiario,
+                    obra_id,
+                    proveedor_id,
+                    empleado_id,
+                    monto,
+                    moneda,
+                    metodo_pago,
+                    numero_comprobante,
+                    observaciones,
+                    self.usuario_actual,
+                    self.usuario_actual,
+                ),
+            )
 
-recibo_id = cursor.lastrowid
-self.db_connection.commit()
+            recibo_id = cursor.lastrowid
+            self.db_connection.commit()
 
-# Registrar auditoría
-self.registrar_auditoria(
-"recibos",
-recibo_id,
-"INSERT",
-None,
-{"numero_recibo": numero_recibo, "concepto": concepto, "monto": monto},
-)
+            # Registrar auditoría
+            self.registrar_auditoria(
+                "recibos",
+                recibo_id,
+                "INSERT",
+                None,
+                {"numero_recibo": numero_recibo, "concepto": concepto, "monto": monto},
+            )
 
-return recibo_id
+            return recibo_id
 
-except Exception as e:
-        logger.info(f"Error creando recibo: {e}")
-self.db_connection.rollback()
-return None
+        except Exception as e:
+            logging.error(f"Error creando recibo: {e}")
+            self.db_connection.rollback()
+            return None
 
-def obtener_recibos(
+    def obtener_recibos(
 self,
 fecha_desde=None,
 fecha_hasta=None,

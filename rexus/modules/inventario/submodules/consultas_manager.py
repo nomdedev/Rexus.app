@@ -19,33 +19,33 @@ from rexus.utils.unified_sanitizer import sanitize_string
 
 # DataSanitizer unificado
 try:
-from rexus.utils.unified_sanitizer import unified_sanitizer
-# unified_sanitizer ya es una instancia, no se necesita instanciar
-data_sanitizer = unified_sanitizer
+    from rexus.utils.unified_sanitizer import unified_sanitizer
+    # unified_sanitizer ya es una instancia, no se necesita instanciar
+    data_sanitizer = unified_sanitizer
 except ImportError:
-class DataSanitizer:
+    class DataSanitizer:
         def sanitize_dict(self, data):
-        return data if data else {}
+            return data if data else {}
 
-def sanitize_string(self, text):
-        return str(text) if text else ""
+        def sanitize_string(self, text):
+            return str(text) if text else ""
 
-def sanitize_integer(self, value):
-        return int(value) if value else 0
+        def sanitize_integer(self, value):
+            return int(value) if value else 0
 
-def sanitize_text(self, text):
-        return str(text) if text else ""
+        def sanitize_text(self, text):
+            return str(text) if text else ""
 
-data_sanitizer = DataSanitizer()
+    data_sanitizer = DataSanitizer()
 
 
 class ConsultasManager(PaginatedTableMixin):
-"""Gestor especializado para consultas y búsquedas de inventario."""
+    """Gestor especializado para consultas y búsquedas de inventario."""
 
-def __init__(self, db_connection=None):
+    def __init__(self, db_connection=None):
         """Inicializa el gestor de consultas."""
-self.db_connection = db_connection
-self.sanitizer = data_sanitizer
+        self.db_connection = db_connection
+        self.sanitizer = data_sanitizer
 def obtener_productos_paginados(
 self,
 offset: int = 0,

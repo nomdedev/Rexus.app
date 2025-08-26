@@ -1,0 +1,1 @@
+SELECT SUM(precio_m2) FROM vidrios WHERE estado = 'ACTIVO'

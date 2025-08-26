@@ -80,7 +80,7 @@ import sqlite3
             
             # Verificar que existan en tabla users
             for user in referenced_users:
-                users_cursor.execute("SELECT id FROM usuarios WHERE username = ?", (user,))
+                users_cursor.execute("SELECT id FROM usuarios WHERE usuario = ?", (user,))
                 if not users_cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="foreign_key_violation",
@@ -337,7 +337,7 @@ import sqlite3
             """)
             
             for row in audit_cursor.fetchall():
-                users_cursor.execute("SELECT id FROM usuarios WHERE username = ?", (row[1],))
+                users_cursor.execute("SELECT id FROM usuarios WHERE usuario = ?", (row[1],))
                 if not users_cursor.fetchone():
                     self.violations.append(IntegrityViolation(
                         violation_type="orphaned_record",

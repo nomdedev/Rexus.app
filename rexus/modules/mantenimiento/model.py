@@ -214,7 +214,7 @@ class MantenimientoModel:
             )
 
             # Obtener ID del equipo creado
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute(self.sql_manager.get_query("mantenimiento", "get_last_identity"))
             equipo_id = cursor.fetchone()[0]
 
             # Registrar en historial
@@ -381,7 +381,7 @@ class MantenimientoModel:
             )
 
             # Obtener ID del mantenimiento creado
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute(self.sql_manager.get_query("mantenimiento", "get_last_identity"))
             mantenimiento_id = cursor.fetchone()[0]
 
             # Registrar en historial
@@ -682,7 +682,7 @@ mantenimiento_id,
         try:
             cursor = self.db_connection.cursor()
             
-            query = "SELECT COUNT(*) FROM ordenes_trabajo WHERE activo = 1"
+            query = self.sql_manager.get_query("mantenimiento", "count_ordenes_trabajo")
             params = []
             
             # Aplicar filtros si existen
@@ -756,7 +756,7 @@ mantenimiento_id,
             ))
 
             # Obtener ID de la orden creada
-            cursor.execute("SELECT @@IDENTITY")
+            cursor.execute(self.sql_manager.get_query("mantenimiento", "get_last_identity"))
             orden_id = cursor.fetchone()[0]
 
             self.db_connection.commit()

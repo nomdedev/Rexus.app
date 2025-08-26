@@ -5,14 +5,38 @@ Proporciona componentes de paginación para tablas grandes
 mejorando el rendimiento y la experiencia de usuario.
 """
 
-
 import logging
+from typing import Dict, List, Optional, Tuple
+from PyQt6.QtWidgets import QTableWidget, QTableWidgetItem
+
 logger = logging.getLogger(__name__)
 
-                - get_paginated_data(offset,
-limit,
-        filters=None) -> Tuple[List[Dict],
-        int]
+class PaginationInfo:
+    """Información de paginación."""
+    def __init__(self, page=1, page_size=50, total_items=0):
+        self.page = page
+        self.page_size = page_size
+        self.total_items = total_items
+        self.total_pages = max(1, (total_items + page_size - 1) // page_size)
+
+class PaginatedTableMixin:
+    """Mixin para agregar funcionalidad de paginación a tablas."""
+    
+    def __init__(self):
+        self.pagination_manager = PaginationManager()
+    
+    def setup_pagination(self, page_size=50):
+        """Configura la paginación."""
+        self.pagination_manager.pagination_info.page_size = page_size
+    
+    def get_paginated_data(self, offset, limit, filters=None):
+        """Método que debe ser implementado por las clases que usen este mixin."""
+        raise NotImplementedError("Debe implementar get_paginated_data")
+
+class PaginationManager:
+    """
+    Gestor de paginación que debe implementar:
+    - get_paginated_data(offset, limit, filters=None) -> Tuple[List[Dict], int]
     """
 
     def __init__(self):

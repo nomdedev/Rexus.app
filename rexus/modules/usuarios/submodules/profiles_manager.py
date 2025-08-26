@@ -249,7 +249,7 @@ datos: Dict[str,
             cursor = self.db_connection.cursor()
 
             # Verificar username
-            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE username = ?", (username,))
+            cursor.execute("SELECT COUNT(*) FROM usuarios WHERE usuario = ?", (username,))
             if cursor.fetchone()[0] > 0:
                 return False
 

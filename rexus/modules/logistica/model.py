@@ -36,6 +36,12 @@ except ImportError:
                 return ""
             return str(text).replace("'", "''")
 
+# SQLQueryManager para consultas seguras
+try:
+    from ...utils.sql_query_manager import SQLQueryManager
+except ImportError:
+    from ...core.sql_query_manager import SQLQueryManager
+
 
 class LogisticaModel:
     """Modelo para gestionar operaciones logísticas."""
@@ -48,6 +54,7 @@ class LogisticaModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         logger.info("LogisticaModel inicializado")
     
     def crear_servicio_transporte(self, datos_servicio: Dict[str, Any]) -> Optional[int]:
@@ -517,7 +524,7 @@ class LogisticaModel:
                 return f"SERV{datetime.now().strftime('%Y%m%d%H%M%S')}"
             
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT COUNT(*) FROM servicios_transporte")
+            cursor.execute(self.sql_manager.get_query("logistica", "count_servicios_transporte"))
             count = cursor.fetchone()[0] + 1
             
             return f"SERV{count:06d}"

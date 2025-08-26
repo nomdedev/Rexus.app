@@ -21,25 +21,26 @@
 
 """Vista de Pedidos de Compras"""
 
-
 import logging
-logger = logging.getLogger(__name__)
-
 from PyQt6.QtWidgets import QVBoxLayout, QWidget
 
 # Importar componentes Rexus
-from rexus.ui.components.base_components import (
-RexusLabel
-)
+from rexus.ui.components.base_components import RexusLabel
+
+logger = logging.getLogger(__name__)
 
 
 class PedidosView(QWidget):
-def __init__(self):
+    """Vista para gestión de pedidos de compras."""
+    
+    def __init__(self):
         super().__init__()
-self.init_ui()
+        self.init_ui()
 
-def init_ui(self):
+    def init_ui(self):
+        """Inicializa la interfaz de usuario."""
         layout = QVBoxLayout(self)
-title_label = RexusLabel()
-title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #2c3e50;")
-layout.addWidget(title_label)
+        
+        title_label = RexusLabel("Gestión de Pedidos")
+        title_label.setStyleSheet("font-size: 24px; font-weight: bold; color: #2c3e50;")
+        layout.addWidget(title_label)

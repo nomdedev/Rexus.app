@@ -28,13 +28,13 @@ import logging
             stats = {}
 
             # Sesiones activas totales
-            cursor.execute("SELECT COUNT(*) FROM sesiones_usuario WHERE is_active = 1")
+            cursor.execute("SELECT COUNT(*) FROM sesiones WHERE is_active = 1")
             stats['sesiones_activas'] = cursor.fetchone()[0]
 
             # Usuarios únicos con sesiones activas
             cursor.execute("""
                 SELECT COUNT(DISTINCT usuario_id)
-                FROM sesiones_usuario
+                FROM sesiones
                 WHERE is_active = 1
             """)
             stats['usuarios_conectados'] = cursor.fetchone()[0]
@@ -45,7 +45,7 @@ import logging
 created_at,
                     COALESCE(closed_at,
                     GETDATE())))
-                FROM sesiones_usuario
+                FROM sesiones
                 WHERE created_at > DATEADD(DAY, -1, GETDATE())
             """)
             result = cursor.fetchone()[0]
@@ -54,7 +54,7 @@ created_at,
             # Top IPs por número de sesiones (últimas 24 horas)
             cursor.execute("""
                 SELECT TOP 5 ip_address, COUNT(*) as cantidad
-                FROM sesiones_usuario
+                FROM sesiones
                 WHERE created_at > DATEADD(DAY, -1, GETDATE())
                 GROUP BY ip_address
                 ORDER BY cantidad DESC
@@ -100,7 +100,7 @@ created_at,
             cursor = self.db_connection.cursor()
 
             cursor.execute("""
-                SELECT COUNT(*) FROM sesiones_usuario
+                SELECT COUNT(*) FROM sesiones
                 WHERE usuario_id = ? AND is_active = 1
             """, (usuario_id,))
 
@@ -127,7 +127,7 @@ created_at,
 
             # Obtener la sesión más antigua
             cursor.execute("""
-                SELECT TOP 1 session_id FROM sesiones_usuario
+                SELECT TOP 1 session_id FROM sesiones
                 WHERE usuario_id = ? AND is_active = 1
                 ORDER BY created_at ASC
             """, (usuario_id,))
@@ -154,7 +154,7 @@ created_at,
 
             # Cerrar sesiones expiradas
             cursor.execute("""
-                UPDATE sesiones_usuario
+                UPDATE sesiones
                 SET is_active = 0, closed_at = GETDATE()
                 WHERE is_active = 1 AND last_activity < ?
             """, (tiempo_limite,))
@@ -176,16 +176,16 @@ created_at,
 
             cursor = self.db_connection.cursor()
 
-            # Verificar que la tabla sesiones_usuario existe
+            # Verificar que la tabla sesiones existe
             cursor.execute("""
                 SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES 
-                WHERE TABLE_NAME = 'sesiones_usuario'
+                WHERE TABLE_NAME = 'sesiones'
             """)
             if not cursor.fetchone()[0]:
-                logger.warning("Tabla 'sesiones_usuario' no existe en SQL Server")
+                logger.warning("Tabla 'sesiones' no existe en SQL Server")
                 return
 
-            logger.info("Tabla sesiones_usuario verificada correctamente")
+            logger.info("Tabla sesiones verificada correctamente")
 
             self.db_connection.commit()
 

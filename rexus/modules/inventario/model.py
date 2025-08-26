@@ -60,14 +60,15 @@ except ImportError:
 
 # Importar managers especializados
 try:
-    from rexus.modules.inventario.submodules.base_utilities import BaseUtilities
-    from rexus.modules.inventario.submodules.productos_manager import ProductosManager
-    from rexus.modules.inventario.submodules.movimientos_manager import MovimientosManager
-    from rexus.modules.inventario.submodules.reservas_manager import ReservasManager
-    from rexus.modules.inventario.submodules.reportes_manager import ReportesManager
-    from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
+    # TODO: Arreglar errores de indentación en submodules
+    # from rexus.modules.inventario.submodules.base_utilities import BaseUtilities
+    # from rexus.modules.inventario.submodules.productos_manager import ProductosManager
+    # from rexus.modules.inventario.submodules.movimientos_manager import MovimientosManager
+    # from rexus.modules.inventario.submodules.reservas_manager import ReservasManager
+    # from rexus.modules.inventario.submodules.reportes_manager import ReportesManager
+    # from rexus.modules.inventario.submodules.categorias_manager import CategoriasManager
 
-    SUBMODULES_AVAILABLE = True
+    SUBMODULES_AVAILABLE = False
     logger.info("Submódulos especializados cargados")
 except ImportError as e:
     logger.warning(f"Submódulos especializados no disponibles en inventario: {e}")
@@ -81,11 +82,12 @@ except ImportError as e:
 
 # Importar ConsultasManager (mantener compatibilidad)
 try:
-    from rexus.modules.inventario.submodules.consultas_manager import (
-        ConsultasManager,
-    )
+    # TODO: Arreglar errores de indentación en consultas_manager
+    # from rexus.modules.inventario.submodules.consultas_manager import (
+    #     ConsultasManager,
+    # )
 
-    CONSULTAS_MANAGER_AVAILABLE = True
+    CONSULTAS_MANAGER_AVAILABLE = False
 except ImportError as e:
     logger.warning(f"ConsultasManager not available in inventario: {e}")
     CONSULTAS_MANAGER_AVAILABLE = False

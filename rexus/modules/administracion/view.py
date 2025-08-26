@@ -25,19 +25,19 @@ RexusGroupBox, RexusColors
 
 
 class DashboardWidget(QWidget):
-"""Widget del dashboard principal con métricas clave."""
+    """Widget del dashboard principal con métricas clave."""
 
-def __init__(self, parent=None):
+    def __init__(self, parent=None):
         super().__init__(parent)
-self.init_ui()
+        self.init_ui()
 
-def init_ui(self):
+    def init_ui(self):
+        """Inicializa la interfaz del dashboard."""
         layout = QGridLayout(self)
-
-# Tarjetas de métricas
-self.crear_tarjeta_metrica("[USERS] Empleados Activos", "0", 0, 0, layout)
-self.crear_tarjeta_metrica("[MONEY] Balance General",
-"$0.00",
+        
+        # Tarjetas de métricas
+        self.crear_tarjeta_metrica("[USERS] Empleados Activos", "0", 0, 0, layout)
+        self.crear_tarjeta_metrica("[MONEY] Balance General", "$0.00",
 0,
 1,
 layout)

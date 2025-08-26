@@ -97,7 +97,7 @@ class HerrajesModel:
             cursor = self.db_connection.cursor()
 
             # Consulta base
-            query = "SELECT * FROM herrajes WHERE activo = 1"
+            query = self.sql_manager.get_query("herrajes", "select_herrajes_activos")
             params = []
 
             # Aplicar filtros
@@ -237,19 +237,22 @@ class HerrajesModel:
             cursor = self.db_connection.cursor()
 
             # Total herrajes activos
-            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE activo = 1")
+            query = self.sql_manager.get_query("herrajes", "count_herrajes_activos")
+            cursor.execute(query)
             total_herrajes = cursor.fetchone()[0]
 
             # Stock total
-            cursor.execute("SELECT COALESCE(SUM(stock_actual), 0) FROM herrajes WHERE activo = 1")
+            query = self.sql_manager.get_query("herrajes", "sum_stock_herrajes")
+            cursor.execute(query)
             total_stock = cursor.fetchone()[0]
 
             # Herrajes bajo stock
-            cursor.execute("SELECT COUNT(*) FROM herrajes WHERE activo = 1 AND stock_actual <= stock_minimo")
+            query = self.sql_manager.get_query("herrajes", "count_stock_bajo_herrajes")
+            cursor.execute(query)
             herrajes_bajo_stock = cursor.fetchone()[0]
 
             # Proveedores activos
-            cursor.execute("SELECT COUNT(DISTINCT proveedor) FROM herrajes WHERE activo = 1 AND proveedor IS NOT NULL")
+            cursor.execute(self.sql_manager.get_query("herrajes", "count_proveedores_activos"))
             proveedores_activos = cursor.fetchone()[0]
 
             stats = {
@@ -415,16 +418,16 @@ class HerrajesModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si el herraje existe
-            cursor.execute("SELECT id FROM herrajes WHERE codigo = ?", (codigo,))
+            cursor.execute(self.sql_manager.get_query("herrajes", "select_herraje_by_codigo"), (codigo,))
             if not cursor.fetchone():
                 print(f"[ERROR HERRAJES] No se encontró herraje con código: {codigo}")
                 return False
 
             # Eliminar registros relacionados primero (si existen)
-            cursor.execute("DELETE FROM herrajes_obra WHERE herraje_id = (SELECT id FROM herrajes WHERE codigo = ?)", (codigo,))
+            cursor.execute(self.sql_manager.get_query("herrajes", "delete_herrajes_obra_by_herraje_codigo"), (codigo,))
 
             # Eliminar el herraje
-            cursor.execute("DELETE FROM herrajes WHERE codigo = ?", (codigo,))
+            cursor.execute(self.sql_manager.get_query("herrajes", "delete_herraje_by_codigo_param"), (codigo,))
             rows_affected = cursor.rowcount
             self.db_connection.commit()
 
@@ -578,7 +581,7 @@ class HerrajesModel:
         try:
             cursor = self.db_connection.cursor()
             
-            query = "SELECT COUNT(*) FROM herrajes WHERE activo = 1"
+            query = self.sql_manager.get_query("herrajes", "count_herrajes_activos_query")
             params = []
             
             # Aplicar filtros si existen

@@ -1,6 +1,6 @@
 from rexus.core.auth_decorators import (
     admin_required,
-    auth_required,
+    login_required,
 )
 
 # [LOCK] DB Authorization Check - Verify user permissions before DB operations
@@ -375,7 +375,7 @@ class VidriosModel:
             logger.error(f"Error obteniendo vidrios por obra: {e}")
             return []
 
-    @auth_required
+    @login_required
     def asignar_vidrio_obra(
         self,
         vidrio_id,
@@ -428,7 +428,7 @@ class VidriosModel:
             logger.error(f"Error asignando vidrio a obra: {e}")
             return False
 
-    @auth_required
+    @login_required
     def crear_pedido_obra(self, obra_id, proveedor, vidrios_lista):
         """
         Crea un pedido de vidrios para una obra específica.
@@ -460,7 +460,8 @@ class VidriosModel:
             cursor.execute(query_pedido, (obra_id, proveedor, total_estimado))
 
             # Obtener ID del pedido creado
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            query = self.sql_manager.get_query("vidrios", "get_last_identity")
+            cursor.execute(query)
             pedido_id = cursor.fetchone()[0]
 
             # Actualizar cantidades pedidas en vidrios_obra
@@ -502,7 +503,8 @@ class VidriosModel:
             estadisticas = {}
 
             # Total de vidrios
-            cursor.execute("SELECT COUNT(*) FROM vidrios WHERE estado = 'ACTIVO'")
+            query = self.sql_manager.get_query("vidrios", "count_vidrios_activos")
+            cursor.execute(query)
             estadisticas["total_vidrios"] = cursor.fetchone()[0]
 
             # Tipos de vidrio disponibles
@@ -518,7 +520,8 @@ class VidriosModel:
             estadisticas["proveedores_activos"] = cursor.fetchone()[0]
 
             # Valor total del inventario (estimado por m2)
-            cursor.execute("SELECT SUM(precio_m2) FROM vidrios WHERE estado = 'ACTIVO'")
+            query = self.sql_manager.get_query("vidrios", "sum_precios_vidrios")
+            cursor.execute(query)
             resultado = cursor.fetchone()[0]
             estadisticas["valor_total_inventario"] = resultado or 0.0
 
@@ -599,7 +602,7 @@ class VidriosModel:
             logger.error(f"Error buscando vidrios: {e}")
             return False, []
 
-    @auth_required
+    @login_required
     def crear_vidrio(self, datos_vidrio):
         """
         Crea un nuevo vidrio en la base de datos con sanitización completa.
@@ -666,7 +669,8 @@ class VidriosModel:
                 ))
 
             # Obtener ID del vidrio creado
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            query = self.sql_manager.get_query("vidrios", "get_last_identity")
+            cursor.execute(query)
             vidrio_id = cursor.fetchone()[0]
 
             self.db_connection.connection.commit()
@@ -683,7 +687,7 @@ class VidriosModel:
                 self.db_connection.connection.rollback()
             return False, f"Error creando vidrio: {str(e)}", None
 
-    @auth_required
+    @login_required
     def actualizar_vidrio(self, vidrio_id, datos_vidrio):
         """
         Actualiza un vidrio existente con sanitización completa.
@@ -994,7 +998,7 @@ class VidriosModel:
         try:
             cursor = self.db_connection.connection.cursor()
             
-            query = "SELECT COUNT(*) FROM vidrios WHERE activo = 1"
+            query = self.sql_manager.get_query("vidrios", "count_vidrios_activos_simple")
             params = []
             
             # Aplicar filtros si existen

@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM herrajes WHERE activo = 1 AND stock_actual <= stock_minimo

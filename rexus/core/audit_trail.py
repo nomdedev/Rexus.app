@@ -54,14 +54,12 @@ class AuditTrail:
             # Crear tabla de auditoría si no existe
             self._create_audit_table_if_not_exists()
 
-            # Insertar registro de auditoría
-            cursor.execute("""
-                INSERT INTO audit_trail (
-                    tabla, accion, registro_id, usuario_id, usuario_nombre,
-                    datos_anteriores, datos_nuevos, modulo, detalles,
-                    fecha_cambio, ip_address
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, GETDATE(), ?)
-            """, (
+            # CORREGIDO: SQL injection - usar archivo SQL externo
+            from rexus.utils.sql_query_manager import SQLQueryManager
+            sql_manager = SQLQueryManager()
+            
+            query = sql_manager.load_sql("core/insert_audit_trail.sql")
+            cursor.execute(query, (
                 tabla,
                 accion,
                 registro_id,

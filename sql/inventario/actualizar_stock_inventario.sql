@@ -1,0 +1,1 @@
+UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?

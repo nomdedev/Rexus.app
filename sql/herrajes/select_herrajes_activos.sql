@@ -1,0 +1,1 @@
+SELECT * FROM herrajes WHERE activo = 1

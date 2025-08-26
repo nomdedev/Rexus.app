@@ -352,8 +352,8 @@ class AuthManager:
         try:
             cursor = self.db_connection.connection.cursor()
             cursor.execute("""
-                SELECT locked_until FROM auth_users 
-                WHERE username = ? AND locked_until > CURRENT_TIMESTAMP
+                SELECT bloqueado_hasta FROM usuarios 
+                WHERE usuario = ? AND bloqueado_hasta > CURRENT_TIMESTAMP
             """, (username,))
             
             return cursor.fetchone() is not None
@@ -372,14 +372,14 @@ class AuthManager:
             
             # Incrementar contador de intentos fallidos
             cursor.execute("""
-                UPDATE auth_users 
-                SET failed_attempts = failed_attempts + 1
-                WHERE username = ?
+                UPDATE usuarios 
+                SET intentos_fallidos = intentos_fallidos + 1
+                WHERE usuario = ?
             """, (username,))
             
             # Verificar si debe bloquearse
             cursor.execute("""
-                SELECT failed_attempts FROM auth_users WHERE username = ?
+                SELECT intentos_fallidos FROM usuarios WHERE usuario = ?
             """, (username,))
             
             result = cursor.fetchone()
@@ -387,9 +387,9 @@ class AuthManager:
                 # Bloquear usuario
                 lockout_until = datetime.now() + self.lockout_duration
                 cursor.execute("""
-                    UPDATE auth_users 
-                    SET locked_until = ?
-                    WHERE username = ?
+                    UPDATE usuarios 
+                    SET bloqueado_hasta = ?
+                    WHERE usuario = ?
                 """, (lockout_until, username))
                 
                 logger.warning(f"Usuario {username} bloqueado hasta {lockout_until}")
@@ -407,9 +407,9 @@ class AuthManager:
         try:
             cursor = self.db_connection.connection.cursor()
             cursor.execute("""
-                UPDATE auth_users 
-                SET failed_attempts = 0, locked_until = NULL
-                WHERE username = ?
+                UPDATE usuarios 
+                SET intentos_fallidos = 0, bloqueado_hasta = NULL
+                WHERE usuario = ?
             """, (username,))
             self.db_connection.connection.commit()
         except Exception as e:
@@ -423,9 +423,9 @@ class AuthManager:
         try:
             cursor = self.db_connection.connection.cursor()
             cursor.execute("""
-                SELECT id, username, password_hash, salt, role, is_active
-                FROM auth_users 
-                WHERE username = ? AND is_active = 1
+                SELECT id, usuario, password_hash, salt, rol, activo
+                FROM usuarios 
+                WHERE usuario = ? AND activo = 1
             """, (username,))
             
             row = cursor.fetchone()

@@ -1,0 +1,1 @@
+SELECT COALESCE(SUM(stock_actual), 0) FROM herrajes WHERE activo = 1

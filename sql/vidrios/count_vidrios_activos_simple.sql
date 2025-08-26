@@ -1,0 +1,1 @@
+SELECT COUNT(*) FROM vidrios WHERE activo = 1
