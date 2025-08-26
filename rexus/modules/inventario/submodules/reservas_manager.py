@@ -232,31 +232,31 @@ class ReservasManager:
             # Registrar el consumo
             if cantidad_consumida == cantidad_reservada:
                 # Consumo total - marcar como consumida
-                query = self.sql_manager.get_query('update_consumo_total')
+                query = self.sql_manager.get_query('sql/inventario/update_consumo_total.sql')
 
-                cursor.execute(query, (
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    cantidad_consumida,
-                    motivo,
-                    datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                    reserva_id
-                ))
+                cursor.execute(query, {
+                    'fecha_modificacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'cantidad_consumida': cantidad_consumida,
+                    'observaciones': motivo,
+                    'reserva_id': reserva_id
+                })
 
                 mensaje = f"Reserva consumida totalmente: {cantidad_consumida} unidades"
             else:
                 # Consumo parcial - actualizar cantidad reservada
                 nueva_cantidad_reservada = cantidad_reservada - cantidad_consumida
 
-                query = self.sql_manager.get_query('update_consumo_parcial')
+                query = self.sql_manager.get_query('sql/inventario/update_consumo_parcial.sql')
 
                 observacion_parcial = f"[{datetime.now().strftime('%Y-%m-%d %H:%M:%S')}] Consumo parcial: {cantidad_consumida} - {motivo}; "
 
-                cursor.execute(query, (
-                    nueva_cantidad_reservada,
-                    cantidad_consumida,
-                    observacion_parcial,
-                    reserva_id
-                ))
+                cursor.execute(query, {
+                    'nueva_cantidad_reservada': nueva_cantidad_reservada,
+                    'cantidad_consumida': cantidad_consumida,
+                    'observacion_parcial': observacion_parcial,
+                    'fecha_modificacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                    'reserva_id': reserva_id
+                })
 
                 mensaje = f"Consumo parcial registrado: {cantidad_consumida} unidades. Restante: {nueva_cantidad_reservada}"
 
@@ -299,36 +299,21 @@ class ReservasManager:
             return []
 
         try:
+            # Determinar qué query usar según los filtros
+            if obra_id and producto_id:
+                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_obra_producto.sql')
+                params = {'obra_id': obra_id, 'producto_id': producto_id}
+            elif obra_id:
+                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_por_obra.sql')
+                params = {'obra_id': obra_id}
+            elif producto_id:
+                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas_por_producto.sql')
+                params = {'producto_id': producto_id}
+            else:
+                query = self.sql_manager.get_query('sql/inventario/select_reservas_activas.sql')
+                params = {}
+
             cursor = self.db_connection.cursor()
-
-            # Query base con JOIN para obtener información adicional
-            query = f"""
-                SELECT
-                    r.id, r.producto_id, r.obra_id, r.cantidad_reservada,
-                    r.motivo, r.usuario_reserva, r.fecha_creacion, r.fecha_vencimiento,
-                    r.estado, r.cantidad_consumida,
-                    p.codigo as producto_codigo, p.descripcion as producto_descripcion,
-                    p.stock_actual, p.unidad_medida,
-                    o.nombre as obra_nombre
-                FROM {self.TABLA_RESERVAS} r
-                INNER JOIN inventario p ON r.producto_id = p.id
-                LEFT JOIN obras o ON r.obra_id = o.id
-                WHERE r.estado = 'ACTIVA'
-            """
-
-            params = []
-
-            # Aplicar filtros
-            if obra_id:
-                query += " AND r.obra_id = ?"
-                params.append(obra_id)
-
-            if producto_id:
-                query += " AND r.producto_id = ?"
-                params.append(producto_id)
-
-            query += " ORDER BY r.fecha_vencimiento ASC"
-
             cursor.execute(query, params)
             columnas = [desc[0] for desc in cursor.description]
             filas = cursor.fetchall()
@@ -489,29 +474,19 @@ class ReservasManager:
     def _asignar_usuario_por_defecto(self, datos: Dict[str, Any], datos_limpios: Dict[str, Any], es_actualizacion: bool):
         if not es_actualizacion and 'usuario_reserva' not in datos_limpios:
             datos_limpios['usuario_reserva'] = 'SISTEMA'
-                    'data': None
-                }
 
-            return {
-                'valid': True,
-                'error': None,
-                'data': datos_limpios
-            }
-
-        except (ValueError, TypeError, AttributeError) as e:
-            self.logger.error(f"Error validando datos de reserva: {e}")
-            return {
-                'valid': False,
-                'error': f'Error de validación: {str(e)}',
-                'data': None
-            }
+        return {
+            'valid': True,
+            'error': None,
+            'data': datos_limpios
+        }
 
     def _obtener_reserva_por_id(self, reserva_id: int) -> Optional[Dict[str, Any]]:
         """Obtiene una reserva por su ID."""
         try:
+            query = self.sql_manager.get_query('sql/inventario/select_reserva_por_id.sql')
             cursor = self.db_connection.cursor()
-            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_reservas_materiales_1.sql', params)
-            cursor.execute(query, (reserva_id,))
+            cursor.execute(query, {'reserva_id': reserva_id})
             fila = cursor.fetchone()
             cursor.close()
 
@@ -527,8 +502,9 @@ class ReservasManager:
     def _obtener_ultima_reserva_id(self) -> Optional[int]:
         """Obtiene el ID de la última reserva insertada."""
         try:
+            query = self.sql_manager.get_query('sql/inventario/select_scope_identity.sql')
             cursor = self.db_connection.cursor()
-            cursor.execute("SELECT SCOPE_IDENTITY()")
+            cursor.execute(query)
             resultado = cursor.fetchone()
             cursor.close()
             return int(resultado[0]) if resultado and resultado[0] else None
@@ -556,11 +532,18 @@ class ReservasManager:
                 else:
                     valores.append(datos_limpios.get(campo))
 
-            placeholders = ', '.join(['?'] * len(valores))
-            campos_str = ', '.join(campos)
-
-            query = f"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})"
-            cursor.execute(query, valores)
+            # Usar query externalizada
+            query = self.sql_manager.get_query('sql/inventario/insert_reserva_inventario.sql')
+            cursor.execute(query, {
+                'producto_id': datos_limpios.get('producto_id'),
+                'obra_id': datos_limpios.get('obra_id'),
+                'cantidad_reservada': datos_limpios.get('cantidad_reservada'),
+                'motivo': datos_limpios.get('motivo'),
+                'usuario_reserva': datos_limpios.get('usuario_reserva'),
+                'fecha_vencimiento': datos_limpios.get('fecha_vencimiento'),
+                'estado': 'ACTIVA',
+                'fecha_creacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            })
 
             self.db_connection.commit()
             reserva_id = self._obtener_ultima_reserva_id()
@@ -596,18 +579,14 @@ class ReservasManager:
 
         try:
             cursor = self.db_connection.cursor()
-            query = """UPDATE reservas_materiales 
-                      SET estado = ?, 
-                          observaciones = ?,
-                          fecha_modificacion = ?
-                      WHERE id = ?"""
+            query = self.sql_manager.get_query('sql/inventario/update_estado_reserva.sql')
             
-            cursor.execute(query, (
-                nuevo_estado,
-                motivo,
-                datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
-                reserva_id
-            ))
+            cursor.execute(query, {
+                'nuevo_estado': nuevo_estado,
+                'observaciones': motivo,
+                'fecha_modificacion': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+                'reserva_id': reserva_id
+            })
             
             self.db_connection.commit()
             cursor.close()
@@ -632,9 +611,9 @@ class ReservasManager:
     def _obtener_stock_disponible(self, producto_id: int) -> Optional[float]:
         """Obtiene el stock disponible de un producto."""
         try:
+            query = self.sql_manager.get_query('sql/inventario/select_stock_disponible.sql')
             cursor = self.db_connection.cursor()
-            self.sql_manager.ejecutar_consulta_archivo('sql/inventario/select_inventario_2.sql', params)
-            cursor.execute(query, (producto_id,))
+            cursor.execute(query, {'producto_id': producto_id})
             resultado = cursor.fetchone()
             cursor.close()
             return float(resultado[0]) if resultado else None

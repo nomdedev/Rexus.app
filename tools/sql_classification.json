@@ -1,0 +1,1426 @@
+{
+  "critical_queries": 189,
+  "non_critical_queries": 243,
+  "modules": {
+    "api": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 2,
+      "total_queries": 2
+    },
+    "core": {
+      "critical_files": {
+        "core\\auth.py": {
+          "critical_queries": [
+            {
+              "line": 15,
+              "sql": "UPDATE usuarios SET usuario = ? WHERE id = ?",
+              "context": "'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 15,
+              "sql": "UPDATE usuarios SET usuario = ? WHERE id = ?",
+              "context": "'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 16,
+              "sql": "UPDATE usuarios SET rol = ? WHERE id = ?",
+              "context": "'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 16,
+              "sql": "UPDATE usuarios SET rol = ? WHERE id = ?",
+              "context": "'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 17,
+              "sql": "UPDATE usuarios SET nombre = ? WHERE id = ?",
+              "context": "'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 17,
+              "sql": "UPDATE usuarios SET nombre = ? WHERE id = ?",
+              "context": "'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 18,
+              "sql": "UPDATE usuarios SET apellido = ? WHERE id = ?",
+              "context": "'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 18,
+              "sql": "UPDATE usuarios SET apellido = ? WHERE id = ?",
+              "context": "'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 19,
+              "sql": "UPDATE usuarios SET email = ? WHERE id = ?",
+              "context": "'email': 'UPDATE usuarios SET email = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 19,
+              "sql": "UPDATE usuarios SET email = ? WHERE id = ?",
+              "context": "'email': 'UPDATE usuarios SET email = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 20,
+              "sql": "UPDATE usuarios SET estado = ? WHERE id = ?",
+              "context": "'estado': 'UPDATE usuarios SET estado = ? WHERE id = ?'",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 20,
+              "sql": "UPDATE usuarios SET estado = ? WHERE id = ?",
+              "context": "'estado': 'UPDATE usuarios SET estado = ? WHERE id = ?'",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 12
+        },
+        "core\\database.py": {
+          "critical_queries": [
+            {
+              "line": 210,
+              "sql": "SELECT * FROM productos",
+              "context": "return self.execute_query(\"SELECT * FROM productos\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 210,
+              "sql": "SELECT * FROM productos",
+              "context": "return self.execute_query(\"SELECT * FROM productos\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 215,
+              "sql": "SELECT stock FROM productos WHERE id = ?",
+              "context": "\"SELECT stock FROM productos WHERE id = ?\", (producto_id,)",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 215,
+              "sql": "SELECT stock FROM productos WHERE id = ?",
+              "context": "\"SELECT stock FROM productos WHERE id = ?\", (producto_id,)",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 4
+        },
+        "core\\database_manager.py": {
+          "critical_queries": [
+            {
+              "line": 135,
+              "sql": "SELECT name FROM sqlite_master WHERE type=",
+              "context": "tables = self.execute_query(\"SELECT name FROM sqlite_master WHERE type='table'\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 135,
+              "sql": "SELECT name FROM sqlite_master WHERE type=",
+              "context": "tables = self.execute_query(\"SELECT name FROM sqlite_master WHERE type='table'\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 141,
+              "sql": "SELECT COUNT(*) as count FROM {table_name}",
+              "context": "count_result = self.execute_query(f\"SELECT COUNT(*) as count FROM {table_name}\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 141,
+              "sql": "SELECT COUNT(*) as count FROM {table_name}",
+              "context": "count_result = self.execute_query(f\"SELECT COUNT(*) as count FROM {table_name}\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 141,
+              "sql": "SELECT COUNT(*) as count FROM {table_name}",
+              "context": "count_result = self.execute_query(f\"SELECT COUNT(*) as count FROM {table_name}\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 141,
+              "sql": "SELECT COUNT(*) as count FROM {table_name}",
+              "context": "count_result = self.execute_query(f\"SELECT COUNT(*) as count FROM {table_name}\")",
+              "reason": "Critical execution pattern with SQL keywords"
+            }
+          ],
+          "count": 6
+        },
+        "core\\rate_limiter.py": {
+          "critical_queries": [
+            {
+              "line": 351,
+              "sql": "Reset for user: {username}",
+              "context": "self._log_security_event(admin_user, \"admin_reset_attempts\", f\"Reset for user: {username}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        },
+        "core\\security.py": {
+          "critical_queries": [
+            {
+              "line": 36,
+              "sql": "UPDATE usuarios SET usuario = ? WHERE id = ?",
+              "context": "'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 36,
+              "sql": "UPDATE usuarios SET usuario = ? WHERE id = ?",
+              "context": "'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 37,
+              "sql": "UPDATE usuarios SET email = ? WHERE id = ?",
+              "context": "'email': 'UPDATE usuarios SET email = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 37,
+              "sql": "UPDATE usuarios SET email = ? WHERE id = ?",
+              "context": "'email': 'UPDATE usuarios SET email = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 38,
+              "sql": "UPDATE usuarios SET nombre = ? WHERE id = ?",
+              "context": "'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 38,
+              "sql": "UPDATE usuarios SET nombre = ? WHERE id = ?",
+              "context": "'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 39,
+              "sql": "UPDATE usuarios SET apellido = ? WHERE id = ?",
+              "context": "'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 39,
+              "sql": "UPDATE usuarios SET apellido = ? WHERE id = ?",
+              "context": "'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 40,
+              "sql": "UPDATE usuarios SET rol = ? WHERE id = ?",
+              "context": "'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 40,
+              "sql": "UPDATE usuarios SET rol = ? WHERE id = ?",
+              "context": "'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 41,
+              "sql": "UPDATE usuarios SET activo = ? WHERE id = ?",
+              "context": "'activo': 'UPDATE usuarios SET activo = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 41,
+              "sql": "UPDATE usuarios SET activo = ? WHERE id = ?",
+              "context": "'activo': 'UPDATE usuarios SET activo = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 42,
+              "sql": "UPDATE usuarios SET bloqueado = ? WHERE id = ?",
+              "context": "'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 42,
+              "sql": "UPDATE usuarios SET bloqueado = ? WHERE id = ?",
+              "context": "'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 43,
+              "sql": "UPDATE usuarios SET password_hash = ? WHERE id = ?",
+              "context": "'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 43,
+              "sql": "UPDATE usuarios SET password_hash = ? WHERE id = ?",
+              "context": "'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 152,
+              "sql": "SELECT activo, bloqueado FROM usuarios WHERE id = ?",
+              "context": "\"SELECT activo, bloqueado FROM usuarios WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 152,
+              "sql": "SELECT activo, bloqueado FROM usuarios WHERE id = ?",
+              "context": "\"SELECT activo, bloqueado FROM usuarios WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 194,
+              "sql": "SELECT rol FROM usuarios WHERE id = ?",
+              "context": "\"SELECT rol FROM usuarios WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 194,
+              "sql": "SELECT rol FROM usuarios WHERE id = ?",
+              "context": "\"SELECT rol FROM usuarios WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 20
+        },
+        "core\\sql_query_manager.py": {
+          "critical_queries": [
+            {
+              "line": 41,
+              "sql": "delete\\s+from.*where\\s+1\\s*=\\s*1",
+              "context": "r'delete\\s+from.*where\\s+1\\s*=\\s*1',",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 297,
+              "sql": "SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1",
+              "context": "query = f\"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 297,
+              "sql": "SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1",
+              "context": "query = f\"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 297,
+              "sql": "SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1",
+              "context": "query = f\"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 297,
+              "sql": "SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1",
+              "context": "query = f\"SELECT 1 FROM {table} WHERE {where_clause} LIMIT 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 317,
+              "sql": "SELECT COUNT(*) FROM {table}",
+              "context": "query = f\"SELECT COUNT(*) FROM {table}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 317,
+              "sql": "SELECT COUNT(*) FROM {table}",
+              "context": "query = f\"SELECT COUNT(*) FROM {table}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 317,
+              "sql": "SELECT COUNT(*) FROM {table}",
+              "context": "query = f\"SELECT COUNT(*) FROM {table}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 317,
+              "sql": "SELECT COUNT(*) FROM {table}",
+              "context": "query = f\"SELECT COUNT(*) FROM {table}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 319,
+              "sql": "WHERE {where_clause}",
+              "context": "query += f\" WHERE {where_clause}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 10
+        }
+      },
+      "critical_count": 53,
+      "non_critical_count": 54,
+      "total_queries": 107
+    },
+    "main": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 2,
+      "total_queries": 2
+    },
+    "models": {
+      "critical_files": {
+        "models\\productos_model.py": {
+          "critical_queries": [
+            {
+              "line": 84,
+              "sql": "SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype=",
+              "context": "\"SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype='U'\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 84,
+              "sql": "SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype=",
+              "context": "\"SELECT COUNT(*) FROM sysobjects WHERE name=? AND xtype='U'\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 328,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) as counted",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) as counted\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 328,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) as counted",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) as counted\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 328,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) as counted",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) as counted\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 328,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) as counted",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) as counted\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 333,
+              "sql": "{base_query} ORDER BY nombre OFFSET ? ROWS FETCH NEXT ? ROWS ONLY",
+              "context": "paginated_query = f\"{base_query} ORDER BY nombre OFFSET ? ROWS FETCH NEXT ? ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 447,
+              "sql": "SELECT * FROM productos WHERE tipo_producto = ?",
+              "context": "query = \"SELECT * FROM productos WHERE tipo_producto = ?\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 447,
+              "sql": "SELECT * FROM productos WHERE tipo_producto = ?",
+              "context": "query = \"SELECT * FROM productos WHERE tipo_producto = ?\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 447,
+              "sql": "SELECT * FROM productos WHERE tipo_producto = ?",
+              "context": "query = \"SELECT * FROM productos WHERE tipo_producto = ?\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 581,
+              "sql": "SELECT COUNT(*) FROM productos WHERE codigo = ?",
+              "context": "cursor.execute(\"SELECT COUNT(*) FROM productos WHERE codigo = ?\", (codigo,))",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 581,
+              "sql": "SELECT COUNT(*) FROM productos WHERE codigo = ?",
+              "context": "cursor.execute(\"SELECT COUNT(*) FROM productos WHERE codigo = ?\", (codigo,))",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 581,
+              "sql": "SELECT COUNT(*) FROM productos WHERE codigo = ?",
+              "context": "cursor.execute(\"SELECT COUNT(*) FROM productos WHERE codigo = ?\", (codigo,))",
+              "reason": "Critical execution pattern with SQL keywords"
+            },
+            {
+              "line": 581,
+              "sql": "SELECT COUNT(*) FROM productos WHERE codigo = ?",
+              "context": "cursor.execute(\"SELECT COUNT(*) FROM productos WHERE codigo = ?\", (codigo,))",
+              "reason": "Critical execution pattern with SQL keywords"
+            }
+          ],
+          "count": 14
+        }
+      },
+      "critical_count": 14,
+      "non_critical_count": 7,
+      "total_queries": 21
+    },
+    "administracion": {
+      "critical_files": {
+        "modules\\administracion\\model.py": {
+          "critical_queries": [
+            {
+              "line": 339,
+              "sql": "WHERE {where_clause}",
+              "context": "query = query.replace(\"WHERE 1=1\", f\"WHERE {where_clause}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 491,
+              "sql": "WHERE {where_clause}",
+              "context": "query = query.replace(\"WHERE 1=1\", f\"WHERE {where_clause}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 497,
+              "sql": "OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY",
+              "context": "query += f\" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 647,
+              "sql": "OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY",
+              "context": "query += f\" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 823,
+              "sql": "OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY",
+              "context": "query += f\" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 1219,
+              "sql": "OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY",
+              "context": "query += f\" OFFSET 0 ROWS FETCH NEXT {limite_validado} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 6
+        },
+        "modules\\administracion\\recursos_humanos\\model.py": {
+          "critical_queries": [
+            {
+              "line": 507,
+              "sql": "WHERE {where_clause}",
+              "context": "query = query.replace(\"WHERE 1=1\", f\"WHERE {where_clause}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 603,
+              "sql": "{{WHERE_CONDITIONS}}",
+              "context": "query = base_query.replace(\"{{WHERE_CONDITIONS}}\", where_clause)",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 653,
+              "sql": "{{WHERE_CONDITIONS}}",
+              "context": "query = base_query.replace(\"{{WHERE_CONDITIONS}}\", where_clause)",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 3
+        }
+      },
+      "critical_count": 9,
+      "non_critical_count": 15,
+      "total_queries": 24
+    },
+    "auditoria": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 3,
+      "total_queries": 3
+    },
+    "configuracion": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 4,
+      "total_queries": 4
+    },
+    "herrajes": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 5,
+      "total_queries": 5
+    },
+    "inventario": {
+      "critical_files": {
+        "modules\\inventario\\model.py": {
+          "critical_queries": [
+            {
+              "line": 983,
+              "sql": "ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY",
+              "context": "f\" ORDER BY fecha DESC OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        },
+        "modules\\inventario\\submodules\\base_utilities.py": {
+          "critical_queries": [
+            {
+              "line": 47,
+              "sql": "WHERE {where_clause}",
+              "context": "query_parts.append(f\"WHERE {where_clause}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 55,
+              "sql": "OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY",
+              "context": "query_parts.append(f\"OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 2
+        },
+        "modules\\inventario\\submodules\\categorias_manager.py": {
+          "critical_queries": [
+            {
+              "line": 262,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 262,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 262,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 262,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 277,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 277,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 277,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 277,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 374,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 374,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 374,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 374,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 666,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 666,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 666,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 666,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_INVENTARIO} WHERE categoria = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 674,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 674,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 674,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 674,
+              "sql": "SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1",
+              "context": "f\"SELECT COUNT(*) FROM {self.TABLA_CATEGORIAS} WHERE nombre = ? AND activa = 1\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 20
+        },
+        "modules\\inventario\\submodules\\consultas_manager.py": {
+          "critical_queries": [
+            {
+              "line": 76,
+              "sql": "SELECT COUNT(*) FROM inventario WHERE activo = 1",
+              "context": "query_count = \"SELECT COUNT(*) FROM inventario WHERE activo = 1\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 76,
+              "sql": "SELECT COUNT(*) FROM inventario WHERE activo = 1",
+              "context": "query_count = \"SELECT COUNT(*) FROM inventario WHERE activo = 1\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 107,
+              "sql": "OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY",
+              "context": "query_base += f\" OFFSET {offset} ROWS FETCH NEXT {limit} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 3
+        },
+        "modules\\inventario\\submodules\\movimientos_manager.py": {
+          "critical_queries": [
+            {
+              "line": 107,
+              "sql": "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+              "context": "\"UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 107,
+              "sql": "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+              "context": "\"UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 113,
+              "sql": "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+              "context": "\"UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 113,
+              "sql": "UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?",
+              "context": "\"UPDATE inventario SET stock_actual = ?, fecha_modificacion = GETDATE() WHERE id = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 172,
+              "sql": "OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY",
+              "context": "query += f\" OFFSET 0 ROWS FETCH NEXT {limite} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 255,
+              "sql": "SELECT stock_actual FROM inventario WHERE id = ?",
+              "context": "\"SELECT stock_actual FROM inventario WHERE id = ?\", (producto_id,)",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 255,
+              "sql": "SELECT stock_actual FROM inventario WHERE id = ?",
+              "context": "\"SELECT stock_actual FROM inventario WHERE id = ?\", (producto_id,)",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 7
+        },
+        "modules\\inventario\\submodules\\reservas_manager.py": {
+          "critical_queries": [
+            {
+              "line": 562,
+              "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
+              "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 562,
+              "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
+              "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 562,
+              "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
+              "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 562,
+              "sql": "INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})",
+              "context": "query = f\"INSERT INTO {self.TABLA_RESERVAS} ({campos_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 4
+        }
+      },
+      "critical_count": 37,
+      "non_critical_count": 30,
+      "total_queries": 67
+    },
+    "logistica": {
+      "critical_files": {
+        "modules\\logistica\\components\\tabla_transportes_widget.py": {
+          "critical_queries": [
+            {
+              "line": 236,
+              "sql": "¿Está seguro de eliminar el transporte {self.current_selection.get(",
+              "context": "f\"¿Está seguro de eliminar el transporte {self.current_selection.get('numero', '')}?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "critical_count": 1,
+      "non_critical_count": 2,
+      "total_queries": 3
+    },
+    "mantenimiento": {
+      "critical_files": {
+        "modules\\mantenimiento\\model.py": {
+          "critical_queries": [
+            {
+              "line": 63,
+              "sql": "SELECT * FROM sysobjects WHERE name=? AND xtype=",
+              "context": "\"SELECT * FROM sysobjects WHERE name=? AND xtype='U'\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 63,
+              "sql": "SELECT * FROM sysobjects WHERE name=? AND xtype=",
+              "context": "\"SELECT * FROM sysobjects WHERE name=? AND xtype='U'\",",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 2
+        }
+      },
+      "critical_count": 2,
+      "non_critical_count": 6,
+      "total_queries": 8
+    },
+    "notificaciones": {
+      "critical_files": {
+        "modules\\notificaciones\\model.py": {
+          "critical_queries": [
+            {
+              "line": 260,
+              "sql": "OFFSET {offset} ROWS FETCH NEXT {limite} ROWS ONLY",
+              "context": "query += f\" OFFSET {offset} ROWS FETCH NEXT {limite} ROWS ONLY\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "critical_count": 1,
+      "non_critical_count": 1,
+      "total_queries": 2
+    },
+    "obras": {
+      "critical_files": {
+        "modules\\obras\\model.py": {
+          "critical_queries": [
+            {
+              "line": 296,
+              "sql": "WHERE activo = 1 {where_clause}",
+              "context": "query = base_query.replace(\"WHERE activo = 1\", f\"WHERE activo = 1 {where_clause}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        }
+      },
+      "critical_count": 1,
+      "non_critical_count": 18,
+      "total_queries": 19
+    },
+    "usuarios": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 8,
+      "total_queries": 8
+    },
+    "vidrios": {
+      "critical_files": {
+        "modules\\vidrios\\model.py": {
+          "critical_queries": [
+            {
+              "line": 508,
+              "sql": "SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado =",
+              "context": "\"SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 508,
+              "sql": "SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado =",
+              "context": "\"SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 514,
+              "sql": "SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado =",
+              "context": "\"SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO'\"",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 514,
+              "sql": "SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado =",
+              "context": "\"SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO'\"",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 4
+        }
+      },
+      "critical_count": 4,
+      "non_critical_count": 5,
+      "total_queries": 9
+    },
+    "ui": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 13,
+      "total_queries": 13
+    },
+    "utils": {
+      "critical_files": {
+        "utils\\database_optimizer.py": {
+          "critical_queries": [
+            {
+              "line": 515,
+              "sql": "UPDATE STATISTICS {full_table_name} WITH FULLSCAN",
+              "context": "cursor.execute(f\"UPDATE STATISTICS {full_table_name} WITH FULLSCAN\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 515,
+              "sql": "UPDATE STATISTICS {full_table_name} WITH FULLSCAN",
+              "context": "cursor.execute(f\"UPDATE STATISTICS {full_table_name} WITH FULLSCAN\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 515,
+              "sql": "UPDATE STATISTICS {full_table_name} WITH FULLSCAN",
+              "context": "cursor.execute(f\"UPDATE STATISTICS {full_table_name} WITH FULLSCAN\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 515,
+              "sql": "UPDATE STATISTICS {full_table_name} WITH FULLSCAN",
+              "context": "cursor.execute(f\"UPDATE STATISTICS {full_table_name} WITH FULLSCAN\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 515,
+              "sql": "UPDATE STATISTICS {full_table_name} WITH FULLSCAN",
+              "context": "cursor.execute(f\"UPDATE STATISTICS {full_table_name} WITH FULLSCAN\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 531,
+              "sql": "Updated {result[",
+              "context": "f\"Updated {result['tables_updated']} tables\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 592,
+              "sql": "CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})",
+              "context": "create_sql = f\"CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 592,
+              "sql": "CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})",
+              "context": "create_sql = f\"CREATE NONCLUSTERED INDEX [{index_name}] ON [{schema}].[{table}] ({columns})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 614,
+              "sql": "Created index {index_name}",
+              "context": "f\"Created index {index_name}\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 961,
+              "sql": "ALTER INDEX [{index_name}] ON [{schema}].[{table}] REBUILD WITH (ONLINE = ON)",
+              "context": "sql = f\"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REBUILD WITH (ONLINE = ON)\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 961,
+              "sql": "ALTER INDEX [{index_name}] ON [{schema}].[{table}] REBUILD WITH (ONLINE = ON)",
+              "context": "sql = f\"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REBUILD WITH (ONLINE = ON)\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 965,
+              "sql": "ALTER INDEX [{index_name}] ON [{schema}].[{table}] REORGANIZE",
+              "context": "sql = f\"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REORGANIZE\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 965,
+              "sql": "ALTER INDEX [{index_name}] ON [{schema}].[{table}] REORGANIZE",
+              "context": "sql = f\"ALTER INDEX [{index_name}] ON [{schema}].[{table}] REORGANIZE\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 13
+        },
+        "utils\\data_integrity_validator.py": {
+          "critical_queries": [
+            {
+              "line": 522,
+              "sql": "DELETE FROM {violation.table_name} WHERE id = ?",
+              "context": "f\"DELETE FROM {violation.table_name} WHERE id = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 522,
+              "sql": "DELETE FROM {violation.table_name} WHERE id = ?",
+              "context": "f\"DELETE FROM {violation.table_name} WHERE id = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 522,
+              "sql": "DELETE FROM {violation.table_name} WHERE id = ?",
+              "context": "f\"DELETE FROM {violation.table_name} WHERE id = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 522,
+              "sql": "DELETE FROM {violation.table_name} WHERE id = ?",
+              "context": "f\"DELETE FROM {violation.table_name} WHERE id = ?\",",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 4
+        },
+        "utils\\intelligent_cache_manager.py": {
+          "critical_queries": [
+            {
+              "line": 289,
+              "sql": "SELECT file_path FROM cache_entries WHERE key = ?",
+              "context": "'SELECT file_path FROM cache_entries WHERE key = ?', (key,)",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 289,
+              "sql": "SELECT file_path FROM cache_entries WHERE key = ?",
+              "context": "'SELECT file_path FROM cache_entries WHERE key = ?', (key,)",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 2
+        },
+        "utils\\metrics_api.py": {
+          "critical_queries": [
+            {
+              "line": 242,
+              "sql": "Error resetting stats: {str(e)}",
+              "context": "self._send_error(500, f\"Error resetting stats: {str(e)}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 1
+        },
+        "utils\\pagination.py": {
+          "critical_queries": [
+            {
+              "line": 126,
+              "sql": "SELECT COUNT(*) {from_part}",
+              "context": "count_query = f\"SELECT COUNT(*) {from_part}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 126,
+              "sql": "SELECT COUNT(*) {from_part}",
+              "context": "count_query = f\"SELECT COUNT(*) {from_part}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 126,
+              "sql": "SELECT COUNT(*) {from_part}",
+              "context": "count_query = f\"SELECT COUNT(*) {from_part}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 126,
+              "sql": "SELECT COUNT(*) {from_part}",
+              "context": "count_query = f\"SELECT COUNT(*) {from_part}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 128,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) AS count_subquery",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) AS count_subquery\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 128,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) AS count_subquery",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) AS count_subquery\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 128,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) AS count_subquery",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) AS count_subquery\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 128,
+              "sql": "SELECT COUNT(*) FROM ({base_query}) AS count_subquery",
+              "context": "count_query = f\"SELECT COUNT(*) FROM ({base_query}) AS count_subquery\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 8
+        },
+        "utils\\pagination_manager.py": {
+          "critical_queries": [
+            {
+              "line": 151,
+              "sql": "SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1",
+              "context": "base_query = f\"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 151,
+              "sql": "SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1",
+              "context": "base_query = f\"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 151,
+              "sql": "SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1",
+              "context": "base_query = f\"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 151,
+              "sql": "SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1",
+              "context": "base_query = f\"SELECT COUNT(*) FROM {self.table_name} WHERE activo = 1\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 4
+        },
+        "utils\\query_performance_analyzer.py": {
+          "critical_queries": [
+            {
+              "line": 483,
+              "sql": "SELECT * FROM productos WHERE categoria = ?",
+              "context": "\"SELECT * FROM productos WHERE categoria = ?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 483,
+              "sql": "SELECT * FROM productos WHERE categoria = ?",
+              "context": "\"SELECT * FROM productos WHERE categoria = ?\",",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 2
+        },
+        "utils\\security_analyzer.py": {
+          "critical_queries": [
+            {
+              "line": 109,
+              "sql": ".*SELECT.*{.*}",
+              "context": "r'f\".*SELECT.*{.*}',",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 110,
+              "sql": ".*INSERT.*{.*}",
+              "context": "r'f\".*INSERT.*{.*}',",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 111,
+              "sql": ".*UPDATE.*{.*}",
+              "context": "r'f\".*UPDATE.*{.*}',",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 112,
+              "sql": ".*DELETE.*{.*}",
+              "context": "r'f\".*DELETE.*{.*}',",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 4
+        },
+        "utils\\sql_dialect_translator.py": {
+          "critical_queries": [
+            {
+              "line": 25,
+              "sql": "SELECT name FROM sqlite_master WHERE type=",
+              "context": "\"SELECT name FROM sqlite_master WHERE type='table' AND name=?\":",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 25,
+              "sql": "SELECT name FROM sqlite_master WHERE type=",
+              "context": "\"SELECT name FROM sqlite_master WHERE type='table' AND name=?\":",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 26,
+              "sql": "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE=",
+              "context": "\"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_NAME=?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 26,
+              "sql": "SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE=",
+              "context": "\"SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE='BASE TABLE' AND TABLE_NAME=?\",",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 28,
+              "sql": "SELECT sql FROM sqlite_master WHERE type=",
+              "context": "\"SELECT sql FROM sqlite_master WHERE type='table' AND name=?\":",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 28,
+              "sql": "SELECT sql FROM sqlite_master WHERE type=",
+              "context": "\"SELECT sql FROM sqlite_master WHERE type='table' AND name=?\":",
+              "reason": "Complete SQL statement structure"
+            },
+            {
+              "line": 58,
+              "sql": "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name=",
+              "context": "\"CREATE TABLE IF NOT EXISTS\": \"IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='{table_name}' AND xtype='U') CREATE TABLE\",",
+              "reason": "Complete SQL statement structure"
+            }
+          ],
+          "count": 7
+        },
+        "utils\\sql_security.py": {
+          "critical_queries": [
+            {
+              "line": 269,
+              "sql": "SELECT {columns_str} FROM [{safe_table}]",
+              "context": "query = f\"SELECT {columns_str} FROM [{safe_table}]\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 269,
+              "sql": "SELECT {columns_str} FROM [{safe_table}]",
+              "context": "query = f\"SELECT {columns_str} FROM [{safe_table}]\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 269,
+              "sql": "SELECT {columns_str} FROM [{safe_table}]",
+              "context": "query = f\"SELECT {columns_str} FROM [{safe_table}]\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 269,
+              "sql": "SELECT {columns_str} FROM [{safe_table}]",
+              "context": "query = f\"SELECT {columns_str} FROM [{safe_table}]\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 278,
+              "sql": "WHERE {where_clause}",
+              "context": "query += f\" WHERE {where_clause}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 306,
+              "sql": "INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})",
+              "context": "return f\"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 306,
+              "sql": "INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})",
+              "context": "return f\"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 306,
+              "sql": "INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})",
+              "context": "return f\"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 306,
+              "sql": "INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})",
+              "context": "return f\"INSERT INTO [{safe_table}] ({columns_str}) VALUES ({placeholders})\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 334,
+              "sql": "UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}",
+              "context": "return f\"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 334,
+              "sql": "UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}",
+              "context": "return f\"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 334,
+              "sql": "UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}",
+              "context": "return f\"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 334,
+              "sql": "UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}",
+              "context": "return f\"UPDATE [{safe_table}] SET {set_clause} WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 349,
+              "sql": "DELETE FROM [{safe_table}] WHERE {where_condition}",
+              "context": "return f\"DELETE FROM [{safe_table}] WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 349,
+              "sql": "DELETE FROM [{safe_table}] WHERE {where_condition}",
+              "context": "return f\"DELETE FROM [{safe_table}] WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 349,
+              "sql": "DELETE FROM [{safe_table}] WHERE {where_condition}",
+              "context": "return f\"DELETE FROM [{safe_table}] WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 349,
+              "sql": "DELETE FROM [{safe_table}] WHERE {where_condition}",
+              "context": "return f\"DELETE FROM [{safe_table}] WHERE {where_condition}\"",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 431,
+              "sql": "SELECT {columns}",
+              "context": "self.query_parts.append(f\"SELECT {columns}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 431,
+              "sql": "SELECT {columns}",
+              "context": "self.query_parts.append(f\"SELECT {columns}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 431,
+              "sql": "SELECT {columns}",
+              "context": "self.query_parts.append(f\"SELECT {columns}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 439,
+              "sql": "FROM {table}",
+              "context": "self.query_parts.append(f\"FROM {table}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            },
+            {
+              "line": 444,
+              "sql": "WHERE {condition}",
+              "context": "self.query_parts.append(f\"WHERE {condition}\")",
+              "reason": "SQL with string interpolation (injection risk)"
+            }
+          ],
+          "count": 22
+        }
+      },
+      "critical_count": 67,
+      "non_critical_count": 67,
+      "total_queries": 134
+    },
+    "workflows": {
+      "critical_files": {},
+      "critical_count": 0,
+      "non_critical_count": 1,
+      "total_queries": 1
+    }
+  },
+  "summary": {
+    "high_priority": [
+      "core",
+      "models",
+      "inventario",
+      "utils"
+    ],
+    "medium_priority": [
+      "administracion",
+      "vidrios"
+    ],
+    "low_priority": [
+      "logistica",
+      "mantenimiento",
+      "notificaciones",
+      "obras"
+    ]
+  }
+}

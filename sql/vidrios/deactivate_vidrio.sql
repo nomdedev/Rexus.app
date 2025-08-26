@@ -1,3 +1,3 @@
 -- Desactivar vidrio (soft delete)
-UPDATE vidrios SET estado = 'INACTIVO', fecha_actualizacion = GETDATE()
+UPDATE vidrios SET activo = 0, fecha_actualizacion = GETDATE()
 WHERE id = ?;

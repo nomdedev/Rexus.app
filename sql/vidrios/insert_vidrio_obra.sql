@@ -1,4 +1,3 @@
--- Insertar vidrio por obra
 INSERT INTO vidrios_por_obra
-(obra_id, id_vidrio, cantidad_necesaria, tipo, ancho, alto, color, proveedor, observaciones)
-VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?);
+(vidrio_id, obra_id, metros_cuadrados_requeridos, medidas_especificas, fecha_asignacion, observaciones)
+VALUES (@vidrio_id, @obra_id, @metros_cuadrados, @medidas_especificas, GETDATE(), @observaciones)

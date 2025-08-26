@@ -17,13 +17,19 @@ from datetime import datetime
 from typing import List, Dict, Optional, Any
 from functools import wraps
 
-# Importar logging
+# Importar logging y SQL manager
 try:
     from ..utils.app_logger import get_logger
+    from ..utils.sql_query_manager import SQLQueryManager
     logger = get_logger(__name__)
 except ImportError:
     import logging
     logger = logging.getLogger(__name__)
+    # Dummy SQL manager if import fails
+    class DummySQLQueryManager:
+        def get_query(self, module, query_name):
+            return f"-- Query {query_name} not found"
+    SQLQueryManager = DummySQLQueryManager
 
 
 class SecurityManager:
@@ -32,34 +38,58 @@ class SecurityManager:
     def __init__(self, db_connection=None):
         """Inicializa el gestor de seguridad."""
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         self.allowed_updates = {
-            'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',
-            'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
-            'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
-            'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',
-            'rol': 'UPDATE usuarios SET rol = ? WHERE id = ?',
-            'activo': 'UPDATE usuarios SET activo = ? WHERE id = ?',
-            'bloqueado': 'UPDATE usuarios SET bloqueado = ? WHERE id = ?',
-            'password_hash': 'UPDATE usuarios SET password_hash = ? WHERE id = ?'
+            'usuario': 'update_usuario_campo',
+            'email': 'update_email',
+            'nombre': 'update_nombre', 
+            'apellido': 'update_apellido',
+            'rol': 'update_rol',
+            'activo': 'update_activo',
+            'bloqueado': 'update_bloqueado',
+            'password_hash': 'update_password_hash'
         }
     
     def update_user_secure(self, fields, values, user_id=None):
         """Actualiza campos de usuario de forma segura."""
         try:
+            if not self.db_connection:
+                logger.error("No database connection available")
+                return False
+            
+            cursor = self.db_connection.cursor()
+            
             # Ejecutar updates de forma segura
             for i, field in enumerate(fields):
                 field_name = field.replace(' = ?', '').strip()
                 if field_name in self.allowed_updates:
-                    # cursor.execute(self.allowed_updates[field_name], (values[i], values[-1]))
-                    pass  # Placeholder for database operation
+                    query_name = self.allowed_updates[field_name]
+                    query = self.sql_manager.get_query('usuarios', query_name)
+                    
+                    # Map parameters based on query
+                    if field_name == 'usuario':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'email':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'nombre':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'apellido':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'rol':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'activo':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'bloqueado':
+                        cursor.execute(query, (values[i], user_id))
+                    elif field_name == 'password_hash':
+                        cursor.execute(query, (values[i], user_id))
+                else:
+                    logger.warning(f"Field {field_name} not allowed for update")
 
-            # self.db_connection.commit()
+            self.db_connection.commit()
+            cursor.close()
 
-            # Log
-            # self.log_security_event(
-            #     user_id, "USER_UPDATED", "USUARIOS", f"Usuario actualizado"
-            # )
-
+            logger.info(f"User {user_id} updated successfully - fields: {fields}")
             return True
 
         except Exception as e:

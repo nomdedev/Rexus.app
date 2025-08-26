@@ -1,0 +1,1 @@
+SELECT COUNT(DISTINCT tipo) FROM vidrios WHERE estado = 'ACTIVO'

@@ -1,2 +1,2 @@
 -- Contar proveedores distintos de vidrios
-SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE estado = 'ACTIVO';
+SELECT COUNT(DISTINCT proveedor) FROM vidrios WHERE activo = 1;

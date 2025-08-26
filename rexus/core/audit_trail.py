@@ -336,8 +336,8 @@ record_id: int,
             cursor = self.db_connection.cursor()
 
             # Obtener datos anteriores
-        # FIXED: SQL Injection vulnerability
-            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_4.sql', params), (self.tabla_name,), (record_id,))
+            # FIXED: SQL Injection vulnerability
+            cursor.execute(self.sql_manager.get_query('audit', 'get_record_history'), (self.tabla_name, record_id))
             old_data = cursor.fetchone()
 
             if not old_data:
@@ -359,8 +359,8 @@ record_id: int,
             cursor.execute(query, values)
 
             # Obtener datos nuevos
-        # FIXED: SQL Injection vulnerability
-            cursorself.sql_manager.ejecutar_consulta_archivo('sql/core/select_5.sql', params), (self.tabla_name,), (record_id,))
+            # FIXED: SQL Injection vulnerability
+            cursor.execute(self.sql_manager.get_query('audit', 'get_record_history'), (self.tabla_name, record_id))
             new_data = cursor.fetchone()
             datos_nuevos = dict(zip(columns, new_data))
 
@@ -399,8 +399,8 @@ record_id: int,
             cursor = self.db_connection.cursor()
 
             # Obtener datos antes de eliminar
-        # FIXED: SQL Injection vulnerability
-            self.sql_manager.ejecutar_consulta_archivo('sql/core/select_7.sql', params), (self.tabla_name,), (record_id,))
+            # FIXED: SQL Injection vulnerability
+            cursor.execute(self.sql_manager.get_query('audit', 'get_record_history'), (self.tabla_name, record_id))
             old_data = cursor.fetchone()
 
             if not old_data:
@@ -411,8 +411,9 @@ record_id: int,
             datos_anteriores = dict(zip(columns, old_data))
 
             # Eliminar registro
-        # FIXED: SQL Injection vulnerability
-            self.sql_manager.ejecutar_consulta_archivo('sql/core/delete_11.sql', params), (self.tabla_name,), (record_id,))
+            # FIXED: SQL Injection vulnerability
+            delete_query = self.sql_manager.get_query('audit', 'delete_old_audit_logs')
+            cursor.execute(delete_query, (self.tabla_name, record_id))
 
             # Registrar en auditoría
             self.audit_trail.log_change(

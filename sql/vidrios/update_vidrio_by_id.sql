@@ -4,5 +4,5 @@ SET tipo = ?, especificaciones = ?, espesor = ?,
     proveedor = ?, precio_m2 = ?, color = ?,
     propiedades = ?, dimensiones = ?,
     fecha_actualizacion = GETDATE(),
-    usuario_actualizacion = ?
+    usuario_modificacion = ?
 WHERE id = ?;

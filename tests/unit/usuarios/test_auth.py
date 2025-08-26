@@ -59,7 +59,7 @@ class TestUsuariosAuth(unittest.TestCase):
         
         # Test básico - el módulo debe poder importarse
         try:
-            from rexus.modules.usuarios import controller as usuarios_controller
+            from rexus.modules.09_usuarios import controller as usuarios_controller
             # Si llegamos aquí, el import fue exitoso
             self.assertTrue(True)
         except ImportError as e:
@@ -74,7 +74,7 @@ class TestUsuariosAuth(unittest.TestCase):
         
         # Test - verificar que el sistema maneja usuarios inexistentes
         try:
-            from rexus.modules.usuarios import controller as usuarios_controller
+            from rexus.modules.09_usuarios import controller as usuarios_controller
             # Test de concepto - en implementación real verificaríamos el resultado
             self.assertTrue(True)
         except ImportError as e:

@@ -23,11 +23,11 @@ def test_obras_step_by_step():
         logging.getLogger().setLevel(logging.CRITICAL)
 
         print("2. Test import básico...")
-        from rexus.modules.obras import view
+        from rexus.modules.01_obras import view
         print("   ✓ Import módulo obras OK")
 
         print("3. Test import clase principal...")
-        from rexus.modules.obras.view import ObrasModernView
+        from rexus.modules.01_obras.view import ObrasModernView
         print("   ✓ Import ObrasModernView OK")
 
         print("4. Test dependencias críticas...")

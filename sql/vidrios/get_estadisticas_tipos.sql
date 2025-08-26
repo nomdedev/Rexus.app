@@ -1,6 +1,6 @@
 -- Obtener estadísticas por tipo de vidrio
 SELECT tipo, COUNT(*) as cantidad
 FROM vidrios
-WHERE estado = 'ACTIVO'
+WHERE activo = 1
 GROUP BY tipo
 ORDER BY cantidad DESC;
