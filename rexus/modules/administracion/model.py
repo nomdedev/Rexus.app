@@ -142,179 +142,24 @@ class AdministracionModel(ContabilidadModel):
         try:
             cursor = self.db_connection.cursor()
 
-            # Tabla de departamentos
-            cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='departamentos' AND xtype='U')
-CREATE TABLE departamentos (
-id INT IDENTITY(1,1) PRIMARY KEY,
-codigo VARCHAR(20) NOT NULL UNIQUE,
-nombre VARCHAR(100) NOT NULL,
-descripcion TEXT,
-responsable VARCHAR(100),
-presupuesto_mensual DECIMAL(15,2) DEFAULT 0,
-estado VARCHAR(20) DEFAULT 'ACTIVO',
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100)
-)
-""")
+            # Verificar que las tablas principales ya existen
+            tablas_requeridas = ['departamentos', 'empleados', 'libro_contable']
+            
+            for tabla in tablas_requeridas:
+                try:
+                    cursor.execute(f"SELECT COUNT(*) FROM {tabla}")
+                    logger.debug(f"Tabla '{tabla}' verificada correctamente")
+                except Exception as e:
+                    logger.error(f"Error: tabla '{tabla}' no existe: {e}")
+                    return False
 
-# Tabla de empleados
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='empleados' AND xtype='U')
-CREATE TABLE empleados (
-id INT IDENTITY(1,1) PRIMARY KEY,
-codigo VARCHAR(20) NOT NULL UNIQUE,
-nombre VARCHAR(100) NOT NULL,
-apellido VARCHAR(100) NOT NULL,
-documento VARCHAR(20) UNIQUE,
-email VARCHAR(100),
-telefono VARCHAR(20),
-departamento_id INT,
-cargo VARCHAR(50),
-salario DECIMAL(12,2),
-fecha_ingreso DATE,
-estado VARCHAR(20) DEFAULT 'ACTIVO',
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100),
-FOREIGN KEY (departamento_id) REFERENCES departamentos(id)
-)
-""")
-
-# Tabla de libro contable
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='libro_contable' AND xtype='U')
-CREATE TABLE libro_contable (
-id INT IDENTITY(1,1) PRIMARY KEY,
-numero_asiento VARCHAR(20) NOT NULL UNIQUE,
-fecha_asiento DATE NOT NULL,
-tipo_asiento VARCHAR(20) NOT NULL,
-concepto VARCHAR(200) NOT NULL,
-referencia VARCHAR(100),
-obra_id INT,
-proveedor_id INT,
-empleado_id INT,
-departamento_id INT,
-cuenta_contable VARCHAR(20),
-debe DECIMAL(15,2) DEFAULT 0,
-haber DECIMAL(15,2) DEFAULT 0,
-saldo DECIMAL(15,2),
-estado VARCHAR(20) DEFAULT 'ACTIVO',
-observaciones TEXT,
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100)
-)
-""")
-
-# Tabla de recibos
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='recibos' AND xtype='U')
-CREATE TABLE recibos (
-id INT IDENTITY(1,1) PRIMARY KEY,
-numero_recibo VARCHAR(20) NOT NULL UNIQUE,
-fecha_emision DATE NOT NULL,
-tipo_recibo VARCHAR(20) NOT NULL,
-concepto VARCHAR(200) NOT NULL,
-beneficiario VARCHAR(100),
-obra_id INT,
-proveedor_id INT,
-empleado_id INT,
-monto DECIMAL(15,2) NOT NULL,
-moneda VARCHAR(10) DEFAULT 'ARS',
-metodo_pago VARCHAR(20),
-numero_comprobante VARCHAR(50),
-estado VARCHAR(20) DEFAULT 'EMITIDO',
-impreso BIT DEFAULT 0,
-archivo_pdf VARCHAR(255),
-observaciones TEXT,
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100)
-)
-""")
-
-# Tabla de pagos por obra
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pagos_obras' AND xtype='U')
-CREATE TABLE pagos_obras (
-id INT IDENTITY(1,1) PRIMARY KEY,
-obra_id INT NOT NULL,
-concepto VARCHAR(200) NOT NULL,
-categoria VARCHAR(50),
-monto DECIMAL(15,2) NOT NULL,
-fecha_pago DATE NOT NULL,
-proveedor_id INT,
-empleado_id INT,
-recibo_id INT,
-asiento_contable_id INT,
-metodo_pago VARCHAR(20),
-numero_comprobante VARCHAR(50),
-estado VARCHAR(20) DEFAULT 'PAGADO',
-observaciones TEXT,
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100)
-)
-""")
-
-# Tabla de pagos por materiales
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='pagos_materiales' AND xtype='U')
-CREATE TABLE pagos_materiales (
-id INT IDENTITY(1,1) PRIMARY KEY,
-producto_id INT NOT NULL,
-proveedor_id INT NOT NULL,
-obra_id INT,
-cantidad DECIMAL(10,2) NOT NULL,
-precio_unitario DECIMAL(10,2) NOT NULL,
-total DECIMAL(15,2) NOT NULL,
-fecha_compra DATE NOT NULL,
-fecha_pago DATE,
-estado_pago VARCHAR(20) DEFAULT 'PENDIENTE',
-monto_pagado DECIMAL(15,2) DEFAULT 0,
-saldo_pendiente DECIMAL(15,2),
-recibo_id INT,
-asiento_contable_id INT,
-numero_factura VARCHAR(50),
-observaciones TEXT,
-fecha_creacion DATETIME DEFAULT GETDATE(),
-usuario_creacion VARCHAR(100),
-fecha_actualizacion DATETIME DEFAULT GETDATE(),
-usuario_actualizacion VARCHAR(100)
-)
-""")
-
-# Tabla de auditoría contable
-cursor.execute("""
-IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='auditoria_contable' AND xtype='U')
-CREATE TABLE auditoria_contable (
-id INT IDENTITY(1,1) PRIMARY KEY,
-tabla_afectada VARCHAR(50) NOT NULL,
-registro_id INT NOT NULL,
-accion VARCHAR(20) NOT NULL,
-datos_anteriores TEXT,
-datos_nuevos TEXT,
-usuario VARCHAR(100) NOT NULL,
-fecha_accion DATETIME DEFAULT GETDATE(),
-            ip_address VARCHAR(45),
-            observaciones TEXT
-        )
-        """)
-
-                self.db_connection.commit()
-                logger.info("Tablas de contabilidad creadas exitosamente")
+            logger.info("Verificación de tablas de administración completada")
+            return True
         
-            except Exception as e:
-                if self.db_connection:
-                    self.db_connection.rollback()
-                logger.error(f"Error creando tablas: {e}")
+        except Exception as e:
+            if self.db_connection:
+                self.db_connection.rollback()
+            logger.error(f"Error creando tablas: {e}")
 
     def registrar_auditoria(
         self,

@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM inventario_perfiles WHERE activo = 1

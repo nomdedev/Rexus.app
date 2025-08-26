@@ -1,1 +1,0 @@
-SELECT * FROM sysobjects WHERE name='historial_precios' AND xtype='U'

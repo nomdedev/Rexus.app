@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM clientes WHERE id = ? AND activo = 1

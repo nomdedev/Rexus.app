@@ -1,1 +1,0 @@
-SELECT descuento, impuestos FROM compras WHERE id = ?

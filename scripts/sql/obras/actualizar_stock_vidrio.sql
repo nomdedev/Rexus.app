@@ -1,1 +1,0 @@
-UPDATE vidrios SET stock = stock - ?, fecha_modificacion = GETDATE() WHERE id = ?

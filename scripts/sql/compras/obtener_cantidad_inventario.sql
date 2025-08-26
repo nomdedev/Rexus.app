@@ -1,1 +1,0 @@
-SELECT cantidad FROM inventario WHERE codigo = ? AND estado = 'ACTIVO'

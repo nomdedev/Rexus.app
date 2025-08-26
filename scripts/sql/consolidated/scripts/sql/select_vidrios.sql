@@ -1,1 +1,0 @@
-SELECT * FROM productos WHERE categoria = 'VIDRIO' AND activo = 1

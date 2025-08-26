@@ -1,1 +1,0 @@
-SELECT stock_actual, stock_minimo, stock_maximo FROM productos WHERE id = ?

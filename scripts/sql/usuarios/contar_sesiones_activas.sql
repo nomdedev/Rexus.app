@@ -1,1 +1,0 @@
-SELECT COUNT(*) FROM sesiones_usuario WHERE is_active = 1

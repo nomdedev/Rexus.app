@@ -1,1 +1,0 @@
-SELECT * FROM herrajes WHERE id IN (1,2);

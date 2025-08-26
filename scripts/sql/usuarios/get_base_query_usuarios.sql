@@ -1,1 +1,0 @@
-SELECT * FROM usuarios WHERE activo = 1 ORDER BY fecha_creacion DESC;

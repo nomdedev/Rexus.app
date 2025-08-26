@@ -1,1 +1,0 @@
-SELECT * FROM inventario_perfiles WHERE codigo = ?

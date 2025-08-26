@@ -6,9 +6,23 @@ Maneja la lógica de negocio y acceso a datos para mantenimiento.
 
 import logging
 from typing import Dict, List, Optional, Any
-from datetime import datetime, date
+from datetime import date
 
 logger = logging.getLogger(__name__)
+
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
 
 class MantenimientoModel:
     """Modelo para el módulo de mantenimiento."""
@@ -16,6 +30,8 @@ class MantenimientoModel:
     def __init__(self, db_connection=None):
         """Inicializa el modelo de mantenimiento."""
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'mantenimiento'
         self.logger = logger
         
     def obtener_estado_equipos(self) -> Dict[str, Any]:
@@ -34,13 +50,15 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
             
             # Obtener totales
-            cursor.execute("SELECT COUNT(*) FROM equipos")
+            query_total = self.sql_manager.get_query(self.sql_path, 'count_equipos_total')
+            cursor.execute(query_total)
             total_equipos = cursor.fetchone()[0] or 0
             
-            cursor.execute("SELECT COUNT(*) FROM equipos WHERE estado = 'operativo'")
+            query_by_estado = self.sql_manager.get_query(self.sql_path, 'count_equipos_by_estado')
+            cursor.execute(query_by_estado, {'estado': 'operativo'})
             equipos_operativos = cursor.fetchone()[0] or 0
             
-            cursor.execute("SELECT COUNT(*) FROM equipos WHERE estado = 'critico'")
+            cursor.execute(query_by_estado, {'estado': 'critico'})
             equipos_criticos = cursor.fetchone()[0] or 0
             
             # Calcular estado general
@@ -84,11 +102,8 @@ class MantenimientoModel:
                 return []
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                SELECT id, nombre, tipo, estado, ubicacion, fecha_instalacion, ultimo_mantenimiento
-                FROM equipos 
-                ORDER BY nombre
-            """)
+            query = self.sql_manager.get_query(self.sql_path, 'select_equipos_all')
+            cursor.execute(query)
             
             equipos = []
             for row in cursor.fetchall():
@@ -115,16 +130,14 @@ class MantenimientoModel:
                 return None
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                INSERT INTO equipos (nombre, tipo, estado, ubicacion, fecha_instalacion)
-                VALUES (?, ?, ?, ?, ?)
-            """, (
-                datos.get('nombre'),
-                datos.get('tipo'),
-                datos.get('estado', 'operativo'),
-                datos.get('ubicacion'),
-                datos.get('fecha_instalacion', date.today().isoformat())
-            ))
+            query = self.sql_manager.get_query(self.sql_path, 'insert_equipo_simple')
+            cursor.execute(query, {
+                'nombre': datos.get('nombre'),
+                'tipo': datos.get('tipo'),
+                'estado': datos.get('estado', 'operativo'),
+                'ubicacion': datos.get('ubicacion'),
+                'fecha_instalacion': datos.get('fecha_instalacion', date.today().isoformat())
+            })
             
             equipo_id = cursor.lastrowid
             self.db_connection.commit()
@@ -144,10 +157,13 @@ class MantenimientoModel:
                 return False
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                INSERT INTO mantenimientos_programados (equipo_id, fecha_programada, tipo, observaciones, estado)
-                VALUES (?, ?, ?, ?, 'programado')
-            """, (equipo_id, fecha_programada, tipo, observaciones))
+            query = self.sql_manager.get_query(self.sql_path, 'insert_mantenimiento_programado')
+            cursor.execute(query, {
+                'equipo_id': equipo_id,
+                'fecha_programada': fecha_programada,
+                'tipo': tipo,
+                'observaciones': observaciones
+            })
             
             self.db_connection.commit()
             self.logger.info(f"Mantenimiento programado para equipo {equipo_id}")
@@ -168,27 +184,25 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
             
             # Actualizar la programación
-            cursor.execute("""
-                UPDATE mantenimientos_programados 
-                SET estado = 'ejecutado', fecha_ejecucion = ?, observaciones_ejecucion = ?
-                WHERE id = ?
-            """, (
-                datos_ejecucion.get('fecha_ejecucion', date.today().isoformat()),
-                datos_ejecucion.get('observaciones', ''),
-                programacion_id
-            ))
+            query_update = self.sql_manager.get_query(self.sql_path, 'update_mantenimiento_ejecutado')
+            cursor.execute(query_update, {
+                'fecha_ejecucion': datos_ejecucion.get('fecha_ejecucion', date.today().isoformat()),
+                'observaciones_ejecucion': datos_ejecucion.get('observaciones', ''),
+                'programacion_id': programacion_id
+            })
             
             # Obtener el equipo_id
-            cursor.execute("SELECT equipo_id FROM mantenimientos_programados WHERE id = ?", (programacion_id,))
+            query_select = self.sql_manager.get_query(self.sql_path, 'select_equipo_id_by_mantenimiento')
+            cursor.execute(query_select, {'programacion_id': programacion_id})
             row = cursor.fetchone()
             if row:
                 equipo_id = row[0]
                 # Actualizar fecha de último mantenimiento del equipo
-                cursor.execute("""
-                    UPDATE equipos 
-                    SET ultimo_mantenimiento = ? 
-                    WHERE id = ?
-                """, (datos_ejecucion.get('fecha_ejecucion', date.today().isoformat()), equipo_id))
+                query_update_equipo = self.sql_manager.get_query(self.sql_path, 'update_ultimo_mantenimiento_equipo')
+                cursor.execute(query_update_equipo, {
+                    'fecha_ultimo_mantenimiento': datos_ejecucion.get('fecha_ejecucion', date.today().isoformat()),
+                    'equipo_id': equipo_id
+                })
             
             self.db_connection.commit()
             self.logger.info(f"Mantenimiento ejecutado: {programacion_id}")
@@ -209,22 +223,11 @@ class MantenimientoModel:
             cursor = self.db_connection.cursor()
             
             if equipo_id:
-                cursor.execute("""
-                    SELECT mp.id, mp.equipo_id, e.nombre, mp.tipo, mp.fecha_programada, 
-                           mp.fecha_ejecucion, mp.estado, mp.observaciones
-                    FROM mantenimientos_programados mp
-                    JOIN equipos e ON mp.equipo_id = e.id
-                    WHERE mp.equipo_id = ?
-                    ORDER BY mp.fecha_programada DESC
-                """, (equipo_id,))
+                query = self.sql_manager.get_query(self.sql_path, 'select_historial_by_equipo')
+                cursor.execute(query, {'equipo_id': equipo_id})
             else:
-                cursor.execute("""
-                    SELECT mp.id, mp.equipo_id, e.nombre, mp.tipo, mp.fecha_programada, 
-                           mp.fecha_ejecucion, mp.estado, mp.observaciones
-                    FROM mantenimientos_programados mp
-                    JOIN equipos e ON mp.equipo_id = e.id
-                    ORDER BY mp.fecha_programada DESC
-                """)
+                query = self.sql_manager.get_query(self.sql_path, 'select_historial_all')
+                cursor.execute(query)
             
             historial = []
             for row in cursor.fetchall():

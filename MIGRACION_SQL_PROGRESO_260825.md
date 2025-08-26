@@ -34,6 +34,14 @@
 - ✅ Código actualizado para usar consultas externas
 - ✅ Imports corregidos (pyodbc, typing)
 
+#### 🔹 mantenimiento/model.py
+- ✅ Queries principales migradas a sql/mantenimiento/
+- ✅ 8 archivos SQL creados específicos para migración
+- ✅ 6 métodos migrados: obtener_estado_equipos, obtener_todos_equipos, crear_equipo, programar_mantenimiento, ejecutar_mantenimiento, obtener_historial_mantenimiento
+- ✅ sql_manager inicializado correctamente
+- ✅ Import datetime.datetime no usado eliminado
+- ✅ Total de 29 archivos SQL en el directorio
+
 #### 🔹 notificaciones/model.py
 - ✅ Queries principales migradas a sql/notificaciones/
 - ✅ 7 archivos SQL creados para operaciones CRUD completas
@@ -146,6 +154,7 @@ sql/
 ├── vidrios/ (✅ 38+ archivos)
 ├── herrajes/ (✅ 29+ archivos)
 ├── notificaciones/ (✅ 7 archivos nuevos)
+├── mantenimiento/ (✅ 29 archivos)
 ├── utils/
 └── usuarios/ (ya existía con muchos archivos)
 ```
@@ -157,4 +166,4 @@ sql/
 4. Documentar cambios realizados
 
 ---
-**Progreso estimado:** 45% completado
+**Progreso estimado:** 50% completado

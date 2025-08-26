@@ -1,1 +1,0 @@
-SELECT codigo, nombre FROM obras WHERE id = ?

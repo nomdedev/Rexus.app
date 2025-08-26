@@ -1,1 +1,0 @@
-SELECT codigo, estado FROM obras WHERE id = ?

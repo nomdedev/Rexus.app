@@ -1,1 +1,0 @@
-SELECT codigo FROM obras WHERE id = ? AND activo = 1

@@ -1,1 +1,0 @@
-SELECT DISTINCT tipo FROM inventario_perfiles WHERE activo = 1

@@ -1,1 +1,0 @@
-SELECT * FROM sysobjects WHERE name='lotes_inventario' AND xtype='U'

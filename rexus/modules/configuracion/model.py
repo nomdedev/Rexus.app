@@ -23,6 +23,19 @@ except ImportError:
     import logging
     logger = logging.getLogger(__name__)
 
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
 
 class ConfiguracionModel:
     """Modelo para gestionar configuraciones del sistema."""
@@ -36,6 +49,8 @@ class ConfiguracionModel:
         """
         self.db_connection = db_connection
         self.configuraciones_cache = {}
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'configuracion'
         logger.info("ConfiguracionModel inicializado")
     
     def crear_tablas(self):
@@ -47,24 +62,13 @@ class ConfiguracionModel:
             
             cursor = self.db_connection.cursor()
             
-            # Tabla principal de configuraciones
-            create_config_table = """
-                CREATE TABLE IF NOT EXISTS configuraciones (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    clave TEXT NOT NULL UNIQUE,
-                    valor TEXT NOT NULL,
-                    tipo TEXT DEFAULT 'string',
-                    categoria TEXT DEFAULT 'general',
-                    descripcion TEXT,
-                    es_editable BOOLEAN DEFAULT 1,
-                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    usuario_modificacion TEXT DEFAULT 'SISTEMA'
-                )
-            """
-            
-            cursor.execute(create_config_table)
-            self.db_connection.commit()
+            # Verificar que la tabla configuracion_sistema existe (ya está creada)
+            try:
+                cursor.execute("SELECT COUNT(*) FROM configuracion_sistema")
+                logger.debug("Tabla 'configuracion_sistema' verificada correctamente")
+            except Exception as e:
+                logger.error(f"Error: tabla 'configuracion_sistema' no existe: {e}")
+                return False
             
             # Insertar configuraciones por defecto si no existen
             self._insertar_configuraciones_default()
@@ -81,25 +85,8 @@ class ConfiguracionModel:
         try:
             cursor = self.db_connection.cursor()
             
-            configuraciones_default = [
-                ('empresa_nombre', 'Rexus.app', 'string', 'empresa', 'Nombre de la empresa'),
-                ('empresa_direccion', '', 'string', 'empresa', 'Dirección de la empresa'),
-                ('empresa_telefono', '', 'string', 'empresa', 'Teléfono de la empresa'),
-                ('empresa_email', '', 'string', 'empresa', 'Email de la empresa'),
-                ('sistema_tema', 'light', 'string', 'sistema', 'Tema del sistema'),
-                ('sistema_idioma', 'es', 'string', 'sistema', 'Idioma del sistema'),
-                ('bd_backup_auto', 'true', 'boolean', 'database', 'Backup automático'),
-                ('bd_backup_frecuencia', '24', 'number', 'database', 'Frecuencia backup (horas)'),
-                ('usuario_sesion_timeout', '480', 'number', 'usuario', 'Timeout de sesión (minutos)'),
-                ('sistema_logs_nivel', 'INFO', 'string', 'sistema', 'Nivel de logs')
-            ]
-            
-            for config in configuraciones_default:
-                cursor.execute("""
-                    INSERT OR IGNORE INTO configuraciones 
-                    (clave, valor, tipo, categoria, descripcion) 
-                    VALUES (?, ?, ?, ?, ?)
-                """, config)
+            query = self.sql_manager.get_query(self.sql_path, 'insert_configuraciones_default')
+            cursor.execute(query)
             
             self.db_connection.commit()
             logger.debug("Configuraciones por defecto insertadas")
@@ -120,13 +107,8 @@ class ConfiguracionModel:
                 return self._obtener_configuraciones_demo()
             
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                SELECT id, clave, valor, tipo, categoria, descripcion, 
-                       es_editable, fecha_creacion, fecha_modificacion, 
-                       usuario_modificacion
-                FROM configuraciones 
-                ORDER BY categoria, clave
-            """)
+            query = self.sql_manager.get_query(self.sql_path, 'select_configuraciones_all')
+            cursor.execute(query)
             
             configuraciones = []
             for row in cursor.fetchall():
@@ -173,29 +155,27 @@ class ConfiguracionModel:
             cursor = self.db_connection.cursor()
             
             # Query base
-            query = """
-                SELECT id, clave, valor, tipo, categoria, descripcion, 
-                       es_editable, fecha_creacion, fecha_modificacion, 
-                       usuario_modificacion
-                FROM configuraciones 
-                WHERE 1=1
-            """
+            base_query = self.sql_manager.get_query(self.sql_path, 'select_configuraciones_filtered')
+            
+            if not base_query:
+                logger.error("No se pudo cargar query de configuraciones filtradas")
+                return []
+                
+            query = base_query
             params = []
             
-            # Aplicar filtros
+            # Aplicar filtros modificando la query
             if filtros.get('categoria'):
-                query += " AND categoria = ?"
+                query = query.replace("ORDER BY categoria, clave", "AND categoria = ? ORDER BY categoria, clave")
                 params.append(filtros['categoria'])
             
             if filtros.get('clave'):
-                query += " AND clave LIKE ?"
+                query = query.replace("ORDER BY categoria, clave", "AND clave LIKE ? ORDER BY categoria, clave")
                 params.append(f"%{filtros['clave']}%")
             
             if filtros.get('es_editable') is not None:
-                query += " AND es_editable = ?"
+                query = query.replace("ORDER BY categoria, clave", "AND es_editable = ? ORDER BY categoria, clave")
                 params.append(filtros['es_editable'])
-            
-            query += " ORDER BY categoria, clave"
             
             cursor.execute(query, params)
             
@@ -241,10 +221,8 @@ class ConfiguracionModel:
                 return self._obtener_valor_demo(clave)
             
             cursor = self.db_connection.cursor()
-            cursor.execute(
-                "SELECT valor FROM configuraciones WHERE clave = ?", 
-                (clave,)
-            )
+            query = self.sql_manager.get_query(self.sql_path, 'select_valor_by_clave')
+            cursor.execute(query, {'clave': clave})
             
             result = cursor.fetchone()
             if result:
@@ -274,19 +252,16 @@ class ConfiguracionModel:
                 return False
             
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                INSERT INTO configuraciones 
-                (clave, valor, tipo, categoria, descripcion, es_editable, usuario_modificacion)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                datos_config.get('clave'),
-                datos_config.get('valor'),
-                datos_config.get('tipo', 'string'),
-                datos_config.get('categoria', 'general'),
-                datos_config.get('descripcion', ''),
-                datos_config.get('es_editable', True),
-                datos_config.get('usuario_modificacion', 'SISTEMA')
-            ))
+            query = self.sql_manager.get_query(self.sql_path, 'insert_configuracion')
+            cursor.execute(query, {
+                'clave': datos_config.get('clave'),
+                'valor': datos_config.get('valor'),
+                'tipo': datos_config.get('tipo', 'string'),
+                'categoria': datos_config.get('categoria', 'general'),
+                'descripcion': datos_config.get('descripcion', ''),
+                'es_editable': datos_config.get('es_editable', True),
+                'usuario_modificacion': datos_config.get('usuario_modificacion', 'SISTEMA')
+            })
             
             self.db_connection.commit()
             
@@ -317,21 +292,16 @@ class ConfiguracionModel:
                 return False
             
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                UPDATE configuraciones 
-                SET valor = ?, tipo = ?, categoria = ?, descripcion = ?, 
-                    es_editable = ?, fecha_modificacion = CURRENT_TIMESTAMP,
-                    usuario_modificacion = ?
-                WHERE id = ?
-            """, (
-                datos_config.get('valor'),
-                datos_config.get('tipo', 'string'),
-                datos_config.get('categoria', 'general'),
-                datos_config.get('descripcion', ''),
-                datos_config.get('es_editable', True),
-                datos_config.get('usuario_modificacion', 'SISTEMA'),
-                config_id
-            ))
+            query = self.sql_manager.get_query(self.sql_path, 'update_configuracion_by_id')
+            cursor.execute(query, {
+                'valor': datos_config.get('valor'),
+                'tipo': datos_config.get('tipo', 'string'),
+                'categoria': datos_config.get('categoria', 'general'),
+                'descripcion': datos_config.get('descripcion', ''),
+                'es_editable': datos_config.get('es_editable', True),
+                'usuario_modificacion': datos_config.get('usuario_modificacion', 'SISTEMA'),
+                'config_id': config_id
+            })
             
             self.db_connection.commit()
             
@@ -361,7 +331,8 @@ class ConfiguracionModel:
                 return False
             
             cursor = self.db_connection.cursor()
-            cursor.execute("DELETE FROM configuraciones WHERE id = ? AND es_editable = 1", (config_id,))
+            query = self.sql_manager.get_query(self.sql_path, 'delete_configuracion')
+            cursor.execute(query, {'config_id': config_id})
             self.db_connection.commit()
             
             # Limpiar cache

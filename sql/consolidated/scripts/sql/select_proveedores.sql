@@ -1,1 +1,0 @@
-SELECT DISTINCT proveedor FROM productos WHERE estado = 'ACTIVO' ORDER BY proveedor;

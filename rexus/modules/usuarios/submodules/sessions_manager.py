@@ -176,22 +176,16 @@ created_at,
 
             cursor = self.db_connection.cursor()
 
+            # Verificar que la tabla sesiones_usuario existe
             cursor.execute("""
-                IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='sesiones_usuario' AND xtype='U')
-                CREATE TABLE sesiones_usuario (
-                    id INT IDENTITY(1,1) PRIMARY KEY,
-                    session_id NVARCHAR(64) UNIQUE NOT NULL,
-                    usuario_id INT NOT NULL,
-                    username NVARCHAR(50) NOT NULL,
-                    ip_address NVARCHAR(45) NULL,
-                    user_agent NVARCHAR(500) NULL,
-                    created_at DATETIME DEFAULT GETDATE(),
-                    last_activity DATETIME DEFAULT GETDATE(),
-                    closed_at DATETIME NULL,
-                    is_active BIT DEFAULT 1,
-                    FOREIGN KEY (usuario_id) REFERENCES usuarios(id)
-                )
+                SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES 
+                WHERE TABLE_NAME = 'sesiones_usuario'
             """)
+            if not cursor.fetchone()[0]:
+                logger.warning("Tabla 'sesiones_usuario' no existe en SQL Server")
+                return
+
+            logger.info("Tabla sesiones_usuario verificada correctamente")
 
             self.db_connection.commit()
 

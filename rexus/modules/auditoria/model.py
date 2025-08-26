@@ -49,72 +49,9 @@ class AuditoriaModel:
         logger.info("AuditoriaModel inicializado")
     
     def crear_tablas(self):
-        """Crea las tablas necesarias para auditoría."""
-        try:
-            if not self.db_connection:
-                logger.warning("No hay conexión a BD disponible")
-                return False
-            
-            cursor = self.db_connection.cursor()
-            
-            # Tabla principal de auditoría
-            create_audit_table = """
-                CREATE TABLE IF NOT EXISTS auditoria_eventos (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
-                    usuario TEXT NOT NULL,
-                    accion TEXT NOT NULL,
-                    modulo TEXT NOT NULL,
-                    tabla_afectada TEXT,
-                    registro_id TEXT,
-                    datos_anteriores TEXT,
-                    datos_nuevos TEXT,
-                    ip_address TEXT,
-                    user_agent TEXT,
-                    resultado TEXT,
-                    detalles TEXT,
-                    nivel_riesgo TEXT DEFAULT 'NORMAL',
-                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            
-            cursor.execute(create_audit_table)
-            
-            # Tabla de configuración de auditoría
-            create_config_table = """
-                CREATE TABLE IF NOT EXISTS auditoria_configuracion (
-                    id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    modulo TEXT NOT NULL,
-                    tabla TEXT NOT NULL,
-                    auditoria_activa BOOLEAN DEFAULT 1,
-                    auditoria_inserts BOOLEAN DEFAULT 1,
-                    auditoria_updates BOOLEAN DEFAULT 1,
-                    auditoria_deletes BOOLEAN DEFAULT 1,
-                    retencion_dias INTEGER DEFAULT 365,
-                    nivel_detalle TEXT DEFAULT 'COMPLETO',
-                    fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
-                )
-            """
-            
-            cursor.execute(create_config_table)
-            
-            # Índices para optimizar consultas
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_auditoria_timestamp ON auditoria_eventos(timestamp)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_auditoria_usuario ON auditoria_eventos(usuario)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_auditoria_modulo ON auditoria_eventos(modulo)")
-            cursor.execute("CREATE INDEX IF NOT EXISTS idx_auditoria_accion ON auditoria_eventos(accion)")
-            
-            self.db_connection.commit()
-            
-            # Insertar configuraciones por defecto
-            self._insertar_configuraciones_default()
-            
-            logger.debug("Tablas de auditoría creadas exitosamente")
-            return True
-            
-        except Exception as e:
-            logger.error(f"Error creando tablas de auditoría: {e}")
-            return False
+        """Las tablas de auditoría ya existen en la base de datos SQL Server."""
+        logger.info("Las tablas de auditoría ya están creadas en SQL Server")
+        return True
     
     def _insertar_configuraciones_default(self):
         """Inserta configuraciones por defecto de auditoría."""

@@ -10,8 +10,35 @@ Responsabilidades:
 """
 
 import logging
+from typing import Dict, List, Optional, Any
+
+logger = logging.getLogger(__name__)
+
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
 
 class ProfilesManager:
+    """Gestor de perfiles de usuarios."""
+    
+    def __init__(self, db_connection=None):
+        """Inicializa el gestor de perfiles."""
+        self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'usuarios'
+        self.logger = logger
+        self.username_min_length = 3
+        self.username_max_length = 50
 
     def eliminar_usuario(self, usuario_id: int) -> Optional[Dict[str, Any]]:
         """

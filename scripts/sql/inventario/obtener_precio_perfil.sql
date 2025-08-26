@@ -1,1 +1,0 @@
-SELECT precio_unitario FROM inventario_perfiles WHERE id = ?

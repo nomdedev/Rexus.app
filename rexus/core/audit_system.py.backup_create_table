@@ -67,7 +67,21 @@ class AuditSystem:
         try:
             cursor = self.db_connection.connection.cursor()
             cursor.execute("""
-                -- Tabla auditoria_sistema ya existe en SQL Server
+                CREATE TABLE IF NOT EXISTS auditoria_sistema (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    event_type TEXT NOT NULL,
+                    level TEXT NOT NULL,
+                    usuario_id INTEGER,
+                    usuario_nombre TEXT,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    modulo TEXT,
+                    accion TEXT,
+                    detalles TEXT,
+                    resultado TEXT,
+                    session_id TEXT
+                )
             """)
             self.db_connection.connection.commit()
         except sqlite3.Error as e:

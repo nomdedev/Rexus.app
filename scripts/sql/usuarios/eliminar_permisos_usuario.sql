@@ -1,1 +1,0 @@
-DELETE FROM permisos_usuario WHERE usuario_id = ?

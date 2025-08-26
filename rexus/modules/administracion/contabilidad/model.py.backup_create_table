@@ -64,7 +64,11 @@ try:
 
 # Tabla de libro contable (asientos principales)
 cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
+CREATE TABLE IF NOT EXISTS libro_contable (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+numero_asiento INTEGER NOT NULL,
+fecha_asiento DATE NOT NULL,
+tipo_asiento VARCHAR(50) NOT NULL,
 concepto TEXT NOT NULL,
 referencia VARCHAR(100),
 debe DECIMAL(15,2) DEFAULT 0.00,
@@ -79,7 +83,9 @@ fecha_modificacion DATETIME DEFAULT CURRENT_TIMESTAMP
 
 # Tabla de plan de cuentas
 cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL UNIQUE,
+CREATE TABLE IF NOT EXISTS plan_cuentas (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+codigo_cuenta VARCHAR(20) NOT NULL UNIQUE,
 nombre_cuenta VARCHAR(200) NOT NULL,
 tipo_cuenta VARCHAR(50) NOT NULL,
 nivel INTEGER DEFAULT 1,
@@ -92,7 +98,10 @@ fecha_creacion DATETIME DEFAULT CURRENT_TIMESTAMP
 
 # Tabla de detalle de asientos
 cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
+CREATE TABLE IF NOT EXISTS asientos_detalle (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+asiento_id INTEGER NOT NULL,
+codigo_cuenta VARCHAR(20) NOT NULL,
 debe DECIMAL(15,2) DEFAULT 0.00,
 haber DECIMAL(15,2) DEFAULT 0.00,
 concepto_detalle TEXT,
@@ -103,7 +112,9 @@ FOREIGN KEY (codigo_cuenta) REFERENCES plan_cuentas(codigo_cuenta)
 
 # Tabla de balances contables
 cursor.execute("""
--- Tablas de contabilidad ya existen en SQL Server NOT NULL,
+CREATE TABLE IF NOT EXISTS balances_contables (
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+periodo VARCHAR(20) NOT NULL,
 fecha_balance DATE NOT NULL,
 codigo_cuenta VARCHAR(20) NOT NULL,
 saldo_inicial DECIMAL(15,2) DEFAULT 0.00,

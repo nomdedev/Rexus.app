@@ -1,1 +1,0 @@
-SELECT * FROM productos WHERE id IN (1,2);

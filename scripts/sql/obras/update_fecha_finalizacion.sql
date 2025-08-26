@@ -1,1 +1,0 @@
-UPDATE obras SET fecha_fin_real = GETDATE() WHERE id = ?

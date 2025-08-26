@@ -1,1 +1,0 @@
-SELECT MAX(numero_recibo) FROM recibos

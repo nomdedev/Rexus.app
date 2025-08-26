@@ -1,1 +1,0 @@
-UPDATE obras SET estado = ? WHERE id = ? AND activo = 1

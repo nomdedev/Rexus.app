@@ -1,1 +1,0 @@
-SELECT SCOPE_IDENTITY() AS last_id;

@@ -1,1 +1,0 @@
-SELECT usuario FROM usuarios WHERE id = :id

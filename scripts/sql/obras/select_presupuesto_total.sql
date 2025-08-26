@@ -1,1 +1,0 @@
-SELECT SUM(presupuesto_total) FROM obras

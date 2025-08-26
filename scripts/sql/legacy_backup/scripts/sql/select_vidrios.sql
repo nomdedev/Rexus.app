@@ -1,1 +1,0 @@
-SELECT * FROM vidrios WHERE 1=1

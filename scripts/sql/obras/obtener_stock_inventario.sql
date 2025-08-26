@@ -1,1 +1,0 @@
-SELECT cantidad_disponible FROM inventario WHERE id = ? AND activo = 1

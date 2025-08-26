@@ -223,7 +223,8 @@ usuario_id: int,
         try:
             cursor.execute("""
                 IF NOT EXISTS (SELECT * FROM sysobjects WHERE name='permisos_usuarios' AND xtype='U')
-                -- Tabla permisos_usuarios ya existe en SQL Server PRIMARY KEY,
+                CREATE TABLE permisos_usuarios (
+                    id INT IDENTITY(1,1) PRIMARY KEY,
                     usuario_id INT NOT NULL,
                     modulo NVARCHAR(50) NOT NULL,
                     accion NVARCHAR(20) NOT NULL,

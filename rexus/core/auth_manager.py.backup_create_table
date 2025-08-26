@@ -88,12 +88,32 @@ class AuthManager:
             
             # Tabla de usuarios con autenticación
             cursor.execute("""
-                -- Tabla auth_users ya existe en SQL Server
+                CREATE TABLE IF NOT EXISTS auth_users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    username TEXT UNIQUE NOT NULL,
+                    password_hash TEXT NOT NULL,
+                    salt TEXT NOT NULL,
+                    role TEXT NOT NULL DEFAULT 'USER',
+                    is_active BOOLEAN DEFAULT 1,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    last_login DATETIME,
+                    failed_attempts INTEGER DEFAULT 0,
+                    locked_until DATETIME
+                )
             """)
             
             # Tabla de sesiones activas
             cursor.execute("""
-                -- Tabla auth_sessions ya existe en SQL Server
+                CREATE TABLE IF NOT EXISTS auth_sessions (
+                    session_id TEXT PRIMARY KEY,
+                    user_id INTEGER NOT NULL,
+                    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    last_activity DATETIME DEFAULT CURRENT_TIMESTAMP,
+                    ip_address TEXT,
+                    user_agent TEXT,
+                    status TEXT DEFAULT 'ACTIVE',
+                    FOREIGN KEY (user_id) REFERENCES auth_users (id)
+                )
             """)
             
             self.db_connection.connection.commit()
