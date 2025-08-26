@@ -1,0 +1,6 @@
+SELECT id, codigo, nombre, razon_social, ruc, telefono, email,
+direccion, contacto_principal, calificacion, activo,
+fecha_registro, observaciones, tipo_proveedor,
+condiciones_pago, descuento_comercial
+FROM proveedores
+ORDER BY nombre;

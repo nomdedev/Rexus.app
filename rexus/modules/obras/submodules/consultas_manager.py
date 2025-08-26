@@ -9,7 +9,11 @@ Responsabilidades:
 - Reportes de productividad
 """
 
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+import pyodbc
+from datetime import datetime, date, timedelta
+from typing import List, Dict, Any, Optional
+
+from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
 from rexus.utils.app_logger import get_logger
 
 # Configurar logger
@@ -28,9 +32,8 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f
+            script_name = filename
             return self.sql_loader.load_script(script_name)
-
 
 # DataSanitizer unificado
 try:
@@ -46,8 +49,6 @@ except ImportError:
 
         def sanitize_integer(self, value):
             return int(value) if value else 0
-
-        def sanitize_integer(self, value, min_val=None, max_val=None):
             return int(value) if value else 0
 
         def sanitize_numeric(self, value, min_val=None, max_val=None):
@@ -286,7 +287,7 @@ min(100,
         except Exception as e:
             return []
     def obtener_reporte_productividad(
-        self, fecha_inicio: datetime = None, fecha_fin: datetime = None
+        self, fecha_inicio: Optional[datetime] = None, fecha_fin: Optional[datetime] = None
     ) -> Dict[str, Any]:
         """Genera reporte de productividad en un período."""
         if not self.db_connection:
@@ -450,13 +451,7 @@ min(100,
 
             cursor = self.db_connection.cursor()
 
-            query = """
-                SELECT COUNT(*)
-                FROM obras
-                WHERE estado = 'COMPLETADA'
-                  AND fecha_finalizacion BETWEEN %(fecha_inicio)s AND %(fecha_fin)s
-            """
-
+            query = self.sql_manager.get_query(self.sql_path, "contar_obras_completadas_periodo")
             cursor.execute(
                 query,
                 {"fecha_inicio": fecha_inicio.date(), "fecha_fin": fecha_fin.date()},
@@ -467,5 +462,5 @@ min(100,
 
             return total_obras / max(1, dias_periodo)
 
-        except (sqlite3.Error, ValueError, TypeError, AttributeError):
+        except (pyodbc.Error, ValueError, TypeError, AttributeError):
             return 0.0

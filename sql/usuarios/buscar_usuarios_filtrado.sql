@@ -1,23 +1,25 @@
--- Búsqueda de usuarios con filtros dinámicos (SQLite)
--- Parámetros: :busqueda, :rol, :estado (opcionales)
+-- Búsqueda de usuarios con filtros dinámicos (SQL Server)
+-- Parámetros: @nombre, @usuario, @email, @rol, @estado (opcionales)
 -- Retorna: Lista de usuarios filtrada
 
 SELECT 
-    u.id, 
-    u.username, 
-    u.email, 
-    u.nombre_completo, 
-    u.departamento,
-    u.cargo, 
-    u.telefono, 
-    u.activo, 
-    u.fecha_creacion, 
-    u.ultimo_acceso,
-    COALESCE(ur.role_name, 'Sin Rol') as rol, 
-    u.estado
-FROM usuarios u
-LEFT JOIN user_roles ur ON u.id = ur.user_id
-WHERE 1=1
+    id,
+    usuario,
+    nombre_completo,
+    email,
+    telefono,
+    rol,
+    estado,
+    fecha_creacion,
+    ultimo_acceso
+FROM usuarios 
+WHERE activo = 1
+    AND (@nombre IS NULL OR LOWER(nombre_completo) LIKE LOWER('%' + @nombre + '%'))
+    AND (@usuario IS NULL OR LOWER(usuario) LIKE LOWER('%' + @usuario + '%'))
+    AND (@email IS NULL OR LOWER(email) LIKE LOWER('%' + @email + '%'))
+    AND (@rol IS NULL OR rol = @rol)
+    AND (@estado IS NULL OR estado = @estado)
+ORDER BY nombre_completo
     AND (:busqueda IS NULL OR 
          u.username LIKE '%' || :busqueda || '%' OR 
          u.email LIKE '%' || :busqueda || '%' OR 

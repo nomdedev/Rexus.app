@@ -73,14 +73,9 @@ class LogisticaModel:
             # Sanitizar datos
             datos_sanitizados = self._sanitizar_datos_servicio(datos_servicio)
             
-            cursor.execute("""
-                INSERT INTO servicios_transporte (
-                    codigo, descripcion, tipo_servicio, proveedor_transporte_id,
-                    origen, destino, fecha_programada, fecha_real,
-                    estado, costo_estimado, costo_real, observaciones,
-                    capacidad_peso, capacidad_volumen, activo, fecha_creacion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+            with open('sql/logistica/insert_servicio_transporte.sql', 'r', encoding='utf-8') as f:
+                insert_query = f.read()
+            cursor.execute(insert_query, (
                 datos_sanitizados['codigo'],
                 datos_sanitizados['descripcion'],
                 datos_sanitizados.get('tipo_servicio', 'ENTREGA'),
@@ -128,28 +123,13 @@ class LogisticaModel:
             cursor = self.db_connection.cursor()
             
             if activos_solo:
-                cursor.execute("""
-                    SELECT st.id, st.codigo, st.descripcion, st.tipo_servicio,
-                           st.origen, st.destino, st.fecha_programada, st.fecha_real,
-                           st.estado, st.costo_estimado, st.costo_real,
-                           st.capacidad_peso, st.capacidad_volumen, st.observaciones,
-                           pt.nombre as proveedor_nombre
-                    FROM servicios_transporte st
-                    LEFT JOIN proveedores_transporte pt ON st.proveedor_transporte_id = pt.id
-                    WHERE st.activo = 1
-                    ORDER BY st.fecha_programada DESC
-                """)
+                with open('sql/logistica/select_servicios_transporte_activos.sql', 'r', encoding='utf-8') as f:
+                    select_query = f.read()
+                cursor.execute(select_query)
             else:
-                cursor.execute("""
-                    SELECT st.id, st.codigo, st.descripcion, st.tipo_servicio,
-                           st.origen, st.destino, st.fecha_programada, st.fecha_real,
-                           st.estado, st.costo_estimado, st.costo_real,
-                           st.capacidad_peso, st.capacidad_volumen, st.observaciones,
-                           pt.nombre as proveedor_nombre
-                    FROM servicios_transporte st
-                    LEFT JOIN proveedores_transporte pt ON st.proveedor_transporte_id = pt.id
-                    ORDER BY st.fecha_programada DESC
-                """)
+                with open('sql/logistica/select_servicios_transporte_all.sql', 'r', encoding='utf-8') as f:
+                    select_query = f.read()
+                cursor.execute(select_query)
             
             servicios = []
             for row in cursor.fetchall():
@@ -249,13 +229,9 @@ class LogisticaModel:
             # Sanitizar datos
             datos_sanitizados = self._sanitizar_datos_proveedor_transporte(datos_proveedor)
             
-            cursor.execute("""
-                INSERT INTO proveedores_transporte (
-                    codigo, nombre, razon_social, ruc, telefono, email,
-                    direccion, contacto_principal, tipo_transporte, zona_cobertura,
-                    tarifa_base, calificacion, activo, fecha_registro
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-            """, (
+            with open('sql/logistica/insert_proveedor_transporte.sql', 'r', encoding='utf-8') as f:
+                insert_query = f.read()
+            cursor.execute(insert_query, (
                 datos_sanitizados['codigo'],
                 datos_sanitizados['nombre'],
                 datos_sanitizados.get('razon_social', ''),

@@ -10,13 +10,28 @@ from typing import Dict, List, Any, Optional
 
 logger = logging.getLogger(__name__)
 
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
+
 class UsuariosModel:
     """Modelo para gestión de usuarios. USA ÚNICAMENTE LA DB USERS EXISTENTE."""
     
     def __init__(self, db_connection=None):
         """Inicializa el modelo de usuarios."""
         self.db_connection = db_connection
-        self.sql_manager = None
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'usuarios'
         self.data_sanitizer = None
         
     def validar_credenciales(self, username: str, password: str) -> Optional[Dict[str, Any]]:
@@ -46,27 +61,7 @@ class UsuariosModel:
                 return None
             
             # Buscar usuario en la tabla usuarios existente
-            query = """
-                SELECT
-                    id,
-                    usuario,
-                    password_hash,
-                    nombre_completo,
-                    email,
-                    telefono,
-                    rol,
-                    estado,
-                    intentos_fallidos,
-                    bloqueado_hasta,
-                    ultimo_acceso,
-                    fecha_creacion,
-                    fecha_modificacion
-                FROM usuarios
-                WHERE LOWER(usuario) = LOWER(?)
-                    AND activo = 1
-                    AND estado IN ('ACTIVO', 'PRIMERA_VEZ')
-            """
-            
+            query = self.sql_manager.get_query('usuarios', 'select_usuario_autenticacion')
             user_data = db_users.execute_query(query, (username,))
             
             if not user_data:
@@ -156,11 +151,7 @@ class UsuariosModel:
             db_users: Conexión a la base de datos users
         """
         try:
-            query = """
-                UPDATE usuarios 
-                SET intentos_fallidos = intentos_fallidos + 1
-                WHERE LOWER(usuario) = LOWER(?)
-            """
+            query = self.sql_manager.get_query(self.sql_path, "update_incrementar_intentos_fallidos")
             db_users.execute_non_query(query, (username,))
             logger.info(f"Incrementados intentos fallidos para usuario '{username}' en DB users")
         except Exception as e:
@@ -175,12 +166,7 @@ class UsuariosModel:
             db_users: Conexión a la base de datos users
         """
         try:
-            query = """
-                UPDATE usuarios 
-                SET ultimo_acceso = CURRENT_TIMESTAMP,
-                    intentos_fallidos = 0
-                WHERE id = ?
-            """
+            query = self.sql_manager.get_query(self.sql_path, "update_ultimo_acceso")
             db_users.execute_non_query(query, (user_id,))
             logger.debug(f"Actualizado último acceso para usuario ID: {user_id} en DB users")
         except Exception as e:
@@ -199,7 +185,7 @@ class UsuariosModel:
         """
         try:
             # Verificar si existe la tabla permisos_usuario
-            query_tabla = "SELECT name FROM sqlite_master WHERE type='table' AND name='permisos_usuario'"
+            query_tabla = self.sql_manager.get_query(self.sql_path, "verificar_tabla_permisos_usuario")
             tablas = db_users.execute_query(query_tabla)
             
             if not tablas:
@@ -207,7 +193,7 @@ class UsuariosModel:
                 return self._obtener_permisos_por_rol(user_id, db_users)
             
             # Obtener permisos desde la tabla real
-            query = "SELECT modulo FROM permisos_usuario WHERE usuario_id = ?"
+            query = self.sql_manager.get_query(self.sql_path, "select_permisos_usuario")
             permisos_result = db_users.execute_query(query, (user_id,))
             
             permisos = [row[0] for row in permisos_result]
@@ -235,7 +221,7 @@ class UsuariosModel:
             Lista de módulos basada en el rol
         """
         try:
-            query = "SELECT rol FROM usuarios WHERE id = ?"
+            query = self.sql_manager.get_query(self.sql_path, "select_rol_usuario")
             rol_result = db_users.execute_query(query, (user_id,))
             
             if not rol_result:
@@ -286,10 +272,8 @@ class UsuariosModel:
             
             # Ejecutar consulta usando SQL Manager
             if self.sql_manager:
-                usuarios = self.sql_manager.ejecutar_consulta_archivo(
-                    'usuarios/buscar_usuarios_filtrado.sql',
-                    params
-                )
+                query = self.sql_manager.get_query(self.sql_path, 'buscar_usuarios_filtrado')
+                usuarios = self.db_connection.execute_query(query, params)
             else:
                 # Fallback básico
                 usuarios = []

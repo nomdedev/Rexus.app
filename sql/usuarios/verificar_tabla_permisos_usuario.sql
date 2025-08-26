@@ -1,0 +1,4 @@
+SELECT name 
+FROM INFORMATION_SCHEMA.TABLES 
+WHERE TABLE_NAME = 'permisos_usuario' 
+  AND TABLE_SCHEMA = 'dbo'

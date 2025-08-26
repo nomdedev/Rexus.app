@@ -1497,3 +1497,4 @@
 2025-08-24 22:43:12 | WARNING  | rexus.modules.compras.controller | No se pudo importar BaseController
 2025-08-25 17:27:13 | INFO     | rexus.modules.usuarios.controller | UsuariosController inicializado correctamente
 2025-08-25 17:27:13 | INFO     | rexus.modules.usuarios.controller | UsuariosController inicializado
+2025-08-26 09:09:13 | INFO     | rexus.modules.obras.view | [OBRAS] Tabla configurada correctamente

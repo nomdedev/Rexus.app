@@ -25,15 +25,51 @@ NO mezclar tablas de negocio en 'users'. NO usar 'inventario' para login o permi
 -------------------------------------------------------------
 """
 
-import os
+
 import logging
-import sqlite3
+import pyodbc
+from .config import DB_USERS, DB_INVENTARIO, DB_AUDITORIA, DB_SERVER, DB_USERNAME, DB_PASSWORD
+
+logger = logging.getLogger("rexus.database")
+
 
 # Importar configuraciones de base de datos
-from .config import DB_USERS, DB_INVENTARIO, DB_AUDITORIA
+
 
 class DatabaseConnection:
     
+    def __init__(self, database=None, auto_connect=False):
+        self.database = database
+        self._connection = None
+        if auto_connect and database:
+            self.connect()
+
+    def connect(self):
+        """Establece conexión a SQL Server usando pyodbc."""
+        try:
+            conn_str = (
+                f"DRIVER={{ODBC Driver 17 for SQL Server}};"
+                f"SERVER={DB_SERVER};"
+                f"DATABASE={self.database};"
+                f"UID={DB_USERNAME};PWD={DB_PASSWORD}"
+            )
+            self._connection = pyodbc.connect(conn_str)
+            return True
+        except Exception as e:
+            logger.error(f"Error conectando a SQL Server: {e}")
+            self._connection = None
+            return False
+
+    def disconnect(self):
+        if self._connection:
+            self._connection.close()
+            self._connection = None
+
+    def switch_database(self, database):
+        self.disconnect()
+        self.database = database
+        self.connect()
+
     def cursor(self):
         """Retorna un cursor de la conexión."""
         if self._connection:
@@ -60,11 +96,8 @@ class DatabaseConnection:
             result = cursor.fetchall()
             cursor.close()
             return result
-        except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.IntegrityError) as e:
-            logger.exception(f"Error de base de datos en consulta: {e}\nQuery: {query}\nParams: {params}")
-            return []
         except Exception as e:
-            logger.exception(f"Error inesperado en consulta: {e}\nQuery: {query}\nParams: {params}")
+            logger.exception(f"Error de base de datos en consulta: {e}\nQuery: {query}\nParams: {params}")
             return []
 
     def execute_non_query(self, query: str, params: tuple = ()) -> bool:
@@ -78,7 +111,7 @@ class DatabaseConnection:
             self._connection.commit()
             cursor.close()
             return True
-        except (sqlite3.Error, sqlite3.DatabaseError, sqlite3.IntegrityError) as e:
+        except Exception as e:
             logger.exception(f"Error de base de datos en comando: {e}\nQuery: {query}\nParams: {params}")
             self._connection.rollback()
             return False

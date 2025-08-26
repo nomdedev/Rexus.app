@@ -37,45 +37,15 @@ class InventarioModel:
                         cursor.execute(sql, {
                             'activos_solo': activos_solo
                         })
-                    except:
-                        # Fallback con query manual
-                        sql = """
-                        SELECT 
-                            l.id,
-                            l.producto_id,
-                            l.numero_lote,
-                            l.cantidad,
-                            l.fecha_vencimiento,
-                            l.ubicacion,
-                            l.estado,
-                            l.fecha_ingreso,
-                            p.nombre as producto_nombre,
-                            p.codigo as producto_codigo
-                        FROM lotes_inventario l
-                        LEFT JOIN productos p ON l.producto_id = p.id
-                        WHERE l.activo = ?
-                        ORDER BY l.fecha_ingreso DESC
-                        """
+                    except Exception:
+                        # Cargar query desde archivo SQL externo
+                        with open('sql/inventario/select_lotes_inventario.sql', 'r', encoding='utf-8') as f:
+                            sql = f.read()
                         cursor.execute(sql, (1 if activos_solo else 0,))
                 else:
-                    # Query manual sin SQL Manager
-                    sql = """
-                    SELECT 
-                        l.id,
-                        l.producto_id,
-                        l.numero_lote,
-                        l.cantidad,
-                        l.fecha_vencimiento,
-                        l.ubicacion,
-                        l.estado,
-                        l.fecha_ingreso,
-                        p.nombre as producto_nombre,
-                        p.codigo as producto_codigo
-                    FROM lotes_inventario l
-                    LEFT JOIN productos p ON l.producto_id = p.id
-                    WHERE l.activo = ?
-                    ORDER BY l.fecha_ingreso DESC
-                    """
+                    # Cargar query desde archivo SQL externo
+                    with open('sql/inventario/select_lotes_inventario.sql', 'r', encoding='utf-8') as f:
+                        sql = f.read()
                     cursor.execute(sql, (1 if activos_solo else 0,))
                 
                 # Procesar resultados

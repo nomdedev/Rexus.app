@@ -9,12 +9,28 @@ from typing import Dict, List, Optional, Any
 
 logger = logging.getLogger(__name__)
 
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
+
 class HerrajesModel:
     """Modelo para el módulo de herrajes."""
 
     def __init__(self, db_connection=None):
         """Inicializa el modelo de herrajes."""
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'herrajes'
         self.logger = logger
 
     def obtener_herraje_por_codigo(self, codigo: str) -> Optional[Dict[str, Any]]:
@@ -24,11 +40,8 @@ class HerrajesModel:
                 return None
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            SELECT id, codigo, nombre, tipo, descripcion, precio_unitario, stock_actual, stock_minimo
-            FROM herrajes 
-            WHERE codigo = ?
-            """, (codigo,))
+            query = self.sql_manager.get_query(self.sql_path, 'select_herraje_by_codigo')
+            cursor.execute(query, {'codigo': codigo})
 
             row = cursor.fetchone()
             if row:
@@ -57,16 +70,19 @@ class HerrajesModel:
             cursor = self.db_connection.cursor()
 
             # Verificar si el herraje existe
-            cursor.execute("SELECT id FROM herrajes WHERE codigo = ?", (codigo,))
+            query_check = self.sql_manager.get_query(self.sql_path, 'select_herraje_id_by_codigo')
+            cursor.execute(query_check, {'codigo': codigo})
             if not cursor.fetchone():
                 self.logger.warning(f"Herraje con código {codigo} no encontrado")
                 return False
 
             # Eliminar relaciones primero
-            cursor.execute("DELETE FROM herrajes_obra WHERE herraje_id = (SELECT id FROM herrajes WHERE codigo = ?)", (codigo,))
+            query_delete_rel = self.sql_manager.get_query(self.sql_path, 'delete_herrajes_obra_by_codigo')
+            cursor.execute(query_delete_rel, {'codigo': codigo})
 
             # Eliminar el herraje
-            cursor.execute("DELETE FROM herrajes WHERE codigo = ?", (codigo,))
+            query_delete = self.sql_manager.get_query(self.sql_path, 'delete_herraje_by_codigo')
+            cursor.execute(query_delete, {'codigo': codigo})
             rows_affected = cursor.rowcount
 
             if rows_affected > 0:
@@ -90,11 +106,8 @@ class HerrajesModel:
                 return []
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            SELECT id, codigo, nombre, tipo, descripcion, precio_unitario, stock_actual, stock_minimo
-            FROM herrajes 
-            ORDER BY nombre
-            """)
+            query = self.sql_manager.get_query(self.sql_path, 'select_all_herrajes')
+            cursor.execute(query)
 
             herrajes = []
             for row in cursor.fetchall():
@@ -122,18 +135,16 @@ class HerrajesModel:
                 return None
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            INSERT INTO herrajes (codigo, nombre, tipo, descripcion, precio_unitario, stock_actual, stock_minimo)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
-            """, (
-                datos.get('codigo'),
-                datos.get('nombre'),
-                datos.get('tipo'),
-                datos.get('descripcion', ''),
-                datos.get('precio_unitario', 0.0),
-                datos.get('stock_actual', 0),
-                datos.get('stock_minimo', 0)
-            ))
+            query = self.sql_manager.get_query(self.sql_path, 'insert_herraje_simple')
+            cursor.execute(query, {
+                'codigo': datos.get('codigo'),
+                'nombre': datos.get('nombre'),
+                'tipo': datos.get('tipo'),
+                'descripcion': datos.get('descripcion', ''),
+                'precio_unitario': datos.get('precio_unitario', 0.0),
+                'stock_actual': datos.get('stock_actual', 0),
+                'stock_minimo': datos.get('stock_minimo', 0)
+            })
 
             herraje_id = cursor.lastrowid
             self.db_connection.commit()
@@ -153,11 +164,11 @@ class HerrajesModel:
                 return False
 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-            UPDATE herrajes 
-            SET stock_actual = ? 
-            WHERE codigo = ?
-            """, (nuevo_stock, codigo))
+            query = self.sql_manager.get_query(self.sql_path, 'update_stock_herraje')
+            cursor.execute(query, {
+                'nuevo_stock': nuevo_stock,
+                'codigo': codigo
+            })
 
             if cursor.rowcount > 0:
                 self.db_connection.commit()

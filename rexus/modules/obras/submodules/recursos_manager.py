@@ -9,12 +9,12 @@ Responsabilidades:
 - Seguimiento de costos de recursos
 """
 
-
 import logging
-logger = logging.getLogger(__name__)
+import pyodbc
+from datetime import datetime
+from typing import List, Dict, Any, Optional
 
-import sqlite3
-            from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+logger = logging.getLogger(__name__)
 
 # SQLQueryManager unificado
 try:
@@ -29,15 +29,16 @@ except ImportError:
 
         def get_query(self, path, filename):
             # Construir nombre del script sin extensión
-            script_name = f
+            script_name = filename
             return self.sql_loader.load_script(script_name)
-
 
 # DataSanitizer unificado
 try:
     from rexus.utils.unified_sanitizer import unified_sanitizer
     DataSanitizer = unified_sanitizer
 except ImportError:
+    from rexus.utils.unified_sanitizer import unified_sanitizer, sanitize_string
+    
     class DataSanitizer:
         def sanitize_dict(self, data):
             return data if data else {}
@@ -184,7 +185,7 @@ class RecursosManager:
             logger.info(f"Error liberando material: {str(e)}")
             return False
     def asignar_personal_obra(
-        self, obra_id: int, personal_id: int, rol: str, fecha_inicio: datetime = None
+        self, obra_id: int, personal_id: int, rol: str, fecha_inicio: Optional[datetime] = None
     ) -> bool:
         """Asigna personal a una obra."""
         if not self.db_connection or not obra_id or not personal_id:
@@ -264,15 +265,15 @@ class RecursosManager:
                 self._obtener_tabla_material(tipo_material)
             )
 
-            # Usar consulta preparada sin f-string
+            # Usar consulta preparada externa
             if tabla_material == "vidrios":
-                query = "SELECT stock FROM vidrios WHERE id = %s AND activo = 1"
+                query = self.sql_manager.get_query(self.sql_path, "select_vidrio_stock")
             elif tabla_material == "inventario":
-                query = "SELECT cantidad_disponible FROM inventario WHERE id = %s AND activo = 1"
+                query = self.sql_manager.get_query(self.sql_path, "select_inventario_stock")
             else:
                 return False
 
-            cursor.execute(query, (material_id,))
+            cursor.execute(query, {"material_id": material_id})
             result = cursor.fetchone()
 
             if not result:
@@ -294,15 +295,15 @@ class RecursosManager:
                 self._obtener_tabla_material(tipo_material)
             )
 
-            # Usar consulta preparada sin f-string
+            # Usar consulta preparada externa
             if tabla_material == "vidrios":
-                query = "UPDATE vidrios SET stock = stock - %s, fecha_modificacion = GETDATE() WHERE id = %s"
+                query = self.sql_manager.get_query(self.sql_path, "update_vidrio_stock")
             elif tabla_material == "inventario":
-                query = "UPDATE inventario SET cantidad_disponible = cantidad_disponible - %s, fecha_modificacion = GETDATE() WHERE id = %s"
+                query = self.sql_manager.get_query(self.sql_path, "update_inventario_stock")
             else:
                 return
 
-            cursor.execute(query, (cantidad, material_id))
+            cursor.execute(query, {"cantidad": cantidad, "material_id": material_id})
 
         except Exception as e:
             logger.info(f"Error actualizando stock: {str(e)}")
@@ -313,14 +314,8 @@ material_id: int,
         cursor) -> None:
         """Devuelve material al inventario."""
         try:
-            # Por simplicidad, asumir que es vidrio
-            query = """
-                UPDATE vidrios
-                SET stock = stock + %(cantidad)s,
-                    fecha_modificacion = GETDATE()
-                WHERE id = %(material_id)s
-            """
-
+            # Devolver material al inventario usando consulta externa
+            query = self.sql_manager.get_query(self.sql_path, "devolver_vidrio_stock")
             cursor.execute(query, {"material_id": material_id, "cantidad": cantidad})
 
         except Exception as e:
@@ -334,21 +329,14 @@ material_id: int,
         try:
             cursor = self.db_connection.cursor()
 
-            query = """
-                SELECT COUNT(*)
-                FROM obra_materiales
-                WHERE obra_id = %(obra_id)s
-                  AND material_id = %(material_id)s
-                  AND cantidad_asignada > 0
-            """
-
+            query = self.sql_manager.get_query(self.sql_path, "verificar_material_asignado")
             cursor.execute(query, {"obra_id": obra_id, "material_id": material_id})
 
             result = cursor.fetchone()
             return (result[0] if result else 0) > 0
 
-        except (sqlite3.Error, AttributeError, TypeError) as e:
-            # sqlite3.Error: errores de base de datos
+        except (pyodbc.Error, AttributeError, TypeError):
+            # pyodbc.Error: errores de base de datos
             # AttributeError: cursor no válido
             # TypeError: parámetros incorrectos
             return False
@@ -359,7 +347,7 @@ material_id: int,
             cantidad = material.get("cantidad_asignada", 0)
             precio = material.get("precio", 0)
             return float(cantidad) * float(precio)
-        except (ValueError, TypeError) as e:
+        except (ValueError, TypeError):
             # ValueError: conversión a float falló
             # TypeError: tipos incompatibles para operaciones matemáticas
             return 0.0

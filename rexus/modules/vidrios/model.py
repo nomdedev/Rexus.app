@@ -11,6 +11,20 @@ from datetime import datetime
 
 logger = logging.getLogger(__name__)
 
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
+
 class VidriosModel:
     """Modelo para el módulo de vidrios."""
     
@@ -28,6 +42,10 @@ class VidriosModel:
     
     def __init__(self, db_connection=None):
         """Inicializa el modelo de vidrios."""
+        self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'vidrios'
+        self.logger = logger
         self.db_connection = db_connection
         self.logger = logger
         
@@ -53,7 +71,8 @@ class VidriosModel:
             cursor = self.db_connection.cursor()
             
             # Verificar si el vidrio existe y está activo
-            cursor.execute("SELECT id, tipo FROM vidrios WHERE id = ? AND activo = 1", (vidrio_id,))
+            query_check = self.sql_manager.get_query(self.sql_path, 'select_vidrio_activo_by_id')
+            cursor.execute(query_check, {'vidrio_id': vidrio_id})
             vidrio = cursor.fetchone()
             
             if not vidrio:
@@ -61,22 +80,26 @@ class VidriosModel:
                 return False
                 
             # Verificar si está siendo usado en obras
-            cursor.execute("""
-                SELECT COUNT(*) FROM obra_vidrios 
-                WHERE vidrio_id = ? AND obra_estado != 'cancelada'
-            """, (vidrio_id,))
+            query_count = self.sql_manager.get_query(self.sql_path, 'count_obra_vidrios_by_id')
+            cursor.execute(query_count, {'vidrio_id': vidrio_id})
             
             obras_activas = cursor.fetchone()[0] if cursor.fetchone() else 0
             
             if obras_activas > 0:
                 self.logger.warning(f"Vidrio {vidrio_id} está siendo usado en {obras_activas} obras activas")
                 # Marcar como inactivo en lugar de eliminar
-                cursor.execute("UPDATE vidrios SET activo = 0, fecha_eliminacion = ? WHERE id = ?", 
-                             (datetime.now().isoformat(), vidrio_id))
+                query_update = self.sql_manager.get_query(self.sql_path, 'update_vidrio_activo')
+                cursor.execute(query_update, {
+                    'fecha_eliminacion': datetime.now().isoformat(),
+                    'vidrio_id': vidrio_id
+                })
             else:
                 # Eliminación lógica
-                cursor.execute("UPDATE vidrios SET activo = 0, fecha_eliminacion = ? WHERE id = ?", 
-                             (datetime.now().isoformat(), vidrio_id))
+                query_update = self.sql_manager.get_query(self.sql_path, 'update_vidrio_activo')
+                cursor.execute(query_update, {
+                    'fecha_eliminacion': datetime.now().isoformat(),
+                    'vidrio_id': vidrio_id
+                })
             
             if cursor.rowcount > 0:
                 self.db_connection.commit()
@@ -106,16 +129,14 @@ class VidriosModel:
             cursor = self.db_connection.cursor()
             
             # Verificar si ya existe un vidrio con las mismas características
-            cursor.execute("""
-                SELECT id FROM vidrios 
-                WHERE tipo = ? AND grosor = ? AND ancho = ? AND alto = ? AND color = ? AND activo = 1
-            """, (
-                datos.get('tipo'),
-                datos.get('grosor'),
-                datos.get('ancho'),
-                datos.get('alto'),
-                datos.get('color', 'transparente')
-            ))
+            query_check = self.sql_manager.get_query(self.sql_path, 'select_vidrio_by_caracteristicas')
+            cursor.execute(query_check, {
+                'tipo': datos.get('tipo'),
+                'grosor': datos.get('grosor'),
+                'ancho': datos.get('ancho'),
+                'alto': datos.get('alto'),
+                'color': datos.get('color', 'transparente')
+            })
             
             if cursor.fetchone():
                 self.logger.warning("Ya existe un vidrio con las mismas características")
@@ -123,23 +144,19 @@ class VidriosModel:
                 
             # Calcular precio automáticamente si no se proporciona
             precio = datos.get('precio_unitario') or self.calcular_precio(datos)
-            
-            cursor.execute("""
-                INSERT INTO vidrios (
-                    tipo, grosor, ancho, alto, color, precio_unitario, 
-                    stock_actual, stock_minimo, activo, fecha_creacion
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, ?)
-            """, (
-                datos.get('tipo'),
-                datos.get('grosor'),
-                datos.get('ancho'),
-                datos.get('alto'),
-                datos.get('color', 'transparente'),
-                precio,
-                datos.get('stock_actual', 0),
-                datos.get('stock_minimo', 5),
-                datetime.now().isoformat()
-            ))
+
+            query_insert = self.sql_manager.get_query(self.sql_path, 'insert_vidrio_completo')
+            cursor.execute(query_insert, {
+                'tipo': datos.get('tipo'),
+                'grosor': datos.get('grosor'),
+                'ancho': datos.get('ancho'),
+                'alto': datos.get('alto'),
+                'color': datos.get('color', 'transparente'),
+                'precio_unitario': precio,
+                'stock_actual': datos.get('stock_actual', 0),
+                'stock_minimo': datos.get('stock_minimo', 5),
+                'fecha_creacion': datetime.now().isoformat()
+            })
             
             vidrio_id = cursor.lastrowid
             self.db_connection.commit()
@@ -165,7 +182,8 @@ class VidriosModel:
             cursor = self.db_connection.cursor()
             
             # Verificar que el vidrio existe
-            cursor.execute("SELECT id FROM vidrios WHERE id = ? AND activo = 1", (vidrio_id,))
+            query_check = self.sql_manager.get_query(self.sql_path, 'select_vidrio_activo_by_id')
+            cursor.execute(query_check, {'vidrio_id': vidrio_id})
             if not cursor.fetchone():
                 self.logger.error(f"Vidrio {vidrio_id} no encontrado")
                 return False
@@ -173,24 +191,19 @@ class VidriosModel:
             # Recalcular precio si cambió alguna especificación
             precio = datos.get('precio_unitario') or self.calcular_precio(datos)
             
-            cursor.execute("""
-                UPDATE vidrios 
-                SET tipo = ?, grosor = ?, ancho = ?, alto = ?, color = ?, 
-                    precio_unitario = ?, stock_actual = ?, stock_minimo = ?,
-                    fecha_modificacion = ?
-                WHERE id = ? AND activo = 1
-            """, (
-                datos.get('tipo'),
-                datos.get('grosor'),
-                datos.get('ancho'),
-                datos.get('alto'),
-                datos.get('color'),
-                precio,
-                datos.get('stock_actual'),
-                datos.get('stock_minimo'),
-                datetime.now().isoformat(),
-                vidrio_id
-            ))
+            query_update = self.sql_manager.get_query(self.sql_path, 'update_vidrio_completo')
+            cursor.execute(query_update, {
+                'tipo': datos.get('tipo'),
+                'grosor': datos.get('grosor'),
+                'ancho': datos.get('ancho'),
+                'alto': datos.get('alto'),
+                'color': datos.get('color'),
+                'precio_unitario': precio,
+                'stock_actual': datos.get('stock_actual'),
+                'stock_minimo': datos.get('stock_minimo'),
+                'fecha_modificacion': datetime.now().isoformat(),
+                'vidrio_id': vidrio_id
+            })
             
             if cursor.rowcount > 0:
                 self.db_connection.commit()
@@ -213,12 +226,8 @@ class VidriosModel:
                 return None
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                SELECT id, tipo, grosor, ancho, alto, color, precio_unitario, 
-                       stock_actual, stock_minimo, fecha_creacion, fecha_modificacion
-                FROM vidrios 
-                WHERE id = ? AND activo = 1
-            """, (vidrio_id,))
+            query = self.sql_manager.get_query(self.sql_path, 'select_vidrio_info_completa')
+            cursor.execute(query, {'vidrio_id': vidrio_id})
             
             row = cursor.fetchone()
             if row:
@@ -249,15 +258,26 @@ class VidriosModel:
                 
             cursor = self.db_connection.cursor()
             
-            query = """
-                SELECT id, tipo, grosor, ancho, alto, color, precio_unitario, 
-                       stock_actual, stock_minimo, fecha_creacion
-                FROM vidrios 
-                WHERE activo = 1
-            """
-            params = []
-            
-            if filtros:
+            # Usar queries optimizadas para casos comunes
+            if not filtros:
+                query = self.sql_manager.get_query(self.sql_path, 'select_vidrios_basic')
+                cursor.execute(query)
+            elif filtros.get('stock_bajo'):
+                query = self.sql_manager.get_query(self.sql_path, 'select_vidrios_stock_bajo')
+                cursor.execute(query)
+            elif filtros.get('tipo') and len(filtros) == 1:
+                query = self.sql_manager.get_query(self.sql_path, 'select_vidrios_by_tipo')
+                cursor.execute(query, {'tipo': filtros['tipo']})
+            else:
+                # Fallback para filtros complejos (mantener lógica existente temporalmente)
+                query = """
+                    SELECT id, tipo, grosor, ancho, alto, color, precio_unitario, 
+                           stock_actual, stock_minimo, fecha_creacion
+                    FROM vidrios 
+                    WHERE activo = 1
+                """
+                params = []
+                
                 if filtros.get('tipo'):
                     query += " AND tipo = ?"
                     params.append(filtros['tipo'])
@@ -278,9 +298,8 @@ class VidriosModel:
                     busqueda = f"%{filtros['busqueda']}%"
                     params.extend([busqueda, busqueda])
             
-            query += " ORDER BY tipo, grosor, ancho, alto"
-            
-            cursor.execute(query, params)
+                query += " ORDER BY tipo, grosor, ancho, alto"
+                cursor.execute(query, params)
             
             vidrios = []
             for row in cursor.fetchall():

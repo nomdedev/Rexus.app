@@ -10,7 +10,6 @@ Responsabilidades:
 """
 
 import logging
-import sqlite3
 
 class ProfilesManager:
 
@@ -56,19 +55,12 @@ usuario.get("username",
                 usuario_id)
             return {'success': True, 'message': 'Usuario eliminado exitosamente'}
 
-        except sqlite3.Error as e:
-            logger.error("Error de base de datos eliminando usuario: %s", e)
-            try:
-                self.db_connection.rollback()
-            except sqlite3.Error:
-                logger.error("Error adicional durante rollback")
-            return {'success': False, 'message': 'Error de base de datos'}
         except Exception as e:
-            logger.exception("Error inesperado eliminando usuario: %s", e)
+            logger.error("Error eliminando usuario: %s", e)
             try:
                 self.db_connection.rollback()
-            except sqlite3.Error:
-                pass
+            except Exception:
+                logger.error("Error adicional durante rollback")
             return {'success': False, 'message': 'Error interno del sistema'}
 
     def obtener_estadisticas_usuarios(self):

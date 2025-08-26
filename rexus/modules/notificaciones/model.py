@@ -6,10 +6,23 @@ Maneja la lógica de negocio y acceso a datos para notificaciones.
 
 import logging
 import datetime
-import json
 from typing import Dict, List, Optional, Any
 
 logger = logging.getLogger(__name__)
+
+# SQLQueryManager unificado
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+
+        def get_query(self, path, filename):
+            script_name = filename
+            return self.sql_loader.load_script(script_name)
 
 class NotificacionesModel:
     """Modelo para el módulo de notificaciones."""
@@ -17,6 +30,8 @@ class NotificacionesModel:
     def __init__(self, db_connection=None):
         """Inicializa el modelo de notificaciones."""
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
+        self.sql_path = 'notificaciones'
         self.logger = logger
         
     def eliminar_notificacion(self, notificacion_id: int) -> bool:
@@ -34,7 +49,8 @@ class NotificacionesModel:
                 return False
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("DELETE FROM notificaciones WHERE id = ?", (notificacion_id,))
+            query = self.sql_manager.get_query(self.sql_path, 'delete_notificacion_by_id')
+            cursor.execute(query, {'notificacion_id': notificacion_id})
             
             if cursor.rowcount > 0:
                 self.db_connection.commit()
@@ -57,17 +73,15 @@ class NotificacionesModel:
                 return None
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                INSERT INTO notificaciones (titulo, mensaje, tipo, usuario_id, fecha_creacion, leida)
-                VALUES (?, ?, ?, ?, ?, ?)
-            """, (
-                datos.get('titulo'),
-                datos.get('mensaje'),
-                datos.get('tipo', 'info'),
-                datos.get('usuario_id'),
-                datetime.datetime.now().isoformat(),
-                False
-            ))
+            query = self.sql_manager.get_query(self.sql_path, 'insert_notificacion')
+            cursor.execute(query, {
+                'titulo': datos.get('titulo'),
+                'mensaje': datos.get('mensaje'),
+                'tipo': datos.get('tipo', 'info'),
+                'usuario_id': datos.get('usuario_id'),
+                'fecha_creacion': datetime.datetime.now().isoformat(),
+                'leida': False
+            })
             
             notificacion_id = cursor.lastrowid
             self.db_connection.commit()
@@ -87,11 +101,12 @@ class NotificacionesModel:
                 return False
                 
             cursor = self.db_connection.cursor()
-            cursor.execute("""
-                UPDATE notificaciones 
-                SET leida = ?, fecha_lectura = ?
-                WHERE id = ?
-            """, (True, datetime.datetime.now().isoformat(), notificacion_id))
+            query = self.sql_manager.get_query(self.sql_path, 'update_marcar_leida')
+            cursor.execute(query, {
+                'leida': True,
+                'fecha_lectura': datetime.datetime.now().isoformat(),
+                'notificacion_id': notificacion_id
+            })
             
             if cursor.rowcount > 0:
                 self.db_connection.commit()
@@ -113,18 +128,11 @@ class NotificacionesModel:
             cursor = self.db_connection.cursor()
             
             if usuario_id:
-                cursor.execute("""
-                    SELECT id, titulo, mensaje, tipo, usuario_id, fecha_creacion, leida, fecha_lectura
-                    FROM notificaciones 
-                    WHERE usuario_id = ? OR usuario_id IS NULL
-                    ORDER BY fecha_creacion DESC
-                """, (usuario_id,))
+                query = self.sql_manager.get_query(self.sql_path, 'select_notificaciones_by_usuario')
+                cursor.execute(query, {'usuario_id': usuario_id})
             else:
-                cursor.execute("""
-                    SELECT id, titulo, mensaje, tipo, usuario_id, fecha_creacion, leida, fecha_lectura
-                    FROM notificaciones 
-                    ORDER BY fecha_creacion DESC
-                """)
+                query = self.sql_manager.get_query(self.sql_path, 'select_notificaciones_all')
+                cursor.execute(query)
             
             notificaciones = []
             for row in cursor.fetchall():
@@ -154,19 +162,11 @@ class NotificacionesModel:
             cursor = self.db_connection.cursor()
             
             if usuario_id:
-                cursor.execute("""
-                    SELECT id, titulo, mensaje, tipo, usuario_id, fecha_creacion
-                    FROM notificaciones 
-                    WHERE (usuario_id = ? OR usuario_id IS NULL) AND leida = ?
-                    ORDER BY fecha_creacion DESC
-                """, (usuario_id, False))
+                query = self.sql_manager.get_query(self.sql_path, 'select_notificaciones_no_leidas_by_usuario')
+                cursor.execute(query, {'usuario_id': usuario_id, 'leida': False})
             else:
-                cursor.execute("""
-                    SELECT id, titulo, mensaje, tipo, usuario_id, fecha_creacion
-                    FROM notificaciones 
-                    WHERE leida = ?
-                    ORDER BY fecha_creacion DESC
-                """, (False,))
+                query = self.sql_manager.get_query(self.sql_path, 'select_notificaciones_no_leidas_all')
+                cursor.execute(query, {'leida': False})
             
             notificaciones = []
             for row in cursor.fetchall():
@@ -195,13 +195,11 @@ class NotificacionesModel:
             cursor = self.db_connection.cursor()
             
             if usuario_id:
-                cursor.execute("""
-                    SELECT COUNT(*) 
-                    FROM notificaciones 
-                    WHERE (usuario_id = ? OR usuario_id IS NULL) AND leida = ?
-                """, (usuario_id, False))
+                query = self.sql_manager.get_query(self.sql_path, 'count_no_leidas_by_usuario')
+                cursor.execute(query, {'usuario_id': usuario_id, 'leida': False})
             else:
-                cursor.execute("SELECT COUNT(*) FROM notificaciones WHERE leida = ?", (False,))
+                query = self.sql_manager.get_query(self.sql_path, 'count_no_leidas_all')
+                cursor.execute(query, {'leida': False})
             
             return cursor.fetchone()[0] or 0
             
