@@ -28,6 +28,17 @@ except ImportError:
     logger.warning("Sanitizador no disponible, usando métodos básicos")
     SANITIZER_AVAILABLE = False
 
+# SQLQueryManager para externalizar queries
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+        def get_query(self, path, filename):
+            return self.sql_loader.load_script(filename)
+
     def sanitize_string(s):
         return str(s).replace("'", "''").replace(";", "") if s else ""
 
@@ -46,7 +57,7 @@ class ComprasModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
-        self.sql_manager = None
+        self.sql_manager = SQLQueryManager()
         self.data_sanitizer = None
         logger.info("ComprasModel inicializado")
 
@@ -59,22 +70,24 @@ class ComprasModel:
         try:
             cursor = self.db_connection.cursor()
             
-            # Lista de tablas requeridas
+            # Lista de tablas requeridas (usando nombres que SÍ existen en la BD)
             tablas_requeridas = [
                 'compras', 'detalle_compras', 'proveedores', 
-                'ordenes_compra', 'recepciones_compra'
+                'pedidos_compra', 'pedidos'
             ]
             
             for tabla in tablas_requeridas:
                 try:
-                    cursor.execute(
-                        "SELECT COUNT(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ?", 
-                        (tabla,)
-                    )
-                    if not cursor.fetchone()[0]:
+                    # Usar SQL externalizado compatible con SQL Server
+                    sql_verificar = self.sql_manager.get_query('compras', 'verificar_tabla_existe')
+                    cursor.execute(sql_verificar, (tabla,))
+                    result = cursor.fetchone()
+                    if not result or result[0] == 0:
                         logger.warning(f"Tabla '{tabla}' no existe en la base de datos")
+                    else:
+                        logger.info(f"Tabla '{tabla}' verificada correctamente")
                 except Exception as e:
-                    logger.error(f"Error: tabla '{tabla}' no existe: {e}")
+                    logger.error(f"Error verificando tabla '{tabla}': {e}")
                     return False
 
             logger.info("Verificación de tablas de compras completada")

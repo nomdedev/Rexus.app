@@ -28,14 +28,14 @@ import logging
             stats = {}
 
             # Sesiones activas totales
-            cursor.execute("SELECT COUNT(*) FROM sesiones WHERE is_active = 1")
+            cursor.execute("SELECT COUNT(*) FROM sesiones WHERE activa = 1")
             stats['sesiones_activas'] = cursor.fetchone()[0]
 
             # Usuarios únicos con sesiones activas
             cursor.execute("""
                 SELECT COUNT(DISTINCT usuario_id)
                 FROM sesiones
-                WHERE is_active = 1
+                WHERE activa = 1
             """)
             stats['usuarios_conectados'] = cursor.fetchone()[0]
 
@@ -101,7 +101,7 @@ created_at,
 
             cursor.execute("""
                 SELECT COUNT(*) FROM sesiones
-                WHERE usuario_id = ? AND is_active = 1
+                WHERE usuario_id = ? AND activa = 1
             """, (usuario_id,))
 
             sesiones_activas = cursor.fetchone()[0]
@@ -128,7 +128,7 @@ created_at,
             # Obtener la sesión más antigua
             cursor.execute("""
                 SELECT TOP 1 session_id FROM sesiones
-                WHERE usuario_id = ? AND is_active = 1
+                WHERE usuario_id = ? AND activa = 1
                 ORDER BY created_at ASC
             """, (usuario_id,))
 
@@ -155,8 +155,8 @@ created_at,
             # Cerrar sesiones expiradas
             cursor.execute("""
                 UPDATE sesiones
-                SET is_active = 0, closed_at = GETDATE()
-                WHERE is_active = 1 AND last_activity < ?
+                SET activa = 0, closed_at = GETDATE()
+                WHERE activa = 1 AND last_activity < ?
             """, (tiempo_limite,))
 
             sesiones_cerradas = cursor.rowcount

@@ -33,7 +33,7 @@ class SecurityManager:
         """Inicializa el gestor de seguridad."""
         self.db_connection = db_connection
         self.allowed_updates = {
-            'username': 'UPDATE usuarios SET username = ? WHERE id = ?',
+            'usuario': 'UPDATE usuarios SET usuario = ? WHERE id = ?',
             'email': 'UPDATE usuarios SET email = ? WHERE id = ?',
             'nombre': 'UPDATE usuarios SET nombre = ? WHERE id = ?',
             'apellido': 'UPDATE usuarios SET apellido = ? WHERE id = ?',
@@ -80,7 +80,7 @@ class SecurityManager:
             cursor = self.db_connection.cursor()
             cursor.execute(
                 """
-                SELECT ls.id, u.username, ls.accion, ls.modulo, ls.detalles,
+                SELECT ls.id, u.usuario, ls.accion, ls.modulo, ls.detalles,
                        ls.ip_address, ls.fecha
                 FROM logs_seguridad ls
                 LEFT JOIN usuarios u ON ls.usuario_id = u.id
@@ -95,7 +95,7 @@ class SecurityManager:
                 logs.append(
                     {
                         "id": row[0],
-                        "username": row[1],
+                        "usuario": row[1],
                         "accion": row[2],
                         "modulo": row[3],
                         "detalles": row[4],

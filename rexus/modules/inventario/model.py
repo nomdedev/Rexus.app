@@ -1866,7 +1866,7 @@ fecha_fin,
                     if cursor.fetchone():
                         cursor.execute(
                             """
-                        INSERT INTO historial_precios
+                        INSERT INTO historial
                         (producto_id, precio_anterior, precio_nuevo,
                          fecha_cambio, usuario, motivo)
                         VALUES (?, ?, ?, GETDATE(), ?, ?)

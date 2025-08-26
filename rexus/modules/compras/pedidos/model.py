@@ -9,6 +9,17 @@ from typing import Any, Dict, List
 from datetime import datetime
 from rexus.utils.security import SecurityUtils
 
+# SQLQueryManager para externalizar queries
+try:
+    from rexus.core.sql_query_manager import SQLQueryManager
+except ImportError:
+    from rexus.utils.sql_script_loader import sql_script_loader
+    class SQLQueryManager:
+        def __init__(self):
+            self.sql_loader = sql_script_loader
+        def get_query(self, path, filename):
+            return self.sql_loader.load_script(filename)
+
 logger = logging.getLogger(__name__)
 
 
@@ -23,6 +34,7 @@ class PedidosModel:
             db_connection: Conexión a la base de datos
         """
         self.db_connection = db_connection
+        self.sql_manager = SQLQueryManager()
         self.tabla_pedidos = "pedidos_compra"
         self.tabla_detalle_pedidos = "detalle_pedidos_compra"
         self._crear_tablas_si_no_existen()
@@ -35,22 +47,18 @@ class PedidosModel:
         try:
             cursor = self.db_connection.cursor()
 
-            # Verificar tabla pedidos_compra
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_pedidos,),
-            )
-            if cursor.fetchone():
+            # Verificar tabla pedidos_compra usando SQL externalizado
+            sql_verificar_pedidos = self.sql_manager.get_query('compras', 'verificar_tabla_pedidos')
+            cursor.execute(sql_verificar_pedidos, (self.tabla_pedidos,))
+            if cursor.fetchone()[0] > 0:
                 logger.info(f"[PEDIDOS] Tabla '{self.tabla_pedidos}' verificada.")
             else:
                 logger.info(f"[ADVERTENCIA] La tabla '{self.tabla_pedidos}' no existe.")
 
-            # Verificar tabla detalle_pedidos_compra
-            cursor.execute(
-                "SELECT * FROM sysobjects WHERE name=? AND xtype='U'",
-                (self.tabla_detalle_pedidos,),
-            )
-            if cursor.fetchone():
+            # Verificar tabla detalle_pedidos_compra usando SQL externalizado
+            sql_verificar_detalle = self.sql_manager.get_query('compras', 'verificar_tabla_detalle_pedidos')
+            cursor.execute(sql_verificar_detalle, (self.tabla_detalle_pedidos,))
+            if cursor.fetchone()[0] > 0:
                 logger.info(f"[PEDIDOS] Tabla '{self.tabla_detalle_pedidos}' verificada.")
             else:
                 logger.info(f"[ADVERTENCIA] La tabla '{self.tabla_detalle_pedidos}' no existe.")

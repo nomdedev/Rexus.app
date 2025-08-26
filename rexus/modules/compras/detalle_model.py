@@ -270,7 +270,7 @@ class DetalleComprasModel:
 
             # Actualizar orden
             cursor.execute("""
-                UPDATE ordenes_compra 
+                UPDATE pedidos_compra 
                 SET subtotal = ?, descuento_total = ?, impuesto_porcentaje = ?, 
                     impuesto_monto = ?, total = ?
                 WHERE id = ?

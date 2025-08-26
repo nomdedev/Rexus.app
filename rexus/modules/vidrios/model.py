@@ -59,7 +59,7 @@ class VidriosModel:
         """
         self.db_connection = db_connection
         self.tabla_vidrios = "vidrios"  # Tabla principal de vidrios en DB inventario
-        self.tabla_vidrios_obra = "vidrios_obra"  # Tabla para asociar vidrios con obras
+        self.tabla_vidrios_obra = "vidrios_por_obra"  # Tabla para asociar vidrios con obras
         self.tabla_pedidos_vidrios = "pedidos_vidrios"  # Tabla para pedidos por obra
 
         # Configurar cargador de scripts SQL
@@ -226,7 +226,7 @@ class VidriosModel:
             raise ValueError(f"Nombre de tabla inválido: {table_name}")
 
         # Lista blanca de tablas permitidas
-        allowed_tables = {"vidrios", "vidrios_obra", "pedidos_vidrios"}
+        allowed_tables = {"vidrios", "vidrios_por_obra", "pedidos_vidrios"}
         if table_name not in allowed_tables:
             raise ValueError(f"Tabla no permitida: {table_name}")
 
@@ -357,7 +357,7 @@ class VidriosModel:
                        v.espesor, v.color, v.precio_m2, v.estado, v.dimensiones as ubicacion,
                        vo.cantidad_utilizada, vo.fecha_asignacion
                 FROM vidrios v
-                INNER JOIN vidrios_obra vo ON v.id = vo.vidrio_id
+                INNER JOIN vidrios_por_obra vo ON v.id = vo.vidrio_id
                 WHERE vo.obra_id = ?
                 ORDER BY v.tipo
             """, (obra_id,))
@@ -404,7 +404,7 @@ class VidriosModel:
             cursor = self.db_connection.connection.cursor()
 
             query = """
-                INSERT INTO vidrios_obra
+                INSERT INTO vidrios_por_obra
                 (vidrio_id, obra_id, metros_cuadrados_requeridos, medidas_especificas, fecha_asignacion, observaciones)
                 VALUES (?, ?, ?, ?, GETDATE(), ?)
             """
@@ -464,11 +464,11 @@ class VidriosModel:
             cursor.execute(query)
             pedido_id = cursor.fetchone()[0]
 
-            # Actualizar cantidades pedidas en vidrios_obra
+            # Actualizar cantidades pedidas en vidrios_por_obra
             for vidrio in vidrios_lista:
                 # FIXED: Usar consulta parametrizada segura en lugar de script_content
                 cursor.execute("""
-                    UPDATE vidrios_obra 
+                    UPDATE vidrios_por_obra 
                     SET metros_pedidos = metros_pedidos + ?
                     WHERE vidrio_id = ? AND obra_id = ?
                 """, (vidrio["metros_cuadrados"], vidrio["vidrio_id"], obra_id))
@@ -839,7 +839,7 @@ class VidriosModel:
 
             # FIXED: Verificar si el vidrio está asignado a alguna obra usando consulta parametrizada segura
             cursor.execute("""
-                SELECT COUNT(*) FROM vidrios_obra WHERE vidrio_id = ?
+                SELECT COUNT(*) FROM vidrios_por_obra WHERE vidrio_id = ?
             """, (vidrio_id_limpio,))
 
             if cursor.fetchone()[0] > 0:

@@ -11,6 +11,7 @@ Este test verifica que:
 
 import os
 import sys
+import re
 import pytest
 import pyodbc
 from typing import Dict, List, Tuple
@@ -125,81 +126,48 @@ class DatabaseSchemaValidator:
         """Extraer todas las consultas SQL embebidas del código."""
         embedded_queries = []
         
-        # Definir las consultas que encontramos anteriormente
-        known_queries = [
-            {
-                'file': 'rexus/modules/usuarios/submodules/profiles_manager.py',
-                'query': 'SELECT COUNT(*) FROM usuarios',
-                'tables': ['usuarios'],
-                'columns': ['COUNT(*)'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/usuarios/submodules/profiles_manager.py',
-                'query': 'SELECT COUNT(*) FROM usuarios WHERE activo = 1',
-                'tables': ['usuarios'],
-                'columns': ['COUNT(*)', 'activo'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/usuarios/submodules/profiles_manager.py',
-                'query': 'SELECT COUNT(*) FROM usuarios WHERE username = ?',
-                'tables': ['usuarios'],
-                'columns': ['COUNT(*)', 'username'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/usuarios/submodules/sessions_manager.py',
-                'query': 'SELECT COUNT(*) FROM sesiones_usuario WHERE is_active = 1',
-                'tables': ['sesiones_usuario'],
-                'columns': ['COUNT(*)', 'is_active'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/inventario/submodules/reportes_manager.py',
-                'query': 'SELECT COUNT(*) FROM inventario WHERE activo = 1',
-                'tables': ['inventario'],
-                'columns': ['COUNT(*)', 'activo'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/compras/detalle_model.py',
-                'query': 'SELECT orden_id FROM ordenes_compra_detalles WHERE id = ?',
-                'tables': ['ordenes_compra_detalles'],
-                'columns': ['orden_id', 'id'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/auditoria/model.py',
-                'query': 'SELECT COUNT(*) FROM auditoria_eventos',
-                'tables': ['auditoria_eventos'],
-                'columns': ['COUNT(*)'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/models/productos_model.py',
-                'query': 'SELECT COUNT(*) FROM productos WHERE codigo = ?',
-                'tables': ['productos'],
-                'columns': ['COUNT(*)', 'codigo'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/logistica/model.py',
-                'query': 'SELECT COUNT(*) FROM servicios_transporte',
-                'tables': ['servicios_transporte'],
-                'columns': ['COUNT(*)'],
-                'type': 'SELECT'
-            },
-            {
-                'file': 'rexus/modules/herrajes/model.py',
-                'query': 'SELECT COUNT(DISTINCT proveedor) FROM herrajes WHERE activo = 1 AND proveedor IS NOT NULL',
-                'tables': ['herrajes'],
-                'columns': ['proveedor', 'activo'],
-                'type': 'SELECT'
-            }
+        # Buscar archivos Python en el proyecto
+        python_files = []
+        for root, dirs, files in os.walk('.'):
+            # Saltar directorios específicos
+            if any(skip in root for skip in ['.git', '__pycache__', '.pytest_cache', 'node_modules', 'legacy_root', 'backups']):
+                continue
+            for file in files:
+                if file.endswith('.py') and not file.startswith('test_'):
+                    python_files.append(os.path.join(root, file))
+        
+        # Patrones para encontrar consultas SQL
+        sql_patterns = [
+            r'cursor\.execute\(\s*["\']([^"\']*(?:SELECT|INSERT|UPDATE|DELETE)[^"\']*)["\']',
+            r'cursor\.execute\(\s*["\'"]{3}([^"\']*(?:SELECT|INSERT|UPDATE|DELETE)[^"\']*)["\'"]{3}',
+            r'execute\(\s*["\']([^"\']*(?:SELECT|INSERT|UPDATE|DELETE)[^"\']*)["\']',
+            r'execute\(\s*["\'"]{3}([^"\']*(?:SELECT|INSERT|UPDATE|DELETE)[^"\']*)["\'"]{3}'
         ]
         
-        return known_queries
+        for file_path in python_files:
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+                    
+                for pattern in sql_patterns:
+                    matches = re.finditer(pattern, content, re.IGNORECASE | re.MULTILINE | re.DOTALL)
+                    for match in matches:
+                        query = match.group(1).strip()
+                        # Limpiar query de saltos de línea y espacios extra
+                        query = ' '.join(query.split())
+                        
+                        if len(query) > 10:  # Filtrar queries muy cortas
+                            embedded_queries.append({
+                                'file': file_path.replace('\\', '/').lstrip('./'),
+                                'query': query,
+                                'type': 'SQL'
+                            })
+            except Exception as e:
+                # Ignorar archivos que no se pueden leer
+                continue
+        
+        return embedded_queries
+        return embedded_queries
     
     def validate_query_against_schema(self, query_info: Dict) -> Dict:
         """Validar una consulta contra el esquema real de la base de datos."""
@@ -211,8 +179,16 @@ class DatabaseSchemaValidator:
             'warnings': []
         }
         
+        query = query_info['query'].upper()
+        
+        # Extraer nombres de tablas del query
+        tables = self.extract_table_names(query_info['query'])
+        
+        # Extraer nombres de columnas específicas que podrían fallar
+        columns = self.extract_column_names(query_info['query'])
+        
         # Verificar cada tabla
-        for table_name in query_info['tables']:
+        for table_name in tables:
             # Intentar encontrar la tabla en diferentes bases de datos
             table_found = False
             
@@ -221,9 +197,9 @@ class DatabaseSchemaValidator:
                 if schema and schema['exists']:
                     table_found = True
                     
-                    # Verificar columnas
-                    for column in query_info['columns']:
-                        if column in ['COUNT(*)', 'SCOPE_IDENTITY()', '@@IDENTITY']:
+                    # Verificar columnas específicas
+                    for column in columns:
+                        if column in ['COUNT(*)', 'SCOPE_IDENTITY()', '@@IDENTITY', '*']:
                             continue  # Funciones SQL especiales
                             
                         if column not in schema['columns']:
@@ -238,6 +214,43 @@ class DatabaseSchemaValidator:
                 result['valid'] = False
         
         return result
+
+    def extract_table_names(self, query: str) -> List[str]:
+        """Extraer nombres de tablas de una consulta SQL."""
+        tables = []
+        query_upper = query.upper()
+        
+        # Patrones para encontrar tablas
+        patterns = [
+            r'FROM\s+([a-zA-Z_][a-zA-Z0-9_]*)',
+            r'UPDATE\s+([a-zA-Z_][a-zA-Z0-9_]*)',
+            r'INSERT\s+INTO\s+([a-zA-Z_][a-zA-Z0-9_]*)',
+            r'DELETE\s+FROM\s+([a-zA-Z_][a-zA-Z0-9_]*)',
+            r'JOIN\s+([a-zA-Z_][a-zA-Z0-9_]*)',
+        ]
+        
+        for pattern in patterns:
+            matches = re.findall(pattern, query_upper)
+            tables.extend(matches)
+        
+        return list(set(tables))  # Eliminar duplicados
+
+    def extract_column_names(self, query: str) -> List[str]:
+        """Extraer nombres de columnas problemáticas de una consulta SQL."""
+        problematic_columns = []
+        query_lower = query.lower()
+        
+        # Buscar columnas específicas problemáticas
+        if 'username' in query_lower:
+            problematic_columns.append('username')
+        if 'is_active' in query_lower:
+            problematic_columns.append('is_active')
+        if 'locked_until' in query_lower:
+            problematic_columns.append('locked_until')
+        if 'failed_attempts' in query_lower:
+            problematic_columns.append('failed_attempts')
+            
+        return problematic_columns
     
     def close_connections(self):
         """Cerrar todas las conexiones."""
